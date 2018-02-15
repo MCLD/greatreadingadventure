@@ -225,6 +225,17 @@ namespace GRA.Controllers.MissionControl
                 viewModel.AskFirstTime = EmptyNoYes();
             }
 
+            var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
+                SiteSettingKey.Users.DefaultDailyPersonalGoal);
+            if (askActivityGoal)
+            {
+                viewModel.DailyPersonalGoal = defaultDailyGoal;
+                var pointTranslation = programList.First().PointTranslation;
+                viewModel.TranslationDescriptionPastTense =
+                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                viewModel.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
+            }
+
             if (systemList.Count() == 1)
             {
                 var systemId = systemList.SingleOrDefault().Id;
@@ -267,6 +278,9 @@ namespace GRA.Controllers.MissionControl
             {
                 ModelState.Remove(nameof(model.IsFirstTime));
             }
+
+            var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
+                SiteSettingKey.Users.DefaultDailyPersonalGoal);
 
             bool askAge = false;
             bool askSchool = false;
@@ -315,6 +329,18 @@ namespace GRA.Controllers.MissionControl
                 {
                     user.IsFirstTime = model.IsFirstTime.Equals(DropDownTrueValue,
                         StringComparison.OrdinalIgnoreCase);
+                }
+
+                if (askActivityGoal && user.DailyPersonalGoal > 0)
+                {
+                    if (user.DailyPersonalGoal > Defaults.MaxDailyActivityGoal)
+                    {
+                        user.DailyPersonalGoal = Defaults.MaxDailyActivityGoal;
+                    }
+                }
+                else
+                {
+                    user.DailyPersonalGoal = null;
                 }
 
                 try
@@ -422,6 +448,14 @@ namespace GRA.Controllers.MissionControl
             if (askIfFirstTime)
             {
                 model.AskFirstTime = EmptyNoYes();
+            }
+
+            if (askActivityGoal)
+            {
+                var pointTranslation = programList.First().PointTranslation;
+                model.TranslationDescriptionPastTense =
+                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
             }
 
             return View(model);
@@ -552,6 +586,17 @@ namespace GRA.Controllers.MissionControl
                     viewModel.CanEditUsername = true;
                 }
 
+                var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
+                SiteSettingKey.Users.DefaultDailyPersonalGoal);
+                if (askActivityGoal)
+                {
+                    var pointTranslation = await _pointTranslationService
+                        .GetByProgramIdAsync(user.ProgramId);
+                    viewModel.TranslationDescriptionPastTense =
+                        pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                    viewModel.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
+                }
+
                 return View(viewModel);
             }
             catch (GraException gex)
@@ -585,6 +630,9 @@ namespace GRA.Controllers.MissionControl
                 ModelState.AddModelError("User.Username", "The Username field is required.");
             }
 
+            var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
+                SiteSettingKey.Users.DefaultDailyPersonalGoal);
+
             if (ModelState.IsValid)
             {
                 try
@@ -611,6 +659,18 @@ namespace GRA.Controllers.MissionControl
                         {
                             model.User.SchoolId = model.SchoolId;
                         }
+                    }
+
+                    if (askActivityGoal && model.User.DailyPersonalGoal > 0)
+                    {
+                        if (model.User.DailyPersonalGoal > Defaults.MaxDailyActivityGoal)
+                        {
+                            model.User.DailyPersonalGoal = Defaults.MaxDailyActivityGoal;
+                        }
+                    }
+                    else
+                    {
+                        model.User.DailyPersonalGoal = null;
                     }
 
                     await _userService.MCUpdate(model.User);
@@ -705,6 +765,15 @@ namespace GRA.Controllers.MissionControl
                         model.SchoolList = new SelectList( schoolList.ToList(), "Id", "Name");
                     }
                 }
+            }
+
+            if (askActivityGoal)
+            {
+                var pointTranslation = await _pointTranslationService
+                    .GetByProgramIdAsync(model.User.ProgramId);
+                model.TranslationDescriptionPastTense =
+                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
             }
 
             return View(model);
@@ -1129,6 +1198,17 @@ namespace GRA.Controllers.MissionControl
                     viewModel.AskFirstTime = EmptyNoYes();
                 }
 
+                var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
+                SiteSettingKey.Users.DefaultDailyPersonalGoal);
+                if (askActivityGoal)
+                {
+                    viewModel.User.DailyPersonalGoal = defaultDailyGoal;
+                    var pointTranslation = programList.First().PointTranslation;
+                    viewModel.TranslationDescriptionPastTense =
+                        pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                    viewModel.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
+                }
+
                 return View("HouseholdAdd", viewModel);
             }
             catch (GraException gex)
@@ -1160,6 +1240,9 @@ namespace GRA.Controllers.MissionControl
             {
                 ModelState.Remove(nameof(model.IsFirstTime));
             }
+
+            var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
+                SiteSettingKey.Users.DefaultDailyPersonalGoal);
 
             bool askAge = false;
             bool askSchool = false;
@@ -1211,6 +1294,18 @@ namespace GRA.Controllers.MissionControl
                     {
                         model.User.IsFirstTime = model.IsFirstTime.Equals(DropDownTrueValue,
                             StringComparison.OrdinalIgnoreCase);
+                    }
+
+                    if (askActivityGoal && model.User.DailyPersonalGoal > 0)
+                    {
+                        if (model.User.DailyPersonalGoal > Defaults.MaxDailyActivityGoal)
+                        {
+                            model.User.DailyPersonalGoal = Defaults.MaxDailyActivityGoal;
+                        }
+                    }
+                    else
+                    {
+                        model.User.DailyPersonalGoal = null;
                     }
 
                     var newMember = await _userService.AddHouseholdMemberAsync(headOfHousehold.Id,
@@ -1304,6 +1399,14 @@ namespace GRA.Controllers.MissionControl
             if (askIfFirstTime)
             {
                 model.AskFirstTime = EmptyNoYes();
+            }
+
+            if (askActivityGoal)
+            {
+                var pointTranslation = programList.First().PointTranslation;
+                model.TranslationDescriptionPastTense =
+                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
             }
 
             return View("HouseholdAdd", model);

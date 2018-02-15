@@ -177,6 +177,17 @@ namespace GRA.Controllers
                 }
             }
 
+            var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
+                SiteSettingKey.Users.DefaultDailyPersonalGoal);
+            if (askActivityGoal)
+            {
+                var pointTranslation = await _pointTranslationService
+                    .GetByProgramIdAsync(user.ProgramId);
+                viewModel.TranslationDescriptionPastTense =
+                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                viewModel.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
+            }
+
             return View(viewModel);
         }
 
@@ -238,6 +249,17 @@ namespace GRA.Controllers
                 model.ShowSchool = program.AskSchool;
             }
 
+            var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
+                SiteSettingKey.Users.DefaultDailyPersonalGoal);
+            if (askActivityGoal)
+            {
+                var pointTranslation = await _pointTranslationService
+                    .GetByProgramIdAsync(model.User.ProgramId);
+                model.TranslationDescriptionPastTense =
+                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
+            }
+
             return View(nameof(Index), model);
         }
 
@@ -260,6 +282,9 @@ namespace GRA.Controllers
             {
                 ModelState.AddModelError("SchoolId", "The School field is required.");
             }
+
+            var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
+                SiteSettingKey.Users.DefaultDailyPersonalGoal);
 
             if (ModelState.IsValid)
             {
@@ -286,6 +311,18 @@ namespace GRA.Controllers
                         {
                             model.User.SchoolId = model.SchoolId;
                         }
+                    }
+
+                    if (askActivityGoal && model.User.DailyPersonalGoal > 0)
+                    {
+                        if (model.User.DailyPersonalGoal > Defaults.MaxDailyActivityGoal)
+                        {
+                            model.User.DailyPersonalGoal = Defaults.MaxDailyActivityGoal;
+                        }
+                    }
+                    else
+                    {
+                        model.User.DailyPersonalGoal = null;
                     }
 
                     await _userService.Update(model.User);
@@ -378,6 +415,15 @@ namespace GRA.Controllers
                         model.SchoolList = new SelectList(schoolList.ToList(), "Id", "Name");
                     }
                 }
+            }
+
+            if (askActivityGoal)
+            {
+                var pointTranslation = await _pointTranslationService
+                    .GetByProgramIdAsync(model.User.ProgramId);
+                model.TranslationDescriptionPastTense =
+                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
             }
 
             return View(model);
@@ -676,6 +722,17 @@ namespace GRA.Controllers
                 viewModel.AskFirstTime = EmptyNoYes();
             }
 
+            var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
+                SiteSettingKey.Users.DefaultDailyPersonalGoal);
+            if (askActivityGoal)
+            {
+                viewModel.User.DailyPersonalGoal = defaultDailyGoal;
+                var pointTranslation = programList.First().PointTranslation;
+                viewModel.TranslationDescriptionPastTense =
+                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                viewModel.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
+            }
+
             return View("HouseholdAdd", viewModel);
         }
 
@@ -743,6 +800,16 @@ namespace GRA.Controllers
                 model.AskFirstTime = EmptyNoYes();
             }
 
+            var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
+                SiteSettingKey.Users.DefaultDailyPersonalGoal);
+            if (askActivityGoal)
+            {
+                var pointTranslation = programList.First().PointTranslation;
+                model.TranslationDescriptionPastTense =
+                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
+            }
+
             return View("HouseholdAdd", model);
         }
 
@@ -766,6 +833,9 @@ namespace GRA.Controllers
             {
                 ModelState.Remove(nameof(model.IsFirstTime));
             }
+
+            var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
+                SiteSettingKey.Users.DefaultDailyPersonalGoal);
 
             bool askAge = false;
             bool askSchool = false;
@@ -816,6 +886,18 @@ namespace GRA.Controllers
                     {
                         model.User.IsFirstTime = model.IsFirstTime.Equals(DropDownTrueValue,
                            StringComparison.OrdinalIgnoreCase);
+                    }
+
+                    if (askActivityGoal && model.User.DailyPersonalGoal > 0)
+                    {
+                        if (model.User.DailyPersonalGoal > Defaults.MaxDailyActivityGoal)
+                        {
+                            model.User.DailyPersonalGoal = Defaults.MaxDailyActivityGoal;
+                        }
+                    }
+                    else
+                    {
+                        model.User.DailyPersonalGoal = null;
                     }
 
                     var newMember = await _userService.AddHouseholdMemberAsync(authUser.Id,
@@ -917,6 +999,14 @@ namespace GRA.Controllers
             if (askIfFirstTime)
             {
                 model.AskFirstTime = EmptyNoYes();
+            }
+
+            if (askActivityGoal)
+            {
+                var pointTranslation = programList.First().PointTranslation;
+                model.TranslationDescriptionPastTense =
+                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
             }
 
             return View("HouseholdAdd", model);

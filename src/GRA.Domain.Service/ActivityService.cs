@@ -1207,5 +1207,20 @@ namespace GRA.Domain.Service
 
             return maximumPermitted.IsSet ? maximumPermitted.SetValue : int.MaxValue;
         }
+
+        public async Task<int> GetActivityEarnedAsync()
+        {
+            var activityEarned = await _userLogRepository.GetActivityEarnedForUserAsync(
+                GetActiveUserId());
+
+            if (activityEarned > int.MaxValue)
+            {
+                return int.MaxValue;
+            }
+            else
+            {
+                return (int)activityEarned;
+            }
+        }
     }
 }

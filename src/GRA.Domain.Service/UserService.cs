@@ -252,6 +252,7 @@ namespace GRA.Domain.Service
                 currentEntity.AvatarId = userToUpdate.AvatarId;
                 currentEntity.BranchName = null;
                 currentEntity.CardNumber = userToUpdate.CardNumber?.Trim();
+                currentEntity.DailyPersonalGoal = userToUpdate.DailyPersonalGoal;
                 currentEntity.Email = userToUpdate.Email?.Trim();
                 currentEntity.FirstName = userToUpdate.FirstName?.Trim();
                 currentEntity.IsHomeschooled = userToUpdate.IsHomeschooled;
@@ -302,6 +303,7 @@ namespace GRA.Domain.Service
                 currentEntity.BranchId = userToUpdate.BranchId;
                 currentEntity.BranchName = null;
                 currentEntity.CardNumber = userToUpdate.CardNumber?.Trim();
+                currentEntity.DailyPersonalGoal = userToUpdate.DailyPersonalGoal;
                 currentEntity.Email = userToUpdate.Email?.Trim();
                 currentEntity.FirstName = userToUpdate.FirstName?.Trim();
                 currentEntity.IsHomeschooled = userToUpdate.IsHomeschooled;

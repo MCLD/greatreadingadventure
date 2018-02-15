@@ -19,5 +19,8 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public SelectList BranchList { get; set; }
         public SelectList ProgramList { get; set; }
         public SelectList SystemList { get; set; }
+
+        public string TranslationDescriptionPastTense { get; set; }
+        public string ActivityDescriptionPlural { get; set; }
     }
 }

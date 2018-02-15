@@ -48,6 +48,11 @@ namespace GRA
             // If this is set (i.e. not null) do not allow users to sign up without selecting if
             // it's their first time in the program
             public const string AskIfFirstTime = "Users.AskIfFirstTime";
+
+            // If this is set to an integer ask users on sign up for a daily personal activity goal
+            // with this value being the default option. Requires the site to have dates set for
+            // ProgramStarst and ProgramEnds.
+            public const string DefaultDailyPersonalGoal = "Users.DefaultDailyPersonalGoal";
         }
     }
 }

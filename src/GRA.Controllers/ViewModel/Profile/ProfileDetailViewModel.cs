@@ -1,6 +1,5 @@
 ﻿using GRA.Controllers.ViewModel.Shared;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Collections.Generic;
 
 namespace GRA.Controllers.ViewModel.Profile
 {
@@ -19,5 +18,8 @@ namespace GRA.Controllers.ViewModel.Profile
         public bool RestrictChangingSystemBranch { get; set; }
         public string SystemName { get; set; }
         public string BranchName { get; set; }
+
+        public string TranslationDescriptionPastTense { get; set; }
+        public string ActivityDescriptionPlural { get; set; }
     }
 }

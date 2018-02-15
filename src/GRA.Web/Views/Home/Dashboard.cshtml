@@ -24,7 +24,7 @@
         <div class="panel panel-default">
             <p>
                 @if (Model.DynamicAvatarElements?.Count > 0)
-            {
+                {
                     <a asp-controller="Avatar" asp-action="Index">
                         <div class="dynamic-avatar-container-dashboard">
                             @foreach (var layer in Model.DynamicAvatarElements)
@@ -57,6 +57,13 @@
             <div class="dashboard-activity">
                 <p style="font-size: x-large;">You have <strong>@Model.CurrentPointTotal points</strong>.</p>
                 <p>See your <a asp-controller="Profile" asp-action="History">activity history</a>.</p>
+                @if (Model.TotalProgramGoal.HasValue)
+                {
+                    <p style="font-size:large">My progress</p>
+                    <div class="progress" style="margin:0px;">
+                        <div class="progress-bar progress-bar-striped@(Model.PercentComplete == 100 ? " progress-bar-success" : "")" role="progressbar" aria-valuenow="@Model.PercentComplete" aria-valuemin="0" aria-valuemax="100" style="width: @Model.PercentComplete%;">@Model.PercentComplete%</div>
+                    </div>
+                }
             </div>
         </div>
     </div>
@@ -236,7 +243,7 @@
             </div>
         </div>
         @if (!string.IsNullOrWhiteSpace(Model.DailyImageMessage))
-            {
+        {
             <div class="panel panel-default">
                 <div class="panel-body text-center">
                     <div class="row">

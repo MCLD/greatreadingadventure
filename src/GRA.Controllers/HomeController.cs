@@ -153,6 +153,16 @@ namespace GRA.Controllers
                     viewModel.SecretCodeMessage = (string)TempData[SecretCodeMessage];
                 }
 
+                if (user.DailyPersonalGoal.HasValue)
+                {
+                    var programDays = (int)Math.Ceiling((
+                        site.ProgramEnds.Value - site.ProgramStarts.Value).TotalDays);
+                    viewModel.TotalProgramGoal = programDays * user.DailyPersonalGoal.Value;
+                    viewModel.ActivityEarned = await _activityService.GetActivityEarnedAsync();
+                    viewModel.PercentComplete = Math.Min(
+                        (int)(viewModel.ActivityEarned * 100 / viewModel.TotalProgramGoal), 100);
+                }
+
                 return View("Dashboard", viewModel);
             }
             else

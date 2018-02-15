@@ -110,21 +110,36 @@
                 }
                 else if (Model.ShowSchool)
                 {
-                        <label class="control-label">School</label>
-                        @if (Model.User.IsHomeschooled)
-                        {
-                            <input class="form-control" type="text" value="Homeschooled" />
-                        }
-                        else if (Model.User.SchoolNotListed)
-                        {
-                            <input class="form-control" type="text" value="School not listed" />
-                        }
-                        else
-                        {
-                            <input class="form-control" type="text" value="@Model.School.Name" />
-                        }
+                    <label class="control-label">School</label>
+                    @if (Model.User.IsHomeschooled)
+                    {
+                        <input class="form-control" type="text" value="Homeschooled" />
+                    }
+                    else if (Model.User.SchoolNotListed)
+                    {
+                        <input class="form-control" type="text" value="School not listed" />
+                    }
+                    else
+                    {
+                        <input class="form-control" type="text" value="@Model.School.Name" />
+                    }
                 }
             </div>
+
+            @if (!string.IsNullOrWhiteSpace(Model.TranslationDescriptionPastTense))
+            {
+                <div class="row row-spacing">
+                    <div class="col-xs-12">
+                        <label asp-for="User.DailyPersonalGoal" class="control-label"></label>
+                        <div>
+                            I will @Model.TranslationDescriptionPastTense
+                            <input asp-for="User.DailyPersonalGoal" class="form-control" style="display:inline-block; width:75px;" />
+                            @Model.ActivityDescriptionPlural a day
+                        </div>
+                        <span asp-validation-for="User.DailyPersonalGoal" class="text-danger"></span>
+                    </div>
+                </div>
+            }
 
             @if (!string.IsNullOrWhiteSpace(Model.User.VendorCode) || Model.User.NeedsToAnswerDonationQuestion)
             {

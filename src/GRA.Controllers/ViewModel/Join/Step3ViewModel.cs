@@ -37,5 +37,10 @@ namespace GRA.Controllers.ViewModel.Join
         [DisplayName("Is this your first time participating?")]
         [Required(ErrorMessage = "Please let us know if this is your first time participating in the program")]
         public string IsFirstTime { get; set; }
+
+        [DisplayName("Set a personal goal")]
+        public int? DailyPersonalGoal { get; set; }
+        public string TranslationDescriptionPastTense { get; set; }
+        public string ActivityDescriptionPlural { get; set; }
     }
 }

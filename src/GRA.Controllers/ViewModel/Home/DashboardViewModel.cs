@@ -28,6 +28,10 @@ namespace GRA.Controllers.ViewModel.Home
 
         public string DashboardPageContent { get; set; }
 
+        public int? ActivityEarned { get; set; }
+        public int? TotalProgramGoal { get; set; }
+        public int? PercentComplete { get; set; }
+
         public IEnumerable<GRA.Domain.Model.Badge> Badges { get; set; }
         public ICollection<GRA.Domain.Model.DynamicAvatarElement> DynamicAvatarElements { get; set; }
     }

@@ -59,5 +59,7 @@ namespace GRA.Data.Model
         public DateTime? LastBroadcast { get; set; }
 
         public bool IsFirstTime { get; set; }
+
+        public int? DailyPersonalGoal { get; set; }
     }
 }

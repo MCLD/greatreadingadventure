@@ -22,5 +22,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         [Required(ErrorMessage = "Please let us know if this is your first time participating in the program")]
         public string IsFirstTime { get; set; }
 
+        public string TranslationDescriptionPastTense { get; set; }
+        public string ActivityDescriptionPlural { get; set; }
     }
 }

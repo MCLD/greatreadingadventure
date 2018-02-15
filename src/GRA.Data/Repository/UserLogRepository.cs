@@ -457,5 +457,13 @@ namespace GRA.Data.Repository
                 .Select(_ => _.UserId)
                 .ToListAsync();
         }
+
+        public async Task<long> GetActivityEarnedForUserAsync(int userId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.UserId == userId && _.IsDeleted == false && _.ActivityEarned.HasValue)
+                .SumAsync(_ => Convert.ToInt64(_.ActivityEarned));
+        }
     }
 }

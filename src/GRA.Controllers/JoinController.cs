@@ -1,4 +1,7 @@
-﻿using GRA.Controllers.Filter;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using GRA.Controllers.Filter;
 using GRA.Controllers.ViewModel.Join;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
@@ -8,9 +11,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GRA.Controllers
 {
@@ -24,6 +24,7 @@ namespace GRA.Controllers
         private readonly AutoMapper.IMapper _mapper;
         private readonly AuthenticationService _authenticationService;
         private readonly MailService _mailService;
+        private readonly PointTranslationService _pointTranslationService;
         private readonly SchoolService _schoolService;
         private readonly SiteService _siteService;
         private readonly QuestionnaireService _questionnaireService;
@@ -32,6 +33,7 @@ namespace GRA.Controllers
             ServiceFacade.Controller context,
             AuthenticationService authenticationService,
             MailService mailService,
+            PointTranslationService pointTranslationService,
             SchoolService schoolService,
             SiteService siteService,
             QuestionnaireService questionnaireService,
@@ -43,6 +45,8 @@ namespace GRA.Controllers
             _authenticationService = Require.IsNotNull(authenticationService,
                 nameof(authenticationService));
             _mailService = Require.IsNotNull(mailService, nameof(mailService));
+            _pointTranslationService = Require.IsNotNull(pointTranslationService,
+                nameof(pointTranslationService));
             _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
             _siteService = Require.IsNotNull(siteService, nameof(siteService));
             _questionnaireService = Require.IsNotNull(questionnaireService,
@@ -101,6 +105,17 @@ namespace GRA.Controllers
             if (askIfFirstTime)
             {
                 viewModel.AskFirstTime = EmptyNoYes();
+            }
+
+            var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
+                SiteSettingKey.Users.DefaultDailyPersonalGoal);
+            if (askActivityGoal)
+            {
+                viewModel.DailyPersonalGoal = defaultDailyGoal;
+                var pointTranslation = programList.First().PointTranslation;
+                viewModel.TranslationDescriptionPastTense =
+                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                viewModel.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
             }
 
             if (systemList.Count() == 1)
@@ -200,6 +215,16 @@ namespace GRA.Controllers
                 model.AskFirstTime = EmptyNoYes();
             }
 
+            var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
+                SiteSettingKey.Users.DefaultDailyPersonalGoal);
+            if (askActivityGoal)
+            {
+                var pointTranslation = programList.First().PointTranslation;
+                model.TranslationDescriptionPastTense =
+                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
+            }
+
             return View(nameof(Index), model);
         }
 
@@ -222,6 +247,9 @@ namespace GRA.Controllers
             {
                 ModelState.Remove(nameof(model.IsFirstTime));
             }
+
+            var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
+                SiteSettingKey.Users.DefaultDailyPersonalGoal);
 
             bool askAge = false;
             bool askSchool = false;
@@ -269,6 +297,18 @@ namespace GRA.Controllers
                 {
                     user.IsFirstTime = model.IsFirstTime.Equals(DropDownTrueValue,
                        System.StringComparison.OrdinalIgnoreCase);
+                }
+
+                if (askActivityGoal && user.DailyPersonalGoal > 0)
+                {
+                    if (user.DailyPersonalGoal > Defaults.MaxDailyActivityGoal)
+                    {
+                        user.DailyPersonalGoal = Defaults.MaxDailyActivityGoal;
+                    }
+                }
+                else
+                {
+                    user.DailyPersonalGoal = null;
                 }
 
                 try
@@ -383,6 +423,14 @@ namespace GRA.Controllers
             if (askIfFirstTime)
             {
                 model.AskFirstTime = EmptyNoYes();
+            }
+
+            if (askActivityGoal)
+            {
+                var pointTranslation = programList.First().PointTranslation;
+                model.TranslationDescriptionPastTense =
+                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
             }
 
             return View(model);
@@ -614,7 +662,7 @@ namespace GRA.Controllers
                 {
                     ModelState.AddModelError("Age", "The Age field is required.");
                 }
-                if (program.SchoolRequired && !model.SchoolId.HasValue && !model.SchoolNotListed 
+                if (program.SchoolRequired && !model.SchoolId.HasValue && !model.SchoolNotListed
                     && !model.IsHomeschooled)
                 {
                     ModelState.AddModelError("SchoolId", "The School field is required.");
@@ -648,7 +696,7 @@ namespace GRA.Controllers
             }
 
             PageTitle = $"{site.Name} - Join Now!";
-            
+
             var programList = await _siteService.GetProgramList();
             var programViewObject = _mapper.Map<List<ProgramViewModel>>(programList);
             model.ProgramList = new SelectList(programList.ToList(), "Id", "Name");
@@ -749,6 +797,20 @@ namespace GRA.Controllers
                 };
             }
 
+            var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
+                SiteSettingKey.Users.DefaultDailyPersonalGoal);
+            if (askActivityGoal)
+            {
+                viewModel.DailyPersonalGoal = defaultDailyGoal;
+                string step2Json = (string)TempData.Peek(TempStep2);
+                var step2 = JsonConvert.DeserializeObject<Step2ViewModel>(step2Json);
+                var pointTranslation = await _pointTranslationService
+                    .GetByProgramIdAsync(step2.ProgramId.Value);
+                viewModel.TranslationDescriptionPastTense =
+                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                viewModel.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
+            }
+
             return View(viewModel);
         }
 
@@ -762,6 +824,9 @@ namespace GRA.Controllers
             {
                 ModelState.Remove(nameof(model.IsFirstTime));
             }
+
+            var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
+                SiteSettingKey.Users.DefaultDailyPersonalGoal);
 
             if (site.SinglePageSignUp)
             {
@@ -794,6 +859,18 @@ namespace GRA.Controllers
                 {
                     user.IsFirstTime = model.IsFirstTime.Equals(DropDownTrueValue,
                        System.StringComparison.OrdinalIgnoreCase);
+                }
+
+                if (askActivityGoal && user.DailyPersonalGoal > 0)
+                {
+                    if (user.DailyPersonalGoal > Defaults.MaxDailyActivityGoal)
+                    {
+                        user.DailyPersonalGoal = Defaults.MaxDailyActivityGoal;
+                    }
+                }
+                else
+                {
+                    user.DailyPersonalGoal = null;
                 }
 
                 try
@@ -829,6 +906,17 @@ namespace GRA.Controllers
             if (askIfFirstTime)
             {
                 model.AskFirstTime = EmptyNoYes();
+            }
+
+            if (askActivityGoal)
+            {
+                string step2Json = (string)TempData.Peek(TempStep2);
+                var step2 = JsonConvert.DeserializeObject<Step2ViewModel>(step2Json);
+                var pointTranslation = await _pointTranslationService
+                    .GetByProgramIdAsync(step2.ProgramId.Value);
+                model.TranslationDescriptionPastTense =
+                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
             }
 
             PageTitle = $"{site.Name} - Join Now!";
