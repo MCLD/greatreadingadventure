@@ -602,12 +602,14 @@ namespace GRA.Domain.Service
                 throw new GraException("You cannot add yourself");
             }
 
-            int totalAddCount = 0;
+            // one for the person we are adding
+            int totalAddCount = 1;
             if (authenticationResult.User.HouseholdHeadUserId == null)
             {
                 var household = await _userRepository
                     .GetHouseholdAsync(authenticationResult.User.Id);
-                totalAddCount = household.Count();
+                // add on the total household count
+                totalAddCount += household.Count();
             }
 
             return (totalAddCount: totalAddCount, addUserId: authenticationResult.User.Id);
