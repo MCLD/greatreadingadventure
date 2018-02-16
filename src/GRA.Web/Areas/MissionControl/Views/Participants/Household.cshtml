@@ -183,7 +183,10 @@
     <div class="col-xs-12">
         @if (Model.Users.Count() == 0)
         {
-            <div class="alert alert-warning">Participant is not a member of a @string.IsNullOrEmpty(Model.GroupName) ? "family." : "group."</div>
+            <div class="alert alert-warning">
+                Participant is not a member of a
+                @(string.IsNullOrEmpty(Model.GroupName) ? "family." : "group.")
+            </div>
         }
         else
         {

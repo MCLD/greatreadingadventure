@@ -73,7 +73,7 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
-                await _schoolService.AddSchool(model.School.Name,
+                await _schoolService.AddSchool(model.School.Name?.Trim(),
                     model.School.SchoolDistrictId,
                     model.School.SchoolTypeId);
 
@@ -91,6 +91,7 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
+                model.School.Name = model.School.Name?.Trim();
                 await _schoolService.UpdateSchoolAsync(model.School);
                 ShowAlertSuccess($"School District '{model.School.Name}' updated");
             }
@@ -171,6 +172,7 @@ namespace GRA.Controllers.MissionControl
                     model.District.IsPrivate = false;
                     model.District.IsCharter = false;
                 }
+                model.District.Name = model.District.Name?.Trim();
                 await _schoolService.AddDistrict(model.District);
                 ShowAlertSuccess($"Added School District '{model.District.Name}'");
             }
@@ -201,6 +203,7 @@ namespace GRA.Controllers.MissionControl
                     model.District.IsPrivate = false;
                     model.District.IsCharter = false;
                 }
+                model.District.Name = model.District.Name?.Trim();
                 await _schoolService.UpdateDistrictAsync(model.District);
                 ShowAlertSuccess($"School District '{model.District.Name}' updated");
             }
@@ -266,6 +269,7 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
+                model.Type.Name = model.Type.Name?.Trim();
                 await _schoolService.AddSchoolType(model.Type.Name);
                 ShowAlertSuccess($"Added School Type '{model.Type.Name}'");
             }
@@ -281,6 +285,7 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
+                model.Type.Name = model.Type.Name?.Trim();
                 await _schoolService.UpdateTypeAsync(model.Type);
                 ShowAlertSuccess($"School Type '{model.Type.Name}' updated");
             }
@@ -316,12 +321,12 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Import(Microsoft.AspNetCore.Http.IFormFile schoolFileCsv)
         {
-            PageTitle = "Import Events";
+            PageTitle = "Import Schools";
             if (schoolFileCsv == null
                 || Path.GetExtension(schoolFileCsv.FileName).ToLower() != ".csv")
             {
                 AlertDanger = "You must select a .csv file.";
-                ModelState.AddModelError("eventFileCsv", "You must select a .csv file.");
+                ModelState.AddModelError("schoolFileCsv", "You must select a .csv file.");
             }
 
             if (ModelState.ErrorCount == 0)

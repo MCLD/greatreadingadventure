@@ -216,7 +216,9 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> Create(int? id, bool communityExperience = false)
         {
-            PageTitle = "Create Event";
+            PageTitle = communityExperience == true 
+                ? "Create Community Experience" 
+                : "Create Event";
 
             var requireSecretCode = await GetSiteSettingBoolAsync(
                     SiteSettingKey.Events.RequireBadge);
@@ -278,6 +280,7 @@ namespace GRA.Controllers.MissionControl
             if (communityExperience)
             {
                 viewModel.NewCommunityExperience = true;
+                viewModel.UseLocation = true;
             }
 
             return View(viewModel);
@@ -473,11 +476,13 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> Edit(int id)
         {
-            PageTitle = "Edit Event";
-
             try
             {
                 var graEvent = await _eventService.GetDetails(id, true);
+                PageTitle = graEvent.IsCommunityExperience
+                    ? "Edit Community Experience"
+                    : "Edit Event";
+
                 var systemList = await _siteService.GetSystemList(true);
                 var branchList = await _siteService.GetBranches(GetId(ClaimType.SystemId));
                 var locationList = await _eventService.GetLocations();
@@ -521,7 +526,7 @@ namespace GRA.Controllers.MissionControl
             }
             catch (GraException gex)
             {
-                ShowAlertWarning("Unable to view event: ", gex);
+                ShowAlertWarning("Unable to view event/community experience: ", gex);
                 return RedirectToAction("Index");
             }
         }
