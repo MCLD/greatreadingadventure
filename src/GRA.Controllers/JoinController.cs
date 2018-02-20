@@ -786,15 +786,12 @@ namespace GRA.Controllers
             PageTitle = $"{site.Name} - Join Now!";
 
 
-            Step3ViewModel viewModel = null;
+            var viewModel = new Step3ViewModel();
 
             var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
             if (askIfFirstTime)
             {
-                viewModel = new Step3ViewModel
-                {
-                    AskFirstTime = EmptyNoYes()
-                };
+                viewModel.AskFirstTime = EmptyNoYes();
             }
 
             var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
