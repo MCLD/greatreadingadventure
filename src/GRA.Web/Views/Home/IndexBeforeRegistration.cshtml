@@ -15,7 +15,7 @@
              asp-append-version="true" />
     </div>
 </div>
-<div class="row" style="margin-top: 2em; font-size: larger;">
+<div class="row" style="margin-top: 2em; margin-bottom: 2em; font-size: larger;">
     <div class="col-sm-3">
         <p>For more information about this reading program, visit your local library!</p>
         <p>
@@ -26,7 +26,7 @@
     <div class="col-sm-6">
         Welcome to <grasite property="name"></grasite>.
         @if (Model == null || Model.Site == null || string.IsNullOrEmpty(Model.RegistrationOpens))
-            {
+        {
             <p>When the program starts, you'll be able to join right here. Come back soon!</p>
         }
         else if (Model.Site.CollectPreregistrationEmails == true)
@@ -56,18 +56,20 @@
                     </div>
                 </div>
             </form>
-            <p><strong>Want to add a calendar reminder?</strong> Click "Add to calendar" button!</p>
-            <form asp-controller="Home"
-                  asp-action="GetIcs"
-                  method="post"
-                  role="form">
-                <button type="submit" class="btn btn-primary center-block"><span class="fa fa-calendar"></span> Add to calendar</button>
-            </form>
         }
         else
         {
             <p>You can join our program starting on @Model.RegistrationOpens!</p>
         }
+        <form asp-controller="Home"
+              asp-action="GetIcs"
+              method="post"
+              role="form">
+            <button type="submit" class="btn btn-primary center-block">
+                <span class="fa fa-calendar"></span>
+                Add a calendar reminder
+            </button>
+        </form>
     </div>
     <div class="col-sm-3">
         <p>Reading for 20 minutes a day helps build a strong lifelong reading habit.</p>
