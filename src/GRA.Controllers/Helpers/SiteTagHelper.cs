@@ -63,7 +63,7 @@ namespace GRA.Controllers.Helpers
                     output.TagName = string.Empty;
                     if (!string.IsNullOrEmpty(site.MetaDescription))
                     {
-                        output.Content.AppendHtml(MetaTag("description", site.MetaDescription));
+                        output.Content.AppendHtml(MetaName("description", site.MetaDescription));
                         output.Content.AppendHtml(Environment.NewLine);
                     }
                     break;
@@ -111,7 +111,7 @@ namespace GRA.Controllers.Helpers
                 return $"{scheme}://{host}/{site.Path}";
             }
         }
-        private TagBuilder MetaTag(string name, string content)
+        private TagBuilder MetaName(string name, string content)
         {
             var metaTag = new TagBuilder("meta");
             metaTag.TagRenderMode = TagRenderMode.SelfClosing;
@@ -119,16 +119,25 @@ namespace GRA.Controllers.Helpers
             metaTag.Attributes.Add("content", content);
             return metaTag;
         }
+    
+        private TagBuilder MetaProperty(string property, string content)
+        {
+            var metaTag = new TagBuilder("meta");
+            metaTag.TagRenderMode = TagRenderMode.SelfClosing;
+            metaTag.Attributes.Add("property", property);
+            metaTag.Attributes.Add("content", content);
+            return metaTag;
+        }
 
         private void AddDcMetadata(TagHelperOutput output, Site site)
         {
-            output.Content.AppendHtml(MetaTag("DC.Title", site.Name));
+            output.Content.AppendHtml(MetaName("DC.Title", site.Name));
             output.Content.AppendHtml(Environment.NewLine);
-            output.Content.AppendHtml(MetaTag("DC.Description", site.MetaDescription));
+            output.Content.AppendHtml(MetaName("DC.Description", site.MetaDescription));
             output.Content.AppendHtml(Environment.NewLine);
-            output.Content.AppendHtml(MetaTag("DC.Source", GetSiteUrl(site)));
+            output.Content.AppendHtml(MetaName("DC.Source", GetSiteUrl(site)));
             output.Content.AppendHtml(Environment.NewLine);
-            output.Content.AppendHtml(MetaTag("DC.Type", "InteractiveResource"));
+            output.Content.AppendHtml(MetaName("DC.Type", "InteractiveResource"));
             output.Content.AppendHtml(Environment.NewLine);
         }
 
@@ -136,44 +145,44 @@ namespace GRA.Controllers.Helpers
         {
             if (site.TwitterLargeCard == true)
             {
-                output.Content.AppendHtml(MetaTag("twitter:card", "summary_large_image"));
+                output.Content.AppendHtml(MetaName("twitter:card", "summary_large_image"));
             }
             else
             {
-                output.Content.AppendHtml(MetaTag("twitter:card", "summary"));
+                output.Content.AppendHtml(MetaName("twitter:card", "summary"));
             }
             output.Content.AppendHtml(Environment.NewLine);
-            output.Content.AppendHtml(MetaTag("twitter:title", site.Name));
+            output.Content.AppendHtml(MetaName("twitter:title", site.Name));
             output.Content.AppendHtml(Environment.NewLine);
-            output.Content.AppendHtml(MetaTag("twitter:description", site.MetaDescription));
+            output.Content.AppendHtml(MetaName("twitter:description", site.MetaDescription));
             output.Content.AppendHtml(Environment.NewLine);
             if (!string.IsNullOrEmpty(site.TwitterUsername))
             {
-                output.Content.AppendHtml(MetaTag("twitter:site", site.TwitterUsername));
+                output.Content.AppendHtml(MetaName("twitter:site", site.TwitterUsername));
                 output.Content.AppendHtml(Environment.NewLine);
             }
             if (!string.IsNullOrEmpty(site.TwitterCardImageUrl))
             {
-                output.Content.AppendHtml(MetaTag("twitter:image", site.TwitterCardImageUrl));
+                output.Content.AppendHtml(MetaName("twitter:image", site.TwitterCardImageUrl));
                 output.Content.AppendHtml(Environment.NewLine);
             }
         }
 
         private void AddFacebookMetadata(TagHelperOutput output, Site site)
         {
-            output.Content.AppendHtml(MetaTag("fb:app_id", site.FacebookAppId));
+            output.Content.AppendHtml(MetaProperty("fb:app_id", site.FacebookAppId));
             output.Content.AppendHtml(Environment.NewLine);
-            output.Content.AppendHtml(MetaTag("og:title", site.Name));
+            output.Content.AppendHtml(MetaProperty("og:title", site.Name));
             output.Content.AppendHtml(Environment.NewLine);
-            output.Content.AppendHtml(MetaTag("og:type", "website"));
+            output.Content.AppendHtml(MetaProperty("og:type", "website"));
             output.Content.AppendHtml(Environment.NewLine);
-            output.Content.AppendHtml(MetaTag("og:description", site.MetaDescription));
+            output.Content.AppendHtml(MetaProperty("og:description", site.MetaDescription));
             output.Content.AppendHtml(Environment.NewLine);
-            output.Content.AppendHtml(MetaTag("og:url", GetSiteUrl(site)));
+            output.Content.AppendHtml(MetaProperty("og:url", GetSiteUrl(site)));
             output.Content.AppendHtml(Environment.NewLine);
             if (!string.IsNullOrEmpty(site.FacebookImageUrl))
             {
-                output.Content.AppendHtml(MetaTag("og:image", site.FacebookImageUrl));
+                output.Content.AppendHtml(MetaProperty("og:image", site.FacebookImageUrl));
                 output.Content.AppendHtml(Environment.NewLine);
             }
         }

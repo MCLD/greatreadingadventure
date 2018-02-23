@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Participant mail subject to be clickable
 - Move vendor code to top of profile page
 - Rename "household" to "family" in visible locations
+- Use meta property rather than meta name for OpenGraph tags
 
 ### Fixed
 - Fix error that occurred when editing challenge groups
