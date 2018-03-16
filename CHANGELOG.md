@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Private and chater school district types
 - Homeschool and school not listed options
 - Setting for asking participants daily personal goals
+- Authorization code entry during signup
 
 ### Changed
 - Participant mail subject to be clickable

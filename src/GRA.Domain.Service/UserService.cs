@@ -101,9 +101,13 @@ namespace GRA.Domain.Service
         }
 
         public async Task<User> RegisterUserAsync(User user, string password,
-            bool MCRegistration = false)
+            bool MCRegistration = false, bool allowDuringCloseProgram = false)
         {
-            VerifyCanRegister();
+            if (allowDuringCloseProgram == false)
+            {
+                VerifyCanRegister();
+            }
+
             var existingUser = await _userRepository.GetByUsernameAsync(user.Username);
             if (existingUser != null)
             {
@@ -422,10 +426,10 @@ namespace GRA.Domain.Service
         }
 
         public async Task<string>
-            ActivateAuthorizationCode(string authorizationCode)
+            ActivateAuthorizationCode(string authorizationCode, int? joiningUserId = null)
         {
             string fixedCode = authorizationCode.Trim().ToLower();
-            int siteId = GetClaimId(ClaimType.SiteId);
+            int siteId = GetCurrentSiteId();
             var authCode
                 = await _authorizationCodeRepository.GetByCodeAsync(siteId, fixedCode);
 
@@ -433,7 +437,7 @@ namespace GRA.Domain.Service
             {
                 return null;
             }
-            int userId = GetClaimId(ClaimType.UserId);
+            int userId = joiningUserId ?? GetClaimId(ClaimType.UserId);
 
             var userRoles = await _userRepository.GetUserRolesAsync(userId);
             if (userRoles.Contains(authCode.RoleId))
@@ -467,6 +471,21 @@ namespace GRA.Domain.Service
             await _userRepository.UpdateSaveAsync(userId, user);
 
             return authCode.RoleName;
+        }
+
+        public async Task<bool> ValidateAuthorizationCode(string authorizationCode)
+        {
+            string fixedCode = authorizationCode.Trim().ToLower();
+            int siteId = GetCurrentSiteId();
+            var authCode = await _authorizationCodeRepository.GetByCodeAsync(siteId, fixedCode);
+            if (authCode == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         public async Task<User> AddHouseholdMemberAsync(int householdHeadUserId, User memberToAdd)

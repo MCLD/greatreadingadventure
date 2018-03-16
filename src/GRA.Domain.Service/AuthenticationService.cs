@@ -40,7 +40,7 @@ namespace GRA.Domain.Service
         }
 
         public async Task<AuthenticationResult> AuthenticateUserAsync(string username,
-            string password)
+            string password, bool allowDuringCloseProgram = false)
         {
             string trimmedUsername = username.Trim();
             var authResult = await _userRepository.AuthenticateUserAsync(trimmedUsername, password);
@@ -57,7 +57,8 @@ namespace GRA.Domain.Service
             {
                 authResult.PermissionNames
                     = await _roleRepository.GetPermisisonNamesForUserAsync(authResult.User.Id);
-                if (!authResult.PermissionNames.Contains(Permission.AccessMissionControl.ToString()))
+                if (!authResult.PermissionNames.Contains(Permission.AccessMissionControl.ToString())
+                    && !allowDuringCloseProgram)
                 {
                     var userContext = GetUserContext();
                     if (userContext.SiteStage == SiteStage.BeforeRegistration

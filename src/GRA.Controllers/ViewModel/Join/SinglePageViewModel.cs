@@ -79,5 +79,7 @@ namespace GRA.Controllers.ViewModel.Join
         public int? DailyPersonalGoal { get; set; }
         public string TranslationDescriptionPastTense { get; set; }
         public string ActivityDescriptionPlural { get; set; }
+
+        public string AuthorizationCode { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GRA.Abstract;
 using GRA.Controllers.Filter;
 using GRA.Controllers.ViewModel.Join;
 using GRA.Controllers.ViewModel.Shared;
@@ -20,6 +21,9 @@ namespace GRA.Controllers
         private const string TempStep1 = "TempStep1";
         private const string TempStep2 = "TempStep2";
 
+        private const string AuthCodeAttempts = "AuthCodeAttempts";
+        private const string EnteredAuthCode = "EnteredAuthCode";
+
         private readonly ILogger<JoinController> _logger;
         private readonly AutoMapper.IMapper _mapper;
         private readonly AuthenticationService _authenticationService;
@@ -29,6 +33,8 @@ namespace GRA.Controllers
         private readonly SiteService _siteService;
         private readonly QuestionnaireService _questionnaireService;
         private readonly UserService _userService;
+
+        private readonly ICodeSanitizer _codeSanitizer;
         public JoinController(ILogger<JoinController> logger,
             ServiceFacade.Controller context,
             AuthenticationService authenticationService,
@@ -37,7 +43,8 @@ namespace GRA.Controllers
             SchoolService schoolService,
             SiteService siteService,
             QuestionnaireService questionnaireService,
-            UserService userService)
+            UserService userService,
+            ICodeSanitizer codeSanitizer)
                 : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
@@ -52,33 +59,45 @@ namespace GRA.Controllers
             _questionnaireService = Require.IsNotNull(questionnaireService,
                 nameof(questionnaireService));
             _userService = Require.IsNotNull(userService, nameof(userService));
+            _codeSanitizer = Require.IsNotNull(codeSanitizer, nameof(codeSanitizer));
             PageTitle = "Join";
         }
 
         public async Task<IActionResult> Index()
         {
+            string authCode = null;
+            var useAuthCode = TempData.ContainsKey(EnteredAuthCode);
+            if (useAuthCode)
+            {
+                authCode = (string)TempData[EnteredAuthCode];
+            }
+
             var site = await GetCurrentSiteAsync();
             if (!site.SinglePageSignUp)
             {
                 return RedirectToAction("Step1");
             }
-            var siteStage = GetSiteStage();
-            if (siteStage == SiteStage.BeforeRegistration)
+
+            if (useAuthCode == false)
             {
-                if (site.RegistrationOpens.HasValue)
+                var siteStage = GetSiteStage();
+                if (siteStage == SiteStage.BeforeRegistration)
                 {
-                    AlertInfo = $"You can join {site.Name} on {site.RegistrationOpens.Value.ToString("d")}";
+                    if (site.RegistrationOpens.HasValue)
+                    {
+                        AlertInfo = $"You can join {site.Name} on {site.RegistrationOpens.Value.ToString("d")}";
+                    }
+                    else
+                    {
+                        AlertInfo = $"Registration for {site.Name} has not opened yet";
+                    }
+                    return RedirectToAction("Index", "Home");
                 }
-                else
+                else if (siteStage >= SiteStage.ProgramEnded)
                 {
-                    AlertInfo = $"Registration for {site.Name} has not opened yet";
+                    AlertInfo = $"{site.Name} has ended, please join us next time!";
+                    return RedirectToAction("Index", "Home");
                 }
-                return RedirectToAction("Index", "Home");
-            }
-            else if (siteStage >= SiteStage.ProgramEnded)
-            {
-                AlertInfo = $"{site.Name} has ended, please join us next time!";
-                return RedirectToAction("Index", "Home");
             }
 
             PageTitle = $"{site.Name} - Join Now!";
@@ -141,6 +160,11 @@ namespace GRA.Controllers
                 viewModel.ProgramId = programList.SingleOrDefault().Id;
                 viewModel.ShowAge = program.AskAge;
                 viewModel.ShowSchool = program.AskSchool;
+            }
+
+            if (useAuthCode)
+            {
+                viewModel.AuthorizationCode = authCode;
             }
 
             return View(viewModel);
@@ -313,10 +337,37 @@ namespace GRA.Controllers
 
                 try
                 {
-                    await _userService.RegisterUserAsync(user, model.Password);
+                    bool useAuthCode = false;
+                    string sanitized = null;
+                    if (!string.IsNullOrWhiteSpace(model.AuthorizationCode))
+                    {
+                        sanitized = _codeSanitizer.Sanitize(model.AuthorizationCode, 255);
+                        useAuthCode = await _userService.ValidateAuthorizationCode(sanitized);
+                        if (useAuthCode == false)
+                        {
+                            _logger.LogError($"Invalid auth code used on join: {model.AuthorizationCode}");
+                        }
+                    }
+                    await _userService.RegisterUserAsync(user, model.Password,
+                        allowDuringCloseProgram: useAuthCode);
                     var loginAttempt = await _authenticationService
-                        .AuthenticateUserAsync(user.Username, model.Password);
+                        .AuthenticateUserAsync(user.Username, model.Password, useAuthCode);
                     await LoginUserAsync(loginAttempt);
+
+                    if (useAuthCode)
+                    {
+                        string role = await _userService.ActivateAuthorizationCode(sanitized,
+                                loginAttempt.User.Id);
+
+                        if (!string.IsNullOrEmpty(role))
+                        {
+                            var auth = await _authenticationService
+                                .RevalidateUserAsync(loginAttempt.User.Id);
+                            auth.AuthenticationMessage = $"Code applied, you are a member of the role: <strong>{role}</strong>.";
+                            await LoginUserAsync(auth);
+                        }
+                    }
+
                     await _mailService.SendUserBroadcastsAsync(loginAttempt.User.Id, false, true,
                         true);
                     var questionnaireId = await _questionnaireService
@@ -438,28 +489,39 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> Step1()
         {
+            string authCode = null;
+            var useAuthCode = TempData.ContainsKey(EnteredAuthCode);
+            if (useAuthCode)
+            {
+                authCode = (string)TempData[EnteredAuthCode];
+            }
+
             var site = await GetCurrentSiteAsync();
             if (site.SinglePageSignUp)
             {
                 return RedirectToAction("Index");
             }
-            var siteStage = GetSiteStage();
-            if (siteStage == SiteStage.BeforeRegistration)
+
+            if (useAuthCode == false)
             {
-                if (site.RegistrationOpens.HasValue)
+                var siteStage = GetSiteStage();
+                if (siteStage == SiteStage.BeforeRegistration)
                 {
-                    AlertInfo = $"You can join {site.Name} on {site.RegistrationOpens.Value.ToString("d")}";
+                    if (site.RegistrationOpens.HasValue)
+                    {
+                        AlertInfo = $"You can join {site.Name} on {site.RegistrationOpens.Value.ToString("d")}";
+                    }
+                    else
+                    {
+                        AlertInfo = $"Registration for {site.Name} has not opened yet";
+                    }
+                    return RedirectToAction("Index", "Home");
                 }
-                else
+                else if (siteStage >= SiteStage.ProgramEnded)
                 {
-                    AlertInfo = $"Registration for {site.Name} has not opened yet";
+                    AlertInfo = $"{site.Name} has ended, please join us next time!";
+                    return RedirectToAction("Index", "Home");
                 }
-                return RedirectToAction("Index", "Home");
-            }
-            else if (siteStage >= SiteStage.ProgramEnded)
-            {
-                AlertInfo = $"{site.Name} has ended, please join us next time!";
-                return RedirectToAction("Index", "Home");
             }
 
             PageTitle = $"{site.Name} - Join Now!";
@@ -490,6 +552,11 @@ namespace GRA.Controllers
             {
                 viewModel.BranchList = new SelectList(await _siteService.GetAllBranches(true),
                     "Id", "Name");
+            }
+
+            if (useAuthCode)
+            {
+                viewModel.AuthorizationCode = authCode;
             }
 
             return View(viewModel);
@@ -872,12 +939,39 @@ namespace GRA.Controllers
 
                 try
                 {
-                    await _userService.RegisterUserAsync(user, model.Password);
+                    bool useAuthCode = false;
+                    string sanitized = null;
+                    if (!string.IsNullOrWhiteSpace(step1.AuthorizationCode))
+                    {
+                        sanitized = _codeSanitizer.Sanitize(step1.AuthorizationCode, 255);
+                        useAuthCode = await _userService.ValidateAuthorizationCode(sanitized);
+                        if (useAuthCode == false)
+                        {
+                            _logger.LogError($"Invalid auth code used on join: {step1.AuthorizationCode}");
+                        }
+                    }
+                    await _userService.RegisterUserAsync(user, model.Password,
+                        allowDuringCloseProgram: useAuthCode);
                     TempData.Remove(TempStep1);
                     TempData.Remove(TempStep2);
                     var loginAttempt = await _authenticationService
-                        .AuthenticateUserAsync(user.Username, model.Password);
+                        .AuthenticateUserAsync(user.Username, model.Password, useAuthCode);
                     await LoginUserAsync(loginAttempt);
+
+                    if (useAuthCode)
+                    {
+                        string role = await _userService.ActivateAuthorizationCode(sanitized,
+                                loginAttempt.User.Id);
+
+                        if (!string.IsNullOrEmpty(role))
+                        {
+                            var auth = await _authenticationService
+                                .RevalidateUserAsync(loginAttempt.User.Id);
+                            auth.AuthenticationMessage = $"Code applied, you are a member of the role: <strong>{role}</strong>.";
+                            await LoginUserAsync(auth);
+                        }
+                    }
+
                     await _mailService.SendUserBroadcastsAsync(loginAttempt.User.Id, false, true,
                         true);
                     var questionnaireId = await _questionnaireService
@@ -919,6 +1013,56 @@ namespace GRA.Controllers
             PageTitle = $"{site.Name} - Join Now!";
 
             return View(model);
+        }
+
+        public IActionResult AuthorizationCode()
+        {
+            if (TempData.ContainsKey(AuthCodeAttempts) && (int)TempData.Peek(AuthCodeAttempts) >= 5)
+            {
+                ShowAlertDanger("Too many failed authorization attemps.");
+                return RedirectToAction(nameof(HomeController.Index), nameof(HomeController));
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AuthorizationCode(AuthorizationCodeViewModel model)
+        {
+            if (!TempData.ContainsKey(AuthCodeAttempts) || (int)TempData.Peek(AuthCodeAttempts) < 5)
+            {
+                var sanitized = _codeSanitizer.Sanitize(model.AuthorizationCode, 255);
+                if (await _userService.ValidateAuthorizationCode(sanitized))
+                {
+                    TempData.Remove(AuthCodeAttempts);
+                    TempData[EnteredAuthCode] = model.AuthorizationCode;
+                    ShowAlertInfo("Authorization code accepted.");
+                    var site = await GetCurrentSiteAsync();
+                    if (site.SinglePageSignUp)
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else
+                    {
+                        return RedirectToAction(nameof(Step1));
+                    }
+                }
+                if (TempData.ContainsKey(AuthCodeAttempts))
+                {
+                    TempData[AuthCodeAttempts] = (int)TempData[AuthCodeAttempts] + 1;
+                }
+                else
+                {
+                    TempData[AuthCodeAttempts] = 1;
+                }
+            }
+
+            if (TempData.ContainsKey(AuthCodeAttempts) && (int)TempData.Peek(AuthCodeAttempts) >= 5)
+            {
+                ShowAlertDanger("Too many failed authorization attemps.");
+                return RedirectToAction(nameof(HomeController.Index), nameof(HomeController));
+            }
+            ShowAlertDanger("Invalid authorization code.");
+            return View();
         }
     }
 }

@@ -1,6 +1,11 @@
 ﻿@model GRA.Controllers.ViewModel.Join.Step1ViewModel
 
 <form asp-controller="Join" asp-action="Step1" method="post" role="form" novalidate>
+    @if (!string.IsNullOrWhiteSpace(Model.AuthorizationCode))
+    {
+        <input asp-for="AuthorizationCode" type="hidden" />
+    }
+
     <div class="row">
         <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
             <div class="panel panel-default">
