@@ -110,7 +110,9 @@ namespace GRA.Controllers
                 RestrictChangingSystemBranch = (await GetSiteSettingBoolAsync(SiteSettingKey.Users.RestrictChangingSystemBranch)),
                 CategorySelectionAction = nameof(SchoolCategory),
                 ShowPrivateOption = await _schoolService.AnyPrivateSchoolsAsync(),
-                ShowCharterOption = await _schoolService.AnyCharterSchoolsAsync()
+                ShowCharterOption = await _schoolService.AnyCharterSchoolsAsync(),
+                AskEmailReminder = GetSiteStage() == SiteStage.RegistrationOpen
+                    && await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskPreregistrationReminder)
             };
 
             if (viewModel.RestrictChangingSystemBranch)
@@ -242,6 +244,9 @@ namespace GRA.Controllers
             model.ProgramList = new SelectList(programList.ToList(), "Id", "Name");
             model.ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject);
             model.RequirePostalCode = site.RequirePostalCode;
+            model.AskEmailReminder = GetSiteStage() == SiteStage.RegistrationOpen
+                && await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskPreregistrationReminder);
+
             if (model.User.ProgramId >= 0)
             {
                 var program = await _siteService.GetProgramByIdAsync(model.User.ProgramId);
@@ -281,6 +286,16 @@ namespace GRA.Controllers
                 && !model.IsHomeschooled)
             {
                 ModelState.AddModelError("SchoolId", "The School field is required.");
+            }
+
+            model.AskEmailReminder = GetSiteStage() == SiteStage.RegistrationOpen
+                && await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskPreregistrationReminder);
+
+            if (model.AskEmailReminder && model.User.PreregistrationReminderRequested
+                && string.IsNullOrWhiteSpace(model.User.Email))
+            {
+                ModelState.AddModelError("User.Email",
+                    "Please enter an email address to send the reminder to.");
             }
 
             var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(

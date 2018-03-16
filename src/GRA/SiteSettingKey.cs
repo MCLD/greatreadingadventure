@@ -29,6 +29,7 @@
             public const string RestrictChangingSystemBranch = "Users.RestrictChangingSystemBranch";
             public const string MaximumHouseholdSizeBeforeGroup = "Users.MaximumHouseholdSizeBeforeGroup";
             public const string AskIfFirstTime = "Users.AskIfFirstTime";
+            public const string AskPreregistrationReminder = "Users.AskPreregistrationReminder";
             public const string DefaultDailyPersonalGoal = "Users.DefaultDailyPersonalGoal";
         }
     }

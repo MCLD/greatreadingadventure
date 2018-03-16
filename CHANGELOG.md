@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Setting for asking participants daily personal goals
 - Site and site setting management
 - Authorization code entry during signup
+- Setting to ask participants during preregistration if they want an email reminder when the program starts
 
 ### Changed
 - Participant mail subject to be clickable

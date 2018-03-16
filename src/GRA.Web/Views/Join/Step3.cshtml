@@ -81,6 +81,20 @@
                         </div>
                     }
 
+                    @if (Model.AskEmailReminder)
+                    {
+                        <div class="row row-spacing">
+                            <div class="col-xs-12">
+                                <label asp-for="PreregistrationReminderRequested" class="control-label"></label>
+                                <select asp-for="PreregistrationReminderRequested" class="form-control">
+                                    <option value="false">No</option>
+                                    <option value="true">Yes</option>
+                                </select>
+                                <span asp-validation-for="PreregistrationReminderRequested" class="text-danger"></span>
+                            </div>
+                        </div>
+                    }
+
                     @if (!string.IsNullOrWhiteSpace(Model.TranslationDescriptionPastTense))
                     {
                         <div class="row row-spacing">

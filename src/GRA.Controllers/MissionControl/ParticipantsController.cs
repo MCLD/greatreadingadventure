@@ -216,7 +216,9 @@ namespace GRA.Controllers.MissionControl
                 PublicSelected = true,
                 ShowPrivateOption = await _schoolService.AnyPrivateSchoolsAsync(),
                 ShowCharterOption = await _schoolService.AnyCharterSchoolsAsync(),
-                SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name")
+                SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name"),
+                AskEmailReminder = siteStage == SiteStage.RegistrationOpen
+                    && await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskPreregistrationReminder)
             };
 
             var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
@@ -279,6 +281,16 @@ namespace GRA.Controllers.MissionControl
                 ModelState.Remove(nameof(model.IsFirstTime));
             }
 
+            model.AskEmailReminder = GetSiteStage() == SiteStage.RegistrationOpen
+                && await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskPreregistrationReminder);
+
+            if (model.AskEmailReminder && model.PreregistrationReminderRequested
+                && string.IsNullOrWhiteSpace(model.Email))
+            {
+                ModelState.AddModelError(nameof(model.Email),
+                    "Please enter an email address to send the reminder to.");
+            }
+
             var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
                 SiteSettingKey.Users.DefaultDailyPersonalGoal);
 
@@ -329,6 +341,11 @@ namespace GRA.Controllers.MissionControl
                 {
                     user.IsFirstTime = model.IsFirstTime.Equals(DropDownTrueValue,
                         StringComparison.OrdinalIgnoreCase);
+                }
+
+                if (!model.AskEmailReminder)
+                {
+                    user.PreregistrationReminderRequested = false;
                 }
 
                 if (askActivityGoal && user.DailyPersonalGoal > 0)
@@ -516,7 +533,9 @@ namespace GRA.Controllers.MissionControl
                     ProgramList = new SelectList(programList.ToList(), "Id", "Name"),
                     SystemList = new SelectList(systemList.ToList(), "Id", "Name"),
                     ShowPrivateOption = await _schoolService.AnyPrivateSchoolsAsync(),
-                    ShowCharterOption = await _schoolService.AnyCharterSchoolsAsync()
+                    ShowCharterOption = await _schoolService.AnyCharterSchoolsAsync(),
+                    AskEmailReminder = GetSiteStage() == SiteStage.RegistrationOpen
+                        && await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskPreregistrationReminder)
                 };
 
                 if (UserHasPermission(Permission.ViewUserPrizes))
@@ -628,6 +647,16 @@ namespace GRA.Controllers.MissionControl
             if (model.CanEditUsername && string.IsNullOrWhiteSpace(model.User.Username))
             {
                 ModelState.AddModelError("User.Username", "The Username field is required.");
+            }
+
+            model.AskEmailReminder = GetSiteStage() == SiteStage.RegistrationOpen
+                && await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskPreregistrationReminder);
+
+            if (model.AskEmailReminder && model.User.PreregistrationReminderRequested
+                && string.IsNullOrWhiteSpace(model.User.Email))
+            {
+                ModelState.AddModelError("User.Email",
+                    "Please enter an email address to send the reminder to.");
             }
 
             var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(

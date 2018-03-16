@@ -99,6 +99,17 @@ namespace GRA
                 }
             },
             {
+                SiteSettingKey.Users.AskPreregistrationReminder,
+                new SiteSettingDefinition()
+                {
+                    Name = "Ask reminder email during preregistraion",
+                    Info = "If this is set (i.e. not null) ask users on sign up during " +
+                        "preregistration if they want a reminder email when the program starts",
+                    Category = typeof(SiteSettingKey.Users).Name,
+                    Format = SiteSettingFormat.Boolean
+                }
+            },
+            {
                 SiteSettingKey.Users.DefaultDailyPersonalGoal,
                 new SiteSettingDefinition()
                 {

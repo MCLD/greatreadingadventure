@@ -280,6 +280,19 @@ namespace GRA.Domain.Service
                     currentEntity.BranchId = userToUpdate.BranchId;
                 }
 
+                var askEmailReminder = await _siteLookupService.GetSiteSettingBoolAsync(
+                    currentEntity.SiteId, SiteSettingKey.Users.AskPreregistrationReminder);
+
+                if (askEmailReminder)
+                {
+                    var site = await _siteLookupService.GetByIdAsync(currentEntity.SiteId);
+                    if (_siteLookupService.GetSiteStage(site) == SiteStage.RegistrationOpen)
+                    {
+                        currentEntity.PreregistrationReminderRequested =
+                            userToUpdate.PreregistrationReminderRequested;
+                    }
+                }
+
                 await ValidateUserFields(currentEntity);
 
                 var updatedUser = await _userRepository
@@ -336,6 +349,19 @@ namespace GRA.Domain.Service
                         {
                             currentEntity.Username = userToUpdate.Username?.Trim();
                         }
+                    }
+                }
+
+                var askEmailReminder = await _siteLookupService.GetSiteSettingBoolAsync(
+                    currentEntity.SiteId, SiteSettingKey.Users.AskPreregistrationReminder);
+
+                if (askEmailReminder)
+                {
+                    var site = await _siteLookupService.GetByIdAsync(currentEntity.SiteId);
+                    if (_siteLookupService.GetSiteStage(site) == SiteStage.RegistrationOpen)
+                    {
+                        currentEntity.PreregistrationReminderRequested =
+                            userToUpdate.PreregistrationReminderRequested;
                     }
                 }
 

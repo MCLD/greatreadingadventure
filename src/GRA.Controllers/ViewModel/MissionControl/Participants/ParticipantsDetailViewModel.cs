@@ -20,6 +20,8 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public SelectList ProgramList { get; set; }
         public SelectList SystemList { get; set; }
 
+        public bool AskEmailReminder { get; set; }
+
         public string TranslationDescriptionPastTense { get; set; }
         public string ActivityDescriptionPlural { get; set; }
     }
