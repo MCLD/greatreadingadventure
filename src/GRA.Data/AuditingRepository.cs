@@ -233,6 +233,12 @@ namespace GRA.Data
 
         public virtual async Task RemoveSaveAsync(int userId, int id)
         {
+            await RemoveAsync(userId, id);
+            await SaveAsync();
+        }
+
+        public virtual async Task RemoveAsync(int userId, int id)
+        {
             var entity = await DbSet.FindAsync(id);
             if (entity == null)
             {
@@ -252,7 +258,6 @@ namespace GRA.Data
                 };
                 await AuditSet.AddAsync(audit);
             }
-            await SaveAsync();
         }
 
         public virtual async Task SaveAsync()

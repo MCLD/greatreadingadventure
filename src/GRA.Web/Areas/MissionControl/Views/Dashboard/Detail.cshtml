@@ -54,7 +54,7 @@
     <script src="~/js/WMD.min.js" asp-append-version="true"></script>
 
     <script>
-        var editor = new Markdown.Editor(allowUploads = true);
+        var editor = new Markdown.Editor({ allowUploads: true });
         editor.run();
 
         $("#pickerStart").datetimepicker({

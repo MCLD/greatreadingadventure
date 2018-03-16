@@ -2,7 +2,7 @@
 { 
     width: 100%; 
     resize: vertical; 
-    height: 300px !important; 
+    height: 300px; 
     font-family: monospace; 
 
     background-color: Gainsboro;
@@ -69,19 +69,6 @@ blockquote {
     display: inline-block;
     list-style: none;
     cursor: pointer;
-}
-
-.wmd-spacer1
-{
-    left: 42px;
-}
-.wmd-spacer2
-{
-    left: 170px;
-}
-.wmd-spacer3
-{
-    left: 293px;
 }
 
 .wmd-prompt-background

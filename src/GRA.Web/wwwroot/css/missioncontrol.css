@@ -79,3 +79,8 @@ table > tbody > tr > td.gra-mc-icon {
     vertical-align: middle;
     white-space: nowrap;
 }
+
+.wide-tooltip + .tooltip .tooltip-inner {
+    max-width:25rem;
+    width: 25rem;
+}

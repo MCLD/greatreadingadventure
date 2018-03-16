@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using GRA.Controllers.ViewModel.Avatar;
 using GRA.Controllers.ViewModel.Challenges;
 using GRA.Controllers.ViewModel.Join;
 using GRA.Controllers.ViewModel.MissionControl.Participants;
+using GRA.Controllers.ViewModel.MissionControl.Sites;
 using GRA.Domain.Model;
-using System.Linq;
 
 namespace GRA.Controllers
 {
@@ -28,6 +28,10 @@ namespace GRA.Controllers
                     Value = _.Color
                 })))
                 .ReverseMap();
+            CreateMap<SiteDetailViewModel, Site>().ReverseMap();
+            CreateMap<SiteConfigurationViewModel, Site>().ReverseMap();
+            CreateMap<SiteScheduleViewModel, Site>().ReverseMap();
+            CreateMap<SiteSocialMediaViewModel, Site>().ReverseMap();
         }
     }
 }

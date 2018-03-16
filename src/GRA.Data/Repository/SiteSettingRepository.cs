@@ -23,5 +23,38 @@ namespace GRA.Data.Repository
                 .ProjectTo<SiteSetting>()
                 .ToListAsync();
         }
+
+        public async Task AddListAsync(int userId, IEnumerable<SiteSetting> siteSettings)
+        {
+            foreach (var siteSetting in siteSettings)
+            {
+                await base.AddAsync(userId, siteSetting);
+            }
+        }
+
+        public async Task UpdateListAsync(int userId, IEnumerable<SiteSetting> siteSettings)
+        {
+            foreach (var siteSetting in siteSettings)
+            {
+                var setting = await DbSet
+                    .Where(_ => _.SiteId == siteSetting.SiteId && _.Key == siteSetting.Key)
+                    .SingleAsync();
+                string original = null;
+                if (AuditSet != null)
+                {
+                    original = _entitySerializer.Serialize(setting);
+                }
+                setting.Value = siteSetting.Value;
+                await base.UpdateAsync(userId, setting, original);
+            }
+        }
+
+        public async Task RemoveListAsync(int userId, IEnumerable<int> siteSettingIds)
+        {
+            foreach (var id in siteSettingIds)
+            {
+                await base.RemoveAsync(userId, id);
+            }
+        }
     }
 }

@@ -1,0 +1,53 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Sites.SiteListViewModel
+
+<div class="row" style="padding: 10px 0;">
+    <div class="col-xs-12">
+        @if (Model.Sites.Count() == 0)
+        {
+            <div class="alert alert-warning">No Sites</div>
+        }
+        else
+        {
+            <div>
+                <table class="table table-condensed table-bordered link-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var site in Model.Sites)
+                        {
+                            <tr>
+                                <td class="td-class">
+                                    <a asp-action="Detail" asp-route-id="@site.Id" class="rowlink">
+                                        @site.Name
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            @if (Model.PaginateModel.MaxPage > 1)
+            {
+                <paginate paginateModel="@Model.PaginateModel"></paginate>
+            }
+        }
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(window).on("load", function () {
+            $('.td-class').each(function () {
+                $(this).children('a.rowlink').height($(this).height() + 11);
+            });
+        });
+        $(window).resize(function () {
+            $('.td-class').each(function () {
+                $(this).children('a.rowlink').height($(this).height() + 11);
+            });
+        });
+    </script>
+}

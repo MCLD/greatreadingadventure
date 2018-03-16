@@ -11,7 +11,5 @@ namespace GRA.Domain.Model
         public string Key { get; set; }
         [MaxLength(255)]
         public string Value { get; set; }
-        [Required]
-        public SiteSettingFormat Format { get; set; }
     }
 }

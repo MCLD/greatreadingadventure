@@ -625,7 +625,7 @@
             @if (Model.AddTask || Model.Task != null)
             {
                 <text>
-                var editor = new Markdown.Editor(allowUploads = true);
+                var editor = new Markdown.Editor({ allowUploads: true, allowImages: false });
                 editor.run();
 
                 var observer = new MutationObserver(function (mutations) {

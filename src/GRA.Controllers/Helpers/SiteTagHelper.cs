@@ -1,4 +1,5 @@
-﻿using GRA.Domain.Model;
+﻿using CommonMark;
+using GRA.Domain.Model;
 using GRA.Domain.Service;
 using GRA.Domain.Service.Abstract;
 using Microsoft.AspNetCore.Mvc;
@@ -57,7 +58,7 @@ namespace GRA.Controllers.Helpers
                 case "footer":
                     output.TagName = "p";
                     output.Attributes.SetAttribute("class", "footer");
-                    output.Content.SetHtmlContent(site.Footer);
+                    output.Content.SetHtmlContent(CommonMarkConverter.Convert(site.Footer));
                     break;
                 case "metadescription":
                     output.TagName = string.Empty;

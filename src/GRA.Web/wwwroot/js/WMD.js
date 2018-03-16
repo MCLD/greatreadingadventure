@@ -222,12 +222,15 @@ Markdown.HookCollection = HookCollection;
     // - getConverter() returns the markdown converter object that was passed to the constructor
     // - run() actually starts the editor; should be called after all necessary plugins are registered. Calling this more than once is a no-op.
     // - refreshPreview() forces the preview to be updated. This method is only available after run() was called.
-    Markdown.Editor = function (allowUploads, options) {
-
-
-        allowUploads = allowUploads || false;
+    Markdown.Editor = function (options) {
 
         options = options || {};
+        if (options.allowUploads == null) {
+            options.allowUploads = false;
+        }
+        if (options.allowImages == null) {
+            options.allowImages = true;
+        }
 
         if (typeof options.handler === "function") { //backwards compatible behavior
             options = { helpButton: options };
@@ -267,7 +270,7 @@ Markdown.HookCollection = HookCollection;
                 }
             }
 
-            uiManager = new UIManager(panels, undoManager, commandManager, allowUploads, options.helpButton, getString);
+            uiManager = new UIManager(panels, undoManager, commandManager, options.allowUploads, options.allowImages, options.helpButton, getString);
             uiManager.setUndoRedoButtonStates();
         };
 
@@ -1270,7 +1273,7 @@ Markdown.HookCollection = HookCollection;
         }, 0);
     };
 
-    function UIManager(panels, undoManager, commandManager, allowUploads, helpOptions, getString) {
+    function UIManager(panels, undoManager, commandManager, allowUploads, allowImages, helpOptions, getString) {
 
         var inputBox = panels.input,
             buttons = {}; // buttons.undo, buttons.link, etc. The actual DOM elements.
@@ -1519,6 +1522,7 @@ Markdown.HookCollection = HookCollection;
                 var spacer = document.createElement("li");
                 spacer.className = "wmd-spacer wmd-spacer" + num;
                 spacer.id = "wmd-spacer" + num;
+                spacer.style.left = xPosition - 5 + "px";
                 buttonRow.appendChild(spacer);
                 xPosition += 25;
             }
@@ -1531,9 +1535,11 @@ Markdown.HookCollection = HookCollection;
             }));
             buttons.quote = makeButton("wmd-quote-button", getString("quote"), "fa-quote-left", bindCommand("doBlockquote"));
             buttons.code = makeButton("wmd-code-button", getString("code"), "fa-code", bindCommand("doCode"));
-            buttons.image = makeButton("wmd-image-button", getString("image"), "fa-picture-o", bindCommand(function (chunk, postProcessing) {
-                return this.doLinkOrImage(chunk, postProcessing, true, allowUploads);
-            }));
+            if (allowImages) {
+                buttons.image = makeButton("wmd-image-button", getString("image"), "fa-picture-o", bindCommand(function (chunk, postProcessing) {
+                    return this.doLinkOrImage(chunk, postProcessing, true, allowUploads);
+                }));
+            }
             makeSpacer(2);
             buttons.olist = makeButton("wmd-olist-button", getString("olist"), "fa-list-ol", bindCommand(function (chunk, postProcessing) {
                 this.doList(chunk, postProcessing, true);

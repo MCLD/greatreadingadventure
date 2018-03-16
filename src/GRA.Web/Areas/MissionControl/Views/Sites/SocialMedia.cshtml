@@ -1,0 +1,53 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Sites.SiteSocialMediaViewModel
+
+@Html.Partial("_SitePartial")
+
+<form asp-controller="Sites" asp-action="SocialMedia" method="post" role="form">
+    <input asp-for="Id" type="hidden" />
+
+    <div class="row row-spacing">
+        <div class="col-xs-12 col-sm-6">
+            <label asp-for="FacebookAppId" class="control-label"></label>
+            <input asp-for="FacebookAppId" type="text" class="form-control" />
+            <span asp-validation-for="FacebookAppId" class="text-danger"></span>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <label asp-for="FacebookImageUrl" class="control-label"></label>
+            <input asp-for="FacebookImageUrl" type="text" class="form-control" />
+            <span asp-validation-for="FacebookImageUrl" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12 col-sm-6">
+            <label asp-for="TwitterUsername" class="control-label"></label>
+            <input asp-for="TwitterUsername" type="text" class="form-control" />
+            <span asp-validation-for="TwitterUsername" class="text-danger"></span>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <label asp-for="TwitterCardImageUrl" class="control-label"></label>
+            <input asp-for="TwitterCardImageUrl" type="text" class="form-control" />
+            <span asp-validation-for="TwitterCardImageUrl" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12 col-sm-6">
+            <label asp-for="TwitterLargeCard" class="control-label"></label>
+            <select asp-for="TwitterLargeCard" class="form-control">
+                <option></option>
+                <option value="false">No</option>
+                <option value="true">Yes</option>
+            </select>
+            <span asp-validation-for="TwitterLargeCard" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <a asp-action="Index" class="btn btn-default">Return to List</a>
+        <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-primary btn-spinner">
+            <span class="buttonText">Save</span>
+            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+        </button>
+    </div>
+</form>

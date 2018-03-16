@@ -1,0 +1,11 @@
+﻿<div class="row">
+    <div class="col-xs-12">
+        <ul class="nav nav-pills" style="padding: 10px 0;">
+            <li ActiveBy routeKey="Action" value="Detail"><a asp-action="Detail" asp-route-id="@Model.Id">Details</a></li>
+            <li ActiveBy routeKey="Action" value="Configuration"><a asp-action="Configuration" asp-route-id="@Model.Id">Configuration</a></li>
+            <li ActiveBy routeKey="Action" value="Schedule"><a asp-action="Schedule" asp-route-id="@Model.Id">Schedule</a></li>
+            <li ActiveBy routeKey="Action" value="SocialMedia"><a asp-action="SocialMedia" asp-route-id="@Model.Id">Social Media</a></li>
+            <li ActiveBy routeKey="Action" value="Settings"><a asp-action="Settings" asp-route-id="@Model.Id">Settings</a></li>
+        </ul>
+    </div>
+</div>

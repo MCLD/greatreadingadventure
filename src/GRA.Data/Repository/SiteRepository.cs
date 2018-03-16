@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using GRA.Domain.Model;
-using GRA.Domain.Repository;
-using Microsoft.Extensions.Logging;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
+using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
+using GRA.Domain.Repository;
+using GRA.Domain.Repository.Extensions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace GRA.Data.Repository
 {
@@ -24,6 +25,22 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .ProjectTo<Site>()
                 .ToListAsync();
+        }
+
+        public async Task<DataWithCount<IEnumerable<Site>>> PageAsync(BaseFilter filter) {
+            var sites = DbSet.AsNoTracking();
+            var count = await sites.CountAsync();
+            var data = await sites
+                .OrderBy(_ => _.Name)
+                .ApplyPagination(filter)
+                .ProjectTo<Site>()
+                .ToListAsync();
+
+            return new DataWithCount<IEnumerable<Site>>()
+            {
+                Data = data,
+                Count = count
+            };
         }
     }
 }

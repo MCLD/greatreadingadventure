@@ -1,0 +1,96 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Sites.SiteScheduleViewModel
+
+@Html.Partial("_SitePartial")
+
+<form asp-controller="Sites" asp-action="Schedule" method="post" role="form">
+    <input asp-for="Id" type="hidden" />
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="CollectPreregistrationEmails" class="control-label"></label>
+            <select asp-for="CollectPreregistrationEmails" class="form-control">
+                <option value="false">No</option>
+                <option value="true">Yes</option>
+            </select>
+            <span asp-validation-for="CollectPreregistrationEmails" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="RegistrationOpens" class="control-label"></label>
+            <div class="input-group date datetimepicker">
+                <span class="input-group-addon">
+                    <span class="fa fa-calendar"></span>
+                </span>
+                <input asp-for="RegistrationOpens" type="text" class="form-control" />
+            </div>
+            <span asp-validation-for="RegistrationOpens" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="ProgramStarts" class="control-label"></label>
+            <div class="input-group date datetimepicker">
+                <span class="input-group-addon">
+                    <span class="fa fa-calendar"></span>
+                </span>
+                <input asp-for="ProgramStarts" type="text" class="form-control" />
+            </div>
+            <span asp-validation-for="ProgramStarts" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="ProgramEnds" class="control-label"></label>
+            <div class="input-group date datetimepicker">
+                <span class="input-group-addon">
+                    <span class="fa fa-calendar"></span>
+                </span>
+                <input asp-for="ProgramEnds" type="text" class="form-control" />
+            </div>
+            <span asp-validation-for="ProgramEnds" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="AccessClosed" class="control-label"></label>
+            <div class="input-group date datetimepicker">
+                <span class="input-group-addon">
+                    <span class="fa fa-calendar"></span>
+                </span>
+                <input asp-for="AccessClosed" type="text" class="form-control" />
+            </div>
+            <span asp-validation-for="AccessClosed" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <a asp-action="Index" class="btn btn-default">Return to List</a>
+        <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-primary btn-spinner">
+            <span class="buttonText">Save</span>
+            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+        </button>
+    </div>
+</form>
+
+@section scripts {
+    <script>
+        $(".datetimepicker").datetimepicker({
+            format: "MM/DD/YYYY hh:mm A",
+            allowInputToggle: true,
+            sideBySide: true,
+            icons: {
+                time: "fa fa-clock-o",
+                date: "fa fa-calendar",
+                up: "fa fa-arrow-up",
+                down: "fa fa-arrow-down",
+                previous: "fa fa-arrow-left",
+                next: "fa fa-arrow-right"
+            }
+        });
+    </script>
+}

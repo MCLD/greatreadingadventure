@@ -172,11 +172,22 @@ namespace GRA.Domain.Service
         /// set to NULL.</returns>
         public async Task<bool> GetSiteSettingBoolAsync(int siteId, string key)
         {
+            var settingDefinition = SiteSettingDefinitions.DefinitionDictionary[key];
+
+            if (settingDefinition == null)
+            {
+                throw new Exception($"Invalid key: {key}");
+            }
+            else if (settingDefinition.Format == SiteSettingFormat.Integer)
+            {
+                throw new Exception($"Invalid format for key: {key}");
+            }
+
             var site = (await GetSitesFromCacheAsync())
                 .Where(_ => _.Id == siteId)
                 .SingleOrDefault();
             return site.Settings
-                .Where(_ => _.Key == key && _.Format == SiteSettingFormat.Boolean)
+                .Where(_ => _.Key == key)
                 .FirstOrDefault()?
                 .Value != null;
         }
@@ -191,11 +202,22 @@ namespace GRA.Domain.Service
         /// integer.</returns>
         public async Task<(bool IsSet, int SetValue)> GetSiteSettingIntAsync(int siteId, string key)
         {
+            var settingDefinition = SiteSettingDefinitions.DefinitionDictionary[key];
+
+            if (settingDefinition == null)
+            {
+                throw new Exception($"Invalid key: {key}");
+            }
+            else if (settingDefinition.Format == SiteSettingFormat.Boolean)
+            {
+                throw new Exception($"Invalid format for key: {key}");
+            }
+
             var site = (await GetSitesFromCacheAsync())
                 .Where(_ => _.Id == siteId)
                 .SingleOrDefault();
             var settingValueString = site.Settings
-                .Where(_ => _.Key == key && _.Format == SiteSettingFormat.Integer)
+                .Where(_ => _.Key == key)
                 .FirstOrDefault()?
                 .Value;
 

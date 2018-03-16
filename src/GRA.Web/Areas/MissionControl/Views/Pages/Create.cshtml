@@ -79,7 +79,7 @@
     <script>
         $(document).ready(function() {
 
-            var editor = new Markdown.Editor(allowUploads = true);
+            var editor = new Markdown.Editor({ allowUploads: true });
             editor.run();
 
             $('#Page_Title').on("keyup", function () {

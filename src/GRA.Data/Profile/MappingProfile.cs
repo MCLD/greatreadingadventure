@@ -88,14 +88,7 @@ namespace GRA.Data.Profile
             CreateMap<Model.SchoolDistrict, Domain.Model.SchoolDistrict>().ReverseMap();
             CreateMap<Model.SchoolType, Domain.Model.SchoolType>().ReverseMap();
             CreateMap<Model.Site, Domain.Model.Site>().ReverseMap();
-            CreateMap<Model.SiteSetting, Domain.Model.SiteSetting>()
-                .ForMember(
-                    dest => dest.Format,
-                    opt => opt.MapFrom(_ => (Domain.Model.SiteSettingFormat)System.Enum.Parse(typeof(Domain.Model.SiteSettingFormat), _.Format)));
-            CreateMap<Domain.Model.SiteSetting, Model.SiteSetting>()
-                .ForMember(
-                    dest => dest.Format,
-                    opt => opt.MapFrom(_ => _.Format.ToString()));
+            CreateMap<Model.SiteSetting, Domain.Model.SiteSetting>().ReverseMap();
             CreateMap<Model.System, Domain.Model.System>().ReverseMap();
             CreateMap<Model.Trigger, Domain.Model.Trigger>()
                 .ForMember(dest => dest.BadgeIds, opt => opt.MapFrom(src

@@ -1,13 +1,13 @@
-﻿using GRA.Domain.Model;
-using GRA.Domain.Model.Filters;
-using GRA.Domain.Repository;
-using GRA.Domain.Service.Abstract;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
+using GRA.Domain.Repository;
+using GRA.Domain.Service.Abstract;
+using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Service
 {
@@ -16,7 +16,9 @@ namespace GRA.Domain.Service
         private readonly IBranchRepository _branchRepository;
         private readonly IProgramRepository _programRepository;
         private readonly ISiteRepository _siteRepository;
+        private readonly ISiteSettingRepository _siteSettingRepository;
         private readonly ISystemRepository _systemRepository;
+        private readonly SiteLookupService _siteLookupService;
 
         public SiteService(ILogger<SiteService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
@@ -24,13 +26,56 @@ namespace GRA.Domain.Service
             IBranchRepository branchRepository,
             IProgramRepository programRepository,
             ISiteRepository siteRepository,
-            ISystemRepository systemRepository)
+            ISiteSettingRepository siteSettingRepository,
+            ISystemRepository systemRepository,
+            SiteLookupService siteLookupService)
             : base(logger, dateTimeProvider, userContextProvider)
         {
+            SetManagementPermission(Permission.ManageSites);
             _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
             _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));
             _siteRepository = Require.IsNotNull(siteRepository, nameof(siteRepository));
+            _siteSettingRepository = siteSettingRepository
+                ?? throw new ArgumentNullException(nameof(siteSettingRepository));
             _systemRepository = Require.IsNotNull(systemRepository, nameof(systemRepository));
+            _siteLookupService = siteLookupService
+                ?? throw new ArgumentException(nameof(siteLookupService));
+        }
+
+        public async Task<DataWithCount<IEnumerable<Site>>> GetPaginatedListAsync(BaseFilter filter)
+        {
+            VerifyManagementPermission();
+            return await _siteRepository.PageAsync(filter);
+        }
+
+        public async Task UpdateAsync(Site site)
+        {
+            VerifyManagementPermission();
+            await _siteRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), site);
+            await _siteLookupService.ReloadSiteCacheAsync();
+        }
+
+        public async Task UpdateSiteSettingsAsync(int siteId, IEnumerable<SiteSetting> siteSettings)
+        {
+            VerifyManagementPermission();
+            var currentSiteSettings = await _siteSettingRepository.GetBySiteIdAsync(siteId);
+            var siteSettingsToAdd = siteSettings
+                .Where(_ => currentSiteSettings.Select(s => s.Key).Contains(_.Key) == false);
+            var siteSettingsToRemove = currentSiteSettings
+                .Where(_ => siteSettings.Select(s => s.Key).Contains(_.Key) == false)
+                .Select(_ => _.Id);
+            var siteSettingsToUpdate = siteSettings
+                .Where(_ => currentSiteSettings
+                    .Where(s => s.Key == _.Key)
+                    .Any(s => s.Value != _.Value));
+
+            var userId = GetClaimId(ClaimType.UserId);
+            await _siteSettingRepository.AddListAsync(userId, siteSettingsToAdd);
+            await _siteSettingRepository.RemoveListAsync(userId, siteSettingsToRemove);
+            await _siteSettingRepository.UpdateListAsync(userId, siteSettingsToUpdate);
+            await _siteSettingRepository.SaveAsync();
+
+            await _siteLookupService.ReloadSiteCacheAsync();
         }
 
         public async Task<IEnumerable<Model.System>> GetSystemList(bool prioritizeUserSystem = false)

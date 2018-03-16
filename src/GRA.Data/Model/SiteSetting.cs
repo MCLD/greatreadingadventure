@@ -11,8 +11,5 @@ namespace GRA.Data.Model
         public string Key { get; set; }
         [MaxLength(255)]
         public string Value { get; set; }
-        [Required]
-        [MaxLength(255)]
-        public string Format { get; set; }
     }
 }
