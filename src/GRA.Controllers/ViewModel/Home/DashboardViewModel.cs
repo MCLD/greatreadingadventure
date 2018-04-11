@@ -8,7 +8,6 @@ namespace GRA.Controllers.ViewModel.Home
     {
         public string FirstName { get; set; }
         public int CurrentPointTotal { get; set; }
-        public string AvatarPath { get; set; }
         public bool SingleEvent { get; set; }
         public string ActivityDescriptionPlural { get; set; }
 
@@ -33,6 +32,6 @@ namespace GRA.Controllers.ViewModel.Home
         public int? PercentComplete { get; set; }
 
         public IEnumerable<GRA.Domain.Model.Badge> Badges { get; set; }
-        public ICollection<GRA.Domain.Model.DynamicAvatarElement> DynamicAvatarElements { get; set; }
+        public ICollection<GRA.Domain.Model.AvatarElement> AvatarElements { get; set; }
     }
 }

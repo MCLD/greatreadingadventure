@@ -185,10 +185,8 @@
     </div>
 </div>
 
-@section scripts
-    {
+@section scripts {
     <script>
-        var blah;
         $('#editModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
             var id = button.data('id');
@@ -196,7 +194,6 @@
             var private = button.data("private");
             var charter = button.data("charter");
             var modal = $(this);
-            blah = private;
             modal.find('#editModalLabel').text('Edit district - "' + name + '"');
             modal.find('#District_Id').val(id);
             modal.find('#District_Name').val(name);

@@ -20,16 +20,16 @@ namespace GRA.Controllers.MissionControl
     public class TriggersController : Base.MCController
     {
         private readonly ILogger<TriggersController> _logger;
+        private readonly AvatarService _avatarService;
         private readonly BadgeService _badgeService;
-        private readonly DynamicAvatarService _dynamicAvatarService;
         private readonly EventService _eventService;
         private readonly SiteService _siteService;
         private readonly TriggerService _triggerService;
         private readonly VendorCodeService _vendorCodeService;
         public TriggersController(ILogger<TriggersController> logger,
             ServiceFacade.Controller context,
+            AvatarService avatarService,
             BadgeService badgeService,
-            DynamicAvatarService dynamicAvatarService,
             EventService eventService,
             SiteService siteService,
             TriggerService triggerService,
@@ -37,9 +37,8 @@ namespace GRA.Controllers.MissionControl
             : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
+            _avatarService = Require.IsNotNull(avatarService, nameof(avatarService));
             _badgeService = Require.IsNotNull(badgeService, nameof(badgeService));
-            _dynamicAvatarService = Require.IsNotNull(dynamicAvatarService,
-                nameof(dynamicAvatarService));
             _eventService = Require.IsNotNull(eventService, nameof(eventService));
             _siteService = Require.IsNotNull(siteService, nameof(SiteService));
             _triggerService = Require.IsNotNull(triggerService, nameof(triggerService));
@@ -205,7 +204,7 @@ namespace GRA.Controllers.MissionControl
             if (viewModel.EditAvatarBundle)
             {
                 viewModel.UnlockableAvatarBundleList = new SelectList(
-                    await _dynamicAvatarService.GetAllBundlesAsync(true), "Id", "Name");
+                    await _avatarService.GetAllBundlesAsync(true), "Id", "Name");
             }
 
             PageTitle = "Create Trigger";
@@ -390,7 +389,7 @@ namespace GRA.Controllers.MissionControl
             if (model.EditAvatarBundle)
             {
                 model.UnlockableAvatarBundleList = new SelectList(
-                    await _dynamicAvatarService.GetAllBundlesAsync(true), "Id", "Name");
+                    await _avatarService.GetAllBundlesAsync(true), "Id", "Name");
             }
 
             PageTitle = "Create Trigger";
@@ -436,11 +435,11 @@ namespace GRA.Controllers.MissionControl
             if (viewModel.EditAvatarBundle)
             {
                 viewModel.UnlockableAvatarBundleList = new SelectList(
-                    await _dynamicAvatarService.GetAllBundlesAsync(true), "Id", "Name");
+                    await _avatarService.GetAllBundlesAsync(true), "Id", "Name");
             }
             else if (viewModel.Trigger.AwardAvatarBundleId.HasValue)
             {
-                viewModel.UnlockableAvatarBundle = (await _dynamicAvatarService
+                viewModel.UnlockableAvatarBundle = (await _avatarService
                     .GetBundleByIdAsync(viewModel.Trigger.AwardAvatarBundleId.Value)).Name;
             }
 
@@ -652,11 +651,11 @@ namespace GRA.Controllers.MissionControl
             if (model.EditAvatarBundle)
             {
                 model.UnlockableAvatarBundleList = new SelectList(
-                    await _dynamicAvatarService.GetAllBundlesAsync(true), "Id", "Name");
+                    await _avatarService.GetAllBundlesAsync(true), "Id", "Name");
             }
             else if (model.Trigger.AwardAvatarBundleId.HasValue)
             {
-                model.UnlockableAvatarBundle = (await _dynamicAvatarService
+                model.UnlockableAvatarBundle = (await _avatarService
                     .GetBundleByIdAsync(model.Trigger.AwardAvatarBundleId.Value)).Name;
             }
 

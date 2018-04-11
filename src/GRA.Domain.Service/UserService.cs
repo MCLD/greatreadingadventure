@@ -253,7 +253,6 @@ namespace GRA.Domain.Service
                 var currentEntity = await _userRepository.GetByIdAsync(userToUpdate.Id);
                 currentEntity.IsAdmin = await UserHasRoles(userToUpdate.Id);
                 currentEntity.Age = userToUpdate.Age;
-                currentEntity.AvatarId = userToUpdate.AvatarId;
                 currentEntity.BranchName = null;
                 currentEntity.CardNumber = userToUpdate.CardNumber?.Trim();
                 currentEntity.DailyPersonalGoal = userToUpdate.DailyPersonalGoal;
@@ -316,7 +315,6 @@ namespace GRA.Domain.Service
                 var currentEntity = await _userRepository.GetByIdAsync(userToUpdate.Id);
                 currentEntity.IsAdmin = await UserHasRoles(userToUpdate.Id);
                 currentEntity.Age = userToUpdate.Age;
-                currentEntity.AvatarId = userToUpdate.AvatarId;
                 currentEntity.BranchId = userToUpdate.BranchId;
                 currentEntity.BranchName = null;
                 currentEntity.CardNumber = userToUpdate.CardNumber?.Trim();

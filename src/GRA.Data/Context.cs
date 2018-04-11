@@ -38,14 +38,14 @@ namespace GRA.Data
 
             // configure composite keys
             // https://docs.microsoft.com/en-us/ef/core/modeling/keys
+            modelBuilder.Entity<Model.AvatarBundleItem>()
+                .HasKey(_ => new { _.AvatarBundleId, _.AvatarItemId });
             modelBuilder.Entity<Model.ChallengeCategory>()
                 .HasKey(_ => new { _.ChallengeId, _.CategoryId });
             modelBuilder.Entity<Model.ChallengeGroupChallenge>()
                 .HasKey(_ => new { _.ChallengeGroupId, _.ChallengeId });
             modelBuilder.Entity<Model.DrawingCriterionProgram>()
                 .HasKey(_ => new { _.DrawingCriterionId, _.ProgramId });
-            modelBuilder.Entity<Model.DynamicAvatarBundleItem>()
-                .HasKey(_ => new { _.DynamicAvatarBundleId, _.DynamicAvatarItemId });
             modelBuilder.Entity<Model.RolePermission>()
                 .HasKey(_ => new { _.RoleId, _.PermissionId });
             modelBuilder.Entity<Model.TriggerBadge>()
@@ -54,16 +54,16 @@ namespace GRA.Data
                 .HasKey(_ => new { _.TriggerId, _.ChallengeId });
             modelBuilder.Entity<Model.UserAnswer>()
                 .HasKey(_ => new { _.UserId, _.AnswerId });
+            modelBuilder.Entity<Model.UserAvatar>()
+                .HasKey(_ => new { _.UserId, _.AvatarElementId });
             modelBuilder.Entity<Model.UserAvatarItem>()
-                .HasKey(_ => new { _.UserId, _.DynamicAvatarItemId });
+                .HasKey(_ => new { _.UserId, _.AvatarItemId });
             modelBuilder.Entity<Model.UserBadge>()
                 .HasKey(_ => new { _.UserId, _.BadgeId });
             modelBuilder.Entity<Model.UserBook>()
                 .HasKey(_ => new { _.UserId, _.BookId });
             modelBuilder.Entity<Model.UserChallengeTask>()
                 .HasKey(_ => new { _.UserId, _.ChallengeTaskId });
-            modelBuilder.Entity<Model.UserDynamicAvatar>()
-                .HasKey(_ => new { _.UserId, _.DynamicAvatarElementId });
             modelBuilder.Entity<Model.UserFavoriteChallenge>()
                 .HasKey(_ => new { _.UserId, _.ChallengeId });
             modelBuilder.Entity<Model.UserQuestionnaire>()
@@ -127,6 +127,12 @@ namespace GRA.Data
 
         public DbSet<Model.Answer> Answers { get; set; }
         public DbSet<Model.AuditLog> AuditLogs { get; set; }
+        public DbSet<Model.AvatarBundle> AvatarBundles { get; set; }
+        public DbSet<Model.AvatarBundleItem> AvatarBundleItems { get; set; }
+        public DbSet<Model.AvatarColor> AvatarColors { get; set; }
+        public DbSet<Model.AvatarElement> AvatarElements { get; set; }
+        public DbSet<Model.AvatarItem> AvatarItems { get; set; }
+        public DbSet<Model.AvatarLayer> AvatarLayers { get; set; }
         public DbSet<Model.AuthorizationCode> AuthorizationCodes { get; set; }
         public DbSet<Model.Badge> Badges { get; set; }
         public DbSet<Model.Book> Books { get; set; }
@@ -143,12 +149,6 @@ namespace GRA.Data
         public DbSet<Model.Drawing> Drawings { get; set; }
         public DbSet<Model.DrawingCriterion> DrawingCriteria { get; set; }
         public DbSet<Model.DrawingCriterionProgram> DrawingCriterionPrograms { get; set; }
-        public DbSet<Model.DynamicAvatarBundle> DynamicAvatarBundles { get; set; }
-        public DbSet<Model.DynamicAvatarBundleItem> DynamicAvatarBundleItems { get; set; }
-        public DbSet<Model.DynamicAvatarColor> DynamicAvatarColors { get; set; }
-        public DbSet<Model.DynamicAvatarElement> DynamicAvatarElements { get; set; }
-        public DbSet<Model.DynamicAvatarItem> DynamicAvatarItems { get; set; }
-        public DbSet<Model.DynamicAvatarLayer> DynamicAvatarLayers { get; set; }
         public DbSet<Model.EmailReminder> EmailReminders { get; set; }
         public DbSet<Model.Event> Events { get; set; }
         public DbSet<Model.GroupInfo> GroupInfos { get; set; }
@@ -181,11 +181,11 @@ namespace GRA.Data
         public DbSet<Model.UserLog> UserLogs { get; set; }
         public DbSet<Model.User> Users { get; set; }
         public DbSet<Model.UserAnswer> UserAnswers { get; set; }
+        public DbSet<Model.UserAvatar> UserAvatars { get; set; }
         public DbSet<Model.UserAvatarItem> UserAvatarItems { get; set; }
         public DbSet<Model.UserChallengeTask> UserChallengeTasks { get; set; }
         public DbSet<Model.UserBadge> UserBadges { get; set; }
         public DbSet<Model.UserBook> UserBooks { get; set; }
-        public DbSet<Model.UserDynamicAvatar> UserDynamicAvatars { get; set; }
         public DbSet<Model.UserFavoriteChallenge> UserFavoriteChallenges { get; set; }
         public DbSet<Model.UserQuestionnaire> UserQuestionnaires { get; set; }
         public DbSet<Model.UserRole> UserRoles { get; set; }

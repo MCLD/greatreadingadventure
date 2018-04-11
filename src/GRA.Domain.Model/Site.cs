@@ -92,6 +92,15 @@ namespace GRA.Domain.Model
         public string TwitterUsername { get; set; }
         [DisplayName("Is Https Forced")]
         public bool IsHttpsForced { get; set; }
+        [DisplayName("Twitter Avatar Message")]
+        [MaxLength(255)]
+        public string TwitterAvatarMessage { get; set; }
+        [DisplayName("Twitter Avatar Hashtags")]
+        [MaxLength(100)]
+        public string TwitterAvatarHashtags { get; set; }
+        [DisplayName("Avatar Card Description")]
+        [MaxLength(150)]
+        public string AvatarCardDescription { get; set; }
         public ICollection<SiteSetting> Settings { get; set; }
     }
 }

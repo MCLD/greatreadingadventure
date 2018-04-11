@@ -11,8 +11,8 @@ namespace GRA.Domain.Service
 {
     public class TriggerService : BaseUserService<TriggerService>
     {
+        private readonly IAvatarBundleRepository _avatarBundleRepository;
         private readonly IBranchRepository _branchRepository;
-        private readonly IDynamicAvatarBundleRepository _dynamicAvatarBundleRepository;
         private readonly IEventRepository _eventRepository;
         private readonly IProgramRepository _programRepository;
         private readonly ISystemRepository _systemRepository;
@@ -21,8 +21,8 @@ namespace GRA.Domain.Service
         public TriggerService(ILogger<TriggerService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
+            IAvatarBundleRepository avatarBundleRepository,
             IBranchRepository branchRepository,
-            IDynamicAvatarBundleRepository dynamicAvatarBundleRepository,
             IEventRepository eventRepository,
             IProgramRepository programRepository,
             ISystemRepository systemRepository,
@@ -31,9 +31,9 @@ namespace GRA.Domain.Service
             : base(logger, dateTimeProvider, userContextProvider)
         {
             SetManagementPermission(Permission.ManageTriggers);
+            _avatarBundleRepository = Require.IsNotNull(avatarBundleRepository,
+                nameof(avatarBundleRepository));
             _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
-            _dynamicAvatarBundleRepository = Require.IsNotNull(dynamicAvatarBundleRepository,
-                nameof(dynamicAvatarBundleRepository));
             _eventRepository = Require.IsNotNull(eventRepository, nameof(eventRepository));
             _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));
             _systemRepository = Require.IsNotNull(systemRepository, nameof(systemRepository));
@@ -241,7 +241,7 @@ namespace GRA.Domain.Service
 
             if (trigger.AwardAvatarBundleId.HasValue)
             {
-                var bundle = await _dynamicAvatarBundleRepository
+                var bundle = await _avatarBundleRepository
                     .GetByIdAsync(trigger.AwardAvatarBundleId.Value, false);
 
                 if (bundle == null || bundle.CanBeUnlocked == false)

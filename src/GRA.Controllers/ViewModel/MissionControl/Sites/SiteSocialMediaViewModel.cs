@@ -21,5 +21,14 @@ namespace GRA.Controllers.ViewModel.MissionControl.Sites
         [DisplayName("Twitter Username")]
         [MaxLength(15)]
         public string TwitterUsername { get; set; }
+        [DisplayName("Twitter Avatar Message")]
+        [MaxLength(255)]
+        public string TwitterAvatarMessage { get; set; }
+        [DisplayName("Twitter Avatar Hashtags")]
+        [MaxLength(100)]
+        public string TwitterAvatarHashtags { get; set; }
+        [DisplayName("Avatar Card Description")]
+        [MaxLength(150)]
+        public string AvatarCardDescription { get; set; }
     }
 }

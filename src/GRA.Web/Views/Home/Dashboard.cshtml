@@ -23,36 +23,28 @@
     <div class="col-sm-3 text-center">
         <div class="panel panel-default">
             <p>
-                @if (Model.DynamicAvatarElements?.Count > 0)
-                {
-                    <a asp-controller="Avatar" asp-action="Index">
-                        <div class="dynamic-avatar-container-dashboard">
-                            @foreach (var layer in Model.DynamicAvatarElements)
+                <a asp-controller="Avatar" asp-action="Index">
+                    @if (Model.AvatarElements?.Count > 0)
+                    {
+
+                        <div class="avatar-container-dashboard">
+                            @foreach (var layer in Model.AvatarElements)
                             {
                                 <img src="~/@layer.Filename"
-                                     style="z-index: @(layer.DynamicAvatarItem.DynamicAvatarLayerPosition + 1)"
-                                     class="dynamic-avatar-layer-dashboard" />
+                                     style="z-index: @(layer.AvatarItem.AvatarLayerPosition + 1)"
+                                     class="avatar-layer-dashboard" />
                             }
                         </div>
-                    </a>
-                }
-                else if (!string.IsNullOrEmpty(Model.AvatarPath))
-                {
-                    <a asp-controller="Avatar" asp-action="Index">
-                        <img src="~/@Model.AvatarPath"
-                             asp-append-version="true"
-                             width="200" />
-                    </a>
-                }
-                else
-                {
-                    <a asp-controller="Avatar" asp-action="Index">
+                    }
+                    else
+                    {
                         <img src="~/images/no_avatar.png"
                              class="img img-responsive center-block"
                              style="width:200px;"
                              asp-append-version="true" />
-                    </a>
-                }
+
+                    }
+                </a>
             </p>
             <div class="dashboard-activity">
                 <p style="font-size: x-large;">You have <strong>@Model.CurrentPointTotal points</strong>.</p>

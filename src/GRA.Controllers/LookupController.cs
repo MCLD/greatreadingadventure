@@ -13,21 +13,20 @@ namespace GRA.Controllers
     public class LookupController : Base.Controller
     {
         private readonly ILogger<LookupController> _logger;
-        private readonly DynamicAvatarService _dynamicAvatarService;
+        private readonly AvatarService _avatarService;
         private readonly SchoolService _schoolService;
         private readonly SiteService _siteService;
         private readonly UserService _userService;
 
         public LookupController(ILogger<LookupController> logger,
              ServiceFacade.Controller context,
-             DynamicAvatarService dynamicAvatarService,
+             AvatarService avatarService,
              SchoolService schoolService,
             SiteService siteService,
             UserService userService) : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
-            _dynamicAvatarService = Require.IsNotNull(dynamicAvatarService,
-                nameof(dynamicAvatarService));
+            _avatarService = Require.IsNotNull(avatarService, nameof(avatarService));
             _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
             _siteService = Require.IsNotNull(siteService, nameof(siteService));
             _userService = Require.IsNotNull(userService, nameof(userService));
@@ -104,8 +103,8 @@ namespace GRA.Controllers
 
         public async Task<JsonResult> GetItemsInBundleAsync(int id)
         {
-            var bundle = await _dynamicAvatarService.GetBundleByIdAsync(id, true);
-            var thumbnailList = bundle.DynamicAvatarItems
+            var bundle = await _avatarService.GetBundleByIdAsync(id, true);
+            var thumbnailList = bundle.AvatarItems
                 .Select(_ => _pathResolver.ResolveContentPath(_.Thumbnail))
                 .ToList();
 

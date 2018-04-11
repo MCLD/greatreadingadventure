@@ -32,7 +32,7 @@
     </div>
 
     <div class="row row-spacing">
-        <div class="col-xs-12 col-sm-6">
+        <div class="col-xs-12">
             <label asp-for="TwitterLargeCard" class="control-label"></label>
             <select asp-for="TwitterLargeCard" class="form-control">
                 <option></option>
@@ -40,6 +40,27 @@
                 <option value="true">Yes</option>
             </select>
             <span asp-validation-for="TwitterLargeCard" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12 col-sm-6">
+            <label asp-for="TwitterAvatarMessage" class="control-label"></label>
+            <input asp-for="TwitterAvatarMessage" type="text" class="form-control" />
+            <span asp-validation-for="TwitterAvatarMessage" class="text-danger"></span>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <label asp-for="TwitterAvatarHashtags" class="control-label"></label>
+            <input asp-for="TwitterAvatarHashtags" type="text" class="form-control" />
+            <span asp-validation-for="TwitterAvatarHashtags" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="AvatarCardDescription" class="control-label"></label>
+            <input asp-for="AvatarCardDescription" type="text" class="form-control" />
+            <span asp-validation-for="AvatarCardDescription" class="text-danger"></span>
         </div>
     </div>
 

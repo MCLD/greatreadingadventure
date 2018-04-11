@@ -8,6 +8,7 @@
     "jquery-validation-unobtrusive": "3.2.6",
     "font-awesome": "4.6.1",
     "eonasdan-bootstrap-datetimepicker": "4.17.37",
-    "bootstrap-multiselect": "v0.9.13"
+    "bootstrap-multiselect": "v0.9.13",
+    "slick-carousel": "v1.8.1"
   }
 }
