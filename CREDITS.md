@@ -13,13 +13,13 @@ The Great Reading Adventure is open source software developed with the help of [
 
 ### <a name="people-developers"></a>Developers
 - [Harald Nagel](https://haraldnagel.com/) :shipit:
-- [Dan Wilcox](https://github.com/iafb/)
+- [Dan Wilcox](https://github.com/iafb/) :koala:
 - [Ian Griffin](https://github.com/iangriffin/)
 - [Justin Meiners](https://justinmeiners.github.io/)
 
 ### <a name="people-support"></a>Support
 
-- [Caris O'Malley](http://carisomalley.com/) &#9734;
+- [Caris O'Malley](https://www.linkedin.com/in/caris-o-malley-28b5a547) &#9734;
 - Brianna King
 - Danette Barton
 - [Daniel Messer](http://cyberpunklibrarian.com/)
@@ -32,13 +32,14 @@ The Great Reading Adventure is open source software developed with the help of [
 
 - [AppHarbor](https://appharbor.com/) - free hosting tier that will run the GRA for testing
 - [AppVeyor](http://www.appveyor.com/) - continuous integration, ensuring code check-ins don't break Windows builds
+- [Codacy](https://www.codacy.com/) - automated code reviews and code analytics
 - [Discourse](https://www.discourse.org/) - powers [forum.greatreadingadventure.com](http://forums.greatreadingadventure.com)
-- [dmarcian](https://dmarcian.com/) - helps keep email spam-free
+- [Docker](https://www.docker.com/) - containerized deployment
 - [Eleven Giants](http://www.elevengiants.com/) - helped with extraction of avatars from the Glitch public domain game art
 - [Favicon Generator. For real.](https://realfavicongenerator.net/) - generate icons for many platforms
 - [GitHub](https://github.com/) - hosts the source code, issue tracker, Wiki, [www.greatreadingadventure.com](http://www.greatreadingadventure.com/) and more
 - [GitMagic](https://gitmagic.io/) - enforces revision control guidelines
-- [Glitch public domain game art](https://www.glitchthegame.com/public-domain-game-art/) - free fantastic art which can be seen in the default banner and avatars
+- [Glitch public domain game art](https://www.glitchthegame.com/public-domain-game-art/) - free fantastic art provided by [Tiny Speck](https://tinyspeck.com/) which can be seen in the default banner and avatars
 - [Mailtrap](https://mailtrap.io/) - painless email testing during development
 - [MyKnowledgeMap](https://www.myknowledgemap.com/) - creators and maintainers of [OpenBadges.me](https://www.openbadges.me/), our integrated badge maker
 - [Open Library](https://openlibrary.org/) - book cover images, title, and author lookups for challenges

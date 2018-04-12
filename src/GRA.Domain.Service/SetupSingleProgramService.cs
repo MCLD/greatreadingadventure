@@ -93,7 +93,7 @@ namespace GRA.Domain.Service
             {
                 Code = initialAuthorizationCode.Trim().ToLower(),
                 Description = "Initial code to grant system administrator status.",
-                IsSingleUse = true,
+                IsSingleUse = false,
                 RoleId = adminRole.Id,
                 SiteId = siteId
             });

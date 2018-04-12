@@ -1,4 +1,4 @@
-# GRA 4 Developer Documentation - Adding an entity
+# GRA Developer Documentation - Adding an entity
 
 Adding an entity and the related infrastructure is a multi-step affair. We'll assume the type you are adding below is `Chronoton` for illustrative purposes.
 

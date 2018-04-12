@@ -16,4 +16,3 @@ COPY --from=build-env /app/publish/web .
 
 # Set entrypoint
 ENTRYPOINT ["dotnet", "GRA.Web.dll"]
-
