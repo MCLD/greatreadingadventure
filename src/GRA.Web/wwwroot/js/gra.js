@@ -1,4 +1,9 @@
-﻿$(".btn-spinner").on("click", function(e) {
+﻿window.onunload = function () {
+    $(".btn-spinner, .btn-spinner-no-validate").removeClass("disabled");
+    $(".btn-spinner, .btn-spinner-no-validate").children(".fa-spinner").addClass("hidden");
+}
+
+$(".btn-spinner").on("click", function (e) {
     if ($(this).parents("form:first").valid())
     {
         if ($(this).hasClass("disabled"))

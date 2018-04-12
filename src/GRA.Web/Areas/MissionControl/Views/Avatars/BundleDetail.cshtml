@@ -141,19 +141,19 @@
                             </tr>
                         </thead>
                         <tbody id="itemList">
-                            <tr id="noItems" class="@(Model.Bundle?.DynamicAvatarItems?.Count > 0 ? "hide" : "")">
+                            <tr id="noItems" class="@(Model.Bundle?.AvatarItems?.Count > 0 ? "hide" : "")">
                                 <td colspan="4"><em>No items</em></td>
                             </tr>
-                            @if (Model.Bundle?.DynamicAvatarItems?.Count > 0)
+                            @if (Model.Bundle?.AvatarItems?.Count > 0)
                             {
-                                foreach (var item in Model.Bundle.DynamicAvatarItems)
+                                foreach (var item in Model.Bundle.AvatarItems)
                                 {
                                     <tr class="itemRow">
                                         <td>
                                             @item.Name
                                         </td>
                                         <td>
-                                            @item.DynamicAvatarLayerName
+                                            @item.AvatarLayerName
                                         </td>
                                         <td>
                                             @if (!string.IsNullOrWhiteSpace(item.Thumbnail))

@@ -23,9 +23,9 @@ namespace GRA.Controllers
 
         private readonly ILogger<HomeController> _logger;
         private readonly ActivityService _activityService;
+        private readonly AvatarService _avatarService;
         private readonly DailyLiteracyTipService _dailyLiteracyTipService;
         private readonly DashboardContentService _dashboardContentService;
-        private readonly DynamicAvatarService _dynamicAvatarService;
         private readonly EmailReminderService _emailReminderService;
         private readonly PageService _pageService;
         private readonly SiteService _siteService;
@@ -33,9 +33,9 @@ namespace GRA.Controllers
         public HomeController(ILogger<HomeController> logger,
             ServiceFacade.Controller context,
             ActivityService activityService,
+            AvatarService avatarService,
             DailyLiteracyTipService dailyLiteracyTipService,
             DashboardContentService dashboardContentService,
-            DynamicAvatarService dynamicAvatarService,
             EmailReminderService emailReminderService,
             PageService pageService,
             SiteService siteService,
@@ -44,12 +44,11 @@ namespace GRA.Controllers
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
             _activityService = Require.IsNotNull(activityService, nameof(activityService));
+            _avatarService = Require.IsNotNull(avatarService, nameof(avatarService));
             _dailyLiteracyTipService = Require.IsNotNull(dailyLiteracyTipService,
                 nameof(dailyLiteracyTipService));
             _dashboardContentService = Require.IsNotNull(dashboardContentService,
                 nameof(dashboardContentService));
-            _dynamicAvatarService = Require.IsNotNull(dynamicAvatarService,
-                nameof(dynamicAvatarService));
             _emailReminderService = Require.IsNotNull(emailReminderService,
                 nameof(emailReminderService));
             _pageService = Require.IsNotNull(pageService, nameof(pageService));
@@ -109,15 +108,15 @@ namespace GRA.Controllers
                     }
                 }
 
-                var userDynamicAvatar = await _dynamicAvatarService.GetUserAvatarAsync();
-                if (userDynamicAvatar?.Count > 0)
+                var userAvatar = await _avatarService.GetUserAvatarAsync();
+                if (userAvatar?.Count > 0)
                 {
-                    var dynamicAvatarElements = userDynamicAvatar;
-                    foreach (var element in dynamicAvatarElements)
+                    var avatarElements = userAvatar;
+                    foreach (var element in avatarElements)
                     {
                         element.Filename = _pathResolver.ResolveContentPath(element.Filename);
                     }
-                    viewModel.DynamicAvatarElements = dynamicAvatarElements;
+                    viewModel.AvatarElements = avatarElements;
                 }
 
                 var dashboardPage = await _dashboardContentService.GetCurrentContentAsync();

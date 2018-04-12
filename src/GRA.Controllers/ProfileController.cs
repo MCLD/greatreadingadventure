@@ -27,8 +27,8 @@ namespace GRA.Controllers
         private readonly AutoMapper.IMapper _mapper;
         private readonly ActivityService _activityService;
         private readonly AuthenticationService _authenticationService;
+        private readonly AvatarService _avatarService;
         private readonly DailyLiteracyTipService _dailyLiteracyTipService;
-        private readonly DynamicAvatarService _dynamicAvatarService;
         private readonly MailService _mailService;
         private readonly PointTranslationService _pointTranslationService;
         private readonly QuestionnaireService _questionnaireService;
@@ -44,8 +44,8 @@ namespace GRA.Controllers
             Abstract.IPasswordValidator passwordValidator,
             ActivityService activityService,
             AuthenticationService authenticationService,
+            AvatarService avatarService,
             DailyLiteracyTipService dailyLiteracyTipService,
-            DynamicAvatarService dynamicAvatarService,
             MailService mailService,
             PointTranslationService pointTranslationService,
             QuestionnaireService questionnaireService,
@@ -59,10 +59,9 @@ namespace GRA.Controllers
             _activityService = Require.IsNotNull(activityService, nameof(activityService));
             _authenticationService = Require.IsNotNull(authenticationService,
                 nameof(authenticationService));
+            _avatarService = Require.IsNotNull(avatarService, nameof(avatarService));
             _dailyLiteracyTipService = Require.IsNotNull(dailyLiteracyTipService,
                 nameof(dailyLiteracyTipService));
-            _dynamicAvatarService = Require.IsNotNull(dynamicAvatarService,
-                nameof(dynamicAvatarService));
             _mailService = Require.IsNotNull(mailService, nameof(mailService));
             _pointTranslationService = Require.IsNotNull(pointTranslationService,
                 nameof(pointTranslationService));
@@ -1375,13 +1374,13 @@ namespace GRA.Controllers
                 }
                 else if (item.AvatarBundleId.HasValue)
                 {
-                    var bundle = await _dynamicAvatarService
+                    var bundle = await _avatarService
                         .GetBundleByIdAsync(item.AvatarBundleId.Value, true);
-                    if (bundle.DynamicAvatarItems.Count > 0)
+                    if (bundle.AvatarItems.Count > 0)
                     {
                         itemModel.BadgeFilename = _pathResolver.ResolveContentPath(
-                            bundle.DynamicAvatarItems.FirstOrDefault().Thumbnail);
-                        if (bundle.DynamicAvatarItems.Count > 1)
+                            bundle.AvatarItems.FirstOrDefault().Thumbnail);
+                        if (bundle.AvatarItems.Count > 1)
                         {
                             itemModel.Description += $" <strong><a class=\"bundle-link\" data-id=\"{item.AvatarBundleId.Value}\">Click here</a></strong> to see all the items you unlocked.";
                         }

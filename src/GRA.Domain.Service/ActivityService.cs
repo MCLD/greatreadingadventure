@@ -13,13 +13,13 @@ namespace GRA.Domain.Service
 {
     public class ActivityService : Abstract.BaseUserService<UserService>
     {
+        private readonly IAvatarBundleRepository _avatarBundleRepository;
+        private readonly IAvatarItemRepository _avatarItemRepository;
         private readonly IBadgeRepository _badgeRepository;
         private readonly IBookRepository _bookRepository;
         private readonly IChallengeRepository _challengeRepository;
         private readonly IChallengeTaskRepository _challengeTaskRepository;
         private readonly IDrawingRepository _drawingRepository;
-        private readonly IDynamicAvatarBundleRepository _dynamicAvatarBundleRepository;
-        private readonly IDynamicAvatarItemRepository _dynamicAvatarItemRepository;
         private readonly INotificationRepository _notificationRepository;
         private readonly IPointTranslationRepository _pointTranslationRepository;
         private readonly IProgramRepository _programRepository;
@@ -38,13 +38,13 @@ namespace GRA.Domain.Service
         public ActivityService(ILogger<UserService> logger,
             IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContext,
+            IAvatarBundleRepository avatarBundleRepository,
+            IAvatarItemRepository avatarItemRepository,
             IBadgeRepository badgeRepository,
             IBookRepository bookRepository,
             IChallengeRepository challengeRepository,
             IChallengeTaskRepository challengeTaskRepository,
             IDrawingRepository drawingRepository,
-            IDynamicAvatarBundleRepository dynamicAvatarBundleRepository,
-            IDynamicAvatarItemRepository dynamicAvatarItemRepository,
             INotificationRepository notificationRepository,
             IPointTranslationRepository pointTranslationRepository,
             IProgramRepository programRepository,
@@ -60,6 +60,10 @@ namespace GRA.Domain.Service
             SiteLookupService siteLookupService,
             VendorCodeService vendorCodeService) : base(logger, dateTimeProvider, userContext)
         {
+            _avatarBundleRepository = Require.IsNotNull(avatarBundleRepository,
+                nameof(avatarBundleRepository));
+            _avatarItemRepository = Require.IsNotNull(avatarItemRepository,
+                nameof(avatarItemRepository));
             _badgeRepository = Require.IsNotNull(badgeRepository, nameof(badgeRepository));
             _bookRepository = Require.IsNotNull(bookRepository, nameof(bookRepository));
             _challengeRepository = Require.IsNotNull(challengeRepository,
@@ -67,10 +71,6 @@ namespace GRA.Domain.Service
             _challengeTaskRepository = Require.IsNotNull(challengeTaskRepository,
                 nameof(challengeTaskRepository));
             _drawingRepository = Require.IsNotNull(drawingRepository, nameof(drawingRepository));
-            _dynamicAvatarBundleRepository = Require.IsNotNull(dynamicAvatarBundleRepository,
-                nameof(dynamicAvatarBundleRepository));
-            _dynamicAvatarItemRepository = Require.IsNotNull(dynamicAvatarItemRepository,
-                nameof(dynamicAvatarItemRepository));
             _notificationRepository = Require.IsNotNull(notificationRepository,
                 nameof(notificationRepository));
             _pointTranslationRepository = Require.IsNotNull(pointTranslationRepository,
@@ -1155,17 +1155,17 @@ namespace GRA.Domain.Service
         private async Task AwardUserBundle(int userId, int bundleId,
             bool userIdIsCurrentUser = false)
         {
-            var bundle = await _dynamicAvatarBundleRepository.GetByIdAsync(bundleId, false);
-            if (bundle.DynamicAvatarItems.Count > 0)
+            var bundle = await _avatarBundleRepository.GetByIdAsync(bundleId, false);
+            if (bundle.AvatarItems.Count > 0)
             {
                 var loggingUser = (userIdIsCurrentUser ? userId : GetActiveUserId());
-                var userItems = await _dynamicAvatarItemRepository.GetUserUnlockedItemsAsync(userId);
+                var userItems = await _avatarItemRepository.GetUserUnlockedItemsAsync(userId);
 
-                var newItems = bundle.DynamicAvatarItems.Select(_ => _.Id).Except(userItems).ToList();
+                var newItems = bundle.AvatarItems.Select(_ => _.Id).Except(userItems).ToList();
 
                 if (newItems.Count > 0)
                 {
-                    await _dynamicAvatarItemRepository.AddUserItemsAsync(userId, newItems);
+                    await _avatarItemRepository.AddUserItemsAsync(userId, newItems);
                 }
 
                 var notification = new Notification
@@ -1173,10 +1173,10 @@ namespace GRA.Domain.Service
                     PointsEarned = 0,
                     Text = $"<span class=\"fa fa-shopping-bag\"></span> You've unlocked the <strong>{bundle.Name}</strong> avatar bundle!",
                     UserId = userId,
-                    BadgeFilename = bundle.DynamicAvatarItems.FirstOrDefault().Thumbnail
+                    BadgeFilename = bundle.AvatarItems.FirstOrDefault().Thumbnail
                 };
 
-                if (bundle.DynamicAvatarItems.Count > 1)
+                if (bundle.AvatarItems.Count > 1)
                 {
                     notification.Text += " You can view the full list of pieces unlocked in your Profile History.";
                 }
@@ -1195,7 +1195,7 @@ namespace GRA.Domain.Service
                 if (!bundle.HasBeenAwarded)
                 {
                     bundle.HasBeenAwarded = true;
-                    await _dynamicAvatarBundleRepository.UpdateSaveAsync(loggingUser, bundle);
+                    await _avatarBundleRepository.UpdateSaveAsync(loggingUser, bundle);
                 }
             }
         }

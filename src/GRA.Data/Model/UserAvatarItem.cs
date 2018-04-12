@@ -9,7 +9,7 @@ namespace GRA.Data.Model
         public User User { get; set; }
 
         [Required]
-        public int DynamicAvatarItemId { get; set; }
-        public DynamicAvatarItem DynamicAvatarItem { get; set; }
+        public int AvatarItemId { get; set; }
+        public AvatarItem AvatarItem { get; set; }
     }
 }

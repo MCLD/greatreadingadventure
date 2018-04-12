@@ -94,6 +94,10 @@ The Great Reading Adventure uses open source components. You can find informatio
 - Lightweight and fast library written in C# for reading Microsoft Excel files.
 - Source on GitHub: [ExcelDataReader/ExcelDataReader](https://github.com/ExcelDataReader/ExcelDataReader) - [MIT License](https://github.com/ExcelDataReader/ExcelDataReader/blob/develop/LICENSE)
 
+### ImageSharp
+- A cross-platform library for the processing of image files; written in C# [ImageSharp](https://sixlabors.com/projects/imagesharp/)
+- Source on Github: [SixLabors/ImageSharp](SixLabors/ImageSharp) - [Apache License, Version 2.0](https://github.com/SixLabors/ImageSharp/blob/master/LICENSE)
+
 ### MailKit
 - A cross-platform .NET library for IMAP, POP3, and SMTP.
 - Source on GitHub: [jstedfast/MailKit](https://github.com/jstedfast/MailKit) - [MIT License](https://github.com/jstedfast/MailKit/blob/master/License.md)
@@ -114,6 +118,10 @@ The Great Reading Adventure uses open source components. You can find informatio
 ### Serilog
 - [Serilog](https://serilog.net/): Simple .NET logging with fully-structured events
 - Source on GitHub: [serilog/serilog](https://github.com/serilog/serilog) - [Apache License, Version 2.0](https://github.com/serilog/serilog/blob/dev/LICENSE)
+
+### Slick
+- Javascipt carousel [Slick](http://kenwheeler.github.io/slick/)
+- Source on Github: [kenwheeler/slick/](https://github.com/kenwheeler/slick/) - [MIT License](https://github.com/kenwheeler/slick/blob/master/LICENSE)
 
 ### Slugify.js
 - Javascript text replacement to slugify strings.

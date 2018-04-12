@@ -1,0 +1,21 @@
+﻿@model GRA.Controllers.ViewModel.Share.ShareAvatarViewModel
+
+@section metadata {
+    <grasite property="twittermetadata" cardDescription="@Model.CardDescription" imageUrl="@Model.ImageUrl" twitterLargeCardOverride="true"></grasite>
+    <grasite property="facebookmetadata" cardDescription="@Model.CardDescription" imageUrl="@Model.ImageUrl" pageUrl="@Model.PageUrl"></grasite>
+}
+
+<div class="row">
+    <div class="col-sm-6 pull-right" style="overflow: hidden;">
+        <img src="@Model.ImageUrl" class="avatar-share-image" />
+    </div>
+    <div class="col-sm-6" style="font-size: x-large; margin-top: 2em; text-align: center;">
+        <div style="margin-bottom:1em;">
+            Join now to create your own awesome avatar!
+        </div>
+        <a asp-controller="Join" asp-action="Index" class="btn btn-lg btn-primary" style="width: 50%;">
+            <span class="fa fa-book"></span>
+            Join!
+        </a>
+    </div>
+</div>

@@ -111,11 +111,11 @@ namespace GRA.CommandLine
             // services
             services.AddScoped<ActivityService>();
             services.AddScoped<AuthenticationService>();
+            services.AddScoped<AvatarService>();
             services.AddScoped<BadgeService>();
             services.AddScoped<CategoryService>();
             services.AddScoped<ChallengeService>();
             services.AddScoped<DrawingService>();
-            services.AddScoped<DynamicAvatarService>();
             services.AddScoped<EmailReminderService>();
             services.AddScoped<EmailService>();
             services.AddScoped<EventImportService>();
@@ -141,16 +141,16 @@ namespace GRA.CommandLine
             // repositories
             services.AddScoped<Domain.Repository.IAnswerRepository, Data.Repository.AnswerRepository>();
             services.AddScoped<Domain.Repository.IAuthorizationCodeRepository, Data.Repository.AuthorizationCodeRepository>();
+            services.AddScoped<Domain.Repository.IAvatarBundleRepository, Data.Repository.AvatarBundleRepository>();
+            services.AddScoped<Domain.Repository.IAvatarColorRepository, Data.Repository.AvatarColorRepository>();
+            services.AddScoped<Domain.Repository.IAvatarElementRepository, Data.Repository.AvatarElementRepository>();
+            services.AddScoped<Domain.Repository.IAvatarItemRepository, Data.Repository.AvatarItemRepository>();
+            services.AddScoped<Domain.Repository.IAvatarLayerRepository, Data.Repository.AvatarLayerRepository>();
             services.AddScoped<Domain.Repository.IBadgeRepository, Data.Repository.BadgeRepository>();
             services.AddScoped<Domain.Repository.IBookRepository, Data.Repository.BookRepository>();
             services.AddScoped<Domain.Repository.IBranchRepository, Data.Repository.BranchRepository>();
             services.AddScoped<Domain.Repository.IDrawingCriterionRepository, Data.Repository.DrawingCriterionRepository>();
             services.AddScoped<Domain.Repository.IDrawingRepository, Data.Repository.DrawingRepository>();
-            services.AddScoped<Domain.Repository.IDynamicAvatarBundleRepository, Data.Repository.DynamicAvatarBundleRepository>();
-            services.AddScoped<Domain.Repository.IDynamicAvatarColorRepository, Data.Repository.DynamicAvatarColorRepository>();
-            services.AddScoped<Domain.Repository.IDynamicAvatarElementRepository, Data.Repository.DynamicAvatarElementRepository>();
-            services.AddScoped<Domain.Repository.IDynamicAvatarItemRepository, Data.Repository.DynamicAvatarItemRepository>();
-            services.AddScoped<Domain.Repository.IDynamicAvatarLayerRepository, Data.Repository.DynamicAvatarLayerRepository>();
             services.AddScoped<Domain.Repository.ICategoryRepository, Data.Repository.CategoryRepository>();
             services.AddScoped<Domain.Repository.IChallengeRepository, Data.Repository.ChallengeRepository>();
             services.AddScoped<Domain.Repository.IChallengeTaskRepository, Data.Repository.ChallengeTaskRepository>();

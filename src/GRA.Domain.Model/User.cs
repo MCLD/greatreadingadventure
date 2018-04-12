@@ -50,7 +50,6 @@ namespace GRA.Domain.Model
         [Range(0, int.MaxValue, ErrorMessage = "The Program field is required.")]
         public int ProgramId { get; set; }
         public string StaticAvatarFilename { get; set; }
-        public int? AvatarId { get; set; }
         public int? HouseholdHeadUserId { get; set; }
         public string BranchName { get; set; }
         public string SystemName { get; set; }

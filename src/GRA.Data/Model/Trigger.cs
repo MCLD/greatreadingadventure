@@ -54,6 +54,6 @@ namespace GRA.Data.Model
         [MaxLength(1000)]
         public string AwardPrizeRedemptionInstructions { get; set; }
         public int? AwardAvatarBundleId { get; set; }
-        public DynamicAvatarBundle AwardAvatarBundle { get; set; }
+        public AvatarBundle AwardAvatarBundle { get; set; }
     }
 }

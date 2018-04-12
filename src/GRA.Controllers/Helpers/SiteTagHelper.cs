@@ -26,6 +26,18 @@ namespace GRA.Controllers.Helpers
         [HtmlAttributeName("property")]
         public string property { get; set; }
 
+        [HtmlAttributeName("imageUrl")]
+        public string imageUrl { get; set; }
+
+        [HtmlAttributeName("pageUrl")]
+        public string pageUrl { get; set; }
+
+        [HtmlAttributeName("cardDescription")]
+        public string cardDescription { get; set; }
+
+        [HtmlAttributeName("twitterLargeCardOverride")]
+        public bool twitterLargeCardOverride { get; set; }
+
         public SiteTagHelper(IUrlHelperFactory urlHelperFactory,
             IUserContextProvider userContextProvider,
             SiteLookupService siteLookupService)
@@ -77,19 +89,11 @@ namespace GRA.Controllers.Helpers
                     break;
                 case "twittermetadata":
                     output.TagName = string.Empty;
-                    if (site.TwitterLargeCard != null
-                        && !string.IsNullOrEmpty(site.MetaDescription))
-                    {
-                        AddTwitterMetadata(output, site);
-                    }
+                    AddTwitterMetadata(output, site);
                     break;
                 case "facebookmetadata":
                     output.TagName = string.Empty;
-                    if (!string.IsNullOrEmpty(site.MetaDescription)
-                        && !string.IsNullOrEmpty(site.FacebookAppId))
-                    {
-                        AddFacebookMetadata(output, site);
-                    }
+                    AddFacebookMetadata(output, site);
                     break;
                 default:
                     throw new NotImplementedException();
@@ -99,7 +103,7 @@ namespace GRA.Controllers.Helpers
         {
             string scheme = ViewContext.HttpContext.Request.Scheme;
             string host = ViewContext.HttpContext.Request.Host.Value;
-            if(site.IsHttpsForced)
+            if (site.IsHttpsForced)
             {
                 scheme = "https";
             }
@@ -120,7 +124,7 @@ namespace GRA.Controllers.Helpers
             metaTag.Attributes.Add("content", content);
             return metaTag;
         }
-    
+
         private TagBuilder MetaProperty(string property, string content)
         {
             var metaTag = new TagBuilder("meta");
@@ -144,7 +148,7 @@ namespace GRA.Controllers.Helpers
 
         private void AddTwitterMetadata(TagHelperOutput output, Site site)
         {
-            if (site.TwitterLargeCard == true)
+            if (site.TwitterLargeCard == true || twitterLargeCardOverride == true)
             {
                 output.Content.AppendHtml(MetaName("twitter:card", "summary_large_image"));
             }
@@ -155,14 +159,26 @@ namespace GRA.Controllers.Helpers
             output.Content.AppendHtml(Environment.NewLine);
             output.Content.AppendHtml(MetaName("twitter:title", site.Name));
             output.Content.AppendHtml(Environment.NewLine);
-            output.Content.AppendHtml(MetaName("twitter:description", site.MetaDescription));
+            if (!string.IsNullOrWhiteSpace(cardDescription))
+            {
+                output.Content.AppendHtml(MetaName("twitter:description", cardDescription));
+            }
+            else
+            {
+                output.Content.AppendHtml(MetaName("twitter:description", site.MetaDescription));
+            }
             output.Content.AppendHtml(Environment.NewLine);
             if (!string.IsNullOrEmpty(site.TwitterUsername))
             {
                 output.Content.AppendHtml(MetaName("twitter:site", site.TwitterUsername));
                 output.Content.AppendHtml(Environment.NewLine);
             }
-            if (!string.IsNullOrEmpty(site.TwitterCardImageUrl))
+            if (!string.IsNullOrWhiteSpace(imageUrl))
+            {
+                output.Content.AppendHtml(MetaName("twitter:image", imageUrl));
+                output.Content.AppendHtml(Environment.NewLine);
+            }
+            else if (!string.IsNullOrEmpty(site.TwitterCardImageUrl))
             {
                 output.Content.AppendHtml(MetaName("twitter:image", site.TwitterCardImageUrl));
                 output.Content.AppendHtml(Environment.NewLine);
@@ -177,11 +193,32 @@ namespace GRA.Controllers.Helpers
             output.Content.AppendHtml(Environment.NewLine);
             output.Content.AppendHtml(MetaProperty("og:type", "website"));
             output.Content.AppendHtml(Environment.NewLine);
-            output.Content.AppendHtml(MetaProperty("og:description", site.MetaDescription));
+            if (!string.IsNullOrWhiteSpace(cardDescription))
+            {
+                output.Content.AppendHtml(MetaProperty("og:description", cardDescription));
+            }
+            else
+            {
+                output.Content.AppendHtml(MetaProperty("og:description", site.MetaDescription));
+            }
+            
             output.Content.AppendHtml(Environment.NewLine);
-            output.Content.AppendHtml(MetaProperty("og:url", GetSiteUrl(site)));
-            output.Content.AppendHtml(Environment.NewLine);
-            if (!string.IsNullOrEmpty(site.FacebookImageUrl))
+            if (!string.IsNullOrWhiteSpace(pageUrl))
+            {
+                output.Content.AppendHtml(MetaProperty("og:url", pageUrl));
+                output.Content.AppendHtml(Environment.NewLine);
+            }
+            else
+            {
+                output.Content.AppendHtml(MetaProperty("og:url", GetSiteUrl(site)));
+                output.Content.AppendHtml(Environment.NewLine);
+            }
+            if (!string.IsNullOrWhiteSpace(imageUrl))
+            {
+                output.Content.AppendHtml(MetaProperty("og:image", imageUrl));
+                output.Content.AppendHtml(Environment.NewLine);
+            }
+            else if (!string.IsNullOrEmpty(site.FacebookImageUrl))
             {
                 output.Content.AppendHtml(MetaProperty("og:image", site.FacebookImageUrl));
                 output.Content.AppendHtml(Environment.NewLine);

@@ -64,5 +64,12 @@ namespace GRA.Data.Model
         [MaxLength(15)]
         public string TwitterUsername { get; set; }
         public bool IsHttpsForced { get; set; }
+
+        [MaxLength(255)]
+        public string TwitterAvatarMessage { get; set; }
+        [MaxLength(100)]
+        public string TwitterAvatarHashtags { get; set; }
+        [MaxLength(150)]
+        public string AvatarCardDescription { get; set; }
     }
 }

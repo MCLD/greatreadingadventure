@@ -27,7 +27,7 @@ namespace GRA.Controllers.MissionControl
         private readonly AutoMapper.IMapper _mapper;
         private readonly ActivityService _activityService;
         private readonly AuthenticationService _authenticationService;
-        private readonly DynamicAvatarService _dynamicAvatarService;
+        private readonly AvatarService _avatarService;
         private readonly GroupTypeService _groupTypeService;
         private readonly MailService _mailService;
         private readonly PointTranslationService _pointTranslationService;
@@ -42,7 +42,7 @@ namespace GRA.Controllers.MissionControl
             ServiceFacade.Controller context,
             ActivityService activityService,
             AuthenticationService authenticationService,
-            DynamicAvatarService dynamicAvatarService,
+            AvatarService avatarService,
             GroupTypeService groupTypeService,
             MailService mailService,
             PointTranslationService pointTranslationService,
@@ -60,8 +60,8 @@ namespace GRA.Controllers.MissionControl
             _activityService = Require.IsNotNull(activityService, nameof(activityService));
             _authenticationService = Require.IsNotNull(authenticationService,
                 nameof(authenticationService));
-            _dynamicAvatarService = Require.IsNotNull(dynamicAvatarService,
-                nameof(dynamicAvatarService));
+            _avatarService = Require.IsNotNull(avatarService,
+                nameof(avatarService));
             _groupTypeService = groupTypeService
                 ?? throw new ArgumentNullException(nameof(groupTypeService));
             _mailService = Require.IsNotNull(mailService, nameof(mailService));
@@ -1787,13 +1787,13 @@ namespace GRA.Controllers.MissionControl
                     }
                     else if (item.AvatarBundleId.HasValue)
                     {
-                        var bundle = await _dynamicAvatarService
+                        var bundle = await _avatarService
                             .GetBundleByIdAsync(item.AvatarBundleId.Value, true);
-                        if (bundle.DynamicAvatarItems.Count > 0)
+                        if (bundle.AvatarItems.Count > 0)
                         {
                             itemModel.BadgeFilename = _pathResolver.ResolveContentPath(
-                                bundle.DynamicAvatarItems.FirstOrDefault().Thumbnail);
-                            if (bundle.DynamicAvatarItems.Count > 1)
+                                bundle.AvatarItems.FirstOrDefault().Thumbnail);
+                            if (bundle.AvatarItems.Count > 1)
                             {
                                 itemModel.Description += $" <strong><a class=\"bundle-link\" data-id=\"{item.AvatarBundleId.Value}\">Click here</a></strong> to see all the items you unlocked.";
                             }

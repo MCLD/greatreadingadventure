@@ -1,0 +1,40 @@
+﻿@model IEnumerable<GRA.Domain.Model.AvatarLayer>
+
+<div class="row" style="padding: 10px 0;">
+    <div class="col-xs-12">
+        @if (Model.Count() == 0)
+        {
+            <div>
+                <span class="fa fa-ban"></span>
+                Avatars have not been set up, click the button to add default avatars.
+            </div>
+            <form asp-action="SetupDefaultAvatars" method="post" style="padding: 1em 0;">
+                <button type="submit" class="btn btn-primary">Add default avatars</button>
+            </form>
+        }
+        else
+        {
+            <div>
+                <table class="table table-condensed table-bordered link-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var layer in Model)
+                        {
+                            <tr>
+                                <td class="td-class">
+                                    <a asp-action="Layer" asp-route-id="@layer.Id" class="rowlink">
+                                        @layer.Name
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

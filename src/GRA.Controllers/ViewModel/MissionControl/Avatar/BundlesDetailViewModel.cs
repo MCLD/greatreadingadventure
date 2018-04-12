@@ -7,7 +7,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Avatar
 {
     public class BundlesDetailViewModel
     {
-        public DynamicAvatarBundle Bundle { get; set; }
+        public AvatarBundle Bundle { get; set; }
         public string Action { get; set; }
         [Required(ErrorMessage = "Please select items for the bundle")]
         public string ItemsList { get; set; }

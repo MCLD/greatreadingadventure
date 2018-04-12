@@ -19,10 +19,10 @@ namespace GRA.Controllers
             CreateMap<Step3ViewModel, User>().ReverseMap();
             CreateMap<ParticipantsAddViewModel, User>().ReverseMap();
             CreateMap<TaskDetailViewModel, ChallengeTask>().ReverseMap();
-            CreateMap<DynamicAvatarLayer, DynamicAvatarJsonModel.DynamicAvatarLayer>()
-                .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.DynamicAvatarItems.Select(_ => _.Id)))
-                .ForMember(dest => dest.Colors, opt => opt.MapFrom(src => src.DynamicAvatarColors
-                .Select(_ => new DynamicAvatarJsonModel.DynamicAvatarColor
+            CreateMap<AvatarLayer, AvatarJsonModel.AvatarLayer>()
+                .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.AvatarItems.Select(_ => _.Id)))
+                .ForMember(dest => dest.Colors, opt => opt.MapFrom(src => src.AvatarColors
+                .Select(_ => new AvatarJsonModel.AvatarColor
                 {
                     Id = _.Id,
                     Value = _.Color

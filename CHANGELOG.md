@@ -16,12 +16,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Site and site setting management
 - Authorization code entry during signup
 - Setting to ask participants during preregistration if they want an email reminder when the program starts
+- Avatar social media settings to site
+- Avatar social media sharing
+- Avatar item management
 
 ### Changed
 - Participant mail subject to be clickable
 - Move vendor code to top of profile page
 - Rename "household" to "family" in visible locations
 - Use meta property rather than meta name for OpenGraph tags
+- Avatar selection process
 
 ### Fixed
 - Fix error that occurred when editing challenge groups

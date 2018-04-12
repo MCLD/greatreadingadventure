@@ -32,5 +32,11 @@
     "inputFiles": [
       "wwwroot/css/WMD.css"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/js/slick-avatar.min.js",
+    "inputFiles": [
+      "wwwroot/js/slick-avatar.js"
+    ]
   }
 ]
