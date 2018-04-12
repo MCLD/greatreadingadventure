@@ -1,10 +1,12 @@
 # The Great Reading Adventure
 The Great Reading Adventure is a robust, open source software designed to manage library reading programs. The GRA is free to use, modify, and share. Check out [www.greatreadingadventure.com](http://www.greatreadingadventure.com/) for an overview of its functionality and capabilities.
 
-You can view the latest [release notes](https://github.com/MCLD/greatreadingadventure/releases/latest) or **[download the latest version (3.1.0)](https://github.com/MCLD/greatreadingadventure/releases/download/v3.1.0/GreatReadingAdventure-3.1.0.zip)**.
+**Work on The Great Reading Adventure version 3 has stopped as all effort is being focused on the [version 4 branch](https://github.com/MCLD/greatreadingadventure). There are not expected to be any further releases of version 3 of the GRA.**
+
+The last release under version 3 was 3.1.0, you can view the [release notes](https://github.com/MCLD/greatreadingadventure/releases/tag/v3.1.0) or [download version 3.1.0](https://github.com/MCLD/greatreadingadventure/releases/download/v3.1.0/GreatReadingAdventure-3.1.0.zip).
 
 ## Stuck? Need help?
-The [online manual](http://manual.greatreadingadventure.com/) is still incomplete but we're working on it! You can also download a [PDF version](http://readthedocs.org/projects/great-reading-adventure/downloads/pdf/latest/) for offline viewing.
+The [online manual](http://manual.greatreadingadventure.com/en/gra3/) is not complete but provides deployment and basic usage instructions. You can also download a [PDF version](http://readthedocs.org/projects/great-reading-adventure/downloads/pdf/gra3/) for offline viewing.
 
 You can visit the [Great Reading Adventure Forum](http://forum.greatreadingadventure.com/) for the following:
 
@@ -12,12 +14,6 @@ You can visit the [Great Reading Adventure Forum](http://forum.greatreadingadven
 * [Assistance with configuration and using the GRA](http://forum.greatreadingadventure.com/c/help)
 * [Reporting errors](http://forum.greatreadingadventure.com/c/errors)
 * [Suggesting new features](http://forum.greatreadingadventure.com/c/feature-requests)
-
-## Development
-[![Build status](https://ci.appveyor.com/api/projects/status/pk9qomsbk8rp5t3c?svg=true)](https://ci.appveyor.com/project/haraldnagel/greatreadingadventure)
-[![Documentation status](https://readthedocs.org/projects/great-reading-adventure/badge/?version=latest)](https://readthedocs.org/projects/great-reading-adventure/)
-
-If you are interested in contributing code, Web design, documentation, content, or time testing the GRA, please take a look at the [Development](https://github.com/MCLD/greatreadingadventure/wiki/Development) topic on the project's GitHub Wiki.
 
 ## License
 The Great Reading Adventure source code is distributed under [The MIT License](http://opensource.org/licenses/MIT). For other included packages, please see the [CREDITS.md](https://github.com/MCLD/greatreadingadventure/blob/master/CREDITS.md) file.
