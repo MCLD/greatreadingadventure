@@ -27,6 +27,7 @@
                             <tr>
                                 <td class="td-class">
                                     <a asp-action="Layer" asp-route-id="@layer.Id" class="rowlink">
+                                        <img src="~/@layer.Icon" style="height: 32px; width: auto;" />
                                         @layer.Name
                                     </a>
                                 </td>
@@ -38,3 +39,18 @@
         }
     </div>
 </div>
+
+@section scripts {
+    <script>
+        $(window).on("load", function() {
+            $('.td-class').each(function() {
+                $(this).children('a.rowlink').height($(this).height() + 11);
+            });
+        });
+        $(window).resize(function() {
+            $('.td-class').each(function() {
+                $(this).children('a.rowlink').height($(this).height() + 11);
+            });
+        });
+    </script>
+}

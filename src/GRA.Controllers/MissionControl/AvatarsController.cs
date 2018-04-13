@@ -43,6 +43,10 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Index()
         {
             var layers = await _avatarService.GetLayersAsync();
+            foreach(var layer in layers)
+            {
+                layer.Icon = _pathResolver.ResolveContentPath(layer.Icon);
+            }
             return View(layers);
         }
 
@@ -265,7 +269,7 @@ namespace GRA.Controllers.MissionControl
 
             if (itemList.Data.Any())
             {
-                PageTitle = $"Avatar Items – {itemList.Data.First().AvatarLayerName}";
+                PageTitle = $"Avatar Items: {itemList.Data.First().AvatarLayerName}";
             }
 
             var viewModel = new ItemsListViewModel()
