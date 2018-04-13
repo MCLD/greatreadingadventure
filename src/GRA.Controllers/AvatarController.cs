@@ -212,7 +212,8 @@ namespace GRA.Controllers
 
                 using (Image<Rgba32> image = Image.Load(avatarPath))
                 {
-                    image.Mutate(_ => _.Crop(new Rectangle(60, 0, 1080, 566)));
+                    image.Mutate(_ => _.Resize(1080, 567));
+                    image.Mutate(_ => _.Crop(new Rectangle(0, 0, 1080, 566)));
                     image.Save(igFilePath);
                 }
                 var imageBytes = System.IO.File.ReadAllBytes(igFilePath);
