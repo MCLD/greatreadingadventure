@@ -1,4 +1,4 @@
-# GRA 4 Developer Documentation - Project organization
+# GRA Developer Documentation - Project organization
 
 This document describes the layout of the project as viewed in the solution file.
 
