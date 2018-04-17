@@ -77,7 +77,9 @@ namespace GRA.Domain.Service
             currentPointTranslation.TranslationDescriptionPresentTense = pointTranslation.TranslationDescriptionPresentTense;
             currentPointTranslation.TranslationName = pointTranslation.TranslationName;
 
-            if (await HasBeenUsedAsync(pointTranslation.Id) == false)
+            var hasBeenUsed = await HasBeenUsedAsync(pointTranslation.Id);
+
+            if (hasBeenUsed == false)
             {
                 currentPointTranslation.ActivityAmount = pointTranslation.ActivityAmount;
                 currentPointTranslation.IsSingleEvent = pointTranslation.IsSingleEvent;

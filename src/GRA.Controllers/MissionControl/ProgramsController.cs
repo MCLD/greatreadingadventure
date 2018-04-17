@@ -392,7 +392,7 @@ namespace GRA.Controllers.MissionControl
             var filter = new BaseFilter(page);
             var translationsList = await _pointTranslationService.GetPaginatedListAsync(filter);
 
-            var paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel
             {
                 ItemCount = translationsList.Count,
                 CurrentPage = page,
@@ -407,7 +407,7 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
-            var viewModel = new PointTranslationsListViewModel()
+            var viewModel = new PointTranslationsListViewModel
             {
                 PointTranslations = translationsList.Data,
                 PaginateModel = paginateModel
@@ -419,7 +419,7 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> EditPointTranslation(int id)
         {
-            var viewModel = new PointTranslationDetailViewModel()
+            var viewModel = new PointTranslationDetailViewModel
             {
                 PointTranslation = await _pointTranslationService.GetByIdAsync(id),
                 Action = nameof(EditPointTranslation),
