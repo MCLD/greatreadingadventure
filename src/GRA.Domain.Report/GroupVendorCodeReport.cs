@@ -79,7 +79,7 @@ namespace GRA.Domain.Report
 
             var head = await _userRepository.GetByIdAsync(groupInfo.UserId);
             var users = await _userRepository.GetHouseholdAsync(groupInfo.UserId);
-            users.Prepend(head);
+            users = users.Prepend(head);
 
             foreach (var user in users)
             {
