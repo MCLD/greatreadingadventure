@@ -680,6 +680,10 @@
         {
             <a asp-action="AddHouseholdMember" asp-route-id="@Model.Id" class="btn btn-default">Add Family Member</a>
             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#listModal">Add Existing Participant to Family</button>
+            if (Model.IsGroup == false && Model.HouseholdCount > 0)
+            {
+                <a asp-action="UpgradeToGroup" asp-route-id="@Model.Id" class="btn btn-default">Upgrade to Group</a>
+            }
         }
     }
 </div>
