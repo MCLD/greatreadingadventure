@@ -2258,7 +2258,8 @@ namespace GRA.Controllers.MissionControl
 
             try
             {
-                viewModel.GroupInfo.UserId = viewModel.Id;
+                var user = await _userService.GetDetails(viewModel.Id);
+                viewModel.GroupInfo.UserId = user.HouseholdHeadUserId ?? user.Id;
                 await _userService.CreateGroup(GetActiveUserId(), viewModel.GroupInfo);
             }
             catch (Exception ex)
