@@ -16,12 +16,10 @@ The critical settings to update are the "SqlServer" setting under "ConnectionStr
 
 In the above example you'd replace the following:
 
-| item | replacement value |
-| --- | --- |
-| `<servername>` | Hostname or IP address of your SQL Server |
-| `<databasename>` | Name of the SQL Server database |
-| `<username>` | SQL Server login to use |
-| `<password>` | SQL Server password to use |
+- `<servername>` - Hostname or IP address of your SQL Server
+- `<databasename>` - Name of the SQL Server database
+- `<username>` - SQL Server login to use
+- `<password>` - SQL Server password to use
 
 For password generation, please consider using a utility like [pwgen](https://github.com/tytso/pwgen) in a Linux environment or something similar to the [online Diceware password generator](https://www.rempe.us/diceware/#eff).
 
