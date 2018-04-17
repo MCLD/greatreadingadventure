@@ -1026,5 +1026,10 @@ namespace GRA.Domain.Service
             currentGroup.User = null;
             return await _groupInfoRepository.UpdateSaveAsync(currentUserId, currentGroup);
         }
+
+        public async Task<IEnumerable<GroupInfo>> GetGroupInfosAsync()
+        {
+            return await _groupInfoRepository.GetAllAsync(GetCurrentSiteId());
+        }
     }
 }
