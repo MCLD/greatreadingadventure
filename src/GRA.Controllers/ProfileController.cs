@@ -1500,7 +1500,7 @@ namespace GRA.Controllers
 
             try
             {
-                viewModel.GroupInfo.UserId = GetActiveUserId();
+                viewModel.GroupInfo.UserId = GetId(ClaimType.UserId);
                 await _userService.CreateGroup(viewModel.GroupInfo.UserId, viewModel.GroupInfo);
             }
             catch (Exception ex)
