@@ -1147,10 +1147,9 @@ namespace GRA.Controllers
             return RedirectToAction("Household");
         }
 
-        [HttpPost]
-        public IActionResult CancelGroupUpgrade(GroupUpgradeViewModel viewModel)
+        public IActionResult CancelGroupUpgrade()
         {
-            if (viewModel.AddExisting == true)
+            if (HttpContext.Session.Keys.Contains(SessionKey.AbsorbUserId))
             {
                 HttpContext.Session.Remove(SessionKey.AbsorbUserId);
             }
