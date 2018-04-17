@@ -41,6 +41,7 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Program management";
         }
 
+        #region Programs
         public async Task<IActionResult> Index(string search, int page = 1)
         {
             var filter = new BaseFilter(page)
@@ -383,5 +384,66 @@ namespace GRA.Controllers.MissionControl
                 return Json(false);
             }
         }
+        #endregion
+
+        #region Point Translations
+        public async Task<IActionResult> PointTranslations(int page = 1)
+        {
+            var filter = new BaseFilter(page);
+            var translationsList = await _pointTranslationService.GetPaginatedListAsync(filter);
+
+            var paginateModel = new PaginateViewModel()
+            {
+                ItemCount = translationsList.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
+            };
+            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
+            }
+
+            var viewModel = new PointTranslationsListViewModel()
+            {
+                PointTranslations = translationsList.Data,
+                PaginateModel = paginateModel
+            };
+
+            PageTitle = "Point Translation management";
+            return View(viewModel);
+        }
+
+        public async Task<IActionResult> EditPointTranslation(int id)
+        {
+            var viewModel = new PointTranslationDetailViewModel()
+            {
+                PointTranslation = await _pointTranslationService.GetByIdAsync(id),
+                Action = nameof(EditPointTranslation),
+                HasBeenUsed = await _pointTranslationService.HasBeenUsedAsync(id)
+            };
+
+            PageTitle = "Edit Point Translation";
+            return View("PointTranslationDetail", viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditPointTranslation(PointTranslationDetailViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                await _pointTranslationService.UpdateAsync(model.PointTranslation);
+                ShowAlertSuccess($"Saved Point Translation \"{model.PointTranslation.TranslationName}\"!");
+                return RedirectToAction(nameof(EditPointTranslation),
+                    new { id = model.PointTranslation.Id });
+            }
+
+            PageTitle = "Edit Point Translation";
+            return View("PointTranslationDetail", model);
+        }
+        #endregion
     }
 }

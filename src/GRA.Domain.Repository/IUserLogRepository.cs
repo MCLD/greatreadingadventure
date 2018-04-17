@@ -21,5 +21,6 @@ namespace GRA.Domain.Repository
         Task<ICollection<int>> UserIdsEarnedBadgeAsync(int badgeId, ReportCriterion criterion);
         Task<ICollection<int>> UserIdsCompletedChallengesAsync(int challengeId, ReportCriterion criterion);
         Task<long> GetActivityEarnedForUserAsync(int userId);
+        Task<bool> PointTranslationHasBeenUsedAsync(int translationId);
     }
 }
