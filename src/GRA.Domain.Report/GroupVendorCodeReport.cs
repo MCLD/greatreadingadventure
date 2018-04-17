@@ -90,7 +90,7 @@ namespace GRA.Domain.Report
 
                 var vendorCode = await _vendorCodeRepository.GetUserVendorCode(user.Id);
 
-                var row = new List<object>() {
+                var row = new List<object> {
                         user.FullName,
                         vendorCode?.IsDonated == false ? vendorCode.Code : ""
                 };

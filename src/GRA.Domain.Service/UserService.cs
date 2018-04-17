@@ -837,7 +837,7 @@ namespace GRA.Domain.Service
             {
                 await _groupInfoRepository.RemoveAsync(authId, groupInfo.Id);
 
-                var newGroup = new GroupInfo()
+                var newGroup = new GroupInfo
                 {
                     GroupTypeId = groupInfo.GroupTypeId,
                     Name = groupInfo.Name,
