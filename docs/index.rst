@@ -41,8 +41,8 @@ This manual is split into several main sections:
    installation/system-requirements
    installation/requirements-checklist
    installation/create-the-database
+   installation/configuration
    installation/install-the-software-windows
-   installation/initial-configuration
 
 .. _technical-docs:
 
