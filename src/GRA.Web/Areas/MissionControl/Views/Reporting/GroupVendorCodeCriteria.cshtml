@@ -1,0 +1,24 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Reporting.ReportCriteriaViewModel
+
+<form asp-controller="Reporting" asp-action="Run" method="post" role="form" class="form-horizontal" style="margin-top: 2rem; margin-bottom: 2rem;">
+    <input asp-for="ReportId" type="hidden" />
+
+    <div class="form-group">
+        <div class="col-xs-12">
+            <label asp-for="GroupInfoId" class="control-label"></label>
+            <select asp-for="GroupInfoId" asp-items="Model.GroupInfosList" class="form-control" data-val="true" data-val-required="Please select a group.">
+                <option></option>
+            </select>
+            <span asp-validation-for="GroupInfoId" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-xs-12">
+            <button type="submit" class="btn btn-primary">
+                <span class="fa fa-file-text"></span>
+                Run Report!
+            </button>
+        </div>
+    </div>
+</form>
