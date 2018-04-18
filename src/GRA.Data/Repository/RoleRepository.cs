@@ -44,16 +44,6 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task AddPermissionAsync(int userId, string name)
-        {
-            await _context.Permissions.AddAsync(new Model.Permission
-            {
-                Name = name,
-                CreatedBy = userId,
-                CreatedAt = _dateTimeProvider.Now
-            });
-        }
-
         public async Task AddPermissionListAsync(IEnumerable<string> names)
         {
             var now = _dateTimeProvider.Now;
@@ -87,25 +77,6 @@ namespace GRA.Data.Repository
 
             _context.RolePermissions.RemoveRange(rolePermissions);
             _context.Permissions.RemoveRange(permissions);
-        }
-
-        public async Task AddPermissionToRoleAsync(int userId, int roleId, string permissionName)
-        {
-            var permission = await _context.Permissions
-                .Where(_ => _.Name == permissionName)
-                .SingleOrDefaultAsync();
-            if (permission == null)
-            {
-                throw new Exception($"Permission '{permissionName}' not found.");
-            }
-
-            await _context.RolePermissions.AddAsync(new Model.RolePermission
-            {
-                RoleId = roleId,
-                PermissionId = permission.Id,
-                CreatedBy = userId,
-                CreatedAt = _dateTimeProvider.Now
-            });
         }
 
         public async Task<IEnumerable<string>> GetPermisisonNamesForUserAsync(int userId)

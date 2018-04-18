@@ -11,8 +11,6 @@ namespace GRA.Domain.Repository
         Task<IEnumerable<string>> GetAllPermissionsAsync();
         Task AddPermissionListAsync(IEnumerable<string> names);
         void RemovePermissionList(IEnumerable<string> names);
-        Task AddPermissionAsync(int userId, string permissionName);
-        Task AddPermissionToRoleAsync(int userId, int roleId, string permissionName);
         Task<IEnumerable<string>> GetPermisisonNamesForUserAsync(int userId);
     }
 }
