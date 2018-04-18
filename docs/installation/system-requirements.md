@@ -8,7 +8,7 @@ Version 4 of the GRA runs in the [Microsoft .NET Core 1.1](https://www.microsoft
   * Linux (CentOS, Debian, Fedora, openSUSE, Ubuntu)
   * Windows (x64 and x86)
 
-As of this writing the latest release of the .NET Core 1.1 environment is [Runtime v1.1.7](https://www.microsoft.com/net/download/dotnet-core/runtime-1.1.7). Please ensure you use a v1.1.x runtime!
+As of this writing the latest release of the .NET Core 1.1 environment is [Runtime v1.1.7](https://www.microsoft.com/net/download/dotnet-core/runtime-1.1.7). Please ensure you use a v1.1.x Hosting Bundle!
 
 ## Web server
 Microsoft [recommends that ASP.NET Core 1.1 applications are run behind an Apache, nginx, or IIS reverse proxy](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel?view=aspnetcore-1.1&tabs=aspnetcore1x#when-to-use-kestrel-with-a-reverse-proxy).

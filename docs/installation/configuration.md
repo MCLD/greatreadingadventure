@@ -31,7 +31,7 @@ For password generation, please consider using a utility like [pwgen](https://gi
 
 This is the code that you will use when you set up your account to grant you full access to Mission Control (the adminsitrative interface) of the software. Please change this value to ensure that people who come across your site cannot grant themselves full adminsitrator access!
 
-## Sample override file
+### Sample configuration override file
 
 If you wish to override the `appsettings.json` file rather than edit the file that comes packaged with the GRA, you'll make a file called `appsettings.json` in the `shared` directory under your GRA installation. The contents of that file should be similiar to this (see above for how to change the configuration values):
 
