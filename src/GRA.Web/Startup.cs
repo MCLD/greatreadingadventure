@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
 using AutoMapper;
 using GRA.Abstract;
 using GRA.Controllers.RouteConstraint;
@@ -241,6 +242,7 @@ namespace GRA.Web
             services.AddScoped<PrizeWinnerService>();
             services.AddScoped<QuestionnaireService>();
             services.AddScoped<ReportService>();
+            services.AddScoped<RoleService>();
             services.AddScoped<SampleDataService>();
             services.AddScoped<SchoolImportService>();
             services.AddScoped<SchoolService>();
@@ -345,7 +347,8 @@ namespace GRA.Web
         public void Configure(IApplicationBuilder app,
             IHostingEnvironment env,
             ILoggerFactory loggerFactory,
-            IPathResolver pathResolver)
+            IPathResolver pathResolver,
+            RoleService roleService)
         {
             loggerFactory.AddSerilog();
 
@@ -360,6 +363,7 @@ namespace GRA.Web
             }
 
             app.ApplicationServices.GetService<Data.Context>().Migrate();
+            Task.Run(() => roleService.SyncPermissionsAsync()).Wait();
 
             app.UseResponseCompression();
 

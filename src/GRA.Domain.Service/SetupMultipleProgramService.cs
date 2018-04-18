@@ -139,7 +139,8 @@ namespace GRA.Domain.Service
             // required for a user to be an administrator
             var adminRole = await _roleRepository.AddSaveAsync(userId, new Model.Role
             {
-                Name = "System Administrator"
+                Name = "System Administrator",
+                IsAdmin = true
             });
 
             // add code to make first user system administrator

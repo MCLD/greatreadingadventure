@@ -1,10 +1,14 @@
-﻿using GRA.Domain.Repository;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using AutoMapper.QueryableExtensions;
+using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
+using GRA.Domain.Repository;
+using GRA.Domain.Repository.Extensions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace GRA.Data.Repository
 {
@@ -15,6 +19,31 @@ namespace GRA.Data.Repository
             ILogger<RoleRepository> logger) : base(repositoryFacade, logger)
         { }
 
+        public async Task<DataWithCount<IEnumerable<Role>>> PageAsync(BaseFilter filter)
+        {
+            var roles = DbSet.AsNoTracking();
+            var count = await roles.CountAsync();
+            var data = await roles
+                .OrderBy(_ => _.Name)
+                .ApplyPagination(filter)
+                .ProjectTo<Role>()
+                .ToListAsync();
+
+            return new DataWithCount<IEnumerable<Role>>()
+            {
+                Data = data,
+                Count = count
+            };
+        }
+
+        public async Task<IEnumerable<string>> GetAllPermissionsAsync()
+        {
+            return await _context.Permissions
+                .AsNoTracking()
+                .Select(_ => _.Name)
+                .ToListAsync();
+        }
+
         public async Task AddPermissionAsync(int userId, string name)
         {
             await _context.Permissions.AddAsync(new Model.Permission
@@ -23,6 +52,41 @@ namespace GRA.Data.Repository
                 CreatedBy = userId,
                 CreatedAt = _dateTimeProvider.Now
             });
+        }
+
+        public async Task AddPermissionListAsync(IEnumerable<string> names)
+        {
+            var now = _dateTimeProvider.Now;
+
+            var permissions = names.Select(_ => new Model.Permission
+            {
+                Name = _,
+                CreatedAt = now,
+                CreatedBy = -1
+            });
+
+            var rolePermissions = DbSet.AsNoTracking()
+                .Where(_ => _.IsAdmin)
+                .SelectMany(_ => permissions, (r, p) => new Model.RolePermission
+                {
+                    RoleId = r.Id,
+                    Permission = p,
+                    CreatedAt = now,
+                    CreatedBy = -1
+                });
+
+            await _context.RolePermissions.AddRangeAsync(rolePermissions);
+        }
+
+        public void RemovePermissionList(IEnumerable<string> names)
+        {
+            var permissions = _context.Permissions.Where(_ => names.Contains(_.Name));
+
+            var rolePermissions = _context.RolePermissions
+                .Where(_ => permissions.Select(p => p.Id).Contains(_.PermissionId));
+
+            _context.RolePermissions.RemoveRange(rolePermissions);
+            _context.Permissions.RemoveRange(permissions);
         }
 
         public async Task AddPermissionToRoleAsync(int userId, int roleId, string permissionName)
