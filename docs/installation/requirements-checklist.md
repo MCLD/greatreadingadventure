@@ -3,7 +3,7 @@
 ## Hosting in a Windows environments
 
 - Ensure you have a Windows server running **Windows Server 2008 or newer**
-- Note that for reporting to work you must be running **Windows Server 2018/IIS 8 or later with Web Sockets enabled**
+- Note that for reporting to work you must be running **Windows Server 2012/IIS 8 or later with Web Sockets enabled**
 - Ensure your server has the **.NET Core Runtime 1.1.x Hosting Bundle** installed
 - Confirm that you can **create a new Web site in IIS** on this server
 - Confirm that you will be permitted to configure it so that **Web site files can be writable by the Windows user who owns the IIS process (typically the `IIS_IUSRS` group or `DefaultAppPool` user)**.
@@ -32,8 +32,8 @@
 
 Your final decision is which initial program configuration to choose:
 
-- You can opt to set up with a single reading program that tracks by books read
-- You can opt to set up with four age-specific reading programs that track by minutes read
+- You can opt to set up with a single reading program that **tracks by books read**
+- You can opt to set up with four age-specific reading programs that **track by minutes read**
 
 Once you set up in either configuration you can add or remove programs as you see fit.
 
