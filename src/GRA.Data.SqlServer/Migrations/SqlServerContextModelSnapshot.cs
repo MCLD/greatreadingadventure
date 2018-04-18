@@ -1253,8 +1253,6 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<bool>("Favorite");
 
-                    b.Property<int?>("GroupInfoId");
-
                     b.Property<string>("Name")
                         .HasMaxLength(255);
 
