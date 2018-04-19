@@ -5,17 +5,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
-- Group vendor code report
-- Ability to upgrade households to groups before hitting the max household size
+- Group Vendor Code Report: group members and their assigned vendor codes
+- Admins with Edit Participant permission can upgrade households to groups regardless of household size
 
 ### Fixed
-- Mission control household url typos
-- Promoting member to head of household not transferring the group
-- Being able to assign groups to non-head of households
+- Broken household URLs in Mission Control (leading spaces)
+- Promoting member to household lead wasn't transferring the group
+- Ability to assign groups to household members (not just the lead)
 
 ## [4.0.0-beta1] - 2018-04-13
 ### Added
 - Everything! First release of 4.0.
 
 [4.0.0-beta1]: https://github.com/mcld/greatreadingadventure/tree/v4.0.0-beta1
-
