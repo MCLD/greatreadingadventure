@@ -13,6 +13,7 @@ namespace GRA.Data.Model
         public int? ProgramId { get; set; }
         public int? SchoolDistrictId { get; set; }
         public int? SchoolId { get; set; }
+        public int? GroupInfoId { get; set; }
 
         public bool Favorite { get; set; }
         [MaxLength(255)]

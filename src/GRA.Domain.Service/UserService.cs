@@ -835,7 +835,15 @@ namespace GRA.Domain.Service
             var groupInfo = await _groupInfoRepository.GetByUserIdAsync(oldHeadUserId);
             if (groupInfo != null)
             {
-                groupInfo.UserId = user.Id;
+                await _groupInfoRepository.RemoveAsync(authId, groupInfo.Id);
+
+                var newGroup = new GroupInfo
+                {
+                    GroupTypeId = groupInfo.GroupTypeId,
+                    Name = groupInfo.Name,
+                    UserId = userId
+                };
+                await _groupInfoRepository.AddAsync(authId, newGroup);
             }
 
             await _userRepository.SaveAsync();
@@ -1025,6 +1033,11 @@ namespace GRA.Domain.Service
             currentGroup.GroupType = null;
             currentGroup.User = null;
             return await _groupInfoRepository.UpdateSaveAsync(currentUserId, currentGroup);
+        }
+
+        public async Task<IEnumerable<GroupInfo>> GetGroupInfosAsync()
+        {
+            return await _groupInfoRepository.GetAllAsync(GetCurrentSiteId());
         }
     }
 }

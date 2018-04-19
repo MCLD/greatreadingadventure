@@ -1147,10 +1147,9 @@ namespace GRA.Controllers
             return RedirectToAction("Household");
         }
 
-        [HttpPost]
-        public IActionResult CancelGroupUpgrade(GroupUpgradeViewModel viewModel)
+        public IActionResult CancelGroupUpgrade()
         {
-            if (viewModel.AddExisting == true)
+            if (HttpContext.Session.Keys.Contains(SessionKey.AbsorbUserId))
             {
                 HttpContext.Session.Remove(SessionKey.AbsorbUserId);
             }
@@ -1501,7 +1500,7 @@ namespace GRA.Controllers
 
             try
             {
-                viewModel.GroupInfo.UserId = GetActiveUserId();
+                viewModel.GroupInfo.UserId = GetId(ClaimType.UserId);
                 await _userService.CreateGroup(viewModel.GroupInfo.UserId, viewModel.GroupInfo);
             }
             catch (Exception ex)
