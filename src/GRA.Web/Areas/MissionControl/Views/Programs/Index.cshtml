@@ -1,5 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Programs.ProgramListViewModel
 
+@Html.Partial("_ProgramsPartial")
+
 <div class="row">
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
         <div class="modal-dialog" role="document">
@@ -96,7 +98,7 @@
                     </tbody>
                 </table>
             </div>
-            @if (Model.PaginateModel.MaxPage > 1 )
+            @if (Model.PaginateModel.MaxPage > 1)
             {
                 <paginate paginateModel="@Model.PaginateModel"></paginate>
             }
@@ -105,7 +107,7 @@
 </div>
 
 @section scripts {
-<script>
+    <script>
         var decreasePositionUrl = "@Url.Action("DecreasePosition")";
         var increasePositionUrl = "@Url.Action("IncreasePosition")";
 
@@ -189,5 +191,5 @@
                 });
             }
         })
-</script>
+    </script>
 }

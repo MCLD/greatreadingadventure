@@ -12,14 +12,19 @@ namespace GRA.Domain.Service
     public class PointTranslationService : BaseUserService<PointTranslationService>
     {
         private readonly IPointTranslationRepository _pointTranslationRepository;
+        private readonly IUserLogRepository _userLogRepository;
         public PointTranslationService(ILogger<PointTranslationService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
-            IPointTranslationRepository pointTranslationRepository)
+            IPointTranslationRepository pointTranslationRepository,
+            IUserLogRepository userLogRepository)
             : base(logger, dateTimeProvider, userContextProvider)
         {
-            _pointTranslationRepository = pointTranslationRepository 
+            SetManagementPermission(Permission.ManagePrograms);
+            _pointTranslationRepository = pointTranslationRepository
                 ?? throw new ArgumentNullException(nameof(pointTranslationRepository));
+            _userLogRepository = userLogRepository
+                ?? throw new ArgumentNullException(nameof(userLogRepository));
         }
 
         public async Task<IEnumerable<PointTranslation>> GetListAsync()
@@ -37,6 +42,12 @@ namespace GRA.Domain.Service
                 Data = await _pointTranslationRepository.PageAsync(filter),
                 Count = await _pointTranslationRepository.CountAsync(filter)
             };
+        }
+
+        public async Task<PointTranslation> GetByIdAsync(int id)
+        {
+            VerifyManagementPermission();
+            return await _pointTranslationRepository.GetByIdAsync(id);
         }
 
         public async Task<PointTranslation> AddAsync(PointTranslation pointTranslation)
@@ -60,14 +71,20 @@ namespace GRA.Domain.Service
                 throw new GraException($"Permission denied - point translation belongs to site id {currentPointTranslation.SiteId}.");
             }
 
-            currentPointTranslation.ActivityAmount = pointTranslation.ActivityAmount;
             currentPointTranslation.ActivityDescription = pointTranslation.ActivityDescriptionPlural;
             currentPointTranslation.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
-            currentPointTranslation.IsSingleEvent = pointTranslation.IsSingleEvent;
-            currentPointTranslation.PointsEarned = pointTranslation.PointsEarned;
             currentPointTranslation.TranslationDescriptionPastTense = pointTranslation.TranslationDescriptionPastTense;
             currentPointTranslation.TranslationDescriptionPresentTense = pointTranslation.TranslationDescriptionPresentTense;
             currentPointTranslation.TranslationName = pointTranslation.TranslationName;
+
+            var hasBeenUsed = await HasBeenUsedAsync(pointTranslation.Id);
+
+            if (hasBeenUsed == false)
+            {
+                currentPointTranslation.ActivityAmount = pointTranslation.ActivityAmount;
+                currentPointTranslation.IsSingleEvent = pointTranslation.IsSingleEvent;
+                currentPointTranslation.PointsEarned = pointTranslation.PointsEarned;
+            }
 
             await _pointTranslationRepository.UpdateSaveAsync(authId, currentPointTranslation);
         }
@@ -90,6 +107,12 @@ namespace GRA.Domain.Service
             await _pointTranslationRepository.RemoveSaveAsync(authId, pointTranslationId);
         }
 
+        public async Task<bool> HasBeenUsedAsync(int id)
+        {
+            VerifyManagementPermission();
+            return await _userLogRepository.PointTranslationHasBeenUsedAsync(id);
+        }
+
         public async Task<PointTranslation> GetByProgramIdAsync(int id, bool titleCase = false)
         {
             var pointTranslation = await _pointTranslationRepository.GetByProgramIdAsync(id);
@@ -101,12 +124,12 @@ namespace GRA.Domain.Service
                     pointTranslation.ActivityDescription = pointTranslation.ActivityDescription
                         .First()
                         .ToString()
-                        .ToUpper() 
+                        .ToUpper()
                         + pointTranslation.ActivityDescription.Substring(1);
                 }
                 if (!string.IsNullOrWhiteSpace(pointTranslation.ActivityDescriptionPlural))
                 {
-                    pointTranslation.ActivityDescriptionPlural = 
+                    pointTranslation.ActivityDescriptionPlural =
                         pointTranslation.ActivityDescriptionPlural
                         .First()
                         .ToString()

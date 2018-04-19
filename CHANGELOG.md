@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Added
 - Group Vendor Code Report: group members and their assigned vendor codes
 - Admins with Edit Participant permission can upgrade households to groups regardless of household size
+- Point translation management in Mission Control
 
 ### Fixed
 - Broken household URLs in Mission Control (leading spaces)
@@ -19,3 +20,4 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Everything! First release of 4.0.
 
 [4.0.0-beta1]: https://github.com/mcld/greatreadingadventure/tree/v4.0.0-beta1
+

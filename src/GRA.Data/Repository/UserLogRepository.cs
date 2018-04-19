@@ -465,5 +465,13 @@ namespace GRA.Data.Repository
                 .Where(_ => _.UserId == userId && _.IsDeleted == false && _.ActivityEarned.HasValue)
                 .SumAsync(_ => Convert.ToInt64(_.ActivityEarned));
         }
+
+        public async Task<bool> PointTranslationHasBeenUsedAsync(int translationId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.PointTranslationId == translationId)
+                .AnyAsync();
+        }
     }
 }
