@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Group Vendor Code Report: group members and their assigned vendor codes
 - Admins with Edit Participant permission can upgrade households to groups regardless of household size
 - Point translation management in Mission Control
+- SQL Server create database script in db/ folder
+- Documentation in docs/ folder to update the manual for version 4
 
 ### Fixed
 - Broken household URLs in Mission Control (leading spaces)
