@@ -6,7 +6,7 @@ namespace GRA
         public const string DefaultCSSQLite = "ConnectionStrings:SQLite";
         public const string DefaultCSSqlServer = "ConnectionStrings:SqlServer";
 
-        public const string ApplicationDescriminator = "GraApplicationDescriminator";
+        public const string ApplicationDiscriminator = "GraApplicationDiscriminator";
         public const string ConnectionStringName = "GraConnectionStringName";
         public const string ContentDirectory = "GraContentDirectory";
         public const string ContentPath = "GraContentPath";
