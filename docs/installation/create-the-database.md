@@ -7,7 +7,7 @@ There are two options when creating the database: you can execute a script or ma
 ### From a script
 
 1. Connect to the database server to run a query (this can be done with SQL Server Management Studio by right-clicking on the server in the Object Explorer on the left and choosing **New Query**).
-2. Copy the text from the [database create script](https://raw.githubusercontent.com/MCLD/greatreadingadventure/master/db/SQL-Server-createdb.sql) and paste it into the query window.
+2. Copy the text from the [database create script](https://raw.githubusercontent.com/MCLD/greatreadingadventure/develop/db/SQL-Server-createdb.sql) and paste it into the query window.
 3. Click the **Execute** button in the toolbar.
 
 ### From the user interface

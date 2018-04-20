@@ -21,6 +21,7 @@ This manual is split into several main sections:
 
 * :ref:`intro-docs` - What is The Great Reading Adventure? How does it work?
 * :ref:`install-docs` - installing and configuring The Great Reading Adventure software
+* :ref:`setup-docs` - setting the software up to work with your reading program(s)
 * :ref:`technical-docs` - technical documentation
 
 .. _intro-docs:
@@ -43,6 +44,13 @@ This manual is split into several main sections:
    installation/create-the-database
    installation/configuration
    installation/install-the-software-windows
+
+.. _setup-docs:
+.. toctree::
+   :maxdepth: 1
+   :caption: Setup
+
+   setup/administrator-account
 
 .. _technical-docs:
 
