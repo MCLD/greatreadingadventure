@@ -15,6 +15,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Ability to assign groups to household members (not just the lead)
 - Dashboard error caused by daily literacy tips
 - Disable add default avatars button on click
+- Misspelled app setting (GraApplicationDiscriminator)
+
+### Removed
+- Comments from appsettings.json, see the [manual](http://manual.greatreadingadventure.com/en/latest/technical/appsettings/) for more information
 
 ## [4.0.0-beta1] - 2018-04-13
 ### Added

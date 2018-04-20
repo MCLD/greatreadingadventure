@@ -129,7 +129,7 @@ namespace GRA.Web
                 !string.IsNullOrEmpty(Configuration[ConfigurationKey.DataProtectionPath])
                 ? Configuration[ConfigurationKey.DataProtectionPath]
                 : Path.Combine(Directory.GetCurrentDirectory(), "shared", "dataprotection");
-            string discriminator = Configuration[ConfigurationKey.ApplicationDescriminator]
+            string discriminator = Configuration[ConfigurationKey.ApplicationDiscriminator]
                     ?? "gra";
             services.AddDataProtection(_ => _.ApplicationDiscriminator = discriminator)
                 .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(protectionPath, "keys")));
