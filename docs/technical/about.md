@@ -19,8 +19,10 @@ The content of this manual is part of the [open-source project on GitHub](https:
 ### Contributors
 
 * Brianna King
-* [Caris O'Malley](http://carisomalley.com/)
+* [Caris O'Malley](https://www.linkedin.com/in/caris-o-malley-28b5a547)
+* [Dan Wilcox](https://github.com/iafb/)
 * [Harald Nagel](https://haraldnagel.com/)
+* [Holly Brennan](https://www.linkedin.com/in/holly-brennan-76450270)
 * Tammy Gross
 * [Tara Carpenter](http://www.taracarpenter.com/)
 * [Tony Apodaca](https://antonioramonapodaca.wordpress.com/)

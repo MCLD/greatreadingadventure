@@ -51,6 +51,7 @@ This manual is split into several main sections:
    :caption: Setup
 
    setup/administrator-account
+   setup/adding-avatars
 
 .. _technical-docs:
 
