@@ -9,7 +9,10 @@
                 Avatars have not been set up, click the button to add default avatars.
             </div>
             <form asp-action="SetupDefaultAvatars" method="post" style="padding: 1em 0;">
-                <button type="submit" class="btn btn-primary">Add default avatars</button>
+                <button type="submit" class="btn btn-primary btn-spinner">
+                    Add default avatars
+                    <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                </button>
             </form>
         }
         else
