@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net;
 using System.Threading.Tasks;
 using GRA.Controllers.Filter;
@@ -210,6 +211,29 @@ namespace GRA.Controllers
                 {
                     Event = await _eventService.GetDetails(id)
                 };
+
+                PageTitle = $"{viewModel.Event.Name} @ {viewModel.Event.EventLocationName}";
+                if (!string.IsNullOrEmpty(viewModel.Event.EventLocationName)
+                    && !string.IsNullOrEmpty(viewModel.Event.EventLocationAddress))
+                {
+                    viewModel.ShowStructuredData = true;
+                    if (viewModel.Event.AllDay == true)
+                    {
+                        viewModel.EventStart = viewModel.Event.StartDate.ToString("yyyy-MM-dd", 
+                            CultureInfo.InvariantCulture);
+                    }
+                    else
+                    {
+                        viewModel.EventStart = viewModel.Event.StartDate.ToString("s", 
+                            CultureInfo.InvariantCulture);
+                        if (viewModel.Event.EndDate != null)
+                        {
+                            var endDate = (DateTime)viewModel.Event.EndDate;
+                            viewModel.EventEnd = endDate.ToString("s", 
+                                CultureInfo.InvariantCulture);
+                        }
+                    }
+                }
 
                 if (viewModel.Event.ProgramId.HasValue)
                 {

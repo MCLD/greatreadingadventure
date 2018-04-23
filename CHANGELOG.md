@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Point translation management in Mission Control
 - SQL Server create database script in db/ folder
 - Documentation in docs/ folder to update the manual for version 4
+- Metadata description and structured data for Events
 
 ### Fixed
 - Broken household URLs in Mission Control (leading spaces)
