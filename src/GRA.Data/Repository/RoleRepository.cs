@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
@@ -36,11 +35,71 @@ namespace GRA.Data.Repository
             };
         }
 
+        public async Task<Role> AddSaveAsync(int userId, Role role, IEnumerable<string> permissions)
+        {
+            var now = _dateTimeProvider.Now;
+            var roleEntity = _mapper.Map<Role, Model.Role>(role);
+
+            var rolePermissions = _context.Permissions
+                .AsNoTracking()
+                .Where(_ => permissions.Contains(_.Name))
+                .Select(_ => new Model.RolePermission
+                {
+                    Role = roleEntity,
+                    PermissionId = _.Id,
+                    CreatedAt = now,
+                    CreatedBy = userId
+                });
+            await _context.RolePermissions.AddRangeAsync(rolePermissions);
+            await _context.SaveChangesAsync();
+            return _mapper.Map<Model.Role, Role>(roleEntity);
+        }
+
+        public async Task UpdateSaveAsync(int userId, Role role, List<string> permissionsToAdd,
+            List<string> permissionsToRemove)
+        {
+            await UpdateAsync(userId, role);
+
+            var now = _dateTimeProvider.Now;
+
+            var addPermissions = _context.Permissions
+                .AsNoTracking()
+                .Where(_ => permissionsToAdd.Contains(_.Name))
+                .Select(_ => new Model.RolePermission
+                {
+                    RoleId = role.Id,
+                    PermissionId = _.Id,
+                    CreatedAt = now,
+                    CreatedBy = userId
+                });
+            var removePermissions = _context.RolePermissions
+                .Where(_ => _.RoleId == role.Id && role.IsAdmin == false
+                    && permissionsToRemove.Contains(_.Permission.Name));
+
+            await _context.RolePermissions.AddRangeAsync(addPermissions);
+            _context.RolePermissions.RemoveRange(removePermissions);
+            await _context.SaveChangesAsync();
+        }
+
+        public override async Task RemoveSaveAsync(int userId, int roleId)
+        {
+            var rolePermissions = _context.RolePermissions.Where(_ => _.RoleId == roleId);
+            _context.RolePermissions.RemoveRange(rolePermissions);
+
+            var userRoles = _context.UserRoles.Where(_ => _.RoleId == roleId);
+            _context.UserRoles.RemoveRange(userRoles);
+
+            await RemoveAsync(userId, roleId);
+
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<IEnumerable<string>> GetAllPermissionsAsync()
         {
             return await _context.Permissions
                 .AsNoTracking()
                 .Select(_ => _.Name)
+                .OrderBy(_ => _)
                 .ToListAsync();
         }
 
@@ -94,6 +153,16 @@ namespace GRA.Data.Repository
                 .Where(_ => roleIds.Contains(_.RoleId))
                 .Select(_ => _.Permission.Name)
                 .Distinct()
+                .OrderBy(_ => _)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<string>> GetPermissionNamesForRoleAsync(int roleId)
+        {
+            return await _context.RolePermissions
+                .AsNoTracking()
+                .Where(_ => _.RoleId == roleId)
+                .Select(_ => _.Permission.Name)
                 .OrderBy(_ => _)
                 .ToListAsync();
         }

@@ -28,10 +28,81 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(siteRepository));
         }
 
+        public async Task<Role> GetByIdAsync(int id)
+        {
+            VerifyManagementPermission();
+            return await _roleRepository.GetByIdAsync(id);
+        }
+
         public async Task<DataWithCount<IEnumerable<Role>>> GetPaginatedListAsync(BaseFilter filter)
         {
             VerifyManagementPermission();
             return await _roleRepository.PageAsync(filter);
+        }
+
+        public async Task<Role> AddAsync(Role role, IEnumerable<string> permissions)
+        {
+            VerifyManagementPermission();
+            var authId = GetClaimId(ClaimType.UserId);
+            role.Name = role.Name.Trim();
+            role.IsAdmin = false;
+
+            if (permissions.Count() > 0)
+            {
+                role.CreatedAt = _dateTimeProvider.Now;
+                role.CreatedBy = authId;
+                return await _roleRepository.AddSaveAsync(authId, role, permissions);
+            }
+            else
+            {
+                return await _roleRepository.AddSaveAsync(authId, role);
+            }
+        }
+
+        public async Task EditAsync(Role role, IEnumerable<string> permissions)
+        {
+            VerifyManagementPermission();
+            var authId = GetClaimId(ClaimType.UserId);
+            var currentRole = await _roleRepository.GetByIdAsync(role.Id);
+            role.Name = role.Name.Trim();
+            role.IsAdmin = currentRole.IsAdmin;
+            role.CreatedAt = currentRole.CreatedAt;
+            role.CreatedBy = currentRole.CreatedBy;
+
+            var permissionsToAdd = new List<string>();
+            var permissionsToRemove = new List<string>();
+            if (role.IsAdmin == false)
+            {
+                var currentPermissions = await _roleRepository
+                    .GetPermissionNamesForRoleAsync(role.Id);
+
+                permissionsToAdd = permissions.Except(currentPermissions).ToList();
+                permissionsToRemove = currentPermissions.Except(permissions).ToList();
+            }
+            await _roleRepository.UpdateSaveAsync(authId, role, permissionsToAdd, permissionsToRemove);
+        }
+
+        public async Task RemoveAsync(int roleId)
+        {
+            VerifyManagementPermission();
+            var role = await _roleRepository.GetByIdAsync(roleId);
+            if (role.IsAdmin)
+            {
+                throw new GraException("Cannot delete an admin role.");
+            }
+            await _roleRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), roleId);
+        }
+
+        public async Task<IEnumerable<string>> GetAllPermissionsAsync()
+        {
+            VerifyManagementPermission();
+            return await _roleRepository.GetAllPermissionsAsync();
+        }
+
+        public async Task<IEnumerable<string>> GetPermissionsForRoleAsync(int roleId)
+        {
+            VerifyManagementPermission();
+            return await _roleRepository.GetPermissionNamesForRoleAsync(roleId);
         }
 
         public async Task SyncPermissionsAsync()
