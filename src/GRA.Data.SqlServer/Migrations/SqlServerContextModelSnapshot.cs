@@ -1253,8 +1253,6 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<bool>("Favorite");
 
-                    b.Property<int?>("GroupInfoId");
-
                     b.Property<string>("Name")
                         .HasMaxLength(255);
 
@@ -1343,8 +1341,6 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<DateTime>("CreatedAt");
 
                     b.Property<int>("CreatedBy");
-
-                    b.Property<bool>("IsAdmin");
 
                     b.Property<string>("Name")
                         .IsRequired()
