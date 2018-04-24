@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Metadata description and structured data for Events
 - Role management
 - Authorization code management
+- User role management
 - Automatically assigning new permissions to admin roles
 
 ### Fixed
