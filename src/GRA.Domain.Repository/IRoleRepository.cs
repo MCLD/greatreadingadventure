@@ -7,6 +7,7 @@ namespace GRA.Domain.Repository
 {
     public interface IRoleRepository : IRepository<Model.Role>
     {
+        Task<IEnumerable<Role>> GetAllAsync();
         Task<DataWithCount<IEnumerable<Role>>> PageAsync(BaseFilter filter);
         Task<Role> AddSaveAsync(int userId, Role role, IEnumerable<string> permissions);
         Task UpdateSaveAsync(int userId, Role role, List<string> permissionsToAdd,

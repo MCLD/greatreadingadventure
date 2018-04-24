@@ -224,6 +224,7 @@ namespace GRA.Web
             // services
             services.AddScoped<ActivityService>();
             services.AddScoped<AuthenticationService>();
+            services.AddScoped<AuthorizationCodeService>();
             services.AddScoped<AvatarService>();
             services.AddScoped<BadgeService>();
             services.AddScoped<CategoryService>();

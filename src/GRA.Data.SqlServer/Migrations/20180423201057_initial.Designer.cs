@@ -8,8 +8,8 @@ using GRA.Data.SqlServer;
 namespace GRA.Data.SqlServer.Migrations
 {
     [DbContext(typeof(SqlServerContext))]
-    [Migration("20180413200538_v4.0.0-beta1")]
-    partial class v400beta1
+    [Migration("20180423201057_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -1254,6 +1254,8 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<bool>("Favorite");
 
+                    b.Property<int?>("GroupInfoId");
+
                     b.Property<string>("Name")
                         .HasMaxLength(255);
 
@@ -1342,6 +1344,8 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<DateTime>("CreatedAt");
 
                     b.Property<int>("CreatedBy");
+
+                    b.Property<bool>("IsAdmin");
 
                     b.Property<string>("Name")
                         .IsRequired()

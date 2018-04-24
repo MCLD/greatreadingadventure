@@ -497,21 +497,6 @@ namespace GRA.Domain.Service
             return authCode.RoleName;
         }
 
-        public async Task<bool> ValidateAuthorizationCode(string authorizationCode)
-        {
-            string fixedCode = authorizationCode.Trim().ToLower();
-            int siteId = GetCurrentSiteId();
-            var authCode = await _authorizationCodeRepository.GetByCodeAsync(siteId, fixedCode);
-            if (authCode == null)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
-
         public async Task<User> AddHouseholdMemberAsync(int householdHeadUserId, User memberToAdd)
         {
             VerifyCanHouseholdAction();

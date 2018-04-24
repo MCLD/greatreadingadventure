@@ -34,6 +34,12 @@ namespace GRA.Domain.Service
             return await _roleRepository.GetByIdAsync(id);
         }
 
+        public async Task<IEnumerable<Role>> GetAllAsync()
+        {
+            VerifyManagementPermission();
+            return await _roleRepository.GetAllAsync();
+        }
+
         public async Task<DataWithCount<IEnumerable<Role>>> GetPaginatedListAsync(BaseFilter filter)
         {
             VerifyManagementPermission();
@@ -64,22 +70,19 @@ namespace GRA.Domain.Service
             VerifyManagementPermission();
             var authId = GetClaimId(ClaimType.UserId);
             var currentRole = await _roleRepository.GetByIdAsync(role.Id);
-            role.Name = role.Name.Trim();
-            role.IsAdmin = currentRole.IsAdmin;
-            role.CreatedAt = currentRole.CreatedAt;
-            role.CreatedBy = currentRole.CreatedBy;
+            currentRole.Name = role.Name.Trim();
 
             var permissionsToAdd = new List<string>();
             var permissionsToRemove = new List<string>();
-            if (role.IsAdmin == false)
+            if (currentRole.IsAdmin == false)
             {
                 var currentPermissions = await _roleRepository
-                    .GetPermissionNamesForRoleAsync(role.Id);
+                    .GetPermissionNamesForRoleAsync(currentRole.Id);
 
                 permissionsToAdd = permissions.Except(currentPermissions).ToList();
                 permissionsToRemove = currentPermissions.Except(permissions).ToList();
             }
-            await _roleRepository.UpdateSaveAsync(authId, role, permissionsToAdd, permissionsToRemove);
+            await _roleRepository.UpdateSaveAsync(authId, currentRole, permissionsToAdd, permissionsToRemove);
         }
 
         public async Task RemoveAsync(int roleId)

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace GRA.Data.SqlServer.Migrations
 {
-    public partial class v400beta1 : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -427,6 +427,7 @@ namespace GRA.Data.SqlServer.Migrations
                     CreatedBy = table.Column<int>(nullable: false),
                     EndDate = table.Column<DateTime>(nullable: true),
                     Favorite = table.Column<bool>(nullable: false),
+                    GroupInfoId = table.Column<int>(nullable: true),
                     Name = table.Column<string>(maxLength: 255, nullable: true),
                     ProgramId = table.Column<int>(nullable: true),
                     SchoolDistrictId = table.Column<int>(nullable: true),
@@ -491,6 +492,7 @@ namespace GRA.Data.SqlServer.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     CreatedBy = table.Column<int>(nullable: false),
+                    IsAdmin = table.Column<bool>(nullable: false),
                     Name = table.Column<string>(maxLength: 255, nullable: false)
                 },
                 constraints: table =>

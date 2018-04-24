@@ -8,6 +8,7 @@ using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 
 namespace GRA.Controllers.MissionControl
@@ -17,16 +18,21 @@ namespace GRA.Controllers.MissionControl
     public class RolesController : Base.MCController
     {
         private readonly ILogger<RolesController> _logger;
+        private readonly AuthorizationCodeService _authorizationCodeService;
         private readonly RoleService _roleService;
         public RolesController(ILogger<RolesController> logger,
             ServiceFacade.Controller context,
+            AuthorizationCodeService authorizationCodeService,
             RoleService roleService)
             : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _authorizationCodeService = authorizationCodeService
+                ?? throw new ArgumentNullException(nameof(authorizationCodeService));
             _roleService = roleService ?? throw new ArgumentNullException(nameof(roleService));
         }
 
+        #region Roles
         public async Task<IActionResult> Index(int page = 1)
         {
             var filter = new BaseFilter(page);
@@ -141,5 +147,99 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Edit Role";
             return View("Detail", model);
         }
+        #endregion
+
+        #region Authorization Codes
+        public async Task<IActionResult> AuthorizationCodes(int page = 1)
+        {
+            var filter = new BaseFilter(page);
+
+            var authorizationCodeList = await _authorizationCodeService.GetPaginatedListAsync(filter);
+
+            PaginateViewModel paginateModel = new PaginateViewModel()
+            {
+                ItemCount = authorizationCodeList.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
+            };
+            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
+            }
+
+            var viewModel = new AuthorizationCodeListViewModel()
+            {
+                AuthorizationCodes = authorizationCodeList.Data,
+                PaginateModel = paginateModel,
+                RoleList = new SelectList(await _roleService.GetAllAsync(), "Id", "Name")
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddCode(AuthorizationCodeListViewModel model)
+        {
+            try
+            {
+                model.AuthorizationCode.Code.Trim();
+                model.AuthorizationCode.Description?.Trim();
+                await _authorizationCodeService.AddAsync(model.AuthorizationCode);
+                ShowAlertSuccess($"Added Authorization Code \"{model.AuthorizationCode.Code}\"!");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to add Authorization Code: ", gex);
+            }
+            return RedirectToAction(nameof(AuthorizationCodes), new
+            {
+                page = model.PaginateModel.CurrentPage
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditCode(AuthorizationCodeListViewModel model)
+        {
+            try
+            {
+                model.AuthorizationCode.Code.Trim();
+                model.AuthorizationCode.Description?.Trim();
+                await _authorizationCodeService.UpdateAsync(model.AuthorizationCode);
+                ShowAlertSuccess($"Authorization Code \"{model.AuthorizationCode.Code}\" updated!");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to edit Authorization Code: ", gex);
+            }
+
+            return RedirectToAction(nameof(AuthorizationCodes), new
+            {
+                page = model.PaginateModel.CurrentPage
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteCode(AuthorizationCodeListViewModel model)
+        {
+            try
+            {
+                await _authorizationCodeService.RemoveAsync(model.AuthorizationCode.Id);
+                ShowAlertSuccess($"Authorization Code \"{model.AuthorizationCode.Code}\" removed!");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to remove Authorization Code: ", gex);
+            }
+
+            return RedirectToAction(nameof(AuthorizationCodes), new
+            {
+                page = model.PaginateModel.CurrentPage
+            });
+        }
+        #endregion
     }
 }

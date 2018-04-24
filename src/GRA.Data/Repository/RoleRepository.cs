@@ -18,6 +18,14 @@ namespace GRA.Data.Repository
             ILogger<RoleRepository> logger) : base(repositoryFacade, logger)
         { }
 
+        public async Task<IEnumerable<Role>> GetAllAsync()
+        {
+            return await DbSet
+                .AsNoTracking()
+                .ProjectTo<Role>()
+                .ToListAsync();
+        }
+
         public async Task<DataWithCount<IEnumerable<Role>>> PageAsync(BaseFilter filter)
         {
             var roles = DbSet.AsNoTracking();
