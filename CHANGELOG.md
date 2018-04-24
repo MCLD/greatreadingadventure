@@ -11,6 +11,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - SQL Server create database script in db/ folder
 - Documentation in docs/ folder to update the manual for version 4
 - Metadata description and structured data for Events
+- Role management
+- Authorization code management
+- Automatically assigning new permissions to admin roles
 
 ### Fixed
 - Broken household URLs in Mission Control (leading spaces)
