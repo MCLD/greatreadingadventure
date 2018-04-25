@@ -11,7 +11,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - SQL Server create database script in db/ folder
 - Documentation in docs/ folder to update the manual for version 4
 - Metadata description and structured data for Events
-- Trigger activation date
+- Ability to restrict triggers from activating until a specified date
 
 ### Fixed
 - Broken household URLs in Mission Control (leading spaces)
