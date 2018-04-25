@@ -30,6 +30,7 @@
                         </div>
                         <div class="form-group">
                             <label asp-for="AuthorizationCode.IsSingleUse" class="control-label"></label>
+                            <span class="fa fa-question-circle-o" data-toggle="tooltip" title="Single use codes may be used once and then are deactivated."></span>
                             <select id="addSingle" asp-for="AuthorizationCode.IsSingleUse" class="form-control">
                                 <option value="true">Single Use</option>
                                 <option value="false">Multiple Use</option>
@@ -79,6 +80,7 @@
                         </div>
                         <div class="form-group">
                             <label asp-for="AuthorizationCode.IsSingleUse" class="control-label"></label>
+                            <span class="fa fa-question-circle-o" data-toggle="tooltip" title="Single use codes may be used once and then are deactivated."></span>
                             <select id="editingle" asp-for="AuthorizationCode.IsSingleUse" class="form-control">
                                 <option value="true">Single Use</option>
                                 <option value="false">Multiple Use</option>
@@ -210,6 +212,8 @@
 
 @section scripts {
     <script>
+        $('[data-toggle="tooltip"]').tooltip();
+
         $("#editModal").on("show.bs.modal", function (e) {
             var button = $(e.relatedTarget);
             var id = button.data("id");

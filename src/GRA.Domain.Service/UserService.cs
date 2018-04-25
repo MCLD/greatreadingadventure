@@ -1042,6 +1042,17 @@ namespace GRA.Domain.Service
             }
 
             var userRoles = await _userRepository.GetUserRolesAsync(userId);
+
+            if (await _roleRepository.ListContainsAdminRoleAsync(userRoles) 
+                && await _roleRepository.ListContainsAdminRoleAsync(roleIds) == false)
+            {
+                var adminCount = await _roleRepository.GetUsersWithAdminRoleCountAsync();
+                if (adminCount <= 1)
+                {
+                    throw new GraException("Cannot remove the last admin.");
+                }
+            }
+
             var rolesToAdd = roleIds.Except(userRoles);
             var rolesToRemove = userRoles.Except(roleIds);
 

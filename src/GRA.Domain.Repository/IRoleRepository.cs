@@ -17,5 +17,7 @@ namespace GRA.Domain.Repository
         void RemovePermissionList(IEnumerable<string> names);
         Task<IEnumerable<string>> GetPermisisonNamesForUserAsync(int userId);
         Task<IEnumerable<string>> GetPermissionNamesForRoleAsync(int roleId);
+        Task<bool> ListContainsAdminRoleAsync(IEnumerable<int> roleIds);
+        Task<int> GetUsersWithAdminRoleCountAsync();
     }
 }

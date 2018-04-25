@@ -43,7 +43,13 @@ namespace GRA.Domain.Service
         public async Task<DataWithCount<IEnumerable<Role>>> GetPaginatedListAsync(BaseFilter filter)
         {
             VerifyManagementPermission();
-            return await _roleRepository.PageAsync(filter);
+            var roleList = await _roleRepository.PageAsync(filter);
+            foreach (var role in roleList.Data)
+            {
+                var permissions = await _roleRepository.GetPermissionNamesForRoleAsync(role.Id);
+                role.PermissionCount = permissions.Count();
+            }
+            return roleList;
         }
 
         public async Task<Role> AddAsync(Role role, IEnumerable<string> permissions)

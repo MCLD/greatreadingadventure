@@ -174,6 +174,24 @@ namespace GRA.Data.Repository
                 .OrderBy(_ => _)
                 .ToListAsync();
         }
+
+        public async Task<bool> ListContainsAdminRoleAsync(IEnumerable<int> roleIds)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.IsAdmin && roleIds.Contains(_.Id))
+                .AnyAsync();
+        }
+
+        public async Task<int> GetUsersWithAdminRoleCountAsync()
+        {
+            return await _context.UserRoles
+                .AsNoTracking()
+                .Where(_ => _.Role.IsAdmin)
+                .Select(_ => _.UserId)
+                .Distinct()
+                .CountAsync();
+        }
     }
 }
 

@@ -127,6 +127,11 @@ namespace GRA.Controllers.MissionControl
             viewModel.UnselectedPermissions = (await _roleService.GetAllPermissionsAsync())
                 .Except(viewModel.SelectedPermissions);
 
+            if (viewModel.Role.IsAdmin)
+            {
+                ShowAlertWarning("Permissions for an admin role cannot be modified.");
+            }
+
             return View("Detail", viewModel);
         }
 

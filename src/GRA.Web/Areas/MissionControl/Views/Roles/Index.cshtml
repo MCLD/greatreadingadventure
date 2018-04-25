@@ -51,6 +51,7 @@
                     <thead>
                         <tr>
                             <th>Name</th>
+                            <th>Has Permissions</th>
                             <th width="100">&nbsp;</th>
                         </tr>
                     </thead>
@@ -63,6 +64,7 @@
                                         @role.Name
                                     </a>
                                 </td>
+                                <td>@role.PermissionCount</td>
                                 <td class="on-top gra-mc-icon">
                                     @if (role.IsAdmin == false)
                                     {
