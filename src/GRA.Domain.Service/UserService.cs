@@ -1049,7 +1049,7 @@ namespace GRA.Domain.Service
                 var adminCount = await _roleRepository.GetUsersWithAdminRoleCountAsync();
                 if (adminCount <= 1)
                 {
-                    throw new GraException("Cannot remove the last admin.");
+                    throw new GraException("Cannot remove the last participant in the System Administrator role.");
                 }
             }
 

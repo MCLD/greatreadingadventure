@@ -15,7 +15,7 @@ namespace GRA.Domain.Model
         public int RoleId { get; set; }
         public string RoleName { get; set; }
         public int Uses { get; set; }
-        [DisplayName("Can only be used once")]
+        [DisplayName("Single Use")]
         public bool IsSingleUse { get; set; }
     }
 }

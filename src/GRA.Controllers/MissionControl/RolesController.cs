@@ -129,7 +129,7 @@ namespace GRA.Controllers.MissionControl
 
             if (viewModel.Role.IsAdmin)
             {
-                ShowAlertWarning("Permissions for an admin role cannot be modified.");
+                ShowAlertWarning("Permissions for the System Administrator role cannot be modified. This role always has all permissions.");
             }
 
             return View("Detail", viewModel);
