@@ -356,7 +356,7 @@ namespace GRA.Web
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseStatusCodePagesWithReExecute("/Error/Index", "?statusCode={0}");
             }
 
             app.ApplicationServices.GetService<Data.Context>().Migrate();

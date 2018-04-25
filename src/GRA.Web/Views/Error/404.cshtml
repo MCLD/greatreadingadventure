@@ -1,0 +1,29 @@
+﻿@{
+    ViewData[GRA.Controllers.ViewDataKey.Title] = "Page not found";
+}
+
+@section styles {
+    <style>
+        p {
+            margin-bottom: 2rem;
+            line-height: 3rem;
+            font-size: larger;
+        }
+    </style>
+}
+
+<div class="row">
+    <div class="col-sm-8 col-sm-offset-2">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="h3 text-danger"><strong>Sorry, we couldn't find what you were looking for!</strong></span>
+            </div>
+            <div class="panel-body">
+                <a asp-controller="Home" asp-action="Index" class="btn btn-lg btn-default">
+                    <span class="fa fa-home"></span>
+                    Go Home
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
