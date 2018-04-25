@@ -357,6 +357,19 @@
         </div>
     </div>
 
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="Trigger.ActivationDate" class="control-label"></label>
+            <div class="input-group date" id="activationDatePicker">
+                <span class="input-group-addon">
+                    <span class="fa fa-calendar"></span>
+                </span>
+                <input asp-for="Trigger.ActivationDate" type="text" class="form-control" />
+            </div>
+            <span asp-validation-for="Trigger.ActivationDate" class="text-danger"></span>
+        </div>
+    </div>
+
     <div class="panel panel-primary" style="margin-top: 2rem;">
         <div class="panel-heading">
             <h3 class="panel-title">Awards</h3>
@@ -834,5 +847,19 @@
                 $('.trigger-name-field').first().focus();
             }
         })
+
+        $("#activationDatePicker").datetimepicker({
+            format: "MM/DD/YYYY h:mm a",
+            allowInputToggle: true,
+            sideBySide: true,
+            icons: {
+                time: "fa fa-clock-o",
+                date: "fa fa-calendar",
+                up: "fa fa-arrow-up",
+                down: "fa fa-arrow-down",
+                previous: "fa fa-arrow-left",
+                next: "fa fa-arrow-right"
+            }
+        });
     </script>
 }

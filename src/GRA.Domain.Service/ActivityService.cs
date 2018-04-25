@@ -875,7 +875,8 @@ namespace GRA.Domain.Service
                 throw new GraException("Secret codes cannot be entered while there is a pending questionnaire to be taken.");
             }
 
-            var trigger = await _triggerRepository.GetByCodeAsync(GetCurrentSiteId(), secretCode);
+            var trigger = await _triggerRepository.GetByCodeAsync(GetCurrentSiteId(), secretCode,
+                true);
 
             if (trigger == null)
             {
@@ -1043,7 +1044,8 @@ namespace GRA.Domain.Service
                 }
             }
 
-            var trigger = await _triggerRepository.GetByCodeAsync(GetCurrentSiteId(), secretCode);
+            var trigger = await _triggerRepository.GetByCodeAsync(GetCurrentSiteId(), secretCode,
+                true);
 
             if (trigger == null)
             {

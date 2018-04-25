@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -27,6 +28,8 @@ namespace GRA.Domain.Model
         public ICollection<int> BadgeIds { get; set; }
         public ICollection<int> ChallengeIds { get; set; }
 
+        [DisplayName("Activation Date")]
+        public DateTime? ActivationDate { get; set; }
         [DisplayName("Limit to System?")]
         public int? LimitToSystemId { get; set; }
         [DisplayName("Limit to Branch?")]
