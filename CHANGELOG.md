@@ -19,7 +19,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Dashboard error caused by daily literacy tips
 - Disable add default avatars button on click
 - Misspelled app setting (GraApplicationDiscriminator)
-- Logout admin users on self deletion
+- Handle admin users self-deleting properly (log out, redirect to front of site)
 
 ### Removed
 - Comments from appsettings.json, see the [manual](http://manual.greatreadingadventure.com/en/latest/technical/appsettings/) for more information
