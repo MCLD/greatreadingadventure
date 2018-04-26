@@ -25,6 +25,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Disable add default avatars button on click
 - Misspelled app setting (GraApplicationDiscriminator)
 - Handle admin users self-deleting properly (log out, redirect to front of site)
+- Issue with double initial page loads causing duplicate database insertions (#283)
 
 ### Removed
 - Comments from appsettings.json, see the [manual](http://manual.greatreadingadventure.com/en/latest/technical/appsettings/) for more information
