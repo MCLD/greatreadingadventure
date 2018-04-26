@@ -349,7 +349,8 @@ namespace GRA.Web
             IHostingEnvironment env,
             ILoggerFactory loggerFactory,
             IPathResolver pathResolver,
-            RoleService roleService)
+            RoleService roleService,
+            SiteLookupService siteLookupService)
         {
             loggerFactory.AddSerilog();
 
@@ -364,6 +365,7 @@ namespace GRA.Web
             }
 
             app.ApplicationServices.GetService<Data.Context>().Migrate();
+            Task.Run(() => siteLookupService.GetDefaultSiteIdAsync()).Wait();
             Task.Run(() => roleService.SyncPermissionsAsync()).Wait();
 
             app.UseResponseCompression();
