@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace GRA.Controllers
 {
-    public class ErrorController : Base.Controller
+    public class ErrorController : Base.UserController
     {
         private readonly ILogger<ErrorController> _logger;
 
