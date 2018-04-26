@@ -84,3 +84,13 @@ table > tbody > tr > td.gra-mc-icon {
     max-width:25rem;
     width: 25rem;
 }
+
+.move-right {
+    float: right;
+    margin-left: 20px;
+}
+
+.move-left {
+    float: left;
+    margin-right: 20px;
+}

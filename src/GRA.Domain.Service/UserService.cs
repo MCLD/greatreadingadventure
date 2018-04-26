@@ -1,12 +1,12 @@
-﻿using GRA.Domain.Model;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GRA.Domain.Service
 {
@@ -495,21 +495,6 @@ namespace GRA.Domain.Service
             await _userRepository.UpdateSaveAsync(userId, user);
 
             return authCode.RoleName;
-        }
-
-        public async Task<bool> ValidateAuthorizationCode(string authorizationCode)
-        {
-            string fixedCode = authorizationCode.Trim().ToLower();
-            int siteId = GetCurrentSiteId();
-            var authCode = await _authorizationCodeRepository.GetByCodeAsync(siteId, fixedCode);
-            if (authCode == null)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
         }
 
         public async Task<User> AddHouseholdMemberAsync(int householdHeadUserId, User memberToAdd)
@@ -1038,6 +1023,41 @@ namespace GRA.Domain.Service
         public async Task<IEnumerable<GroupInfo>> GetGroupInfosAsync()
         {
             return await _groupInfoRepository.GetAllAsync(GetCurrentSiteId());
+        }
+
+        public async Task<ICollection<int>> GetUserRolesAsync(int userId)
+        {
+            VerifyPermission(Permission.ManageRoles);
+            return await _userRepository.GetUserRolesAsync(userId);
+        }
+
+        public async Task UpdateUserRolesAsync(int userId, IEnumerable<int> roleIds)
+        {
+            VerifyPermission(Permission.ManageRoles);
+
+            var user = await  _userRepository.GetByIdAsync(userId);
+            if (string.IsNullOrWhiteSpace(user.Username))
+            {
+                throw new GraException("User doesn't have a username and can't be assigned roles");
+            }
+
+            var userRoles = await _userRepository.GetUserRolesAsync(userId);
+
+            if (await _roleRepository.ListContainsAdminRoleAsync(userRoles) 
+                && await _roleRepository.ListContainsAdminRoleAsync(roleIds) == false)
+            {
+                var adminCount = await _roleRepository.GetUsersWithAdminRoleCountAsync();
+                if (adminCount <= 1)
+                {
+                    throw new GraException("Cannot remove the last participant in the System Administrator role.");
+                }
+            }
+
+            var rolesToAdd = roleIds.Except(userRoles);
+            var rolesToRemove = userRoles.Except(roleIds);
+
+            await _userRepository.UpdateUserRolesAsync(GetClaimId(ClaimType.UserId), userId,
+                rolesToAdd, rolesToRemove);
         }
     }
 }

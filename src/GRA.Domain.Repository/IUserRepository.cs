@@ -1,8 +1,7 @@
-﻿using GRA.Domain.Model;
-using GRA.Domain.Model.Filters;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 
 namespace GRA.Domain.Repository
 {
@@ -10,6 +9,8 @@ namespace GRA.Domain.Repository
     {
         Task AddRoleAsync(int currentUserId, int userId, int roleId);
         Task<ICollection<int>> GetUserRolesAsync(int userId);
+        Task UpdateUserRolesAsync(int currentUserId, int userId, IEnumerable<int> rolesToAdd,
+            IEnumerable<int> rolesToRemove);
         Task<AuthenticationResult> AuthenticateUserAsync(string username, string password);
         Task<IEnumerable<int>> GetAllUserIds(int siteId);
         Task<User> GetByUsernameAsync(string username);

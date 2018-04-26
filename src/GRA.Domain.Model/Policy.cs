@@ -31,6 +31,7 @@ namespace GRA.Domain.Model
         public const string ManagePointTranslations = "ManagePointTranslations";
         public const string ManagePrograms = "ManagePrograms";
         public const string ManageQuestionnaires = "ManageQuestionnaires";
+        public const string ManageRoles = "ManageRoles";
         public const string ManageSchools = "ManageSchools";
         public const string ManageSites = "ManageSites";
         public const string ManageSystems = "ManageSystems";
