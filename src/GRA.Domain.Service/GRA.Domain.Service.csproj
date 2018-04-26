@@ -25,16 +25,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="csvhelper" Version="2.16.3" />
-    <PackageReference Include="ExcelDataReader" Version="3.0.0-develop00019" />
-    <PackageReference Include="MailKit" Version="1.16.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="1.1.2" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="1.1.2" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="1.1.2" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.1.2" />
-    <PackageReference Include="SmartFormat.NET" Version="2.0.0" />
-    <PackageReference Include="System.Security.Claims" Version="4.3.0" />
-    <PackageReference Include="system.valuetuple" Version="4.3.1" />
+    <PackageReference Include="CsvHelper" Version="2.16.*" />
+    <PackageReference Include="ExcelDataReader" Version="3.*" />
+    <PackageReference Include="MailKit" Version="2.*" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="1.*" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="1.*" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="1.*" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.*" />
+    <PackageReference Include="SmartFormat.NET" Version="2.*" />
+    <PackageReference Include="System.Security.Claims" Version="4.*" />
+    <PackageReference Include="System.ValueTuple" Version="4.*" />
   </ItemGroup>
 
 </Project>
