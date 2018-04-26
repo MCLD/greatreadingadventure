@@ -39,7 +39,7 @@ namespace GRA.Controllers.MissionControl
 
             var roleList = await _roleService.GetPaginatedListAsync(filter);
 
-            PaginateViewModel paginateModel = new PaginateViewModel()
+            PaginateViewModel paginateModel = new PaginateViewModel
             {
                 ItemCount = roleList.Count,
                 CurrentPage = page,
@@ -54,7 +54,7 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
-            var viewModel = new RoleListViewModel()
+            var viewModel = new RoleListViewModel
             {
                 Roles = roleList.Data,
                 PaginateModel = paginateModel
@@ -86,7 +86,7 @@ namespace GRA.Controllers.MissionControl
         {
             PageTitle = "Create Role";
 
-            var viewModel = new RoleDetailViewModel()
+            var viewModel = new RoleDetailViewModel
             {
                 Action = nameof(Create),
                 UnselectedPermissions = await _roleService.GetAllPermissionsAsync()
@@ -176,7 +176,7 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
-            var viewModel = new AuthorizationCodeListViewModel()
+            var viewModel = new AuthorizationCodeListViewModel
             {
                 AuthorizationCodes = authorizationCodeList.Data,
                 PaginateModel = paginateModel,

@@ -2197,7 +2197,7 @@ namespace GRA.Controllers.MissionControl
                 var groupInfo
                     = await _userService.GetGroupFromHouseholdHeadAsync(user.HouseholdHeadUserId ?? id);
 
-                var viewModel = new RolesViewModel()
+                var viewModel = new RolesViewModel
                 {
                     Id = id,
                     HouseholdCount = await _userService

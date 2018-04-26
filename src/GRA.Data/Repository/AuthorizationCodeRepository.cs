@@ -29,7 +29,7 @@ namespace GRA.Data.Repository
                 .ProjectTo<AuthorizationCode>()
                 .ToListAsync();
 
-            return new DataWithCount<IEnumerable<AuthorizationCode>>()
+            return new DataWithCount<IEnumerable<AuthorizationCode>>
             {
                 Data = data,
                 Count = count

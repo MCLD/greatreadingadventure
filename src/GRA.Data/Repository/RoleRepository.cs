@@ -36,7 +36,7 @@ namespace GRA.Data.Repository
                 .ProjectTo<Role>()
                 .ToListAsync();
 
-            return new DataWithCount<IEnumerable<Role>>()
+            return new DataWithCount<IEnumerable<Role>>
             {
                 Data = data,
                 Count = count
