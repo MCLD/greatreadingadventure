@@ -18,6 +18,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Automatically assign any new permissions to the System Administrator role
 - User-friendly page to display page not found (404) errors
 
+### Changed
+- Updated package dependencies to latest compatible versions
+
 ### Fixed
 - Broken household URLs in Mission Control (leading spaces)
 - Promoting member to household lead wasn't transferring the group
