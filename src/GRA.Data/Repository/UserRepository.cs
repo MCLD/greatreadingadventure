@@ -52,6 +52,26 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
+        public async Task UpdateUserRolesAsync(int currentUserId, int userId, IEnumerable<int> rolesToAdd, 
+            IEnumerable<int> rolesToRemove)
+        {
+            var now = _dateTimeProvider.Now;
+
+            var addRoles = rolesToAdd.Select(_ => new Model.UserRole
+            {
+                RoleId = _,
+                UserId = userId,
+                CreatedAt = now,
+                CreatedBy = currentUserId
+            });
+            var removeRoles = _context.UserRoles
+                .Where(_ => _.UserId == userId && rolesToRemove.Contains(_.RoleId));
+
+            await _context.UserRoles.AddRangeAsync(addRoles);
+            _context.UserRoles.RemoveRange(removeRoles);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task SetUserPasswordAsync(int currentUserId, int userId, string password)
         {
             var user = DbSet.Find(userId);

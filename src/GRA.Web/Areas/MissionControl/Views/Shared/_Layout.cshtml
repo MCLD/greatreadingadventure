@@ -122,7 +122,7 @@
                             </ul>
                         </li>
                     }
-                    @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageCategories.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageDashboardContent.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageGroupTypes.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewUnpublishedPages.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManagePrograms.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageQuestionnaires.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSchools.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSites.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSystems.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSystems.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageVendorCodes.ToString()))
+                    @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageCategories.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageDashboardContent.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageGroupTypes.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewUnpublishedPages.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManagePrograms.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageQuestionnaires.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageRoles.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSchools.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSites.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSystems.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSystems.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageVendorCodes.ToString()))
                     {
                         <li ActiveBy routeKey="Controller" value="Pages, Schools">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Setup"><span class="fa fa-wrench"></span><span class="visible-xs-inline"> Setup</span> <span class="caret"></span></a>
@@ -151,6 +151,10 @@
                                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageQuestionnaires.ToString()))
                                 {
                                     <li><a asp-controller="Questionnaires" asp-action="Index">Questionnaire management</a></li>
+                                }
+                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageRoles.ToString()))
+                                {
+                                    <li><a asp-controller="Roles" asp-action="Index">Role management</a></li>
                                 }
                                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSchools.ToString()))
                                 {
@@ -192,7 +196,7 @@
         </noscript>
 
         @if (ViewData.ContainsKey(GRA.Controllers.ViewDataKey.TitleHtml)
-            && ViewData[GRA.Controllers.ViewDataKey.TitleHtml] != null)
+           && ViewData[GRA.Controllers.ViewDataKey.TitleHtml] != null)
         {
             <div class="row">
                 <div class="col-xs-12">

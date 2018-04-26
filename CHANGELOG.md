@@ -11,7 +11,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - SQL Server create database script in db/ folder
 - Documentation in docs/ folder to update the manual for version 4
 - Metadata description and structured data for Events
-- Page to display for 404 errors
+- Ability to restrict triggers from activating until a specified date
+- Role management
+- Authorization code management
+- Participant/role assignment
+- Automatically assign any new permissions to the System Administrator role
+- User-friendly page to display page not found (404) errors
 
 ### Fixed
 - Broken household URLs in Mission Control (leading spaces)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GRA.Abstract;
@@ -27,6 +28,7 @@ namespace GRA.Controllers
         private readonly ILogger<JoinController> _logger;
         private readonly AutoMapper.IMapper _mapper;
         private readonly AuthenticationService _authenticationService;
+        private readonly AuthorizationCodeService _authorizationCodeService;
         private readonly MailService _mailService;
         private readonly PointTranslationService _pointTranslationService;
         private readonly SchoolService _schoolService;
@@ -38,6 +40,7 @@ namespace GRA.Controllers
         public JoinController(ILogger<JoinController> logger,
             ServiceFacade.Controller context,
             AuthenticationService authenticationService,
+            AuthorizationCodeService authorizationCodeService,
             MailService mailService,
             PointTranslationService pointTranslationService,
             SchoolService schoolService,
@@ -51,6 +54,8 @@ namespace GRA.Controllers
             _mapper = context.Mapper;
             _authenticationService = Require.IsNotNull(authenticationService,
                 nameof(authenticationService));
+            _authorizationCodeService = authorizationCodeService 
+                ?? throw new ArgumentNullException(nameof(authorizationCodeService));
             _mailService = Require.IsNotNull(mailService, nameof(mailService));
             _pointTranslationService = Require.IsNotNull(pointTranslationService,
                 nameof(pointTranslationService));
@@ -362,7 +367,8 @@ namespace GRA.Controllers
                     if (!string.IsNullOrWhiteSpace(model.AuthorizationCode))
                     {
                         sanitized = _codeSanitizer.Sanitize(model.AuthorizationCode, 255);
-                        useAuthCode = await _userService.ValidateAuthorizationCode(sanitized);
+                        useAuthCode = await _authorizationCodeService
+                            .ValidateAuthorizationCode(sanitized);
                         if (useAuthCode == false)
                         {
                             _logger.LogError($"Invalid auth code used on join: {model.AuthorizationCode}");
@@ -983,7 +989,8 @@ namespace GRA.Controllers
                     if (!string.IsNullOrWhiteSpace(step1.AuthorizationCode))
                     {
                         sanitized = _codeSanitizer.Sanitize(step1.AuthorizationCode, 255);
-                        useAuthCode = await _userService.ValidateAuthorizationCode(sanitized);
+                        useAuthCode = await _authorizationCodeService
+                            .ValidateAuthorizationCode(sanitized);
                         if (useAuthCode == false)
                         {
                             _logger.LogError($"Invalid auth code used on join: {step1.AuthorizationCode}");
@@ -1070,7 +1077,7 @@ namespace GRA.Controllers
             if (!TempData.ContainsKey(AuthCodeAttempts) || (int)TempData.Peek(AuthCodeAttempts) < 5)
             {
                 var sanitized = _codeSanitizer.Sanitize(model.AuthorizationCode, 255);
-                if (await _userService.ValidateAuthorizationCode(sanitized))
+                if (await _authorizationCodeService.ValidateAuthorizationCode(sanitized))
                 {
                     TempData.Remove(AuthCodeAttempts);
                     TempData[EnteredAuthCode] = model.AuthorizationCode;

@@ -15,7 +15,7 @@ namespace GRA.Domain.Repository
         Task<int> CountAsync(TriggerFilter filter);
         Task<ICollection<Trigger>> GetTriggersAsync(int userId);
         Task AddTriggerActivationAsync(int userId, int triggerId);
-        Task<Trigger> GetByCodeAsync(int siteId, string secretCode);
+        Task<Trigger> GetByCodeAsync(int siteId, string secretCode, bool mustBeActive);
         Task<DateTime?> CheckTriggerActivationAsync(int userId, int triggerId);
         Task<ICollection<TriggerRequirement>> GetTriggerRequirmentsAsync(Trigger trigger);
         Task<int> CountRequirementsAsync(BaseFilter filter);
