@@ -489,6 +489,11 @@ namespace GRA.Controllers.MissionControl
             {
                 await _userService.RemoveAsync(id);
                 AlertSuccess = "Participant deleted";
+                if (id == GetId(ClaimType.UserId))
+                {
+                    await LogoutUserAsync();
+                    return RedirectToAction("Index", "Home", new { area = string.Empty });
+                }
             }
             catch (GraException gex)
             {
