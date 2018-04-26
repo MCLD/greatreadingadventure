@@ -7,7 +7,7 @@ COPY . ./
 RUN dotnet restore
 
 # Build and publish
-RUN dotnet publish -c Release -o $(pwd)/publish/web
+RUN dotnet publish -c Release -o "$(pwd)/publish/web"
 
 # Get runtime image
 FROM microsoft/aspnetcore:1.1
