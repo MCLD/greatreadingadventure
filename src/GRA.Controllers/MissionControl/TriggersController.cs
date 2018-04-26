@@ -399,6 +399,12 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Edit(int id)
         {
             var trigger = await _triggerService.GetByIdAsync(id);
+
+            if(trigger == null)
+            {
+                ShowAlertWarning($"Could not find trigger id {id}, possibly it has been deleted.");
+                return RedirectToAction("Index");
+            }
             var site = await GetCurrentSiteAsync();
             var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
             var viewModel = new TriggersDetailViewModel

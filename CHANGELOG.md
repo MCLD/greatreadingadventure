@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Misspelled app setting (GraApplicationDiscriminator)
 - Handle admin users self-deleting properly (log out, redirect to front of site)
 - Issue with double initial page loads causing duplicate database insertions (#283)
+- Editing a trigger that doesn't exist now shows an error rather than logging an exception
 
 ### Removed
 - Comments from appsettings.json, see the [manual](http://manual.greatreadingadventure.com/en/latest/technical/appsettings/) for more information
