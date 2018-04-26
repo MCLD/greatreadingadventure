@@ -6,7 +6,15 @@ WORKDIR /app
 COPY . ./
 RUN dotnet restore
 
+# Add database migrations
+WORKDIR /app/src/GRA.Data.SqlServer
+RUN dotnet ef migrations add -s ../GRA.Web/GRA.Web.csproj develop
+
+WORKDIR /app/src/GRA.Data.SQLite
+RUN dotnet ef migrations add -s ../GRA.Web/GRA.Web.csproj develop
+
 # Build and publish
+WORKDIR /app
 RUN dotnet publish -c Release -o "$(pwd)/publish/web"
 
 # Get runtime image
