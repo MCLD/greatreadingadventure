@@ -124,7 +124,7 @@ namespace GRA.Data.Repository
                                                 || _.SecretCode.Contains(filter.Search));
             }
 
-            if(filter.SecretCodesOnly == true)
+            if (filter.SecretCodesOnly == true)
             {
                 triggerList = triggerList.Where(_ => !string.IsNullOrWhiteSpace(_.SecretCode));
             }
@@ -132,16 +132,21 @@ namespace GRA.Data.Repository
             return triggerList;
         }
 
-        public async Task<Trigger> GetByCodeAsync(int siteId, string secretCode)
+        public async Task<Trigger> GetByCodeAsync(int siteId, string secretCode, bool mustBeActive)
         {
             secretCode = secretCode.Trim().ToLower();
-            var codeTrigger = await DbSet
+            var triggerQuery = DbSet
                 .AsNoTracking()
                 .Where(_ => _.SiteId == siteId
                     && _.IsDeleted == false
-                    && _.SecretCode == secretCode)
-                .SingleOrDefaultAsync();
+                    && _.SecretCode == secretCode);
 
+            if (mustBeActive)
+            {
+                triggerQuery = triggerQuery.Where(_ => _.ActivationDate > DateTime.Now == false);
+            }
+
+            var codeTrigger = await triggerQuery.SingleOrDefaultAsync();
             if (codeTrigger == null)
             {
                 return null;
@@ -175,7 +180,8 @@ namespace GRA.Data.Repository
                     && (_.LimitToBranchId == null || _.LimitToBranchId == user.BranchId)
                     && (_.LimitToProgramId == null || _.LimitToProgramId == user.ProgramId)
                     && (_.Points == 0 || _.Points <= user.PointsEarned)
-                    && string.IsNullOrEmpty(_.SecretCode))
+                    && string.IsNullOrEmpty(_.SecretCode)
+                    && _.ActivationDate > _dateTimeProvider.Now == false)
                 .OrderBy(_ => _.Points)
                 .ThenBy(_ => _.AwardPoints)
                 .ToListAsync();

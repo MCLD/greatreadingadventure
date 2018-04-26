@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -25,6 +26,7 @@ namespace GRA.Data.Model
         public ICollection<TriggerBadge> RequiredBadges { get; set; }
         public ICollection<TriggerChallenge> RequiredChallenges { get; set; }
 
+        public DateTime? ActivationDate { get; set; }
         public int? LimitToSystemId { get; set; }
         [ForeignKey("LimitToSystemId")]
         public System LimitToSystem { get; set; }
