@@ -33,8 +33,7 @@ namespace GRA.Domain.Service
         {
             return !string.IsNullOrEmpty(site.FromEmailAddress)
                 && !string.IsNullOrEmpty(site.FromEmailName)
-                && !string.IsNullOrEmpty(site.OutgoingMailHost)
-                && site.OutgoingMailPort != null;
+                && !string.IsNullOrEmpty(site.OutgoingMailHost);
         }
 
         public async Task<bool> CanSendMailTo(int userId)
@@ -81,7 +80,6 @@ namespace GRA.Domain.Service
                 // accept any STARTTLS certificate
                 client.ServerCertificateValidationCallback = (s, c, h, e) => true;
 
-                // TODO store mail server in site
                 await client.ConnectAsync(site.OutgoingMailHost,
                     site.OutgoingMailPort ?? 25,
                     false);
