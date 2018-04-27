@@ -64,7 +64,6 @@ namespace GRA.Domain.Service
                     RegisteredUsers = await _userRepository.GetCountAsync(request),
                     Achievers = await _userRepository.GetAchieverCountAsync(request),
                     PointsEarned = await _userLogRepository.PointsEarnedTotalAsync(request),
-                    ActivityEarnings = await _userLogRepository.ActivityEarningsTotalAsync(request),
                     CompletedChallenges = await _userLogRepository
                         .CompletedChallengeCountAsync(request),
                     BadgesEarned = await _userLogRepository.EarnedBadgeCountAsync(request),
