@@ -17,9 +17,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Participant/role assignment
 - Automatically assign any new permissions to the System Administrator role
 - User-friendly page to display page not found (404) errors
+- Ability to send test emails from Mission Control
 
 ### Changed
 - Updated package dependencies to latest compatible versions
+- Improve descriptions on Site Management pages
 
 ### Fixed
 - Broken household URLs in Mission Control (leading spaces)
