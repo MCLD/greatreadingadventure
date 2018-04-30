@@ -23,6 +23,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Updated package dependencies to latest compatible versions
 - Improve descriptions on Site Management pages
 - Updated front-end packages to latest compatible versions
+- Display event title as hyperlink rather than URL
 
 ### Fixed
 - Broken household URLs in Mission Control (leading spaces)
