@@ -67,15 +67,6 @@
             @Model.FilteredStatus.BadgesEarned.ToString("N0") badges
         </div>
     </div>
-    @foreach (var item in Model.FilteredStatus.ActivityEarnings)
-    {
-        <div class="col-sm-2">
-            <div class="ataglance-pill ataglance-pill-seagreen">
-                <span class="fa fa-book fa-2x"></span><br />
-                @item.Value.ToString("N0") @item.Key
-            </div>
-        </div>
-    }
     @if (Model.FilteredStatus.DaysUntilEnd != null)
     {
         <div class="col-sm-2">

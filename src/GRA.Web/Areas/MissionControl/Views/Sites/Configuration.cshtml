@@ -110,7 +110,7 @@
 
     <div class="form-group">
         <label>Send test email to:</label>
-        <input id="emailAddress" class="form-control" style="display:unset; width:300px;" />
+        <input id="emailAddress" class="form-control" style="display:unset; width:300px;" value="@Model.CurrentUserMail">
         <button id="sendTest" type="button" class="btn btn-default">
             Send
             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
@@ -131,7 +131,7 @@
         $("#sendTest").on("click", function () {
             var emailAddress = $("#emailAddress").val();
             if (emailAddress == "") {
-                alert("Pleas enter an email address");
+                alert("Please enter an email address in order to send a test email.");
                 return;
             }
             var button = $(this);

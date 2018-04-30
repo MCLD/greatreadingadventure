@@ -20,16 +20,19 @@ namespace GRA.Controllers.MissionControl
         private readonly AutoMapper.IMapper _mapper;
         private readonly EmailService _emailSerivce;
         private readonly SiteService _siteService;
+        private readonly UserService _userService;
         public SitesController(ILogger<SitesController> logger,
             ServiceFacade.Controller context,
             EmailService emailService,
-            SiteService siteService)
+            SiteService siteService,
+            UserService userService)
             : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = context.Mapper ?? throw new ArgumentNullException(nameof(context.Mapper));
             _emailSerivce = emailService ?? throw new ArgumentNullException(nameof(emailService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
+            _userService = userService ?? throw new ArgumentNullException(nameof(UserService));
             PageTitle = "Site management";
         }
 
@@ -99,6 +102,12 @@ namespace GRA.Controllers.MissionControl
         {
             var site = await _siteLookupService.GetByIdAsync(id);
             var viewModel = _mapper.Map<Site, SiteConfigurationViewModel>(site);
+
+            var user = await _userService.GetDetails(GetActiveUserId());
+            if (user != null && !string.IsNullOrEmpty(user.Email))
+            {
+                viewModel.CurrentUserMail = user.Email;
+            }
 
             PageTitle = $"Site management - {site.Name}";
             return View(viewModel);
