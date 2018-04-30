@@ -119,6 +119,21 @@ namespace GRA.Domain.Service
             var sites = await _siteRepository.GetAllAsync();
             if (sites.Count() > 0)
             {
+                var adminRole = await _roleRepository.GetByIdAsync(1);
+                if (adminRole != null)
+                {
+                    if (adminRole.IsAdmin != true)
+                    {
+                        _logger.LogError("Role ID 1 is not set as IsAdmin, fixing.");
+                        adminRole.IsAdmin = true;
+                        await _roleRepository.UpdateSaveAsync(-1, adminRole);
+                    }
+                }
+                else
+                {
+                    _logger.LogError("Cannot find role ID 1 in order to ensure it is marked as IsAdmin");
+                }
+
                 var permissionList = Enum.GetValues(typeof(Permission))
                     .Cast<Permission>()
                     .Select(_ => _.ToString());
