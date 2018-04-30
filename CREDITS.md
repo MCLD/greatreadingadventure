@@ -63,6 +63,10 @@ The Great Reading Adventure uses open source components. You can find informatio
 - [Bogus](https://github.com/bchavez/Bogus): A simple and sane fake data generator for C#. Based on and ported from the famed faker.js.
 - Source on GitHub [bchavez/Bogus](https://github.com/bchavez/Bogus) - [MIT License](https://github.com/bchavez/Bogus/blob/master/LICENSE)
 
+### Bootstrap
+- A sleek, intuitive, and powerful mobile first front-end framework for faster and easier web development.
+- Source on GitHub [twbs/bootstrap](https://github.com/twbs/bootstrap/tree/v3.3.7) - [MIT License](https://github.com/twbs/bootstrap/blob/v3.3.7/LICENSE)
+
 ### Bootstrap-DatetimePicker
 - Date/time picker widget based on twitter bootstrap [Bootstrap-DatetimePicker](http://eonasdan.github.io/bootstrap-datetimepicker/)
 - Source on GitHub: [Eonasdan/bootstrap-datetimepicker](https://github.com/Eonasdan/bootstrap-datetimepicker) - [MIT License](https://github.com/Eonasdan/bootstrap-datetimepicker/blob/master/LICENSE)
@@ -95,13 +99,25 @@ The Great Reading Adventure uses open source components. You can find informatio
 - Lightweight and fast library written in C# for reading Microsoft Excel files.
 - Source on GitHub: [ExcelDataReader/ExcelDataReader](https://github.com/ExcelDataReader/ExcelDataReader) - [MIT License](https://github.com/ExcelDataReader/ExcelDataReader/blob/develop/LICENSE)
 
+### FontAwesome
+- Scalable vector icons that can instantly be customized — size, color, drop shadow, and anything that can be done with the power of CSS.
+- Source on GitHub: [FortAwesome/FontAwesome](https://github.com/FortAwesome/Font-Awesome/releases/tag/v4.7.0) - [SIL OFL and MIT Licenses](https://github.com/FortAwesome/Font-Awesome/tree/v4.7.0#license)
+
 ### ImageSharp
 - A cross-platform library for the processing of image files; written in C# [ImageSharp](https://sixlabors.com/projects/imagesharp/)
-- Source on Github: [SixLabors/ImageSharp](SixLabors/ImageSharp) - [Apache License, Version 2.0](https://github.com/SixLabors/ImageSharp/blob/master/LICENSE)
+- Source on GitHub: [SixLabors/ImageSharp](SixLabors/ImageSharp) - [Apache License, Version 2.0](https://github.com/SixLabors/ImageSharp/blob/master/LICENSE)
+
+### jQuery
+- A fast, small, and feature-rich JavaScript library
+- Source on GitHub: [jquery/jquery](https://github.com/jquery/jquery) - [MIT License](https://github.com/jquery/jquery/blob/master/LICENSE.txt)
 
 ### MailKit
 - A cross-platform .NET library for IMAP, POP3, and SMTP.
 - Source on GitHub: [jstedfast/MailKit](https://github.com/jstedfast/MailKit) - [MIT License](https://github.com/jstedfast/MailKit/blob/master/License.md)
+
+### Moment.js
+- Parse, validate, manipulate, and display dates and times in JavaScript.
+- Source on GitHub: [moment/moment](https://github.com/moment/moment/) - [MIT License](https://github.com/moment/moment/blob/develop/LICENSE)
 
 ### Newtonsoft.Json
 - [Json.NET](http://www.newtonsoft.com/json): A high-performance JSON framework for .NET.
@@ -122,7 +138,7 @@ The Great Reading Adventure uses open source components. You can find informatio
 
 ### Slick
 - Javascipt carousel [Slick](http://kenwheeler.github.io/slick/)
-- Source on Github: [kenwheeler/slick/](https://github.com/kenwheeler/slick/) - [MIT License](https://github.com/kenwheeler/slick/blob/master/LICENSE)
+- Source on GitHub: [kenwheeler/slick/](https://github.com/kenwheeler/slick/) - [MIT License](https://github.com/kenwheeler/slick/blob/master/LICENSE)
 
 ### Slugify.js
 - Javascript text replacement to slugify strings.

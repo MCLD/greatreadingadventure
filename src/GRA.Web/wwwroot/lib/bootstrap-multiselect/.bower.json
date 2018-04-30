@@ -1,8 +1,8 @@
 {
   "name": "bootstrap-multiselect",
   "description": "Twitter Bootstrap plugin to make selects user friendly.",
-  "homepage": "http://davidstutz.github.io/bootstrap-multiselect/",
-  "version": "0.9.13",
+  "homepage": "http://davidstutz.de/bootstrap-multiselect/",
+  "version": "0.9.15",
   "keywords": [
     "js",
     "css",
@@ -29,14 +29,13 @@
     "*.png",
     "*.php"
   ],
-  "_release": "0.9.13",
+  "_release": "0.9.15",
   "_resolution": {
     "type": "version",
-    "tag": "v0.9.13",
-    "commit": "6367ced04daafc054aeff51b2a903669eb0da214"
+    "tag": "v0.9.15",
+    "commit": "4749da211e6d39644ef164cd709cfeae5ccba579"
   },
   "_source": "https://github.com/davidstutz/bootstrap-multiselect.git",
-  "_target": "v0.9.13",
-  "_originalSource": "bootstrap-multiselect",
-  "_direct": true
+  "_target": "v0.9.15",
+  "_originalSource": "bootstrap-multiselect"
 }

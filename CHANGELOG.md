@@ -22,6 +22,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Changed
 - Updated package dependencies to latest compatible versions
 - Improve descriptions on Site Management pages
+- Updated front-end packages to latest compatible versions
 
 ### Fixed
 - Broken household URLs in Mission Control (leading spaces)
@@ -43,4 +44,3 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Everything! First release of 4.0.
 
 [4.0.0-beta1]: https://github.com/mcld/greatreadingadventure/tree/v4.0.0-beta1
-

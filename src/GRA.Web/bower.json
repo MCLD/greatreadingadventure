@@ -2,13 +2,16 @@
   "name": "asp.net",
   "private": true,
   "dependencies": {
-    "bootstrap": "3.3.6",
-    "jquery": "2.2.0",
-    "jquery-validation": "1.14.0",
-    "jquery-validation-unobtrusive": "3.2.6",
-    "font-awesome": "4.6.1",
-    "eonasdan-bootstrap-datetimepicker": "4.17.37",
-    "bootstrap-multiselect": "v0.9.13",
+    "bootstrap": "3.3.7",
+    "bootstrap-multiselect": "v0.9.15",
+    "commonmark": "0.28.1",
+    "eonasdan-bootstrap-datetimepicker": "4.17.47",
+    "font-awesome": "4.7.0",
+    "jquery": "2.2.4",
+    "jquery-validation": "1.17.0",
+    "jquery-validation-unobtrusive": "3.2.9",
+    "moment": "2.22.1",
+    "moment-timezone": "0.5.16",
     "slick-carousel": "v1.8.1"
   }
 }
