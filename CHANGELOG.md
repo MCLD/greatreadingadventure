@@ -34,6 +34,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### Removed
 - Comments from appsettings.json, see the [manual](http://manual.greatreadingadventure.com/en/latest/technical/appsettings/) for more information
+- Activity earned from at a glance report
 
 ## [4.0.0-beta1] - 2018-04-13
 ### Added

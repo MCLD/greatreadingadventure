@@ -25,15 +25,6 @@
             @Model.SiteStatus.BadgesEarned.ToString("N0") badges
         </div>
     </div>
-    @foreach (var item in Model.SiteStatus.ActivityEarnings)
-    {
-        <div class="col-sm-2">
-            <div class="ataglance-pill ataglance-pill-steelblue">
-                <span class="fa fa-book fa-2x"></span><br />
-                @item.Value.ToString("N0") @item.Key
-            </div>
-        </div>
-    }
     @if (Model.SiteStatus.DaysUntilEnd != null)
     {
         <div class="col-sm-2">
