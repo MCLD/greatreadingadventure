@@ -38,5 +38,11 @@
     "inputFiles": [
       "wwwroot/js/slick-avatar.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/bootstrap-multiselect/dist/js/bootstrap-multiselect.min.js",
+    "inputFiles": [
+      "wwwroot/lib/bootstrap-multiselect/dist/js/bootstrap-multiselect.js"
+    ]
   }
 ]

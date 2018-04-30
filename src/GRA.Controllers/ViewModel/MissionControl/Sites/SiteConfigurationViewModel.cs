@@ -35,5 +35,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.Sites
         public string OutgoingMailLogin { get; set; }
         [DisplayName("Outgoing Mail Password")]
         public string OutgoingMailPassword { get; set; }
+        public string CurrentUserMail { get; set; }
     }
 }

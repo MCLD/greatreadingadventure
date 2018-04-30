@@ -18,6 +18,8 @@
     <PackageProjectUrl>http://www.greatreadingadventure.com/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/mcld/greatreadingadventure/</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
   </PropertyGroup>
 
   <ItemGroup>
