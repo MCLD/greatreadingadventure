@@ -109,6 +109,15 @@
     </div>
 
     <div class="form-group">
+        <label>Send test email to:</label>
+        <input id="emailAddress" class="form-control" style="display:unset; width:300px;" />
+        <button id="sendTest" type="button" class="btn btn-default">
+            Send
+            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+        </button>
+    </div>
+
+    <div class="form-group">
         <a asp-action="Index" class="btn btn-default">Return to List</a>
         <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-primary btn-spinner">
             <span class="buttonText">Save</span>
@@ -116,3 +125,29 @@
         </button>
     </div>
 </form>
+
+@section scripts {
+    <script>
+        $("#sendTest").on("click", function () {
+            var emailAddress = $("#emailAddress").val();
+            if (emailAddress == "") {
+                alert("Pleas enter an email address");
+                return;
+            }
+            var button = $(this);
+            button.attr("disabled", "disabled");
+            button.children("span").removeClass("hidden");
+            var url = "@Url.Action("SendTestEmail")";
+            $.post(url, { emailAddress: emailAddress }, function (response) {
+                button.removeAttr("disabled", "disabled");
+                button.children("span").addClass("hidden");
+                if (response.success) {
+                    alert("Email successfully sent!");
+                }
+                else {
+                    alert("Error sending email: " + response.message);
+                }
+            });
+        })
+    </script>
+}
