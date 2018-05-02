@@ -11,14 +11,10 @@ namespace GRA.Data
     public abstract class Context : DbContext
     {
         protected readonly string devConnectionString;
-        protected readonly IConfigurationRoot config;
+        protected readonly IConfigurationRoot _config;
         public Context(IConfigurationRoot config)
         {
-            if (config == null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-            this.config = config;
+            _config = config ?? throw new ArgumentNullException(nameof(config));
             devConnectionString = null;
         }
         protected internal Context(string connectionString)
@@ -110,9 +106,19 @@ namespace GRA.Data
             Database.Migrate();
         }
 
+        public IEnumerable<string> GetPendingMigrations()
+        {
+            return Database.GetPendingMigrations();
+        }
+
         public async Task MigrateAsync()
         {
             await Database.MigrateAsync();
+        }
+
+        public async Task<IEnumerable<string>> GetPendingMigrationsAsync()
+        {
+            return await Database.GetPendingMigrationsAsync();
         }
 
         public async Task<IEnumerable<string>> GetMigrationsListAsync()

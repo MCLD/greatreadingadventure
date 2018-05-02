@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -364,7 +365,19 @@ namespace GRA.Web
                 app.UseStatusCodePagesWithReExecute("/Error/Index", "?statusCode={0}");
             }
 
-            app.ApplicationServices.GetService<Data.Context>().Migrate();
+            var dbContext = app.ApplicationServices.GetService<Data.Context>();
+            try
+            {
+                var pending = dbContext.GetPendingMigrations();
+                if(pending != null && pending.Count() > 0)
+                {
+                    Log.Logger.Warning($"Applying {pending.Count()} database migrations, last is: {pending.Last()}");
+                }
+            } catch (Exception ex)
+            {
+                Log.Logger.Error($"Error looking up migrations to perform: {ex.Message}");
+            }
+            dbContext.Migrate();
             Task.Run(() => siteLookupService.GetDefaultSiteIdAsync()).Wait();
             Task.Run(() => roleService.SyncPermissionsAsync()).Wait();
 
