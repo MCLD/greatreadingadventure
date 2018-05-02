@@ -1061,14 +1061,21 @@ namespace GRA.Controllers
             return View(model);
         }
 
-        public IActionResult AuthorizationCode()
+        public async Task<IActionResult> AuthorizationCode()
         {
             if (TempData.ContainsKey(AuthCodeAttempts) && (int)TempData.Peek(AuthCodeAttempts) >= 5)
             {
-                ShowAlertDanger("Too many failed authorization attemps.");
+                ShowAlertDanger("Too many failed authorization attempts.");
                 return RedirectToAction(nameof(HomeController.Index), nameof(HomeController));
             }
-            return View();
+            var site = await GetCurrentSiteAsync();
+            string siteLogoUrl = site.SiteLogoUrl
+                ?? Url.Content(Defaults.SiteLogoPath);
+
+            return View(new AuthorizationCodeViewModel
+            {
+                SiteLogoUrl = siteLogoUrl
+            });
         }
 
         [HttpPost]
@@ -1104,7 +1111,7 @@ namespace GRA.Controllers
 
             if (TempData.ContainsKey(AuthCodeAttempts) && (int)TempData.Peek(AuthCodeAttempts) >= 5)
             {
-                ShowAlertDanger("Too many failed authorization attemps.");
+                ShowAlertDanger("Too many failed authorization attempts.");
                 return RedirectToAction(nameof(HomeController.Index), nameof(HomeController));
             }
             ShowAlertDanger("Invalid authorization code.");

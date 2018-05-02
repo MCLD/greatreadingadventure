@@ -73,29 +73,29 @@ namespace GRA.Domain.Model
         [DisplayName("From Email Address")]
         public string FromEmailAddress { get; set; }
 
-        [DisplayName("Site Logo Url")]
-        [MaxLength(100)]
+        [DisplayName("Site Logo URL")]
+        [MaxLength(255)]
         public string SiteLogoUrl { get; set; }
-        [DisplayName("Facebook App Id")]
+        [DisplayName("Facebook App ID")]
         [MaxLength(100)]
         public string FacebookAppId { get; set; }
-        [DisplayName("Facebook Image Url")]
-        [MaxLength(100)]
+        [DisplayName("Facebook/Open Graph Image URL")]
+        [MaxLength(255)]
         public string FacebookImageUrl { get; set; }
         [DisplayName("Twitter Large Card")]
         public bool? TwitterLargeCard { get; set; }
-        [DisplayName("Twitter Card ImageUrl")]
-        [MaxLength(100)]
+        [DisplayName("Twitter Card Image URL")]
+        [MaxLength(255)]
         public string TwitterCardImageUrl { get; set; }
         [DisplayName("Twitter Username")]
         [MaxLength(15)]
         public string TwitterUsername { get; set; }
-        [DisplayName("Is Https Forced")]
+        [DisplayName("Is HTTPS Forced")]
         public bool IsHttpsForced { get; set; }
         [DisplayName("Twitter Avatar Message")]
         [MaxLength(255)]
         public string TwitterAvatarMessage { get; set; }
-        [DisplayName("Twitter Avatar Hashtags")]
+        [DisplayName("Twitter Avatar Hashtag")]
         [MaxLength(100)]
         public string TwitterAvatarHashtags { get; set; }
         [DisplayName("Avatar Card Description")]

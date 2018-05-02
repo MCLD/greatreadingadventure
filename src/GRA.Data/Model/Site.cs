@@ -52,14 +52,14 @@ namespace GRA.Data.Model
         public string FromEmailName { get; set; }
         public string FromEmailAddress { get; set; }
 
-        [MaxLength(100)]
+        [MaxLength(255)]
         public string SiteLogoUrl { get; set; }
         [MaxLength(100)]
         public string FacebookAppId { get; set; }
-        [MaxLength(100)]
+        [MaxLength(255)]
         public string FacebookImageUrl { get; set; }
         public bool? TwitterLargeCard { get; set; }
-        [MaxLength(100)]
+        [MaxLength(255)]
         public string TwitterCardImageUrl { get; set; }
         [MaxLength(15)]
         public string TwitterUsername { get; set; }
