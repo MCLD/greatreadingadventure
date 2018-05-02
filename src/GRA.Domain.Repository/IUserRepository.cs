@@ -27,5 +27,6 @@ namespace GRA.Domain.Repository
         Task<List<int>> GetUserIdsByBranchProgram(ReportCriterion criterion);
         Task<int> GetAchieverCountAsync(ReportCriterion request);
         Task<IEnumerable<User>> GetTopScoresAsync(ReportCriterion criterion, int scoresToReturn);
+        Task<IEnumerable<User>> GetUsersByCriterionAsync(ReportCriterion criterion);
     }
 }
