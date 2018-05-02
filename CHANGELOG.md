@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - User-friendly page to display page not found (404) errors
 - Ability to send test emails from Mission Control
 - Token {Link} in vendor code mails
+- Vendor code donations report
 
 ### Changed
 - Updated package dependencies to latest compatible versions
