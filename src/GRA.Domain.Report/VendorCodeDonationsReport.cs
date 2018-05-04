@@ -11,26 +11,34 @@ using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Report
 {
-    [ReportInformation(13,
-        "Vendor Code Report",
-        "Vendor prizes earned and ordered by partcipants filterable by system.",
+    [ReportInformation(15,
+        "Vendor Code Donations Report",
+        "Vendor prizes by program filterable by system.",
         "Participants")]
-    public class VendorCodeReport : BaseReport
+    public class VendorCodeDonationsReport : BaseReport
     {
         private readonly IBranchRepository _branchRepository;
+        private readonly IProgramRepository _programRepository;
         private readonly ISystemRepository _systemRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IVendorCodeRepository _vendorCodeRepository;
 
-        public VendorCodeReport(ILogger<TopScoresReport> logger,
+        public VendorCodeDonationsReport(ILogger<VendorCodeDonationsReport> logger,
             Domain.Report.ServiceFacade.Report serviceFacade,
             IBranchRepository branchRepository,
+            IProgramRepository programRepository,
             ISystemRepository systemRepository,
+            IUserRepository userRepository,
             IVendorCodeRepository vendorCodeRepository) : base(logger, serviceFacade)
         {
             _branchRepository = branchRepository
                 ?? throw new ArgumentException(nameof(branchRepository));
+            _programRepository = programRepository
+                ?? throw new ArgumentNullException(nameof(programRepository));
             _systemRepository = systemRepository
                 ?? throw new ArgumentException(nameof(systemRepository));
+            _userRepository = userRepository
+                ?? throw new ArgumentNullException(nameof(userRepository));
             _vendorCodeRepository = vendorCodeRepository
                 ?? throw new ArgumentException(nameof(vendorCodeRepository));
         }
@@ -76,77 +84,90 @@ namespace GRA.Domain.Report
 
             // header row
             report.HeaderRow = new object[] {
-                "System Name",
-                "Branch Name",
-                "# Redeemed",
-                "# Ordered"
+                criterion.SystemId.HasValue ? "System Name" : "Branch Name"
             };
+
+            var programs = await _programRepository.GetAllAsync(criterion.SiteId.Value);
+            foreach (var program in programs)
+            {
+                report.HeaderRow = report.HeaderRow.Append(program.Name);
+            }
+
+            report.HeaderRow = report.HeaderRow.Append("Total");
 
             int count = 0;
 
-            // running totals
-            int totalEarned = 0;
-            int totalOrdered = 0;
+            var users = await _userRepository.GetUsersByCriterionAsync(criterion);
 
-            var branches = criterion.SystemId != null
-                ? await _branchRepository.GetBySystemAsync((int)criterion.SystemId)
-                : await _branchRepository.GetAllAsync((int)criterion.SiteId);
-
-            var systemIds = branches
-                .OrderBy(_ => _.SystemName)
-                .GroupBy(_ => _.SystemId)
-                .Select(_ => _.First().SystemId);
-
-            foreach (var systemId in systemIds)
+            if (criterion.SystemId.HasValue)
             {
-                if (token.IsCancellationRequested)
+                users = users.Where(_ => _.SystemId == criterion.SystemId);
+                var branches = await _branchRepository.GetBySystemAsync(criterion.SystemId.Value);
+                foreach (var branch in branches)
                 {
-                    break;
-                }
+                    if (token.IsCancellationRequested)
+                    {
+                        break;
+                    }
 
-                foreach (var branch in branches.Where(_ => _.SystemId == systemId))
-                {
                     UpdateProgress(progress,
                         ++count * 100 / branches.Count(),
                         $"Processing: {branch.SystemName} - {branch.Name}",
                         request.Name);
 
-                    criterion.SystemId = systemId;
-                    criterion.BranchId = branch.Id;
-
-                    var vendorCodes = await _vendorCodeRepository.GetEarnedCodesAsync(criterion);
-                    int earnedCodes = vendorCodes.Count;
-                    int usedCodes = vendorCodes.Where(_ => _.IsUsed).Count();
-
-                    totalEarned += earnedCodes;
-                    totalOrdered += usedCodes;
-
-                    var row = new List<object>() {
-                        branch.SystemName,
-                        branch.Name,
-                        earnedCodes,
-                        usedCodes
+                    var branchUsers = users.Where(_ => _.BranchId == branch.Id);
+                    IEnumerable<object> row = new object[]
+                    {
+                        branch.Name
                     };
-
+                    foreach (var program in programs)
+                    {
+                        row = row.Append(branchUsers.Where(_ => _.ProgramId == program.Id).Count());
+                    }
+                    row = row.Append(branchUsers.Count());
                     reportData.Add(row.ToArray());
-
+                }
+            }
+            else
+            {
+                var systems = await _systemRepository.GetAllAsync(criterion.SiteId.Value);
+                foreach (var system in systems)
+                {
                     if (token.IsCancellationRequested)
                     {
                         break;
                     }
+
+                    UpdateProgress(progress,
+                        ++count * 100 / systems.Count(),
+                        $"Processing: {system.Name}",
+                        request.Name);
+
+                    var systemUsers = users.Where(_ => _.SystemId == system.Id);
+                    IEnumerable<object> row = new object[]
+                    {
+                        system.Name
+                    };
+                    foreach (var program in programs)
+                    {
+                        row = row.Append(systemUsers.Where(_ => _.ProgramId == program.Id).Count());
+                    }
+                    row = row.Append(systemUsers.Count());
+                    reportData.Add(row.ToArray());
                 }
             }
 
             report.Data = reportData.ToArray();
 
-            // total row
-            var footerRow = new List<object>()
+            IEnumerable<object> footerRow = new object[]
             {
-                "Total",
-                string.Empty,
-                totalEarned,
-                totalOrdered
+                "Total"
             };
+            foreach (var program in programs)
+            {
+                footerRow = footerRow.Append(users.Where(_ => _.ProgramId == program.Id).Count());
+            }
+            footerRow = footerRow.Append(users.Count());
 
             report.FooterRow = footerRow.ToArray();
 

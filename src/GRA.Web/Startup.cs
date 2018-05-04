@@ -268,6 +268,7 @@ namespace GRA.Web
             services.AddScoped<Domain.Report.ParticipantProgressReport>();
             services.AddScoped<Domain.Report.PrizeRedemptionReport>();
             services.AddScoped<Domain.Report.TopScoresReport>();
+            services.AddScoped<Domain.Report.VendorCodeDonationsReport>();
             services.AddScoped<Domain.Report.VendorCodeReport>();
 
             // service resolution

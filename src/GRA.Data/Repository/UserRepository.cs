@@ -286,9 +286,20 @@ namespace GRA.Data.Repository
                 userList = userList.Where(_ => _.CreatedAt <= criterion.EndDate);
             }
 
-            if(criterion.SchoolId != null)
+            if (criterion.SchoolId != null)
             {
                 userList = userList.Where(_ => _.SchoolId == criterion.SchoolId);
+            }
+
+            if (criterion.VendorCodeTypeId != null)
+            {
+                userList = userList.Join(_context.VendorCodes,
+                    u => u.Id,
+                    v => v.UserId,
+                    (u, v) => new { u, v })
+                    .Where(_ => _.v.VendorCodeTypeId == criterion.VendorCodeTypeId.Value
+                        && _.v.IsDonated == true)
+                    .Select(_ => _.u);
             }
 
             return userList;
@@ -416,6 +427,13 @@ namespace GRA.Data.Repository
             return await ApplyUserFilter(criterion)
                 .OrderByDescending(_ => _.PointsEarned)
                 .Take(scoresToReturn)
+                .ProjectTo<User>()
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<User>> GetUsersByCriterionAsync(ReportCriterion criterion)
+        {
+            return await ApplyUserFilter(criterion)
                 .ProjectTo<User>()
                 .ToListAsync();
         }
