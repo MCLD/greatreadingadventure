@@ -37,12 +37,14 @@
     <Content Remove="wwwroot\js\jquery-ui-1.12.1.custom\jquery-ui.css" />
     <Content Remove="wwwroot\js\jquery-ui-1.12.1.custom\jquery-ui.js" />
     <Content Remove="wwwroot\js\jquery-ui-1.12.1.custom\jquery-ui.structure.css" />
+    <Content Remove="wwwroot\js\jquery-ui-1.12.1.custom\jquery-ui.structure.min.css" />
     <Content Remove="wwwroot\js\jquery-ui-1.12.1.custom\jquery-ui.theme.css" />
+    <Content Remove="wwwroot\js\jquery-ui-1.12.1.custom\jquery-ui.theme.min.css" />
     <Content Remove="wwwroot\js\jquery-ui-1.12.1.custom\LICENSE.txt" />
     <Content Remove="wwwroot\js\jquery-ui-1.12.1.custom\package.json" />
     <Content Remove="wwwroot\js\slick-avatar.js" />
     <Content Remove="wwwroot\js\WMD.js" />
-    <Content Remove="wwwroot/lib/**/*" />
+    <Content Remove="wwwroot\lib\**\*" />
   </ItemGroup>
 
   <ItemGroup>
@@ -118,12 +120,14 @@
     <None Include="wwwroot\js\jquery-ui-1.12.1.custom\jquery-ui.css" />
     <None Include="wwwroot\js\jquery-ui-1.12.1.custom\jquery-ui.js" />
     <None Include="wwwroot\js\jquery-ui-1.12.1.custom\jquery-ui.structure.css" />
+    <None Include="wwwroot\js\jquery-ui-1.12.1.custom\jquery-ui.structure.min.css" />
     <None Include="wwwroot\js\jquery-ui-1.12.1.custom\jquery-ui.theme.css" />
+    <None Include="wwwroot\js\jquery-ui-1.12.1.custom\jquery-ui.theme.min.css" />
     <None Include="wwwroot\js\jquery-ui-1.12.1.custom\LICENSE.txt" />
     <None Include="wwwroot\js\jquery-ui-1.12.1.custom\package.json" />
     <None Include="wwwroot\js\slick-avatar.js" />
     <None Include="wwwroot\js\WMD.js" />
-    <None Include="wwwroot/lib/**/*" />
+    <None Include="wwwroot\lib\**\*" />
   </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
