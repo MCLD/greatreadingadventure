@@ -23,6 +23,29 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="bower.json" />
+    <Content Remove="bundleconfig.json" />
+    <Content Remove="wwwroot\css\gra.css" />
+    <Content Remove="wwwroot\css\missioncontrol.css" />
+    <Content Remove="wwwroot\css\WMD.css" />
+    <Content Remove="wwwroot\js\gra.js" />
+    <Content Remove="wwwroot\js\jquery-ui-1.12.1.custom\AUTHORS.txt" />
+    <Content Remove="wwwroot\js\jquery-ui-1.12.1.custom\Components.txt" />
+    <Content Remove="wwwroot\js\jquery-ui-1.12.1.custom\external\**\*" />
+    <Content Remove="wwwroot\js\jquery-ui-1.12.1.custom\images\**\*" />
+    <Content Remove="wwwroot\js\jquery-ui-1.12.1.custom\index.html" />
+    <Content Remove="wwwroot\js\jquery-ui-1.12.1.custom\jquery-ui.css" />
+    <Content Remove="wwwroot\js\jquery-ui-1.12.1.custom\jquery-ui.js" />
+    <Content Remove="wwwroot\js\jquery-ui-1.12.1.custom\jquery-ui.structure.css" />
+    <Content Remove="wwwroot\js\jquery-ui-1.12.1.custom\jquery-ui.theme.css" />
+    <Content Remove="wwwroot\js\jquery-ui-1.12.1.custom\LICENSE.txt" />
+    <Content Remove="wwwroot\js\jquery-ui-1.12.1.custom\package.json" />
+    <Content Remove="wwwroot\js\slick-avatar.js" />
+    <Content Remove="wwwroot\js\WMD.js" />
+    <Content Remove="wwwroot/lib/**/*" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Update="wwwroot\**\*;assets\**\*;**\*.cshtml;appsettings.json;web.config">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
@@ -40,6 +63,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="2.0.1" />
+    <PackageReference Include="BuildBundlerMinifier" Version="2.7.385" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="1.*" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.*" />
     <PackageReference Include="Microsoft.AspNetCore.Routing" Version="1.*" />
@@ -77,6 +101,29 @@
     <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="1.*" />
     <DotNetCliToolReference Include="Microsoft.Extensions.Caching.SqlConfig.Tools" Version="1.*" />
     <DotNetCliToolReference Include="BundlerMinifier.Core" Version="2.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bower.json" />
+    <None Include="bundleconfig.json" />
+    <None Include="wwwroot\css\gra.css" />
+    <None Include="wwwroot\css\missioncontrol.css" />
+    <None Include="wwwroot\css\WMD.css" />
+    <None Include="wwwroot\js\gra.js" />
+    <None Include="wwwroot\js\jquery-ui-1.12.1.custom\AUTHORS.txt" />
+    <None Include="wwwroot\js\jquery-ui-1.12.1.custom\Components.txt" />
+    <None Include="wwwroot\js\jquery-ui-1.12.1.custom\external\**\*" />
+    <None Include="wwwroot\js\jquery-ui-1.12.1.custom\images\**\*" />
+    <None Include="wwwroot\js\jquery-ui-1.12.1.custom\index.html" />
+    <None Include="wwwroot\js\jquery-ui-1.12.1.custom\jquery-ui.css" />
+    <None Include="wwwroot\js\jquery-ui-1.12.1.custom\jquery-ui.js" />
+    <None Include="wwwroot\js\jquery-ui-1.12.1.custom\jquery-ui.structure.css" />
+    <None Include="wwwroot\js\jquery-ui-1.12.1.custom\jquery-ui.theme.css" />
+    <None Include="wwwroot\js\jquery-ui-1.12.1.custom\LICENSE.txt" />
+    <None Include="wwwroot\js\jquery-ui-1.12.1.custom\package.json" />
+    <None Include="wwwroot\js\slick-avatar.js" />
+    <None Include="wwwroot\js\WMD.js" />
+    <None Include="wwwroot/lib/**/*" />
   </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">

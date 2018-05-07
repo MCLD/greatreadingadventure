@@ -2,7 +2,7 @@
 @using GRA.Domain.Model
 
 @section styles {
-    <link rel="stylesheet" href="~/css/WMD.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/markdown.min.css" asp-append-version="true" />
     <style>
         textarea#wmd-input {
             height: 200px !important;
@@ -604,8 +604,7 @@
 @section scripts {
     @if (Model.AddTask || Model.Task != null)
     {
-        <script src="~/lib/commonmark/dist/commonmark.min.js" asp-append-version="true"></script>
-        <script src="~/js/WMD.min.js" asp-append-version="true"></script>
+        <script src="~/js/markdown.min.js" asp-append-version="true"></script>
     }
 
     <script>
