@@ -1081,6 +1081,7 @@ namespace GRA.Controllers
         [HttpPost]
         public async Task<IActionResult> AuthorizationCode(AuthorizationCodeViewModel model)
         {
+            var site = await GetCurrentSiteAsync();
             if (!TempData.ContainsKey(AuthCodeAttempts) || (int)TempData.Peek(AuthCodeAttempts) < 5)
             {
                 var sanitized = _codeSanitizer.Sanitize(model.AuthorizationCode, 255);
@@ -1089,7 +1090,7 @@ namespace GRA.Controllers
                     TempData.Remove(AuthCodeAttempts);
                     TempData[EnteredAuthCode] = model.AuthorizationCode;
                     ShowAlertInfo("Authorization code accepted.");
-                    var site = await GetCurrentSiteAsync();
+                    
                     if (site.SinglePageSignUp)
                     {
                         return RedirectToAction(nameof(Index));
@@ -1115,7 +1116,14 @@ namespace GRA.Controllers
                 return RedirectToAction(nameof(HomeController.Index), nameof(HomeController));
             }
             ShowAlertDanger("Invalid authorization code.");
-            return View();
+
+            var siteLogoUrl = site.SiteLogoUrl
+                ?? Url.Content(Defaults.SiteLogoPath);
+
+            return View(new AuthorizationCodeViewModel
+            {
+                SiteLogoUrl = siteLogoUrl
+            });
         }
     }
 }
