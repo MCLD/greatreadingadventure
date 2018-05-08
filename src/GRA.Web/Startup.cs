@@ -19,6 +19,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using Serilog.Filters;
 
 namespace GRA.Web
 {
@@ -76,13 +77,34 @@ namespace GRA.Web
                     path = path + "/";
                 }
 
+                string httpPath = Configuration[ConfigurationKey.RollingLogHttp];
                 string rollingFilename = path + instance + "-{Date}.txt";
 
-                Log.Logger = new LoggerConfiguration()
-                    .ReadFrom.Configuration(Configuration)
-                    .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Error)
-                    .WriteTo.RollingFile(rollingFilename)
-                    .CreateLogger();
+                if (!string.IsNullOrEmpty(httpPath))
+                {
+                    string rollingHttpFilename = path + instance + "-" + httpPath + "-{Date}.txt";
+
+                    Log.Logger = new LoggerConfiguration()
+                        .ReadFrom.Configuration(Configuration)
+                        .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Error)
+                        .WriteTo.Logger(_ => _
+                            .Filter.ByExcluding(Matching.FromSource("GRA.Controllers.ErrorController"))
+                            .WriteTo.RollingFile(rollingFilename))
+                        .WriteTo.Logger(_ => _
+                            .Filter.ByIncludingOnly(Matching.FromSource("GRA.Controllers.ErrorController"))
+                            .WriteTo.RollingFile(rollingHttpFilename))
+                        .CreateLogger();
+                }
+                else
+                {
+                    Log.Logger = new LoggerConfiguration()
+                        .ReadFrom.Configuration(Configuration)
+                        .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Error)
+                        .WriteTo.Logger(_ => _
+                            .Filter.ByExcluding(Matching.FromSource("GRA.Controllers.ErrorController"))
+                            .WriteTo.RollingFile(rollingFilename))
+                        .CreateLogger();
+                }
             }
             else
             {
@@ -363,18 +385,19 @@ namespace GRA.Web
             }
             else
             {
-                app.UseStatusCodePagesWithReExecute("/Error/Index", "?statusCode={0}");
+                app.UseStatusCodePagesWithReExecute("/Error/Index/{0}");
             }
 
             var dbContext = app.ApplicationServices.GetService<Data.Context>();
             try
             {
                 var pending = dbContext.GetPendingMigrations();
-                if(pending != null && pending.Count() > 0)
+                if (pending != null && pending.Count() > 0)
                 {
                     Log.Logger.Warning($"Applying {pending.Count()} database migrations, last is: {pending.Last()}");
                 }
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Log.Logger.Error($"Error looking up migrations to perform: {ex.Message}");
             }
