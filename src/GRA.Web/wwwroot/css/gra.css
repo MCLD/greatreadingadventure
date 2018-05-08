@@ -690,11 +690,6 @@ p.password-note {
         height: 250px;
         width: 150px;
     }
-
-    .avatar-share-image {
-        left: -250px;
-        max-width: 200%;
-    }
 }
 
 @media only screen and (min-width : 992px) {
@@ -717,10 +712,6 @@ p.password-note {
         height: 350px;
         width: 210px;
     }
-
-    .avatar-share-image {
-        max-width: 175%;
-    }
 }
 
 @media only screen and (min-width : 1200px) {
@@ -737,10 +728,6 @@ p.password-note {
     .avatar-layer-dashboard {
         height: 425px;
         width: 255px;
-    }
-
-    .avatar-share-image {
-        max-width: 150%;
     }
 }
 

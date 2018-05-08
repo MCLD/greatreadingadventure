@@ -1,19 +1,27 @@
 ﻿@model GRA.Controllers.ViewModel.Share.ShareAvatarViewModel
 
 @section metadata {
-    <grasite property="twittermetadata" cardDescription="@Model.CardDescription" imageUrl="@Model.ImageUrl" twitterLargeCardOverride="true"></grasite>
-    <grasite property="facebookmetadata" cardDescription="@Model.CardDescription" imageUrl="@Model.ImageUrl" pageUrl="@Model.PageUrl"></grasite>
+    <grasite property="twittermetadata"
+             cardDescription="@Model.CardDescription"
+             imageUrl="@Model.ImageUrl"
+             twitterLargeCardOverride="true"></grasite>
+    <grasite property="facebookmetadata"
+             cardDescription="@Model.CardDescription"
+             imageUrl="@Model.ImageUrl"
+             pageUrl="@Model.PageUrl"></grasite>
+    <grasite property="avatarmetadata"></grasite>
 }
 
-<div class="row">
-    <div class="col-sm-6 pull-right" style="overflow: hidden;">
-        <img src="@Model.ImageUrl" class="avatar-share-image" />
+<div class="row row-spacing">
+    <div class="col-xs-12">
+        <a asp-controller="Join" asp-action="Index"><img src="@Model.ImageUrl" class="img-responsive" /></a>
     </div>
-    <div class="col-sm-6" style="font-size: x-large; margin-top: 2em; text-align: center;">
-        <div style="margin-bottom:1em;">
-            Join now to create your own awesome avatar!
-        </div>
-        <a asp-controller="Join" asp-action="Index" class="btn btn-lg btn-primary" style="width: 50%;">
+    <div class="col-xs-12" style="text-align: center;">
+        <div class="h4 visible-xs" style="margin-bottom: 1.5rem; margin-top: 1.5rem;">Join now to create your own awesome avatar!</div>
+        <div class="h2 hidden-xs" style="margin-bottom: 2rem;">Join now to create your own awesome avatar!</div>
+    </div>
+    <div class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3" style="margin-bottom: 2rem;">
+        <a asp-controller="Join" asp-action="Index" class="btn btn-lg btn-block btn-primary">
             <span class="fa fa-book"></span>
             Join!
         </a>
