@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -14,12 +15,22 @@ namespace GRA.Controllers
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public IActionResult Index(int statusCode)
+        public IActionResult Index(int id)
         {
-            if (statusCode == 404)
+            string originalPath = "unknown";
+            var statusFeature = HttpContext.Features.Get<IStatusCodeReExecuteFeature>();
+            if (statusFeature != null)
             {
+                originalPath = statusFeature.OriginalPath;
+            }
+            string currentUser = UserClaim(ClaimType.UserId);
+
+            if (id == 404)
+            {
+                _logger.LogError($"HTTP Error {id}: path={originalPath},site={GetCurrentSiteId()},currentUser={currentUser}");
                 return View("404");
             }
+            _logger.LogCritical($"HTTP Error {id}: path={originalPath},site={GetCurrentSiteId()},currentUser={currentUser}");
             return View("Error");
         }
     }
