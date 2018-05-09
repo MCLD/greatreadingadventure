@@ -266,6 +266,16 @@ namespace GRA.Controllers.MissionControl
                 viewModel.ShowSchool = program.AskSchool;
             }
 
+            if (districtList.Count() == 1)
+            {
+                viewModel.SchoolDistrictId = districtList.SingleOrDefault().Id;
+                var typeList = await _schoolService.GetTypesAsync(viewModel.SchoolDistrictId);
+                viewModel.SchoolTypeList = new SelectList(typeList.ToList(), "Id", "Name");
+                var schoolList = await _schoolService.GetSchoolsAsync(viewModel.SchoolDistrictId,
+                    viewModel.SchoolTypeId);
+                viewModel.SchoolList = new SelectList(schoolList.ToList(), "Id", "Name");
+            }
+
             return View(viewModel);
         }
 
@@ -307,6 +317,12 @@ namespace GRA.Controllers.MissionControl
                 if (program.AgeRequired && !model.Age.HasValue)
                 {
                     ModelState.AddModelError("Age", "The Age field is required.");
+                }
+                if (program.SchoolRequired && !model.SchoolId.HasValue
+                    && !model.SchoolDistrictId.HasValue && !model.SchoolNotListed
+                    && !model.IsHomeschooled)
+                {
+                    ModelState.AddModelError("SchoolDistrictId", "The School District field is required.");
                 }
                 if (program.SchoolRequired && !model.SchoolId.HasValue && !model.SchoolNotListed
                     && !model.IsHomeschooled)
@@ -1258,6 +1274,16 @@ namespace GRA.Controllers.MissionControl
                     viewModel.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
                 }
 
+                if (districtList.Count() == 1)
+                {
+                    viewModel.SchoolDistrictId = districtList.SingleOrDefault().Id;
+                    var typeList = await _schoolService.GetTypesAsync(viewModel.SchoolDistrictId);
+                    viewModel.SchoolTypeList = new SelectList(typeList.ToList(), "Id", "Name");
+                    var schoolList = await _schoolService.GetSchoolsAsync(viewModel.SchoolDistrictId,
+                        viewModel.SchoolTypeId);
+                    viewModel.SchoolList = new SelectList(schoolList.ToList(), "Id", "Name");
+                }
+
                 return View("HouseholdAdd", viewModel);
             }
             catch (GraException gex)
@@ -1303,6 +1329,12 @@ namespace GRA.Controllers.MissionControl
                 if (program.AgeRequired && !model.User.Age.HasValue)
                 {
                     ModelState.AddModelError("User.Age", "The Age field is required.");
+                }
+                if (program.SchoolRequired && !model.SchoolId.HasValue
+                    && !model.SchoolDistrictId.HasValue && !model.SchoolNotListed
+                    && !model.IsHomeschooled)
+                {
+                    ModelState.AddModelError("SchoolDistrictId", "The School District field is required.");
                 }
                 if (program.SchoolRequired && !model.SchoolId.HasValue && !model.SchoolNotListed
                     && !model.IsHomeschooled)
