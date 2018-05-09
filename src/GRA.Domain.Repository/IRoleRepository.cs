@@ -19,5 +19,6 @@ namespace GRA.Domain.Repository
         Task<IEnumerable<string>> GetPermissionNamesForRoleAsync(int roleId);
         Task<bool> ListContainsAdminRoleAsync(IEnumerable<int> roleIds);
         Task<int> GetUsersWithAdminRoleCountAsync();
+        Task<bool> HasInvalidRolesAsync(IEnumerable<int> roleIds);
     }
 }

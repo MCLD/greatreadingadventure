@@ -69,7 +69,6 @@ namespace GRA.Data.Repository
 
             await _context.UserRoles.AddRangeAsync(addRoles);
             _context.UserRoles.RemoveRange(removeRoles);
-            await _context.SaveChangesAsync();
         }
 
         public async Task SetUserPasswordAsync(int currentUserId, int userId, string password)
