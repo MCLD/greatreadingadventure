@@ -26,7 +26,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Improve descriptions on Site Management pages
 - Updated front-end packages to latest compatible versions
 - Display event title as hyperlink rather than URL
-- Improve school district selection during registration
+- Automatically select school district during registration if there's only one
 
 ### Fixed
 - Broken household URLs in Mission Control (leading spaces)
