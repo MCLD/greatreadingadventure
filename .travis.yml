@@ -15,5 +15,5 @@ install:
   - docker info
 
 script:
-  - docker build -t gra4 .
+  - docker build -t gra .
 
