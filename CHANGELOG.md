@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Ability to send test emails from Mission Control
 - Token {Link} in vendor code mails
 - Vendor code donations report
+- Default culture so as to not show 24-hour time in event details
 
 ### Changed
 - Updated package dependencies to latest compatible versions
