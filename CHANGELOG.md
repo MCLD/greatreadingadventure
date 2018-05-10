@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Ability to send test emails from Mission Control
 - Token {Link} in vendor code mails
 - Vendor code donations report
+- Default culture so as to not show 24-hour time in event details
 
 ### Changed
 - Updated package dependencies to latest compatible versions
@@ -39,7 +40,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Handle admin users self-deleting properly (log out, redirect to front of site)
 - Issue with double initial page loads causing duplicate database insertions (#283)
 - Editing a trigger that doesn't exist now shows an error rather than logging an exception
-- Getting vendor code type list requiring manage vendor code permissions
+- Manage vendor code permission no longer required to get a list of vendor code types (for reporting)
+- User admin status is updated as their roles are updated
 
 ### Removed
 - Comments from appsettings.json, see the [manual](http://manual.greatreadingadventure.com/en/latest/technical/appsettings/) for more information

@@ -192,6 +192,16 @@ namespace GRA.Data.Repository
                 .Distinct()
                 .CountAsync();
         }
+
+        public async Task<bool> HasInvalidRolesAsync(IEnumerable<int> roleIds)
+        {
+            var validRoleIds = await _context.Roles
+                .AsNoTracking()
+                .Select(_ => _.Id)
+                .ToListAsync();
+
+            return roleIds.Except(validRoleIds).Any();
+        } 
     }
 }
 
