@@ -10,6 +10,7 @@ namespace GRA
         public const string ConnectionStringName = "GraConnectionStringName";
         public const string ContentDirectory = "GraContentDirectory";
         public const string ContentPath = "GraContentPath";
+        public const string Culture = "GraCulture";
         public const string DataProtectionPath = "GraDataProtectionPath";
         public const string DefaultFooter = "GraDefaultFooter";
         public const string DefaultOutgoingMailHost = "GraDefaultOutgoingMailHost";

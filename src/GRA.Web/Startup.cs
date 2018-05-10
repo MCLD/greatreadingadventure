@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -40,7 +41,8 @@ namespace GRA.Web
             { ConfigurationKey.DefaultSitePath, "gra" },
             { ConfigurationKey.DefaultFooter, "This site is running the open source <a href=\"http://www.greatreadingadventure.com/\">Great Reading Adventure</a> software developed by the <a href=\"https://mcldaz.org/\">Maricopa County Library District</a> with support by the <a href=\"http://www.azlibrary.gov/\">Arizona State Library, Archives and Public Records</a>, a division of the Secretary of State, and with federal funds from the <a href=\"http://www.imls.gov/\">Institute of Museum and Library Services</a>." },
             { ConfigurationKey.InitialAuthorizationCode, "gra4adminmagic" },
-            { ConfigurationKey.ContentPath, "content" }
+            { ConfigurationKey.ContentPath, "content" },
+            { ConfigurationKey.Culture, "en-US" }
         };
 
         public Startup(IHostingEnvironment env)
@@ -366,6 +368,12 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IVendorCodeTypeRepository, Data.Repository.VendorCodeTypeRepository>();
 
             services.AddAutoMapper();
+
+            services.Configure<RequestLocalizationOptions>(_ =>
+            {
+                _.DefaultRequestCulture
+                    = new Microsoft.AspNetCore.Localization.RequestCulture(Configuration[ConfigurationKey.Culture]);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -404,6 +412,8 @@ namespace GRA.Web
             dbContext.Migrate();
             Task.Run(() => siteLookupService.GetDefaultSiteIdAsync()).Wait();
             Task.Run(() => roleService.SyncPermissionsAsync()).Wait();
+
+            app.UseRequestLocalization();
 
             app.UseResponseCompression();
 
