@@ -1034,16 +1034,22 @@ namespace GRA.Domain.Service
         public async Task UpdateUserRolesAsync(int userId, IEnumerable<int> roleIds)
         {
             VerifyPermission(Permission.ManageRoles);
+            var authId = GetClaimId(ClaimType.UserId);
 
-            var user = await  _userRepository.GetByIdAsync(userId);
+            var user = await _userRepository.GetByIdAsync(userId);
             if (string.IsNullOrWhiteSpace(user.Username))
             {
                 throw new GraException("User doesn't have a username and can't be assigned roles");
             }
 
+            if (await _roleRepository.HasInvalidRolesAsync(roleIds))
+            {
+                throw new GraException("Role list contains invalid roles.");
+            }
+
             var userRoles = await _userRepository.GetUserRolesAsync(userId);
 
-            if (await _roleRepository.ListContainsAdminRoleAsync(userRoles) 
+            if (await _roleRepository.ListContainsAdminRoleAsync(userRoles)
                 && await _roleRepository.ListContainsAdminRoleAsync(roleIds) == false)
             {
                 var adminCount = await _roleRepository.GetUsersWithAdminRoleCountAsync();
@@ -1056,8 +1062,20 @@ namespace GRA.Domain.Service
             var rolesToAdd = roleIds.Except(userRoles);
             var rolesToRemove = userRoles.Except(roleIds);
 
-            await _userRepository.UpdateUserRolesAsync(GetClaimId(ClaimType.UserId), userId,
-                rolesToAdd, rolesToRemove);
+            await _userRepository.UpdateUserRolesAsync(authId, userId, rolesToAdd, rolesToRemove);
+
+            if (user.IsAdmin && roleIds.Count() == 0)
+            {
+                user.IsAdmin = false;
+                await _userRepository.UpdateAsync(authId, user);
+            }
+            else if (user.IsAdmin == false && roleIds.Count() > 0)
+            {
+                user.IsAdmin = true;
+                await _userRepository.UpdateAsync(authId, user);
+            }
+
+            await _userRepository.SaveAsync();
         }
     }
 }
