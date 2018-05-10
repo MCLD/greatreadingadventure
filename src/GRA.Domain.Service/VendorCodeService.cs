@@ -47,7 +47,6 @@ namespace GRA.Domain.Service
 
         public async Task<ICollection<VendorCodeType>> GetTypeAllAsync()
         {
-            VerifyManagementPermission();
             return await _vendorCodeTypeRepository.GetAllAsync(GetCurrentSiteId());
         }
 
