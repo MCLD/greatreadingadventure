@@ -134,8 +134,8 @@
                 var name = button.data("name");
                 var modal = $(this);
                 modal.find("#modal-text").text("Are you sure you want to delete the challenge group \"" + name + "\"?");
-                modal.find("#Challenge_Id").val(id);
-                modal.find("#Challenge_Name").val(name);
+                modal.find("#ChallengeGroup_Id").val(id);
+                modal.find("#ChallengeGroup_Name").val(name);
             });
 
             $(window).on("load", function() {
