@@ -42,6 +42,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Editing a trigger that doesn't exist now shows an error rather than logging an exception
 - Manage vendor code permission no longer required to get a list of vendor code types (for reporting)
 - User admin status is updated as their roles are updated
+- Bug preventing deletion of challenge groups
 
 ### Removed
 - Comments from appsettings.json, see the [manual](http://manual.greatreadingadventure.com/en/latest/technical/appsettings/) for more information
