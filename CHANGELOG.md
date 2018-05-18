@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
-## [4.0.0-beta2] - 2018-05-17
+## [4.0.0-beta2] - 2018-05-18
 ### Added
 - Group Vendor Code Report: group members and their assigned vendor codes
 - Admins with Edit Participant permission can upgrade households to groups regardless of household size
