@@ -18,18 +18,16 @@ Setting up multiple programs gives a library system the flexibility to deliver t
 
 Setting up multiple programs adds flexibility but increases complexity.
 
-**In version 4 of the GRA, setting up a single program at the start gives you reading tracking by books (i.e. participants say "I read a book" and get a point). When you select the multi-program initial setup, participants track their reading by minutes read (one minute is one point). You can add and remove programs once you perform the initial setup but you currently cannot change whether you are tracking by books or by minutes read.**
+**By default in version 4 of the GRA, setting up a single program at the start gives you reading tracking by books (i.e. participants say "I read a book" and get a point). When you select the multi-program initial setup, participants track their reading by minutes read (one minute is one point). You can add and remove programs once you perform the initial setup and you can change whether programs are tracking by books or minutes read.**
 
 Creating a **single reading program** is good if you:
 
-- Want to track by books read
 - Are targeting a single age group
 - Intend to have the same experience for all participants
 - Aren't intending to require a literacy test for only some participants
 
 **Several age-specific reading programs** are better if you:
 
-- Want to track by minutes read
 - Want to report on age groups differently
 - Intend to have Badges, Challenges, and Events specific to age groups
 
