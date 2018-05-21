@@ -98,7 +98,7 @@ namespace GRA.Domain.Service.Abstract
             var userContext = GetUserContext();
             if (userContext.SiteStage != SiteStage.ProgramOpen && userContext.SiteStage != SiteStage.RegistrationOpen)
             {
-                throw new GraException("Household changes cannot be made at this time.");
+                throw new GraException("These changes cannot be made at this time.");
             }
         }
 

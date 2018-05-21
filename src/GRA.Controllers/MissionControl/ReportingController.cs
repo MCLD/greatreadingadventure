@@ -29,17 +29,24 @@ namespace GRA.Controllers.MissionControl
         private readonly ReportService _reportService;
         private readonly SchoolService _schoolService;
         private readonly SiteService _siteService;
+        private readonly UserService _userService;
+        private readonly VendorCodeService _vendorCodeService;
 
         public ReportingController(ILogger<ReportingController> logger,
             ServiceFacade.Controller context,
             ReportService reportService,
             SchoolService schoolService,
-            SiteService siteService) : base(context)
+            SiteService siteService,
+            UserService userService,
+            VendorCodeService vendorCodeService) : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
             _reportService = Require.IsNotNull(reportService, nameof(reportService));
             _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
             _siteService = Require.IsNotNull(siteService, nameof(siteService));
+            _userService = Require.IsNotNull(userService, nameof(userService));
+            _vendorCodeService = vendorCodeService
+                ?? throw new ArgumentNullException(nameof(vendorCodeService));
             PageTitle = "Reporting";
         }
 
@@ -72,6 +79,8 @@ namespace GRA.Controllers.MissionControl
             var programList = await _siteService.GetProgramList();
             var schoolDistrictList = await _schoolService.GetDistrictsAsync();
             var schoolList = await _schoolService.GetSchoolsAsync(schoolDistrictList.FirstOrDefault()?.Id);
+            var groupInfoList = await _userService.GetGroupInfosAsync();
+            var vendorCodeTypeList = await _vendorCodeService.GetTypeAllAsync();
 
             return View($"{viewName}Criteria", new ReportCriteriaViewModel
             {
@@ -81,6 +90,8 @@ namespace GRA.Controllers.MissionControl
                 ProgramList = new SelectList(programList, "Id", "Name"),
                 SchoolDistrictList = new SelectList(schoolDistrictList, "Id", "Name"),
                 SchoolList = new SelectList(schoolList, "Id", "Name"),
+                GroupInfosList = new SelectList(groupInfoList, "Id", "Name"),
+                VendorCodeTypeList = new SelectList(vendorCodeTypeList, "Id", "Description")
             });
         }
 
@@ -99,6 +110,8 @@ namespace GRA.Controllers.MissionControl
                 ProgramId = viewModel.ProgramId,
                 SchoolDistrictId = viewModel.SchoolDistrictId,
                 SchoolId = viewModel.SchoolId,
+                GroupInfoId = viewModel.GroupInfoId,
+                VendorCodeTypeId = viewModel.VendorCodeTypeId,
                 BadgeRequiredList = viewModel.BadgeRequiredList,
                 ChallengeRequiredList = viewModel.ChallengeRequiredList
             };

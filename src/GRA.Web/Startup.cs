@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using AutoMapper;
 using GRA.Abstract;
 using GRA.Controllers.RouteConstraint;
@@ -17,6 +20,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using Serilog.Filters;
 
 namespace GRA.Web
 {
@@ -37,7 +41,8 @@ namespace GRA.Web
             { ConfigurationKey.DefaultSitePath, "gra" },
             { ConfigurationKey.DefaultFooter, "This site is running the open source <a href=\"http://www.greatreadingadventure.com/\">Great Reading Adventure</a> software developed by the <a href=\"https://mcldaz.org/\">Maricopa County Library District</a> with support by the <a href=\"http://www.azlibrary.gov/\">Arizona State Library, Archives and Public Records</a>, a division of the Secretary of State, and with federal funds from the <a href=\"http://www.imls.gov/\">Institute of Museum and Library Services</a>." },
             { ConfigurationKey.InitialAuthorizationCode, "gra4adminmagic" },
-            { ConfigurationKey.ContentPath, "content" }
+            { ConfigurationKey.ContentPath, "content" },
+            { ConfigurationKey.Culture, "en-US" }
         };
 
         public Startup(IHostingEnvironment env)
@@ -56,7 +61,7 @@ namespace GRA.Web
 
             if (env.IsDevelopment())
             {
-                builder.AddUserSecrets();
+                builder.AddUserSecrets<Startup>();
             }
 
             Configuration = builder.Build();
@@ -74,13 +79,34 @@ namespace GRA.Web
                     path = path + "/";
                 }
 
+                string httpPath = Configuration[ConfigurationKey.RollingLogHttp];
                 string rollingFilename = path + instance + "-{Date}.txt";
 
-                Log.Logger = new LoggerConfiguration()
-                    .ReadFrom.Configuration(Configuration)
-                    .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Error)
-                    .WriteTo.RollingFile(rollingFilename)
-                    .CreateLogger();
+                if (!string.IsNullOrEmpty(httpPath))
+                {
+                    string rollingHttpFilename = path + instance + "-" + httpPath + "-{Date}.txt";
+
+                    Log.Logger = new LoggerConfiguration()
+                        .ReadFrom.Configuration(Configuration)
+                        .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Error)
+                        .WriteTo.Logger(_ => _
+                            .Filter.ByExcluding(Matching.FromSource("GRA.Controllers.ErrorController"))
+                            .WriteTo.RollingFile(rollingFilename))
+                        .WriteTo.Logger(_ => _
+                            .Filter.ByIncludingOnly(Matching.FromSource("GRA.Controllers.ErrorController"))
+                            .WriteTo.RollingFile(rollingHttpFilename))
+                        .CreateLogger();
+                }
+                else
+                {
+                    Log.Logger = new LoggerConfiguration()
+                        .ReadFrom.Configuration(Configuration)
+                        .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Error)
+                        .WriteTo.Logger(_ => _
+                            .Filter.ByExcluding(Matching.FromSource("GRA.Controllers.ErrorController"))
+                            .WriteTo.RollingFile(rollingFilename))
+                        .CreateLogger();
+                }
             }
             else
             {
@@ -129,7 +155,7 @@ namespace GRA.Web
                 !string.IsNullOrEmpty(Configuration[ConfigurationKey.DataProtectionPath])
                 ? Configuration[ConfigurationKey.DataProtectionPath]
                 : Path.Combine(Directory.GetCurrentDirectory(), "shared", "dataprotection");
-            string discriminator = Configuration[ConfigurationKey.ApplicationDescriminator]
+            string discriminator = Configuration[ConfigurationKey.ApplicationDiscriminator]
                     ?? "gra";
             services.AddDataProtection(_ => _.ApplicationDiscriminator = discriminator)
                 .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(protectionPath, "keys")));
@@ -223,6 +249,7 @@ namespace GRA.Web
             // services
             services.AddScoped<ActivityService>();
             services.AddScoped<AuthenticationService>();
+            services.AddScoped<AuthorizationCodeService>();
             services.AddScoped<AvatarService>();
             services.AddScoped<BadgeService>();
             services.AddScoped<CategoryService>();
@@ -241,6 +268,7 @@ namespace GRA.Web
             services.AddScoped<PrizeWinnerService>();
             services.AddScoped<QuestionnaireService>();
             services.AddScoped<ReportService>();
+            services.AddScoped<RoleService>();
             services.AddScoped<SampleDataService>();
             services.AddScoped<SchoolImportService>();
             services.AddScoped<SchoolService>();
@@ -257,12 +285,14 @@ namespace GRA.Web
             services.AddScoped<Domain.Report.BadgeTopScoresReport>();
             services.AddScoped<Domain.Report.CurrentStatusByProgramReport>();
             services.AddScoped<Domain.Report.CurrentStatusReport>();
+            services.AddScoped<Domain.Report.GroupVendorCodeReport>();
             services.AddScoped<Domain.Report.RegistrationsAchieversBySchoolReport>();
             services.AddScoped<Domain.Report.RegistrationsAchieversReport>();
             services.AddScoped<Domain.Report.ParticipantPrizeReport>();
             services.AddScoped<Domain.Report.ParticipantProgressReport>();
             services.AddScoped<Domain.Report.PrizeRedemptionReport>();
             services.AddScoped<Domain.Report.TopScoresReport>();
+            services.AddScoped<Domain.Report.VendorCodeDonationsReport>();
             services.AddScoped<Domain.Report.VendorCodeReport>();
 
             // service resolution
@@ -338,13 +368,21 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IVendorCodeTypeRepository, Data.Repository.VendorCodeTypeRepository>();
 
             services.AddAutoMapper();
+
+            services.Configure<RequestLocalizationOptions>(_ =>
+            {
+                _.DefaultRequestCulture
+                    = new Microsoft.AspNetCore.Localization.RequestCulture(Configuration[ConfigurationKey.Culture]);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app,
             IHostingEnvironment env,
             ILoggerFactory loggerFactory,
-            IPathResolver pathResolver)
+            IPathResolver pathResolver,
+            RoleService roleService,
+            SiteLookupService siteLookupService)
         {
             loggerFactory.AddSerilog();
 
@@ -355,10 +393,27 @@ namespace GRA.Web
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseStatusCodePagesWithReExecute("/Error/Index/{0}");
             }
 
-            app.ApplicationServices.GetService<Data.Context>().Migrate();
+            var dbContext = app.ApplicationServices.GetService<Data.Context>();
+            try
+            {
+                var pending = dbContext.GetPendingMigrations();
+                if (pending != null && pending.Count() > 0)
+                {
+                    Log.Logger.Warning($"Applying {pending.Count()} database migrations, last is: {pending.Last()}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error($"Error looking up migrations to perform: {ex.Message}");
+            }
+            dbContext.Migrate();
+            Task.Run(() => siteLookupService.GetDefaultSiteIdAsync()).Wait();
+            Task.Run(() => roleService.SyncPermissionsAsync()).Wait();
+
+            app.UseRequestLocalization();
 
             app.UseResponseCompression();
 

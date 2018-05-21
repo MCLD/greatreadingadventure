@@ -88,6 +88,21 @@ namespace GRA.Controllers.MissionControl
             settings.Add("GC latency mode", System.Runtime.GCSettings.LatencyMode.ToString());
             settings.Add("Server GC mode", System.Runtime.GCSettings.IsServerGC.ToString());
 
+            settings.Add("Culture", _config[ConfigurationKey.Culture]);
+
+            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            if(!string.IsNullOrEmpty(env))
+            {
+                settings.Add("ASP.NET Core Environment", env);
+            }
+
+            var dotnetVersion = Environment.GetEnvironmentVariable("DOTNET_VERSION");
+            if (!string.IsNullOrEmpty(dotnetVersion))
+            {
+                settings.Add(".NET Version", dotnetVersion);
+            }
+
+
             return View(new SystemInformationViewModel
             {
                 Assembly = thisAssemblyName,

@@ -30,6 +30,7 @@ namespace GRA.Domain.Model
         ManagePointTranslations,
         ManagePrograms,
         ManageQuestionnaires,
+        ManageRoles,
         ManageSchools,
         ManageSites,
         ManageSystems,
@@ -46,6 +47,6 @@ namespace GRA.Domain.Model
         ViewParticipantList,
         ViewParticipantDetails,
         ViewUnpublishedPages,
-        ViewUserPrizes,
+        ViewUserPrizes
     }
 }

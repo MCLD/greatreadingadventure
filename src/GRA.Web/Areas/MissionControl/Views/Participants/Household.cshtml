@@ -168,7 +168,7 @@
         @if (Model.CanEditDetails)
         {
             <div class="col-sm-2">
-                <a href="@Url.Action(" UpdateGroup", new { id=Model.HeadOfHouseholdId ?? Model.Id })"
+                <a href="@Url.Action("UpdateGroup", new { id=Model.HeadOfHouseholdId ?? Model.Id })"
                    class="btn btn-block btn-default">Edit Group</a>
             </div>
         }
@@ -206,11 +206,11 @@
                                     {
                                         <td style="padding-right:6px;">@Model.PointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim()</td>
                                         <td width="80px" style="padding-right:6px;">
-                                            <input data-action="@Url.Action(" HouseholdApplyActivity")" value="" class="form-control activityInput" />
+                                            <input data-action="@Url.Action("HouseholdApplyActivity")" value="" class="form-control activityInput" />
                                         </td>
                                     }
                                     <td>
-                                        <button type="submit" class="btn btn-primary btn-spinner activityButton" data-action="@Url.Action(" HouseholdApplyActivity")">
+                                        <button type="submit" class="btn btn-primary btn-spinner activityButton" data-action="@Url.Action("HouseholdApplyActivity")">
                                             <span>
                                                 @if (Model.PointTranslation.IsSingleEvent)
                                                 {
@@ -249,10 +249,10 @@
                                     <tr>
                                         <td style="padding-right:6px;">Apply</td>
                                         <td width="200px">
-                                            <input data-action="@Url.Action(" HouseholdApplySecretCode")" class="form-control codeInput" />
+                                            <input data-action="@Url.Action("HouseholdApplySecretCode")" class="form-control codeInput" />
                                         </td>
                                         <td style="padding-left:6px;">
-                                            <button type="submit" class="btn btn-primary btn-spinner codeButton" data-action="@Url.Action(" HouseholdApplySecretCode")">
+                                            <button type="submit" class="btn btn-primary btn-spinner codeButton" data-action="@Url.Action("HouseholdApplySecretCode")">
                                                 <span class="buttonText">Secret Code</span>
                                                 <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                                             </button>
@@ -599,11 +599,11 @@
                                     {
                                         <td style="padding-right:6px;">@Model.PointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim()</td>
                                         <td width="80px" style="padding-right:6px;">
-                                            <input data-action="@Url.Action(" HouseholdApplyActivity")" value="" class="form-control activityInput" />
+                                            <input data-action="@Url.Action("HouseholdApplyActivity")" value="" class="form-control activityInput" />
                                         </td>
                                     }
                                     <td>
-                                        <button type="submit" class="btn btn-primary btn-spinner activityButton" data-action="@Url.Action(" HouseholdApplyActivity")">
+                                        <button type="submit" class="btn btn-primary btn-spinner activityButton" data-action="@Url.Action("HouseholdApplyActivity")">
                                             <span>
                                                 @if (Model.PointTranslation.IsSingleEvent)
                                                 {
@@ -642,10 +642,10 @@
                                     <tr>
                                         <td style="padding-right:6px;">Apply</td>
                                         <td width="200px">
-                                            <input data-action="@Url.Action(" HouseholdApplySecretCode")" class="form-control codeInput" />
+                                            <input data-action="@Url.Action("HouseholdApplySecretCode")" class="form-control codeInput" />
                                         </td>
                                         <td style="padding-left:6px;">
-                                            <button type="submit" class="btn btn-primary btn-spinner codeButton" data-action="@Url.Action(" HouseholdApplySecretCode")">
+                                            <button type="submit" class="btn btn-primary btn-spinner codeButton" data-action="@Url.Action("HouseholdApplySecretCode")">
                                                 <span class="buttonText">Secret Code</span>
                                                 <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                                             </button>
@@ -680,6 +680,10 @@
         {
             <a asp-action="AddHouseholdMember" asp-route-id="@Model.Id" class="btn btn-default">Add Family Member</a>
             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#listModal">Add Existing Participant to Family</button>
+            if (Model.IsGroup == false && Model.HouseholdCount > 0)
+            {
+                <a asp-action="UpgradeToGroup" asp-route-id="@Model.Id" class="btn btn-default">Upgrade to Group</a>
+            }
         }
     }
 </div>

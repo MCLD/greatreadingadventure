@@ -1,13 +1,28 @@
 [
   {
-    "outputFileName": "wwwroot/css/gra.min.css",
+    "outputFileName": "wwwroot/css/main.min.css",
     "inputFiles": [
-      "wwwroot/css/gra.css"
-    ]
+      "wwwroot/lib/bootstrap/dist/css/bootstrap.css",
+      "wwwroot/css/gra.css",
+      "wwwroot/lib/font-awesome/css/font-awesome.css",
+      "wwwroot/lib/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css",
+      "wwwroot/lib/bootstrap-multiselect/dist/css/bootstrap-multiselect.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "adjustRelativePaths": false
+    }
   },
   {
-    "outputFileName": "wwwroot/js/gra.min.js",
+    "outputFileName": "wwwroot/js/main.min.js",
     "inputFiles": [
+      "wwwroot/lib/jquery/dist/jquery.js",
+      "wwwroot/lib/jquery-validation/dist/jquery.validate.js",
+      "wwwroot/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js",
+      "wwwroot/lib/bootstrap/dist/js/bootstrap.js",
+      "wwwroot/lib/moment/moment.js",
+      "wwwroot/lib/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js",
+      "wwwroot/lib/bootstrap-multiselect/dist/js/bootstrap-multiselect.js",
       "wwwroot/js/gra.js"
     ],
     "minify": {
@@ -19,24 +34,52 @@
     "outputFileName": "wwwroot/css/missioncontrol.min.css",
     "inputFiles": [
       "wwwroot/css/missioncontrol.css"
-    ]
+    ],
+    "minify": {
+      "enabled": true,
+      "adjustRelativePaths": false
+    }
   },
   {
-    "outputFileName": "wwwroot/js/WMD.min.js",
+    "outputFileName": "wwwroot/js/markdown.min.js",
     "inputFiles": [
+      "wwwroot/lib/commonmark/dist/commonmark.js",
       "wwwroot/js/WMD.js"
-    ]
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
   },
   {
-    "outputFileName": "wwwroot/css/WMD.min.css",
+    "outputFileName": "wwwroot/css/markdown.min.css",
     "inputFiles": [
       "wwwroot/css/WMD.css"
-    ]
+    ],
+    "minify": {
+      "enabled": true,
+      "adjustRelativePaths": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/css/slick.min.css",
+    "inputFiles": [
+      "wwwroot/lib/slick-carousel/slick/slick.css",
+      "wwwroot/lib/slick-carousel/slick/slick-theme.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "adjustRelativePaths": false
+    }
   },
   {
     "outputFileName": "wwwroot/js/slick-avatar.min.js",
     "inputFiles": [
       "wwwroot/js/slick-avatar.js"
-    ]
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
   }
 ]

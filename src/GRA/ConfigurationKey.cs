@@ -6,10 +6,11 @@ namespace GRA
         public const string DefaultCSSQLite = "ConnectionStrings:SQLite";
         public const string DefaultCSSqlServer = "ConnectionStrings:SqlServer";
 
-        public const string ApplicationDescriminator = "GraApplicationDescriminator";
+        public const string ApplicationDiscriminator = "GraApplicationDiscriminator";
         public const string ConnectionStringName = "GraConnectionStringName";
         public const string ContentDirectory = "GraContentDirectory";
         public const string ContentPath = "GraContentPath";
+        public const string Culture = "GraCulture";
         public const string DataProtectionPath = "GraDataProtectionPath";
         public const string DefaultFooter = "GraDefaultFooter";
         public const string DefaultOutgoingMailHost = "GraDefaultOutgoingMailHost";
@@ -24,6 +25,7 @@ namespace GRA
         public const string InitialAuthorizationCode = "GraInitialAuthCode";
         public const string InitialProgramSetup = "GraInitialProgramSetup";
         public const string InstanceName = "GraInstanceName";
+        public const string RollingLogHttp = "GraRollingLogHttp";
         public const string RollingLogPath = "GraRollingLogPath";
         public const string SqlSessionSchemaName = "GraSqlSessionSchemaName";
         public const string SqlSessionTable = "GraSqlSessionTable";

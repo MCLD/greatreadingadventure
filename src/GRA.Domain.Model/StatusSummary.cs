@@ -19,7 +19,6 @@ namespace GRA.Domain.Model
 
         public int RegisteredUsers { get; set; }
         public long PointsEarned { get; set; }
-        public Dictionary<string, long> ActivityEarnings { get; set; }
         public long CompletedChallenges { get; set; }
         public long BadgesEarned { get; set; }
         public int? DaysUntilEnd { get; set; }

@@ -13,7 +13,7 @@ namespace GRA.Data.SQLite.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "1.1.2");
+                .HasAnnotation("ProductVersion", "1.1.5");
 
             modelBuilder.Entity("GRA.Data.Model.Answer", b =>
                 {
@@ -1252,6 +1252,8 @@ namespace GRA.Data.SQLite.Migrations
 
                     b.Property<bool>("Favorite");
 
+                    b.Property<int?>("GroupInfoId");
+
                     b.Property<string>("Name")
                         .HasMaxLength(255);
 
@@ -1266,6 +1268,8 @@ namespace GRA.Data.SQLite.Migrations
                     b.Property<DateTime?>("StartDate");
 
                     b.Property<int?>("SystemId");
+
+                    b.Property<int?>("VendorCodeTypeId");
 
                     b.HasKey("Id");
 
@@ -1340,6 +1344,8 @@ namespace GRA.Data.SQLite.Migrations
                     b.Property<DateTime>("CreatedAt");
 
                     b.Property<int>("CreatedBy");
+
+                    b.Property<bool>("IsAdmin");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -1468,7 +1474,7 @@ namespace GRA.Data.SQLite.Migrations
                         .HasMaxLength(100);
 
                     b.Property<string>("FacebookImageUrl")
-                        .HasMaxLength(100);
+                        .HasMaxLength(255);
 
                     b.Property<string>("Footer");
 
@@ -1524,7 +1530,7 @@ namespace GRA.Data.SQLite.Migrations
                     b.Property<bool>("SinglePageSignUp");
 
                     b.Property<string>("SiteLogoUrl")
-                        .HasMaxLength(100);
+                        .HasMaxLength(255);
 
                     b.Property<string>("TwitterAvatarHashtags")
                         .HasMaxLength(100);
@@ -1533,7 +1539,7 @@ namespace GRA.Data.SQLite.Migrations
                         .HasMaxLength(255);
 
                     b.Property<string>("TwitterCardImageUrl")
-                        .HasMaxLength(100);
+                        .HasMaxLength(255);
 
                     b.Property<bool?>("TwitterLargeCard");
 
@@ -1594,6 +1600,8 @@ namespace GRA.Data.SQLite.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime?>("ActivationDate");
 
                     b.Property<int?>("AwardAvatarBundleId");
 

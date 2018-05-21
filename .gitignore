@@ -264,3 +264,6 @@ src/GRA.CommandLine/logs/
 
 # GRA.CommandLine publish
 src/GRA.CommandLine/Properties/PublishProfiles/
+
+# exclude bootstrap-multiselect TS project file
+src/GRA.Web/wwwroot/lib/bootstrap-multiselect/types/bootstrap-multiselect/tsconfig.json

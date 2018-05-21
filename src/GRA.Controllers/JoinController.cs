@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GRA.Abstract;
@@ -27,6 +28,7 @@ namespace GRA.Controllers
         private readonly ILogger<JoinController> _logger;
         private readonly AutoMapper.IMapper _mapper;
         private readonly AuthenticationService _authenticationService;
+        private readonly AuthorizationCodeService _authorizationCodeService;
         private readonly MailService _mailService;
         private readonly PointTranslationService _pointTranslationService;
         private readonly SchoolService _schoolService;
@@ -38,6 +40,7 @@ namespace GRA.Controllers
         public JoinController(ILogger<JoinController> logger,
             ServiceFacade.Controller context,
             AuthenticationService authenticationService,
+            AuthorizationCodeService authorizationCodeService,
             MailService mailService,
             PointTranslationService pointTranslationService,
             SchoolService schoolService,
@@ -51,6 +54,8 @@ namespace GRA.Controllers
             _mapper = context.Mapper;
             _authenticationService = Require.IsNotNull(authenticationService,
                 nameof(authenticationService));
+            _authorizationCodeService = authorizationCodeService 
+                ?? throw new ArgumentNullException(nameof(authorizationCodeService));
             _mailService = Require.IsNotNull(mailService, nameof(mailService));
             _pointTranslationService = Require.IsNotNull(pointTranslationService,
                 nameof(pointTranslationService));
@@ -164,6 +169,16 @@ namespace GRA.Controllers
                 viewModel.ShowSchool = program.AskSchool;
             }
 
+            if (districtList.Count() == 1)
+            {
+                viewModel.SchoolDistrictId = districtList.SingleOrDefault().Id;
+                var typeList = await _schoolService.GetTypesAsync(viewModel.SchoolDistrictId);
+                viewModel.SchoolTypeList = new SelectList(typeList.ToList(), "Id", "Name");
+                var schoolList = await _schoolService.GetSchoolsAsync(viewModel.SchoolDistrictId,
+                    viewModel.SchoolTypeId);
+                viewModel.SchoolList = new SelectList(schoolList.ToList(), "Id", "Name");
+            }
+
             if (useAuthCode)
             {
                 viewModel.AuthorizationCode = authCode;
@@ -186,27 +201,41 @@ namespace GRA.Controllers
                 model.PrivateSelected = true;
                 model.SchoolList = new SelectList(
                     await _schoolService.GetPrivateSchoolListAsync(), "Id", "Name");
+                model.SchoolDistrictId = null;
             }
             else if (model.SetCharter)
             {
                 model.CharterSelected = true;
                 model.SchoolList = new SelectList(
                     await _schoolService.GetCharterSchoolListAsync(), "Id", "Name");
+                model.SchoolDistrictId = null;
             }
             else if (model.SetHomeschool)
             {
                 model.IsHomeschooled = true;
+                model.SchoolDistrictId = null;
             }
             else
             {
                 model.PublicSelected = true;
+                var districtList = await _schoolService.GetDistrictsAsync(true);
+                model.SchoolDistrictList = new SelectList(districtList, "Id", "Name");
+                if (districtList.Count() == 1)
+                {
+                    model.SchoolDistrictId = districtList.SingleOrDefault().Id;
+                    var typeList = await _schoolService.GetTypesAsync(model.SchoolDistrictId);
+                    model.SchoolTypeList = new SelectList(typeList.ToList(), "Id", "Name");
+                    var schoolList = await _schoolService.GetSchoolsAsync(model.SchoolDistrictId);
+                    model.SchoolList = new SelectList(schoolList.ToList(), "Id", "Name");
+                }
+                else
+                {
+                    model.SchoolDistrictId = null;
+                }
             }
 
             model.CategorySelectionAction = nameof(SchoolCategory);
-            model.SchoolDistrictList = new SelectList(
-                await _schoolService.GetDistrictsAsync(true), "Id", "Name");
             model.SchoolId = null;
-            model.SchoolDistrictId = null;
             model.SchoolNotListed = false;
 
             var site = await GetCurrentSiteAsync();
@@ -301,6 +330,12 @@ namespace GRA.Controllers
                 {
                     ModelState.AddModelError("Age", "The Age field is required.");
                 }
+                if (program.SchoolRequired && !model.SchoolId.HasValue
+                    && !model.SchoolDistrictId.HasValue && !model.SchoolNotListed
+                    && !model.IsHomeschooled)
+                {
+                    ModelState.AddModelError("SchoolDistrictId", "The School District field is required.");
+                }
                 if (program.SchoolRequired && !model.SchoolId.HasValue && !model.SchoolNotListed
                     && !model.IsHomeschooled)
                 {
@@ -362,7 +397,8 @@ namespace GRA.Controllers
                     if (!string.IsNullOrWhiteSpace(model.AuthorizationCode))
                     {
                         sanitized = _codeSanitizer.Sanitize(model.AuthorizationCode, 255);
-                        useAuthCode = await _userService.ValidateAuthorizationCode(sanitized);
+                        useAuthCode = await _authorizationCodeService
+                            .ValidateAuthorizationCode(sanitized);
                         if (useAuthCode == false)
                         {
                             _logger.LogError($"Invalid auth code used on join: {model.AuthorizationCode}");
@@ -668,6 +704,16 @@ namespace GRA.Controllers
                 viewModel.ShowSchool = program.AskSchool;
             }
 
+            if (districtList.Count() == 1)
+            {
+                viewModel.SchoolDistrictId = districtList.SingleOrDefault().Id;
+                var typeList = await _schoolService.GetTypesAsync(viewModel.SchoolDistrictId);
+                viewModel.SchoolTypeList = new SelectList(typeList.ToList(), "Id", "Name");
+                var schoolList = await _schoolService.GetSchoolsAsync(viewModel.SchoolDistrictId,
+                    viewModel.SchoolTypeId);
+                viewModel.SchoolList = new SelectList(schoolList.ToList(), "Id", "Name");
+            }
+
             return View(viewModel);
         }
 
@@ -685,27 +731,41 @@ namespace GRA.Controllers
                 model.PrivateSelected = true;
                 model.SchoolList = new SelectList(
                     await _schoolService.GetPrivateSchoolListAsync(), "Id", "Name");
+                model.SchoolDistrictId = null;
             }
             else if (model.SetCharter)
             {
                 model.CharterSelected = true;
                 model.SchoolList = new SelectList(
                     await _schoolService.GetCharterSchoolListAsync(), "Id", "Name");
+                model.SchoolDistrictId = null;
             }
             else if (model.SetHomeschool)
             {
                 model.IsHomeschooled = true;
+                model.SchoolDistrictId = null;
             }
             else
             {
                 model.PublicSelected = true;
+                var districtList = await _schoolService.GetDistrictsAsync(true);
+                model.SchoolDistrictList = new SelectList(districtList, "Id", "Name");
+                if (districtList.Count() == 1)
+                {
+                    model.SchoolDistrictId = districtList.SingleOrDefault().Id;
+                    var typeList = await _schoolService.GetTypesAsync(model.SchoolDistrictId);
+                    model.SchoolTypeList = new SelectList(typeList.ToList(), "Id", "Name");
+                    var schoolList = await _schoolService.GetSchoolsAsync(model.SchoolDistrictId);
+                    model.SchoolList = new SelectList(schoolList.ToList(), "Id", "Name");
+                }
+                else
+                {
+                    model.SchoolDistrictId = null;
+                }
             }
 
             model.CategorySelectionAction = nameof(Step2SchoolCategory);
-            model.SchoolDistrictList = new SelectList(
-                await _schoolService.GetDistrictsAsync(true), "Id", "Name");
             model.SchoolId = null;
-            model.SchoolDistrictId = null;
             model.SchoolNotListed = false;
 
             var site = await GetCurrentSiteAsync();
@@ -748,6 +808,12 @@ namespace GRA.Controllers
                 if (program.AgeRequired && !model.Age.HasValue)
                 {
                     ModelState.AddModelError("Age", "The Age field is required.");
+                }
+                if (program.SchoolRequired && !model.SchoolId.HasValue 
+                    && !model.SchoolDistrictId.HasValue && !model.SchoolNotListed 
+                    && !model.IsHomeschooled)
+                {
+                    ModelState.AddModelError("SchoolDistrictId", "The School District field is required.");
                 }
                 if (program.SchoolRequired && !model.SchoolId.HasValue && !model.SchoolNotListed
                     && !model.IsHomeschooled)
@@ -983,7 +1049,8 @@ namespace GRA.Controllers
                     if (!string.IsNullOrWhiteSpace(step1.AuthorizationCode))
                     {
                         sanitized = _codeSanitizer.Sanitize(step1.AuthorizationCode, 255);
-                        useAuthCode = await _userService.ValidateAuthorizationCode(sanitized);
+                        useAuthCode = await _authorizationCodeService
+                            .ValidateAuthorizationCode(sanitized);
                         if (useAuthCode == false)
                         {
                             _logger.LogError($"Invalid auth code used on join: {step1.AuthorizationCode}");
@@ -1054,28 +1121,36 @@ namespace GRA.Controllers
             return View(model);
         }
 
-        public IActionResult AuthorizationCode()
+        public async Task<IActionResult> AuthorizationCode()
         {
             if (TempData.ContainsKey(AuthCodeAttempts) && (int)TempData.Peek(AuthCodeAttempts) >= 5)
             {
-                ShowAlertDanger("Too many failed authorization attemps.");
+                ShowAlertDanger("Too many failed authorization attempts.");
                 return RedirectToAction(nameof(HomeController.Index), nameof(HomeController));
             }
-            return View();
+            var site = await GetCurrentSiteAsync();
+            string siteLogoUrl = site.SiteLogoUrl
+                ?? Url.Content(Defaults.SiteLogoPath);
+
+            return View(new AuthorizationCodeViewModel
+            {
+                SiteLogoUrl = siteLogoUrl
+            });
         }
 
         [HttpPost]
         public async Task<IActionResult> AuthorizationCode(AuthorizationCodeViewModel model)
         {
+            var site = await GetCurrentSiteAsync();
             if (!TempData.ContainsKey(AuthCodeAttempts) || (int)TempData.Peek(AuthCodeAttempts) < 5)
             {
                 var sanitized = _codeSanitizer.Sanitize(model.AuthorizationCode, 255);
-                if (await _userService.ValidateAuthorizationCode(sanitized))
+                if (await _authorizationCodeService.ValidateAuthorizationCode(sanitized))
                 {
                     TempData.Remove(AuthCodeAttempts);
                     TempData[EnteredAuthCode] = model.AuthorizationCode;
                     ShowAlertInfo("Authorization code accepted.");
-                    var site = await GetCurrentSiteAsync();
+                    
                     if (site.SinglePageSignUp)
                     {
                         return RedirectToAction(nameof(Index));
@@ -1097,11 +1172,18 @@ namespace GRA.Controllers
 
             if (TempData.ContainsKey(AuthCodeAttempts) && (int)TempData.Peek(AuthCodeAttempts) >= 5)
             {
-                ShowAlertDanger("Too many failed authorization attemps.");
+                ShowAlertDanger("Too many failed authorization attempts.");
                 return RedirectToAction(nameof(HomeController.Index), nameof(HomeController));
             }
             ShowAlertDanger("Invalid authorization code.");
-            return View();
+
+            var siteLogoUrl = site.SiteLogoUrl
+                ?? Url.Content(Defaults.SiteLogoPath);
+
+            return View(new AuthorizationCodeViewModel
+            {
+                SiteLogoUrl = siteLogoUrl
+            });
         }
     }
 }

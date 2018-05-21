@@ -2,6 +2,7 @@
 {
     public struct TemplateToken
     {
-        public const string VendorCodeToken = "{Code}";
+        public static readonly string VendorCodeToken = "{Code}";
+        public static readonly string VendorLinkToken = "{Link}";
     }
 }

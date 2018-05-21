@@ -33,8 +33,7 @@ namespace GRA.Domain.Service
         {
             return !string.IsNullOrEmpty(site.FromEmailAddress)
                 && !string.IsNullOrEmpty(site.FromEmailName)
-                && !string.IsNullOrEmpty(site.OutgoingMailHost)
-                && site.OutgoingMailPort != null;
+                && !string.IsNullOrEmpty(site.OutgoingMailHost);
         }
 
         public async Task<bool> CanSendMailTo(int userId)
@@ -49,13 +48,40 @@ namespace GRA.Domain.Service
         {
             var user = await _userRepository.GetByIdAsync(userId);
             var site = await _siteRepository.GetByIdAsync(user.SiteId);
-            var message = new MimeMessage();
 
+            await SendEmailAsync(site,
+                user.Email,
+                subject,
+                body,
+                htmlBody,
+                user.FullName);
+        }
+
+        public async Task SendEmailToAddressAsync(int siteId, string emailAddress, string subject,
+            string body, string htmlBody = null)
+        {
+            var site = await _siteRepository.GetByIdAsync(siteId);
+
+            await SendEmailAsync(site,
+                emailAddress,
+                subject,
+                body,
+                htmlBody);
+        }
+
+        private async Task SendEmailAsync(Site site,
+            string emailAddress,
+            string subject,
+            string body,
+            string htmlBody = null,
+            string emailName = null)
+        {
             if (!CanSendMailTo(site))
             {
                 throw new GraException("Sending email is not configured.");
             }
 
+            var message = new MimeMessage();
             message.From.Add(new MailboxAddress(site.FromEmailName, site.FromEmailAddress));
 
             if (!string.IsNullOrWhiteSpace(_config[ConfigurationKey.EmailOverride]))
@@ -64,7 +90,14 @@ namespace GRA.Domain.Service
             }
             else
             {
-                message.To.Add(new MailboxAddress(user.FullName, user.Email));
+                if (!string.IsNullOrWhiteSpace(emailName))
+                {
+                    message.To.Add(new MailboxAddress(emailName, emailAddress));
+                }
+                else
+                {
+                    message.To.Add(new MailboxAddress(emailAddress));
+                }
             }
             message.Subject = subject;
 
@@ -81,7 +114,6 @@ namespace GRA.Domain.Service
                 // accept any STARTTLS certificate
                 client.ServerCertificateValidationCallback = (s, c, h, e) => true;
 
-                // TODO store mail server in site
                 await client.ConnectAsync(site.OutgoingMailHost,
                     site.OutgoingMailPort ?? 25,
                     false);

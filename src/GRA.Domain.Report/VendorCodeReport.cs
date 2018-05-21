@@ -78,7 +78,7 @@ namespace GRA.Domain.Report
             report.HeaderRow = new object[] {
                 "System Name",
                 "Branch Name",
-                "# Earned",
+                "# Redeemed",
                 "# Ordered"
             };
 

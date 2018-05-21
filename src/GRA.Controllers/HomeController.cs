@@ -95,14 +95,15 @@ namespace GRA.Controllers
                             program.DailyLiteracyTipId.Value, day.Value);
                         if (image != null)
                         {
-                            var imagePath = _pathResolver.ResolveContentFilePath(
-                                Path.Combine($"site{site.Id}", "dailyimages",
+                            var imagePath = Path.Combine($"site{site.Id}", "dailyimages",
                                 $"dailyliteracytip{program.DailyLiteracyTipId}",
-                                $"{image.Id}.{image.Extension}"));
-                            if (System.IO.File.Exists(imagePath))
+                                $"{image.Id}{image.Extension}");
+                            if (System.IO.File.Exists(_pathResolver.ResolveContentFilePath(imagePath)))
                             {
-                                viewModel.DailyImageMessage = program.DailyLiteracyTip.Message;
-                                viewModel.DailyImagePath = imagePath;
+                                var dailyLiteracyTip = await _dailyLiteracyTipService
+                                    .GetByIdAsync(program.DailyLiteracyTipId.Value);
+                                viewModel.DailyImageMessage = dailyLiteracyTip.Message;
+                                viewModel.DailyImagePath = _pathResolver.ResolveContentPath(imagePath);
                             }
                         }
                     }
@@ -125,7 +126,7 @@ namespace GRA.Controllers
                     viewModel.DashboardPageContent = CommonMark.CommonMarkConverter
                         .Convert(dashboardPage.Content);
                 }
-                
+
                 if (TempData.ContainsKey(ModelData))
                 {
                     var model = Newtonsoft.Json.JsonConvert

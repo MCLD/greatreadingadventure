@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl.Sites;
 using GRA.Controllers.ViewModel.Shared;
@@ -21,15 +18,21 @@ namespace GRA.Controllers.MissionControl
     {
         private readonly ILogger<SitesController> _logger;
         private readonly AutoMapper.IMapper _mapper;
+        private readonly EmailService _emailSerivce;
         private readonly SiteService _siteService;
+        private readonly UserService _userService;
         public SitesController(ILogger<SitesController> logger,
             ServiceFacade.Controller context,
-            SiteService siteService)
+            EmailService emailService,
+            SiteService siteService,
+            UserService userService)
             : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = context.Mapper ?? throw new ArgumentNullException(nameof(context.Mapper));
+            _emailSerivce = emailService ?? throw new ArgumentNullException(nameof(emailService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
+            _userService = userService ?? throw new ArgumentNullException(nameof(UserService));
             PageTitle = "Site management";
         }
 
@@ -99,6 +102,12 @@ namespace GRA.Controllers.MissionControl
         {
             var site = await _siteLookupService.GetByIdAsync(id);
             var viewModel = _mapper.Map<Site, SiteConfigurationViewModel>(site);
+
+            var user = await _userService.GetDetails(GetActiveUserId());
+            if (user != null && !string.IsNullOrEmpty(user.Email))
+            {
+                viewModel.CurrentUserMail = user.Email;
+            }
 
             PageTitle = $"Site management - {site.Name}";
             return View(viewModel);
@@ -225,7 +234,7 @@ namespace GRA.Controllers.MissionControl
                     Name = _.Key,
                     SettingInformations = _.Select(i => new SiteSettingInformation()
                     {
-                        SiteSetting = site.Settings.Where(s => s.Key == i.Key).SingleOrDefault() 
+                        SiteSetting = site.Settings.Where(s => s.Key == i.Key).SingleOrDefault()
                             ?? new SiteSetting(),
                         Definition = i.Value,
                         Key = i.Key
@@ -268,7 +277,7 @@ namespace GRA.Controllers.MissionControl
             foreach (var siteSetting in siteSettings)
             {
                 siteSetting.SiteId = site.Id;
-                
+
                 if (!string.IsNullOrWhiteSpace(siteSetting.Value))
                 {
                     var definition = SiteSettingDefinitions.DefinitionDictionary[siteSetting.Key];
@@ -316,6 +325,26 @@ namespace GRA.Controllers.MissionControl
             PageTitle = $"Site management - {site.Name}";
 
             return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> SendTestEmail(string emailAddress)
+        {
+            try
+            {
+                var site = await GetCurrentSiteAsync();
+                var subject = $"{site.Name} test email";
+                var body = $"This is a test email sent by {site.Name} at {_dateTimeProvider.Now}";
+                await _emailSerivce.SendEmailToAddressAsync(GetCurrentSiteId(), emailAddress, 
+                    subject, body);
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error sending test email", ex);
+                return Json(new { Success = false, message = ex.Message });
+            }
         }
     }
 }

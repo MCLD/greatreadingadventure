@@ -47,7 +47,6 @@ namespace GRA.Domain.Service
 
         public async Task<ICollection<VendorCodeType>> GetTypeAllAsync()
         {
-            VerifyManagementPermission();
             return await _vendorCodeTypeRepository.GetAllAsync(GetCurrentSiteId());
         }
 
@@ -523,6 +522,10 @@ namespace GRA.Domain.Service
                     // token and url - make token clickable to go to url
                     body = codeType.Mail.Replace(TemplateToken.VendorCodeToken,
                         $"<a href=\"{url}\" _target=\"blank\">{assignedCode}</a>");
+                    if(body.Contains(TemplateToken.VendorLinkToken))
+                    {
+                        body = body.Replace(TemplateToken.VendorLinkToken, url);
+                    }
                 }
             }
 

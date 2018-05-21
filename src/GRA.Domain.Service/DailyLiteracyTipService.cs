@@ -45,6 +45,11 @@ namespace GRA.Domain.Service
             };
         }
 
+        public async Task<DailyLiteracyTip> GetByIdAsync(int id)
+        {
+            return await _dailyLiteracyTipRepository.GetByIdAsync(id);
+        }
+
         public async Task<DailyLiteracyTip> AddAsync(DailyLiteracyTip dailyLiteracyTip)
         {
             VerifyManagementPermission();

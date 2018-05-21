@@ -7,16 +7,16 @@ namespace GRA.Controllers.ViewModel.MissionControl.Sites
     {
         public int Id { get; set; }
 
-        [DisplayName("Facebook App Id")]
+        [DisplayName("Facebook App ID")]
         [MaxLength(100)]
         public string FacebookAppId { get; set; }
-        [DisplayName("Facebook Image Url")]
-        [MaxLength(100)]
+        [DisplayName("Facebook/Open Graph Image URL")]
+        [MaxLength(255)]
         public string FacebookImageUrl { get; set; }
         [DisplayName("Twitter Large Card")]
         public bool? TwitterLargeCard { get; set; }
-        [DisplayName("Twitter Card ImageUrl")]
-        [MaxLength(100)]
+        [DisplayName("Twitter Card Image URL")]
+        [MaxLength(255)]
         public string TwitterCardImageUrl { get; set; }
         [DisplayName("Twitter Username")]
         [MaxLength(15)]
@@ -24,7 +24,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Sites
         [DisplayName("Twitter Avatar Message")]
         [MaxLength(255)]
         public string TwitterAvatarMessage { get; set; }
-        [DisplayName("Twitter Avatar Hashtags")]
+        [DisplayName("Twitter Avatar Hashtag")]
         [MaxLength(100)]
         public string TwitterAvatarHashtags { get; set; }
         [DisplayName("Avatar Card Description")]

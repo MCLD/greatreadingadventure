@@ -1,8 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.Avatar.AvatarViewModel
 
 @section styles {
-    <link rel="stylesheet" href="~/lib/slick-carousel/slick/slick.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/lib/slick-carousel/slick/slick-theme.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/slick.min.css" asp-append-version="true" />
 }
 
 <div class="panel panel-default">
@@ -97,7 +96,7 @@
                             Save
                         </button>
                         <form id="shareForm" asp-action="Share" method="post" role="form" style="display: inline-block">
-                            
+
                             <button class="btn btn-lg btn-default" style="margin:5px;">
                                 <span class="fa fa-share-alt"></span>
                                 Share

@@ -1,22 +1,33 @@
 ﻿@model GRA.Controllers.ViewModel.Avatar.ShareViewModel
 
-<img src="@Model.AvatarImageUrl" class="img-responsive" style="padding-bottom:1em;" />
+<div class="row row-spacing">
+    <div class="col-xs-12">
+        <img src="@Model.AvatarImageUrl" class="img-responsive" />
+    </div>
+</div>
 
-<a asp-action="Index" class="btn btn-default">
-    <span class="fa fa-arrow-left"></span>
-    Return
-</a>
+<div class="row row-spacing">
+    <div class="col-xs-12">
+        <a asp-action="Index" class="btn btn-default row-spacing">
+            <span class="fa fa-arrow-left"></span>
+            Return
+        </a>
 
-<a href="@Model.FacebookShareUrl" class="btn btn-default" target="_blank">
-    <span class="fa fa-facebook"></span>
-    Share
-</a>
+        <a href="@Model.FacebookShareUrl" class="btn btn-default row-spacing" target="_blank">
+            <span class="fa fa-facebook"></span>
+            Share
+        </a>
 
-<a href="@Model.TwitterShareUrl" class="btn btn-default" target="_blank">
-    <span class="fa fa-twitter"></span>
-    Share
-</a>
-<a asp-action="InstagramImage" asp-route-id="@Model.AvatarId" class="btn btn-default" download="avatar.jpg">
-    <span class="fa fa-instagram"></span>
-    Download
-</a>
+        <a href="@Model.TwitterShareUrl" class="btn btn-default row-spacing" target="_blank">
+            <span class="fa fa-twitter"></span>
+            Share
+        </a>
+        <a asp-action="InstagramImage"
+           asp-route-id="@Model.AvatarId"
+           class="btn btn-default row-spacing"
+           download="avatar.jpg">
+            <span class="fa fa-instagram"></span>
+            Download to Share
+        </a>
+    </div>
+</div>

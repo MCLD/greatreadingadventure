@@ -52,6 +52,25 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
+        public async Task UpdateUserRolesAsync(int currentUserId, int userId, IEnumerable<int> rolesToAdd, 
+            IEnumerable<int> rolesToRemove)
+        {
+            var now = _dateTimeProvider.Now;
+
+            var addRoles = rolesToAdd.Select(_ => new Model.UserRole
+            {
+                RoleId = _,
+                UserId = userId,
+                CreatedAt = now,
+                CreatedBy = currentUserId
+            });
+            var removeRoles = _context.UserRoles
+                .Where(_ => _.UserId == userId && rolesToRemove.Contains(_.RoleId));
+
+            await _context.UserRoles.AddRangeAsync(addRoles);
+            _context.UserRoles.RemoveRange(removeRoles);
+        }
+
         public async Task SetUserPasswordAsync(int currentUserId, int userId, string password)
         {
             var user = DbSet.Find(userId);
@@ -266,9 +285,20 @@ namespace GRA.Data.Repository
                 userList = userList.Where(_ => _.CreatedAt <= criterion.EndDate);
             }
 
-            if(criterion.SchoolId != null)
+            if (criterion.SchoolId != null)
             {
                 userList = userList.Where(_ => _.SchoolId == criterion.SchoolId);
+            }
+
+            if (criterion.VendorCodeTypeId != null)
+            {
+                userList = userList.Join(_context.VendorCodes,
+                    u => u.Id,
+                    v => v.UserId,
+                    (u, v) => new { u, v })
+                    .Where(_ => _.v.VendorCodeTypeId == criterion.VendorCodeTypeId.Value
+                        && _.v.IsDonated == true)
+                    .Select(_ => _.u);
             }
 
             return userList;
@@ -396,6 +426,13 @@ namespace GRA.Data.Repository
             return await ApplyUserFilter(criterion)
                 .OrderByDescending(_ => _.PointsEarned)
                 .Take(scoresToReturn)
+                .ProjectTo<User>()
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<User>> GetUsersByCriterionAsync(ReportCriterion criterion)
+        {
+            return await ApplyUserFilter(criterion)
                 .ProjectTo<User>()
                 .ToListAsync();
         }

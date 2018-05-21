@@ -87,6 +87,10 @@ namespace GRA.Controllers.Helpers
                         AddDcMetadata(output, site);
                     }
                     break;
+                case "avatarmetadata":
+                    output.TagName = string.Empty;
+                    AddAvatarMetadata(output, site);
+                    break;
                 case "twittermetadata":
                     output.TagName = string.Empty;
                     AddTwitterMetadata(output, site);
@@ -224,5 +228,12 @@ namespace GRA.Controllers.Helpers
                 output.Content.AppendHtml(Environment.NewLine);
             }
         }
+
+        private void AddAvatarMetadata(TagHelperOutput output, Site site)
+        {
+            output.Content.AppendHtml(MetaName("description", 
+                $"A customized avatar for {site.Name}, join the site to make your own!"));
+        }
+
     }
 }

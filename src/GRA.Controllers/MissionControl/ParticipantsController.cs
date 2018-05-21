@@ -33,6 +33,7 @@ namespace GRA.Controllers.MissionControl
         private readonly PointTranslationService _pointTranslationService;
         private readonly PrizeWinnerService _prizeWinnerService;
         private readonly QuestionnaireService _questionnaireService;
+        private readonly RoleService _roleService;
         private readonly SchoolService _schoolService;
         private readonly SiteService _siteService;
         private readonly TriggerService _triggerService;
@@ -48,6 +49,7 @@ namespace GRA.Controllers.MissionControl
             PointTranslationService pointTranslationService,
             PrizeWinnerService prizeWinnerService,
             QuestionnaireService questionnaireService,
+            RoleService roleService,
             SchoolService schoolService,
             SiteService siteService,
             TriggerService triggerService,
@@ -70,6 +72,7 @@ namespace GRA.Controllers.MissionControl
             _prizeWinnerService = Require.IsNotNull(prizeWinnerService, nameof(prizeWinnerService));
             _questionnaireService = Require.IsNotNull(questionnaireService,
                 nameof(questionnaireService));
+            _roleService = roleService ?? throw new ArgumentNullException(nameof(roleService));
             _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
             _siteService = Require.IsNotNull(siteService, nameof(siteService));
             _triggerService = Require.IsNotNull(triggerService, nameof(triggerService));
@@ -263,6 +266,16 @@ namespace GRA.Controllers.MissionControl
                 viewModel.ShowSchool = program.AskSchool;
             }
 
+            if (districtList.Count() == 1)
+            {
+                viewModel.SchoolDistrictId = districtList.SingleOrDefault().Id;
+                var typeList = await _schoolService.GetTypesAsync(viewModel.SchoolDistrictId);
+                viewModel.SchoolTypeList = new SelectList(typeList.ToList(), "Id", "Name");
+                var schoolList = await _schoolService.GetSchoolsAsync(viewModel.SchoolDistrictId,
+                    viewModel.SchoolTypeId);
+                viewModel.SchoolList = new SelectList(schoolList.ToList(), "Id", "Name");
+            }
+
             return View(viewModel);
         }
 
@@ -304,6 +317,12 @@ namespace GRA.Controllers.MissionControl
                 if (program.AgeRequired && !model.Age.HasValue)
                 {
                     ModelState.AddModelError("Age", "The Age field is required.");
+                }
+                if (program.SchoolRequired && !model.SchoolId.HasValue
+                    && !model.SchoolDistrictId.HasValue && !model.SchoolNotListed
+                    && !model.IsHomeschooled)
+                {
+                    ModelState.AddModelError("SchoolDistrictId", "The School District field is required.");
                 }
                 if (program.SchoolRequired && !model.SchoolId.HasValue && !model.SchoolNotListed
                     && !model.IsHomeschooled)
@@ -486,6 +505,11 @@ namespace GRA.Controllers.MissionControl
             {
                 await _userService.RemoveAsync(id);
                 AlertSuccess = "Participant deleted";
+                if (id == GetId(ClaimType.UserId))
+                {
+                    await LogoutUserAsync();
+                    return RedirectToAction("Index", "Home", new { area = string.Empty });
+                }
             }
             catch (GraException gex)
             {
@@ -541,6 +565,10 @@ namespace GRA.Controllers.MissionControl
                 if (UserHasPermission(Permission.ViewUserPrizes))
                 {
                     viewModel.PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false);
+                }
+                if (UserHasPermission(Permission.ManageRoles) && viewModel.HasAccount)
+                {
+                    viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
                 }
 
                 var districtList = await _schoolService.GetDistrictsAsync(true);
@@ -791,7 +819,7 @@ namespace GRA.Controllers.MissionControl
                             typeList.ToList(), "Id", "Name", model.SchoolTypeId);
                         var schoolList = await _schoolService.GetSchoolsAsync(
                             model.SchoolDistrictId, model.SchoolTypeId);
-                        model.SchoolList = new SelectList( schoolList.ToList(), "Id", "Name");
+                        model.SchoolList = new SelectList(schoolList.ToList(), "Id", "Name");
                     }
                 }
             }
@@ -836,6 +864,10 @@ namespace GRA.Controllers.MissionControl
             if (UserHasPermission(Permission.ViewUserPrizes))
             {
                 viewModel.PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false);
+            }
+            if (UserHasPermission(Permission.ManageRoles) && viewModel.HasAccount)
+            {
+                viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
             }
 
             if (UserHasPermission(Permission.ManageVendorCodes))
@@ -1014,6 +1046,10 @@ namespace GRA.Controllers.MissionControl
                 {
                     viewModel.PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false);
                 }
+                if (UserHasPermission(Permission.ManageRoles) && viewModel.HasAccount)
+                {
+                    viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
+                }
 
                 if (TempData.ContainsKey(ActivityMessage))
                 {
@@ -1183,7 +1219,7 @@ namespace GRA.Controllers.MissionControl
                         .GetDetails((int)headOfHousehold.HouseholdHeadUserId);
                 }
 
-                var groupInfo 
+                var groupInfo
                     = await _userService.GetGroupFromHouseholdHeadAsync(headOfHousehold.Id);
 
                 string callIt = groupInfo == null ? "Family" : "Group";
@@ -1238,6 +1274,16 @@ namespace GRA.Controllers.MissionControl
                     viewModel.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
                 }
 
+                if (districtList.Count() == 1)
+                {
+                    viewModel.SchoolDistrictId = districtList.SingleOrDefault().Id;
+                    var typeList = await _schoolService.GetTypesAsync(viewModel.SchoolDistrictId);
+                    viewModel.SchoolTypeList = new SelectList(typeList.ToList(), "Id", "Name");
+                    var schoolList = await _schoolService.GetSchoolsAsync(viewModel.SchoolDistrictId,
+                        viewModel.SchoolTypeId);
+                    viewModel.SchoolList = new SelectList(schoolList.ToList(), "Id", "Name");
+                }
+
                 return View("HouseholdAdd", viewModel);
             }
             catch (GraException gex)
@@ -1283,6 +1329,12 @@ namespace GRA.Controllers.MissionControl
                 if (program.AgeRequired && !model.User.Age.HasValue)
                 {
                     ModelState.AddModelError("User.Age", "The Age field is required.");
+                }
+                if (program.SchoolRequired && !model.SchoolId.HasValue
+                    && !model.SchoolDistrictId.HasValue && !model.SchoolNotListed
+                    && !model.IsHomeschooled)
+                {
+                    ModelState.AddModelError("SchoolDistrictId", "The School District field is required.");
                 }
                 if (program.SchoolRequired && !model.SchoolId.HasValue && !model.SchoolNotListed
                     && !model.IsHomeschooled)
@@ -1613,6 +1665,11 @@ namespace GRA.Controllers.MissionControl
                 {
                     viewModel.PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false);
                 }
+                if (UserHasPermission(Permission.ManageRoles) && viewModel.HasAccount)
+                {
+                    viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
+                }
+
                 return View(viewModel);
             }
             catch (GraException gex)
@@ -1752,6 +1809,10 @@ namespace GRA.Controllers.MissionControl
                 if (UserHasPermission(Permission.ViewUserPrizes))
                 {
                     viewModel.PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false);
+                }
+                if (UserHasPermission(Permission.ManageRoles) && viewModel.HasAccount)
+                {
+                    viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
                 }
 
                 bool editChallenges = UserHasPermission(Permission.EditChallenges);
@@ -1895,6 +1956,11 @@ namespace GRA.Controllers.MissionControl
                     HasAccount = !string.IsNullOrWhiteSpace(user.Username)
                 };
 
+                if (UserHasPermission(Permission.ManageRoles) && viewModel.HasAccount)
+                {
+                    viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
+                }
+
                 return View(viewModel);
             }
             catch (GraException gex)
@@ -1985,6 +2051,10 @@ namespace GRA.Controllers.MissionControl
                 if (UserHasPermission(Permission.ViewUserPrizes))
                 {
                     viewModel.PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false);
+                }
+                if (UserHasPermission(Permission.ManageRoles) && viewModel.HasAccount)
+                {
+                    viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
                 }
 
                 return View(viewModel);
@@ -2108,6 +2178,10 @@ namespace GRA.Controllers.MissionControl
                 {
                     viewModel.PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false);
                 }
+                if (UserHasPermission(Permission.ManageRoles) && viewModel.HasAccount)
+                {
+                    viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
+                }
 
                 return View(viewModel);
             }
@@ -2139,6 +2213,66 @@ namespace GRA.Controllers.MissionControl
 
             SetPageTitle(user);
             return View(model);
+        }
+        #endregion
+
+        #region Roles
+        [Authorize(Policy = Policy.ManageRoles)]
+        public async Task<IActionResult> Roles(int id)
+        {
+            try
+            {
+                var user = await _userService.GetDetails(id);
+                if (string.IsNullOrWhiteSpace(user.Username))
+                {
+                    ShowAlertDanger("User doesn't have a username and can't be assigned roles.");
+                    return RedirectToAction(nameof(Detail), new { id });
+                }
+
+                SetPageTitle(user);
+
+                var groupInfo
+                    = await _userService.GetGroupFromHouseholdHeadAsync(user.HouseholdHeadUserId ?? id);
+
+                var viewModel = new RolesViewModel
+                {
+                    Id = id,
+                    HouseholdCount = await _userService
+                        .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
+                    HasAccount = !string.IsNullOrWhiteSpace(user.Username),
+                    IsGroup = groupInfo != null
+                };
+
+                var userRoles = await _userService.GetUserRolesAsync(id);
+                var roles = await _roleService.GetAllAsync();
+                viewModel.RoleCount = userRoles.Count;
+                viewModel.SelectedRoles = roles.Where(_ => userRoles.Contains(_.Id));
+                viewModel.UnselectedRoles = roles.Except(viewModel.SelectedRoles);
+
+                return View(viewModel);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning("Unable to view participant's roles: ", gex);
+                return RedirectToAction("Index");
+            }
+        }
+
+        [Authorize(Policy = Policy.ManageRoles)]
+        [HttpPost]
+        public async Task<IActionResult> Roles(RolesViewModel model)
+        {
+            try
+            {
+                var roleIds = model.Roles?.Split(',').Select(_ => int.Parse(_)) ?? new int[] { };
+                await _userService.UpdateUserRolesAsync(model.Id, roleIds);
+                ShowAlertSuccess($"Saved user's roles!");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to update participant's roles: ", gex);
+            }
+            return RedirectToAction(nameof(Roles), new { id = model.Id });
         }
         #endregion
 
@@ -2258,7 +2392,8 @@ namespace GRA.Controllers.MissionControl
 
             try
             {
-                viewModel.GroupInfo.UserId = viewModel.Id;
+                var user = await _userService.GetDetails(viewModel.Id);
+                viewModel.GroupInfo.UserId = user.HouseholdHeadUserId ?? user.Id;
                 await _userService.CreateGroup(GetActiveUserId(), viewModel.GroupInfo);
             }
             catch (Exception ex)

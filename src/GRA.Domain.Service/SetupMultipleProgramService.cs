@@ -2,6 +2,7 @@
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GRA.Domain.Service
@@ -139,7 +140,8 @@ namespace GRA.Domain.Service
             // required for a user to be an administrator
             var adminRole = await _roleRepository.AddSaveAsync(userId, new Model.Role
             {
-                Name = "System Administrator"
+                Name = "System Administrator",
+                IsAdmin = true
             });
 
             // add code to make first user system administrator
@@ -152,20 +154,11 @@ namespace GRA.Domain.Service
                 SiteId = siteId
             });
 
-            // system permissions
-            foreach (var value in Enum.GetValues(typeof(Model.Permission)))
-            {
-                await _roleRepository.AddPermissionAsync(userId, value.ToString());
-            }
-            await _roleRepository.SaveAsync();
-
-            // add permissions to the admin role
-            foreach (var value in Enum.GetValues(typeof(Model.Permission)))
-            {
-                await _roleRepository.AddPermissionToRoleAsync(userId,
-                    adminRole.Id,
-                    value.ToString());
-            }
+            // set up system permissions and add to the admin role
+            var permissionList = Enum.GetValues(typeof(Model.Permission))
+                    .Cast<Model.Permission>()
+                    .Select(_ => _.ToString());
+            await _roleRepository.AddPermissionListAsync(permissionList);
             await _roleRepository.SaveAsync();
 
             foreach (var value in Enum.GetValues(typeof(Model.ChallengeTaskType)))

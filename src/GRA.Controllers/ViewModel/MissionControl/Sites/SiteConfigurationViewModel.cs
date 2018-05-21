@@ -8,10 +8,10 @@ namespace GRA.Controllers.ViewModel.MissionControl.Sites
     {
         public int Id { get; set; }
 
-        [DisplayName("Site Logo Url")]
-        [MaxLength(100)]
+        [DisplayName("Site Logo URL")]
+        [MaxLength(255)]
         public string SiteLogoUrl { get; set; }
-        [DisplayName("External Event List Url")]
+        [DisplayName("External Event List URL")]
         public string ExternalEventListUrl { get; set; }
         [DisplayName("Max Points Per Challenge Task")]
         public int? MaxPointsPerChallengeTask { get; set; }
@@ -21,7 +21,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Sites
         public bool SinglePageSignUp { get; set; }
         [DisplayName("Google Analytics Tracking Id")]
         public string GoogleAnalyticsTrackingId { get; set; }
-        [DisplayName("Is Https Forced")]
+        [DisplayName("Is HTTPS Forced")]
         public bool IsHttpsForced { get; set; }
         [DisplayName("From Email Name")]
         public string FromEmailName { get; set; }
@@ -35,5 +35,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.Sites
         public string OutgoingMailLogin { get; set; }
         [DisplayName("Outgoing Mail Password")]
         public string OutgoingMailPassword { get; set; }
+        public string CurrentUserMail { get; set; }
     }
 }

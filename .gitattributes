@@ -1,10 +1,15 @@
 # Set default behavior to automatically normalize line endings.
 * text=auto
 
-# tell linguist to ignore vendor files
-# https://github.com/github/linguist#overrides
+# linguist overrides https://github.com/github/linguist#overrides
 src/GRA.Web/wwwroot/lib/* linguist-vendored
+dev/* linguist-documentation
+docs/* linguist-documentation
+re/* linguist-documentation
+src/GRA.Data.SQLite/Migrations/* linguist-generated
+src/GRA.Data.SqlServer/Migrations/* linguist-generated
+*.min.css linguist-generated=true
+*.min.js linguist-generated=true
 
 # fix CHANGELOG.md to default to union merge
 CHANGELOG merge=union
-
