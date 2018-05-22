@@ -40,6 +40,7 @@ namespace GRA.Controllers
             string StartDate = null,
             string EndDate = null)
         {
+            PageTitle = "Community Experiences";
             return await Index(page, search, system, branch, location, program, StartDate, EndDate, true);
         }
 
