@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## Unreleased
+### Fixed
+- Fix page title to "community experiences" when selected on the events page
+
 ## [4.0.0-beta2] - 2018-05-18
 ### Added
 - Group Vendor Code Report: group members and their assigned vendor codes
