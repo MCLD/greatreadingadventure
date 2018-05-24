@@ -86,7 +86,7 @@ namespace GRA.Controllers.MissionControl
             return View($"{viewName}Criteria", new ReportCriteriaViewModel
             {
                 ReportId = id,
-                ProgramStartDate = site.ProgramStarts ?? DateTime.Parse("2018/01/01"),
+                ProgramStartDate = site.ProgramStarts ?? new DateTime(2018, 01, 01),
                 SystemList = new SelectList(systemList, "Id", "Name"),
                 BranchList = new SelectList(branchList, "Id", "Name"),
                 ProgramList = new SelectList(programList, "Id", "Name"),
