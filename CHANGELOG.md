@@ -5,7 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## Unreleased
 ### Added
-- Enhance date selection on reports
+- Default start and end date on reports which require date selection
+- Button on reports with date selection for the entire program
+- Button on reports with date selection for the last week
+
 
 ### Fixed
 - Fix page title to "community experiences" when selected on the events page
