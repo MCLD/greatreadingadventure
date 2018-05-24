@@ -10,8 +10,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Button on reports with date selection for the last week
 
 ### Fixed
-- Fix page title to "community experiences" when selected on the events page
-- Fix registrations and achievers by school report name
+- Set page title to "community experiences" when selected on the events page
+- Registrations and achievers by school report name
 
 ## [4.0.0-beta2] - 2018-05-18
 ### Added
