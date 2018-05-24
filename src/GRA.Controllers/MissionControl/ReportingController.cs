@@ -81,10 +81,12 @@ namespace GRA.Controllers.MissionControl
             var schoolList = await _schoolService.GetSchoolsAsync(schoolDistrictList.FirstOrDefault()?.Id);
             var groupInfoList = await _userService.GetGroupInfosAsync();
             var vendorCodeTypeList = await _vendorCodeService.GetTypeAllAsync();
+            var site = await GetCurrentSiteAsync();
 
             return View($"{viewName}Criteria", new ReportCriteriaViewModel
             {
                 ReportId = id,
+                ProgramStartDate = site.ProgramStarts ?? DateTime.Parse("2018/01/01"),
                 SystemList = new SelectList(systemList, "Id", "Name"),
                 BranchList = new SelectList(branchList, "Id", "Name"),
                 ProgramList = new SelectList(programList, "Id", "Name"),

@@ -13,6 +13,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Reporting
         public DateTime? StartDate { get; set; }
         [DisplayName("End Date")]
         public DateTime? EndDate { get; set; }
+        public DateTime ProgramStartDate { get; set; }
         [DisplayName("Select a system")]
         public int? SystemId { get; set; }
         [DisplayName("Select a branch")]
