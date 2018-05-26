@@ -949,6 +949,17 @@ namespace GRA.Domain.Service
             }
         }
 
+        public async Task<GroupInfo> GetGroupInfoByIdAsync(int id)
+        {
+            if (!HasPermission(Permission.ViewParticipantDetails) 
+                && !HasPermission(Permission.ViewAllReporting))
+            {
+                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view group info.");
+                throw new GraException("Permission denied.");
+            }
+            return await _groupInfoRepository.GetByIdAsync(id);
+        }
+
         public async Task<GroupInfo> GetGroupFromHouseholdHeadAsync(int householdHeadUserId)
         {
             return await _groupInfoRepository.GetByUserIdAsync(householdHeadUserId);

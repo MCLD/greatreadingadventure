@@ -1,4 +1,9 @@
-﻿using DocumentFormat.OpenXml.Packaging;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using GRA.Controllers.ViewModel.MissionControl.Reporting;
 using GRA.Domain.Model;
@@ -8,11 +13,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Net;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -145,6 +145,50 @@ namespace GRA.Controllers.MissionControl
                     ReportResultId = id
                 };
 
+                if (storedReport.criterion.StartDate.HasValue)
+                {
+                    viewModel.StartDate = storedReport.criterion.StartDate;
+                }
+                if (storedReport.criterion.EndDate.HasValue)
+                {
+                    viewModel.EndDate = storedReport.criterion.EndDate;
+                }
+                if (storedReport.criterion.SystemId.HasValue)
+                {
+                    viewModel.SystemName = (await _siteService
+                        .GetSystemByIdAsync(storedReport.criterion.SystemId.Value)).Name;
+                }
+                if (storedReport.criterion.BranchId.HasValue)
+                {
+                    viewModel.BranchName = await _siteService
+                        .GetBranchName(storedReport.criterion.BranchId.Value);
+                }
+                if (storedReport.criterion.ProgramId.HasValue)
+                {
+                    viewModel.ProgramName = (await _siteService
+                        .GetProgramByIdAsync(storedReport.criterion.ProgramId.Value)).Name;
+                }
+                if (storedReport.criterion.GroupInfoId.HasValue)
+                {
+                    viewModel.GroupName = (await _userService
+                        .GetGroupInfoByIdAsync(storedReport.criterion.GroupInfoId.Value)).Name;
+                }
+                if (storedReport.criterion.SchoolDistrictId.HasValue)
+                {
+                    viewModel.SchoolDistrictName = (await _schoolService
+                        .GetDistrictByIdAsync(storedReport.criterion.SchoolDistrictId.Value)).Name;
+                }
+                if (storedReport.criterion.SchoolId.HasValue)
+                {
+                    viewModel.SchoolName = (await _schoolService
+                        .GetByIdAsync(storedReport.criterion.SchoolId.Value)).Name;
+                }
+                if (storedReport.criterion.VendorCodeTypeId.HasValue)
+                {
+                    viewModel.VendorCodeName = (await _vendorCodeService
+                        .GetTypeById(storedReport.criterion.VendorCodeTypeId.Value)).Description;
+                }
+
                 viewModel.ReportSet = JsonConvert
                     .DeserializeObject<StoredReportSet>(storedReport.request.ResultJson);
 
@@ -209,6 +253,51 @@ namespace GRA.Controllers.MissionControl
                 Title = PageTitle
             };
 
+            var criteriaDictionnary = new Dictionary<string, object>();
+            if (storedReport.criterion.StartDate.HasValue)
+            {
+                criteriaDictionnary.Add("Start Date", storedReport.criterion.StartDate.Value);
+            }
+            if (storedReport.criterion.EndDate.HasValue)
+            {
+                criteriaDictionnary.Add("End Date", storedReport.criterion.StartDate.Value);
+            }
+            if (storedReport.criterion.SystemId.HasValue)
+            {
+                criteriaDictionnary.Add("System", (await _siteService
+                    .GetSystemByIdAsync(storedReport.criterion.SystemId.Value)).Name);
+            }
+            if (storedReport.criterion.BranchId.HasValue)
+            {
+                criteriaDictionnary.Add("Branch", await _siteService
+                    .GetBranchName(storedReport.criterion.BranchId.Value));
+            }
+            if (storedReport.criterion.ProgramId.HasValue)
+            {
+                criteriaDictionnary.Add("Program", (await _siteService
+                    .GetProgramByIdAsync(storedReport.criterion.ProgramId.Value)).Name);
+            }
+            if (storedReport.criterion.GroupInfoId.HasValue)
+            {
+                criteriaDictionnary.Add("Group", (await _userService
+                    .GetGroupInfoByIdAsync(storedReport.criterion.GroupInfoId.Value)).Name);
+            }
+            if (storedReport.criterion.SchoolDistrictId.HasValue)
+            {
+                criteriaDictionnary.Add("School District", (await _schoolService
+                    .GetDistrictByIdAsync(storedReport.criterion.SchoolDistrictId.Value)).Name);
+            }
+            if (storedReport.criterion.SchoolId.HasValue)
+            {
+                criteriaDictionnary.Add("Program", (await _schoolService
+                    .GetByIdAsync(storedReport.criterion.SchoolId.Value)).Name);
+            }
+            if (storedReport.criterion.VendorCodeTypeId.HasValue)
+            {
+                criteriaDictionnary.Add("Program", (await _vendorCodeService
+                    .GetTypeById(storedReport.criterion.VendorCodeTypeId.Value)).Description);
+            }
+
             viewModel.ReportSet = JsonConvert
                 .DeserializeObject<StoredReportSet>(storedReport.request.ResultJson);
 
@@ -230,7 +319,6 @@ namespace GRA.Controllers.MissionControl
                     var sheetPart = workbook.WorkbookPart.AddNewPart<WorksheetPart>();
                     var sheetData = new SheetData();
                     sheetPart.Worksheet = new Worksheet(sheetData);
-
 
                     var sheets = workbook.WorkbookPart.Workbook.GetFirstChild<Sheets>();
                     var relationshipId = workbook.WorkbookPart.GetIdOfPart(sheetPart);
@@ -379,6 +467,106 @@ namespace GRA.Controllers.MissionControl
                         }
                     }
                 }
+
+                var criteriaSheetPart = workbook.WorkbookPart.AddNewPart<WorksheetPart>();
+                var criteriaSheetData = new SheetData();
+                criteriaSheetPart.Worksheet = new Worksheet(criteriaSheetData);
+
+                var criteriaSheets = workbook.WorkbookPart.Workbook.GetFirstChild<Sheets>();
+                var criteriaRelationshipId = workbook.WorkbookPart.GetIdOfPart(criteriaSheetPart);
+
+                uint criteriaSheetId = 1;
+                if (criteriaSheets.Elements<Sheet>().Count() > 0)
+                {
+                    criteriaSheetId = criteriaSheets.Elements<Sheet>()
+                        .Select(_ => _.SheetId.Value).Max() + 1;
+                }
+
+                string criteriaSheetName = "Report Criteria";
+
+                var criteriaSheet = new Sheet
+                {
+                    Id = criteriaRelationshipId,
+                    SheetId = criteriaSheetId,
+                    Name = criteriaSheetName
+                };
+                criteriaSheets.Append(criteriaSheet);
+
+                var criteriaMaximumColumnWidth = new Dictionary<int, int>();
+
+                foreach (var criterion in criteriaDictionnary)
+                {
+                    var row = new Row();
+
+                    (var nameCell, var nameLength) = CreateCell(criterion.Key);
+                    row.AppendChild(nameCell);
+                    if (criteriaMaximumColumnWidth.ContainsKey(0))
+                    {
+                        criteriaMaximumColumnWidth[0]
+                            = Math.Max(criteriaMaximumColumnWidth[0], nameLength);
+                    }
+                    else
+                    {
+                        criteriaMaximumColumnWidth.Add(0, nameLength);
+                    }
+
+                    (var dataCell, var dataLength) = CreateCell(criterion.Value);
+                    row.AppendChild(dataCell);
+                    if (criteriaMaximumColumnWidth.ContainsKey(1))
+                    {
+                        criteriaMaximumColumnWidth[1]
+                            = Math.Max(criteriaMaximumColumnWidth[1], dataLength);
+                    }
+                    else
+                    {
+                        criteriaMaximumColumnWidth.Add(1, dataLength);
+                    }
+
+                    criteriaSheetData.Append(row);
+                }
+
+                foreach (var value in criteriaMaximumColumnWidth.Keys.OrderByDescending(_ => _))
+                {
+                    var columnId = value + 1;
+                    var width = criteriaMaximumColumnWidth[value] + ExcelPaddingCharacters;
+                    Columns cs = criteriaSheet.GetFirstChild<Columns>();
+                    if (cs != null)
+                    {
+                        var columnElements = cs.Elements<Column>()
+                            .Where(_ => _.Min == columnId && _.Max == columnId);
+                        if (columnElements.Count() > 0)
+                        {
+                            var column = columnElements.First();
+                            column.Width = width;
+                            column.CustomWidth = true;
+                        }
+                        else
+                        {
+                            var column = new Column
+                            {
+                                Min = (uint)columnId,
+                                Max = (uint)columnId,
+                                Width = width,
+                                CustomWidth = true
+                            };
+                            cs.Append(column);
+                        }
+                    }
+                    else
+                    {
+                        cs = new Columns();
+                        cs.Append(new Column
+                        {
+                            Min = (uint)columnId,
+                            Max = (uint)columnId,
+                            Width = width,
+                            CustomWidth = true
+                        });
+                        criteriaSheetPart.Worksheet.InsertAfter(cs,
+                            criteriaSheetPart.Worksheet.GetFirstChild<SheetFormatProperties>());
+                    }
+                }
+
                 workbook.Save();
                 workbook.Close();
                 ms.Seek(0, System.IO.SeekOrigin.Begin);

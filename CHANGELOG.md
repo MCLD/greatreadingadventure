@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Default start and end date on reports which require date selection
 - Button on reports with date selection for the entire program
 - Button on reports with date selection for the last week
+- Report criteria to show on report view and excel
 
 ### Fixed
 - Set page title to "community experiences" when selected on the events page
