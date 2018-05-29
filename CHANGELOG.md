@@ -4,8 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## Unreleased
+### Added
+- Default start and end date on reports which require date selection
+- Button on reports with date selection for the entire program
+- Button on reports with date selection for the last week
+- Report criteria to show on browser report view and exports
+
 ### Fixed
-- Fix page title to "community experiences" when selected on the events page
+- Set page title to "community experiences" when selected on the events page
+- Registrations and achievers by school report name
+- Issue showing list of badges for the Badge Top Scores Report
 
 ## [4.0.0-beta2] - 2018-05-18
 ### Added

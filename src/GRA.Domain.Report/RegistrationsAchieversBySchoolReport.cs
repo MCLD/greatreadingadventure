@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 namespace GRA.Domain.Report
 {
     [ReportInformation(19,
-    "Registrations And Achievers by School Report",
+    "Registrations And Achievers By School Report",
     "Registered participants and achievers by school (filterable by district and school).",
     "Program")]
     public class RegistrationsAchieversBySchoolReport : BaseReport

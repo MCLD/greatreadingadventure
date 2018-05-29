@@ -78,6 +78,11 @@ namespace GRA.Domain.Service
             await _siteLookupService.ReloadSiteCacheAsync();
         }
 
+        public async Task<Model.System> GetSystemByIdAsync(int id)
+        {
+            return await _systemRepository.GetByIdAsync(id);
+        }
+
         public async Task<IEnumerable<Model.System>> GetSystemList(bool prioritizeUserSystem = false)
         {
             var systemList = await _systemRepository.GetAllAsync(GetCurrentSiteId());
