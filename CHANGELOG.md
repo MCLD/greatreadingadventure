@@ -11,8 +11,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Mission Control events navbar icon is now a drop-down (#322)
 
 ### Fixed
-- Fix page title to "community experiences" when selected on the events page
+- Set page title to "community experiences" when selected on the events page
+- Registrations and achievers by school report name (#320)
+- Issue showing list of badges for the Badge Top Scores Report
 - Public event locations list sorts alphabetically (#321)
+- Default start and end date on reports which require date selection (#317)
+- Button on reports with date selection for the entire program (#317)
+- Button on reports with date selection for the last week (#317)
+- Report criteria to show on browser report view and exports (#318)
 
 ## [4.0.0-beta2] - 2018-05-18
 ### Added

@@ -151,6 +151,11 @@ namespace GRA.Domain.Service
             await _schoolRepository.RemoveSaveAsync(GetActiveUserId(), schoolId);
         }
 
+        public async Task<School> GetByIdAsync(int id)
+        {
+            return await _schoolRepository.GetByIdAsync(id);
+        }
+
         public async Task<DataWithCount<ICollection<School>>> GetPaginatedListAsync(
             BaseFilter filter)
         {

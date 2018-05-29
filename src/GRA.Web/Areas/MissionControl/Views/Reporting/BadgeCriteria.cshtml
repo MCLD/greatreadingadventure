@@ -68,6 +68,13 @@
     <input asp-for="BadgeRequiredList" type="hidden" />
     <input asp-for="ChallengeRequiredList" type="hidden" />
 
+    <div class="row" style="padding: 10px 0;">
+        <div class="col-xs-12">
+            <btn type="button" class="btn btn-default time-selector" data-start="@Model.ProgramStartDate" data-end="now">Entire program</btn>
+            <btn type="button" class="btn btn-default time-selector" data-start="@DateTime.Now.AddDays(-8).ToString("MM/dd/yyyy")" data-end="@DateTime.Now.AddDays(-1).ToString("MM/dd/yyyy")">Last 7 days</btn>
+        </div>
+    </div>
+
     <div class="form-group">
         <div class="col-xs-6">
             <label asp-for="StartDate" class="control-label"></label>
@@ -302,6 +309,18 @@
                 previous: "fa fa-arrow-left",
                 next: "fa fa-arrow-right"
             }
+        });
+
+        $("#pickerStart").data("DateTimePicker").defaultDate(moment(new Date()).subtract(2, "d").format("MM/DD/YYYY"));
+        $("#pickerEnd").data("DateTimePicker").defaultDate(moment(new Date()).subtract(1, "d").format("MM/DD/YYYY"));
+
+        $(".time-selector").on("click", function() {
+            $("#pickerStart").data("DateTimePicker").date($(this).data("start"));
+            var end = $(this).data("end");
+            if (end === "now") {
+                end = new Date();
+            }
+            $("#pickerEnd").data("DateTimePicker").date(end);
         });
 
         $("form").on("submit", function (e) {

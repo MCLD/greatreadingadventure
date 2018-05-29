@@ -9,6 +9,77 @@
         </a>
     </div>
 }
+
+<div class="row" style="padding-top:10px;">
+    <div class="col-xs-12">
+        <table class="table table-bordered" style="border: none;margin-bottom:0; width:auto;">
+            @if (Model.StartDate.HasValue)
+            {
+                <tr>
+                    <td><strong>Start Date:</strong></td>
+                    <td>@Model.StartDate</td>
+                </tr>
+            }
+            @if (Model.EndDate.HasValue)
+            {
+                <tr>
+                    <td><strong>End Date:</strong></td>
+                    <td>@Model.EndDate</td>
+                </tr>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.SystemName))
+            {
+                <tr>
+                    <td><strong>System:</strong></td>
+                    <td>@Model.SystemName</td>
+                </tr>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.BranchName))
+            {
+                <tr>
+                    <td><strong>Branch:</strong></td>
+                    <td>@Model.BranchName</td>
+                </tr>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.ProgramName))
+            {
+                <tr>
+                    <td><strong>Program:</strong></td>
+                    <td>@Model.ProgramName</td>
+                </tr>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.GroupName))
+            {
+                <tr>
+                    <td><strong>Group:</strong></td>
+                    <td>@Model.GroupName</td>
+                </tr>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.SchoolDistrictName))
+            {
+                <tr>
+                    <td><strong>School District:</strong></td>
+                    <td>@Model.SchoolDistrictName</td>
+                </tr>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.SchoolName))
+            {
+                <tr>
+                    <td><strong>School:</strong></td>
+                    <td>@Model.SchoolName</td>
+                </tr>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.VendorCodeName))
+            {
+                <tr>
+                    <td><strong>Vendor Code:</strong></td>
+                    <td>@Model.VendorCodeName</td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+
 @foreach (var report in Model.ReportSet.Reports)
 {
     <div class="row">
