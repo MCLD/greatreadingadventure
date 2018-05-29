@@ -24,6 +24,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.SiteId == siteId)
+                .OrderBy(_ => _.Name)
                 .ProjectTo<Location>()
                 .ToListAsync();
         }
@@ -38,7 +39,18 @@ namespace GRA.Data.Repository
         {
             return await ApplyFilters(filter)
                 .ApplyPagination(filter)
-                .ProjectTo<Location>()
+                .GroupJoin(_context.Events, l => l.Id, e => e.AtLocationId, (l, e) => new { l, e })
+                .Select(_ => new Location {
+                    Id = _.l.Id,
+                    Address = _.l.Address,
+                    CreatedAt = _.l.CreatedAt,
+                    CreatedBy = _.l.CreatedBy,
+                    Name = _.l.Name,
+                    SiteId = _.l.SiteId,
+                    Telephone = _.l.Telephone,
+                    Url = _.l.Url,
+                    EventCount = _.e.Count()
+                })
                 .ToListAsync();
         }
 

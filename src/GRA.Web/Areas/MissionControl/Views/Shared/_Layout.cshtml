@@ -81,7 +81,17 @@
                     }
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageEvents.ToString()) && Context.Items.ContainsKey(GRA.Controllers.ItemKey.ExternalEventListUrl) == false)
                     {
-                        <li ActiveBy routeKey="Controller" value="Events"><a asp-controller="Events" asp-action="Index" title="Events"><span class="fa fa-calendar"></span><span class="visible-xs-inline"> Events</span></a></li>
+                        <li ActiveBy routeKey="Controller" value="Events">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Events"><span class="fa fa-calendar"></span><span class="visible-xs-inline"> Events</span><span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a asp-controller="Events" asp-action="Index">Events</a></li>
+                                <li><a asp-controller="Events" asp-action="CommunityExperiences">Community Experiences</a></li>
+                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageLocations.ToString()))
+                                {
+                                    <li><a asp-controller="Events" asp-action="Locations">Locations</a></li>
+                                }
+                            </ul>
+                        </li>
                     }
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageAvatars.ToString()))
                     {

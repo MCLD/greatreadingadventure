@@ -5,15 +5,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## Unreleased
 ### Added
-- Default start and end date on reports which require date selection
-- Button on reports with date selection for the entire program
-- Button on reports with date selection for the last week
-- Report criteria to show on browser report view and exports
+- Mission Control location list shows a count of related events/community experiences (#322)
+
+### Changed
+- Mission Control events navbar icon is now a drop-down (#322)
 
 ### Fixed
 - Set page title to "community experiences" when selected on the events page
-- Registrations and achievers by school report name
+- Registrations and achievers by school report name (#320)
 - Issue showing list of badges for the Badge Top Scores Report
+- Public event locations list sorts alphabetically (#321)
+- Default start and end date on reports which require date selection (#317)
+- Button on reports with date selection for the entire program (#317)
+- Button on reports with date selection for the last week (#317)
+- Report criteria to show on browser report view and exports (#318)
 
 ## [4.0.0-beta2] - 2018-05-18
 ### Added
