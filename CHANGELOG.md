@@ -13,7 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Fixed
 - Set page title to "community experiences" when selected on the events page
 - Registrations and achievers by school report name
-- Fix badge top scores report badge list not loading
+- Issue showing list of badges for the Badge Top Scores Report
 
 ## [4.0.0-beta2] - 2018-05-18
 ### Added
