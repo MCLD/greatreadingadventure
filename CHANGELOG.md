@@ -4,8 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## Unreleased
+### Changed
+- Added number of events column to Mission Control location list
+- Changed Mission Control events navbar item to dropdown
+
 ### Fixed
 - Fix page title to "community experiences" when selected on the events page
+- Changed public event locations list to be sorted alphabetically
 
 ## [4.0.0-beta2] - 2018-05-18
 ### Added
