@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## Unreleased
 ### Added
 - Mission Control location list shows a count of related events/community experiences (#322)
-- Google Analytics participant join tracking (#324)
+- Add Google Analytics Event when participant joins (#324)
 
 ### Changed
 - Mission Control events navbar icon is now a drop-down (#322)
