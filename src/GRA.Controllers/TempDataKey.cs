@@ -7,5 +7,6 @@ namespace GRA.Controllers
         public const string AlertInfo = "alert-info";
         public const string AlertWarning = "alert-warning";
         public const string AlertDanger = "alert-danger";
+        public const string UserJoined = "UserJoined";
     }
 }
