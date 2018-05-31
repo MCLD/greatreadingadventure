@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### Changed
 - Mission Control events navbar icon is now a drop-down (#322)
+- Fix automated builds and pushing to Docker Hub
 
 ### Fixed
 - Set page title to "community experiences" when selected on the events page
