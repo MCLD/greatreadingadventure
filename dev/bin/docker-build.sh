@@ -1,5 +1,7 @@
 #!/bin/bash
 
+IMAGE="mcld/gra"
+
 pwd=${PWD##*/}
 
 if [ $pwd = "bin" ]; then
@@ -25,8 +27,18 @@ elif [[ "$BRANCH" == "develop" ]]; then
   export DOCKERFILE="dev/Dockerfile"
   echo -e "\e[1m\e[41mAutomatically adding a database migration for $BRANCH branch\e[0m"
 else
-  export TAG=$COMMIT;
+  export TAG=$BRANCH;
   export DOCKERFILE="Dockerfile"
 fi
 
-docker build -f $DOCKERFILE -t mcld/gra:$TAG --build-arg commit="$COMMIT" .
+if [ "$#" -gt 0 ]; then
+  IMAGE="$1"
+fi
+
+if [ "$#" -gt 1 ]; then
+  TAG="$2"
+fi
+
+echo -e "\e[1mCreating Docker image \e[95m$IMAGE:$TAG\e[0m"
+
+docker build -f $DOCKERFILE -t $IMAGE:$TAG --build-arg commit="$COMMIT" .
