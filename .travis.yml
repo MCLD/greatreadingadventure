@@ -13,3 +13,17 @@ services:
   - docker
 
 script: bash dev/bin/docker-build.sh
+
+after_success:
+  - |
+    if [[ "$DOCKER_USERNAME" != "" ]] && [[ "$DOCKER_PASSWORD" != "" ]]; then
+        if [[ "$TRAVIS_BRANCH" == "master" ]]; then
+          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+          docker push mcld/gra:latest
+          docker logout
+        elif [[ "$TRAVIS_BRANCH" == "develop" ]]; then
+          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+          docker push mcld/gra:$TRAVIS_BRANCH
+          docker logout
+        fi
+    fi
