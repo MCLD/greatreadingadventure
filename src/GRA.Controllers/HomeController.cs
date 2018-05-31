@@ -109,6 +109,14 @@ namespace GRA.Controllers
                     }
                 }
 
+                if (TempData.ContainsKey(TempDataKey.UserJoined))
+                {
+                    TempData.Remove(TempDataKey.UserJoined);
+                    viewModel.SitePath = site.Path;
+                    viewModel.ProgramName = program.Name;
+                    viewModel.UserJoined = true;
+                }
+
                 var userAvatar = await _avatarService.GetUserAvatarAsync();
                 if (userAvatar?.Count > 0)
                 {
