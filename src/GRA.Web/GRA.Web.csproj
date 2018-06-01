@@ -7,7 +7,6 @@
     <OutputType>Exe</OutputType>
     <PackageId>GRA.Web</PackageId>
     <UserSecretsId>gra-e773e45a-3078-4b1b-842d-c7a8f7d310a6</UserSecretsId>
-    <RuntimeFrameworkVersion>1.1.0</RuntimeFrameworkVersion>
     <PackageTargetFallback>$(PackageTargetFallback);dotnet5.6;portable-net45+win8</PackageTargetFallback>
     <Version>4.0.0-beta2</Version>
     <Authors>GRA.Web</Authors>
