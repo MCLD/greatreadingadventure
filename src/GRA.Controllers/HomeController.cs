@@ -112,6 +112,7 @@ namespace GRA.Controllers
                 if (TempData.ContainsKey(TempDataKey.UserJoined))
                 {
                     TempData.Remove(TempDataKey.UserJoined);
+                    viewModel.FirstTime = user.IsFirstTime;
                     viewModel.SitePath = site.Path;
                     viewModel.ProgramName = program.Name;
                     viewModel.UserJoined = true;
