@@ -112,10 +112,13 @@ namespace GRA.Controllers
                 if (TempData.ContainsKey(TempDataKey.UserJoined))
                 {
                     TempData.Remove(TempDataKey.UserJoined);
-                    viewModel.FirstTime = user.IsFirstTime;
                     viewModel.SitePath = site.Path;
                     viewModel.ProgramName = program.Name;
                     viewModel.UserJoined = true;
+                    if (await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime))
+                    {
+                        viewModel.FirstTime = user.IsFirstTime;
+                    }
                 }
 
                 var userAvatar = await _avatarService.GetUserAvatarAsync();
