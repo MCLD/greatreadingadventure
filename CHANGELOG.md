@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Button on reports with date selection for the entire program (#317)
 - Button on reports with date selection for the last week (#317)
 - Report criteria to show on browser report view and exports (#318)
+- Mail threading showing html as text
 
 ## [4.0.0-beta2] - 2018-05-18
 ### Added
