@@ -18,10 +18,12 @@ after_success:
   - |
     if [[ "$DOCKER_USERNAME" != "" ]] && [[ "$DOCKER_PASSWORD" != "" ]]; then
         if [[ "$TRAVIS_BRANCH" == "master" ]]; then
+          echo "Pushing docker image mcld/gra:latest to Docker Hub"
           echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
           docker push mcld/gra:latest
           docker logout
         elif [[ "$TRAVIS_BRANCH" == "develop" ]]; then
+          echo "Pushing docker image mcld/gra:develop to Docker Hub"
           echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
           docker push mcld/gra:$TRAVIS_BRANCH
           docker logout

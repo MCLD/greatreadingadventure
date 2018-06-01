@@ -1,5 +1,5 @@
 # Get build image
-FROM microsoft/dotnet:1.1-sdk AS dotnet-sdk
+FROM microsoft/aspnetcore-build:1.1 AS dotnet-sdk
 WORKDIR /app
 
 # Copy source and build
@@ -10,7 +10,7 @@ RUN dotnet restore
 RUN dotnet publish -c Release -o "$(pwd)/publish/web"
 
 # Get runtime image
-FROM microsoft/dotnet:1.1-runtime
+FROM microsoft/aspnetcore:1.1
 WORKDIR /app
 
 # Bring in metadata
