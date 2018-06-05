@@ -7,7 +7,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Added
 - Mission Control location list shows a count of related events/community experiences (#322)
 - Add Google Analytics Event when participant joins (#324)
-- Disable spinner when avatar save button is clicked
 
 ### Changed
 - Mission Control events navbar icon is now a drop-down (#322)
@@ -23,6 +22,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Button on reports with date selection for the last week (#317)
 - Report criteria to show on browser report view and exports (#318)
 - Mail threading showing html as text
+- Disable avatar save button while saving to avoid accidental double-clicks
 
 ## [4.0.0-beta2] - 2018-05-18
 ### Added
