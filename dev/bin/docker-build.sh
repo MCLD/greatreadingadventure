@@ -27,7 +27,7 @@ elif [[ "$BRANCH" == "develop" ]]; then
   export DOCKERFILE="dev/Dockerfile"
   echo -e "\e[1m\e[41mAutomatically adding a database migration for $BRANCH branch\e[0m"
 else
-  export TAG=$BRANCH;
+  export TAG=$COMMIT;
   export DOCKERFILE="Dockerfile"
 fi
 
