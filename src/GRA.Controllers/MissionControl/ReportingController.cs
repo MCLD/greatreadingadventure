@@ -260,7 +260,7 @@ namespace GRA.Controllers.MissionControl
             }
             if (storedReport.criterion.EndDate.HasValue)
             {
-                criteriaDictionnary.Add("End Date", storedReport.criterion.StartDate.Value);
+                criteriaDictionnary.Add("End Date", storedReport.criterion.EndDate.Value);
             }
             if (storedReport.criterion.SystemId.HasValue)
             {
