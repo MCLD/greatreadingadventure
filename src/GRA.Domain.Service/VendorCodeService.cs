@@ -260,64 +260,70 @@ namespace GRA.Domain.Service
                                 }
                                 else
                                 {
-                                    string coupon = null;
-                                    DateTime? orderDate = null;
-                                    DateTime? shipDate = null;
-                                    try
+                                    if (excelReader.GetValue(couponColumnId) != null
+                                        && excelReader.GetValue(orderDateColumnId) != null
+                                        && excelReader.GetValue(shipDateColumnId) != null)
                                     {
-                                        coupon = excelReader.GetString(couponColumnId);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        _logger.LogError($"Parse error on code, row {row}: {ex.Message}");
-                                        issues.Add($"Issue reading code on line {row}: {ex.Message}");
-                                    }
-                                    try
-                                    {
-                                        orderDate = excelReader.GetDateTime(orderDateColumnId);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        _logger.LogError($"Parse error on order date, row {row}: {ex.Message}");
-                                        issues.Add($"Issue reading order date on row {row}: {ex.Message}");
-                                    }
-                                    try
-                                    {
-                                        shipDate = excelReader.GetDateTime(shipDateColumnId);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        _logger.LogError($"Parse error on ship date, row {row}: {ex.Message}");
-                                        issues.Add($"Issue reading ship date on row {row}: {ex.Message}");
-                                    }
-                                    if (!string.IsNullOrEmpty(coupon)
-                                        && (orderDate != null && shipDate != null))
-                                    {
-                                        var code = await _vendorCodeRepository.GetByCode(coupon);
-                                        if (code == null)
+
+                                        string coupon = null;
+                                        DateTime? orderDate = null;
+                                        DateTime? shipDate = null;
+                                        try
                                         {
-                                            _logger.LogError($"File contained code {coupon} which was not found in the database");
-                                            issues.Add($"Uploaded file contained code <code>{coupon}</code> which couldn't be found in the database.");
+                                            coupon = excelReader.GetString(couponColumnId);
                                         }
-                                        else
+                                        catch (Exception ex)
                                         {
-                                            if (orderDate == code.OrderDate && shipDate == code.ShipDate)
+                                            _logger.LogError($"Parse error on code, row {row}: {ex.Message}");
+                                            issues.Add($"Issue reading code on line {row}: {ex.Message}");
+                                        }
+                                        try
+                                        {
+                                            orderDate = excelReader.GetDateTime(orderDateColumnId);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            _logger.LogError($"Parse error on order date, row {row}: {ex.Message}");
+                                            issues.Add($"Issue reading order date on row {row}: {ex.Message}");
+                                        }
+                                        try
+                                        {
+                                            shipDate = excelReader.GetDateTime(shipDateColumnId);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            _logger.LogError($"Parse error on ship date, row {row}: {ex.Message}");
+                                            issues.Add($"Issue reading ship date on row {row}: {ex.Message}");
+                                        }
+                                        if (!string.IsNullOrEmpty(coupon)
+                                            && (orderDate != null && shipDate != null))
+                                        {
+                                            var code = await _vendorCodeRepository.GetByCode(coupon);
+                                            if (code == null)
                                             {
-                                                alreadyCurrent++;
+                                                _logger.LogError($"File contained code {coupon} which was not found in the database");
+                                                issues.Add($"Uploaded file contained code <code>{coupon}</code> which couldn't be found in the database.");
                                             }
                                             else
                                             {
-                                                code.IsUsed = true;
-                                                if (orderDate != null)
+                                                if (orderDate == code.OrderDate && shipDate == code.ShipDate)
                                                 {
-                                                    code.OrderDate = orderDate;
+                                                    alreadyCurrent++;
                                                 }
-                                                if (shipDate != null)
+                                                else
                                                 {
-                                                    code.ShipDate = shipDate;
+                                                    code.IsUsed = true;
+                                                    if (orderDate != null)
+                                                    {
+                                                        code.OrderDate = orderDate;
+                                                    }
+                                                    if (shipDate != null)
+                                                    {
+                                                        code.ShipDate = shipDate;
+                                                    }
+                                                    await _vendorCodeRepository.UpdateSaveNoAuditAsync(code);
+                                                    updated++;
                                                 }
-                                                await _vendorCodeRepository.UpdateSaveNoAuditAsync(code);
-                                                updated++;
                                             }
                                         }
                                     }
@@ -326,11 +332,6 @@ namespace GRA.Domain.Service
                                 {
                                     break;
                                 }
-                            }
-
-                            if (!excelReader.IsClosed)
-                            {
-                                excelReader.Close();
                             }
                         }
 
@@ -511,7 +512,7 @@ namespace GRA.Domain.Service
                 {
                     string url = null;
                     // see if the url has the token in it, if so swap in the code
-                    if(!codeType.Url.Contains(TemplateToken.VendorCodeToken))
+                    if (!codeType.Url.Contains(TemplateToken.VendorCodeToken))
                     {
                         url = codeType.Url;
                     }
@@ -522,7 +523,7 @@ namespace GRA.Domain.Service
                     // token and url - make token clickable to go to url
                     body = codeType.Mail.Replace(TemplateToken.VendorCodeToken,
                         $"<a href=\"{url}\" _target=\"blank\">{assignedCode}</a>");
-                    if(body.Contains(TemplateToken.VendorLinkToken))
+                    if (body.Contains(TemplateToken.VendorLinkToken))
                     {
                         body = body.Replace(TemplateToken.VendorLinkToken, url);
                     }
