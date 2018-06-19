@@ -24,6 +24,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Mail threading showing html as text
 - Disable avatar save button while saving to avoid accidental double-clicks
 - Issue with parsing some Excel spreadsheets in the vendor code status update
+- Reporting excel sheet formatting error
 
 ## [4.0.0-beta2] - 2018-05-18
 ### Added
