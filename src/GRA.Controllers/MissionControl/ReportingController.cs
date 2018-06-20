@@ -256,11 +256,11 @@ namespace GRA.Controllers.MissionControl
             var criteriaDictionnary = new Dictionary<string, object>();
             if (storedReport.criterion.StartDate.HasValue)
             {
-                criteriaDictionnary.Add("Start Date", storedReport.criterion.StartDate.Value);
+                criteriaDictionnary.Add("Start Date", storedReport.criterion.StartDate.Value.ToString());
             }
             if (storedReport.criterion.EndDate.HasValue)
             {
-                criteriaDictionnary.Add("End Date", storedReport.criterion.EndDate.Value);
+                criteriaDictionnary.Add("End Date", storedReport.criterion.EndDate.Value.ToString());
             }
             if (storedReport.criterion.SystemId.HasValue)
             {
