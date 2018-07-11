@@ -31,6 +31,8 @@
             public const string AskIfFirstTime = "Users.AskIfFirstTime";
             public const string AskPreregistrationReminder = "Users.AskPreregistrationReminder";
             public const string DefaultDailyPersonalGoal = "Users.DefaultDailyPersonalGoal";
+            public const string SurveyUrl = "Users.SurveyUrl";
+            public const string FirstTimeSurveyUrl = "Users.FirstTimeSurveyUrl";
         }
     }
 }

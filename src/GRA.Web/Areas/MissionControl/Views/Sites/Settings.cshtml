@@ -29,6 +29,10 @@
                     {
                         <input asp-for="SiteSettingGroups[i].SettingInformations[j].SiteSetting.Value" type="number" class="form-control" />
                     }
+                    else if (Model.SiteSettingGroups[i].SettingInformations[j].Definition.Format == GRA.Domain.Model.SiteSettingFormat.String)
+                    {
+                        <input asp-for="SiteSettingGroups[i].SettingInformations[j].SiteSetting.Value" type="text" class="form-control" />
+                    }
                     <span asp-validation-for="SiteSettingGroups[i].SettingInformations[j].SiteSetting.Value" class="text-danger"></span>
                 </div>
             </div>

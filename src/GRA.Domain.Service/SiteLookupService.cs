@@ -178,7 +178,8 @@ namespace GRA.Domain.Service
             {
                 throw new Exception($"Invalid key: {key}");
             }
-            else if (settingDefinition.Format == SiteSettingFormat.Integer)
+            else if (settingDefinition.Format == SiteSettingFormat.Integer
+                || settingDefinition.Format == SiteSettingFormat.String)
             {
                 throw new Exception($"Invalid format for key: {key}");
             }
@@ -208,7 +209,8 @@ namespace GRA.Domain.Service
             {
                 throw new Exception($"Invalid key: {key}");
             }
-            else if (settingDefinition.Format == SiteSettingFormat.Boolean)
+            else if (settingDefinition.Format == SiteSettingFormat.Boolean
+                || settingDefinition.Format == SiteSettingFormat.String)
             {
                 throw new Exception($"Invalid format for key: {key}");
             }
@@ -229,6 +231,43 @@ namespace GRA.Domain.Service
                 }
             }
             return (IsSet: false, SetValue: default(int));
+        }
+
+        /// <summary>
+        /// Look up a string site setting by site id and key.
+        /// </summary>
+        /// <param name="siteId">Site id that the setting is associated with</param>
+        /// <param name="key">The site setting key value (a string, up to 255 characters)</param>
+        /// <returns>A tuple, the bool is true if the setting is present and a string with the
+        /// value. The bool is false if the setting is not set.</returns>
+        public async Task<(bool IsSet, string SetValue)> GetSiteSettingStringAsync(
+            int siteId, string key)
+        {
+            var settingDefinition = SiteSettingDefinitions.DefinitionDictionary[key];
+
+            if (settingDefinition == null)
+            {
+                throw new Exception($"Invalid key: {key}");
+            }
+            else if (settingDefinition.Format == SiteSettingFormat.Boolean
+                || settingDefinition.Format == SiteSettingFormat.Integer)
+            {
+                throw new Exception($"Invalid format for key: {key}");
+            }
+
+            var site = (await GetSitesFromCacheAsync())
+                .Where(_ => _.Id == siteId)
+                .SingleOrDefault();
+            var settingValueString = site.Settings
+                .Where(_ => _.Key == key)
+                .FirstOrDefault()?
+                .Value;
+
+            if (!string.IsNullOrEmpty(settingValueString))
+            {
+                return (IsSet: true, SetValue: settingValueString);
+            }
+            return (IsSet: false, SetValue: string.Empty);
         }
     }
 }
