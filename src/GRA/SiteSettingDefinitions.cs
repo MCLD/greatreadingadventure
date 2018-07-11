@@ -107,6 +107,26 @@ namespace GRA
                     Category = typeof(SiteSettingKey.Users).Name,
                     Format = SiteSettingFormat.Integer
                 }
+            },
+            {
+                SiteSettingKey.Users.SurveyUrl,
+                new SiteSettingDefinition()
+                {
+                    Name = "Survey URL",
+                    Info = "Set a link for {Your Website}/Survey to redirect to.",
+                    Category = typeof(SiteSettingKey.Users).Name,
+                    Format = SiteSettingFormat.String
+                }
+            },
+            {
+                SiteSettingKey.Users.FirstTimeSurveyUrl,
+                new SiteSettingDefinition()
+                {
+                    Name = "First time survey URL",
+                    Info = "Set a link for {Your Website}/Survey to redirect to for first time users. Requires Ask if first time and Survey URL to be configured.",
+                    Category = typeof(SiteSettingKey.Users).Name,
+                    Format = SiteSettingFormat.String
+                }
             }
         };
     }
