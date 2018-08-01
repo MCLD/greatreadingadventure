@@ -26,6 +26,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Disable avatar save button while saving to avoid accidental double-clicks
 - Issue with parsing some Excel spreadsheets in the vendor code status update
 - Reporting excel sheet formatting error
+- Issue displaying vendor code notes on household pages
 
 ## [4.0.0-beta2] - 2018-05-18
 ### Added
