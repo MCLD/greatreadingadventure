@@ -310,6 +310,12 @@ namespace GRA.Data.Repository
             return await ApplyUserFilter(request).CountAsync();
         }
 
+        public async Task<int> GetFirstTimeCountAsync(ReportCriterion request)
+        {
+            var users = ApplyUserFilter(request);
+            return await users.Where(_ => _.IsFirstTime == true).CountAsync();
+        }
+
         public async Task<int> GetAchieverCountAsync(ReportCriterion request)
         {
             return await ApplyUserFilter(request)

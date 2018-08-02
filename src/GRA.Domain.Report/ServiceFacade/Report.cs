@@ -11,6 +11,7 @@ namespace GRA.Domain.Report.ServiceFacade
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly IReportCriterionRepository _reportCriterionRepository;
         private readonly IReportRequestRepository _reportRequestRepository;
+        private readonly ISiteSettingRepository _siteSettingRepository;
 
         public IConfigurationRoot Config
         {
@@ -41,11 +42,20 @@ namespace GRA.Domain.Report.ServiceFacade
             }
         }
 
+        public ISiteSettingRepository SiteSettingRepository
+        {
+            get
+            {
+                return _siteSettingRepository;
+            }
+        }
+
 
         public Report(IConfigurationRoot config,
             IDateTimeProvider dateTimeProvider,
             IReportCriterionRepository reportCriterionRepository,
-            IReportRequestRepository reportRequestRepository)
+            IReportRequestRepository reportRequestRepository,
+            ISiteSettingRepository siteSettingRepository)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
             _dateTimeProvider = dateTimeProvider
@@ -54,6 +64,8 @@ namespace GRA.Domain.Report.ServiceFacade
                 ?? throw new ArgumentNullException(nameof(reportCriterionRepository));
             _reportRequestRepository = reportRequestRepository
                 ?? throw new ArgumentNullException(nameof(reportRequestRepository));
+            _siteSettingRepository = siteSettingRepository
+                ?? throw new ArgumentNullException(nameof(SiteSettingRepository));
         }
     }
 }
