@@ -70,6 +70,9 @@ namespace GRA.Domain.Report
                 AsOf = _serviceFacade.DateTimeProvider.Now
             };
             var reportData = new List<object[]>();
+
+            var askIfFirstTime
+                = await GetSiteSettingBoolAsync(criterion, SiteSettingKey.Users.AskIfFirstTime);
             #endregion Reporting initialization
 
             #region Collect data
@@ -79,11 +82,17 @@ namespace GRA.Domain.Report
             var headerRow = new List<object>() {
                 "System Name",
                 "Branch Name",
-                "Registered Users",
-                "Achievers",
-                "Challenges Completed",
-                "Badges Earned"
+                "Registered Users"
             };
+
+            if (askIfFirstTime)
+            {
+                headerRow.Add("First time Participants");
+            }
+
+            headerRow.Add("Achievers");
+            headerRow.Add("Challenges Completed");
+            headerRow.Add("Badges Earned");
 
             var translations = new Dictionary<string, ICollection<int?>>();
             var translationTotals = new Dictionary<string, long>();
@@ -122,6 +131,7 @@ namespace GRA.Domain.Report
 
             // running totals
             long totalRegistered = 0;
+            long totalFirstTime = 0;
             long totalAchiever = 0;
             long totalChallenges = 0;
             long totalBadges = 0;
@@ -166,14 +176,24 @@ namespace GRA.Domain.Report
                     totalBadges += badge;
                     totalPoints += points;
 
-                    var row = new List<object>() {
+                    var row = new List<object>()
+                    {
                         branch.SystemName,
                         branch.Name,
-                        users,
-                        achievers,
-                        challenge,
-                        badge,
+                        users
                     };
+
+                    if (askIfFirstTime)
+                    {
+                        int firstTime = await _userRepository.GetFirstTimeCountAsync(criterion);
+                        totalFirstTime += firstTime;
+
+                        row.Add(firstTime);
+                    }
+
+                    row.Add(achievers);
+                    row.Add(challenge);
+                    row.Add(badge);
 
                     foreach (var translationName in translations.Keys)
                     {
@@ -200,11 +220,17 @@ namespace GRA.Domain.Report
             {
                 "Total",
                 string.Empty,
-                totalRegistered,
-                totalAchiever,
-                totalChallenges,
-                totalBadges
+                totalRegistered
             };
+
+            if (askIfFirstTime)
+            {
+                footerRow.Add(totalFirstTime);
+            }
+
+            footerRow.Add(totalAchiever);
+            footerRow.Add(totalChallenges);
+            footerRow.Add(totalBadges);
 
             foreach (var total in translationTotals.Values)
             {
