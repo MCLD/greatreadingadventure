@@ -13,6 +13,8 @@ namespace GRA.Data.Repository
     public class UserLogRepository
         : AuditingRepository<Model.UserLog, Domain.Model.UserLog>, IUserLogRepository
     {
+        public const int MaxMinutesForReporting = 0;
+
         public UserLogRepository(ServiceFacade.Repository repositoryFacade,
             ILogger<UserLogRepository> logger) : base(repositoryFacade, logger)
         {
@@ -380,6 +382,7 @@ namespace GRA.Data.Repository
             var earnedFilter = DbSet
                 .AsNoTracking()
                 .Where(_ => _.IsDeleted == false
+                    && _.ActivityEarned != null
                     && _.User.IsDeleted == false
                     && _.PointTranslationId != null
                     && translationIds.Contains(_.PointTranslationId));
@@ -388,8 +391,20 @@ namespace GRA.Data.Repository
             if (eligibleUserIds != null)
             {
                 earnedFilter = earnedFilter.Where(_ => eligibleUserIds.Contains(_.UserId));
+                
+                if (MaxMinutesForReporting > 0)
+                {
+                    return await _context.Users
+                        .Where(_ => eligibleUserIds.Contains(_.Id))
+                        .GroupJoin(earnedFilter, u => u.Id, ul => ul.UserId, (u, ul) => new { User = u, Sum = (long)ul.Sum(_ => _.ActivityEarned) })
+                        .Where(_ => _.Sum > 0)
+                        .Select(_ => (_.Sum > MaxMinutesForReporting ? _.User.Program.AchieverPointAmount : _.Sum))
+                        .SumAsync(_ => _);
+                }
             }
 
+            // TODO Fix for reporting over a time period
+            /*
             if (request.StartDate != null)
             {
                 earnedFilter = earnedFilter
@@ -401,6 +416,7 @@ namespace GRA.Data.Repository
                 earnedFilter = earnedFilter
                     .Where(_ => _.CreatedAt <= request.EndDate);
             }
+            */
 
             return await earnedFilter.SumAsync(_ => Convert.ToInt64(_.ActivityEarned));
         }

@@ -283,6 +283,7 @@ namespace GRA.Web
             services.AddScoped<Domain.Report.ActivityByProgramReport>();
             services.AddScoped<Domain.Report.BadgeReport>();
             services.AddScoped<Domain.Report.BadgeTopScoresReport>();
+            services.AddScoped<Domain.Report.CommunityExperiencesReport>();
             services.AddScoped<Domain.Report.CurrentStatusByProgramReport>();
             services.AddScoped<Domain.Report.CurrentStatusReport>();
             services.AddScoped<Domain.Report.GroupVendorCodeReport>();
@@ -290,6 +291,7 @@ namespace GRA.Web
             services.AddScoped<Domain.Report.RegistrationsAchieversReport>();
             services.AddScoped<Domain.Report.ParticipantPrizeReport>();
             services.AddScoped<Domain.Report.ParticipantProgressReport>();
+            services.AddScoped<Domain.Report.ParticipantCountMinutesByProgram>();
             services.AddScoped<Domain.Report.PrizeRedemptionReport>();
             services.AddScoped<Domain.Report.TopScoresReport>();
             services.AddScoped<Domain.Report.VendorCodeDonationsReport>();

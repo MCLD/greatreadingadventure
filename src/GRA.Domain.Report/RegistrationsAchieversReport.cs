@@ -58,24 +58,35 @@ namespace GRA.Domain.Report
                 AsOf = _serviceFacade.DateTimeProvider.Now
             };
             var reportData = new List<object[]>();
+
+            var askIfFirstTime
+                = await GetSiteSettingBoolAsync(criterion, SiteSettingKey.Users.AskIfFirstTime);
             #endregion Reporting initialization
 
             #region Collect data
             UpdateProgress(progress, 1, "Starting report...", request.Name);
 
             // header row
-            report.HeaderRow = new object[]
-            {
+            var headerRow = new List<object>() {
                 "System Name",
                 "Branch Name",
-                "Registered Users",
-                "Achievers"
+                "Registered Users"
             };
+
+            if (askIfFirstTime)
+            {
+                headerRow.Add("First time Participants");
+            }
+
+            headerRow.Add("Achievers");
+
+            report.HeaderRow = headerRow.ToArray();
 
             int count = 0;
 
             // running totals
             long totalRegistered = 0;
+            long totalFirstTime = 0;
             long totalAchiever = 0;
 
             var branches = criterion.SystemId != null
@@ -109,13 +120,24 @@ namespace GRA.Domain.Report
                     totalRegistered += users;
                     totalAchiever += achievers;
 
-                    // add row
-                    reportData.Add(new object[] {
+                    var row = new List<object>()
+                    {
                         branch.SystemName,
                         branch.Name,
-                        users,
-                        achievers
-                    });
+                        users
+                    };
+
+                    if (askIfFirstTime)
+                    {
+                        int firstTime = await _userRepository.GetFirstTimeCountAsync(criterion);
+                        totalFirstTime += firstTime;
+
+                        row.Add(firstTime);
+                    }
+
+                    row.Add(achievers);
+
+                    reportData.Add(row.ToArray());
 
                     if (token.IsCancellationRequested)
                     {
@@ -127,13 +149,21 @@ namespace GRA.Domain.Report
             report.Data = reportData.ToArray();
 
             // total row
-            report.FooterRow = new object[]
+            var footerRow = new List<object>()
             {
                 "Total",
                 string.Empty,
-                totalRegistered,
-                totalAchiever
+                totalRegistered
             };
+
+            if (askIfFirstTime)
+            {
+                footerRow.Add(totalFirstTime);
+            }
+
+            footerRow.Add(totalAchiever);
+
+            report.FooterRow = footerRow.ToArray();
             #endregion Collect data
 
             #region Finish up reporting

@@ -11,32 +11,32 @@ using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Report
 {
-    [ReportInformation(8,
-        "Activity By Program",
-        "Registration count and activity, filterable by system and date, displayed by program.",
-        "Program")]
-    public class ActivityByProgramReport : BaseReport
+    [ReportInformation(16,
+    "Participant Count and Minutes By Program Report",
+    "Select a system, see participant count and minutes reported by program.",
+    "Program")]
+    public class ParticipantCountMinutesByProgram : BaseReport
     {
-        private readonly IBranchRepository _branchRepository;
         private readonly IPointTranslationRepository _pointTranslationRepository;
         private readonly IProgramRepository _programRepository;
+        private readonly ISystemRepository _systemRepository;
         private readonly IUserRepository _userRepository;
         private readonly IUserLogRepository _userLogRepository;
 
-        public ActivityByProgramReport(ILogger<ActivityByProgramReport> logger,
+        public ParticipantCountMinutesByProgram(ILogger<ParticipantCountMinutesByProgram> logger,
             ServiceFacade.Report serviceFacade,
-            IBranchRepository branchRepository,
             IPointTranslationRepository pointTranslationRepository,
             IProgramRepository programRepository,
+            ISystemRepository systemRepository,
             IUserRepository userRepository,
             IUserLogRepository userLogRepository) : base(logger, serviceFacade)
         {
-            _branchRepository = branchRepository
-                ?? throw new ArgumentNullException(nameof(branchRepository));
             _pointTranslationRepository = pointTranslationRepository
                 ?? throw new ArgumentNullException(nameof(pointTranslationRepository));
             _programRepository = programRepository
                 ?? throw new ArgumentNullException(nameof(programRepository));
+            _systemRepository = systemRepository
+                ?? throw new ArgumentNullException(nameof(ISystemRepository));
             _userRepository = userRepository
                 ?? throw new ArgumentNullException(nameof(userRepository));
             _userLogRepository = userLogRepository
@@ -63,10 +63,6 @@ namespace GRA.Domain.Report
             };
 
             var reportData = new List<object[]>();
-
-
-            var askIfFirstTime
-                = await GetSiteSettingBoolAsync(criterion, SiteSettingKey.Users.AskIfFirstTime);
             #endregion Reporting initialization
 
             #region Collect data
@@ -75,18 +71,14 @@ namespace GRA.Domain.Report
             // header row
             var headerRow = new List<object>() {
                 "System Name",
-                "Branch Name",
                 "Program Name",
                 "Registered Users",
             };
 
-            if (askIfFirstTime)
-            {
-                headerRow.Add("First time Participants");
-            }
-
             var translations = new Dictionary<string, ICollection<int?>>();
             var translationTotals = new Dictionary<string, long>();
+
+            var system = await _systemRepository.GetByIdAsync((int)criterion.SystemId);
 
             var programDictionary = (await _programRepository.GetAllAsync((int)criterion.SiteId))
                 .ToDictionary(_ => _.Id, _ => _.Name);
@@ -123,78 +115,46 @@ namespace GRA.Domain.Report
 
             // running totals
             long totalRegistered = 0;
-            long totalFirstTime = 0;
 
-            var branches = criterion.SystemId != null
-                ? await _branchRepository.GetBySystemAsync((int)criterion.SystemId)
-                : await _branchRepository.GetAllAsync((int)criterion.SiteId);
+            int totalItems = programDictionary.Count();
 
-            var systemIds = branches
-                .OrderBy(_ => _.SystemName)
-                .GroupBy(_ => _.SystemId)
-                .Select(_ => _.First().SystemId);
-
-            int totalItems = branches.Count() * programDictionary.Count();
-
-            foreach (var systemId in systemIds)
+            foreach (var programId in programDictionary.Keys)
             {
                 if (token.IsCancellationRequested)
                 {
                     break;
                 }
+                UpdateProgress(progress,
+                    ++count * 100 / totalItems,
+                    $"Processing: {programDictionary[programId]}",
+                    request.Name);
 
-                foreach (var branch in branches.Where(_ => _.SystemId == systemId))
+                criterion.SystemId = system.Id;
+                criterion.ProgramId = programId;
+
+                int users = await _userRepository.GetCountAsync(criterion);
+
+                totalRegistered += users;
+
+                var row = new List<object>() {
+                        system.Name,
+                        programDictionary[programId],
+                        users
+                    };
+
+                foreach (var translationName in translations.Keys)
                 {
-                    if (token.IsCancellationRequested)
-                    {
-                        break;
-                    }
+                    long total = await _userLogRepository.TranslationEarningsAsync(criterion,
+                        translations[translationName]);
+                    row.Add(total);
+                    translationTotals[translationName] += total;
+                }
 
-                    foreach (var programId in programDictionary.Keys)
-                    {
-                        UpdateProgress(progress,
-                            ++count * 100 / totalItems,
-                            $"Processing: {branch.SystemName} - {branch.Name}",
-                            request.Name);
+                reportData.Add(row.ToArray());
 
-                        criterion.SystemId = systemId;
-                        criterion.BranchId = branch.Id;
-                        criterion.ProgramId = programId;
-
-                        int users = await _userRepository.GetCountAsync(criterion);
-
-                        totalRegistered += users;
-
-                        var row = new List<object>() {
-                            branch.SystemName,
-                            branch.Name,
-                            programDictionary[programId],
-                            users
-                        };
-
-                        if (askIfFirstTime)
-                        {
-                            int firstTime = await _userRepository.GetFirstTimeCountAsync(criterion);
-                            totalFirstTime += firstTime;
-
-                            row.Add(firstTime);
-                        }
-
-                        foreach (var translationName in translations.Keys)
-                        {
-                            long total = await _userLogRepository.TranslationEarningsAsync(criterion,
-                                translations[translationName]);
-                            row.Add(total);
-                            translationTotals[translationName] += total;
-                        }
-
-                        reportData.Add(row.ToArray());
-
-                        if (token.IsCancellationRequested)
-                        {
-                            break;
-                        }
-                    }
+                if (token.IsCancellationRequested)
+                {
+                    break;
                 }
             }
 
@@ -205,14 +165,8 @@ namespace GRA.Domain.Report
             {
                 "Total",
                 string.Empty,
-                string.Empty,
                 totalRegistered,
             };
-
-            if (askIfFirstTime)
-            {
-                footerRow.Add(totalFirstTime);
-            }
 
             foreach (var total in translationTotals.Values)
             {
