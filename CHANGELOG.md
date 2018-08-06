@@ -10,10 +10,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Survey linking for all participants and first time participants
 - Participant Count and Minutes by Program Report
 - First time users to Activity by Program Report
+- Add community experience attendance report
 
 ### Changed
 - Mission Control events navbar icon is now a drop-down (#322)
 - Fix automated builds and pushing to Docker Hub
+- Add minute cap to reporting
 
 ### Fixed
 - Set page title to "community experiences" when selected on the events page
