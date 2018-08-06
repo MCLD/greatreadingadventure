@@ -283,6 +283,7 @@ namespace GRA.Web
             services.AddScoped<Domain.Report.ActivityByProgramReport>();
             services.AddScoped<Domain.Report.BadgeReport>();
             services.AddScoped<Domain.Report.BadgeTopScoresReport>();
+            services.AddScoped<Domain.Report.CommunityExperiencesReport>();
             services.AddScoped<Domain.Report.CurrentStatusByProgramReport>();
             services.AddScoped<Domain.Report.CurrentStatusReport>();
             services.AddScoped<Domain.Report.GroupVendorCodeReport>();
