@@ -11,11 +11,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Participant Count and Minutes by Program Report
 - First time users to Activity by Program Report
 - Add community experience attendance report
+- Email reminders after access has closed
 
 ### Changed
 - Mission Control events navbar icon is now a drop-down (#322)
 - Fix automated builds and pushing to Docker Hub
 - Developer ability to add minute cap to reporting
+- Before registration email reminder to use a site setting
 
 ### Fixed
 - Set page title to "community experiences" when selected on the events page
