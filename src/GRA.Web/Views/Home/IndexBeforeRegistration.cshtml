@@ -25,11 +25,11 @@
     </div>
     <div class="col-sm-6">
         Welcome to <grasite property="name"></grasite>.
-        @if (Model == null || Model.Site == null || string.IsNullOrEmpty(Model.RegistrationOpens))
+        @if (Model == null || string.IsNullOrEmpty(Model.RegistrationOpens))
         {
             <p>When the program starts, you'll be able to join right here. Come back soon!</p>
         }
-        else if (Model.Site.CollectPreregistrationEmails == true)
+        else if (Model.CollectEmail == true)
         {
             <p>You can join our program starting on @Model.RegistrationOpens!</p>
 

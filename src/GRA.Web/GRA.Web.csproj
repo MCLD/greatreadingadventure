@@ -125,6 +125,10 @@
     <None Include="wwwroot\lib\**\*" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="shared\Views\Home\" />
+  </ItemGroup>
+
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <TypeScriptTarget>ES5</TypeScriptTarget>
     <TypeScriptJSXEmit>None</TypeScriptJSXEmit>

@@ -54,8 +54,6 @@ namespace GRA.Domain.Model
         public string ExternalEventListUrl { get; set; }
         [DisplayName("Google Analytics Tracking Id")]
         public string GoogleAnalyticsTrackingId { get; set; }
-        [DisplayName("Collect Preregistration Emails")]
-        public bool CollectPreregistrationEmails { get; set; }
         [DisplayName("Meta Description")]
         [MaxLength(150)]
         public string MetaDescription { get; set; }
