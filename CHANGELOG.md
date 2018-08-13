@@ -12,6 +12,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - First time users to Activity by Program Report
 - Community experience attendance report
 - Email address collection after program has ended
+- First time participant count on vendor code report
+- Achiever count to the participant count and minutes by program report
 
 ### Changed
 - Mission Control events navbar icon is now a drop-down (#322)
