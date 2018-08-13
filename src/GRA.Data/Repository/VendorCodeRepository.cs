@@ -93,6 +93,11 @@ namespace GRA.Data.Repository
             var validUsers = _context.Users.AsNoTracking()
                 .Where(_ => _.SiteId == criterion.SiteId);
 
+            if(criterion.IsFirstTimeParticipant == true)
+            {
+                validUsers = validUsers.Where(_ => _.IsFirstTime == true);
+            }
+
             if (criterion.BranchId.HasValue)
             {
                 validUsers = validUsers.Where(_ => _.BranchId == criterion.BranchId.Value);
