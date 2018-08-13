@@ -99,6 +99,26 @@ namespace GRA
                 }
             },
             {
+                SiteSettingKey.Users.CollectAccessClosedEmails,
+                new SiteSettingDefinition()
+                {
+                    Name = "Collect emails after access has closed",
+                    Info = "Put any text here to add email collection on the homepage after the program has closed. This software does not send the email, it just collects the addresses.",
+                    Category = typeof(SiteSettingKey.Users).Name,
+                    Format = SiteSettingFormat.Boolean
+                }
+            },
+            {
+                SiteSettingKey.Users.CollectPreregistrationEmails,
+                new SiteSettingDefinition()
+                {
+                    Name = "Collect emails before registration has opened",
+                    Info = "Put any text here to add email collection on the homepage before registration has opened. This software does not send the email, it just collects the addresses.",
+                    Category = typeof(SiteSettingKey.Users).Name,
+                    Format = SiteSettingFormat.Boolean
+                }
+            },
+            {
                 SiteSettingKey.Users.DefaultDailyPersonalGoal,
                 new SiteSettingDefinition()
                 {

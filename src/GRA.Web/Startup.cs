@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -14,6 +13,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -186,6 +186,11 @@ namespace GRA.Web
                 });
             }
             services.AddMvc();
+
+            // Add custom view directory
+            services.Configure<RazorViewEngineOptions>(options =>
+                options.ViewLocationFormats.Insert(0, "/shared/Views/{1}/{0}.cshtml")
+            );
 
             services.AddAuthorization(options =>
             {
