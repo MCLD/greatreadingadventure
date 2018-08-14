@@ -6,6 +6,8 @@ You can edit the `appsettings.json` file that comes with The Great Reading Adven
 
 The critical settings to update are the "SqlServer" setting under "ConnectionStrings" and the "GraInitialAuthCode" setting.
 
+**Please note:** Application settings are configured in a JSON or "JavaScript Object Notation" file. This file can be edited with any text editor (such as notepad.exe) but must be in a specific format. You can find validators online which will help you ensure that the syntax of the file is correct. Also note that when a backslash (`\`) or double quote (`"`) appears within quotes (for example in the database password) it must be escaped, meaning a backslash should appear prior to the escaped character (e.g. `\\` or `\"`).
+
 ## Connection string
 
 ```json
