@@ -189,7 +189,7 @@ namespace GRA.Web
 
             // Add custom view directory
             services.Configure<RazorViewEngineOptions>(options =>
-                options.ViewLocationFormats.Insert(0, "/shared/Views/{1}/{0}.cshtml")
+                options.ViewLocationFormats.Insert(0, "/shared/views/{1}/{0}.cshtml")
             );
 
             services.AddAuthorization(options =>
@@ -280,6 +280,7 @@ namespace GRA.Web
             services.AddScoped<SiteLookupService>();
             services.AddScoped<SiteService>();
             services.AddScoped<SystemInformationService>();
+            services.AddScoped<TemplateService>();
             services.AddScoped<TriggerService>();
             services.AddScoped<UserService>();
             services.AddScoped<VendorCodeService>();
@@ -389,7 +390,8 @@ namespace GRA.Web
             ILoggerFactory loggerFactory,
             IPathResolver pathResolver,
             RoleService roleService,
-            SiteLookupService siteLookupService)
+            SiteLookupService siteLookupService,
+            TemplateService templateService)
         {
             loggerFactory.AddSerilog();
 
@@ -419,7 +421,8 @@ namespace GRA.Web
             dbContext.Migrate();
             Task.Run(() => siteLookupService.GetDefaultSiteIdAsync()).Wait();
             Task.Run(() => roleService.SyncPermissionsAsync()).Wait();
-
+            templateService.SetupTemplates();
+            
             app.UseRequestLocalization();
 
             app.UseResponseCompression();
