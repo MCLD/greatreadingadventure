@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - First time users to Activity by Program Report
 - Community experience attendance report
 - Email address collection after program has ended
+- Templates in the shared folder for front page and dashboard views
 
 ### Changed
 - Mission Control events navbar icon is now a drop-down (#322)
