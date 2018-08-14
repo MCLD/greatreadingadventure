@@ -13,7 +13,7 @@ namespace GRA.Domain.Report
 {
     [ReportInformation(16,
     "Participant Count and Minutes By Program Report",
-    "Select a system, see participant count and minutes reported by program.",
+    "Select a system, see participant count, achievers, and minutes reported by program.",
     "Program")]
     public class ParticipantCountMinutesByProgram : BaseReport
     {
@@ -73,6 +73,7 @@ namespace GRA.Domain.Report
                 "System Name",
                 "Program Name",
                 "Registered Users",
+                "Achievers"
             };
 
             var translations = new Dictionary<string, ICollection<int?>>();
@@ -115,6 +116,7 @@ namespace GRA.Domain.Report
 
             // running totals
             long totalRegistered = 0;
+            long totalAchievers = 0;
 
             int totalItems = programDictionary.Count();
 
@@ -134,12 +136,16 @@ namespace GRA.Domain.Report
 
                 int users = await _userRepository.GetCountAsync(criterion);
 
+                int achievers = await _userRepository.GetAchieverCountAsync(criterion);
+
                 totalRegistered += users;
+                totalAchievers += achievers;
 
                 var row = new List<object>() {
                         system.Name,
                         programDictionary[programId],
-                        users
+                        users,
+                        achievers
                     };
 
                 foreach (var translationName in translations.Keys)
@@ -166,6 +172,7 @@ namespace GRA.Domain.Report
                 "Total",
                 string.Empty,
                 totalRegistered,
+                totalAchievers
             };
 
             foreach (var total in translationTotals.Values)

@@ -23,5 +23,7 @@ namespace GRA.Domain.Model
         public string Name { get; set; }
         public string BadgeRequiredList { get; set; }
         public string ChallengeRequiredList { get; set; }
+
+        public bool IsFirstTimeParticipant { get; set; }
     }
 }

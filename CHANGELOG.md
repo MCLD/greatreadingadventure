@@ -13,6 +13,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Community experience attendance report
 - Email address collection after program has ended
 - Templates in the shared folder for front page and dashboard views
+- First time participant count on vendor code report
+- Achiever count to the participant count and minutes by program report
 
 ### Changed
 - Mission Control events navbar icon is now a drop-down (#322)
