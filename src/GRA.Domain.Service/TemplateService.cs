@@ -27,7 +27,9 @@ namespace GRA.Domain.Service
             var sharedViewsPath = Path.Combine(Directory.GetCurrentDirectory(), "shared", "views");
             Directory.CreateDirectory(sharedViewsPath);
             File.Copy(Path.Combine(viewsPath, "_ViewImports.cshtml"),
-                Path.Combine(sharedViewsPath, "_ViewImports.cshtml"));
+                Path.Combine(sharedViewsPath, "_ViewImports.cshtml"), true);
+            File.Copy(Path.Combine(viewsPath, "_ViewStart.cshtml"),
+                Path.Combine(sharedViewsPath, "_ViewStart.cshtml"), true);
 
             var homeViewsPath = Path.Combine(viewsPath, "Home");
             var homeTemplatesPath = Path.Combine(templatesPath, "Home");
