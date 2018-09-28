@@ -1,8 +1,8 @@
 ﻿using System;
 using GRA.Domain.Service;
 using GRA.Domain.Service.Abstract;
+using McMaster.Extensions.CommandLineUtils;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Configuration;
 
 namespace GRA.CommandLine
@@ -10,13 +10,13 @@ namespace GRA.CommandLine
     public class ServiceFacade
     {
         public CommandLineApplication App { get; private set; }
-        public IConfigurationRoot Config { get; private set; }
+        public IConfiguration Config { get; private set; }
         public IHttpContextAccessor HttpContextAccessor { get; private set; }
         public AuthenticationService AuthenticationService { get; private set; }
         public SiteLookupService SiteLookupService { get; private set; }
         public UserService UserService { get; private set; }
         public ServiceFacade(CommandLineApplication app,
-            IConfigurationRoot config,
+            IConfiguration config,
             IHttpContextAccessor httpContextAccessor,
             IUserContextProvider userContextProvider,
             AuthenticationService authenticationService,

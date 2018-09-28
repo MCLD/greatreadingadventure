@@ -12,13 +12,13 @@ namespace GRA.Domain.Service
     public class BadgeService : Abstract.BaseUserService<BadgeService>
     {
         private const string BadgePath = "badges";
-        private readonly IConfigurationRoot _config;
+        private readonly IConfiguration _config;
         private readonly IBadgeRepository _badgeRepository;
         private readonly IPathResolver _pathResolver;
         public BadgeService(ILogger<BadgeService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
-            IConfigurationRoot config,
+            IConfiguration config,
             IBadgeRepository badgeRepository,
             IPathResolver pathResolver) : base(logger, dateTimeProvider, userContextProvider)
         {

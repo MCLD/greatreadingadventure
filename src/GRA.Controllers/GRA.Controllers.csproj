@@ -1,24 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.6</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>GRA.Controllers</AssemblyName>
     <PackageId>GRA.Controllers</PackageId>
-    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
-    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+    <NetStandardImplicitPackageVersion>2.0</NetStandardImplicitPackageVersion>
+    <AssetTargetFallback>$(AssetTargetFallback);dnxcore50</AssetTargetFallback>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <Version>4.0.0</Version>
+    <Version>4.1.0-alpha1</Version>
     <Copyright>Copyright 2017 Maricopa County Library District</Copyright>
     <PackageLicenseUrl>https://github.com/mcld/greatreadingadventure/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>http://www.greatreadingadventure.com/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/mcld/greatreadingadventure/</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
-    <Description>The Great Reading Adventure is a robust, open source software designed to manage library reading programs. The GRA is free to use, modify, and share.</Description>
-    <Authors>Maricopa County Library District</Authors>
-    <PackageTags>public-library reading-program literacy gra</PackageTags>
-    <PackageReleaseNotes>See https://github.com/MCLD/greatreadingadventure/releases/tag/v4.0.0</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -35,11 +31,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="2.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="2.*" />
     <PackageReference Include="CommonMark.NET" Version="0.15.1" />
     <PackageReference Include="DocumentFormat.OpenXml" Version="2.8.*" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.*" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.*" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.*" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.*" />
     <PackageReference Include="Newtonsoft.Json" Version="11.*" />
     <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0003" />
     <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0003" />

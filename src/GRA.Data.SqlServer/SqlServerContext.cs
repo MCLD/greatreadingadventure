@@ -5,7 +5,7 @@ namespace GRA.Data.SqlServer
 {
     public class SqlServerContext : Context
     {
-        public SqlServerContext(IConfigurationRoot config) : base(config) { }
+        public SqlServerContext(IConfiguration config) : base(config) { }
         internal SqlServerContext() : base(DefaultConnectionString.SqlServer) { }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

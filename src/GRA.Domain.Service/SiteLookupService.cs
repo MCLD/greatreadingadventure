@@ -13,7 +13,7 @@ namespace GRA.Domain.Service
 {
     public class SiteLookupService : BaseService<SiteLookupService>
     {
-        private readonly IConfigurationRoot _config;
+        private readonly IConfiguration _config;
         private readonly IMemoryCache _memoryCache;
         private readonly ISiteRepository _siteRepository;
         private readonly ISiteSettingRepository _siteSettingRepository;
@@ -21,7 +21,7 @@ namespace GRA.Domain.Service
 
         public SiteLookupService(ILogger<SiteLookupService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
-            IConfigurationRoot config,
+            IConfiguration config,
             IMemoryCache memoryCache,
             ISiteRepository siteRepository,
             ISiteSettingRepository siteSettingRepository,

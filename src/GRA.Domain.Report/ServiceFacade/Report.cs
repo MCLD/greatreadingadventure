@@ -7,13 +7,13 @@ namespace GRA.Domain.Report.ServiceFacade
 {
     public class Report
     {
-        private readonly IConfigurationRoot _config;
+        private readonly IConfiguration _config;
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly IReportCriterionRepository _reportCriterionRepository;
         private readonly IReportRequestRepository _reportRequestRepository;
         private readonly ISiteSettingRepository _siteSettingRepository;
 
-        public IConfigurationRoot Config
+        public IConfiguration Config
         {
             get
             {
@@ -51,7 +51,7 @@ namespace GRA.Domain.Report.ServiceFacade
         }
 
 
-        public Report(IConfigurationRoot config,
+        public Report(IConfiguration config,
             IDateTimeProvider dateTimeProvider,
             IReportCriterionRepository reportCriterionRepository,
             IReportRequestRepository reportRequestRepository,

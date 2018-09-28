@@ -6,9 +6,11 @@ using System.Reflection;
 using System.Threading.Tasks;
 using AutoMapper;
 using GRA.Abstract;
+using GRA.Controllers;
 using GRA.Controllers.RouteConstraint;
 using GRA.Domain.Service;
 using GRA.Domain.Service.Abstract;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
@@ -45,26 +47,12 @@ namespace GRA.Web
             { ConfigurationKey.Culture, "en-US" }
         };
 
-        public Startup(IHostingEnvironment env)
+        public IConfiguration Configuration { get; }
+
+        public Startup(IHostingEnvironment env, IConfiguration configuration)
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json",
-                    optional: true,
-                    reloadOnChange: true)
-                .AddJsonFile("shared/appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"shared/appsettings.{env.EnvironmentName}.json",
-                    optional: true,
-                    reloadOnChange: true)
-                .AddEnvironmentVariables();
+            Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 
-            if (env.IsDevelopment())
-            {
-                builder.AddUserSecrets<Startup>();
-            }
-
-            Configuration = builder.Build();
             string instance =
                 !string.IsNullOrEmpty(Configuration[ConfigurationKey.InstanceName])
                 ? Configuration[ConfigurationKey.InstanceName]
@@ -123,7 +111,7 @@ namespace GRA.Web
                     .InformationalVersion,
                 env.WebRootPath));
 
-            foreach (var configKey in _defaultSettings.Keys)
+            foreach (string configKey in _defaultSettings.Keys)
             {
                 if (string.IsNullOrEmpty(Configuration[configKey]))
                 {
@@ -146,8 +134,6 @@ namespace GRA.Web
             }
         }
 
-        public IConfigurationRoot Configuration { get; }
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -167,8 +153,6 @@ namespace GRA.Web
             });
             services.TryAddSingleton(_ => Configuration);
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.TryAddSingleton<Microsoft.AspNetCore.Mvc.ViewFeatures.IHtmlGenerator,
-                HtmlGeneratorHack>();
             services.AddResponseCompression();
             services.AddMemoryCache();
 
@@ -192,9 +176,27 @@ namespace GRA.Web
                 options.ViewLocationFormats.Insert(0, "/shared/views/{1}/{0}.cshtml")
             );
 
+            // set cookie authentication options
+            var cookieAuthOptions = new CookieAuthenticationOptions
+            {
+
+                LoginPath = new PathString("/SignIn/"),
+                AccessDeniedPath = new PathString("/"),
+            };
+
+            // if there's a data protection path, set it up - for clustered/multi-server configs
+            if (!string.IsNullOrEmpty(Configuration[ConfigurationKey.DataProtectionPath]))
+            {
+                cookieAuthOptions.DataProtectionProvider = DataProtectionProvider.Create(
+                    new DirectoryInfo(Path.Combine(protectionPath, "cookies")));
+            }
+
+            services.AddAuthentication(Authentication.SchemeGRACookie)
+                .AddCookie(_ => _ = cookieAuthOptions);
+
             services.AddAuthorization(options =>
             {
-                foreach (var permisisonName in Enum.GetValues(typeof(Domain.Model.Permission)))
+                foreach (object permisisonName in Enum.GetValues(typeof(Domain.Model.Permission)))
                 {
                     options.AddPolicy(permisisonName.ToString(),
                         _ => _.RequireClaim(ClaimType.Permission, permisisonName.ToString()));
@@ -389,9 +391,7 @@ namespace GRA.Web
             IHostingEnvironment env,
             ILoggerFactory loggerFactory,
             IPathResolver pathResolver,
-            RoleService roleService,
-            SiteLookupService siteLookupService,
-            TemplateService templateService)
+            Controllers.Base.ISitePathValidator sitePathValidator)
         {
             loggerFactory.AddSerilog();
 
@@ -405,24 +405,6 @@ namespace GRA.Web
                 app.UseStatusCodePagesWithReExecute("/Error/Index/{0}");
             }
 
-            var dbContext = app.ApplicationServices.GetService<Data.Context>();
-            try
-            {
-                var pending = dbContext.GetPendingMigrations();
-                if (pending != null && pending.Count() > 0)
-                {
-                    Log.Logger.Warning($"Applying {pending.Count()} database migrations, last is: {pending.Last()}");
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Logger.Error($"Error looking up migrations to perform: {ex.Message}");
-            }
-            dbContext.Migrate();
-            Task.Run(() => siteLookupService.GetDefaultSiteIdAsync()).Wait();
-            Task.Run(() => roleService.SyncPermissionsAsync()).Wait();
-            templateService.SetupTemplates();
-            
             app.UseRequestLocalization();
 
             app.UseResponseCompression();
@@ -432,7 +414,7 @@ namespace GRA.Web
             {
                 OnPrepareResponse = _ =>
                 {
-                    var headers = _.Context.Response.GetTypedHeaders();
+                    Microsoft.AspNetCore.Http.Headers.ResponseHeaders headers = _.Context.Response.GetTypedHeaders();
                     headers.CacheControl = new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
                     {
                         MaxAge = TimeSpan.FromDays(7)
@@ -468,7 +450,7 @@ namespace GRA.Web
                 RequestPath = new PathString(pathString),
                 OnPrepareResponse = _ =>
                 {
-                    var headers = _.Context.Response.GetTypedHeaders();
+                    Microsoft.AspNetCore.Http.Headers.ResponseHeaders headers = _.Context.Response.GetTypedHeaders();
                     headers.CacheControl = new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
                     {
                         MaxAge = TimeSpan.FromDays(7)
@@ -478,25 +460,7 @@ namespace GRA.Web
 
             app.UseSession();
 
-            // set cookie authentication options
-            var cookieAuthOptions = new CookieAuthenticationOptions
-            {
-                AuthenticationScheme = Controllers.Authentication.SchemeGRACookie,
-                LoginPath = new PathString("/SignIn/"),
-                AccessDeniedPath = new PathString("/"),
-                AutomaticAuthenticate = true,
-                AutomaticChallenge = true
-            };
-
-            // if there's a data protection path, set it up - for clustered/multi-server configs
-            if (!string.IsNullOrEmpty(Configuration[ConfigurationKey.DataProtectionPath]))
-            {
-                string protectionPath = Configuration[ConfigurationKey.DataProtectionPath];
-                cookieAuthOptions.DataProtectionProvider = DataProtectionProvider.Create(
-                    new DirectoryInfo(Path.Combine(protectionPath, "cookies")));
-            }
-
-            app.UseCookieAuthentication(cookieAuthOptions);
+            app.UseAuthentication();
 
             // sitePath is also referenced in GRA.Controllers.Filter.SiteFilter
             app.UseMvc(routes =>
@@ -511,7 +475,7 @@ namespace GRA.Web
                     defaults: new { controller = "Info", action = "Index" },
                     constraints: new
                     {
-                        sitePath = new SiteRouteConstraint(app.ApplicationServices.GetRequiredService<Controllers.Base.ISitePathValidator>())
+                        sitePath = new SiteRouteConstraint(sitePathValidator)
                     });
                 routes.MapRoute(
                     name: null,
@@ -524,7 +488,7 @@ namespace GRA.Web
                     defaults: new { controller = "Home", action = "Index" },
                     constraints: new
                     {
-                        sitePath = new SiteRouteConstraint(app.ApplicationServices.GetRequiredService<Controllers.Base.ISitePathValidator>())
+                        sitePath = new SiteRouteConstraint(sitePathValidator)
                     });
                 routes.MapRoute(
                     name: null,
@@ -540,7 +504,7 @@ namespace GRA.Web
             {
                 if (context.WebSockets.IsWebSocketRequest)
                 {
-                    var handler = app.ApplicationServices.GetService<WebSocketHandler>();
+                    WebSocketHandler handler = app.ApplicationServices.GetService<WebSocketHandler>();
                     await handler.Handle(context);
                 }
                 else

@@ -11,10 +11,10 @@ namespace GRA.Domain.Service
 {
     public class TemplateService : BaseService<TemplateService>
     {
-        private readonly IConfigurationRoot _config;
+        private readonly IConfiguration _config;
         public TemplateService(ILogger<TemplateService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
-            IConfigurationRoot config) : base(logger, dateTimeProvider)
+            IConfiguration config) : base(logger, dateTimeProvider)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
         }

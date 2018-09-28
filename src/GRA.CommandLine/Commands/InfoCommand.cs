@@ -1,7 +1,7 @@
 ﻿using System;
 using GRA.CommandLine.Base;
 using GRA.CommandLine.FakeWeb;
-using Microsoft.Extensions.CommandLineUtils;
+using McMaster.Extensions.CommandLineUtils;
 
 namespace GRA.CommandLine.Commands
 {

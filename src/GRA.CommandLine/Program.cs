@@ -6,16 +6,15 @@ using AutoMapper;
 using GRA.Abstract;
 using GRA.Domain.Service;
 using GRA.Domain.Service.Abstract;
-using Microsoft.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using System.Diagnostics;
-using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.AspNetCore.Http;
 using GRA.CommandLine.FakeWeb;
 using GRA.CommandLine.Base;
+using McMaster.Extensions.CommandLineUtils;
 
 namespace GRA.CommandLine
 {
@@ -46,7 +45,7 @@ namespace GRA.CommandLine
             };
             app.HelpOption("-?|-h|--help");
             app.VersionOption("--version",
-                $"Version {PlatformServices.Default.Application.ApplicationVersion}{VersionSuffix}");
+                $"Version {Assembly.GetEntryAssembly().GetName().Version}{VersionSuffix}");
 
             // default option if no command is specified
             app.OnExecute(() =>
