@@ -12,6 +12,7 @@ using GRA.Controllers.Filter;
 using System;
 using System.Text;
 using GRA.Abstract;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GRA.Controllers.Base
@@ -24,7 +25,7 @@ namespace GRA.Controllers.Base
         protected const string DropDownTrueValue = "True";
         protected const string DropDownFalseValue = "False";
 
-        protected readonly IConfigurationRoot _config;
+        protected readonly IConfiguration _config;
         protected readonly IDateTimeProvider _dateTimeProvider;
         protected readonly IPathResolver _pathResolver;
         protected readonly IUserContextProvider _userContextProvider;
@@ -107,7 +108,7 @@ namespace GRA.Controllers.Base
 
                 var identity = new ClaimsIdentity(claims, Authentication.TypeGRAPassword);
 
-                await HttpContext.Authentication.SignInAsync(Authentication.SchemeGRACookie,
+                await HttpContext.SignInAsync(Authentication.SchemeGRACookie,
                     new ClaimsPrincipal(identity));
 
                 HttpContext.Session.SetInt32(SessionKey.ActiveUserId, authResult.User.Id);
@@ -127,7 +128,7 @@ namespace GRA.Controllers.Base
         {
             int? siteId = HttpContext.Session.GetInt32(SessionKey.SiteId);
             HttpContext.Session.Clear();
-            await HttpContext.Authentication.SignOutAsync(Authentication.SchemeGRACookie);
+            await HttpContext.SignOutAsync(Authentication.SchemeGRACookie);
             HttpContext.User = null;
             if (siteId != null)
             {

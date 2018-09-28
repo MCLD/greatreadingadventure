@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore.Infrastructure;
+﻿using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace GRA.Data.SqlServer
 {
-    internal class SqlServerContextFactory : IDbContextFactory<SqlServerContext>
+    internal class SqlServerContextFactory : IDesignTimeDbContextFactory<SqlServerContext>
     {
-        SqlServerContext IDbContextFactory<SqlServerContext>.Create(DbContextFactoryOptions options)
+        public SqlServerContext CreateDbContext(string[] args)
         {
             return new SqlServerContext();
         }

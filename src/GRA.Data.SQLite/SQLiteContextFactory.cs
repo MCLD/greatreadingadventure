@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore.Infrastructure;
+﻿using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace GRA.Data.SQLite
 {
-    internal class SQLiteContextFactory : IDbContextFactory<SQLiteContext>
+    internal class SQLiteContextFactory : IDesignTimeDbContextFactory<SQLiteContext>
     {
-        SQLiteContext IDbContextFactory<SQLiteContext>.Create(DbContextFactoryOptions options)
+        public SQLiteContext CreateDbContext(string[] args)
         {
             return new SQLiteContext();
         }

@@ -11,8 +11,8 @@ namespace GRA.Data
     public abstract class Context : DbContext
     {
         protected readonly string devConnectionString;
-        protected readonly IConfigurationRoot _config;
-        public Context(IConfigurationRoot config)
+        protected readonly IConfiguration _config;
+        public Context(IConfiguration config)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
             devConnectionString = null;

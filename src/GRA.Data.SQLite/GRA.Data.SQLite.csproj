@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <AssemblyName>GRA.Data.SQLite</AssemblyName>
     <PackageId>GRA.Data.SQLite</PackageId>
-    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <NetStandardImplicitPackageVersion>2.0</NetStandardImplicitPackageVersion>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <Version>4.0.0-beta2</Version>
+    <Version>4.1.0-alpha1</Version>
     <Copyright>Copyright 2017 Maricopa County Library District</Copyright>
     <PackageLicenseUrl>https://github.com/mcld/greatreadingadventure/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>http://www.greatreadingadventure.com/</PackageProjectUrl>
@@ -22,13 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="1.*" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="1.*" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="1.*" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="1.*" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.*" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.*" />
   </ItemGroup>
 
 </Project>

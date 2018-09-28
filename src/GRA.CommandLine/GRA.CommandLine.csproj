@@ -2,9 +2,9 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <AssemblyName>gracl</AssemblyName>
-    <Version>4.0.0-beta2</Version>
+    <Version>4.1.0-alpha1</Version>
     <Company />
     <Product />
     <Copyright>Copyright 2017 Maricopa County Library District</Copyright>
@@ -16,13 +16,13 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="6.0.2" />
-    <PackageReference Include="Bogus" Version="22.*" />
-    <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.*" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="1.*" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="1.*" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="1.*" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="1.*" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="1.*" />
+    <PackageReference Include="Bogus" Version="24.*" />
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.*" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.*" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="2.*" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.*" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.*" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.*" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="2.*" />
     <PackageReference Include="Serilog.Extensions.Logging.File" Version="1.*" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="2.*" />
