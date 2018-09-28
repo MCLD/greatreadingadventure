@@ -9,12 +9,16 @@
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <Version>4.0.0-beta2</Version>
+    <Version>4.0.0</Version>
     <Copyright>Copyright 2017 Maricopa County Library District</Copyright>
     <PackageLicenseUrl>https://github.com/mcld/greatreadingadventure/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>http://www.greatreadingadventure.com/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/mcld/greatreadingadventure/</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
+    <Description>The Great Reading Adventure is a robust, open source software designed to manage library reading programs. The GRA is free to use, modify, and share.</Description>
+    <Authors>Maricopa County Library District</Authors>
+    <PackageTags>public-library reading-program literacy gra</PackageTags>
+    <PackageReleaseNotes>See https://github.com/MCLD/greatreadingadventure/releases/tag/v4.0.0</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
