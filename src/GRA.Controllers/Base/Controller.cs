@@ -14,6 +14,7 @@ using System.Text;
 using GRA.Abstract;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace GRA.Controllers.Base
 {
@@ -108,7 +109,7 @@ namespace GRA.Controllers.Base
 
                 var identity = new ClaimsIdentity(claims, Authentication.TypeGRAPassword);
 
-                await HttpContext.SignInAsync(Authentication.SchemeGRACookie,
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                     new ClaimsPrincipal(identity));
 
                 HttpContext.Session.SetInt32(SessionKey.ActiveUserId, authResult.User.Id);
@@ -128,7 +129,7 @@ namespace GRA.Controllers.Base
         {
             int? siteId = HttpContext.Session.GetInt32(SessionKey.SiteId);
             HttpContext.Session.Clear();
-            await HttpContext.SignOutAsync(Authentication.SchemeGRACookie);
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             HttpContext.User = null;
             if (siteId != null)
             {

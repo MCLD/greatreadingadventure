@@ -191,7 +191,7 @@ namespace GRA.Web
                     new DirectoryInfo(Path.Combine(protectionPath, "cookies")));
             }
 
-            services.AddAuthentication(Authentication.SchemeGRACookie)
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(_ => _ = cookieAuthOptions);
 
             services.AddAuthorization(options =>

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl;
+using System.Runtime.Versioning;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -96,12 +97,20 @@ namespace GRA.Controllers.MissionControl
                 settings.Add("ASP.NET Core Environment", env);
             }
 
+            var dotnetTargetFrameworkVersion = Assembly
+                .GetEntryAssembly()?
+                .GetCustomAttribute<TargetFrameworkAttribute>()?
+                .FrameworkName;
+            if (!string.IsNullOrEmpty(dotnetTargetFrameworkVersion))
+            {
+                settings.Add(".NET Target Framework Version", dotnetTargetFrameworkVersion);
+            }
+
             var dotnetVersion = Environment.GetEnvironmentVariable("DOTNET_VERSION");
             if (!string.IsNullOrEmpty(dotnetVersion))
             {
-                settings.Add(".NET Version", dotnetVersion);
+                settings.Add(".NET Environment Version", dotnetVersion);
             }
-
 
             return View(new SystemInformationViewModel
             {
