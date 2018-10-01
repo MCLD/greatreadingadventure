@@ -186,12 +186,10 @@ namespace GRA.Web
                             Data.SqlServer.SqlServerContext>(
                             _ => _.UseSqlServer(cs));
                     }
-                    //services.AddScoped<Data.Context, Data.SqlServer.SqlServerContext>();
                     break;
                 case ConnectionStringNameSQLite:
                     services.AddDbContextPool<Data.Context, Data.SQLite.SQLiteContext>(
                         _ => _.UseSqlite(cs));
-                    //services.AddScoped<Data.Context, Data.SQLite.SQLiteContext>();
                     break;
             }
 
@@ -355,6 +353,19 @@ namespace GRA.Web
             else
             {
                 app.UseStatusCodePagesWithReExecute("/Error/Index/{0}");
+            }
+
+            if (!string.IsNullOrEmpty(_config[ConfigurationKey.ReverseProxyAddress]))
+            {
+                app.UseForwardedHeaders(new ForwardedHeadersOptions
+                {
+                    ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.All,
+                    RequireHeaderSymmetry = false,
+                    ForwardLimit = null,
+                    KnownProxies = {
+                        System.Net.IPAddress.Parse(_config[ConfigurationKey.ReverseProxyAddress])
+                    }
+                });
             }
 
             // insert remote address and trace identifier into the log context for each request
