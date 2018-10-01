@@ -1,12 +1,9 @@
 # Get build image
-FROM microsoft/aspnetcore-build:1.1 AS dotnet-sdk
+FROM microsoft/dotnet:2.1-sdk AS dotnet-sdk
 WORKDIR /app
 
 # Copy source
 COPY . ./
-
-# Restore
-RUN dotnet restore
 
 # Add database migrations
 WORKDIR /app/src/GRA.Data.SqlServer
@@ -20,7 +17,7 @@ WORKDIR /app
 RUN dotnet publish -c Release -o "/app/publish/"
 
 # Get runtime image
-FROM microsoft/aspnetcore:1.1
+FROM microsoft/dotnet:2.1-aspnetcore-runtime
 WORKDIR /app
 
 # Bring in metadata
@@ -33,9 +30,6 @@ LABEL maintainer="Maricopa County Library District developers <development@mclda
 
 # Copy source
 COPY --from=dotnet-sdk "/app/publish/" .
-
-# Persist shared directory
-VOLUME ["/app/shared"]
 
 # Port 80 for http
 EXPOSE 80
