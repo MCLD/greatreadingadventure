@@ -15,6 +15,7 @@ One connection string is required (either `SqlServer` or `SQLite`).
 - `SqlServer` - A SQL Server connection string
 - `SQLite` - SQLite connection information (typically the path to the SQLite database file)
 - `SqlServerSessions` - *optional* - A SQL Server connection string for [storing session data in a SQL Server database](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/app-state?view=aspnetcore-1.1&tabs=aspnetcore1x#working-with-session-state) (necessary for multiple Web servers answering requests for the same site)
+- `SqlServerSerilog` - *optional* - A SQL Server connection string used for [storing SQL Server application logs](https://github.com/serilog/serilog-sinks-mssqlserver); the user should have database owner access (at least initially) so that it can create the proper table for logging
 
 ## General settings
 
@@ -22,7 +23,8 @@ One connection string is required (either `SqlServer` or `SQLite`).
 - `GraInitialAuthCode` - the Authorization Code entered to grant users full access to the site - **it's important that the default is not kept here**
 - `GraInitialProgramSetup` - *optional* - defaults to "multiple" which creates four age-based programs and sets up a point translation of one minute read equals one point, can also be set to "single" which creates one program and sets up a point translation of one book read equals one point
 - `GraRollingLogPath` - defaults to "shared/logs", a path to save a daily-rotating log file - if `GraInstanceName` is specified in `appsettings.json` it will be included in the log file name
-- `GraCulture` - *optional* - defaults to "en-US", the culture to use for displaying things like dates and times - for valid options see the language tags listed in the Microsoft [National Language Support (NLS) API Reference](http://go.microsoft.com/fwlink/?LinkId=200048)
+- `GraCulture` - *optional* - defaults to "en-US", the culture to use for displaying things like dates and times - for valid options see the language tags listed in the Microsoft [National Language Support (NLS) API Reference](http://go.microsoft.com/fwlink/?LinkId=200048
+- `GraSqlServer2008` - *optional* - if you are using SQL Server 2008, put text into this setting (any text will do)
 
 ## Default settings
 

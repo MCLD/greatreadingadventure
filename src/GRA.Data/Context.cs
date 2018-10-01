@@ -1,7 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.Extensions.Configuration;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,17 +7,7 @@ namespace GRA.Data
 {
     public abstract class Context : DbContext
     {
-        protected readonly string devConnectionString;
-        protected readonly IConfiguration _config;
-        public Context(IConfiguration config)
-        {
-            _config = config ?? throw new ArgumentNullException(nameof(config));
-            devConnectionString = null;
-        }
-        protected internal Context(string connectionString)
-        {
-            devConnectionString = connectionString;
-        }
+        public Context(DbContextOptions options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -76,10 +76,13 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.*" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.*" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.*" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink.Loader" Version="14.1.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink.Loader" Version="14.*" />
+    <PackageReference Include="Serilog.AspNetCore" Version="2.*" />
     <PackageReference Include="Serilog.Extensions.Logging.File" Version="1.*" />
     <PackageReference Include="Serilog.Filters.Expressions" Version="2.*" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="2.*" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="3.*" />
+    <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="5.*" />
     <PackageReference Include="Serilog.Sinks.Slack.Core" Version="0.1.5-beta" />
   </ItemGroup>
 

@@ -20,7 +20,7 @@ namespace GRA.CommandLine
 {
     class Program
     {
-        private const string VersionSuffix = "-beta2";
+        private const string VersionSuffix = "-alpha1";
         public static int Main(string[] args)
         {
             var sw = new Stopwatch();
@@ -54,17 +54,6 @@ namespace GRA.CommandLine
                 return 2;
             });
             #endregion Initial setup of CommandLineApplication
-
-            #region Default connection string settings in case we don't have a CS
-            if (string.IsNullOrEmpty(config[ConfigurationKey.DefaultCSSqlServer]))
-            {
-                config[ConfigurationKey.DefaultCSSqlServer] = DefaultConnectionString.SqlServer;
-            }
-            if (string.IsNullOrEmpty(config[ConfigurationKey.DefaultCSSQLite]))
-            {
-                config[ConfigurationKey.DefaultCSSQLite] = DefaultConnectionString.SQLite;
-            }
-            #endregion Default connection string settings in case we don't have a CS
 
             // set up our Dependency Injection collection
             var services = new ServiceCollection();
