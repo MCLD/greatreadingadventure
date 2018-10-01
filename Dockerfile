@@ -5,11 +5,8 @@ WORKDIR /app
 # Copy source
 COPY . ./
 
-# Run restore and build
-RUN dotnet build -c Release
-
 # Publish
-RUN dotnet publish -c Release -o "/app/publish/" --no-build
+RUN dotnet publish -c Release -o "/app/publish/"
 
 # Get runtime image
 FROM microsoft/dotnet:2.1-aspnetcore-runtime

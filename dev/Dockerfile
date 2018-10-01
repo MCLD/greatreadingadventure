@@ -5,9 +5,6 @@ WORKDIR /app
 # Copy source
 COPY . ./
 
-# Run restore
-RUN dotnet restore
-
 # Add database migrations
 WORKDIR /app/src/GRA.Data.SqlServer
 RUN dotnet ef migrations add develop
@@ -17,7 +14,7 @@ RUN dotnet ef migrations add develop
 
 # Publish
 WORKDIR /app
-RUN dotnet publish -c Release -o "/app/publish/
+RUN dotnet publish -c Release -o "/app/publish/"
 
 # Get runtime image
 FROM microsoft/dotnet:2.1-aspnetcore-runtime

@@ -3,7 +3,6 @@
 PROJECT="mcld/gra"
 
 COMMIT=`git rev-parse --short HEAD`
-PUSH=false
 DOCKERFILE="Dockerfile"
 
 if GITBRANCH=$(git symbolic-ref --short -q HEAD); then
