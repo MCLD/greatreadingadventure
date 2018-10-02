@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -171,25 +172,32 @@ namespace GRA.Web
                 throw new Exception($"Unknown GraConnectionStringName: {csName}");
             }
 
+            // mute ignored includes warnings
+            // see https://docs.microsoft.com/en-us/ef/core/querying/related-data#ignored-includes
+            var dbContextBuilder = new DbContextOptionsBuilder<Data.Context>();
+            if (_logger.IsEnabled(LogLevel.Debug))
+            {
+                dbContextBuilder.ConfigureWarnings(w => w.Ignore());
+            }
+
             string cs = _config.GetConnectionString(csName);
             switch (_config[ConfigurationKey.ConnectionStringName])
             {
                 case ConnectionStringNameSqlServer:
+                    var sqlBuilder = new SqlServerDbContextOptionsBuilder(dbContextBuilder);
                     if (!string.IsNullOrEmpty(_config[ConfigurationKey.SqlServer2008]))
                     {
-                        services.AddDbContextPool<Data.Context, Data.SqlServer.SqlServerContext>(
-                            _ => _.UseSqlServer(cs, opt => opt.UseRowNumberForPaging()));
+                        sqlBuilder.UseRowNumberForPaging();
                     }
-                    else
-                    {
-                        services.AddDbContextPool<Data.Context,
-                            Data.SqlServer.SqlServerContext>(
-                            _ => _.UseSqlServer(cs));
-                    }
+                    services.AddDbContextPool<Data.Context,
+                        Data.SqlServer.SqlServerContext>(
+                        _ => _.UseSqlServer(cs, b => b = sqlBuilder));
                     break;
                 case ConnectionStringNameSQLite:
+                    var sqliteBuilder = new SqliteDbContextOptionsBuilder(dbContextBuilder);
+
                     services.AddDbContextPool<Data.Context, Data.SQLite.SQLiteContext>(
-                        _ => _.UseSqlite(cs));
+                        _ => _.UseSqlite(cs, b => b = sqliteBuilder));
                     break;
             }
 
