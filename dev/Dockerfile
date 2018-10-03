@@ -5,6 +5,9 @@ WORKDIR /app
 # Copy source
 COPY . ./
 
+# Restore
+RUN dotnet restore
+
 # Add database migrations
 WORKDIR /app/src/GRA.Data.SqlServer
 RUN dotnet ef migrations add develop

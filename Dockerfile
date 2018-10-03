@@ -5,6 +5,9 @@ WORKDIR /app
 # Copy source
 COPY . ./
 
+# Restore
+RUN dotnet restore
+
 # Publish
 RUN dotnet publish -c Release -o "/app/publish/"
 
