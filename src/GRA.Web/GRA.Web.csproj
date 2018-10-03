@@ -68,7 +68,10 @@
     <PackageReference Include="BuildBundlerMinifier" Version="2.*" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.*" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="2.*" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.Redis" Version="0.*" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.*" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.1.2" />
     <PackageReference Include="Microsoft.Extensions.Caching.SqlServer" Version="2.*" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="2.*" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.*" />

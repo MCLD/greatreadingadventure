@@ -119,14 +119,14 @@ namespace GRA.Web
                 }
             }
 
-            string applicationName = instance.ToLower() != "gra" ? $"GRA  {instance}" : "GRA";
+            string applicationName = instance.ToLower() != "gra" ? $"GRA {instance}" : "GRA";
             string version = "v" + Assembly.GetEntryAssembly()
                 .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
                 .InformationalVersion;
 
             try
             {
-                Log.Warning("{0} version {1} starting up in {2}",
+                Log.Warning("{0} {1} starting up in {2}",
                     applicationName,
                     version,
                     webRootPath);
@@ -136,7 +136,7 @@ namespace GRA.Web
             }
             catch (Exception ex)
             {
-                Log.Warning("{0} version {1} exited unxpectedly: {2}",
+                Log.Warning("{0} {1} exited unexpectedly: {2}",
                     applicationName,
                     version,
                     ex.Message);
