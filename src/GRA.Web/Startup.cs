@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using AutoMapper;
 using GRA.Abstract;
 using GRA.Controllers.RouteConstraint;
@@ -14,6 +15,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
@@ -22,6 +24,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Serilog.Context;
+using StackExchange.Redis;
 
 namespace GRA.Web
 {
@@ -51,11 +54,11 @@ namespace GRA.Web
         private readonly IConfiguration _config;
         private readonly ILogger _logger;
 
-        public Startup(IConfiguration configuration,
+        public Startup(IConfiguration config,
             IHostingEnvironment env,
             ILogger<Startup> logger)
         {
-            _config = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _config = config ?? throw new ArgumentNullException(nameof(config));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             foreach (string configKey in _defaultSettings.Keys)
@@ -80,38 +83,89 @@ namespace GRA.Web
                 _.SupportedUICultures = new List<CultureInfo> { new CultureInfo(culture) };
             });
 
+            // Add framework services.
+            services.AddSession(_ =>
+            {
+                _.IdleTimeout = TimeSpan.FromMinutes(30);
+            });
+
+            services.TryAddSingleton(_ => _config);
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.AddResponseCompression(_ =>
+            {
+                _.Providers.Add<GzipCompressionProvider>();
+                _.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] {
+                        "application/vnd.ms-fontobject",
+                        "application/x-font-opentype",
+                        "application/x-font-truetype",
+                        "application/x-font-ttf",
+                        "application/x-javascript",
+                        "font/eot",
+                        "font/opentype",
+                        "font/otf",
+                        "image/svg+xml",
+                        "image/vnd.microsoft.icon",
+                        "text/javascript"
+                });
+            });
+
+            // configure distributed cache
             string protectionPath =
                 !string.IsNullOrEmpty(_config[ConfigurationKey.DataProtectionPath])
                 ? _config[ConfigurationKey.DataProtectionPath]
                 : Path.Combine(Directory.GetCurrentDirectory(), "shared", "dataprotection");
             string discriminator = _config[ConfigurationKey.ApplicationDiscriminator]
                     ?? "gra";
-            services.AddDataProtection(_ => _.ApplicationDiscriminator = discriminator)
-                .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(protectionPath, "keys")));
 
-            // Add framework services.
-            services.AddSession(_ =>
+            switch (_config[ConfigurationKey.DistributedCache]?.ToLower())
             {
-                _.IdleTimeout = TimeSpan.FromMinutes(30);
-            });
-            services.TryAddSingleton(_ => _config);
-            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddResponseCompression();
-            services.AddMemoryCache();
-
-            // check for a connection string for storing sessions in a database table
-            string sessionCs = _config.GetConnectionString("SqlServerSessions");
-            string sessionSchema = _config[ConfigurationKey.SqlSessionSchemaName] ?? "dbo";
-            string sessionTable = _config[ConfigurationKey.SqlSessionTable] ?? "Sessions";
-            if (!string.IsNullOrEmpty(sessionCs))
-            {
-                services.AddDistributedSqlServerCache(_ =>
-                {
-                    _.ConnectionString = sessionCs;
-                    _.SchemaName = sessionSchema;
-                    _.TableName = sessionTable;
-                });
+                case "redis":
+                    string redisConfig = _config[ConfigurationKey.RedisConfiguration]
+                        ?? throw new Exception($"{ConfigurationKey.DistributedCache} has Redis selected but {ConfigurationKey.RedisConfiguration} is not set.");
+                    string redisInstance = "gra." + discriminator;
+                    if (!redisInstance.EndsWith("."))
+                    {
+                        redisInstance += ".";
+                    }
+                    services.AddDistributedRedisCache(_ =>
+                    {
+                        _.Configuration = redisConfig;
+                        _.InstanceName = redisInstance;
+                    });
+                    var redis = ConnectionMultiplexer.Connect(redisConfig);
+                    services.AddDataProtection(_ => _.ApplicationDiscriminator = discriminator)
+                        .PersistKeysToRedis(redis, $"grainternal.{discriminator}.dpk")
+                        .SetApplicationName(discriminator);
+                    _logger.LogInformation("Using Redis distributed cache {0} discriminator {1}",
+                        redisConfig,
+                        redisInstance);
+                    break;
+                case "sqlserver":
+                    string sessionCs = _config.GetConnectionString("SqlServerSessions")
+                        ?? throw new Exception($"{ConfigurationKey.DistributedCache} has SQL Server selected but SqlServerSessions connection string is not set.");
+                    string sessionTable = _config[ConfigurationKey.SqlSessionTable] ?? "Sessions";
+                    _logger.LogInformation("Using SQL Server distributed cache in table {sessionTable}", sessionTable);
+                    services.AddDistributedSqlServerCache(_ =>
+                    {
+                        _.ConnectionString = sessionCs;
+                        _.SchemaName = _config[ConfigurationKey.SqlSessionSchemaName] ?? "dbo";
+                        _.TableName = sessionTable;
+                    });
+                    services.AddDataProtection(_ => _.ApplicationDiscriminator = discriminator)
+                        .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(protectionPath, "keys")))
+                        .SetApplicationName(discriminator);
+                    break;
+                default:
+                    _logger.LogInformation("Using memory-based distributed cache");
+                    services.AddDistributedMemoryCache();
+                    services.AddDataProtection(_ => _.ApplicationDiscriminator = discriminator)
+                        .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(protectionPath, "keys")))
+                        .SetApplicationName(discriminator);
+                    break;
             }
+
+            // add MVC
             services.AddMvc();
 
             // Add custom view directory
@@ -120,22 +174,12 @@ namespace GRA.Web
             );
 
             // set cookie authentication options
-            var cookieAuthOptions = new CookieAuthenticationOptions
-            {
-
-                LoginPath = new PathString("/SignIn/"),
-                AccessDeniedPath = new PathString("/"),
-            };
-
-            // if there's a data protection path, set it up - for clustered/multi-server configs
-            if (!string.IsNullOrEmpty(_config[ConfigurationKey.DataProtectionPath]))
-            {
-                cookieAuthOptions.DataProtectionProvider = DataProtectionProvider.Create(
-                    new DirectoryInfo(Path.Combine(protectionPath, "cookies")));
-            }
-
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(_ => _ = cookieAuthOptions);
+                .AddCookie(_ => _ = new CookieAuthenticationOptions
+                {
+                    LoginPath = new PathString("/SignIn/"),
+                    AccessDeniedPath = new PathString("/"),
+                });
 
             services.AddAuthorization(options =>
             {
@@ -166,21 +210,19 @@ namespace GRA.Web
                 throw new Exception("GraConnectionStringName is not configured in appsettings.json - cannot continue");
             }
 
-            string csName = _config[ConfigurationKey.ConnectionStringName];
-            if (string.IsNullOrEmpty(csName))
-            {
-                throw new Exception($"Unknown GraConnectionStringName: {csName}");
-            }
+            string csName = _config[ConfigurationKey.ConnectionStringName]
+                ?? throw new Exception($"{ConfigurationKey.ConnectionStringName} must be provided.");
 
             // mute ignored includes warnings
             // see https://docs.microsoft.com/en-us/ef/core/querying/related-data#ignored-includes
             var dbContextBuilder = new DbContextOptionsBuilder<Data.Context>();
-            if (_logger.IsEnabled(LogLevel.Debug))
+            if (_logger.IsEnabled(LogLevel.Debug) || _logger.IsEnabled(LogLevel.Trace))
             {
                 dbContextBuilder.ConfigureWarnings(w => w.Ignore());
             }
 
-            string cs = _config.GetConnectionString(csName);
+            string cs = _config.GetConnectionString(csName)
+                ?? throw new Exception($"A {csName} connection string must be provided.");
             switch (_config[ConfigurationKey.ConnectionStringName])
             {
                 case ConnectionStringNameSqlServer:
@@ -199,6 +241,8 @@ namespace GRA.Web
                     services.AddDbContextPool<Data.Context, Data.SQLite.SQLiteContext>(
                         _ => _.UseSqlite(cs, b => b = sqliteBuilder));
                     break;
+                default:
+                    throw new Exception($"Unknown GraConnectionStringName: {csName}");
             }
 
             // utilities
@@ -349,7 +393,6 @@ namespace GRA.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app,
             IHostingEnvironment env,
-            ILoggerFactory loggerFactory,
             IPathResolver pathResolver,
             Controllers.Base.ISitePathValidator sitePathValidator)
         {

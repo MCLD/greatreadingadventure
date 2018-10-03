@@ -64,7 +64,13 @@ namespace GRA.Controllers.Filter
             if (httpContext.User.HasClaim(ClaimType.Permission,
                 Domain.Model.Permission.ReadAllMail.ToString()))
             {
-                httpContext.Items[ItemKey.UnreadCount] = await _mailService.GetAdminUnreadCountAsync();
+                try
+                {
+                    httpContext.Items[ItemKey.UnreadCount] = await _mailService.GetAdminUnreadCountAsync();
+                } catch (Exception ex)
+                {
+                    _logger.LogError("Error getting admin mail unread count: {Message}", ex.Message);
+                }
             }
 
             await next();

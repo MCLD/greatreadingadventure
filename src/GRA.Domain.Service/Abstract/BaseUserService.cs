@@ -1,5 +1,7 @@
 ﻿using GRA.Domain.Model;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Security.Claims;
 
 namespace GRA.Domain.Service.Abstract
@@ -14,6 +16,8 @@ namespace GRA.Domain.Service.Abstract
         {
             _userContextProvider = Require.IsNotNull(userContextProvider, nameof(userContextProvider));
         }
+
+        protected const int DefaultCacheExpiration = 5;
 
         private UserContext _userContext = null;
         private ClaimsPrincipal _currentUser = null;
@@ -134,6 +138,13 @@ namespace GRA.Domain.Service.Abstract
         public void ClearCachedUserContext()
         {
             _userContext = null;
+        }
+
+        protected DistributedCacheEntryOptions ExpireIn(int? minutes = null)
+        {
+            var fromMinutes = new TimeSpan(0, minutes ?? DefaultCacheExpiration, 0);
+            return new DistributedCacheEntryOptions()
+                .SetAbsoluteExpiration(fromMinutes);
         }
     }
 }
