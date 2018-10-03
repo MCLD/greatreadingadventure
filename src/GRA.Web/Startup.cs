@@ -1,31 +1,37 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 using AutoMapper;
 using GRA.Abstract;
 using GRA.Controllers.RouteConstraint;
 using GRA.Domain.Service;
 using GRA.Domain.Service.Abstract;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
-using Serilog;
-using Serilog.Filters;
+using Serilog.Context;
+using StackExchange.Redis;
 
 namespace GRA.Web
 {
     public class Startup
     {
+        private const string DefaultCulture = "en-US";
+
         private const string ConfigurationSingleProgramValue = "Single";
         private const string ConfigurationMultipleProgramValue = "Multiple";
 
@@ -45,146 +51,121 @@ namespace GRA.Web
             { ConfigurationKey.Culture, "en-US" }
         };
 
-        public Startup(IHostingEnvironment env)
+        private readonly IConfiguration _config;
+        private readonly ILogger _logger;
+
+        public Startup(IConfiguration config,
+            IHostingEnvironment env,
+            ILogger<Startup> logger)
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json",
-                    optional: true,
-                    reloadOnChange: true)
-                .AddJsonFile("shared/appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"shared/appsettings.{env.EnvironmentName}.json",
-                    optional: true,
-                    reloadOnChange: true)
-                .AddEnvironmentVariables();
+            _config = config ?? throw new ArgumentNullException(nameof(config));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-            if (env.IsDevelopment())
+            foreach (string configKey in _defaultSettings.Keys)
             {
-                builder.AddUserSecrets<Startup>();
-            }
-
-            Configuration = builder.Build();
-            string instance =
-                !string.IsNullOrEmpty(Configuration[ConfigurationKey.InstanceName])
-                ? Configuration[ConfigurationKey.InstanceName]
-                : "gra";
-
-            if (!string.IsNullOrEmpty(Configuration[ConfigurationKey.RollingLogPath]))
-            {
-                string path = Configuration[ConfigurationKey.RollingLogPath];
-
-                if (!path.EndsWith("/"))
+                if (string.IsNullOrEmpty(_config[configKey]))
                 {
-                    path = path + "/";
-                }
-
-                string httpPath = Configuration[ConfigurationKey.RollingLogHttp];
-                string rollingFilename = path + instance + "-{Date}.txt";
-
-                if (!string.IsNullOrEmpty(httpPath))
-                {
-                    string rollingHttpFilename = path + instance + "-" + httpPath + "-{Date}.txt";
-
-                    Log.Logger = new LoggerConfiguration()
-                        .ReadFrom.Configuration(Configuration)
-                        .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Error)
-                        .WriteTo.Logger(_ => _
-                            .Filter.ByExcluding(Matching.FromSource("GRA.Controllers.ErrorController"))
-                            .WriteTo.RollingFile(rollingFilename))
-                        .WriteTo.Logger(_ => _
-                            .Filter.ByIncludingOnly(Matching.FromSource("GRA.Controllers.ErrorController"))
-                            .WriteTo.RollingFile(rollingHttpFilename))
-                        .CreateLogger();
-                }
-                else
-                {
-                    Log.Logger = new LoggerConfiguration()
-                        .ReadFrom.Configuration(Configuration)
-                        .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Error)
-                        .WriteTo.Logger(_ => _
-                            .Filter.ByExcluding(Matching.FromSource("GRA.Controllers.ErrorController"))
-                            .WriteTo.RollingFile(rollingFilename))
-                        .CreateLogger();
-                }
-            }
-            else
-            {
-                Log.Logger = new LoggerConfiguration()
-                    .ReadFrom.Configuration(Configuration)
-                    .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Error)
-                    .CreateLogger();
-            }
-
-            Log.Logger.Warning(string.Format("GRA{0} v{1} starting up in '{2}'",
-                instance.ToLower() != "gra" ? " " + instance : string.Empty,
-                Assembly.GetEntryAssembly()
-                    .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
-                    .InformationalVersion,
-                env.WebRootPath));
-
-            foreach (var configKey in _defaultSettings.Keys)
-            {
-                if (string.IsNullOrEmpty(Configuration[configKey]))
-                {
-                    Configuration[configKey] = _defaultSettings[configKey];
-                }
-            }
-
-            if (env.IsDevelopment())
-            {
-                if (string.IsNullOrEmpty(Configuration[ConfigurationKey.DefaultCSSqlServer]))
-                {
-                    Configuration[ConfigurationKey.DefaultCSSqlServer]
-                        = DefaultConnectionString.SqlServer;
-                }
-                if (string.IsNullOrEmpty(Configuration[ConfigurationKey.DefaultCSSQLite]))
-                {
-                    Configuration[ConfigurationKey.DefaultCSSQLite]
-                        = DefaultConnectionString.SQLite;
+                    _config[configKey] = _defaultSettings[configKey];
                 }
             }
         }
 
-        public IConfigurationRoot Configuration { get; }
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string protectionPath =
-                !string.IsNullOrEmpty(Configuration[ConfigurationKey.DataProtectionPath])
-                ? Configuration[ConfigurationKey.DataProtectionPath]
-                : Path.Combine(Directory.GetCurrentDirectory(), "shared", "dataprotection");
-            string discriminator = Configuration[ConfigurationKey.ApplicationDiscriminator]
-                    ?? "gra";
-            services.AddDataProtection(_ => _.ApplicationDiscriminator = discriminator)
-                .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(protectionPath, "keys")));
+            // set a default culture of en-US if none is specified
+            string culture = _config[ConfigurationKey.Culture] ?? DefaultCulture;
+            _logger.LogInformation("Configuring for culture: {0}", culture);
+            services.Configure<RequestLocalizationOptions>(_ =>
+            {
+                _.DefaultRequestCulture = new RequestCulture(culture);
+                _.SupportedCultures = new List<CultureInfo> { new CultureInfo(culture) };
+                _.SupportedUICultures = new List<CultureInfo> { new CultureInfo(culture) };
+            });
 
             // Add framework services.
             services.AddSession(_ =>
             {
                 _.IdleTimeout = TimeSpan.FromMinutes(30);
             });
-            services.TryAddSingleton(_ => Configuration);
-            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.TryAddSingleton<Microsoft.AspNetCore.Mvc.ViewFeatures.IHtmlGenerator,
-                HtmlGeneratorHack>();
-            services.AddResponseCompression();
-            services.AddMemoryCache();
 
-            // check for a connection string for storing sessions in a database table
-            string sessionCs = Configuration.GetConnectionString("SqlServerSessions");
-            string sessionSchema = Configuration[ConfigurationKey.SqlSessionSchemaName] ?? "dbo";
-            string sessionTable = Configuration[ConfigurationKey.SqlSessionTable] ?? "Sessions";
-            if (!string.IsNullOrEmpty(sessionCs))
+            services.TryAddSingleton(_ => _config);
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.AddResponseCompression(_ =>
             {
-                services.AddDistributedSqlServerCache(_ =>
-                {
-                    _.ConnectionString = sessionCs;
-                    _.SchemaName = sessionSchema;
-                    _.TableName = sessionTable;
+                _.Providers.Add<GzipCompressionProvider>();
+                _.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] {
+                        "application/vnd.ms-fontobject",
+                        "application/x-font-opentype",
+                        "application/x-font-truetype",
+                        "application/x-font-ttf",
+                        "application/x-javascript",
+                        "font/eot",
+                        "font/opentype",
+                        "font/otf",
+                        "image/svg+xml",
+                        "image/vnd.microsoft.icon",
+                        "text/javascript"
                 });
+            });
+
+            // configure distributed cache
+            string protectionPath =
+                !string.IsNullOrEmpty(_config[ConfigurationKey.DataProtectionPath])
+                ? _config[ConfigurationKey.DataProtectionPath]
+                : Path.Combine(Directory.GetCurrentDirectory(), "shared", "dataprotection");
+            string discriminator = _config[ConfigurationKey.ApplicationDiscriminator]
+                    ?? "gra";
+
+            switch (_config[ConfigurationKey.DistributedCache]?.ToLower())
+            {
+                case "redis":
+                    string redisConfig = _config[ConfigurationKey.RedisConfiguration]
+                        ?? throw new Exception($"{ConfigurationKey.DistributedCache} has Redis selected but {ConfigurationKey.RedisConfiguration} is not set.");
+                    string redisInstance = "gra." + discriminator;
+                    if (!redisInstance.EndsWith("."))
+                    {
+                        redisInstance += ".";
+                    }
+                    services.AddDistributedRedisCache(_ =>
+                    {
+                        _.Configuration = redisConfig;
+                        _.InstanceName = redisInstance;
+                    });
+                    var redis = ConnectionMultiplexer.Connect(redisConfig);
+                    services.AddDataProtection(_ => _.ApplicationDiscriminator = discriminator)
+                        .PersistKeysToRedis(redis, $"grainternal.{discriminator}.dpk")
+                        .SetApplicationName(discriminator);
+                    _logger.LogInformation("Using Redis distributed cache {0} discriminator {1}",
+                        redisConfig,
+                        redisInstance);
+                    break;
+                case "sqlserver":
+                    string sessionCs = _config.GetConnectionString("SqlServerSessions")
+                        ?? throw new Exception($"{ConfigurationKey.DistributedCache} has SQL Server selected but SqlServerSessions connection string is not set.");
+                    string sessionTable = _config[ConfigurationKey.SqlSessionTable] ?? "Sessions";
+                    _logger.LogInformation("Using SQL Server distributed cache in table {sessionTable}", sessionTable);
+                    services.AddDistributedSqlServerCache(_ =>
+                    {
+                        _.ConnectionString = sessionCs;
+                        _.SchemaName = _config[ConfigurationKey.SqlSessionSchemaName] ?? "dbo";
+                        _.TableName = sessionTable;
+                    });
+                    services.AddDataProtection(_ => _.ApplicationDiscriminator = discriminator)
+                        .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(protectionPath, "keys")))
+                        .SetApplicationName(discriminator);
+                    break;
+                default:
+                    _logger.LogInformation("Using memory-based distributed cache");
+                    services.AddDistributedMemoryCache();
+                    services.AddDataProtection(_ => _.ApplicationDiscriminator = discriminator)
+                        .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(protectionPath, "keys")))
+                        .SetApplicationName(discriminator);
+                    break;
             }
+
+            // add MVC
             services.AddMvc();
 
             // Add custom view directory
@@ -192,9 +173,17 @@ namespace GRA.Web
                 options.ViewLocationFormats.Insert(0, "/shared/views/{1}/{0}.cshtml")
             );
 
+            // set cookie authentication options
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(_ => _ = new CookieAuthenticationOptions
+                {
+                    LoginPath = new PathString("/SignIn/"),
+                    AccessDeniedPath = new PathString("/"),
+                });
+
             services.AddAuthorization(options =>
             {
-                foreach (var permisisonName in Enum.GetValues(typeof(Domain.Model.Permission)))
+                foreach (object permisisonName in Enum.GetValues(typeof(Domain.Model.Permission)))
                 {
                     options.AddPolicy(permisisonName.ToString(),
                         _ => _.RequireClaim(ClaimType.Permission, permisisonName.ToString()));
@@ -216,21 +205,44 @@ namespace GRA.Web
             services.AddScoped<Data.ServiceFacade.Repository, Data.ServiceFacade.Repository>();
 
             // database
-            if (string.IsNullOrEmpty(Configuration[ConfigurationKey.ConnectionStringName]))
+            if (string.IsNullOrEmpty(_config[ConfigurationKey.ConnectionStringName]))
             {
                 throw new Exception("GraConnectionStringName is not configured in appsettings.json - cannot continue");
             }
 
-            switch (Configuration[ConfigurationKey.ConnectionStringName])
+            string csName = _config[ConfigurationKey.ConnectionStringName]
+                ?? throw new Exception($"{ConfigurationKey.ConnectionStringName} must be provided.");
+
+            // mute ignored includes warnings
+            // see https://docs.microsoft.com/en-us/ef/core/querying/related-data#ignored-includes
+            var dbContextBuilder = new DbContextOptionsBuilder<Data.Context>();
+            if (_logger.IsEnabled(LogLevel.Debug) || _logger.IsEnabled(LogLevel.Trace))
+            {
+                dbContextBuilder.ConfigureWarnings(w => w.Ignore());
+            }
+
+            string cs = _config.GetConnectionString(csName)
+                ?? throw new Exception($"A {csName} connection string must be provided.");
+            switch (_config[ConfigurationKey.ConnectionStringName])
             {
                 case ConnectionStringNameSqlServer:
-                    services.AddScoped<Data.Context, Data.SqlServer.SqlServerContext>();
+                    var sqlBuilder = new SqlServerDbContextOptionsBuilder(dbContextBuilder);
+                    if (!string.IsNullOrEmpty(_config[ConfigurationKey.SqlServer2008]))
+                    {
+                        sqlBuilder.UseRowNumberForPaging();
+                    }
+                    services.AddDbContextPool<Data.Context,
+                        Data.SqlServer.SqlServerContext>(
+                        _ => _.UseSqlServer(cs, b => b = sqlBuilder));
                     break;
                 case ConnectionStringNameSQLite:
-                    services.AddScoped<Data.Context, Data.SQLite.SQLiteContext>();
+                    var sqliteBuilder = new SqliteDbContextOptionsBuilder(dbContextBuilder);
+
+                    services.AddDbContextPool<Data.Context, Data.SQLite.SQLiteContext>(
+                        _ => _.UseSqlite(cs, b => b = sqliteBuilder));
                     break;
                 default:
-                    throw new Exception($"Unknown GraConnectionStringName: {Configuration[ConfigurationKey.ConnectionStringName]}");
+                    throw new Exception($"Unknown GraConnectionStringName: {csName}");
             }
 
             // utilities
@@ -306,9 +318,9 @@ namespace GRA.Web
             // service resolution
             string initialProgramSetup = DefaultInitialProgramSetup;
 
-            if (!string.IsNullOrEmpty(Configuration[ConfigurationKey.InitialProgramSetup]))
+            if (!string.IsNullOrEmpty(_config[ConfigurationKey.InitialProgramSetup]))
             {
-                initialProgramSetup = Configuration[ConfigurationKey.InitialProgramSetup];
+                initialProgramSetup = _config[ConfigurationKey.InitialProgramSetup];
             }
 
             switch (initialProgramSetup)
@@ -376,25 +388,14 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IVendorCodeTypeRepository, Data.Repository.VendorCodeTypeRepository>();
 
             services.AddAutoMapper();
-
-            services.Configure<RequestLocalizationOptions>(_ =>
-            {
-                _.DefaultRequestCulture
-                    = new Microsoft.AspNetCore.Localization.RequestCulture(Configuration[ConfigurationKey.Culture]);
-            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app,
             IHostingEnvironment env,
-            ILoggerFactory loggerFactory,
             IPathResolver pathResolver,
-            RoleService roleService,
-            SiteLookupService siteLookupService,
-            TemplateService templateService)
+            Controllers.Base.ISitePathValidator sitePathValidator)
         {
-            loggerFactory.AddSerilog();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -405,24 +406,29 @@ namespace GRA.Web
                 app.UseStatusCodePagesWithReExecute("/Error/Index/{0}");
             }
 
-            var dbContext = app.ApplicationServices.GetService<Data.Context>();
-            try
+            if (!string.IsNullOrEmpty(_config[ConfigurationKey.ReverseProxyAddress]))
             {
-                var pending = dbContext.GetPendingMigrations();
-                if (pending != null && pending.Count() > 0)
+                app.UseForwardedHeaders(new ForwardedHeadersOptions
                 {
-                    Log.Logger.Warning($"Applying {pending.Count()} database migrations, last is: {pending.Last()}");
-                }
+                    ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.All,
+                    RequireHeaderSymmetry = false,
+                    ForwardLimit = null,
+                    KnownProxies = {
+                        System.Net.IPAddress.Parse(_config[ConfigurationKey.ReverseProxyAddress])
+                    }
+                });
             }
-            catch (Exception ex)
+
+            // insert remote address and trace identifier into the log context for each request
+            app.Use(async (context, next) =>
             {
-                Log.Logger.Error($"Error looking up migrations to perform: {ex.Message}");
-            }
-            dbContext.Migrate();
-            Task.Run(() => siteLookupService.GetDefaultSiteIdAsync()).Wait();
-            Task.Run(() => roleService.SyncPermissionsAsync()).Wait();
-            templateService.SetupTemplates();
-            
+                using (LogContext.PushProperty("Identifier", context.TraceIdentifier))
+                using (LogContext.PushProperty("RemoteAddress", context.Connection.RemoteIpAddress))
+                {
+                    await next.Invoke();
+                }
+            });
+
             app.UseRequestLocalization();
 
             app.UseResponseCompression();
@@ -478,25 +484,7 @@ namespace GRA.Web
 
             app.UseSession();
 
-            // set cookie authentication options
-            var cookieAuthOptions = new CookieAuthenticationOptions
-            {
-                AuthenticationScheme = Controllers.Authentication.SchemeGRACookie,
-                LoginPath = new PathString("/SignIn/"),
-                AccessDeniedPath = new PathString("/"),
-                AutomaticAuthenticate = true,
-                AutomaticChallenge = true
-            };
-
-            // if there's a data protection path, set it up - for clustered/multi-server configs
-            if (!string.IsNullOrEmpty(Configuration[ConfigurationKey.DataProtectionPath]))
-            {
-                string protectionPath = Configuration[ConfigurationKey.DataProtectionPath];
-                cookieAuthOptions.DataProtectionProvider = DataProtectionProvider.Create(
-                    new DirectoryInfo(Path.Combine(protectionPath, "cookies")));
-            }
-
-            app.UseCookieAuthentication(cookieAuthOptions);
+            app.UseAuthentication();
 
             // sitePath is also referenced in GRA.Controllers.Filter.SiteFilter
             app.UseMvc(routes =>
@@ -511,7 +499,7 @@ namespace GRA.Web
                     defaults: new { controller = "Info", action = "Index" },
                     constraints: new
                     {
-                        sitePath = new SiteRouteConstraint(app.ApplicationServices.GetRequiredService<Controllers.Base.ISitePathValidator>())
+                        sitePath = new SiteRouteConstraint(sitePathValidator)
                     });
                 routes.MapRoute(
                     name: null,
@@ -524,7 +512,7 @@ namespace GRA.Web
                     defaults: new { controller = "Home", action = "Index" },
                     constraints: new
                     {
-                        sitePath = new SiteRouteConstraint(app.ApplicationServices.GetRequiredService<Controllers.Base.ISitePathValidator>())
+                        sitePath = new SiteRouteConstraint(sitePathValidator)
                     });
                 routes.MapRoute(
                     name: null,
@@ -540,7 +528,7 @@ namespace GRA.Web
             {
                 if (context.WebSockets.IsWebSocketRequest)
                 {
-                    var handler = app.ApplicationServices.GetService<WebSocketHandler>();
+                    var handler = context.RequestServices.GetRequiredService<WebSocketHandler>();
                     await handler.Handle(context);
                 }
                 else

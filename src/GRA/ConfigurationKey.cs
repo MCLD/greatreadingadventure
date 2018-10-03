@@ -3,8 +3,7 @@ namespace GRA
 {
     public static class ConfigurationKey
     {
-        public const string DefaultCSSQLite = "ConnectionStrings:SQLite";
-        public const string DefaultCSSqlServer = "ConnectionStrings:SqlServer";
+        public const string CSSqlServerSerilog = "SqlServerSerilog";
 
         public const string ApplicationDiscriminator = "GraApplicationDiscriminator";
         public const string ConnectionStringName = "GraConnectionStringName";
@@ -21,12 +20,16 @@ namespace GRA
         public const string DefaultSiteName = "GraDefaultSiteName";
         public const string DefaultSitePath = "GraDefaultSitePath";
         public const string DeployDate = "GraDeployDate";
+        public const string DistributedCache = "GraDistributedCache";
         public const string EmailOverride = "GraEmailOverride";
         public const string InitialAuthorizationCode = "GraInitialAuthCode";
         public const string InitialProgramSetup = "GraInitialProgramSetup";
         public const string InstanceName = "GraInstanceName";
+        public const string RedisConfiguration = "GraRedisConfiguration";
+        public const string ReverseProxyAddress = "GraReverseProxyAddress";
         public const string RollingLogHttp = "GraRollingLogHttp";
         public const string RollingLogPath = "GraRollingLogPath";
+        public const string SqlServer2008 = "GraSqlServer2008";
         public const string SqlSessionSchemaName = "GraSqlSessionSchemaName";
         public const string SqlSessionTable = "GraSqlSessionTable";
     }

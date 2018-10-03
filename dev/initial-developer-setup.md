@@ -31,6 +31,18 @@ Initial database setup and configuration can be done utilizing the [`dotnet ef`]
 
     dotnet ef -s ../GRA.Web database update
 
+Here are steps for using the Package Manager Console:
+
+  1. Choose the appropriate project from the "Default project" drop-down (e.g. `src/GRA.Data.SqlServer` or `src/GRA.Data.SQLite`).
+  2. Check if a database migration exists by looking for a folder named "Migrations" in one of the GRA.Data projects.
+  3. If no migrations exist, create one:
+
+      Add-Migration develop
+
+  4. Create or update the database to the migration (necessary for SQLite, possibly not for SQL Server but won't hurt):
+
+      Update-Database
+
 ### Configuration
 
 The `GRA.Web` project has the [Secret Manager](https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets#secret-manager) enabled. You may want to issue a command such as:

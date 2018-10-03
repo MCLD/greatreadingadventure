@@ -1,29 +1,27 @@
 # Get build image
-FROM microsoft/aspnetcore-build:1.1 AS dotnet-sdk
+FROM microsoft/dotnet:2.1-sdk AS dotnet-sdk
 WORKDIR /app
 
-# Copy source and build
+# Copy source
 COPY . ./
-RUN dotnet restore
 
-# Build and publish
-RUN dotnet publish -c Release -o "$(pwd)/publish/web"
+# Publish
+RUN dotnet publish -c Release -o "/app/publish/"
 
 # Get runtime image
-FROM microsoft/aspnetcore:1.1
+FROM microsoft/dotnet:2.1-aspnetcore-runtime
 WORKDIR /app
 
 # Bring in metadata
 ARG commit=unknown
+ARG branch=unknown
 
-LABEL gra.commit=$commit
+LABEL commit=$commit
+LABEL branch=$branch
 LABEL maintainer="Maricopa County Library District developers <development@mcldaz.org>"
 
 # Copy source
-COPY --from=dotnet-sdk /app/publish/web .
-
-# Persist shared directory
-VOLUME ["/app/shared"]
+COPY --from=dotnet-sdk "/app/publish/" .
 
 # Port 80 for http
 EXPOSE 80

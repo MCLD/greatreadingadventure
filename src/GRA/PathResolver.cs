@@ -10,8 +10,8 @@ namespace GRA
 {
     public class PathResolver : IPathResolver
     {
-        private readonly IConfigurationRoot _config;
-        public PathResolver(IConfigurationRoot config)
+        private readonly IConfiguration _config;
+        public PathResolver(IConfiguration config)
         {
             _config = config;
         }

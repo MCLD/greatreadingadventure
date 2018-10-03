@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
@@ -47,7 +48,17 @@ namespace GRA.CommandLine.FakeWeb
             return null;
         }
 
+        public Task CommitAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return null;
+        }
+
         public Task LoadAsync()
+        {
+            return null;
+        }
+
+        public Task LoadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return null;
         }

@@ -12,13 +12,13 @@ namespace GRA.Domain.Service
 {
     public class EmailService : BaseService<EmailService>
     {
-        private readonly IConfigurationRoot _config;
+        private readonly IConfiguration _config;
         private readonly IProgramRepository _programRepository;
         private readonly ISiteRepository _siteRepository;
         private readonly IUserRepository _userRepository;
         public EmailService(ILogger<EmailService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
-            IConfigurationRoot config,
+            IConfiguration config,
             IProgramRepository programRepository,
             ISiteRepository siteRepository,
             IUserRepository userRepository) : base(logger, dateTimeProvider)

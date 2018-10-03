@@ -1,24 +1,28 @@
-﻿using GRA.Domain.Service;
-using Microsoft.AspNetCore.Mvc.Filters;
-using System;
+﻿using System;
+using System.Reflection;
 using System.Threading.Tasks;
+using GRA.Domain.Service;
+using GRA.Domain.Service.Abstract;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Controllers;
-using System.Reflection;
-using GRA.Domain.Service.Abstract;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Logging;
 
 namespace GRA.Controllers.Filter
 {
     public class UserFilter : Attribute, IAsyncActionFilter
     {
+        private readonly ILogger _logger;
         private readonly MailService _mailService;
         private readonly UserService _userService;
         private readonly IUserContextProvider _userContextProvider;
 
-        public UserFilter(MailService mailService,
+        public UserFilter(ILogger<UserFilter> logger,
+            MailService mailService,
             UserService userService,
             IUserContextProvider userContextProvider)
         {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _userContextProvider = userContextProvider
@@ -54,7 +58,14 @@ namespace GRA.Controllers.Filter
                         return;
                     }
                 }
-                httpContext.Items[ItemKey.UnreadCount] = await _mailService.GetUserUnreadCountAsync();
+                try
+                {
+                    httpContext.Items[ItemKey.UnreadCount] = await _mailService.GetUserUnreadCountAsync();
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error getting user unread mail count: {Message}", ex.Message);
+                }
             }
             await next();
         }

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using GRA.CommandLine.FakeWeb;
 using GRA.Controllers;
 using GRA.Domain.Model;
+using McMaster.Extensions.CommandLineUtils;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.CommandLineUtils;
 
 namespace GRA.CommandLine.Base
 {
