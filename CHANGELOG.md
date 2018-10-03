@@ -3,6 +3,25 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## Unreleased
+### Added
+- Logging prior to spin-up of Web server (Fix #241)
+- Logging when site managers authenticate and when test emails are sent
+- Ability for Serilog to output to a SQL Server table
+- Application setting to support SQL Server 2008
+- Database context pooling
+- Request trace identifier to logging
+- Reverse proxy address configuration option
+
+### Changed
+- Upgrade from ASP.NET Core v1.1 to v2.1
+
+### Fixed
+- Docker builds with Travis CI
+
+### Removed
+- Hack to get around Antiforgery issue (Fix #357)
+
 ## [4.0.0] - 2018-10-09
 ### Added
 - Mission Control location list shows a count of related events/community experiences (#322)

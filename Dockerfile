@@ -23,6 +23,9 @@ LABEL maintainer="Maricopa County Library District developers <development@mclda
 # Copy source
 COPY --from=dotnet-sdk "/app/publish/" .
 
+# Persist shared directory
+VOLUME ["/app/shared"]
+
 # Port 80 for http
 EXPOSE 80
 
