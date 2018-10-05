@@ -68,6 +68,17 @@ namespace GRA.Data.Profile
             CreateMap<Model.Page, Domain.Model.Page>().ReverseMap();
             CreateMap<Model.PointTranslation, Domain.Model.PointTranslation>().ReverseMap();
             CreateMap<Model.Program, Domain.Model.Program>().ReverseMap();
+            CreateMap<Model.PsAgeGroup, Domain.Model.PsAgeGroup>().ReverseMap();
+            CreateMap<Model.PsBlackoutDate, Domain.Model.PsBlackoutDate>().ReverseMap();
+            CreateMap<Model.PsBranchSelection, Domain.Model.PsBranchSelection>().ReverseMap();
+            CreateMap<Model.PsDates, Domain.Model.PsDates>().ReverseMap();
+            CreateMap<Model.PsKit, Domain.Model.PsKit>().ReverseMap();
+            CreateMap<Model.PsKitImage, Domain.Model.PsKitImage>().ReverseMap();
+            CreateMap<Model.PsPerformer, Domain.Model.PsPerformer>().ReverseMap();
+            CreateMap<Model.PsPerformerImage, Domain.Model.PsPerformerImage>().ReverseMap();
+            CreateMap<Model.PsPerformerSchedule, Domain.Model.PsPerformerSchedule>().ReverseMap();
+            CreateMap<Model.PsProgram, Domain.Model.PsProgram>().ReverseMap();
+            CreateMap<Model.PsProgramImage, Domain.Model.PsProgramImage>().ReverseMap();
             CreateMap<Model.Question, Domain.Model.Question>()
                 .ForMember(dest => dest.Answers, opt =>
                 {

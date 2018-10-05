@@ -5,6 +5,7 @@ namespace GRA.Domain.Model
     {
         AccessFlightController,
         AccessMissionControl,
+        AccessPerformerRegistration,
         ActivateAllChallenges,
         ActivateSystemChallenges,
         AddChallenges,
@@ -29,6 +30,7 @@ namespace GRA.Domain.Model
         ManageGroupTypes,
         ManageLocations,
         ManagePointTranslations,
+        ManagePerformers,
         ManagePrograms,
         ManageQuestionnaires,
         ManageRoles,
@@ -41,6 +43,7 @@ namespace GRA.Domain.Model
         PerformDrawing,
         ReadAllMail,
         RemoveChallenges,
+        SchedulePerformers,
         SendBroadcastMail,
         UnDonateVendorCode,
         ViewAllChallenges,

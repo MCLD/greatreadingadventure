@@ -72,6 +72,14 @@ namespace GRA.Controllers
             }
             if (AuthUser.Identity.IsAuthenticated)
             {
+                if (TempData.ContainsKey(TempDataKey.UserJoined)
+                    && UserHasPermission(Permission.AccessPerformerRegistration)
+                    && UserHasPermission(Permission.AccessMissionControl) == false)
+                {
+                    return RedirectToAction(nameof(PerformerRegistration.HomeController.Information),
+                        "Home", new { Area = "PerformerRegistration" });
+                }
+
                 User user = null;
                 // signed-in users can view the dashboard
                 try

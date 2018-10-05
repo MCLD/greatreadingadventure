@@ -5,6 +5,7 @@ namespace GRA.Domain.Model
     {
         public const string AccessFlightController = "AccessFlightController";
         public const string AccessMissionControl = "AccessMissionControl";
+        public const string AccessPerformerRegistration = "AccessPerformerRegistration";
         public const string ActivateAllChallenges = "ActivateAllChallenges";
         public const string ActivateChallenges = "ActivateChallenges";
         public const string ActivateSystemChallenges = "ActivateSystemChallenges";
@@ -29,6 +30,7 @@ namespace GRA.Domain.Model
         public const string ManageEvents = "ManageEvents";
         public const string ManageGroupTypes = "ManageGroupTypes";
         public const string ManageLocations = "ManageLocations";
+        public const string ManagePerformers = "ManagePerformers";
         public const string ManagePointTranslations = "ManagePointTranslations";
         public const string ManagePrograms = "ManagePrograms";
         public const string ManageQuestionnaires = "ManageQuestionnaires";
@@ -42,6 +44,7 @@ namespace GRA.Domain.Model
         public const string PerformDrawing = "PerformDrawing";
         public const string ReadAllMail = "ReadAllMail";
         public const string RemoveChallenges = "RemoveChallenges";
+        public const string SchedulePerformers = "SchedulePerformers";
         public const string SendBroadcastMail = "SendBroadcastMail";
         public const string UnDonateVendorCode = "UnDonateVendorCode";
         public const string ViewAllChallenges = "ViewAllChallenges";

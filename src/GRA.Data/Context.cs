@@ -31,6 +31,12 @@ namespace GRA.Data
                 .HasKey(_ => new { _.DrawingCriterionId, _.ProgramId });
             modelBuilder.Entity<Model.RolePermission>()
                 .HasKey(_ => new { _.RoleId, _.PermissionId });
+            modelBuilder.Entity<Model.PsKitAgeGroup>()
+                .HasKey(_ => new { _.KitId, _.AgeGroupId });
+            modelBuilder.Entity<Model.PsPerformerBranch>()
+                .HasKey(_ => new { _.PerformerId, _.BranchId });
+            modelBuilder.Entity<Model.PsProgramAgeGroup>()
+                .HasKey(_ => new { _.ProgramId, _.AgeGroupId });
             modelBuilder.Entity<Model.TriggerBadge>()
                 .HasKey(_ => new { _.TriggerId, _.BadgeId });
             modelBuilder.Entity<Model.TriggerChallenge>()
@@ -156,6 +162,20 @@ namespace GRA.Data
         public DbSet<Model.PointTranslation> PointTranslations { get; set; }
         public DbSet<Model.PrizeWinner> PrizeWinners { get; set; }
         public DbSet<Model.Program> Programs { get; set; }
+        public DbSet<Model.PsAgeGroup> PsAgeGroups { get; set; }
+        public DbSet<Model.PsBlackoutDate> PsBlackoutDates { get; set; }
+        public DbSet<Model.PsBranchSelection> PsBranchSelections { get; set; }
+        public DbSet<Model.PsDates> PsDates { get; set; }
+        public DbSet<Model.PsKitAgeGroup> PsKitAgeGroups { get; set; }
+        public DbSet<Model.PsKitImage> PsKitImages { get; set; }
+        public DbSet<Model.PsKit> PsKits { get; set; }
+        public DbSet<Model.PsPerformerBranch> PsPerformerBranches { get; set; }
+        public DbSet<Model.PsPerformerImage> PsPerformerImages { get; set; }
+        public DbSet<Model.PsPerformer> PsPerformers { get; set; }
+        public DbSet<Model.PsPerformerSchedule> PsPerformerSchedules { get; set; }
+        public DbSet<Model.PsProgramAgeGroup> PsProgramAgeGroups { get; set; }
+        public DbSet<Model.PsProgramImage> PsProgramImages { get; set; }
+        public DbSet<Model.PsProgram> PsPrograms { get; set; }
         public DbSet<Model.Question> Questions { get; set; }
         public DbSet<Model.Questionnaire> Questionnaires { get; set; }
         public DbSet<Model.RecoveryToken> RecoveryTokens { get; set; }
