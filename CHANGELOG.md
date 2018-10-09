@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
-## Unreleased
+## [4.0.0] - 2018-10-09
 ### Added
 - Mission Control location list shows a count of related events/community experiences (#322)
 - Add Google Analytics Event when participant joins (#324)
@@ -34,7 +34,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Mail threading showing html as text
 - Disable avatar save button while saving to avoid accidental double-clicks
 - Issue with parsing some Excel spreadsheets in the vendor code status update
-- Reporting excel sheet formatting error
+- Reporting Excel sheet formatting error
 - Issue displaying vendor code notes on household pages
 
 ## [4.0.0-beta2] - 2018-05-18
@@ -86,5 +86,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Added
 - Everything! First release of 4.0.
 
+[4.0.0]: https://github.com/mcld/greatreadingadventure/tree/v4.0.0
 [4.0.0-beta2]: https://github.com/mcld/greatreadingadventure/tree/v4.0.0-beta2
 [4.0.0-beta1]: https://github.com/mcld/greatreadingadventure/tree/v4.0.0-beta1

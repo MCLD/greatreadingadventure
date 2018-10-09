@@ -21,7 +21,7 @@ namespace GRA.CommandLine
 {
     class Program
     {
-        private const string VersionSuffix = "-beta2";
+        private static readonly string VersionSuffix = string.Empty;
         public static int Main(string[] args)
         {
             var sw = new Stopwatch();

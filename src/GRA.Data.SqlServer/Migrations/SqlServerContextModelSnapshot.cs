@@ -13,7 +13,7 @@ namespace GRA.Data.SqlServer.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "1.1.5")
+                .HasAnnotation("ProductVersion", "1.1.6")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("GRA.Data.Model.Answer", b =>
@@ -1459,8 +1459,6 @@ namespace GRA.Data.SqlServer.Migrations
                         .HasMaxLength(150);
 
                     b.Property<int?>("BeforeRegistrationPage");
-
-                    b.Property<bool>("CollectPreregistrationEmails");
 
                     b.Property<DateTime>("CreatedAt");
 

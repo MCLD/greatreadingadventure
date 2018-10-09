@@ -3,17 +3,19 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using GRA.Data.SQLite;
+using GRA.Data.SqlServer;
 
-namespace GRA.Data.SQLite.Migrations
+namespace GRA.Data.SqlServer.Migrations
 {
-    [DbContext(typeof(SQLiteContext))]
-    partial class SQLiteContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(SqlServerContext))]
+    [Migration("20181009170000_v4.0.0")]
+    partial class v400
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "1.1.6");
+                .HasAnnotation("ProductVersion", "1.1.6")
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("GRA.Data.Model.Answer", b =>
                 {
