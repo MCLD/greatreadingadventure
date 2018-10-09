@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
-## [4.0.0] - 2018-09-28
+## [4.0.0] - 2018-10-09
 ### Added
 - Mission Control location list shows a count of related events/community experiences (#322)
 - Add Google Analytics Event when participant joins (#324)
