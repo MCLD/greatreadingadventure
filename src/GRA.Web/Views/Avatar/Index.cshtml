@@ -94,6 +94,7 @@
                         <button id="saveAvatar" class="btn btn-lg @(Model.NewAvatar ? "btn-success" : "btn-default")" style="margin:5px;">
                             <span class="fa fa-floppy-o"></span>
                             Save
+                            <span id="saveSpinner" class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                         </button>
                         <form id="shareForm" asp-action="Share" method="post" role="form" style="display: inline-block">
 
@@ -131,6 +132,10 @@
         var itemRows;
 
         SetLayer(@Model.DefaultLayer);
+
+        $.ajaxSetup({
+            timeout: 30000
+        });
 
         function GetLayerById(layerId) {
             for (var i = 0; i < layers.length; i++) {
@@ -428,6 +433,10 @@
                 $(".avatar-save-message").removeClass("text-success").addClass("text-danger");
                 $(".avatar-save-message").text("Error saving Avatar");
                 $(".avatar-save-message").show();
+            })
+            .always(function() {
+                $("#saveSpinner").addClass("hidden");
+                $("#saveAvatar").removeAttr("disabled");
             });
         }
 
@@ -471,6 +480,9 @@
         });
 
         $("#saveAvatar").on("click", function () {
+            $(".avatar-save-message").hide();
+            $(this).attr("disabled", "disabled");
+            $("#saveSpinner").removeClass("hidden");
             SaveAvatar();
         });
 

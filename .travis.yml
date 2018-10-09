@@ -6,14 +6,26 @@ sudo: required
 
 language: bash
 
+git:
+  depth: 3
+
 services:
   - docker
 
-install:
-  - sudo apt-get update
-  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
-  - docker info
+script: bash docker-build.sh
 
-script:
-  - docker build -t gra .
-
+after_success:
+  - |
+    if [[ "$DOCKER_USERNAME" != "" ]] && [[ "$DOCKER_PASSWORD" != "" ]]; then
+        if [[ $TRAVIS_BRANCH == "master" ]]; then
+          echo "Pushing docker image mcld/gra:latest to Docker Hub"
+          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+          docker push mcld/gra:latest
+          docker logout
+        elif [[ $TRAVIS_BRANCH == "develop" || $TRAVIS_BRANCH =~ (v[0-9]+\.[0-9]+\.[0-9]+.*) ]]; then
+          echo "Pushing docker image mcld/gra:$TRAVIS_BRANCH to Docker Hub"
+          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+          docker push mcld/gra:$TRAVIS_BRANCH
+          docker logout
+        fi
+    fi

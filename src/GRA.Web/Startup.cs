@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -14,6 +13,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -187,6 +187,11 @@ namespace GRA.Web
             }
             services.AddMvc();
 
+            // Add custom view directory
+            services.Configure<RazorViewEngineOptions>(options =>
+                options.ViewLocationFormats.Insert(0, "/shared/views/{1}/{0}.cshtml")
+            );
+
             services.AddAuthorization(options =>
             {
                 foreach (var permisisonName in Enum.GetValues(typeof(Domain.Model.Permission)))
@@ -275,6 +280,7 @@ namespace GRA.Web
             services.AddScoped<SiteLookupService>();
             services.AddScoped<SiteService>();
             services.AddScoped<SystemInformationService>();
+            services.AddScoped<TemplateService>();
             services.AddScoped<TriggerService>();
             services.AddScoped<UserService>();
             services.AddScoped<VendorCodeService>();
@@ -283,6 +289,7 @@ namespace GRA.Web
             services.AddScoped<Domain.Report.ActivityByProgramReport>();
             services.AddScoped<Domain.Report.BadgeReport>();
             services.AddScoped<Domain.Report.BadgeTopScoresReport>();
+            services.AddScoped<Domain.Report.CommunityExperiencesReport>();
             services.AddScoped<Domain.Report.CurrentStatusByProgramReport>();
             services.AddScoped<Domain.Report.CurrentStatusReport>();
             services.AddScoped<Domain.Report.GroupVendorCodeReport>();
@@ -290,6 +297,7 @@ namespace GRA.Web
             services.AddScoped<Domain.Report.RegistrationsAchieversReport>();
             services.AddScoped<Domain.Report.ParticipantPrizeReport>();
             services.AddScoped<Domain.Report.ParticipantProgressReport>();
+            services.AddScoped<Domain.Report.ParticipantCountMinutesByProgram>();
             services.AddScoped<Domain.Report.PrizeRedemptionReport>();
             services.AddScoped<Domain.Report.TopScoresReport>();
             services.AddScoped<Domain.Report.VendorCodeDonationsReport>();
@@ -382,7 +390,8 @@ namespace GRA.Web
             ILoggerFactory loggerFactory,
             IPathResolver pathResolver,
             RoleService roleService,
-            SiteLookupService siteLookupService)
+            SiteLookupService siteLookupService,
+            TemplateService templateService)
         {
             loggerFactory.AddSerilog();
 
@@ -412,7 +421,8 @@ namespace GRA.Web
             dbContext.Migrate();
             Task.Run(() => siteLookupService.GetDefaultSiteIdAsync()).Wait();
             Task.Run(() => roleService.SyncPermissionsAsync()).Wait();
-
+            templateService.SetupTemplates();
+            
             app.UseRequestLocalization();
 
             app.UseResponseCompression();

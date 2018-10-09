@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using GRA.Domain.Report.Attribute;
 using System.Reflection;
+using System.Linq;
 
 namespace GRA.Domain.Report.Abstract
 {
@@ -62,7 +63,7 @@ namespace GRA.Domain.Report.Abstract
             UpdateProgress(progress, percentComplete, null);
         }
 
-        protected void UpdateProgress(IProgress<OperationStatus> progress, 
+        protected void UpdateProgress(IProgress<OperationStatus> progress,
             string message,
             string title = null)
         {
@@ -86,7 +87,7 @@ namespace GRA.Domain.Report.Abstract
                 {
                     status.Status = message;
                 }
-                if(!string.IsNullOrEmpty(title))
+                if (!string.IsNullOrEmpty(title))
                 {
                     status.Title = title;
                 }
@@ -143,6 +144,21 @@ namespace GRA.Domain.Report.Abstract
                 request.ResultJson = Newtonsoft.Json.JsonConvert.SerializeObject(ReportSet);
             }
             await _serviceFacade.ReportRequestRepository.UpdateSaveNoAuditAsync(request);
+        }
+
+        protected async Task<bool> GetSiteSettingBoolAsync(ReportCriterion criterion, string key)
+        {
+            if (criterion == null || criterion.SiteId == null)
+            {
+                throw new ArgumentNullException(nameof(criterion.SiteId));
+            }
+
+            var settings
+                = await _serviceFacade.SiteSettingRepository.GetBySiteIdAsync((int)criterion.SiteId);
+
+            var setting = settings.Where(_ => _.Key == key);
+
+            return setting.SingleOrDefault()?.Value != null;
         }
     }
 }

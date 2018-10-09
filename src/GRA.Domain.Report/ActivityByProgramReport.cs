@@ -63,6 +63,10 @@ namespace GRA.Domain.Report
             };
 
             var reportData = new List<object[]>();
+
+
+            var askIfFirstTime
+                = await GetSiteSettingBoolAsync(criterion, SiteSettingKey.Users.AskIfFirstTime);
             #endregion Reporting initialization
 
             #region Collect data
@@ -75,6 +79,11 @@ namespace GRA.Domain.Report
                 "Program Name",
                 "Registered Users",
             };
+
+            if (askIfFirstTime)
+            {
+                headerRow.Add("First time Participants");
+            }
 
             var translations = new Dictionary<string, ICollection<int?>>();
             var translationTotals = new Dictionary<string, long>();
@@ -114,6 +123,7 @@ namespace GRA.Domain.Report
 
             // running totals
             long totalRegistered = 0;
+            long totalFirstTime = 0;
 
             var branches = criterion.SystemId != null
                 ? await _branchRepository.GetBySystemAsync((int)criterion.SystemId)
@@ -156,11 +166,19 @@ namespace GRA.Domain.Report
                         totalRegistered += users;
 
                         var row = new List<object>() {
-                        branch.SystemName,
-                        branch.Name,
-                        programDictionary[programId],
-                        users
-                    };
+                            branch.SystemName,
+                            branch.Name,
+                            programDictionary[programId],
+                            users
+                        };
+
+                        if (askIfFirstTime)
+                        {
+                            int firstTime = await _userRepository.GetFirstTimeCountAsync(criterion);
+                            totalFirstTime += firstTime;
+
+                            row.Add(firstTime);
+                        }
 
                         foreach (var translationName in translations.Keys)
                         {
@@ -190,6 +208,11 @@ namespace GRA.Domain.Report
                 string.Empty,
                 totalRegistered,
             };
+
+            if (askIfFirstTime)
+            {
+                footerRow.Add(totalFirstTime);
+            }
 
             foreach (var total in translationTotals.Values)
             {

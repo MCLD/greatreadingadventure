@@ -3,6 +3,7 @@
     public enum SiteSettingFormat
     {
         Boolean,
-        Integer
+        Integer,
+        String
     }
 }

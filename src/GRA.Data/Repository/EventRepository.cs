@@ -1,13 +1,13 @@
-﻿using AutoMapper.QueryableExtensions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GRA.Data.Repository
 {
@@ -259,6 +259,41 @@ namespace GRA.Data.Repository
                 graEvent.ChallengeGroupId = null;
                 await base.UpdateAsync(userId, graEvent, null);
             }
+        }
+
+        public async Task<ICollection<DataWithCount<Event>>>
+            GetCommunityExperienceAttendanceAsync(ReportCriterion criterion)
+        {
+            var communityExperiences = DbSet
+                .AsNoTracking()
+                .Where(_ => _.IsCommunityExperience && _.RelatedTriggerId.HasValue);
+
+            if (criterion.BranchId.HasValue)
+            {
+                communityExperiences = communityExperiences
+                    .Where(_ => _.RelatedBranchId == criterion.BranchId);
+            }
+            else if (criterion.SystemId.HasValue)
+            {
+                communityExperiences = communityExperiences
+                    .Where(_ => _.RelatedSystemId == criterion.SystemId);
+            }
+
+            var experienceWithCount = communityExperiences
+                .ProjectTo<Event>()
+                .GroupJoin(_context.UserTriggers,
+                    c => c.RelatedTriggerId.Value, 
+                    ut => ut.TriggerId, 
+                    (c, e) => new { c, e })
+                .Select(_ => new DataWithCount<Event>()
+                {
+                    Data = _.c,
+                    Count = _.e.Count()
+                });
+
+            return await experienceWithCount
+                .OrderBy(_ => _.Data.Name)
+                .ToListAsync();
         }
     }
 }

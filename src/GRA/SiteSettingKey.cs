@@ -30,7 +30,11 @@
             public const string MaximumHouseholdSizeBeforeGroup = "Users.MaximumHouseholdSizeBeforeGroup";
             public const string AskIfFirstTime = "Users.AskIfFirstTime";
             public const string AskPreregistrationReminder = "Users.AskPreregistrationReminder";
+            public const string CollectAccessClosedEmails = "Users.CollectAccessClosedEmails";
+            public const string CollectPreregistrationEmails = "User.CollectPreregistrationEmails";
             public const string DefaultDailyPersonalGoal = "Users.DefaultDailyPersonalGoal";
+            public const string SurveyUrl = "Users.SurveyUrl";
+            public const string FirstTimeSurveyUrl = "Users.FirstTimeSurveyUrl";
         }
     }
 }

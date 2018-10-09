@@ -8,8 +8,8 @@ namespace GRA.Controllers.ViewModel.Home
 {
     public class BeforeRegistrationViewModel
     {
-        public Site Site { get; set; }
         public string RegistrationOpens { get; set; }
+        public bool CollectEmail { get; set; }
         public string Email { get; set; }
         public string SignUpSource { get; set; }
     }

@@ -1,30 +1,38 @@
 # Get build image
-FROM microsoft/aspnetcore-build:1.1 AS build-env
+FROM microsoft/aspnetcore-build:1.1 AS dotnet-sdk
 WORKDIR /app
 
-# Copy source and build
+# Copy source
 COPY . ./
+
+# Restore
 RUN dotnet restore
 
 # Add database migrations
 WORKDIR /app/src/GRA.Data.SqlServer
-RUN dotnet ef migrations add -s ../GRA.Web/GRA.Web.csproj develop
+RUN dotnet ef migrations add develop
 
 WORKDIR /app/src/GRA.Data.SQLite
-RUN dotnet ef migrations add -s ../GRA.Web/GRA.Web.csproj develop
+RUN dotnet ef migrations add develop
 
-# Build and publish
+# Publish
 WORKDIR /app
-RUN dotnet publish -c Release -o "$(pwd)/publish/web"
+RUN dotnet publish -c Release -o "/app/publish/"
 
 # Get runtime image
 FROM microsoft/aspnetcore:1.1
 WORKDIR /app
 
+# Bring in metadata
+ARG commit=unknown
+ARG branch=unknown
+
+LABEL commit=$commit
+LABEL branch=$branch
 LABEL maintainer="Maricopa County Library District developers <development@mcldaz.org>"
 
 # Copy source
-COPY --from=build-env /app/publish/web .
+COPY --from=dotnet-sdk "/app/publish/" .
 
 # Persist shared directory
 VOLUME ["/app/shared"]

@@ -7,7 +7,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.Sites
     {
         public int Id { get; set; }
 
-        public bool CollectPreregistrationEmails { get; set; }
         [DisplayName("Before RegistrationPage")]
         public int? BeforeRegistrationPage { get; set; }
         [DisplayName("Registration Opens")]

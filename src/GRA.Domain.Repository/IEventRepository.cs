@@ -16,5 +16,7 @@ namespace GRA.Domain.Repository
         Task<ICollection<Event>> GetRelatedEventsForTriggerAsync(int triggerId);
         Task DetachRelatedChallenge(int userId, int challengeId);
         Task DetachRelatedChallengeGroup(int userId, int challengeGroupId);
+        Task<ICollection<DataWithCount<Event>>> GetCommunityExperienceAttendanceAsync(
+            ReportCriterion criterion);
     }
 }

@@ -99,6 +99,26 @@ namespace GRA
                 }
             },
             {
+                SiteSettingKey.Users.CollectAccessClosedEmails,
+                new SiteSettingDefinition()
+                {
+                    Name = "Collect emails after access has closed",
+                    Info = "Put any text here to add email collection on the homepage after the program has closed. This software does not send the email, it just collects the addresses.",
+                    Category = typeof(SiteSettingKey.Users).Name,
+                    Format = SiteSettingFormat.Boolean
+                }
+            },
+            {
+                SiteSettingKey.Users.CollectPreregistrationEmails,
+                new SiteSettingDefinition()
+                {
+                    Name = "Collect emails before registration has opened",
+                    Info = "Put any text here to add email collection on the homepage before registration has opened. This software does not send the email, it just collects the addresses.",
+                    Category = typeof(SiteSettingKey.Users).Name,
+                    Format = SiteSettingFormat.Boolean
+                }
+            },
+            {
                 SiteSettingKey.Users.DefaultDailyPersonalGoal,
                 new SiteSettingDefinition()
                 {
@@ -106,6 +126,26 @@ namespace GRA
                     Info = "A number here will prompt participants if they want to use that as a daily personal activity goal. Requires the site to program start and program end dates configured.",
                     Category = typeof(SiteSettingKey.Users).Name,
                     Format = SiteSettingFormat.Integer
+                }
+            },
+            {
+                SiteSettingKey.Users.SurveyUrl,
+                new SiteSettingDefinition()
+                {
+                    Name = "Survey URL",
+                    Info = "Set a link for {Your Website}/Survey to redirect to.",
+                    Category = typeof(SiteSettingKey.Users).Name,
+                    Format = SiteSettingFormat.String
+                }
+            },
+            {
+                SiteSettingKey.Users.FirstTimeSurveyUrl,
+                new SiteSettingDefinition()
+                {
+                    Name = "First time survey URL",
+                    Info = "Set a link for {Your Website}/Survey to redirect to for first time users. Requires Ask if first time and Survey URL to be configured.",
+                    Category = typeof(SiteSettingKey.Users).Name,
+                    Format = SiteSettingFormat.String
                 }
             }
         };

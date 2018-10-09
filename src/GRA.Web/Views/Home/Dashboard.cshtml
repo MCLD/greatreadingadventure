@@ -265,15 +265,29 @@
     </div>
 }
 
-@if (!string.IsNullOrWhiteSpace(Model.DailyImageMessage))
-{
-    @section scripts {
-        <script>
-            $("#viewDailyImage").on("click", function () {
-                var src = $(this).data("src");
-                $(".daily-image").attr("src", src);
-                $("#dailyImageModal").modal().show();
-            });
-        </script>
-    }
+
+@section scripts {
+    <script>
+            @if (!string.IsNullOrWhiteSpace(Model.DailyImageMessage))
+            {
+                <text>
+                    $("#viewDailyImage").on("click", function() {
+                            var src = $(this).data("src");
+                        $(".daily-image").attr("src", src);
+                        $("#dailyImageModal").modal().show();
+                        });
+                </text>
+            }
+            @if (Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null && Model.UserJoined)
+            {
+                <text>
+                    ga('send', {
+                        hitType: 'event',
+                        eventCategory: '@Model.SitePath',
+                        eventAction: 'join',
+                        eventLabel: '@Model.ProgramName'
+                    });
+                </text>
+            }
+    </script>
 }

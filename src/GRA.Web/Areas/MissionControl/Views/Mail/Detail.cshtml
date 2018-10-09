@@ -59,7 +59,14 @@
                                     <strong style="padding-bottom:15px;">@mail.Subject</strong>
                                 </div>
 
-                                @mail.Body
+                                @if (mail.ToUserId.HasValue)
+                                {
+                                    @: @Html.Raw(mail.Body)
+                                }
+                                else
+                                {
+                                    @mail.Body
+                                }
                             </div>
                         </div>
                     </div>

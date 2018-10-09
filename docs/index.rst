@@ -44,6 +44,7 @@ This manual is split into several main sections:
    installation/create-the-database
    installation/configuration
    installation/install-the-software-windows
+   installation/upgrading
 
 .. _setup-docs:
 .. toctree::

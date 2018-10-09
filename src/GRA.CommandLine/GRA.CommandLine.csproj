@@ -4,14 +4,18 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <AssemblyName>gracl</AssemblyName>
-    <Version>4.0.0-beta2</Version>
+    <Version>4.0.0</Version>
     <Company />
-    <Product />
+    <Product>Great Reading Adventure</Product>
     <Copyright>Copyright 2017 Maricopa County Library District</Copyright>
     <PackageLicenseUrl>https://github.com/mcld/greatreadingadventure/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>http://www.greatreadingadventure.com/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/mcld/greatreadingadventure/</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
+    <Authors>Maricopa County Library District</Authors>
+    <Description>The Great Reading Adventure is a robust, open source software designed to manage library reading programs. The GRA is free to use, modify, and share.</Description>
+    <PackageTags>public-library reading-program literacy gra</PackageTags>
+    <PackageReleaseNotes>See https://github.com/MCLD/greatreadingadventure/releases/tag/v4.0.0</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

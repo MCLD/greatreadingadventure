@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 namespace GRA.Domain.Report
 {
     [ReportInformation(19,
-    "Registrations And Achievers by School Report",
+    "Registrations And Achievers By School Report",
     "Registered participants and achievers by school (filterable by district and school).",
     "Program")]
     public class RegistrationsAchieversBySchoolReport : BaseReport
@@ -65,24 +65,35 @@ namespace GRA.Domain.Report
                 AsOf = _serviceFacade.DateTimeProvider.Now
             };
             var reportData = new List<object[]>();
+
+            var askIfFirstTime
+                = await GetSiteSettingBoolAsync(criterion, SiteSettingKey.Users.AskIfFirstTime);
             #endregion Reporting initialization
 
             #region Collect data
             UpdateProgress(progress, 1, "Starting report...", request.Name);
 
             // header row
-            report.HeaderRow = new object[]
-            {
+            var headerRow = new List<object>() {
                 "School Name",
                 "School Type",
-                "Registered Users",
-                "Achievers"
+                "Registered Users"
             };
+
+            if (askIfFirstTime)
+            {
+                headerRow.Add("First time Participants");
+            }
+
+            headerRow.Add("Achievers");
+
+            report.HeaderRow = headerRow.ToArray();
 
             int count = 0;
 
             // running totals
             long totalRegistered = 0;
+            long totalFirstTime = 0;
             long totalAchiever = 0;
 
             ICollection<School> schools = null;
@@ -132,28 +143,45 @@ namespace GRA.Domain.Report
                         .GetByIdAsync(school.SchoolTypeId.Value);
                     schoolTypeName = schoolType.Name;
                 }
-                
 
-                // add row
-                reportData.Add(new object[] {
-                        school.Name,
-                        schoolTypeName,
-                        users,
-                        achievers
-                    });
+                var row = new List<object>()
+                {
+                    school.Name,
+                    schoolTypeName,
+                    users
+                };
+
+                if (askIfFirstTime)
+                {
+                    int firstTime = await _userRepository.GetFirstTimeCountAsync(criterion);
+                    totalFirstTime += firstTime;
+
+                    row.Add(firstTime);
+                }
+
+                row.Add(achievers);
+
+                reportData.Add(row.ToArray());
             }
 
             report.Data = reportData.ToArray();
 
             // total row
-            report.FooterRow = new object[]
+            var footerRow = new List<object>()
             {
                 "Total",
                 string.Empty,
-                totalRegistered,
-                totalAchiever
+                totalRegistered
             };
 
+            if (askIfFirstTime)
+            {
+                footerRow.Add(totalFirstTime);
+            }
+
+            footerRow.Add(totalAchiever);
+
+            report.FooterRow = footerRow.ToArray();
             #endregion Collect data
 
             #region Finish up reporting

@@ -109,6 +109,14 @@ namespace GRA.Controllers
                     }
                 }
 
+                if (TempData.ContainsKey(TempDataKey.UserJoined))
+                {
+                    TempData.Remove(TempDataKey.UserJoined);
+                    viewModel.SitePath = site.Path;
+                    viewModel.ProgramName = program.Name;
+                    viewModel.UserJoined = true;
+                }
+
                 var userAvatar = await _avatarService.GetUserAvatarAsync();
                 if (userAvatar?.Count > 0)
                 {
@@ -173,13 +181,18 @@ namespace GRA.Controllers
                     case SiteStage.BeforeRegistration:
                         var viewModel = new BeforeRegistrationViewModel
                         {
-                            Site = await GetCurrentSiteAsync(),
                             SignUpSource = "BeforeRegistration"
                         };
-                        if (viewModel.Site != null && viewModel.Site.RegistrationOpens != null)
+                        if (site != null)
                         {
-                            viewModel.RegistrationOpens
-                                = ((DateTime)viewModel.Site.RegistrationOpens).ToString("D");
+                            viewModel.CollectEmail = await _siteLookupService
+                                .GetSiteSettingBoolAsync(site.Id, 
+                                    SiteSettingKey.Users.CollectPreregistrationEmails);
+                            if (site.RegistrationOpens != null)
+                            {
+                                viewModel.RegistrationOpens
+                                    = ((DateTime)site.RegistrationOpens).ToString("D");
+                            }
                         }
                         return View("IndexBeforeRegistration", viewModel);
                     case SiteStage.RegistrationOpen:
@@ -187,7 +200,17 @@ namespace GRA.Controllers
                     case SiteStage.ProgramEnded:
                         return View("IndexProgramEnded");
                     case SiteStage.AccessClosed:
-                        return View("IndexAccessClosed");
+                        var acViewModel = new AccessClosedViewModel
+                        {
+                            SignUpSource = "AccessClosed"
+                        };
+                        if (site != null)
+                        {
+                            acViewModel.CollectEmail = await _siteLookupService
+                                .GetSiteSettingBoolAsync(site.Id,
+                                    SiteSettingKey.Users.CollectAccessClosedEmails);
+                        }
+                        return View("IndexAccessClosed", acViewModel);
                     case SiteStage.ProgramOpen:
                     default:
                         return View("IndexProgramOpen");

@@ -3,6 +3,40 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [4.0.0] - 2018-10-09
+### Added
+- Mission Control location list shows a count of related events/community experiences (#322)
+- Add Google Analytics Event when participant joins (#324)
+- Survey linking for all participants and first time participants
+- Participant Count and Minutes by Program Report
+- First time users to Activity by Program Report
+- Community experience attendance report
+- Email address collection after program has ended
+- Templates in the shared folder for front page and dashboard views
+- First time participant count on vendor code report
+- Achiever count to the participant count and minutes by program report
+
+### Changed
+- Mission Control events navbar icon is now a drop-down (#322)
+- Fix automated builds and pushing to Docker Hub
+- Developer ability to add minute cap to reporting
+- Whether or not to collect email addresses prior to registration is now a site setting
+
+### Fixed
+- Set page title to "community experiences" when selected on the events page
+- Registrations and achievers by school report name (#320)
+- Issue showing list of badges for the Badge Top Scores Report
+- Public event locations list sorts alphabetically (#321)
+- Default start and end date on reports which require date selection (#317)
+- Button on reports with date selection for the entire program (#317)
+- Button on reports with date selection for the last week (#317)
+- Report criteria to show on browser report view and exports (#318)
+- Mail threading showing html as text
+- Disable avatar save button while saving to avoid accidental double-clicks
+- Issue with parsing some Excel spreadsheets in the vendor code status update
+- Reporting Excel sheet formatting error
+- Issue displaying vendor code notes on household pages
+
 ## [4.0.0-beta2] - 2018-05-18
 ### Added
 - Group Vendor Code Report: group members and their assigned vendor codes
@@ -52,5 +86,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Added
 - Everything! First release of 4.0.
 
+[4.0.0]: https://github.com/mcld/greatreadingadventure/tree/v4.0.0
 [4.0.0-beta2]: https://github.com/mcld/greatreadingadventure/tree/v4.0.0-beta2
 [4.0.0-beta1]: https://github.com/mcld/greatreadingadventure/tree/v4.0.0-beta1

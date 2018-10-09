@@ -434,6 +434,8 @@ namespace GRA.Controllers
                             questionnaireId.Value);
                     }
 
+                    TempData.Add(TempDataKey.UserJoined, true);
+
                     return RedirectToAction("Index", "Home");
                 }
                 catch (GraException gex)
@@ -1087,6 +1089,8 @@ namespace GRA.Controllers
                         HttpContext.Session.SetInt32(SessionKey.PendingQuestionnaire,
                             questionnaireId.Value);
                     }
+
+                    TempData.Add(TempDataKey.UserJoined, true);
 
                     return RedirectToAction("Index", "Home");
                 }

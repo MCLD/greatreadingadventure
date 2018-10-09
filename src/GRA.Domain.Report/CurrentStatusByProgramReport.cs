@@ -57,12 +57,15 @@ namespace GRA.Domain.Report
 
             int count = 0;
             var asof = _serviceFacade.DateTimeProvider.Now;
+
+            var askIfFirstTime
+                = await GetSiteSettingBoolAsync(criterion, SiteSettingKey.Users.AskIfFirstTime);
             #endregion Reporting initialization
 
             #region Collect data
             UpdateProgress(progress, 1, "Starting report...", request.Name);
 
-            var programTotals = new Dictionary<int, (int users, int achievers)>();
+            var programTotals = new Dictionary<int, (int users, int firstTime, int achievers)>();
 
             var programReports = new List<StoredReport>();
 
@@ -85,15 +88,24 @@ namespace GRA.Domain.Report
                 };
                 var reportData = new List<object[]>();
 
-                report.HeaderRow = new string[]
-                {
+                // header row
+                var headerRow = new List<object>() {
                     "Library System",
                     "Library",
-                    "Signups",
-                    "Achievers"
+                    "Signups"
                 };
 
+                if (askIfFirstTime)
+                {
+                    headerRow.Add("First time Participants");
+                }
+
+                headerRow.Add("Achievers");
+
+                report.HeaderRow = headerRow.ToArray();
+
                 int programTotalUsers = 0;
+                int programTotalFirstTime = 0;
                 int programTotalAchievers = 0;
 
                 var systemIds = branches
@@ -118,16 +130,26 @@ namespace GRA.Domain.Report
                         int users = await _userRepository.GetCountAsync(criterion);
                         int achievers = await _userRepository.GetAchieverCountAsync(criterion);
 
-                        reportData.Add(new object[]
-                        {
+                        var row = new List<object>() {
                             branch.SystemName,
                             branch.Name,
-                            users,
-                            achievers
-                        });
+                            users
+                        };
+
+                        if (askIfFirstTime)
+                        {
+                            int firstTime = await _userRepository.GetFirstTimeCountAsync(criterion);
+                            programTotalFirstTime += firstTime;
+
+                            row.Add(firstTime);
+                        }
+
+                        row.Add(achievers);
 
                         programTotalUsers += users;
                         programTotalAchievers += achievers;
+
+                        reportData.Add(row.ToArray());
 
                         if (token.IsCancellationRequested)
                         {
@@ -143,15 +165,23 @@ namespace GRA.Domain.Report
 
                 report.Data = reportData.ToArray();
 
-                report.FooterRow = new object[]
-                    {
-                        "Total",
-                        string.Empty,
-                        programTotalUsers,
-                        programTotalAchievers
-                    };
+                var footerRow = new List<object>()
+                {
+                    "Total",
+                    string.Empty,
+                    programTotalUsers,
+                };
 
-                programTotals.Add(program.Id, (programTotalUsers, programTotalAchievers));
+                if (askIfFirstTime)
+                {
+                    footerRow.Add(programTotalFirstTime);
+                }
+
+                footerRow.Add(programTotalAchievers);
+
+                report.FooterRow = footerRow.ToArray();
+
+                programTotals.Add(program.Id, (programTotalUsers, programTotalFirstTime, programTotalAchievers));
 
                 double completion = 0;
                 if (programTotalUsers > 0)
@@ -176,41 +206,69 @@ namespace GRA.Domain.Report
                 AsOf = asof
             };
             var summaryReportData = new List<object[]>();
-            summaryReport.HeaderRow = new string[]
+
+            var summaryHeader = new List<object>()
             {
                 "Program",
                 "Signups",
-                "Achievers",
-                "Achiever Points"
-            }.ToArray();
+            };
+
+            if (askIfFirstTime)
+            {
+                summaryHeader.Add("First time Participants");
+            }
+
+            summaryHeader.Add("Achievers");
+            summaryHeader.Add("Achiever Points");
+
+            summaryReport.HeaderRow = summaryHeader.ToArray();
 
             int signupTotal = 0;
+            int firstTimeTotal = 0;
             int achieverTotal = 0;
 
             foreach (var program in programs)
             {
                 var programData = programTotals[program.Id];
-                summaryReportData.Add(new object[]
+
+                var summaryRow = new List<object>()
                 {
                     program.Name,
-                    programData.users,
-                    programData.achievers,
-                    program.AchieverPointAmount
-                });
+                    programData.users
+                };
+
+                if (askIfFirstTime)
+                {
+                    summaryRow.Add(programData.firstTime);
+                }
+
+                summaryRow.Add(programData.achievers);
+                summaryRow.Add(program.AchieverPointAmount);
+
+                summaryReportData.Add(summaryRow.ToArray());
 
                 signupTotal += programData.users;
+                firstTimeTotal += programData.firstTime;
                 achieverTotal += programData.achievers;
             }
 
             summaryReport.Data = summaryReportData.ToArray();
 
-            summaryReport.FooterRow = new object[]
+            var summaryFooter = new List<object>()
             {
                 "Total",
                 signupTotal,
-                achieverTotal,
-                string.Empty
             };
+
+            if (askIfFirstTime)
+            {
+                summaryFooter.Add(firstTimeTotal);
+            }
+
+            summaryFooter.Add(achieverTotal);
+            summaryFooter.Add(string.Empty);
+
+            summaryReport.FooterRow = summaryFooter.ToArray();
 
             double totalCompletion = 0;
             if (signupTotal > 0)

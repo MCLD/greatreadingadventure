@@ -88,6 +88,7 @@ namespace GRA.Controllers.MissionControl
                         });
                 }
                 viewModel.CommunityExperience = true;
+                PageTitle = "Community Experiences";
                 return View("Index", viewModel);
             }
             catch (Exception ex)

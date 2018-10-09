@@ -14,5 +14,7 @@ namespace GRA.Domain.Model
         public string Address { get; set; }
         [MaxLength(50)]
         public string Telephone { get; set; }
+
+        public int EventCount { get; set; }
     }
 }

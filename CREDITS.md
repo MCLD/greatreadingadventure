@@ -23,7 +23,10 @@ The Great Reading Adventure is open source software developed with the help of [
 - Brianna King
 - Danette Barton
 - [Daniel Messer](http://cyberpunklibrarian.com/)
+- [Erin MacFarlane](https://www.linkedin.com/in/erin-macfarlane-407646118)
+- [Heather Hershey](https://www.linkedin.com/in/heatherhershey)
 - [Holly Brennan](https://www.linkedin.com/in/holly-brennan-76450270)
+- [Lindsey Powers](https://www.linkedin.com/in/lindsey-powers-a3422730)
 - [Lucas Gonzalez](http://diffracted.com/)
 - [Tara Carpenter](http://www.taracarpenter.com/)
 - [Tony Apodaca](https://antonioramonapodaca.wordpress.com/)
