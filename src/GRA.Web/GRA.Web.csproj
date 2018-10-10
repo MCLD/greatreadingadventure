@@ -71,7 +71,7 @@
     <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="2.*" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.Redis" Version="0.*" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.*" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.*" />
     <PackageReference Include="Microsoft.Extensions.Caching.SqlServer" Version="2.*" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="2.*" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.*" />
@@ -79,7 +79,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.*" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.*" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.*" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink.Loader" Version="14.*" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.*" PrivateAssets="All" />
     <PackageReference Include="Serilog.AspNetCore" Version="2.*" />
     <PackageReference Include="Serilog.Extensions.Logging.File" Version="1.*" />
     <PackageReference Include="Serilog.Filters.Expressions" Version="2.*" />
