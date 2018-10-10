@@ -18,7 +18,7 @@ using McMaster.Extensions.CommandLineUtils;
 
 namespace GRA.CommandLine
 {
-    class Program
+    static class Program
     {
         private const string VersionSuffix = "-alpha1";
         public static int Main(string[] args)
@@ -220,7 +220,7 @@ namespace GRA.CommandLine
                 Log.Logger.Fatal(ex.Message);
                 if (developMode)
                 {
-                    throw ex;
+                    throw;
                 }
             }
 

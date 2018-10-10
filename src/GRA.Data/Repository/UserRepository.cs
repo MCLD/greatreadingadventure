@@ -52,7 +52,7 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task UpdateUserRolesAsync(int currentUserId, int userId, IEnumerable<int> rolesToAdd, 
+        public async Task UpdateUserRolesAsync(int currentUserId, int userId, IEnumerable<int> rolesToAdd,
             IEnumerable<int> rolesToRemove)
         {
             var now = _dateTimeProvider.Now;
@@ -144,6 +144,7 @@ namespace GRA.Data.Repository
                     }
                     break;
                 case SortUsersBy.LastName:
+                default:
                     if (filter.OrderDescending)
                     {
                         userList = userList

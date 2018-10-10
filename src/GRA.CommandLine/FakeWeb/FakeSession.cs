@@ -9,7 +9,7 @@ namespace GRA.CommandLine.FakeWeb
     public class FakeSession : ISession
     {
         private Dictionary<string, byte[]> _values = new Dictionary<string, byte[]>();
-        private string _id;
+        private readonly string _id;
 
         public FakeSession()
         {
@@ -43,17 +43,7 @@ namespace GRA.CommandLine.FakeWeb
             _values = new Dictionary<string, byte[]>();
         }
 
-        public Task CommitAsync()
-        {
-            return null;
-        }
-
         public Task CommitAsync(CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return null;
-        }
-
-        public Task LoadAsync()
         {
             return null;
         }

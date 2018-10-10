@@ -7,7 +7,7 @@ namespace GRA.Data
 {
     public abstract class Context : DbContext
     {
-        public Context(DbContextOptions options) : base(options) { }
+        protected Context(DbContextOptions options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

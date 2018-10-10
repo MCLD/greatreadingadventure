@@ -1,8 +1,8 @@
 ﻿
 namespace GRA.Controllers
 {
-    public sealed class Authentication
+    public static class Authentication
     {
-        public const string TypeGRAPassword = "GRAPasswordAuthentication";
+        public static readonly string TypeGRAPassword = "GRAPasswordAuthentication";
     }
 }

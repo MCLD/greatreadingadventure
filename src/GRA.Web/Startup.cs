@@ -166,7 +166,8 @@ namespace GRA.Web
             }
 
             // add MVC
-            services.AddMvc();
+            services.AddMvc()
+                .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_1);
 
             // Add custom view directory
             services.Configure<RazorViewEngineOptions>(options =>
@@ -175,7 +176,7 @@ namespace GRA.Web
 
             // set cookie authentication options
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(_ => _ = new CookieAuthenticationOptions
+                .AddCookie(_ => new CookieAuthenticationOptions
                 {
                     LoginPath = new PathString("/SignIn/"),
                     AccessDeniedPath = new PathString("/"),

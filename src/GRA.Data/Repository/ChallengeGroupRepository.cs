@@ -142,7 +142,7 @@ namespace GRA.Data.Repository
         {
             await base.UpdateAsync(userId, challengeGroup);
 
-            if (challengesToAdd?.Count() > 0)
+            if (challengesToAdd != null && challengesToAdd.Count() > 0)
             {
                 var time = _dateTimeProvider.Now;
                 var challengeGroupChallengeList = new List<Model.ChallengeGroupChallenge>();

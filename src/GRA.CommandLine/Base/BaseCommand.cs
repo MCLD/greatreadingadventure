@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace GRA.CommandLine.Base
 {
-    public abstract class BaseCommand : CommandLineApplication
+    abstract class BaseCommand : CommandLineApplication
     {
         protected readonly ServiceFacade _facade;
         protected readonly ConfigureUserSite _configureUserSite;

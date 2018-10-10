@@ -3,13 +3,13 @@ namespace GRA.Controllers
 {
     public static class SessionKey
     {
-        public const string SiteId = "SiteId";
-        public const string AbsorbUserId = "AbsorbUserId";
-        public const string ActiveUserId = "ActiveUserId";
-        public const string CallItGroup = "CallItGroup";
-        public const string ChallengeSearch = "ChallengeSearch";
-        public const string ChallengePage = "ChallengePage";
-        public const string PendingQuestionnaire = "PendingQuestionnaire";
-        public const string HeadOfHousehold = "HeadOfHousehold";
+        public static readonly string SiteId = "SiteId";
+        public static readonly string AbsorbUserId = "AbsorbUserId";
+        public static readonly string ActiveUserId = "ActiveUserId";
+        public static readonly string CallItGroup = "CallItGroup";
+        public static readonly string ChallengeSearch = "ChallengeSearch";
+        public static readonly string ChallengePage = "ChallengePage";
+        public static readonly string PendingQuestionnaire = "PendingQuestionnaire";
+        public static readonly string HeadOfHousehold = "HeadOfHousehold";
     }
 }

@@ -94,7 +94,7 @@ namespace GRA.Controllers.MissionControl
                     ShowAlertDanger("Unable to update site: ", gex);
                 }
             }
-            PageTitle = PageTitle = $"Site management - {model.Name}";
+            PageTitle = $"Site management - {model.Name}";
             return View(model);
         }
 
@@ -139,7 +139,7 @@ namespace GRA.Controllers.MissionControl
                 var site = await _siteLookupService.GetByIdAsync(model.Id);
                 siteName = site.Name;
             }
-            PageTitle = PageTitle = $"Site management - {siteName}";
+            PageTitle = $"Site management - {siteName}";
             return View(model);
         }
 
@@ -178,7 +178,7 @@ namespace GRA.Controllers.MissionControl
                 var site = await _siteLookupService.GetByIdAsync(model.Id);
                 siteName = site.Name;
             }
-            PageTitle = PageTitle = $"Site management - {siteName}";
+            PageTitle = $"Site management - {siteName}";
             return View(model);
         }
 
@@ -217,7 +217,7 @@ namespace GRA.Controllers.MissionControl
                 var site = await _siteLookupService.GetByIdAsync(model.Id);
                 siteName = site.Name;
             }
-            PageTitle = PageTitle = $"Site management - {siteName}";
+            PageTitle = $"Site management - {siteName}";
             return View(model);
         }
 

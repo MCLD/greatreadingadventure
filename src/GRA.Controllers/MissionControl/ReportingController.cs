@@ -594,7 +594,7 @@ namespace GRA.Controllers.MissionControl
 
         private (Cell cell, int length) CreateCell(object dataItem)
         {
-            var cell = new Cell
+            var addCell = new Cell
             {
                 CellValue = new CellValue(dataItem.ToString())
             };
@@ -603,18 +603,18 @@ namespace GRA.Controllers.MissionControl
             {
                 case int i:
                 case long l:
-                    cell.DataType = CellValues.Number;
+                    addCell.DataType = CellValues.Number;
                     break;
                 case DateTime d:
-                    cell.DataType = CellValues.Date;
+                    addCell.DataType = CellValues.Date;
                     break;
                 case null:
                 default:
-                    cell.DataType = CellValues.String;
+                    addCell.DataType = CellValues.String;
                     break;
             }
 
-            return (cell, dataItem.ToString().Length);
+            return (addCell, dataItem.ToString().Length);
         }
 
         private Stylesheet GetStylesheet()

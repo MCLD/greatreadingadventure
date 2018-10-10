@@ -8,7 +8,7 @@ namespace GRA
     {
         private const string DefaultAllowedCharacters = "ACEFHJKMNPRTUVWXY3479";
 
-        private RandomNumberGenerator _rng;
+        private readonly RandomNumberGenerator _rng;
         private string _allowedCharacters;
 
         public CodeGenerator()

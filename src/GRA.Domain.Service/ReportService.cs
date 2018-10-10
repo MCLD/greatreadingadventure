@@ -113,17 +113,18 @@ namespace GRA.Domain.Service
 
                 criterion = await _reportCriterionRepository.AddSaveNoAuditAsync(criterion);
 
-                var request = await _reportRequestRepository.AddSaveNoAuditAsync(new ReportRequest
-                {
-                    CreatedAt = criterion.CreatedAt,
-                    CreatedBy = criterion.CreatedBy,
-                    ReportCriteriaId = criterion.Id,
-                    ReportId = reportId,
-                    Name = GetReportList().Where(_ => _.Id == reportId).SingleOrDefault()?.Name,
-                    SiteId = criterion.SiteId,
-                });
+                var reportRequest = await _reportRequestRepository
+                    .AddSaveNoAuditAsync(new ReportRequest
+                    {
+                        CreatedAt = criterion.CreatedAt,
+                        CreatedBy = criterion.CreatedBy,
+                        ReportCriteriaId = criterion.Id,
+                        ReportId = reportId,
+                        Name = GetReportList().Where(_ => _.Id == reportId).SingleOrDefault()?.Name,
+                        SiteId = criterion.SiteId,
+                    });
 
-                return request.Id;
+                return reportRequest.Id;
             }
             else
             {

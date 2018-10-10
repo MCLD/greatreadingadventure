@@ -129,7 +129,7 @@ namespace GRA.Domain.Service
             user.PostalCode = user.PostalCode?.Trim();
             user.Username = user.Username?.Trim();
 
-            var registeredUser = new User();
+            User registeredUser = null;
             if (MCRegistration)
             {
                 registeredUser = await _userRepository.AddSaveAsync(
@@ -267,7 +267,6 @@ namespace GRA.Domain.Service
                 currentEntity.SchoolId = userToUpdate.SchoolId;
                 currentEntity.SchoolNotListed = userToUpdate.SchoolNotListed;
                 currentEntity.SystemName = null;
-                //currentEntity.Username = userToUpdate.Username;
 
                 bool restrictChangingSystemBranch = await _siteLookupService
                     .GetSiteSettingBoolAsync(currentEntity.SiteId,
@@ -631,16 +630,16 @@ namespace GRA.Domain.Service
             }
 
             // one for the person we are adding
-            int totalAddCount = 1;
+            int totalAdded = 1;
             if (authenticationResult.User.HouseholdHeadUserId == null)
             {
                 var household = await _userRepository
                     .GetHouseholdAsync(authenticationResult.User.Id);
                 // add on the total household count
-                totalAddCount += household.Count();
+                totalAdded += household.Count();
             }
 
-            return (totalAddCount: totalAddCount, addUserId: authenticationResult.User.Id);
+            return (totalAddCount: totalAdded, addUserId: authenticationResult.User.Id);
         }
 
         public async Task<string> AddParticipantToHouseholdAlreadyAuthorizedAsync(int userId)

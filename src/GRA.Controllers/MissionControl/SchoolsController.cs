@@ -1,4 +1,7 @@
-﻿using GRA.Controllers.ViewModel.MissionControl.Schools;
+﻿using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using GRA.Controllers.ViewModel.MissionControl.Schools;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
@@ -7,9 +10,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -342,6 +342,7 @@ namespace GRA.Controllers.MissionControl
                             AlertSuccess = message;
                             break;
                         case ImportStatus.Info:
+                        default:
                             AlertInfo = message;
                             break;
                         case ImportStatus.Warning:

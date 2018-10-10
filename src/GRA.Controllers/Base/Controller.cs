@@ -33,7 +33,7 @@ namespace GRA.Controllers.Base
         protected readonly SiteLookupService _siteLookupService;
         protected string PageTitle { get; set; }
         protected string PageTitleHtml { get; set; }
-        public Controller(ServiceFacade.Controller context)
+        protected Controller(ServiceFacade.Controller context)
         {
             _config = context.Config;
             _dateTimeProvider = context.DateTimeProvider;
@@ -284,7 +284,6 @@ namespace GRA.Controllers.Base
         /// </returns>
         protected SelectList EmptyNoYes()
         {
-            //new SelectList(EmptyNoYes(), "Key", "Value", string.Empty);
             return new SelectList(new Dictionary<string, string>
             {
                 {string.Empty, string.Empty},

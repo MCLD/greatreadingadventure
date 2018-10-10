@@ -273,7 +273,7 @@ namespace GRA.Data
                 {
                     _logger.LogError($"Inner exception: {ex.InnerException.Message}");
                 }
-                throw ex;
+                throw;
             }
         }
 

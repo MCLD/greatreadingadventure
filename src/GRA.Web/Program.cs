@@ -1,9 +1,7 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using GRA.Domain.Service;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -12,7 +10,7 @@ using Serilog;
 
 namespace GRA.Web
 {
-    public class Program
+    public static class Program
     {
         public static int Main(string[] args)
         {
@@ -38,87 +36,16 @@ namespace GRA.Web
             // now that we have logging present in our config, we must create the webhost
             IWebHost webhost = CreateWebHostBuilder(args).Build();
 
+            // perform initialization
             using (IServiceScope scope = webhost.Services.CreateScope())
             {
-                int stage = 10;
-                try
-                {
-                    var dbContext = scope.ServiceProvider.GetRequiredService<Data.Context>();
-
-                    stage = 20;
-                    var pending = dbContext.GetPendingMigrations();
-                    if (pending != null && pending.Count() > 0)
-                    {
-                        Log.Warning("Applying {0} database migrations, last is: {1}",
-                            pending.Count(),
-                            pending.Last());
-                    }
-
-                    stage = 30;
-                    dbContext.Migrate();
-
-                    stage = 40;
-                    Task.Run(() => scope
-                        .ServiceProvider
-                        .GetRequiredService<SiteLookupService>().GetDefaultSiteIdAsync()).Wait();
-
-                    stage = 50;
-                    Task.Run(() => scope
-                        .ServiceProvider
-                        .GetRequiredService<RoleService>().SyncPermissionsAsync()).Wait();
-
-                    stage = 60;
-                    scope.ServiceProvider.GetRequiredService<TemplateService>().SetupTemplates();
-
-                    stage = 70;
-                    IHostingEnvironment env
-                        = scope.ServiceProvider.GetRequiredService<IHostingEnvironment>();
-                    webRootPath = env.WebRootPath;
-                }
-                catch (Exception ex)
-                {
-                    bool critical = false;
-                    string errorText = null;
-                    switch (stage)
-                    {
-                        case 10:
-                            critical = true;
-                            errorText = "Error accessing data context: {Message}";
-                            break;
-                        case 20:
-                            errorText = "Error looking up migrations to perform: {Message}";
-                            break;
-                        case 30:
-                            errorText = "Error performing database migrations: {Message}";
-                            break;
-                        case 40:
-                            errorText = "Error loading sites into cache: {Message}";
-                            break;
-                        case 50:
-                            errorText = "Error synchronizing permissions: {Message}";
-                            break;
-                        case 60:
-                            errorText = "Error copying templates to shared folder: {Message}";
-                            break;
-                        case 70:
-                            errorText = "Error establishing WebRootPath: {Message}";
-                            break;
-                        default:
-                            errorText = "Unknown error during application startup: {Message}";
-                            break;
-                    }
-                    if (critical)
-                    {
-                        Log.Fatal(ex, errorText, ex.Message);
-                        throw ex;
-                    }
-                    else
-                    {
-                        Log.Error(ex, errorText, ex.Message);
-                    }
-                }
+                var web = new Web(scope);
+                Task.Run(() => web.InitalizeAsync()).Wait();
+                webRootPath = scope.ServiceProvider
+                    .GetRequiredService<IHostingEnvironment>().WebRootPath;
             }
 
+            // run the application
             string applicationName = instance.ToLower() != "gra" ? $"GRA {instance}" : "GRA";
             string version = "v" + Assembly.GetEntryAssembly()
                 .GetCustomAttribute<AssemblyInformationalVersionAttribute>()

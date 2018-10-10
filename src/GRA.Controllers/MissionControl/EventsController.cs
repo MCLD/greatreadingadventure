@@ -217,8 +217,8 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> Create(int? id, bool communityExperience = false)
         {
-            PageTitle = communityExperience == true 
-                ? "Create Community Experience" 
+            PageTitle = communityExperience == true
+                ? "Create Community Experience"
                 : "Create Event";
 
             var requireSecretCode = await GetSiteSettingBoolAsync(
@@ -861,6 +861,7 @@ namespace GRA.Controllers.MissionControl
                             AlertSuccess = message;
                             break;
                         case ImportStatus.Info:
+                        default:
                             AlertInfo = message;
                             break;
                         case ImportStatus.Warning:
