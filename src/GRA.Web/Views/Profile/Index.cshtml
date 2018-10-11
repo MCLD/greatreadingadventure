@@ -9,7 +9,7 @@
             </div>
             <div class="panel-body">
 
-                @Html.Partial("_ProfilePartial")
+                @await Html.PartialAsync("_ProfilePartial")
 
                 <form asp-controller="Profile" asp-action="Index" method="post" role="form">
                     <button type="submit" id="DefaultSubmitOnEnter" name="DefaultSubmitOnEnter" value="DefaultSubmitOnEnter" style="display: none;"></button>

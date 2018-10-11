@@ -1,6 +1,6 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Mail.BroadcastListViewModel
 
-@Html.Partial("_MailPartial")
+@await Html.PartialAsync("_MailPartial")
 
 @if (Model.Upcoming)
 {

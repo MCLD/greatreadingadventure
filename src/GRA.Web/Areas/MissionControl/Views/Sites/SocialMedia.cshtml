@@ -1,6 +1,6 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Sites.SiteSocialMediaViewModel
 
-@Html.Partial("_SitePartial")
+@await Html.PartialAsync("_SitePartial")
 
 <form asp-controller="Sites" asp-action="SocialMedia" method="post" role="form">
     <input asp-for="Id" type="hidden" />

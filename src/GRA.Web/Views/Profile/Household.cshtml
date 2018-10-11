@@ -38,7 +38,7 @@
                 <span class="lead">My Profile</span>
             </div>
             <div class="panel-body">
-                @Html.Partial("_ProfilePartial")
+                @await Html.PartialAsync("_ProfilePartial")
 
                 @if (!string.IsNullOrEmpty(Model.GroupName))
                 {
