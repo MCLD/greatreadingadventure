@@ -28,7 +28,7 @@ fi
 
 echo Building release packages for $GRAVERSION...
 
-docker run -it -v `pwd`:/app --workdir /app --rm microsoft/aspnetcore-build:1.1 bash -c "dotnet clean && dotnet restore && dotnet publish -c Release -o /app/release"
+docker run -it -v $(pwd):/app --workdir /app --rm microsoft/aspnetcore-build:1.1 bash -c "dotnet clean && dotnet restore && dotnet publish -c Release -o /app/release"
 
 mv release GreatReadingAdventure-$GRAVERSION
 

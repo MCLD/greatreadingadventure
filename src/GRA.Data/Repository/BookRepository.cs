@@ -79,7 +79,8 @@ namespace GRA.Data.Repository
 
             switch (filter.SortBy)
             {
-                case SortBooksBy.Date:
+                // default is by date
+                default:
                     if (filter.OrderDescending)
                     {
                         bookList = bookList
@@ -135,20 +136,20 @@ namespace GRA.Data.Repository
                 Data = data,
                 Count = count
             };
-}
+        }
 
-public async Task<bool> UserHasBookAsync(int userId, int bookId)
-{
-    return await _context.UserBooks.AsNoTracking()
-        .Where(_ => _.BookId == bookId && _.UserId == userId)
-        .AnyAsync();
-}
+        public async Task<bool> UserHasBookAsync(int userId, int bookId)
+        {
+            return await _context.UserBooks.AsNoTracking()
+                .Where(_ => _.BookId == bookId && _.UserId == userId)
+                .AnyAsync();
+        }
 
-public async Task<int> GetUserCountForBookAsync(int bookId)
-{
-    return await _context.UserBooks.AsNoTracking()
-        .Where(_ => _.BookId == bookId)
-        .CountAsync();
-}
+        public async Task<int> GetUserCountForBookAsync(int bookId)
+        {
+            return await _context.UserBooks.AsNoTracking()
+                .Where(_ => _.BookId == bookId)
+                .CountAsync();
+        }
     }
 }

@@ -93,7 +93,7 @@ namespace GRA.Controllers
         public async Task<IActionResult> Share()
         {
             var userAvatar = await _avatarService.GetUserAvatarAsync();
-            if (userAvatar?.Count > 0)
+            if (userAvatar != null && userAvatar.Count > 0)
             {
                 var site = await GetCurrentSiteAsync();
                 var directory = _pathResolver

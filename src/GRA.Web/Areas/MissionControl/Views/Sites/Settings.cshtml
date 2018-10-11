@@ -1,6 +1,6 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Sites.SiteSettingsViewModel
 
-@Html.Partial("_SitePartial")
+@await Html.PartialAsync("_SitePartial")
 
 <div asp-validation-summary="ModelOnly"></div>
 <form asp-controller="Sites" asp-action="Settings" method="post" role="form">

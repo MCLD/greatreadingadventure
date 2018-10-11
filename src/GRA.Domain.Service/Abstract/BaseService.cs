@@ -12,7 +12,7 @@ namespace GRA.Domain.Service.Abstract
         protected readonly ILogger<Service> _logger;
         protected readonly IDateTimeProvider _dateTimeProvider;
 
-        public BaseService(ILogger<Service> logger, IDateTimeProvider dateTimeProvider)
+        protected BaseService(ILogger<Service> logger, IDateTimeProvider dateTimeProvider)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
             _dateTimeProvider = Require.IsNotNull(dateTimeProvider, nameof(dateTimeProvider));

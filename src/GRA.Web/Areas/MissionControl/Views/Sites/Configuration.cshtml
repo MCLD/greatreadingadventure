@@ -1,6 +1,6 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Sites.SiteConfigurationViewModel
 
-@Html.Partial("_SitePartial")
+@await Html.PartialAsync("_SitePartial")
 
 <form asp-controller="Sites" asp-action="Configuration" method="post" role="form">
     <input asp-for="Id" type="hidden" />

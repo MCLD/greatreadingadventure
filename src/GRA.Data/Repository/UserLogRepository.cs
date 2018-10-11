@@ -13,7 +13,7 @@ namespace GRA.Data.Repository
     public class UserLogRepository
         : AuditingRepository<Model.UserLog, Domain.Model.UserLog>, IUserLogRepository
     {
-        public const int MaxMinutesForReporting = 0;
+        public static readonly int MaxMinutesForReporting;
 
         public UserLogRepository(ServiceFacade.Repository repositoryFacade,
             ILogger<UserLogRepository> logger) : base(repositoryFacade, logger)
@@ -281,36 +281,6 @@ namespace GRA.Data.Repository
             }
 
             return namedResult;
-        }
-
-        public async Task<long> EarnedBadgeCountAsync(ReportCriterion request)
-        {
-            var eligibleUserIds = await GetEligibleUserIds(request);
-
-            var badgeCount = DbSet
-                .AsNoTracking()
-                .Where(_ => _.BadgeId != null
-                    && _.IsDeleted == false
-                    && _.User.IsDeleted == false);
-
-            if (eligibleUserIds != null)
-            {
-                badgeCount = badgeCount.Where(_ => eligibleUserIds.Contains(_.UserId));
-            }
-
-            if (request.StartDate != null)
-            {
-                badgeCount = badgeCount
-                    .Where(_ => _.CreatedAt >= request.StartDate);
-            }
-
-            if (request.EndDate != null)
-            {
-                badgeCount = badgeCount
-                    .Where(_ => _.CreatedAt <= request.EndDate);
-            }
-
-            return await badgeCount.CountAsync();
         }
 
         public async Task<long> GetEarningsOverPeriodAsync(int userId, ReportCriterion criterion)

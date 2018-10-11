@@ -1,6 +1,6 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Programs.ProgramListViewModel
 
-@Html.Partial("_ProgramsPartial")
+@await Html.PartialAsync("_ProgramsPartial")
 
 <div class="row">
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">

@@ -19,8 +19,7 @@ namespace GRA.Domain.Report.Abstract
 
         protected StoredReportSet ReportSet { get; set; }
 
-        public BaseReport(ILogger logger,
-            ServiceFacade.Report serviceFacade)
+        protected BaseReport(ILogger logger, ServiceFacade.Report serviceFacade)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _serviceFacade = serviceFacade
@@ -148,9 +147,14 @@ namespace GRA.Domain.Report.Abstract
 
         protected async Task<bool> GetSiteSettingBoolAsync(ReportCriterion criterion, string key)
         {
-            if (criterion == null || criterion.SiteId == null)
+            if (criterion == null)
             {
-                throw new ArgumentNullException(nameof(criterion.SiteId));
+                throw new ArgumentNullException(nameof(criterion));
+            }
+
+            if (criterion.SiteId == null)
+            {
+                throw new ArgumentException("Must provide SiteId to execute a report.");
             }
 
             var settings

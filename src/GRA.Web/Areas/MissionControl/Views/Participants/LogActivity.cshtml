@@ -1,6 +1,6 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.LogActivityViewModel
 
-@Html.Partial("_ParticipantPartial")
+@await Html.PartialAsync("_ParticipantPartial")
 
 <form asp-controller="Participants" asp-action="LogActivity" method="post" role="form">
     <input asp-for="Id" type="hidden" />

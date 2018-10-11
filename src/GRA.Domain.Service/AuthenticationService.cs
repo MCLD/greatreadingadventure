@@ -57,6 +57,11 @@ namespace GRA.Domain.Service
             {
                 authResult.PermissionNames
                     = await _roleRepository.GetPermisisonNamesForUserAsync(authResult.User.Id);
+
+                if (authResult.PermissionNames.Contains(Permission.ManageSites.ToString())) {
+                    _logger.LogInformation("Site manager {username} authenticated", username);
+                }
+
                 if (!authResult.PermissionNames.Contains(Permission.AccessMissionControl.ToString())
                     && !allowDuringCloseProgram)
                 {

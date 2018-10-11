@@ -18,7 +18,7 @@ namespace GRA.Controllers.Helper
     [HtmlTargetElement("paginate", Attributes = "paginateModel")]
     public class PaginateTagHelper : TagHelper
     {
-        private IUrlHelperFactory _urlHelperFactory;
+        private readonly IUrlHelperFactory _urlHelperFactory;
 
         public PaginateTagHelper(IUrlHelperFactory urlHelperFactory)
         {

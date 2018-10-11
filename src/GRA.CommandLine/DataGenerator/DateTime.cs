@@ -7,8 +7,8 @@ namespace GRA.CommandLine.DataGenerator
 {
     class DateTime
     {
-        private Faker _faker;
-        private SettableDateTimeProvider _dateTimeProvider;
+        private readonly Faker _faker;
+        private readonly SettableDateTimeProvider _dateTimeProvider;
         public DateTime(IDateTimeProvider dateTimeProvider)
         {
             if (dateTimeProvider == null)

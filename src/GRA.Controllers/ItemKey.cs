@@ -5,19 +5,19 @@ using System.Threading.Tasks;
 
 namespace GRA.Controllers
 {
-    public class ItemKey
+    public static class ItemKey
     {
-        public const string ExternalEventListUrl = "ExternalEventListUrl";
-        public const string GoogleAnalytics = "GoogleAnalytics";
-        public const string HouseholdTitle = "HouseholdTitle";
-        public const string NotificationsDisplayed = "NotificationsDisplayed";
-        public const string NotificationsList = "NotificationsList";
-        public const string NotificationsModal = "NotificationsModal";
-        public const string ShowMissionControl = "ShowMissionControl";
-        public const string SiteId = "SiteId";
-        public const string SiteStage = "SiteStage";
-        public const string UnreadCount = "UnreadCount";
-        public const string ShowChallenges = "ShowChallenges";
-        public const string ShowEvents = "ShowEvents";
+        public static readonly string ExternalEventListUrl = "ExternalEventListUrl";
+        public static readonly string GoogleAnalytics = "GoogleAnalytics";
+        public static readonly string HouseholdTitle = "HouseholdTitle";
+        public static readonly string NotificationsDisplayed = "NotificationsDisplayed";
+        public static readonly string NotificationsList = "NotificationsList";
+        public static readonly string NotificationsModal = "NotificationsModal";
+        public static readonly string ShowMissionControl = "ShowMissionControl";
+        public static readonly string SiteId = "SiteId";
+        public static readonly string SiteStage = "SiteStage";
+        public static readonly string UnreadCount = "UnreadCount";
+        public static readonly string ShowChallenges = "ShowChallenges";
+        public static readonly string ShowEvents = "ShowEvents";
     }
 }

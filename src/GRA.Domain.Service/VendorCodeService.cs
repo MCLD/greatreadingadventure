@@ -255,6 +255,8 @@ namespace GRA.Domain.Service
                                             case ShipDateRowHeading:
                                                 shipDateColumnId = i;
                                                 break;
+                                            default:
+                                                break;
                                         }
                                     }
                                 }
@@ -442,8 +444,7 @@ namespace GRA.Domain.Service
                 {
                     await SendVendorCodeMailAsync(userId, siteId, vendorCodeType, vendorCode.Code);
                 }
-                else if (donate == true
-                  && !string.IsNullOrEmpty(vendorCodeType.DonationSubject)
+                else if (!string.IsNullOrEmpty(vendorCodeType.DonationSubject)
                   && !string.IsNullOrEmpty(vendorCodeType.DonationMail))
                 {
                     await SendVendorDonationMailAsync(userId, siteId, vendorCodeType);

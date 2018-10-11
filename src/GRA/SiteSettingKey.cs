@@ -5,36 +5,44 @@
         public struct SecretCode
         {
             // TODO make this truly disable secret codes for the site
-            public const string Disable = "SecretCode.Disable";
+            public static readonly string Disable = "SecretCode.Disable";
         }
 
         public struct Challenges
         {
-            public const string HideUntilRegistrationOpen = "Challenges.HideUntilRegistrationOpen";
+            public static readonly string HideUntilRegistrationOpen
+                = "Challenges.HideUntilRegistrationOpen";
         }
 
         public struct Events
         {
-            public const string HideUntilRegistrationOpen = "Events.HideUntilRegistrationOpen";
-            public const string RequireBadge = "Events.RequireBadge";
+            public static readonly string HideUntilRegistrationOpen
+                = "Events.HideUntilRegistrationOpen";
+            public static readonly string RequireBadge = "Events.RequireBadge";
         }
 
         public struct Points
         {
-            public const string MaximumPermitted = "Points.MaximumPermitted";
+            public static readonly string MaximumPermitted = "Points.MaximumPermitted";
         }
 
         public struct Users
         {
-            public const string RestrictChangingSystemBranch = "Users.RestrictChangingSystemBranch";
-            public const string MaximumHouseholdSizeBeforeGroup = "Users.MaximumHouseholdSizeBeforeGroup";
-            public const string AskIfFirstTime = "Users.AskIfFirstTime";
-            public const string AskPreregistrationReminder = "Users.AskPreregistrationReminder";
-            public const string CollectAccessClosedEmails = "Users.CollectAccessClosedEmails";
-            public const string CollectPreregistrationEmails = "User.CollectPreregistrationEmails";
-            public const string DefaultDailyPersonalGoal = "Users.DefaultDailyPersonalGoal";
-            public const string SurveyUrl = "Users.SurveyUrl";
-            public const string FirstTimeSurveyUrl = "Users.FirstTimeSurveyUrl";
+            public static readonly string RestrictChangingSystemBranch
+                = "Users.RestrictChangingSystemBranch";
+            public static readonly string MaximumHouseholdSizeBeforeGroup
+                = "Users.MaximumHouseholdSizeBeforeGroup";
+            public static readonly string AskIfFirstTime = "Users.AskIfFirstTime";
+            public static readonly string AskPreregistrationReminder
+                = "Users.AskPreregistrationReminder";
+            public static readonly string CollectAccessClosedEmails
+                = "Users.CollectAccessClosedEmails";
+            public static readonly string CollectPreregistrationEmails
+                = "User.CollectPreregistrationEmails";
+            public static readonly string DefaultDailyPersonalGoal
+                = "Users.DefaultDailyPersonalGoal";
+            public static readonly string SurveyUrl = "Users.SurveyUrl";
+            public static readonly string FirstTimeSurveyUrl = "Users.FirstTimeSurveyUrl";
         }
     }
 }

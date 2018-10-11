@@ -3,31 +3,35 @@ namespace GRA
 {
     public static class ConfigurationKey
     {
-        public const string DefaultCSSQLite = "ConnectionStrings:SQLite";
-        public const string DefaultCSSqlServer = "ConnectionStrings:SqlServer";
+        public static readonly string CSSqlServerSerilog = "SqlServerSerilog";
 
-        public const string ApplicationDiscriminator = "GraApplicationDiscriminator";
-        public const string ConnectionStringName = "GraConnectionStringName";
-        public const string ContentDirectory = "GraContentDirectory";
-        public const string ContentPath = "GraContentPath";
-        public const string Culture = "GraCulture";
-        public const string DataProtectionPath = "GraDataProtectionPath";
-        public const string DefaultFooter = "GraDefaultFooter";
-        public const string DefaultOutgoingMailHost = "GraDefaultOutgoingMailHost";
-        public const string DefaultOutgoingMailLogin = "GraDefaultOutgoingMailLogin";
-        public const string DefaultOutgoingMailPassword = "GraDefaultOutgoingMailPassword";
-        public const string DefaultOutgoingMailPort = "GraDefaultOutgoingMailPort";
-        public const string DefaultPageTitle = "GraDefaultPageTitle";
-        public const string DefaultSiteName = "GraDefaultSiteName";
-        public const string DefaultSitePath = "GraDefaultSitePath";
-        public const string DeployDate = "GraDeployDate";
-        public const string EmailOverride = "GraEmailOverride";
-        public const string InitialAuthorizationCode = "GraInitialAuthCode";
-        public const string InitialProgramSetup = "GraInitialProgramSetup";
-        public const string InstanceName = "GraInstanceName";
-        public const string RollingLogHttp = "GraRollingLogHttp";
-        public const string RollingLogPath = "GraRollingLogPath";
-        public const string SqlSessionSchemaName = "GraSqlSessionSchemaName";
-        public const string SqlSessionTable = "GraSqlSessionTable";
+        public static readonly string ApplicationDiscriminator = "GraApplicationDiscriminator";
+        public static readonly string ConnectionStringName = "GraConnectionStringName";
+        public static readonly string ContentDirectory = "GraContentDirectory";
+        public static readonly string ContentPath = "GraContentPath";
+        public static readonly string Culture = "GraCulture";
+        public static readonly string DataProtectionPath = "GraDataProtectionPath";
+        public static readonly string DefaultFooter = "GraDefaultFooter";
+        public static readonly string DefaultOutgoingMailHost = "GraDefaultOutgoingMailHost";
+        public static readonly string DefaultOutgoingMailLogin = "GraDefaultOutgoingMailLogin";
+        public static readonly string DefaultOutgoingMailPassword 
+            = "GraDefaultOutgoingMailPassword";
+        public static readonly string DefaultOutgoingMailPort = "GraDefaultOutgoingMailPort";
+        public static readonly string DefaultPageTitle = "GraDefaultPageTitle";
+        public static readonly string DefaultSiteName = "GraDefaultSiteName";
+        public static readonly string DefaultSitePath = "GraDefaultSitePath";
+        public static readonly string DeployDate = "GraDeployDate";
+        public static readonly string DistributedCache = "GraDistributedCache";
+        public static readonly string EmailOverride = "GraEmailOverride";
+        public static readonly string InitialAuthorizationCode = "GraInitialAuthCode";
+        public static readonly string InitialProgramSetup = "GraInitialProgramSetup";
+        public static readonly string InstanceName = "GraInstanceName";
+        public static readonly string RedisConfiguration = "GraRedisConfiguration";
+        public static readonly string ReverseProxyAddress = "GraReverseProxyAddress";
+        public static readonly string RollingLogHttp = "GraRollingLogHttp";
+        public static readonly string RollingLogPath = "GraRollingLogPath";
+        public static readonly string SqlServer2008 = "GraSqlServer2008";
+        public static readonly string SqlSessionSchemaName = "GraSqlSessionSchemaName";
+        public static readonly string SqlSessionTable = "GraSqlSessionTable";
     }
 }

@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="~/css/markdown.min.css" asp-append-version="true" />
 }
 
-@Html.Partial("_SitePartial")
+@await Html.PartialAsync("_SitePartial")
 
 <form asp-controller="Sites" asp-action="Detail" method="post" role="form">
     <input asp-for="Id" type="hidden" />

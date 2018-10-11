@@ -13,7 +13,7 @@ namespace GRA.Controllers.Helper
     [HtmlTargetElement(Attributes = "ActiveBy, routeKey, value")]
     public class ActiveTagHelper : TagHelper
     {
-        private IUrlHelperFactory _urlHelperFactory;
+        private readonly IUrlHelperFactory _urlHelperFactory;
 
         public ActiveTagHelper(IUrlHelperFactory urlHelperFactory)
         {

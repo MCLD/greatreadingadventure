@@ -12,10 +12,10 @@ namespace GRA.Domain.Service
 {
     public class EventImportService : Abstract.BaseUserService<EventImportService>
     {
-        private BadgeService _badgeService;
-        private EventService _eventService;
-        private SiteService _siteService;
-        private TriggerService _triggerService;
+        private readonly BadgeService _badgeService;
+        private readonly EventService _eventService;
+        private readonly SiteService _siteService;
+        private readonly TriggerService _triggerService;
         public EventImportService(ILogger<EventImportService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
