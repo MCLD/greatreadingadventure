@@ -4,6 +4,8 @@
 
 GRA code should successfully compile using the free [Visual Studio Community](https://www.visualstudio.com/vs/community/) edition. External dependencies are managed with NuGet and should be automatically downloaded upon the first build.
 
+Version 4.0.0 (the last major release) was developed with the ASP.NET Core v1.1 runtime; version 4.1.0 is under development with the ASP.NET Core 2.1 runtime.
+
 By default, GRA is configured to use LocalDB as a database for development and testing. While not packaged with Visual Studio Community, it can easily be added by selecting the notification flag in the title bar of Visual Studio and choosing to install the "MS SQL Server Update for database tooling". Alternately, the [SQL Server Data Tools (SSDT)](https://msdn.microsoft.com/en-us/library/hh272686.aspx) package can be installed manually by downloading it from Microsoft.
 
 If you have any trouble getting the package to build, please submit an [issue](https://github.com/MCLD/greatreadingadventure/issues/new) with details.
@@ -22,7 +24,7 @@ The `master` branch represents the latest release and the `develop` branch conta
 - Follow the [initial developer setup](initial-developer-setup.md) guidance.
 - Examine guidance for [adding an entity](adding-an-entity.md) if necessary.
 - We try to adhere to [domain-driven design](https://en.wikipedia.org/wiki/Domain-driven_design) with varying levels of success.
--
+
 ## Design/Architecture
 
 ### Back-end software
