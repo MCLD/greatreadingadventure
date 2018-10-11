@@ -9,7 +9,7 @@ namespace GRA.Web
 {
     public class Web
     {
-        private ILogger<Web> _log;
+        private readonly ILogger<Web> _log;
         private readonly IServiceScope _scope;
 
         public Web(IServiceScope scope)

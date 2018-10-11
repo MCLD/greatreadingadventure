@@ -13,7 +13,7 @@ namespace GRA.Data.Repository
     public class UserLogRepository
         : AuditingRepository<Model.UserLog, Domain.Model.UserLog>, IUserLogRepository
     {
-        public static readonly int MaxMinutesForReporting = 0;
+        public static readonly int MaxMinutesForReporting;
 
         public UserLogRepository(ServiceFacade.Repository repositoryFacade,
             ILogger<UserLogRepository> logger) : base(repositoryFacade, logger)

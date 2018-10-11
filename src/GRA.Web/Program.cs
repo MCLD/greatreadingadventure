@@ -46,7 +46,8 @@ namespace GRA.Web
             }
 
             // run the application
-            string applicationName = instance.ToLower() != "gra" ? $"GRA {instance}" : "GRA";
+            string applicationName
+                = instance.ToLowerInvariant() != "gra" ? $"GRA {instance}" : "GRA";
             string version = "v" + Assembly.GetEntryAssembly()
                 .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
                 .InformationalVersion;

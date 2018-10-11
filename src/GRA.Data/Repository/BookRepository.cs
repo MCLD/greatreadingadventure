@@ -79,7 +79,7 @@ namespace GRA.Data.Repository
 
             switch (filter.SortBy)
             {
-                case SortBooksBy.Date:
+                // default is by date
                 default:
                     if (filter.OrderDescending)
                     {

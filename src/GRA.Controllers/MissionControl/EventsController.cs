@@ -860,7 +860,6 @@ namespace GRA.Controllers.MissionControl
                         case ImportStatus.Success:
                             AlertSuccess = message;
                             break;
-                        case ImportStatus.Info:
                         default:
                             AlertInfo = message;
                             break;

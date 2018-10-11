@@ -608,7 +608,6 @@ namespace GRA.Controllers.MissionControl
                 case DateTime d:
                     addCell.DataType = CellValues.Date;
                     break;
-                case null:
                 default:
                     addCell.DataType = CellValues.String;
                     break;

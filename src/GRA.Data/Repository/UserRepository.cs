@@ -143,7 +143,7 @@ namespace GRA.Data.Repository
                             .ThenBy(_ => _.Username);
                     }
                     break;
-                case SortUsersBy.LastName:
+                // default is by last name
                 default:
                     if (filter.OrderDescending)
                     {

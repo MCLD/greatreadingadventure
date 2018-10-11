@@ -24,7 +24,6 @@ namespace GRA.Web
         {
             var applicationName = Assembly.GetExecutingAssembly().GetName().Name;
             var version = Assembly.GetExecutingAssembly().GetName().Version;
-            var id = Process.GetCurrentProcess().Id;
 
             LoggerConfiguration loggerConfig = new LoggerConfiguration()
                 .ReadFrom.Configuration(config)

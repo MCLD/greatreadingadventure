@@ -3,7 +3,7 @@ namespace GRA.Controllers
 {
     public static class ViewDataKey
     {
-        public static string Title = "Title";
-        public static string TitleHtml = "TitleHtml";
+        public static readonly string Title = "Title";
+        public static readonly string TitleHtml = "TitleHtml";
     }
 }
