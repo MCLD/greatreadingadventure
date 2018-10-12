@@ -1,7 +1,5 @@
 #!/bin/bash
 
-PROJECT="gra"
-
 PUSH=false
 BRANCH_FOUND=false
 DOCKERFILE="Dockerfile"
@@ -23,40 +21,44 @@ if [[ $BRANCH_FOUND = "false" ]]; then
 fi
 
 if [[ $BRANCH == "master" ]]; then
-  TAG="latest"
+  DOCKER_TAG="latest"
   PUSH=true
 elif [[ $BRANCH == "develop" ]]; then
-  echo "Adding database migration for $BRANCH build..."
-  TAG="develop"
+  DOCKER_TAG="develop"
   PUSH=true
   DOCKERFILE="dev/Dockerfile"
+  echo "Using $DOCKERFILE to add database migration for $BRANCH build..."
 elif [[ $BRANCH =~ v([0-9]+\.[0-9]+\.[0-9]+.*) || $BRANCH =~ release/([0-9]+\.[0-9]+\.[0-9]+.*) ]]; then
-  TAG=v${BASH_REMATCH[1]}
+  DOCKER_TAG=v${BASH_REMATCH[1]}
   PUSH=true
 else
-  TAG=$COMMIT
+  DOCKER_TAG=$COMMIT
 fi
 
 if [ $# -gt 0 ]; then
-  TAG="$1"
+  DOCKER_TAG="$1"
 fi
 
-
-if [[ -z $DOCKER_PREFIX ]]; then
-  echo -e "Building branch $BRANCH commit $COMMIT as Docker image $PROJECT:$TAG"
-  docker build -f $DOCKERFILE -t $PROJECT:$TAG --build-arg commit="$COMMIT" --build-arg branch="$BRANCH" .
-  echo 'Not pushing Docker image: no Docker prefix configured'
+if [[ -z $DOCKER_REPOSITORY ]]; then
+  if [[ -z $DOCKER_IMAGE ]]; then
+    echo -e "Building branch $BRANCH commit $COMMIT as Docker image $DOCKER_TAG"
+    docker build -f $DOCKERFILE -t $DOCKER_TAG --build-arg commit="$COMMIT" --build-arg branch="$BRANCH" .
+  else
+    echo -e "Building branch $BRANCH commit $COMMIT as Docker image $DOCKER_IMAGE:$DOCKER_TAG"
+    docker build -f $DOCKERFILE -t $DOCKER_IMAGE:$DOCKER_TAG --build-arg commit="$COMMIT" --build-arg branch="$BRANCH" .
+  fi
+  echo 'Not pushing Docker image: no Docker repository configured'
 else
-  echo -e "Building branch $BRANCH commit $COMMIT as Docker image $DOCKER_PREFIX/$PROJECT:$TAG"
-  docker build -f $DOCKERFILE -t $DOCKER_PREFIX/$PROJECT:$TAG --build-arg commit="$COMMIT" --build-arg branch="$BRANCH" .
+  echo -e "Building branch $BRANCH commit $COMMIT as Docker image $DOCKER_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG"
+  docker build -f $DOCKERFILE -t $DOCKER_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG --build-arg commit="$COMMIT" --build-arg branch="$BRANCH" .
   if [[ -z $DOCKER_USERNAME || -z $DOCKER_PASSWORD ]]; then
     echo 'Not pushing Docker image: username or password not specified'
   else
     if [[ $PUSH = true ]]; then
-      echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin $DOCKER_PREFIX
-      echo "Pushing Docker image: $DOCKER_PREFIX/$PROJECT:$TAG"
-      docker push $DOCKER_PREFIX/$PROJECT:$TAG
-      docker logout $DOCKER_PREFIX
+      echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin $DOCKER_HOST
+      echo "Pushing Docker image: $DOCKER_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG"
+      docker push $DOCKER_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG
+      docker logout $DOCKER_REPOSITORY
     else
       echo 'Not pushing Docker image: branch is not master, develop, or versioned release'
     fi
