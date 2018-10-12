@@ -14,7 +14,11 @@ The project ships with the Microsoft SQL Server data provider configured. If you
 
 ### Database migration
 
-Initial database setup and configuration can be done utilizing the [`dotnet ef`](https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/dotnet) command line tool or the [Package Manager Console](https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/powershell). Here are steps for using `dotnet ef`:
+Initial database setup and configuration can be done utilizing the [`dotnet ef`](https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/dotnet) command line tool or the [Package Manager Console](https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/powershell).
+
+Connection strings for creating migrations are located in the `GRA.Development` namespace and mirror the definitions in the default `appsettings.json` file.
+
+Here are steps for using `dotnet ef`:
 
   1. Navigate to the appropriate project directory for your database provider (e.g. `src/GRA.Data.SqlServer` or `src/GRA.Data.SQLite`).
   2. See a list of existing migrations:
