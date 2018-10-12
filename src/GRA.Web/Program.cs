@@ -35,7 +35,7 @@ namespace GRA.Web
 
             // now that we have logging present in our config, we must create the webhost
             IWebHost webhost = CreateWebHostBuilder(args).Build();
-
+            
             // perform initialization
             using (IServiceScope scope = webhost.Services.CreateScope())
             {
