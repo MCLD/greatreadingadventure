@@ -8,7 +8,6 @@ namespace GRA.Domain.Model
     public class PsPerformer : Abstract.BaseDomainEntity
     {
         public int UserId { get; set; }
-        public User User { get; set; }
 
         [DisplayName("Performer name")]
         [MaxLength(255, ErrorMessage = "Please enter no more than {1} characters for {0}.")]

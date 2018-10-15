@@ -7,14 +7,14 @@ namespace GRA.Data.Model
         public int SiteId { get; set; }
         public Site Site { get; set; }
 
-        public DateTime? PerformerRegistrationOpen { get; set; }
-        public DateTime? PerformerRegistrationClosed { get; set; }
-        public DateTime? PerformerSchedulingPreview { get; set; }
-        public DateTime? PerformerSchedulingOpen { get; set; }
-        public DateTime? PerformerSchedulingClosed { get; set; }
-        public DateTime? PerformerSchedulePosted { get; set; }
+        public DateTime? RegistrationOpen { get; set; }
+        public DateTime? RegistrationClosed { get; set; }
+        public DateTime? SchedulingPreview { get; set; }
+        public DateTime? SchedulingOpen { get; set; }
+        public DateTime? SchedulingClosed { get; set; }
+        public DateTime? SchedulePosted { get; set; }
 
-        public DateTime? PerformerScheduleStartDate { get; set; }
-        public DateTime? PerformerScheduleEndDate { get; set; }
+        public DateTime? ScheduleStartDate { get; set; }
+        public DateTime? ScheduleEndDate { get; set; }
     }
 }

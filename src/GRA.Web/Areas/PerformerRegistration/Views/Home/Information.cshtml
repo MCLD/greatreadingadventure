@@ -1,0 +1,313 @@
+﻿@model GRA.Controllers.ViewModel.PerformerRegistration.Home.InformationViewModel
+
+@{
+    var invalid = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid;
+}
+
+<div class="row">
+    <div class="modal fade" id="branchModal" tabindex="-1" role="dialog" aria-labelledby="branchModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="branchModalLabel">Branch Selection</h4>
+                </div>
+                <div class="modal-body" style="max-height: calc(100vh - 200px); overflow-y:auto;">
+                    <p>
+                        <strong>
+                            These libraries serve residents all over the 9,000 square miles of
+                            Maricopa County.
+                        </strong>
+                        Please select the locations where you are willing
+                        to perform for the contracted rate. If you are unsure where the library is
+                        located, click the map icon to see it on a map.
+                    </p>
+                    <button id="selectAllButton" class="btn btn-primary" style="margin-bottom:10px;">Select All @Model.BranchCount Libraries</button>
+
+                    @foreach (var system in Model.Systems)
+                    {
+                        <div style="font-size:x-large;margin-bottom:10px;">
+                            <strong>@system.Name</strong>
+                        </div>
+                        @foreach (var branch in system.Branches)
+                        {
+                            <div>
+                                <input id="@($"branch{branch.Id}")" class="branchSelector" data-id="@branch.Id" type="checkbox" asp-checked="@(Model.BranchAvailability?.Contains(branch.Id) == true)" />
+                                <label for="@($"branch{branch.Id}")" data-toggle="tooltip" data-placement="top" title="@branch.Address">@branch.Name</label>
+                                <a href="https://www.google.com/maps/search/@branch.Address" target="_blank"><span class="fa fa-map-o"></span></a>
+                            </div>
+                        }
+                        <br />
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.Performer?.RegistrationCompleted != true)
+{
+    @section nav {
+        <div class="row row-spacing">
+            <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 join-header">
+                <div class="col-xs-4 sign-up-step active">
+                    <p>Information</p>
+                </div>
+                <div class="col-xs-4 sign-up-step">
+                    <p>Schedule</p>
+                </div>
+                <div class="col-xs-4 sign-up-step">
+                    <p>Program</p>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+<div class="row">
+    <div class="col-sm-9 col-sm-offset-3">
+        <p>
+            @if (Model.Performer?.RegistrationCompleted != true)
+            {
+                <text>
+                    Please provide details about yourself as a performer.
+                    On the next page you will provide details about your programs.
+                    <br />
+                </text>
+            }
+            <span class="text-danger small" style="font-weight: bold;">
+                Fields marked with an asterisk (*) are required.
+            </span>
+        </p>
+    </div>
+</div>
+
+<form asp-action="Information" class="form-horizontal" method="post" role="form" enctype="multipart/form-data">
+    <input asp-for="BranchAvailabilityString" type="hidden" />
+    @if (Model.Performer?.RegistrationCompleted == true)
+    {
+        <input asp-for="Performer.RegistrationCompleted" type="hidden" />
+    }
+
+    <div class="form-group">
+        <label asp-for="Performer.Name" class="col-sm-3 control-label required-field"></label>
+        <div class="col-sm-9">
+            <input asp-for="Performer.Name" class="form-control" placeholder="" />
+            <span asp-validation-for="Performer.Name" class="text-danger"></span>
+        </div>
+    </div>
+
+    @if (Model.Performer?.RegistrationCompleted != true)
+    {
+        <div class="row">
+            <div class="col-sm-9 col-sm-offset-3">
+                <p>
+                    In order to promote your programming, please upload one or more
+                    <strong>photos of yourself</strong>
+                    (when selecting files, hold CTRL to select more than one).
+                    You will have the opportunity to upload photos about your programs when you enter
+                    program details. For best results please use images that are at least 1,000 pixels in
+                    each dimension, your upload is limited to 25MB total.
+                </p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label required-field">Upload photos</label>
+            <div class="col-sm-9">
+                <div class="input-group">
+                    <label class="input-group-btn">
+                        <span class="btn btn-default btn-file">
+                            <span class="fa fa-file-image-o"></span> Select file(s)...
+                            <input type="file"
+                                   multiple="multiple"
+                                   asp-for="Images"
+                                   accept=".png,.jpg,.jpeg"
+                                   style="display: none;" />
+                        </span>
+                    </label>
+                    <input type="text" class="form-control @(ViewData.ModelState.GetValidationState("Images") == invalid ? "input-validation-error" : "")" readonly />
+                </div>
+                <span asp-validation-for="Images" class="text-danger"></span>
+            </div>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-sm-9 col-sm-offset-3">
+            @if (Model.Performer?.RegistrationCompleted != true)
+            {
+                <p>
+                    Please provide a single PDF document with references. Include name, email
+                    address, and/or telephone number for each reference.
+                </p>
+            }
+            else
+            {
+                <p>
+                    A new PDF document can be uploaded to replace the current list of references.
+                    Include name, email address, and/or telephone number for each reference.
+                </p>
+            }
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label @(Model.Performer?.RegistrationCompleted != true ? "required-field": "")">Upload PDF</label>
+        <div class="col-sm-9">
+            <div class="input-group">
+                <label class="input-group-btn">
+                    <span class="btn btn-default btn-file" style="width:132px;text-align:left;">
+                        <span class="fa fa-file-image-o"></span> Select file...
+                        <input type="file"
+                               asp-for="References"
+                               accept=".pdf"
+                               style="display: none;" />
+                    </span>
+                </label>
+                <input type="text" class="form-control @(ViewData.ModelState.GetValidationState("References") == invalid ? "input-validation-error" : "")" readonly />
+            </div>
+            <span asp-validation-for="References" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Performer.BillingAddress" class="col-sm-3 control-label required-field"></label>
+        <div class="col-sm-9">
+            <textarea asp-for="Performer.BillingAddress" class="form-control"></textarea>
+            <span asp-validation-for="Performer.BillingAddress" class="text-danger"></span>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <label asp-for="Performer.Website" class="col-sm-3 control-label"></label>
+        <div class="col-sm-9">
+            <input asp-for="Performer.Website" class="form-control" placeholder="" />
+            <span asp-validation-for="Performer.Website" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Performer.PhonePreferred" class="col-sm-3 control-label required-field"></label>
+        <div class="col-sm-9">
+            <select asp-for="Performer.PhonePreferred" class="form-control">
+                <option value="false">Email</option>
+                <option value="true">Phone</option>
+            </select>
+            <span asp-validation-for="Performer.PhonePreferred" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Performer.Email" class="col-sm-3 control-label required-field">Email</label>
+        <div class="col-sm-9">
+            <input asp-for="Performer.Email" class="form-control" placeholder="" />
+            <span asp-validation-for="Performer.Email" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Performer.Phone" class="col-sm-3 control-label required-field"></label>
+        <div class="col-sm-9">
+            <input asp-for="Performer.Phone" class="form-control" placeholder="" />
+            <span asp-validation-for="Performer.Phone" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Performer.VendorId" class="col-sm-3 control-label required-field">Vender ID number<span class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" title="Example number: VC1234567891"></span></label>
+        <div class="col-sm-9">
+            <input asp-for="Performer.VendorId" class="form-control" placeholder="" />
+            <span asp-validation-for="Performer.VendorId" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Performer.HasFingerprintCard" class="col-sm-3 control-label required-field"></label>
+        <div class="col-sm-9">
+            <select asp-for="Performer.HasFingerprintCard" class="form-control">
+                <option value="false">No</option>
+                <option value="true">Yes</option>
+            </select>
+            <span asp-validation-for="Performer.HasFingerprintCard" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-9 col-sm-offset-3">
+            <p>
+                Please let us know at which locations you are willing to perform:
+                <strong><span id="branchCount">@(Model.BranchAvailability?.Count ?? 0)</span> of @Model.BranchCount Selected</strong>
+            </p>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#branchModal">Select Libraries</button>
+            <span id="branchValidator" asp-validation-for="BranchAvailability" class="field-validation-error text-danger">Please select the libraries where you are willing to perform.</span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-9 col-sm-offset-3">
+
+            @if (Model.Performer?.RegistrationCompleted != true)
+            {
+                <button id="submitButton" type="submit" class="btn btn-lg btn-success">
+                    Next: Schedule
+                    <span class="fa fa-spinner fa-pulse fa-fw hidden"></span>
+                </button>
+            }
+            else
+            {
+                <button id="submitButton" type="submit" class="btn btn-lg btn-success" style="margin-bottom: 10px;">
+                    Update Information
+                    <span class="fa fa-spinner fa-pulse fa-fw hidden"></span>
+                </button>
+                <a asp-action="Dashboard" class="btn btn-lg btn-default pull-left" style="margin-right: 10px;">Return to Dashboard</a>
+            }
+
+        </div>
+    </div>
+</form>
+
+@section scripts {
+    <script>
+        $("#selectAllButton").on("click", function () {
+            $(".branchSelector").prop("checked", true);
+        });
+
+        $("#branchModal").on("hide.bs.modal", function () {
+            var selectedCount = $(".branchSelector:checked").length;
+            $("#branchCount").text(selectedCount);
+            if (selectedCount == 0) {
+                $("#branchValidator").show();
+            }
+            else {
+                $("#branchValidator").hide();
+            }
+        });
+
+        $("form").on("submit", function (e) {
+            var BranchAvailability = $(".branchSelector:checked").map(function () { return $(this).data("id"); }).get();
+            if (BranchAvailability.length == 0) {
+                $("#branchValidator").show();
+                e.preventDefault();
+            }
+            else {
+                $("#BranchAvailabilityString").val(JSON.stringify(BranchAvailability));
+
+                if ($("#submitButton").parents("form:first").valid()) {
+                    if ($("#submitButton").hasClass("disabled")) {
+                        e.preventDefault();
+                    }
+                    else {
+                        $("#submitButton").addClass("disabled");
+                        $("#submitButton").siblings(".btn-spinner").addClass("disabled");
+                        $("#submitButton").children(".fa-spinner").removeClass("hidden");
+                    }
+                }
+            }
+        });
+    </script>
+}

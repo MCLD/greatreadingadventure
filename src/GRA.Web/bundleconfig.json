@@ -42,6 +42,26 @@
     }
   },
   {
+    "outputFileName": "wwwroot/js/performerregistration.min.js",
+    "inputFiles": [
+      "wwwroot/js/performerregistration.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/css/performerregistration.min.css",
+    "inputFiles": [
+      "wwwroot/css/performerregistration.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "adjustRelativePaths": false
+    }
+  },
+  {
     "outputFileName": "wwwroot/js/markdown.min.js",
     "inputFiles": [
       "wwwroot/lib/commonmark/dist/commonmark.js",
@@ -82,5 +102,11 @@
       "enabled": true,
       "renameLocals": true
     }
+  },
+  {
+    "outputFileName": "wwwroot/css/performerregistration.min.css",
+    "inputFiles": [
+      "wwwroot/css/performerregistration.css"
+    ]
   }
 ]

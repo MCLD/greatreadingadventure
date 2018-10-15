@@ -8,7 +8,6 @@ namespace GRA.Domain.Model
     {
         [Required]
         public int PerformerId { get; set; }
-        public PsPerformer Performer { get; set; }
 
         [DisplayName("Program name")]
         [MaxLength(50, ErrorMessage = "Please enter no more than {1} characters for {0}.")]

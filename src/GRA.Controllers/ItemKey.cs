@@ -17,5 +17,6 @@
         public static readonly string ShowChallenges = "ShowChallenges";
         public static readonly string ShowEvents = "ShowEvents";
         public static readonly string SignedIn = "SignedIn";
+        public const string ShowPerformerRegistration = "ShowPerformerRegistration";
     }
 }

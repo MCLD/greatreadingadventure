@@ -34,7 +34,7 @@ namespace GRA.Data
             modelBuilder.Entity<Model.PsKitAgeGroup>()
                 .HasKey(_ => new { _.KitId, _.AgeGroupId });
             modelBuilder.Entity<Model.PsPerformerBranch>()
-                .HasKey(_ => new { _.PerformerId, _.BranchId });
+                .HasKey(_ => new { _.PsPerformerId, _.BranchId });
             modelBuilder.Entity<Model.PsProgramAgeGroup>()
                 .HasKey(_ => new { _.ProgramId, _.AgeGroupId });
             modelBuilder.Entity<Model.TriggerBadge>()

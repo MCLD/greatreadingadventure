@@ -8,20 +8,19 @@ using GRA.Data.SqlServer;
 namespace GRA.Data.SqlServer.Migrations
 {
     [DbContext(typeof(SqlServerContext))]
-    partial class SqlServerContextModelSnapshot : ModelSnapshot
+    [Migration("20181015175037_initial")]
+    partial class initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.0-rtm-35687")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("ProductVersion", "1.1.6")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("GRA.Data.Model.Answer", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("CreatedAt");
 
@@ -45,8 +44,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.AuditLog", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("CreatedAt");
 
@@ -74,8 +72,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.AuthorizationCode", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Code")
                         .IsRequired()
@@ -105,8 +102,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.AvatarBundle", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<bool>("CanBeUnlocked");
 
@@ -145,8 +141,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.AvatarColor", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int>("AvatarLayerId");
 
@@ -170,8 +165,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.AvatarElement", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int?>("AvatarColorId");
 
@@ -197,8 +191,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.AvatarItem", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int>("AvatarLayerId");
 
@@ -227,8 +220,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.AvatarLayer", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<bool>("CanBeEmpty");
 
@@ -257,8 +249,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<int>("SortOrder");
 
-                    b.Property<decimal>("ZoomScale")
-                        .HasColumnType("decimal(4,2)");
+                    b.Property<decimal>("ZoomScale");
 
                     b.Property<int>("ZoomYOffset");
 
@@ -270,8 +261,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.Badge", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("CreatedAt");
 
@@ -289,8 +279,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.Book", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Author")
                         .HasMaxLength(255);
@@ -319,8 +308,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.Branch", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Address")
                         .HasMaxLength(255);
@@ -351,8 +339,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.Broadcast", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Body")
                         .IsRequired()
@@ -377,69 +364,10 @@ namespace GRA.Data.SqlServer.Migrations
                     b.ToTable("Broadcasts");
                 });
 
-            modelBuilder.Entity("GRA.Data.Model.Carousel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("CreatedAt");
-
-                    b.Property<int>("CreatedBy");
-
-                    b.Property<string>("Heading")
-                        .HasMaxLength(255);
-
-                    b.Property<bool>("IsForDashboard");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255);
-
-                    b.Property<int>("SiteId");
-
-                    b.Property<DateTime>("StartTime");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Carousels");
-                });
-
-            modelBuilder.Entity("GRA.Data.Model.CarouselItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("CarouselId");
-
-                    b.Property<DateTime>("CreatedAt");
-
-                    b.Property<int>("CreatedBy");
-
-                    b.Property<string>("Description")
-                        .IsRequired();
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasMaxLength(500);
-
-                    b.Property<int>("SortOrder");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(255);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CarouselItems");
-                });
-
             modelBuilder.Entity("GRA.Data.Model.Category", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Color")
                         .HasMaxLength(10);
@@ -465,8 +393,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.Challenge", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int?>("BadgeId");
 
@@ -530,8 +457,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.ChallengeGroup", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("CreatedAt");
 
@@ -576,8 +502,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.ChallengeTask", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Author")
                         .HasMaxLength(255);
@@ -614,8 +539,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.ChallengeTaskType", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int?>("ActivityCount");
 
@@ -637,8 +561,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.DailyLiteracyTip", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("CreatedAt");
 
@@ -662,8 +585,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.DailyLiteracyTipImage", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("CreatedAt");
 
@@ -691,8 +613,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.DashboardContent", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Content");
 
@@ -712,8 +633,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.Drawing", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("CreatedAt");
 
@@ -752,8 +672,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.DrawingCriterion", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int?>("BranchId");
 
@@ -812,8 +731,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.EmailReminder", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("CreatedAt");
 
@@ -836,8 +754,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.Event", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<bool>("AllDay");
 
@@ -898,8 +815,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.GroupInfo", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("CreatedAt");
 
@@ -925,8 +841,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.GroupType", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("CreatedAt");
 
@@ -946,8 +861,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.Location", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Address");
 
@@ -975,8 +889,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.Mail", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Body")
                         .IsRequired()
@@ -1024,8 +937,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.Notification", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("BadgeFilename");
 
@@ -1058,8 +970,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.Page", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Content")
                         .IsRequired();
@@ -1088,8 +999,7 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("SiteId", "Stub")
-                        .IsUnique()
-                        .HasFilter("[Stub] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("Pages");
                 });
@@ -1097,8 +1007,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.Permission", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("CreatedAt");
 
@@ -1116,8 +1025,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.PointTranslation", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int>("ActivityAmount");
 
@@ -1157,8 +1065,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.PrizeWinner", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("CreatedAt");
 
@@ -1185,8 +1092,7 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasIndex("UserId");
 
                     b.HasIndex("DrawingId", "UserId", "RedeemedAt")
-                        .IsUnique()
-                        .HasFilter("[DrawingId] IS NOT NULL AND [RedeemedAt] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("PrizeWinners");
                 });
@@ -1194,8 +1100,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.Program", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int>("AchieverPointAmount");
 
@@ -1617,8 +1522,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.Question", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int>("CorrectAnswerId");
 
@@ -1649,8 +1553,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.Questionnaire", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int?>("BadgeId");
 
@@ -1686,8 +1589,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.RecoveryToken", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("CreatedAt");
 
@@ -1707,8 +1609,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.ReportCriterion", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("BadgeRequiredList");
 
@@ -1751,8 +1652,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.ReportRequest", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("CreatedAt");
 
@@ -1786,8 +1686,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.RequiredQuestionnaire", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int?>("AgeMaximum");
 
@@ -1813,8 +1712,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.Role", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("CreatedAt");
 
@@ -1851,8 +1749,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.School", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("CreatedAt");
 
@@ -1880,8 +1777,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.SchoolDistrict", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("CreatedAt");
 
@@ -1905,8 +1801,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.SchoolType", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("CreatedAt");
 
@@ -1926,8 +1821,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.Site", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<DateTime?>("AccessClosed");
 
@@ -2031,8 +1925,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.SiteSetting", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("CreatedAt");
 
@@ -2055,8 +1948,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.System", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("CreatedAt");
 
@@ -2078,8 +1970,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.Trigger", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<DateTime?>("ActivationDate");
 
@@ -2182,8 +2073,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.User", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<DateTime?>("AchievedAt");
 
@@ -2270,12 +2160,10 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasIndex("SystemId");
 
                     b.HasIndex("SiteId", "IsDeleted", "Username")
-                        .IsUnique()
-                        .HasFilter("[Username] IS NOT NULL");
+                        .IsUnique();
 
                     b.HasIndex("SiteId", "Id", "IsDeleted", "HouseholdHeadUserId")
-                        .IsUnique()
-                        .HasFilter("[HouseholdHeadUserId] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });
@@ -2394,8 +2282,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.UserLog", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int?>("ActivityEarned");
 
@@ -2484,8 +2371,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.VendorCode", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Code")
                         .IsRequired();
@@ -2521,8 +2407,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder.Entity("GRA.Data.Model.VendorCodeType", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("CreatedAt");
 
@@ -2570,207 +2455,177 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.HasOne("GRA.Data.Model.Question", "Question")
                         .WithMany("Answers")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("QuestionId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.AuthorizationCode", b =>
                 {
                     b.HasOne("GRA.Data.Model.Role", "Role")
                         .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("RoleId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.AvatarBundleItem", b =>
                 {
                     b.HasOne("GRA.Data.Model.AvatarBundle", "AvatarBundle")
                         .WithMany("AvatarBundleItems")
-                        .HasForeignKey("AvatarBundleId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("AvatarBundleId");
 
                     b.HasOne("GRA.Data.Model.AvatarItem", "AvatarItem")
                         .WithMany()
-                        .HasForeignKey("AvatarItemId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("AvatarItemId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.AvatarColor", b =>
                 {
                     b.HasOne("GRA.Data.Model.AvatarLayer", "AvatarLayer")
                         .WithMany("AvatarColors")
-                        .HasForeignKey("AvatarLayerId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("AvatarLayerId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.AvatarElement", b =>
                 {
                     b.HasOne("GRA.Data.Model.AvatarColor", "AvatarColor")
                         .WithMany()
-                        .HasForeignKey("AvatarColorId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("AvatarColorId");
 
                     b.HasOne("GRA.Data.Model.AvatarItem", "AvatarItem")
                         .WithMany()
-                        .HasForeignKey("AvatarItemId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("AvatarItemId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.AvatarItem", b =>
                 {
                     b.HasOne("GRA.Data.Model.AvatarLayer", "AvatarLayer")
                         .WithMany("AvatarItems")
-                        .HasForeignKey("AvatarLayerId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("AvatarLayerId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Branch", b =>
                 {
                     b.HasOne("GRA.Data.Model.System", "System")
                         .WithMany("Branches")
-                        .HasForeignKey("SystemId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("SystemId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Challenge", b =>
                 {
                     b.HasOne("GRA.Data.Model.Site")
                         .WithMany("Challenges")
-                        .HasForeignKey("SiteId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("SiteId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.ChallengeCategory", b =>
                 {
                     b.HasOne("GRA.Data.Model.Category", "Category")
                         .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("CategoryId");
 
                     b.HasOne("GRA.Data.Model.Challenge", "Challenge")
                         .WithMany("ChallengeCategories")
-                        .HasForeignKey("ChallengeId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("ChallengeId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.ChallengeGroupChallenge", b =>
                 {
                     b.HasOne("GRA.Data.Model.ChallengeGroup", "ChallengeGroup")
                         .WithMany("ChallengeGroupChallenges")
-                        .HasForeignKey("ChallengeGroupId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("ChallengeGroupId");
 
                     b.HasOne("GRA.Data.Model.Challenge", "Challenge")
                         .WithMany("ChallengeGroupChallenges")
-                        .HasForeignKey("ChallengeId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("ChallengeId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.ChallengeTask", b =>
                 {
                     b.HasOne("GRA.Data.Model.Challenge")
                         .WithMany("Tasks")
-                        .HasForeignKey("ChallengeId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("ChallengeId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.DailyLiteracyTipImage", b =>
                 {
                     b.HasOne("GRA.Data.Model.DailyLiteracyTip", "DailyLiteracyTip")
                         .WithMany("DailyLiteracyTipImages")
-                        .HasForeignKey("DailyLiteracyTipId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("DailyLiteracyTipId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Drawing", b =>
                 {
                     b.HasOne("GRA.Data.Model.DrawingCriterion", "DrawingCriterion")
                         .WithMany()
-                        .HasForeignKey("DrawingCriterionId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("DrawingCriterionId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.DrawingCriterion", b =>
                 {
                     b.HasOne("GRA.Data.Model.Branch", "Branch")
                         .WithMany()
-                        .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("BranchId");
 
                     b.HasOne("GRA.Data.Model.System", "System")
                         .WithMany()
-                        .HasForeignKey("SystemId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("SystemId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.DrawingCriterionProgram", b =>
                 {
                     b.HasOne("GRA.Data.Model.DrawingCriterion")
                         .WithMany("CriterionPrograms")
-                        .HasForeignKey("DrawingCriterionId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("DrawingCriterionId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Event", b =>
                 {
                     b.HasOne("GRA.Data.Model.ChallengeGroup", "ChallengeGroup")
                         .WithMany()
-                        .HasForeignKey("ChallengeGroupId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("ChallengeGroupId");
 
                     b.HasOne("GRA.Data.Model.Challenge", "Challenge")
                         .WithMany()
-                        .HasForeignKey("ChallengeId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("ChallengeId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.GroupInfo", b =>
                 {
                     b.HasOne("GRA.Data.Model.GroupType", "GroupType")
                         .WithMany()
-                        .HasForeignKey("GroupTypeId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("GroupTypeId");
 
                     b.HasOne("GRA.Data.Model.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PrizeWinner", b =>
                 {
                     b.HasOne("GRA.Data.Model.Drawing", "Drawing")
                         .WithMany("Winners")
-                        .HasForeignKey("DrawingId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("DrawingId");
 
                     b.HasOne("GRA.Data.Model.Trigger", "Trigger")
                         .WithMany()
-                        .HasForeignKey("TriggerId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("TriggerId");
 
                     b.HasOne("GRA.Data.Model.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Program", b =>
                 {
                     b.HasOne("GRA.Data.Model.DailyLiteracyTip", "DailyLiteracy")
                         .WithMany()
-                        .HasForeignKey("DailyLiteracyTipId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("DailyLiteracyTipId");
 
                     b.HasOne("GRA.Data.Model.PointTranslation", "PointTranslation")
                         .WithMany()
-                        .HasForeignKey("PointTranslationId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("PointTranslationId");
 
                     b.HasOne("GRA.Data.Model.Site")
                         .WithMany("Programs")
-                        .HasForeignKey("SiteId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("SiteId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PsBranchSelection", b =>
@@ -2882,278 +2737,235 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.HasOne("GRA.Data.Model.Questionnaire", "Questionnaire")
                         .WithMany("Questions")
-                        .HasForeignKey("QuestionnaireId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("QuestionnaireId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.RolePermission", b =>
                 {
                     b.HasOne("GRA.Data.Model.Permission", "Permission")
                         .WithMany()
-                        .HasForeignKey("PermissionId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("PermissionId");
 
                     b.HasOne("GRA.Data.Model.Role", "Role")
                         .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("RoleId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.School", b =>
                 {
                     b.HasOne("GRA.Data.Model.SchoolDistrict", "SchoolDistrict")
                         .WithMany("Schools")
-                        .HasForeignKey("SchoolDistrictId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("SchoolDistrictId");
 
                     b.HasOne("GRA.Data.Model.SchoolType", "SchoolType")
                         .WithMany()
-                        .HasForeignKey("SchoolTypeId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("SchoolTypeId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.System", b =>
                 {
                     b.HasOne("GRA.Data.Model.Site")
                         .WithMany("Systems")
-                        .HasForeignKey("SiteId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("SiteId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Trigger", b =>
                 {
                     b.HasOne("GRA.Data.Model.AvatarBundle", "AwardAvatarBundle")
                         .WithMany()
-                        .HasForeignKey("AwardAvatarBundleId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("AwardAvatarBundleId");
 
                     b.HasOne("GRA.Data.Model.Badge", "AwardBadge")
                         .WithMany()
-                        .HasForeignKey("AwardBadgeId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("AwardBadgeId");
 
                     b.HasOne("GRA.Data.Model.VendorCodeType", "AwardVendorCodeType")
                         .WithMany()
-                        .HasForeignKey("AwardVendorCodeTypeId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("AwardVendorCodeTypeId");
 
                     b.HasOne("GRA.Data.Model.Branch", "LimitToBranch")
                         .WithMany()
-                        .HasForeignKey("LimitToBranchId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("LimitToBranchId");
 
                     b.HasOne("GRA.Data.Model.Program", "LimitToProgram")
                         .WithMany()
-                        .HasForeignKey("LimitToProgramId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("LimitToProgramId");
 
                     b.HasOne("GRA.Data.Model.System", "LimitToSystem")
                         .WithMany()
-                        .HasForeignKey("LimitToSystemId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("LimitToSystemId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.TriggerBadge", b =>
                 {
                     b.HasOne("GRA.Data.Model.Badge", "Badge")
                         .WithMany()
-                        .HasForeignKey("BadgeId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("BadgeId");
 
                     b.HasOne("GRA.Data.Model.Trigger", "Trigger")
                         .WithMany("RequiredBadges")
-                        .HasForeignKey("TriggerId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("TriggerId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.TriggerChallenge", b =>
                 {
                     b.HasOne("GRA.Data.Model.Challenge", "Challenge")
                         .WithMany()
-                        .HasForeignKey("ChallengeId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("ChallengeId");
 
                     b.HasOne("GRA.Data.Model.Trigger", "Trigger")
                         .WithMany("RequiredChallenges")
-                        .HasForeignKey("TriggerId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("TriggerId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.User", b =>
                 {
                     b.HasOne("GRA.Data.Model.Branch", "Branch")
                         .WithMany("Users")
-                        .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("BranchId");
 
                     b.HasOne("GRA.Data.Model.Program", "Program")
                         .WithMany()
-                        .HasForeignKey("ProgramId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("ProgramId");
 
                     b.HasOne("GRA.Data.Model.Site", "Site")
                         .WithMany()
-                        .HasForeignKey("SiteId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("SiteId");
 
                     b.HasOne("GRA.Data.Model.System", "System")
                         .WithMany()
-                        .HasForeignKey("SystemId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("SystemId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserAnswer", b =>
                 {
                     b.HasOne("GRA.Data.Model.Answer", "Answer")
                         .WithMany()
-                        .HasForeignKey("AnswerId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("AnswerId");
 
                     b.HasOne("GRA.Data.Model.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserAvatar", b =>
                 {
                     b.HasOne("GRA.Data.Model.AvatarElement", "AvatarElement")
                         .WithMany()
-                        .HasForeignKey("AvatarElementId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("AvatarElementId");
 
                     b.HasOne("GRA.Data.Model.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserAvatarItem", b =>
                 {
                     b.HasOne("GRA.Data.Model.AvatarItem", "AvatarItem")
                         .WithMany()
-                        .HasForeignKey("AvatarItemId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("AvatarItemId");
 
                     b.HasOne("GRA.Data.Model.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserBadge", b =>
                 {
                     b.HasOne("GRA.Data.Model.Badge", "Badge")
                         .WithMany()
-                        .HasForeignKey("BadgeId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("BadgeId");
 
                     b.HasOne("GRA.Data.Model.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserBook", b =>
                 {
                     b.HasOne("GRA.Data.Model.Book", "Book")
                         .WithMany()
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("BookId");
 
                     b.HasOne("GRA.Data.Model.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserChallengeTask", b =>
                 {
                     b.HasOne("GRA.Data.Model.ChallengeTask", "ChallengeTask")
                         .WithMany()
-                        .HasForeignKey("ChallengeTaskId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("ChallengeTaskId");
 
                     b.HasOne("GRA.Data.Model.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserFavoriteChallenge", b =>
                 {
                     b.HasOne("GRA.Data.Model.Challenge", "Challenge")
                         .WithMany()
-                        .HasForeignKey("ChallengeId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("ChallengeId");
 
                     b.HasOne("GRA.Data.Model.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserLog", b =>
                 {
                     b.HasOne("GRA.Data.Model.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserQuestionnaire", b =>
                 {
                     b.HasOne("GRA.Data.Model.Questionnaire", "Questionnaire")
                         .WithMany()
-                        .HasForeignKey("QuestionnaireId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("QuestionnaireId");
 
                     b.HasOne("GRA.Data.Model.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserRole", b =>
                 {
                     b.HasOne("GRA.Data.Model.Role", "Role")
                         .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("RoleId");
 
                     b.HasOne("GRA.Data.Model.User", "User")
                         .WithMany("UserRoles")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserTrigger", b =>
                 {
                     b.HasOne("GRA.Data.Model.Trigger", "Trigger")
                         .WithMany()
-                        .HasForeignKey("TriggerId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("TriggerId");
 
                     b.HasOne("GRA.Data.Model.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.VendorCode", b =>
                 {
                     b.HasOne("GRA.Data.Model.VendorCodeType", "VendorCodeType")
                         .WithMany()
-                        .HasForeignKey("VendorCodeTypeId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("VendorCodeTypeId");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.VendorCodeType", b =>
                 {
                     b.HasOne("GRA.Data.Model.Site", "Site")
                         .WithMany()
-                        .HasForeignKey("SiteId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("SiteId");
                 });
         }
     }

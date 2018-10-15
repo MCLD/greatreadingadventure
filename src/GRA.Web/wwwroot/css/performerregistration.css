@@ -1,0 +1,131 @@
+﻿.join-header {
+    color: lightgrey;
+    font-size: 20px;
+    text-align: center;
+}
+
+    .join-header .active {
+        color: black;
+        font-weight: bold;
+    }
+
+.sign-up-step {
+    padding-top: 0.8rem;
+    padding-bottom: 0;
+}
+
+    .sign-up-step p {
+        color: #999;
+    }
+
+    .sign-up-step.active {
+        background-color: #5cb85c;
+        border-color: #398439;
+        border-radius: 1rem;
+    }
+
+        .sign-up-step.active p {
+            color: white;
+        }
+
+h1 {
+    font-weight: bold;
+    color: #307fe2;
+    text-align: center;
+}
+
+.calendar-cell {
+    padding: 0 !important;
+}
+
+.selectable {
+    padding: 0 !important;
+    cursor: pointer;
+}
+
+.unselectable {
+    padding: 0 !important;
+    cursor: not-allowed;
+}
+
+.available {
+    background-color: lightgreen;
+}
+
+.available-text {
+    color: green;
+}
+
+.current {
+    background-color: deepskyblue;
+}
+
+.unavailable {
+    background-color: red;
+}
+
+.unavailable-text {
+    color: red;
+}
+
+.required-field {
+    font-weight: bold;
+}
+
+.time {
+    background-color: orange;
+}
+
+.time-text {
+    color: orange;
+}
+
+.option {
+    padding: 8px 4px;
+    -webkit-user-select: none; /* Chrome, Opera, Safari */
+    -moz-user-select: none; /* Firefox 2+ */
+    -ms-user-select: none; /* IE 10+ */
+    user-select: none; /* Standard syntax */
+}
+
+.selected-date {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.blackout {
+    background-color: #333333;
+    color: white;
+}
+
+.blackout-text {
+    color: darkgray;
+}
+
+.out-of-range {
+    opacity: .3;
+}
+
+.required-field:after {
+    content: "*";
+    color: #a94442;
+    font-weight: bold;
+    font-size: 1.3em;
+}
+
+.multiselect .multiselect-selected-text {
+    position: absolute;
+    left: 13px;
+    top: 7px;
+}
+
+.multiselect .caret {
+    position: absolute;
+    right: 13px;
+}
+
+.drop-up.multiselect-container {
+    margin-top: -576px !important;
+    max-height: 542px !important;
+    overflow-y: auto;
+    overflow-x: hidden;
+}

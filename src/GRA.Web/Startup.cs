@@ -315,6 +315,7 @@ namespace GRA.Web
             services.AddScoped<GroupTypeService>();
             services.AddScoped<MailService>();
             services.AddScoped<PageService>();
+            services.AddScoped<PerformerSchedulingService>();
             services.AddScoped<PointTranslationService>();
             services.AddScoped<PrizeWinnerService>();
             services.AddScoped<QuestionnaireService>();
@@ -409,6 +410,17 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IReportRequestRepository, Data.Repository.ReportRequestRepository>();
             services.AddScoped<Domain.Repository.IRequiredQuestionnaireRepository, Data.Repository.RequiredQuestionnaireRepository>();
             services.AddScoped<Domain.Repository.IRoleRepository, Data.Repository.RoleRepository>();
+            services.AddScoped<Domain.Repository.IPsAgeGroupRepository, Data.Repository.PsAgeGroupRepository>();
+            services.AddScoped<Domain.Repository.IPsBlackoutDateRepository, Data.Repository.PsBlackoutDateRepository>();
+            services.AddScoped<Domain.Repository.IPsBranchSelectionRepository, Data.Repository.PsBranchSelectionRepository>();
+            services.AddScoped<Domain.Repository.IPsDatesRepository, Data.Repository.PsDatesRepository>();
+            services.AddScoped<Domain.Repository.IPsKitImageRepository, Data.Repository.PsKitImageRepository>();
+            services.AddScoped<Domain.Repository.IPsKitRepository, Data.Repository.PsKitRepository>();
+            services.AddScoped<Domain.Repository.IPsPerformerImageRepository, Data.Repository.PsPerformerImageRepository>();
+            services.AddScoped<Domain.Repository.IPsPerformerRepository, Data.Repository.PsPerformerRepository>();
+            services.AddScoped<Domain.Repository.IPsPerformerScheduleRepository, Data.Repository.PsPerformerScheduleRepository>();
+            services.AddScoped<Domain.Repository.IPsProgramImageRepository, Data.Repository.PsProgramImageRepository>();
+            services.AddScoped<Domain.Repository.IPsProgramRepository, Data.Repository.PsProgramRepository>();
             services.AddScoped<Domain.Repository.ISchoolDistrictRepository, Data.Repository.SchoolDistrictRepository>();
             services.AddScoped<Domain.Repository.ISchoolRepository, Data.Repository.SchoolRepository>();
             services.AddScoped<Domain.Repository.ISchoolTypeRepository, Data.Repository.SchoolTypeRepository>();

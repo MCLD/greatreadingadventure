@@ -2,8 +2,8 @@
 {
     public class PsPerformerBranch
     {
-        public int PerformerId { get; set; }
-        public PsPerformer Performer { get; set; }
+        public int PsPerformerId { get; set; }
+        public PsPerformer PsPerformer { get; set; }
         public int BranchId { get; set; }
         public Branch Branch { get; set; }
     }

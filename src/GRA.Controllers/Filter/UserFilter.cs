@@ -40,13 +40,23 @@ namespace GRA.Controllers.Filter
             var httpContext = context.HttpContext;
             if (httpContext.User.Identity.IsAuthenticated)
             {
-                // Check if user can access mission control and the user Id matches the active user id
-                if (httpContext.User.HasClaim(ClaimType.Permission,
-                        nameof(Domain.Model.Permission.AccessMissionControl))
-                    && httpContext.Session.GetInt32(SessionKey.ActiveUserId)
-                        == _userContextProvider.GetId(httpContext.User, ClaimType.UserId))
+                // Check if the user Id matches the active user id
+                if (httpContext.Session.GetInt32(SessionKey.ActiveUserId) ==
+                        _userContextProvider.GetId(httpContext.User, ClaimType.UserId))
                 {
-                    httpContext.Items.Add(ItemKey.ShowMissionControl, true);
+                    // Check if user can access mission control
+                    if (httpContext.User.HasClaim(GRA.ClaimType.Permission,
+                        GRA.Domain.Model.Permission.AccessMissionControl.ToString()))
+                    {
+                        httpContext.Items.Add(ItemKey.ShowMissionControl, true);
+                    }
+
+                    // Check if user can access performer registration
+                    if (httpContext.User.HasClaim(GRA.ClaimType.Permission,
+                        GRA.Domain.Model.Permission.AccessPerformerRegistration.ToString()))
+                    {
+                        httpContext.Items.Add(ItemKey.ShowPerformerRegistration, true);
+                    }
                 }
 
                 var pendingQuestionnaire = httpContext.Session.GetInt32(SessionKey.PendingQuestionnaire);

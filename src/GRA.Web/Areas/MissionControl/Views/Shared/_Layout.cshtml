@@ -156,6 +156,10 @@
                                 {
                                     <li><a asp-controller="Pages" asp-action="Index">Page management</a></li>
                                 }
+                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManagePerformers.ToString()))
+                                {
+                                    <li><a asp-controller="PerformerManagement" asp-action="Index">Performer Management</a></li>
+                                }
                                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManagePrograms.ToString()))
                                 {
                                     <li><a asp-controller="Programs" asp-action="Index">Program management</a></li>

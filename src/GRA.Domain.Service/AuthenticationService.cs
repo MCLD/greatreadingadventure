@@ -63,6 +63,7 @@ namespace GRA.Domain.Service
                 }
 
                 if (!authResult.PermissionNames.Contains(Permission.AccessMissionControl.ToString())
+                    && !authResult.PermissionNames.Contains(Permission.AccessPerformerRegistration.ToString())
                     && !allowDuringCloseProgram)
                 {
                     var userContext = GetUserContext();
