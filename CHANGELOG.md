@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Database context pooling
 - Request trace identifier to logging
 - Reverse proxy address configuration option
+- Robots noindex and nofollow to Mission Control pages (to prevent search engine crawling)
 
 ### Changed
 - Upgrade from ASP.NET Core v1.1 to v2.1
