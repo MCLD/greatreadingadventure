@@ -26,6 +26,7 @@ namespace GRA
         public static readonly string InitialAuthorizationCode = "GraInitialAuthCode";
         public static readonly string InitialProgramSetup = "GraInitialProgramSetup";
         public static readonly string InstanceName = "GraInstanceName";
+        public static readonly string MaximumAllowableActivity = "GraMaximumAllowableActivity";
         public static readonly string RedisConfiguration = "GraRedisConfiguration";
         public static readonly string ReverseProxyAddress = "GraReverseProxyAddress";
         public static readonly string RollingLogHttp = "GraRollingLogHttp";
