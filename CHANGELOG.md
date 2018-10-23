@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### Fixed
 - Docker builds with Travis CI
+- Allow maximum allowable activity to be configured without requiring code changes
 
 ### Removed
 - Hack to get around Antiforgery issue (Fix #357)

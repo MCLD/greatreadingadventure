@@ -1,4 +1,16 @@
-﻿@model IEnumerable<GRA.Domain.Model.ReportDetails>
+﻿@model GRA.Controllers.ViewModel.MissionControl.Reporting.ReportIndexViewModel
+
+@if (!string.IsNullOrEmpty(Model.ReportingNote))
+{
+<div class="row mc-alertrow">
+    <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+        <div class="alert alert-info clearfix">
+            <span class="fa fa-3x fa-info-circle pull-left"></span>
+            @Model.ReportingNote
+        </div>
+    </div>
+</div>
+}
 
 <table class="table table-condensed table-bordered table-striped" style="margin-top: 2rem;">
     <thead>
@@ -8,7 +20,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var report in Model)
+        @foreach (var report in Model.Reports)
         {
             <tr>
                 <td><a asp-action="Configure" asp-route-id="@report.Id">@report.Name</a></td>

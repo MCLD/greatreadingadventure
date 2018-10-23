@@ -11,6 +11,7 @@ using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -26,6 +27,7 @@ namespace GRA.Controllers.MissionControl
         private const int ExcelPaddingCharacters = 1;
 
         private readonly ILogger<ReportingController> _logger;
+        private readonly IConfiguration _config;
         private readonly ReportService _reportService;
         private readonly SchoolService _schoolService;
         private readonly SiteService _siteService;
@@ -41,6 +43,7 @@ namespace GRA.Controllers.MissionControl
             VendorCodeService vendorCodeService) : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
+            _config = context.Config ?? throw new ArgumentNullException(nameof(context.Config));
             _reportService = Require.IsNotNull(reportService, nameof(reportService));
             _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
             _siteService = Require.IsNotNull(siteService, nameof(siteService));
@@ -54,7 +57,26 @@ namespace GRA.Controllers.MissionControl
         public IActionResult Index()
         {
             PageTitle = "Select a Report";
-            return View(_reportService.GetReportList());
+            var viewModel = new ReportIndexViewModel
+            {
+                Reports = _reportService.GetReportList()
+            };
+
+            var configuredMaxActivity = _config[ConfigurationKey.MaximumAllowableActivity];
+            if (!string.IsNullOrEmpty(configuredMaxActivity))
+            {
+                if (!int.TryParse(configuredMaxActivity, out int MaximumAllowableActivity))
+                {
+                    _logger.LogError("Could not configure maximum allowable activity: {0} in configuration is not a number",
+                        ConfigurationKey.MaximumAllowableActivity);
+                }
+                else
+                {
+                    viewModel.ReportingNote = $"Participants who logged more than {MaximumAllowableActivity:N0} minutes have had their activity amount reduced to the program achiever amount for reporting purposes.";
+                }
+            }
+
+            return View(viewModel);
         }
 
         [HttpGet]
@@ -307,8 +329,10 @@ namespace GRA.Controllers.MissionControl
                 DocumentFormat.OpenXml.SpreadsheetDocumentType.Workbook))
             {
                 var workbookPart = workbook.AddWorkbookPart();
-                workbook.WorkbookPart.Workbook = new Workbook();
-                workbook.WorkbookPart.Workbook.Sheets = new Sheets();
+                workbook.WorkbookPart.Workbook = new Workbook
+                {
+                    Sheets = new Sheets()
+                };
 
                 var stylesPart = workbook.WorkbookPart.AddNewPart<WorkbookStylesPart>();
                 stylesPart.Stylesheet = GetStylesheet();
