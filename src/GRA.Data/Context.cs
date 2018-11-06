@@ -165,7 +165,7 @@ namespace GRA.Data
         public DbSet<Model.PsAgeGroup> PsAgeGroups { get; set; }
         public DbSet<Model.PsBlackoutDate> PsBlackoutDates { get; set; }
         public DbSet<Model.PsBranchSelection> PsBranchSelections { get; set; }
-        public DbSet<Model.PsDates> PsDates { get; set; }
+        public DbSet<Model.PsSettings> PsSettings { get; set; }
         public DbSet<Model.PsKitAgeGroup> PsKitAgeGroups { get; set; }
         public DbSet<Model.PsKitImage> PsKitImages { get; set; }
         public DbSet<Model.PsKit> PsKits { get; set; }

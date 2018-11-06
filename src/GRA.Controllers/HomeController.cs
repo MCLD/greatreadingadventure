@@ -80,13 +80,13 @@ namespace GRA.Controllers
                     && UserHasPermission(Permission.AccessPerformerRegistration)
                     && UserHasPermission(Permission.AccessMissionControl) == false)
                 {
-                    var dates = await _performerSchedulingService.GetDatesAsync();
+                    var dates = await _performerSchedulingService.GetSettingsAsync();
                     var schedulingStage = _performerSchedulingService.GetSchedulingStage(dates);
 
                     if (schedulingStage != PsSchedulingStage.Unavailable)
                     {
                         TempData.Remove(TempDataKey.UserJoined);
-                        return RedirectToAction(nameof(PerformerRegistration.HomeController.Information),
+                        return RedirectToAction(nameof(PerformerRegistration.HomeController.Index),
                             "Home", new { Area = "PerformerRegistration" });
                     }
                 }

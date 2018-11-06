@@ -18,6 +18,11 @@ namespace GRA.Domain.Service
         private readonly ISystemRepository _systemRepository;
         private readonly IPointTranslationRepository _pointTranslationRepository;
 
+        // Temp
+        private readonly IPsAgeGroupRepository _psAgeGroupRepository;
+        private readonly IPsBlackoutDateRepository _psBlackoutDateRepository;
+        private readonly IPsSettingsRepository _psSettingsRepository;
+
         public SetupMultipleProgramService(ILogger<SetupMultipleProgramService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IAuthorizationCodeRepository authorizationCodeRepository,
@@ -26,7 +31,11 @@ namespace GRA.Domain.Service
             IProgramRepository programRepository,
             IRoleRepository roleRepository,
             ISystemRepository systemRepository,
-            IPointTranslationRepository pointTranslationRepository) : base(logger, dateTimeProvider)
+            IPointTranslationRepository pointTranslationRepository,
+            // Temp
+            IPsAgeGroupRepository psAgeGroupRepository,
+            IPsBlackoutDateRepository psBlackoutDateRepository,
+            IPsSettingsRepository psSettingsRepository) : base(logger, dateTimeProvider)
         {
             _authorizationCodeRepository = Require.IsNotNull(authorizationCodeRepository,
                 nameof(authorizationCodeRepository));
@@ -39,6 +48,14 @@ namespace GRA.Domain.Service
             _systemRepository = Require.IsNotNull(systemRepository, nameof(systemRepository));
             _pointTranslationRepository = Require.IsNotNull(pointTranslationRepository,
                 nameof(pointTranslationRepository));
+
+            // Temp
+            _psAgeGroupRepository = psAgeGroupRepository
+                ?? throw new ArgumentNullException(nameof(psAgeGroupRepository));
+            _psBlackoutDateRepository = psBlackoutDateRepository
+                ?? throw new ArgumentNullException(nameof(psBlackoutDateRepository));
+            _psSettingsRepository = psSettingsRepository 
+                ?? throw new ArgumentNullException(nameof(psSettingsRepository));
         }
 
         public async Task InsertAsync(int siteId, string initialAuthorizationCode, int userId = -1)
@@ -167,6 +184,38 @@ namespace GRA.Domain.Service
                     value.ToString());
             }
             await _challengeTaskRepository.SaveAsync();
+
+
+            // Temp for performer registration
+
+            var psSettings = new Model.PsSettings
+            {
+                SiteId = siteId,
+                ContactEmail = "DanielWilcox@mcldaz.org",
+                SelectionsPerBranch = 3,
+                RegistrationOpen = DateTime.Parse("2018-10-20"),
+                RegistrationClosed = DateTime.Parse("2018-10-30"),
+                SchedulingPreview = DateTime.Parse("2018-11-07"),
+                SchedulingOpen = DateTime.Parse("2018-11-10"),
+                SchedulingClosed = DateTime.Parse("2018-11-20"),
+                SchedulePosted = DateTime.Parse("2018-11-30"),
+                ScheduleStartDate = DateTime.Parse("2019-01-01"),
+                ScheduleEndDate = DateTime.Parse("2019-03-01")
+            };
+            await _psSettingsRepository.AddSaveAsync(userId, psSettings);
+
+            var psBlackoutDate = new Model.PsBlackoutDate
+            {
+                Date = DateTime.Parse("2019-01-15"),
+                Reason = "test"
+            };
+            await _psBlackoutDateRepository.AddSaveAsync(userId, psBlackoutDate);
+
+            var psAgeGroup = new Model.PsAgeGroup
+            {
+                Name = "Adult"
+            };
+            await _psAgeGroupRepository.AddSaveAsync(userId, psAgeGroup);
         }
     }
 }

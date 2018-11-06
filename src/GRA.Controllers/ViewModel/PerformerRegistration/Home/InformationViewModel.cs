@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using GRA.Domain.Model;
 using Microsoft.AspNetCore.Http;
 
@@ -16,6 +14,7 @@ namespace GRA.Controllers.ViewModel.PerformerRegistration.Home
 
         public List<IFormFile> Images { get; set; }
         public IFormFile References { get; set; }
+        public int MaxUploadMB { get; set; }
 
         public int BranchCount { get; set; }
     }

@@ -2,10 +2,14 @@
 
 namespace GRA.Data.Model
 {
-    public class PsDates : Abstract.BaseDbEntity
+    public class PsSettings : Abstract.BaseDbEntity
     {
         public int SiteId { get; set; }
         public Site Site { get; set; }
+
+        public string ContactEmail { get; set; }
+
+        public int? SelectionsPerBranch { get; set; }
 
         public DateTime? RegistrationOpen { get; set; }
         public DateTime? RegistrationClosed { get; set; }

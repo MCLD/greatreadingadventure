@@ -1,0 +1,389 @@
+﻿@model GRA.Controllers.ViewModel.PerformerRegistration.Home.ScheduleViewModel
+
+@section Styles {
+    <style>
+        li {
+            font-size: larger;
+        }
+    </style>
+}
+
+@if (Model.EditingSchedule == false)
+{
+    @section nav {
+        <div class="row row-spacing">
+            <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 join-header">
+                <div class="col-xs-4 sign-up-step">
+                    <p>Information</p>
+                </div>
+                <div class="col-xs-4 sign-up-step active">
+                    <p>Schedule</p>
+                </div>
+                <div class="col-xs-4 sign-up-step">
+                    <p>Program</p>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+<div class="row">
+    <div class="col-xs-12">
+        <h1>Schedule</h1>
+    </div>
+
+    <div class="col-xs-12">
+        <p class="lead">
+            Days default to available (<span class="text-success" style="font-weight: bold;">green</span>).
+        </p>
+        <p>
+            Select days and then indicate your availability using the buttons below.
+            @if (Model.EditingSchedule == false)
+            {
+                <text>
+                    On the next page you will provide details about the
+                    programs that you perform.
+                </text>
+            }
+        </p>
+    </div>
+
+    <form asp-action="Schedule" class="form-horizontal col-xs-12" method="post" role="form">
+        <input asp-for="JsonSchedule" type="hidden" />
+        @{int count = 0;}
+        @for (var calendarMonth = new DateTime(Model.StartDate.Year, Model.StartDate.Month, 1); calendarMonth <= Model.EndDate; calendarMonth = calendarMonth.AddMonths(1))
+        {
+            var firstDayOfWeek = (int)calendarMonth.DayOfWeek;
+            var daysInMonth = DateTime.DaysInMonth(calendarMonth.Year, calendarMonth.Month);
+            var monthDateSelectors = (firstDayOfWeek + daysInMonth > 35 ? 42 : 35);
+
+            @if (count % 3 == 0)
+            {
+                @Html.Raw("<div class=\"row\">");
+            }
+            <div class="col-xs-12 col-md-4">
+                <table class="table table-bordered" style="table-layout:fixed; text-align:center">
+                    <thead>
+                        <tr>
+                            <td colspan="7" class="selectable" data-selector="Month" data-year="@calendarMonth.Year" data-month="@calendarMonth.Month">
+                                <div class="option">
+                                    @calendarMonth.ToString("MMMM") @(Model.StartDate.Year != Model.EndDate.Year ? calendarMonth.ToString("yyyy") : "")
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="selectable" data-selector="Day" data-year="@calendarMonth.Year" data-month="@calendarMonth.Month" data-day="0"><div class="option">Sun</div></td>
+                            <td class="selectable" data-selector="Day" data-year="@calendarMonth.Year" data-month="@calendarMonth.Month" data-day="1"><div class="option">Mon</div></td>
+                            <td class="selectable" data-selector="Day" data-year="@calendarMonth.Year" data-month="@calendarMonth.Month" data-day="2"><div class="option">Tue</div></td>
+                            <td class="selectable" data-selector="Day" data-year="@calendarMonth.Year" data-month="@calendarMonth.Month" data-day="3"><div class="option">Wed</div></td>
+                            <td class="selectable" data-selector="Day" data-year="@calendarMonth.Year" data-month="@calendarMonth.Month" data-day="4"><div class="option">Thu</div></td>
+                            <td class="selectable" data-selector="Day" data-year="@calendarMonth.Year" data-month="@calendarMonth.Month" data-day="5"><div class="option">Fri</div></td>
+                            <td class="selectable" data-selector="Day" data-year="@calendarMonth.Year" data-month="@calendarMonth.Month" data-day="6"><div class="option">Sat</div></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int date = 1 - firstDayOfWeek; date <= (monthDateSelectors - firstDayOfWeek); date++)
+                        {
+                            var outOfRange = (calendarMonth.Month == Model.StartDate.Month && calendarMonth.Year == Model.StartDate.Year && date < Model.StartDate.Day
+                                || calendarMonth.Month == Model.EndDate.Month && calendarMonth.Year == Model.EndDate.Year && date > Model.EndDate.Day);
+                            var hideDate = date < 1 || date > daysInMonth;
+                            var blackoutDate = Model.BlackoutDates.FirstOrDefault(_ => _.Date.Day == date && _.Date.Month == calendarMonth.Month && _.Date.Year == calendarMonth.Year);
+                            var scheduleDate = Model.ScheduleDates.FirstOrDefault(_ => _.Date.Day == date && _.Date.Month == calendarMonth.Month && _.Date.Year == calendarMonth.Year);
+
+                            if ((date + firstDayOfWeek) % 7 == 1)
+                            {
+                                @:<tr>
+                                }
+                                <td class="@(outOfRange || hideDate || blackoutDate != null ? "unselectable" : "selectable dateSelection")@(blackoutDate != null ? " blackout" : "")@(outOfRange ? " out-of-range" : "")" data-selector="Date" data-year="@calendarMonth.Year" data-month="@calendarMonth.Month" data-day="@((date + firstDayOfWeek - 1) % 7)" data-date="@date" asp-schedule="@scheduleDate">
+                                    <div class="option" data-toggle="tooltip" data-placement="top" title="@blackoutDate?.Reason">
+                                        @Html.Raw(hideDate ? "&nbsp;" : date.ToString())
+                                    </div>
+                                </td>
+                                if ((date + firstDayOfWeek) % 7 == 0)
+                                {
+                                @:</tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            if (count % 3 == 2)
+            {
+                @Html.Raw("</div>");
+            }
+            { count++; }
+        }
+        @if (count % 3 != 2)
+        {
+            @Html.Raw("</div>");
+        }
+
+        <div class="row" style="margin-bottom:30px;">
+            <div class="col-xs-6 col-md-3" style="margin-bottom:15px;text-align:center;">
+                <button type="button" id="availableButton" class="btn btn-success">Available</button>
+            </div>
+            <div class="col-xs-6 col-md-3" style="margin-bottom:15px;text-align:center;">
+                <button type="button" id="unavailableButton" class="btn btn-danger">Unavailable</button>
+            </div>
+            <div class="col-xs-12 col-md-6" style="margin-bottom:15px;text-align:center;">
+                <table style="margin:0 auto;">
+                    <tr>
+                        <td style="padding-right:10px">
+                            <button type="button" id="timeButton" class="btn btn-warning" disabled>Set Time</button>
+                        </td>
+                        <td>
+                            <div class="input-group date" id="pickerStart" style="width:150px;">
+                                <span class="input-group-addon">
+                                    <span class="fa fa-clock-o"></span>
+                                </span>
+                                <input id="startTime" class="form-control timeInput" />
+                            </div>
+                        </td>
+                        <td style="padding:0 5px;">
+                            &ndash;
+                        </td>
+                        <td>
+                            <div class="input-group date" id="pickerEnd" style="width:150px;">
+                                <span class="input-group-addon">
+                                    <span class="fa fa-clock-o"></span>
+                                </span>
+                                <input id="endTime" class="form-control timeInput" />
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-xs-12">
+            <h3>Selecting days:</h3>
+            <ul>
+                <li>Click a day to select it.</li>
+                <li>To select a range, click a start date and end date.</li>
+                <li>Select an entire month by clicking the month name.</li>
+                <li>
+                    Click a day of the week heading (like "Mon" for Monday) to select that day of
+                    the week for the entire month. Click again to select it for all three months.
+                </li>
+            </ul>
+            <h3>Changing availability:</h3>
+            <ul>
+                <li>
+                    Green means you are available that day <strong>(8 AM to 8 PM)</strong>. Once you
+                    have selected day(s), click the green "Available" button.
+                </li>
+                <li>
+                    Yellow means that you are only available for some hours on that day.
+                    Once you have selected day(s), choose start and end times and click "Set Time."
+                </li>
+                <li>
+                    Red means you are not available that day. Once you have selected day(s), click
+                    the Red "Unavailable" button.
+                </li>
+            </ul>
+        </div>
+        @if (Model.EditingSchedule == false)
+        {
+            <div class="col-xs-12 col-sm-4 col-sm-offset-4" style="padding-top: 1em;">
+                <button type="submit" class="btn btn-lg btn-success btn-spinner">
+                    Next: Programs
+                    <span class="fa fa-spinner fa-pulse fa-fw hidden"></span>
+                </button>
+            </div>
+        }
+        else
+        {
+            <div class="col-xs-12 col-sm-8 col-sm-offset-3" style="padding-top: 1em;">
+                <button type="submit" class="btn btn-lg btn-success btn-spinner" style="margin-bottom: 10px;">
+                    Save Schedule
+                    <span class="fa fa-spinner fa-pulse fa-fw hidden"></span>
+                </button>
+                <a asp-action="Dashboard" class="btn btn-lg btn-default pull-left" style="margin-right: 10px;">Return to Dashboard</a>
+            </div>
+        }
+    </form>
+</div>
+
+@section scripts {
+    <script>
+        var lastSelector = null;
+        var lastYear = null;
+        var lastMonth = null;
+        var lastDay = null;
+        var lastDate = null;
+
+        function setLast(setSelector, setYear, setMonth, setDay, setDate) {
+            lastSelector = setSelector;
+            lastYear = setYear
+            lastMonth = setMonth;
+            lastDay = setDay;
+            lastDate = setDate;
+        }
+
+        function setTimes() {
+            if ($(".dateSelection.selected").length > 0 && $(".dateSelection.selected").not(".time").length == 0) {
+                var time = $(".dateSelection.selected").first().data("time");
+                var useTime = true
+                $(".dateSelection.selected").each(function () {
+                    if ($(this).data("time") != time) {
+                        useTime = false;
+                        return false;
+                    }
+                });
+                if (useTime) {
+                    $("#pickerStart").data("DateTimePicker").date(time[0]);
+                    $("#pickerEnd").data("DateTimePicker").date(time[1]);
+                    return true;
+                }
+            }
+
+            $("#pickerStart").data("DateTimePicker").date(null);
+            $("#pickerEnd").data("DateTimePicker").date(null);
+        }
+
+        $(".selectable").on("click", function () {
+            $(".selected").removeClass("selected");
+            $(".selected-date").removeClass("selected-date");
+            var selector = $(this).data("selector");
+            if (selector == "Month") {
+                var year = $(this).data("year");
+                var month = $(this).data("month");
+                $(".selectable[data-year=" + year + "][data-month=" + month + "]").addClass("selected").children().addClass("selected-date");
+                setTimes();
+                setLast(selector, year, month, null, null);
+            }
+            else if (selector == "Day") {
+                var year = $(this).data("year");
+                var month = $(this).data("month");
+                var day = $(this).data("day");
+                if (year == lastYear && month == lastMonth && day == lastDay) {
+                    $(".selectable[data-day=" + day + "]").addClass("selected").children().addClass("selected-date");
+                    setTimes();
+                    setLast(selector, null, day, null);
+                }
+                else {
+                    $(".selectable[data-year=" + year + "][data-month=" + month + "][data-day=" + day + "]").addClass("selected").children().addClass("selected-date");
+                    setTimes();
+                    setLast(selector, year, month, day, null);
+                }
+            }
+            else if (selector == "Date") {
+                var year = $(this).data("year");
+                var month = $(this).data("month");
+                var date = $(this).data("date");
+                if (lastSelector == "Date" && (lastDate != date || lastMonth != month || lastYear != year)) {
+                    var firstYear = null;
+                    var secondYear = null;
+                    var firstMonth = null;
+                    var secondMonth = null;
+                    var firstDate = null;
+                    var secondDate = null;
+                    if (year + ("0" + month).slice(-2) + ("0" + date).slice(-2) > lastYear + ("0" + lastMonth).slice(-2) + ("0" + lastDate).slice(-2)) {
+                        firstYear = lastYear;
+                        secondYear = year;
+                        firstMonth = lastMonth;
+                        secondMonth = month;
+                        firstDate = lastDate;
+                        secondDate = date;
+                    }
+                    else {
+                        firstYear = year;
+                        secondYear = lastYear;
+                        firstMonth = month;
+                        secondMonth = lastMonth;
+                        firstDate = date;
+                        secondDate = lastDate;
+                    }
+
+                    $(".dateSelection").filter(function () {
+                        var thisYear = $(this).data("year");
+                        var thisMonth = $(this).data("month");
+                        var thisDate = $(this).data("date");
+                        if (firstYear == secondYear && firstMonth == secondMonth) {
+                            return (thisYear == firstYear && thisMonth == firstMonth && thisDate >= firstDate && thisDate <= secondDate);
+                        }
+                        else {
+                            return ((thisYear > firstYear && thisYear < secondYear)
+                                || (thisYear == firstYear && thisYear != secondYear && (thisMonth > firstMonth || (thisMonth == firstMonth && thisDate >= firstDate)))
+                                || (thisYear == secondYear && thisYear != firstYear && (thisMonth < secondMonth || (thisMonth == secondMonth && thisDate <= secondDate)))
+                                || (thisYear == firstYear && thisYear == secondYear && ((thisMonth > firstMonth && thisMonth < secondMonth) || (thisMonth == firstMonth && thisDate >= firstDate) || (thisMonth == secondMonth && thisDate <= secondDate))));
+                        }
+                    }).addClass("selected").children().addClass("selected-date");
+                    setTimes();
+                    setLast(null, null, null, null, null)
+                }
+                else {
+                    $(".selectable[data-year=" + year + "][data-month=" + month + "][data-date=" + date + "]").addClass("selected").children().addClass("selected-date");
+                    setTimes();
+                    setLast(selector, year, month, null, date);
+                }
+            }
+        });
+
+        $("#availableButton").on("click", function () {
+            $(".selected.dateSelection").removeClass("unavailable time").addClass("available").data("availability", "Available");
+            setLast(null, null, null, null, null);
+        });
+
+        $("#unavailableButton").on("click", function () {
+            $(".selected.dateSelection").removeClass("available time").addClass("unavailable").data("availability", "Unavailable");
+            setLast(null, null, null, null, null);
+        });
+
+        $("#timeButton").on("click", function () {
+            var startTime = $("#startTime").val();
+            var endTime = $("#endTime").val();
+            if (moment(startTime, "hh:mm A") >= moment(endTime, "hh:mm A")) {
+                alert("Please select an End time after the Start time");
+            }
+            else {
+                $(".selected.dateSelection").removeClass("available unavailable").addClass("time").data({ time: [startTime, endTime] }).data("availability", "Time");
+            }
+            setLast(null, null, null, null, null);
+        });
+
+        $("[id^=picker]").datetimepicker({
+            format: "hh:mm A",
+            allowInputToggle: true,
+            stepping: 15,
+            useCurrent: false,
+            icons: {
+                time: "fa fa-clock-o",
+                date: "fa fa-calendar",
+                up: "fa fa-arrow-up",
+                down: "fa fa-arrow-down",
+                previous: "fa fa-arrow-left",
+                next: "fa fa-arrow-right"
+            }
+        });
+
+        $("#pickerStart").on("dp.show", function () {
+            if ($("#startTime").val() == "") {
+                $(this).data("DateTimePicker").date("8:00 AM");
+            }
+        });
+
+        $("#pickerEnd").on("dp.show", function () {
+            if ($("#endTime").val() == "") {
+                $(this).data("DateTimePicker").date("8:00 PM");
+            }
+        });
+
+        $("[id^=picker]").on("dp.change", function () {
+            var startTime = $("#startTime").val();
+            var endTime = $("#endTime").val();
+            if ($(".selected.dateSelection").length > 0 && startTime != "" && endTime != "" && moment(startTime, "hh:mm A") < moment(endTime, "hh:mm A")) {
+                $("#timeButton").removeAttr("disabled");
+            }
+            else {
+                $("#timeButton").attr("disabled", "disabled");
+            }
+        })
+
+        $("form").on("submit", function () {
+            var jsonSchedule = JSON.stringify($(".dateSelection").map(function () { return $(this).data() }).get());
+            $("#JsonSchedule").val(jsonSchedule);
+        })
+
+    </script>
+}

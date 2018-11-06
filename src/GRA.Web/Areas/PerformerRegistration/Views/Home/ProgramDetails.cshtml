@@ -1,0 +1,95 @@
+﻿@model GRA.Controllers.ViewModel.PerformerRegistration.Home.ProgramDetailsViewModel
+
+<div class="row">
+    <div class="col-xs-12">
+        <h1>
+            Program
+            @if (Model.IsEditable)
+            {
+                <a asp-action="Program" asp-route-id="@Model.Program.Id" class="btn btn-default" style="display:inline-block">Edit Program</a>
+            }
+        </h1>
+    </div>
+
+    <div class="col-xs-12 col-sm-5 col-md-4">
+        @if (!string.IsNullOrWhiteSpace(Model.Image))
+        {
+            <div class="row" style="padding-bottom:15px;">
+                <div class="col-xs-12">
+                    <img src="~/@Model.Image" class="img-responsive" margin="0 auto" />
+                </div>
+            </div>
+        }
+        <div class="row" style="padding-bottom:15px;">
+            <div class="col-xs-12" style="text-align:center;">
+                <a asp-action="ProgramImages" asp-route-id="@Model.Program.Id" class="btn btn-primary">@(Model.IsEditable ? "View/Manage Images" : "View Images")</a>
+            </div>
+        </div>
+        <div class="row" style="padding-bottom:15px;">
+            <div class="col-xs-12" style="text-align:center;">
+                <a asp-action="Dashboard" asp-route-id="@Model.Program.PerformerId" class="btn btn-default">Return to Dashboard</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-7 col-md-8">
+        <div class="form-group">
+            <label>Name</label>
+            <div>@Model.Program.Title</div>
+        </div>
+        <div class="form-group">
+            <label>Description</label>
+            <div>@Model.Program.Description</div>
+        </div>
+        <div class="form-group">
+            <label>Capacity</label>
+            <div>@Model.Program.MinimumCapacity &ndash; @Model.Program.MaximumCapacity</div>
+        </div>
+        <div class="form-group">
+            <label>Ages</label>
+            <div>
+                <ul>
+                    @foreach (var age in Model.Program.AgeGroups)
+                    {
+                        <li>@age.Name</li>
+                    }
+                </ul>
+            </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-xs-6">
+                <label>Program Length</label>
+                <div>@Model.Program.ProgramLengthMinutes minutes</div>
+            </div>
+            <div class="col-xs-6">
+                <label>Set-up Time</label>
+                <div>@Model.Program.SetupTimeMinutes minutes</div>
+            </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-xs-6">
+                <label>Breakdown Time</label>
+                <div>@Model.Program.BreakdownTimeMinutes minutes</div>
+            </div>
+            <div class="col-xs-6">
+                <label>Time Between Back-to-Back Programs</label>
+                <div>@Model.Program.BackToBackMinutes minutes</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Inclusive Cost</label>
+            <div>$@Model.Program.Cost</div>
+        </div>
+        <div class="form-group">
+            <label>Library Set-up</label>
+            <div>@Model.Program.Setup</div>
+        </div>
+        <div class="form-group">
+            <label>Willing to allow the library to livestream the program online?</label>
+            <div>@(Model.Program.AllowStreaming ? "Yes" : "No")</div>
+        </div>
+        <div class="form-group">
+            <label>Willing to allow the library to save and share the archive of event, if livestreamed or recorded?</label>
+            <div>@(Model.Program.AllowStreaming ? "Yes" : "No")</div>
+        </div>
+    </div>
+</div>

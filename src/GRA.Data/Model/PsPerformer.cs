@@ -47,10 +47,6 @@ namespace GRA.Data.Model
         public bool RegistrationCompleted { get; set; }
         public bool IsApproved { get; set; }
 
-        public ICollection<PsPerformerBranch> Branches { get; set; }
         public IList<PsPerformerImage> Images { get; set; }
-        public IList<PsPerformerSchedule> Schedule { get; set; }
-
-        public ICollection<PsProgram> Programs { get; set; }
     }
 }

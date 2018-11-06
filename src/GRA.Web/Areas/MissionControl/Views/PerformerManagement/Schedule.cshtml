@@ -1,105 +1,111 @@
-﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.ScheduleViewModel
+﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.ScheduleDetailViewModel
 
 @await Html.PartialAsync("_PerformerManagementPartial")
 
-<h4>All dates must be set to enable performer scheduling</h4>
+<h4>All fields must be set to enable performer scheduling</h4>
 
 <form asp-controller="PerformerManagement" asp-action="Schedule" method="post" role="form">
+    <div class="form-group">
+        <label asp-for="Settings.ContactEmail" class="control-label"></label>
+        <input asp-for="Settings.ContactEmail" class="form-control" />
+        <span asp-validation-for="Settings.ContactEmail" class="text-danger"></span>
+    </div>
+
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Dates.RegistrationOpen" class="control-label"></label>
+            <label asp-for="Settings.RegistrationOpen" class="control-label"></label>
             <div class="input-group date datetimepicker">
                 <span class="input-group-addon">
                     <span class="fa fa-calendar"></span>
                 </span>
-                <input asp-for="Dates.RegistrationOpen" type="text" class="form-control" />
+                <input asp-for="Settings.RegistrationOpen" type="text" class="form-control" />
             </div>
-            <span asp-validation-for="Dates.RegistrationOpen" class="text-danger"></span>
+            <span asp-validation-for="Settings.RegistrationOpen" class="text-danger"></span>
         </div>
     </div>
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Dates.RegistrationClosed" class="control-label"></label>
+            <label asp-for="Settings.RegistrationClosed" class="control-label"></label>
             <div class="input-group date datetimepicker">
                 <span class="input-group-addon">
                     <span class="fa fa-calendar"></span>
                 </span>
-                <input asp-for="Dates.RegistrationClosed" type="text" class="form-control" />
+                <input asp-for="Settings.RegistrationClosed" type="text" class="form-control" />
             </div>
-            <span asp-validation-for="Dates.RegistrationClosed" class="text-danger"></span>
+            <span asp-validation-for="Settings.RegistrationClosed" class="text-danger"></span>
         </div>
     </div>
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Dates.SchedulingPreview" class="control-label"></label>
+            <label asp-for="Settings.SchedulingPreview" class="control-label"></label>
             <div class="input-group date datetimepicker">
                 <span class="input-group-addon">
                     <span class="fa fa-calendar"></span>
                 </span>
-                <input asp-for="Dates.SchedulingPreview" type="text" class="form-control" />
+                <input asp-for="Settings.SchedulingPreview" type="text" class="form-control" />
             </div>
-            <span asp-validation-for="Dates.SchedulingPreview" class="text-danger"></span>
+            <span asp-validation-for="Settings.SchedulingPreview" class="text-danger"></span>
         </div>
     </div>
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Dates.SchedulingOpen" class="control-label"></label>
+            <label asp-for="Settings.SchedulingOpen" class="control-label"></label>
             <div class="input-group date datetimepicker">
                 <span class="input-group-addon">
                     <span class="fa fa-calendar"></span>
                 </span>
-                <input asp-for="Dates.SchedulingOpen" type="text" class="form-control" />
+                <input asp-for="Settings.SchedulingOpen" type="text" class="form-control" />
             </div>
-            <span asp-validation-for="Dates.SchedulingOpen" class="text-danger"></span>
+            <span asp-validation-for="Settings.SchedulingOpen" class="text-danger"></span>
         </div>
     </div>
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Dates.SchedulingClosed" class="control-label"></label>
+            <label asp-for="Settings.SchedulingClosed" class="control-label"></label>
             <div class="input-group date datetimepicker">
                 <span class="input-group-addon">
                     <span class="fa fa-calendar"></span>
                 </span>
-                <input asp-for="Dates.SchedulingClosed" type="text" class="form-control" />
+                <input asp-for="Settings.SchedulingClosed" type="text" class="form-control" />
             </div>
-            <span asp-validation-for="Dates.SchedulingClosed" class="text-danger"></span>
+            <span asp-validation-for="Settings.SchedulingClosed" class="text-danger"></span>
         </div>
     </div>
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Dates.SchedulePosted" class="control-label"></label>
+            <label asp-for="Settings.SchedulePosted" class="control-label"></label>
             <div class="input-group date datetimepicker">
                 <span class="input-group-addon">
                     <span class="fa fa-calendar"></span>
                 </span>
-                <input asp-for="Dates.SchedulePosted" type="text" class="form-control" />
+                <input asp-for="Settings.SchedulePosted" type="text" class="form-control" />
             </div>
-            <span asp-validation-for="Dates.SchedulePosted" class="text-danger"></span>
+            <span asp-validation-for="Settings.SchedulePosted" class="text-danger"></span>
         </div>
     </div>
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Dates.ScheduleStartDate" class="control-label"></label>
+            <label asp-for="Settings.ScheduleStartDate" class="control-label"></label>
             <div class="input-group date datepicker">
                 <span class="input-group-addon">
                     <span class="fa fa-calendar"></span>
                 </span>
-                <input asp-for="Dates.ScheduleStartDate" type="text" class="form-control" />
+                <input asp-for="Settings.ScheduleStartDate" type="text" class="form-control" />
             </div>
-            <span asp-validation-for="Dates.ScheduleStartDate" class="text-danger"></span>
+            <span asp-validation-for="Settings.ScheduleStartDate" class="text-danger"></span>
         </div>
     </div>
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Dates.ScheduleEndDate" class="control-label"></label>
+            <label asp-for="Settings.ScheduleEndDate" class="control-label"></label>
             <div class="input-group date datepicker">
                 <span class="input-group-addon">
                     <span class="fa fa-calendar"></span>
                 </span>
-                <input asp-for="Dates.ScheduleEndDate" type="text" class="form-control" />
+                <input asp-for="Settings.ScheduleEndDate" type="text" class="form-control" />
             </div>
-            <span asp-validation-for="Dates.ScheduleEndDate" class="text-danger"></span>
+            <span asp-validation-for="Settings.ScheduleEndDate" class="text-danger"></span>
         </div>
     </div>
 

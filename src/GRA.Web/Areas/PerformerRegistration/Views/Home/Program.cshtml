@@ -1,0 +1,276 @@
+﻿@model GRA.Controllers.ViewModel.PerformerRegistration.Home.ProgramViewModel
+
+@{
+    var invalid = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid;
+}
+
+@section styles {
+    <noscript>
+        <style>
+            #descriptionCounter {
+                display: none;
+            }
+        </style>
+    </noscript>
+}
+
+@if (Model.RegistrationCompleted == false)
+{
+    @section nav {
+        <div class="row row-spacing">
+            <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 join-header">
+                <div class="col-xs-4 sign-up-step">
+                    <p>Information</p>
+                </div>
+                <div class="col-xs-4 sign-up-step">
+                    <p>Schedule</p>
+                </div>
+                <div class="col-xs-4 sign-up-step active">
+                    <p>Program</p>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+<div class="row">
+    <div class="col-xs-12">
+        <h1>@(Model.EditingProgram ? "Edit " : "")Program</h1>
+    </div>
+
+    <div class="col-sm-9 col-sm-offset-3">
+        <p>
+            Please provide details about the programs you perform.
+            <br />
+            <span class="text-danger small" style="font-weight: bold;">Fields marked with an asterisk (*) are required.</span>
+        </p>
+    </div>
+
+    <form asp-action="Program" class="form-horizontal col-xs-12" method="post" role="form" enctype="multipart/form-data">
+        @if (Model.EditingProgram)
+        {
+            <input asp-for="Program.Id" type="hidden" />
+            <input asp-for="EditingProgram" type="hidden" />
+        }
+
+        <div class="form-group">
+            <label asp-for="Program.Title" class="col-sm-3 control-label required-field"></label>
+            <div class="col-sm-9">
+                <input asp-for="Program.Title" class="form-control" placeholder="" />
+                <span asp-validation-for="Program.Title" class="text-danger"></span>
+            </div>
+        </div>
+        @if (Model.EditingProgram == false)
+        {
+            <div class="col-sm-9 col-sm-offset-3">
+                <p>
+                    Do you have a photograph that is representative of this program? If so
+                    you can attach it here - if not, you do not have to. For best results please
+                    use images that are at least 1,000px by 1,000px, photos are limited to @(Model.MaxUploadMB)MB total.
+                    Multiple images can be selected by holding the CTRL key.
+                </p>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Upload photos</label>
+                <div class="col-sm-9">
+                    <div class="input-group">
+                        <label class="input-group-btn">
+                            <span class="btn btn-default btn-file">
+                                <span class="fa fa-file-image-o"></span> Select file(s)...
+                                <input type="file"
+                                       multiple="multiple"
+                                       asp-for="Images"
+                                       accept=".png,.jpg,.jpeg"
+                                       style="display: none;" />
+                            </span>
+                        </label>
+                        <input type="text" class="form-control @(ViewData.ModelState.GetValidationState("Images") == invalid ? "input-validation-error" : "")" readonly />
+                    </div>
+                    <span asp-validation-for="Images" class="text-danger"></span>
+                </div>
+            </div>
+        }
+
+        <div class="form-group">
+            <label asp-for="Program.MinimumCapacity" class="col-sm-2 col-sm-offset-3 control-label required-field"></label>
+            <div class="col-sm-2">
+                <input asp-for="Program.MinimumCapacity" class="form-control input-lg" type="text" placeholder="" />
+                <span asp-validation-for="Program.MinimumCapacity" class="text-danger"></span>
+            </div>
+            <div class="visible-xs" style="padding-bottom:10px;"></div>
+            <label asp-for="Program.MaximumCapacity" class="col-sm-2 control-label required-field"></label>
+            <div class="col-sm-2">
+                <input asp-for="Program.MaximumCapacity" class="form-control input-lg" type="text" placeholder="" />
+                <span asp-validation-for="Program.MaximumCapacity" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-12 col-sm-9 col-sm-offset-3">
+                <p>
+                    Please select which age groups the program is suited for.
+                </p>
+            </div>
+            <label class="col-sm-3 control-label required-field">Age(s)</label>
+            <div class="col-sm-9">
+                <input id="agePlaceholder" class="form-control" />
+                <select asp-for="AgeSelection" asp-items="Model.AgeList" class="form-control hidden" type="text" multiple="multiple">
+<option value=""></option>
+</select>
+                <span asp-validation-for="AgeSelection" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-12 col-sm-9 col-sm-offset-3">
+                <p>
+                    Please list all times in minutes.
+                </p>
+            </div>
+            <label asp-for="Program.ProgramLengthMinutes" class="col-sm-offset-3 col-sm-2 control-label required-field"></label>
+            <div class="col-sm-2">
+                <input asp-for="Program.ProgramLengthMinutes" class="form-control input-lg" type="text" placeholder="" />
+                <span asp-validation-for="Program.ProgramLengthMinutes" class="text-danger"></span>
+            </div>
+            <div class="visible-xs" style="padding-bottom:10px;"></div>
+            <label class="col-sm-2 control-label required-field">
+                Set-up Time
+                <span class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" title="How much time needed before program begins."></span>
+            </label>
+            <div class="col-sm-2">
+                <input asp-for="Program.SetupTimeMinutes" class="form-control input-lg" type="text" placeholder="" />
+                <span asp-validation-for="Program.SetupTimeMinutes" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-offset-3 col-sm-2 control-label control-label required-field">
+                Breakdown Time
+                <span class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" title="How much time needed after program ends."></span>
+            </label>
+            <div class="col-sm-2">
+                <input asp-for="Program.BreakdownTimeMinutes" class="form-control input-lg" type="text" placeholder="" />
+                <span asp-validation-for="Program.BreakdownTimeMinutes" class="text-danger"></span>
+            </div>
+            <div class="visible-xs" style="padding-bottom:10px;"></div>
+            <label class="col-sm-2 control-label required-field">
+                Time between back-to-back programs
+                <span class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" title="If you are requested to do this program twice in a row, how much time do you require between them?"></span>
+            </label>
+            <div class="col-sm-2">
+                <input asp-for="Program.BackToBackMinutes" class="form-control input-lg" type="text" placeholder="" />
+                <span asp-validation-for="Program.BackToBackMinutes" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label required-field">
+                Program description
+                <span class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" title="Limited to 375 characters. Spaces are counted as characters."></span>
+            </label>
+            <div class="col-sm-9">
+                <textarea asp-for="Program.Description" class="form-control" maxlength="375" rows="4"></textarea>
+                <span id="descriptionCounter" class="pull-right">
+                    <span id="descriptionCount">@Model.Program?.Description?.Length</span> / 375
+                </span>
+                <span asp-validation-for="Program.Description" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label required-field">
+                Inclusive cost
+                <span class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" title="Includes mileage, supplies, etc."></span>
+            </label>
+
+            <div class="col-sm-9">
+                <div class="input-group">
+                    <span class="input-group-addon">$</span>
+                    <input asp-for="Program.Cost" class="form-control" placeholder="" />
+                </div>
+                <span asp-validation-for="Program.Cost" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label required-field">
+                Set-up
+            </label>
+            <div class="col-sm-9">
+                <textarea asp-for="Program.Setup" class="form-control"></textarea>
+                <span asp-validation-for="Program.Setup" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-12 col-sm-9 col-sm-offset-3">
+                <p>
+                    Are you willing to allow the library to livestream your program online?<span class="required-field"></span>
+                </p>
+            </div>
+            <div class="col-sm-9 col-sm-offset-3">
+                <select asp-for="Program.AllowStreaming" class="form-control">
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </select>
+                <span asp-validation-for="Program.AllowStreaming" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-12 col-sm-9 col-sm-offset-3">
+                <p>
+                    Are you willing to allow the library to save and share the archive of your event, if livestreamed or recorded?<span class="required-field"></span>
+                </p>
+            </div>
+            <div class="col-sm-9 col-sm-offset-3">
+                <select asp-for="Program.AllowArchiving" class="form-control">
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </select>
+                <span asp-validation-for="Program.AllowArchiving" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-9 col-sm-offset-3" style="margin-top: 1em;">
+                <button type="submit" class="btn btn-lg btn-success btn-spinner" style="margin-bottom: 10px;">
+                    Save Program
+                    <span class="fa fa-spinner fa-pulse fa-fw hidden"></span>
+                </button>
+                @if (Model.RegistrationCompleted)
+                {
+                    if (Model.EditingProgram)
+                    {
+                        <a asp-action="ProgramDetails" asp-route-id="@Model.Program.Id" class="btn btn-lg btn-default pull-left" style="margin-right: 10px;">Return to Program</a>
+                    }
+                    else
+                    {
+                        <a asp-action="Dashboard" class="btn btn-lg btn-default pull-left" style="margin-right: 10px;">Return to Dashboard</a>
+                    }
+                }
+            </div>
+        </div>
+    </form>
+
+</div>
+
+@section scripts {
+    <script>
+        $("#agePlaceholder").remove();
+        $("#AgeSelection")
+            .removeClass("hidden")
+            .multiselect({
+                inheritClass: true,
+                buttonWidth: "100%",
+                nonSelectedText: "",
+                includeSelectAllOption: @((Model.AgeList?.Count() > 1).ToString().ToLower()),
+                numberDisplayed: 3
+            });
+
+        $("#Program_Description").on("input propertychange", function () {
+            $("#descriptionCount").text($(this).val().length);
+        });
+    </script>
+}

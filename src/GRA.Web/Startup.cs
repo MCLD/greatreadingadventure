@@ -413,7 +413,7 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IPsAgeGroupRepository, Data.Repository.PsAgeGroupRepository>();
             services.AddScoped<Domain.Repository.IPsBlackoutDateRepository, Data.Repository.PsBlackoutDateRepository>();
             services.AddScoped<Domain.Repository.IPsBranchSelectionRepository, Data.Repository.PsBranchSelectionRepository>();
-            services.AddScoped<Domain.Repository.IPsDatesRepository, Data.Repository.PsDatesRepository>();
+            services.AddScoped<Domain.Repository.IPsSettingsRepository, Data.Repository.PsSettingsRepository>();
             services.AddScoped<Domain.Repository.IPsKitImageRepository, Data.Repository.PsKitImageRepository>();
             services.AddScoped<Domain.Repository.IPsKitRepository, Data.Repository.PsKitRepository>();
             services.AddScoped<Domain.Repository.IPsPerformerImageRepository, Data.Repository.PsPerformerImageRepository>();

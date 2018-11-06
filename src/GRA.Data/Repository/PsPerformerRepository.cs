@@ -17,26 +17,22 @@ namespace GRA.Data.Repository
         {
         }
 
-        public override async Task<PsPerformer> GetByIdAsync(int id)
-        {
-            return await DbSet
-                .AsNoTracking()
-                .Include(_ => _.Branches)
-                    .ThenInclude(_ => _.Branch)
-                .Where(_ => _.Id == id)
-                .ProjectTo<PsPerformer>()
-                .SingleOrDefaultAsync();
-        }
-
         public async Task<PsPerformer> GetByUserIdAsync(int userId)
         {
             return await DbSet
                 .AsNoTracking()
-                .Include(_ => _.Branches)
-                    .ThenInclude(_ => _.Branch)
                 .Where(_ => _.UserId == userId)
                 .ProjectTo<PsPerformer>()
                 .SingleOrDefaultAsync();     
+        }
+
+        public async Task<ICollection<Branch>> GetPerformerBranchesAsync(int performerId)
+        {
+            return await _context.PsPerformerBranches
+                .AsNoTracking()
+                .Where(_ => _.PsPerformerId == performerId)
+                .Select(_ => _.Branch).ProjectTo<Branch>()
+                .ToListAsync();
         }
 
         public async Task AddPerformerBranchesAsync(int performerId, List<int> branchIds)
@@ -55,7 +51,7 @@ namespace GRA.Data.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task RemovePerformerBranchesAync(int performerId, List<int> branchIds)
+        public async Task RemovePerformerBranchesAsync(int performerId, List<int> branchIds)
         {
             var performerBranches = _context.PsPerformerBranches
                 .AsNoTracking()

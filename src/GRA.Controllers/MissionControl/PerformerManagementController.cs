@@ -32,8 +32,8 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> Index()
         {
-            var dates = await _performerSchedulingService.GetDatesAsync();
-            var performerSchedulingEnabled = _performerSchedulingService.GetSchedulingStage(dates)
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var performerSchedulingEnabled = _performerSchedulingService.GetSchedulingStage(settings)
                     != PsSchedulingStage.Unavailable;
             if (!performerSchedulingEnabled)
             {
@@ -50,50 +50,50 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> Schedule()
         {
-            var dates = await _performerSchedulingService.GetDatesAsync();
-            var viewModel = new ScheduleViewModel
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var viewModel = new ScheduleDetailViewModel
             {
-                Dates = dates,
-                PerformerSchedulingEnbabled = _performerSchedulingService.GetSchedulingStage(dates) 
-                    != PsSchedulingStage.Unavailable
+                Settings = settings,
+                PerformerSchedulingEnbabled = _performerSchedulingService
+                    .GetSchedulingStage(settings) != PsSchedulingStage.Unavailable
             };
             return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Schedule(PsDates dates)
+        public async Task<IActionResult> Schedule(PsSettings settings)
         {
-            if (dates.RegistrationClosed < dates.RegistrationOpen)
+            if (settings.RegistrationClosed < settings.RegistrationOpen)
             {
-                ModelState.AddModelError("Dates.RegistrationClosed", "The Registration Closed date cannot be before the Registration Open date.");
+                ModelState.AddModelError("Settings.RegistrationClosed", "The Registration Closed date cannot be before the Registration Open date.");
             }
-            if (dates.SchedulingPreview < dates.RegistrationClosed)
+            if (settings.SchedulingPreview < settings.RegistrationClosed)
             {
-                ModelState.AddModelError("Dates.SchedulingPreview", "The Schedule Preview date cannot be before the Registration Closed date.");
+                ModelState.AddModelError("Settings.SchedulingPreview", "The Schedule Preview date cannot be before the Registration Closed date.");
             }
-            if (dates.SchedulingOpen < dates.SchedulingPreview)
+            if (settings.SchedulingOpen < settings.SchedulingPreview)
             {
-                ModelState.AddModelError("Dates.SchedulingOpen", "The Schedule Open date cannot be before the Schedule Preview date.");
+                ModelState.AddModelError("Settings.SchedulingOpen", "The Schedule Open date cannot be before the Schedule Preview date.");
             }
-            if (dates.SchedulingClosed < dates.SchedulingOpen)
+            if (settings.SchedulingClosed < settings.SchedulingOpen)
             {
-                ModelState.AddModelError("Dates.SchedulingClosed", "The Schedule Closed date cannot be before the Schedule Open date.");
+                ModelState.AddModelError("Settings.SchedulingClosed", "The Schedule Closed date cannot be before the Schedule Open date.");
             }
-            if (dates.SchedulePosted < dates.SchedulingClosed)
+            if (settings.SchedulePosted < settings.SchedulingClosed)
             {
-                ModelState.AddModelError("Dates.SchedulePosted", "The Schedule Posted date cannot be before the Schedule Closed date.");
+                ModelState.AddModelError("Settings.SchedulePosted", "The Schedule Posted date cannot be before the Schedule Closed date.");
             }
 
-            if (dates.ScheduleEndDate < dates.ScheduleStartDate)
+            if (settings.ScheduleEndDate < settings.ScheduleStartDate)
             {
-                ModelState.AddModelError("Dates.ScheduleEndDate", "The Schedule End date cannot be before the Schedule Start date.");
+                ModelState.AddModelError("Settings.ScheduleEndDate", "The Schedule End date cannot be before the Schedule Start date.");
             }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _performerSchedulingService.UpdateDatesAsync(dates);
+                    await _performerSchedulingService.UpdateSettingsAsync(settings);
                     ShowAlertSuccess($"Schedule successfully updated!");
                     return RedirectToAction(nameof(Schedule));
                 }
@@ -103,10 +103,10 @@ namespace GRA.Controllers.MissionControl
                 }
             }
 
-            var viewModel = new ScheduleViewModel
+            var viewModel = new ScheduleDetailViewModel
             {
-                Dates = dates,
-                PerformerSchedulingEnbabled = _performerSchedulingService.GetSchedulingStage(dates)
+                Settings = settings,
+                PerformerSchedulingEnbabled = _performerSchedulingService.GetSchedulingStage(settings)
                     != PsSchedulingStage.Unavailable
             };
             return View(viewModel);
@@ -114,8 +114,8 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> BlackoutDates(int page = 1)
         {
-            var dates = await _performerSchedulingService.GetDatesAsync();
-            var performerSchedulingEnabled = _performerSchedulingService.GetSchedulingStage(dates)
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var performerSchedulingEnabled = _performerSchedulingService.GetSchedulingStage(settings)
                     != PsSchedulingStage.Unavailable;
             if (!performerSchedulingEnabled)
             {
@@ -142,7 +142,7 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
-            var viewModel = new BlackoutDatesViewModel
+            var viewModel = new BlackoutDatesListViewModel
             {
                 BlackoutDates = blackoutDateList.Data,
                 PaginateModel = paginateModel,
@@ -153,12 +153,13 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddBlackoutDate(BlackoutDatesViewModel model)
+        public async Task<IActionResult> AddBlackoutDate(BlackoutDatesListViewModel model)
         {
             try
             {
-                await _performerSchedulingService.AddBlackoutDateAsync(model.BlackoutDate);
-                ShowAlertSuccess($"Added Blackout Date!");
+                var blackoutDate = await _performerSchedulingService.AddBlackoutDateAsync(
+                    model.BlackoutDate);
+                ShowAlertSuccess($"Added Blackout Date \"{blackoutDate.Reason}\"!");
             }
             catch(GraException gex)
             {
@@ -172,12 +173,12 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost] 
-        public async Task<IActionResult> DeleteBlackoutDate(BlackoutDatesViewModel model)
+        public async Task<IActionResult> DeleteBlackoutDate(BlackoutDatesListViewModel model)
         {
             try
             {
                 await _performerSchedulingService.RemoveBlackoutDateAsync(model.BlackoutDate.Id);
-                ShowAlertSuccess("Blackout Date removed!");
+                ShowAlertSuccess($"Blackout Date \"{model.BlackoutDate.Reason}\" removed!");
             }
             catch (GraException gex)
             {
@@ -185,6 +186,84 @@ namespace GRA.Controllers.MissionControl
             }
 
             return RedirectToAction(nameof(BlackoutDates), new
+            {
+                page = model.PaginateModel.CurrentPage
+            });
+        }
+
+        public async Task<IActionResult> AgeGroups(int page = 1)
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var performerSchedulingEnabled = _performerSchedulingService.GetSchedulingStage(settings)
+                    != PsSchedulingStage.Unavailable;
+            if (!performerSchedulingEnabled)
+            {
+                return RedirectToAction(nameof(Schedule));
+            }
+
+            var filter = new BaseFilter(page);
+
+            var ageGroupList = await _performerSchedulingService.GetPaginatedAgeGroupsAsync(
+                filter);
+
+            var paginateModel = new PaginateViewModel()
+            {
+                ItemCount = ageGroupList.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
+            };
+            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
+            }
+
+            var viewModel = new AgeGroupsListViewModel
+            {
+                AgeGroups = ageGroupList.Data,
+                PaginateModel = paginateModel,
+                PerformerSchedulingEnbabled = performerSchedulingEnabled
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddAgeGroup(AgeGroupsListViewModel model)
+        {
+            try
+            {
+                var ageGroup = await _performerSchedulingService.AddAgeGroupAsync(model.AgeGroup);
+                ShowAlertSuccess($"Added Age Group \"{ageGroup.Name}\"!");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to add Age Group: ", gex);
+            }
+
+            return RedirectToAction(nameof(AgeGroups), new
+            {
+                page = model.PaginateModel.CurrentPage
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteAgeGroup(AgeGroupsListViewModel model)
+        {
+            try
+            {
+                await _performerSchedulingService.RemoveAgeGroupAsync(model.AgeGroup.Id);
+                ShowAlertSuccess($"Age Group \"{model.AgeGroup.Name}\" removed!");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to remove Age Group: ", gex);
+            }
+
+            return RedirectToAction(nameof(AgeGroups), new
             {
                 page = model.PaginateModel.CurrentPage
             });

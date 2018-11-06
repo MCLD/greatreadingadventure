@@ -1,0 +1,54 @@
+﻿@model GRA.Controllers.ViewModel.PerformerRegistration.Home.IndexViewModel
+
+<div class="row" style="margin-top: 1rem;">
+    <div class="col-sm-8 col-sm-offset-2">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Performer Registration</h3>
+            </div>
+            <div class="panel-body">
+                @if (Model.SchedulingStage > GRA.Domain.Model.PsSchedulingStage.RegistrationOpen)
+                {
+                    <p>
+                        Registration has closed, if you have any questions please
+                        contact <a href="@($"mailto:{Model.Settings.ContactEmail}")">@Model.Settings.ContactEmail</a>.
+                    </p>
+                }
+                else if (Model.HasPermission == false)
+                {
+                    <form asp-action="AuthorizationCode" method="post">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+                                <div class="form-group form-group-lg">
+                                    <label asp-for="AuthorizationCode" class="h4">Authorization Code for <grasite property="name"></grasite>:</label>
+                                    <input asp-for="AuthorizationCode" class="form-control input-lg" type="password" autofocus required>
+                                    <span asp-validation-for="AuthorizationCode" class="text-danger"></span>
+                                </div>
+                                <button class="btn btn-lg btn-primary btn-block" type="submit">Validate code</button>
+                            </div>
+                        </div>
+                    </form>
+                }
+                else
+                {
+                    <p style="margin-bottom: auto;">
+                        Registration has not yet opened and will begin on @Model.Settings.RegistrationOpen.Value.ToLongDateString(). Please come back then!
+                    </p>
+                }
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+                    background: #fcfcfc;
+    }
+
+    .panel-body p {
+                    font-size: larger;
+                    line-height: 3rem;
+                    margin-bottom: 2rem;
+                }
+</style>

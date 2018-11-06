@@ -3,8 +3,8 @@ using GRA.Domain.Model;
 
 namespace GRA.Domain.Repository
 {
-    public interface IPsDatesRepository : IRepository<PsDates>
+    public interface IPsSettingsRepository : IRepository<PsSettings>
     {
-        Task<PsDates> GetBySiteIdAsync(int siteId);
+        Task<PsSettings> GetBySiteIdAsync(int siteId);
     }
 }

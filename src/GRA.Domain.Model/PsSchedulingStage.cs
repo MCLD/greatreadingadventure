@@ -4,8 +4,8 @@
     {
         Unavailable,
         BeforeRegistration,
-        PerformerOpen,
-        PerformerClosed,
+        RegistrationOpen,
+        RegistrationClosed,
         SchedulingPreview,
         SchedulingOpen,
         SchedulingClosed,

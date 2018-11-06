@@ -3,9 +3,13 @@ using System.ComponentModel;
 
 namespace GRA.Domain.Model
 {
-    public class PsDates : Abstract.BaseDomainEntity
+    public class PsSettings : Abstract.BaseDomainEntity
     {
         public int SiteId { get; set; }
+
+        public string ContactEmail { get; set; }
+
+        public int? SelectionsPerBranch { get; set; }
 
         [DisplayName("Registration Open")]
         public DateTime? RegistrationOpen { get; set; }

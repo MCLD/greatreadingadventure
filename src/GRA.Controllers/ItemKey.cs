@@ -9,6 +9,7 @@
         public static readonly string NotificationsList = "NotificationsList";
         public static readonly string NotificationsModal = "NotificationsModal";
         public static readonly string ShowMissionControl = "ShowMissionControl";
+        public static readonly string ShowPerformerRegistration = "ShowPerformerRegistration";
         public static readonly string SiteCss = "SiteCss";
         public static readonly string SiteId = "SiteId";
         public static readonly string SiteJs = "SiteJs";
@@ -17,6 +18,5 @@
         public static readonly string ShowChallenges = "ShowChallenges";
         public static readonly string ShowEvents = "ShowEvents";
         public static readonly string SignedIn = "SignedIn";
-        public const string ShowPerformerRegistration = "ShowPerformerRegistration";
     }
 }
