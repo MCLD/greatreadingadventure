@@ -118,6 +118,10 @@
     <None Include="wwwroot\lib\**\*" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\webfonts\" />
+  </ItemGroup>
+
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <TypeScriptTarget>ES5</TypeScriptTarget>
     <TypeScriptJSXEmit>None</TypeScriptJSXEmit>

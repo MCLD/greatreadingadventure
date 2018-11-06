@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### Changed
 - Upgrade from ASP.NET Core v1.1 to v2.1
+- Upgrade Font Awesome from v4.7.0 to v5.5.0
 
 ### Fixed
 - Docker builds with Travis CI
