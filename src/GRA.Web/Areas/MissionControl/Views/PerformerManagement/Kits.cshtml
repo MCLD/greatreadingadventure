@@ -1,6 +1,4 @@
-﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.PerformerListViewModel
-
-@await Html.PartialAsync("_PerformerManagementPartial")
+﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.KitListViewModel
 
 @if (Model.SchedulingStage < GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
 {
@@ -10,7 +8,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="deleteModalLabel">Delete performer</h4>
+                        <h4 class="modal-title" id="deleteModalLabel">Delete kit</h4>
                     </div>
                     <div class="modal-body">
                         <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
@@ -18,10 +16,10 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <form asp-action="PerformerDelete" method="post" role="form" style="display:inline">
+                        <form asp-action="KitDelete" method="post" role="form" style="display:inline">
                             <input asp-for="PaginateModel.CurrentPage" type="hidden" />
-                            <input asp-for="PerformerToDelete.Id" type="hidden" />
-                            <input asp-for="PerformerToDelete.Name" type="hidden" />
+                            <input asp-for="KitToDelete.Id" type="hidden" />
+                            <input asp-for="KitToDelete.Name" type="hidden" />
                             <button type="submit" class="btn btn-danger btn-spinner pull-right" aria-label="Confirm">
                                 <span class="fa fa-remove" aria-hidden="true"></span>
                                 Delete
@@ -37,13 +35,17 @@
 
 <div class="row">
     <div class="col-xs-12">
-        <h1>Performers</h1>
+        <h1>Kits</h1>
+    </div>
+
+    <div class="col-xs-12" style="padding-bottom: 10px;">
+        <a asp-action="KitAdd" class="btn btn-default">Add Kit</a>
     </div>
 
     <div class="col-xs-12">
-        @if (Model.Performers.Count == 0)
+        @if (Model.Kits.Count == 0)
         {
-            <div class="alert alert-warning">No performers found.</div>
+            <div class="alert alert-warning">No kits found.</div>
         }
         else
         {
@@ -51,58 +53,45 @@
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Email <span class="fa fa-question-circle-o" title="Preferred method of contact is italicized." data-toggle="tooltip" data-placement="top"></span></th>
-                        <th>Phone <span class="fa fa-question-circle-o" title="Preferred method of contact is italicized." data-toggle="tooltip" data-placement="top"></span></th>
-                        <th>Vendor ID</th>
-                        <th>Programs</th>
-                        @if (Model.RegistrationClosed)
+                        @if (Model.SchedulingStage <= GRA.Domain.Model.PsSchedulingStage.SchedulingPreview)
                         {
-                            <th>Approved?</th>
+                            <th width="44px;">&nbsp;</th>
                         }
-                        @if (Model.SchedulingStage >= GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
+                        else
                         {
-                            <th>Selections</th>
+                            <th width="85px;">Selections</th>
+                            <th width="110px;">&nbsp;</th>
+
                         }
-                        <th>&nbsp;</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var performer in Model.Performers)
+                    @foreach (var kit in Model.Kits)
                     {
                         <tr>
                             <td class="td-class">
-                                <a asp-action="Performer" asp-route-id="@performer.Id" class="rowlink">
-                                    @performer.Name
+                                <a asp-action="Kit" asp-route-id="@kit.Id" class="rowlink">
+                                    @kit.Name
                                 </a>
                             </td>
-                            <td style="@(performer.PhonePreferred ? "" : "font-style:italic")">@performer.Email</td>
-                            <td style="@(performer.PhonePreferred ? "font-style:italic" : "")">@performer.Phone</td>
-                            <td>@performer.VendorId</td>
-                            <td>@performer.ProgramCount</td>
-                            @if (Model.RegistrationClosed)
+                            @if (Model.SchedulingStage <= GRA.Domain.Model.PsSchedulingStage.SchedulingPreview)
                             {
-                                <td>
-                                    <span class="colored-icon fa @(performer.IsApproved ? "fa-check" : "fa-times")"></span>
-                                </td>
-                            }
-                            @if (Model.SchedulingStage < GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
-                            {
-                                <td class="on-top">
+                                <td class="on-top" style="text-align:center;">
                                     <button type="button"
                                             class="btn btn-danger btn-xs"
                                             data-toggle="modal"
                                             data-target="#deleteModal"
-                                            data-id="@performer.Id"
-                                            data-name="@performer.Name">
+                                            data-id="@kit.Id"
+                                            data-name="@kit.Name">
                                         <span class="fa fa-remove" aria-hidden="true"></span>
                                     </button>
                                 </td>
                             }
                             else
                             {
-                                <td>@performer.SelectionsCount</td>
+                                <td>@kit.SelectionsCount</td>
                                 <td class="on-top">
-                                    <a asp-action="PerformerSelections" asp-route-id="@performer.Id" class="btn btn-xs btn-default">View Selections</a>
+                                    <a asp-action="KitSelections" asp-route-id="@kit.Id" class="btn btn-xs btn-default">View Selections</a>
                                 </td>
                             }
                         </tr>
@@ -118,18 +107,9 @@
     </div>
 </div>
 
-@section scripts {
+@section scripts
+    {
     <script>
-        $(window).on("load", function () {
-            $(".td-class").each(function () {
-                $(this).children("a.rowlink").height($(this).height() + 11);
-            });
-        });
-        $(window).resize(function () {
-            $(".td-class").each(function () {
-                $(this).children("a.rowlink").height($(this).height() + 11);
-            });
-        });
         @if (Model.SchedulingStage < GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
         {
             <text>
@@ -137,9 +117,9 @@
                 var button = $(event.relatedTarget);
                 var id = button.data("id");
                 var name = button.data("name");
-                $(this).find("#modal-text").text('Are you sure you want to delete the performer "' + name + '" and all information associated with them?');
-                $(this).find("#PerformerToDelete_Id").val(id);
-                $(this).find("#PerformerToDelete_Name").val(name);
+                $(this).find("#modal-text").text('Are you sure you want to delete the kit "' + name + '"?');
+                $(this).find("#KitToDelete_Id").val(id);
+                $(this).find("#KitToDelete_Name").val(name);
             });
             </text>
         }

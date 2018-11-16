@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
@@ -19,7 +20,16 @@ namespace GRA.Data.Repository
         {
         }
 
-        public async Task<IEnumerable<PsBlackoutDate>> GetAllAsync()
+        public async Task<PsBlackoutDate> GetByDateAsync(DateTime date)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.Date.Date == date.Date)
+                .ProjectTo<PsBlackoutDate>()
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<ICollection<PsBlackoutDate>> GetAllAsync()
         {
             return await DbSet
                 .AsNoTracking()
@@ -28,7 +38,7 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task<DataWithCount<ICollection<PsBlackoutDate>>> GetPaginatedListAsync(
+        public async Task<DataWithCount<ICollection<PsBlackoutDate>>> PageAsync(
             BaseFilter filter)
         {
             var blackoutDates = DbSet.AsNoTracking();

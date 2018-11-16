@@ -1,0 +1,212 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.KitSelectionsViewModel
+
+<div class="row">
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="deleteModalLabel">Edit Kit Selection</h4>
+                </div>
+                <div class="modal-body">
+                    <div id="kitInformation" class="col-xs-12" style="font-size:larger;margin-bottom:10px;">
+                    </div>
+                    <form asp-action="@nameof(PerformerManagementController.EditBranchKitSelection)" id="editKitForm" class="form-horizontal col-xs-12" method="post" role="form">
+                        <input name="Id" asp-for="BranchSelection.Id" type="hidden" />
+                        <div class="form-group">
+                            <label asp-for="BranchSelection.KitId" class="col-sm-3 control-label"></label>
+                            <div class="col-sm-9">
+                                <select name="KitId" asp-for="BranchSelection.KitId" asp-items="Model.KitList" class="form-control"></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="BranchSelection.AgeGroupId" class="col-sm-3 control-label"></label>
+                            <div class="col-sm-9">
+                                <select name="AgeGroupId" asp-for="BranchSelection.AgeGroupId" asp-items="Model.AgeGroupList" class="form-control"></select>
+                            </div>
+                        </div>
+
+                        <div class="row" style="margin-top: 20px;">
+                            <div class="col-xs-12 col-sm-9 col-sm-offset-3">
+                                <div id="checkAlert" class="alert hidden"></div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-9 col-sm-offset-3">
+                                <button id="editKit" type="button" class="btn btn-success hidden">Save Selection</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        <table style="margin:0 auto;">
+            <tr>
+                @if (Model.PrevKit.HasValue)
+                {
+                    <td style="position:absolute;">
+                        <h1>
+                            <a asp-action="KitSelections" asp-route-id="@Model.PrevKit" style="margin-left:-125px;"><span class="fa fa-chevron-left"></span></a>
+                        </h1>
+                    </td>
+                }
+                <td><h1>Kit Selections</h1></td>
+                @if (Model.NextKit.HasValue)
+                {
+                    <td style="position:absolute;">
+                        <h1>
+                            <a asp-action="KitSelections" asp-route-id="@Model.NextKit" style="margin-left:50px;"><span class="fa fa-chevron-right"></span></a>
+                        </h1>
+                    </td>
+                }
+            </tr>
+        </table>
+        <hr />
+        <div class="row">
+            <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="row form-group">
+                            <div class="col-xs-6">
+                                <label>Kit</label>
+                                <div>@Model.Kit.Name</div>
+                            </div>
+                            <div class="col-xs-6">
+                                <label>Kit Selections</label>
+                                <div>@Model.BranchSelections.Count()</div>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-xs-12">
+                                <a asp-action="Kit" asp-route-id="@Model.Kit.Id" class="btn btn-lg btn-default">View Kit</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        @if (Model.BranchSelections.Count == 0)
+        {
+            <div class="alert alert-warning">No selections.</div>
+        }
+        else
+        {
+            <table class="table table-bordered table-condensed table-striped">
+                <thead>
+                    <tr>
+                        <th>System</th>
+                        <th>Branch</th>
+                        <th>Age Group</th>
+                        <th width="36px">&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var branchSelection in Model.BranchSelections)
+                    {
+                        <tr>
+                            <td>@branchSelection.Branch.SystemName</td>
+                            <td>@branchSelection.Branch.Name</td>
+                            <td>@branchSelection.AgeGroup.Name</td>
+                            <td style="text-align:center;">
+                                <button type="button"
+                                        class="btn btn-xs btn-primary"
+                                        data-toggle="modal"
+                                        data-target="#editModal"
+                                        data-id="@branchSelection.Id"
+                                        data-agegroupid="@branchSelection.AgeGroupId"
+                                        data-agegroupname="@branchSelection.AgeGroup.Name"
+                                        data-branchname="@branchSelection.Branch.Name"
+                                        data-systemname="@branchSelection.Branch.SystemName">
+                                    <span class="fa fa-edit"></span>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        var checkBranchAgeGroupUrl = "@Url.Action(nameof(PerformerManagementController.CheckBranchAgeGroup))";
+        var editKitSelectionUrl = "@Url.Action(nameof(PerformerManagementController.EditBranchKitSelection))";
+        var kitAgeGroupsUrl = "@Url.Action(nameof(PerformerManagementController.GetKitAgeGroups))";
+
+        $("#editModal").on("show.bs.modal", function (event) {
+            var button = $(event.relatedTarget);
+            $("#BranchSelection_Id").val(button.data("id"));
+            $("#kitInformation").text(button.data("systemname") + ": " + button.data("branchname") + " – " + button.data("agegroupname") + " kit");
+            $("#checkAlert").addClass("hidden");
+            $("#editKit").addClass("hidden");
+            $("#BranchSelection_KitId").val(@Model.Kit.Id);
+            var ageList = $("#BranchSelection_AgeGroupId");
+            $.getJSON(kitAgeGroupsUrl, { kitId: @Model.Kit.Id }, function (response) {
+                ageList.empty();
+                $.each(response, function (index, item) {
+                    ageList.append(new Option(item.text, item.value))
+                });
+                ageList.val(button.data("agegroupid"));
+            });
+        });
+
+        $("#BranchSelection_KitId").on("change", function () {
+            var ageList = $("#BranchSelection_AgeGroupId");
+            $("#checkAlert").addClass("hidden");
+            $("#editKit").addClass("hidden");
+            $.getJSON(kitAgeGroupsUrl, { kitId: $(this).val() }, function (response) {
+                ageList.empty();
+                ageList.append(new Option("", ""))
+                $.each(response, function (index, item) {
+                    ageList.append(new Option(item.text, item.value))
+                });
+            });
+        });
+
+        $("#BranchSelection_AgeGroupId").on("change", function () {
+            $.getJSON(checkBranchAgeGroupUrl, { branchSelectionId: $("#BranchSelection_Id").val(), ageGroupId: $(this).val() }, function (response) {
+                if (response.success) {
+                    $("#checkAlert").removeClass("alert-danger").addClass("alert-success");
+                }
+                else {
+                    $("#checkAlert").removeClass("alert-success").addClass("alert-danger");
+                }
+                $("#checkAlert").text(response.message);
+                $("#checkAlert").removeClass("hidden");
+                $("#editKit").removeClass("hidden");
+            });
+        });
+
+        $("#editKit").on("click", function () {
+            if ($(this).hasClass("hidden") == false) {
+                var data = $("#editKitForm").serializeArray().reduce(function (m, o) { m[o.name] = o.value; return m; }, {})
+                $.post(editKitSelectionUrl, { branchSelection: data }, function (response) {
+                    if (response.success) {
+                        window.location.href = "@Url.Action(nameof(PerformerManagementController.KitSelections), new { id = Model.Kit.Id})";
+                    }
+                    else {
+                        $("#checkAlert").addClass("hidden");
+                        $("#scheduleProgram").addClass("hidden");
+                        alert(response.message);
+                    }
+                });
+            }
+        });
+
+    </script>
+}

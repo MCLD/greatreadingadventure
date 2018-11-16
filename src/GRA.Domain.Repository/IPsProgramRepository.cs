@@ -7,6 +7,7 @@ namespace GRA.Domain.Repository
     public interface IPsProgramRepository : IRepository<PsProgram>
     {
         Task<ICollection<PsProgram>> GetByPerformerIdAsync(int performerId);
+        Task<int> GetCountByPerformerAsync(int performerId);
         Task AddProgramAgeGroupsAsync(int programId, List<int> ageGroupIds);
         Task RemoveProgramAgeGroupsAsync(int programId, List<int> ageGroupIds);
     }

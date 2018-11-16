@@ -58,6 +58,8 @@ namespace GRA.Domain.Model
         public ICollection<PsProgram> Programs { get; set; }
 
         [NotMapped]
+        public int ProgramCount { get; set; }
+        [NotMapped]
         public int SelectionsCount { get; set; }
     }
 }

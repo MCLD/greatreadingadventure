@@ -8,6 +8,6 @@ namespace GRA.Domain.Repository
     public interface IPsAgeGroupRepository : IRepository<PsAgeGroup>
     {
         Task<IEnumerable<PsAgeGroup>> GetAllAsync();
-        Task<DataWithCount<ICollection<PsAgeGroup>>> GetPaginatedListAsync(BaseFilter filter);
+        Task<DataWithCount<ICollection<PsAgeGroup>>> PageAsync(BaseFilter filter);
     }
 }

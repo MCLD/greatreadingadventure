@@ -26,7 +26,7 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task<DataWithCount<ICollection<PsAgeGroup>>> GetPaginatedListAsync(
+        public async Task<DataWithCount<ICollection<PsAgeGroup>>> PageAsync(
             BaseFilter filter)
         {
             var ageGroups = DbSet.AsNoTracking();

@@ -1,0 +1,254 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.PerformerCalendarViewModel
+
+<div class="row">
+    <div class="col-xs-12" style="font-size:larger;margin-bottom:10px;">
+        @Model.BranchSelection.Branch.Name <a href="https://www.google.com/maps/search/@Model.BranchSelection.Branch.Address" target="_blank"><span class="fa fa-map-o"></span></a> &ndash; Starting at @Model.BranchSelection.RequestedStartTime.ToShortTimeString()@(Model.BranchSelection.BackToBackProgram ? $" & {Model.BranchSelection.RequestedStartTime.AddMinutes(Model.BranchSelection.Program.ProgramLengthMinutes + Model.BranchSelection.Program.BackToBackMinutes).ToShortTimeString()}" : ""): @Model.BranchSelection.Program.Title
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        @{int count = 0;}
+        @for (var calendarMonth = new DateTime(Model.Settings.ScheduleStartDate.Value.Year, Model.Settings.ScheduleStartDate.Value.Month, 1); calendarMonth <= Model.Settings.ScheduleEndDate.Value; calendarMonth = calendarMonth.AddMonths(1))
+        {
+            var firstDayOfWeek = (int)calendarMonth.DayOfWeek;
+            var daysInMonth = DateTime.DaysInMonth(calendarMonth.Year, calendarMonth.Month);
+            var monthDateSelectors = (firstDayOfWeek + daysInMonth > 35 ? 42 : 35);
+
+            @if (count % 3 == 0)
+            {
+                @Html.Raw("<div class=\"row\">");
+            }
+            <div class="col-xs-12 col-md-4">
+                <table class="table table-bordered" style="table-layout:fixed; text-align:center">
+                    <thead>
+                        <tr>
+                            <td colspan="7" class="calendar-cell">
+                                <div class="option">
+                                    @calendarMonth.ToString("MMMM") @(Model.Settings.ScheduleStartDate.Value.Year != Model.Settings.ScheduleEndDate.Value.Year ? calendarMonth.ToString("yyyy") : "")
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="calendar-cell"><div class="option">Sun</div></td>
+                            <td class="calendar-cell"><div class="option">Mon</div></td>
+                            <td class="calendar-cell"><div class="option">Tue</div></td>
+                            <td class="calendar-cell"><div class="option">Wed</div></td>
+                            <td class="calendar-cell"><div class="option">Thu</div></td>
+                            <td class="calendar-cell"><div class="option">Fri</div></td>
+                            <td class="calendar-cell"><div class="option">Sat</div></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int date = 1 - firstDayOfWeek; date <= (monthDateSelectors - firstDayOfWeek); date++)
+                        {
+                            var outOfRange = (calendarMonth.Month == Model.Settings.ScheduleStartDate.Value.Month && calendarMonth.Year == Model.Settings.ScheduleStartDate.Value.Year && date < Model.Settings.ScheduleStartDate.Value.Day
+                                || calendarMonth.Month == Model.Settings.ScheduleEndDate.Value.Month && calendarMonth.Year == Model.Settings.ScheduleEndDate.Value.Year && date > Model.Settings.ScheduleEndDate.Value.Day);
+                            var hideDate = date < 1 || date > daysInMonth;
+                            var blackoutDate = Model.BlackoutDates.FirstOrDefault(_ => _.Date.Day == date && _.Date.Month == calendarMonth.Month && _.Date.Year == calendarMonth.Year);
+                            var scheduleDate = Model.Performer.Schedule.FirstOrDefault(_ => _.Date.Day == date && _.Date.Month == calendarMonth.Month && _.Date.Year == calendarMonth.Year);
+                            var bookedDate = Model.BookedDates.FirstOrDefault(_ => _.Day == date && _.Month == calendarMonth.Month && _.Year == calendarMonth.Year);
+                            bool currentDate = Model.BranchSelection.RequestedStartTime.Year == calendarMonth.Year && Model.BranchSelection.RequestedStartTime.Month == calendarMonth.Month
+                                && Model.BranchSelection.RequestedStartTime.Day == date;
+
+                            if ((date + firstDayOfWeek) % 7 == 1)
+                            {
+                                @:<tr>
+                                }
+                                <td class="@(outOfRange || hideDate ? "unselectable" : "selectable")@(blackoutDate != null ? " blackout" : "")@(outOfRange ? " out-of-range" : "")" data-year="@calendarMonth.Year" data-month="@calendarMonth.Month" data-date="@date" data-start="@(scheduleDate?.StartTime?.ToShortTimeString() ?? "8:00 AM")" asp-schedule="@scheduleDate" asp-booked="@bookedDate" asp-booking="true" asp-currentDate="@currentDate">
+                                    <div class="option@(currentDate ? " selected-date" : "")" data-toggle="tooltip" data-placement="top" title="@blackoutDate?.Reason">
+                                        @Html.Raw(hideDate ? "&nbsp;" : date.ToString())
+                                    </div>
+                                </td>
+                                if ((date + firstDayOfWeek) % 7 == 0)
+                                {
+                                @:</tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            if (count % 3 == 2)
+            {
+                @Html.Raw("</div>");
+            }
+            { count++; }
+        }
+        @if (count % 3 != 0)
+        {
+            @Html.Raw("</div>");
+        }
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        <div id="daySchedule">
+            <ul>
+                @if (!string.IsNullOrWhiteSpace(Model.DayScheduleModel.StartTime))
+                {
+                    @Html.Raw($"<li>Available: {Model.DayScheduleModel.StartTime}");
+                }
+                @for (int i = 0; i < Model.DayScheduleModel.BranchSelections.Count; i++)
+                {
+                    if (i != 0 || !string.IsNullOrWhiteSpace(Model.DayScheduleModel.StartTime))
+                    {
+                        @Html.Raw($"&ndash; {Model.DayScheduleModel.BranchSelections[i].ScheduleStartTime.ToLongTimeString()}</li>")
+                    }
+                    <li>Booked: @Model.DayScheduleModel.BranchSelections[i].ScheduleStartTime.ToLongTimeString() &ndash; @Model.DayScheduleModel.BranchSelections[i].ScheduleStartTime.AddMinutes(Model.DayScheduleModel.BranchSelections[i].ScheduleDuration).ToLongTimeString() @@ @Model.DayScheduleModel.BranchSelections[i].Branch.Name <a href="https://www.google.com/maps/search/@Model.DayScheduleModel.BranchSelections[i].Branch.Address" target="_blank"><span class="fa fa-map-o"></span></a></li>
+                    if (i != Model.DayScheduleModel.BranchSelections.Count - 1 || !string.IsNullOrWhiteSpace(Model.DayScheduleModel.EndTime))
+                    {
+                        @Html.Raw($"<li>Available: {Model.DayScheduleModel.BranchSelections[i].ScheduleStartTime.AddMinutes(Model.DayScheduleModel.BranchSelections[i].ScheduleDuration).ToLongTimeString()}")
+                    }
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.DayScheduleModel.EndTime))
+                {
+                    @Html.Raw($"&ndash; {Model.DayScheduleModel.EndTime}</li>");
+                }
+            </ul>
+        </div>
+        <table>
+            <tr>
+                <td>
+                    Program Start Time:
+                </td>
+                <td style="padding-left:15px;" colspan="2">
+                    Total Performer Time:
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="input-group date" id="pickerStart" style="width:150px;">
+                        <span class="input-group-addon">
+                            <span class="fa fa-clock-o"></span>
+                        </span>
+                        <input id="startTime" class="form-control" />
+                    </div>
+                </td>
+                <td id="programDuration" style="padding-left: 15px; width: 175px;"></td>
+                <td>
+                    <button id="checkTime" type="button" class="btn btn-primary" style="margin-left:15px;" disabled="disabled">Check Time</button>
+                </td>
+            </tr>
+        </table>
+
+        <div class="row" style="margin-top: 20px;">
+            <div class="col-xs-12 col-sm-6">
+                <div id="checkAlert" class="alert hidden"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 col-sm-6">
+                <button id="scheduleProgram" type="button" class="btn btn-success hidden">Save Selection</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form asp-action="@nameof(PerformerManagementController.EditBranchProgramSelection)" id="editSelectionForm" method="post" role="form" hidden="hidden">
+    <input name="Id" asp-for="BranchSelection.Id" type="hidden" />
+    <input name="RequestedStartTime" asp-for="BranchSelection.RequestedStartTime" type="hidden" />
+</form>
+
+<script>
+        var dayScheduleUrl = "@Url.Action(nameof(PerformerManagementController.GetPerformerDaySchedule))";
+        var checkTimeUrl = "@Url.Action(nameof(PerformerManagementController.CheckProgramTimeAvailability))";
+        var scheduleBranchProgramUrl = "@Url.Action(nameof(PerformerManagementController.EditBranchProgramSelection))";
+        var backToBack = @Model.BranchSelection.BackToBackProgram.ToString().ToLower();
+        var selectedDate = "@Model.BranchSelection.RequestedStartTime.ToString("yyyy-M-d")";
+        var startTime = "@Model.DayScheduleModel.StartTime";
+        var startDateTime;
+
+        $(".selectable").on("click", function () {
+            $(".selected-date").removeClass("selected-date");
+            $(this).children().addClass("selected-date");
+            selectedDate = $(this).data("year") + "-" + $(this).data("month") + "-" + $(this).data("date");
+            startTime = $(this).data("start");
+
+            $("#checkAlert").addClass("hidden");
+            $("#scheduleProgram").addClass("hidden");
+            $.get(dayScheduleUrl, { programId: "@Model.BranchSelection.ProgramId", date: selectedDate }, function (response) {
+                $("#daySchedule").html(response);
+                $("#startTime").val("").removeAttr("disabled");
+                $("#checkTime").attr("disabled", "disabled");
+            });
+        });
+
+        $("[id^=picker]").datetimepicker({
+            format: "hh:mm A",
+            allowInputToggle: true,
+            stepping: 5,
+            useCurrent: false,
+            icons: {
+                time: "fa fa-clock-o",
+                date: "fa fa-calendar",
+                up: "fa fa-arrow-up",
+                down: "fa fa-arrow-down",
+                previous: "fa fa-arrow-left",
+                next: "fa fa-arrow-right"
+            }
+        });
+
+        $("#pickerStart").on("dp.show", function () {
+            if ($("#startTime").val() == "") {
+                $(this).data("DateTimePicker").date(startTime);
+            }
+        });
+
+        $("#pickerStart").on("dp.change", function () {
+            if ($("#pickerStart").data("DateTimePicker").date() != null) {
+                $("#checkTime").removeAttr("disabled");
+                var scheduleStartTime = $("#pickerStart").data("DateTimePicker").date().subtract(@Model.BranchSelection.Program.SetupTimeMinutes, "minutes").format("hh:mm A");
+                var scheduleEndTime = $("#pickerStart").data("DateTimePicker").date().add(@Model.BranchSelection.Program.ProgramLengthMinutes + @Model.BranchSelection.Program.BreakdownTimeMinutes, "minutes");
+                if (backToBack == true) {
+                    scheduleEndTime.add(@Model.BranchSelection.Program.ProgramLengthMinutes + @Model.BranchSelection.Program.BackToBackMinutes, "minutes");
+                }
+                scheduleEndTime = scheduleEndTime.format("hh:mm A");
+                $("#programDuration").text(scheduleStartTime + " – " + scheduleEndTime);
+            }
+            else {
+                $("#programDuration").text();
+            }
+            $("#checkAlert").addClass("hidden");
+            $("#scheduleProgram").addClass("hidden");
+        });
+
+        $("#checkTime").on("click", function () {
+            var time = $("#pickerStart").data("DateTimePicker").date().format("HH:mm");
+            startDateTime = selectedDate + "T" + time;
+            $.getJSON(checkTimeUrl, { programId: "@Model.BranchSelection.ProgramId", date: startDateTime, backToBack: backToBack }, function (response) {
+                var checkAlert = $("#checkAlert");
+                checkAlert.removeClass("hidden").removeClass("alert-warning alert-success alert-danger");
+                if (response.success == true) {
+                    if (response.message != null) {
+                        checkAlert.addClass("alert-warning").text(response.message);
+                    }
+                    else {
+                        checkAlert.addClass("alert-success").text("The performer is available at that time.");
+                    }
+                }
+                else {
+                    checkAlert.addClass("alert-danger").text(response.message);
+                }
+                $("#scheduleProgram").removeClass("hidden");
+            });
+        });
+
+        $("#scheduleProgram").on("click", function () {
+            if ($(this).hasClass("hidden") == false) {
+                $("#BranchSelection_RequestedStartTime").val(startDateTime);
+                var data = $("#editSelectionForm").serializeArray().reduce(function (m, o) { m[o.name] = o.value; return m; }, {})
+                $.post(scheduleBranchProgramUrl, { branchSelection: data }, function (response) {
+                    if (response.success) {
+                        window.location.href = "@Url.Action(nameof(PerformerManagementController.PerformerSelections), new { id = Model.Performer.Id})";
+                    }
+                    else {
+                        $("#checkAlert").addClass("hidden");
+                        $("#scheduleProgram").addClass("hidden");
+                        alert(response.message);
+                    }
+                });
+            }
+        });
+</script>

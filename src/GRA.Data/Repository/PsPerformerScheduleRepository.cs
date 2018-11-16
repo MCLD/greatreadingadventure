@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
@@ -26,6 +27,15 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
+        public async Task<PsPerformerSchedule> GetPerformerDateScheduleAsync(int performerId, 
+            DateTime date)
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.PerformerId == performerId && _.Date == date.Date)
+                .ProjectTo<PsPerformerSchedule>()
+                .FirstOrDefaultAsync();
+        }
+
         public async Task SetPerformerScheduleAsync(int performerId,
             List<PsPerformerSchedule> schedule)
         {
@@ -36,6 +46,13 @@ namespace GRA.Data.Repository
                 .Map<List<PsPerformerSchedule>, List<Model.PsPerformerSchedule>>(schedule);
             await DbSet.AddRangeAsync(newSchedule);
 
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RemovePerformerScheduleAsync(int performerId)
+        {
+            var schedule = DbSet.Where(_ => _.PerformerId == performerId);
+            DbSet.RemoveRange(schedule);
             await _context.SaveChangesAsync();
         }
     }

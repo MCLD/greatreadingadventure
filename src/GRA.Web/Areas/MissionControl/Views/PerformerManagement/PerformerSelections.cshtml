@@ -1,0 +1,213 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.PerformerSelectionsViewModel
+
+@section Styles {
+    <style>
+        @@media print {
+            a[href]:after {
+                content: none !important;
+            }
+        }
+    </style>
+}
+
+<div class="row">
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="deleteModalLabel">Edit Date/Time</h4>
+                </div>
+                <div id="calendarContainer" class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row hidden-print">
+    <div class="col-xs-12">
+        <table style="margin:0 auto;">
+            <tr>
+                @if (Model.PrevPerformer.HasValue)
+                {
+                    <td style="position:absolute;">
+                        <h1>
+                            <a asp-action="PerformerSelections" asp-route-id="@Model.PrevPerformer" style="margin-left:-125px;"><span class="fa fa-chevron-left"></span></a>
+                        </h1>
+                    </td>
+                }
+                <td><h1>Performer Selections</h1></td>
+                @if (Model.NextPerformer.HasValue)
+                {
+                    <td style="position:absolute;">
+                        <h1>
+                            <a asp-action="PerformerSelections" asp-route-id="@Model.NextPerformer" style="margin-left:50px;"><span class="fa fa-chevron-right"></span></a>
+                        </h1>
+                    </td>
+                }
+            </tr>
+        </table>
+        <hr />
+        <div class="row">
+            <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="row form-group">
+                            <div class="col-xs-6">
+                                <label>Performer</label>
+                                <div>@Model.Performer.Name</div>
+                            </div>
+                            <div class="col-xs-6">
+                                <label>Program Selections</label>
+                                <div>@Model.BranchSelectionDates.SelectMany(_ => _).Count()</div>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-xs-12">
+                                <a asp-action="Performer" asp-route-id="@Model.Performer.Id" class="btn btn-lg btn-default">View Performer</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <h1 class="visible-print">@Model.Performer.Name</h1>
+        @if (Model.BranchSelectionDates.SelectMany(_ => _).Count() == 0)
+        {
+            <div class="alert alert-warning">No selections.</div>
+        }
+        else
+        {
+            @foreach (var branchSelectionDate in Model.BranchSelectionDates)
+            {
+                var date = branchSelectionDate.First().RequestedStartTime.Date;
+                var performerSchedule = Model.Performer.Schedule.Where(_ => _.Date.Date == date).FirstOrDefault();
+                var backToBack = branchSelectionDate.Any(_ => _.BackToBackProgram);
+                <strong style="font-size:large">@date.ToLongDateString()</strong>
+                <div class="hidden-print">
+                    @if (performerSchedule == null)
+                    {
+                        <div class="text-success" style="font-size:large">Available: @Model.DefaultPerformerScheduleStartTime.ToShortTimeString() &ndash; @Model.DefaultPerformerScheduleEndTime.ToShortTimeString()</div>
+                    }
+                    else if (performerSchedule.StartTime.HasValue)
+                    {
+                        <div style="color:#DFAA15; font-size:large">Available: @performerSchedule.StartTime.Value.ToShortTimeString() &ndash; @performerSchedule.EndTime.Value.ToShortTimeString()</div>
+                    }
+                    else
+                    {
+                        <div class="text-danger" style="font-size:x-large">Unavailable</div>
+                    }
+                </div>
+
+                <table class="table table-bordered table-condensed table-striped">
+                    <thead>
+                        <tr>
+                            <th width="170px">Total Performer Time</th>
+                            @if (backToBack)
+                            {
+                                <th width="150px">Start Time(s)</th>
+
+                            }
+                            else
+                            {
+                                <th width="90px">Start Time</th>
+                            }
+                            <th width="120px">Age Group</th>
+                            <th>Program</th>
+                            <th>Location</th>
+                            <th width="400px">Secret Code</th>
+                            <th class="hidden-print" width="36px">&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var branchSelection in branchSelectionDate)
+                        {
+                            <tr>
+                                <td>@branchSelection.ScheduleStartTime.ToShortTimeString() &ndash; @branchSelection.ScheduleStartTime.AddMinutes(branchSelection.ScheduleDuration).ToShortTimeString()</td>
+                                <td>@branchSelection.RequestedStartTime.ToShortTimeString()@(branchSelection.BackToBackProgram ? $", {branchSelection.RequestedStartTime.AddMinutes(branchSelection.Program.ProgramLengthMinutes + branchSelection.Program.BackToBackMinutes).ToShortTimeString()}" : "")</td>
+                                <td>@branchSelection.AgeGroup.Name</td>
+                                <td><a asp-action="Program" asp-route-id="@branchSelection.ProgramId" target="_blank">@branchSelection.Program.Title</a></td>
+                                <td>@branchSelection.Branch.SystemName: <span style="white-space:nowrap">@branchSelection.Branch.Name <a href="https://www.google.com/maps/search/@branchSelection.Branch.Address" target="_blank" class="hidden-print"><span class="fa fa-map-o"></span></a><span class="visible-print">(@branchSelection.Branch.Address)</span></span></td>
+                                <td>
+                                    <table style="width:100%;">
+                                        <tr>
+                                            <td>
+                                                <input class="secretCode form-control" data-id="@branchSelection.Id" value="@branchSelection.SecretCode" autocomplete="off" />
+                                            </td>
+                                            <td style="padding-left:3px; text-align:center; width:30px;">
+                                                <span class="icon fa fa-lg colored-icon @(!string.IsNullOrWhiteSpace(branchSelection.SecretCode) ? "fa-check" : "hidden")"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <div class="errorMessage text-danger"></div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td class="hidden-print" style="text-align:center;">
+                                    <button type="button"
+                                            class="btn btn-xs btn-primary"
+                                            data-toggle="modal"
+                                            data-target="#editModal"
+                                            data-id="@branchSelection.Id">
+                                        <span class="fa fa-edit"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <hr />
+            }
+        }
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        var performerCalendarUrl = "@Url.Action(nameof(PerformerManagementController.GetPerformerCalendar))";
+        var secretCodeUrl = "@Url.Action(nameof(PerformerManagementController.SetSecretCode))";
+
+        $("#editModal").on("show.bs.modal", function (event) {
+            var button = $(event.relatedTarget);
+            var id = button.data("id");
+            $.get(performerCalendarUrl, { branchSelectionId: id }, function (response) {
+                $("#calendarContainer").html(response);
+            });
+        });
+
+        $(".secretCode").on("blur", function () {
+            var input = $(this);
+            if (input.attr("readonly") != "readonly") {
+                var icon = input.closest("tr").find(".icon");
+                var errorMessage = input.closest("table").find(".errorMessage");
+                input.attr("readonly", "readonly");
+                icon.removeClass("hidden fa-check fa-times").addClass("fa-spinner fa-pulse fa-fw");
+                errorMessage.text("");
+                $.post(secretCodeUrl, { id: input.data("id"), secretCode: input.val() }, function (response) {
+                    setTimeout(function () {
+                        input.val(response.secretCode).removeAttr("readonly");
+                        if (response.success) {
+
+                            icon.removeClass("fa-spinner fa-pulse fa-fw").addClass("fa-check");
+                        }
+                        else {
+                            icon.removeClass("fa-spinner fa-pulse fa-fw").addClass("fa-times");
+                            errorMessage.text(response.message);
+                        }
+                    }, 500);
+                });
+            }
+        });
+    </script>
+}

@@ -19,8 +19,8 @@ namespace GRA.Controllers.PerformerRegistration
     [Authorize(Policy = Policy.AccessPerformerRegistration)]
     public class HomeController : Base.Controller
     {
-        private const int MaxUploadMB = 25;
-        private const int MBSize = 1024 * 1024;
+        private static readonly int MaxUploadMB = 25;
+        private static readonly int MBSize = 1024 * 1024;
 
         private readonly ILogger<HomeController> _logger;
         private readonly AuthenticationService _authenticationService;
@@ -267,7 +267,7 @@ namespace GRA.Controllers.PerformerRegistration
                         using (var ms = new MemoryStream())
                         {
                             fileStream.CopyTo(ms);
-                            await _performerSchedulingService.AddPerformerReferencesAsync(
+                            await _performerSchedulingService.SetPerformerReferencesAsync(
                                 performer.Id, ms.ToArray(),
                                 Path.GetExtension(model.References.FileName));
                         }
@@ -296,7 +296,7 @@ namespace GRA.Controllers.PerformerRegistration
                 }
                 else
                 {
-                    TempData[TempDataKey.AlertSuccess] = "Information saved!";
+                    ShowAlertSuccess("Information saved!");
                     return RedirectToAction(nameof(Dashboard));
                 }
             }
@@ -593,7 +593,7 @@ namespace GRA.Controllers.PerformerRegistration
 
                 if (performer.RegistrationCompleted == false)
                 {
-                    await _performerSchedulingService.SetPerformerRegistrationCompelted(
+                    await _performerSchedulingService.SetPerformerRegistrationCompeltedAsync(
                         performer.Id);
                     ShowAlertSuccess("Registration completed!");
                 }
@@ -741,7 +741,7 @@ namespace GRA.Controllers.PerformerRegistration
                         }
                     }
                 }
-                TempData[TempDataKey.AlertSuccess] = "Image(s) added!";
+                ShowAlertSuccess("Image(s) added!");
                 return RedirectToAction(nameof(Images));
             }
 
@@ -779,9 +779,9 @@ namespace GRA.Controllers.PerformerRegistration
             {
                 foreach (var imageId in imageIds)
                 {
-                    await _performerSchedulingService.RemovePerformerImageAsync(imageId);
+                    await _performerSchedulingService.RemovePerformerImageByIdAsync(imageId);
                 }
-                TempData[TempDataKey.AlertSuccess] = "Image(s) deleted!";
+                ShowAlertSuccess("Image(s) deleted!");
             }
             return RedirectToAction(nameof(Images));
         }
@@ -811,11 +811,11 @@ namespace GRA.Controllers.PerformerRegistration
             {
                 await _performerSchedulingService.RemoveProgramAsync(id);
 
-                TempData[TempDataKey.AlertSuccess] = $"Program \"{program.Title}\" has been deleted!";
+                ShowAlertSuccess($"Program \"{program.Title}\" has been deleted!");
             }
             else
             {
-                TempData[TempDataKey.AlertWarning] = $"Unable to delete the program \"{program.Title}\".";
+                ShowAlertDanger($"Unable to delete the program \"{program.Title}\".");
             }
 
             return RedirectToAction(nameof(Dashboard));
@@ -957,7 +957,7 @@ namespace GRA.Controllers.PerformerRegistration
                         }
                     }
                 }
-                TempData[TempDataKey.AlertSuccess] = "Image(s) added!";
+                ShowAlertSuccess("Image(s) added!");
                 return RedirectToAction(nameof(ProgramImages), new { id = program.Id });
             }
 
@@ -1003,9 +1003,9 @@ namespace GRA.Controllers.PerformerRegistration
             {
                 foreach (var imageId in imageIds)
                 {
-                    await _performerSchedulingService.RemovePerformerImageAsync(imageId);
+                    await _performerSchedulingService.RemoveProgramImageByIdAsync(imageId);
                 }
-                TempData[TempDataKey.AlertSuccess] = "Image(s) deleted!";
+                ShowAlertSuccess("Image(s) deleted!");
             }
             return RedirectToAction(nameof(ProgramImages), new { id = program.Id });
         }

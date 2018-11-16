@@ -1,0 +1,127 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.KitDetailsViewModel
+
+@{
+    var invalid = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid;
+}
+
+<div class="row">
+    <div class="col-xs-12">
+        <h1>@(Model.NewKit ? "Add Kit" : $"Edit Kit: {Model.Kit.Name}")</h1>
+    </div>
+
+    <div class="col-sm-9 col-sm-offset-3">
+        <p>
+            <span class="text-danger small" style="font-weight: bold;">Fields marked with an asterisk (*) are required.</span>
+        </p>
+    </div>
+
+    <form asp-action="KitDetails" class="form-horizontal col-xs-12" method="post" role="form" enctype="multipart/form-data">
+        <input asp-for="NewKit" type="hidden" />
+        @if (Model.NewKit == false)
+        {
+            <input asp-for="Kit.Id" type="hidden" />
+        }
+
+        <div class="form-group">
+            <label asp-for="Kit.Name" class="col-sm-3 control-label required-field"></label>
+            <div class="col-sm-9">
+                <input asp-for="Kit.Name" class="form-control" placeholder="" />
+                <span asp-validation-for="Kit.Name" class="text-danger"></span>
+            </div>
+        </div>
+
+        @if (Model.NewKit)
+        {
+            <div class="col-sm-9 col-sm-offset-3">
+                <p>
+                    For best results please use images that are at least 1,000px by 1,000px,
+                    uploads are limited to @(Model.MaxUploadMB)MB total.
+                    Multiple images can be selected by holding the CTRL key.
+                </p>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label required-field">Upload photos</label>
+                <div class="col-sm-9">
+                    <div class="input-group">
+                        <label class="input-group-btn">
+                            <span class="btn btn-default btn-file">
+                                <span class="fa fa-file-image-o"></span> Select file(s)...
+                                <input type="file"
+                                       multiple="multiple"
+                                       asp-for="Images"
+                                       accept=".png,.jpg,.jpeg"
+                                       style="display: none;" />
+                            </span>
+                        </label>
+                        <input type="text" class="form-control @(ViewData.ModelState.GetValidationState("Images") == invalid ? "input-validation-error" : "")" readonly />
+                    </div>
+                    <span asp-validation-for="Images" class="text-danger"></span>
+                </div>
+            </div>
+        }
+
+        <div class="form-group">
+            <label asp-for="Kit.Website" class="col-sm-3 control-label"></label>
+            <div class="col-sm-9">
+                <input asp-for="Kit.Website" class="form-control" placeholder="" />
+                <span asp-validation-for="Kit.Website" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Kit.Description" class="col-sm-3 control-label required-field"></label>
+            <div class="col-sm-9">
+                <textarea asp-for="Kit.Description" class="form-control" rows="6"></textarea>
+                <span asp-validation-for="Kit.Description" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-12 col-sm-9 col-sm-offset-3">
+                <p>
+                    Please select which age groups the kit is suited for.
+                </p>
+            </div>
+            <label class="col-sm-3 control-label required-field">Age(s)</label>
+            <div class="col-sm-9">
+                <input id="agePlaceholder" class="form-control" />
+                <select asp-for="AgeSelection" asp-items="Model.AgeList" class="form-control hidden" type="text" multiple="multiple"></select>
+                <span asp-validation-for="AgeSelection" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-9 col-sm-offset-3" style="margin-top: 1em;">
+                <button type="submit" class="btn btn-lg btn-success btn-spinner" style="margin-bottom: 10px;">
+                    Save Kit
+                    <span class="fa fa-spinner fa-pulse fa-fw hidden"></span>
+                </button>
+                @if (Model.NewKit == false)
+                {
+                    <a asp-action="Kit" asp-route-id="@Model.Kit.Id" class="btn btn-lg btn-default pull-left" style="margin-right: 10px;">Return to Kit</a>
+                }
+                else
+                {
+                    <a asp-action="Kits" class="btn btn-lg btn-default pull-left" style="margin-right: 10px;">Return to List</a>
+                }
+            </div>
+        </div>
+    </form>
+
+</div>
+
+@section scripts {
+    <script>
+        $("#agePlaceholder").remove();
+        $("#AgeSelection")
+            .removeClass("hidden")
+            .multiselect({
+                inheritClass: true,
+                buttonWidth: "100%",
+                nonSelectedText: "",
+                includeSelectAllOption: true,
+                numberDisplayed: 4
+            });
+    </script>
+}

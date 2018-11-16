@@ -26,6 +26,14 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
+        public async Task<int> GetCountByPerformerAsync(int performerId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.PerformerId == performerId)
+                .CountAsync();
+        }
+
         public async Task AddProgramAgeGroupsAsync(int programId, List<int> ageGroupIds)
         {
             var programAgeGroups = ageGroupIds
