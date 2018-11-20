@@ -2,6 +2,7 @@
 
 BLD_PUSH=false
 BLD_BRANCH_FOUND=false
+BLD_RELEASE=false
 BLD_DOCKERFILE="Dockerfile"
 BLD_COMMIT=$(git rev-parse --short HEAD)
 
@@ -32,11 +33,14 @@ if [[ $BLD_BRANCH == "master" ]]; then
 elif [[ $BLD_BRANCH == "develop" ]]; then
   BLD_DOCKER_TAG="develop"
   BLD_PUSH=true
-  #BLD_DOCKERFILE="dev/Dockerfile"
-  #echo "=== Using $BLD_DOCKERFILE to add database migration for $BLD_BRANCH build..."
+  BLD_DOCKERFILE="dev/Dockerfile"
+  echo "=== Using $BLD_DOCKERFILE to add database migration for $BLD_BRANCH build..."
 elif [[ $BLD_BRANCH =~ v([0-9]+\.[0-9]+\.[0-9]+.*) || $BLD_BRANCH =~ release/([0-9]+\.[0-9]+\.[0-9]+.*) ]]; then
-  BLD_DOCKER_TAG=v${BASH_REMATCH[1]}
+  BLD_RELEASE_VERSION=${BASH_REMATCH[1]}
+  BLD_DOCKER_TAG=v${BLD_RELEASE_VERSION}
+  BLD_RELEASE=true
   BLD_PUSH=true
+  echo "=== Building release artifacts for $BLD_RELEASE_VERSION"
 else
   BLD_DOCKER_TAG=$BLD_COMMIT
 fi
@@ -71,4 +75,26 @@ else
       docker logout $BLD_DOCKER_HOST
     fi
   fi
+fi
+
+if [[ $BLD_RELEASE = "true" ]]; then
+  echo "=== Copying files out of docker image to build release $BLD_RELEASE_VERSION..."
+  
+  mkdir GreatReadingAdventure-$BLD_RELEASE_VERSION
+  
+  docker run --rm --entrypoint "/bin/bash" -v $(pwd)/GreatReadingAdventure-$BLD_RELEASE_VERSION:/release $BLD_DOCKER_IMAGE:$BLD_DOCKER_TAG -c "cp -a /app/* /release/"
+
+  echo "=== Building GreatReadingAdventure-$BLD_RELEASE_VERSION-noavatars.zip"
+  zip -q -r9 GreatReadingAdventure-$BLD_RELEASE_VERSION-noavatars.zip GreatReadingAdventure-$BLD_RELEASE_VERSION/
+  du -sch GreatReadingAdventure-$BLD_RELEASE_VERSION-noavatars.zip
+
+  echo "=== Downloading and decompressing avatar package"
+  curl -L -o defaultavatars.zip https://github.com/MCLD/greatreadingadventure/releases/download/v4.0.0/defaultavatars-4.0.0.zip
+  mkdir GreatReadingAdventure-$BLD_RELEASE_VERSION/assets
+  unzip -q defaultavatars.zip -d GreatReadingAdventure-$BLD_RELEASE_VERSION/assets
+  rm defaultavatars.zip
+  
+  echo "=== Building GreatReadingAdventure-$BLD_RELEASE_VERSION.zip"
+  zip -q -r9 GreatReadingAdventure-$BLD_RELEASE_VERSION.zip GreatReadingAdventure-$BLD_RELEASE_VERSION
+  du -sch GreatReadingAdventure-$BLD_RELEASE_VERSION.zip
 fi
