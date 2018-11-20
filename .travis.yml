@@ -1,13 +1,12 @@
 # Great Reading Adventure Travis CI Docker build file
 
 os: linux
-dist: trusty
-sudo: required
+dist: xenial
 
 language: bash
 
 git:
-  depth: 3
+  depth: 1
 
 services:
   - docker
