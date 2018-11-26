@@ -1,12 +1,14 @@
 # Application Settings
 
-ASP.NET Core can check several locations for configuration settings. It checks the following places in order:
+The GRA checks several locations for configuration settings:
 
-1. `appsettings.json` in the deployed application directory (where the `GRA.dll` and `GRA.Web.dll` files are)
-2. `shared/appsettings.json` in the deployed application directory - settings in this file override any settings in the top level `appsettings.json` file
-3. Environment variables - any configured environment variables are passed into the software. If you don't wish to put sensitive information (such as your configuration string) into a file in the application directory you can [configure those items via environment settings](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-2.1#environment-variables-configuration-provider).
+1. First the `appsettings.json` file in the deployed application directory (where the `GRA.dll` and `GRA.Web.dll` files are)
+2. Next, the `shared/appsettings.json` in the deployed application directory - settings in this file override any settings in the top level `appsettings.json` file
+3. Finally the GRA checks environment variables - any configured environment variables are passed into the software. If you don't wish to put sensitive information (such as your configuration string) into a file in the application directory you can [configure those items via environment settings](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/#environment-variables-configuration-provider).
 
-The majority of the software configuration occurs in the `appsettings.json` file which is a [JSON-formatted configuration file](https://json.org/example.html).
+**Please note:** Application settings are configured in a [JSON](https://json.org/example.html) or "JavaScript Object Notation" file. This file can be edited with any text editor (such as notepad.exe) but must be in a specific format. You can find validators online which will help you ensure that the syntax of the file is correct. Also note that when a backslash (`\`) or double quote (`"`) appears within quotes (for example in the database password) it must be escaped, meaning a backslash should appear prior to the escaped character (e.g. `\\` or `\"`).
+
+Any settings below not marked with a version number were added in v4.0.
 
 ## Connection strings
 
@@ -43,7 +45,7 @@ These settings are used when the program runs for the first time to insert some 
 
 ## Static file settings
 
-- `GraContentDirectory` - defaults to "content/shared", the path to the shared content files for this instance of the application
+- `GraContentDirectory` - defaults to "shared/content", the path to the shared content files for this instance of the application
 - `GraContentPath` - defaults to "content", the URL path to the files in the `GraContentDirectory` (e.g. by default accessing /content/ with your Web browser serves files off the disk from the content/shared directory)
 
 ## Distributed cache and multiple front-end settings

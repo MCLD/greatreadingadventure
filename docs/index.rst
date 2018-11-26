@@ -43,7 +43,7 @@ This manual is split into several main sections:
    installation/requirements-checklist
    installation/create-the-database
    installation/configuration
-   installation/install-the-software-windows
+   installation/install-the-software
    installation/upgrading
 
 .. _setup-docs:

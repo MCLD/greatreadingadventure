@@ -22,12 +22,14 @@ The Great Reading Adventure is open source software developed with the help of [
 - [Caris O'Malley](https://www.linkedin.com/in/caris-o-malley-28b5a547) &#9734;
 - Brianna King
 - Danette Barton
-- [Daniel Messer](http://cyberpunklibrarian.com/)
+- [Daniel Messer](https://cyberpunklibrarian.com/)
 - [Erin MacFarlane](https://www.linkedin.com/in/erin-macfarlane-407646118)
 - [Heather Hershey](https://www.linkedin.com/in/heatherhershey)
 - [Holly Brennan](https://www.linkedin.com/in/holly-brennan-76450270)
 - [Lindsey Powers](https://www.linkedin.com/in/lindsey-powers-a3422730)
 - [Lucas Gonzalez](http://diffracted.com/)
+- [Paula Wilson](https://www.linkedin.com/in/apaulawilson)
+- [Tammy Gross](https://www.tamdoll.com/)
 - [Tara Carpenter](http://www.taracarpenter.com/)
 - [Tony Apodaca](https://antonioramonapodaca.wordpress.com/)
 
@@ -37,7 +39,7 @@ The Great Reading Adventure is open source software developed with the help of [
 - [AppVeyor](http://www.appveyor.com/) - continuous integration, ensuring code check-ins don't break Windows builds
 - [Codacy](https://www.codacy.com/) - automated code reviews and code analytics
 - [Discourse](https://www.discourse.org/) - powers [forum.greatreadingadventure.com](http://forums.greatreadingadventure.com)
-- [Docker](https://www.docker.com/) - containerized deployment
+- [Docker](https://www.docker.com/) - containerized builds and deployment
 - [Eleven Giants](http://www.elevengiants.com/) - helped with extraction of avatars from the Glitch public domain game art
 - [Favicon Generator. For real.](https://realfavicongenerator.net/) - generate icons for many platforms
 - [GitHub](https://github.com/) - hosts the source code, issue tracker, Wiki, [www.greatreadingadventure.com](http://www.greatreadingadventure.com/) and more
