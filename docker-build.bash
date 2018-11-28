@@ -40,6 +40,11 @@ elif [[ $BLD_BRANCH =~ v([0-9]+\.[0-9]+\.[0-9]+.*) || $BLD_BRANCH =~ release/([0
   BLD_DOCKER_TAG=v${BLD_RELEASE_VERSION}
   BLD_RELEASE=true
   BLD_PUSH=true
+  echo "=== Downloading and decompressing avatar package"
+  curl -L -o defaultavatars.zip https://github.com/MCLD/greatreadingadventure/releases/download/v4.0.0/defaultavatars-4.0.0.zip
+  mkdir src/GRA.Web/assets
+  unzip -q defaultavatars.zip -d src/GRA.Web/assets
+  rm defaultavatars.zip
   echo "=== Building release artifacts for $BLD_RELEASE_VERSION"
 else
   BLD_DOCKER_TAG=$BLD_COMMIT
@@ -66,7 +71,7 @@ else
         echo "=== Pushing Docker image: $BLD_DOCKER_REPOSITORY/$BLD_DOCKER_IMAGE:$BLD_DOCKER_TAG to $BLD_DOCKER_HOST"
       fi
       echo "=== Authenticating..."
-      echo "$BLD_DOCKER_PASSWORD" | docker login -u "$BLD_DOCKER_USERNAME" --password-stdin $BLD_DOCKER_HOST || exit $?  
+      echo "$BLD_DOCKER_PASSWORD" | docker login -u "$BLD_DOCKER_USERNAME" --password-stdin $BLD_DOCKER_HOST || exit $?
       echo "=== Tagging image $BLD_DOCKER_IMAGE:$BLD_DOCKER_TAG as $BLD_DOCKER_REPOSITORY/$BLD_DOCKER_IMAGE:$BLD_DOCKER_TAG"
       docker tag $BLD_DOCKER_IMAGE:$BLD_DOCKER_TAG $BLD_DOCKER_REPOSITORY/$BLD_DOCKER_IMAGE:$BLD_DOCKER_TAG
       echo "=== Pushing image $BLD_DOCKER_REPOSITORY/$BLD_DOCKER_IMAGE:$BLD_DOCKER_TAG"
@@ -79,21 +84,9 @@ fi
 
 if [[ $BLD_RELEASE = "true" ]]; then
   echo "=== Copying files out of docker image to build release $BLD_RELEASE_VERSION..."
-  
   mkdir GreatReadingAdventure-$BLD_RELEASE_VERSION
-  
   docker run --rm --entrypoint "/bin/bash" -v $(pwd)/GreatReadingAdventure-$BLD_RELEASE_VERSION:/release $BLD_DOCKER_IMAGE:$BLD_DOCKER_TAG -c "cp -a /app/* /release/"
 
-  echo "=== Building GreatReadingAdventure-$BLD_RELEASE_VERSION-noavatars.zip"
-  zip -q -r9 GreatReadingAdventure-$BLD_RELEASE_VERSION-noavatars.zip GreatReadingAdventure-$BLD_RELEASE_VERSION/
-  du -sch GreatReadingAdventure-$BLD_RELEASE_VERSION-noavatars.zip
-
-  echo "=== Downloading and decompressing avatar package"
-  curl -L -o defaultavatars.zip https://github.com/MCLD/greatreadingadventure/releases/download/v4.0.0/defaultavatars-4.0.0.zip
-  mkdir GreatReadingAdventure-$BLD_RELEASE_VERSION/assets
-  unzip -q defaultavatars.zip -d GreatReadingAdventure-$BLD_RELEASE_VERSION/assets
-  rm defaultavatars.zip
-  
   echo "=== Building GreatReadingAdventure-$BLD_RELEASE_VERSION.zip"
   zip -q -r9 GreatReadingAdventure-$BLD_RELEASE_VERSION.zip GreatReadingAdventure-$BLD_RELEASE_VERSION
   du -sch GreatReadingAdventure-$BLD_RELEASE_VERSION.zip

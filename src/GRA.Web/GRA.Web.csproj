@@ -47,9 +47,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="wwwroot\**\*;assets\**\*;**\*.cshtml;appsettings.json;web.config">
+    <Content Update="wwwroot\**\*;**\*.cshtml;appsettings.json;web.config">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ContentWithTargetPath Include="assets\**\*" TargetPath="assets\%(RecursiveDir)%(FileName)%(Extension)">
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+    </ContentWithTargetPath>
   </ItemGroup>
 
   <ItemGroup>

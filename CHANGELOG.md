@@ -24,6 +24,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### Removed
 - Hack to get around Antiforgery issue (Fix #357)
+- Structure for having a "no avatars" release build
 
 ## [4.0.0] - 2018-10-09
 ### Added
