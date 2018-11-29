@@ -27,7 +27,6 @@ namespace GRA.Controllers.MissionControl
         private const int ExcelPaddingCharacters = 1;
 
         private readonly ILogger<ReportingController> _logger;
-        private readonly IConfiguration _config;
         private readonly ReportService _reportService;
         private readonly SchoolService _schoolService;
         private readonly SiteService _siteService;
@@ -43,7 +42,6 @@ namespace GRA.Controllers.MissionControl
             VendorCodeService vendorCodeService) : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
-            _config = context.Config ?? throw new ArgumentNullException(nameof(context.Config));
             _reportService = Require.IsNotNull(reportService, nameof(reportService));
             _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
             _siteService = Require.IsNotNull(siteService, nameof(siteService));
