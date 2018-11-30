@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
@@ -8,7 +9,7 @@ namespace GRA.CommandLine.FakeWeb
     public class FakeSession : ISession
     {
         private Dictionary<string, byte[]> _values = new Dictionary<string, byte[]>();
-        private string _id;
+        private readonly string _id;
 
         public FakeSession()
         {
@@ -42,12 +43,12 @@ namespace GRA.CommandLine.FakeWeb
             _values = new Dictionary<string, byte[]>();
         }
 
-        public Task CommitAsync()
+        public Task CommitAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return null;
         }
 
-        public Task LoadAsync()
+        public Task LoadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return null;
         }

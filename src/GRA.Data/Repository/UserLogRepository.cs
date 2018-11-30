@@ -1,23 +1,32 @@
-﻿using AutoMapper.QueryableExtensions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System;
 
 namespace GRA.Data.Repository
 {
-    public class UserLogRepository
-        : AuditingRepository<Model.UserLog, Domain.Model.UserLog>, IUserLogRepository
+    public class UserLogRepository : AuditingRepository<Model.UserLog, UserLog>, IUserLogRepository
     {
-        public const int MaxMinutesForReporting = 0;
+        public readonly int MaximumAllowableActivity;
 
         public UserLogRepository(ServiceFacade.Repository repositoryFacade,
             ILogger<UserLogRepository> logger) : base(repositoryFacade, logger)
         {
+            var configuredMaxActivity
+                = repositoryFacade.config[ConfigurationKey.MaximumAllowableActivity];
+            if (!string.IsNullOrEmpty(configuredMaxActivity))
+            {
+                if (!int.TryParse(configuredMaxActivity, out MaximumAllowableActivity))
+                {
+                    _logger.LogError("Could not configure maximum allowable activity: {0} in configuration is not a number",
+                        ConfigurationKey.MaximumAllowableActivity);
+                }
+            }
         }
 
         public async Task<IEnumerable<UserLog>> PageHistoryAsync(int userId, int skip, int take)
@@ -96,7 +105,7 @@ namespace GRA.Data.Repository
                 .CountAsync();
         }
 
-        public async override Task RemoveSaveAsync(int userId, int id)
+        public override async Task RemoveSaveAsync(int userId, int id)
         {
             var entity = await DbSet
                 .Where(_ => _.IsDeleted == false && _.Id == id)
@@ -283,36 +292,6 @@ namespace GRA.Data.Repository
             return namedResult;
         }
 
-        public async Task<long> EarnedBadgeCountAsync(ReportCriterion request)
-        {
-            var eligibleUserIds = await GetEligibleUserIds(request);
-
-            var badgeCount = DbSet
-                .AsNoTracking()
-                .Where(_ => _.BadgeId != null
-                    && _.IsDeleted == false
-                    && _.User.IsDeleted == false);
-
-            if (eligibleUserIds != null)
-            {
-                badgeCount = badgeCount.Where(_ => eligibleUserIds.Contains(_.UserId));
-            }
-
-            if (request.StartDate != null)
-            {
-                badgeCount = badgeCount
-                    .Where(_ => _.CreatedAt >= request.StartDate);
-            }
-
-            if (request.EndDate != null)
-            {
-                badgeCount = badgeCount
-                    .Where(_ => _.CreatedAt <= request.EndDate);
-            }
-
-            return await badgeCount.CountAsync();
-        }
-
         public async Task<long> GetEarningsOverPeriodAsync(int userId, ReportCriterion criterion)
         {
             return await DbSet
@@ -391,14 +370,14 @@ namespace GRA.Data.Repository
             if (eligibleUserIds != null)
             {
                 earnedFilter = earnedFilter.Where(_ => eligibleUserIds.Contains(_.UserId));
-                
-                if (MaxMinutesForReporting > 0)
+
+                if (MaximumAllowableActivity > 0)
                 {
                     return await _context.Users
                         .Where(_ => eligibleUserIds.Contains(_.Id))
                         .GroupJoin(earnedFilter, u => u.Id, ul => ul.UserId, (u, ul) => new { User = u, Sum = (long)ul.Sum(_ => _.ActivityEarned) })
                         .Where(_ => _.Sum > 0)
-                        .Select(_ => (_.Sum > MaxMinutesForReporting ? _.User.Program.AchieverPointAmount : _.Sum))
+                        .Select(_ => (_.Sum > MaximumAllowableActivity ? _.User.Program.AchieverPointAmount : _.Sum))
                         .SumAsync(_ => _);
                 }
             }
@@ -458,7 +437,7 @@ namespace GRA.Data.Repository
         }
 
 
-        async public Task<ICollection<int>> UserIdsEarnedBadgeAsync(int badgeId, ReportCriterion criterion)
+        public async Task<ICollection<int>> UserIdsEarnedBadgeAsync(int badgeId, ReportCriterion criterion)
         {
             return await GetEligibleUserLogs(criterion)
                 .Where(_ => _.BadgeId == badgeId)
@@ -466,7 +445,7 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        async public Task<ICollection<int>> UserIdsCompletedChallengesAsync(int challengeId, ReportCriterion criterion)
+        public async Task<ICollection<int>> UserIdsCompletedChallengesAsync(int challengeId, ReportCriterion criterion)
         {
             return await GetEligibleUserLogs(criterion)
                 .Where(_ => _.ChallengeId == challengeId)

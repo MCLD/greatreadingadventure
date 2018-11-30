@@ -163,6 +163,10 @@ namespace GRA.Web
                                 break;
                             case TaskStatus.Canceled:
                                 break;
+                            default:
+                                _logger.LogError("Unknown task status: {Status}", runTask.Status);
+                                result.Error = true;
+                                break;
                         }
 
                         var last = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(runTask.Result));

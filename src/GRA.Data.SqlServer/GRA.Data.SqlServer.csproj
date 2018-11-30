@@ -1,23 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <AssemblyName>GRA.Data.SqlServer</AssemblyName>
     <PackageId>GRA.Data.SqlServer</PackageId>
-    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <NetStandardImplicitPackageVersion>2.0</NetStandardImplicitPackageVersion>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <Version>4.0.0</Version>
+    <Version>4.1.0</Version>
     <Copyright>Copyright 2017 Maricopa County Library District</Copyright>
     <PackageLicenseUrl>https://github.com/mcld/greatreadingadventure/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>http://www.greatreadingadventure.com/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/mcld/greatreadingadventure/</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
-    <Authors>Maricopa County Library District</Authors>
-    <Description>The Great Reading Adventure is a robust, open source software designed to manage library reading programs. The GRA is free to use, modify, and share.</Description>
-    <PackageTags>public-library reading-program literacy gra</PackageTags>
-    <PackageReleaseNotes>See https://github.com/MCLD/greatreadingadventure/releases/tag/v4.0.0</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,13 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="1.*" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="1.*" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="1.*" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="1.*" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.1.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.4" />
   </ItemGroup>
 
 </Project>

@@ -1,7 +1,7 @@
 ﻿
 namespace GRA.Domain.Model
 {
-    public sealed class Policy
+    public static class Policy
     {
         public const string AccessFlightController = "AccessFlightController";
         public const string AccessMissionControl = "AccessMissionControl";

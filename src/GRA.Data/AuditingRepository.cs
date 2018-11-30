@@ -23,7 +23,7 @@ namespace GRA.Data
         protected readonly Context _context;
         protected readonly ILogger _logger;
         protected readonly AutoMapper.IMapper _mapper;
-        protected readonly IConfigurationRoot _config;
+        protected readonly IConfiguration _config;
         protected readonly IDateTimeProvider _dateTimeProvider;
         protected readonly IEntitySerializer _entitySerializer;
 
@@ -273,7 +273,7 @@ namespace GRA.Data
                 {
                     _logger.LogError($"Inner exception: {ex.InnerException.Message}");
                 }
-                throw ex;
+                throw;
             }
         }
 

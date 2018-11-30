@@ -13,7 +13,7 @@ namespace GRA.Controllers.Helpers
     [HtmlTargetElement(Attributes = "sort")]
     public class SortTagHelper : TagHelper
     {
-        private IUrlHelperFactory _urlHelperFactory;
+        private readonly IUrlHelperFactory _urlHelperFactory;
 
         [HtmlAttributeName("asp-route-Sort")]
         public string sortValue { get; set; }

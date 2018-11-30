@@ -46,7 +46,10 @@ public class ProgressBar : IDisposable, IProgress<double>
     {
         lock (timer)
         {
-            if (disposed) return;
+            if (disposed)
+            {
+                return;
+            }
 
             int progressBlockCount = (int)(currentProgress * blockCount);
             int percent = (int)(currentProgress * 100);

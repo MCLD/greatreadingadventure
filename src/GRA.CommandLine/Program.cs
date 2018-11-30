@@ -6,22 +6,21 @@ using AutoMapper;
 using GRA.Abstract;
 using GRA.Domain.Service;
 using GRA.Domain.Service.Abstract;
-using Microsoft.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using System.Diagnostics;
-using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.AspNetCore.Http;
 using GRA.CommandLine.FakeWeb;
 using GRA.CommandLine.Base;
+using McMaster.Extensions.CommandLineUtils;
 
 namespace GRA.CommandLine
 {
-    class Program
+    static class Program
     {
-        private static readonly string VersionSuffix = string.Empty;
+        private const string VersionSuffix = "-alpha1";
         public static int Main(string[] args)
         {
             var sw = new Stopwatch();
@@ -46,7 +45,7 @@ namespace GRA.CommandLine
             };
             app.HelpOption("-?|-h|--help");
             app.VersionOption("--version",
-                $"Version {PlatformServices.Default.Application.ApplicationVersion}{VersionSuffix}");
+                $"Version {Assembly.GetEntryAssembly().GetName().Version}{VersionSuffix}");
 
             // default option if no command is specified
             app.OnExecute(() =>
@@ -55,17 +54,6 @@ namespace GRA.CommandLine
                 return 2;
             });
             #endregion Initial setup of CommandLineApplication
-
-            #region Default connection string settings in case we don't have a CS
-            if (string.IsNullOrEmpty(config[ConfigurationKey.DefaultCSSqlServer]))
-            {
-                config[ConfigurationKey.DefaultCSSqlServer] = DefaultConnectionString.SqlServer;
-            }
-            if (string.IsNullOrEmpty(config[ConfigurationKey.DefaultCSSQLite]))
-            {
-                config[ConfigurationKey.DefaultCSSQLite] = DefaultConnectionString.SQLite;
-            }
-            #endregion Default connection string settings in case we don't have a CS
 
             // set up our Dependency Injection collection
             var services = new ServiceCollection();
@@ -232,7 +220,7 @@ namespace GRA.CommandLine
                 Log.Logger.Fatal(ex.Message);
                 if (developMode)
                 {
-                    throw ex;
+                    throw;
                 }
             }
 

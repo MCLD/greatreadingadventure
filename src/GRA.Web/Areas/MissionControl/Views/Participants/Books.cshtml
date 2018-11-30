@@ -1,6 +1,6 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.BookListViewModel
 
-@Html.Partial("_ParticipantPartial")
+@await Html.PartialAsync("_ParticipantPartial")
 
 @if (Model.CanEditBooks)
 {

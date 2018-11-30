@@ -3,6 +3,29 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [4.1.0] - 2018-11-30
+### Added
+- Logging prior to spin-up of Web server (Fix #241)
+- Logging when site managers authenticate and when test emails are sent
+- Ability for Serilog to output to a SQL Server table
+- Application setting to support SQL Server 2008
+- Database context pooling
+- Request trace identifier to logging
+- Reverse proxy address configuration option
+- Robots noindex and nofollow to Mission Control pages (to prevent search engine crawling)
+
+### Changed
+- Upgrade from ASP.NET Core v1.1 to v2.1
+- Upgrade Font Awesome from v4.7.0 to v5.5.0
+
+### Fixed
+- Docker builds with Travis CI
+- Allow maximum allowable activity to be configured without requiring code changes
+
+### Removed
+- Hack to get around Antiforgery issue (Fix #357)
+- Structure for having a "no avatars" release build
+
 ## [4.0.0] - 2018-10-09
 ### Added
 - Mission Control location list shows a count of related events/community experiences (#322)
@@ -86,6 +109,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Added
 - Everything! First release of 4.0.
 
+[4.1.0]: https://github.com/mcld/greatreadingadventure/tree/v4.1.0
 [4.0.0]: https://github.com/mcld/greatreadingadventure/tree/v4.0.0
 [4.0.0-beta2]: https://github.com/mcld/greatreadingadventure/tree/v4.0.0-beta2
 [4.0.0-beta1]: https://github.com/mcld/greatreadingadventure/tree/v4.0.0-beta1

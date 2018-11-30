@@ -1,12 +1,14 @@
 # Application Settings
 
-ASP.NET Core can check several locations for configuration settings. It checks the following places in order:
+The GRA checks several locations for configuration settings:
 
-1. `appsettings.json` in the deployed application directory (where the `GRA.dll` and `GRA.Web.dll` files are)
-2. `shared/appsettings.json` in the deployed application directory - settings in this file override any settings in the top level `appsettings.json` file
-3. Environment varaibles - any configured environment variables are passed into the software. If you don't wish to put sensitive information (such as your configuration string) into a file in the application directory you can [configure those items via environment settings](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-1.1&tabs=basicconfiguration#configuration-by-environment).
+1. First the `appsettings.json` file in the deployed application directory (where the `GRA.dll` and `GRA.Web.dll` files are)
+2. Next, the `shared/appsettings.json` in the deployed application directory - settings in this file override any settings in the top level `appsettings.json` file
+3. Finally the GRA checks environment variables - any configured environment variables are passed into the software. If you don't wish to put sensitive information (such as your configuration string) into a file in the application directory you can [configure those items via environment settings](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/#environment-variables-configuration-provider).
 
-The majority of the software configuration occurs in the `appsettings.json` file which is a [JSON-formatted configuration file](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-1.1&tabs=basicconfiguration#json-configuration).
+**Please note:** Application settings are configured in a [JSON](https://json.org/example.html) or "JavaScript Object Notation" file. This file can be edited with any text editor (such as notepad.exe) but must be in a specific format. You can find validators online which will help you ensure that the syntax of the file is correct. Also note that when a backslash (`\`) or double quote (`"`) appears within quotes (for example in the database password) it must be escaped, meaning a backslash should appear prior to the escaped character (e.g. `\\` or `\"`).
+
+Any settings below not marked with a version number were added in v4.0.
 
 ## Connection strings
 
@@ -14,15 +16,19 @@ One connection string is required (either `SqlServer` or `SQLite`).
 
 - `SqlServer` - A SQL Server connection string
 - `SQLite` - SQLite connection information (typically the path to the SQLite database file)
-- `SqlServerSessions` - *optional* - A SQL Server connection string for [storing session data in a SQL Server database](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/app-state?view=aspnetcore-1.1&tabs=aspnetcore1x#working-with-session-state) (necessary for multiple Web servers answering requests for the same site)
+- `SqlServerSessions` - *optional* - A SQL Server connection string for [storing session data in a SQL Server database](https://docs.microsoft.com/en-us/aspnet/core/performance/caching/distributed?view=aspnetcore-2.1#using-a-sql-server-distributed-cache) (necessary for multiple Web servers answering requests for the same site)
+- `SqlServerSerilog` - *optional* - A SQL Server connection string used for [storing SQL Server application logs](https://github.com/serilog/serilog-sinks-mssqlserver); the user should have database owner access (at least initially) so that it can create the proper table for logging
 
 ## General settings
 
 - `GraConnectionStringName` - which connection string to use (either `SqlServer` or `SQLite`)
-- `GraInitialAuthCode` - the Authorization Code entered to grant users full access to the site - **it's important that the default is not kept here**
-- `GraInitialProgramSetup` - *optional* - defaults to "multiple" which creates four age-based programs and sets up a point translation of one minute read equals one point, can also be set to "single" which creates one program and sets up a point translation of one book read equals one point
-- `GraRollingLogPath` - defaults to "shared/logs", a path to save a daily-rotating log file - if `GraInstanceName` is specified in `appsettings.json` it will be included in the log file name
 - `GraCulture` - *optional* - defaults to "en-US", the culture to use for displaying things like dates and times - for valid options see the language tags listed in the Microsoft [National Language Support (NLS) API Reference](http://go.microsoft.com/fwlink/?LinkId=200048)
+- `GraInitialAuthCode` - the Authorization Code entered to grant users full access to the site - **it's important that you change this!**
+- `GraInitialProgramSetup` - *optional* - defaults to "multiple" which creates four age-based programs and sets up a point translation of one minute read equals one point, can also be set to "single" which creates one program and sets up a point translation of one book read equals one point
+- `GraMaximumAllowableActivity` (v4.1) - *optional* - for reporting purposes, limit participant activity above this amount to the "achiever" level configured for the participant's program
+- `GraReverseProxyAddress` - *optional* - if provided, internally the software will disregard proxy IP addresses
+- `GraRollingLogPath` - defaults to "shared/logs", a path to save a daily-rotating log file - if `GraInstanceName` is specified in `appsettings.json` it will be included in the log file name
+- `GraSqlServer2008` - *optional* - if you are using SQL Server 2008, put text into this setting (any text will do)
 
 ## Default settings
 
@@ -39,15 +45,17 @@ These settings are used when the program runs for the first time to insert some 
 
 ## Static file settings
 
-- `GraContentDirectory` - defaults to "content/shared", the path to the shared content files for this instance of the application
+- `GraContentDirectory` - defaults to "shared/content", the path to the shared content files for this instance of the application
 - `GraContentPath` - defaults to "content", the URL path to the files in the `GraContentDirectory` (e.g. by default accessing /content/ with your Web browser serves files off the disk from the content/shared directory)
 
-
-## Settings for multiple front-end deployments
-
-- `GraDataProtectionPath` - defaults to "shared/dataprotection", location to save the [data protection key](https://docs.microsoft.com/en-us/aspnet/core/security/data-protection/?view=aspnetcore-1.1)
+## Distributed cache and multiple front-end settings
 - `GraApplicationDescriminator` - defaults to "gra", application discriminator to use for data protection
+- `GraDataProtectionPath` - defaults to "shared/dataprotection", location to save the [data protection key](https://docs.microsoft.com/en-us/aspnet/core/security/data-protection/?view=aspnetcore-2.1) if not using Redis as a distributed cache
+- `GraDistributedCache` - *optional* - select a system to use for distributed cache: "Redis" or "SqlServer", anything else uses an in-memory distributed cache
 - `GraInstanceName` - the name of this deployed instance
+- `GraRedisConfiguration` - *optional* - address of a Redis server for distributed cache, only used if `GraDistributedCache` is set to "Redis"
+- `GraSqlSessionSchemaName` - *optional* - the schema to use for the SQL Server distributed cache table, defaults to "dbo"
+- `GraSqlSessionTable` - *optional* - the table to use for the SQL Server distributed cache, defaults to "Sessions"
 
 ## Logging with Serilog
 

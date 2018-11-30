@@ -1,22 +1,23 @@
-﻿using GRA.Domain.Model;
-using GRA.Domain.Report;
-using GRA.Domain.Repository;
-using GRA.Domain.Service.Abstract;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
+using GRA.Domain.Model;
+using GRA.Domain.Report;
 using GRA.Domain.Report.Abstract;
+using GRA.Domain.Repository;
+using GRA.Domain.Service.Abstract;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace GRA.Domain.Service
 {
     public class ReportService : Abstract.BaseUserService<ReportService>
     {
-        private readonly IMemoryCache _memoryCache;
         private readonly IBranchRepository _branchRepository;
+        private readonly IDistributedCache _cache;
         private readonly IServiceProvider _serviceProvider;
         private readonly IReportCriterionRepository _reportCriterionRepository;
         private readonly IReportRequestRepository _reportRequestRepository;
@@ -27,7 +28,7 @@ namespace GRA.Domain.Service
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             IServiceProvider serviceProvider,
-            IMemoryCache memoryCache,
+            IDistributedCache cache,
             IBranchRepository branchRepository,
             IReportCriterionRepository reportCriterionRepository,
             IReportRequestRepository reportRequestRepository,
@@ -36,16 +37,21 @@ namespace GRA.Domain.Service
             ISystemRepository systemRepository)
             : base(logger, dateTimeProvider, userContextProvider)
         {
-            _serviceProvider = Require.IsNotNull(serviceProvider, nameof(serviceProvider));
-            _memoryCache = Require.IsNotNull(memoryCache, nameof(memoryCache));
-            _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
-            _reportCriterionRepository = Require.IsNotNull(reportCriterionRepository,
-                nameof(reportCriterionRepository));
-            _reportRequestRepository = Require.IsNotNull(reportRequestRepository,
-                nameof(reportRequestRepository));
-            _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
-            _userLogRepository = Require.IsNotNull(userLogRepository, nameof(userLogRepository));
-            _systemRepository = Require.IsNotNull(systemRepository, nameof(systemRepository));
+            _serviceProvider = serviceProvider
+                ?? throw new ArgumentNullException(nameof(serviceProvider));
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
+            _branchRepository = branchRepository
+                ?? throw new ArgumentNullException(nameof(branchRepository));
+            _reportCriterionRepository = reportCriterionRepository
+                ?? throw new ArgumentNullException(nameof(reportCriterionRepository));
+            _reportRequestRepository = reportRequestRepository
+                ?? throw new ArgumentNullException(nameof(reportRequestRepository));
+            _userRepository = userRepository
+                ?? throw new ArgumentNullException(nameof(userRepository));
+            _userLogRepository = userLogRepository
+                ?? throw new ArgumentNullException(nameof(userLogRepository));
+            _systemRepository = systemRepository
+                ?? throw new ArgumentNullException(nameof(systemRepository));
         }
 
         public async Task<StatusSummary> GetCurrentStatsAsync(ReportCriterion request)
@@ -55,11 +61,11 @@ namespace GRA.Domain.Service
             {
                 request.SiteId = GetCurrentSiteId();
             }
-            string cacheKey = $"{CacheKey.CurrentStats}s{request.SiteId}p{request.ProgramId}sys{request.SystemId}b{request.BranchId}";
-            var summary = _memoryCache.Get<StatusSummary>(cacheKey);
-            if (summary == null)
+            string cacheKey = $"s{request.SiteId}.p{request.ProgramId}.sys{request.SystemId}.b{request.BranchId}.{CacheKey.CurrentStats}";
+            var summaryJson = _cache.GetString(cacheKey);
+            if (string.IsNullOrEmpty(summaryJson))
             {
-                summary = new StatusSummary
+                var summary = new StatusSummary
                 {
                     RegisteredUsers = await _userRepository.GetCountAsync(request),
                     Achievers = await _userRepository.GetAchieverCountAsync(request),
@@ -69,11 +75,13 @@ namespace GRA.Domain.Service
                     BadgesEarned = await _userLogRepository.EarnedBadgeCountAsync(request),
                     DaysUntilEnd = await GetDaysUntilEnd()
                 };
-                _memoryCache.Set(cacheKey,
-                    summary,
-                    new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
+                _cache.SetString(cacheKey, JsonConvert.SerializeObject(summary), ExpireIn());
+                return summary;
             }
-            return summary;
+            else
+            {
+                return JsonConvert.DeserializeObject<StatusSummary>(summaryJson);
+            }
         }
 
         public async Task<int?> GetDaysUntilEnd()
@@ -105,17 +113,18 @@ namespace GRA.Domain.Service
 
                 criterion = await _reportCriterionRepository.AddSaveNoAuditAsync(criterion);
 
-                var request = await _reportRequestRepository.AddSaveNoAuditAsync(new ReportRequest
-                {
-                    CreatedAt = criterion.CreatedAt,
-                    CreatedBy = criterion.CreatedBy,
-                    ReportCriteriaId = criterion.Id,
-                    ReportId = reportId,
-                    Name = GetReportList().Where(_ => _.Id == reportId).SingleOrDefault()?.Name,
-                    SiteId = criterion.SiteId,
-                });
+                var reportRequest = await _reportRequestRepository
+                    .AddSaveNoAuditAsync(new ReportRequest
+                    {
+                        CreatedAt = criterion.CreatedAt,
+                        CreatedBy = criterion.CreatedBy,
+                        ReportCriteriaId = criterion.Id,
+                        ReportId = reportId,
+                        Name = GetReportList().Where(_ => _.Id == reportId).SingleOrDefault()?.Name,
+                        SiteId = criterion.SiteId,
+                    });
 
-                return request.Id;
+                return reportRequest.Id;
             }
             else
             {
@@ -139,8 +148,7 @@ namespace GRA.Domain.Service
                 BaseReport report = null;
                 ReportRequest _request = null;
 
-                int reportRequestId = 0;
-                if (!int.TryParse(reportRequestIdString, out reportRequestId))
+                if (!int.TryParse(reportRequestIdString, out int reportRequestId))
                 {
                     _logger.LogError($"Couldn't covert report request id {reportRequestIdString} to a number.");
                     return new OperationStatus

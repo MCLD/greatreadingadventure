@@ -5,11 +5,12 @@ using System.Threading.Tasks;
 
 namespace GRA
 {
-    public sealed class CacheKey
+    public static class CacheKey
     {
-        public const string CurrentStats = "CurrentStats";
-        public const string SitePaths = "SitePaths";
-        public const string UnhandledMailCount = "UnhanledMailCount";
-        public const string UserUnreadMailCount = "UserUnreadMailCount";
+        public static readonly string CurrentStats = "CurrentStats";
+        public static readonly string Sites = "Sites";
+        public static readonly string SiteSettings = "SiteSettings";
+        public static readonly string UnhandledMailCount = "UnhandledMailCount";
+        public static readonly string UserUnreadMailCount = "UserUnreadMailCount";
     }
 }

@@ -1,19 +1,24 @@
-﻿using GRA.Domain.Model;
-using Microsoft.Extensions.Logging;
+﻿using System;
 using System.Security.Claims;
+using GRA.Domain.Model;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Service.Abstract
 {
     public abstract class BaseUserService<Service> : BaseService<Service>
     {
         protected readonly IUserContextProvider _userContextProvider;
-        public BaseUserService(ILogger<Service> logger, 
+        protected BaseUserService(ILogger<Service> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider)
             : base(logger, dateTimeProvider)
         {
-            _userContextProvider = Require.IsNotNull(userContextProvider, nameof(userContextProvider));
+            _userContextProvider = userContextProvider
+                ?? throw new ArgumentNullException(nameof(userContextProvider));
         }
+
+        protected const int DefaultCacheExpiration = 5;
 
         private UserContext _userContext = null;
         private ClaimsPrincipal _currentUser = null;
@@ -53,7 +58,6 @@ namespace GRA.Domain.Service.Abstract
         {
             var currentUser = GetAuthUser();
             return _userContextProvider.UserHasPermission(currentUser, permission.ToString());
-            //return new UserClaimLookup(currentUser).UserHasPermission(permission.ToString());
         }
 
         protected int GetClaimId(string claimType)
@@ -96,7 +100,8 @@ namespace GRA.Domain.Service.Abstract
         protected void VerifyCanHouseholdAction()
         {
             var userContext = GetUserContext();
-            if (userContext.SiteStage != SiteStage.ProgramOpen && userContext.SiteStage != SiteStage.RegistrationOpen)
+            if (userContext.SiteStage != SiteStage.ProgramOpen
+                && userContext.SiteStage != SiteStage.RegistrationOpen)
             {
                 throw new GraException("These changes cannot be made at this time.");
             }
@@ -134,6 +139,13 @@ namespace GRA.Domain.Service.Abstract
         public void ClearCachedUserContext()
         {
             _userContext = null;
+        }
+
+        protected DistributedCacheEntryOptions ExpireIn(int? minutes = null)
+        {
+            var fromMinutes = new TimeSpan(0, minutes ?? DefaultCacheExpiration, 0);
+            return new DistributedCacheEntryOptions()
+                .SetAbsoluteExpiration(fromMinutes);
         }
     }
 }

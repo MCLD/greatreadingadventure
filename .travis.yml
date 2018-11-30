@@ -1,31 +1,14 @@
 # Great Reading Adventure Travis CI Docker build file
 
 os: linux
-dist: trusty
-sudo: required
+dist: xenial
 
 language: bash
 
 git:
-  depth: 3
+  depth: 1
 
 services:
   - docker
 
-script: bash docker-build.sh
-
-after_success:
-  - |
-    if [[ "$DOCKER_USERNAME" != "" ]] && [[ "$DOCKER_PASSWORD" != "" ]]; then
-        if [[ $TRAVIS_BRANCH == "master" ]]; then
-          echo "Pushing docker image mcld/gra:latest to Docker Hub"
-          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-          docker push mcld/gra:latest
-          docker logout
-        elif [[ $TRAVIS_BRANCH == "develop" || $TRAVIS_BRANCH =~ (v[0-9]+\.[0-9]+\.[0-9]+.*) ]]; then
-          echo "Pushing docker image mcld/gra:$TRAVIS_BRANCH to Docker Hub"
-          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-          docker push mcld/gra:$TRAVIS_BRANCH
-          docker logout
-        fi
-    fi
+script: bash docker-build.bash

@@ -106,7 +106,8 @@ namespace GRA.Domain.Service
             {
                 if (filter.IsActive == false)
                 {
-                    if (!HasPermission(Permission.ActivateSystemChallenges) && !HasPermission(Permission.ActivateAllChallenges))
+                    if (!HasPermission(Permission.ActivateSystemChallenges)
+                        && !HasPermission(Permission.ActivateAllChallenges))
                     {
                         _logger.LogError($"User {authUserId} doesn't have permission to view pending challenges.");
                         throw new Exception("Permission denied.");

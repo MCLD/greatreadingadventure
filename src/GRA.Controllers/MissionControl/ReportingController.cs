@@ -11,6 +11,7 @@ using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -54,7 +55,26 @@ namespace GRA.Controllers.MissionControl
         public IActionResult Index()
         {
             PageTitle = "Select a Report";
-            return View(_reportService.GetReportList());
+            var viewModel = new ReportIndexViewModel
+            {
+                Reports = _reportService.GetReportList()
+            };
+
+            var configuredMaxActivity = _config[ConfigurationKey.MaximumAllowableActivity];
+            if (!string.IsNullOrEmpty(configuredMaxActivity))
+            {
+                if (!int.TryParse(configuredMaxActivity, out int MaximumAllowableActivity))
+                {
+                    _logger.LogError("Could not configure maximum allowable activity: {0} in configuration is not a number",
+                        ConfigurationKey.MaximumAllowableActivity);
+                }
+                else
+                {
+                    viewModel.ReportingNote = $"Participants who logged more than {MaximumAllowableActivity:N0} minutes have had their activity amount reduced to the program achiever amount for reporting purposes.";
+                }
+            }
+
+            return View(viewModel);
         }
 
         [HttpGet]
@@ -307,8 +327,10 @@ namespace GRA.Controllers.MissionControl
                 DocumentFormat.OpenXml.SpreadsheetDocumentType.Workbook))
             {
                 var workbookPart = workbook.AddWorkbookPart();
-                workbook.WorkbookPart.Workbook = new Workbook();
-                workbook.WorkbookPart.Workbook.Sheets = new Sheets();
+                workbook.WorkbookPart.Workbook = new Workbook
+                {
+                    Sheets = new Sheets()
+                };
 
                 var stylesPart = workbook.WorkbookPart.AddNewPart<WorkbookStylesPart>();
                 stylesPart.Stylesheet = GetStylesheet();
@@ -594,7 +616,7 @@ namespace GRA.Controllers.MissionControl
 
         private (Cell cell, int length) CreateCell(object dataItem)
         {
-            var cell = new Cell
+            var addCell = new Cell
             {
                 CellValue = new CellValue(dataItem.ToString())
             };
@@ -603,18 +625,17 @@ namespace GRA.Controllers.MissionControl
             {
                 case int i:
                 case long l:
-                    cell.DataType = CellValues.Number;
+                    addCell.DataType = CellValues.Number;
                     break;
                 case DateTime d:
-                    cell.DataType = CellValues.Date;
+                    addCell.DataType = CellValues.Date;
                     break;
-                case null:
                 default:
-                    cell.DataType = CellValues.String;
+                    addCell.DataType = CellValues.String;
                     break;
             }
 
-            return (cell, dataItem.ToString().Length);
+            return (addCell, dataItem.ToString().Length);
         }
 
         private Stylesheet GetStylesheet()

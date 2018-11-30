@@ -6,23 +6,11 @@ The Great Reading Adventure was initially developed by the [Maricopa County Libr
 
 The Great Reading Adventure source code is distributed under [The MIT License](http://opensource.org/licenses/MIT).
 
-## This manual
-### Colophon
+## Colophon
 
 The content of this manual is part of the [open-source project on GitHub](https://github.com/MCLD/greatreadingadventure/tree/master/docs). It is generated using the following tools and technologies:
 
-* [reStructuredText](http://docutils.sourceforge.net/rst.html) and [CommonMark](http://commonmark.org/) (a fork of [Markdown](http://daringfireball.net/projects/markdown/)) text markup languages.
-* [Sphinx](http://sphinx-doc.org/) generates the manual from source files.
-* [GitHub](http://github.com/) provides version control and source code management.
-* [Read The Docs](https://readthedocs.org/) generates and hosts the online manual in [PDF](https://media.readthedocs.org/pdf/great-reading-adventure/latest/great-reading-adventure.pdf) and [HTML](http://readthedocs.org/projects/great-reading-adventure/downloads/htmlzip/latest/) formats.
-
-### Contributors
-
-* Brianna King
-* [Caris O'Malley](https://www.linkedin.com/in/caris-o-malley-28b5a547)
-* [Dan Wilcox](https://github.com/iafb/)
-* [Harald Nagel](https://haraldnagel.com/)
-* [Holly Brennan](https://www.linkedin.com/in/holly-brennan-76450270)
-* Tammy Gross
-* [Tara Carpenter](http://www.taracarpenter.com/)
-* [Tony Apodaca](https://antonioramonapodaca.wordpress.com/)
+* [reStructuredText](http://docutils.sourceforge.net/rst.html) and [CommonMark](https://commonmark.org/) (a fork of [Markdown](https://daringfireball.net/projects/markdown/)) text markup languages.
+* [Sphinx](https://www.sphinx-doc.org/en/master/) generates the manual from source files.
+* [GitHub](https://github.com/) provides version control and source code management.
+* [Read The Docs](https://readthedocs.org/) generates and hosts the online manual in [PDF](https://readthedocs.org/projects/great-reading-adventure/downloads/pdf/latest/) and [HTML](https://readthedocs.org/projects/great-reading-adventure/downloads/htmlzip/latest/) formats.

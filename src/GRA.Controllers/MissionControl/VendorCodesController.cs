@@ -53,6 +53,7 @@ namespace GRA.Controllers.MissionControl
             {
                 AlertDanger = "You must select an .xls file.";
                 ModelState.AddModelError("excelFile", "You must select an .xls file.");
+                return RedirectToAction("ImportStatus");
             }
 
             if (ModelState.ErrorCount == 0)

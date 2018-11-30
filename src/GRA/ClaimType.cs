@@ -1,12 +1,12 @@
 ﻿
 namespace GRA
 {
-    public sealed class ClaimType
+    public static class ClaimType
     {
-        public const string BranchId = "GRA.BranchId";
-        public const string Permission = "GRA.Permission";
-        public const string SiteId = "GRA.SiteId";
-        public const string SystemId = "GRA.SystemId";
-        public const string UserId = "GRA.UserId";
+        public static readonly string BranchId = "GRA.BranchId";
+        public static readonly string Permission = "GRA.Permission";
+        public static readonly string SiteId = "GRA.SiteId";
+        public static readonly string SystemId = "GRA.SystemId";
+        public static readonly string UserId = "GRA.UserId";
     }
 }

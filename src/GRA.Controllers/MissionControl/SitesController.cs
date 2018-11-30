@@ -94,7 +94,7 @@ namespace GRA.Controllers.MissionControl
                     ShowAlertDanger("Unable to update site: ", gex);
                 }
             }
-            PageTitle = PageTitle = $"Site management - {model.Name}";
+            PageTitle = $"Site management - {model.Name}";
             return View(model);
         }
 
@@ -139,7 +139,7 @@ namespace GRA.Controllers.MissionControl
                 var site = await _siteLookupService.GetByIdAsync(model.Id);
                 siteName = site.Name;
             }
-            PageTitle = PageTitle = $"Site management - {siteName}";
+            PageTitle = $"Site management - {siteName}";
             return View(model);
         }
 
@@ -178,7 +178,7 @@ namespace GRA.Controllers.MissionControl
                 var site = await _siteLookupService.GetByIdAsync(model.Id);
                 siteName = site.Name;
             }
-            PageTitle = PageTitle = $"Site management - {siteName}";
+            PageTitle = $"Site management - {siteName}";
             return View(model);
         }
 
@@ -217,7 +217,7 @@ namespace GRA.Controllers.MissionControl
                 var site = await _siteLookupService.GetByIdAsync(model.Id);
                 siteName = site.Name;
             }
-            PageTitle = PageTitle = $"Site management - {siteName}";
+            PageTitle = $"Site management - {siteName}";
             return View(model);
         }
 
@@ -337,12 +337,12 @@ namespace GRA.Controllers.MissionControl
                 var body = $"This is a test email sent by {site.Name} at {_dateTimeProvider.Now}";
                 await _emailSerivce.SendEmailToAddressAsync(GetCurrentSiteId(), emailAddress, 
                     subject, body);
-
+                _logger.LogInformation("Test email sent to {emailAddress}", emailAddress);
                 return Json(new { success = true });
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error sending test email", ex);
+                _logger.LogError(ex, "Error sending test email: {Message}", ex.Message);
                 return Json(new { Success = false, message = ex.Message });
             }
         }
