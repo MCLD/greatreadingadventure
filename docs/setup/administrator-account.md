@@ -1,8 +1,9 @@
 # Setting up your administrator account
 
-Once you can access your installation of the software, it's time to set up the initial adminsitrator account. To do this, you'll need the initial Authorization Code (configured as `GraInitialAuthCode`) that you put into the `appsettings.json` file.
+Once you can access your installation of the software, it's time to set up the initial administrator account. To do this, you'll need the initial Authorization Code (configured as `GraInitialAuthCode`) that you put into the `appsettings.json` file.
 
 ## Joining with an Authorization Code
+The easiest approach is to join and grant yourself administrative rights at the same time.
 
 1. Visit `/Join/AuthorizationCode/` in your installation
 2. Supply the Authorization Code specified as `GraInitialAuthCode` in your configuration file

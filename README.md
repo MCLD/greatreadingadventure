@@ -1,9 +1,9 @@
 # The Great Reading Adventure
 The Great Reading Adventure is a robust, open source software designed to manage library reading programs. The GRA is free to use, modify, and share. Check out [www.greatreadingadventure.com](http://www.greatreadingadventure.com/) for an overview of its functionality and capabilities.
 
-You can view the latest [release notes](https://github.com/MCLD/greatreadingadventure/releases/latest) or **[download the latest version (4.0.0)](https://github.com/MCLD/greatreadingadventure/releases/download/v4.0.0/GreatReadingAdventure-4.0.0.zip)**.
+You can view the latest [release notes](https://github.com/MCLD/greatreadingadventure/releases/latest) or **[download the latest version (4.1.0)](https://github.com/MCLD/greatreadingadventure/releases/download/v4.1.0/GreatReadingAdventure-4.1.0.zip)**.
 
-**Version 4 of The Great Reading Adventure has been rewritten using the [Microsoft .NET Core framework](https://en.wikipedia.org/wiki/.NET_Framework#.NET_Core).** This version of the GRA is cross-platform (working in Linux, macOS, and Windows). For information on installing this version please review the [System requirements](http://manual.greatreadingadventure.com/en/latest/installation/system-requirements/) in the manual. If you do not wish to use install the .NET Core runtime, you can use our prior major release: [The Great Reading Adventure v3.1.0](https://github.com/MCLD/greatreadingadventure/releases/tag/v3.1.0).
+**Version 4 of The Great Reading Adventure has been rewritten using the [Microsoft .NET Core framework](https://en.wikipedia.org/wiki/.NET_Framework#.NET_Core).** This version of the GRA is cross-platform (working in Linux, macOS, and Windows). For information on installing this version please review the [System requirements](http://manual.greatreadingadventure.com/en/latest/installation/system-requirements/) in the manual. If you do not wish to use the .NET Core runtime, you can use a prior release: [The Great Reading Adventure v3.1.0](https://github.com/MCLD/greatreadingadventure/releases/tag/v3.1.0).
 
 ## Stuck? Need help?
 You can visit the [Great Reading Adventure Forum](http://forum.greatreadingadventure.com/) for the following:

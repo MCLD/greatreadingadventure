@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
-## Unreleased
+## [4.1.0] - 2018-11-30
 ### Added
 - Logging prior to spin-up of Web server (Fix #241)
 - Logging when site managers authenticate and when test emails are sent
@@ -109,6 +109,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Added
 - Everything! First release of 4.0.
 
+[4.1.0]: https://github.com/mcld/greatreadingadventure/tree/v4.1.0
 [4.0.0]: https://github.com/mcld/greatreadingadventure/tree/v4.0.0
 [4.0.0-beta2]: https://github.com/mcld/greatreadingadventure/tree/v4.0.0-beta2
 [4.0.0-beta1]: https://github.com/mcld/greatreadingadventure/tree/v4.0.0-beta1

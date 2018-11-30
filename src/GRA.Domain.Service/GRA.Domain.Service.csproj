@@ -9,7 +9,7 @@
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <Version>4.1.0-alpha1</Version>
+    <Version>4.1.0</Version>
     <Copyright>Copyright 2017 Maricopa County Library District</Copyright>
     <PackageLicenseUrl>https://github.com/mcld/greatreadingadventure/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>http://www.greatreadingadventure.com/</PackageProjectUrl>
@@ -33,6 +33,7 @@
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.1.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="2.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.1.1" />
+    <PackageReference Include="MimeKit" Version="2.0.7" />
     <PackageReference Include="SmartFormat.NET" Version="2.3.1.1" />
     <PackageReference Include="System.Security.Claims" Version="4.3.0" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
