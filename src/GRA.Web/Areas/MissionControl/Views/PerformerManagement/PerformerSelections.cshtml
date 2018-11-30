@@ -159,7 +159,7 @@
                                             class="btn btn-xs btn-primary"
                                             data-toggle="modal"
                                             data-target="#editModal"
-                                            data-id="@branchSelection.Id">
+                                            data-selectionid="@branchSelection.Id">
                                         <span class="fa fa-edit"></span>
                                     </button>
                                 </td>
@@ -180,8 +180,8 @@
 
         $("#editModal").on("show.bs.modal", function (event) {
             var button = $(event.relatedTarget);
-            var id = button.data("id");
-            $.get(performerCalendarUrl, { branchSelectionId: id }, function (response) {
+            var selectionId = button.data("selectionid");
+            $.get(performerCalendarUrl, { performerId: "@Model.Performer.Id", branchSelectionId: selectionId }, function (response) {
                 $("#calendarContainer").html(response);
             });
         });

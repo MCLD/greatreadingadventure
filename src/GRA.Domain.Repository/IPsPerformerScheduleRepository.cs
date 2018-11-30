@@ -7,7 +7,7 @@ namespace GRA.Domain.Repository
 {
     public interface IPsPerformerScheduleRepository : IRepository<PsPerformerSchedule>
     {
-        Task<IList<PsPerformerSchedule>> GetByPerformerIdAsync(int performerId);
+        Task<List<PsPerformerSchedule>> GetByPerformerIdAsync(int performerId);
         Task<PsPerformerSchedule> GetPerformerDateScheduleAsync(int performerId, DateTime date);
         Task SetPerformerScheduleAsync(int performerId, List<PsPerformerSchedule> schedule);
         Task RemovePerformerScheduleAsync(int performerId);

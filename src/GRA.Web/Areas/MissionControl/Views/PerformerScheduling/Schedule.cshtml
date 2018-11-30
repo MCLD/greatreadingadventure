@@ -1,0 +1,108 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerScheduling.ScheduleViewModel
+
+@section Styles {
+    <style>
+        @@media print {
+            a[href]:after {
+                content: none !important;
+            }
+        }
+    </style>
+}
+
+<div class="modal fade" id="emailPrograms" tabindex="-1" role="dialog" aria-labelledby="emailProgramsLabel">
+    <div class="modal-dialog" role="document">
+        <form asp-action="EmailSchedule" method="post" role="form">
+            <input asp-for="Branch.Id" type="hidden" />
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="emailProgramsLabel">Email My Schedule</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label asp-for="Settings.ContactEmail" class="control-label">Email address:</label>
+                        <input asp-for="Settings.ContactEmail" class="form-control" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success"><span class="fa fa-paper-plane"></span> Send email</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div class="row hidden-print">
+    <div class="col-xs-12 col-sm-8 col-sm-offset-2" style="margin-top:20px;">
+        <a asp-action="Index" class="btn btn-default" style="margin-right:20px;">Back to system overview</a>
+        <button class="btn btn-primary" style="margin-right:5px;" data-toggle="modal" data-target="#emailPrograms"><span class="fa fa-envelope"></span> Email</button>
+        <button class="btn btn-primary" onclick="window.print()"><span class="fa fa-print"></span> Print</button>
+    </div>
+</div>
+
+<h1>@Model.Branch.Name Schedule</h1>
+
+@foreach (var selection in Model.Branch.Selections)
+{
+    <div class="row">
+        <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+            <hr />
+            <table class="table table-striped table-condensed">
+                @if (selection.ProgramId.HasValue)
+                {
+                    <tr style="font-size:larger">
+                        <th width="180px">Program start time@(selection.BackToBackProgram ? "s" : ""):</th>
+                        <td>@selection.RequestedStartTime.ToShortDateString() @@ @selection.RequestedStartTime.ToShortTimeString()@(selection.BackToBackProgram ? $" & {selection.RequestedStartTime.AddMinutes(selection.Program.ProgramLengthMinutes + selection.Program.BackToBackMinutes).ToShortTimeString()}" : "")</td>
+                    </tr>
+                    <tr>
+                        <th width="180px">Performer:</th>
+                        <td><a asp-action="Performer" asp-route-id="@selection.Program.PerformerId">@selection.Program.PerformerName</a></td>
+                    </tr>
+                    <tr>
+                        <th width="180px">Program:</th>
+                        <td><a asp-action="Program" asp-route-id="@selection.ProgramId">@selection.Program.Title</a></td>
+                    </tr>
+                    <tr>
+                        <th width="180px">Age group:</th>
+                        <td>@selection.AgeGroup.Name</td>
+                    </tr>
+                    <tr>
+                        <th width="180px">Total performer time:</th>
+                        <td>
+                            @selection.ScheduleDuration minutes (@selection.ScheduleStartTime.ToShortTimeString() &ndash; @selection.ScheduleStartTime.AddMinutes(selection.ScheduleDuration).ToShortTimeString())
+                            <br /><span style="font-size: small; font-weight: normal; font-style: italic;">(includes set-up and teardown)</span>
+                        </td>
+                    </tr>
+                    @if (selection.BackToBackProgram)
+                    {
+                        <tr>
+                            <th width="180px">Back-to-back selection:</th>
+                            <td>Yes</td>
+                        </tr>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(selection.SecretCode))
+                    {
+                        <tr>
+                            <th width="180px">Secret code:</th>
+                            <td>@selection.SecretCode</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <th width="180px">Kit:</th>
+                        <td><a asp-action="Kit" asp-route-id="@selection.KitId">@selection.Kit.Name</a></td>
+                    </tr>
+                    <tr>
+                        <th width="180px">Age group:</th>
+                        <td>@selection.AgeGroup.Name</td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+}

@@ -31,6 +31,8 @@ namespace GRA.Data
                 .HasKey(_ => new { _.DrawingCriterionId, _.ProgramId });
             modelBuilder.Entity<Model.RolePermission>()
                 .HasKey(_ => new { _.RoleId, _.PermissionId });
+            modelBuilder.Entity<Model.PsBackToBack>()
+                .HasKey(_ => new { _.PsAgeGroupId, _.BranchId });
             modelBuilder.Entity<Model.PsKitAgeGroup>()
                 .HasKey(_ => new { _.KitId, _.AgeGroupId });
             modelBuilder.Entity<Model.PsPerformerBranch>()
@@ -163,6 +165,7 @@ namespace GRA.Data
         public DbSet<Model.PrizeWinner> PrizeWinners { get; set; }
         public DbSet<Model.Program> Programs { get; set; }
         public DbSet<Model.PsAgeGroup> PsAgeGroups { get; set; }
+        public DbSet<Model.PsBackToBack> PsBackToBack { get; set; }
         public DbSet<Model.PsBlackoutDate> PsBlackoutDates { get; set; }
         public DbSet<Model.PsBranchSelection> PsBranchSelections { get; set; }
         public DbSet<Model.PsSettings> PsSettings { get; set; }

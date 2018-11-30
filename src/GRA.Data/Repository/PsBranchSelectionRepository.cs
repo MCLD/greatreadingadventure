@@ -18,6 +18,16 @@ namespace GRA.Data.Repository
         {
         }
 
+        public async Task<ICollection<PsBranchSelection>> GetByBranchIdAsync(int branchId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.Branch.Id == branchId)
+                .OrderBy(_ => _.SelectedAt)
+                .ProjectTo<PsBranchSelection>()
+                .ToListAsync();
+        }
+
         public async Task<int> GetCountByKitIdAsync(int kitId)
         {
             return await DbSet
@@ -70,21 +80,19 @@ namespace GRA.Data.Repository
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<bool> BranchAgeGroupAlreadySelectedAsync(int ageGroupId, 
-            int branchSelectionId)
+        public async Task<bool> BranchAgeGroupAlreadySelectedAsync(int ageGroupId, int branchId,
+            int? currentSelectionId = null)
         {
-            var branchId = await DbSet
+            var selection = DbSet
                 .AsNoTracking()
-                .Where(_ => _.Id == branchSelectionId)
-                .Select(_ => _.BranchId)
-                .FirstOrDefaultAsync();
+                .Where(_ => _.AgeGroupId == ageGroupId && _.BranchId == branchId);
 
-            return await DbSet
-                .AsNoTracking()
-                .Where(_ => _.Id != branchSelectionId
-                    && _.BranchId == branchId
-                    && _.AgeGroupId == ageGroupId)
-                .AnyAsync();
+            if (currentSelectionId.HasValue)
+            {
+                selection = selection.Where(_ => _.Id != currentSelectionId.Value);
+            }
+
+            return await selection.AnyAsync();
         }
     }
 }

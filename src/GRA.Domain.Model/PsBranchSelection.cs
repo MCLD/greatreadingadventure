@@ -7,6 +7,7 @@ namespace GRA.Domain.Model
     public class PsBranchSelection : Abstract.BaseDomainEntity
     {
         public int UserId { get; set; }
+        public User User { get; set; }
 
         [DisplayName("Branch")]
         public int BranchId { get; set; }
@@ -33,5 +34,9 @@ namespace GRA.Domain.Model
 
         [MaxLength(50)]
         public string SecretCode { get; set; }
+
+        public string StartsAt { get; set; }
+        public string EndsAt { get; set; }
+        public string Summary { get; set; }
     }
 }

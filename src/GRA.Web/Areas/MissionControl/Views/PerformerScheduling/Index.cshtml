@@ -1,0 +1,275 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerScheduling.ScheduleOverviewViewModel
+
+@{
+    var hasBackToBacks = false;
+}
+
+
+<div class="row" style="margin-top: 1rem;">
+    <div class="col-sm-8 col-sm-offset-2">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Program Selection</h3>
+            </div>
+            <div class="panel-body">
+                @if (Model.SchedulingStage < GRA.Domain.Model.PsSchedulingStage.SchedulingPreview)
+                {
+                    <p style="margin-bottom: auto;">
+                        The available programs and kits will be available to view starting on
+                        @Model.Settings.SchedulingPreview.Value.ToLongDateString(). Please come back then!
+                    </p>
+                }
+                else if (Model.SchedulingStage == GRA.Domain.Model.PsSchedulingStage.SchedulingPreview)
+                {
+                    <p>
+                        The available programs and kits are available for preview until selection
+                        begins on @Model.Settings.SchedulingOpen.Value.ToLongDateString() at @Model.Settings.SchedulingOpen.Value.ToLongTimeString().
+                    </p>
+                    <div class="col-sm-6 col-sm-offset-3">
+                        <a asp-action="Performers" class="btn btn-lg btn-default btn-block">Preview Programs</a>
+                    </div>
+                    <div class="col-sm-6">
+                        <a asp-action="Kits" class="btn btn-lg btn-info btn-block">Preview Kits</a>
+                    </div>
+                }
+                else if (Model.SchedulingStage == GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
+                {
+                    <p>
+                        Scheduling has begun! You have until @Model.Settings.SchedulingClosed.Value.ToLongDateString() at @Model.Settings.SchedulingClosed.Value.ToLongTimeString() to complete your selection.
+                    </p>
+                    <div class="col-sm-6 col-sm-offset-3">
+                        <a asp-action="Performers" class="btn btn-lg btn-default btn-block">Schedule Programs</a>
+                    </div>
+                    <div class="col-sm-6">
+                        <a asp-action="Kits" class="btn btn-lg btn-info btn-block">Select Kits</a>
+                    </div>
+                }
+                else if (Model.SchedulingStage == GRA.Domain.Model.PsSchedulingStage.RegistrationClosed)
+                {
+                    <p>
+                        Scheduling has closed, the finalized schedule will be posted on @Model.Settings.SchedulePosted.Value.ToLongDateString() at @Model.Settings.SchedulePosted.Value.ToLongTimeString(). If you have any questions please contact <a href="@($"mailto:{Model.Settings.ContactEmail}")">@Model.Settings.ContactEmail</a>
+                    </p>
+                    <div class="col-sm-6">
+                        <a asp-action="Performers" class="btn btn-lg btn-default btn-block">View Performers</a>
+                    </div>
+                    <div class="col-sm-6">
+                        <a asp-action="Kits" class="btn btn-lg btn-default btn-block">View Kits</a>
+                    </div>
+                }
+                else if (Model.SchedulingStage >= GRA.Domain.Model.PsSchedulingStage.SchedulePosted)
+                {
+                    if (Model.BranchList?.Count() > 0)
+                    {
+                        <p style="margin-bottom:0;">View finalized schedule for branch:</p>
+                        <form asp-action="Schedule" method="get" role="form">
+                            <div class="row" style="margin-bottom:2rem;">
+                                <div class="col-xs-9">
+                                    <select name="id" asp-items="Model.BranchList" class="form-control"></select>
+                                </div>
+                                <div class="col-xs-3">
+                                    <button type="submit" class="btn btn-primary">View</button>
+                                </div>
+                            </div>
+                        </form>
+                    }
+                    <p>
+                        If you have any questions please contact <a href="@($"mailto:{Model.Settings.ContactEmail}")">@Model.Settings.ContactEmail</a>
+                    </p>
+                    <div class="col-sm-6">
+                        <a asp-action="Performers" class="btn btn-lg btn-default btn-block">View Performers</a>
+                    </div>
+                    <div class="col-sm-6">
+                        <a asp-action="Kits" class="btn btn-lg btn-default btn-block">View Kits</a>
+                    </div>
+                }
+
+                @if (Model.SchedulingStage >= GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
+                {
+                    <div class="clearfix" style="margin-bottom: 3rem;"></div>
+                    <p class="lead"><strong>@Model.SystemName status</strong></p>
+                    <table class="table table-striped table-hover table-condensed"
+                           style="width: 70%;">
+                        <tr>
+                            <th>Branch</th>
+                            <th>Status</th>
+                        </tr>
+
+                        @foreach (var branch in Model.Branches)
+                        {
+                            <tr>
+                                <td>@branch.Name</td>
+                                <td>
+                                    @{int count = 0;}
+                                    @foreach (var selection in branch.Selections)
+                                    {
+                                        count++;
+                                        hasBackToBacks = hasBackToBacks || selection.BackToBackProgram;
+                                        <span class="fa-stack cursor-pointer"
+                                              title="@selection.Summary"
+                                              data-toggle="modal"
+                                              data-target="#selectionDetailsModal"
+                                              data-selectionname="@(selection.KitId.HasValue ? selection.Kit.Name : selection.Program.Title)"
+                                              data-agegroupname="@selection.AgeGroup.Name"
+                                              data-branchname="@branch.Name"
+                                              data-contactname="@selection.User.FullName"
+                                              data-contactemail="@selection.User.Email"
+                                              data-scheduled="@selection.RequestedStartTime"
+                                              data-selectedat="@selection.SelectedAt"
+                                              data-backtoback="@selection.BackToBackProgram"
+                                              data-duration="@selection.ScheduleDuration"
+                                              data-startsat="@selection.StartsAt"
+                                              data-endsat="@selection.EndsAt"
+                                              data-iskit="@selection.KitId.HasValue">
+
+                                            @if (selection.KitId.HasValue)
+                                            {
+                                                <span class="fa fa-square fa-stack-2x age-group-id-@selection.AgeGroupId"></span>
+                                                <span class="fa-stack-2x" style="color: white; font-size: small;">KIT</span>
+                                            }
+                                            else
+                                            {
+                                                @if (selection.BackToBackProgram)
+                                                {
+                                                    <span class="fa fa-plus-square fa-stack-2x age-group-id-@selection.AgeGroupId"></span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="fa fa-check-square fa-stack-2x age-group-id-@selection.AgeGroupId"></span>
+                                                }
+                                            }
+                                        </span>
+                                    }
+                                    @while (count < Model.Settings.SelectionsPerBranch)
+                                    {
+                                        count++;
+                                        <span class="fa-stack">
+                                            <span class="fa fa-square-o fa-stack-2x"></span>
+                                        </span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                    <p style="font-style: italic;">
+                        @foreach (var ageGroup in Model.AgeGroups)
+                        {
+                            <span class="age-group-id-@ageGroup.Id"
+                                  style="white-space: nowrap; display: inline-block; margin-right: 1rem;">
+                                <span class="fa fa-square"></span>
+                                @ageGroup.Name
+                            </span>
+                        }
+                        <span style="white-space: nowrap; display: inline-block; margin-right: 1rem;">
+                            <span class="fa-stack">
+                                <span class="fa fa-square fa-stack-1x"></span>
+                                <span class="fa-stack-1x" style="color: white; font-size: x-small;">KIT</span>
+                            </span>Kit
+                        </span>
+                        @if (hasBackToBacks)
+                        {
+                            <span style="white-space: nowrap; display: inline-block; margin-right: 1rem;">
+                                <span class="fa fa-plus-square"></span>
+                                Back-to-back
+                            </span>
+                        }
+                    </p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="selectionDetailsModal" tabindex="-1" role="dialog" aria-labelledby="selectionDetailsLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 id="selectionDetailsLabel">Selection details</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped table-condensed">
+                    <tr>
+                        <th>Selection:</th>
+                        <td><span id="selectionname"></span></td>
+                    </tr>
+                    <tr>
+                        <th>Branch:</th>
+                        <td><span id="modelbranchname"></span></td>
+                    </tr>
+                    <tr>
+                        <th>Age group:</th>
+                        <td><span id="modalagegroupname"></span></td>
+                    </tr>
+                    <tr id="modalscheduledrow">
+                        <th>Program start time:</th>
+                        <td><span id="modalscheduled"></span></td>
+                    </tr>
+                    <tr id="modaldurationrow">
+                        <th>
+                            Total performer time:
+                        </th>
+                        <td>
+                            <span id="modalduration"></span> minutes (<span id="modalstartsat"></span>&ndash;<span id="modalendsat"></span>)
+                            <br /><span style="font-size: small; font-weight: normal; font-style: italic;">(includes set-up and teardown)</span>
+                        </td>
+                    </tr>
+                    <tr id="modalbacktoback" style="display: none;">
+                        <th>Back-to-back selection</th>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <th>Selection made by:</th>
+                        <td><a id="modalcontactmailto"></a> at <span id="modalselectedat"></span></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background: #fcfcfc;
+    }
+
+    .panel-body p {
+        font-size: larger;
+        line-height: 3rem;
+        margin-bottom: 2rem;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        $('#selectionDetailsModal').on('show.bs.modal', function (e) {
+            var dataElement = $(e.relatedTarget).closest('[data-target]');
+            $('#selectionDetailsLabel').html(dataElement.data('selectionname') + ' @@ ' + dataElement.data('branchname'));
+            $('#selectionname').text(dataElement.data('selectionname'));
+            $('#modalagegroupname').text(dataElement.data('agegroupname'));
+            $('#modelbranchname').text(dataElement.data('branchname'));
+            $('#modalcontactmailto').attr('href', 'mailto:' + dataElement.data('contactemail'));
+            $('#modalcontactmailto').text(dataElement.data('contactname'));
+            $('#modalscheduled').text(dataElement.data('scheduled'));
+            $('#modalduration').text(dataElement.data('duration'));
+            $('#modalstartsat').text(dataElement.data('startsat'));
+            $('#modalendsat').text(dataElement.data('endsat'));
+            $('#modalselectedat').text(dataElement.data('selectedat'));
+            if (dataElement.data('backtoback') === 'True') {
+                $('#modalbacktoback').show();
+            } else {
+                $('#modalbacktoback').hide();
+            }
+            if (dataElement.data('iskit') === 'True') {
+                $('#modalscheduledrow').hide();
+                $('#modaldurationrow').hide();
+            }
+            else {
+                $('#modalscheduledrow').show();
+                $('#modaldurationrow').show();
+            }
+        })
+    </script>
+}

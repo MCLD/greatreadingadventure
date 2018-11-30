@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
-using GRA.Data.Model;
+using GRA.Domain.Model;
 using GRA.Domain.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

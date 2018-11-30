@@ -19,6 +19,22 @@ namespace GRA.Data.Repository
         {
         }
 
+        public async Task<PsPerformer> GetByIdAsync(int id, bool onlyApproved = false)
+        {
+            var performer = DbSet
+                .AsNoTracking()
+                .Where(_ => _.Id == id);
+
+            if (onlyApproved)
+            {
+                performer = performer.Where(_ => _.IsApproved);
+            }
+
+            return await performer
+                .ProjectTo<PsPerformer>()
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<PsPerformer> GetByUserIdAsync(int userId)
         {
             return await DbSet
@@ -28,9 +44,15 @@ namespace GRA.Data.Repository
                 .SingleOrDefaultAsync();     
         }
 
-        public async Task<DataWithCount<ICollection<PsPerformer>>> PageAsync(BaseFilter filter)
+        public async Task<DataWithCount<ICollection<PsPerformer>>> PageAsync(
+            PerformerSchedulingFilter filter)
         {
             var performers = DbSet.AsNoTracking();
+
+            if (filter.IsApproved.HasValue)
+            {
+                performers = performers.Where(_ => _.IsApproved == filter.IsApproved);
+            }
 
             var count = await performers.CountAsync();
 
@@ -47,12 +69,30 @@ namespace GRA.Data.Repository
             };
         }
 
-        public async Task<List<int>> GetIndexListAsync()
+        public async Task<List<int>> GetIndexListAsync(bool onlyApproved = false)
         {
-            return await DbSet
-                .AsNoTracking()
+            var performers = DbSet
+                .AsNoTracking();
+
+            if (onlyApproved)
+            {
+                performers = performers.Where(_ => _.IsApproved == true);
+            }
+
+            return await performers
                 .OrderBy(_ => _.Name)
                 .Select(_ => _.Id)
+                .ToListAsync();
+        }
+
+        public async Task<ICollection<PsAgeGroup>> GetPerformerAgeGroupsAsync(int performerId)
+        {
+            return await _context.PsPrograms
+                .AsNoTracking()
+                .Where(_ => _.PerformerId == performerId)
+                .Select(_ => _.AgeGroups)
+                .Distinct()
+                .ProjectTo<PsAgeGroup>()
                 .ToListAsync();
         }
 
@@ -61,8 +101,36 @@ namespace GRA.Data.Repository
             return await _context.PsPerformerBranches
                 .AsNoTracking()
                 .Where(_ => _.PsPerformerId == performerId)
-                .Select(_ => _.Branch).ProjectTo<Branch>()
+                .Select(_ => _.Branch)
+                .ProjectTo<Branch>()
                 .ToListAsync();
+        }
+
+        public async Task<ICollection<int>> GetPerformerBranchIdsAsync(int performerId,
+            int? systemId = null)
+        {
+            var performerBranches = _context.PsPerformerBranches
+                .AsNoTracking()
+                .Where(_ => _.PsPerformerId == performerId);
+
+            if (systemId.HasValue)
+            {
+                performerBranches = performerBranches
+                    .Where(_ => _.Branch.SystemId == systemId.Value);
+            }
+
+            return await performerBranches
+                .Select(_ => _.BranchId)
+                .ToListAsync();
+        }
+
+        public async Task<bool> GetPerformerSystemAvailability(int performerId, int systemId)
+        {
+            return await _context.PsPerformerBranches
+                .AsNoTracking()
+                .Where(_ => _.PsPerformerId == performerId 
+                    && (_.PsPerformer.AllBranches || _.Branch.SystemId == systemId))
+                .AnyAsync();
         }
 
         public async Task AddPerformerBranchListAsync(int performerId, List<int> branchIds)

@@ -47,6 +47,6 @@ namespace GRA.Data.Model
         public bool RegistrationCompleted { get; set; }
         public bool IsApproved { get; set; }
 
-        public IList<PsPerformerImage> Images { get; set; }
+        public List<PsPerformerImage> Images { get; set; }
     }
 }

@@ -55,9 +55,10 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(Schedule));
             }
 
-            var filter = new BaseFilter(page, PerformersPerPage);
+            var filter = new PerformerSchedulingFilter(page, PerformersPerPage);
 
-            var performerList = await _performerSchedulingService.GetPaginatedPerformerList(filter);
+            var performerList = await _performerSchedulingService
+                .GetPaginatedPerformerListAsync(filter);
 
             var paginateModel = new PaginateViewModel()
             {
@@ -75,8 +76,8 @@ namespace GRA.Controllers.MissionControl
             }
             foreach (var performer in performerList.Data)
             {
-                performer.ProgramCount = await _performerSchedulingService.
-                    GetPerformerProgramCountAsync(performer.Id);
+                performer.ProgramCount = await _performerSchedulingService
+                    .GetPerformerProgramCountAsync(performer.Id);
 
                 if (schedulingStage >= PsSchedulingStage.SchedulingOpen)
                 {
@@ -493,14 +494,14 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(Index));
             }
 
-            var viewModel = new ViewModel.MissionControl.PerformerManagement.ProgramViewModel()
+            var viewModel = new ProgramViewModel()
             {
                 Program = program
             };
 
-            if (program.ProgramImages?.Count > 0)
+            if (program.Images?.Count > 0)
             {
-                viewModel.Image = _pathResolver.ResolveContentPath(program.ProgramImages.First().Filename);
+                viewModel.Image = _pathResolver.ResolveContentPath(program.Images.First().Filename);
             }
 
             return View(viewModel);
@@ -680,7 +681,7 @@ namespace GRA.Controllers.MissionControl
             {
                 ProgramId = program.Id,
                 ProgramName = program.Title,
-                ProgramImages = program.ProgramImages.ToList(),
+                ProgramImages = program.Images.ToList(),
                 MaxUploadMB = MaxUploadMB
             };
             viewModel.ProgramImages.ForEach(_ => _.Filename = _pathResolver
@@ -745,7 +746,7 @@ namespace GRA.Controllers.MissionControl
             }
 
             model.ProgramName = program.Title;
-            model.ProgramImages = program.ProgramImages.ToList();
+            model.ProgramImages = program.Images.ToList();
             model.ProgramImages.ForEach(_ => _.Filename = _pathResolver.ResolveContentPath(
                 _.Filename));
             model.MaxUploadMB = MaxUploadMB;
@@ -994,8 +995,8 @@ namespace GRA.Controllers.MissionControl
             {
                 BranchSelections = branchSelections
             };
-            var startTime = performerSchedule?.StartTime ?? DateTime.Parse("8:00 AM");
-            var endTime = performerSchedule?.EndTime ?? DateTime.Parse("8:00 PM");
+            var startTime = performerSchedule?.StartTime ?? DefaultPerformerScheduleStartTime;
+            var endTime = performerSchedule?.EndTime ?? DefaultPerformerScheduleEndTime;
 
             var earliestSelection = branchSelections
                 .OrderBy(_ => _.ScheduleStartTime)
@@ -1065,7 +1066,7 @@ namespace GRA.Controllers.MissionControl
                 });
             }
 
-           try
+            try
             {
                 await _performerSchedulingService.UpdateBranchProgramSelectionAsync(branchSelection);
             }
@@ -1094,7 +1095,7 @@ namespace GRA.Controllers.MissionControl
 
             try
             {
-                await _performerSchedulingService.SetSelectionSecretCodeAsync(id, 
+                await _performerSchedulingService.SetSelectionSecretCodeAsync(id,
                     secretCode);
             }
             catch (GraException gex)
@@ -1581,10 +1582,11 @@ namespace GRA.Controllers.MissionControl
             });
         }
 
-        public async Task<JsonResult> CheckBranchAgeGroup(int ageGroupId, int branchSelectionId)
+        public async Task<JsonResult> CheckBranchAgeGroup(int ageGroupId, int branchId,
+            int? currentSelectionId = null)
         {
             var alreadySelected = await _performerSchedulingService
-                .BranchAgeGroupAlreadySelectedAsync(ageGroupId, branchSelectionId);
+                .BranchAgeGroupAlreadySelectedAsync(ageGroupId, branchId, currentSelectionId);
             if (alreadySelected)
             {
                 return Json(new

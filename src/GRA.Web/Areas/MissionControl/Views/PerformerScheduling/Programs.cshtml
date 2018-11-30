@@ -1,0 +1,71 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerScheduling.ProgramListViewModel
+
+<div class="row">
+    <div class="col-xs-12">
+        <h1>Programs</h1>
+        <ul class="nav nav-pills" style="padding: 10px 0;">
+            <li class="@(Model.AgeGroupId == null ? "active" : "")"><a asp-action="Programs">All</a></li>
+            @foreach (var ageGroup in Model.AgeGroups)
+            {
+                <li class="@(Model.AgeGroupId == ageGroup.Id ? "active" : "")"><a asp-action="Programs" asp-route-ageGroup="@ageGroup.Id">@ageGroup.Name</a></li>
+            }
+        </ul>
+        <hr />
+    </div>
+
+    <div class="col-xs-12">
+        @if (Model.Programs.Count == 0)
+        {
+            <div class="alert alert-warning">No programs found.</div>
+        }
+        else
+        {
+            <table class="table table-condensed table-bordered link-table">
+                <thead>
+                    <tr>
+                        <th>Performer</th>
+                        <th>Name</th>
+                        <th>Capacity</th>
+                        <th width="102px">Length (min)</th>
+                        <th width="196px;">Available in your system</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var program in Model.Programs)
+                    {
+                        <tr>
+                            <td class="td-class">
+                                <a asp-action="Program" asp-route-id="@program.Id" asp-route-list="true" asp-route-ageGroup="@Model.AgeGroupId" class="rowlink">
+                                    @program.PerformerName
+                                </a>
+                            </td>
+                            <td>@program.Title</td>
+                            <td>@program.MinimumCapacity &ndash; @program.MaximumCapacity</td>
+                            <td>@program.ProgramLengthMinutes</td>
+                            <td><span class="colored-icon fa @(program.AvailableInSystem ? "fa-check" : "fa-times")"></span></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            @if (Model.PaginateModel.MaxPage > 1)
+            {
+                <paginate paginateModel="@Model.PaginateModel"></paginate>
+            }
+        }
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(window).on("load", function () {
+            $(".td-class").each(function () {
+                $(this).children("a.rowlink").height($(this).height() + 11);
+            });
+        });
+        $(window).resize(function () {
+            $(".td-class").each(function () {
+                $(this).children("a.rowlink").height($(this).height() + 11);
+            });
+        });
+    </script>
+}

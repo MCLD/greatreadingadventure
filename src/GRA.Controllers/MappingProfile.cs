@@ -12,7 +12,7 @@ namespace GRA.Controllers
     {
         public MappingProfile()
         {
-            CreateMap<ViewModel.Shared.ProgramViewModel, GRA.Domain.Model.Program>().ReverseMap();
+            CreateMap<ViewModel.Shared.ProgramSettingsViewModel, GRA.Domain.Model.Program>().ReverseMap();
             CreateMap<SinglePageViewModel, User>().ReverseMap();
             CreateMap<Step1ViewModel, User>().ReverseMap();
             CreateMap<Step2ViewModel, User>().ReverseMap();

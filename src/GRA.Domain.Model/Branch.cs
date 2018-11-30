@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace GRA.Domain.Model
@@ -17,5 +18,7 @@ namespace GRA.Domain.Model
         [MaxLength(50)]
         public string Telephone { get; set; }
         public string SystemName { get; set; }
+
+        public ICollection<PsBranchSelection> Selections { get; set; }
     }
 }

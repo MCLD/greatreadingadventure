@@ -1,0 +1,172 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerScheduling.KitViewModel
+
+<div class="row">
+    <div class="col-xs-12">
+        <table style="margin:0 auto;">
+            <tr>
+                @if (Model.PrevKit.HasValue)
+                {
+                    <td style="position:absolute;">
+                        <h1>
+                            <a asp-action="Kit" asp-route-id="@Model.PrevKit" style="margin-left:-125px;"><span class="fa fa-chevron-left"></span></a>
+                        </h1>
+                    </td>
+                }
+                <td><h1>Kit</h1></td>
+                @if (Model.NextKit.HasValue)
+                {
+                    <td style="position:absolute;">
+                        <h1>
+                            <a asp-action="Kit" asp-route-id="@Model.NextKit" style="margin-left:50px;"><span class="fa fa-chevron-right"></span></a>
+                        </h1>
+                    </td>
+                }
+            </tr>
+        </table>
+        <hr />
+    </div>
+
+    <div class="col-xs-12 col-sm-5 col-md-4">
+        @if (!string.IsNullOrWhiteSpace(Model.ImagePath))
+        {
+            <div class="row" style="padding-bottom:15px;">
+                <div class="col-xs-12">
+                    <img src="~/@Model.ImagePath" class="img-responsive" margin="0 auto" />
+                </div>
+            </div>
+        }
+        @if (Model.Kit.Images.Count > 1)
+        {
+            <div class="row" style="padding-bottom:15px;">
+                <div class="col-xs-12" style="text-align:center;">
+                    <a asp-action="KitImages" asp-route-id="@Model.Kit.Id" class="btn btn-primary">View More Images</a>
+                </div>
+            </div>
+        }
+        <div class="row" style="padding-bottom:15px;">
+            <div class="col-xs-12" style="text-align:center;">
+                <a asp-action="Kits" asp-route-page="@Model.ReturnPage" class="btn btn-default">Return to List</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-7 col-md-8">
+        <div class="form-group">
+            <label>Name</label>
+            <div>@Model.Kit.Name</div>
+        </div>
+        <div class="form-group">
+            <label>Description</label>
+            <div>@Model.Kit.Description</div>
+        </div>
+        @if (!string.IsNullOrWhiteSpace(Model.Kit.Website))
+        {
+            <div class="form-group">
+                <label>Website</label>
+                <div>
+                    @if (Model.Uri != null)
+                    {
+                        <a href="@Model.Uri" target="_blank">@Model.Kit.Website</a>
+                    }
+                    else
+                    {
+                        <div>@Model.Kit.Website</div>
+                    }
+                </div>
+            </div>
+        }
+        <div class="form-group">
+            <label>Ages</label>
+            <div>
+                <ul>
+                    @foreach (var age in Model.Kit.AgeGroups)
+                    {
+                        <li>@age.Name</li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.SchedulingOpen)
+{
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="row">
+                <div class="col-xs-12">
+                    <hr />
+                    <h2>
+                        Select Kit
+                    </h2>
+                </div>
+            </div>
+            <div class="row">
+                <form asp-action="SelectKit" class="form-horizontal col-xs-12" method="post" role="form">
+                    <input asp-for="BranchSelection.KitId" value="@Model.Kit.Id" type="hidden" />
+                    <div class="form-group">
+                        <label asp-for="BranchSelection.BranchId" class="col-sm-3 control-label required-field"></label>
+                        <div class="col-sm-9">
+                            <select asp-for="BranchSelection.BranchId" asp-items="Model.BranchList" class="form-control">
+                                <option></option>
+                            </select>
+                            <span id="BranchValidationMessage" asp-validation-for="BranchSelection.BranchId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="BranchSelection.AgeGroupId" class="col-sm-3 control-label required-field"></label>
+                        <div class="col-sm-9">
+                            <select asp-for="BranchSelection.AgeGroupId" asp-items="Model.AgeGroupList" class="form-control" disabled="disabled">
+                                <option></option>
+                            </select>
+                            <span asp-validation-for="BranchSelection.AgeGroupId" class="text-danger"></span>
+                            <em>Age groups which are not available or have already been scheduled are not shown.</em>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6 col-sm-offset-3" style="margin-top: 1em;">
+                            <button type="submit" class="btn btn-lg btn-success btn-spinner" style="margin-bottom: 10px;">
+                                Select this kit in place of a program
+                                <span class="fa fa-spinner fa-pulse fa-fw hidden"></span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        var availableAgeGroupsUrl = "@Url.Action(nameof(PerformerSchedulingController.GetKitAvailableAgeGroupsAsync))";
+        $("#BranchSelection_BranchId").on("change", function () {
+            $("#BranchValidationMessage").addClass("field-validation-valid").removeClass("field-validation-error").text("");
+            var branchId = $(this).val();
+            if (branchId == "") {
+                $("#BranchSelection_AgeGroupId").val("").attr("disabled", "disabled");
+            }
+            else {
+                $.getJSON(availableAgeGroupsUrl, { branchId: $(this).val(), kitId: "@Model.Kit.Id" }, function (response) {
+                    if (response.success == true) {
+                        $("#BranchSelection_AgeGroupId").removeAttr("disabled", "disabled");
+                        $("#BranchSelection_AgeGroupId > option").each(function () {
+                            var option = $(this);
+                            if (option.val() != "") {
+                                if (response.data.indexOf(option.val()) == -1) {
+                                    option.attr("hidden", "hidden");
+                                }
+                                else {
+                                    option.removeAttr("hidden");
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        $("#BranchValidationMessage").removeClass("field-validation-valid").addClass("field-validation-error").text(response.message);
+                    }
+                });
+            }
+        });
+    </script>
+}

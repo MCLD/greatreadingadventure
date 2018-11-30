@@ -17,10 +17,9 @@ namespace GRA.Domain.Model
         [MaxLength(255, ErrorMessage = "Please enter no more than {1} characters for {0}.")]
         public string Website { get; set; }
 
-        public IList<PsKitImage> Images { get; set; }
+        public List<PsKitImage> Images { get; set; }
         public ICollection<PsAgeGroup> AgeGroups { get; set; }
 
-        [NotMapped]
         public int SelectionsCount { get; set; }
     }
 }

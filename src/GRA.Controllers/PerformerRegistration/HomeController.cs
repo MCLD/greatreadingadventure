@@ -852,10 +852,10 @@ namespace GRA.Controllers.PerformerRegistration
                 Program = program
             };
 
-            if (program.ProgramImages?.Count > 0)
+            if (program.Images?.Count > 0)
             {
                 viewModel.Image = _pathResolver.ResolveContentPath(
-                    program.ProgramImages.First().Filename);
+                    program.Images.First().Filename);
             }
 
             return View(viewModel);
@@ -886,7 +886,7 @@ namespace GRA.Controllers.PerformerRegistration
                 return RedirectToAction(nameof(Dashboard));
             }
 
-            var programImages = program.ProgramImages.ToList();
+            var programImages = program.Images.ToList();
             programImages.ForEach(_ => _.Filename = _pathResolver.ResolveContentPath(_.Filename));
 
             var viewModel = new ProgramImagesViewModel()
@@ -961,7 +961,7 @@ namespace GRA.Controllers.PerformerRegistration
                 return RedirectToAction(nameof(ProgramImages), new { id = program.Id });
             }
 
-            var programImages = program.ProgramImages.ToList();
+            var programImages = program.Images.ToList();
             programImages.ForEach(_ => _.Filename = _pathResolver.ResolveContentPath(_.Filename));
 
             model.IsEditable = schedulingStage == PsSchedulingStage.RegistrationOpen;

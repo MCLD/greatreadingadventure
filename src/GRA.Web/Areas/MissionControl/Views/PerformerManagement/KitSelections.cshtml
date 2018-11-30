@@ -13,6 +13,7 @@
                     </div>
                     <form asp-action="@nameof(PerformerManagementController.EditBranchKitSelection)" id="editKitForm" class="form-horizontal col-xs-12" method="post" role="form">
                         <input name="Id" asp-for="BranchSelection.Id" type="hidden" />
+                        <input id="branchId" type="hidden" />
                         <div class="form-group">
                             <label asp-for="BranchSelection.KitId" class="col-sm-3 control-label"></label>
                             <div class="col-sm-9">
@@ -129,6 +130,7 @@
                                         data-id="@branchSelection.Id"
                                         data-agegroupid="@branchSelection.AgeGroupId"
                                         data-agegroupname="@branchSelection.AgeGroup.Name"
+                                        data-branchid="@branchSelection.BranchId"
                                         data-branchname="@branchSelection.Branch.Name"
                                         data-systemname="@branchSelection.Branch.SystemName">
                                     <span class="fa fa-edit"></span>
@@ -151,6 +153,7 @@
         $("#editModal").on("show.bs.modal", function (event) {
             var button = $(event.relatedTarget);
             $("#BranchSelection_Id").val(button.data("id"));
+            $("#branchId").val(button.data("branchid"));
             $("#kitInformation").text(button.data("systemname") + ": " + button.data("branchname") + " – " + button.data("agegroupname") + " kit");
             $("#checkAlert").addClass("hidden");
             $("#editKit").addClass("hidden");
@@ -179,7 +182,7 @@
         });
 
         $("#BranchSelection_AgeGroupId").on("change", function () {
-            $.getJSON(checkBranchAgeGroupUrl, { branchSelectionId: $("#BranchSelection_Id").val(), ageGroupId: $(this).val() }, function (response) {
+            $.getJSON(checkBranchAgeGroupUrl, { ageGroupId: $(this).val(), branchId: $("#branchId").val(), currentSelectionIdId: $("#BranchSelection_Id").val() }, function (response) {
                 if (response.success) {
                     $("#checkAlert").removeClass("alert-danger").addClass("alert-success");
                 }

@@ -157,15 +157,15 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<DataWithCount<ICollection<PsPerformer>>> GetPaginatedPerformerList(
-            BaseFilter filter)
+        public async Task<DataWithCount<ICollection<PsPerformer>>> GetPaginatedPerformerListAsync(
+            PerformerSchedulingFilter filter)
         {
             return await _psPerformerRepository.PageAsync(filter);
         }
 
-        public async Task<List<int>> GetPerformerIndexListAsync()
+        public async Task<List<int>> GetPerformerIndexListAsync(bool onlyApproved = false)
         {
-            return await _psPerformerRepository.GetIndexListAsync();
+            return await _psPerformerRepository.GetIndexListAsync(onlyApproved);
         }
 
         public async Task<ICollection<PsBlackoutDate>> GetBlackoutDatesAsync()
@@ -193,7 +193,7 @@ namespace GRA.Domain.Service
                 blackoutDateId);
         }
 
-        public async Task<IEnumerable<PsAgeGroup>> GetAgeGroupsAsync()
+        public async Task<ICollection<PsAgeGroup>> GetAgeGroupsAsync()
         {
             return await _psAgeGroupRepository.GetAllAsync();
         }
@@ -221,9 +221,10 @@ namespace GRA.Domain.Service
         public async Task<PsPerformer> GetPerformerByIdAsync(int id,
             bool includeBranches = false,
             bool includePrograms = false,
-            bool includeSchedule = false)
+            bool includeSchedule = false,
+            bool onlyApproved = false)
         {
-            var performer = await _psPerformerRepository.GetByUserIdAsync(id);
+            var performer = await _psPerformerRepository.GetByIdAsync(id, onlyApproved);
             if (performer == null)
             {
                 throw new GraException("The requested performer could not be accessed or does not exist.");
@@ -282,9 +283,32 @@ namespace GRA.Domain.Service
             return performer;
         }
 
+        public async Task<ICollection<PsAgeGroup>> GetPerformerAgeGroupsAsync(int performerId)
+        {
+            return await _psPerformerRepository.GetPerformerAgeGroupsAsync(performerId);
+        }
+
+        public async Task<ICollection<int>> GetPerformerBranchIdsAsync(int performerId,
+            int? systemId = null)
+        {
+            return await _psPerformerRepository.GetPerformerBranchIdsAsync(performerId, systemId);
+        }
+
         public async Task<int> GetPerformerProgramCountAsync(int performerId)
         {
             return await _psProgramRepository.GetCountByPerformerAsync(performerId);
+        }
+
+        public async Task<bool> GetPerformerSystemAvailabilityAsync(int performerId, int systemId)
+        {
+            return await _psPerformerRepository.GetPerformerSystemAvailability(performerId,
+                systemId);
+        }
+
+        public async Task<ICollection<PsPerformerSchedule>> GetPerformerScheduleAsync(
+            int performerId)
+        {
+            return await _psPerformerScheduleRepository.GetByPerformerIdAsync(performerId);
         }
 
         public async Task<PsPerformerSchedule> GetPerformerDateScheduleAsync(int performerId,
@@ -607,10 +631,23 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<PsProgram> GetProgramByIdAsync(int id)
+        public async Task<DataWithCount<ICollection<PsProgram>>> GetPaginatedProgramListAsync(
+            PerformerSchedulingFilter filter)
+        {
+            return await _psProgramRepository.PageAsync(filter);
+        }
+
+        public async Task<List<int>> GetProgramIndexListAsync(int? ageGroupId = null,
+            bool onlyApproved = false)
+        {
+            return await _psProgramRepository.GetIndexListAsync(ageGroupId, onlyApproved);
+        }
+
+        public async Task<PsProgram> GetProgramByIdAsync(int id,
+            bool onlyApproved = false)
         {
             var authId = GetClaimId(ClaimType.UserId);
-            var program = await _psProgramRepository.GetByIdAsync(id);
+            var program = await _psProgramRepository.GetByIdAsync(id, onlyApproved);
             if (program == null)
             {
                 throw new GraException("The requested program could not be accessed or does not exist.");
@@ -701,7 +738,7 @@ namespace GRA.Domain.Service
             var ageGroupIds = program.AgeGroups.Select(_ => _.Id).ToList();
             await _psProgramRepository.RemoveProgramAgeGroupsAsync(programId, ageGroupIds);
 
-            var images = program.ProgramImages;
+            var images = program.Images;
             foreach (var image in images)
             {
                 await RemoveProgramImageAsync(image);
@@ -912,6 +949,69 @@ namespace GRA.Domain.Service
             }
         }
 
+        public async Task<PsBranchSelection> AddBranchProgramSelectionAsync(
+            PsBranchSelection branchSelection)
+        {
+            if (branchSelection.ProgramId.HasValue == false)
+            {
+                throw new GraException("No program selected.");
+            }
+
+            var program = await GetProgramByIdAsync(branchSelection.ProgramId.Value,
+                true);
+
+            var validAgeGroup = await _psProgramRepository.IsValidAgeGroupAsync(program.Id,
+                branchSelection.AgeGroupId);
+            if (validAgeGroup == false)
+            {
+                throw new GraException("Invalid age group for program.");
+            }
+
+            var programAvailableAtBranch = await _psProgramRepository.AvailableAtBranchAsync(
+                program.Id, branchSelection.BranchId);
+            if (programAvailableAtBranch == false)
+            {
+                throw new GraException("The performer does not performer at that branch.");
+            }
+
+            var settings = await _psSettingsRepository.GetByIdAsync(GetCurrentSiteId());
+            var branchSelections = await _psBranchSelectionRepository
+                .GetByBranchIdAsync(branchSelection.BranchId);
+
+            if (branchSelections.Count >= settings.SelectionsPerBranch)
+            {
+                throw new GraException($"The branch has already made its {settings.SelectionsPerBranch} selections.");
+            }
+
+            var selectedAgeGroupIds = branchSelections.Select(_ => _.AgeGroupId);
+            if (selectedAgeGroupIds.Any(_ => _ == branchSelection.AgeGroupId))
+            {
+                throw new GraException("The branch already has a selection for that age group.");
+            }
+
+            branchSelection.BackToBackProgram = await _psAgeGroupRepository
+                .BranchHasBackToBackAsync(branchSelection.AgeGroupId, branchSelection.BranchId);
+
+            await ValidateScheduleTimeAsync(program.Id, branchSelection.RequestedStartTime, 
+                branchSelection.BackToBackProgram);
+
+            branchSelection.KitId = null;
+            branchSelection.SelectedAt = DateTime.Now;
+            branchSelection.ScheduleStartTime = branchSelection.RequestedStartTime
+                .AddMinutes(-program.SetupTimeMinutes);
+            branchSelection.ScheduleDuration = program.SetupTimeMinutes
+                + program.ProgramLengthMinutes + program.BreakdownTimeMinutes;
+            if (branchSelection.BackToBackProgram)
+            {
+                branchSelection.ScheduleDuration += program.ProgramLengthMinutes
+                    + program.BackToBackMinutes;
+            }
+
+            return await _psBranchSelectionRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), 
+                branchSelection);
+        }
+
+
         public async Task UpdateBranchProgramSelectionAsync(PsBranchSelection branchSelection)
         {
             var currentBranchSelection = await _psBranchSelectionRepository.GetByIdAsync(
@@ -1005,6 +1105,49 @@ namespace GRA.Domain.Service
             return null;
         }
 
+        public async Task<PsBranchSelection> AddBranchKitSelectionAsync(
+            PsBranchSelection branchSelection)
+        {
+            if (branchSelection.KitId.HasValue == false)
+            {
+                throw new GraException("No kit selected.");
+            }
+
+            var kit = await GetKitByIdAsync(branchSelection.KitId.Value);
+
+            var validAgeGroup = await _psKitRepository.IsValidAgeGroupAsync(kit.Id,
+                branchSelection.AgeGroupId);
+            if (validAgeGroup == false)
+            {
+                throw new GraException("Invalid age group for kit.");
+            }
+
+            var settings = await _psSettingsRepository.GetByIdAsync(GetCurrentSiteId());
+            var branchSelections = await _psBranchSelectionRepository
+                .GetByBranchIdAsync(branchSelection.BranchId);
+
+            if (branchSelections.Count >= settings.SelectionsPerBranch)
+            {
+                throw new GraException($"The branch has already made its {settings.SelectionsPerBranch} selections.");
+            }
+
+            var selectedAgeGroupIds = branchSelections.Select(_ => _.AgeGroupId);
+            if (selectedAgeGroupIds.Any(_ => _ == branchSelection.AgeGroupId))
+            {
+                throw new GraException("The branch already has a selection for that age group.");
+            }
+
+            branchSelection.BackToBackProgram = false;
+            branchSelection.ProgramId = null;
+            branchSelection.RequestedStartTime = default(DateTime);
+            branchSelection.SelectedAt = DateTime.Now;
+            branchSelection.ScheduleStartTime = default(DateTime);
+            branchSelection.ScheduleDuration = 0;
+
+            return await _psBranchSelectionRepository.AddSaveAsync(GetClaimId(ClaimType.UserId),
+                branchSelection);
+        }
+
         public async Task SetSelectionSecretCodeAsync(int selectionId, string secretCode)
         {
             secretCode = secretCode?.Trim().ToLower();
@@ -1022,7 +1165,7 @@ namespace GRA.Domain.Service
                 throw new ArgumentNullException("Please enter less than 50 characters.");
             }
 
-            var existingTrigger = await _triggerRepository.GetByCodeAsync(GetCurrentSiteId(), 
+            var existingTrigger = await _triggerRepository.GetByCodeAsync(GetCurrentSiteId(),
                 secretCode, false);
             if (existingTrigger != null)
             {
@@ -1040,16 +1183,27 @@ namespace GRA.Domain.Service
                 }
 
                 currentSelection.SecretCode = secretCode;
-                await _psBranchSelectionRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), 
+                await _psBranchSelectionRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
                     currentSelection);
             }
         }
 
-        public async Task<bool> BranchAgeGroupAlreadySelectedAsync(int ageGroupId, 
-            int branchSelectionId)
+        public async Task<bool> BranchAgeGroupAlreadySelectedAsync(int ageGroupId,
+            int branchId, int? currentSelectionId = null)
         {
-            return await _psBranchSelectionRepository.BranchAgeGroupAlreadySelectedAsync(ageGroupId, 
-                branchSelectionId);
+            return await _psBranchSelectionRepository.BranchAgeGroupAlreadySelectedAsync(ageGroupId,
+                branchId, currentSelectionId);
+        }
+
+        public async Task<bool> BranchAgeGroupHasBackToBackAsync(int ageGroupId,
+            int branchId)
+        {
+            return await _psAgeGroupRepository.BranchHasBackToBackAsync(ageGroupId, branchId);
+        }
+
+        public async Task<bool> ProgramAvailableAtBranchAsync(int programId, int branchId)
+        {
+            return await _psProgramRepository.AvailableAtBranchAsync(programId, branchId);
         }
 
         public async Task UpdateBranchKitSelectionAsync(PsBranchSelection branchSelection)
@@ -1086,6 +1240,11 @@ namespace GRA.Domain.Service
 
             await _psBranchSelectionRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
                 currentBranchSelection);
+        }
+
+        public async Task<ICollection<PsBranchSelection>> GetSelectionsByBranchIdAsync(int branchId)
+        {
+            return await _psBranchSelectionRepository.GetByBranchIdAsync(branchId);
         }
     }
 }

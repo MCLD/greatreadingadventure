@@ -1,0 +1,64 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerScheduling.PerformerListViewModel
+
+<div class="row">
+    <div class="col-xs-12">
+        <h1>Performers</h1>
+        <hr />
+    </div>
+
+    <div class="col-xs-12">
+        @if (Model.Performers.Count == 0)
+        {
+            <div class="alert alert-warning">No performers found.</div>
+        }
+        else
+        {
+            <table class="table table-condensed table-bordered link-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email <span class="fa fa-question-circle-o" title="Preferred method of contact is italicized." data-toggle="tooltip" data-placement="top"></span></th>
+                        <th>Phone <span class="fa fa-question-circle-o" title="Preferred method of contact is italicized." data-toggle="tooltip" data-placement="top"></span></th>
+                        <th width="80px;">Programs</th>
+                        <th width="196px;">Performing in your system</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var performer in Model.Performers)
+                    {
+                        <tr>
+                            <td class="td-class">
+                                <a asp-action="Performer" asp-route-id="@performer.Id" class="rowlink">
+                                    @performer.Name
+                                </a>
+                            </td>
+                            <td style="@(performer.PhonePreferred ? "" : "font-style:italic")">@performer.Email</td>
+                            <td style="@(performer.PhonePreferred ? "font-style:italic" : "")">@performer.Phone</td>
+                            <td>@performer.Programs.Count</td>
+                            <td><span class="colored-icon fa @(performer.AvailableInSystem ? "fa-check" : "fa-times")"></span></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            @if (Model.PaginateModel.MaxPage > 1)
+            {
+                <paginate paginateModel="@Model.PaginateModel"></paginate>
+            }
+        }
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(window).on("load", function () {
+            $(".td-class").each(function () {
+                $(this).children("a.rowlink").height($(this).height() + 11);
+            });
+        });
+        $(window).resize(function () {
+            $(".td-class").each(function () {
+                $(this).children("a.rowlink").height($(this).height() + 11);
+            });
+        });
+    </script>
+}

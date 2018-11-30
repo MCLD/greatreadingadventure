@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace GRA.Controllers.ViewModel.Shared
+﻿namespace GRA.Controllers.ViewModel.Shared
 {
-    public class ProgramViewModel
+    public class ProgramSettingsViewModel
     {
         public int Id { get; set; }
         public string Name { get; set; }

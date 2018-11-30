@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace GRA.Domain.Model
 {
@@ -9,6 +10,7 @@ namespace GRA.Domain.Model
 
         public string ContactEmail { get; set; }
 
+        [Range(1, int.MaxValue)]
         public int? SelectionsPerBranch { get; set; }
 
         [DisplayName("Registration Open")]

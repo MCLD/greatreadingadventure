@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
@@ -18,7 +19,7 @@ namespace GRA.Data.Repository
         {
         }
 
-        public async Task<IEnumerable<PsAgeGroup>> GetAllAsync()
+        public async Task<ICollection<PsAgeGroup>> GetAllAsync()
         {
             return await DbSet
                 .AsNoTracking()
@@ -43,6 +44,14 @@ namespace GRA.Data.Repository
                 Data = ageGroupList,
                 Count = count
             };
+        }
+
+        public async Task<bool> BranchHasBackToBackAsync(int ageGroupId, int branchId)
+        {
+            return await _context.PsBackToBack
+                .AsNoTracking()
+                .Where(_ => _.PsAgeGroupId == ageGroupId && _.BranchId == branchId)
+                .AnyAsync();
         }
     }
 }

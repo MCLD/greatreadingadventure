@@ -11,6 +11,12 @@
         <span asp-validation-for="Settings.ContactEmail" class="text-danger"></span>
     </div>
 
+    <div class="form-group">
+        <label asp-for="Settings.SelectionsPerBranch" class="control-label"></label>
+        <input asp-for="Settings.SelectionsPerBranch" class="form-control" />
+        <span asp-validation-for="Settings.SelectionsPerBranch" class="text-danger"></span>
+    </div>
+
     <div class="row row-spacing">
         <div class="col-xs-12">
             <label asp-for="Settings.RegistrationOpen" class="control-label"></label>

@@ -7,7 +7,8 @@ namespace GRA.Domain.Repository
 {
     public interface IPsAgeGroupRepository : IRepository<PsAgeGroup>
     {
-        Task<IEnumerable<PsAgeGroup>> GetAllAsync();
+        Task<ICollection<PsAgeGroup>> GetAllAsync();
         Task<DataWithCount<ICollection<PsAgeGroup>>> PageAsync(BaseFilter filter);
+        Task<bool> BranchHasBackToBackAsync(int ageGroupId, int branchId);
     }
 }

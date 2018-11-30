@@ -52,14 +52,13 @@ namespace GRA.Domain.Model
         public bool IsApproved { get; set; }
 
         public ICollection<Branch> Branches { get; set; }
-        public IList<PsPerformerImage> Images { get; set; }
-        public IList<PsPerformerSchedule> Schedule { get; set; }
+        public List<PsPerformerImage> Images { get; set; }
+        public List<PsPerformerSchedule> Schedule { get; set; }
 
         public ICollection<PsProgram> Programs { get; set; }
 
-        [NotMapped]
+        public bool AvailableInSystem { get; set; }
         public int ProgramCount { get; set; }
-        [NotMapped]
         public int SelectionsCount { get; set; }
     }
 }

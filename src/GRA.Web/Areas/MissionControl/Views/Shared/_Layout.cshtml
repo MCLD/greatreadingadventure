@@ -121,6 +121,10 @@
                             </ul>
                         </li>
                     }
+                    @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewPerformerDetails.ToString()))
+                    {
+                        <li ActiveBy routeKey="Controller" value="PerformerScheduling"><a asp-controller="PerformerScheduling" asp-action="Index" title="Performer Scheduling"><span class="fas fa-theater-masks"></span><span class="visible-xs-inline"> Performer Scheduling</span></a></li>
+                    }
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewAllReporting.ToString()))
                     {
                         <li ActiveBy routeKey="Controller" value="Reporting">

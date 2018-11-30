@@ -1,0 +1,58 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerScheduling.KitListViewModel
+
+<div class="row">
+    <div class="col-xs-12">
+        <h1>Kits</h1>
+        <p style="font-size:large;text-align:center;">In lieu of a program, you are welcome to select a kit for the same age group.</p>
+        <hr />
+    </div>
+
+    <div class="col-sm-6 col-sm-offset-3">
+        @if (Model.Kits.Count == 0)
+        {
+            <div class="alert alert-warning">No kits found.</div>
+        }
+        else
+        {
+            <table class="table table-condensed table-bordered link-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var kit in Model.Kits)
+                    {
+                        <tr>
+                            <td class="td-class">
+                                <a asp-action="Kit" asp-route-id="@kit.Id" class="rowlink">
+                                    @kit.Name
+                                </a>
+                            </td>
+                        </tr>
+
+                    }
+                </tbody>
+            </table>
+            @if (Model.PaginateModel.MaxPage > 1)
+            {
+                <paginate paginateModel="@Model.PaginateModel"></paginate>
+            }
+        }
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(window).on("load", function () {
+            $(".td-class").each(function () {
+                $(this).children("a.rowlink").height($(this).height() + 11);
+            });
+        });
+        $(window).resize(function () {
+            $(".td-class").each(function () {
+                $(this).children("a.rowlink").height($(this).height() + 11);
+            });
+        });
+    </script>
+}

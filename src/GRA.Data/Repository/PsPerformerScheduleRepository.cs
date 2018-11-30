@@ -18,7 +18,7 @@ namespace GRA.Data.Repository
         {
         }
 
-        public async Task<IList<PsPerformerSchedule>> GetByPerformerIdAsync(int performerId)
+        public async Task<List<PsPerformerSchedule>> GetByPerformerIdAsync(int performerId)
         {
             return await DbSet
                 .AsNoTracking()

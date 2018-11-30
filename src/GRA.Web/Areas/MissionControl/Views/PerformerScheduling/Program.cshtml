@@ -1,0 +1,264 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerScheduling.ProgramViewModel
+
+<div class="row">
+    <div class="modal fade" id="branchModal" tabindex="-1" role="dialog" aria-labelledby="branchModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="branchModalLabel">Branch Availability</h4>
+                </div>
+                <div class="modal-body" style="max-height: calc(100vh - 200px); overflow-y:auto;">
+                    <div style="font-size:x-large;margin-bottom:10px;">
+                        <strong>@Model.System.Name</strong>
+                    </div>
+                    @foreach (var branch in Model.System.Branches)
+                    {
+                        <div>
+                            <span class="colored-icon fa fa-lg @(Model.AllBranches || Model.BranchAvailability.Contains(branch.Id) ? "fa-check" : "fa-times")"></span>
+                            <label data-toggle="tooltip" data-placement="top" title="@branch.Address">@branch.Name</label>
+                            <a href="https://www.google.com/maps/search/@branch.Address" target="_blank"><span class="fa fa-map-o"></span></a>
+                        </div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        @if (Model.List == true)
+        {
+            <table style="margin:0 auto;">
+                <tr>
+                    @if (Model.PrevProgram.HasValue)
+                    {
+                        <td style="position:absolute;">
+                            <h1>
+                                <a asp-action="Program" asp-route-id="@Model.PrevProgram" asp-route-list="true" asp-route-ageGroup="@Model.AgeGroup?.Id" style="margin-left:-125px;"><span class="fa fa-chevron-left"></span></a>
+                            </h1>
+                        </td>
+                    }
+                    <td><h1>Program@(!string.IsNullOrWhiteSpace(Model.AgeGroup?.Name) ? $": {Model.AgeGroup.Name}" : "")</h1></td>
+                    @if (Model.NextProgram.HasValue)
+                    {
+                        <td style="position:absolute;">
+                            <h1>
+                                <a asp-action="Program" asp-route-id="@Model.NextProgram" asp-route-list="true" asp-route-ageGroup="@Model.AgeGroup?.Id" style="margin-left:50px;"><span class="fa fa-chevron-right"></span></a>
+                            </h1>
+                        </td>
+                    }
+                </tr>
+            </table>
+        }
+        else
+        {
+            <h1>
+                Program
+            </h1>
+        }
+        <hr />
+    </div>
+
+    <div class="col-xs-12 col-sm-5 col-md-4">
+        @if (!string.IsNullOrWhiteSpace(Model.Image))
+        {
+            <div class="row" style="padding-bottom:15px;">
+                <div class="col-xs-12">
+                    <img src="~/@Model.Image" class="img-responsive" margin="0 auto" />
+                </div>
+            </div>
+        }
+        @if (Model.Program.Images.Count > 1)
+        {
+            <div class="row" style="padding-bottom:15px;">
+                <div class="col-xs-12" style="text-align:center;">
+                    <a asp-action="ProgramImages" asp-route-id="@Model.Program.Id" asp-route-list="@Model.List" asp-route-ageGroup="@Model.AgeGroup" class="btn btn-primary">View More Images</a>
+                </div>
+            </div>
+        }
+        @if (Model.List == true)
+        {
+            <div class="row" style="padding-bottom:15px;">
+                <div class="col-xs-12" style="text-align:center;">
+                    <a asp-action="Performer" asp-route-id="@Model.Program.PerformerId" class="btn btn-default" target="_blank">View Performer</a>
+                </div>
+            </div>
+            <div class="row" style="padding-bottom:15px;">
+                <div class="col-xs-12" style="text-align:center;">
+                    <a asp-action="Programs" asp-route-page="@Model.ReturnPage" asp-route-ageGroup="@Model.AgeGroup" class="btn btn-default">Return to List</a>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="row" style="padding-bottom:15px;">
+                <div class="col-xs-12" style="text-align:center;">
+                    <a asp-action="Performer" asp-route-id="@Model.Program.PerformerId" class="btn btn-default">Return to Performer</a>
+                </div>
+            </div>
+        }
+
+    </div>
+
+    <div class="col-xs-12 col-sm-7 col-md-8">
+        <div class="form-group">
+            <label>Performer</label>
+            <div>@Model.Program.PerformerName</div>
+        </div>
+        <div class="form-group">
+            <label>Name</label>
+            <div>@Model.Program.Title</div>
+        </div>
+        <div class="form-group">
+            <label>Description</label>
+            <div>@Model.Program.Description</div>
+        </div>
+        <div class="form-group">
+            <label>Capacity</label>
+            <div>@Model.Program.MinimumCapacity &ndash; @Model.Program.MaximumCapacity</div>
+        </div>
+        <div class="form-group">
+            <label>Ages</label>
+            <div>
+                <ul>
+                    @foreach (var age in Model.Program.AgeGroups)
+                    {
+                        <li>@age.Name</li>
+                    }
+                </ul>
+            </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-xs-6">
+                <label>Program Length</label>
+                <div>@Model.Program.ProgramLengthMinutes minutes</div>
+            </div>
+            <div class="col-xs-6">
+                <label>Set-up Time</label>
+                <div>@Model.Program.SetupTimeMinutes minutes</div>
+            </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-xs-6">
+                <label>Breakdown Time</label>
+                <div>@Model.Program.BreakdownTimeMinutes minutes</div>
+            </div>
+            <div class="col-xs-6">
+                <label>Time Between Back-to-Back Programs</label>
+                <div>@Model.Program.BackToBackMinutes minutes</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Library Set-up</label>
+            <div>@Model.Program.Setup</div>
+        </div>
+        <div class="form-group">
+            <label>Locations</label>
+            <div>
+                Available at
+                <strong>@(Model.AllBranches || Model.BranchAvailability.Count == Model.System.Branches.Count ? "all" : $"{Model.BranchAvailability.Count} of {Model.System.Branches.Count}")</strong>
+                libraries in your system.
+            </div>
+            <button type="button" class="btn btn-default" style="margin-top:10px;" data-toggle="modal" data-target="#branchModal">View Locations</button>
+        </div>
+    </div>
+</div>
+
+@if (Model.SchedulingOpen)
+{
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="row">
+                <div class="col-xs-12">
+                    <hr />
+                    <h2>
+                        Schedule Program
+                    </h2>
+                </div>
+            </div>
+            @if (Model.AllBranches == false && Model.BranchAvailability.Count == 0)
+            {
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="alert alert-warning">We're sorry, this program is not available in your system.</div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="row">
+                    <form asp-action="ScheduleProgram" class="form-horizontal col-xs-12" method="post" role="form" enctype="multipart/form-data">
+                        <input asp-for="BranchSelection.ProgramId" value="@Model.Program.Id" type="hidden" />
+                        <div class="form-group">
+                            <label asp-for="BranchSelection.BranchId" class="col-sm-3 control-label required-field"></label>
+                            <div class="col-sm-9">
+                                <select asp-for="BranchSelection.BranchId" asp-items="Model.BranchList" class="form-control">
+                                    <option></option>
+                                </select>
+                                <span id="BranchValidationMessage" asp-validation-for="BranchSelection.BranchId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="BranchSelection.AgeGroupId" class="col-sm-3 control-label required-field"></label>
+                            <div class="col-sm-9">
+                                <select asp-for="BranchSelection.AgeGroupId" asp-items="Model.AgeGroupList" class="form-control" disabled="disabled">
+                                    <option></option>
+                                </select>
+                                <span asp-validation-for="BranchSelection.AgeGroupId" class="text-danger"></span>
+                                <em>Age groups which are not available or have already been scheduled are not shown.</em>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6 col-sm-offset-3" style="margin-top: 1em;">
+                                <button type="submit" class="btn btn-lg btn-primary btn-spinner" style="margin-bottom: 10px;">
+                                    Select Time
+                                    <span class="fa fa-spinner fa-pulse fa-fw hidden"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        var availableAgeGroupsUrl = "@Url.Action(nameof(PerformerSchedulingController.GetProgramAvailableAgeGroupsAsync))";
+        $("#BranchSelection_BranchId").on("change", function () {
+            $("#BranchValidationMessage").addClass("field-validation-valid").removeClass("field-validation-error").text("");
+            var branchId = $(this).val();
+            if (branchId == "") {
+                $("#BranchSelection_AgeGroupId").val("").attr("disabled", "disabled");
+            }
+            else {
+                $.getJSON(availableAgeGroupsUrl, { programId: "@Model.Program.Id",  branchId: $(this).val() }, function (response) {
+                    if (response.success == true) {
+                        $("#BranchSelection_AgeGroupId").removeAttr("disabled", "disabled");
+                        $("#BranchSelection_AgeGroupId > option").each(function () {
+                            var option = $(this);
+                            if (option.val() != "") {
+                                if (response.data.indexOf(option.val()) == -1) {
+                                    option.attr("hidden", "hidden");
+                                }
+                                else {
+                                    option.removeAttr("hidden");
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        $("#BranchValidationMessage").removeClass("field-validation-valid").addClass("field-validation-error").text(response.message);
+                    }
+                });
+            }
+        });
+    </script>
+}

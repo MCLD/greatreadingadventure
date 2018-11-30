@@ -1,0 +1,39 @@
+﻿@model GRA.Domain.Model.PsKit
+
+<div class="row">
+    <div class="col-xs-12">
+        <h1>
+            Images for Kit: @Model.Name
+            <a asp-action="Kit" asp-route-id="@Model.Id" class="btn btn-lg btn-default" style="margin-bottom:10px;">Return to Kit</a>
+        </h1>
+    </div>
+    <div class="col-xs-12">
+        @if (Model.Images.Count == 0)
+        {
+            <div class="alert alert-warning">No Images.</div>
+        }
+        else
+        {
+            for (int i = 0; i < Model.Images.Count; i++)
+            {
+                if (i % 3 == 0)
+                {
+                    @Html.Raw("<div class=\"row\">");
+                }
+                <div class="col-xs-12 col-md-4" style="margin-bottom:40px;">
+                    <div style="padding:10px;border:1px solid black;">
+                        <img src="~/@Model.Images[i].Filename" class="img-responsive" style="margin: 0 auto;" />
+                    </div>
+                </div>
+                if (i % 3 == 2)
+                {
+                    @Html.Raw("</div>");
+                }
+            }
+            if (Model.Images.Count % 3 != 0)
+            {
+                @Html.Raw("</div>");
+            }
+        }
+    </div>
+</div>
