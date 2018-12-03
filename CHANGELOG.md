@@ -4,10 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## Unreleased
+### Changed
+- New mail icon in navigation is red and solid if there are new messages, grey and wireframe otherwise
+
 ### Fixed
 - Fix #377 Adding a challenge task causes an error
 - Fix #382 Adding a drawing criterion fails if no or all programs are selected
 - Fix #383 Viewing a challenge group causes a timeout
+- Fix #379 Stacked Font Awesome icons are not working properly
 
 ## [4.1.0] - 2018-11-30
 ### Added

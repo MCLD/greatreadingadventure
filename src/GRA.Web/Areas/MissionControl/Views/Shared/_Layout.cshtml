@@ -48,12 +48,16 @@
                     {
                         <li ActiveBy routeKey="Controller" value="Mail">
                             <a asp-controller="Mail" asp-action="Index" title="Mail">
-                                <span class="fa fa-envelope-o"></span><span class="visible-xs-inline"> Mail</span>
                                 @if ((int)Context.Items[GRA.Controllers.ItemKey.UnreadCount] > 0)
                                 {
-                                    <span class="label label-default label-as-badge">
+                                    <span class="fas fa-envelope fa-lg text-danger" title="New message(s)!"></span><span class="visible-xs-inline"> Mail</span>
+                                    <span class="label label-default label-as-badge" style="background-color: #a94442;">
                                         @Context.Items[GRA.Controllers.ItemKey.UnreadCount]
                                     </span>
+                                }
+                                else
+                                {
+                                    <span class="far fa-envelope"></span><span class="visible-xs-inline"> Mail</span>
                                 }
                             </a>
                         </li>
@@ -197,7 +201,7 @@
         </noscript>
 
         @if (ViewData.ContainsKey(GRA.Controllers.ViewDataKey.TitleHtml)
-        && ViewData[GRA.Controllers.ViewDataKey.TitleHtml] != null)
+      && ViewData[GRA.Controllers.ViewDataKey.TitleHtml] != null)
         {
             <div class="row">
                 <div class="col-xs-12">
