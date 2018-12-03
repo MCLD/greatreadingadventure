@@ -1,7 +1,7 @@
 image: ubuntu
 stack: docker
 test: off
-version: 4.1.0-{build}
+version: 4.1.1-{build}
 
 build_script:
 - bash docker-build.bash
