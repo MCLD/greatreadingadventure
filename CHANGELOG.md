@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## Unreleased
+### Fixed
+- Fix #377 Adding a challenge task causes an error
 
 ## [4.1.0] - 2018-11-30
 ### Added

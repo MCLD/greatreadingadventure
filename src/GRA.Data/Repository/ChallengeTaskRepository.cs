@@ -39,6 +39,7 @@ namespace GRA.Data.Repository
             await LookUpChallengeTaskTypeAsync(domainEntity);
             domainEntity.Position = DbSet
                 .Where(_ => _.ChallengeId == domainEntity.ChallengeId)
+                .DefaultIfEmpty()
                 .Max(_ => _.Position) + 1;
             await base.AddAsync(userId, domainEntity);
         }
@@ -48,6 +49,7 @@ namespace GRA.Data.Repository
             await LookUpChallengeTaskTypeAsync(domainEntity);
             domainEntity.Position = DbSet
                 .Where(_ => _.ChallengeId == domainEntity.ChallengeId)
+                .DefaultIfEmpty()
                 .Max(_ => _.Position) + 1;
             return await base.AddSaveAsync(userId, domainEntity);
         }
