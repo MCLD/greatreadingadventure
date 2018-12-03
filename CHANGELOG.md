@@ -7,6 +7,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Fixed
 - Fix #377 Adding a challenge task causes an error
 
+### Fixed
+- Drawing Criterion program selection throwing exceptions (Fix #382)
+
 ## [4.1.0] - 2018-11-30
 ### Added
 - Logging prior to spin-up of Web server (Fix #241)
