@@ -8,6 +8,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Fix #377 Adding a challenge task causes an error
 - Fix #382 Adding a drawing criterion fails if no or all programs are selected
 
+### Fixed
+- Viewing a challenge group causing a timeout (Fix #383)
+
 ## [4.1.0] - 2018-11-30
 ### Added
 - Logging prior to spin-up of Web server (Fix #241)
