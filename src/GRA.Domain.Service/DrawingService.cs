@@ -170,8 +170,12 @@ namespace GRA.Domain.Service
                     var programs = await _programRepository.GetAllAsync(GetCurrentSiteId());
                     if (!programs.Select(_ => _.Id).Except(criterion.ProgramIds).Any())
                     {
-                        criterion.ProgramIds = null;
+                        criterion.ProgramIds = new List<int>();
                     }
+                }
+                else
+                {
+                    criterion.ProgramIds = new List<int>();
                 }
 
                 return await _drawingCriterionRepository.UpdateSaveAsync(authUserId, criterion);

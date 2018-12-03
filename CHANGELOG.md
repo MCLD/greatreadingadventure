@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## Unreleased
 ### Fixed
 - Fix #377 Adding a challenge task causes an error
+- Fix #382 Adding a drawing criterion fails if no or all programs are selected
 
 ## [4.1.0] - 2018-11-30
 ### Added
