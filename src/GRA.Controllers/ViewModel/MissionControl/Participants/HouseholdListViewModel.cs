@@ -26,6 +26,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public IEnumerable<GRA.Domain.Model.Branch> BranchList { get; set; }
         public IEnumerable<GRA.Domain.Model.System> SystemList { get; set; }
         public bool UpgradeToGroup { get; set; }
+        public bool UseGroups { get; set; }
         public string GroupName { get; set; }
         public string GroupType { get; set; }
     }
