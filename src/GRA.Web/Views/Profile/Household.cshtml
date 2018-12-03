@@ -155,9 +155,9 @@
                                                 {
                                                     if (Model.CanLogActivity)
                                                     {
-                                                        <th style="vertical-align:middle;" width="24px;"><input id="checkAll" type="checkbox" data-id="@Model.Head.Id" /></th>
+                                                        <th style="vertical-align:middle;" class="text-center" width="24px;"><input id="checkAll" type="checkbox" data-id="@Model.Head.Id" /></th>
                                                     }
-                                                    <th width="36px"><span class="fa fa-envelope fa-lg"></span></th>
+                                                    <th width="36px" class="text-center"><span class="far fa-envelope fa-lg"></span></th>
                                                 }
                                                 <th>User</th>
                                                 <th>Points</th>
@@ -171,20 +171,19 @@
                                                 {
                                                     if (Model.CanLogActivity)
                                                     {
-                                                        <td style="vertical-align:middle;">
+                                                        <td style="vertical-align:middle;" class="text-center">
                                                             <input class="userSelection" data-id="@Model.Head.Id" type="checkbox" />
                                                         </td>
                                                     }
-                                                    <td style="vertical-align:middle;">
+                                                    <td style="vertical-align:middle;" class="text-center">
                                                         <div class="user-mail" data-action="@(Model.ActiveUser == Model.Head.Id ? "" : @Url.Action("LoginAs", new { loginId = Model.Head.Id, goToMail = true }))">
                                                             @if (Model.Head.HasNewMail)
                                                             {
-                                                                <span class="fa fa-envelope fa-lg"></span>
-                                                                <span class="fa fa-exclamation fa-2x exclamation-alert"></span>
+                                                                <span class="fas fa-envelope fa-lg text-danger" title="New message(s)!"></span>
                                                             }
                                                             else
                                                             {
-                                                                <span class="fa fa-envelope fa-lg" style="color:grey;"></span>
+                                                                <span class="far fa-envelope fa-lg text-muted"></span>
                                                             }
                                                         </div>
                                                     </td>
@@ -284,7 +283,7 @@
                                                     {
                                                         if (Model.CanLogActivity)
                                                         {
-                                                            <td style="vertical-align:middle;">
+                                                            <td style="vertical-align:middle;" class="text-center">
                                                                 @if (!user.HasPendingQuestionnaire)
                                                                 {
                                                                     <input class="userSelection" type="checkbox" data-id="@user.Id" />
@@ -296,16 +295,15 @@
                                                                 }
                                                             </td>
                                                         }
-                                                        <td style="vertical-align:middle;">
+                                                        <td style="vertical-align:middle;" class="text-center">
                                                             <div class="user-mail" data-action="@(Model.ActiveUser == user.Id ? "" : @Url.Action("LoginAs", new { loginId = user.Id, goToMail = true }))">
                                                                 @if (user.HasNewMail)
                                                                 {
-                                                                    <span class="fa fa-envelope fa-lg"></span>
-                                                                    <span class="fa fa-exclamation fa-2x exclamation-alert"></span>
+                                                                    <span class="fas fa-envelope fa-lg text-danger" title="New message(s)!"></span>
                                                                 }
                                                                 else
                                                                 {
-                                                                    <span class="fa fa-envelope fa-lg" style="color:grey;"></span>
+                                                                    <span class="far fa-envelope fa-lg text-muted"></span>
                                                                 }
                                                             </div>
                                                         </td>
