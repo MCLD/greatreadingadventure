@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## Unreleased
 ### Changed
 - New mail icon in navigation is red and solid if there are new messages, grey and wireframe otherwise
+- Upgrade ImageSharp from v1.0.0-beta0003 to v1.0.0-beta0005
 
 ### Fixed
 - Fix #377 Adding a challenge task causes an error
