@@ -10,6 +10,7 @@ namespace GRA
         public static readonly string ContentDirectory = "GraContentDirectory";
         public static readonly string ContentPath = "GraContentPath";
         public static readonly string Culture = "GraCulture";
+        public static readonly string DatabaseWarningLogging = "GraDatabaseWarningLogging";
         public static readonly string DataProtectionPath = "GraDataProtectionPath";
         public static readonly string DefaultFooter = "GraDefaultFooter";
         public static readonly string DefaultOutgoingMailHost = "GraDefaultOutgoingMailHost";
