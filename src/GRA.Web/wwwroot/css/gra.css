@@ -1,4 +1,4 @@
-﻿.link-table {
+.link-table {
     position: relative;
 }
 
@@ -334,7 +334,9 @@ input.form-checkbox {
 }
 
 .dashboard-badge {
-    padding: 0.25rem;
+    margin-bottom: 0.75rem;
+    max-height: 110px;
+    padding: 0.1rem;
 }
 
 .dashboard-activity {
