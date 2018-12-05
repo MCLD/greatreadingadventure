@@ -8,7 +8,7 @@
 
     @for (int i = 0; i < Model.SiteSettingGroups.Count; i++)
     {
-        <h2>@Model.SiteSettingGroups[i].Name</h2>
+        <a name="@Model.SiteSettingGroups[i].Name"></a><h2>@Model.SiteSettingGroups[i].Name</h2>
 
         @for (int j = 0; j < Model.SiteSettingGroups[i].SettingInformations.Count; j++)
         {
