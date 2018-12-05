@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GRA.Data.Model
 {
@@ -22,7 +23,7 @@ namespace GRA.Data.Model
 
         [MaxLength(255)]
         public string Icon { get; set; }
-
+        [Column(TypeName = "decimal(4,2)")]
         public decimal ZoomScale { get; set; }
         public int ZoomYOffset { get; set; }
 
