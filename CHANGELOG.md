@@ -14,6 +14,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Fix #383 Viewing a challenge group causes a timeout
 - Fix #379 Stacked Font Awesome icons are not working properly
 - Fix #380 Group button showing on participant household with groups not configured
+- Challenge favorite icons not displaying
+- Signup school not listed icon not displaying
 
 ## [4.1.0] - 2018-11-30
 ### Added
