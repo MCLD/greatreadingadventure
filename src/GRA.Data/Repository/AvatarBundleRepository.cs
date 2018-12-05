@@ -24,8 +24,6 @@ namespace GRA.Data.Repository
         public async Task<AvatarBundle> GetByIdAsync(int id, bool includeDeleted)
         {
             var bundles = DbSet.AsNoTracking()
-                .Include(_ => _.AvatarBundleItems)
-                    .ThenInclude(_ => _.AvatarItem)
                 .Where(_ => _.Id == id);
 
             if (!includeDeleted)
@@ -47,6 +45,7 @@ namespace GRA.Data.Repository
         public async Task<ICollection<AvatarBundle>> PageAsync(AvatarFilter filter)
         {
             return await ApplyFilters(filter)
+                .OrderBy(_ => _.Name)
                 .ApplyPagination(filter)
                 .ProjectTo<AvatarBundle>()
                 .ToListAsync();
@@ -93,8 +92,6 @@ namespace GRA.Data.Repository
         public async Task<ICollection<AvatarItem>> GetRandomDefaultBundleAsync(int siteId)
         {
             var bundleItems = await DbSet.AsNoTracking()
-               .Include(_ => _.AvatarBundleItems)
-                   .ThenInclude(_ => _.AvatarItem)
                .Where(_ => _.SiteId == siteId && _.CanBeUnlocked == false && _.IsDeleted == false)
                .OrderBy(_ => Guid.NewGuid())
                .Take(1)

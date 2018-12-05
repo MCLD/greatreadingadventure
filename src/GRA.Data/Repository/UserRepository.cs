@@ -200,9 +200,6 @@ namespace GRA.Data.Repository
 
             return await userList
                 .ApplyPagination(filter)
-                .Include(_ => _.Branch)
-                .Include(_ => _.Program)
-                .Include(_ => _.System)
                 .ProjectTo<User>()
                 .ToListAsync();
         }
@@ -329,11 +326,11 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Include(_ => _.Branch)
-                .Include(_ => _.Program)
-                .Include(_ => _.System)
                 .Where(_ => _.IsDeleted == false
                        && _.HouseholdHeadUserId == householdHeadUserId)
+                .OrderBy(_ => _.LastName)
+                .ThenBy(_ => _.FirstName)
+                .ThenBy(_ => _.Username)
                 .Skip(skip)
                 .Take(take)
                 .ProjectTo<User>()
@@ -353,9 +350,6 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Include(_ => _.Branch)
-                .Include(_ => _.Program)
-                .Include(_ => _.System)
                 .Where(_ => _.Id == id && _.IsDeleted == false)
                 .ProjectTo<User>()
                 .SingleOrDefaultAsync();
@@ -399,9 +393,6 @@ namespace GRA.Data.Repository
         {
             var household = await DbSet
                 .AsNoTracking()
-                .Include(_ => _.Branch)
-                .Include(_ => _.Program)
-                .Include(_ => _.System)
                 .Where(_ => _.IsDeleted == false
                        && _.HouseholdHeadUserId == householdHeadUserId)
                 .ProjectTo<User>()

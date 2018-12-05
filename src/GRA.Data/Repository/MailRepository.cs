@@ -59,6 +59,7 @@ namespace GRA.Data.Repository
                     && _.SiteId == siteId
                     && _.ToUserId == null
                     && _.IsRepliedTo == false)
+                .OrderByDescending(_ => _.CreatedAt)
                 .Skip(skip)
                 .Take(take)
                 .ProjectTo<Mail>()
@@ -99,6 +100,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.IsDeleted == false
                     && (_.ToUserId == userId || _.FromUserId == userId))
+                .OrderByDescending(_ => _.CreatedAt)
                 .Skip(skip)
                 .Take(take)
                 .ProjectTo<Mail>()
@@ -111,6 +113,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.IsDeleted == false
                     && _.ToUserId == userId)
+                .OrderByDescending(_ => _.CreatedAt)
                 .Skip(skip)
                 .Take(take)
                 .ProjectTo<Mail>()

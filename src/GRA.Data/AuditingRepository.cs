@@ -116,6 +116,7 @@ namespace GRA.Data
         {
             return await DbSet
                 .AsNoTracking()
+                .OrderBy(_ => _.Id)
                 .Skip(skip)
                 .Take(take)
                 .ProjectTo<DomainEntity>()

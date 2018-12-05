@@ -17,7 +17,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -52,6 +52,7 @@ namespace GRA.Web
         };
 
         private readonly IConfiguration _config;
+        private readonly bool _isDevelopment;
         private readonly ILogger _logger;
 
         public Startup(IConfiguration config,
@@ -68,6 +69,8 @@ namespace GRA.Web
                     _config[configKey] = _defaultSettings[configKey];
                 }
             }
+
+            _isDevelopment = env.IsDevelopment();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -75,7 +78,7 @@ namespace GRA.Web
         {
             // set a default culture of en-US if none is specified
             string culture = _config[ConfigurationKey.Culture] ?? DefaultCulture;
-            _logger.LogInformation("Configuring for culture: {0}", culture);
+            _logger.LogDebug("Configuring for culture: {0}", culture);
             services.Configure<RequestLocalizationOptions>(_ =>
             {
                 _.DefaultRequestCulture = new RequestCulture(culture);
@@ -214,12 +217,29 @@ namespace GRA.Web
             string csName = _config[ConfigurationKey.ConnectionStringName]
                 ?? throw new Exception($"{ConfigurationKey.ConnectionStringName} must be provided.");
 
-            // mute ignored includes warnings
+            // configure ef errors to throw, log, or ignore as appropriate for the environment
             // see https://docs.microsoft.com/en-us/ef/core/querying/related-data#ignored-includes
-            var dbContextBuilder = new DbContextOptionsBuilder<Data.Context>();
-            if (_logger.IsEnabled(LogLevel.Debug) || _logger.IsEnabled(LogLevel.Trace))
+            var throwEvents = new List<EventId>();
+            var logEvents = new List<EventId>();
+            var ignoreEvents = new List<EventId>();
+
+            if (_isDevelopment)
             {
-                dbContextBuilder.ConfigureWarnings(w => w.Ignore());
+                logEvents.Add(RelationalEventId.QueryClientEvaluationWarning);
+                throwEvents.Add(CoreEventId.IncludeIgnoredWarning);
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(_config[ConfigurationKey.DatabaseWarningLogging]))
+                {
+                    ignoreEvents.Add(RelationalEventId.QueryClientEvaluationWarning);
+                    ignoreEvents.Add(CoreEventId.IncludeIgnoredWarning);
+                }
+                else
+                {
+                    logEvents.Add(RelationalEventId.QueryClientEvaluationWarning);
+                    logEvents.Add(CoreEventId.IncludeIgnoredWarning);
+                }
             }
 
             string cs = _config.GetConnectionString(csName)
@@ -227,20 +247,32 @@ namespace GRA.Web
             switch (_config[ConfigurationKey.ConnectionStringName])
             {
                 case ConnectionStringNameSqlServer:
-                    var sqlBuilder = new SqlServerDbContextOptionsBuilder(dbContextBuilder);
                     if (!string.IsNullOrEmpty(_config[ConfigurationKey.SqlServer2008]))
                     {
-                        sqlBuilder.UseRowNumberForPaging();
+                        services.AddDbContextPool<Data.Context, Data.SqlServer.SqlServerContext>(
+                            _ => _.UseSqlServer(cs, b => b.UseRowNumberForPaging())
+                            .ConfigureWarnings(w => w
+                                .Throw(throwEvents.ToArray())
+                                .Log(logEvents.ToArray())
+                                .Ignore(ignoreEvents.ToArray())));
                     }
-                    services.AddDbContextPool<Data.Context,
-                        Data.SqlServer.SqlServerContext>(
-                        _ => _.UseSqlServer(cs, b => b = sqlBuilder));
+                    else
+                    {
+                        services.AddDbContextPool<Data.Context, Data.SqlServer.SqlServerContext>(
+                            _ => _.UseSqlServer(cs)
+                            .ConfigureWarnings(w => w
+                                .Throw(throwEvents.ToArray())
+                                .Log(logEvents.ToArray())
+                                .Ignore(ignoreEvents.ToArray())));
+                    }
                     break;
                 case ConnectionStringNameSQLite:
-                    var sqliteBuilder = new SqliteDbContextOptionsBuilder(dbContextBuilder);
-
                     services.AddDbContextPool<Data.Context, Data.SQLite.SQLiteContext>(
-                        _ => _.UseSqlite(cs, b => b = sqliteBuilder));
+                        _ => _.UseSqlite(cs)
+                            .ConfigureWarnings(w => w
+                                .Throw(throwEvents.ToArray())
+                                .Log(logEvents.ToArray())
+                                .Ignore(ignoreEvents.ToArray())));
                     break;
                 default:
                     throw new Exception($"Unknown GraConnectionStringName: {csName}");
@@ -393,11 +425,11 @@ namespace GRA.Web
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app,
-            IHostingEnvironment env,
+            //IHostingEnvironment env,
             IPathResolver pathResolver,
             Controllers.Base.ISitePathValidator sitePathValidator)
         {
-            if (env.IsDevelopment())
+            if (_isDevelopment)
             {
                 app.UseDeveloperExceptionPage();
             }

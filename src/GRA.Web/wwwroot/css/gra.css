@@ -1,4 +1,4 @@
-﻿.link-table {
+.link-table {
     position: relative;
 }
 
@@ -334,7 +334,9 @@ input.form-checkbox {
 }
 
 .dashboard-badge {
-    padding: 0.25rem;
+    margin-bottom: 0.75rem;
+    max-height: 110px;
+    padding: 0.1rem;
 }
 
 .dashboard-activity {
@@ -391,28 +393,24 @@ input.form-checkbox {
 
     .favorite-checkbox + label:before {
         color: #DDB500;
-        content: "\f006";
+        content: "\f005";
         cursor: pointer;
         display: inline-block;
-        font-family: FontAwesome;
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 500;
         font-size: 24px;
     }
 
     .favorite-checkbox:checked + label:before {
-        content: "\f005";
+        font-weight: 900;
     }
 
 .favorite-button {
     cursor: pointer;
-    font-family: FontAwesome;
     font-size: 24px;
 }
 
     .favorite-button.fa-star {
-        color: #DDB500;
-    }
-
-    .favorite-button.fa-star-o {
         color: #DDB500;
     }
 
@@ -484,9 +482,9 @@ p.password-note {
         }
 
         .school-not-listed-checkbox + label::before {
-            content: "\f096";
-            font-family: FontAwesome;
-            margin-right: 8px;
+            content: "\f0c8";
+            font-family: 'Font Awesome 5 Free';
+            margin-right: 6px;
         }
 
 
@@ -503,8 +501,7 @@ p.password-note {
         }
 
         .school-not-listed-checkbox:checked + label::before {
-            content: "\f046";
-            margin-right: 6px;
+            content: "\f14a";
         }
 
 @media only screen and (max-width : 767px) {

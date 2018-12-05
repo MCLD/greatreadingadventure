@@ -23,7 +23,6 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Include(_ => _.System)
                 .Where(_ => _.System.SiteId == siteId)
                 .OrderBy(_ => _.Name)
                 .ThenBy(_ => _.System.Name)
@@ -90,7 +89,6 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Include(_ => _.System)
                 .Where(_ => _.Id == branchId && _.System.SiteId == siteId)
                 .AnyAsync();
         }

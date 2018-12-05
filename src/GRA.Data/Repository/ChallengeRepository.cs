@@ -24,8 +24,6 @@ namespace GRA.Data.Repository
             PageAllAsync(ChallengeFilter filter)
         {
             var challengeList = await ApplyFilters(filter)
-                .Include(_ => _.ChallengeCategories)
-                    .ThenInclude(_ => _.Category)
                 .OrderBy(_ => _.Name)
                 .ThenBy(_ => _.Id)
                 .ApplyPagination(filter)
@@ -77,7 +75,6 @@ namespace GRA.Data.Repository
             if (filter.CategoryIds?.Any() == true)
             {
                 challenges = challenges
-                    .Include(_ => _.ChallengeCategories)
                     .Where(_ => _.ChallengeCategories
                         .Select(c => c.CategoryId)
                         .Any(c => filter.CategoryIds.Contains(c)));
@@ -110,8 +107,6 @@ namespace GRA.Data.Repository
             if (!string.IsNullOrWhiteSpace(filter.Search))
             {
                 challenges = challenges
-                    .Include(_ => _.ChallengeCategories)
-                    .ThenInclude(_ => _.Category)
                     .Where(_ => _.Name.Contains(filter.Search)
                         || _.Description.Contains(filter.Search)
                         || _.Tasks.Any(_t => _t.Title.Contains(filter.Search))
@@ -158,7 +153,6 @@ namespace GRA.Data.Repository
 
                 challenge.Categories = await _context.ChallengeCategories
                     .AsNoTracking()
-                    .Include(_ => _.Category)
                     .Where(_ => _.ChallengeId == id)
                     .Select(_ => _.Category)
                     .ProjectTo<Category>()
@@ -454,8 +448,6 @@ namespace GRA.Data.Repository
                         && (_.LimitToProgramId == null || _.LimitToProgramId == user.ProgramId));
 
             var data = await challengeList
-                .Include(_ => _.ChallengeCategories)
-                    .ThenInclude(_ => _.Category)
                 .OrderBy(_ => _.Name)
                 .ThenBy(_ => _.Id)
                 .ApplyPagination(filter)

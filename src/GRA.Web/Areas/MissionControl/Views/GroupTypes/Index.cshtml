@@ -14,6 +14,10 @@
                         <td>
                             No maximum number of family members is configured for this site so
                             groups will not be used even if group types are configured below.
+                            <strong>
+                                This setting can be changed in
+                                <a asp-area="MissionControl" asp-controller="Sites" asp-action="Settings" asp-route-id="@Model.SiteId" asp-fragment="Users">Site management</a>.
+                            </strong>
                         </td>
                     </tr>
                 </table>
@@ -35,7 +39,10 @@ else
                         <td>
                             Families will be prompted to upgrade to a group when they exceed
                             <strong>@Model.MaximumHouseholdMembers members</strong> and one or more
-                            group types are configured below.
+                            group types are configured below. <strong>
+                                This setting can be changed in
+                                <a asp-area="MissionControl" asp-controller="Sites" asp-action="Settings" asp-route-id="@Model.SiteId" asp-fragment="Users">Site management</a>.
+                            </strong>
                         </td>
                     </tr>
                 </table>
