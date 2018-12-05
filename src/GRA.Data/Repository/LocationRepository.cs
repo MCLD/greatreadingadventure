@@ -38,6 +38,7 @@ namespace GRA.Data.Repository
         public async Task<ICollection<Location>> PageAsync(BaseFilter filter)
         {
             return await ApplyFilters(filter)
+                .OrderBy(_ => _.Name)
                 .ApplyPagination(filter)
                 .GroupJoin(_context.Events, l => l.Id, e => e.AtLocationId, (l, e) => new { l, e })
                 .Select(_ => new Location {

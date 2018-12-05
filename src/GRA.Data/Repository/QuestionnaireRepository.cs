@@ -30,6 +30,7 @@ namespace GRA.Data.Repository
         public async Task<ICollection<Questionnaire>> PageAsync(BaseFilter filter)
         {
             return await ApplyFilters(filter)
+                .OrderBy(_ => _.Name)
                 .ApplyPagination(filter)
                 .ProjectTo<Questionnaire>()
                 .ToListAsync();

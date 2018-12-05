@@ -39,6 +39,7 @@ namespace GRA.Data.Repository
         public async Task<ICollection<VendorCodeType>> PageAsync(BaseFilter filter)
         {
             return await ApplyFilters(filter)
+                .OrderBy(_ => _.Description)
                 .ApplyPagination(filter)
                 .ProjectTo<VendorCodeType>()
                 .ToListAsync();

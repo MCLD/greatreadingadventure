@@ -55,7 +55,6 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Include(_ => _.ChallengeGroupChallenges)
                 .Where(_ => _.SiteId == siteId
                     && _.ChallengeGroupChallenges.Select(c => c.ChallengeId).Contains(challengeId))
                 .ProjectTo<ChallengeGroup>()
