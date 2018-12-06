@@ -90,7 +90,11 @@ namespace GRA.Data.Repository
             return await _context.PsPrograms
                 .AsNoTracking()
                 .Where(_ => _.PerformerId == performerId)
-                .Select(_ => _.AgeGroups)
+                .Join(_context.PsProgramAgeGroups,
+                    program => program.Id,
+                    ageGroups => ageGroups.ProgramId,
+                    (program, ageGroups) => ageGroups)
+                .Select(_ => _.AgeGroup)
                 .Distinct()
                 .ProjectTo<PsAgeGroup>()
                 .ToListAsync();

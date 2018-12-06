@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl.PerformerScheduling;
 using GRA.Controllers.ViewModel.Shared;
@@ -14,6 +13,7 @@ using Microsoft.Extensions.Logging;
 
 namespace GRA.Controllers.MissionControl
 {
+    [Area("MissionControl")]
     public class PerformerSchedulingController : Base.MCController
     {
         private static readonly int KitsPerPage = 15;
@@ -173,6 +173,7 @@ namespace GRA.Controllers.MissionControl
             try
             {
                 performer = await _performerSchedulingService.GetPerformerByIdAsync(id,
+                    includeImages: true,
                     includePrograms: true,
                     includeSchedule: true,
                     onlyApproved: true);
@@ -244,6 +245,7 @@ namespace GRA.Controllers.MissionControl
             try
             {
                 performer = await _performerSchedulingService.GetPerformerByIdAsync(id,
+                    includeImages: true,
                     onlyApproved: true);
             }
             catch (GraException gex)
@@ -321,6 +323,7 @@ namespace GRA.Controllers.MissionControl
             try
             {
                 program = await _performerSchedulingService.GetProgramByIdAsync(id,
+                    includeAgeGroups: true,
                     onlyApproved: true);
             }
             catch (GraException gex)
@@ -561,6 +564,7 @@ namespace GRA.Controllers.MissionControl
             try
             {
                 program = await _performerSchedulingService.GetProgramByIdAsync(programId,
+                    includeAgeGroups: true,
                     onlyApproved: true);
             }
             catch (GraException gex)

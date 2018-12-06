@@ -168,7 +168,7 @@ namespace GRA.Data
         public DbSet<Model.PsBackToBack> PsBackToBack { get; set; }
         public DbSet<Model.PsBlackoutDate> PsBlackoutDates { get; set; }
         public DbSet<Model.PsBranchSelection> PsBranchSelections { get; set; }
-        public DbSet<Model.PsSettings> PsSettings { get; set; }
+        public DbSet<Model.PsExcludeBranch> PsExcludeBranches { get; set; }
         public DbSet<Model.PsKitAgeGroup> PsKitAgeGroups { get; set; }
         public DbSet<Model.PsKitImage> PsKitImages { get; set; }
         public DbSet<Model.PsKit> PsKits { get; set; }
@@ -179,6 +179,7 @@ namespace GRA.Data
         public DbSet<Model.PsProgramAgeGroup> PsProgramAgeGroups { get; set; }
         public DbSet<Model.PsProgramImage> PsProgramImages { get; set; }
         public DbSet<Model.PsProgram> PsPrograms { get; set; }
+        public DbSet<Model.PsSettings> PsSettings { get; set; }
         public DbSet<Model.Question> Questions { get; set; }
         public DbSet<Model.Questionnaire> Questionnaires { get; set; }
         public DbSet<Model.RecoveryToken> RecoveryTokens { get; set; }

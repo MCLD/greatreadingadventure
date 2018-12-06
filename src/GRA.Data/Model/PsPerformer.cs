@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GRA.Data.Model
 {
@@ -46,7 +45,5 @@ namespace GRA.Data.Model
         public bool SetSchedule { get; set; }
         public bool RegistrationCompleted { get; set; }
         public bool IsApproved { get; set; }
-
-        public List<PsPerformerImage> Images { get; set; }
     }
 }

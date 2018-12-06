@@ -47,7 +47,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                    <form asp-controller="Performer" asp-action="ProgramDelete" method="post" role="form" style="display:inline">
+                    <form asp-action="ProgramDelete" method="post" role="form" style="display:inline">
                         <input id="Id" name="Id" type="hidden" />
                         <button type="submit" class="btn btn-danger btn-spinner pull-right" aria-label="Confirm">
                             <span class="fa fa-remove" aria-hidden="true"></span>
@@ -92,7 +92,7 @@
         </h2>
     </div>
     <div class="col-xs-12 col-sm-5 col-md-4">
-        @if (Model.Performer.Images != null)
+        @if (!string.IsNullOrWhiteSpace(Model.ImagePath))
         {
             <div class="row" style="padding-bottom:15px;">
                 <div class="col-xs-12">
@@ -303,6 +303,17 @@
 
 @section scripts {
     <script>
+        $(window).on("load", function () {
+            $(".td-class").each(function () {
+                $(this).children("a.rowlink").height($(this).height() + 11);
+            });
+        });
+        $(window).resize(function () {
+            $(".td-class").each(function () {
+                $(this).children("a.rowlink").height($(this).height() + 11);
+            });
+        });
+
         $("#deleteModal").on("show.bs.modal", function (event) {
             var button = $(event.relatedTarget);
             var id = button.data("id");

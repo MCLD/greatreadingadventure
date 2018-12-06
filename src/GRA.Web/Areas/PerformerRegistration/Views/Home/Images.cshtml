@@ -18,7 +18,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                    <form asp-controller="Performer" asp-action="ImagesDelete" method="post" role="form" style="display:inline">
+                    <form asp-action="ImagesDelete" method="post" role="form" style="display:inline">
                         <input asp-for="ImagesToDelete" type="hidden" />
                         <button type="submit" class="btn btn-danger btn-spinner pull-right" aria-label="Confirm">
                             <span class="fa fa-remove" aria-hidden="true"></span>
@@ -41,7 +41,7 @@
     </div>
     @if (Model.IsEditable)
     {
-        <form asp-controller="Performer" asp-action="Images" class="form-horizontal col-xs-12" method="post" role="form" enctype="multipart/form-data">
+        <form asp-action="Images" class="form-horizontal col-xs-12" method="post" role="form" enctype="multipart/form-data">
             <div class="row">
                 <div class="col-sm-9 col-sm-offset-3">
                     <p>

@@ -38,13 +38,13 @@ namespace GRA.Controllers.PerformerRegistration
             ICodeSanitizer codeSanitizer) : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _authenticationService = authenticationService 
+            _authenticationService = authenticationService
                 ?? throw new ArgumentNullException(nameof(authenticationService));
             _performerSchedulingService = performerSchedulingService
                 ?? throw new ArgumentNullException(nameof(performerSchedulingService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-            _codeSanitizer = codeSanitizer 
+            _codeSanitizer = codeSanitizer
                 ?? throw new ArgumentNullException(nameof(codeSanitizer));
             PageTitle = "Performer Registration";
         }
@@ -65,7 +65,7 @@ namespace GRA.Controllers.PerformerRegistration
             var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId,
                 includeBranches: true);
 
-            if (hasPermission 
+            if (hasPermission
                 && (performer != null || schedulingStage == PsSchedulingStage.RegistrationOpen))
             {
                 return RedirectToAction(nameof(Dashboard));
@@ -146,6 +146,9 @@ namespace GRA.Controllers.PerformerRegistration
             }
 
             var systems = (await _siteService.GetSystemList()).ToList();
+            var excludedBranches = await _performerSchedulingService.GetExcludedBranchIdsAsync();
+            systems.ForEach(_ => _.Branches = _.Branches
+                .Where(b => excludedBranches.Contains(b.Id) == false).ToList());
 
             var viewModel = new InformationViewModel()
             {
@@ -195,6 +198,9 @@ namespace GRA.Controllers.PerformerRegistration
             }
 
             var systems = (await _siteService.GetSystemList()).ToList();
+            var excludedBranches = await _performerSchedulingService.GetExcludedBranchIdsAsync();
+            systems.ForEach(_ => _.Branches = _.Branches
+                .Where(b => excludedBranches.Contains(b.Id) == false).ToList());
             var branchIds = systems.SelectMany(_ => _.Branches).Select(_ => _.Id);
             var BranchAvailability = JsonConvert.DeserializeObject
                 <List<int>>(model.BranchAvailabilityString)
@@ -238,8 +244,7 @@ namespace GRA.Controllers.PerformerRegistration
 
             if (ModelState.IsValid)
             {
-                var performer = currentPerformer ?? model.Performer;
-
+                var performer = model.Performer;
                 if (BranchAvailability.Count == branchIds.Count())
                 {
                     performer.AllBranches = true;
@@ -249,7 +254,7 @@ namespace GRA.Controllers.PerformerRegistration
                     performer.AllBranches = false;
                 }
 
-                if (performer?.RegistrationCompleted == true)
+                if (currentPerformer?.RegistrationCompleted == true)
                 {
                     performer = await _performerSchedulingService.EditPerformerAsync(performer,
                         BranchAvailability);
@@ -445,7 +450,11 @@ namespace GRA.Controllers.PerformerRegistration
             var userId = GetId(ClaimType.UserId);
             var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId);
 
-            if (performer != null && performer.SetSchedule == false)
+            if (performer == null)
+            {
+                return RedirectToAction(nameof(Information));
+            }
+            else if (performer.SetSchedule == false)
             {
                 return RedirectToAction(nameof(Schedule));
             }
@@ -466,28 +475,17 @@ namespace GRA.Controllers.PerformerRegistration
 
             if (id.HasValue)
             {
-                string unableToView = string.Empty;
                 try
                 {
-                    var program = await _performerSchedulingService.GetProgramByIdAsync(id.Value);
-                    if (program != null)
-                    {
-                        unableToView = "Program could not be found.";
-                    }
-                    else
-                    {
-                        viewModel.AgeSelection = program.AgeGroups.Select(_ => _.Id).ToList();
-                        viewModel.EditingProgram = true;
-                        viewModel.Program = program;
-                    }
+                    var program = await _performerSchedulingService.GetProgramByIdAsync(id.Value, 
+                        includeAgeGroups: true);
+                    viewModel.AgeSelection = program.AgeGroups.Select(_ => _.Id).ToList();
+                    viewModel.EditingProgram = true;
+                    viewModel.Program = program;
                 }
                 catch (GraException gex)
                 {
-                    unableToView = gex.Message;
-                }
-                if (!string.IsNullOrWhiteSpace(unableToView))
-                {
-                    ShowAlertDanger("Unable to view Program: ", unableToView);
+                    ShowAlertDanger("Unable to view Program: ", gex);
                     return RedirectToAction(nameof(Dashboard));
                 }
             }
@@ -508,32 +506,13 @@ namespace GRA.Controllers.PerformerRegistration
             var userId = GetId(ClaimType.UserId);
             var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId);
 
-            if (performer != null && performer.SetSchedule == false)
+            if (performer == null)
+            {
+                return RedirectToAction(nameof(Information));
+            }
+            else if (performer.SetSchedule == false)
             {
                 return RedirectToAction(nameof(Schedule));
-            }
-
-            if (model.EditingProgram)
-            {
-                string unableToSave = string.Empty;
-                try
-                {
-                    var program = await _performerSchedulingService.GetProgramByIdAsync(
-                        model.Program.Id);
-                    if (program == null)
-                    {
-                        unableToSave = "Program could not be found.";
-                    }
-                }
-                catch (GraException gex)
-                {
-                    unableToSave = gex.Message;
-                }
-                if (!string.IsNullOrWhiteSpace(unableToSave))
-                {
-                    ShowAlertDanger("Unable to save Program: ", unableToSave);
-                    return RedirectToAction(nameof(Dashboard));
-                }
             }
 
             var ageGroups = await _performerSchedulingService.GetAgeGroupsAsync();
@@ -563,11 +542,19 @@ namespace GRA.Controllers.PerformerRegistration
             {
                 if (model.EditingProgram)
                 {
-                    var program = await _performerSchedulingService.UpdateProgramAsync(
-                        model.Program, ageSelection);
+                    try
+                    {
+                        var program = await _performerSchedulingService.UpdateProgramAsync(
+                            model.Program, ageSelection);
 
-                    ShowAlertSuccess("Program saved!");
-                    return RedirectToAction(nameof(ProgramDetails), new { id = program.Id });
+                        ShowAlertSuccess("Program saved!");
+                        return RedirectToAction(nameof(ProgramDetails), new { id = program.Id });
+                    }
+                    catch (GraException gex)
+                    {
+                        ShowAlertDanger("Unable to update Program: ", gex);
+                        return RedirectToAction(nameof(Dashboard));
+                    }
                 }
                 else
                 {
@@ -626,12 +613,20 @@ namespace GRA.Controllers.PerformerRegistration
 
             var userId = GetId(ClaimType.UserId);
             var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId,
-                includeBranches: true, includePrograms: true, includeSchedule: true);
+                includeBranches: true,
+                includeImages: true,
+                includePrograms: true,
+                includeSchedule: true);
 
             if (performer?.RegistrationCompleted != true)
             {
                 return RedirectToAction(nameof(Information));
             }
+
+            var systems = (await _siteService.GetSystemList()).ToList();
+            var excludedBranches = await _performerSchedulingService.GetExcludedBranchIdsAsync();
+            systems.ForEach(_ => _.Branches = _.Branches
+                .Where(b => excludedBranches.Contains(b.Id) == false).ToList());
 
             var viewModel = new DashboardViewModel
             {
@@ -641,7 +636,7 @@ namespace GRA.Controllers.PerformerRegistration
                 Performer = performer,
                 ReferencesPath = _pathResolver.ResolveContentPath(performer.ReferencesFilename),
                 Settings = settings,
-                Systems = await _siteService.GetSystemList()
+                Systems = systems
             };
 
             if (performer.Images.Any())
@@ -672,7 +667,7 @@ namespace GRA.Controllers.PerformerRegistration
 
             var userId = GetId(ClaimType.UserId);
             var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId,
-                includeBranches: true, includePrograms: true, includeSchedule: true);
+                includeImages: true);
 
             if (performer?.RegistrationCompleted != true)
             {
@@ -704,7 +699,7 @@ namespace GRA.Controllers.PerformerRegistration
 
             var userId = GetId(ClaimType.UserId);
             var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId,
-                includeBranches: true, includePrograms: true, includeSchedule: true);
+                includeImages: true);
 
             if (performer?.RegistrationCompleted != true)
             {
@@ -765,8 +760,7 @@ namespace GRA.Controllers.PerformerRegistration
             }
 
             var userId = GetId(ClaimType.UserId);
-            var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId,
-                includeBranches: true, includePrograms: true, includeSchedule: true);
+            var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId);
 
             if (performer?.RegistrationCompleted != true)
             {
@@ -797,8 +791,7 @@ namespace GRA.Controllers.PerformerRegistration
             }
 
             var userId = GetId(ClaimType.UserId);
-            var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId,
-                includeBranches: true, includePrograms: true, includeSchedule: true);
+            var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId);
 
             if (performer?.RegistrationCompleted != true)
             {
@@ -831,15 +824,15 @@ namespace GRA.Controllers.PerformerRegistration
             }
 
             var userId = GetId(ClaimType.UserId);
-            var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId,
-                includeBranches: true, includePrograms: true, includeSchedule: true);
+            var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId);
 
             if (performer?.RegistrationCompleted != true)
             {
                 return RedirectToAction(nameof(Information));
             }
 
-            var program = await _performerSchedulingService.GetProgramByIdAsync(id);
+            var program = await _performerSchedulingService.GetProgramByIdAsync(id, 
+                includeAgeGroups: true);
 
             if (program == null)
             {
@@ -871,8 +864,7 @@ namespace GRA.Controllers.PerformerRegistration
             }
 
             var userId = GetId(ClaimType.UserId);
-            var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId,
-                includeBranches: true, includePrograms: true, includeSchedule: true);
+            var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId);
 
             if (performer?.RegistrationCompleted != true)
             {
@@ -912,8 +904,7 @@ namespace GRA.Controllers.PerformerRegistration
             }
 
             var userId = GetId(ClaimType.UserId);
-            var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId,
-                includeBranches: true, includePrograms: true, includeSchedule: true);
+            var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId);
 
             if (performer?.RegistrationCompleted != true)
             {
@@ -982,8 +973,7 @@ namespace GRA.Controllers.PerformerRegistration
             }
 
             var userId = GetId(ClaimType.UserId);
-            var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId,
-                includeBranches: true, includePrograms: true, includeSchedule: true);
+            var performer = await _performerSchedulingService.GetPerformerByUserIdAsync(userId);
 
             if (performer?.RegistrationCompleted != true)
             {

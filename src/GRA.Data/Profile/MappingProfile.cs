@@ -77,12 +77,7 @@ namespace GRA.Data.Profile
             CreateMap<Model.PsPerformer, Domain.Model.PsPerformer>().ReverseMap();
             CreateMap<Model.PsPerformerImage, Domain.Model.PsPerformerImage>().ReverseMap();
             CreateMap<Model.PsPerformerSchedule, Domain.Model.PsPerformerSchedule>().ReverseMap();
-            CreateMap<Model.PsProgram, Domain.Model.PsProgram>()
-                .ForMember(dest => dest.AgeGroups, opt =>
-                {
-                    opt.MapFrom(src => src.AgeGroups.Select(_ => _.AgeGroup));
-                })
-                .ReverseMap();
+            CreateMap<Model.PsProgram, Domain.Model.PsProgram>().ReverseMap();
             CreateMap<Model.PsProgramImage, Domain.Model.PsProgramImage>().ReverseMap();
             CreateMap<Model.Question, Domain.Model.Question>()
                 .ForMember(dest => dest.Answers, opt =>
@@ -107,7 +102,10 @@ namespace GRA.Data.Profile
             CreateMap<Model.SchoolType, Domain.Model.SchoolType>().ReverseMap();
             CreateMap<Model.Site, Domain.Model.Site>().ReverseMap();
             CreateMap<Model.SiteSetting, Domain.Model.SiteSetting>().ReverseMap();
-            CreateMap<Model.System, Domain.Model.System>().ReverseMap();
+            CreateMap<Model.System, Domain.Model.System>()
+                .ForMember(_ => _.Branches, 
+                    opt => opt.MapFrom(src => src.Branches.OrderBy(_ => _.Name)))
+                .ReverseMap();
             CreateMap<Model.Trigger, Domain.Model.Trigger>()
                 .ForMember(dest => dest.BadgeIds, opt => opt.MapFrom(src
                 => src.RequiredBadges.Select(_ => _.BadgeId).ToList()))

@@ -17,7 +17,7 @@ namespace GRA.Data.Repository
         {
         }
 
-        public async Task<ICollection<PsPerformerImage>> GetByPerformerIdAsync(int performerId)
+        public async Task<List<PsPerformerImage>> GetByPerformerIdAsync(int performerId)
         {
             return await DbSet
                 .AsNoTracking()

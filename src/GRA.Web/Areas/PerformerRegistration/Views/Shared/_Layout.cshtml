@@ -35,14 +35,14 @@
                 <a asp-controller="Home"
                    asp-action="Index"
                    class="navbar-brand mc-navbar-brand">
-                    <span class="fa fa-cutlery"></span>
+                    <span class="fa fa-theater-masks"></span>
                     Performer Registration
                 </a>
             </div>
             <div class="navbar-collapse navbar-right collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Home" asp-action="Index" title="Back to the site" data-toggle="tooltip" data-placement="bottom" class="gra-homelink"><span class="fa fa-sitemap"></span><span class="visible-xs-inline"> Back to the site</span></a></li>
-                    <li><a asp-controller="Home" asp-action="Signout">Sign out</a></li>
+                    <li><a asp-controller="Home" asp-action="Signout" asp-area="">Sign out</a></li>
                 </ul>
             </div>
         </div>
@@ -56,25 +56,6 @@
             </div>
         </noscript>
         @RenderSection("Nav", required: false)
-        @if (ViewData.ContainsKey(GRA.Controllers.ViewDataKey.TitleHtml)
-           && ViewData[GRA.Controllers.ViewDataKey.TitleHtml] != null)
-        {
-            <div class="row">
-                <div class="col-xs-12">
-                    @RenderSection("inHeading", required: false)
-                    <span class="h2">@Html.Raw(ViewData[GRA.Controllers.ViewDataKey.TitleHtml])</span>
-                </div>
-            </div>
-        }
-        else if (ViewData.ContainsKey(GRA.Controllers.ViewDataKey.Title))
-        {
-            <div class="row">
-                <div class="col-xs-12">
-                    @RenderSection("inHeading", required: false)
-                    <span class="h2">@ViewData[GRA.Controllers.ViewDataKey.Title]</span>
-                </div>
-            </div>
-        }
 
         @if (TempData[GRA.Controllers.TempDataKey.AlertDanger] != null)
         {

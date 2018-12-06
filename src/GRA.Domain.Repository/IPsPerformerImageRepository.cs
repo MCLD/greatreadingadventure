@@ -6,6 +6,6 @@ namespace GRA.Domain.Repository
 {
     public interface IPsPerformerImageRepository : IRepository<PsPerformerImage>
     {
-        Task<ICollection<PsPerformerImage>> GetByPerformerIdAsync(int performerId);
+        Task<List<PsPerformerImage>> GetByPerformerIdAsync(int performerId);
     }
 }

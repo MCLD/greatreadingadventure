@@ -13,6 +13,7 @@ namespace GRA.Domain.Repository
         Task<List<int>> GetIndexListAsync(int? ageGroupId = null, bool onlyApproved = false);
         Task<int> GetCountByPerformerAsync(int performerId);
         Task<bool> IsValidAgeGroupAsync(int programId, int ageGroupId);
+        Task<ICollection<PsAgeGroup>> GetProgramAgeGroupsAsync(int programId);
         Task AddProgramAgeGroupsAsync(int programId, List<int> ageGroupIds);
         Task RemoveProgramAgeGroupsAsync(int programId, List<int> ageGroupIds);
         Task<bool> AvailableAtBranchAsync(int programId, int branchId);

@@ -143,6 +143,7 @@ namespace GRA.Controllers.MissionControl
             {
                 performer = await _performerSchedulingService.GetPerformerByIdAsync(id,
                     includeBranches: true,
+                    includeImages: true,
                     includePrograms: true,
                     includeSchedule: true);
             }
@@ -364,7 +365,8 @@ namespace GRA.Controllers.MissionControl
             var performer = new PsPerformer();
             try
             {
-                performer = await _performerSchedulingService.GetPerformerByIdAsync(id);
+                performer = await _performerSchedulingService.GetPerformerByIdAsync(id,
+                    includeImages: true);
             }
             catch (GraException gex)
             {
@@ -399,7 +401,7 @@ namespace GRA.Controllers.MissionControl
             try
             {
                 performer = await _performerSchedulingService.GetPerformerByIdAsync(
-                    model.PerformerId);
+                    model.PerformerId, includeImages: true);
             }
             catch (GraException gex)
             {
@@ -486,7 +488,8 @@ namespace GRA.Controllers.MissionControl
             var program = new PsProgram();
             try
             {
-                program = await _performerSchedulingService.GetProgramByIdAsync(id);
+                program = await _performerSchedulingService.GetProgramByIdAsync(id,
+                    includeAgeGroups: true);
             }
             catch (GraException gex)
             {
@@ -557,7 +560,8 @@ namespace GRA.Controllers.MissionControl
             var program = new PsProgram();
             try
             {
-                program = await _performerSchedulingService.GetProgramByIdAsync(id);
+                program = await _performerSchedulingService.GetProgramByIdAsync(id,
+                    includeAgeGroups: true);
             }
             catch (GraException gex)
             {

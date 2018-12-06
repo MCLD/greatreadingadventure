@@ -51,8 +51,11 @@ namespace GRA.Data.Repository
 
             if (filter.AgeGroupId.HasValue)
             {
-                programs = programs.Where(_ => _.AgeGroups
-                    .Select(a => a.AgeGroupId).Contains(filter.AgeGroupId.Value));
+                programs = programs
+                    .Join(_context.PsProgramAgeGroups.Where(_ => _.AgeGroupId == filter.AgeGroupId.Value),
+                        program => program.Id,
+                        ageGroups => ageGroups.ProgramId,
+                        (program, ageGroups) => program);
             }
             if (filter.IsApproved.HasValue)
             {
@@ -75,15 +78,18 @@ namespace GRA.Data.Repository
             };
         }
 
-        public async Task<List<int>> GetIndexListAsync(int? ageGroupId = null, 
+        public async Task<List<int>> GetIndexListAsync(int? ageGroupId = null,
             bool onlyApproved = false)
         {
             var programs = DbSet.AsNoTracking();
 
             if (ageGroupId.HasValue)
             {
-                programs = programs.Where(_ => _.AgeGroups
-                    .Select(a => a.AgeGroupId).Contains(ageGroupId.Value));
+                programs = programs
+                    .Join(_context.PsProgramAgeGroups.Where(_ => _.AgeGroupId == ageGroupId.Value),
+                        program => program.Id,
+                        ageGroups => ageGroups.ProgramId,
+                        (program, ageGroups) => program);
             }
             if (onlyApproved)
             {
@@ -109,9 +115,22 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.Id == programId
-                    && _.AgeGroups.Select(a => a.AgeGroupId).Contains(ageGroupId))
+                .Where(_ => _.Id == programId)
+                .Join(_context.PsProgramAgeGroups.Where(_ => _.AgeGroupId == ageGroupId),
+                    program => program.Id,
+                    ageGroups => ageGroups.ProgramId,
+                    (program, ageGroups) => program)
                 .AnyAsync();
+        }
+
+        public async Task<ICollection<PsAgeGroup>> GetProgramAgeGroupsAsync(int programId)
+        {
+            return await _context.PsProgramAgeGroups
+                .AsNoTracking()
+                .Where(_ => _.ProgramId == programId)
+                .Select(_ => _.AgeGroup)
+                .ProjectTo<PsAgeGroup>()
+                .ToListAsync();
         }
 
         public async Task AddProgramAgeGroupsAsync(int programId, List<int> ageGroupIds)
@@ -141,11 +160,11 @@ namespace GRA.Data.Repository
         {
             return await DbSet.AsNoTracking()
                 .Where(_ => _.Id == programId)
-                .GroupJoin(_context.PsPerformerBranches, 
-                    program => program.PerformerId, 
-                    performerbranches => performerbranches.PsPerformerId, 
+                .GroupJoin(_context.PsPerformerBranches,
+                    program => program.PerformerId,
+                    performerbranches => performerbranches.PsPerformerId,
                     (program, performerbranches) => new { program, performerbranches })
-                .Where(_ => _.program.Performer.AllBranches 
+                .Where(_ => _.program.Performer.AllBranches
                     || _.performerbranches.Select(b => b.BranchId).Contains(branchId))
                 .AnyAsync();
         }

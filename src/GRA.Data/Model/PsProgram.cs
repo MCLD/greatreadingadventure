@@ -38,7 +38,6 @@ namespace GRA.Data.Model
 
         public bool AllowArchiving { get; set; }
 
-        public ICollection<PsProgramAgeGroup> AgeGroups { get; set; }
         public List<PsProgramImage> Images { get; set; }
     }
 }

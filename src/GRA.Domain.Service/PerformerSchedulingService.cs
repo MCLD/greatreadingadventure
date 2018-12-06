@@ -157,6 +157,22 @@ namespace GRA.Domain.Service
             }
         }
 
+        public async Task<ICollection<int>> GetExcludedBranchIdsAsync()
+        {
+            return await _psSettingsRepository.GetExcludedBranchIdsAsync();
+        }
+
+        public async Task UpdateBranchExclusionsAsync(List<int> branchIds)
+        {
+            var excludedBranches = await _psSettingsRepository.GetExcludedBranchIdsAsync();
+
+            var exclusionsToAdd = branchIds.Except(excludedBranches).ToList();
+            var exclusionsToRemove = excludedBranches.Except(branchIds).ToList();
+
+            await _psSettingsRepository.AddBranchExclusionsAsync(exclusionsToAdd);
+            await _psSettingsRepository.RemoveBranchExclusionsAsync(exclusionsToRemove);
+        }
+
         public async Task<DataWithCount<ICollection<PsPerformer>>> GetPaginatedPerformerListAsync(
             PerformerSchedulingFilter filter)
         {
@@ -220,6 +236,7 @@ namespace GRA.Domain.Service
 
         public async Task<PsPerformer> GetPerformerByIdAsync(int id,
             bool includeBranches = false,
+            bool includeImages = false,
             bool includePrograms = false,
             bool includeSchedule = false,
             bool onlyApproved = false)
@@ -232,6 +249,11 @@ namespace GRA.Domain.Service
             if (includeBranches)
             {
                 performer.Branches = await _psPerformerRepository.GetPerformerBranchesAsync(
+                    performer.Id);
+            }
+            if (includeImages)
+            {
+                performer.Images = await _psPerformerImageRepository.GetByPerformerIdAsync(
                     performer.Id);
             }
             if (includePrograms)
@@ -250,6 +272,7 @@ namespace GRA.Domain.Service
 
         public async Task<PsPerformer> GetPerformerByUserIdAsync(int userId,
             bool includeBranches = false,
+            bool includeImages = false,
             bool includePrograms = false,
             bool includeSchedule = false)
         {
@@ -266,6 +289,11 @@ namespace GRA.Domain.Service
                 if (includeBranches)
                 {
                     performer.Branches = await _psPerformerRepository.GetPerformerBranchesAsync(
+                        performer.Id);
+                }
+                if (includeImages)
+                {
+                    performer.Images = await _psPerformerImageRepository.GetByPerformerIdAsync(
                         performer.Id);
                 }
                 if (includePrograms)
@@ -644,6 +672,7 @@ namespace GRA.Domain.Service
         }
 
         public async Task<PsProgram> GetProgramByIdAsync(int id,
+            bool includeAgeGroups = false,
             bool onlyApproved = false)
         {
             var authId = GetClaimId(ClaimType.UserId);
@@ -663,6 +692,11 @@ namespace GRA.Domain.Service
                     _logger.LogError($"User id {authId} does not have persmission to view program id {id}.");
                     throw new GraException("Permission denied.");
                 }
+            }
+
+            if (includeAgeGroups)
+            {
+                program.AgeGroups = await _psProgramRepository.GetProgramAgeGroupsAsync(program.Id);
             }
 
             return program;
@@ -709,8 +743,11 @@ namespace GRA.Domain.Service
 
             currentProgram = await _psProgramRepository.UpdateSaveAsync(authId, currentProgram);
 
-            var agesToAdd = ageSelection.Except(currentProgram.AgeGroups.Select(_ => _.Id)).ToList();
-            var agesToRemove = currentProgram.AgeGroups.Select(_ => _.Id).Except(ageSelection).ToList();
+            var currentAgeGroups = await _psProgramRepository.GetProgramAgeGroupsAsync(
+                currentProgram.Id);
+
+            var agesToAdd = ageSelection.Except(currentAgeGroups.Select(_ => _.Id)).ToList();
+            var agesToRemove = currentAgeGroups.Select(_ => _.Id).Except(ageSelection).ToList();
 
             await _psProgramRepository.AddProgramAgeGroupsAsync(currentProgram.Id, agesToAdd);
             await _psProgramRepository.RemoveProgramAgeGroupsAsync(currentProgram.Id, agesToRemove);
@@ -735,7 +772,8 @@ namespace GRA.Domain.Service
                 throw new GraException("The requested program could not be accessed or does not exist.");
             }
 
-            var ageGroupIds = program.AgeGroups.Select(_ => _.Id).ToList();
+            var ageGroups = await _psProgramRepository.GetProgramAgeGroupsAsync(program.Id);
+            var ageGroupIds = ageGroups.Select(_ => _.Id).ToList();
             await _psProgramRepository.RemoveProgramAgeGroupsAsync(programId, ageGroupIds);
 
             var images = program.Images;
@@ -791,7 +829,7 @@ namespace GRA.Domain.Service
         {
             var authId = GetClaimId(ClaimType.UserId);
 
-            await _psPerformerImageRepository.RemoveSaveAsync(authId, image.Id);
+            await _psProgramImageRepository.RemoveSaveAsync(authId, image.Id);
             var file = _pathResolver.ResolveContentFilePath(image.Filename);
             if (System.IO.File.Exists(file))
             {
