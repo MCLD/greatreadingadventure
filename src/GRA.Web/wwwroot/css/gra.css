@@ -78,6 +78,7 @@ ul.navbar-nav li.active {
 }
 
 .gra-navbar {
+    background-color: white;
     border-bottom: 1px solid #eee;
 }
 
@@ -730,4 +731,8 @@ p.password-note {
 
 .slick-slider * {
     outline: none;
+}
+
+.gra-authorization-code {
+    background-color: #eee;
 }

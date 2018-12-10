@@ -147,6 +147,16 @@ namespace GRA
                     Category = typeof(SiteSettingKey.Users).Name,
                     Format = SiteSettingFormat.String
                 }
+            },
+            {
+                SiteSettingKey.Web.CacheSiteCustomizationsMinutes,
+                new SiteSettingDefinition
+                {
+                    Name = "Check for site.css and site.js changes on disk",
+                    Info = "How often (in minutes) To check if site.css and site.js have changed on disk. Set to 0 when working on the files so that they will reload on each page load, set to a higher number when you are editing them infrequently. An empty setting will default to 60 minutes",
+                    Category = typeof(SiteSettingKey.Web).Name,
+                    Format= SiteSettingFormat.Integer
+                }
             }
         };
     }

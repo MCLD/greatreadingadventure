@@ -185,8 +185,8 @@ namespace GRA.Domain.Service
             var sites = await _siteRepository.GetAllAsync();
             foreach(var site in sites)
             {
-                string key = $"s{site.Id}.{CacheKey.SiteSettings}";
-                _cache.Remove(key);
+                _cache.Remove($"s{site.Id}.{CacheKey.SiteSettings}");
+                _cache.Remove($"s{site.Id}.{CacheKey.SiteCss}");
             }
             _cache.Remove(CacheKey.Sites);
             return await GetSitesFromCacheAsync();

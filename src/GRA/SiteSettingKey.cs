@@ -2,12 +2,6 @@
 {
     public struct SiteSettingKey
     {
-        public struct SecretCode
-        {
-            // TODO make this truly disable secret codes for the site
-            public static readonly string Disable = "SecretCode.Disable";
-        }
-
         public struct Challenges
         {
             public static readonly string HideUntilRegistrationOpen
@@ -24,6 +18,11 @@
         public struct Points
         {
             public static readonly string MaximumPermitted = "Points.MaximumPermitted";
+        }
+        public struct SecretCode
+        {
+            // TODO make this truly disable secret codes for the site
+            public static readonly string Disable = "SecretCode.Disable";
         }
 
         public struct Users
@@ -43,6 +42,12 @@
                 = "Users.DefaultDailyPersonalGoal";
             public static readonly string SurveyUrl = "Users.SurveyUrl";
             public static readonly string FirstTimeSurveyUrl = "Users.FirstTimeSurveyUrl";
+        }
+
+        public struct Web
+        {
+            public static readonly string CacheSiteCustomizationsMinutes 
+                = "Web.CacheSiteCustomizationsMinutes";
         }
     }
 }

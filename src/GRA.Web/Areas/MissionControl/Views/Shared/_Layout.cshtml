@@ -15,8 +15,11 @@
     <link rel="stylesheet" href="~/js/jquery-ui-1.12.1.custom/jquery-ui.min.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/main.min.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/missioncontrol.min.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     @RenderSection("styles", required: false)
+    @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.SiteCss))
+    {
+        <link rel="stylesheet" href="@Url.Content(Context.Items[GRA.Controllers.ItemKey.SiteCss].ToString())" />
+    }
     <style>
         div.tooltip-inner {
             width: 10rem;
@@ -201,7 +204,7 @@
         </noscript>
 
         @if (ViewData.ContainsKey(GRA.Controllers.ViewDataKey.TitleHtml)
-      && ViewData[GRA.Controllers.ViewDataKey.TitleHtml] != null)
+   && ViewData[GRA.Controllers.ViewDataKey.TitleHtml] != null)
         {
             <div class="row">
                 <div class="col-xs-12">
@@ -265,5 +268,9 @@
             $('[data-toggle="tooltip"]').tooltip()
         })
     </script>
+    @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.SiteJs))
+    {
+        <script src="@Url.Content(Context.Items[GRA.Controllers.ItemKey.SiteJs].ToString())"></script>
+    }
 </body>
 </html>

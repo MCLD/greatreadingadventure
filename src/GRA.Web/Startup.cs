@@ -425,7 +425,6 @@ namespace GRA.Web
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app,
-            //IHostingEnvironment env,
             IPathResolver pathResolver,
             Controllers.Base.ISitePathValidator sitePathValidator)
         {

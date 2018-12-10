@@ -4,9 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## Unreleased
+### Added
+- Add site.js to shared folder for customizing site scripting
+
 ### Changed
 - New mail icon in navigation is red and solid if there are new messages, grey and wireframe otherwise
 - Upgrade ImageSharp from v1.0.0-beta0003 to v1.0.0-beta0005
+- Move site.css for customizing site styles to shared folder
 
 ### Fixed
 - Fix #377 Adding a challenge task causes an error
@@ -17,6 +21,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Challenge favorite icons not displaying
 - 'Signup school not listed' icon not displaying
 - Badge display on the dashboard to wrap properly
+
+### Removed
+- Old prior-version FontAwesome files
 
 ## [4.1.0] - 2018-11-30
 ### Added

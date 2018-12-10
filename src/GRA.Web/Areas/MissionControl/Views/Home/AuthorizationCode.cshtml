@@ -14,14 +14,12 @@
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5e3ab6">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="~/css/main.min.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <style>
-        body {
-            background-color: #eee;
-        }
-    </style>
+    @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.SiteCss))
+    {
+        <link rel="stylesheet" href="@Url.Content(Context.Items[GRA.Controllers.ItemKey.SiteCss].ToString())" />
+    }
 </head>
-<body>
+<body class="gra-authorization-code">
     <div class="container body-content">
         <div class="row">
             <div class="col-xs-12">
@@ -77,5 +75,9 @@
         </form>
     </div>
     <script src="~/js/main.min.js" asp-append-version="true"></script>
+    @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.SiteJs))
+    {
+        <script src="@Url.Content(Context.Items[GRA.Controllers.ItemKey.SiteJs].ToString())"></script>
+    }
 </body>
 </html>

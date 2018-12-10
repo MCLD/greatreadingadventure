@@ -1,28 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using GRA.Abstract;
+﻿using System.IO;
 using GRA.Domain.Service.Abstract;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Service
 {
     public class TemplateService : BaseService<TemplateService>
     {
-        private readonly IConfiguration _config;
         public TemplateService(ILogger<TemplateService> logger,
-            GRA.Abstract.IDateTimeProvider dateTimeProvider,
-            IConfiguration config) : base(logger, dateTimeProvider)
+            GRA.Abstract.IDateTimeProvider dateTimeProvider) : base(logger, dateTimeProvider)
         {
-            _config = config ?? throw new ArgumentNullException(nameof(config));
         }
 
         public void SetupTemplates()
         {
             string viewsPath = Path.Combine(Directory.GetCurrentDirectory(), "Views");
-            string templatesPath = Path.Combine(Directory.GetCurrentDirectory(), "shared", "templates");
+            string templatesPath = Path.Combine(Directory.GetCurrentDirectory(), 
+                "shared", 
+                "templates");
 
             var sharedViewsPath = Path.Combine(Directory.GetCurrentDirectory(), "shared", "views");
             Directory.CreateDirectory(sharedViewsPath);
