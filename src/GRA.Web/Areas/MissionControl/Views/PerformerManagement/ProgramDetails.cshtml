@@ -5,6 +5,7 @@
 }
 
 @section styles {
+    <link rel="stylesheet" href="~/css/performerregistration.min.css" asp-append-version="true" />
     <noscript>
         <style>
             #descriptionCounter {
@@ -140,7 +141,7 @@
             <div class="col-sm-9">
                 <textarea asp-for="Program.Description" class="form-control" maxlength="375" rows="4"></textarea>
                 <span id="descriptionCounter" class="pull-right">
-                    <span id="descriptionCount">@Model.Program?.Description?.Length</span> / 375
+                    <span id="descriptionCount">@(Model.Program?.Description?.Length ?? 0)</span> / 375
                 </span>
                 <span asp-validation-for="Program.Description" class="text-danger"></span>
             </div>
@@ -220,6 +221,8 @@
 </div>
 
 @section scripts {
+    <script src="~/js/performerregistration.min.js" asp-append-version="true"></script>
+
     <script>
         $("#agePlaceholder").remove();
         $("#AgeSelection")

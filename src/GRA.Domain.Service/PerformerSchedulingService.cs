@@ -37,6 +37,7 @@ namespace GRA.Domain.Service
         public IPsProgramRepository _psProgramRepository;
         public IPsProgramImageRepository _psProgramImageRepository;
         public IPsSettingsRepository _psSettingsRepository;
+        public ISystemRepository _systemRepository;
         public ITriggerRepository _triggerRepository;
         public PerformerSchedulingService(ILogger<PerformerSchedulingService> logger,
             IDateTimeProvider dateTimeProvider,
@@ -53,6 +54,7 @@ namespace GRA.Domain.Service
             IPsProgramRepository psProgramRepository,
             IPsProgramImageRepository psProgramImageRepository,
             IPsSettingsRepository psSettingsRepository,
+            ISystemRepository systemRepository,
             ITriggerRepository triggerRepository)
             : base(logger, dateTimeProvider, userContextProvider)
         {
@@ -79,6 +81,8 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(psProgramImageRepository));
             _psSettingsRepository = psSettingsRepository
                 ?? throw new ArgumentNullException(nameof(psSettingsRepository));
+            _systemRepository = systemRepository
+                ?? throw new ArgumentNullException(nameof(systemRepository));
             _triggerRepository = triggerRepository
                 ?? throw new ArgumentNullException(nameof(triggerRepository));
         }
@@ -155,6 +159,51 @@ namespace GRA.Domain.Service
 
                 await _psSettingsRepository.UpdateSaveAsync(authId, currentSettings);
             }
+        }
+
+        public async Task<List<Model.System>> GetSystemListWithoutExcludedBranchesAsync()
+        {
+            var systems = (await _systemRepository.GetAllAsync(GetCurrentSiteId()))
+                .ToList();
+
+            var excludedBranchIds = await _psSettingsRepository
+                .GetExcludedBranchIdsAsync();
+
+            foreach(var system in systems)
+            {
+                system.Branches = system.Branches
+                    .Where(_ => excludedBranchIds.Contains(_.Id) == false).ToList();
+            }
+
+            return systems;
+        }
+
+        public async Task<Model.System> GetSystemWithoutExcludedBranchesAsync(int systemId)
+        {
+            var system = await _systemRepository.GetByIdAsync(systemId);
+
+            var excludedBranchIds = await _psSettingsRepository
+                .GetExcludedBranchIdsAsync();
+
+            system.Branches = system.Branches.Where(_ => excludedBranchIds.Contains(_.Id) == false)
+                .ToList();
+
+            return system;
+        }
+
+        public async Task<ICollection<Branch>> GetNonExcludedSystemBranchesAsync(int systemId, 
+            bool prioritizeUserBranch = false)
+        {
+            var prioritizedBranch = prioritizeUserBranch 
+                ? GetClaimId(ClaimType.BranchId) : default(int?);
+
+            return await _psSettingsRepository.GetNonExcludedSystemBranchesAsync(systemId, 
+                prioritizedBranch);
+        }
+
+        public async Task<Branch> GetNonExcludedBranch(int branchId)
+        {
+            return await _psSettingsRepository.GetNonExcludedBranchAsync(branchId);
         }
 
         public async Task<ICollection<int>> GetExcludedBranchIdsAsync()
@@ -390,7 +439,7 @@ namespace GRA.Domain.Service
         {
             var authId = GetClaimId(ClaimType.UserId);
 
-            var currentPerformer = await _psPerformerRepository.GetByUserIdAsync(authId);
+            var currentPerformer = await _psPerformerRepository.GetByIdAsync(performer.Id);
             if (currentPerformer == null)
             {
                 throw new GraException("The requested performer could not be accessed or does not exist.");
@@ -673,6 +722,7 @@ namespace GRA.Domain.Service
 
         public async Task<PsProgram> GetProgramByIdAsync(int id,
             bool includeAgeGroups = false,
+            bool includeImages = false,
             bool onlyApproved = false)
         {
             var authId = GetClaimId(ClaimType.UserId);
@@ -697,6 +747,10 @@ namespace GRA.Domain.Service
             if (includeAgeGroups)
             {
                 program.AgeGroups = await _psProgramRepository.GetProgramAgeGroupsAsync(program.Id);
+            }
+            if (includeImages)
+            {
+                program.Images = await _psProgramImageRepository.GetByProgramIdAsync(program.Id);
             }
 
             return program;
@@ -863,13 +917,24 @@ namespace GRA.Domain.Service
             return await _psBranchSelectionRepository.GetByKitIdAsync(kitId);
         }
 
-        public async Task<PsKit> GetKitByIdAsync(int kitId)
+        public async Task<PsKit> GetKitByIdAsync(int kitId, bool includeAgeGroups = false, 
+            bool includeImages = false)
         {
             var kit = await _psKitRepository.GetByIdAsync(kitId);
             if (kit == null)
             {
                 throw new GraException("The requested kit could not be accessed or does not exist.");
             }
+
+            if (includeAgeGroups)
+            {
+                kit.AgeGroups = await _psKitRepository.GetKitAgeGroupsAsync(kit.Id);
+            }
+            if (includeImages)
+            {
+                kit.Images = await _psKitImageRepository.GetByKitIdAsync(kit.Id);
+            }
+
             return kit;
         }
 
@@ -883,7 +948,7 @@ namespace GRA.Domain.Service
 
             kit = await _psKitRepository.AddSaveAsync(authId, kit);
 
-            await _psProgramRepository.AddProgramAgeGroupsAsync(kit.Id, ageSelection);
+            await _psKitRepository.AddKitAgeGroupsAsync(kit.Id, ageSelection);
 
             return kit;
         }
@@ -904,8 +969,9 @@ namespace GRA.Domain.Service
 
             currentKit = await _psKitRepository.UpdateSaveAsync(authId, currentKit);
 
-            var agesToAdd = ageSelection.Except(currentKit.AgeGroups.Select(_ => _.Id)).ToList();
-            var agesToRemove = currentKit.AgeGroups.Select(_ => _.Id).Except(ageSelection).ToList();
+            var currentAgeGroups = await _psKitRepository.GetKitAgeGroupsAsync(currentKit.Id);
+            var agesToAdd = ageSelection.Except(currentAgeGroups.Select(_ => _.Id)).ToList();
+            var agesToRemove = currentAgeGroups.Select(_ => _.Id).Except(ageSelection).ToList();
 
             await _psKitRepository.AddKitAgeGroupsAsync(currentKit.Id, agesToAdd);
             await _psKitRepository.RemoveKitAgeGroupsAsync(currentKit.Id, agesToRemove);
@@ -922,7 +988,8 @@ namespace GRA.Domain.Service
                 throw new GraException("The requested kit could not be accessed or does not exist.");
             }
 
-            var ageGroupIds = kit.AgeGroups.Select(_ => _.Id).ToList();
+            var ageGroupIds = (await _psKitRepository.GetKitAgeGroupsAsync(kit.Id))
+                .Select(_ => _.Id).ToList();
             await _psKitRepository.RemoveKitAgeGroupsAsync(kit.Id, ageGroupIds);
 
             var kitImages = await _psKitImageRepository.GetByKitIdAsync(kit.Id);
@@ -979,7 +1046,7 @@ namespace GRA.Domain.Service
         {
             var authId = GetClaimId(ClaimType.UserId);
 
-            await _psPerformerImageRepository.RemoveSaveAsync(authId, image.Id);
+            await _psKitImageRepository.RemoveSaveAsync(authId, image.Id);
             var file = _pathResolver.ResolveContentFilePath(image.Filename);
             if (System.IO.File.Exists(file))
             {

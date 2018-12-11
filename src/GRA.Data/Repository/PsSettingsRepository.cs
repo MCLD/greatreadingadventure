@@ -34,6 +34,44 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
+        public async Task<ICollection<Branch>> GetNonExcludedSystemBranchesAsync(int systemId, 
+            int? prioritizeBranchId = null)
+        {
+            var excludedBranches = _context.PsExcludeBranches
+                .AsNoTracking()
+                .Select(_ => _.BranchId);
+
+            var branches = _context.Branches
+                .Where(_ => _.SystemId == systemId && excludedBranches.Contains(_.Id) == false);
+
+            if (prioritizeBranchId.HasValue)
+            {
+                branches = branches.OrderByDescending(_ => _.Id == prioritizeBranchId.Value)
+                    .ThenBy(_ => _.Name);
+            }
+            else
+            {
+                branches = branches.OrderBy(_ => _.Name);
+            }
+
+            return await branches
+                .ProjectTo<Branch>()
+                .ToListAsync();
+        }
+
+        public async Task<Branch> GetNonExcludedBranchAsync(int branchId)
+        {
+            var branchExcluded = _context.PsExcludeBranches
+                .AsNoTracking()
+                .Where(_ => _.BranchId == branchId);
+
+            return await _context.Branches
+                .AsNoTracking()
+                .Where(_ => _.Id == branchId && branchExcluded.Any() == false)
+                .ProjectTo<Branch>()
+                .FirstOrDefaultAsync();
+        }
+
         public async Task AddBranchExclusionsAsync(List<int> branchIds)
         {
             var excludedBranches = branchIds.Select(_ => new Model.PsExcludeBranch

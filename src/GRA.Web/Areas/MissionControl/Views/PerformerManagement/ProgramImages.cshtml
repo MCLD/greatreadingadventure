@@ -1,8 +1,11 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.ProgramImagesViewModel
 
 @{
-    ViewData["Title"] = "Services";
     var invalid = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid;
+}
+
+@section styles {
+    <link rel="stylesheet" href="~/css/performerregistration.min.css" asp-append-version="true" />
 }
 
 <div class="row">
@@ -118,6 +121,8 @@
 </div>
 
 @section scripts {
+    <script src="~/js/performerregistration.min.js" asp-append-version="true"></script>
+
     <script>
         $(".deleteSelection").on("change", function () {
             if ($(".deleteSelection:checked").length > 0) {

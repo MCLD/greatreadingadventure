@@ -1,5 +1,9 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.PerformerScheduleViewModel
 
+@section styles {
+    <link rel="stylesheet" href="~/css/performerregistration.min.css" asp-append-version="true" />
+}
+
 <div class="row">
     <div class="col-xs-12">
         <h1>Schedule for Performer: @Model.Performer.Name</h1>
@@ -14,6 +18,7 @@
 
     <form asp-action="PerformerSchedule" class="form-horizontal col-xs-12" method="post" role="form">
         <input asp-for="Performer.Id" type="hidden" />
+        <input asp-for="Performer.Name" type="hidden" />
         <input asp-for="JsonSchedule" type="hidden" />
         @{int count = 0;}
         @for (var calendarMonth = new DateTime(Model.StartDate.Year, Model.StartDate.Month, 1); calendarMonth <= Model.EndDate; calendarMonth = calendarMonth.AddMonths(1))
@@ -158,6 +163,8 @@
 </div>
 
 @section scripts {
+    <script src="~/js/performerregistration.min.js" asp-append-version="true"></script>
+
     <script>
         var lastSelector = null;
         var lastYear = null;

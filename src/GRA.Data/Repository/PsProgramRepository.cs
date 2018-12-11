@@ -54,8 +54,8 @@ namespace GRA.Data.Repository
                 programs = programs
                     .Join(_context.PsProgramAgeGroups.Where(_ => _.AgeGroupId == filter.AgeGroupId.Value),
                         program => program.Id,
-                        ageGroups => ageGroups.ProgramId,
-                        (program, ageGroups) => program);
+                        ageGroup => ageGroup.ProgramId,
+                        (program, ageGroup) => program);
             }
             if (filter.IsApproved.HasValue)
             {
@@ -88,8 +88,8 @@ namespace GRA.Data.Repository
                 programs = programs
                     .Join(_context.PsProgramAgeGroups.Where(_ => _.AgeGroupId == ageGroupId.Value),
                         program => program.Id,
-                        ageGroups => ageGroups.ProgramId,
-                        (program, ageGroups) => program);
+                        ageGroup => ageGroup.ProgramId,
+                        (program, ageGroup) => program);
             }
             if (onlyApproved)
             {
@@ -118,8 +118,8 @@ namespace GRA.Data.Repository
                 .Where(_ => _.Id == programId)
                 .Join(_context.PsProgramAgeGroups.Where(_ => _.AgeGroupId == ageGroupId),
                     program => program.Id,
-                    ageGroups => ageGroups.ProgramId,
-                    (program, ageGroups) => program)
+                    ageGroup => ageGroup.ProgramId,
+                    (program, ageGroup) => program)
                 .AnyAsync();
         }
 

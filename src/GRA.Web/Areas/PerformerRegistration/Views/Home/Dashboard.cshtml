@@ -48,7 +48,8 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
                     <form asp-action="ProgramDelete" method="post" role="form" style="display:inline">
-                        <input id="Id" name="Id" type="hidden" />
+                        <input asp-for="ProgramToDelete.Id" type="hidden" />
+                        <input asp-for="ProgramToDelete.Title" type="hidden" />
                         <button type="submit" class="btn btn-danger btn-spinner pull-right" aria-label="Confirm">
                             <span class="fa fa-remove" aria-hidden="true"></span>
                             Delete
@@ -319,7 +320,8 @@
             var id = button.data("id");
             var name = button.data("name");
             $(this).find("#modal-text").text("Are you sure you want to delete the program \"" + name + "\"?");
-            $(this).find("#Id").val(id);
+            $(this).find("#ProgramToDelete_Id").val(id);
+            $(this).find("#ProgramToDelete_Title").val(name);
         });
     </script>
 }

@@ -31,17 +31,14 @@ namespace GRA.Controllers.MissionControl
 
         private readonly ILogger<PerformerManagementController> _logger;
         private readonly PerformerSchedulingService _performerSchedulingService;
-        private readonly SiteService _siteService;
         public PerformerManagementController(ILogger<PerformerManagementController> logger,
             ServiceFacade.Controller context,
-            PerformerSchedulingService performerSchedulingService,
-            SiteService siteService)
+            PerformerSchedulingService performerSchedulingService)
             : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _performerSchedulingService = performerSchedulingService
                 ?? throw new ArgumentNullException(nameof(performerSchedulingService));
-            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             PageTitle = "Performer Management";
         }
 
@@ -162,7 +159,8 @@ namespace GRA.Controllers.MissionControl
                 ReferencesPath = _pathResolver.ResolveContentPath(performer.ReferencesFilename),
                 SchedulingStage = schedulingStage,
                 Settings = settings,
-                Systems = await _siteService.GetSystemList()
+                Systems = await _performerSchedulingService
+                    .GetSystemListWithoutExcludedBranchesAsync()
             };
 
             if (performer.Images.Any())
@@ -211,7 +209,7 @@ namespace GRA.Controllers.MissionControl
             }
             catch (GraException gex)
             {
-                ShowAlertDanger("Unable to view performer: ", gex);
+                ShowAlertDanger($"Unable to {(model.Approve ? "Approve" : "Unapprove")} performer: ", gex);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -262,7 +260,8 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(Index));
             }
 
-            var systems = await _siteService.GetSystemList();
+            var systems = await _performerSchedulingService
+                .GetSystemListWithoutExcludedBranchesAsync();
 
             var viewModel = new PerformerDetailsViewModel()
             {
@@ -296,7 +295,8 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(Schedule));
             }
 
-            var systems = await _siteService.GetSystemList();
+            var systems = await _performerSchedulingService
+                .GetSystemListWithoutExcludedBranchesAsync();
             var branchIds = systems.SelectMany(_ => _.Branches).Select(_ => _.Id);
             var branchAvailability = JsonConvert
                 .DeserializeObject<List<int>>(model.BranchAvailabilityString)
@@ -405,7 +405,7 @@ namespace GRA.Controllers.MissionControl
             }
             catch (GraException gex)
             {
-                ShowAlertDanger("Unable to edit performer images: ", gex);
+                ShowAlertDanger("Unable to add performer images: ", gex);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -489,7 +489,8 @@ namespace GRA.Controllers.MissionControl
             try
             {
                 program = await _performerSchedulingService.GetProgramByIdAsync(id,
-                    includeAgeGroups: true);
+                    includeAgeGroups: true,
+                    includeImages: true);
             }
             catch (GraException gex)
             {
@@ -648,7 +649,7 @@ namespace GRA.Controllers.MissionControl
                     ShowAlertDanger("Unable to edit program: ", gex);
                     return RedirectToAction(nameof(Index));
                 }
-                return RedirectToAction(nameof(ProgramDetails), new { id = program.Id });
+                return RedirectToAction(nameof(Performer), new { id = program.PerformerId });
             }
 
             model.AgeList = new SelectList(ageGroups, "Id", "Name");
@@ -673,7 +674,8 @@ namespace GRA.Controllers.MissionControl
             var program = new PsProgram();
             try
             {
-                program = await _performerSchedulingService.GetProgramByIdAsync(id);
+                program = await _performerSchedulingService.GetProgramByIdAsync(id,
+                    includeImages: true);
             }
             catch (GraException gex)
             {
@@ -741,7 +743,8 @@ namespace GRA.Controllers.MissionControl
             var program = new PsProgram();
             try
             {
-                program = await _performerSchedulingService.GetProgramByIdAsync(model.ProgramId);
+                program = await _performerSchedulingService.GetProgramByIdAsync(model.ProgramId,
+                    includeImages: true);
             }
             catch (GraException gex)
             {
@@ -807,7 +810,7 @@ namespace GRA.Controllers.MissionControl
             {
                 Performer = performer,
                 StartDate = settings.ScheduleStartDate.Value,
-                EndDate = settings.ScheduleStartDate.Value,
+                EndDate = settings.ScheduleEndDate.Value,
                 BlackoutDates = await _performerSchedulingService.GetBlackoutDatesAsync(),
                 ScheduleDates = performer.Schedule.ToList()
             };
@@ -848,6 +851,7 @@ namespace GRA.Controllers.MissionControl
                     await _performerSchedulingService.EditPerformerScheduleAsync(model.Performer.Id,
                         schedule);
                     ShowAlertSuccess($"Schedule for \"{model.Performer.Name}\" updated!");
+                    return RedirectToAction(nameof(Performer), new { id = model.Performer.Id });
                 }
                 catch (GraException gex)
                 {
@@ -876,6 +880,7 @@ namespace GRA.Controllers.MissionControl
             model.BlackoutDates = await _performerSchedulingService.GetBlackoutDatesAsync();
             model.StartDate = settings.ScheduleStartDate.Value;
             model.EndDate = settings.ScheduleEndDate.Value;
+            model.ScheduleDates = performer.Schedule.ToList();
             return View(model);
         }
         #endregion
@@ -1085,7 +1090,7 @@ namespace GRA.Controllers.MissionControl
 
             _logger.LogInformation($"Selection {branchSelection.Id} edited");
 
-            TempData[TempDataKey.AlertSuccess] = "Program selection edited!";
+            ShowAlertSuccess("Program selection edited!");
             return Json(new
             {
                 success = true
@@ -1163,6 +1168,7 @@ namespace GRA.Controllers.MissionControl
             {
                 Kits = kitList.Data.ToList(),
                 PaginateModel = paginateModel,
+                PerformerSchedulingEnbabled = true,
                 SchedulingStage = schedulingStage
             };
 
@@ -1185,7 +1191,7 @@ namespace GRA.Controllers.MissionControl
                 {
                     await _performerSchedulingService.RemoveKitAsync(
                         model.KitToDelete.Id);
-                    ShowAlertSuccess($"Performer \"{model.KitToDelete.Name}\" removed!.");
+                    ShowAlertSuccess($"Kit \"{model.KitToDelete.Name}\" removed!.");
                 }
                 catch (GraException gex)
                 {
@@ -1212,7 +1218,8 @@ namespace GRA.Controllers.MissionControl
             var kit = new PsKit();
             try
             {
-                kit = await _performerSchedulingService.GetKitByIdAsync(id);
+                kit = await _performerSchedulingService.GetKitByIdAsync(id, includeAgeGroups: true,
+                    includeImages: true);
             }
             catch (GraException gex)
             {
@@ -1288,7 +1295,7 @@ namespace GRA.Controllers.MissionControl
             var kit = new PsKit();
             try
             {
-                kit = await _performerSchedulingService.GetKitByIdAsync(id);
+                kit = await _performerSchedulingService.GetKitByIdAsync(id, includeAgeGroups: true);
             }
             catch (GraException gex)
             {
@@ -1364,7 +1371,7 @@ namespace GRA.Controllers.MissionControl
                                 using (var ms = new MemoryStream())
                                 {
                                     fileStream.CopyTo(ms);
-                                    await _performerSchedulingService.AddProgramImageAsync(
+                                    await _performerSchedulingService.AddKitImageAsync(
                                         kit.Id, ms.ToArray(), Path.GetExtension(image.FileName));
                                 }
                             }
@@ -1405,7 +1412,7 @@ namespace GRA.Controllers.MissionControl
             var kit = new PsKit();
             try
             {
-                kit = await _performerSchedulingService.GetKitByIdAsync(id);
+                kit = await _performerSchedulingService.GetKitByIdAsync(id, includeImages: true);
             }
             catch (GraException gex)
             {
@@ -1439,11 +1446,12 @@ namespace GRA.Controllers.MissionControl
             var kit = new PsKit();
             try
             {
-                kit = await _performerSchedulingService.GetKitByIdAsync(model.KitId);
+                kit = await _performerSchedulingService.GetKitByIdAsync(model.KitId,
+                    includeImages: true);
             }
             catch (GraException gex)
             {
-                ShowAlertDanger("Unable to view kit images: ", gex);
+                ShowAlertDanger("Unable to add kit images: ", gex);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -1485,7 +1493,7 @@ namespace GRA.Controllers.MissionControl
             kitImages.ForEach(_ => _.Filename = _pathResolver.ResolveContentPath(_.Filename));
 
 
-            model.KitName = model.KitName;
+            model.KitName = kit.Name;
             model.KitImages = kitImages;
             model.MaxUploadMB = MaxUploadMB;
             return View(model);
@@ -1529,7 +1537,7 @@ namespace GRA.Controllers.MissionControl
             var kit = new PsKit();
             try
             {
-                kit = await _performerSchedulingService.GetKitByIdAsync(id);
+                kit = await _performerSchedulingService.GetKitByIdAsync(id, includeAgeGroups: true);
             }
             catch (GraException gex)
             {
@@ -1568,7 +1576,8 @@ namespace GRA.Controllers.MissionControl
             var kit = new PsKit();
             try
             {
-                kit = await _performerSchedulingService.GetKitByIdAsync(kitId);
+                kit = await _performerSchedulingService.GetKitByIdAsync(kitId,
+                    includeAgeGroups: true);
             }
             catch (GraException gex)
             {
@@ -1644,7 +1653,7 @@ namespace GRA.Controllers.MissionControl
 
             _logger.LogInformation($"Selection {branchSelection.Id} edited");
 
-            TempData[TempDataKey.AlertSuccess] = "Kit selection updated!";
+            ShowAlertSuccess("Kit selection updated!");
             return Json(new
             {
                 success = true

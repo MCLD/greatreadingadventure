@@ -17,7 +17,7 @@ namespace GRA.Data.Repository
         {
         }
 
-        public async Task<ICollection<PsKitImage>> GetByKitIdAsync(int kitId)
+        public async Task<List<PsKitImage>> GetByKitIdAsync(int kitId)
         {
             return await DbSet
                 .AsNoTracking()

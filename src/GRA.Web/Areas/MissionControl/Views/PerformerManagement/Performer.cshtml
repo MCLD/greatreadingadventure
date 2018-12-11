@@ -1,5 +1,9 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.PerformerViewModel
 
+@section styles {
+    <link rel="stylesheet" href="~/css/performerregistration.min.css" asp-append-version="true" />
+}
+
 <div class="row">
     <div class="modal fade" id="branchModal" tabindex="-1" role="dialog" aria-labelledby="branchModalLabel">
         <div class="modal-dialog" role="document">
@@ -63,7 +67,7 @@
     </div>
 </div>
 
-<div class="row">
+<div class="row" style="padding: 10px 0;">
     <div class="col-xs-12">
         <table style="margin:0 auto;">
             <tr>
@@ -86,27 +90,27 @@
                 }
             </tr>
         </table>
+        <hr />
     </div>
     <div class="col-xs-12">
-        <hr />
-        @if (Model.SchedulingStage >= GRA.Domain.Model.PsSchedulingStage.RegistrationClosed && Model.SchedulingStage <= GRA.Domain.Model.PsSchedulingStage.SchedulingPreview)
-        {
-            <form method="post" role="form" style="display:inline;">
-                <input asp-for="Approve" type="hidden" />
-                <button asp-action="PerformerApprove" asp-route-id="@Model.Performer.Id" class="btn btn-lg @(Model.Approve ? "btn-success" : "btn-danger") pull-right">@(Model.Approve ? "Approve" : "Unapprove")</button>
-            </form>
-        }
-        else if (Model.SchedulingStage >= GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
-        {
-            <a asp-action="PerformerSelections" asp-route-id="@Model.Performer.Id" class="btn btn-lg btn-default pull-right">View Selections</a>
-        }
-        <h2 style="margin-top:0px;">
-            Information
+        <h2 style="margin-top:0px;">Information
             <a asp-action="PerformerDetails" asp-route-id="@Model.Performer.Id" class="btn btn-default" style="display:inline-block">Edit Information</a>
         </h2>
+            @if (Model.SchedulingStage >= GRA.Domain.Model.PsSchedulingStage.RegistrationClosed && Model.SchedulingStage <= GRA.Domain.Model.PsSchedulingStage.SchedulingPreview)
+            {
+                <form method="post" role="form" style="display:inline;">
+                    <input asp-for="Approve" type="hidden" />
+                    <button asp-action="PerformerApprove" asp-route-id="@Model.Performer.Id" class="btn btn-lg @(Model.Approve ? "btn-success" : "btn-danger") pull-right">@(Model.Approve ? "Approve" : "Unapprove")</button>
+                </form>
+            }
+            else if (Model.SchedulingStage >= GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
+            {
+                <a asp-action="PerformerSelections" asp-route-id="@Model.Performer.Id" class="btn btn-lg btn-default pull-right">View Selections</a>
+            }
+
     </div>
     <div class="col-xs-12 col-sm-5 col-md-4">
-        @if (Model.Performer.Images != null)
+        @if (!string.IsNullOrWhiteSpace(Model.ImagePath))
         {
             <div class="row" style="padding-bottom:15px;">
                 <div class="col-xs-12">
@@ -121,17 +125,20 @@
         </div>
         <div class="row" style="padding-bottom:15px;">
             <div class="col-xs-12" style="text-align:center;">
-                <a href="@Model.ReferencesPath" target="_blank" class="btn btn-primary">View References</a>
+                <a href="~/@Model.ReferencesPath" target="_blank" class="btn btn-primary">View References</a>
             </div>
         </div>
-        <div class="row" style="padding-bottom:15px;">
-            <div class="col-xs-12" style="text-align:center;">
-                <a asp-action="PerformerPasswordReset" asp-route-id="@Model.Performer.Id" class="btn btn-primary">Reset Password</a>
+        @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewParticipantDetails.ToString()))
+        {
+            <div class="row" style="padding-bottom:15px;">
+                <div class="col-xs-12" style="text-align:center;">
+                    <a asp-controller="Participants" asp-action="Detail" asp-route-id="@Model.Performer.UserId" class="btn btn-default">View Participant Profile</a>
+                </div>
             </div>
-        </div>
+        }
         <div class="row" style="padding-bottom:15px;">
             <div class="col-xs-12" style="text-align:center;">
-                <a asp-action="Performers" asp-route-page="@Model.ReturnPage" class="btn btn-default">Return to List</a>
+                <a asp-action="Index" asp-route-page="@Model.ReturnPage" class="btn btn-default">Return to List</a>
             </div>
         </div>
     </div>
@@ -320,14 +327,27 @@
 </div>
 
 @section scripts {
+    <script src="~/js/performerregistration.min.js" asp-append-version="true"></script>
+
     <script>
+        $(window).on("load", function () {
+            $(".td-class").each(function () {
+                $(this).children("a.rowlink").height($(this).height() + 11);
+            });
+        });
+        $(window).resize(function () {
+            $(".td-class").each(function () {
+                $(this).children("a.rowlink").height($(this).height() + 11);
+            });
+        });
+
         $("#deleteModal").on("show.bs.modal", function (event) {
             var button = $(event.relatedTarget);
             var id = button.data("id");
             var name = button.data("name");
             $(this).find("#modal-text").text("Are you sure you want to delete the program \"" + name + "\"?");
             $(this).find("#ProgramToDelete_Id").val(id);
-            $(this).find("#ProgramToDelete_Name").val(name);
+            $(this).find("#ProgramToDelete_Title").val(name);
         });
     </script>
 }

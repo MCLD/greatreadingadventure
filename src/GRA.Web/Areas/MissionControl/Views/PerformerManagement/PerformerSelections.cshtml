@@ -1,6 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.PerformerSelectionsViewModel
 
 @section Styles {
+    <link rel="stylesheet" href="~/css/performerregistration.min.css" asp-append-version="true" />
     <style>
         @@media print {
             a[href]:after {
@@ -174,6 +175,8 @@
 </div>
 
 @section scripts {
+    <script src="~/js/performerregistration.min.js" asp-append-version="true"></script>
+
     <script>
         var performerCalendarUrl = "@Url.Action(nameof(PerformerManagementController.GetPerformerCalendar))";
         var secretCodeUrl = "@Url.Action(nameof(PerformerManagementController.SetSecretCode))";

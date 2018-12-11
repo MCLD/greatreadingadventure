@@ -6,6 +6,6 @@ namespace GRA.Domain.Repository
 {
     public interface IPsKitImageRepository : IRepository<PsKitImage>
     {
-        Task<ICollection<PsKitImage>> GetByKitIdAsync(int kitId);
+        Task<List<PsKitImage>> GetByKitIdAsync(int kitId);
     }
 }

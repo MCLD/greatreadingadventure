@@ -10,6 +10,7 @@ namespace GRA.Domain.Repository
         Task<ICollection<PsKit>> GetAllAsync();
         Task<DataWithCount<ICollection<PsKit>>> PageAsync(BaseFilter filter);
         Task<List<int>> GetIndexListAsync();
+        Task<ICollection<PsAgeGroup>> GetKitAgeGroupsAsync(int kitId);
         Task AddKitAgeGroupsAsync(int kitIdId, List<int> ageGroupIds);
         Task RemoveKitAgeGroupsAsync(int kitIdId, List<int> ageGroupIds);
         Task<bool> IsValidAgeGroupAsync(int kitId, int ageGroupId);

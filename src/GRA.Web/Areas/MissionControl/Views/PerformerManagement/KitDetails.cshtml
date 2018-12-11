@@ -4,6 +4,10 @@
     var invalid = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid;
 }
 
+@section styles {
+    <link rel="stylesheet" href="~/css/performerregistration.min.css" asp-append-version="true" />
+}
+
 <div class="row">
     <div class="col-xs-12">
         <h1>@(Model.NewKit ? "Add Kit" : $"Edit Kit: {Model.Kit.Name}")</h1>
@@ -112,6 +116,8 @@
 </div>
 
 @section scripts {
+    <script src="~/js/performerregistration.min.js" asp-append-version="true"></script>
+
     <script>
         $("#agePlaceholder").remove();
         $("#AgeSelection")

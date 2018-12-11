@@ -1,5 +1,9 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.KitSelectionsViewModel
 
+@section styles {
+    <link rel="stylesheet" href="~/css/performerregistration.min.css" asp-append-version="true" />
+}
+
 <div class="row">
     <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
         <div class="modal-dialog modal-lg" role="document">
@@ -145,6 +149,8 @@
 </div>
 
 @section scripts {
+    <script src="~/js/performerregistration.min.js" asp-append-version="true"></script>
+
     <script>
         var checkBranchAgeGroupUrl = "@Url.Action(nameof(PerformerManagementController.CheckBranchAgeGroup))";
         var editKitSelectionUrl = "@Url.Action(nameof(PerformerManagementController.EditBranchKitSelection))";

@@ -37,7 +37,5 @@ namespace GRA.Data.Model
         public bool AllowStreaming { get; set; }
 
         public bool AllowArchiving { get; set; }
-
-        public List<PsProgramImage> Images { get; set; }
     }
 }

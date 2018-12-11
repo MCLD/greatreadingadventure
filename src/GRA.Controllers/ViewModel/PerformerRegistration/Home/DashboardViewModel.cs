@@ -13,6 +13,7 @@ namespace GRA.Controllers.ViewModel.PerformerRegistration.Home
         public string ReferencesPath { get; set; }
         public Uri Uri { get; set; }
         public bool IsEditable { get; set; }
+        public PsProgram ProgramToDelete { get; set; }
 
         public List<int> BranchAvailability { get; set; }
         public IEnumerable<PsBlackoutDate> BlackoutDates { get; set; }

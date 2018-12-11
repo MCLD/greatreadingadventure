@@ -15,8 +15,5 @@ namespace GRA.Data.Model
 
         [MaxLength(255)]
         public string Website { get; set; }
-
-        public List<PsKitImage> Images { get; set; }
-        public ICollection<PsKitAgeGroup> AgeGroups { get; set; }
     }
 }

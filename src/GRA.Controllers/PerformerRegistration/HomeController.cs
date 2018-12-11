@@ -25,15 +25,12 @@ namespace GRA.Controllers.PerformerRegistration
         private readonly ILogger<HomeController> _logger;
         private readonly AuthenticationService _authenticationService;
         private readonly PerformerSchedulingService _performerSchedulingService;
-        private readonly SiteService _siteService;
         private readonly UserService _userService;
-
         private readonly ICodeSanitizer _codeSanitizer;
         public HomeController(ILogger<HomeController> logger,
             ServiceFacade.Controller context,
             AuthenticationService authenticationService,
             PerformerSchedulingService performerSchedulingService,
-            SiteService siteService,
             UserService userService,
             ICodeSanitizer codeSanitizer) : base(context)
         {
@@ -42,7 +39,6 @@ namespace GRA.Controllers.PerformerRegistration
                 ?? throw new ArgumentNullException(nameof(authenticationService));
             _performerSchedulingService = performerSchedulingService
                 ?? throw new ArgumentNullException(nameof(performerSchedulingService));
-            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _codeSanitizer = codeSanitizer
                 ?? throw new ArgumentNullException(nameof(codeSanitizer));
@@ -145,15 +141,13 @@ namespace GRA.Controllers.PerformerRegistration
                 return RedirectToAction(nameof(Schedule));
             }
 
-            var systems = (await _siteService.GetSystemList()).ToList();
-            var excludedBranches = await _performerSchedulingService.GetExcludedBranchIdsAsync();
-            systems.ForEach(_ => _.Branches = _.Branches
-                .Where(b => excludedBranches.Contains(b.Id) == false).ToList());
+            var systems = await _performerSchedulingService
+                .GetSystemListWithoutExcludedBranchesAsync();
 
             var viewModel = new InformationViewModel()
             {
                 Performer = performer,
-                Systems = systems.ToList(),
+                Systems = systems,
                 BranchCount = systems.Sum(_ => _.Branches.Count()),
                 MaxUploadMB = MaxUploadMB
             };
@@ -197,10 +191,8 @@ namespace GRA.Controllers.PerformerRegistration
                 return RedirectToAction(nameof(Schedule));
             }
 
-            var systems = (await _siteService.GetSystemList()).ToList();
-            var excludedBranches = await _performerSchedulingService.GetExcludedBranchIdsAsync();
-            systems.ForEach(_ => _.Branches = _.Branches
-                .Where(b => excludedBranches.Contains(b.Id) == false).ToList());
+            var systems = await _performerSchedulingService
+                .GetSystemListWithoutExcludedBranchesAsync();
             var branchIds = systems.SelectMany(_ => _.Branches).Select(_ => _.Id);
             var BranchAvailability = JsonConvert.DeserializeObject
                 <List<int>>(model.BranchAvailabilityString)
@@ -256,6 +248,7 @@ namespace GRA.Controllers.PerformerRegistration
 
                 if (currentPerformer?.RegistrationCompleted == true)
                 {
+                    performer.Id = currentPerformer.Id;
                     performer = await _performerSchedulingService.EditPerformerAsync(performer,
                         BranchAvailability);
                 }
@@ -477,7 +470,7 @@ namespace GRA.Controllers.PerformerRegistration
             {
                 try
                 {
-                    var program = await _performerSchedulingService.GetProgramByIdAsync(id.Value, 
+                    var program = await _performerSchedulingService.GetProgramByIdAsync(id.Value,
                         includeAgeGroups: true);
                     viewModel.AgeSelection = program.AgeGroups.Select(_ => _.Id).ToList();
                     viewModel.EditingProgram = true;
@@ -623,11 +616,6 @@ namespace GRA.Controllers.PerformerRegistration
                 return RedirectToAction(nameof(Information));
             }
 
-            var systems = (await _siteService.GetSystemList()).ToList();
-            var excludedBranches = await _performerSchedulingService.GetExcludedBranchIdsAsync();
-            systems.ForEach(_ => _.Branches = _.Branches
-                .Where(b => excludedBranches.Contains(b.Id) == false).ToList());
-
             var viewModel = new DashboardViewModel
             {
                 BlackoutDates = await _performerSchedulingService.GetBlackoutDatesAsync(),
@@ -636,7 +624,8 @@ namespace GRA.Controllers.PerformerRegistration
                 Performer = performer,
                 ReferencesPath = _pathResolver.ResolveContentPath(performer.ReferencesFilename),
                 Settings = settings,
-                Systems = systems
+                Systems = await _performerSchedulingService
+                    .GetSystemListWithoutExcludedBranchesAsync()
             };
 
             if (performer.Images.Any())
@@ -781,7 +770,7 @@ namespace GRA.Controllers.PerformerRegistration
         }
 
         [HttpPost]
-        public async Task<IActionResult> ProgramDelete(int id)
+        public async Task<IActionResult> ProgramDelete(DashboardViewModel model)
         {
             var settings = await _performerSchedulingService.GetSettingsAsync();
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
@@ -798,18 +787,17 @@ namespace GRA.Controllers.PerformerRegistration
                 return RedirectToAction(nameof(Information));
             }
 
-            var program = await _performerSchedulingService.GetProgramByIdAsync(id);
-
-            if (program != null)
+            try
             {
-                await _performerSchedulingService.RemoveProgramAsync(id);
+                await _performerSchedulingService.RemoveProgramAsync(model.ProgramToDelete.Id);
 
-                ShowAlertSuccess($"Program \"{program.Title}\" has been deleted!");
+                ShowAlertSuccess($"Program \"{model.ProgramToDelete.Title}\" removed!");
             }
-            else
+            catch (GraException gex)
             {
-                ShowAlertDanger($"Unable to delete the program \"{program.Title}\".");
+                ShowAlertDanger("Unable to remove program: ", gex);
             }
+
 
             return RedirectToAction(nameof(Dashboard));
         }
@@ -831,7 +819,7 @@ namespace GRA.Controllers.PerformerRegistration
                 return RedirectToAction(nameof(Information));
             }
 
-            var program = await _performerSchedulingService.GetProgramByIdAsync(id, 
+            var program = await _performerSchedulingService.GetProgramByIdAsync(id,
                 includeAgeGroups: true);
 
             if (program == null)
@@ -871,21 +859,25 @@ namespace GRA.Controllers.PerformerRegistration
                 return RedirectToAction(nameof(Information));
             }
 
-            var program = await _performerSchedulingService.GetProgramByIdAsync(id);
-
-            if (program == null)
+            var program = new PsProgram();
+            try
             {
+                program = await _performerSchedulingService.GetProgramByIdAsync(id,
+                    includeImages: true);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to view program images: ", gex);
                 return RedirectToAction(nameof(Dashboard));
             }
 
-            var programImages = program.Images.ToList();
-            programImages.ForEach(_ => _.Filename = _pathResolver.ResolveContentPath(_.Filename));
+            program.Images.ForEach(_ => _.Filename = _pathResolver.ResolveContentPath(_.Filename));
 
             var viewModel = new ProgramImagesViewModel()
             {
                 IsEditable = schedulingStage == PsSchedulingStage.RegistrationOpen,
                 MaxUploadMB = MaxUploadMB,
-                ProgramImages = programImages,
+                ProgramImages = program.Images,
                 ProgramId = program.Id,
                 ProgramTitle = program.Title
             };
@@ -909,13 +901,6 @@ namespace GRA.Controllers.PerformerRegistration
             if (performer?.RegistrationCompleted != true)
             {
                 return RedirectToAction(nameof(Information));
-            }
-
-            var program = await _performerSchedulingService.GetProgramByIdAsync(model.ProgramId);
-
-            if (program == null)
-            {
-                return RedirectToAction(nameof(Dashboard));
             }
 
             if (model.Images == null)
@@ -944,21 +929,32 @@ namespace GRA.Controllers.PerformerRegistration
                         {
                             fileStream.CopyTo(ms);
                             await _performerSchedulingService.AddProgramImageAsync(
-                                program.Id, ms.ToArray(), Path.GetExtension(image.FileName));
+                                model.ProgramId, ms.ToArray(), Path.GetExtension(image.FileName));
                         }
                     }
                 }
                 ShowAlertSuccess("Image(s) added!");
-                return RedirectToAction(nameof(ProgramImages), new { id = program.Id });
+                return RedirectToAction(nameof(ProgramImages), new { id = model.ProgramId });
             }
 
-            var programImages = program.Images.ToList();
-            programImages.ForEach(_ => _.Filename = _pathResolver.ResolveContentPath(_.Filename));
+            var program = new PsProgram();
+            try
+            {
+                program = await _performerSchedulingService.GetProgramByIdAsync(model.ProgramId,
+                    includeImages: true);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to view program images: ", gex);
+                return RedirectToAction(nameof(Index));
+            }
+
+            program.Images.ForEach(_ => _.Filename = _pathResolver.ResolveContentPath(_.Filename));
 
             model.IsEditable = schedulingStage == PsSchedulingStage.RegistrationOpen;
             model.MaxUploadMB = MaxUploadMB;
             model.ProgramTitle = program.Title;
-            model.ProgramImages = programImages;
+            model.ProgramImages = program.Images;
             return View(model);
         }
 

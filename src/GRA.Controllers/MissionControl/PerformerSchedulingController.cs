@@ -25,17 +25,14 @@ namespace GRA.Controllers.MissionControl
 
         private readonly ILogger<PerformerSchedulingController> _logger;
         private readonly PerformerSchedulingService _performerSchedulingService;
-        private readonly SiteService _siteService;
         public PerformerSchedulingController(ILogger<PerformerSchedulingController> logger,
             ServiceFacade.Controller context,
-            PerformerSchedulingService performerSchedulingService,
-            SiteService siteService)
+            PerformerSchedulingService performerSchedulingService)
             : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _performerSchedulingService = performerSchedulingService
                 ?? throw new ArgumentNullException(nameof(performerSchedulingService));
-            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             PageTitle = "Performer Scheduling";
         }
 
@@ -61,10 +58,11 @@ namespace GRA.Controllers.MissionControl
 
             if (schedulingStage >= PsSchedulingStage.SchedulingOpen)
             {
-                var system = await _siteService.GetSystemByIdAsync(systemId);
+                var system = await _performerSchedulingService
+                    .GetSystemWithoutExcludedBranchesAsync(systemId);
                 viewModel.SystemName = system.Name;
 
-                var branches = await _siteService.GetBranches(systemId);
+                var branches = system.Branches;
                 foreach (var branch in branches)
                 {
                     branch.Selections = await _performerSchedulingService
@@ -76,7 +74,8 @@ namespace GRA.Controllers.MissionControl
 
             if (schedulingStage >= PsSchedulingStage.SchedulePosted)
             {
-                var branches = await _siteService.GetBranches(systemId, true);
+                var branches = await _performerSchedulingService
+                    .GetNonExcludedSystemBranchesAsync(systemId, true);
                 viewModel.BranchList = new SelectList(branches, "Id", "Name");
             }
 
@@ -92,7 +91,7 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(Index));
             }
 
-            var branch = await _siteService.GetBranchByIdAsync(id);
+            var branch = await _performerSchedulingService.GetNonExcludedBranch(id);
 
             if (branch == null)
             {
@@ -184,7 +183,8 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(Performers));
             }
 
-            var system = await _siteService.GetSystemByIdAsync(GetId(ClaimType.SystemId));
+            var system = await _performerSchedulingService
+                .GetSystemWithoutExcludedBranchesAsync(GetId(ClaimType.SystemId));
 
             var viewModel = new PerformerViewModel()
             {
@@ -324,6 +324,7 @@ namespace GRA.Controllers.MissionControl
             {
                 program = await _performerSchedulingService.GetProgramByIdAsync(id,
                     includeAgeGroups: true,
+                    includeImages: true,
                     onlyApproved: true);
             }
             catch (GraException gex)
@@ -336,7 +337,8 @@ namespace GRA.Controllers.MissionControl
 
             var performer = await _performerSchedulingService.GetPerformerByIdAsync(
                 program.PerformerId);
-            var system = await _siteService.GetSystemByIdAsync(GetId(ClaimType.SystemId));
+            var system = await _performerSchedulingService
+                .GetSystemWithoutExcludedBranchesAsync(GetId(ClaimType.SystemId));
 
             var viewModel = new ProgramViewModel()
             {
@@ -432,7 +434,8 @@ namespace GRA.Controllers.MissionControl
             try
             {
                 program = await _performerSchedulingService.GetProgramByIdAsync(id,
-                onlyApproved: true);
+                    includeImages: true,
+                    onlyApproved: true);
             }
             catch (GraException gex)
             {
@@ -485,7 +488,7 @@ namespace GRA.Controllers.MissionControl
 
             if (ageAlreadySelected)
             {
-                TempData[TempDataKey.AlertDanger] = $"Branch already has a selection for that age group.";
+                ShowAlertDanger("Branch already has a selection for that age group.");
                 return RedirectToAction(nameof(Program), new { id = program.Id });
             }
 
@@ -495,7 +498,7 @@ namespace GRA.Controllers.MissionControl
 
             if (programAvailableAtBranch == false)
             {
-                TempData[TempDataKey.AlertDanger] = "The performer does not performer at that branch.";
+                ShowAlertDanger("The performer does not performer at that branch.");
                 return RedirectToAction(nameof(Program), new { id = program.Id });
             }
 
@@ -551,7 +554,7 @@ namespace GRA.Controllers.MissionControl
 
             _logger.LogInformation($"Selection {branchSelection.Id} added by user {GetId(ClaimType.UserId)}");
 
-            TempData[TempDataKey.AlertSuccess] = "Program selection added!";
+            ShowAlertSuccess("Program selection added!");
             return Json(new
             {
                 success = true
@@ -723,7 +726,8 @@ namespace GRA.Controllers.MissionControl
             var kit = new PsKit();
             try
             {
-                kit = await _performerSchedulingService.GetKitByIdAsync(id);
+                kit = await _performerSchedulingService.GetKitByIdAsync(id, includeAgeGroups: true, 
+                    includeImages: true);
             }
             catch (GraException gex)
             {
@@ -755,7 +759,8 @@ namespace GRA.Controllers.MissionControl
             {
                 viewModel.AgeGroupList = new SelectList(kit.AgeGroups, "Id", "Name");
 
-                var system = await _siteService.GetSystemByIdAsync(GetId(ClaimType.SystemId));
+                var system = await _performerSchedulingService
+                    .GetSystemWithoutExcludedBranchesAsync(GetId(ClaimType.SystemId));
 
                 var branches = new List<Branch>();
                 foreach (var branch in system.Branches)
@@ -811,7 +816,7 @@ namespace GRA.Controllers.MissionControl
             var kit = new PsKit();
             try
             {
-                kit = await _performerSchedulingService.GetKitByIdAsync(id);
+                kit = await _performerSchedulingService.GetKitByIdAsync(id, includeImages: true);
             }
             catch (GraException gex)
             {
@@ -862,7 +867,8 @@ namespace GRA.Controllers.MissionControl
             var kit = new PsKit();
             try
             {
-                kit = await _performerSchedulingService.GetKitByIdAsync(kitId);
+                kit = await _performerSchedulingService.GetKitByIdAsync(kitId,
+                    includeAgeGroups: true);
             }
             catch (GraException gex)
             {

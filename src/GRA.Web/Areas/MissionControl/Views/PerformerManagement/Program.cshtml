@@ -1,5 +1,9 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.ProgramViewModel
 
+@section styles {
+    <link rel="stylesheet" href="~/css/performerregistration.min.css" asp-append-version="true" />
+}
+
 <div class="row">
     <div class="col-xs-12">
         <h1>
@@ -13,7 +17,7 @@
         {
             <div class="row" style="padding-bottom:15px;">
                 <div class="col-xs-12">
-                    <img src="~/@Model.Image" class="img-responsive" margin="0 auto" />
+                    <img src="~/@Model.Image" class="img-responsive" style="margin: 0 auto;" />
                 </div>
             </div>
         }
@@ -90,3 +94,7 @@
         </div>
     </div>
 </div>
+
+@section scripts {
+    <script src="~/js/performerregistration.min.js" asp-append-version="true"></script>
+}

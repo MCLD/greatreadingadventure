@@ -6,7 +6,7 @@ using GRA.Domain.Model;
 
 namespace GRA.Controllers.ViewModel.MissionControl.PerformerManagement
 {
-    public class KitListViewModel
+    public class KitListViewModel : PerformerManagementPartialViewModel
     {
         public List<PsKit> Kits { get; set; }
         public PaginateViewModel PaginateModel { get; set; }

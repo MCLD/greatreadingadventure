@@ -1,5 +1,12 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.KitListViewModel
 
+@section styles {
+    <link rel="stylesheet" href="~/css/performerregistration.min.css" asp-append-version="true" />
+}
+
+@await Html.PartialAsync("_PerformerManagementPartial")
+
+
 @if (Model.SchedulingStage < GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
 {
     <div class="row">
@@ -33,15 +40,13 @@
     </div>
 }
 
-<div class="row">
+<div class="row" style="padding: 10px 0;">
     <div class="col-xs-12">
-        <h1>Kits</h1>
-    </div>
-
-    <div class="col-xs-12" style="padding-bottom: 10px;">
         <a asp-action="KitAdd" class="btn btn-default">Add Kit</a>
     </div>
+</div>
 
+<div class="row" style="padding: 10px 0;">
     <div class="col-xs-12">
         @if (Model.Kits.Count == 0)
         {
@@ -107,9 +112,21 @@
     </div>
 </div>
 
-@section scripts
-    {
+@section scripts {
+    <script src="~/js/performerregistration.min.js" asp-append-version="true"></script>
+
     <script>
+        $(window).on("load", function () {
+            $(".td-class").each(function () {
+                $(this).children("a.rowlink").height($(this).height() + 11);
+            });
+        });
+        $(window).resize(function () {
+            $(".td-class").each(function () {
+                $(this).children("a.rowlink").height($(this).height() + 11);
+            });
+        });
+
         @if (Model.SchedulingStage < GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
         {
             <text>

@@ -55,6 +55,16 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
+        public async Task<ICollection<PsAgeGroup>> GetKitAgeGroupsAsync(int kitId)
+        {
+            return await _context.PsKitAgeGroups
+                .AsNoTracking()
+                .Where(_ => _.KitId == kitId)
+                .Select(_ => _.AgeGroup)
+                .ProjectTo<PsAgeGroup>()
+                .ToListAsync();
+        }
+
         public async Task AddKitAgeGroupsAsync(int kitIdId, List<int> ageGroupIds)
         {
             var kitAgeGroups = ageGroupIds
@@ -82,8 +92,11 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.Id == kitId 
-                    && _.AgeGroups.Select(a => a.AgeGroupId).Contains(ageGroupId))
+                .Where(_ => _.Id == kitId)
+                .Join(_context.PsKitAgeGroups.Where(_ => _.AgeGroupId == ageGroupId),
+                    kit => kit.Id,
+                    ageGroup => ageGroup.KitId,
+                    (kit, ageGroup) => kit)
                 .AnyAsync();
         }
     }
