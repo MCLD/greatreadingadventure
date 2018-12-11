@@ -15,7 +15,7 @@ namespace GRA.Data.SqlServer.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
+                .HasAnnotation("ProductVersion", "2.2.0-rtm-35687")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -259,7 +259,8 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<int>("SortOrder");
 
-                    b.Property<decimal>("ZoomScale");
+                    b.Property<decimal>("ZoomScale")
+                        .HasColumnType("decimal(4,2)");
 
                     b.Property<int>("ZoomYOffset");
 
