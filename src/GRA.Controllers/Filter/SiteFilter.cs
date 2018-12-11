@@ -22,6 +22,7 @@ namespace GRA.Controllers.Filter
         private readonly IPathResolver _pathResolver;
         private readonly SiteLookupService _siteLookupService;
         private readonly IUserContextProvider _userContextProvider;
+
         public SiteFilter(ILogger<SiteFilter> logger,
             IDistributedCache cache,
             IConfiguration config,
@@ -98,13 +99,11 @@ namespace GRA.Controllers.Filter
                 // hide means that if the value is set then we want showChallenges to be false
                 // hence == null rather than != null
                 showChallenges = site.Settings
-                    .Where(_ => _.Key == SiteSettingKey.Challenges.HideUntilRegistrationOpen)
-                    .FirstOrDefault()?
+                    .FirstOrDefault(_ => _.Key == SiteSettingKey.Challenges.HideUntilRegistrationOpen)?
                     .Value == null;
 
                 showEvents = site.Settings
-                    .Where(_ => _.Key == SiteSettingKey.Events.HideUntilRegistrationOpen)
-                    .FirstOrDefault()?
+                    .FirstOrDefault(_ => _.Key == SiteSettingKey.Events.HideUntilRegistrationOpen)?
                     .Value == null;
             }
 
@@ -127,8 +126,7 @@ namespace GRA.Controllers.Filter
             int cacheMinutes = 60;
 
             var cacheSiteCustomizationsMinutes = site.Settings
-                .Where(_ => _.Key == SiteSettingKey.Web.CacheSiteCustomizationsMinutes)
-                .FirstOrDefault()?
+                .FirstOrDefault(_ => _.Key == SiteSettingKey.Web.CacheSiteCustomizationsMinutes)?
                 .Value;
 
             if (cacheSiteCustomizationsMinutes != null)

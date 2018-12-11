@@ -14,8 +14,8 @@ namespace GRA.Domain.Service
         public void SetupTemplates()
         {
             string viewsPath = Path.Combine(Directory.GetCurrentDirectory(), "Views");
-            string templatesPath = Path.Combine(Directory.GetCurrentDirectory(), 
-                "shared", 
+            string templatesPath = Path.Combine(Directory.GetCurrentDirectory(),
+                "shared",
                 "templates");
 
             var sharedViewsPath = Path.Combine(Directory.GetCurrentDirectory(), "shared", "views");
@@ -29,7 +29,7 @@ namespace GRA.Domain.Service
             var homeTemplatesPath = Path.Combine(templatesPath, "Home");
             Directory.CreateDirectory(homeTemplatesPath);
 
-            File.Copy(Path.Combine(homeViewsPath, "Dashboard.cshtml"), 
+            File.Copy(Path.Combine(homeViewsPath, "Dashboard.cshtml"),
                 Path.Combine(homeTemplatesPath, "Dashboard.cshtml"), true);
             File.Copy(Path.Combine(homeViewsPath, "IndexAccessClosed.cshtml"),
                 Path.Combine(homeTemplatesPath, "IndexAccessClosed.cshtml"), true);

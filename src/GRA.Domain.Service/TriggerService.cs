@@ -130,7 +130,7 @@ namespace GRA.Domain.Service
             var requireSecretCode = await _siteLookupService.GetSiteSettingBoolAsync(
                 GetCurrentSiteId(), SiteSettingKey.Events.RequireBadge);
 
-            if (requireSecretCode == false)
+            if (!requireSecretCode)
             {
                 await _eventRepository.DetachRelatedTrigger(triggerId);
             }
@@ -244,7 +244,7 @@ namespace GRA.Domain.Service
                 var bundle = await _avatarBundleRepository
                     .GetByIdAsync(trigger.AwardAvatarBundleId.Value, false);
 
-                if (bundle == null || bundle.CanBeUnlocked == false)
+                if (bundle?.CanBeUnlocked != true)
                 {
                     throw new GraException("Invalid Avatar Bundle selection.");
                 }
