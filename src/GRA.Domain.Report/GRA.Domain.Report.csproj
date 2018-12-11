@@ -1,20 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>4.1.1</Version>
-    <Company />
-    <Product>Great Reading Adventure</Product>
+    <Authors>Maricopa County Library District Web developers</Authors>
+    <CodeAnalysisRuleSet>../../GRARuleSet.ruleset</CodeAnalysisRuleSet>
+    <Company>Maricopa County Library District</Company>
     <Copyright>Copyright 2017 Maricopa County Library District</Copyright>
+    <Description>The Great Reading Adventure is an open-source tool for managing dynamic library reading programs.</Description>
     <PackageLicenseUrl>https://github.com/mcld/greatreadingadventure/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>http://www.greatreadingadventure.com/</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/mcld/greatreadingadventure/</RepositoryUrl>
-    <RepositoryType>Git</RepositoryType>
-    <Authors>Maricopa County Library District</Authors>
-    <Description>The Great Reading Adventure is a robust, open source software designed to manage library reading programs. The GRA is free to use, modify, and share.</Description>
+    <PackageReleaseNotes>See https://github.com/MCLD/greatreadingadventure/releases/latest</PackageReleaseNotes>
     <PackageTags>public-library reading-program literacy gra</PackageTags>
-    <PackageReleaseNotes>See https://github.com/MCLD/greatreadingadventure/releases/tag/v4.0.0
-</PackageReleaseNotes>
+    <Product>Great Reading Adventure</Product>
+    <RepositoryType>Git</RepositoryType>
+    <RepositoryUrl>https://github.com/mcld/greatreadingadventure/</RepositoryUrl>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>4.1.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
