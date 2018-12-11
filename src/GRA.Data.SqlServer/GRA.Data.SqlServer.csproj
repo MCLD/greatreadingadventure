@@ -1,19 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
     <AssemblyName>GRA.Data.SqlServer</AssemblyName>
-    <PackageId>GRA.Data.SqlServer</PackageId>
-    <NetStandardImplicitPackageVersion>2.0</NetStandardImplicitPackageVersion>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <Version>4.1.1</Version>
+    <Authors>Maricopa County Library District Web developers</Authors>
+    <CodeAnalysisRuleSet>../../GRARuleSet.ruleset</CodeAnalysisRuleSet>
+    <Company>Maricopa County Library District</Company>
     <Copyright>Copyright 2017 Maricopa County Library District</Copyright>
+    <Description>The Great Reading Adventure is an open-source tool for managing dynamic library reading programs.</Description>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <NetStandardImplicitPackageVersion>2.0</NetStandardImplicitPackageVersion>
+    <PackageId>GRA.Data.SqlServer</PackageId>
     <PackageLicenseUrl>https://github.com/mcld/greatreadingadventure/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>http://www.greatreadingadventure.com/</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/mcld/greatreadingadventure/</RepositoryUrl>
+    <PackageReleaseNotes>See https://github.com/MCLD/greatreadingadventure/releases/latest</PackageReleaseNotes>
+    <PackageTags>public-library reading-program literacy gra</PackageTags>
+    <Product>Great Reading Adventure</Product>
     <RepositoryType>Git</RepositoryType>
+    <RepositoryUrl>https://github.com/mcld/greatreadingadventure/</RepositoryUrl>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <Version>4.1.1</Version>
   </PropertyGroup>
 
   <ItemGroup>

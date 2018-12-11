@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace GRA
+﻿namespace GRA
 {
     public static class CacheKey
     {
         public static readonly string CurrentStats = "CurrentStats";
+        public static readonly string SiteCss = "SiteCss";
+        public static readonly string SiteJs = "SiteJs";
         public static readonly string Sites = "Sites";
         public static readonly string SiteSettings = "SiteSettings";
         public static readonly string UnhandledMailCount = "UnhandledMailCount";

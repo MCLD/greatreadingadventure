@@ -14,13 +14,16 @@
     <meta name="theme-color" content="#ffffff">
     @RenderSection("metadata", required: false)
     <link rel="stylesheet" href="~/css/main.min.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     @RenderSection("styles", required: false)
     <style>
         div.tooltip-inner {
             width: 11rem;
         }
     </style>
+    @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.SiteCss))
+    {
+        <link rel="stylesheet" href="@Url.Content(Context.Items[GRA.Controllers.ItemKey.SiteCss].ToString())" />
+    }
 </head>
 <body>
     @{SiteStage siteStage = (SiteStage)(Context.Items[GRA.Controllers.ItemKey.SiteStage] ?? SiteStage.ProgramOpen); }
@@ -195,5 +198,9 @@
             @: $('#notificationsModal').modal('show');
                                         }
     </script>
+    @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.SiteJs))
+    {
+        <script src="@Url.Content(Context.Items[GRA.Controllers.ItemKey.SiteJs].ToString())"></script>
+    }
 </body>
 </html>

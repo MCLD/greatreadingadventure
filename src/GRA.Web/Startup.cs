@@ -25,6 +25,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Serilog.Context;
 using StackExchange.Redis;
+using GRA.Domain.Model;
 
 namespace GRA.Web
 {
@@ -87,10 +88,7 @@ namespace GRA.Web
             });
 
             // Add framework services.
-            services.AddSession(_ =>
-            {
-                _.IdleTimeout = TimeSpan.FromMinutes(30);
-            });
+            services.AddSession(_ => _.IdleTimeout = TimeSpan.FromMinutes(30));
 
             services.TryAddSingleton(_ => _config);
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -193,10 +191,10 @@ namespace GRA.Web
                         _ => _.RequireClaim(ClaimType.Permission, permisisonName.ToString()));
                 }
 
-                options.AddPolicy(Domain.Model.Policy.ActivateChallenges,
+                options.AddPolicy(Policy.ActivateChallenges,
                     _ => _.RequireClaim(ClaimType.Permission,
-                        Domain.Model.Permission.ActivateAllChallenges.ToString(),
-                        Domain.Model.Permission.ActivateSystemChallenges.ToString()));
+                        nameof(Permission.ActivateAllChallenges),
+                        nameof(Permission.ActivateSystemChallenges)));
             });
 
             // path validator
@@ -425,7 +423,6 @@ namespace GRA.Web
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app,
-            //IHostingEnvironment env,
             IPathResolver pathResolver,
             Controllers.Base.ISitePathValidator sitePathValidator)
         {
@@ -486,10 +483,10 @@ namespace GRA.Web
                 {
                     Directory.CreateDirectory(contentPath);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     Console.WriteLine($"Unable to create directory '{contentPath}' in {Directory.GetCurrentDirectory()}");
-                    throw (ex);
+                    throw;
                 }
             }
 
