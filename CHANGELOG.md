@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Upgrade ImageSharp from v1.0.0-beta0003 to v1.0.0-beta0005
 - Move site.css for customizing site styles to shared folder
 - Only redirect to the sign in page with the session expired message if the participant has authenticated within the last two hours
+- Upgrade from ASP.NET Core v2.1 to v2.2
 
 ### Fixed
 - Fix #377 Adding a challenge task causes an error

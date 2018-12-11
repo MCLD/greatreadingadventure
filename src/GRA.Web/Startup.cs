@@ -168,7 +168,7 @@ namespace GRA.Web
 
             // add MVC
             services.AddMvc()
-                .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_1);
+                .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_2);
 
             // Add custom view directory
             services.Configure<RazorViewEngineOptions>(options =>
