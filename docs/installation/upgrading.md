@@ -1,6 +1,6 @@
 # Upgrading
 
-**There is no upgrade path from versions 2 or 3 to this release** due to significant architectural changes. Follow these instructions to upgrade from a previous release of version 4 (i.e. 4.0, 4.0.0-beta1, and 4.0.0-beta2). When upgrading from version 4.0 to 4.1 note that you'll need to ensure you have the appropriate version of the [.NET Core Hosting Bundle](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/?view=aspnetcore-2.1#install-the-net-core-hosting-bundle) on the server.
+**There is no upgrade path from versions 2 or 3 to this release** due to significant architectural changes. Follow these instructions to upgrade from a previous release of version 4 (i.e. 4.0, 4.0.0-beta1, and 4.0.0-beta2). When upgrading from version 4.0 to 4.1 note that you'll need to ensure you have the appropriate version of the [.NET Core Hosting Bundle](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/?view=aspnetcore-2.2#install-the-net-core-hosting-bundle) on the server.
 
 Note that during the upgrade there will be an interruption in service so it may be ideal to schedule this upgrade in off hours.
 
