@@ -68,9 +68,8 @@ namespace GRA.Controllers.Helpers
                     output.Content.SetHtmlContent(site.PageTitle);
                     break;
                 case "footer":
-                    output.TagName = "p";
-                    output.Attributes.SetAttribute("class", "footer");
-                    output.Content.SetHtmlContent(CommonMarkConverter.Convert(site.Footer));
+                    output.TagName = string.Empty;
+                    output.Content.AppendHtml(CommonMarkConverter.Convert(site.Footer));
                     break;
                 case "metadescription":
                     output.TagName = string.Empty;
