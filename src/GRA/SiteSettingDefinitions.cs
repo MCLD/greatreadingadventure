@@ -75,7 +75,7 @@ namespace GRA
                 [SiteSettingKey.Users.AskPreregistrationReminder] =
                 new SiteSettingDefinition
                 {
-                    Name = "Ask reminder email during pre-registraion",
+                    Name = "Ask reminder email during pre-registration",
                     Info = "Put any text here to ask participants during pre-registration if they want to receive an email when the program starts. This software does not send the email, it just collects the addresses.",
                     Category = typeof(SiteSettingKey.Users).Name,
                     Format = SiteSettingFormat.Boolean
