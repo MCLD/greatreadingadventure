@@ -167,5 +167,21 @@ namespace GRA.Controllers.MissionControl
         {
             return View();
         }
+
+        [HttpPost]
+        public IActionResult LogWarning()
+        {
+            _logger.LogWarning("Logging warning message per Flight Controller request.");
+            AlertWarning = "Warning message logged.";
+            return View(nameof(Index));
+        }
+
+        [HttpPost]
+        public IActionResult LogError()
+        {
+            _logger.LogError("Logging error message per Flight Controller request.");
+            AlertDanger = "Error message logged.";
+            return View(nameof(Index));
+        }
     }
 }
