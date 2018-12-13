@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
-## [4.1.1] - 2018-12-11
+## [4.1.1] - 2018-12-13
 ### Added
 - Add site.js to shared folder for customizing site scripting
 
