@@ -82,7 +82,6 @@ namespace GRA.Data.Repository
         public override async Task<DrawingCriterion> GetByIdAsync(int id)
         {
             return await DbSet.AsNoTracking()
-                .Include(_ => _.CriterionPrograms)
                 .Where(_ => _.Id == id)
                 .ProjectTo<DrawingCriterion>()
                 .SingleOrDefaultAsync();

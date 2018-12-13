@@ -100,7 +100,6 @@ namespace GRA.Data.Repository
         {
             var drawing = await DbSet
                 .AsNoTracking()
-                .Include(_ => _.DrawingCriterion)
                 .Where(_ => _.Id == id)
                 .ProjectTo<Drawing>()
                 .SingleOrDefaultAsync();
@@ -112,7 +111,6 @@ namespace GRA.Data.Repository
 
             drawing.Winners = await _context.PrizeWinners
                 .AsNoTracking()
-                .Include(_ => _.User)
                 .Where(_ => _.DrawingId == id && _.User.IsDeleted == false)
                 .OrderBy(_ => _.User.LastName)
                 .ThenBy(_ => _.User.FirstName)

@@ -115,7 +115,7 @@
                                                     @if (Model.IsLoggedIn)
                                                     {
                                                         <td style="text-align:center;vertical-align:middle;">
-                                                            <div class="favorite-button @(Model.Challenges[i].IsFavorited ? "fa-star" : "fa-star-o")" data-challengeid="@Model.Challenges[i].Id" data-favorite="@Model.Challenges[i].IsFavorited"></div>
+                                                            <div class="favorite-button @(Model.Challenges[i].IsFavorited ? "fas" : "far") fa-star" data-challengeid="@Model.Challenges[i].Id" data-favorite="@Model.Challenges[i].IsFavorited"></div>
                                                             <noscript>
                                                                 <input asp-for="@Model.Challenges[i].Id" type="hidden" />
                                                                 <input asp-for="@Model.Challenges[i].IsFavorited" class="favorite-checkbox" />
@@ -213,7 +213,7 @@
         $(".favorite-button").on("click", function () {
             var button = $(this);
             if (button.hasClass("fa-spinner") == false) {
-                button.removeClass("fa-star fa-star-o").addClass("fa-spinner fa-pulse");
+                button.removeClass("far fa-star").addClass("fas fa-spinner fa-pulse");
                 var favorite = button.data("favorite") == "False";
 
                 $.post(favoriteUrl, { challengeId: button.data("challengeid"), favorite: favorite }, function (response) {
@@ -226,10 +226,10 @@
                             else {
                                 if (showFavorites) {
                                     button.parent().parent().remove();
-
                                 }
                                 else {
-                                    button.addClass("fa-star-o");
+                                    button.removeClass("fas");
+                                    button.addClass("far fa-star");
                                     button.data("favorite", "False");
                                 }
                             }

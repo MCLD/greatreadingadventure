@@ -37,6 +37,7 @@ namespace GRA.Data.Repository
         public async Task<ICollection<DailyLiteracyTip>> PageAsync(BaseFilter filter)
         {
             return await ApplyFilters(filter)
+                .OrderBy(_ => _.Name)
                 .ApplyPagination(filter)
                 .ProjectTo<DailyLiteracyTip>()
                 .ToListAsync();

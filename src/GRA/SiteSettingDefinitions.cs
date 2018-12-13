@@ -7,147 +7,127 @@ namespace GRA
     {
         public static Dictionary<string, SiteSettingDefinition> DefinitionDictionary
             = new Dictionary<string, SiteSettingDefinition>()
-        {
             {
-                SiteSettingKey.SecretCode.Disable,
-                new SiteSettingDefinition()
+                [SiteSettingKey.SecretCode.Disable] =
+                new SiteSettingDefinition
                 {
                     Name = "Disable",
                     Info = "Put any text here to disable secret code entry",
                     Category = typeof(SiteSettingKey.SecretCode).Name,
                     Format = SiteSettingFormat.Boolean
-                }
-            },
-            {
-                SiteSettingKey.Challenges.HideUntilRegistrationOpen,
-                new SiteSettingDefinition()
+                },
+                [SiteSettingKey.Challenges.HideUntilRegistrationOpen] =
+                new SiteSettingDefinition
                 {
                     Name = "Hide until registration opens",
                     Info = "Put any text here to hide challenges until the program is open for registration",
                     Category = typeof(SiteSettingKey.Challenges).Name,
                     Format = SiteSettingFormat.Boolean
-                }
-            },
-            {
-                SiteSettingKey.Events.HideUntilRegistrationOpen,
-                new SiteSettingDefinition()
+                },
+                [SiteSettingKey.Events.HideUntilRegistrationOpen] =
+                new SiteSettingDefinition
                 {
                     Name = "Hide until registration opens",
                     Info = "Put any text here to hide events until the program is open for registration",
                     Category = typeof(SiteSettingKey.Events).Name,
                     Format = SiteSettingFormat.Boolean
-                }
-            },
-            {
-                SiteSettingKey.Events.RequireBadge,
-                new SiteSettingDefinition()
+                },
+                [SiteSettingKey.Events.RequireBadge] =
+                new SiteSettingDefinition
                 {
                     Name = "Require badges",
                     Info = "Put any text here to require all events to have a badge and secret code associated with them. With this set anyone who has the ManageEvents permission will need the ManageTriggers permission as well.",
                     Category = typeof(SiteSettingKey.Events).Name,
                     Format = SiteSettingFormat.Boolean,
-                }
-            },
-            {
-                SiteSettingKey.Points.MaximumPermitted,
-                new SiteSettingDefinition()
+                },
+                [SiteSettingKey.Points.MaximumPermitted] =
+                new SiteSettingDefinition
                 {
                     Name = "Maximum points",
                     Info = "A number representing the maximum amount of points permitted for a participant to have through regular means (it may be able to be overidden from Mission Control).",
                     Category = typeof(SiteSettingKey.Points).Name,
                     Format = SiteSettingFormat.Integer
-                }
-            },
-            {
-                SiteSettingKey.Users.RestrictChangingSystemBranch,
-                new SiteSettingDefinition()
+                },
+                [SiteSettingKey.Users.RestrictChangingSystemBranch] =
+                new SiteSettingDefinition
                 {
                     Name = "Restrict changing system and branch",
                     Info = "Put any text here to forbid participants from changing their system/branch after joining",
                     Category = typeof(SiteSettingKey.Users).Name,
                     Format = SiteSettingFormat.Boolean,
-                }
-            },
-            {
-                SiteSettingKey.Users.MaximumHouseholdSizeBeforeGroup,
-                new SiteSettingDefinition()
+                },
+                [SiteSettingKey.Users.MaximumHouseholdSizeBeforeGroup] =
+                new SiteSettingDefinition
                 {
                     Name = "Maximum household size before group",
                     Info = "A number that is the maximum size for a household before it is converted to a group. Group Types must be configured for this to work.",
                     Category = typeof(SiteSettingKey.Users).Name,
                     Format = SiteSettingFormat.Integer
-                }
-            },
-            {
-                SiteSettingKey.Users.AskIfFirstTime,
-                new SiteSettingDefinition()
+                },
+                [SiteSettingKey.Users.AskIfFirstTime] =
+                new SiteSettingDefinition
                 {
                     Name = "Ask if first time",
                     Info = "Put any text here to ask participants if it is their first time in the program",
                     Category = typeof(SiteSettingKey.Users).Name,
                     Format = SiteSettingFormat.Boolean
-                }
-            },
-            {
-                SiteSettingKey.Users.AskPreregistrationReminder,
-                new SiteSettingDefinition()
+                },
+                [SiteSettingKey.Users.AskPreregistrationReminder] =
+                new SiteSettingDefinition
                 {
-                    Name = "Ask reminder email during pre-registraion",
+                    Name = "Ask reminder email during pre-registration",
                     Info = "Put any text here to ask participants during pre-registration if they want to receive an email when the program starts. This software does not send the email, it just collects the addresses.",
                     Category = typeof(SiteSettingKey.Users).Name,
                     Format = SiteSettingFormat.Boolean
-                }
-            },
-            {
-                SiteSettingKey.Users.CollectAccessClosedEmails,
-                new SiteSettingDefinition()
+                },
+                [SiteSettingKey.Users.CollectAccessClosedEmails] =
+                new SiteSettingDefinition
                 {
                     Name = "Collect emails after access has closed",
                     Info = "Put any text here to add email collection on the homepage after the program has closed. This software does not send the email, it just collects the addresses.",
                     Category = typeof(SiteSettingKey.Users).Name,
                     Format = SiteSettingFormat.Boolean
-                }
-            },
-            {
-                SiteSettingKey.Users.CollectPreregistrationEmails,
-                new SiteSettingDefinition()
+                },
+                [SiteSettingKey.Users.CollectPreregistrationEmails] =
+                new SiteSettingDefinition
                 {
                     Name = "Collect emails before registration has opened",
                     Info = "Put any text here to add email collection on the homepage before registration has opened. This software does not send the email, it just collects the addresses.",
                     Category = typeof(SiteSettingKey.Users).Name,
                     Format = SiteSettingFormat.Boolean
-                }
-            },
-            {
-                SiteSettingKey.Users.DefaultDailyPersonalGoal,
-                new SiteSettingDefinition()
+                },
+                [SiteSettingKey.Users.DefaultDailyPersonalGoal] =
+                new SiteSettingDefinition
                 {
                     Name = "Default daily personal goal",
                     Info = "A number here will prompt participants if they want to use that as a daily personal activity goal. Requires the site to program start and program end dates configured.",
                     Category = typeof(SiteSettingKey.Users).Name,
                     Format = SiteSettingFormat.Integer
-                }
-            },
-            {
-                SiteSettingKey.Users.SurveyUrl,
-                new SiteSettingDefinition()
+                },
+                [SiteSettingKey.Users.SurveyUrl] =
+                new SiteSettingDefinition
                 {
                     Name = "Survey URL",
                     Info = "Set a link for {Your Website}/Survey to redirect to.",
                     Category = typeof(SiteSettingKey.Users).Name,
                     Format = SiteSettingFormat.String
-                }
-            },
-            {
-                SiteSettingKey.Users.FirstTimeSurveyUrl,
-                new SiteSettingDefinition()
+                },
+                [SiteSettingKey.Users.FirstTimeSurveyUrl] =
+                new SiteSettingDefinition
                 {
                     Name = "First time survey URL",
                     Info = "Set a link for {Your Website}/Survey to redirect to for first time users. Requires Ask if first time and Survey URL to be configured.",
                     Category = typeof(SiteSettingKey.Users).Name,
                     Format = SiteSettingFormat.String
+                },
+                [SiteSettingKey.Web.CacheSiteCustomizationsMinutes] =
+                new SiteSettingDefinition
+                {
+                    Name = "Check for site.css and site.js changes on disk",
+                    Info = "How often (in minutes) To check if site.css and site.js have changed on disk. Set to 0 when working on the files so that they will reload on each page load, set to a higher number when you are editing them infrequently. An empty setting will default to 60 minutes",
+                    Category = typeof(SiteSettingKey.Web).Name,
+                    Format = SiteSettingFormat.Integer
                 }
-            }
-        };
+            };
     }
 }

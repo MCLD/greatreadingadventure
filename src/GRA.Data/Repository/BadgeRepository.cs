@@ -35,7 +35,6 @@ namespace GRA.Data.Repository
         {
             return await _context.UserBadges
                 .AsNoTracking()
-                .Include(_ => _.Badge)
                 .Where(_ => _.UserId == userId)
                 .CountAsync();
         }
@@ -44,7 +43,6 @@ namespace GRA.Data.Repository
         {
             return await _context.UserBadges
                 .AsNoTracking()
-                .Include(_ => _.Badge)
                 .Where(_ => _.UserId == userId)
                 .OrderByDescending(_ => _.CreatedAt)
                 .Skip(skip)

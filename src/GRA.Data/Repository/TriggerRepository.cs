@@ -61,9 +61,6 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Include(_ => _.AwardBadge)
-                .Include(_ => _.RequiredBadges)
-                .Include(_ => _.RequiredChallenges)
                 .Where(_ => _.Id == id)
                 .ProjectTo<Trigger>()
                 .SingleOrDefaultAsync();
@@ -79,6 +76,7 @@ namespace GRA.Data.Repository
         public async Task<ICollection<Trigger>> PageAsync(TriggerFilter filter)
         {
             var triggerList = await ApplyFilters(filter)
+                .OrderBy(_ => _.Name)
                 .ApplyPagination(filter)
                 .ProjectTo<Trigger>()
                 .ToListAsync();
@@ -171,8 +169,8 @@ namespace GRA.Data.Repository
             // monster trigger query
             var triggers = await DbSet
                 .AsNoTracking()
-                .Include("RequiredBadges")
-                .Include("RequiredChallenges")
+                .Include(_ => _.RequiredBadges)
+                .Include(_ => _.RequiredChallenges)
                 .Where(_ => _.SiteId == user.SiteId
                     && _.IsDeleted == false
                     && !alreadyEarnedTriggerIds.Contains(_.Id)
@@ -552,7 +550,6 @@ namespace GRA.Data.Repository
         {
             return await _context.TriggerBadges
                 .AsNoTracking()
-                .Include(_ => _.Trigger)
                 .Where(_ => _.BadgeId == triggerBadgeId)
                 .Select(_ => _.Trigger)
                 .ProjectTo<Trigger>()

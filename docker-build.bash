@@ -3,6 +3,7 @@
 BLD_PUSH=false
 BLD_BRANCH_FOUND=false
 BLD_RELEASE=false
+BLD_INCLUDE_AVATARS=false
 BLD_DOCKERFILE="Dockerfile"
 BLD_COMMIT=$(git rev-parse --short HEAD)
 
@@ -27,10 +28,11 @@ if [[ $BLD_BRANCH_FOUND = "false" ]]; then
   fi
 fi
 
-if [[ $BLD_BRANCH == "master" ]]; then
+if [[ $BLD_BRANCH = "master" ]]; then
   BLD_DOCKER_TAG="latest"
   BLD_PUSH=true
-elif [[ $BLD_BRANCH == "develop" ]]; then
+  BLD_INCLUDE_AVATARS=true
+elif [[ $BLD_BRANCH = "develop" ]]; then
   BLD_DOCKER_TAG="develop"
   BLD_PUSH=true
   BLD_DOCKERFILE="dev/Dockerfile"
@@ -40,14 +42,18 @@ elif [[ $BLD_BRANCH =~ v([0-9]+\.[0-9]+\.[0-9]+.*) || $BLD_BRANCH =~ release/([0
   BLD_DOCKER_TAG=v${BLD_RELEASE_VERSION}
   BLD_RELEASE=true
   BLD_PUSH=true
+  BLD_INCLUDE_AVATARS=true
+  echo "=== Building release artifacts for $BLD_RELEASE_VERSION"
+else
+  BLD_DOCKER_TAG=$BLD_COMMIT
+fi
+
+if [[ $BLD_INCLUDE_AVATARS = "true" ]]; then
   echo "=== Downloading and decompressing avatar package"
   curl -L -o defaultavatars.zip https://github.com/MCLD/greatreadingadventure/releases/download/v4.0.0/defaultavatars-4.0.0.zip
   mkdir src/GRA.Web/assets
   unzip -q defaultavatars.zip -d src/GRA.Web/assets
   rm defaultavatars.zip
-  echo "=== Building release artifacts for $BLD_RELEASE_VERSION"
-else
-  BLD_DOCKER_TAG=$BLD_COMMIT
 fi
 
 if [ $# -gt 0 ]; then

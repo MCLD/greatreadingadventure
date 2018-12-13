@@ -2,7 +2,7 @@
 
 The GRA checks several locations for configuration settings:
 
-1. First the `appsettings.json` file in the deployed application directory (where the `GRA.dll` and `GRA.Web.dll` files are)
+1. First the `appsettings.json` file in the deployed application directory (where the `GRA.dll` and `GRA.Web.dll` files are (**we recommend that you don't edit this file as it may be overwritten during software upgrades**)
 2. Next, the `shared/appsettings.json` in the deployed application directory - settings in this file override any settings in the top level `appsettings.json` file
 3. Finally the GRA checks environment variables - any configured environment variables are passed into the software. If you don't wish to put sensitive information (such as your configuration string) into a file in the application directory you can [configure those items via environment settings](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/#environment-variables-configuration-provider).
 
@@ -16,7 +16,7 @@ One connection string is required (either `SqlServer` or `SQLite`).
 
 - `SqlServer` - A SQL Server connection string
 - `SQLite` - SQLite connection information (typically the path to the SQLite database file)
-- `SqlServerSessions` - *optional* - A SQL Server connection string for [storing session data in a SQL Server database](https://docs.microsoft.com/en-us/aspnet/core/performance/caching/distributed?view=aspnetcore-2.1#using-a-sql-server-distributed-cache) (necessary for multiple Web servers answering requests for the same site)
+- `SqlServerSessions` - *optional* - A SQL Server connection string for [storing session data in a SQL Server database](https://docs.microsoft.com/en-us/aspnet/core/performance/caching/distributed?view=aspnetcore-2.2#using-a-sql-server-distributed-cache) (necessary for multiple Web servers answering requests for the same site)
 - `SqlServerSerilog` - *optional* - A SQL Server connection string used for [storing SQL Server application logs](https://github.com/serilog/serilog-sinks-mssqlserver); the user should have database owner access (at least initially) so that it can create the proper table for logging
 
 ## General settings
@@ -25,7 +25,7 @@ One connection string is required (either `SqlServer` or `SQLite`).
 - `GraCulture` - *optional* - defaults to "en-US", the culture to use for displaying things like dates and times - for valid options see the language tags listed in the Microsoft [National Language Support (NLS) API Reference](http://go.microsoft.com/fwlink/?LinkId=200048)
 - `GraInitialAuthCode` - the Authorization Code entered to grant users full access to the site - **it's important that you change this!**
 - `GraInitialProgramSetup` - *optional* - defaults to "multiple" which creates four age-based programs and sets up a point translation of one minute read equals one point, can also be set to "single" which creates one program and sets up a point translation of one book read equals one point
-- `GraMaximumAllowableActivity` (v4.1) - *optional* - for reporting purposes, limit participant activity above this amount to the "achiever" level configured for the participant's program
+- `GraMaximumAllowableActivity` (v4.1.0) - *optional* - for reporting purposes, limit participant activity above this amount to the "achiever" level configured for the participant's program
 - `GraReverseProxyAddress` - *optional* - if provided, internally the software will disregard proxy IP addresses
 - `GraRollingLogPath` - defaults to "shared/logs", a path to save a daily-rotating log file - if `GraInstanceName` is specified in `appsettings.json` it will be included in the log file name
 - `GraSqlServer2008` - *optional* - if you are using SQL Server 2008, put text into this setting (any text will do)
@@ -49,13 +49,23 @@ These settings are used when the program runs for the first time to insert some 
 - `GraContentPath` - defaults to "content", the URL path to the files in the `GraContentDirectory` (e.g. by default accessing /content/ with your Web browser serves files off the disk from the content/shared directory)
 
 ## Distributed cache and multiple front-end settings
+
+When operating in a load-balanced environment these settings are used to configure instances to keep settings and data shared or unique as necessary.
+
 - `GraApplicationDescriminator` - defaults to "gra", application discriminator to use for data protection
-- `GraDataProtectionPath` - defaults to "shared/dataprotection", location to save the [data protection key](https://docs.microsoft.com/en-us/aspnet/core/security/data-protection/?view=aspnetcore-2.1) if not using Redis as a distributed cache
+- `GraDataProtectionPath` - defaults to "shared/dataprotection", location to save the [data protection key](https://docs.microsoft.com/en-us/aspnet/core/security/data-protection/?view=aspnetcore-2.2) if not using Redis as a distributed cache
 - `GraDistributedCache` - *optional* - select a system to use for distributed cache: "Redis" or "SqlServer", anything else uses an in-memory distributed cache
 - `GraInstanceName` - the name of this deployed instance
 - `GraRedisConfiguration` - *optional* - address of a Redis server for distributed cache, only used if `GraDistributedCache` is set to "Redis"
 - `GraSqlSessionSchemaName` - *optional* - the schema to use for the SQL Server distributed cache table, defaults to "dbo"
 - `GraSqlSessionTable` - *optional* - the table to use for the SQL Server distributed cache, defaults to "Sessions"
+
+## Developer settings
+
+These settings are primarily of interest to developers working on The Great Reading Adventure source code.
+
+- `GraDatabaseWarningLogging` (v4.1.1) - *optional* - when set to any value write relational database warnings to the log
+- `GraEmailOverride` - *optional* - override any emails and send them to this address
 
 ## Logging with Serilog
 

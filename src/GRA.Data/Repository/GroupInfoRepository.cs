@@ -36,7 +36,6 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.UserId == householdHeadUserId)
-                .Include(_ => _.GroupType)
                 .ProjectTo<GroupInfo>()
                 .SingleOrDefaultAsync();
         }

@@ -1,20 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>GRA.Controllers</AssemblyName>
-    <PackageId>GRA.Controllers</PackageId>
-    <NetStandardImplicitPackageVersion>2.0</NetStandardImplicitPackageVersion>
     <AssetTargetFallback>$(AssetTargetFallback);dnxcore50</AssetTargetFallback>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <Version>4.1.0</Version>
+    <Authors>Maricopa County Library District Web developers</Authors>
+    <CodeAnalysisRuleSet>../../GRARuleSet.ruleset</CodeAnalysisRuleSet>
+    <Company>Maricopa County Library District</Company>
     <Copyright>Copyright 2017 Maricopa County Library District</Copyright>
+    <Description>The Great Reading Adventure is an open-source tool for managing dynamic library reading programs.</Description>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <NetStandardImplicitPackageVersion>2.0</NetStandardImplicitPackageVersion>
+    <PackageId>GRA.Controllers</PackageId>
     <PackageLicenseUrl>https://github.com/mcld/greatreadingadventure/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>http://www.greatreadingadventure.com/</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/mcld/greatreadingadventure/</RepositoryUrl>
+    <PackageReleaseNotes>See https://github.com/MCLD/greatreadingadventure/releases/latest</PackageReleaseNotes>
+    <PackageTags>public-library reading-program literacy gra</PackageTags>
+    <Product>Great Reading Adventure</Product>
     <RepositoryType>Git</RepositoryType>
+    <RepositoryUrl>https://github.com/mcld/greatreadingadventure/</RepositoryUrl>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>4.1.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,15 +38,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="2.0.1" allowedVersions="[2.0.1]" />
+    <PackageReference Include="AutoMapper" Version="[6.0.2]" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="[2.0.1]" />
     <PackageReference Include="CommonMark.NET" Version="0.15.1" />
     <PackageReference Include="DocumentFormat.OpenXml" Version="2.8.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.1.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.3" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0003" allowedVersions="[1.0.0-beta0003]" />
-    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0003" allowedVersions="[1.0.0-beta0003]" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0005" allowedVersions="[1.0.0-beta0005]" />
+    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0005" allowedVersions="[1.0.0-beta0005]" />
     <PackageReference Include="SmartFormat.NET" Version="2.3.1.1" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>

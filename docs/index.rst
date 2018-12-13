@@ -53,6 +53,7 @@ This manual is split into several main sections:
 
    setup/administrator-account
    setup/adding-avatars
+   setup/site-customizations
 
 .. _technical-docs:
 

@@ -1074,6 +1074,7 @@ namespace GRA.Controllers.MissionControl
                 {
                     var (useGroups, maximumHousehold) =
                         await GetSiteSettingIntAsync(SiteSettingKey.Users.MaximumHouseholdSizeBeforeGroup);
+                    viewModel.UseGroups = useGroups;
                     if (useGroups && household.Count() + 1 >= maximumHousehold)
                     {
                         viewModel.UpgradeToGroup = true;

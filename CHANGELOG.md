@@ -3,6 +3,30 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [4.1.1] - 2018-12-13
+### Added
+- Add site.js to shared folder for customizing site scripting
+
+### Changed
+- New mail icon in navigation is red and solid if there are new messages, grey and wireframe otherwise
+- Upgrade ImageSharp from v1.0.0-beta0003 to v1.0.0-beta0005
+- Move site.css for customizing site styles to shared folder
+- Only redirect to the sign in page with the session expired message if the participant has authenticated within the last two hours
+- Upgrade from ASP.NET Core v2.1 to v2.2
+
+### Fixed
+- Fix #377 Adding a challenge task causes an error
+- Fix #382 Adding a drawing criterion fails if no or all programs are selected
+- Fix #383 Viewing a challenge group causes a timeout
+- Fix #379 Stacked Font Awesome icons are not working properly
+- Fix #380 Group button showing on participant household with groups not configured
+- Challenge favorite icons not displaying
+- 'Signup school not listed' icon not displaying
+- Badge display on the dashboard to wrap properly
+
+### Removed
+- Old prior-version FontAwesome files
+
 ## [4.1.0] - 2018-11-30
 ### Added
 - Logging prior to spin-up of Web server (Fix #241)
@@ -109,6 +133,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Added
 - Everything! First release of 4.0.
 
+[4.1.1]: https://github.com/mcld/greatreadingadventure/tree/v4.1.1
 [4.1.0]: https://github.com/mcld/greatreadingadventure/tree/v4.1.0
 [4.0.0]: https://github.com/mcld/greatreadingadventure/tree/v4.0.0
 [4.0.0-beta2]: https://github.com/mcld/greatreadingadventure/tree/v4.0.0-beta2

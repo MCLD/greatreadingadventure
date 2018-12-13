@@ -61,6 +61,7 @@ namespace GRA.Controllers.MissionControl
 
             return View(new GroupTypesListViewModel
             {
+                SiteId = GetCurrentSiteId(),
                 GroupTypes = data.Data,
                 PaginateModel = paginateModel,
                 MaximumHouseholdMembers = useGroups ? (int?)maximumHousehold : null

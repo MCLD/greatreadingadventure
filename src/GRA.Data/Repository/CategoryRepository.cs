@@ -29,7 +29,6 @@ namespace GRA.Data.Repository
             {
                 var activeChallengeCategories = await _context.Challenges.
                     AsNoTracking()
-                    .Include(_ => _.ChallengeCategories)
                     .Where(_ => _.IsActive && _.IsDeleted == false)
                     .SelectMany(_ => _.ChallengeCategories
                         .Select(c => c.CategoryId))

@@ -14,13 +14,16 @@
     <meta name="theme-color" content="#ffffff">
     @RenderSection("metadata", required: false)
     <link rel="stylesheet" href="~/css/main.min.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     @RenderSection("styles", required: false)
     <style>
         div.tooltip-inner {
             width: 11rem;
         }
     </style>
+    @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.SiteCss))
+    {
+        <link rel="stylesheet" href="@Url.Content(Context.Items[GRA.Controllers.ItemKey.SiteCss].ToString())" />
+    }
 </head>
 <body>
     @{SiteStage siteStage = (SiteStage)(Context.Items[GRA.Controllers.ItemKey.SiteStage] ?? SiteStage.ProgramOpen); }
@@ -52,12 +55,16 @@
                         {
                             <li ActiveBy routeKey="Controller" value="Mail" title="Mail">
                                 <a asp-controller="Mail" asp-action="Index">
-                                    <span class="fa fa-envelope"></span><span class="visible-xs-inline"> Mail</span>
                                     @if ((int)Context.Items[GRA.Controllers.ItemKey.UnreadCount] > 0)
                                     {
-                                        <span class="label label-default label-as-badge">
+                                        <span class="fas fa-envelope text-danger" title="New message(s)!"></span><span class="visible-xs-inline"> Mail</span>
+                                        <span class="label label-default label-as-badge" style="background-color: #a94442;">
                                             @Context.Items[GRA.Controllers.ItemKey.UnreadCount]
                                         </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="far fa-envelope"></span><span class="visible-xs-inline"> Mail</span>
                                     }
                                 </a>
                             </li>
@@ -191,5 +198,9 @@
             @: $('#notificationsModal').modal('show');
                                         }
     </script>
+    @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.SiteJs))
+    {
+        <script src="@Url.Content(Context.Items[GRA.Controllers.ItemKey.SiteJs].ToString())"></script>
+    }
 </body>
 </html>

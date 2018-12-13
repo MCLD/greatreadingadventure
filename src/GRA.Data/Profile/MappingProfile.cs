@@ -38,7 +38,7 @@ namespace GRA.Data.Profile
                 .ReverseMap();
             CreateMap<Model.ChallengeGroup, Domain.Model.ChallengeGroup>()
                 .ForMember(dest => dest.ChallengeIds, opt => opt.MapFrom(
-                    src => src.ChallengeGroupChallenges.Select(_ => _.ChallengeId)))
+                    src => src.ChallengeGroupChallenges.Select(_ => _.ChallengeId).ToList()))
                 .ReverseMap();
             CreateMap<Model.ChallengeTask, Domain.Model.ChallengeTask>().ReverseMap();
             CreateMap<Model.DailyLiteracyTip, Domain.Model.DailyLiteracyTip>().ReverseMap();

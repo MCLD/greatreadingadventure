@@ -276,15 +276,15 @@
                             <tr>
                                 @if (Model.CanLogActivity)
                                 {
-                                    <th style="vertical-align:middle;" width="24px;"><input id="checkAll" type="checkbox" data-id="@Model.Head.Id" /></th>
+                                    <th style="vertical-align:middle;" width="24px;" class="text-center"><input id="checkAll" type="checkbox" data-id="@Model.Head.Id" /></th>
                                 }
                                 @if (Model.CanReadMail)
                                 {
-                                    <th width="36px"><span class="fa fa-envelope fa-lg"></span></th>
+                                    <th width="36px" class="text-center"><span class="far fa-envelope fa-lg"></span></th>
                                 }
                                 @if (Model.CanViewPrizes)
                                 {
-                                    <th width="36px"><span class="fa fa-gift fa-lg"></span></th>
+                                    <th width="36px" class="text-center"><span class="fa fa-gift fa-lg"></span></th>
                                 }
                                 <th>User</th>
                                 <th>Points Earned</th>
@@ -302,7 +302,7 @@
                             <tr class="warning @(Model.Id == Model.Head.Id ? " text-strong" : null)">
                                 @if (Model.CanLogActivity)
                                 {
-                                    <td class="on-top" style="vertical-align:middle;">
+                                    <td class="on-top text-center" style="vertical-align:middle;">
                                         @if (!Model.Head.HasPendingQuestionnaire)
                                         {
                                             <input class="userSelection" type="checkbox" data-id="@Model.Head.Id" />
@@ -315,16 +315,15 @@
                                 }
                                 @if (Model.CanReadMail)
                                 {
-                                    <td class="on-top" style="vertical-align:middle;">
+                                    <td class="on-top text-center" style="vertical-align:middle;">
                                         <a class="plain-link" asp-action="Mail" asp-route-id="@Model.Head.Id">
                                             @if (Model.Head.HasNewMail)
                                             {
-                                                <span class="fa fa-envelope fa-lg"></span>
-                                                <span class="fa fa-exclamation fa-2x exclamation-alert"></span>
+                                                <span class="fas fa-envelope fa-lg text-danger" title="New message(s)!"></span>
                                             }
                                             else
                                             {
-                                                <span class="fa fa-envelope fa-lg" style="color:grey;"></span>
+                                                <span class="far fa-envelope fa-lg text-muted"></span>
                                             }
                                         </a>
                                     </td>
@@ -332,16 +331,15 @@
                                 }
                                 @if (Model.CanViewPrizes)
                                 {
-                                    <td class="on-top" style="vertical-align:middle;">
+                                    <td class="on-top text-center" style="vertical-align:middle;">
                                         <a class="plain-link" asp-action="Prizes" asp-route-id="@Model.Head.Id">
                                             @if (Model.Head.HasUnclaimedPrize)
                                             {
-                                                <span class="fa fa-gift fa-lg"></span>
-                                                <span class="fa fa-exclamation fa-2x exclamation-alert"></span>
+                                                <span class="fa fa-gift fa-lg text-danger"></span>
                                             }
                                             else
                                             {
-                                                <span class="fa fa-gift fa-lg" style="color:grey;"></span>
+                                                <span>&nbsp;</span>
                                             }
                                         </a>
                                     </td>
@@ -425,7 +423,7 @@
                                 <tr class="@(Model.Id == user.Id ? " info text-strong" : null)">
                                     @if (Model.CanLogActivity)
                                     {
-                                        <td class="on-top" style="vertical-align:middle;">
+                                        <td class="on-top text-center" style="vertical-align:middle;">
                                             @if (!user.HasPendingQuestionnaire)
                                             {
                                                 <input class="userSelection" type="checkbox" data-id="@user.Id" />
@@ -438,32 +436,30 @@
                                     }
                                     @if (Model.CanReadMail)
                                     {
-                                        <td class="on-top" style="vertical-align:middle;">
+                                        <td class="on-top text-center" style="vertical-align:middle;">
                                             <a class="plain-link" asp-action="Mail" asp-route-id="@user.Id">
                                                 @if (user.HasNewMail)
                                                 {
-                                                    <span class="fa fa-envelope fa-lg"></span>
-                                                    <span class="fa fa-exclamation fa-2x exclamation-alert"></span>
+                                                    <span class="fas fa-envelope fa-lg text-danger" title="New message(s)!"></span>
                                                 }
                                                 else
                                                 {
-                                                    <span class="fa fa-envelope fa-lg" style="color:grey;"></span>
+                                                    <span class="far fa-envelope fa-lg text-muted"></span>
                                                 }
                                             </a>
                                         </td>
                                     }
                                     @if (Model.CanViewPrizes)
                                     {
-                                        <td class="on-top" style="vertical-align:middle;">
+                                        <td class="on-top text-center" style="vertical-align:middle;">
                                             <a class="plain-link" asp-action="Prizes" asp-route-id="@user.Id">
                                                 @if (user.HasUnclaimedPrize)
                                                 {
-                                                    <span class="fa fa-gift fa-lg"></span>
-                                                    <span class="fa fa-exclamation fa-2x exclamation-alert"></span>
+                                                    <span class="fa fa-gift fa-lg text-danger"></span>
                                                 }
                                                 else
                                                 {
-                                                    <span class="fa fa-gift fa-lg" style="color:grey;"></span>
+                                                    <span>&nbsp;</span>
                                                 }
                                             </a>
                                         </td>
@@ -680,7 +676,7 @@
         {
             <a asp-action="AddHouseholdMember" asp-route-id="@Model.Id" class="btn btn-default">Add Family Member</a>
             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#listModal">Add Existing Participant to Family</button>
-            if (Model.IsGroup == false && Model.HouseholdCount > 0)
+            if (Model.UseGroups && Model.IsGroup == false && Model.HouseholdCount > 0)
             {
                 <a asp-action="UpgradeToGroup" asp-route-id="@Model.Id" class="btn btn-default">Upgrade to Group</a>
             }

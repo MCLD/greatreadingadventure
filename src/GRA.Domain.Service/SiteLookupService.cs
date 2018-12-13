@@ -37,6 +37,7 @@ namespace GRA.Domain.Service
             _initialSetupService = initialSetupService
                 ?? throw new ArgumentNullException(nameof(initialSetupService));
         }
+
         private async Task<IEnumerable<Site>> GetSitesFromCacheAsync()
         {
             IEnumerable<Site> sites = null;
@@ -44,7 +45,7 @@ namespace GRA.Domain.Service
             if (cachedSites == null)
             {
                 sites = await _siteRepository.GetAllAsync();
-                if (sites.Count() == 0)
+                if (!sites.Any())
                 {
                     sites = await InsertInitialSiteAsync();
                 }
@@ -67,7 +68,7 @@ namespace GRA.Domain.Service
                     _cache.SetString(key, JsonConvert.SerializeObject(site.Settings));
                     _logger.LogTrace("Cache miss on site settings for site id {Id}, {Count} loaded",
                         site.Id,
-                        site.Settings.Count());
+                        site.Settings.Count);
                 }
                 else
                 {
@@ -87,13 +88,13 @@ namespace GRA.Domain.Service
         public async Task<Site> GetSiteByPathAsync(string sitePath)
         {
             var sites = await GetSitesFromCacheAsync();
-            return sites.Where(_ => _.Path == sitePath).SingleOrDefault();
+            return sites.SingleOrDefault(_ => _.Path == sitePath);
         }
 
         public async Task<Site> GetByIdAsync(int siteId)
         {
             var sites = await GetSitesFromCacheAsync();
-            return sites.Where(_ => _.Id == siteId).FirstOrDefault();
+            return sites.FirstOrDefault(_ => _.Id == siteId);
         }
 
         public async Task<IEnumerable<string>> GetSitePathsAsync()
@@ -185,8 +186,8 @@ namespace GRA.Domain.Service
             var sites = await _siteRepository.GetAllAsync();
             foreach(var site in sites)
             {
-                string key = $"s{site.Id}.{CacheKey.SiteSettings}";
-                _cache.Remove(key);
+                _cache.Remove($"s{site.Id}.{CacheKey.SiteSettings}");
+                _cache.Remove($"s{site.Id}.{CacheKey.SiteCss}");
             }
             _cache.Remove(CacheKey.Sites);
             return await GetSitesFromCacheAsync();
@@ -214,11 +215,9 @@ namespace GRA.Domain.Service
             }
 
             var site = (await GetSitesFromCacheAsync())
-                .Where(_ => _.Id == siteId)
-                .SingleOrDefault();
+                .SingleOrDefault(_ => _.Id == siteId);
             return site.Settings
-                .Where(_ => _.Key == key)
-                .FirstOrDefault()?
+                .FirstOrDefault(_ => _.Key == key)?
                 .Value != null;
         }
 
@@ -245,11 +244,9 @@ namespace GRA.Domain.Service
             }
 
             var site = (await GetSitesFromCacheAsync())
-                .Where(_ => _.Id == siteId)
-                .SingleOrDefault();
+                .SingleOrDefault(_ => _.Id == siteId);
             var settingValueString = site.Settings
-                .Where(_ => _.Key == key)
-                .FirstOrDefault()?
+                .FirstOrDefault(_ => _.Key == key)?
                 .Value;
 
             if (!string.IsNullOrEmpty(settingValueString))
@@ -285,11 +282,9 @@ namespace GRA.Domain.Service
             }
 
             var site = (await GetSitesFromCacheAsync())
-                .Where(_ => _.Id == siteId)
-                .SingleOrDefault();
+                .SingleOrDefault(_ => _.Id == siteId);
             var settingValueString = site.Settings
-                .Where(_ => _.Key == key)
-                .FirstOrDefault()?
+                .FirstOrDefault(_ => _.Key == key)?
                 .Value;
 
             if (!string.IsNullOrEmpty(settingValueString))

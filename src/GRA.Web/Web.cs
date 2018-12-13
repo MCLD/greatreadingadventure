@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using GRA.Domain.Service;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -22,6 +23,12 @@ namespace GRA.Web
             int stage = 10;
             try
             {
+                var cache = _scope.ServiceProvider.GetRequiredService<IDistributedCache>();
+                var options = new DistributedCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromSeconds(10));
+                await cache.SetStringAsync("Startup", DateTime.Now.ToString(), options);
+
+                stage = 15;
                 var dbContext = _scope.ServiceProvider.GetRequiredService<Data.Context>();
 
                 stage = 20;
@@ -59,6 +66,10 @@ namespace GRA.Web
                 switch (stage)
                 {
                     case 10:
+                        critical = true;
+                        errorText = "Error utilizing distributed cache: {Message}";
+                        break;
+                    case 15:
                         critical = true;
                         errorText = "Error accessing data context: {Message}";
                         break;
