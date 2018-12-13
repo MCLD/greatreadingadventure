@@ -6,6 +6,7 @@ using System.Linq;
 using AutoMapper;
 using GRA.Abstract;
 using GRA.Controllers.RouteConstraint;
+using GRA.Domain.Model;
 using GRA.Domain.Service;
 using GRA.Domain.Service.Abstract;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -25,7 +26,6 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Serilog.Context;
 using StackExchange.Redis;
-using GRA.Domain.Model;
 
 namespace GRA.Web
 {
@@ -177,10 +177,11 @@ namespace GRA.Web
 
             // set cookie authentication options
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(_ => new CookieAuthenticationOptions
+                .AddCookie(_ =>
                 {
-                    LoginPath = new PathString("/SignIn/"),
-                    AccessDeniedPath = new PathString("/"),
+                    _.LoginPath = "/SignIn";
+                    _.LogoutPath = "/Home/Signout";
+                    _.AccessDeniedPath = "/";
                 });
 
             services.AddAuthorization(options =>

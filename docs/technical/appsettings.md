@@ -16,7 +16,7 @@ One connection string is required (either `SqlServer` or `SQLite`).
 
 - `SqlServer` - A SQL Server connection string
 - `SQLite` - SQLite connection information (typically the path to the SQLite database file)
-- `SqlServerSessions` - *optional* - A SQL Server connection string for [storing session data in a SQL Server database](https://docs.microsoft.com/en-us/aspnet/core/performance/caching/distributed?view=aspnetcore-2.1#using-a-sql-server-distributed-cache) (necessary for multiple Web servers answering requests for the same site)
+- `SqlServerSessions` - *optional* - A SQL Server connection string for [storing session data in a SQL Server database](https://docs.microsoft.com/en-us/aspnet/core/performance/caching/distributed?view=aspnetcore-2.2#using-a-sql-server-distributed-cache) (necessary for multiple Web servers answering requests for the same site)
 - `SqlServerSerilog` - *optional* - A SQL Server connection string used for [storing SQL Server application logs](https://github.com/serilog/serilog-sinks-mssqlserver); the user should have database owner access (at least initially) so that it can create the proper table for logging
 
 ## General settings
@@ -53,7 +53,7 @@ These settings are used when the program runs for the first time to insert some 
 When operating in a load-balanced environment these settings are used to configure instances to keep settings and data shared or unique as necessary.
 
 - `GraApplicationDescriminator` - defaults to "gra", application discriminator to use for data protection
-- `GraDataProtectionPath` - defaults to "shared/dataprotection", location to save the [data protection key](https://docs.microsoft.com/en-us/aspnet/core/security/data-protection/?view=aspnetcore-2.1) if not using Redis as a distributed cache
+- `GraDataProtectionPath` - defaults to "shared/dataprotection", location to save the [data protection key](https://docs.microsoft.com/en-us/aspnet/core/security/data-protection/?view=aspnetcore-2.2) if not using Redis as a distributed cache
 - `GraDistributedCache` - *optional* - select a system to use for distributed cache: "Redis" or "SqlServer", anything else uses an in-memory distributed cache
 - `GraInstanceName` - the name of this deployed instance
 - `GraRedisConfiguration` - *optional* - address of a Redis server for distributed cache, only used if `GraDistributedCache` is set to "Redis"

@@ -22,4 +22,14 @@
             <button type="submit" class="btn btn-info"><span class="fa fa-play"></span></button>
         </form>
     </div>
+    <div class="col-sm-3 col-md-2 row-spacing">
+        <form asp-controller="Flight" asp-action="LogWarning" method="post" role="form" class="form-inline">
+            <button type="submit" class="btn btn-warning btn-block">Log warning message</button>
+        </form>
+    </div>
+    <div class="col-sm-3 col-md-2 row-spacing">
+        <form asp-controller="Flight" asp-action="LogError" method="post" role="form" class="form-inline">
+            <button type="submit" class="btn btn-danger btn-block">Log error message</button>
+        </form>
+    </div>
 </div>

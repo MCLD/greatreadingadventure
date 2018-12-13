@@ -4,9 +4,9 @@ The final installation step is to install and run the GRA software.
 
 ## Install and run the GRA on a Windows Server
 
-The hosting Windows Server should have [IIS installed and the Web Sockets feature enabled](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/?view=aspnetcore-1.1&tabs=aspnetcore1x#iis-configuration).  You do not need to install the Windows Authentication IIS feature.
+The hosting Windows Server should have [IIS installed and the Web Sockets feature enabled](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/?view=aspnetcore-2.2#iis-configuration).  You do not need to install the Windows Authentication IIS feature.
 
-Also, ensure the server has the proper [.NET Core v2.1 Hosting Bundle installed](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/?view=aspnetcore-2.1#install-the-net-core-hosting-bundle).
+Also, ensure the server has the proper [.NET Core v2.2 Hosting Bundle installed](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/?view=aspnetcore-2.2#install-the-net-core-hosting-bundle).
 
 ### Set up the GRA as the only site on the server
 
@@ -59,11 +59,11 @@ Your system administrator can help you select the correct approach.
 ### Troubleshooting a Windows installation
 
 1. Did you modify the `appsettings.json` or provide an override file in the `settings` directory to configure the database connection and authorization code?
-2. Did you install the .NET Core 2.1.x Hosting Bundle?
+2. Did you install the .NET Core 2.2.x Hosting Bundle?
 3. Did you restart IIS after installing it?
 4. Are you sure the `shared` directory has write permissions for the process running IIS? Once the application starts, it will create a "logs" directory there so you will know if the Web server can write to this directory once you see the "logs" directory present. Check that "logs" directory to see if there are any errors written out to the log file.
 5. If the Web process can write to the `shared` directory, you can edit the `Web.config` file `aspNetCore` tag to set `stdoutLogEnabled="true"` and `stdoutLogFile=".\shared\stdout"`. When you restart IIS it should write a log file starting with "stdout" that you can examine to see if any errors are being written to it.
-6. Microsoft's [Troubleshoot ASP.NET Core on IIS](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/troubleshoot?view=aspnetcore-2.1) page will walk you through some typical troubleshooting steps.
+6. Microsoft's [Troubleshoot ASP.NET Core on IIS](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/troubleshoot?view=aspnetcore-2.2) page will walk you through some typical troubleshooting steps.
 
 ## Install and run the GRA in Docker
 

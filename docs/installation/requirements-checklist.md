@@ -30,7 +30,7 @@ Once you set up in either configuration you can add or remove programs as you se
 
 - Ensure you have a Windows server running **Windows Server 2008 or newer**
 - Note that for reporting to work you must be running **Windows Server 2012/IIS 8 or later with Web Sockets enabled**
-- Ensure your server has the **.NET Core Runtime 2.1.x Hosting Bundle** installed
+- Ensure your server has the **.NET Core Runtime 2.2.x Hosting Bundle** installed
 - Confirm that you can **create a new Web site in IIS** on this server
 - Confirm that you will be permitted to configure it so that **Web site files can be writable by the Windows user who owns the IIS process (typically the `IIS_IUSRS` group or `DefaultAppPool` user)**.
 - Ensure you have access to a **Microsoft SQL Server version 2008 or newer**

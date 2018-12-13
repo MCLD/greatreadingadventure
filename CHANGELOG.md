@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
-## Unreleased
+## [4.1.1] - 2018-12-13
 ### Added
 - Add site.js to shared folder for customizing site scripting
 
@@ -133,6 +133,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Added
 - Everything! First release of 4.0.
 
+[4.1.1]: https://github.com/mcld/greatreadingadventure/tree/v4.1.1
 [4.1.0]: https://github.com/mcld/greatreadingadventure/tree/v4.1.0
 [4.0.0]: https://github.com/mcld/greatreadingadventure/tree/v4.0.0
 [4.0.0-beta2]: https://github.com/mcld/greatreadingadventure/tree/v4.0.0-beta2
