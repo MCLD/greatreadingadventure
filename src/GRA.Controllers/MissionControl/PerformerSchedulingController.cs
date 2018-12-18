@@ -520,6 +520,10 @@ namespace GRA.Controllers.MissionControl
                 viewModel.BranchSelection.BackToBackProgram = true;
             }
 
+            viewModel.BranchSelection.AgeGroup = await _performerSchedulingService
+                .GetAgeGroupByIdAsync(viewModel.BranchSelection.AgeGroupId);
+            viewModel.BranchSelection.Branch = await _performerSchedulingService
+                .GetNonExcludedBranch(model.BranchSelection.BranchId);
             viewModel.BranchSelection.Program = program;
 
             return View(viewModel);
@@ -579,32 +583,36 @@ namespace GRA.Controllers.MissionControl
                 });
             }
 
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+
             var branchSelections = await _performerSchedulingService
                 .GetSelectionsByBranchIdAsync(branchId);
-            if (branchSelections.Count >= 3)
+            if (branchSelections.Count >= settings.SelectionsPerBranch)
             {
                 return Json(new
                 {
                     success = false,
-                    message = "Branch has already made its 3 selections."
+                    message = $"Branch has already made its {settings.SelectionsPerBranch} selections."
                 });
             }
 
-            var availableAgeGroups = program.AgeGroups.Except(
-                branchSelections.Select(_ => _.AgeGroup)).ToList();
+            var availableAgeGroups = program.AgeGroups
+                .Select(_ => _.Id.ToString())
+                .Except(branchSelections.Select(_ => _.AgeGroupId.ToString()))
+                .ToList();
             if (availableAgeGroups.Count == 0)
             {
                 return Json(new
                 {
                     success = false,
-                    message = "Branch  already has selections for all of this programs age groups."
+                    message = "Branch already has selections for all of this programs age groups."
                 });
             }
 
             return Json(new
             {
                 success = true,
-                data = new SelectList(availableAgeGroups, "Id", "Name")
+                data = availableAgeGroups
             });
         }
 
@@ -842,7 +850,7 @@ namespace GRA.Controllers.MissionControl
 
             try
             {
-                branchSelection = await _performerSchedulingService.AddBranchProgramSelectionAsync(
+                branchSelection = await _performerSchedulingService.AddBranchKitSelectionAsync(
                     branchSelection);
                 _logger.LogInformation($"Selection {branchSelection.Id} added by user {GetId(ClaimType.UserId)}");
                 ShowAlertSuccess("Kit selection added!");
@@ -879,19 +887,22 @@ namespace GRA.Controllers.MissionControl
                 });
             }
 
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+
             var branchSelections = await _performerSchedulingService
                 .GetSelectionsByBranchIdAsync(branchId);
-            if (branchSelections.Count >= 3)
+            if (branchSelections.Count >= settings.SelectionsPerBranch)
             {
                 return Json(new
                 {
                     success = false,
-                    message = "Branch has already made its 3 selections."
+                    message = $"Branch has already made its {settings.SelectionsPerBranch} selections."
                 });
             }
 
-            var availableAgeGroups = kit.AgeGroups.Except(
-                branchSelections.Select(_ => _.AgeGroup)).ToList();
+            var availableAgeGroups = kit.AgeGroups.Select(_ => _.Id.ToString())
+                .Except(branchSelections.Select(_ => _.AgeGroupId.ToString()))
+                .ToList();
             if (availableAgeGroups.Count == 0)
             {
                 return Json(new
@@ -904,7 +915,7 @@ namespace GRA.Controllers.MissionControl
             return Json(new
             {
                 success = true,
-                data = new SelectList(availableAgeGroups, "Id", "Name")
+                data = availableAgeGroups
             });
         }
     }

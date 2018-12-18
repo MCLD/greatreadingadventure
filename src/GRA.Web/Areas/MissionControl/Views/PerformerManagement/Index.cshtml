@@ -98,7 +98,10 @@
                             {
                                 <td>@performer.SelectionsCount</td>
                                 <td class="on-top">
-                                    <a asp-action="PerformerSelections" asp-route-id="@performer.Id" class="btn btn-xs btn-default">View Selections</a>
+                                    @if (performer.IsApproved)
+                                    {
+                                        <a asp-action="PerformerSelections" asp-route-id="@performer.Id" class="btn btn-xs btn-default">View Selections</a>
+                                    }
                                 </td>
                             }
                         </tr>

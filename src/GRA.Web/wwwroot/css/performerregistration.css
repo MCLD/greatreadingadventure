@@ -129,3 +129,7 @@ h1 {
     overflow-y: auto;
     overflow-x: hidden;
 }
+
+.cursor-pointer {
+    cursor: pointer;
+}

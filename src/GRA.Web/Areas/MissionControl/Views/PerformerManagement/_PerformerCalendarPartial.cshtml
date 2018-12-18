@@ -217,7 +217,7 @@
         $("#checkTime").on("click", function () {
             var time = $("#pickerStart").data("DateTimePicker").date().format("HH:mm");
             startDateTime = selectedDate + "T" + time;
-            $.getJSON(checkTimeUrl, { programId: "@Model.BranchSelection.ProgramId", date: startDateTime, backToBack: backToBack }, function (response) {
+            $.getJSON(checkTimeUrl, { selectionId: "@Model.BranchSelection.Id", programId: "@Model.BranchSelection.ProgramId", date: startDateTime, backToBack: backToBack }, function (response) {
                 var checkAlert = $("#checkAlert");
                 checkAlert.removeClass("hidden").removeClass("alert-warning alert-success alert-danger");
                 if (response.success == true) {

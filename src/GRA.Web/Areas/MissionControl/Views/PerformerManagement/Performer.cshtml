@@ -96,11 +96,12 @@
         <h2 style="margin-top:0px;">Information
             <a asp-action="PerformerDetails" asp-route-id="@Model.Performer.Id" class="btn btn-default" style="display:inline-block">Edit Information</a>
         </h2>
-            @if (Model.SchedulingStage >= GRA.Domain.Model.PsSchedulingStage.RegistrationClosed && Model.SchedulingStage <= GRA.Domain.Model.PsSchedulingStage.SchedulingPreview)
+            @if (Model.SchedulingStage == GRA.Domain.Model.PsSchedulingStage.RegistrationClosed)
             {
                 <form method="post" role="form" style="display:inline;">
+                    <input asp-for="Performer.Id" type="hidden" />
                     <input asp-for="Approve" type="hidden" />
-                    <button asp-action="PerformerApprove" asp-route-id="@Model.Performer.Id" class="btn btn-lg @(Model.Approve ? "btn-success" : "btn-danger") pull-right">@(Model.Approve ? "Approve" : "Unapprove")</button>
+                    <button asp-action="PerformerApprove" class="btn btn-lg @(Model.Approve ? "btn-success" : "btn-danger") pull-right">@(Model.Approve ? "Approve" : "Unapprove")</button>
                 </form>
             }
             else if (Model.SchedulingStage >= GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)

@@ -23,6 +23,7 @@
                             <div class="col-sm-9">
                                 <select name="KitId" asp-for="BranchSelection.KitId" asp-items="Model.KitList" class="form-control"></select>
                             </div>
+                            <span id="KitValidationMessage" asp-validation-for="BranchSelection.KitId" class="text-danger"></span>
                         </div>
                         <div class="form-group">
                             <label asp-for="BranchSelection.AgeGroupId" class="col-sm-3 control-label"></label>
@@ -157,6 +158,7 @@
         var kitAgeGroupsUrl = "@Url.Action(nameof(PerformerManagementController.GetKitAgeGroups))";
 
         $("#editModal").on("show.bs.modal", function (event) {
+            $("#KitValidationMessage").addClass("field-validation-valid").removeClass("field-validation-error").text("");
             var button = $(event.relatedTarget);
             $("#BranchSelection_Id").val(button.data("id"));
             $("#branchId").val(button.data("branchid"));
@@ -166,38 +168,52 @@
             $("#BranchSelection_KitId").val(@Model.Kit.Id);
             var ageList = $("#BranchSelection_AgeGroupId");
             $.getJSON(kitAgeGroupsUrl, { kitId: @Model.Kit.Id }, function (response) {
-                ageList.empty();
-                $.each(response, function (index, item) {
-                    ageList.append(new Option(item.text, item.value))
-                });
-                ageList.val(button.data("agegroupid"));
+                if (response.success) {
+                    ageList.empty();
+                    $.each(response.data, function (index, item) {
+                        ageList.append(new Option(item.text, item.value))
+                    });
+                    ageList.val(button.data("agegroupid"));
+                }
+                else {
+                    $("#KitValidationMessage").removeClass("field-validation-valid").addClass("field-validation-error").text(response.message);
+                }
             });
         });
 
         $("#BranchSelection_KitId").on("change", function () {
+            $("#KitValidationMessage").addClass("field-validation-valid").removeClass("field-validation-error").text("");
             var ageList = $("#BranchSelection_AgeGroupId");
             $("#checkAlert").addClass("hidden");
             $("#editKit").addClass("hidden");
             $.getJSON(kitAgeGroupsUrl, { kitId: $(this).val() }, function (response) {
-                ageList.empty();
-                ageList.append(new Option("", ""))
-                $.each(response, function (index, item) {
-                    ageList.append(new Option(item.text, item.value))
-                });
+                if (response.success) {
+                    ageList.empty();
+                    ageList.append(new Option("", ""))
+                    $.each(response.data, function (index, item) {
+                        ageList.append(new Option(item.text, item.value))
+                    });
+                    ageList.val(button.data("agegroupid"));
+                }
+                else {
+                    $("#KitValidationMessage").removeClass("field-validation-valid").addClass("field-validation-error").text(response.message);
+                }
             });
         });
 
         $("#BranchSelection_AgeGroupId").on("change", function () {
-            $.getJSON(checkBranchAgeGroupUrl, { ageGroupId: $(this).val(), branchId: $("#branchId").val(), currentSelectionIdId: $("#BranchSelection_Id").val() }, function (response) {
+            $.getJSON(checkBranchAgeGroupUrl, { ageGroupId: $(this).val(), branchId: $("#branchId").val(), currentSelectionId: $("#BranchSelection_Id").val() }, function (response) {
                 if (response.success) {
                     $("#checkAlert").removeClass("alert-danger").addClass("alert-success");
+                    $("#editKit").removeClass("hidden");
                 }
                 else {
                     $("#checkAlert").removeClass("alert-success").addClass("alert-danger");
+                    $("#editKit").addClass("hidden");
                 }
                 $("#checkAlert").text(response.message);
                 $("#checkAlert").removeClass("hidden");
-                $("#editKit").removeClass("hidden");
+                
             });
         });
 

@@ -70,7 +70,12 @@ namespace GRA.Data.Profile
             CreateMap<Model.Program, Domain.Model.Program>().ReverseMap();
             CreateMap<Model.PsAgeGroup, Domain.Model.PsAgeGroup>().ReverseMap();
             CreateMap<Model.PsBlackoutDate, Domain.Model.PsBlackoutDate>().ReverseMap();
-            CreateMap<Model.PsBranchSelection, Domain.Model.PsBranchSelection>().ReverseMap();
+            CreateMap<Model.PsBranchSelection, Domain.Model.PsBranchSelection>()
+                .ForMember(dest => dest.StartsAt, opt => opt.MapFrom(src =>
+                    src.ScheduleStartTime.ToShortTimeString()))
+                .ForMember(dest => dest.EndsAt, opt => opt.MapFrom(src =>
+                    src.ScheduleStartTime.AddMinutes(src.ScheduleDuration).ToShortTimeString()))
+                .ReverseMap();
             CreateMap<Model.PsSettings, Domain.Model.PsSettings>().ReverseMap();
             CreateMap<Model.PsKit, Domain.Model.PsKit>().ReverseMap();
             CreateMap<Model.PsKitImage, Domain.Model.PsKitImage>().ReverseMap();

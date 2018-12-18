@@ -39,6 +39,7 @@ namespace GRA.Domain.Service
         public IPsSettingsRepository _psSettingsRepository;
         public ISystemRepository _systemRepository;
         public ITriggerRepository _triggerRepository;
+        public IUserRepository _userRepository;
         public PerformerSchedulingService(ILogger<PerformerSchedulingService> logger,
             IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
@@ -55,7 +56,8 @@ namespace GRA.Domain.Service
             IPsProgramImageRepository psProgramImageRepository,
             IPsSettingsRepository psSettingsRepository,
             ISystemRepository systemRepository,
-            ITriggerRepository triggerRepository)
+            ITriggerRepository triggerRepository,
+            IUserRepository userRepository)
             : base(logger, dateTimeProvider, userContextProvider)
         {
             _pathResolver = pathResolver ?? throw new ArgumentNullException(nameof(pathResolver));
@@ -85,6 +87,8 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(systemRepository));
             _triggerRepository = triggerRepository
                 ?? throw new ArgumentNullException(nameof(triggerRepository));
+            _userRepository = userRepository
+                ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
         public PsSchedulingStage GetSchedulingStage(PsSettings settings)
@@ -169,7 +173,7 @@ namespace GRA.Domain.Service
             var excludedBranchIds = await _psSettingsRepository
                 .GetExcludedBranchIdsAsync();
 
-            foreach(var system in systems)
+            foreach (var system in systems)
             {
                 system.Branches = system.Branches
                     .Where(_ => excludedBranchIds.Contains(_.Id) == false).ToList();
@@ -185,19 +189,19 @@ namespace GRA.Domain.Service
             var excludedBranchIds = await _psSettingsRepository
                 .GetExcludedBranchIdsAsync();
 
-            system.Branches = system.Branches.Where(_ => excludedBranchIds.Contains(_.Id) == false)
-                .ToList();
+            system.Branches = await _psSettingsRepository
+                .GetNonExcludedSystemBranchesAsync(systemId);
 
             return system;
         }
 
-        public async Task<ICollection<Branch>> GetNonExcludedSystemBranchesAsync(int systemId, 
+        public async Task<ICollection<Branch>> GetNonExcludedSystemBranchesAsync(int systemId,
             bool prioritizeUserBranch = false)
         {
-            var prioritizedBranch = prioritizeUserBranch 
+            var prioritizedBranch = prioritizeUserBranch
                 ? GetClaimId(ClaimType.BranchId) : default(int?);
 
-            return await _psSettingsRepository.GetNonExcludedSystemBranchesAsync(systemId, 
+            return await _psSettingsRepository.GetNonExcludedSystemBranchesAsync(systemId,
                 prioritizedBranch);
         }
 
@@ -267,6 +271,11 @@ namespace GRA.Domain.Service
             BaseFilter filter)
         {
             return await _psAgeGroupRepository.PageAsync(filter);
+        }
+
+        public async Task<PsAgeGroup> GetAgeGroupByIdAsync(int id)
+        {
+            return await _psAgeGroupRepository.GetByIdAsync(id);
         }
 
         public async Task<PsAgeGroup> AddAgeGroupAsync(PsAgeGroup ageGroup)
@@ -733,8 +742,8 @@ namespace GRA.Domain.Service
             }
 
             if (!HasPermission(Permission.ManagePerformers)
-                || !HasPermission(Permission.SchedulePerformers)
-                || !HasPermission(Permission.ViewPerformerDetails))
+                && !HasPermission(Permission.SchedulePerformers)
+                && !HasPermission(Permission.ViewPerformerDetails))
             {
                 var performer = await _psPerformerRepository.GetByIdAsync(program.PerformerId);
                 if (performer.UserId != authId)
@@ -917,7 +926,7 @@ namespace GRA.Domain.Service
             return await _psBranchSelectionRepository.GetByKitIdAsync(kitId);
         }
 
-        public async Task<PsKit> GetKitByIdAsync(int kitId, bool includeAgeGroups = false, 
+        public async Task<PsKit> GetKitByIdAsync(int kitId, bool includeAgeGroups = false,
             bool includeImages = false)
         {
             var kit = await _psKitRepository.GetByIdAsync(kitId);
@@ -1057,6 +1066,8 @@ namespace GRA.Domain.Service
         public async Task<PsBranchSelection> AddBranchProgramSelectionAsync(
             PsBranchSelection branchSelection)
         {
+            var authId = GetClaimId(ClaimType.UserId);
+
             if (branchSelection.ProgramId.HasValue == false)
             {
                 throw new GraException("No program selected.");
@@ -1079,7 +1090,7 @@ namespace GRA.Domain.Service
                 throw new GraException("The performer does not performer at that branch.");
             }
 
-            var settings = await _psSettingsRepository.GetByIdAsync(GetCurrentSiteId());
+            var settings = await _psSettingsRepository.GetBySiteIdAsync(GetCurrentSiteId());
             var branchSelections = await _psBranchSelectionRepository
                 .GetByBranchIdAsync(branchSelection.BranchId);
 
@@ -1097,11 +1108,12 @@ namespace GRA.Domain.Service
             branchSelection.BackToBackProgram = await _psAgeGroupRepository
                 .BranchHasBackToBackAsync(branchSelection.AgeGroupId, branchSelection.BranchId);
 
-            await ValidateScheduleTimeAsync(program.Id, branchSelection.RequestedStartTime, 
+            await ValidateScheduleTimeAsync(program.Id, branchSelection.RequestedStartTime,
                 branchSelection.BackToBackProgram);
 
             branchSelection.KitId = null;
             branchSelection.SelectedAt = DateTime.Now;
+            branchSelection.UserId = authId;
             branchSelection.ScheduleStartTime = branchSelection.RequestedStartTime
                 .AddMinutes(-program.SetupTimeMinutes);
             branchSelection.ScheduleDuration = program.SetupTimeMinutes
@@ -1112,7 +1124,7 @@ namespace GRA.Domain.Service
                     + program.BackToBackMinutes;
             }
 
-            return await _psBranchSelectionRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), 
+            return await _psBranchSelectionRepository.AddSaveAsync(authId,
                 branchSelection);
         }
 
@@ -1133,7 +1145,8 @@ namespace GRA.Domain.Service
 
             await ValidateScheduleTimeAsync(currentBranchSelection.ProgramId.Value,
                 branchSelection.RequestedStartTime,
-                currentBranchSelection.BackToBackProgram);
+                currentBranchSelection.BackToBackProgram,
+                currentBranchSelection.Id);
 
             var program = await _psProgramRepository.GetByIdAsync(
                 currentBranchSelection.ProgramId.Value);
@@ -1147,7 +1160,7 @@ namespace GRA.Domain.Service
         }
 
         public async Task<string> ValidateScheduleTimeAsync(int programId, DateTime programStart,
-            bool backToBack)
+            bool backToBack, int? currentSelectionId = null)
         {
             var blackoutDate = await _psBlackoutDateRepository.GetByDateAsync(programStart);
             if (blackoutDate != null)
@@ -1189,6 +1202,11 @@ namespace GRA.Domain.Service
             var bookedTimes = await _psBranchSelectionRepository.GetByPerformerIdAsync(
                 program.PerformerId, programStart);
 
+            if (currentSelectionId.HasValue)
+            {
+                bookedTimes = bookedTimes.Where(_ => _.Id != currentSelectionId.Value).ToList();
+            }
+
             if (bookedTimes.Any(_ => (_.ScheduleStartTime.TimeOfDay <= setupStartTime
                     && _.ScheduleStartTime.AddMinutes(_.ScheduleDuration).TimeOfDay >= setupStartTime)
                 || (_.ScheduleStartTime.TimeOfDay <= breakdownEndTime
@@ -1213,6 +1231,8 @@ namespace GRA.Domain.Service
         public async Task<PsBranchSelection> AddBranchKitSelectionAsync(
             PsBranchSelection branchSelection)
         {
+            var authId = GetClaimId(ClaimType.UserId);
+
             if (branchSelection.KitId.HasValue == false)
             {
                 throw new GraException("No kit selected.");
@@ -1227,7 +1247,7 @@ namespace GRA.Domain.Service
                 throw new GraException("Invalid age group for kit.");
             }
 
-            var settings = await _psSettingsRepository.GetByIdAsync(GetCurrentSiteId());
+            var settings = await _psSettingsRepository.GetBySiteIdAsync(GetCurrentSiteId());
             var branchSelections = await _psBranchSelectionRepository
                 .GetByBranchIdAsync(branchSelection.BranchId);
 
@@ -1248,8 +1268,9 @@ namespace GRA.Domain.Service
             branchSelection.SelectedAt = DateTime.Now;
             branchSelection.ScheduleStartTime = default(DateTime);
             branchSelection.ScheduleDuration = 0;
+            branchSelection.UserId = authId;
 
-            return await _psBranchSelectionRepository.AddSaveAsync(GetClaimId(ClaimType.UserId),
+            return await _psBranchSelectionRepository.AddSaveAsync(authId,
                 branchSelection);
         }
 
@@ -1326,7 +1347,9 @@ namespace GRA.Domain.Service
             }
 
             var ageGroupExists = await _psBranchSelectionRepository
-                .BranchAgeGroupAlreadySelectedAsync(branchSelection.AgeGroupId, branchSelection.Id);
+                .BranchAgeGroupAlreadySelectedAsync(branchSelection.AgeGroupId,
+                    currentBranchSelection.BranchId,
+                    currentBranchSelection.Id);
             if (ageGroupExists)
             {
                 throw new GraException("Branch already has a selection for that age group.");

@@ -1,5 +1,9 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerScheduling.SelectProgramViewModel
 
+@section styles {
+    <link rel="stylesheet" href="~/css/performerregistration.min.css" asp-append-version="true" />
+}
+
 <div class="row">
     <div class="col-xs-12">
         <h1>
@@ -197,7 +201,7 @@
 
             $("#checkAlert").addClass("hidden");
             $("#scheduleProgram").addClass("hidden");
-            $.get(dayScheduleUrl, { programId: "@Model.BranchSelection.Program.PerformerId", date: selectedDate }, function (response) {
+            $.get(dayScheduleUrl, { performerId: "@Model.BranchSelection.Program.PerformerId", date: selectedDate }, function (response) {
                 $("#daySchedule").html(response);
                 $("#startTime").val("").removeAttr("disabled");
                 $("#checkTime").attr("disabled", "disabled");

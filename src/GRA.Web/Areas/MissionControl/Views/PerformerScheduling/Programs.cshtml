@@ -1,18 +1,35 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerScheduling.ProgramListViewModel
 
+@section styles {
+    <link rel="stylesheet" href="~/css/performerregistration.min.css" asp-append-version="true" />
+}
+
 <div class="row">
     <div class="col-xs-12">
-        <h1>Programs</h1>
         <ul class="nav nav-pills" style="padding: 10px 0;">
-            <li class="@(Model.AgeGroupId == null ? "active" : "")"><a asp-action="Programs">All</a></li>
+            <li ActiveBy routeKey="Action" value="Performers"><a asp-action="Performers">Performers</a></li>
+            <li ActiveBy routeKey="Action" value="Programs"><a asp-action="Programs">Programs</a></li>
+            <li ActiveBy routeKey="Action" value="Kits"><a asp-action="Kits">Kits</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="row row-spacing">
+    <div class="col-xs-12">
+        <span style="font-size:large;">Age Groups:</span>
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+            @(Model.AgeGroups.Where(_ => _.Id == Model.AgeGroupId).FirstOrDefault()?.Name ?? "Show All") <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            <li><a asp-route-ageGroup="">Show All</a></li>
             @foreach (var ageGroup in Model.AgeGroups)
             {
-                <li class="@(Model.AgeGroupId == ageGroup.Id ? "active" : "")"><a asp-action="Programs" asp-route-ageGroup="@ageGroup.Id">@ageGroup.Name</a></li>
+                <li><a asp-route-ageGroup="@ageGroup.Id">@ageGroup.Name</a></li>
             }
         </ul>
-        <hr />
     </div>
-
+</div>
+<div class="row">
     <div class="col-xs-12">
         @if (Model.Programs.Count == 0)
         {

@@ -1,5 +1,9 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerScheduling.ProgramViewModel
 
+@section styles {
+    <link rel="stylesheet" href="~/css/performerregistration.min.css" asp-append-version="true" />
+}
+
 <div class="row">
     <div class="modal fade" id="branchModal" tabindex="-1" role="dialog" aria-labelledby="branchModalLabel">
         <div class="modal-dialog" role="document">
@@ -192,7 +196,7 @@
             else
             {
                 <div class="row">
-                    <form asp-action="ScheduleProgram" class="form-horizontal col-xs-12" method="post" role="form" enctype="multipart/form-data">
+                    <form asp-action="SelectProgram" class="form-horizontal col-xs-12" method="post" role="form">
                         <input asp-for="BranchSelection.ProgramId" value="@Model.Program.Id" type="hidden" />
                         <div class="form-group">
                             <label asp-for="BranchSelection.BranchId" class="col-sm-3 control-label required-field"></label>

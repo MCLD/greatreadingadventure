@@ -1,10 +1,22 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerScheduling.KitListViewModel
 
+@section styles {
+    <link rel="stylesheet" href="~/css/performerregistration.min.css" asp-append-version="true" />
+}
+
 <div class="row">
     <div class="col-xs-12">
-        <h1>Kits</h1>
+        <ul class="nav nav-pills" style="padding: 10px 0;">
+            <li ActiveBy routeKey="Action" value="Performers"><a asp-action="Performers">Performers</a></li>
+            <li ActiveBy routeKey="Action" value="Programs"><a asp-action="Programs">Programs</a></li>
+            <li ActiveBy routeKey="Action" value="Kits"><a asp-action="Kits">Kits</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
         <p style="font-size:large;text-align:center;">In lieu of a program, you are welcome to select a kit for the same age group.</p>
-        <hr />
     </div>
 
     <div class="col-sm-6 col-sm-offset-3">

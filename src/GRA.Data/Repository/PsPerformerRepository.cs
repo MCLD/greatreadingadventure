@@ -41,7 +41,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.UserId == userId)
                 .ProjectTo<PsPerformer>()
-                .SingleOrDefaultAsync();     
+                .SingleOrDefaultAsync();
         }
 
         public async Task<DataWithCount<ICollection<PsPerformer>>> PageAsync(
@@ -130,10 +130,14 @@ namespace GRA.Data.Repository
 
         public async Task<bool> GetPerformerSystemAvailability(int performerId, int systemId)
         {
-            return await _context.PsPerformerBranches
+            return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.PsPerformerId == performerId 
-                    && (_.PsPerformer.AllBranches || _.Branch.SystemId == systemId))
+                .GroupJoin(_context.PsPerformerBranches,
+                    performer => performer.Id,
+                    branches => branches.PsPerformerId,
+                    (performer, branches) => new { performer, branches})
+                .Where(_ => _.performer.Id == performerId
+                    && (_.performer.AllBranches || _.branches.Select(b => b.Branch.SystemId).Contains(systemId)))
                 .AnyAsync();
         }
 

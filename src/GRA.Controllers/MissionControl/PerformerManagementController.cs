@@ -201,16 +201,18 @@ namespace GRA.Controllers.MissionControl
             {
                 return RedirectToAction(nameof(Schedule));
             }
-
-            try
+            else if (schedulingStage == PsSchedulingStage.RegistrationClosed)
             {
-                await _performerSchedulingService.SetPerformerApprovedAsync(model.Performer.Id, model.Approve);
-                ShowAlertSuccess($"Performer {(model.Approve ? "Approved" : "Unapproved")}!");
-            }
-            catch (GraException gex)
-            {
-                ShowAlertDanger($"Unable to {(model.Approve ? "Approve" : "Unapprove")} performer: ", gex);
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    await _performerSchedulingService.SetPerformerApprovedAsync(model.Performer.Id, model.Approve);
+                    ShowAlertSuccess($"Performer {(model.Approve ? "Approved" : "Unapproved")}!");
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger($"Unable to {(model.Approve ? "Approve" : "Unapprove")} performer: ", gex);
+                    return RedirectToAction(nameof(Index));
+                }
             }
 
             return RedirectToAction(nameof(Performer), new { model.Performer.Id });
@@ -895,7 +897,8 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(Schedule));
             }
 
-            var performer = await _performerSchedulingService.GetPerformerByIdAsync(id);
+            var performer = await _performerSchedulingService.GetPerformerByIdAsync(id, 
+                includeSchedule: true);
 
             var branchSelections = await _performerSchedulingService
                 .GetPerformerBranchSelectionsAsync(performer.Id);
@@ -913,7 +916,8 @@ namespace GRA.Controllers.MissionControl
                 DefaultPerformerScheduleEndTime = DefaultPerformerScheduleEndTime
             };
 
-            var performerIndexList = await _performerSchedulingService.GetPerformerIndexListAsync();
+            var performerIndexList = await _performerSchedulingService.GetPerformerIndexListAsync(
+                true);
             var index = performerIndexList.IndexOf(id);
             viewModel.ReturnPage = index / PerformersPerPage + 1;
             if (index != 0)
@@ -968,10 +972,10 @@ namespace GRA.Controllers.MissionControl
             var startTime = performerDaySchedule?.StartTime ?? DefaultPerformerScheduleStartTime;
             var endTime = performerDaySchedule?.EndTime ?? DefaultPerformerScheduleEndTime;
 
-            var earliestSelection = branchSelections
+            var earliestSelection = dayScheduleViewModel.BranchSelections
                 .OrderBy(_ => _.ScheduleStartTime)
                 .FirstOrDefault();
-            var latestSelection = branchSelections
+            var latestSelection = dayScheduleViewModel.BranchSelections
                 .OrderByDescending(_ => _.ScheduleStartTime)
                 .FirstOrDefault();
 
@@ -1029,13 +1033,13 @@ namespace GRA.Controllers.MissionControl
             return PartialView("_DaySchedulePartial", viewModel);
         }
 
-        public async Task<JsonResult> CheckProgramTimeAvailability(int programId, DateTime date,
-            bool backToBack)
+        public async Task<JsonResult> CheckProgramTimeAvailability(int selectionId, 
+            int programId, DateTime date,bool backToBack)
         {
             try
             {
                 var result = await _performerSchedulingService
-                    .ValidateScheduleTimeAsync(programId, date, backToBack);
+                    .ValidateScheduleTimeAsync(programId, date, backToBack, selectionId);
 
                 if (!string.IsNullOrWhiteSpace(result))
                 {
@@ -1591,7 +1595,7 @@ namespace GRA.Controllers.MissionControl
             return Json(new
             {
                 success = true,
-                data = new SelectList(kit.AgeGroups.Select(_ => _.Id), "Id", "Name")
+                data = new SelectList(kit.AgeGroups, "Id", "Name")
             });
         }
 

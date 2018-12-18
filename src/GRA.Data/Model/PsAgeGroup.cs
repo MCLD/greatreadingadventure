@@ -7,6 +7,9 @@ namespace GRA.Data.Model
         [MaxLength(255)]
         [Required]
         public string Name { get; set; }
+        [MaxLength(32)]
+        [Required]
+        public string IconColor { get; set; }
         public bool AllowBackToBack { get; set; }
     }
 }

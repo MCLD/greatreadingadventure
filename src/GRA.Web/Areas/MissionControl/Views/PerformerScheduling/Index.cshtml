@@ -4,6 +4,9 @@
     var hasBackToBacks = false;
 }
 
+@section styles {
+    <link rel="stylesheet" href="~/css/performerregistration.min.css" asp-append-version="true" />
+}
 
 <div class="row" style="margin-top: 1rem;">
     <div class="col-sm-8 col-sm-offset-2">
@@ -25,11 +28,11 @@
                         The available programs and kits are available for preview until selection
                         begins on @Model.Settings.SchedulingOpen.Value.ToLongDateString() at @Model.Settings.SchedulingOpen.Value.ToLongTimeString().
                     </p>
-                    <div class="col-sm-6 col-sm-offset-3">
-                        <a asp-action="Performers" class="btn btn-lg btn-default btn-block">Preview Programs</a>
+                    <div class="col-sm-6">
+                        <a asp-action="Performers" class="btn btn-lg btn-default btn-block">Preview Performers</a>
                     </div>
                     <div class="col-sm-6">
-                        <a asp-action="Kits" class="btn btn-lg btn-info btn-block">Preview Kits</a>
+                        <a asp-action="Kits" class="btn btn-lg btn-default btn-block">Preview Kits</a>
                     </div>
                 }
                 else if (Model.SchedulingStage == GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
@@ -37,14 +40,14 @@
                     <p>
                         Scheduling has begun! You have until @Model.Settings.SchedulingClosed.Value.ToLongDateString() at @Model.Settings.SchedulingClosed.Value.ToLongTimeString() to complete your selection.
                     </p>
-                    <div class="col-sm-6 col-sm-offset-3">
-                        <a asp-action="Performers" class="btn btn-lg btn-default btn-block">Schedule Programs</a>
+                    <div class="col-sm-6">
+                        <a asp-action="Performers" class="btn btn-lg btn-info btn-block">Schedule Programs</a>
                     </div>
                     <div class="col-sm-6">
                         <a asp-action="Kits" class="btn btn-lg btn-info btn-block">Select Kits</a>
                     </div>
                 }
-                else if (Model.SchedulingStage == GRA.Domain.Model.PsSchedulingStage.RegistrationClosed)
+                else if (Model.SchedulingStage == GRA.Domain.Model.PsSchedulingStage.SchedulingClosed)
                 {
                     <p>
                         Scheduling has closed, the finalized schedule will be posted on @Model.Settings.SchedulePosted.Value.ToLongDateString() at @Model.Settings.SchedulePosted.Value.ToLongTimeString(). If you have any questions please contact <a href="@($"mailto:{Model.Settings.ContactEmail}")">@Model.Settings.ContactEmail</a>
@@ -105,6 +108,7 @@
                                         count++;
                                         hasBackToBacks = hasBackToBacks || selection.BackToBackProgram;
                                         <span class="fa-stack cursor-pointer"
+                                              style="color: @selection.AgeGroup.IconColor"
                                               title="@selection.Summary"
                                               data-toggle="modal"
                                               data-target="#selectionDetailsModal"
@@ -153,7 +157,7 @@
                     <p style="font-style: italic;">
                         @foreach (var ageGroup in Model.AgeGroups)
                         {
-                            <span class="age-group-id-@ageGroup.Id"
+                            <span style="color: @ageGroup.IconColor"
                                   style="white-space: nowrap; display: inline-block; margin-right: 1rem;">
                                 <span class="fa fa-square"></span>
                                 @ageGroup.Name
