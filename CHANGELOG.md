@@ -4,8 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## Unreleased
+### Added
+- Ping analytics upon account login
+- Improve analytics for sign-ups to include if it's a first-time participant (fix #330)
+
 ### Changed
 - Modify docker-build.bash to not build release images unless the branch starts with 'release/'
+- Move from Google analytics.js to tag manager for analytics
 
 ### Fixed
 - Fix instance name enrichment for logging
