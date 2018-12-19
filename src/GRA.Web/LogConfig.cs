@@ -20,7 +20,7 @@ namespace GRA.Web
         private const string InstanceEnrichment = "Instance";
         private const string RemoteAddressEnrichment = "RemoteAddress";
 
-        public LoggerConfiguration Build(IConfiguration config, string instance, string[] args)
+        public LoggerConfiguration Build(IConfiguration config)
         {
             var applicationName = Assembly.GetExecutingAssembly().GetName().Name;
             var version = Assembly.GetExecutingAssembly().GetName().Version;
@@ -31,6 +31,13 @@ namespace GRA.Web
                 .Enrich.WithProperty(VersionEnrichment, version)
                 .Enrich.FromLogContext()
                 .WriteTo.Console();
+
+            string instance = config[ConfigurationKey.InstanceName];
+
+            if(!string.IsNullOrEmpty(instance))
+            {
+                loggerConfig.Enrich.WithProperty(InstanceEnrichment, instance);
+            }
 
             string rollingLogLocation = config[ConfigurationKey.RollingLogPath];
             if (!string.IsNullOrEmpty(rollingLogLocation))

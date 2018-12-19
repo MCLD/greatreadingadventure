@@ -281,11 +281,9 @@
             @if (Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null && Model.UserJoined)
             {
                 <text>
-                    ga('send', {
-                        hitType: 'event',
-                        eventCategory: '@Model.SitePath',
-                        eventAction: 'join',
-                        eventLabel: '@Model.ProgramName'
+                    gtag('event', 'sign_up', {
+                        'program_name': '@Model.ProgramName',
+                        'first_time_participant': '@Model.FirstTimeParticipant'
                     });
                 </text>
             }

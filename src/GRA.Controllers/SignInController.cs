@@ -82,6 +82,9 @@ namespace GRA.Controllers
                             HttpContext.Session.SetInt32(SessionKey.PendingQuestionnaire,
                                 questionnaireId.Value);
                         }
+
+                        TempData.Add(TempDataKey.UserSignedIn, true);
+
                         if (!string.IsNullOrEmpty(model.ReturnUrl))
                         {
                             return Redirect(model.ReturnUrl);

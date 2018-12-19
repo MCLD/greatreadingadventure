@@ -24,12 +24,7 @@ namespace GRA.Web
                 {
                     var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
 
-                    if (!string.IsNullOrEmpty(config[ConfigurationKey.InstanceName]))
-                    {
-                        instance = config[ConfigurationKey.InstanceName];
-                    }
-
-                    Log.Logger = new LogConfig().Build(config, instance, args).CreateLogger();
+                    Log.Logger = new LogConfig().Build(config).CreateLogger();
                 }
             }
 

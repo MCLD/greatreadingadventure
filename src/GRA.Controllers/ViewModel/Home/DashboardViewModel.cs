@@ -34,8 +34,8 @@ namespace GRA.Controllers.ViewModel.Home
         public IEnumerable<GRA.Domain.Model.Badge> Badges { get; set; }
         public ICollection<GRA.Domain.Model.AvatarElement> AvatarElements { get; set; }
 
-        public string SitePath { get; set; }
         public string ProgramName { get; set; }
         public bool UserJoined { get; set; }
+        public bool FirstTimeParticipant { get; set; }
     }
 }

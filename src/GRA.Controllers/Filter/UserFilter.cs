@@ -6,6 +6,7 @@ using GRA.Domain.Service.Abstract;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
 
 namespace GRA.Controllers.Filter
@@ -13,16 +14,20 @@ namespace GRA.Controllers.Filter
     public class UserFilter : Attribute, IAsyncActionFilter
     {
         private readonly ILogger _logger;
+        private readonly ITempDataDictionaryFactory _tempDataFactory;
         private readonly MailService _mailService;
         private readonly UserService _userService;
         private readonly IUserContextProvider _userContextProvider;
 
         public UserFilter(ILogger<UserFilter> logger,
+            ITempDataDictionaryFactory tempDataFactory,
             MailService mailService,
             UserService userService,
             IUserContextProvider userContextProvider)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _tempDataFactory = tempDataFactory 
+                ?? throw new ArgumentNullException(nameof(tempDataFactory));
             _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _userContextProvider = userContextProvider
@@ -65,6 +70,14 @@ namespace GRA.Controllers.Filter
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Error getting user unread mail count: {Message}", ex.Message);
+                }
+
+                var tempData = _tempDataFactory.GetTempData(httpContext);
+
+                if (tempData.ContainsKey(TempDataKey.UserSignedIn))
+                {
+                    tempData.Remove(TempDataKey.UserSignedIn);
+                    httpContext.Items[ItemKey.SignedIn] = true;
                 }
             }
             await next();
