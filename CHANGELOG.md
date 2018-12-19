@@ -15,9 +15,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Fixed
 - Fix instance name enrichment for logging
 
-### Fixed
-- Fix instance name enrichment for logging
-
 ## [4.1.1] - 2018-12-13
 ### Added
 - Add site.js to shared folder for customizing site scripting
