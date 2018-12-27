@@ -31,6 +31,8 @@ namespace GRA.Data.Profile
             CreateMap<Model.Book, Domain.Model.Book>().ReverseMap();
             CreateMap<Model.Branch, Domain.Model.Branch>().ReverseMap();
             CreateMap<Model.Broadcast, Domain.Model.Broadcast>().ReverseMap();
+            CreateMap<Model.Carousel, Domain.Model.Carousel>().ReverseMap();
+            CreateMap<Model.CarouselItem, Domain.Model.CarouselItem>().ReverseMap();
             CreateMap<Model.Category, Domain.Model.Category>().ReverseMap();
             CreateMap<Model.Challenge, Domain.Model.Challenge>()
                 .ForMember(dest => dest.Categories, opt => opt.MapFrom(
@@ -76,7 +78,7 @@ namespace GRA.Data.Profile
             CreateMap<Model.Questionnaire, Domain.Model.Questionnaire>()
                 .ForMember(dest => dest.Questions,
                     opt => opt.MapFrom(src => src.Questions
-                        .Where(_ => _.IsDeleted == false)
+                        .Where(_ => !_.IsDeleted)
                         .OrderBy(_ => _.SortOrder)))
                 .ReverseMap();
             CreateMap<Model.RecoveryToken, Domain.Model.RecoveryToken>().ReverseMap();

@@ -1,0 +1,149 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Carousels.DetailViewModel
+
+@if (Model.PageAction == GRA.Controllers.ViewModel.PageAction.Edit
+&& Model.Carousel.Items?.Any() != true)
+{
+    <div class="row">
+        <div class="col-sm-6 col-sm-offset-3">
+            <div class="alert alert-danger" style="margin: 1rem 0;">
+                <span class="fas fa-exclamation-triangle"></span>
+                This carousel has no items so it will not be displayed on the dashboard.
+                <a asp-action="AddItem" asp-route-id="@Model.Carousel.Id">Add an item now.</a>
+            </div>
+        </div>
+    </div>
+}
+
+<form asp-controller="Carousels"
+      asp-action="@Model.PageAction"
+      method="post"
+      role="form"
+      style="margin: 1rem 0;">
+    <input asp-for="PageAction" type="hidden" />
+    @if (Model.PageAction == GRA.Controllers.ViewModel.PageAction.Edit)
+    {
+        <input asp-for="Carousel.Id" type="hidden" />
+    }
+
+    <div class="form-group">
+        <label asp-for="Carousel.Name" class="control-label"></label>
+        <description gra-description-for="Carousel.Name"></description>
+        <input asp-for="Carousel.Name" type="text" class="form-control" />
+        <span asp-validation-for="Carousel.Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Carousel.StartTime" class="control-label"></label>
+        <description gra-description-for="Carousel.StartTime"></description>
+        <div class="input-group date" id="pickerStart">
+            <span class="input-group-addon">
+                <span class="fa fa-calendar"></span>
+            </span>
+            <input asp-for="Carousel.StartTime" type="text" class="form-control" />
+        </div>
+        <span asp-validation-for="Carousel.StartTime" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Carousel.Heading" class="control-label"></label>
+        <description gra-description-for="Carousel.Heading"></description>
+        <input asp-for="Carousel.Heading" type="text" class="form-control" />
+        <span asp-validation-for="Carousel.Heading" class="text-danger"></span>
+    </div>
+
+
+    <div class="form-group">
+        <a asp-action="Index" class="btn btn-default">Return to List</a>
+        <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-primary btn-spinner">
+            <span class="buttonText">Save</span>
+            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+        </button>
+    </div>
+</form>
+
+@if (Model.PageAction == GRA.Controllers.ViewModel.PageAction.Edit)
+{
+    @if (Model.Carousel.Items?.Any() != true)
+    {
+        <a asp-action="AddItem"
+           asp-route-id="@Model.Carousel.Id"
+           class="btn btn-success btn-lg"
+           style="margin: 1rem 0;">
+            <span class="fas fa-lg fa-plus-circle"></span>
+            Add item
+        </a>
+    }
+    else
+    {
+        @if (string.IsNullOrEmpty(Model.Carousel.Heading))
+        {
+            <a asp-action="AddItem"
+               asp-route-id="@Model.Carousel.Id"
+               class="btn btn-success">
+                <span class="fas fa-plus-circle"></span>
+                Add item
+            </a>
+        }
+
+        <div class="row gra-js-required" style="margin-top: 4rem;">
+            <div class="col-xs-12">
+                <div class="panel panel-default">
+                    @if (!string.IsNullOrEmpty(Model.Carousel.Heading))
+                    {
+                        <div class="panel-heading">
+                            @Model.Carousel.Heading
+
+                            <a asp-action="AddItem"
+                               asp-route-id="@Model.Carousel.Id"
+                               class="btn btn-xs btn-success pull-right">
+                                <span class="fas fa-plus-circle"></span>
+                                Add item
+                            </a>
+                        </div>
+                    }
+                    <div class="panel-body">
+                        <div class="gra-carousel text-center">
+                            @foreach (var item in Model.Carousel.Items)
+                            {
+                                <div>
+                                    <a asp-action="EditItem"
+                                       asp-route-id="@item.Id"
+                                       class="gra-carousel-link">
+                                        <img src="@item.ImageUrl" />
+                                        <p>@item.Title</p>
+                                    </a><br />
+                                    <form asp-controller="Carousels"
+                                          asp-action="DeleteItem"
+                                          asp-route-id="@item.Id"
+                                          method="post"
+                                          role="form"
+                                          class="form-inline">
+                                        <button type="submit" class="btn btn-xs btn-danger"><span class="far fa-times-circle"></span> Delete</button>
+                                    </form>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+}
+
+@section scripts {
+    <script>
+        $("#pickerStart").datetimepicker({
+            allowInputToggle: true,
+            sideBySide: true,
+            icons: {
+                time: "fa fa-clock-o",
+                date: "fa fa-calendar",
+                up: "fa fa-arrow-up",
+                down: "fa fa-arrow-down",
+                previous: "fa fa-arrow-left",
+                next: "fa fa-arrow-right"
+            }
+        });
+    </script>
+    <link rel="stylesheet" type="text/css" href="/lib/slick-carousel/slick/slick.css" />
+    <script type="text/javascript" src="/lib/slick-carousel/slick/slick.min.js"></script>
+}

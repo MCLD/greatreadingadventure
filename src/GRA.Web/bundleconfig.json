@@ -3,11 +3,11 @@
     "outputFileName": "wwwroot/css/main.min.css",
     "inputFiles": [
       "wwwroot/lib/bootstrap/dist/css/bootstrap.css",
-      "wwwroot/css/gra.css",
       "wwwroot/lib/font-awesome/web-fonts-with-css/css/fontawesome-all.css",
       "wwwroot/lib/font-awesome/web-fonts-with-css/css/v4-shims.css",
       "wwwroot/lib/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css",
-      "wwwroot/lib/bootstrap-multiselect/dist/css/bootstrap-multiselect.css"
+      "wwwroot/lib/bootstrap-multiselect/dist/css/bootstrap-multiselect.css",
+      "wwwroot/css/gra.css"
     ],
     "minify": {
       "enabled": true,

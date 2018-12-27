@@ -19,6 +19,7 @@ namespace GRA.Controllers.MissionControl
         private readonly SiteService _siteService;
 
         private readonly ICodeSanitizer _codeSanitizer;
+
         public HomeController(ILogger<HomeController> logger,
             AuthenticationService authenticationService,
             ReportService reportService,
@@ -99,6 +100,7 @@ namespace GRA.Controllers.MissionControl
                 SiteLogoUrl = siteLogoUrl
             });
         }
+
         [HttpPost]
         public async Task<IActionResult> AuthorizationCode(AuthorizationCodeViewModel viewmodel)
         {

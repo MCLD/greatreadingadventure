@@ -278,15 +278,15 @@ namespace GRA.Web
             }
 
             // utilities
+            services.AddScoped<ICodeGenerator, CodeGenerator>();
+            services.AddScoped<ICodeSanitizer, CodeSanitizer>();
             services.AddScoped<IDateTimeProvider, CurrentDateTimeProvider>();
-            services.AddScoped<IUserContextProvider, Controllers.UserContextProvider>();
-            services.AddScoped<Security.Abstract.IPasswordHasher, Security.PasswordHasher>();
+            services.AddScoped<IEntitySerializer, EntitySerializer>();
             services.AddScoped<IPasswordValidator, PasswordValidator>();
             services.AddScoped<IPathResolver, PathResolver>();
             services.AddScoped<ITokenGenerator, TokenGenerator>();
-            services.AddScoped<IEntitySerializer, EntitySerializer>();
-            services.AddScoped<ICodeGenerator, CodeGenerator>();
-            services.AddScoped<ICodeSanitizer, CodeSanitizer>();
+            services.AddScoped<IUserContextProvider, Controllers.UserContextProvider>();
+            services.AddScoped<Security.Abstract.IPasswordHasher, Security.PasswordHasher>();
             services.AddScoped<WebSocketHandler>();
 
             // filters
@@ -301,10 +301,12 @@ namespace GRA.Web
             services.AddScoped<AuthorizationCodeService>();
             services.AddScoped<AvatarService>();
             services.AddScoped<BadgeService>();
+            services.AddScoped<CarouselService>();
             services.AddScoped<CategoryService>();
             services.AddScoped<ChallengeService>();
             services.AddScoped<DailyLiteracyTipService>();
             services.AddScoped<DashboardContentService>();
+            services.AddScoped<Domain.Report.ServiceFacade.Report>();
             services.AddScoped<DrawingService>();
             services.AddScoped<EmailReminderService>();
             services.AddScoped<EmailService>();
@@ -329,7 +331,6 @@ namespace GRA.Web
             services.AddScoped<UserService>();
             services.AddScoped<VendorCodeService>();
 
-            services.AddScoped<Domain.Report.ServiceFacade.Report>();
             services.AddScoped<Domain.Report.ActivityByProgramReport>();
             services.AddScoped<Domain.Report.BadgeReport>();
             services.AddScoped<Domain.Report.BadgeTopScoresReport>();
@@ -337,12 +338,12 @@ namespace GRA.Web
             services.AddScoped<Domain.Report.CurrentStatusByProgramReport>();
             services.AddScoped<Domain.Report.CurrentStatusReport>();
             services.AddScoped<Domain.Report.GroupVendorCodeReport>();
-            services.AddScoped<Domain.Report.RegistrationsAchieversBySchoolReport>();
-            services.AddScoped<Domain.Report.RegistrationsAchieversReport>();
+            services.AddScoped<Domain.Report.ParticipantCountMinutesByProgram>();
             services.AddScoped<Domain.Report.ParticipantPrizeReport>();
             services.AddScoped<Domain.Report.ParticipantProgressReport>();
-            services.AddScoped<Domain.Report.ParticipantCountMinutesByProgram>();
             services.AddScoped<Domain.Report.PrizeRedemptionReport>();
+            services.AddScoped<Domain.Report.RegistrationsAchieversBySchoolReport>();
+            services.AddScoped<Domain.Report.RegistrationsAchieversReport>();
             services.AddScoped<Domain.Report.TopScoresReport>();
             services.AddScoped<Domain.Report.VendorCodeDonationsReport>();
             services.AddScoped<Domain.Report.VendorCodeReport>();
@@ -379,9 +380,11 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IBookRepository, Data.Repository.BookRepository>();
             services.AddScoped<Domain.Repository.IBranchRepository, Data.Repository.BranchRepository>();
             services.AddScoped<Domain.Repository.IBroadcastRepository, Data.Repository.BroadcastRepository>();
+            services.AddScoped<Domain.Repository.ICarouselItemRepository, Data.Repository.CarouselItemRepository>();
+            services.AddScoped<Domain.Repository.ICarouselRepository, Data.Repository.CarouselRepository>();
             services.AddScoped<Domain.Repository.ICategoryRepository, Data.Repository.CategoryRepository>();
-            services.AddScoped<Domain.Repository.IChallengeRepository, Data.Repository.ChallengeRepository>();
             services.AddScoped<Domain.Repository.IChallengeGroupRepository, Data.Repository.ChallengeGroupRepository>();
+            services.AddScoped<Domain.Repository.IChallengeRepository, Data.Repository.ChallengeRepository>();
             services.AddScoped<Domain.Repository.IChallengeTaskRepository, Data.Repository.ChallengeTaskRepository>();
             services.AddScoped<Domain.Repository.IDailyLiteracyTipImageRepository, Data.Repository.DailyLiteracyTipImageRepository>();
             services.AddScoped<Domain.Repository.IDailyLiteracyTipRepository, Data.Repository.DailyLiteracyTipRepository>();
@@ -399,12 +402,12 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IPointTranslationRepository, Data.Repository.PointTranslationRepository>();
             services.AddScoped<Domain.Repository.IPrizeWinnerRepository, Data.Repository.PrizeWinnerRepository>();
             services.AddScoped<Domain.Repository.IProgramRepository, Data.Repository.ProgramRepository>();
-            services.AddScoped<Domain.Repository.IQuestionRepository, Data.Repository.QuestionRepository>();
             services.AddScoped<Domain.Repository.IQuestionnaireRepository, Data.Repository.QuestionnaireRepository>();
+            services.AddScoped<Domain.Repository.IQuestionRepository, Data.Repository.QuestionRepository>();
             services.AddScoped<Domain.Repository.IRecoveryTokenRepository, Data.Repository.RecoveryTokenRepository>();
-            services.AddScoped<Domain.Repository.IRequiredQuestionnaireRepository, Data.Repository.RequiredQuestionnaireRepository>();
             services.AddScoped<Domain.Repository.IReportCriterionRepository, Data.Repository.ReportCriterionRepository>();
             services.AddScoped<Domain.Repository.IReportRequestRepository, Data.Repository.ReportRequestRepository>();
+            services.AddScoped<Domain.Repository.IRequiredQuestionnaireRepository, Data.Repository.RequiredQuestionnaireRepository>();
             services.AddScoped<Domain.Repository.IRoleRepository, Data.Repository.RoleRepository>();
             services.AddScoped<Domain.Repository.ISchoolDistrictRepository, Data.Repository.SchoolDistrictRepository>();
             services.AddScoped<Domain.Repository.ISchoolRepository, Data.Repository.SchoolRepository>();

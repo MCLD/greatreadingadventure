@@ -20,6 +20,13 @@
             width: 11rem;
         }
     </style>
+    <noscript>
+        <style>
+            .gra-js-required {
+                display: none;
+            }
+        </style>
+    </noscript>
     @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.SiteCss))
     {
         <link rel="stylesheet" href="@Url.Content(Context.Items[GRA.Controllers.ItemKey.SiteCss].ToString())" />
@@ -185,8 +192,8 @@
 
             gtag('config', '@Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics].ToString()', {
                 'custom_map': {
-                    'dimension1': 'program_name',
-                    'dimension2': 'first_time_participant'
+                    'dimension1': 'Program Name',
+                    'dimension2': 'First Time Participant'
                 }
             });
 

@@ -1,14 +1,14 @@
-﻿using GRA.Controllers.ViewModel.Home;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using GRA.Controllers.Attributes;
+using GRA.Controllers.ViewModel.Home;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using GRA.Controllers.Attributes;
-using System.IO;
 
 namespace GRA.Controllers
 {
@@ -24,16 +24,19 @@ namespace GRA.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ActivityService _activityService;
         private readonly AvatarService _avatarService;
+        private readonly CarouselService _carouselService;
         private readonly DailyLiteracyTipService _dailyLiteracyTipService;
         private readonly DashboardContentService _dashboardContentService;
         private readonly EmailReminderService _emailReminderService;
         private readonly PageService _pageService;
         private readonly SiteService _siteService;
         private readonly UserService _userService;
+
         public HomeController(ILogger<HomeController> logger,
             ServiceFacade.Controller context,
             ActivityService activityService,
             AvatarService avatarService,
+            CarouselService carouselService,
             DailyLiteracyTipService dailyLiteracyTipService,
             DashboardContentService dashboardContentService,
             EmailReminderService emailReminderService,
@@ -42,18 +45,22 @@ namespace GRA.Controllers
             UserService userService)
             : base(context)
         {
-            _logger = Require.IsNotNull(logger, nameof(logger));
-            _activityService = Require.IsNotNull(activityService, nameof(activityService));
-            _avatarService = Require.IsNotNull(avatarService, nameof(avatarService));
-            _dailyLiteracyTipService = Require.IsNotNull(dailyLiteracyTipService,
-                nameof(dailyLiteracyTipService));
-            _dashboardContentService = Require.IsNotNull(dashboardContentService,
-                nameof(dashboardContentService));
-            _emailReminderService = Require.IsNotNull(emailReminderService,
-                nameof(emailReminderService));
-            _pageService = Require.IsNotNull(pageService, nameof(pageService));
-            _siteService = Require.IsNotNull(siteService, nameof(siteService));
-            _userService = Require.IsNotNull(userService, nameof(userService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _activityService = activityService
+                ?? throw new ArgumentNullException(nameof(activityService));
+            _avatarService = avatarService
+                ?? throw new ArgumentNullException(nameof(avatarService));
+            _carouselService = carouselService
+                ?? throw new ArgumentNullException(nameof(carouselService));
+            _dailyLiteracyTipService = dailyLiteracyTipService
+                ?? throw new ArgumentNullException(nameof(dailyLiteracyTipService));
+            _dashboardContentService = dashboardContentService
+                ?? throw new ArgumentNullException(nameof(dashboardContentService));
+            _emailReminderService = emailReminderService
+                ?? throw new ArgumentNullException(nameof(emailReminderService));
+            _pageService = pageService ?? throw new ArgumentNullException(nameof(pageService));
+            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 
         public async Task<IActionResult> Index()
@@ -65,8 +72,21 @@ namespace GRA.Controllers
             }
             if (AuthUser.Identity.IsAuthenticated)
             {
+                User user = null;
                 // signed-in users can view the dashboard
-                var user = await _userService.GetDetails(GetActiveUserId());
+                try
+                {
+                    user = await _userService.GetDetails(GetActiveUserId());
+                }
+                catch (GraException gex)
+                {
+                    // this likely means the currently authenticated user isn't valid anymore
+                    _logger.LogError(gex,
+                        "Problem displaying index for user {GetActiveUserId}: {Message}",
+                        GetActiveUserId(),
+                        gex.Message);
+                    return RedirectToAction(nameof(SignOut));
+                }
 
                 var badges = await _userService.GetPaginatedBadges(user.Id, 0, BadgesToDisplay);
                 foreach (var badge in badges.Data)
@@ -75,7 +95,7 @@ namespace GRA.Controllers
                 }
 
                 var pointTranslation = await _activityService.GetUserPointTranslationAsync();
-                DashboardViewModel viewModel = new DashboardViewModel()
+                var viewModel = new DashboardViewModel
                 {
                     FirstName = user.FirstName,
                     CurrentPointTotal = user.PointsEarned,
@@ -135,6 +155,8 @@ namespace GRA.Controllers
                         .Convert(dashboardPage.Content);
                 }
 
+                viewModel.Carousel = await _carouselService.GetCurrentForDashboardAsync();
+
                 if (TempData.ContainsKey(ModelData))
                 {
                     var model = Newtonsoft.Json.JsonConvert
@@ -186,7 +208,7 @@ namespace GRA.Controllers
                         if (site != null)
                         {
                             viewModel.CollectEmail = await _siteLookupService
-                                .GetSiteSettingBoolAsync(site.Id, 
+                                .GetSiteSettingBoolAsync(site.Id,
                                     SiteSettingKey.Users.CollectPreregistrationEmails);
                             if (site.RegistrationOpens != null)
                             {
@@ -322,6 +344,32 @@ namespace GRA.Controllers
                 TempData[SecretCodeMessage] = gex.Message;
             }
             return RedirectToAction("Index");
+        }
+
+        [ProducesResponseType(200, Type = typeof(string))]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> GetCarouselDescription(int id)
+        {
+            string carouselItemDescription = null;
+            try
+            {
+                carouselItemDescription = await _carouselService.GetItemDescriptionAsync(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning("Request for carousel item {id} description failed: {message}",
+                    id,
+                    ex.Message);
+            }
+
+            if (string.IsNullOrEmpty(carouselItemDescription))
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(CommonMark.CommonMarkConverter.Convert(carouselItemDescription));
+            }
         }
     }
 }

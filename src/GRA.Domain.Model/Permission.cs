@@ -21,6 +21,7 @@ namespace GRA.Domain.Model
         LogActivityForAny,
         MailParticipants,
         ManageAvatars,
+        ManageCarousels,
         ManageCategories,
         ManageDailyLiteracyTips,
         ManageDashboardContent,

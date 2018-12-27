@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Added
 - Ping analytics upon account login
 - Improve analytics for sign-ups to include if it's a first-time participant (fix #330)
+- Ability to add carousel to dashboard
 
 ### Changed
 - Modify docker-build.bash to not build release images unless the branch starts with 'release/'
@@ -14,6 +15,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### Fixed
 - Fix instance name enrichment for logging
+- Error if account disappears while user is logged in
 
 ## [4.1.1] - 2018-12-13
 ### Added
