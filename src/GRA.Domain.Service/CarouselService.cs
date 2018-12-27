@@ -99,20 +99,13 @@ namespace GRA.Domain.Service
         public async Task<Carousel> EditAsync(Carousel carousel)
         {
             VerifyManagementPermission();
-            carousel.Name = carousel.Name.Trim();
-            carousel.Heading = carousel.Heading == null
-                ? carousel.Heading
-                : carousel.Heading.Trim();
 
-            var current = await _carouselRepository.GetByIdAsync(carousel.Id);
-            carousel.SiteId = current.SiteId;
-            if (carousel.Items?.Any() != true)
-            {
-                carousel.IsActive = false;
-            }
+            var currentCarousel = await _carouselRepository.GetByIdAsync(carousel.Id);
+            currentCarousel.Name = carousel.Name.Trim();
+            currentCarousel.Heading = carousel.Heading?.Trim();
 
             return await _carouselRepository
-                .UpdateSaveAsync(GetClaimId(ClaimType.UserId), carousel);
+                .UpdateSaveAsync(GetClaimId(ClaimType.UserId), currentCarousel);
         }
 
         public async Task RemoveAsync(int carouselId)
