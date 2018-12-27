@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace GRA.Domain.Model
@@ -12,7 +13,7 @@ namespace GRA.Domain.Model
         [MaxLength(32)]
         [Required]
         public string IconColor { get; set; }
-        [DisplayName("Allow Back to Back")]
-        public bool AllowBackToBack { get; set; }
+        
+        public ICollection<int> BackToBackBranchIds { get; set; }
     }
 }

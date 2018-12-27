@@ -31,25 +31,104 @@ namespace GRA.Controllers.MissionControl
 
         private readonly ILogger<PerformerManagementController> _logger;
         private readonly PerformerSchedulingService _performerSchedulingService;
+        private readonly SiteService _siteService;
         public PerformerManagementController(ILogger<PerformerManagementController> logger,
             ServiceFacade.Controller context,
-            PerformerSchedulingService performerSchedulingService)
+            PerformerSchedulingService performerSchedulingService,
+            SiteService siteService)
             : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _performerSchedulingService = performerSchedulingService
                 ?? throw new ArgumentNullException(nameof(performerSchedulingService));
+            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             PageTitle = "Performer Management";
         }
 
-        #region Performers
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index()
         {
             var settings = await _performerSchedulingService.GetSettingsAsync();
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage == PsSchedulingStage.Unavailable)
             {
-                return RedirectToAction(nameof(Schedule));
+                return RedirectToAction(nameof(Settings));
+            }
+
+            var completion = new Dictionary<int, string>();
+            var percent = new Dictionary<int, string>();
+            var panel = new Dictionary<int, string>();
+
+            var totalBranchCount = 0;
+            var totalSelectedCount = 0;
+
+            var systems = await _performerSchedulingService
+                .GetSystemListWithoutExcludedBranchesAsync();
+
+            foreach (var system in systems)
+            {
+                int isSelectedCount = 0;
+
+                foreach (var branch in system.Branches)
+                {
+                    branch.Selections = await _performerSchedulingService
+                        .GetSelectionsByBranchIdAsync(branch.Id);
+
+                    if (branch.Selections.Count >= settings.SelectionsPerBranch)
+                    {
+                        isSelectedCount++;
+                    }
+                }
+
+                var branchPercent = isSelectedCount >= system.Branches.Count()
+                    ? 100
+                    : isSelectedCount * 100 / system.Branches.Count();
+
+                totalBranchCount += system.Branches.Count();
+                totalSelectedCount += isSelectedCount;
+                percent.Add(system.Id, $"{branchPercent}%");
+                completion.Add(system.Id, $"({isSelectedCount}/{system.Branches.Count()})");
+
+                if (branchPercent < 50)
+                {
+                    panel.Add(system.Id, "panel-danger");
+                }
+                else if (branchPercent < 100)
+                {
+                    panel.Add(system.Id, "panel-warning");
+                }
+                else
+                {
+                    panel.Add(system.Id, "panel-success");
+                }
+            }
+
+            int summaryPercent = totalSelectedCount >= totalBranchCount
+                ? 100
+                : totalSelectedCount * 100 / totalBranchCount;
+
+            var viewModel = new StatusViewModel
+            {
+                PerformerSchedulingEnbabled = true,
+                Now = DateTime.Now,
+                Settings = settings,
+                Systems = systems,
+                SummaryPercent = $"{summaryPercent}%",
+                Percent = percent,
+                Completion = completion,
+                Panel = panel
+            };
+
+            return View(viewModel);
+        }
+
+        #region Performers
+        public async Task<IActionResult> Performers(int page = 1)
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
+            if (schedulingStage == PsSchedulingStage.Unavailable)
+            {
+                return RedirectToAction(nameof(Settings));
             }
 
             var filter = new PerformerSchedulingFilter(page, PerformersPerPage);
@@ -101,7 +180,7 @@ namespace GRA.Controllers.MissionControl
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage == PsSchedulingStage.Unavailable)
             {
-                return RedirectToAction(nameof(Schedule));
+                return RedirectToAction(nameof(Settings));
             }
 
             if (schedulingStage < PsSchedulingStage.SchedulingOpen)
@@ -122,7 +201,7 @@ namespace GRA.Controllers.MissionControl
                 ShowAlertDanger("Cannot remove performers after scheduling has opened.");
             }
 
-            return RedirectToAction(nameof(Index),
+            return RedirectToAction(nameof(Performers),
                 new { page = model.PaginateModel.CurrentPage });
         }
 
@@ -132,7 +211,7 @@ namespace GRA.Controllers.MissionControl
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage == PsSchedulingStage.Unavailable)
             {
-                return RedirectToAction(nameof(Schedule));
+                return RedirectToAction(nameof(Settings));
             }
 
             var performer = new PsPerformer();
@@ -147,7 +226,7 @@ namespace GRA.Controllers.MissionControl
             catch (GraException gex)
             {
                 ShowAlertDanger("Unable to view performer: ", gex);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Performers));
             }
 
             var viewModel = new PerformerViewModel()
@@ -199,7 +278,7 @@ namespace GRA.Controllers.MissionControl
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage == PsSchedulingStage.Unavailable)
             {
-                return RedirectToAction(nameof(Schedule));
+                return RedirectToAction(nameof(Settings));
             }
             else if (schedulingStage == PsSchedulingStage.RegistrationClosed)
             {
@@ -211,7 +290,7 @@ namespace GRA.Controllers.MissionControl
                 catch (GraException gex)
                 {
                     ShowAlertDanger($"Unable to {(model.Approve ? "Approve" : "Unapprove")} performer: ", gex);
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Performers));
                 }
             }
 
@@ -225,7 +304,7 @@ namespace GRA.Controllers.MissionControl
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage == PsSchedulingStage.Unavailable)
             {
-                return RedirectToAction(nameof(Schedule));
+                return RedirectToAction(nameof(Settings));
             }
 
             try
@@ -247,7 +326,7 @@ namespace GRA.Controllers.MissionControl
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage == PsSchedulingStage.Unavailable)
             {
-                return RedirectToAction(nameof(Schedule));
+                return RedirectToAction(nameof(Settings));
             }
 
             var performer = new PsPerformer();
@@ -259,7 +338,7 @@ namespace GRA.Controllers.MissionControl
             catch (GraException gex)
             {
                 ShowAlertDanger("Unable to edit performer: ", gex);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Performers));
             }
 
             var systems = await _performerSchedulingService
@@ -294,7 +373,7 @@ namespace GRA.Controllers.MissionControl
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage == PsSchedulingStage.Unavailable)
             {
-                return RedirectToAction(nameof(Schedule));
+                return RedirectToAction(nameof(Settings));
             }
 
             var systems = await _performerSchedulingService
@@ -361,7 +440,7 @@ namespace GRA.Controllers.MissionControl
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage == PsSchedulingStage.Unavailable)
             {
-                return RedirectToAction(nameof(Schedule));
+                return RedirectToAction(nameof(Settings));
             }
 
             var performer = new PsPerformer();
@@ -373,7 +452,7 @@ namespace GRA.Controllers.MissionControl
             catch (GraException gex)
             {
                 ShowAlertDanger("Unable to view performer images: ", gex);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Performers));
             }
 
             var viewModel = new PerformerImagesViewModel()
@@ -396,7 +475,7 @@ namespace GRA.Controllers.MissionControl
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage == PsSchedulingStage.Unavailable)
             {
-                return RedirectToAction(nameof(Schedule));
+                return RedirectToAction(nameof(Settings));
             }
 
             var performer = new PsPerformer();
@@ -408,7 +487,7 @@ namespace GRA.Controllers.MissionControl
             catch (GraException gex)
             {
                 ShowAlertDanger("Unable to add performer images: ", gex);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Performers));
             }
 
             if (model.Images == null)
@@ -461,7 +540,7 @@ namespace GRA.Controllers.MissionControl
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage == PsSchedulingStage.Unavailable)
             {
-                return RedirectToAction(nameof(Schedule));
+                return RedirectToAction(nameof(Settings));
             }
 
             var imageIds = Newtonsoft.Json.JsonConvert
@@ -484,7 +563,7 @@ namespace GRA.Controllers.MissionControl
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage == PsSchedulingStage.Unavailable)
             {
-                return RedirectToAction(nameof(Schedule));
+                return RedirectToAction(nameof(Settings));
             }
 
             var program = new PsProgram();
@@ -497,7 +576,7 @@ namespace GRA.Controllers.MissionControl
             catch (GraException gex)
             {
                 ShowAlertDanger("Unable to view program: ", gex);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Performers));
             }
 
             var viewModel = new ProgramViewModel()
@@ -519,7 +598,7 @@ namespace GRA.Controllers.MissionControl
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage == PsSchedulingStage.Unavailable)
             {
-                return RedirectToAction(nameof(Schedule));
+                return RedirectToAction(nameof(Settings));
             }
 
             var performer = new PsPerformer();
@@ -530,7 +609,7 @@ namespace GRA.Controllers.MissionControl
             catch (GraException gex)
             {
                 ShowAlertDanger("Unable to add program: ", gex);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Performers));
             }
 
             var ageGroups = await _performerSchedulingService.GetAgeGroupsAsync();
@@ -557,7 +636,7 @@ namespace GRA.Controllers.MissionControl
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage == PsSchedulingStage.Unavailable)
             {
-                return RedirectToAction(nameof(Schedule));
+                return RedirectToAction(nameof(Settings));
             }
 
             var program = new PsProgram();
@@ -569,7 +648,7 @@ namespace GRA.Controllers.MissionControl
             catch (GraException gex)
             {
                 ShowAlertDanger("Unable to edit program: ", gex);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Performers));
             }
 
             var ageGroups = await _performerSchedulingService.GetAgeGroupsAsync();
@@ -649,7 +728,7 @@ namespace GRA.Controllers.MissionControl
                 catch (GraException gex)
                 {
                     ShowAlertDanger("Unable to edit program: ", gex);
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Performers));
                 }
                 return RedirectToAction(nameof(Performer), new { id = program.PerformerId });
             }
@@ -670,7 +749,7 @@ namespace GRA.Controllers.MissionControl
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage == PsSchedulingStage.Unavailable)
             {
-                return RedirectToAction(nameof(Schedule));
+                return RedirectToAction(nameof(Settings));
             }
 
             var program = new PsProgram();
@@ -682,7 +761,7 @@ namespace GRA.Controllers.MissionControl
             catch (GraException gex)
             {
                 ShowAlertDanger("Unable to view program images: ", gex);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Performers));
             }
 
             var viewModel = new ProgramImagesViewModel()
@@ -705,7 +784,7 @@ namespace GRA.Controllers.MissionControl
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage == PsSchedulingStage.Unavailable)
             {
-                return RedirectToAction(nameof(Schedule));
+                return RedirectToAction(nameof(Settings));
             }
 
             if (model.Images == null)
@@ -751,7 +830,7 @@ namespace GRA.Controllers.MissionControl
             catch (GraException gex)
             {
                 ShowAlertDanger("Unable to view program images: ", gex);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Performers));
             }
 
             model.ProgramName = program.Title;
@@ -770,7 +849,7 @@ namespace GRA.Controllers.MissionControl
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage == PsSchedulingStage.Unavailable)
             {
-                return RedirectToAction(nameof(Schedule));
+                return RedirectToAction(nameof(Settings));
             }
 
             var imageIds = Newtonsoft.Json.JsonConvert
@@ -793,7 +872,7 @@ namespace GRA.Controllers.MissionControl
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage == PsSchedulingStage.Unavailable)
             {
-                return RedirectToAction(nameof(Schedule));
+                return RedirectToAction(nameof(Settings));
             }
 
             var performer = new PsPerformer();
@@ -805,7 +884,7 @@ namespace GRA.Controllers.MissionControl
             catch (GraException gex)
             {
                 ShowAlertDanger("Unable to update schedule: ", gex);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Performers));
             }
 
             var viewModel = new PerformerScheduleViewModel()
@@ -827,7 +906,7 @@ namespace GRA.Controllers.MissionControl
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage == PsSchedulingStage.Unavailable)
             {
-                return RedirectToAction(nameof(Schedule));
+                return RedirectToAction(nameof(Settings));
             }
 
             var schedule = new List<PsScheduleDate>();
@@ -875,7 +954,7 @@ namespace GRA.Controllers.MissionControl
             catch (GraException gex)
             {
                 ShowAlertDanger("Unable to update schedule: ", gex);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Performers));
             }
 
             model.Performer = performer;
@@ -894,10 +973,10 @@ namespace GRA.Controllers.MissionControl
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage < PsSchedulingStage.SchedulingOpen)
             {
-                return RedirectToAction(nameof(Schedule));
+                return RedirectToAction(nameof(Settings));
             }
 
-            var performer = await _performerSchedulingService.GetPerformerByIdAsync(id, 
+            var performer = await _performerSchedulingService.GetPerformerByIdAsync(id,
                 includeSchedule: true);
 
             var branchSelections = await _performerSchedulingService
@@ -938,7 +1017,7 @@ namespace GRA.Controllers.MissionControl
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage < PsSchedulingStage.SchedulingOpen)
             {
-                return RedirectToAction(nameof(Schedule));
+                return RedirectToAction(nameof(Settings));
             }
 
             var performer = await _performerSchedulingService.GetPerformerByIdAsync(performerId,
@@ -1033,8 +1112,8 @@ namespace GRA.Controllers.MissionControl
             return PartialView("_DaySchedulePartial", viewModel);
         }
 
-        public async Task<JsonResult> CheckProgramTimeAvailability(int selectionId, 
-            int programId, DateTime date,bool backToBack)
+        public async Task<JsonResult> CheckProgramTimeAvailability(int selectionId,
+            int programId, DateTime date, bool backToBack)
         {
             try
             {
@@ -1136,7 +1215,7 @@ namespace GRA.Controllers.MissionControl
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage == PsSchedulingStage.Unavailable)
             {
-                return RedirectToAction(nameof(Schedule));
+                return RedirectToAction(nameof(Settings));
             }
 
             var filter = new BaseFilter(page, KitsPerPage);
@@ -1186,7 +1265,7 @@ namespace GRA.Controllers.MissionControl
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage == PsSchedulingStage.Unavailable)
             {
-                return RedirectToAction(nameof(Schedule));
+                return RedirectToAction(nameof(Settings));
             }
 
             if (schedulingStage < PsSchedulingStage.SchedulingOpen)
@@ -1216,7 +1295,7 @@ namespace GRA.Controllers.MissionControl
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage == PsSchedulingStage.Unavailable)
             {
-                return RedirectToAction(nameof(Schedule));
+                return RedirectToAction(nameof(Settings));
             }
 
             var kit = new PsKit();
@@ -1272,7 +1351,7 @@ namespace GRA.Controllers.MissionControl
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage == PsSchedulingStage.Unavailable)
             {
-                return RedirectToAction(nameof(Schedule));
+                return RedirectToAction(nameof(Settings));
             }
 
             var ageGroups = await _performerSchedulingService.GetAgeGroupsAsync();
@@ -1293,7 +1372,7 @@ namespace GRA.Controllers.MissionControl
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage == PsSchedulingStage.Unavailable)
             {
-                return RedirectToAction(nameof(Schedule));
+                return RedirectToAction(nameof(Settings));
             }
 
             var kit = new PsKit();
@@ -1326,7 +1405,7 @@ namespace GRA.Controllers.MissionControl
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage == PsSchedulingStage.Unavailable)
             {
-                return RedirectToAction(nameof(Schedule));
+                return RedirectToAction(nameof(Settings));
             }
 
             var ageGroups = await _performerSchedulingService.GetAgeGroupsAsync();
@@ -1410,7 +1489,7 @@ namespace GRA.Controllers.MissionControl
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage == PsSchedulingStage.Unavailable)
             {
-                return RedirectToAction(nameof(Schedule));
+                return RedirectToAction(nameof(Settings));
             }
 
             var kit = new PsKit();
@@ -1421,7 +1500,7 @@ namespace GRA.Controllers.MissionControl
             catch (GraException gex)
             {
                 ShowAlertDanger("Unable to view kit images: ", gex);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Performers));
             }
 
             var viewModel = new KitImagesViewModel()
@@ -1444,7 +1523,7 @@ namespace GRA.Controllers.MissionControl
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage == PsSchedulingStage.Unavailable)
             {
-                return RedirectToAction(nameof(Schedule));
+                return RedirectToAction(nameof(Settings));
             }
 
             var kit = new PsKit();
@@ -1456,7 +1535,7 @@ namespace GRA.Controllers.MissionControl
             catch (GraException gex)
             {
                 ShowAlertDanger("Unable to add kit images: ", gex);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Performers));
             }
 
             if (model.Images == null)
@@ -1510,7 +1589,7 @@ namespace GRA.Controllers.MissionControl
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage == PsSchedulingStage.Unavailable)
             {
-                return RedirectToAction(nameof(Schedule));
+                return RedirectToAction(nameof(Settings));
             }
 
             var imageIds = Newtonsoft.Json.JsonConvert
@@ -1535,7 +1614,7 @@ namespace GRA.Controllers.MissionControl
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage < PsSchedulingStage.SchedulingOpen)
             {
-                return RedirectToAction(nameof(Schedule));
+                return RedirectToAction(nameof(Settings));
             }
 
             var kit = new PsKit();
@@ -1665,69 +1744,154 @@ namespace GRA.Controllers.MissionControl
         }
         #endregion
 
-        public async Task<IActionResult> Schedule()
+        #region Age Groups
+        public async Task<IActionResult> AgeGroups(int page = 1)
         {
             var settings = await _performerSchedulingService.GetSettingsAsync();
-            var viewModel = new ScheduleDetailViewModel
+            var performerSchedulingEnabled = _performerSchedulingService.GetSchedulingStage(settings)
+                    != PsSchedulingStage.Unavailable;
+            if (!performerSchedulingEnabled)
             {
-                Settings = settings,
-                PerformerSchedulingEnbabled = _performerSchedulingService
-                    .GetSchedulingStage(settings) != PsSchedulingStage.Unavailable
+                return RedirectToAction(nameof(Settings));
+            }
+
+            var filter = new BaseFilter(page);
+
+            var ageGroupList = await _performerSchedulingService.GetPaginatedAgeGroupsAsync(
+                filter);
+
+            var paginateModel = new PaginateViewModel()
+            {
+                ItemCount = ageGroupList.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
             };
+            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
+            }
+
+            foreach (var ageGroup in ageGroupList.Data)
+            {
+                ageGroup.BackToBackBranchIds = await _performerSchedulingService
+                    .GetAgeGroupBacktoBackBranchIdsAsync(ageGroup.Id);
+            }
+
+
+
+            var excludedBranchIds = await _performerSchedulingService.GetExcludedBranchIdsAsync();
+            var branches = await _siteService.GetAllBranches(true);
+            branches = branches.Where(_ => excludedBranchIds.Contains(_.Id) == false);
+
+            var viewModel = new AgeGroupsListViewModel
+            {
+                AgeGroups = ageGroupList.Data,
+                PaginateModel = paginateModel,
+                PerformerSchedulingEnbabled = performerSchedulingEnabled,
+                Systems = await _performerSchedulingService
+                .GetSystemListWithoutExcludedBranchesAsync()
+            };
+
             return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Schedule(PsSettings settings)
+        public async Task<IActionResult> AddAgeGroup(AgeGroupsListViewModel model)
         {
-            if (settings.RegistrationClosed < settings.RegistrationOpen)
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var performerSchedulingEnabled = _performerSchedulingService.GetSchedulingStage(settings)
+                    != PsSchedulingStage.Unavailable;
+            if (!performerSchedulingEnabled)
             {
-                ModelState.AddModelError("Settings.RegistrationClosed", "The Registration Closed date cannot be before the Registration Open date.");
-            }
-            if (settings.SchedulingPreview < settings.RegistrationClosed)
-            {
-                ModelState.AddModelError("Settings.SchedulingPreview", "The Schedule Preview date cannot be before the Registration Closed date.");
-            }
-            if (settings.SchedulingOpen < settings.SchedulingPreview)
-            {
-                ModelState.AddModelError("Settings.SchedulingOpen", "The Schedule Open date cannot be before the Schedule Preview date.");
-            }
-            if (settings.SchedulingClosed < settings.SchedulingOpen)
-            {
-                ModelState.AddModelError("Settings.SchedulingClosed", "The Schedule Closed date cannot be before the Schedule Open date.");
-            }
-            if (settings.SchedulePosted < settings.SchedulingClosed)
-            {
-                ModelState.AddModelError("Settings.SchedulePosted", "The Schedule Posted date cannot be before the Schedule Closed date.");
-            }
-            if (settings.ScheduleEndDate < settings.ScheduleStartDate)
-            {
-                ModelState.AddModelError("Settings.ScheduleEndDate", "The Schedule End date cannot be before the Schedule Start date.");
+                return RedirectToAction(nameof(Settings));
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    await _performerSchedulingService.UpdateSettingsAsync(settings);
-                    ShowAlertSuccess($"Schedule updated!");
-                    return RedirectToAction(nameof(Schedule));
-                }
-                catch (GraException gex)
-                {
-                    ShowAlertDanger("Unable to update site: ", gex);
-                }
+                var ageGroup = await _performerSchedulingService.AddAgeGroupAsync(model.AgeGroup);
+                ShowAlertSuccess($"Added Age Group \"{ageGroup.Name}\"!");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to add Age Group: ", gex);
             }
 
-            var viewModel = new ScheduleDetailViewModel
+            return RedirectToAction(nameof(AgeGroups), new
             {
-                Settings = settings,
-                PerformerSchedulingEnbabled = _performerSchedulingService.GetSchedulingStage(settings)
-                    != PsSchedulingStage.Unavailable
-            };
-            return View(viewModel);
+                page = model.PaginateModel.CurrentPage
+            });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> DeleteAgeGroup(AgeGroupsListViewModel model)
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var performerSchedulingEnabled = _performerSchedulingService.GetSchedulingStage(settings)
+                    != PsSchedulingStage.Unavailable;
+            if (!performerSchedulingEnabled)
+            {
+                return RedirectToAction(nameof(Settings));
+            }
+
+            try
+            {
+                await _performerSchedulingService.RemoveAgeGroupAsync(model.AgeGroup.Id);
+                ShowAlertSuccess($"Age Group \"{model.AgeGroup.Name}\" removed!");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to remove Age Group: ", gex);
+            }
+
+            return RedirectToAction(nameof(AgeGroups), new
+            {
+                page = model.PaginateModel.CurrentPage
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateAgeGroupBackToBackBranches(
+            AgeGroupsListViewModel model)
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var performerSchedulingEnabled = _performerSchedulingService.GetSchedulingStage(settings)
+                    != PsSchedulingStage.Unavailable;
+            if (!performerSchedulingEnabled)
+            {
+                return RedirectToAction(nameof(Settings));
+            }
+
+            var systems = await _performerSchedulingService
+                .GetSystemListWithoutExcludedBranchesAsync();
+            var branchIds = systems.SelectMany(_ => _.Branches).Select(_ => _.Id);
+            var backToBackBranches = JsonConvert
+                .DeserializeObject<List<int>>(model.BackToBackBranchesString)
+                .Where(_ => branchIds.Contains(_))
+                .ToList();
+
+            try
+            {
+                await _performerSchedulingService.UpdateAgeGroupBackToBackBranchesAsync
+                    (model.AgeGroup.Id, backToBackBranches);
+                ShowAlertSuccess("Back to Back branches updated!");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to update back to back branches: ", gex);
+            }
+
+            return RedirectToAction(nameof(AgeGroups), new
+            {
+                page = model.PaginateModel.CurrentPage
+            });
+        }
+        #endregion
+
+        #region Blackout Dates
         public async Task<IActionResult> BlackoutDates(int page = 1)
         {
             var settings = await _performerSchedulingService.GetSettingsAsync();
@@ -1735,7 +1899,7 @@ namespace GRA.Controllers.MissionControl
                     != PsSchedulingStage.Unavailable;
             if (!performerSchedulingEnabled)
             {
-                return RedirectToAction(nameof(Schedule));
+                return RedirectToAction(nameof(Settings));
             }
 
             var filter = new BaseFilter(page);
@@ -1771,6 +1935,14 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> AddBlackoutDate(BlackoutDatesListViewModel model)
         {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var performerSchedulingEnabled = _performerSchedulingService.GetSchedulingStage(settings)
+                    != PsSchedulingStage.Unavailable;
+            if (!performerSchedulingEnabled)
+            {
+                return RedirectToAction(nameof(Settings));
+            }
+
             try
             {
                 var blackoutDate = await _performerSchedulingService.AddBlackoutDateAsync(
@@ -1791,6 +1963,14 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> DeleteBlackoutDate(BlackoutDatesListViewModel model)
         {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var performerSchedulingEnabled = _performerSchedulingService.GetSchedulingStage(settings)
+                    != PsSchedulingStage.Unavailable;
+            if (!performerSchedulingEnabled)
+            {
+                return RedirectToAction(nameof(Settings));
+            }
+
             try
             {
                 await _performerSchedulingService.RemoveBlackoutDateAsync(model.BlackoutDate.Id);
@@ -1806,25 +1986,27 @@ namespace GRA.Controllers.MissionControl
                 page = model.PaginateModel.CurrentPage
             });
         }
+        #endregion
 
-        public async Task<IActionResult> AgeGroups(int page = 1)
+        #region Excluded Branches
+        public async Task<IActionResult> ExcludedBranches(int page = 1)
         {
             var settings = await _performerSchedulingService.GetSettingsAsync();
             var performerSchedulingEnabled = _performerSchedulingService.GetSchedulingStage(settings)
                     != PsSchedulingStage.Unavailable;
             if (!performerSchedulingEnabled)
             {
-                return RedirectToAction(nameof(Schedule));
+                return RedirectToAction(nameof(Settings));
             }
 
             var filter = new BaseFilter(page);
 
-            var ageGroupList = await _performerSchedulingService.GetPaginatedAgeGroupsAsync(
-                filter);
+            var excludedBranchList = await _performerSchedulingService
+                .GetPaginatedExcludedBranchListAsync(filter);
 
             var paginateModel = new PaginateViewModel()
             {
-                ItemCount = ageGroupList.Count,
+                ItemCount = excludedBranchList.Count,
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
@@ -1837,10 +2019,15 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
-            var viewModel = new AgeGroupsListViewModel
+            var excludedBranchIds = await _performerSchedulingService.GetExcludedBranchIdsAsync();
+            var branches = await _siteService.GetAllBranches(true);
+            branches = branches.Where(_ => excludedBranchIds.Contains(_.Id) == false);
+
+            var viewModel = new ExcludedBranchListViewModel
             {
-                AgeGroups = ageGroupList.Data,
+                ExcludedBranches = excludedBranchList.Data,
                 PaginateModel = paginateModel,
+                UnexcludedBranches = new SelectList(branches, "Id", "Name"),
                 PerformerSchedulingEnbabled = performerSchedulingEnabled
             };
 
@@ -1848,41 +2035,129 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddAgeGroup(AgeGroupsListViewModel model)
+        public async Task<IActionResult> AddBranchExclusion(ExcludedBranchListViewModel model)
         {
-            try
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var performerSchedulingEnabled = _performerSchedulingService.GetSchedulingStage(settings)
+                    != PsSchedulingStage.Unavailable;
+            if (!performerSchedulingEnabled)
             {
-                var ageGroup = await _performerSchedulingService.AddAgeGroupAsync(model.AgeGroup);
-                ShowAlertSuccess($"Added Age Group \"{ageGroup.Name}\"!");
-            }
-            catch (GraException gex)
-            {
-                ShowAlertDanger("Unable to add Age Group: ", gex);
+                return RedirectToAction(nameof(Settings));
             }
 
-            return RedirectToAction(nameof(AgeGroups), new
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _performerSchedulingService.AddBranchExclusionAsync(model.BranchId.Value);
+                    ShowAlertSuccess("Branch added to exlcusion list!");
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger("Unable to add Branch Exclusion: ", gex);
+                }
+            }
+
+            return RedirectToAction(nameof(ExcludedBranches), new
             {
                 page = model.PaginateModel.CurrentPage
             });
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteAgeGroup(AgeGroupsListViewModel model)
+        public async Task<IActionResult> DeleteBranchExclusion(ExcludedBranchListViewModel model)
         {
-            try
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var performerSchedulingEnabled = _performerSchedulingService.GetSchedulingStage(settings)
+                    != PsSchedulingStage.Unavailable;
+            if (!performerSchedulingEnabled)
             {
-                await _performerSchedulingService.RemoveAgeGroupAsync(model.AgeGroup.Id);
-                ShowAlertSuccess($"Age Group \"{model.AgeGroup.Name}\" removed!");
-            }
-            catch (GraException gex)
-            {
-                ShowAlertDanger("Unable to remove Age Group: ", gex);
+                return RedirectToAction(nameof(Settings));
             }
 
-            return RedirectToAction(nameof(AgeGroups), new
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _performerSchedulingService.RemoveBranchExclusionAsync(model.BranchId.Value);
+                    ShowAlertSuccess("Branch removed from exlcusion list!");
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger("Unable to remove Branch Exclusion: ", gex);
+                }
+            }
+
+            return RedirectToAction(nameof(ExcludedBranches), new
             {
                 page = model.PaginateModel.CurrentPage
             });
         }
+        #endregion
+
+        #region Settings
+        public async Task<IActionResult> Settings()
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var viewModel = new SettingsViewModel
+            {
+                Settings = settings,
+                PerformerSchedulingEnbabled = _performerSchedulingService
+                    .GetSchedulingStage(settings) != PsSchedulingStage.Unavailable
+            };
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Settings(PsSettings settings)
+        {
+            if (settings.RegistrationClosed < settings.RegistrationOpen)
+            {
+                ModelState.AddModelError("Settings.RegistrationClosed", "The Registration Closed date cannot be before the Registration Open date.");
+            }
+            if (settings.SchedulingPreview < settings.RegistrationClosed)
+            {
+                ModelState.AddModelError("Settings.SchedulingPreview", "The Schedule Preview date cannot be before the Registration Closed date.");
+            }
+            if (settings.SchedulingOpen < settings.SchedulingPreview)
+            {
+                ModelState.AddModelError("Settings.SchedulingOpen", "The Schedule Open date cannot be before the Schedule Preview date.");
+            }
+            if (settings.SchedulingClosed < settings.SchedulingOpen)
+            {
+                ModelState.AddModelError("Settings.SchedulingClosed", "The Schedule Closed date cannot be before the Schedule Open date.");
+            }
+            if (settings.SchedulePosted < settings.SchedulingClosed)
+            {
+                ModelState.AddModelError("Settings.SchedulePosted", "The Schedule Posted date cannot be before the Schedule Closed date.");
+            }
+            if (settings.ScheduleEndDate < settings.ScheduleStartDate)
+            {
+                ModelState.AddModelError("Settings.ScheduleEndDate", "The Schedule End date cannot be before the Schedule Start date.");
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _performerSchedulingService.UpdateSettingsAsync(settings);
+                    ShowAlertSuccess($"Settings updated!");
+                    return RedirectToAction(nameof(Settings));
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger("Unable to update site: ", gex);
+                }
+            }
+
+            var viewModel = new SettingsViewModel
+            {
+                Settings = settings,
+                PerformerSchedulingEnbabled = _performerSchedulingService.GetSchedulingStage(settings)
+                    != PsSchedulingStage.Unavailable
+            };
+            return View(viewModel);
+        }
+        #endregion
     }
 }

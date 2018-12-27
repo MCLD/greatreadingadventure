@@ -15,5 +15,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.PerformerScheduling
         public string SystemName { get; set; }
 
         public SelectList BranchList { get; set; }
+
+        public bool CanSchedule { get; set; }
     }
 }

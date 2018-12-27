@@ -139,7 +139,7 @@
         }
         <div class="row" style="padding-bottom:15px;">
             <div class="col-xs-12" style="text-align:center;">
-                <a asp-action="Index" asp-route-page="@Model.ReturnPage" class="btn btn-default">Return to List</a>
+                <a asp-action="@nameof(PerformerManagementController.Performers)" asp-route-page="@Model.ReturnPage" class="btn btn-default">Return to List</a>
             </div>
         </div>
     </div>

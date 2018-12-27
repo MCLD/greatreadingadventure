@@ -18,5 +18,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.PerformerScheduling
         public SelectList AgeGroupList { get; set; }
         public SelectList BranchList { get; set; }
         public PsBranchSelection BranchSelection { get; set; }
+
+        public bool CanSchedule { get; set; }
     }
 }

@@ -23,19 +23,52 @@
                             <input asp-for="AgeGroup.IconColor" class="form-control" />
                             <span asp-validation-for="AgeGroup.IconColor" class="text-danger"></span>
                         </div>
-                        <div class="form-group">
-                            <label asp-for="AgeGroup.AllowBackToBack" class="control-label"></label>
-                            <select asp-for="AgeGroup.AllowBackToBack" class="form-control">
-                                <option value="false">No</option>
-                                <option value="true">Yes</option>
-                            </select>
-                            <span asp-validation-for="AgeGroup.AllowBackToBack" class="text-danger"></span>
-                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
                         <button type="submit" class="btn btn-primary btn-spinner pull-right" aria-label="Confirm">
                             Add
+                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="modal fade" id="updateBackToBackModal" tabindex="-1" role="dialog" aria-labelledby="updateBackToBackModalLabel">
+        <div class="modal-dialog" role="document">
+            <form id="backToBackUpdateForm" asp-controller="PerformerManagement" asp-action="UpdateAgeGroupBackToBackBranches" method="post" role="form" style="display:inline">
+                <input asp-for="PaginateModel.CurrentPage" type="hidden" />
+                <input asp-for="AgeGroup.Id" type="hidden" />
+                <input asp-for="BackToBackBranchesString" type="hidden" />
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="updateBackToBackModalLabel">Update Back to Back Branches</h4>
+                    </div>
+                    <div class="modal-body" style="max-height: calc(100vh - 200px); overflow-y:auto;">
+                        @foreach (var system in Model.Systems)
+                        {
+                            <div style="font-size:x-large;margin-bottom:10px;">
+                                <strong>@system.Name</strong>
+                            </div>
+                            @foreach (var branch in system.Branches)
+                            {
+                                <div>
+                                    <input id="@($"branch{branch.Id}")" class="branchSelector" data-id="@branch.Id" type="checkbox" />
+                                    <label for="@($"branch{branch.Id}")">@branch.Name</label>
+                                </div>
+                            }
+                            <br />
+                        }
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                        <button type="submit" class="btn btn-primary btn-spinner pull-right" aria-label="Confirm">
+                            Save
                             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                         </button>
                     </div>
@@ -79,7 +112,7 @@
     <div class="col-xs-12">
         <a class="btn btn-default"
            data-toggle="modal"
-           data-target="#addModal">Add a Age Group</a>
+           data-target="#addModal">Add an Age Group</a>
     </div>
 </div>
 
@@ -97,34 +130,45 @@
                         <tr>
                             <th>Name</th>
                             <th>Color</th>
-                            <th>Back To Back</th>
+                            <th>Back to Back Branches</th>
                             <th width="100">&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var AgeGroup in Model.AgeGroups)
                         {
-                        <tr>
-                            <td>
-                                @AgeGroup.Name
-                            </td>
-                            <td>
-                                <span class="fa fa-square" style="color: @AgeGroup.IconColor"></span>
-                            </td>
-                            <td>
-                                @(AgeGroup.AllowBackToBack ? "Yes" : "No")
-                            </td>
-                            <td>
-                                <button type="button"
-                                        class="btn btn-danger btn-xs"
-                                        data-toggle="modal"
-                                        data-target="#deleteModal"
-                                        data-id="@AgeGroup.Id"
-                                        data-name="@AgeGroup.Name">
-                                    <span class="fa fa-2x fa-remove" aria-hidden="true"></span>
-                                </button>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td>
+                                    @AgeGroup.Name
+                                </td>
+
+                                <td>
+                                    <span class="fa fa-square" style="color: @AgeGroup.IconColor"></span>
+                                </td>
+                                <td>
+                                    @AgeGroup.BackToBackBranchIds.Count
+                                    <button type="button"
+                                            class="btn btn-primary btn-xs"
+                                            style="margin-left: 1rem"
+                                            data-toggle="modal"
+                                            data-target="#updateBackToBackModal"
+                                            data-id="@AgeGroup.Id"
+                                            data-name="@AgeGroup.Name"
+                                            data-branchids="@string.Join(",", AgeGroup.BackToBackBranchIds)">
+                                        <span class="fa fa-edit" aria-hidden="true"></span>
+                                    </button>
+                                </td>
+                                <td>
+                                    <button type="button"
+                                            class="btn btn-danger btn-xs"
+                                            data-toggle="modal"
+                                            data-target="#deleteModal"
+                                            data-id="@AgeGroup.Id"
+                                            data-name="@AgeGroup.Name">
+                                        <span class="fa fa-2x fa-remove" aria-hidden="true"></span>
+                                    </button>
+                                </td>
+                            </tr>
                         }
                     </tbody>
                 </table>
@@ -139,6 +183,26 @@
 
 @section scripts {
     <script>
+        $("#updateBackToBackModal").on("show.bs.modal", function (e) {
+            var button = $(e.relatedTarget);
+            var id = button.data("id");
+            var name = button.data("name");
+            var branchIds = button.data("branchids"); 
+            var modal = $(this);
+            modal.find("#AgeGroup_Id").val(id);
+            modal.find("#AgeGroup_Name").val(name);
+            
+            modal.find(".branchSelector").prop("checked", false);
+            $.each(branchIds.split(","), function(index, value) {
+                modal.find("#branch" + value).prop("checked", true);
+            });
+        });
+
+        $("#backToBackUpdateForm").on("submit", function (e) {
+            var backToBackBranches = $(".branchSelector:checked").map(function () { return $(this).data("id"); }).get();
+            $("#BackToBackBranchesString").val(JSON.stringify(backToBackBranches));
+        });
+
         $("#deleteModal").on("show.bs.modal", function (e) {
             var button = $(e.relatedTarget);
             var id = button.data("id");

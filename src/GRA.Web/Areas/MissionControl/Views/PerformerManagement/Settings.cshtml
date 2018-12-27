@@ -1,10 +1,10 @@
-﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.ScheduleDetailViewModel
+﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.SettingsViewModel
 
 @await Html.PartialAsync("_PerformerManagementPartial")
 
 <h4>All fields must be set to enable performer scheduling</h4>
 
-<form asp-controller="PerformerManagement" asp-action="Schedule" method="post" role="form">
+<form asp-controller="PerformerManagement" asp-action="Settings" method="post" role="form">
     <div class="form-group">
         <label asp-for="Settings.ContactEmail" class="control-label"></label>
         <input asp-for="Settings.ContactEmail" class="form-control" />

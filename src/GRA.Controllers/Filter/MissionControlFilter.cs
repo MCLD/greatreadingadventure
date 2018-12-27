@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 using GRA.Domain.Service.Abstract;
+using GRA.Domain.Model;
 
 namespace GRA.Controllers.Filter
 {
@@ -13,20 +14,24 @@ namespace GRA.Controllers.Filter
         private readonly ILogger<MissionControlFilter> _logger;
         private readonly IUserContextProvider _userContextProvider;
         private readonly MailService _mailService;
+        private readonly PerformerSchedulingService _performerSchedulingService;
         private readonly QuestionnaireService _questionnaireService;
         private readonly UserService _userService;
 
         public MissionControlFilter(ILogger<MissionControlFilter> logger,
             IUserContextProvider userContextProvider,
             MailService mailService,
+            PerformerSchedulingService performerSchedulingService,
             QuestionnaireService questionnaireService,
             UserService userService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _userContextProvider = userContextProvider 
+            _userContextProvider = userContextProvider
                 ?? throw new ArgumentNullException(nameof(userContextProvider));
             _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
-            _questionnaireService = questionnaireService 
+            _performerSchedulingService = performerSchedulingService
+                ?? throw new ArgumentNullException(nameof(performerSchedulingService));
+            _questionnaireService = questionnaireService
                 ?? throw new ArgumentNullException(nameof(questionnaireService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
@@ -67,12 +72,24 @@ namespace GRA.Controllers.Filter
                 try
                 {
                     httpContext.Items[ItemKey.UnreadCount] = await _mailService.GetAdminUnreadCountAsync();
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     _logger.LogError("Error getting admin mail unread count: {Message}", ex.Message);
                 }
             }
 
+            if (httpContext.User.HasClaim(ClaimType.Permission,
+                GRA.Domain.Model.Permission.ViewPerformerDetails.ToString()))
+            {
+                var settings = await _performerSchedulingService.GetSettingsAsync();
+                var schedulingStage = _performerSchedulingService
+                    .GetSchedulingStage(settings);
+                if (schedulingStage != PsSchedulingStage.Unavailable)
+                {
+                    httpContext.Items.Add(ItemKey.ShowPerformerScheduling, true);
+                }
+            }
             await next();
         }
     }

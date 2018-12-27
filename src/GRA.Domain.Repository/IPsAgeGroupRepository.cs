@@ -9,6 +9,9 @@ namespace GRA.Domain.Repository
     {
         Task<ICollection<PsAgeGroup>> GetAllAsync();
         Task<DataWithCount<ICollection<PsAgeGroup>>> PageAsync(BaseFilter filter);
+        Task<ICollection<int>> GetAgeGroupBackToBackBranchIdsAsync(int ageGroupId);
+        Task AddAgeGroupBackToBackBranchesAsync(int ageGroupId, List<int> branchIds);
+        Task RemoveAgeGroupBackToBackBranchesAsync(int ageGroupId, List<int> branchIds);
         Task<bool> BranchHasBackToBackAsync(int ageGroupId, int branchId);
     }
 }

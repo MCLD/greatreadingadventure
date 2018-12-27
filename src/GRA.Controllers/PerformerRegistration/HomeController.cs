@@ -52,7 +52,8 @@ namespace GRA.Controllers.PerformerRegistration
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage == PsSchedulingStage.Unavailable)
             {
-                return RedirectToAction("Index", "Home", new { Area = string.Empty });
+                return RedirectToAction(nameof(Controllers.HomeController.Index), "Home", 
+                    new { Area = string.Empty });
             }
 
             var hasPermission = UserHasPermission(Permission.AccessPerformerRegistration);

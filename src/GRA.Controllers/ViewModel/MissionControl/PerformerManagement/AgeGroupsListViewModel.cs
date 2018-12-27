@@ -9,5 +9,8 @@ namespace GRA.Controllers.ViewModel.MissionControl.PerformerManagement
         public ICollection<PsAgeGroup> AgeGroups { get; set; }
         public PaginateViewModel PaginateModel { get; set; }
         public PsAgeGroup AgeGroup { get; set; }
+
+        public List<Domain.Model.System> Systems { get; set; }
+        public string BackToBackBranchesString { get; set; }
     }
 }

@@ -5,11 +5,13 @@
     <div class="row">
         <div class="col-xs-12">
             <ul class="nav nav-pills" style="padding: 10px 0;">
-                <li ActiveBy routeKey="Action" value="Index"><a asp-action="Index">Performers</a></li>
-                <li ActiveBy routeKey="Action" value="Kits"><a asp-action="Kits">Kits</a></li>
-                <li ActiveBy routeKey="Action" value="Schedule"><a asp-action="Schedule">Schedule</a></li>
-                <li ActiveBy routeKey="Action" value="BlackoutDates"><a asp-action="BlackoutDates">Blackout Dates</a></li>
-                <li ActiveBy routeKey="Action" value="AgeGroups"><a asp-action="AgeGroups">Age Groups</a></li>
+                <li ActiveBy routeKey="Action" value="@nameof(PerformerManagementController.Index)"><a asp-action="@nameof(PerformerManagementController.Index)">Status</a></li>
+                <li ActiveBy routeKey="Action" value="@nameof(PerformerManagementController.Performers)"><a asp-action="@nameof(PerformerManagementController.Performers)">Performers</a></li>
+                <li ActiveBy routeKey="Action" value="@nameof(PerformerManagementController.Kits)"><a asp-action="@nameof(PerformerManagementController.Kits)">Kits</a></li>
+                <li ActiveBy routeKey="Action" value="@nameof(PerformerManagementController.AgeGroups)"><a asp-action="@nameof(PerformerManagementController.AgeGroups)">Age Groups</a></li>
+                <li ActiveBy routeKey="Action" value="@nameof(PerformerManagementController.BlackoutDates)"><a asp-action="@nameof(PerformerManagementController.BlackoutDates)">Blackout Dates</a></li>
+                <li ActiveBy routeKey="Action" value="@nameof(PerformerManagementController.ExcludedBranches)"><a asp-action="@nameof(PerformerManagementController.ExcludedBranches)">Excluded Branches</a></li>
+                <li ActiveBy routeKey="Action" value="@nameof(PerformerManagementController.Settings)"><a asp-action="@nameof(PerformerManagementController.Settings)">Settings</a></li>
             </ul>
         </div>
     </div>

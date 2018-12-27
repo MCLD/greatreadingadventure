@@ -1,146 +1,208 @@
-﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.PerformerListViewModel
+﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.StatusViewModel
+
+@section styles {
+    <link rel="stylesheet" href="~/css/performerregistration.min.css" asp-append-version="true" />
+}
 
 @await Html.PartialAsync("_PerformerManagementPartial")
 
-@if (Model.SchedulingStage < GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
-{
-    <div class="row">
-        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="deleteModalLabel">Delete performer</h4>
-                    </div>
-                    <div class="modal-body">
-                        <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
-                        <span id="modal-text"></span>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <form asp-action="PerformerDelete" method="post" role="form" style="display:inline">
-                            <input asp-for="PaginateModel.CurrentPage" type="hidden" />
-                            <input asp-for="PerformerToDelete.Id" type="hidden" />
-                            <input asp-for="PerformerToDelete.Name" type="hidden" />
-                            <button type="submit" class="btn btn-danger btn-spinner pull-right" aria-label="Confirm">
-                                <span class="fa fa-remove" aria-hidden="true"></span>
-                                Delete
-                                <span class="fa fa-spinner fa-pulse fa-fw hidden"></span>
-                            </button>
-                        </form>
-                    </div>
-                </div>
+
+<div class="row" style="margin-top: 2rem;">
+    <div class="col-sm-8 col-sm-offset-2">
+        <div class="progress" style="height: 3rem;">
+            <div class="progress-bar progress-bar-striped"
+                 role="progressbar"
+                 style="width: @Model.SummaryPercent; min-width: 2em; font-size: larger; padding-top: 0.6rem;">
+                @Model.SummaryPercent
             </div>
         </div>
     </div>
-}
+</div>
 
-<div class="row">
-    <div class="col-xs-12">
-        @if (Model.Performers.Count == 0)
-        {
-            <div class="alert alert-warning">No performers found.</div>
-        }
-        else
-        {
-            <table class="table table-condensed table-bordered link-table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email <span class="fa fa-question-circle-o" title="Preferred method of contact is italicized." data-toggle="tooltip" data-placement="top"></span></th>
-                        <th>Phone <span class="fa fa-question-circle-o" title="Preferred method of contact is italicized." data-toggle="tooltip" data-placement="top"></span></th>
-                        <th>Vendor ID</th>
-                        <th>Programs</th>
-                        @if (Model.RegistrationClosed)
-                        {
-                            <th>Approved?</th>
-                        }
-                        @if (Model.SchedulingStage >= GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
-                        {
-                            <th>Selections</th>
-                        }
-                        <th>&nbsp;</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var performer in Model.Performers)
-                    {
-                        <tr>
-                            <td class="td-class">
-                                <a asp-action="Performer" asp-route-id="@performer.Id" class="rowlink">
-                                    @performer.Name
-                                </a>
-                            </td>
-                            <td style="@(performer.PhonePreferred ? "" : "font-style:italic")">@performer.Email</td>
-                            <td style="@(performer.PhonePreferred ? "font-style:italic" : "")">@performer.Phone</td>
-                            <td>@performer.VendorId</td>
-                            <td>@performer.ProgramCount</td>
-                            @if (Model.RegistrationClosed)
-                            {
-                                <td>
-                                    <span class="colored-icon fa @(performer.IsApproved ? "fa-check" : "fa-times")"></span>
-                                </td>
-                            }
-                            @if (Model.SchedulingStage < GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
-                            {
-                                <td class="on-top">
-                                    <button type="button"
-                                            class="btn btn-danger btn-xs"
-                                            data-toggle="modal"
-                                            data-target="#deleteModal"
-                                            data-id="@performer.Id"
-                                            data-name="@performer.Name">
-                                        <span class="fa fa-remove" aria-hidden="true"></span>
-                                    </button>
-                                </td>
-                            }
-                            else
-                            {
-                                <td>@performer.SelectionsCount</td>
-                                <td class="on-top">
-                                    @if (performer.IsApproved)
-                                    {
-                                        <a asp-action="PerformerSelections" asp-route-id="@performer.Id" class="btn btn-xs btn-default">View Selections</a>
-                                    }
-                                </td>
-                            }
-                        </tr>
-
-                    }
-                </tbody>
-            </table>
-            @if (Model.PaginateModel.MaxPage > 1)
+<div class="row" style="margin-top: 0.5rem;">
+    <div class="col-sm-8 col-sm-offset-2">
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            @foreach (var system in Model.Systems)
             {
-                <paginate paginateModel="@Model.PaginateModel"></paginate>
+                <div class="panel @Model.Panel[system.Id]">
+                    <div class="panel-heading" role="tab" id="heading-@system.Id">
+                        <h4 class="panel-title">
+                            <a class="collapsed"
+                               role="button"
+                               data-toggle="collapse"
+                               data-parent="#accordion"
+                               href="#collapse-@system.Id"
+                               aria-expanded="false"
+                               aria-controls="collapse-@system.Id">
+                                @system.Name
+                                <span class="pull-right">@Model.Percent[system.Id]<span class="hidden-xs"> @Model.Completion[system.Id]</span></span>
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapse-@system.Id"
+                         class="panel-collapse collapse"
+                         role="tabpanel"
+                         aria-labelledby="heading-@system.Id">
+                        <div class="panel-body">
+                            <div class="progress">
+                                <div class="progress-bar"
+                                     role="progressbar"
+                                     style="width: @Model.Percent[system.Id]; min-width: 2em;">
+                                    @Model.Percent[system.Id]
+                                </div>
+                            </div>
+
+                            <table class="table table-striped table-hover table-condensed table-bordered">
+                                @foreach (var branch in system.Branches)
+                                {
+                                    <tr>
+                                        <td>@branch.Name</td>
+                                        <td class="text-right">
+                                            @{int count = 0;}
+                                            @foreach (var selection in branch.Selections)
+                                            {
+                                                count++;
+                                                <span class="fa-stack cursor-pointer"
+                                                      style="color: @selection.AgeGroup.IconColor"
+                                                      title="@selection.Summary"
+                                                      data-toggle="modal"
+                                                      data-target="#selectionDetailsModal"
+                                                      data-selectionname="@(selection.KitId.HasValue ? selection.Kit.Name : selection.Program.Title)"
+                                                      data-agegroupname="@selection.AgeGroup.Name"
+                                                      data-branchname="@branch.Name"
+                                                      data-systemname="@system.Name"
+                                                      data-contactname="@selection.User.FullName"
+                                                      data-contactemail="@selection.User.Email"
+                                                      data-scheduled="@selection.RequestedStartTime"
+                                                      data-selectedat="@selection.SelectedAt"
+                                                      data-backtoback="@selection.BackToBackProgram"
+                                                      data-duration="@selection.ScheduleDuration"
+                                                      data-startsat="@selection.StartsAt"
+                                                      data-endsat="@selection.EndsAt"
+                                                      data-iskit="@selection.KitId.HasValue">
+                                                    @if (selection.KitId.HasValue)
+                                                    {
+                                                        <span class="fa fa-square fa-stack-2x age-group-id-@selection.AgeGroupId"></span>
+                                                        <span class="fa-stack-2x" style="color: white; font-size: small;">KIT</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        @if (selection.BackToBackProgram)
+                                                        {
+                                                            <span class="fa fa-plus-square fa-stack-2x age-group-id-@selection.AgeGroupId"></span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="fa fa-check-square fa-stack-2x age-group-id-@selection.AgeGroupId"></span>
+                                                        }
+                                                    }
+                                                </span>
+                                            }
+                                            @while (count < Model.Settings.SelectionsPerBranch)
+                                            {
+                                                count++;
+                                                <span class="fa-stack">
+                                                    <span class="fa fa-square-o fa-stack-2x"></span>
+                                                </span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
             }
-        }
+        </div>
     </div>
 </div>
 
-@section scripts {
+<div class="modal fade" id="selectionDetailsModal" tabindex="-1" role="dialog" aria-labelledby="selectionDetailsLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 id="selectionDetailsLabel">Selection details</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped table-condensed">
+                    <tr>
+                        <th>Selection:</th>
+                        <td><span id="selectionname"></span></td>
+                    </tr>
+                    <tr>
+                        <th>System:</th>
+                        <td><span id="modelsystemname"></span></td>
+                    </tr>
+                    <tr>
+                        <th>Branch:</th>
+                        <td><span id="modelbranchname"></span></td>
+                    </tr>
+                    <tr>
+                        <th>Age group:</th>
+                        <td><span id="modalagegroupname"></span></td>
+                    </tr>
+                    <tr id="modalscheduledrow">
+                        <th>Program start time:</th>
+                        <td><span id="modalscheduled"></span></td>
+                    </tr>
+                    <tr id="modaldurationrow">
+                        <th>
+                            Total performer time:
+                        </th>
+                        <td>
+                            <span id="modalduration"></span> minutes (<span id="modalstartsat"></span>&ndash;<span id="modalendsat"></span>)
+                            <br /><span style="font-size: small; font-weight: normal; font-style: italic;">(includes set-up and teardown)</span>
+                        </td>
+                    </tr>
+                    <tr id="modalbacktoback" style="display: none;">
+                        <th>Back-to-back selection</th>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <th>Selection made by:</th>
+                        <td><a id="modalcontactmailto"></a> at <span id="modalselectedat"></span></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
     <script>
-        $(window).on("load", function () {
-            $(".td-class").each(function () {
-                $(this).children("a.rowlink").height($(this).height() + 11);
-            });
-        });
-        $(window).resize(function () {
-            $(".td-class").each(function () {
-                $(this).children("a.rowlink").height($(this).height() + 11);
-            });
-        });
-        @if (Model.SchedulingStage < GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
-        {
-            <text>
-            $("#deleteModal").on("show.bs.modal", function(event) {
-                var button = $(event.relatedTarget);
-                var id = button.data("id");
-                var name = button.data("name");
-                $(this).find("#modal-text").text('Are you sure you want to delete the performer "' + name + '" and all information associated with them?');
-                $(this).find("#PerformerToDelete_Id").val(id);
-                $(this).find("#PerformerToDelete_Name").val(name);
-            });
-            </text>
-        }
+        $('#selectionDetailsModal').on('show.bs.modal', function (e) {
+            var dataElement = $(e.relatedTarget).closest('[data-target]');
+            $('#selectionDetailsLabel').html(dataElement.data('selectionname') + ' @@ ' + dataElement.data('branchname'));
+            $('#selectionname').text(dataElement.data('selectionname'));
+            $('#modalagegroupname').text(dataElement.data('agegroupname'));
+            $('#modelbranchname').text(dataElement.data('branchname'));
+            $('#modelsystemname').text(dataElement.data('systemname'));
+            $('#modalcontactmailto').attr('href', 'mailto:' + dataElement.data('contactemail'));
+            $('#modalcontactmailto').text(dataElement.data('contactname'));
+            $('#modalscheduled').text(dataElement.data('scheduled'));
+            $('#modalduration').text(dataElement.data('duration'));
+            $('#modalstartsat').text(dataElement.data('startsat'));
+            $('#modalendsat').text(dataElement.data('endsat'));
+            $('#modalselectedat').text(dataElement.data('selectedat'));
+            if (dataElement.data('backtoback') === 'True') {
+                $('#modalbacktoback').show();
+            } else {
+                $('#modalbacktoback').hide();
+            }
+            if (dataElement.data('iskit') === 'True') {
+                $('#modalscheduledrow').hide();
+                $('#modaldurationrow').hide();
+            }
+            else {
+                $('#modalscheduledrow').show();
+                $('#modaldurationrow').show();
+            }
+        })
     </script>
 }

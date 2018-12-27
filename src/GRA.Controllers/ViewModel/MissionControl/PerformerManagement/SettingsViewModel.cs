@@ -2,7 +2,7 @@
 
 namespace GRA.Controllers.ViewModel.MissionControl.PerformerManagement
 {
-    public class ScheduleDetailViewModel : PerformerManagementPartialViewModel
+    public class SettingsViewModel : PerformerManagementPartialViewModel
     {
         public PsSettings Settings { get; set; }
     }

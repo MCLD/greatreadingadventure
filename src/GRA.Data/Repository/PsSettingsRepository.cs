@@ -3,7 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
+using GRA.Domain.Repository.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -24,6 +26,27 @@ namespace GRA.Data.Repository
                 .Where(_ => _.SiteId == siteId)
                 .ProjectTo<PsSettings>()
                 .SingleOrDefaultAsync();
+        }
+
+        public async Task<DataWithCount<ICollection<Branch>>> PageExcludedBranchesAsync(
+            BaseFilter filter)
+        {
+            var excludedBranches = _context.PsExcludeBranches.AsNoTracking();
+
+            var count = await excludedBranches.CountAsync();
+
+            var branchList = await excludedBranches
+                .Select(_ => _.Branch)
+                .OrderBy(_ => _.Name)
+                .ApplyPagination(filter)
+                .ProjectTo<Branch>()
+                .ToListAsync();
+
+            return new DataWithCount<ICollection<Branch>>
+            {
+                Data = branchList,
+                Count = count
+            };
         }
 
         public async Task<ICollection<int>> GetExcludedBranchIdsAsync()
@@ -72,24 +95,25 @@ namespace GRA.Data.Repository
                 .FirstOrDefaultAsync();
         }
 
-        public async Task AddBranchExclusionsAsync(List<int> branchIds)
+        public async Task AddBranchExclusionAsync(int branchId)
         {
-            var excludedBranches = branchIds.Select(_ => new Model.PsExcludeBranch
+            var excludedBranch = new Model.PsExcludeBranch
             {
-                BranchId = _
-            });
+                BranchId = branchId
+            };
 
-            await _context.PsExcludeBranches.AddRangeAsync(excludedBranches);
+            await _context.PsExcludeBranches.AddAsync(excludedBranch);
             await _context.SaveChangesAsync();
         }
 
-        public async Task RemoveBranchExclusionsAsync(List<int> branchIds)
+        public async Task RemoveBranchExclusionAsync(int branchId)
         {
-            var excludedBranches = _context.PsExcludeBranches
+            var excludedBranch = await _context.PsExcludeBranches
                 .AsNoTracking()
-                .Where(_ => branchIds.Contains(_.BranchId));
+                .Where(_ => _.BranchId == branchId)
+                .FirstOrDefaultAsync();
 
-            _context.PsExcludeBranches.RemoveRange(excludedBranches);
+            _context.PsExcludeBranches.Remove(excludedBranch);
             await _context.SaveChangesAsync();
         }
     }

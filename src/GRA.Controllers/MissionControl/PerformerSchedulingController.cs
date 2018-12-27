@@ -7,6 +7,7 @@ using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
@@ -14,6 +15,7 @@ using Microsoft.Extensions.Logging;
 namespace GRA.Controllers.MissionControl
 {
     [Area("MissionControl")]
+    [Authorize(Policy = Policy.ViewPerformerDetails)]
     public class PerformerSchedulingController : Base.MCController
     {
         private static readonly int KitsPerPage = 15;
@@ -43,7 +45,7 @@ namespace GRA.Controllers.MissionControl
             if (schedulingStage == PsSchedulingStage.Unavailable)
             {
                 ShowAlertDanger("Performer scheduling is not set up.");
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
             var systemId = GetId(ClaimType.SystemId);
@@ -52,8 +54,8 @@ namespace GRA.Controllers.MissionControl
             {
                 Settings = settings,
                 SchedulingStage = schedulingStage,
-
-                AgeGroups = await _performerSchedulingService.GetAgeGroupsAsync()
+                AgeGroups = await _performerSchedulingService.GetAgeGroupsAsync(),
+                CanSchedule = UserHasPermission(Permission.SchedulePerformers)
             };
 
             if (schedulingStage >= PsSchedulingStage.SchedulingOpen)
@@ -347,7 +349,8 @@ namespace GRA.Controllers.MissionControl
                 List = list == true,
                 Program = program,
                 SchedulingOpen = schedulingStage == PsSchedulingStage.SchedulingOpen,
-                System = system
+                System = system,
+                CanSchedule = UserHasPermission(Permission.SchedulePerformers)
             };
 
             if (performer.AllBranches == false)
@@ -461,6 +464,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
+        [Authorize(Policy = Policy.SchedulePerformers)]
         public async Task<IActionResult> SelectProgram(ProgramViewModel model)
         {
             var settings = await _performerSchedulingService.GetSettingsAsync();
@@ -530,6 +534,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
+        [Authorize(Policy = Policy.SchedulePerformers)]
         public async Task<JsonResult> ScheduleProgram(PsBranchSelection branchSelection)
         {
             var settings = await _performerSchedulingService.GetSettingsAsync();
@@ -565,6 +570,7 @@ namespace GRA.Controllers.MissionControl
             });
         }
 
+        [Authorize(Policy = Policy.SchedulePerformers)]
         public async Task<JsonResult> GetProgramAvailableAgeGroupsAsync(int branchId, int programId)
         {
             var program = new PsProgram();
@@ -616,6 +622,7 @@ namespace GRA.Controllers.MissionControl
             });
         }
 
+        [Authorize(Policy = Policy.SchedulePerformers)]
         public async Task<IActionResult> GetPerformerDaySchedule(int performerId, DateTime date)
         {
             var performerSchedule = await _performerSchedulingService.GetPerformerDateScheduleAsync(
@@ -653,6 +660,7 @@ namespace GRA.Controllers.MissionControl
             return PartialView("_DaySchedulePartial", viewModel);
         }
 
+        [Authorize(Policy = Policy.SchedulePerformers)]
         public async Task<JsonResult> CheckProgramTimeAvailability(int programId, DateTime date,
             bool backToBack)
         {
@@ -746,7 +754,8 @@ namespace GRA.Controllers.MissionControl
             var viewModel = new KitViewModel()
             {
                 Kit = kit,
-                SchedulingOpen = schedulingStage == PsSchedulingStage.SchedulingOpen
+                SchedulingOpen = schedulingStage == PsSchedulingStage.SchedulingOpen,
+                CanSchedule = UserHasPermission(Permission.SchedulePerformers)
             };
 
             if (kit.Images.Any())
@@ -839,6 +848,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
+        [Authorize(Policy = Policy.SchedulePerformers)]
         public async Task<IActionResult> SelectKit(PsBranchSelection branchSelection)
         {
             var settings = await _performerSchedulingService.GetSettingsAsync();
@@ -870,6 +880,7 @@ namespace GRA.Controllers.MissionControl
             }
         }
 
+        [Authorize(Policy = Policy.SchedulePerformers)]
         public async Task<JsonResult> GetKitAvailableAgeGroupsAsync(int branchId, int kitId)
         {
             var kit = new PsKit();

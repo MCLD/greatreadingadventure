@@ -8,8 +8,10 @@ namespace GRA.Domain.Model
     {
         public int SiteId { get; set; }
 
+        [DisplayName("Contact Email")]
         public string ContactEmail { get; set; }
 
+        [DisplayName("Selections Per Branch")]
         [Range(1, int.MaxValue)]
         public int? SelectionsPerBranch { get; set; }
 

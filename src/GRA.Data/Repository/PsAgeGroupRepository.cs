@@ -46,6 +46,37 @@ namespace GRA.Data.Repository
             };
         }
 
+        public async Task<ICollection<int>> GetAgeGroupBackToBackBranchIdsAsync(int ageGroupId)
+        {
+            return await _context.PsBackToBack
+                .AsNoTracking()
+                .Where(_ => _.PsAgeGroupId == ageGroupId)
+                .Select(_ => _.BranchId)
+                .ToListAsync();
+        }
+
+        public async Task AddAgeGroupBackToBackBranchesAsync(int ageGroupId, List<int> branchIds)
+        {
+            var backToBackBranches = branchIds.Select(_ => new Model.PsBackToBack
+            {
+                BranchId = _,
+                PsAgeGroupId = ageGroupId
+            });
+
+            await _context.PsBackToBack.AddRangeAsync(backToBackBranches);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RemoveAgeGroupBackToBackBranchesAsync(int ageGroupId, List<int> branchIds)
+        {
+            var backToBackBraches = _context.PsBackToBack
+                .AsNoTracking()
+                .Where(_ => _.PsAgeGroupId == ageGroupId && branchIds.Contains(_.BranchId));
+
+            _context.PsBackToBack.RemoveRange(backToBackBraches);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<bool> BranchHasBackToBackAsync(int ageGroupId, int branchId)
         {
             return await _context.PsBackToBack

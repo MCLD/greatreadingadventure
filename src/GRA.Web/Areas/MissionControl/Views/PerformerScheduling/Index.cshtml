@@ -37,15 +37,30 @@
                 }
                 else if (Model.SchedulingStage == GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
                 {
-                    <p>
-                        Scheduling has begun! You have until @Model.Settings.SchedulingClosed.Value.ToLongDateString() at @Model.Settings.SchedulingClosed.Value.ToLongTimeString() to complete your selection.
-                    </p>
-                    <div class="col-sm-6">
-                        <a asp-action="Performers" class="btn btn-lg btn-info btn-block">Schedule Programs</a>
-                    </div>
-                    <div class="col-sm-6">
-                        <a asp-action="Kits" class="btn btn-lg btn-info btn-block">Select Kits</a>
-                    </div>
+                    @if (Model.CanSchedule)
+                    {
+                        <p>
+                            Scheduling has begun! You have until @Model.Settings.SchedulingClosed.Value.ToLongDateString() at @Model.Settings.SchedulingClosed.Value.ToLongTimeString() to complete your selection.
+                        </p>
+                        <div class="col-sm-6">
+                            <a asp-action="Performers" class="btn btn-lg btn-info btn-block">Schedule Performers</a>
+                        </div>
+                        <div class="col-sm-6">
+                            <a asp-action="Kits" class="btn btn-lg btn-info btn-block">Select Kits</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <p>
+                            Scheduling has begun! Selections need to be compeleted by @Model.Settings.SchedulingClosed.Value.ToLongDateString() at @Model.Settings.SchedulingClosed.Value.ToLongTimeString().
+                        </p>
+                        <div class="col-sm-6">
+                            <a asp-action="Performers" class="btn btn-lg btn-default btn-block">View Performers</a>
+                        </div>
+                        <div class="col-sm-6">
+                            <a asp-action="Kits" class="btn btn-lg btn-default btn-block">View Kits</a>
+                        </div>
+                    }
                 }
                 else if (Model.SchedulingStage == GRA.Domain.Model.PsSchedulingStage.SchedulingClosed)
                 {

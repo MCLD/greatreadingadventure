@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Threading.Tasks;
+using GRA.Domain.Model;
 using GRA.Domain.Service;
 using GRA.Domain.Service.Abstract;
 using Microsoft.AspNetCore.Http;
@@ -16,12 +17,14 @@ namespace GRA.Controllers.Filter
         private readonly ILogger _logger;
         private readonly ITempDataDictionaryFactory _tempDataFactory;
         private readonly MailService _mailService;
+        private readonly PerformerSchedulingService _performerSchedulingService;
         private readonly UserService _userService;
         private readonly IUserContextProvider _userContextProvider;
 
         public UserFilter(ILogger<UserFilter> logger,
             ITempDataDictionaryFactory tempDataFactory,
             MailService mailService,
+            PerformerSchedulingService performerSchedulingService,
             UserService userService,
             IUserContextProvider userContextProvider)
         {
@@ -29,6 +32,8 @@ namespace GRA.Controllers.Filter
             _tempDataFactory = tempDataFactory
                 ?? throw new ArgumentNullException(nameof(tempDataFactory));
             _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
+            _performerSchedulingService = performerSchedulingService
+                ?? throw new ArgumentNullException(nameof(performerSchedulingService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _userContextProvider = userContextProvider
                 ?? throw new ArgumentNullException(nameof(userContextProvider));
@@ -55,7 +60,13 @@ namespace GRA.Controllers.Filter
                     if (httpContext.User.HasClaim(GRA.ClaimType.Permission,
                         GRA.Domain.Model.Permission.AccessPerformerRegistration.ToString()))
                     {
-                        httpContext.Items.Add(ItemKey.ShowPerformerRegistration, true);
+                        var settings = await _performerSchedulingService.GetSettingsAsync();
+                        var schedulingStage = _performerSchedulingService
+                            .GetSchedulingStage(settings);
+                        if (schedulingStage != PsSchedulingStage.Unavailable)
+                        {
+                            httpContext.Items.Add(ItemKey.ShowPerformerRegistration, true);
+                        }
                     }
                 }
 
