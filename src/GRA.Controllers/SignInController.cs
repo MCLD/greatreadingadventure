@@ -83,7 +83,10 @@ namespace GRA.Controllers
                                 questionnaireId.Value);
                         }
 
-                        TempData.Add(TempDataKey.UserSignedIn, true);
+                        if (!TempData.ContainsKey(TempDataKey.UserSignedIn))
+                        {
+                            TempData.Add(TempDataKey.UserSignedIn, true);
+                        }
 
                         if (!string.IsNullOrEmpty(model.ReturnUrl))
                         {
