@@ -59,7 +59,8 @@ namespace GRA.Data.Repository
                     .FirstOrDefault();
 
                 return carousels
-                    .Where(_ => _.StartTime > _dateTimeProvider.Now || _.Id == currentCarouselId);
+                    .Where(_ => _.StartTime > _dateTimeProvider.Now || _.Id == currentCarouselId)
+                    .OrderBy(_ => _.StartTime);
             }
             else if (filter.IsActive == false)
             {

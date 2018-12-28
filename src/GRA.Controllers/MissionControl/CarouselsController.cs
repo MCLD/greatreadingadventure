@@ -76,64 +76,89 @@ namespace GRA.Controllers.MissionControl
         {
             viewModel.Carousel.IsForDashboard = true;
             viewModel.Carousel.SiteId = GetCurrentSiteId();
-            // create
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var addedCarousel = await _carouselService.AddAsync(viewModel.Carousel);
-                AlertSuccess = $"Added carousel '<strong>{addedCarousel.Name}</strong>'";
-
-                return RedirectToAction(nameof(Edit), new { id = addedCarousel.Id });
-            }
-            else
-            {
-                AlertDanger = "Found {ModelState.ErrorCount.ToString()} errors";
                 return View(DetailViewName, viewModel);
             }
+
+            var addedCarousel = await _carouselService.AddAsync(viewModel.Carousel);
+            AlertSuccess = $"Added carousel '<strong>{addedCarousel.Name}</strong>'";
+
+            return RedirectToAction(nameof(Edit), new { id = addedCarousel.Id });
         }
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var carousel = await _carouselService.GetCarouselAsync(id);
-            if (carousel == null)
+            Carousel carousel = null;
+
+            try
             {
-                AlertDanger = $"Could not find carousel '<strong>{id}</strong>'.";
+                carousel = await _carouselService.GetCarouselAsync(id);
+                if (carousel == null)
+                {
+                    throw new Exception($"Carousel id {id} not found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                AlertDanger = $"Could not find carousel id '<strong>{id}</strong>'.";
+                _logger.LogError(ex,
+                    "User id {GetActiveUserId} tried to edit non-existent carousel id {id}",
+                    GetActiveUserId(),
+                    id);
                 return RedirectToAction(nameof(Index));
             }
-            else
+
+            return View(DetailViewName, new DetailViewModel
             {
-                return View(DetailViewName, new DetailViewModel
-                {
-                    Carousel = carousel,
-                    PageAction = ViewModel.PageAction.Edit
-                });
-            }
+                Carousel = carousel,
+                PageAction = ViewModel.PageAction.Edit
+            });
         }
 
         [HttpPost]
         public async Task<IActionResult> Edit(DetailViewModel viewModel)
         {
-            var updatedCarousel = await _carouselService.EditAsync(viewModel.Carousel);
+            if (ModelState.IsValid)
+            {
+                var updatedCarousel = await _carouselService.EditAsync(viewModel.Carousel);
 
-            AlertSuccess = $"Updated carousel '<strong>{updatedCarousel.Name}</strong>'";
+                AlertSuccess = $"Updated carousel '<strong>{updatedCarousel.Name}</strong>'";
 
-            return RedirectToAction(nameof(Edit), new { id = updatedCarousel.Id });
+                return RedirectToAction(nameof(Edit), new { id = updatedCarousel.Id });
+            }
+            else
+            {
+                return View(DetailViewName, viewModel);
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            var carousel = await _carouselService.GetCarouselAsync(id);
-            if (carousel == null)
+            Carousel carousel = null;
+            try
             {
-                AlertDanger = $"Could not find carousel '<strong>{id}</strong>'.";
+                carousel = await _carouselService.GetCarouselAsync(id);
+                if (carousel == null)
+                {
+                    throw new Exception($"Carousel id {id} not found.");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                string carouselName = carousel.Name;
-                await _carouselService.RemoveAsync(id);
-                AlertWarning = $"Deleted carousel '<strong>{carouselName}</strong>'.";
+                AlertDanger = $"Could not find carousel id '<strong>{id}</strong>'.";
+                _logger.LogError(ex,
+                    "User id {GetActiveUserId} tried to delete non-existent carousel id {id}",
+                    GetActiveUserId(),
+                    id);
+                return RedirectToAction(nameof(Index));
             }
+
+            string carouselName = carousel.Name;
+            await _carouselService.RemoveAsync(id);
+            AlertWarning = $"Deleted carousel '<strong>{carouselName}</strong>'.";
 
             return RedirectToAction(nameof(Index));
         }
@@ -141,37 +166,91 @@ namespace GRA.Controllers.MissionControl
         [HttpGet]
         public async Task<IActionResult> AddItem(int id)
         {
-            var carousel = await _carouselService.GetCarouselAsync(id);
-            if (carousel == null)
+            Carousel carousel = null;
+            try
             {
-                AlertDanger = $"Could not find carousel '<strong>{id}</strong>'.";
+                carousel = await _carouselService.GetCarouselAsync(id);
+                if (carousel == null)
+                {
+                    throw new Exception($"Carousel id {id} not found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                AlertDanger = $"Could not find carousel id '<strong>{id}</strong>'.";
+                _logger.LogError(ex,
+                    "User id {GetActiveUserId} tried add an item to a non-existent carousel id {id}",
+                    GetActiveUserId(),
+                    id);
                 return RedirectToAction(nameof(Index));
             }
-            else
+
+            return View(ItemDetailViewName, new ItemDetailViewModel
             {
-                return View(ItemDetailViewName, new ItemDetailViewModel
-                {
-                    CarouselId = carousel.Id,
-                    CarouselName = carousel.Name,
-                    PageAction = ViewModel.PageAction.New
-                });
-            }
+                CarouselId = carousel.Id,
+                CarouselName = carousel.Name,
+                PageAction = ViewModel.PageAction.New
+            });
         }
 
         [HttpPost]
         public async Task<IActionResult> AddItem(int id, ItemDetailViewModel viewModel)
         {
-            viewModel.CarouselItem.CarouselId = id;
-            var addedItem = await _carouselService.AddItemAsync(viewModel.CarouselItem);
-            AlertSuccess = $"Added carousel item '<strong>{addedItem.Title}</strong>'";
-            return RedirectToAction(nameof(Edit), new { id = addedItem.CarouselId });
+            if (ModelState.IsValid)
+            {
+                viewModel.CarouselItem.CarouselId = id;
+                var addedItem = await _carouselService.AddItemAsync(viewModel.CarouselItem);
+                AlertSuccess = $"Added carousel item '<strong>{addedItem.Title}</strong>'";
+                return RedirectToAction(nameof(Edit), new { id = addedItem.CarouselId });
+            }
+            else
+            {
+                return View(ItemDetailViewName, viewModel);
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> EditItem(int id)
         {
-            var item = await _carouselService.GetItemAsync(id);
-            var carousel = await _carouselService.GetCarouselAsync(item.CarouselId);
+            CarouselItem item = null;
+            Carousel carousel = null;
+            try
+            {
+                item = await _carouselService.GetItemAsync(id);
+                if (item == null)
+                {
+                    throw new Exception($"Carousel item id {id} not found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                AlertDanger = $"Could not find carousel item id '<strong>{id}</strong>'.";
+                _logger.LogError(ex,
+                    "User id {GetActiveUserId} tried edit non-existent carousel item id {id}",
+                    GetActiveUserId(),
+                    id);
+                return RedirectToAction(nameof(Index));
+            }
+
+            try
+            {
+                carousel = await _carouselService.GetCarouselAsync(item.CarouselId);
+                if (carousel == null)
+                {
+                    throw new Exception($"Carousel id {item.CarouselId} referenced from carousel item {id} not found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                AlertDanger = $"Could not find carousel id '<strong>{item.CarouselId}</strong>' referenced by item id '{id}'.";
+                _logger.LogError(ex,
+                    "User id {GetActiveUserId} tried to edit carousel item id {id} which references non-existant carousel id {CarouselId}",
+                    GetActiveUserId(),
+                    id,
+                    item.CarouselId);
+                return RedirectToAction(nameof(Index));
+            }
+
             return View(ItemDetailViewName, new ItemDetailViewModel
             {
                 CarouselId = carousel.Id,
@@ -184,31 +263,48 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> EditItem(int id, ItemDetailViewModel viewModel)
         {
-            viewModel.CarouselItem.Id = id;
-            var updatedItem = await _carouselService.EditItemAsync(viewModel.CarouselItem);
+            if (ModelState.IsValid)
+            {
+                viewModel.CarouselItem.Id = id;
+                var updatedItem = await _carouselService.EditItemAsync(viewModel.CarouselItem);
 
-            AlertSuccess = $"Updated carousel item '<strong>{updatedItem.Title}</strong>'";
+                AlertSuccess = $"Updated carousel item '<strong>{updatedItem.Title}</strong>'";
 
-            return RedirectToAction(nameof(Edit), new { id = updatedItem.CarouselId });
+                return RedirectToAction(nameof(Edit), new { id = updatedItem.CarouselId });
+            }
+            else
+            {
+                return View(ItemDetailViewName, viewModel);
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> DeleteItem(int id)
         {
-            var carouselItem = await _carouselService.GetItemAsync(id);
-            if (carouselItem == null)
+            CarouselItem carouselItem = null;
+            try
             {
-                AlertDanger = $"Could not find carousel item '<strong>{id}</strong>'.";
+                carouselItem = await _carouselService.GetItemAsync(id);
+                if (carouselItem == null)
+                {
+                    throw new Exception($"Carousel item id {id} not found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                AlertDanger = $"Could not find carousel item id '<strong>{id}</strong>'.";
+                _logger.LogError(ex,
+                    "User id {GetActiveUserId} tried to delete an item from non-existant carousel id {id}",
+                    GetActiveUserId(),
+                    id);
                 return RedirectToAction(nameof(Index));
             }
-            else
-            {
-                string itemTitle = carouselItem.Title;
-                int carouselId = carouselItem.CarouselId;
-                await _carouselService.DeleteItemAsync(id);
-                AlertWarning = $"Deleted carousel item '<strong>{itemTitle}</strong>'.";
-                return RedirectToAction(nameof(Edit), new { id = carouselId });
-            }
+
+            string itemTitle = carouselItem.Title;
+            int carouselId = carouselItem.CarouselId;
+            await _carouselService.DeleteItemAsync(id);
+            AlertWarning = $"Deleted carousel item '<strong>{itemTitle}</strong>'.";
+            return RedirectToAction(nameof(Edit), new { id = carouselId });
         }
     }
 }

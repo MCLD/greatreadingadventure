@@ -36,7 +36,7 @@
         <description gra-description-for="Carousel.StartTime"></description>
         <div class="input-group date" id="pickerStart">
             <span class="input-group-addon">
-                <span class="fa fa-calendar"></span>
+                <span class="far fa-calendar-alt"></span>
             </span>
             <input asp-for="Carousel.StartTime" type="text" class="form-control" />
         </div>
@@ -54,7 +54,7 @@
         <a asp-action="Index" class="btn btn-default">Return to List</a>
         <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-primary btn-spinner">
             <span class="buttonText">Save</span>
-            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+            <span class="fas fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
         </button>
     </div>
 </form>
@@ -135,12 +135,12 @@
             allowInputToggle: true,
             sideBySide: true,
             icons: {
-                time: "fa fa-clock-o",
-                date: "fa fa-calendar",
-                up: "fa fa-arrow-up",
-                down: "fa fa-arrow-down",
-                previous: "fa fa-arrow-left",
-                next: "fa fa-arrow-right"
+                time: "far fa-clock",
+                date: "far fa-calendar-alt",
+                up: "fas fa-arrow-up",
+                down: "fas fa-arrow-down",
+                previous: "fas fa-arrow-left",
+                next: "fas fa-arrow-right"
             }
         });
     </script>

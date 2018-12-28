@@ -9,7 +9,7 @@
                     <h4 class="modal-title" id="deleteModalLabel">Delete carousel</h4>
                 </div>
                 <div class="modal-body">
-                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                    <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
                     <span id="modal-text"></span>
                 </div>
                 <div class="modal-footer">
@@ -17,7 +17,7 @@
                     <form asp-controller="Carousels" asp-action="Delete" method="post" role="form" style="display:inline">
                         <input id="Id" name="Id" type="hidden" />
                         <button id="modal-deleteButton" type="submit" class="btn btn-danger pull-right" aria-label="Confirm">
-                            <span class="fa fa-remove" aria-hidden="true"></span>
+                            <span class="fas fa-times" aria-hidden="true"></span>
                             Delete
                         </button>
                     </form>
@@ -55,6 +55,7 @@
                     <thead>
                         <tr>
                             <th>Name</th>
+                            <th>Start time</th>
                             <th>Item count</th>
                             <th>&nbsp;</th>
                         </tr>
@@ -66,16 +67,28 @@
                                 <td class="td-class">
                                     <a asp-action="Edit" asp-route-id="@carousel.Id" class="rowlink">
                                         @carousel.Name
-                                        @if (carousel.ItemCount == 0)
-                                        {
-                                            <span>
-                                                <span class="fas fa-ban"></span>
-                                                Needs more items to display
-                                            </span>}
                                     </a>
                                 </td>
                                 <td class="td-class">
-                                    @carousel.ItemCount items
+                                    @carousel.StartTime
+                                </td>
+                                <td class="td-class">
+                                    @if (carousel.ItemCount == 0)
+                                    {
+                                        <span class="text-danger">
+                                            @carousel.ItemCount
+                                            items
+                                            <span class="fas fa-ban"></span>
+                                            <em>Will not display!</em>
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span>
+                                            @carousel.ItemCount
+                                            items
+                                        </span>
+                                    }
                                 </td>
                                 <td class="on-top gra-mc-icon">
                                     <button type="button"
@@ -84,7 +97,7 @@
                                             data-target="#deleteModal"
                                             data-id="@carousel.Id"
                                             data-name="@carousel.Name">
-                                        <span class="fa fa-remove" aria-hidden="true"></span>
+                                        <span class="fas fa-times" aria-hidden="true"></span>
                                     </button>
                                 </td>
                             </tr>
