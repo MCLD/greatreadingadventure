@@ -37,7 +37,8 @@ namespace GRA.Domain.Service
 
             if (carousel != null)
             {
-                carousel.Items = await _carouselItemRepository.GetByCarouselIdNoDescriptionAsync(carousel.Id);
+                carousel.Items = await _carouselItemRepository
+                    .GetByCarouselIdNoDescriptionAsync(carousel.Id);
                 if (carousel.Items?.Count() > 0)
                 {
                     return carousel;

@@ -31,14 +31,14 @@ $(".btn-spinner-no-validate").on("click", function(e) {
 });
 
 $().ready(function () {
-    if ($('.gra-carousel').length) {
-        $('.gra-carousel').slick({
+    if ($(".gra-carousel").length) {
+        $(".gra-carousel").slick({
             slidesToShow: 4,
             slidesToScroll: 4,
             autoplay: false,
             dots: false,
-            prevArrow: '<span class="far fa-2x fa-arrow-alt-circle-left gra-carousel-nav gra-carousel-prev"></span>',
-            nextArrow: '<span class="far fa-2x fa-arrow-alt-circle-right gra-carousel-nav gra-carousel-next"></span>',
+            prevArrow: "<span class=\"far fa-2x fa-arrow-alt-circle-left gra-carousel-nav gra-carousel-prev\"></span>",
+            nextArrow: "<span class=\"far fa-2x fa-arrow-alt-circle-right gra-carousel-nav gra-carousel-next\"></span>",
             responsive: [
                 {
                     breakpoint: 993,

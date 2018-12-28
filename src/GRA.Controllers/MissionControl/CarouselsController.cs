@@ -97,7 +97,7 @@ namespace GRA.Controllers.MissionControl
                 carousel = await _carouselService.GetCarouselAsync(id);
                 if (carousel == null)
                 {
-                    throw new Exception($"Carousel id {id} not found.");
+                    throw new GraException($"Carousel id {id} not found.");
                 }
             }
             catch (Exception ex)
@@ -143,7 +143,7 @@ namespace GRA.Controllers.MissionControl
                 carousel = await _carouselService.GetCarouselAsync(id);
                 if (carousel == null)
                 {
-                    throw new Exception($"Carousel id {id} not found.");
+                    throw new GraException($"Carousel id {id} not found.");
                 }
             }
             catch (Exception ex)
@@ -172,7 +172,7 @@ namespace GRA.Controllers.MissionControl
                 carousel = await _carouselService.GetCarouselAsync(id);
                 if (carousel == null)
                 {
-                    throw new Exception($"Carousel id {id} not found.");
+                    throw new GraException($"Carousel id {id} not found.");
                 }
             }
             catch (Exception ex)
@@ -219,7 +219,7 @@ namespace GRA.Controllers.MissionControl
                 item = await _carouselService.GetItemAsync(id);
                 if (item == null)
                 {
-                    throw new Exception($"Carousel item id {id} not found.");
+                    throw new GraException($"Carousel item id {id} not found.");
                 }
             }
             catch (Exception ex)
@@ -237,7 +237,7 @@ namespace GRA.Controllers.MissionControl
                 carousel = await _carouselService.GetCarouselAsync(item.CarouselId);
                 if (carousel == null)
                 {
-                    throw new Exception($"Carousel id {item.CarouselId} referenced from carousel item {id} not found.");
+                    throw new GraException($"Carousel id {item.CarouselId} referenced from carousel item {id} not found.");
                 }
             }
             catch (Exception ex)
@@ -287,7 +287,7 @@ namespace GRA.Controllers.MissionControl
                 carouselItem = await _carouselService.GetItemAsync(id);
                 if (carouselItem == null)
                 {
-                    throw new Exception($"Carousel item id {id} not found.");
+                    throw new GraException($"Carousel item id {id} not found.");
                 }
             }
             catch (Exception ex)
