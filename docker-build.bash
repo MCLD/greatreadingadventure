@@ -35,8 +35,6 @@ if [[ $BLD_BRANCH = "master" ]]; then
 elif [[ $BLD_BRANCH = "develop" ]]; then
   BLD_DOCKER_TAG="develop"
   BLD_PUSH=true
-  BLD_DOCKERFILE="dev/Dockerfile"
-  echo "=== Using $BLD_DOCKERFILE to add database migration for $BLD_BRANCH build..."
 elif [[ $BLD_BRANCH =~ release/([0-9]+\.[0-9]+\.[0-9]+.*) ]]; then
   BLD_RELEASE_VERSION=${BASH_REMATCH[1]}
   BLD_DOCKER_TAG=v${BLD_RELEASE_VERSION}
