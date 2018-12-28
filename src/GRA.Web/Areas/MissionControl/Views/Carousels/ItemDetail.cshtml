@@ -1,0 +1,56 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Carousels.ItemDetailViewModel
+
+@section styles {
+    <link rel="stylesheet" href="~/css/markdown.min.css" asp-append-version="true" />
+}
+
+    <form asp-controller="Carousels"
+          asp-action="@($"{Model.PageAction}Item")"
+          method="post"
+          role="form"
+          style="margin: 1rem 0;">
+
+        <div class="form-group">
+            <label asp-for="CarouselItem.Title" class="control-label"></label>
+            <description gra-description-for="CarouselItem.Title"></description>
+            <input asp-for="CarouselItem.Title" type="text" class="form-control" />
+            <span asp-validation-for="CarouselItem.Title" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="CarouselItem.ImageUrl" class="control-label"></label>
+            <description gra-description-for="CarouselItem.ImageUrl"></description>
+            <input asp-for="CarouselItem.ImageUrl" type="text" class="form-control" />
+            <span asp-validation-for="CarouselItem.ImageUrl" class="text-danger"></span>
+        </div>
+
+        <div class="row row-spacing">
+            <div class="col-xs-12">
+                <label asp-for="CarouselItem.Description" class="control-label"></label>
+                <description gra-description-for="CarouselItem.Description"></description>
+                <div id="wmd-button-bar"></div>
+                <textarea asp-for="CarouselItem.Description" id="wmd-input" class="form-control wmd-input"> </textarea>
+                <br /><label class="control-label">Preview</label>
+                <div id="preview"></div>
+                <span asp-validation-for="CarouselItem.Description" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <a asp-action="Edit" asp-route-id="@Model.CarouselId" class="btn btn-default">Return to Carousel</a>
+            <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-primary btn-spinner">
+                <span class="buttonText">Save</span>
+                <span class="fas fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+            </button>
+        </div>
+
+    </form>
+
+@section scripts {
+    <script src="~/js/markdown.min.js" asp-append-version="true"></script>
+
+    <script>
+        var editor = new Markdown.Editor({ allowUploads: true });
+        editor.run();
+    </script>
+}

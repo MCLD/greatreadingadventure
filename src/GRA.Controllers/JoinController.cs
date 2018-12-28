@@ -54,7 +54,7 @@ namespace GRA.Controllers
             _mapper = context.Mapper;
             _authenticationService = Require.IsNotNull(authenticationService,
                 nameof(authenticationService));
-            _authorizationCodeService = authorizationCodeService 
+            _authorizationCodeService = authorizationCodeService
                 ?? throw new ArgumentNullException(nameof(authorizationCodeService));
             _mailService = Require.IsNotNull(mailService, nameof(mailService));
             _pointTranslationService = Require.IsNotNull(pointTranslationService,
@@ -434,7 +434,10 @@ namespace GRA.Controllers
                             questionnaireId.Value);
                     }
 
-                    TempData.Add(TempDataKey.UserJoined, true);
+                    if (!TempData.ContainsKey(TempDataKey.UserJoined))
+                    {
+                        TempData.Add(TempDataKey.UserJoined, true);
+                    }
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -811,8 +814,8 @@ namespace GRA.Controllers
                 {
                     ModelState.AddModelError("Age", "The Age field is required.");
                 }
-                if (program.SchoolRequired && !model.SchoolId.HasValue 
-                    && !model.SchoolDistrictId.HasValue && !model.SchoolNotListed 
+                if (program.SchoolRequired && !model.SchoolId.HasValue
+                    && !model.SchoolDistrictId.HasValue && !model.SchoolNotListed
                     && !model.IsHomeschooled)
                 {
                     ModelState.AddModelError("SchoolDistrictId", "The School District field is required.");
@@ -1090,7 +1093,10 @@ namespace GRA.Controllers
                             questionnaireId.Value);
                     }
 
-                    TempData.Add(TempDataKey.UserJoined, true);
+                    if (!TempData.ContainsKey(TempDataKey.UserJoined))
+                    {
+                        TempData.Add(TempDataKey.UserJoined, true);
+                    }
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -1154,7 +1160,7 @@ namespace GRA.Controllers
                     TempData.Remove(AuthCodeAttempts);
                     TempData[EnteredAuthCode] = model.AuthorizationCode;
                     ShowAlertInfo("Authorization code accepted.");
-                    
+
                     if (site.SinglePageSignUp)
                     {
                         return RedirectToAction(nameof(Index));

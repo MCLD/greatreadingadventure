@@ -1,10 +1,6 @@
-# Site customizations
+# Customizing the look and feel
 
-Many parts of the GRA can be customized for your specific situation.
-
-## Site settings
-
-By default site settings coded into the software or provided in the configuration file are used to define things like the name of the site and the page footer. These can all be customized in Mission Control by selecting the gear icon on the right side of the navigation bar and choosing "Site management" from the drop-down menu.
+The participant-facing pages can be fully customized to support your specific needs.
 
 ## Custom landing pages and dashboard
 

@@ -120,22 +120,24 @@ namespace GRA.Data
 
         public DbSet<Model.Answer> Answers { get; set; }
         public DbSet<Model.AuditLog> AuditLogs { get; set; }
+        public DbSet<Model.AuthorizationCode> AuthorizationCodes { get; set; }
         public DbSet<Model.AvatarBundle> AvatarBundles { get; set; }
         public DbSet<Model.AvatarBundleItem> AvatarBundleItems { get; set; }
         public DbSet<Model.AvatarColor> AvatarColors { get; set; }
         public DbSet<Model.AvatarElement> AvatarElements { get; set; }
         public DbSet<Model.AvatarItem> AvatarItems { get; set; }
         public DbSet<Model.AvatarLayer> AvatarLayers { get; set; }
-        public DbSet<Model.AuthorizationCode> AuthorizationCodes { get; set; }
         public DbSet<Model.Badge> Badges { get; set; }
         public DbSet<Model.Book> Books { get; set; }
         public DbSet<Model.Branch> Branches { get; set; }
         public DbSet<Model.Broadcast> Broadcasts { get; set; }
+        public DbSet<Model.Carousel> Carousels { get; set; }
+        public DbSet<Model.CarouselItem> CarouselItems { get; set; }
         public DbSet<Model.Category> Categories { get; set; }
-        public DbSet<Model.ChallengeCategory> ChallengeCategories { get; set; }
         public DbSet<Model.Challenge> Challenges { get; set; }
-        public DbSet<Model.ChallengeGroupChallenge> ChallengeGroupChallenges { get; set; }
+        public DbSet<Model.ChallengeCategory> ChallengeCategories { get; set; }
         public DbSet<Model.ChallengeGroup> ChallengeGroups { get; set; }
+        public DbSet<Model.ChallengeGroupChallenge> ChallengeGroupChallenges { get; set; }
         public DbSet<Model.ChallengeTask> ChallengeTasks { get; set; }
         public DbSet<Model.ChallengeTaskType> ChallengeTaskTypes { get; set; }
         public DbSet<Model.DashboardContent> DashboardContents { get; set; }
@@ -154,8 +156,8 @@ namespace GRA.Data
         public DbSet<Model.PointTranslation> PointTranslations { get; set; }
         public DbSet<Model.PrizeWinner> PrizeWinners { get; set; }
         public DbSet<Model.Program> Programs { get; set; }
-        public DbSet<Model.Questionnaire> Questionnaires { get; set; }
         public DbSet<Model.Question> Questions { get; set; }
+        public DbSet<Model.Questionnaire> Questionnaires { get; set; }
         public DbSet<Model.RecoveryToken> RecoveryTokens { get; set; }
         public DbSet<Model.ReportCriterion> ReportCriteria { get; set; }
         public DbSet<Model.ReportRequest> ReportRequests { get; set; }
@@ -171,15 +173,15 @@ namespace GRA.Data
         public DbSet<Model.Trigger> Triggers { get; set; }
         public DbSet<Model.TriggerBadge> TriggerBadges { get; set; }
         public DbSet<Model.TriggerChallenge> TriggerChallenges { get; set; }
-        public DbSet<Model.UserLog> UserLogs { get; set; }
         public DbSet<Model.User> Users { get; set; }
         public DbSet<Model.UserAnswer> UserAnswers { get; set; }
         public DbSet<Model.UserAvatar> UserAvatars { get; set; }
         public DbSet<Model.UserAvatarItem> UserAvatarItems { get; set; }
-        public DbSet<Model.UserChallengeTask> UserChallengeTasks { get; set; }
         public DbSet<Model.UserBadge> UserBadges { get; set; }
         public DbSet<Model.UserBook> UserBooks { get; set; }
+        public DbSet<Model.UserChallengeTask> UserChallengeTasks { get; set; }
         public DbSet<Model.UserFavoriteChallenge> UserFavoriteChallenges { get; set; }
+        public DbSet<Model.UserLog> UserLogs { get; set; }
         public DbSet<Model.UserQuestionnaire> UserQuestionnaires { get; set; }
         public DbSet<Model.UserRole> UserRoles { get; set; }
         public DbSet<Model.UserTrigger> UserTriggers { get; set; }

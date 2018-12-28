@@ -26,7 +26,7 @@ namespace GRA.Controllers.Filter
             IUserContextProvider userContextProvider)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _tempDataFactory = tempDataFactory 
+            _tempDataFactory = tempDataFactory
                 ?? throw new ArgumentNullException(nameof(tempDataFactory));
             _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
@@ -41,10 +41,10 @@ namespace GRA.Controllers.Filter
             if (httpContext.User.Identity.IsAuthenticated)
             {
                 // Check if user can access mission control and the user Id matches the active user id
-                if (httpContext.User.HasClaim(GRA.ClaimType.Permission,
-                        GRA.Domain.Model.Permission.AccessMissionControl.ToString())
-                    && httpContext.Session.GetInt32(SessionKey.ActiveUserId) ==
-                        _userContextProvider.GetId(httpContext.User, ClaimType.UserId))
+                if (httpContext.User.HasClaim(ClaimType.Permission,
+                        nameof(Domain.Model.Permission.AccessMissionControl))
+                    && httpContext.Session.GetInt32(SessionKey.ActiveUserId)
+                        == _userContextProvider.GetId(httpContext.User, ClaimType.UserId))
                 {
                     httpContext.Items.Add(ItemKey.ShowMissionControl, true);
                 }

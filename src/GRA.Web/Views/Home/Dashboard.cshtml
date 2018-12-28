@@ -6,9 +6,9 @@
         <div class="modal fade" id="dailyImageModal" style="text-align:center;" tabindex="-1" role="dialog" aria-labelledby="dailyImageModalLabel">
             <div class="modal-dialog" style="display: inline-block;" role="document">
                 <div class="modal-content">
-                    <span class="frame-close fa fa-stack fa-lg" style="position:absolute;" data-dismiss="modal">
-                        <span class="fa fa-circle fa-stack-2x fa-inverse"></span>
-                        <span class="fa fa-times-circle fa-stack-1x fa-lg" style="text-shadow:none;"></span>
+                    <span class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute" data-dismiss="modal">
+                        <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
+                        <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
                     </span>
                     <div style="padding: 25px;">
                         <img class="img img-responsive daily-image" />
@@ -18,6 +18,35 @@
         </div>
     </div>
 }
+
+@if (Model.Carousel != null)
+{
+    <div class="row">
+        <div class="modal gra-carousel-modal" id="graCarouselModal" tabindex="-1" role="dialog" aria-labelledby="graCarouselModal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <span class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute" data-dismiss="modal">
+                            <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
+                            <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
+                        </span>
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-3 ">
+                                <img id="graCarouselModalImage" 
+                                     class="center-block gra-carousel-modal-image" />
+                            </div>
+                            <div class="col-xs-12 col-sm-9">
+                                <p style="font-size: 2rem; font-weight: bold;" id="graCarouselModalHeader"></p>
+                                <p id="graCarouselModalContent" class="gra-carousel-modal-content"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 
 <div class="row" style="font-size: larger;">
     <div class="col-sm-3 text-center">
@@ -100,7 +129,7 @@
 
                             <button type="submit" class="btn center-block btn-success btn-lg btn-spinner">
                                 <span class="buttonText">I read a book!</span>
-                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                <span class="fas fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
                         </form>
                     </div>
@@ -137,7 +166,7 @@
 
                             <button type="submit" class="btn center-block btn-success btn-lg btn-spinner">
                                 <span class="buttonText">Log Minutes</span>
-                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                <span class="fas fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
                         </form>
                     </div>
@@ -170,7 +199,7 @@
 
                             <button type="submit" class="btn center-block btn-success btn-lg btn-spinner">
                                 <span class="buttonText">Submit Code</span>
-                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                <span class="fas fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
                         </form>
                     </div>
@@ -265,6 +294,38 @@
     </div>
 }
 
+@if (Model.Carousel != null)
+{
+    <div class="row gra-js-required">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                @if (!string.IsNullOrEmpty(Model.Carousel.Heading))
+                {
+                    <div class="panel-heading">
+                        @Model.Carousel.Heading
+                    </div>
+                }
+                <div class="panel-body">
+                    <div class="gra-carousel text-center">
+                        @foreach (var item in Model.Carousel.Items)
+                        {
+                            <div>
+                                <a href="#"
+                                   class="gra-carousel-link"
+                                   data-itemid="@item.Id"
+                                   data-title="@item.Title"
+                                   data-img="@item.ImageUrl">
+                                    <img src="@item.ImageUrl" />
+                                    <p>@item.Title</p>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 @section scripts {
     <script>
@@ -282,10 +343,37 @@
             {
                 <text>
                     gtag('event', 'sign_up', {
-                        'program_name': '@Model.ProgramName',
-                        'first_time_participant': '@Model.FirstTimeParticipant'
+                        'Program Name': '@Model.ProgramName',
+                        'First Time Participant': '@Model.FirstTimeParticipant'
                     });
                 </text>
             }
     </script>
+    @if (Model.Carousel != null)
+    {
+        <script>
+            $(".gra-carousel-link").on("click", function (event) {
+                event.stopPropagation();
+                event.stopImmediatePropagation();
+                $("#graCarouselModalContent").html("<div class=\"gra-carousel-spinner\"><span class=\"fas fa-spinner fa-3x fa-spin\"></span></div>");
+                var id = $(this).data("itemid");
+
+                var jqXHR = $.get("@Url.Action("GetCarouselDescription", "Home")/" + id,
+                    function (data) {
+                        $("#graCarouselModalContent").html(data);
+                    }
+                ).fail(function () {
+                    $("#graCarouselModalContent").html("Could not find details for this item, sorry!");
+                });
+
+                $("#graCarouselModalHeader").text($(this).data("title"));
+                $("#graCarouselModalImage").attr("src", $(this).data("img"));
+
+                $("#graCarouselModal").modal().show();
+            });
+
+        </script>
+        <link rel="stylesheet" type="text/css" href="/lib/slick-carousel/slick/slick.css" />
+        <script type="text/javascript" src="/lib/slick-carousel/slick/slick.min.js"></script>
+    }
 }

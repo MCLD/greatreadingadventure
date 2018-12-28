@@ -52,8 +52,9 @@ This manual is split into several main sections:
    :caption: Setup
 
    setup/administrator-account
+   setup/site-settings
    setup/adding-avatars
-   setup/site-customizations
+   setup/customizing-the-look-and-feel
 
 .. _technical-docs:
 

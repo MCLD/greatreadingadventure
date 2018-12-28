@@ -1,10 +1,11 @@
-﻿using GRA.Controllers.Filter;
+﻿using System;
+using System.Threading.Tasks;
+using GRA.Controllers.Filter;
 using GRA.Controllers.ViewModel.SignIn;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 
 namespace GRA.Controllers
 {
@@ -16,6 +17,7 @@ namespace GRA.Controllers
         private readonly AuthenticationService _authenticationService;
         private readonly QuestionnaireService _questionnaireService;
         private readonly UserService _userService;
+
         public SignInController(ILogger<SignInController> logger,
             ServiceFacade.Controller context,
             ActivityService activityService,
@@ -24,13 +26,14 @@ namespace GRA.Controllers
             UserService userService)
                 : base(context)
         {
-            _logger = Require.IsNotNull(logger, nameof(logger));
-            _activityService = Require.IsNotNull(activityService, nameof(activityService));
-            _authenticationService = Require.IsNotNull(authenticationService,
-                nameof(authenticationService));
-            _questionnaireService = Require.IsNotNull(questionnaireService,
-                nameof(questionnaireService));
-            _userService = Require.IsNotNull(userService, nameof(userService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _activityService = activityService
+                ?? throw new ArgumentNullException(nameof(activityService));
+            _authenticationService = authenticationService
+                ?? throw new ArgumentNullException(nameof(authenticationService));
+            _questionnaireService = questionnaireService
+                ?? throw new ArgumentNullException(nameof(questionnaireService));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             PageTitle = "Sign In";
         }
 
@@ -39,8 +42,10 @@ namespace GRA.Controllers
             var site = await GetCurrentSiteAsync();
             PageTitle = $"Sign In to {site.Name}";
 
-            SignInViewModel viewModel = new SignInViewModel();
-            viewModel.ReturnUrl = ReturnUrl;
+            var viewModel = new SignInViewModel
+            {
+                ReturnUrl = ReturnUrl
+            };
             return View(viewModel);
         }
 
@@ -51,13 +56,19 @@ namespace GRA.Controllers
             {
                 try
                 {
+                    _logger.LogTrace("Authenticating user {Username}", model.Username);
                     var loginAttempt = await _authenticationService
                         .AuthenticateUserAsync(model.Username, model.Password);
 
                     if (loginAttempt.PasswordIsValid)
                     {
+                        _logger.LogTrace("Password valid for {Username}, logging in",
+                            model.Username);
                         await LoginUserAsync(loginAttempt);
+                        _logger.LogTrace("Awarding triggers for {Username}", model.Username);
                         await _activityService.AwardUserTriggersAsync(loginAttempt.User.Id, true);
+
+                        _logger.LogTrace("Checking household count for {Username}", model.Username);
                         var householdCount = await _userService.FamilyMemberCountAsync(
                             loginAttempt.User.Id, true);
                         if (householdCount > 0)
@@ -65,16 +76,19 @@ namespace GRA.Controllers
                             HttpContext.Session.SetString(SessionKey.HeadOfHousehold, "True");
                         }
 
-                        int householdHeadId = loginAttempt.User.HouseholdHeadUserId 
+                        int householdHeadId = loginAttempt.User.HouseholdHeadUserId
                             ?? loginAttempt.User.Id;
 
-                        var group 
+                        _logger.LogTrace("Looking up group for {Username}", model.Username);
+                        var group
                             = await _userService.GetGroupFromHouseholdHeadAsync(householdHeadId);
                         if (group != null)
                         {
                             HttpContext.Session.SetString(SessionKey.CallItGroup, "True");
                         }
 
+                        _logger.LogTrace("Performing questionnaire lookup for {Username}",
+                            model.Username);
                         var questionnaireId = await _questionnaireService
                             .GetRequiredQuestionnaire(loginAttempt.User.Id, loginAttempt.User.Age);
                         if (questionnaireId.HasValue)
@@ -83,7 +97,10 @@ namespace GRA.Controllers
                                 questionnaireId.Value);
                         }
 
-                        TempData.Add(TempDataKey.UserSignedIn, true);
+                        if (!TempData.ContainsKey(TempDataKey.UserSignedIn))
+                        {
+                            TempData.Add(TempDataKey.UserSignedIn, true);
+                        }
 
                         if (!string.IsNullOrEmpty(model.ReturnUrl))
                         {
@@ -97,8 +114,11 @@ namespace GRA.Controllers
                 }
                 catch (GraException gex)
                 {
+                    _logger.LogWarning(gex, "Sign in error for {Username}: {Message}",
+                        model.Username,
+                        gex.Message);
                     AlertInfo = gex.Message;
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction(nameof(Index), "Home");
                 }
                 model.ErrorMessage = "The username and password entered do not match";
             }
@@ -121,12 +141,18 @@ namespace GRA.Controllers
             {
                 try
                 {
-                    string recoveryUrl = Url.Action("PasswordRecovery", "SignIn", null, HttpContext.Request.Scheme);
+                    string recoveryUrl = Url.Action("PasswordRecovery",
+                        "SignIn",
+                        null,
+                        HttpContext.Request.Scheme);
                     await _authenticationService.GenerateTokenAndEmail(username, recoveryUrl);
                     AlertSuccess = $"A password recovery email has been sent to the email of <strong>{username}</strong>.";
                 }
                 catch (GraException gex)
                 {
+                    _logger.LogWarning(gex, "Problem in password recovery for username {username}: {Message}",
+                        username,
+                        gex.Message);
                     ShowAlertWarning("Could not recover password: ", gex);
                 }
             }
@@ -154,7 +180,10 @@ namespace GRA.Controllers
                 }
                 catch (GraException gex)
                 {
-                    ShowAlertWarning("Could not recover usernames: ", gex.Message);
+                    _logger.LogWarning(gex, "Problem recovering username(s) for {email}: {Message}",
+                        email,
+                        gex.Message);
+                    ShowAlertWarning("Could not recover username(s): ", gex.Message);
                 }
             }
 
@@ -163,7 +192,7 @@ namespace GRA.Controllers
 
         public IActionResult PasswordRecovery(string username, string token)
         {
-            PasswordRecoveryViewModel viewModel = new PasswordRecoveryViewModel()
+            var viewModel = new PasswordRecoveryViewModel
             {
                 Username = username,
                 Token = token
@@ -178,12 +207,17 @@ namespace GRA.Controllers
             {
                 try
                 {
-                    await _authenticationService.ResetPassword(model.Username, model.NewPassword, model.Token);
+                    await _authenticationService.ResetPassword(model.Username,
+                        model.NewPassword,
+                        model.Token);
                     AlertSuccess = $"Password reset for {model.Username}";
                     return RedirectToAction("Index");
                 }
                 catch (GraException gex)
                 {
+                    _logger.LogWarning(gex, "Unable to reset password for {Username}: {Message}",
+                        model.Username,
+                        gex.Message);
                     ShowAlertWarning("Unable to reset password: ", gex);
                 }
             }

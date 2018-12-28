@@ -379,6 +379,64 @@ namespace GRA.Data.SqlServer.Migrations
                     b.ToTable("Broadcasts");
                 });
 
+            modelBuilder.Entity("GRA.Data.Model.Carousel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("CreatedBy");
+
+                    b.Property<string>("Heading")
+                        .HasMaxLength(255);
+
+                    b.Property<bool>("IsForDashboard");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255);
+
+                    b.Property<int>("SiteId");
+
+                    b.Property<DateTime>("StartTime");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Carousels");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.CarouselItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CarouselId");
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("CreatedBy");
+
+                    b.Property<string>("Description")
+                        .IsRequired();
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasMaxLength(500);
+
+                    b.Property<int>("SortOrder");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(255);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CarouselItems");
+                });
+
             modelBuilder.Entity("GRA.Data.Model.Category", b =>
                 {
                     b.Property<int>("Id")

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using GRA.Domain.Model;
 
 namespace GRA.Controllers.ViewModel.Home
 {
@@ -12,14 +13,18 @@ namespace GRA.Controllers.ViewModel.Home
         public string ActivityDescriptionPlural { get; set; }
 
         public int? ActivityAmount { get; set; }
+
         [MaxLength(500)]
         public string Title { get; set; }
+
         [MaxLength(255)]
         public string Author { get; set; }
 
         public bool DisableSecretCode { get; set; }
+
         [DisplayName("Secret Code")]
         public string SecretCode { get; set; }
+
         public string SecretCodeMessage { get; set; }
 
         public string DailyImageMessage { get; set; }
@@ -31,11 +36,13 @@ namespace GRA.Controllers.ViewModel.Home
         public int? TotalProgramGoal { get; set; }
         public int? PercentComplete { get; set; }
 
-        public IEnumerable<GRA.Domain.Model.Badge> Badges { get; set; }
-        public ICollection<GRA.Domain.Model.AvatarElement> AvatarElements { get; set; }
+        public IEnumerable<Badge> Badges { get; set; }
+        public ICollection<AvatarElement> AvatarElements { get; set; }
 
         public string ProgramName { get; set; }
         public bool UserJoined { get; set; }
         public bool FirstTimeParticipant { get; set; }
+
+        public Carousel Carousel { get; set; }
     }
 }

@@ -1,20 +1,11 @@
 # GRA Developer Documentation - Docker
 
-The GRA is designed to function in Docker utilizing [Microsoft-provided base images](https://hub.docker.com/r/microsoft/). If built using a `Dockerfile` in the project, the [aspnetcore-build](https://hub.docker.com/r/microsoft/aspnetcore-build/) image will be used for the build and the [aspnetcore](https://hub.docker.com/r/microsoft/aspnetcore/) image will be used for running the compiled application. You must choose a single `Dockerfile` to use for your build:
-
-- `Dockerfile` - builds the project as-is, used for images tagged as release or `master`.
-- `dev/Dockerfile` - adds database migrations and builds the project, used for the image tagged as `develop`.
+The GRA is designed to function in Docker utilizing [Microsoft-provided base images](https://hub.docker.com/r/microsoft/). If built using a `Dockerfile` in the project, the [aspnetcore-build](https://hub.docker.com/r/microsoft/aspnetcore-build/) image will be used for the build and the [aspnetcore](https://hub.docker.com/r/microsoft/aspnetcore/) image will be used for running the compiled application.
 
 ## Sample build command
 
-### Dockerfile for releases
 ```sh
-docker build . -t gra:latest
-```
-
-### Dockerfile for development
-```sh
-docker build -f dev/Dockerfile . -t gra:develop
+bash ./docker-build.bash
 ```
 
 ## Sample run command(s)
