@@ -778,12 +778,12 @@ p.password-note {
     right: 0;
 }
 
-#graCarouselModal {
-    padding: 0 !important;
+.gra-carousel-modal {
+    padding: 0;
     text-align: center;
 }
 
-    #graCarouselModal:before {
+    .gra-carousel-modal:before {
         content: '';
         display: inline-block;
         height: 100%;
@@ -791,19 +791,19 @@ p.password-note {
         vertical-align: middle;
     }
 
-    #graCarouselModal > .modal-dialog {
+    .gra-carousel-modal > .modal-dialog {
         display: inline-block;
         text-align: left;
         vertical-align: middle;
     }
 
-    #graCarouselModal #graCarouselModalContent .gra-carousel-spinner {
-        text-align: center;
-        padding-top: 4rem;
+    .gra-carousel-modal .gra-carousel-modal-content .gra-carousel-spinner {
         color: #77787a;
+        padding-top: 4rem;
+        text-align: center;
     }
 
-    #graCarouselModal .gra-carousel-modal-image {
+    .gra-carousel-modal .gra-carousel-modal-image {
         max-width: 130px;
     }
 
