@@ -51,7 +51,6 @@ namespace GRA.Domain.Model
         public const string ViewAllReporting = "ViewAllReporting";
         public const string ViewParticipantDetails = "ViewParticipantDetails";
         public const string ViewParticipantList = "ViewParticipantList";
-        public const string ViewParticipantDetails = "ViewParticipantDetails";
         public const string ViewPerformerDetails = "ViewPerformerDetails";
         public const string ViewUnpublishedPages = "ViewUnpublishedPages";
         public const string ViewUserPrizes = "ViewUserPrizes";
