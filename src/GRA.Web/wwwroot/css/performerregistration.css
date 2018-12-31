@@ -10,8 +10,8 @@
     }
 
 .sign-up-step {
-    padding-top: 0.8rem;
     padding-bottom: 0;
+    padding-top: 0.8rem;
 }
 
     .sign-up-step p {
@@ -30,8 +30,6 @@
 
 h1 {
     font-weight: bold;
-    color: #307fe2;
-    text-align: center;
 }
 
 .calendar-cell {
@@ -39,13 +37,13 @@ h1 {
 }
 
 .selectable {
-    padding: 0 !important;
     cursor: pointer;
+    padding: 0 !important;
 }
 
 .unselectable {
-    padding: 0 !important;
     cursor: not-allowed;
+    padding: 0 !important;
 }
 
 .available {
@@ -82,9 +80,9 @@ h1 {
 
 .option {
     padding: 8px 4px;
-    -webkit-user-select: none; /* Chrome, Opera, Safari */
     -moz-user-select: none; /* Firefox 2+ */
     -ms-user-select: none; /* IE 10+ */
+    -webkit-user-select: none; /* Chrome, Opera, Safari */
     user-select: none; /* Standard syntax */
 }
 
@@ -106,15 +104,15 @@ h1 {
 }
 
 .required-field:after {
-    content: "*";
     color: #a94442;
-    font-weight: bold;
+    content: "*";
     font-size: 1.3em;
+    font-weight: bold;
 }
 
 .multiselect .multiselect-selected-text {
-    position: absolute;
     left: 13px;
+    position: absolute;
     top: 7px;
 }
 
@@ -126,10 +124,22 @@ h1 {
 .drop-up.multiselect-container {
     margin-top: -576px !important;
     max-height: 542px !important;
-    overflow-y: auto;
     overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .cursor-pointer {
     cursor: pointer;
 }
+
+.gra-performer-navbar {
+    background-color: PaleGoldenrod;
+}
+
+    .gra-performer-navbar .mc-navbar-brand {
+        color: black;
+    }
+
+    .gra-performer-navbar .navbar-nav li.active {
+        background-color: #BDB76B;
+    }

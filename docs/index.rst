@@ -55,6 +55,7 @@ This manual is split into several main sections:
    setup/site-settings
    setup/adding-avatars
    setup/customizing-the-look-and-feel
+   setup/performer-registration
 
 .. _technical-docs:
 

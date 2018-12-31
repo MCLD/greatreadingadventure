@@ -13,22 +13,26 @@
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="~/css/main.min.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/performerregistration.min.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     @RenderSection("styles", required: false)
     <style>
         div.tooltip-inner {
             width: 10rem;
         }
     </style>
+    @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.SiteCss))
+    {
+        <link rel="stylesheet" href="@Url.Content(Context.Items[GRA.Controllers.ItemKey.SiteCss].ToString())" />
+    }
 </head>
 <body id="mission-control-body">
-    <div class="navbar navbar-inverse navbar-static-top">
+    <div class="navbar gra-performer-navbar navbar-static-top">
         <div class="container">
             <div class="navbar-header">
                 <button type="button"
                         class="navbar-toggle mc-menu-button btn-sm"
                         data-toggle="collapse"
-                        data-target=".navbar-collapse">
+                        data-target=".navbar-collapse"
+                        style="color: white;">
                     <span class="sr-only">Toggle navigation</span>
                     Menu
                 </button>
@@ -41,7 +45,8 @@
             </div>
             <div class="navbar-collapse navbar-right collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index" title="Back to the site" data-toggle="tooltip" data-placement="bottom" class="gra-homelink"><span class="fa fa-sitemap"></span><span class="visible-xs-inline"> Back to the site</span></a></li>
+                    <li class="active"><a asp-area="PerformerRegistration" asp-controller="Home" asp-action="Index" title="Performer Registration" data-toggle="tooltip" data-placement="bottom"><span class="fa fa-theater-masks"></span><span class="visible-xs-inline"> Mission Control</span></a></li>
+                    <li><a asp-controller="Home" asp-action="Index" asp-area="" title="Home"><span class="fa fa-home"></span><span class="visible-xs-inline"> Home</span></a></li>
                     <li><a asp-controller="Home" asp-action="Signout" asp-area="">Sign out</a></li>
                 </ul>
             </div>
@@ -90,7 +95,7 @@
             </div>
         }
         @RenderBody()
-        <footer style="clear: both;">
+        <footer style="clear: both; margin-top: 2rem;">
             <grasite property="footer"></grasite>
         </footer>
     </div>

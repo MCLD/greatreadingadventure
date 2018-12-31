@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace GRA.Domain.Model
@@ -9,11 +8,13 @@ namespace GRA.Domain.Model
         [MaxLength(255)]
         [Required]
         public string Name { get; set; }
-        [DisplayName("Icon Color")]
+
+        [Display(Name = "Icon Color",
+            Description = "a Web color entered in hexadecimal such as #4682b4")]
         [MaxLength(32)]
         [Required]
         public string IconColor { get; set; }
-        
+
         public ICollection<int> BackToBackBranchIds { get; set; }
     }
 }
