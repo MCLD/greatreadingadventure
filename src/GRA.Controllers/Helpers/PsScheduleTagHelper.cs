@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using GRA.Domain.Model;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Newtonsoft.Json;
@@ -13,55 +12,57 @@ namespace GRA.Controllers.Helpers
     {
         [HtmlAttributeName("asp-schedule")]
         public PsPerformerSchedule Schedule { get; set; }
+
         [HtmlAttributeName("asp-booked")]
         public DateTime BookedDate { get; set; }
+
         [HtmlAttributeName("asp-booking")]
         public bool Booking { get; set; }
+
         [HtmlAttributeName("asp-currentDate")]
         public bool CurrentDate { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             var existingClasses = output.Attributes
-                    .Where(_ => _.Name == "class")
-                    .FirstOrDefault();
+                    .FirstOrDefault(_ => _.Name == "class");
             string availability = "";
-            if (CurrentDate == true)
+            if (CurrentDate)
             {
-                availability = PsScheduleDateStatus.Current.ToString();
+                availability = nameof(PsScheduleDateStatus.Current);
             }
-            else if (Schedule == null && (Booking == false || BookedDate == default(DateTime)))
+            else if (Schedule == null && (!Booking || BookedDate == default(DateTime)))
             {
-                availability = PsScheduleDateStatus.Available.ToString();
+                availability = nameof(PsScheduleDateStatus.Available);
             }
-            else if (Schedule?.StartTime.HasValue == true || (Booking == true && BookedDate != default(DateTime)))
+            else if (Schedule?.StartTime.HasValue == true || (Booking && BookedDate != default(DateTime)))
             {
-                availability = PsScheduleDateStatus.Time.ToString();
+                availability = nameof(PsScheduleDateStatus.Time);
                 if (Schedule?.StartTime.HasValue == true)
                 {
-                    var timeString = JsonConvert.SerializeObject(new List<string>()
-                {
-                    Schedule.StartTime.Value.ToString("hh:mm tt"),
-                    Schedule.EndTime.Value.ToString("hh:mm tt")
-                });
+                    var timeString = JsonConvert.SerializeObject(new List<string>
+                    {
+                        Schedule.StartTime.Value.ToString("hh:mm tt"),
+                        Schedule.EndTime.Value.ToString("hh:mm tt")
+                    });
                     output.Attributes.Add("data-time", timeString);
                 }
             }
-            else if (Schedule != null && Schedule.StartTime.HasValue == false)
+            else if (Schedule?.StartTime.HasValue == false)
             {
-                availability = PsScheduleDateStatus.Unavailable.ToString();
+                availability = nameof(PsScheduleDateStatus.Unavailable);
             }
 
-            if (Booking == false)
+            if (!Booking)
             {
                 output.Attributes.Add("data-availability", availability);
             }
-            if (existingClasses.Value.ToString().Contains("unselectable") == false
-                || (Booking && availability == PsScheduleDateStatus.Unavailable.ToString()))
+            if (!existingClasses.Value.ToString().Contains("unselectable")
+                || (Booking && availability == nameof(PsScheduleDateStatus.Unavailable)))
             {
                 output.Attributes.Remove(existingClasses);
-                var attribute = new TagHelperAttribute("class", $"{existingClasses.Value} " +
-                    $"{availability.ToLower()}");
+                var attribute = new TagHelperAttribute("class",
+                    $"{existingClasses.Value} {availability.ToLower()}");
 
                 output.Attributes.Add(attribute);
             }

@@ -1,11 +1,11 @@
-﻿using GRA.Domain.Service;
+﻿using System;
+using System.Threading.Tasks;
+using GRA.Domain.Model;
+using GRA.Domain.Service;
+using GRA.Domain.Service.Abstract;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Threading.Tasks;
-using GRA.Domain.Service.Abstract;
-using GRA.Domain.Model;
 
 namespace GRA.Controllers.Filter
 {
@@ -66,12 +66,12 @@ namespace GRA.Controllers.Filter
                 _logger.LogDebug($"Attempted Mission Control access while not logged in: {ex.Message}");
             }
 
-            if (httpContext.User.HasClaim(ClaimType.Permission,
-                Domain.Model.Permission.ReadAllMail.ToString()))
+            if (httpContext.User.HasClaim(ClaimType.Permission, nameof(Permission.ReadAllMail)))
             {
                 try
                 {
-                    httpContext.Items[ItemKey.UnreadCount] = await _mailService.GetAdminUnreadCountAsync();
+                    httpContext.Items[ItemKey.UnreadCount]
+                        = await _mailService.GetAdminUnreadCountAsync();
                 }
                 catch (Exception ex)
                 {
@@ -80,7 +80,7 @@ namespace GRA.Controllers.Filter
             }
 
             if (httpContext.User.HasClaim(ClaimType.Permission,
-                GRA.Domain.Model.Permission.ViewPerformerDetails.ToString()))
+                nameof(Permission.ViewPerformerDetails)))
             {
                 var settings = await _performerSchedulingService.GetSettingsAsync();
                 var schedulingStage = _performerSchedulingService

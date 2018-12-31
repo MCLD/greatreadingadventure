@@ -18,11 +18,6 @@ namespace GRA.Domain.Service
         private readonly ISystemRepository _systemRepository;
         private readonly IPointTranslationRepository _pointTranslationRepository;
 
-        // Temp
-        private readonly IPsAgeGroupRepository _psAgeGroupRepository;
-        private readonly IPsBlackoutDateRepository _psBlackoutDateRepository;
-        private readonly IPsSettingsRepository _psSettingsRepository;
-
         public SetupMultipleProgramService(ILogger<SetupMultipleProgramService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IAuthorizationCodeRepository authorizationCodeRepository,
@@ -31,11 +26,7 @@ namespace GRA.Domain.Service
             IProgramRepository programRepository,
             IRoleRepository roleRepository,
             ISystemRepository systemRepository,
-            IPointTranslationRepository pointTranslationRepository,
-            // Temp
-            IPsAgeGroupRepository psAgeGroupRepository,
-            IPsBlackoutDateRepository psBlackoutDateRepository,
-            IPsSettingsRepository psSettingsRepository) : base(logger, dateTimeProvider)
+            IPointTranslationRepository pointTranslationRepository) : base(logger, dateTimeProvider)
         {
             _authorizationCodeRepository = Require.IsNotNull(authorizationCodeRepository,
                 nameof(authorizationCodeRepository));
@@ -48,14 +39,6 @@ namespace GRA.Domain.Service
             _systemRepository = Require.IsNotNull(systemRepository, nameof(systemRepository));
             _pointTranslationRepository = Require.IsNotNull(pointTranslationRepository,
                 nameof(pointTranslationRepository));
-
-            // Temp
-            _psAgeGroupRepository = psAgeGroupRepository
-                ?? throw new ArgumentNullException(nameof(psAgeGroupRepository));
-            _psBlackoutDateRepository = psBlackoutDateRepository
-                ?? throw new ArgumentNullException(nameof(psBlackoutDateRepository));
-            _psSettingsRepository = psSettingsRepository 
-                ?? throw new ArgumentNullException(nameof(psSettingsRepository));
         }
 
         public async Task InsertAsync(int siteId, string initialAuthorizationCode, int userId = -1)

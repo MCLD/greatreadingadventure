@@ -10,8 +10,10 @@ namespace GRA.Domain.Repository
         Task<PsSettings> GetBySiteIdAsync(int siteId);
         Task<DataWithCount<ICollection<Branch>>> PageExcludedBranchesAsync(BaseFilter filter);
         Task<ICollection<int>> GetExcludedBranchIdsAsync();
+
         Task<ICollection<Branch>> GetNonExcludedSystemBranchesAsync(int systemId,
             int? prioritizeBranchId = null);
+
         Task<Branch> GetNonExcludedBranchAsync(int branchId);
         Task AddBranchExclusionAsync(int branchId);
         Task RemoveBranchExclusionAsync(int branchId);

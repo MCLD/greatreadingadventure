@@ -93,7 +93,7 @@ namespace GRA.Data.Repository
             }
             if (onlyApproved)
             {
-                programs = programs.Where(_ => _.Performer.IsApproved == true);
+                programs = programs.Where(_ => _.Performer.IsApproved);
             }
 
             return await programs

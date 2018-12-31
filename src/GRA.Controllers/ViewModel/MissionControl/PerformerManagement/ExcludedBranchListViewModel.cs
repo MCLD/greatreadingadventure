@@ -14,6 +14,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.PerformerManagement
         public ICollection<Branch> ExcludedBranches { get; set; }
         public PaginateViewModel PaginateModel { get; set; }
         public SelectList UnexcludedBranches { get; set; }
+
         [Required]
         [DisplayName("Branch")]
         public int? BranchId { get; set; }

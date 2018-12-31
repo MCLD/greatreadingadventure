@@ -25,4 +25,4 @@ $(":file").on("fileselect", function (event, numFiles, label) {
 });
 
 // bootstrap tooltip
-$('[data-toggle="tooltip"]').tooltip();
+$("[data-toggle=\"tooltip\"]").tooltip();

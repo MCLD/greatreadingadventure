@@ -76,7 +76,7 @@ namespace GRA.Data.Repository
 
             if (onlyApproved)
             {
-                performers = performers.Where(_ => _.IsApproved == true);
+                performers = performers.Where(_ => _.IsApproved);
             }
 
             return await performers

@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace GRA.Data.Repository
 {
-    public class PsAgeGroupRepository 
+    public class PsAgeGroupRepository
         : AuditingRepository<Model.PsAgeGroup, Domain.Model.PsAgeGroup>, IPsAgeGroupRepository
     {
         public PsAgeGroupRepository(ServiceFacade.Repository repositoryFacade,

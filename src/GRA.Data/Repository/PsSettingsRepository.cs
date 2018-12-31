@@ -57,7 +57,7 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task<ICollection<Branch>> GetNonExcludedSystemBranchesAsync(int systemId, 
+        public async Task<ICollection<Branch>> GetNonExcludedSystemBranchesAsync(int systemId,
             int? prioritizeBranchId = null)
         {
             var excludedBranches = _context.PsExcludeBranches
@@ -65,7 +65,7 @@ namespace GRA.Data.Repository
                 .Select(_ => _.BranchId);
 
             var branches = _context.Branches
-                .Where(_ => _.SystemId == systemId && excludedBranches.Contains(_.Id) == false);
+                .Where(_ => _.SystemId == systemId && !excludedBranches.Contains(_.Id));
 
             if (prioritizeBranchId.HasValue)
             {
@@ -90,7 +90,7 @@ namespace GRA.Data.Repository
 
             return await _context.Branches
                 .AsNoTracking()
-                .Where(_ => _.Id == branchId && branchExcluded.Any() == false)
+                .Where(_ => _.Id == branchId && !branchExcluded.Any())
                 .ProjectTo<Branch>()
                 .FirstOrDefaultAsync();
         }

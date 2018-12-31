@@ -19,14 +19,15 @@ namespace GRA.Controllers.PerformerRegistration
     [Authorize(Policy = Policy.AccessPerformerRegistration)]
     public class HomeController : Base.Controller
     {
-        private static readonly int MaxUploadMB = 25;
-        private static readonly int MBSize = 1024 * 1024;
+        private const int MaxUploadMB = 25;
+        private const int MBSize = 1024 * 1024;
 
         private readonly ILogger<HomeController> _logger;
         private readonly AuthenticationService _authenticationService;
         private readonly PerformerSchedulingService _performerSchedulingService;
         private readonly UserService _userService;
         private readonly ICodeSanitizer _codeSanitizer;
+
         public HomeController(ILogger<HomeController> logger,
             ServiceFacade.Controller context,
             AuthenticationService authenticationService,
@@ -59,7 +60,7 @@ namespace GRA.Controllers.PerformerRegistration
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage == PsSchedulingStage.Unavailable)
             {
-                return RedirectToAction(nameof(Controllers.HomeController.Index), "Home", 
+                return RedirectToAction(nameof(Controllers.HomeController.Index), "Home",
                     new { Area = string.Empty });
             }
 
@@ -171,28 +172,25 @@ namespace GRA.Controllers.PerformerRegistration
             var systems = await _performerSchedulingService
                 .GetSystemListWithoutExcludedBranchesAsync();
 
-            var viewModel = new InformationViewModel()
+            var viewModel = new InformationViewModel
             {
                 Performer = performer,
                 Settings = settings,
                 Systems = systems,
-                BranchCount = systems.Sum(_ => _.Branches.Count()),
+                BranchCount = systems.Sum(_ => _.Branches.Count),
                 MaxUploadMB = MaxUploadMB
             };
 
-            if (performer != null)
+            if (performer.AllBranches)
             {
-                if (performer.AllBranches)
-                {
-                    viewModel.BranchAvailability = systems
-                        .SelectMany(_ => _.Branches)
-                        .Select(_ => _.Id)
-                        .ToList();
-                }
-                else
-                {
-                    viewModel.BranchAvailability = performer.Branches?.Select(_ => _.Id).ToList();
-                }
+                viewModel.BranchAvailability = systems
+                    .SelectMany(_ => _.Branches)
+                    .Select(_ => _.Id)
+                    .ToList();
+            }
+            else
+            {
+                viewModel.BranchAvailability = performer.Branches?.Select(_ => _.Id).ToList();
             }
 
             PageTitle = "Performer Information";
@@ -202,7 +200,6 @@ namespace GRA.Controllers.PerformerRegistration
         [HttpPost]
         public async Task<IActionResult> Information(InformationViewModel model)
         {
-            var siteId = GetCurrentSiteId();
             var settings = await _performerSchedulingService.GetSettingsAsync();
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage != PsSchedulingStage.RegistrationOpen)
@@ -214,7 +211,7 @@ namespace GRA.Controllers.PerformerRegistration
             var currentPerformer = await _performerSchedulingService
                 .GetPerformerByUserIdAsync(userId);
 
-            if (currentPerformer != null && currentPerformer.RegistrationCompleted == false)
+            if (currentPerformer?.RegistrationCompleted == false)
             {
                 return RedirectToAction(nameof(Schedule));
             }
@@ -231,33 +228,32 @@ namespace GRA.Controllers.PerformerRegistration
                 ModelState.AddModelError("BranchAvailability", "Please select the libraries where you are willing to perform.");
             }
 
-            if (currentPerformer == null)
+            if (model.Images == null)
             {
-                if (model.Images == null)
+                ModelState.AddModelError("Images", "Please attach an image to submit.");
+            }
+            else if (model.Images?.Count > 0)
+            {
+                var extensions = model.Images.Select(_ => Path.GetExtension(_.FileName).ToLower());
+                if (extensions.Any(_ => _ != ".jpg" && _ != ".jpeg" && _ != ".png"))
                 {
-                    ModelState.AddModelError("Images", "Please attach an image to submit.");
+                    ModelState.AddModelError("Images", "Please only attach .jpg or .png images.");
                 }
-                else if (model.Images != null && model.Images.Count > 0)
+                else if (model.Images.Sum(_ => _.Length) > MaxUploadMB * MBSize)
                 {
-                    var extensions = model.Images.Select(_ => Path.GetExtension(_.FileName).ToLower());
-                    if (extensions.Any(_ => _ != ".jpg" && _ != ".jpeg" && _ != ".png"))
-                    {
-                        ModelState.AddModelError("Images", "Please only attach .jpg or .png images.");
-                    }
-                    else if (model.Images.Sum(_ => _.Length) > MaxUploadMB * MBSize)
-                    {
-                        ModelState.AddModelError("Images", $"Please limit uploads to a max of {MaxUploadMB}MB.");
-                    }
-                }
-
-                if (model.References == null)
-                {
-                    ModelState.AddModelError("References", "Please attach a list of references to submit.");
+                    ModelState.AddModelError("Images", $"Please limit uploads to a max of {MaxUploadMB}MB.");
                 }
             }
 
+            if (model.References == null)
+            {
+                ModelState.AddModelError("References", "Please attach a list of references to submit.");
+            }
+
             if (model.References != null
-                && Path.GetExtension(model.References.FileName).ToLower() != ".pdf")
+                && !string.Equals(Path.GetExtension(model.References.FileName),
+                ".pdf",
+                StringComparison.OrdinalIgnoreCase))
             {
                 ModelState.AddModelError("References", "Please attach a .pdf file.");
             }
@@ -265,14 +261,7 @@ namespace GRA.Controllers.PerformerRegistration
             if (ModelState.IsValid)
             {
                 var performer = model.Performer;
-                if (BranchAvailability.Count == branchIds.Count())
-                {
-                    performer.AllBranches = true;
-                }
-                else
-                {
-                    performer.AllBranches = false;
-                }
+                performer.AllBranches = BranchAvailability.Count == branchIds.Count();
 
                 if (currentPerformer?.RegistrationCompleted == true)
                 {
@@ -300,7 +289,7 @@ namespace GRA.Controllers.PerformerRegistration
                     }
                 }
 
-                if (performer.RegistrationCompleted == false)
+                if (!performer.RegistrationCompleted)
                 {
                     foreach (var image in model.Images)
                     {
@@ -314,10 +303,7 @@ namespace GRA.Controllers.PerformerRegistration
                             }
                         }
                     }
-                }
 
-                if (performer.RegistrationCompleted == false)
-                {
                     return RedirectToAction(nameof(Schedule));
                 }
                 else
@@ -327,7 +313,7 @@ namespace GRA.Controllers.PerformerRegistration
                 }
             }
 
-            model.BranchCount = systems.Sum(_ => _.Branches.Count());
+            model.BranchCount = systems.Sum(_ => _.Branches.Count);
             model.BranchAvailability = BranchAvailability;
             model.MaxUploadMB = MaxUploadMB;
             model.Settings = settings;
@@ -354,7 +340,7 @@ namespace GRA.Controllers.PerformerRegistration
             {
                 return RedirectToAction(nameof(Information));
             }
-            else if (performer.SetSchedule && performer.RegistrationCompleted == false)
+            else if (performer.SetSchedule && !performer.RegistrationCompleted)
             {
                 return RedirectToAction(nameof(Program));
             }
@@ -395,7 +381,7 @@ namespace GRA.Controllers.PerformerRegistration
             {
                 return RedirectToAction(nameof(Information));
             }
-            else if (performer.SetSchedule && performer.RegistrationCompleted == false)
+            else if (performer.SetSchedule && !performer.RegistrationCompleted)
             {
                 return RedirectToAction(nameof(Program));
             }
@@ -423,7 +409,7 @@ namespace GRA.Controllers.PerformerRegistration
                     await _performerSchedulingService.EditPerformerScheduleAsync(performer.Id,
                         schedule);
 
-                    if (performer.RegistrationCompleted == false)
+                    if (!performer.RegistrationCompleted)
                     {
                         return RedirectToAction(nameof(Program));
                     }
@@ -476,7 +462,7 @@ namespace GRA.Controllers.PerformerRegistration
             {
                 return RedirectToAction(nameof(Information));
             }
-            else if (performer.SetSchedule == false)
+            else if (!performer.SetSchedule)
             {
                 return RedirectToAction(nameof(Schedule));
             }
@@ -488,7 +474,7 @@ namespace GRA.Controllers.PerformerRegistration
                 ageList.First().Selected = true;
             }
 
-            var viewModel = new ProgramViewModel()
+            var viewModel = new ProgramViewModel
             {
                 AgeList = ageList,
                 MaxUploadMB = MaxUploadMB,
@@ -532,7 +518,7 @@ namespace GRA.Controllers.PerformerRegistration
             {
                 return RedirectToAction(nameof(Information));
             }
-            else if (performer.SetSchedule == false)
+            else if (!performer.SetSchedule)
             {
                 return RedirectToAction(nameof(Schedule));
             }
@@ -542,12 +528,12 @@ namespace GRA.Controllers.PerformerRegistration
                 .Where(_ => model.AgeSelection?.Contains(_.Id) == true)
                 .Select(_ => _.Id)
                 .ToList();
-            if (ageSelection.Count() == 0)
+            if (ageSelection.Count == 0)
             {
                 ModelState.AddModelError("AgeSelection", "Please select age groups.");
             }
 
-            if (model.Images != null && model.Images.Count > 0)
+            if (model.Images?.Count > 0)
             {
                 var extensions = model.Images.Select(_ => Path.GetExtension(_.FileName).ToLower());
                 if (extensions.Any(_ => _ != ".jpg" && _ != ".jpeg" && _ != ".png"))
@@ -600,7 +586,7 @@ namespace GRA.Controllers.PerformerRegistration
                     }
                 }
 
-                if (performer.RegistrationCompleted == false)
+                if (!performer.RegistrationCompleted)
                 {
                     await _performerSchedulingService.SetPerformerRegistrationCompeltedAsync(
                         performer.Id);
@@ -657,10 +643,10 @@ namespace GRA.Controllers.PerformerRegistration
                     .GetSystemListWithoutExcludedBranchesAsync()
             };
 
-            if (performer.Images.Any())
+            if (performer.Images.Count > 0)
             {
                 viewModel.ImagePath = _pathResolver.ResolveContentPath(
-                    performer.Images.First().Filename);
+                    performer.Images[0].Filename);
             }
 
             if (!string.IsNullOrWhiteSpace(performer.Website))
@@ -695,7 +681,7 @@ namespace GRA.Controllers.PerformerRegistration
             var performerImages = performer.Images.ToList();
             performerImages.ForEach(_ => _.Filename = _pathResolver.ResolveContentPath(_.Filename));
 
-            var viewModel = new PerformerImagesViewModel()
+            var viewModel = new PerformerImagesViewModel
             {
                 IsEditable = schedulingStage == PsSchedulingStage.RegistrationOpen,
                 MaxUploadMB = MaxUploadMB,
@@ -827,7 +813,6 @@ namespace GRA.Controllers.PerformerRegistration
                 ShowAlertDanger("Unable to remove program: ", gex);
             }
 
-
             return RedirectToAction(nameof(Dashboard));
         }
 
@@ -856,7 +841,7 @@ namespace GRA.Controllers.PerformerRegistration
                 return RedirectToAction(nameof(Dashboard));
             }
 
-            var viewModel = new ProgramDetailsViewModel()
+            var viewModel = new ProgramDetailsViewModel
             {
                 IsEditable = schedulingStage == PsSchedulingStage.RegistrationOpen,
                 Program = program
@@ -865,7 +850,7 @@ namespace GRA.Controllers.PerformerRegistration
             if (program.Images?.Count > 0)
             {
                 viewModel.Image = _pathResolver.ResolveContentPath(
-                    program.Images.First().Filename);
+                    program.Images[0].Filename);
             }
 
             return View(viewModel);
@@ -902,7 +887,7 @@ namespace GRA.Controllers.PerformerRegistration
 
             program.Images.ForEach(_ => _.Filename = _pathResolver.ResolveContentPath(_.Filename));
 
-            var viewModel = new ProgramImagesViewModel()
+            var viewModel = new ProgramImagesViewModel
             {
                 IsEditable = schedulingStage == PsSchedulingStage.RegistrationOpen,
                 MaxUploadMB = MaxUploadMB,

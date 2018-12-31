@@ -145,7 +145,6 @@ namespace GRA.Domain.Service
             {
                 await _dailyLiteracyTipImageRepository.UpdateSaveAsync(authId, currentImage);
             }
-
         }
 
         public async Task RemoveImageAsync(int imageId)

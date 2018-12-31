@@ -13,6 +13,7 @@ namespace GRA.Domain.Service
     {
         private readonly IGroupTypeRepository _groupTypeRepository;
         private readonly IGroupInfoRepository _groupInfoRepository;
+
         public GroupTypeService(ILogger<GroupTypeService> logger,
             IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
@@ -113,6 +114,5 @@ namespace GRA.Domain.Service
                 return (false, $"Unable to edit group type: {ex.Message}");
             }
         }
-
     }
 }

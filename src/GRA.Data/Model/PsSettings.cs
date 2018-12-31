@@ -25,6 +25,7 @@ namespace GRA.Data.Model
 
         [MaxLength(255)]
         public string VendorCodeFormat { get; set; }
+
         [MaxLength(255)]
         public string BranchAvailabilitySuplimentalText { get; set; }
     }

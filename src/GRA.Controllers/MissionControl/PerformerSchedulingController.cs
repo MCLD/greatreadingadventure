@@ -18,15 +18,16 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.ViewPerformerDetails)]
     public class PerformerSchedulingController : Base.MCController
     {
-        private static readonly int KitsPerPage = 15;
-        private static readonly int PerformersPerPage = 15;
-        private static readonly int ProgramsPerPage = 15;
+        private const int KitsPerPage = 15;
+        private const int PerformersPerPage = 15;
+        private const int ProgramsPerPage = 15;
 
         private static readonly DateTime DefaultPerformerScheduleStartTime = DateTime.Parse("8:00 AM");
         private static readonly DateTime DefaultPerformerScheduleEndTime = DateTime.Parse("8:00 PM");
 
         private readonly ILogger<PerformerSchedulingController> _logger;
         private readonly PerformerSchedulingService _performerSchedulingService;
+
         public PerformerSchedulingController(ILogger<PerformerSchedulingController> logger,
             ServiceFacade.Controller context,
             PerformerSchedulingService performerSchedulingService)
@@ -103,7 +104,7 @@ namespace GRA.Controllers.MissionControl
             branch.Selections = await _performerSchedulingService
                 .GetSelectionsByBranchIdAsync(branch.Id);
 
-            var viewModel = new ScheduleViewModel()
+            var viewModel = new ScheduleViewModel
             {
                 Settings = settings,
                 Branch = branch
@@ -128,7 +129,7 @@ namespace GRA.Controllers.MissionControl
 
             var performerList = await _performerSchedulingService.GetPaginatedPerformerListAsync(filter);
 
-            var paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel
             {
                 ItemCount = performerList.Count,
                 CurrentPage = page,
@@ -152,7 +153,7 @@ namespace GRA.Controllers.MissionControl
                     .GetPerformerProgramCountAsync(performer.Id);
             }
 
-            var viewModel = new PerformerListViewModel()
+            var viewModel = new PerformerListViewModel
             {
                 Performers = performerList.Data,
                 PaginateModel = paginateModel
@@ -188,7 +189,7 @@ namespace GRA.Controllers.MissionControl
             var system = await _performerSchedulingService
                 .GetSystemWithoutExcludedBranchesAsync(GetId(ClaimType.SystemId));
 
-            var viewModel = new PerformerViewModel()
+            var viewModel = new PerformerViewModel
             {
                 AgeGroups = await _performerSchedulingService
                     .GetPerformerAgeGroupsAsync(performer.Id),
@@ -198,16 +199,16 @@ namespace GRA.Controllers.MissionControl
                 System = system
             };
 
-            if (performer.AllBranches == false)
+            if (!performer.AllBranches)
             {
                 viewModel.BranchAvailability = await _performerSchedulingService
                     .GetPerformerBranchIdsAsync(performer.Id, system.Id);
             }
 
-            if (performer.Images.Any())
+            if (performer.Images.Count > 0)
             {
                 viewModel.ImagePath = _pathResolver.ResolveContentPath(
-                    performer.Images.First().Filename);
+                    performer.Images[0].Filename);
             }
 
             if (!string.IsNullOrWhiteSpace(performer.Website))
@@ -221,7 +222,7 @@ namespace GRA.Controllers.MissionControl
             var performerIndexList = await _performerSchedulingService
                 .GetPerformerIndexListAsync(true);
             var index = performerIndexList.IndexOf(id);
-            viewModel.ReturnPage = index / PerformersPerPage + 1;
+            viewModel.ReturnPage = (index / PerformersPerPage) + 1;
             if (index != 0)
             {
                 viewModel.PrevPerformer = performerIndexList[index - 1];
@@ -279,7 +280,7 @@ namespace GRA.Controllers.MissionControl
 
             var programList = await _performerSchedulingService.GetPaginatedProgramListAsync(filter);
 
-            var paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel
             {
                 ItemCount = programList.Count,
                 CurrentPage = page,
@@ -301,7 +302,7 @@ namespace GRA.Controllers.MissionControl
                     .GetPerformerSystemAvailabilityAsync(program.PerformerId, systemId);
             }
 
-            var viewModel = new ProgramListViewModel()
+            var viewModel = new ProgramListViewModel
             {
                 Programs = programList.Data,
                 PaginateModel = paginateModel,
@@ -335,14 +336,14 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(Programs));
             }
 
-            var selectedAgeGroup = program.AgeGroups.Where(_ => _.Id == ageGroup).FirstOrDefault();
+            var selectedAgeGroup = program.AgeGroups.FirstOrDefault(_ => _.Id == ageGroup);
 
             var performer = await _performerSchedulingService.GetPerformerByIdAsync(
                 program.PerformerId);
             var system = await _performerSchedulingService
                 .GetSystemWithoutExcludedBranchesAsync(GetId(ClaimType.SystemId));
 
-            var viewModel = new ProgramViewModel()
+            var viewModel = new ProgramViewModel
             {
                 AgeGroup = selectedAgeGroup,
                 AllBranches = performer.AllBranches,
@@ -353,7 +354,7 @@ namespace GRA.Controllers.MissionControl
                 CanSchedule = UserHasPermission(Permission.SchedulePerformers)
             };
 
-            if (performer.AllBranches == false)
+            if (!performer.AllBranches)
             {
                 viewModel.BranchAvailability = await _performerSchedulingService
                     .GetPerformerBranchIdsAsync(performer.Id, system.Id);
@@ -362,7 +363,7 @@ namespace GRA.Controllers.MissionControl
             if (program.Images?.Count > 0)
             {
                 viewModel.Image = _pathResolver.ResolveContentPath(
-                    program.Images.First().Filename);
+                    program.Images[0].Filename);
             }
 
             if (viewModel.SchedulingOpen)
@@ -371,8 +372,8 @@ namespace GRA.Controllers.MissionControl
                 var branches = new List<Branch>();
                 foreach (var branch in system.Branches)
                 {
-                    if (performer.AllBranches == false
-                        && viewModel.BranchAvailability.Contains(branch.Id) == false)
+                    if (!performer.AllBranches
+                        && !viewModel.BranchAvailability.Contains(branch.Id))
                     {
                         continue;
                     }
@@ -389,10 +390,9 @@ namespace GRA.Controllers.MissionControl
                         {
                             var selectedAgeGroups = branchSelections.Select(_ => _.AgeGroupId);
                             var availableAgeGroups = program.AgeGroups
-                                .Where(_ => selectedAgeGroups.Contains(_.Id) == false)
-                                .Any();
+                                .Any(_ => !selectedAgeGroups.Contains(_.Id));
 
-                            if (availableAgeGroups == false)
+                            if (!availableAgeGroups)
                             {
                                 continue;
                             }
@@ -409,7 +409,7 @@ namespace GRA.Controllers.MissionControl
                     ageGroupId: selectedAgeGroup?.Id, onlyApproved: true);
 
                 var index = programIndexList.IndexOf(id);
-                viewModel.ReturnPage = index / ProgramsPerPage + 1;
+                viewModel.ReturnPage = (index / ProgramsPerPage) + 1;
                 if (index != 0)
                 {
                     viewModel.PrevProgram = programIndexList[index - 1];
@@ -449,7 +449,7 @@ namespace GRA.Controllers.MissionControl
             program.Images.ForEach(_ => _.Filename = _pathResolver
                 .ResolveContentPath(_.Filename));
 
-            var viewModel = new ProgramImagesViewModel()
+            var viewModel = new ProgramImagesViewModel
             {
                 Program = program
             };
@@ -500,13 +500,13 @@ namespace GRA.Controllers.MissionControl
                 .ProgramAvailableAtBranchAsync(model.BranchSelection.ProgramId.Value,
                     model.BranchSelection.BranchId);
 
-            if (programAvailableAtBranch == false)
+            if (!programAvailableAtBranch)
             {
                 ShowAlertDanger("The performer does not performer at that branch.");
                 return RedirectToAction(nameof(Program), new { id = program.Id });
             }
 
-            var viewModel = new SelectProgramViewModel()
+            var viewModel = new SelectProgramViewModel
             {
                 BranchSelection = model.BranchSelection,
                 BlackoutDates = await _performerSchedulingService.GetBlackoutDatesAsync(),
@@ -623,15 +623,15 @@ namespace GRA.Controllers.MissionControl
         }
 
         [Authorize(Policy = Policy.SchedulePerformers)]
-        public async Task<IActionResult> GetPerformerDaySchedule(int performerId, DateTime date)
+        public async Task<IActionResult> GetPerformerDaySchedule(int performerId, DateTime dateTime)
         {
             var performerSchedule = await _performerSchedulingService.GetPerformerDateScheduleAsync(
-                performerId, date.Date);
+                performerId, dateTime.Date);
 
             var branchSelections = (await _performerSchedulingService
-                .GetPerformerBranchSelectionsAsync(performerId, date)).ToList();
+                .GetPerformerBranchSelectionsAsync(performerId, dateTime)).ToList();
 
-            var viewModel = new DayScheduleViewModel()
+            var viewModel = new DayScheduleViewModel
             {
                 BranchSelections = branchSelections
             };
@@ -650,8 +650,8 @@ namespace GRA.Controllers.MissionControl
             {
                 viewModel.StartTime = startTime.ToShortTimeString();
             }
-            if (latestSelection == null ||
-                endTime.TimeOfDay > latestSelection.ScheduleStartTime
+            if (latestSelection == null
+                || endTime.TimeOfDay > latestSelection.ScheduleStartTime
                     .AddMinutes(latestSelection.ScheduleDuration).TimeOfDay)
             {
                 viewModel.EndTime = endTime.ToShortTimeString();
@@ -661,13 +661,14 @@ namespace GRA.Controllers.MissionControl
         }
 
         [Authorize(Policy = Policy.SchedulePerformers)]
-        public async Task<JsonResult> CheckProgramTimeAvailability(int programId, DateTime date,
+        public async Task<JsonResult> CheckProgramTimeAvailability(int programId,
+            DateTime dateTime,
             bool backToBack)
         {
             try
             {
                 var result = await _performerSchedulingService
-                    .ValidateScheduleTimeAsync(programId, date, backToBack);
+                    .ValidateScheduleTimeAsync(programId, dateTime, backToBack);
 
                 if (!string.IsNullOrWhiteSpace(result))
                 {
@@ -706,7 +707,7 @@ namespace GRA.Controllers.MissionControl
 
             var kitList = await _performerSchedulingService.GetPaginatedKitListAsync(filter);
 
-            var paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel
             {
                 ItemCount = kitList.Count,
                 CurrentPage = page,
@@ -721,7 +722,7 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
-            var viewModel = new KitListViewModel()
+            var viewModel = new KitListViewModel
             {
                 Kits = kitList.Data,
                 PaginateModel = paginateModel
@@ -742,7 +743,7 @@ namespace GRA.Controllers.MissionControl
             var kit = new PsKit();
             try
             {
-                kit = await _performerSchedulingService.GetKitByIdAsync(id, includeAgeGroups: true, 
+                kit = await _performerSchedulingService.GetKitByIdAsync(id, includeAgeGroups: true,
                     includeImages: true);
             }
             catch (GraException gex)
@@ -751,17 +752,17 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(Kits));
             }
 
-            var viewModel = new KitViewModel()
+            var viewModel = new KitViewModel
             {
                 Kit = kit,
                 SchedulingOpen = schedulingStage == PsSchedulingStage.SchedulingOpen,
                 CanSchedule = UserHasPermission(Permission.SchedulePerformers)
             };
 
-            if (kit.Images.Any())
+            if (kit.Images.Count > 0)
             {
                 viewModel.ImagePath = _pathResolver.ResolveContentPath(
-                    kit.Images.First().Filename);
+                    kit.Images[0].Filename);
             }
 
             if (!string.IsNullOrWhiteSpace(kit.Website))
@@ -793,10 +794,9 @@ namespace GRA.Controllers.MissionControl
                     {
                         var selectedAgeGroups = branchSelections.Select(_ => _.AgeGroupId);
                         var availableAgeGroups = kit.AgeGroups
-                            .Where(_ => selectedAgeGroups.Contains(_.Id) == false)
-                            .Any();
+                            .Any(_ => !selectedAgeGroups.Contains(_.Id));
 
-                        if (availableAgeGroups == false)
+                        if (!availableAgeGroups)
                         {
                             continue;
                         }
@@ -808,7 +808,7 @@ namespace GRA.Controllers.MissionControl
 
             var kitIndexList = await _performerSchedulingService.GetKitIndexListAsync();
             var index = kitIndexList.IndexOf(id);
-            viewModel.ReturnPage = index / KitsPerPage + 1;
+            viewModel.ReturnPage = (index / KitsPerPage) + 1;
             if (index != 0)
             {
                 viewModel.PrevKit = kitIndexList[index - 1];
@@ -858,11 +858,13 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(Index));
             }
 
+            PsBranchSelection addedBranchSelection = null;
+
             try
             {
-                branchSelection = await _performerSchedulingService.AddBranchKitSelectionAsync(
-                    branchSelection);
-                _logger.LogInformation($"Selection {branchSelection.Id} added by user {GetId(ClaimType.UserId)}");
+                addedBranchSelection = await _performerSchedulingService
+                    .AddBranchKitSelectionAsync(branchSelection);
+                _logger.LogInformation($"Selection {addedBranchSelection.Id} added by user {GetId(ClaimType.UserId)}");
                 ShowAlertSuccess("Kit selection added!");
             }
             catch (GraException gex)
@@ -870,9 +872,9 @@ namespace GRA.Controllers.MissionControl
                 ShowAlertDanger($"Unable to select kit: ", gex);
             }
 
-            if (branchSelection.KitId.HasValue)
+            if (addedBranchSelection.KitId.HasValue)
             {
-                return RedirectToAction(nameof(Kit), new { id = branchSelection.KitId });
+                return RedirectToAction(nameof(Kit), new { id = addedBranchSelection.KitId });
             }
             else
             {

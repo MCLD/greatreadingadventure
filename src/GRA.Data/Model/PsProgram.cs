@@ -7,6 +7,7 @@ namespace GRA.Data.Model
     {
         [Required]
         public int PerformerId { get; set; }
+
         public PsPerformer Performer { get; set; }
 
         [MaxLength(50)]

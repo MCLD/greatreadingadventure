@@ -15,7 +15,6 @@ namespace GRA.Domain.Model
         public PsScheduleDateStatus Status { get; set; }
     }
 
-
     public enum PsScheduleDateStatus
     {
         Available,

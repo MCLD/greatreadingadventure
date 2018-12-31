@@ -46,19 +46,19 @@ namespace GRA.Controllers.Filter
             if (httpContext.User.Identity.IsAuthenticated)
             {
                 // Check if the user Id matches the active user id
-                if (httpContext.Session.GetInt32(SessionKey.ActiveUserId) ==
-                        _userContextProvider.GetId(httpContext.User, ClaimType.UserId))
+                if (httpContext.Session.GetInt32(SessionKey.ActiveUserId)
+                        == _userContextProvider.GetId(httpContext.User, ClaimType.UserId))
                 {
                     // Check if user can access mission control
-                    if (httpContext.User.HasClaim(GRA.ClaimType.Permission,
-                        GRA.Domain.Model.Permission.AccessMissionControl.ToString()))
+                    if (httpContext.User.HasClaim(ClaimType.Permission,
+                        nameof(Permission.AccessMissionControl)))
                     {
                         httpContext.Items.Add(ItemKey.ShowMissionControl, true);
                     }
 
                     // Check if user can access performer registration
-                    if (httpContext.User.HasClaim(GRA.ClaimType.Permission,
-                        GRA.Domain.Model.Permission.AccessPerformerRegistration.ToString()))
+                    if (httpContext.User.HasClaim(ClaimType.Permission,
+                        nameof(Permission.AccessPerformerRegistration)))
                     {
                         var settings = await _performerSchedulingService.GetSettingsAsync();
                         var schedulingStage = _performerSchedulingService
@@ -70,23 +70,30 @@ namespace GRA.Controllers.Filter
                     }
                 }
 
-                var pendingQuestionnaire = httpContext.Session.GetInt32(SessionKey.PendingQuestionnaire);
+                var pendingQuestionnaire = httpContext
+                    .Session
+                    .GetInt32(SessionKey.PendingQuestionnaire);
+
                 if (pendingQuestionnaire.HasValue)
                 {
-                    var controllerActionDescriptor = context.ActionDescriptor as ControllerActionDescriptor;
+                    var controllerActionDescriptor
+                        = context.ActionDescriptor as ControllerActionDescriptor;
                     if (!controllerActionDescriptor.ControllerTypeInfo
                             .IsDefined(typeof(Attributes.PreventQuestionnaireRedirect))
                         && !controllerActionDescriptor.MethodInfo
                             .IsDefined(typeof(Attributes.PreventQuestionnaireRedirect)))
                     {
                         var controller = (Base.Controller)context.Controller;
-                        context.Result = controller.RedirectToAction("Index", "Questionnaire", new { id = pendingQuestionnaire });
+                        context.Result = controller.RedirectToAction("Index",
+                            "Questionnaire",
+                            new { id = pendingQuestionnaire });
                         return;
                     }
                 }
                 try
                 {
-                    httpContext.Items[ItemKey.UnreadCount] = await _mailService.GetUserUnreadCountAsync();
+                    httpContext.Items[ItemKey.UnreadCount]
+                        = await _mailService.GetUserUnreadCountAsync();
                 }
                 catch (Exception ex)
                 {

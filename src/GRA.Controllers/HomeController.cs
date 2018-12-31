@@ -78,7 +78,7 @@ namespace GRA.Controllers
             {
                 if (TempData.ContainsKey(TempDataKey.UserJoined)
                     && UserHasPermission(Permission.AccessPerformerRegistration)
-                    && UserHasPermission(Permission.AccessMissionControl) == false)
+                    && !UserHasPermission(Permission.AccessMissionControl))
                 {
                     var dates = await _performerSchedulingService.GetSettingsAsync();
                     var schedulingStage = _performerSchedulingService.GetSchedulingStage(dates);
