@@ -1,10 +1,11 @@
 ﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace GRA.Data.SqlServer.Migrations
 {
-    public partial class initial : Migration
+    public partial class v400beta1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,14 +15,14 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
-                    EntityType = table.Column<string>(maxLength: 255, nullable: false),
-                    EntityId = table.Column<int>(nullable: false),
-                    PreviousValue = table.Column<string>(nullable: true),
+                    CreatedBy = table.Column<int>(nullable: false),
                     CurrentValue = table.Column<string>(nullable: true),
-                    UpdatedBy = table.Column<int>(nullable: false),
-                    UpdatedAt = table.Column<DateTime>(nullable: false)
+                    EntityId = table.Column<int>(nullable: false),
+                    EntityType = table.Column<string>(maxLength: 255, nullable: false),
+                    PreviousValue = table.Column<string>(nullable: true),
+                    UpdatedAt = table.Column<DateTime>(nullable: false),
+                    UpdatedBy = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -34,13 +35,13 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    SiteId = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(maxLength: 255, nullable: false),
                     CanBeUnlocked = table.Column<bool>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
+                    HasBeenAwarded = table.Column<bool>(nullable: false),
                     IsDeleted = table.Column<bool>(nullable: false),
-                    HasBeenAwarded = table.Column<bool>(nullable: false)
+                    Name = table.Column<string>(maxLength: 255, nullable: false),
+                    SiteId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -53,18 +54,18 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
+                    CanBeEmpty = table.Column<bool>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
-                    SiteId = table.Column<int>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
+                    DefaultLayer = table.Column<bool>(nullable: false),
+                    GroupId = table.Column<int>(nullable: false),
+                    Icon = table.Column<string>(maxLength: 255, nullable: true),
                     Name = table.Column<string>(maxLength: 255, nullable: false),
                     Position = table.Column<int>(nullable: false),
-                    CanBeEmpty = table.Column<bool>(nullable: false),
-                    GroupId = table.Column<int>(nullable: false),
-                    SortOrder = table.Column<int>(nullable: false),
-                    DefaultLayer = table.Column<bool>(nullable: false),
-                    ShowItemSelector = table.Column<bool>(nullable: false),
                     ShowColorSelector = table.Column<bool>(nullable: false),
-                    Icon = table.Column<string>(maxLength: 255, nullable: true),
+                    ShowItemSelector = table.Column<bool>(nullable: false),
+                    SiteId = table.Column<int>(nullable: false),
+                    SortOrder = table.Column<int>(nullable: false),
                     ZoomScale = table.Column<decimal>(nullable: false),
                     ZoomYOffset = table.Column<int>(nullable: false)
                 },
@@ -79,10 +80,10 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
-                    SiteId = table.Column<int>(nullable: false),
-                    Filename = table.Column<string>(nullable: true)
+                    CreatedBy = table.Column<int>(nullable: false),
+                    Filename = table.Column<string>(nullable: true),
+                    SiteId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -95,13 +96,13 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    Title = table.Column<string>(maxLength: 500, nullable: false),
                     Author = table.Column<string>(maxLength: 255, nullable: true),
+                    ChallengeId = table.Column<int>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
                     Isbn = table.Column<string>(maxLength: 30, nullable: true),
-                    Url = table.Column<string>(maxLength: 500, nullable: true),
-                    ChallengeId = table.Column<int>(nullable: true)
+                    Title = table.Column<string>(maxLength: 500, nullable: false),
+                    Url = table.Column<string>(maxLength: 500, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -114,13 +115,13 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    SiteId = table.Column<int>(nullable: false),
-                    SendAt = table.Column<DateTime>(nullable: false),
-                    Subject = table.Column<string>(maxLength: 500, nullable: false),
                     Body = table.Column<string>(maxLength: 1000, nullable: false),
-                    SendToNewUsers = table.Column<bool>(nullable: false)
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
+                    SendAt = table.Column<DateTime>(nullable: false),
+                    SendToNewUsers = table.Column<bool>(nullable: false),
+                    SiteId = table.Column<int>(nullable: false),
+                    Subject = table.Column<string>(maxLength: 500, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -133,12 +134,12 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
+                    Color = table.Column<string>(maxLength: 10, nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
-                    SiteId = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(maxLength: 255, nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
                     Description = table.Column<string>(maxLength: 500, nullable: true),
-                    Color = table.Column<string>(maxLength: 10, nullable: true)
+                    Name = table.Column<string>(maxLength: 255, nullable: false),
+                    SiteId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -151,11 +152,11 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
-                    SiteId = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(maxLength: 255, nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
                     Description = table.Column<string>(maxLength: 1000, nullable: false),
+                    Name = table.Column<string>(maxLength: 255, nullable: false),
+                    SiteId = table.Column<int>(nullable: false),
                     Stub = table.Column<string>(maxLength: 255, nullable: false)
                 },
                 constraints: table =>
@@ -169,10 +170,10 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    Name = table.Column<string>(maxLength: 255, nullable: false),
                     ActivityCount = table.Column<int>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(maxLength: 255, nullable: false),
                     PointTranslationId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -186,11 +187,11 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
-                    SiteId = table.Column<int>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
+                    Message = table.Column<string>(maxLength: 50, nullable: false),
                     Name = table.Column<string>(maxLength: 255, nullable: false),
-                    Message = table.Column<string>(maxLength: 50, nullable: false)
+                    SiteId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -203,10 +204,10 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    SiteId = table.Column<int>(nullable: false),
                     Content = table.Column<string>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
+                    SiteId = table.Column<int>(nullable: false),
                     StartTime = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
@@ -220,8 +221,8 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
                     Email = table.Column<string>(nullable: false),
                     SignUpSource = table.Column<string>(nullable: false)
                 },
@@ -236,10 +237,10 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
-                    SiteId = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(maxLength: 255, nullable: false)
+                    CreatedBy = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(maxLength: 255, nullable: false),
+                    SiteId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -252,13 +253,13 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    SiteId = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(maxLength: 255, nullable: false),
-                    Url = table.Column<string>(maxLength: 255, nullable: true),
                     Address = table.Column<string>(nullable: true),
-                    Telephone = table.Column<string>(maxLength: 50, nullable: true)
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(maxLength: 255, nullable: false),
+                    SiteId = table.Column<int>(nullable: false),
+                    Telephone = table.Column<string>(maxLength: 50, nullable: true),
+                    Url = table.Column<string>(maxLength: 255, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -271,21 +272,21 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    SiteId = table.Column<int>(nullable: false),
-                    ToUserId = table.Column<int>(nullable: true),
-                    FromUserId = table.Column<int>(nullable: false),
-                    Subject = table.Column<string>(maxLength: 500, nullable: false),
                     Body = table.Column<string>(maxLength: 2000, nullable: false),
-                    IsNew = table.Column<bool>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false),
-                    IsRepliedTo = table.Column<bool>(nullable: false),
                     CanParticipantDelete = table.Column<bool>(nullable: false),
-                    InReplyToId = table.Column<int>(nullable: true),
-                    ThreadId = table.Column<int>(nullable: true),
-                    IsBroadcast = table.Column<bool>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
                     DrawingId = table.Column<int>(nullable: true),
+                    FromUserId = table.Column<int>(nullable: false),
+                    InReplyToId = table.Column<int>(nullable: true),
+                    IsBroadcast = table.Column<bool>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    IsNew = table.Column<bool>(nullable: false),
+                    IsRepliedTo = table.Column<bool>(nullable: false),
+                    SiteId = table.Column<int>(nullable: false),
+                    Subject = table.Column<string>(maxLength: 500, nullable: false),
+                    ThreadId = table.Column<int>(nullable: true),
+                    ToUserId = table.Column<int>(nullable: true),
                     TriggerId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -299,16 +300,16 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    UserId = table.Column<int>(nullable: false),
-                    Text = table.Column<string>(nullable: false),
-                    BadgeId = table.Column<int>(nullable: true),
                     BadgeFilename = table.Column<string>(nullable: true),
+                    BadgeId = table.Column<int>(nullable: true),
                     ChallengeId = table.Column<int>(nullable: true),
-                    PointsEarned = table.Column<int>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
                     IsAchiever = table.Column<bool>(nullable: false),
-                    IsJoiner = table.Column<bool>(nullable: false)
+                    IsJoiner = table.Column<bool>(nullable: false),
+                    PointsEarned = table.Column<int>(nullable: true),
+                    Text = table.Column<string>(nullable: false),
+                    UserId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -321,15 +322,15 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    SiteId = table.Column<int>(nullable: false),
-                    Title = table.Column<string>(maxLength: 255, nullable: false),
-                    Stub = table.Column<string>(maxLength: 255, nullable: true),
                     Content = table.Column<string>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
                     FooterText = table.Column<string>(maxLength: 255, nullable: true),
+                    IsPublished = table.Column<bool>(nullable: false),
                     NavText = table.Column<string>(maxLength: 255, nullable: true),
-                    IsPublished = table.Column<bool>(nullable: false)
+                    SiteId = table.Column<int>(nullable: false),
+                    Stub = table.Column<string>(maxLength: 255, nullable: true),
+                    Title = table.Column<string>(maxLength: 255, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -342,8 +343,8 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
                     Name = table.Column<string>(maxLength: 255, nullable: false)
                 },
                 constraints: table =>
@@ -357,69 +358,21 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    SiteId = table.Column<int>(nullable: false),
-                    TranslationName = table.Column<string>(maxLength: 255, nullable: false),
+                    ActivityAmount = table.Column<int>(nullable: false),
                     ActivityDescription = table.Column<string>(maxLength: 255, nullable: false),
                     ActivityDescriptionPlural = table.Column<string>(maxLength: 255, nullable: false),
-                    ActivityAmount = table.Column<int>(nullable: false),
-                    PointsEarned = table.Column<int>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
                     IsSingleEvent = table.Column<bool>(nullable: false),
+                    PointsEarned = table.Column<int>(nullable: false),
+                    SiteId = table.Column<int>(nullable: false),
+                    TranslationDescriptionPastTense = table.Column<string>(nullable: false),
                     TranslationDescriptionPresentTense = table.Column<string>(nullable: false),
-                    TranslationDescriptionPastTense = table.Column<string>(nullable: false)
+                    TranslationName = table.Column<string>(maxLength: 255, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PointTranslations", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PsAgeGroups",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    Name = table.Column<string>(maxLength: 255, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PsAgeGroups", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PsBlackoutDates",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    Date = table.Column<DateTime>(nullable: false),
-                    Reason = table.Column<string>(maxLength: 255, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PsBlackoutDates", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PsKits",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    Name = table.Column<string>(maxLength: 255, nullable: false),
-                    Description = table.Column<string>(maxLength: 2000, nullable: false),
-                    Website = table.Column<string>(maxLength: 255, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PsKits", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -428,17 +381,17 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    SiteId = table.Column<int>(nullable: false),
-                    RelatedSystemId = table.Column<int>(nullable: false),
-                    RelatedBranchId = table.Column<int>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false),
-                    Name = table.Column<string>(maxLength: 255, nullable: false),
-                    IsLocked = table.Column<bool>(nullable: false),
                     BadgeId = table.Column<int>(nullable: true),
                     BadgeName = table.Column<string>(maxLength: 255, nullable: true),
-                    BadgeNotificationMessage = table.Column<string>(maxLength: 1000, nullable: true)
+                    BadgeNotificationMessage = table.Column<string>(maxLength: 1000, nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    IsLocked = table.Column<bool>(nullable: false),
+                    Name = table.Column<string>(maxLength: 255, nullable: false),
+                    RelatedBranchId = table.Column<int>(nullable: false),
+                    RelatedSystemId = table.Column<int>(nullable: false),
+                    SiteId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -451,10 +404,10 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
-                    UserId = table.Column<int>(nullable: false),
-                    Token = table.Column<string>(maxLength: 255, nullable: false)
+                    CreatedBy = table.Column<int>(nullable: false),
+                    Token = table.Column<string>(maxLength: 255, nullable: false),
+                    UserId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -467,22 +420,20 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    SiteId = table.Column<int>(nullable: false),
-                    StartDate = table.Column<DateTime>(nullable: true),
-                    EndDate = table.Column<DateTime>(nullable: true),
-                    SystemId = table.Column<int>(nullable: true),
+                    BadgeRequiredList = table.Column<string>(nullable: true),
                     BranchId = table.Column<int>(nullable: true),
+                    ChallengeRequiredList = table.Column<string>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
+                    EndDate = table.Column<DateTime>(nullable: true),
+                    Favorite = table.Column<bool>(nullable: false),
+                    Name = table.Column<string>(maxLength: 255, nullable: true),
                     ProgramId = table.Column<int>(nullable: true),
                     SchoolDistrictId = table.Column<int>(nullable: true),
                     SchoolId = table.Column<int>(nullable: true),
-                    GroupInfoId = table.Column<int>(nullable: true),
-                    VendorCodeTypeId = table.Column<int>(nullable: true),
-                    Favorite = table.Column<bool>(nullable: false),
-                    Name = table.Column<string>(maxLength: 255, nullable: true),
-                    BadgeRequiredList = table.Column<string>(nullable: true),
-                    ChallengeRequiredList = table.Column<string>(nullable: true)
+                    SiteId = table.Column<int>(nullable: false),
+                    StartDate = table.Column<DateTime>(nullable: true),
+                    SystemId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -495,17 +446,17 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
+                    Favorite = table.Column<bool>(nullable: false),
+                    Finished = table.Column<DateTime>(nullable: true),
+                    InstanceName = table.Column<string>(maxLength: 255, nullable: true),
+                    Name = table.Column<string>(maxLength: 255, nullable: true),
                     ReportCriteriaId = table.Column<int>(nullable: false),
                     ReportId = table.Column<int>(nullable: false),
-                    InstanceName = table.Column<string>(maxLength: 255, nullable: true),
-                    Started = table.Column<DateTime>(nullable: true),
-                    Finished = table.Column<DateTime>(nullable: true),
-                    Success = table.Column<bool>(nullable: true),
                     ResultJson = table.Column<string>(nullable: true),
-                    Favorite = table.Column<bool>(nullable: false),
-                    Name = table.Column<string>(maxLength: 255, nullable: true)
+                    Started = table.Column<DateTime>(nullable: true),
+                    Success = table.Column<bool>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -518,14 +469,14 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    SiteId = table.Column<int>(nullable: false),
-                    QuestionnaireId = table.Column<int>(nullable: false),
                     AgeMaximum = table.Column<int>(nullable: true),
                     AgeMinimum = table.Column<int>(nullable: true),
-                    StartDate = table.Column<DateTime>(nullable: true),
-                    EndDate = table.Column<DateTime>(nullable: true)
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
+                    EndDate = table.Column<DateTime>(nullable: true),
+                    QuestionnaireId = table.Column<int>(nullable: false),
+                    SiteId = table.Column<int>(nullable: false),
+                    StartDate = table.Column<DateTime>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -538,10 +489,9 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
-                    Name = table.Column<string>(maxLength: 255, nullable: false),
-                    IsAdmin = table.Column<bool>(nullable: false)
+                    CreatedBy = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(maxLength: 255, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -554,12 +504,12 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
-                    SiteId = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(maxLength: 255, nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
                     IsCharter = table.Column<bool>(nullable: false),
-                    IsPrivate = table.Column<bool>(nullable: false)
+                    IsPrivate = table.Column<bool>(nullable: false),
+                    Name = table.Column<string>(maxLength: 255, nullable: false),
+                    SiteId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -572,10 +522,10 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
-                    SiteId = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(maxLength: 255, nullable: false)
+                    CreatedBy = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(maxLength: 255, nullable: false),
+                    SiteId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -588,45 +538,46 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    Path = table.Column<string>(maxLength: 255, nullable: false),
-                    Name = table.Column<string>(maxLength: 255, nullable: false),
-                    PageTitle = table.Column<string>(maxLength: 255, nullable: false),
-                    Domain = table.Column<string>(maxLength: 255, nullable: true),
-                    IsDefault = table.Column<bool>(nullable: false),
-                    Footer = table.Column<string>(nullable: true),
-                    BeforeRegistrationPage = table.Column<int>(nullable: true),
-                    RegistrationOpens = table.Column<DateTime>(nullable: true),
-                    RegistrationOpenPage = table.Column<int>(nullable: true),
-                    ProgramStarts = table.Column<DateTime>(nullable: true),
-                    ProgramOpenPage = table.Column<int>(nullable: true),
-                    ProgramEnds = table.Column<DateTime>(nullable: true),
-                    ProgramEndedPage = table.Column<int>(nullable: true),
                     AccessClosed = table.Column<DateTime>(nullable: true),
                     AccessClosedPage = table.Column<int>(nullable: true),
+                    AvatarCardDescription = table.Column<string>(maxLength: 150, nullable: true),
+                    BeforeRegistrationPage = table.Column<int>(nullable: true),
+                    CollectPreregistrationEmails = table.Column<bool>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
+                    Domain = table.Column<string>(maxLength: 255, nullable: true),
+                    ExternalEventListUrl = table.Column<string>(nullable: true),
+                    FacebookAppId = table.Column<string>(maxLength: 100, nullable: true),
+                    FacebookImageUrl = table.Column<string>(maxLength: 100, nullable: true),
+                    Footer = table.Column<string>(nullable: true),
+                    FromEmailAddress = table.Column<string>(nullable: true),
+                    FromEmailName = table.Column<string>(nullable: true),
+                    GoogleAnalyticsTrackingId = table.Column<string>(nullable: true),
+                    IsDefault = table.Column<bool>(nullable: false),
+                    IsHttpsForced = table.Column<bool>(nullable: false),
+                    MaxPointsPerChallengeTask = table.Column<int>(nullable: true),
+                    MetaDescription = table.Column<string>(maxLength: 150, nullable: true),
+                    Name = table.Column<string>(maxLength: 255, nullable: false),
                     OutgoingMailHost = table.Column<string>(nullable: true),
-                    OutgoingMailPort = table.Column<int>(nullable: true),
                     OutgoingMailLogin = table.Column<string>(nullable: true),
                     OutgoingMailPassword = table.Column<string>(nullable: true),
-                    ExternalEventListUrl = table.Column<string>(nullable: true),
-                    GoogleAnalyticsTrackingId = table.Column<string>(nullable: true),
-                    MetaDescription = table.Column<string>(maxLength: 150, nullable: true),
+                    OutgoingMailPort = table.Column<int>(nullable: true),
+                    PageTitle = table.Column<string>(maxLength: 255, nullable: false),
+                    Path = table.Column<string>(maxLength: 255, nullable: false),
+                    ProgramEndedPage = table.Column<int>(nullable: true),
+                    ProgramEnds = table.Column<DateTime>(nullable: true),
+                    ProgramOpenPage = table.Column<int>(nullable: true),
+                    ProgramStarts = table.Column<DateTime>(nullable: true),
+                    RegistrationOpenPage = table.Column<int>(nullable: true),
+                    RegistrationOpens = table.Column<DateTime>(nullable: true),
                     RequirePostalCode = table.Column<bool>(nullable: false),
                     SinglePageSignUp = table.Column<bool>(nullable: false),
-                    MaxPointsPerChallengeTask = table.Column<int>(nullable: true),
-                    FromEmailName = table.Column<string>(nullable: true),
-                    FromEmailAddress = table.Column<string>(nullable: true),
-                    SiteLogoUrl = table.Column<string>(maxLength: 255, nullable: true),
-                    FacebookAppId = table.Column<string>(maxLength: 100, nullable: true),
-                    FacebookImageUrl = table.Column<string>(maxLength: 255, nullable: true),
-                    TwitterLargeCard = table.Column<bool>(nullable: true),
-                    TwitterCardImageUrl = table.Column<string>(maxLength: 255, nullable: true),
-                    TwitterUsername = table.Column<string>(maxLength: 15, nullable: true),
-                    IsHttpsForced = table.Column<bool>(nullable: false),
-                    TwitterAvatarMessage = table.Column<string>(maxLength: 255, nullable: true),
+                    SiteLogoUrl = table.Column<string>(maxLength: 100, nullable: true),
                     TwitterAvatarHashtags = table.Column<string>(maxLength: 100, nullable: true),
-                    AvatarCardDescription = table.Column<string>(maxLength: 150, nullable: true)
+                    TwitterAvatarMessage = table.Column<string>(maxLength: 255, nullable: true),
+                    TwitterCardImageUrl = table.Column<string>(maxLength: 100, nullable: true),
+                    TwitterLargeCard = table.Column<bool>(nullable: true),
+                    TwitterUsername = table.Column<string>(maxLength: 15, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -639,10 +590,10 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
-                    SiteId = table.Column<int>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
                     Key = table.Column<string>(maxLength: 255, nullable: false),
+                    SiteId = table.Column<int>(nullable: false),
                     Value = table.Column<string>(maxLength: 255, nullable: true)
                 },
                 constraints: table =>
@@ -656,10 +607,10 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
                     AvatarLayerId = table.Column<int>(nullable: false),
                     Color = table.Column<string>(maxLength: 15, nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
                     SortOrder = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -679,9 +630,9 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
                     AvatarLayerId = table.Column<int>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
                     Name = table.Column<string>(maxLength: 255, nullable: false),
                     SortOrder = table.Column<int>(nullable: false),
                     Thumbnail = table.Column<string>(maxLength: 255, nullable: true),
@@ -704,12 +655,12 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
                     DailyLiteracyTipId = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(maxLength: 255, nullable: false),
+                    Day = table.Column<int>(nullable: false),
                     Extension = table.Column<string>(maxLength: 10, nullable: false),
-                    Day = table.Column<int>(nullable: false)
+                    Name = table.Column<string>(maxLength: 255, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -723,65 +674,19 @@ namespace GRA.Data.SqlServer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PsKitAgeGroups",
-                columns: table => new
-                {
-                    KitId = table.Column<int>(nullable: false),
-                    AgeGroupId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PsKitAgeGroups", x => new { x.KitId, x.AgeGroupId });
-                    table.ForeignKey(
-                        name: "FK_PsKitAgeGroups_PsAgeGroups_AgeGroupId",
-                        column: x => x.AgeGroupId,
-                        principalTable: "PsAgeGroups",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_PsKitAgeGroups_PsKits_KitId",
-                        column: x => x.KitId,
-                        principalTable: "PsKits",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PsKitImages",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    KitId = table.Column<int>(nullable: false),
-                    Filename = table.Column<string>(maxLength: 255, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PsKitImages", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PsKitImages_PsKits_KitId",
-                        column: x => x.KitId,
-                        principalTable: "PsKits",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Questions",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
+                    CorrectAnswerId = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
-                    QuestionnaireId = table.Column<int>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
                     IsDeleted = table.Column<bool>(nullable: false),
                     Name = table.Column<string>(maxLength: 255, nullable: false),
+                    QuestionnaireId = table.Column<int>(nullable: false),
                     SortOrder = table.Column<int>(nullable: false),
-                    Text = table.Column<string>(nullable: false),
-                    CorrectAnswerId = table.Column<int>(nullable: false)
+                    Text = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -800,14 +705,14 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    SiteId = table.Column<int>(nullable: false),
                     Code = table.Column<string>(maxLength: 255, nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
                     Description = table.Column<string>(nullable: true),
+                    IsSingleUse = table.Column<bool>(nullable: false),
                     RoleId = table.Column<int>(nullable: false),
-                    Uses = table.Column<int>(nullable: false),
-                    IsSingleUse = table.Column<bool>(nullable: false)
+                    SiteId = table.Column<int>(nullable: false),
+                    Uses = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -826,8 +731,8 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     RoleId = table.Column<int>(nullable: false),
                     PermissionId = table.Column<int>(nullable: false),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false)
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -852,12 +757,12 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
-                    SiteId = table.Column<int>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(maxLength: 255, nullable: false),
                     SchoolDistrictId = table.Column<int>(nullable: false),
                     SchoolTypeId = table.Column<int>(nullable: true),
-                    Name = table.Column<string>(maxLength: 255, nullable: false)
+                    SiteId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -882,22 +787,22 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
+                    BadgeId = table.Column<int>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
-                    SiteId = table.Column<int>(nullable: false),
-                    RelatedSystemId = table.Column<int>(nullable: false),
-                    RelatedBranchId = table.Column<int>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
+                    Description = table.Column<string>(maxLength: 500, nullable: true),
                     IsActive = table.Column<bool>(nullable: false),
                     IsDeleted = table.Column<bool>(nullable: false),
                     IsValid = table.Column<bool>(nullable: false),
-                    Name = table.Column<string>(maxLength: 255, nullable: false),
-                    Description = table.Column<string>(maxLength: 500, nullable: true),
-                    PointsAwarded = table.Column<int>(nullable: false),
-                    TasksToComplete = table.Column<int>(nullable: false),
-                    LimitToSystemId = table.Column<int>(nullable: true),
                     LimitToBranchId = table.Column<int>(nullable: true),
                     LimitToProgramId = table.Column<int>(nullable: true),
-                    BadgeId = table.Column<int>(nullable: true)
+                    LimitToSystemId = table.Column<int>(nullable: true),
+                    Name = table.Column<string>(maxLength: 255, nullable: false),
+                    PointsAwarded = table.Column<int>(nullable: false),
+                    RelatedBranchId = table.Column<int>(nullable: false),
+                    RelatedSystemId = table.Column<int>(nullable: false),
+                    SiteId = table.Column<int>(nullable: false),
+                    TasksToComplete = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -916,22 +821,22 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    SiteId = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(maxLength: 255, nullable: false),
                     AchieverPointAmount = table.Column<int>(nullable: false),
-                    JoinBadgeId = table.Column<int>(nullable: true),
-                    JoinBadgeName = table.Column<string>(maxLength: 255, nullable: true),
-                    AskAge = table.Column<bool>(nullable: false),
-                    AgeRequired = table.Column<bool>(nullable: false),
-                    AskSchool = table.Column<bool>(nullable: false),
-                    SchoolRequired = table.Column<bool>(nullable: false),
-                    Position = table.Column<int>(nullable: false),
                     AgeMaximum = table.Column<int>(nullable: true),
                     AgeMinimum = table.Column<int>(nullable: true),
+                    AgeRequired = table.Column<bool>(nullable: false),
+                    AskAge = table.Column<bool>(nullable: false),
+                    AskSchool = table.Column<bool>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
                     DailyLiteracyTipId = table.Column<int>(nullable: true),
-                    PointTranslationId = table.Column<int>(nullable: false)
+                    JoinBadgeId = table.Column<int>(nullable: true),
+                    JoinBadgeName = table.Column<string>(maxLength: 255, nullable: true),
+                    Name = table.Column<string>(maxLength: 255, nullable: false),
+                    PointTranslationId = table.Column<int>(nullable: false),
+                    Position = table.Column<int>(nullable: false),
+                    SchoolRequired = table.Column<bool>(nullable: false),
+                    SiteId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -957,46 +862,15 @@ namespace GRA.Data.SqlServer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PsSettings",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    SiteId = table.Column<int>(nullable: false),
-                    ContactEmail = table.Column<string>(nullable: true),
-                    SelectionsPerBranch = table.Column<int>(nullable: true),
-                    RegistrationOpen = table.Column<DateTime>(nullable: true),
-                    RegistrationClosed = table.Column<DateTime>(nullable: true),
-                    SchedulingPreview = table.Column<DateTime>(nullable: true),
-                    SchedulingOpen = table.Column<DateTime>(nullable: true),
-                    SchedulingClosed = table.Column<DateTime>(nullable: true),
-                    SchedulePosted = table.Column<DateTime>(nullable: true),
-                    ScheduleStartDate = table.Column<DateTime>(nullable: true),
-                    ScheduleEndDate = table.Column<DateTime>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PsSettings", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PsSettings_Sites_SiteId",
-                        column: x => x.SiteId,
-                        principalTable: "Sites",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Systems",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
-                    SiteId = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(maxLength: 255, nullable: false)
+                    CreatedBy = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(maxLength: 255, nullable: false),
+                    SiteId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1015,17 +889,17 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
-                    SiteId = table.Column<int>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
                     Description = table.Column<string>(maxLength: 255, nullable: false),
-                    Mail = table.Column<string>(maxLength: 1250, nullable: false),
-                    MailSubject = table.Column<string>(maxLength: 255, nullable: false),
-                    DonationOptionSubject = table.Column<string>(nullable: true),
-                    DonationOptionMail = table.Column<string>(maxLength: 1250, nullable: true),
-                    DonationSubject = table.Column<string>(maxLength: 255, nullable: true),
                     DonationMail = table.Column<string>(maxLength: 1250, nullable: true),
                     DonationMessage = table.Column<string>(maxLength: 255, nullable: true),
+                    DonationOptionMail = table.Column<string>(maxLength: 1250, nullable: true),
+                    DonationOptionSubject = table.Column<string>(nullable: true),
+                    DonationSubject = table.Column<string>(maxLength: 255, nullable: true),
+                    Mail = table.Column<string>(maxLength: 1250, nullable: false),
+                    MailSubject = table.Column<string>(maxLength: 255, nullable: false),
+                    SiteId = table.Column<int>(nullable: false),
                     Url = table.Column<string>(maxLength: 255, nullable: true)
                 },
                 constraints: table =>
@@ -1069,10 +943,10 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    AvatarItemId = table.Column<int>(nullable: false),
                     AvatarColorId = table.Column<int>(nullable: true),
+                    AvatarItemId = table.Column<int>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
                     Filename = table.Column<string>(maxLength: 255, nullable: false)
                 },
                 constraints: table =>
@@ -1098,8 +972,8 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
                     QuestionId = table.Column<int>(nullable: false),
                     SortOrder = table.Column<int>(nullable: false),
                     Text = table.Column<string>(maxLength: 1500, nullable: false)
@@ -1121,8 +995,8 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     ChallengeId = table.Column<int>(nullable: false),
                     CategoryId = table.Column<int>(nullable: false),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false)
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1147,8 +1021,8 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     ChallengeGroupId = table.Column<int>(nullable: false),
                     ChallengeId = table.Column<int>(nullable: false),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false)
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1173,16 +1047,16 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    Author = table.Column<string>(maxLength: 255, nullable: true),
                     ChallengeId = table.Column<int>(nullable: false),
+                    ChallengeTaskTypeId = table.Column<int>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
+                    Filename = table.Column<string>(maxLength: 255, nullable: true),
+                    Isbn = table.Column<string>(maxLength: 30, nullable: true),
                     Position = table.Column<int>(nullable: false),
                     Title = table.Column<string>(nullable: false),
-                    Author = table.Column<string>(maxLength: 255, nullable: true),
-                    Isbn = table.Column<string>(maxLength: 30, nullable: true),
-                    Url = table.Column<string>(maxLength: 500, nullable: true),
-                    Filename = table.Column<string>(maxLength: 255, nullable: true),
-                    ChallengeTaskTypeId = table.Column<int>(nullable: false)
+                    Url = table.Column<string>(maxLength: 500, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1201,27 +1075,27 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    SiteId = table.Column<int>(nullable: false),
-                    RelatedSystemId = table.Column<int>(nullable: false),
-                    RelatedBranchId = table.Column<int>(nullable: false),
-                    RelatedTriggerId = table.Column<int>(nullable: true),
-                    Name = table.Column<string>(maxLength: 255, nullable: false),
-                    StartDate = table.Column<DateTime>(nullable: false),
-                    EndDate = table.Column<DateTime>(nullable: true),
                     AllDay = table.Column<bool>(nullable: false),
-                    Description = table.Column<string>(maxLength: 1500, nullable: false),
-                    IsActive = table.Column<bool>(nullable: false),
-                    IsValid = table.Column<bool>(nullable: false),
-                    IsCommunityExperience = table.Column<bool>(nullable: false),
-                    ExternalLink = table.Column<string>(maxLength: 300, nullable: true),
                     AtBranchId = table.Column<int>(nullable: true),
                     AtLocationId = table.Column<int>(nullable: true),
-                    ProgramId = table.Column<int>(nullable: true),
-                    ParentEventId = table.Column<int>(nullable: true),
+                    ChallengeGroupId = table.Column<int>(nullable: true),
                     ChallengeId = table.Column<int>(nullable: true),
-                    ChallengeGroupId = table.Column<int>(nullable: true)
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
+                    Description = table.Column<string>(maxLength: 1500, nullable: false),
+                    EndDate = table.Column<DateTime>(nullable: true),
+                    ExternalLink = table.Column<string>(maxLength: 300, nullable: true),
+                    IsActive = table.Column<bool>(nullable: false),
+                    IsCommunityExperience = table.Column<bool>(nullable: false),
+                    IsValid = table.Column<bool>(nullable: false),
+                    Name = table.Column<string>(maxLength: 255, nullable: false),
+                    ParentEventId = table.Column<int>(nullable: true),
+                    ProgramId = table.Column<int>(nullable: true),
+                    RelatedBranchId = table.Column<int>(nullable: false),
+                    RelatedSystemId = table.Column<int>(nullable: false),
+                    RelatedTriggerId = table.Column<int>(nullable: true),
+                    SiteId = table.Column<int>(nullable: false),
+                    StartDate = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1246,13 +1120,13 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    SystemId = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(maxLength: 255, nullable: false),
-                    Url = table.Column<string>(maxLength: 500, nullable: true),
                     Address = table.Column<string>(maxLength: 255, nullable: true),
-                    Telephone = table.Column<string>(maxLength: 50, nullable: true)
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(maxLength: 255, nullable: false),
+                    SystemId = table.Column<int>(nullable: false),
+                    Telephone = table.Column<string>(maxLength: 50, nullable: true),
+                    Url = table.Column<string>(maxLength: 500, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1271,17 +1145,17 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    SiteId = table.Column<int>(nullable: false),
-                    VendorCodeTypeId = table.Column<int>(nullable: false),
                     Code = table.Column<string>(nullable: false),
-                    IsUsed = table.Column<bool>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
                     DateUsed = table.Column<DateTime>(nullable: false),
-                    UserId = table.Column<int>(nullable: true),
+                    IsDonated = table.Column<bool>(nullable: true),
+                    IsUsed = table.Column<bool>(nullable: false),
                     OrderDate = table.Column<DateTime>(nullable: true),
                     ShipDate = table.Column<DateTime>(nullable: true),
-                    IsDonated = table.Column<bool>(nullable: true)
+                    SiteId = table.Column<int>(nullable: false),
+                    UserId = table.Column<int>(nullable: true),
+                    VendorCodeTypeId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1300,22 +1174,22 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    SiteId = table.Column<int>(nullable: false),
-                    RelatedSystemId = table.Column<int>(nullable: false),
-                    RelatedBranchId = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(maxLength: 255, nullable: false),
-                    ProgramId = table.Column<int>(nullable: true),
-                    SystemId = table.Column<int>(nullable: true),
                     BranchId = table.Column<int>(nullable: true),
-                    PointsMinimum = table.Column<int>(nullable: true),
-                    PointsMaximum = table.Column<int>(nullable: true),
-                    StartOfPeriod = table.Column<DateTime>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
                     EndOfPeriod = table.Column<DateTime>(nullable: true),
-                    ReadABook = table.Column<bool>(nullable: false),
+                    ExcludePreviousWinners = table.Column<bool>(nullable: false),
                     IncludeAdmin = table.Column<bool>(nullable: false),
-                    ExcludePreviousWinners = table.Column<bool>(nullable: false)
+                    Name = table.Column<string>(maxLength: 255, nullable: false),
+                    PointsMaximum = table.Column<int>(nullable: true),
+                    PointsMinimum = table.Column<int>(nullable: true),
+                    ProgramId = table.Column<int>(nullable: true),
+                    ReadABook = table.Column<bool>(nullable: false),
+                    RelatedBranchId = table.Column<int>(nullable: false),
+                    RelatedSystemId = table.Column<int>(nullable: false),
+                    SiteId = table.Column<int>(nullable: false),
+                    StartOfPeriod = table.Column<DateTime>(nullable: true),
+                    SystemId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1340,29 +1214,28 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    SiteId = table.Column<int>(nullable: false),
-                    RelatedSystemId = table.Column<int>(nullable: false),
-                    RelatedBranchId = table.Column<int>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false),
-                    Name = table.Column<string>(maxLength: 255, nullable: false),
-                    Points = table.Column<int>(nullable: false),
-                    SecretCode = table.Column<string>(maxLength: 50, nullable: true),
-                    ItemsRequired = table.Column<int>(nullable: false),
-                    ActivationDate = table.Column<DateTime>(nullable: true),
-                    LimitToSystemId = table.Column<int>(nullable: true),
-                    LimitToBranchId = table.Column<int>(nullable: true),
-                    LimitToProgramId = table.Column<int>(nullable: true),
-                    AwardMessage = table.Column<string>(maxLength: 1000, nullable: false),
+                    AwardAvatarBundleId = table.Column<int>(nullable: true),
                     AwardBadgeId = table.Column<int>(nullable: false),
-                    AwardVendorCodeTypeId = table.Column<int>(nullable: true),
-                    AwardPoints = table.Column<int>(nullable: false),
-                    AwardMailSubject = table.Column<string>(maxLength: 500, nullable: true),
                     AwardMail = table.Column<string>(maxLength: 2000, nullable: true),
+                    AwardMailSubject = table.Column<string>(maxLength: 500, nullable: true),
+                    AwardMessage = table.Column<string>(maxLength: 1000, nullable: false),
+                    AwardPoints = table.Column<int>(nullable: false),
                     AwardPrizeName = table.Column<string>(maxLength: 255, nullable: true),
                     AwardPrizeRedemptionInstructions = table.Column<string>(maxLength: 1000, nullable: true),
-                    AwardAvatarBundleId = table.Column<int>(nullable: true)
+                    AwardVendorCodeTypeId = table.Column<int>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    ItemsRequired = table.Column<int>(nullable: false),
+                    LimitToBranchId = table.Column<int>(nullable: true),
+                    LimitToProgramId = table.Column<int>(nullable: true),
+                    LimitToSystemId = table.Column<int>(nullable: true),
+                    Name = table.Column<string>(maxLength: 255, nullable: false),
+                    Points = table.Column<int>(nullable: false),
+                    RelatedBranchId = table.Column<int>(nullable: false),
+                    RelatedSystemId = table.Column<int>(nullable: false),
+                    SecretCode = table.Column<string>(maxLength: 50, nullable: true),
+                    SiteId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1411,40 +1284,40 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    SiteId = table.Column<int>(nullable: false),
-                    Email = table.Column<string>(maxLength: 254, nullable: true),
-                    IsDeleted = table.Column<bool>(nullable: false),
+                    AchievedAt = table.Column<DateTime>(nullable: true),
+                    Age = table.Column<int>(nullable: true),
+                    BranchId = table.Column<int>(nullable: false),
                     CanBeDeleted = table.Column<bool>(nullable: false),
+                    CardNumber = table.Column<string>(maxLength: 64, nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
+                    DailyPersonalGoal = table.Column<int>(nullable: true),
+                    Email = table.Column<string>(maxLength: 254, nullable: true),
+                    FirstName = table.Column<string>(maxLength: 255, nullable: false),
+                    HouseholdHeadUserId = table.Column<int>(nullable: true),
+                    IsActive = table.Column<bool>(nullable: false),
+                    IsAdmin = table.Column<bool>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    IsFirstTime = table.Column<bool>(nullable: false),
+                    IsHomeschooled = table.Column<bool>(nullable: false),
                     IsLockedOut = table.Column<bool>(nullable: false),
+                    LastAccess = table.Column<DateTime>(nullable: true),
+                    LastActivityDate = table.Column<DateTime>(nullable: true),
+                    LastBroadcast = table.Column<DateTime>(nullable: true),
+                    LastName = table.Column<string>(maxLength: 255, nullable: true),
                     LockedOutAt = table.Column<DateTime>(nullable: false),
                     LockedOutFor = table.Column<string>(nullable: true),
-                    IsAdmin = table.Column<bool>(nullable: false),
-                    IsActive = table.Column<bool>(nullable: false),
-                    LastActivityDate = table.Column<DateTime>(nullable: true),
-                    Username = table.Column<string>(maxLength: 36, nullable: true),
                     PasswordHash = table.Column<string>(nullable: true),
-                    FirstName = table.Column<string>(maxLength: 255, nullable: false),
-                    LastName = table.Column<string>(maxLength: 255, nullable: true),
                     PhoneNumber = table.Column<string>(maxLength: 15, nullable: true),
-                    PostalCode = table.Column<string>(maxLength: 32, nullable: true),
-                    CardNumber = table.Column<string>(maxLength: 64, nullable: true),
-                    LastAccess = table.Column<DateTime>(nullable: true),
-                    BranchId = table.Column<int>(nullable: false),
-                    SystemId = table.Column<int>(nullable: false),
                     PointsEarned = table.Column<int>(nullable: false),
+                    PostalCode = table.Column<string>(maxLength: 32, nullable: true),
+                    PreregistrationReminderRequested = table.Column<bool>(nullable: false),
                     ProgramId = table.Column<int>(nullable: false),
-                    HouseholdHeadUserId = table.Column<int>(nullable: true),
-                    Age = table.Column<int>(nullable: true),
                     SchoolId = table.Column<int>(nullable: true),
                     SchoolNotListed = table.Column<bool>(nullable: false),
-                    IsHomeschooled = table.Column<bool>(nullable: false),
-                    AchievedAt = table.Column<DateTime>(nullable: true),
-                    LastBroadcast = table.Column<DateTime>(nullable: true),
-                    IsFirstTime = table.Column<bool>(nullable: false),
-                    PreregistrationReminderRequested = table.Column<bool>(nullable: false),
-                    DailyPersonalGoal = table.Column<int>(nullable: true)
+                    SiteId = table.Column<int>(nullable: false),
+                    SystemId = table.Column<int>(nullable: false),
+                    Username = table.Column<string>(maxLength: 36, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1476,6 +1349,35 @@ namespace GRA.Data.SqlServer.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Drawings",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
+                    DrawingCriterionId = table.Column<int>(nullable: false),
+                    IsArchived = table.Column<bool>(nullable: false),
+                    Name = table.Column<string>(maxLength: 255, nullable: false),
+                    NotificationMessage = table.Column<string>(maxLength: 2000, nullable: true),
+                    NotificationSubject = table.Column<string>(maxLength: 255, nullable: true),
+                    RedemptionInstructions = table.Column<string>(maxLength: 1000, nullable: true),
+                    RelatedBranchId = table.Column<int>(nullable: false),
+                    RelatedSystemId = table.Column<int>(nullable: false),
+                    WinnerCount = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Drawings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Drawings_DrawingCriteria_DrawingCriterionId",
+                        column: x => x.DrawingCriterionId,
+                        principalTable: "DrawingCriteria",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DrawingCriterionPrograms",
                 columns: table => new
                 {
@@ -1487,35 +1389,6 @@ namespace GRA.Data.SqlServer.Migrations
                     table.PrimaryKey("PK_DrawingCriterionPrograms", x => new { x.DrawingCriterionId, x.ProgramId });
                     table.ForeignKey(
                         name: "FK_DrawingCriterionPrograms_DrawingCriteria_DrawingCriterionId",
-                        column: x => x.DrawingCriterionId,
-                        principalTable: "DrawingCriteria",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Drawings",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    DrawingCriterionId = table.Column<int>(nullable: false),
-                    RelatedSystemId = table.Column<int>(nullable: false),
-                    RelatedBranchId = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(maxLength: 255, nullable: false),
-                    RedemptionInstructions = table.Column<string>(maxLength: 1000, nullable: true),
-                    WinnerCount = table.Column<int>(nullable: false),
-                    NotificationSubject = table.Column<string>(maxLength: 255, nullable: true),
-                    NotificationMessage = table.Column<string>(maxLength: 2000, nullable: true),
-                    IsArchived = table.Column<bool>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Drawings", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Drawings_DrawingCriteria_DrawingCriterionId",
                         column: x => x.DrawingCriterionId,
                         principalTable: "DrawingCriteria",
                         principalColumn: "Id",
@@ -1576,11 +1449,11 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
-                    UserId = table.Column<int>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
+                    GroupTypeId = table.Column<int>(nullable: false),
                     Name = table.Column<string>(maxLength: 255, nullable: false),
-                    GroupTypeId = table.Column<int>(nullable: false)
+                    UserId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1593,40 +1466,6 @@ namespace GRA.Data.SqlServer.Migrations
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_GroupInfos_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PsPerformers",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    UserId = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(maxLength: 255, nullable: false),
-                    BillingAddress = table.Column<string>(maxLength: 500, nullable: false),
-                    Website = table.Column<string>(maxLength: 255, nullable: true),
-                    Email = table.Column<string>(maxLength: 255, nullable: false),
-                    Phone = table.Column<string>(maxLength: 255, nullable: false),
-                    PhonePreferred = table.Column<bool>(nullable: false),
-                    VendorId = table.Column<string>(maxLength: 255, nullable: false),
-                    HasFingerprintCard = table.Column<bool>(nullable: false),
-                    AllBranches = table.Column<bool>(nullable: false),
-                    ReferencesFilename = table.Column<string>(maxLength: 255, nullable: true),
-                    SetSchedule = table.Column<bool>(nullable: false),
-                    RegistrationCompleted = table.Column<bool>(nullable: false),
-                    IsApproved = table.Column<bool>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PsPerformers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PsPerformers_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -1659,30 +1498,6 @@ namespace GRA.Data.SqlServer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserAvatarItems",
-                columns: table => new
-                {
-                    UserId = table.Column<int>(nullable: false),
-                    AvatarItemId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserAvatarItems", x => new { x.UserId, x.AvatarItemId });
-                    table.ForeignKey(
-                        name: "FK_UserAvatarItems_AvatarItems_AvatarItemId",
-                        column: x => x.AvatarItemId,
-                        principalTable: "AvatarItems",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_UserAvatarItems_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "UserAvatars",
                 columns: table => new
                 {
@@ -1700,6 +1515,30 @@ namespace GRA.Data.SqlServer.Migrations
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_UserAvatars_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserAvatarItems",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(nullable: false),
+                    AvatarItemId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserAvatarItems", x => new { x.UserId, x.AvatarItemId });
+                    table.ForeignKey(
+                        name: "FK_UserAvatarItems_AvatarItems_AvatarItemId",
+                        column: x => x.AvatarItemId,
+                        principalTable: "AvatarItems",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_UserAvatarItems_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -1737,8 +1576,8 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     UserId = table.Column<int>(nullable: false),
                     BookId = table.Column<int>(nullable: false),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false)
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1763,10 +1602,10 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     UserId = table.Column<int>(nullable: false),
                     ChallengeTaskId = table.Column<int>(nullable: false),
-                    IsCompleted = table.Column<bool>(nullable: false),
+                    BookId = table.Column<int>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
-                    UserLogId = table.Column<int>(nullable: true),
-                    BookId = table.Column<int>(nullable: true)
+                    IsCompleted = table.Column<bool>(nullable: false),
+                    UserLogId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1817,19 +1656,19 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    UserId = table.Column<int>(nullable: false),
-                    PointTranslationId = table.Column<int>(nullable: true),
                     ActivityEarned = table.Column<int>(nullable: true),
-                    PointsEarned = table.Column<int>(nullable: false),
+                    AvatarBundleId = table.Column<int>(nullable: true),
                     AwardedBy = table.Column<int>(nullable: true),
-                    IsDeleted = table.Column<bool>(nullable: false),
-                    DeletedBy = table.Column<int>(nullable: true),
-                    ChallengeId = table.Column<int>(nullable: true),
                     BadgeId = table.Column<int>(nullable: true),
+                    ChallengeId = table.Column<int>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
+                    DeletedBy = table.Column<int>(nullable: true),
                     Description = table.Column<string>(nullable: true),
-                    AvatarBundleId = table.Column<int>(nullable: true)
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    PointTranslationId = table.Column<int>(nullable: true),
+                    PointsEarned = table.Column<int>(nullable: false),
+                    UserId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1873,8 +1712,8 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     UserId = table.Column<int>(nullable: false),
                     RoleId = table.Column<int>(nullable: false),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false)
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1924,15 +1763,15 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
-                    SiteId = table.Column<int>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
                     DrawingId = table.Column<int>(nullable: true),
-                    TriggerId = table.Column<int>(nullable: true),
-                    UserId = table.Column<int>(nullable: false),
+                    MailId = table.Column<int>(nullable: true),
                     RedeemedAt = table.Column<DateTime>(nullable: true),
                     RedeemedBy = table.Column<int>(nullable: true),
-                    MailId = table.Column<int>(nullable: true)
+                    SiteId = table.Column<int>(nullable: false),
+                    TriggerId = table.Column<int>(nullable: true),
+                    UserId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1953,210 +1792,6 @@ namespace GRA.Data.SqlServer.Migrations
                         name: "FK_PrizeWinners_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PsPerformerBranches",
-                columns: table => new
-                {
-                    PsPerformerId = table.Column<int>(nullable: false),
-                    BranchId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PsPerformerBranches", x => new { x.PsPerformerId, x.BranchId });
-                    table.ForeignKey(
-                        name: "FK_PsPerformerBranches_Branches_BranchId",
-                        column: x => x.BranchId,
-                        principalTable: "Branches",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_PsPerformerBranches_PsPerformers_PsPerformerId",
-                        column: x => x.PsPerformerId,
-                        principalTable: "PsPerformers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PsPerformerImages",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    PerformerId = table.Column<int>(nullable: false),
-                    Filename = table.Column<string>(maxLength: 255, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PsPerformerImages", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PsPerformerImages_PsPerformers_PerformerId",
-                        column: x => x.PerformerId,
-                        principalTable: "PsPerformers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PsPerformerSchedules",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    PerformerId = table.Column<int>(nullable: false),
-                    Date = table.Column<DateTime>(nullable: false),
-                    StartTime = table.Column<DateTime>(nullable: true),
-                    EndTime = table.Column<DateTime>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PsPerformerSchedules", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PsPerformerSchedules_PsPerformers_PerformerId",
-                        column: x => x.PerformerId,
-                        principalTable: "PsPerformers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PsPrograms",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    PerformerId = table.Column<int>(nullable: false),
-                    Title = table.Column<string>(maxLength: 50, nullable: false),
-                    MinimumCapacity = table.Column<int>(nullable: false),
-                    MaximumCapacity = table.Column<int>(nullable: false),
-                    ProgramLengthMinutes = table.Column<int>(nullable: false),
-                    SetupTimeMinutes = table.Column<int>(nullable: false),
-                    BreakdownTimeMinutes = table.Column<int>(nullable: false),
-                    BackToBackMinutes = table.Column<int>(nullable: false),
-                    Description = table.Column<string>(maxLength: 375, nullable: false),
-                    Cost = table.Column<decimal>(nullable: false),
-                    Setup = table.Column<string>(maxLength: 1000, nullable: true),
-                    AllowStreaming = table.Column<bool>(nullable: false),
-                    AllowArchiving = table.Column<bool>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PsPrograms", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PsPrograms_PsPerformers_PerformerId",
-                        column: x => x.PerformerId,
-                        principalTable: "PsPerformers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PsBranchSelections",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    UserId = table.Column<int>(nullable: false),
-                    BranchId = table.Column<int>(nullable: false),
-                    AgeGroupId = table.Column<int>(nullable: false),
-                    ProgramId = table.Column<int>(nullable: true),
-                    KitId = table.Column<int>(nullable: true),
-                    RequestedStartTime = table.Column<DateTime>(nullable: false),
-                    ScheduleStartTime = table.Column<DateTime>(nullable: false),
-                    ScheduleDuration = table.Column<int>(nullable: false),
-                    BackToBackProgram = table.Column<bool>(nullable: false),
-                    SelectedAt = table.Column<DateTime>(nullable: false),
-                    SecretCode = table.Column<string>(maxLength: 50, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PsBranchSelections", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PsBranchSelections_PsAgeGroups_AgeGroupId",
-                        column: x => x.AgeGroupId,
-                        principalTable: "PsAgeGroups",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_PsBranchSelections_Branches_BranchId",
-                        column: x => x.BranchId,
-                        principalTable: "Branches",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_PsBranchSelections_PsKits_KitId",
-                        column: x => x.KitId,
-                        principalTable: "PsKits",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_PsBranchSelections_PsPrograms_ProgramId",
-                        column: x => x.ProgramId,
-                        principalTable: "PsPrograms",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_PsBranchSelections_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PsProgramAgeGroups",
-                columns: table => new
-                {
-                    ProgramId = table.Column<int>(nullable: false),
-                    AgeGroupId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PsProgramAgeGroups", x => new { x.ProgramId, x.AgeGroupId });
-                    table.ForeignKey(
-                        name: "FK_PsProgramAgeGroups_PsAgeGroups_AgeGroupId",
-                        column: x => x.AgeGroupId,
-                        principalTable: "PsAgeGroups",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_PsProgramAgeGroups_PsPrograms_ProgramId",
-                        column: x => x.ProgramId,
-                        principalTable: "PsPrograms",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PsProgramImages",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    ProgramId = table.Column<int>(nullable: false),
-                    Filename = table.Column<string>(maxLength: 255, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PsProgramImages", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PsProgramImages_PsPrograms_ProgramId",
-                        column: x => x.ProgramId,
-                        principalTable: "PsPrograms",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -2202,6 +1837,11 @@ namespace GRA.Data.SqlServer.Migrations
                 column: "SystemId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Challenges_SiteId",
+                table: "Challenges",
+                column: "SiteId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ChallengeCategories_CategoryId",
                 table: "ChallengeCategories",
                 column: "CategoryId");
@@ -2210,11 +1850,6 @@ namespace GRA.Data.SqlServer.Migrations
                 name: "IX_ChallengeGroupChallenges_ChallengeId",
                 table: "ChallengeGroupChallenges",
                 column: "ChallengeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Challenges_SiteId",
-                table: "Challenges",
-                column: "SiteId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ChallengeTasks_ChallengeId",
@@ -2227,6 +1862,11 @@ namespace GRA.Data.SqlServer.Migrations
                 column: "DailyLiteracyTipId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Drawings_DrawingCriterionId",
+                table: "Drawings",
+                column: "DrawingCriterionId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DrawingCriteria_BranchId",
                 table: "DrawingCriteria",
                 column: "BranchId");
@@ -2235,11 +1875,6 @@ namespace GRA.Data.SqlServer.Migrations
                 name: "IX_DrawingCriteria_SystemId",
                 table: "DrawingCriteria",
                 column: "SystemId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Drawings_DrawingCriterionId",
-                table: "Drawings",
-                column: "DrawingCriterionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EmailReminders_Email_SignUpSource",
@@ -2281,8 +1916,7 @@ namespace GRA.Data.SqlServer.Migrations
                 name: "IX_Pages_SiteId_Stub",
                 table: "Pages",
                 columns: new[] { "SiteId", "Stub" },
-                unique: true,
-                filter: "[Stub] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_PrizeWinners_TriggerId",
@@ -2298,8 +1932,7 @@ namespace GRA.Data.SqlServer.Migrations
                 name: "IX_PrizeWinners_DrawingId_UserId_RedeemedAt",
                 table: "PrizeWinners",
                 columns: new[] { "DrawingId", "UserId", "RedeemedAt" },
-                unique: true,
-                filter: "[DrawingId] IS NOT NULL AND [RedeemedAt] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Programs_DailyLiteracyTipId",
@@ -2314,81 +1947,6 @@ namespace GRA.Data.SqlServer.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Programs_SiteId",
                 table: "Programs",
-                column: "SiteId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PsBranchSelections_AgeGroupId",
-                table: "PsBranchSelections",
-                column: "AgeGroupId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PsBranchSelections_BranchId",
-                table: "PsBranchSelections",
-                column: "BranchId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PsBranchSelections_KitId",
-                table: "PsBranchSelections",
-                column: "KitId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PsBranchSelections_ProgramId",
-                table: "PsBranchSelections",
-                column: "ProgramId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PsBranchSelections_UserId",
-                table: "PsBranchSelections",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PsKitAgeGroups_AgeGroupId",
-                table: "PsKitAgeGroups",
-                column: "AgeGroupId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PsKitImages_KitId",
-                table: "PsKitImages",
-                column: "KitId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PsPerformerBranches_BranchId",
-                table: "PsPerformerBranches",
-                column: "BranchId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PsPerformerImages_PerformerId",
-                table: "PsPerformerImages",
-                column: "PerformerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PsPerformers_UserId",
-                table: "PsPerformers",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PsPerformerSchedules_PerformerId",
-                table: "PsPerformerSchedules",
-                column: "PerformerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PsProgramAgeGroups_AgeGroupId",
-                table: "PsProgramAgeGroups",
-                column: "AgeGroupId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PsProgramImages_ProgramId",
-                table: "PsProgramImages",
-                column: "ProgramId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PsPrograms_PerformerId",
-                table: "PsPrograms",
-                column: "PerformerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PsSettings_SiteId",
-                table: "PsSettings",
                 column: "SiteId");
 
             migrationBuilder.CreateIndex(
@@ -2415,16 +1973,6 @@ namespace GRA.Data.SqlServer.Migrations
                 name: "IX_Systems_SiteId",
                 table: "Systems",
                 column: "SiteId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TriggerBadges_BadgeId",
-                table: "TriggerBadges",
-                column: "BadgeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TriggerChallenges_ChallengeId",
-                table: "TriggerChallenges",
-                column: "ChallengeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Triggers_AwardAvatarBundleId",
@@ -2457,19 +2005,56 @@ namespace GRA.Data.SqlServer.Migrations
                 column: "LimitToSystemId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_TriggerBadges_BadgeId",
+                table: "TriggerBadges",
+                column: "BadgeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TriggerChallenges_ChallengeId",
+                table: "TriggerChallenges",
+                column: "ChallengeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_BranchId",
+                table: "Users",
+                column: "BranchId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_ProgramId",
+                table: "Users",
+                column: "ProgramId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_SystemId",
+                table: "Users",
+                column: "SystemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_SiteId_IsDeleted_Username",
+                table: "Users",
+                columns: new[] { "SiteId", "IsDeleted", "Username" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_SiteId_Id_IsDeleted_HouseholdHeadUserId",
+                table: "Users",
+                columns: new[] { "SiteId", "Id", "IsDeleted", "HouseholdHeadUserId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserAnswers_AnswerId",
                 table: "UserAnswers",
                 column: "AnswerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserAvatarItems_AvatarItemId",
-                table: "UserAvatarItems",
-                column: "AvatarItemId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_UserAvatars_AvatarElementId",
                 table: "UserAvatars",
                 column: "AvatarElementId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserAvatarItems_AvatarItemId",
+                table: "UserAvatarItems",
+                column: "AvatarItemId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserBadges_BadgeId",
@@ -2515,35 +2100,6 @@ namespace GRA.Data.SqlServer.Migrations
                 name: "IX_UserRoles_RoleId",
                 table: "UserRoles",
                 column: "RoleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_BranchId",
-                table: "Users",
-                column: "BranchId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_ProgramId",
-                table: "Users",
-                column: "ProgramId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_SystemId",
-                table: "Users",
-                column: "SystemId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_SiteId_IsDeleted_Username",
-                table: "Users",
-                columns: new[] { "SiteId", "IsDeleted", "Username" },
-                unique: true,
-                filter: "[Username] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_SiteId_Id_IsDeleted_HouseholdHeadUserId",
-                table: "Users",
-                columns: new[] { "SiteId", "Id", "IsDeleted", "HouseholdHeadUserId" },
-                unique: true,
-                filter: "[HouseholdHeadUserId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserTriggers_TriggerId",
@@ -2618,36 +2174,6 @@ namespace GRA.Data.SqlServer.Migrations
                 name: "PrizeWinners");
 
             migrationBuilder.DropTable(
-                name: "PsBlackoutDates");
-
-            migrationBuilder.DropTable(
-                name: "PsBranchSelections");
-
-            migrationBuilder.DropTable(
-                name: "PsKitAgeGroups");
-
-            migrationBuilder.DropTable(
-                name: "PsKitImages");
-
-            migrationBuilder.DropTable(
-                name: "PsPerformerBranches");
-
-            migrationBuilder.DropTable(
-                name: "PsPerformerImages");
-
-            migrationBuilder.DropTable(
-                name: "PsPerformerSchedules");
-
-            migrationBuilder.DropTable(
-                name: "PsProgramAgeGroups");
-
-            migrationBuilder.DropTable(
-                name: "PsProgramImages");
-
-            migrationBuilder.DropTable(
-                name: "PsSettings");
-
-            migrationBuilder.DropTable(
                 name: "RecoveryTokens");
 
             migrationBuilder.DropTable(
@@ -2678,10 +2204,10 @@ namespace GRA.Data.SqlServer.Migrations
                 name: "UserAnswers");
 
             migrationBuilder.DropTable(
-                name: "UserAvatarItems");
+                name: "UserAvatars");
 
             migrationBuilder.DropTable(
-                name: "UserAvatars");
+                name: "UserAvatarItems");
 
             migrationBuilder.DropTable(
                 name: "UserBadges");
@@ -2723,15 +2249,6 @@ namespace GRA.Data.SqlServer.Migrations
                 name: "Drawings");
 
             migrationBuilder.DropTable(
-                name: "PsKits");
-
-            migrationBuilder.DropTable(
-                name: "PsAgeGroups");
-
-            migrationBuilder.DropTable(
-                name: "PsPrograms");
-
-            migrationBuilder.DropTable(
                 name: "Permissions");
 
             migrationBuilder.DropTable(
@@ -2759,10 +2276,10 @@ namespace GRA.Data.SqlServer.Migrations
                 name: "Triggers");
 
             migrationBuilder.DropTable(
-                name: "DrawingCriteria");
+                name: "Users");
 
             migrationBuilder.DropTable(
-                name: "PsPerformers");
+                name: "DrawingCriteria");
 
             migrationBuilder.DropTable(
                 name: "Questions");
@@ -2786,7 +2303,10 @@ namespace GRA.Data.SqlServer.Migrations
                 name: "VendorCodeTypes");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Programs");
+
+            migrationBuilder.DropTable(
+                name: "Branches");
 
             migrationBuilder.DropTable(
                 name: "Questionnaires");
@@ -2795,19 +2315,13 @@ namespace GRA.Data.SqlServer.Migrations
                 name: "AvatarLayers");
 
             migrationBuilder.DropTable(
-                name: "Branches");
-
-            migrationBuilder.DropTable(
-                name: "Programs");
-
-            migrationBuilder.DropTable(
-                name: "Systems");
-
-            migrationBuilder.DropTable(
                 name: "DailyLiteracyTip");
 
             migrationBuilder.DropTable(
                 name: "PointTranslations");
+
+            migrationBuilder.DropTable(
+                name: "Systems");
 
             migrationBuilder.DropTable(
                 name: "Sites");
