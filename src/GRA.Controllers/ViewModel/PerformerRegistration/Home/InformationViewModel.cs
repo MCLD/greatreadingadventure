@@ -8,6 +8,8 @@ namespace GRA.Controllers.ViewModel.PerformerRegistration.Home
     {
         public PsPerformer Performer { get; set; }
 
+        public PsSettings Settings { get; set; }
+
         public List<Domain.Model.System> Systems { get; set; }
         public List<int> BranchAvailability { get; set; }
         public string BranchAvailabilityString { get; set; }

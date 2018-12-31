@@ -162,6 +162,8 @@ namespace GRA.Domain.Service
             }
             else
             {
+                currentSettings.BranchAvailabilitySuplimentalText = settings
+                    .BranchAvailabilitySuplimentalText?.Trim();
                 currentSettings.ContactEmail = settings.ContactEmail?.Trim();
                 currentSettings.SelectionsPerBranch = settings.SelectionsPerBranch;
                 currentSettings.RegistrationOpen = settings.RegistrationOpen;
@@ -172,6 +174,7 @@ namespace GRA.Domain.Service
                 currentSettings.SchedulePosted = settings.SchedulePosted;
                 currentSettings.ScheduleStartDate = settings.ScheduleStartDate;
                 currentSettings.ScheduleEndDate = settings.ScheduleEndDate;
+                currentSettings.VendorCodeFormat = settings.VendorCodeFormat?.Trim();
 
                 await _psSettingsRepository.UpdateSaveAsync(authId, currentSettings);
             }

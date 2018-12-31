@@ -48,6 +48,13 @@ namespace GRA.Controllers.PerformerRegistration
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
+            if (!UserHasPermission(Permission.AccessPerformerRegistration))
+            {
+                // not authorized for Performer registration, redirect to authorization code
+
+                return RedirectToAction(nameof(AuthorizationCode));
+            }
+
             var settings = await _performerSchedulingService.GetSettingsAsync();
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
             if (schedulingStage == PsSchedulingStage.Unavailable)
@@ -79,8 +86,21 @@ namespace GRA.Controllers.PerformerRegistration
         }
 
         [AllowAnonymous]
+        public async Task<IActionResult> AuthorizationCode()
+        {
+            var site = await GetCurrentSiteAsync();
+            string siteLogoUrl = site.SiteLogoUrl
+                ?? Url.Content(Defaults.SiteLogoPath);
+
+            return View(new AuthorizationCodeViewModel
+            {
+                SiteLogoUrl = siteLogoUrl
+            });
+        }
+
+        [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> AuthorizationCode(IndexViewModel viewmodel)
+        public async Task<IActionResult> AuthorizationCode(AuthorizationCodeViewModel viewmodel)
         {
             if (!AuthUser.Identity.IsAuthenticated)
             {
@@ -89,7 +109,7 @@ namespace GRA.Controllers.PerformerRegistration
                 {
                     area = string.Empty,
                     controller = "SignIn",
-                    ReturnUrl = "/PerformerRegistration"
+                    ReturnUrl = "/MissionControl"
                 });
             }
 
@@ -120,8 +140,14 @@ namespace GRA.Controllers.PerformerRegistration
                     ShowAlertDanger("Unable to activate code: ", gex);
                 }
             }
+            var site = await GetCurrentSiteAsync();
+            string siteLogoUrl = site.SiteLogoUrl
+                ?? Url.Content(Defaults.SiteLogoPath);
 
-            return RedirectToAction(nameof(Index));
+            return View(new AuthorizationCodeViewModel
+            {
+                SiteLogoUrl = siteLogoUrl
+            });
         }
 
         public async Task<IActionResult> Information()
@@ -148,6 +174,7 @@ namespace GRA.Controllers.PerformerRegistration
             var viewModel = new InformationViewModel()
             {
                 Performer = performer,
+                Settings = settings,
                 Systems = systems,
                 BranchCount = systems.Sum(_ => _.Branches.Count()),
                 MaxUploadMB = MaxUploadMB
@@ -303,6 +330,7 @@ namespace GRA.Controllers.PerformerRegistration
             model.BranchCount = systems.Sum(_ => _.Branches.Count());
             model.BranchAvailability = BranchAvailability;
             model.MaxUploadMB = MaxUploadMB;
+            model.Settings = settings;
             model.Systems = systems;
 
             PageTitle = "Performer Information";

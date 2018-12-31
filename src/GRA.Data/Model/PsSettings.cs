@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace GRA.Data.Model
 {
@@ -7,6 +8,7 @@ namespace GRA.Data.Model
         public int SiteId { get; set; }
         public Site Site { get; set; }
 
+        [MaxLength(255)]
         public string ContactEmail { get; set; }
 
         public int? SelectionsPerBranch { get; set; }
@@ -20,5 +22,10 @@ namespace GRA.Data.Model
 
         public DateTime? ScheduleStartDate { get; set; }
         public DateTime? ScheduleEndDate { get; set; }
+
+        [MaxLength(255)]
+        public string VendorCodeFormat { get; set; }
+        [MaxLength(255)]
+        public string BranchAvailabilitySuplimentalText { get; set; }
     }
 }

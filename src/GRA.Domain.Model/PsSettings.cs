@@ -9,6 +9,7 @@ namespace GRA.Domain.Model
         public int SiteId { get; set; }
 
         [DisplayName("Contact Email")]
+        [MaxLength(255)]
         public string ContactEmail { get; set; }
 
         [DisplayName("Selections Per Branch")]
@@ -32,5 +33,12 @@ namespace GRA.Domain.Model
         public DateTime? ScheduleStartDate { get; set; }
         [DisplayName("Schedule End Date")]
         public DateTime? ScheduleEndDate { get; set; }
+
+        [DisplayName("Vendor Code Format")]
+        [MaxLength(255)]
+        public string VendorCodeFormat { get; set; }
+        [DisplayName("Branch Availability Suplimental Text")]
+        [MaxLength(255)]
+        public string BranchAvailabilitySuplimentalText { get; set; }
     }
 }

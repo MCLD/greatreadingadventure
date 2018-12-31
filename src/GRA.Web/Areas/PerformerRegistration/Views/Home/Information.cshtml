@@ -14,10 +14,10 @@
                 </div>
                 <div class="modal-body" style="max-height: calc(100vh - 200px); overflow-y:auto;">
                     <p>
-                        <strong>
-                            These libraries serve residents all over the 9,000 square miles of
-                            Maricopa County.
-                        </strong>
+                        @if (!string.IsNullOrWhiteSpace(Model.Settings.BranchAvailabilitySuplimentalText))
+                        {
+                            <strong>@Model.Settings.BranchAvailabilitySuplimentalText</strong>
+                        }
                         Please select the locations where you are willing
                         to perform for the contracted rate. If you are unsure where the library is
                         located, click the map icon to see it on a map.
@@ -229,7 +229,13 @@ else
     </div>
 
     <div class="form-group">
-        <label asp-for="Performer.VendorId" class="col-sm-3 control-label required-field">Vender ID number<span class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" title="Example number: VC1234567891"></span></label>
+        <label asp-for="Performer.VendorId" class="col-sm-3 control-label required-field">
+            Vender ID number
+            @if (!string.IsNullOrWhiteSpace(Model.Settings.VendorCodeFormat))
+            {
+                <span class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" title="Example number: @Model.Settings.VendorCodeFormat"></span>
+            }
+        </label>
         <div class="col-sm-9">
             <input asp-for="Performer.VendorId" class="form-control" placeholder="" />
             <span asp-validation-for="Performer.VendorId" class="text-danger"></span>
