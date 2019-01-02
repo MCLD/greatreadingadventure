@@ -44,13 +44,13 @@ namespace GRA.Domain.Service
 
             try
             {
-                var defaultSocialPath = Path.Combine(Directory.GetCurrentDirectory(),
+                var defaultFaviconPath = Path.Combine(Directory.GetCurrentDirectory(),
                     "assets",
-                    "defaultsocial");
+                    "defaultfavicon");
 
-                if (!Directory.Exists(defaultSocialPath))
+                if (!Directory.Exists(defaultFaviconPath))
                 {
-                    _logger.LogError("Not copying default social images: {defaultSocialPath} doesn't exist", defaultSocialPath);
+                    _logger.LogError("Not copying default social images: {defaultSocialPath} doesn't exist", defaultFaviconPath);
                 }
                 else
                 {
@@ -58,7 +58,7 @@ namespace GRA.Domain.Service
                         "shared",
                         "content");
 
-                    foreach (var filePath in Directory.EnumerateFiles(defaultSocialPath, "*.*"))
+                    foreach (var filePath in Directory.EnumerateFiles(defaultFaviconPath, "*.*"))
                     {
                         var contentPathFile = Path.Combine(contentPath, Path.GetFileName(filePath));
                         if (!File.Exists(contentPathFile))

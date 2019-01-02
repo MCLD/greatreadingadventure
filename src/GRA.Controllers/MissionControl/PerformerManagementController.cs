@@ -2096,29 +2096,29 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public async Task<IActionResult> Settings(PsSettings psSettings)
+        public async Task<IActionResult> Settings(SettingsViewModel model)
         {
-            if (psSettings.RegistrationClosed < psSettings.RegistrationOpen)
+            if (model.Settings.RegistrationClosed < model.Settings.RegistrationOpen)
             {
                 ModelState.AddModelError("Settings.RegistrationClosed", "The Registration Closed date cannot be before the Registration Open date.");
             }
-            if (psSettings.SchedulingPreview < psSettings.RegistrationClosed)
+            if (model.Settings.SchedulingPreview < model.Settings.RegistrationClosed)
             {
                 ModelState.AddModelError("Settings.SchedulingPreview", "The Schedule Preview date cannot be before the Registration Closed date.");
             }
-            if (psSettings.SchedulingOpen < psSettings.SchedulingPreview)
+            if (model.Settings.SchedulingOpen < model.Settings.SchedulingPreview)
             {
                 ModelState.AddModelError("Settings.SchedulingOpen", "The Schedule Open date cannot be before the Schedule Preview date.");
             }
-            if (psSettings.SchedulingClosed < psSettings.SchedulingOpen)
+            if (model.Settings.SchedulingClosed < model.Settings.SchedulingOpen)
             {
                 ModelState.AddModelError("Settings.SchedulingClosed", "The Schedule Closed date cannot be before the Schedule Open date.");
             }
-            if (psSettings.SchedulePosted < psSettings.SchedulingClosed)
+            if (model.Settings.SchedulePosted < model.Settings.SchedulingClosed)
             {
                 ModelState.AddModelError("Settings.SchedulePosted", "The Schedule Posted date cannot be before the Schedule Closed date.");
             }
-            if (psSettings.ScheduleEndDate < psSettings.ScheduleStartDate)
+            if (model.Settings.ScheduleEndDate < model.Settings.ScheduleStartDate)
             {
                 ModelState.AddModelError("Settings.ScheduleEndDate", "The Schedule End date cannot be before the Schedule Start date.");
             }
@@ -2127,7 +2127,7 @@ namespace GRA.Controllers.MissionControl
             {
                 try
                 {
-                    await _performerSchedulingService.UpdateSettingsAsync(psSettings);
+                    await _performerSchedulingService.UpdateSettingsAsync(model.Settings);
                     ShowAlertSuccess($"Settings updated!");
                     return RedirectToAction(nameof(Settings));
                 }
@@ -2137,11 +2137,12 @@ namespace GRA.Controllers.MissionControl
                 }
             }
 
+            var currentSettings = await _performerSchedulingService.GetSettingsAsync();
             var viewModel = new SettingsViewModel
             {
-                Settings = psSettings,
-                PerformerSchedulingEnbabled = _performerSchedulingService.GetSchedulingStage(psSettings)
-                    != PsSchedulingStage.Unavailable
+                Settings = model.Settings,
+                PerformerSchedulingEnbabled = _performerSchedulingService
+                    .GetSchedulingStage(currentSettings) != PsSchedulingStage.Unavailable
             };
             return View(viewModel);
         }
