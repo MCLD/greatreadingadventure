@@ -41,3 +41,7 @@ Additional CSS styling can be added in the `shared` directory: create a subdirec
 ### Scripts
 
 Custom JavaScript that you'd like injected into the site can be added in the file: `shared/scripts/site.js`. This file is loaded after all of the other JavaScript so elements should be available for you to access or modify.
+
+## Home screen icons and favicon.ico
+
+When accessing your site, participants will see the Great Reading Adventure logo in their URL bar (often referred to as a 'favicon'). They'll also see the GRA logo if they add your site to their home screen. If you'd like to customize this, you can replace the icons and images in `shared/content/` with ones of your choosing. Performing an Internet search for terms like "favicon generator" will lead you to tools which will help you resize your image or logo to the appropriate size(s) to replace the images in `shared/content/`.

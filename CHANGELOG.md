@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Changed
 - Modify docker-build.bash to not build release images unless the branch starts with 'release/'
 - Move from Google analytics.js to tag manager for analytics
+- Move favicons from wwwroot to shared/content so they can be easily customized
 
 ### Fixed
 - Fix instance name enrichment for logging

@@ -41,6 +41,40 @@ namespace GRA.Domain.Service
                 Path.Combine(homeTemplatesPath, "IndexProgramOpen.cshtml"), true);
             File.Copy(Path.Combine(homeViewsPath, "IndexRegistrationOpen.cshtml"),
                 Path.Combine(homeTemplatesPath, "IndexRegistrationOpen.cshtml"), true);
+
+            try
+            {
+                var defaultSocialPath = Path.Combine(Directory.GetCurrentDirectory(),
+                    "assets",
+                    "defaultsocial");
+
+                if (!Directory.Exists(defaultSocialPath))
+                {
+                    _logger.LogError("Not copying default social images: {defaultSocialPath} doesn't exist", defaultSocialPath);
+                }
+                else
+                {
+                    var contentPath = Path.Combine(Directory.GetCurrentDirectory(),
+                        "shared",
+                        "content");
+
+                    foreach (var filePath in Directory.EnumerateFiles(defaultSocialPath, "*.*"))
+                    {
+                        var contentPathFile = Path.Combine(contentPath, Path.GetFileName(filePath));
+                        if (!File.Exists(contentPathFile))
+                        {
+                            File.Copy(filePath, contentPathFile);
+                        }
+
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+                _logger.LogError(ex,
+                    "Unable to copy default social files to content path: {Message}",
+                    ex.Message);
+            }
         }
     }
 }

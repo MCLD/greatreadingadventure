@@ -18,6 +18,7 @@ namespace GRA.Web
             _scope = scope ?? throw new ArgumentNullException(nameof(scope));
             _log = scope.ServiceProvider.GetRequiredService<ILogger<Web>>();
         }
+
         public async Task InitalizeAsync()
         {
             int stage = 10;
@@ -33,7 +34,7 @@ namespace GRA.Web
 
                 stage = 20;
                 var pending = dbContext.GetPendingMigrations();
-                if (pending != null && pending.Count() > 0)
+                if (pending?.Count() > 0)
                 {
                     _log.LogWarning("Applying {0} database migrations, last is: {1}",
                         pending.Count(),
