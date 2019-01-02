@@ -133,6 +133,44 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ContentWithTargetPath Remove="assets\defaultsocial\android-chrome-192x192.png" />
+    <ContentWithTargetPath Remove="assets\defaultsocial\android-chrome-384x384.png" />
+    <ContentWithTargetPath Remove="assets\defaultsocial\apple-touch-icon.png" />
+    <ContentWithTargetPath Remove="assets\defaultsocial\browserconfig.xml" />
+    <ContentWithTargetPath Remove="assets\defaultsocial\favicon-16x16.png" />
+    <ContentWithTargetPath Remove="assets\defaultsocial\favicon-32x32.png" />
+    <ContentWithTargetPath Remove="assets\defaultsocial\favicon-96x96.png" />
+    <ContentWithTargetPath Remove="assets\defaultsocial\favicon.ico" />
+    <ContentWithTargetPath Remove="assets\defaultsocial\mstile-150x150.png" />
+    <ContentWithTargetPath Remove="assets\defaultsocial\safari-pinned-tab.svg" />
+    <ContentWithTargetPath Remove="assets\defaultsocial\site.webmanifest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="assets\defaultsocial\android-chrome-192x192.png" />
+    <None Remove="assets\defaultsocial\android-chrome-384x384.png" />
+    <None Remove="assets\defaultsocial\apple-touch-icon.png" />
+    <None Remove="assets\defaultsocial\browserconfig.xml" />
+    <None Remove="assets\defaultsocial\favicon-16x16.png" />
+    <None Remove="assets\defaultsocial\favicon-32x32.png" />
+    <None Remove="assets\defaultsocial\favicon-96x96.png" />
+    <None Remove="assets\defaultsocial\favicon.ico" />
+    <None Remove="assets\defaultsocial\mstile-150x150.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="assets\defaultsocial\android-chrome-192x192.png" />
+    <Content Include="assets\defaultsocial\android-chrome-384x384.png" />
+    <Content Include="assets\defaultsocial\apple-touch-icon.png" />
+    <Content Include="assets\defaultsocial\browserconfig.xml" />
+    <Content Include="assets\defaultsocial\favicon-16x16.png" />
+    <Content Include="assets\defaultsocial\favicon-32x32.png" />
+    <Content Include="assets\defaultsocial\favicon-96x96.png" />
+    <Content Include="assets\defaultsocial\favicon.ico" />
+    <Content Include="assets\defaultsocial\mstile-150x150.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="wwwroot\webfonts\" />
   </ItemGroup>
 

@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
@@ -479,7 +480,7 @@ namespace GRA.Web
             app.UseResponseCompression();
 
             // configure static files with 7 day cache
-            app.UseStaticFiles(new StaticFileOptions()
+            app.UseStaticFiles(new StaticFileOptions
             {
                 OnPrepareResponse = _ =>
                 {
@@ -512,8 +513,12 @@ namespace GRA.Web
                 pathString = "/" + pathString;
             }
 
+            // https://github.com/aspnet/AspNetCore/issues/2442
+            var extensionContentTypeProvider = new FileExtensionContentTypeProvider();
+            extensionContentTypeProvider.Mappings[".webmanifest"] = "application/manifest+json";
+
             // configure /content with 7 day cache
-            app.UseStaticFiles(new StaticFileOptions()
+            app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(contentPath),
                 RequestPath = new PathString(pathString),
@@ -524,7 +529,8 @@ namespace GRA.Web
                     {
                         MaxAge = TimeSpan.FromDays(7)
                     };
-                }
+                },
+                ContentTypeProvider = extensionContentTypeProvider
             });
 
             app.UseSession();
