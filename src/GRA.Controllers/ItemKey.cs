@@ -9,6 +9,8 @@
         public static readonly string NotificationsList = "NotificationsList";
         public static readonly string NotificationsModal = "NotificationsModal";
         public static readonly string ShowMissionControl = "ShowMissionControl";
+        public static readonly string ShowPerformerRegistration = "ShowPerformerRegistration";
+        public static readonly string ShowPerformerScheduling = "ShowPerformerScheduling";
         public static readonly string SiteCss = "SiteCss";
         public static readonly string SiteId = "SiteId";
         public static readonly string SiteJs = "SiteJs";

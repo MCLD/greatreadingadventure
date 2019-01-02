@@ -1204,6 +1204,415 @@ namespace GRA.Data.SQLite.Migrations
                     b.ToTable("Programs");
                 });
 
+            modelBuilder.Entity("GRA.Data.Model.PsAgeGroup", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("CreatedBy");
+
+                    b.Property<string>("IconColor")
+                        .IsRequired()
+                        .HasMaxLength(32);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PsAgeGroups");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.PsBackToBack", b =>
+                {
+                    b.Property<int>("PsAgeGroupId");
+
+                    b.Property<int>("BranchId");
+
+                    b.HasKey("PsAgeGroupId", "BranchId");
+
+                    b.HasIndex("BranchId");
+
+                    b.ToTable("PsBackToBack");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.PsBlackoutDate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("CreatedBy");
+
+                    b.Property<DateTime>("Date");
+
+                    b.Property<string>("Reason")
+                        .HasMaxLength(255);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PsBlackoutDates");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.PsBranchSelection", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("AgeGroupId");
+
+                    b.Property<bool>("BackToBackProgram");
+
+                    b.Property<int>("BranchId");
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("CreatedBy");
+
+                    b.Property<int?>("KitId");
+
+                    b.Property<int?>("ProgramId");
+
+                    b.Property<DateTime>("RequestedStartTime");
+
+                    b.Property<int>("ScheduleDuration");
+
+                    b.Property<DateTime>("ScheduleStartTime");
+
+                    b.Property<string>("SecretCode")
+                        .HasMaxLength(50);
+
+                    b.Property<DateTime>("SelectedAt");
+
+                    b.Property<int>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AgeGroupId");
+
+                    b.HasIndex("BranchId");
+
+                    b.HasIndex("KitId");
+
+                    b.HasIndex("ProgramId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PsBranchSelections");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.PsExcludeBranch", b =>
+                {
+                    b.Property<int>("BranchId");
+
+                    b.HasKey("BranchId");
+
+                    b.ToTable("PsExcludeBranches");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.PsKit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("CreatedBy");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(2000);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255);
+
+                    b.Property<string>("Website")
+                        .HasMaxLength(255);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PsKits");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.PsKitAgeGroup", b =>
+                {
+                    b.Property<int>("KitId");
+
+                    b.Property<int>("AgeGroupId");
+
+                    b.HasKey("KitId", "AgeGroupId");
+
+                    b.HasIndex("AgeGroupId");
+
+                    b.ToTable("PsKitAgeGroups");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.PsKitImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("CreatedBy");
+
+                    b.Property<string>("Filename")
+                        .HasMaxLength(255);
+
+                    b.Property<int>("KitId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("KitId");
+
+                    b.ToTable("PsKitImages");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.PsPerformer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("AllBranches");
+
+                    b.Property<string>("BillingAddress")
+                        .IsRequired()
+                        .HasMaxLength(500);
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("CreatedBy");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(255);
+
+                    b.Property<bool>("HasFingerprintCard");
+
+                    b.Property<bool>("IsApproved");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255);
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(255);
+
+                    b.Property<bool>("PhonePreferred");
+
+                    b.Property<string>("ReferencesFilename")
+                        .HasMaxLength(255);
+
+                    b.Property<bool>("RegistrationCompleted");
+
+                    b.Property<bool>("SetSchedule");
+
+                    b.Property<int>("UserId");
+
+                    b.Property<string>("VendorId")
+                        .IsRequired()
+                        .HasMaxLength(255);
+
+                    b.Property<string>("Website")
+                        .HasMaxLength(255);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PsPerformers");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.PsPerformerBranch", b =>
+                {
+                    b.Property<int>("PsPerformerId");
+
+                    b.Property<int>("BranchId");
+
+                    b.HasKey("PsPerformerId", "BranchId");
+
+                    b.HasIndex("BranchId");
+
+                    b.ToTable("PsPerformerBranches");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.PsPerformerImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("CreatedBy");
+
+                    b.Property<string>("Filename")
+                        .HasMaxLength(255);
+
+                    b.Property<int>("PerformerId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PerformerId");
+
+                    b.ToTable("PsPerformerImages");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.PsPerformerSchedule", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("CreatedBy");
+
+                    b.Property<DateTime>("Date");
+
+                    b.Property<DateTime?>("EndTime");
+
+                    b.Property<int>("PerformerId");
+
+                    b.Property<DateTime?>("StartTime");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PerformerId");
+
+                    b.ToTable("PsPerformerSchedules");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.PsProgram", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("AllowArchiving");
+
+                    b.Property<bool>("AllowStreaming");
+
+                    b.Property<int>("BackToBackMinutes");
+
+                    b.Property<int>("BreakdownTimeMinutes");
+
+                    b.Property<decimal>("Cost");
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("CreatedBy");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(375);
+
+                    b.Property<int>("MaximumCapacity");
+
+                    b.Property<int>("MinimumCapacity");
+
+                    b.Property<int>("PerformerId");
+
+                    b.Property<int>("ProgramLengthMinutes");
+
+                    b.Property<string>("Setup")
+                        .HasMaxLength(1000);
+
+                    b.Property<int>("SetupTimeMinutes");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PerformerId");
+
+                    b.ToTable("PsPrograms");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.PsProgramAgeGroup", b =>
+                {
+                    b.Property<int>("ProgramId");
+
+                    b.Property<int>("AgeGroupId");
+
+                    b.HasKey("ProgramId", "AgeGroupId");
+
+                    b.HasIndex("AgeGroupId");
+
+                    b.ToTable("PsProgramAgeGroups");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.PsProgramImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("CreatedBy");
+
+                    b.Property<string>("Filename")
+                        .HasMaxLength(255);
+
+                    b.Property<int>("ProgramId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProgramId");
+
+                    b.ToTable("PsProgramImages");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.PsSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("BranchAvailabilitySuplimentalText")
+                        .HasMaxLength(255);
+
+                    b.Property<string>("ContactEmail")
+                        .HasMaxLength(255);
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("CreatedBy");
+
+                    b.Property<DateTime?>("RegistrationClosed");
+
+                    b.Property<DateTime?>("RegistrationOpen");
+
+                    b.Property<DateTime?>("ScheduleEndDate");
+
+                    b.Property<DateTime?>("SchedulePosted");
+
+                    b.Property<DateTime?>("ScheduleStartDate");
+
+                    b.Property<DateTime?>("SchedulingClosed");
+
+                    b.Property<DateTime?>("SchedulingOpen");
+
+                    b.Property<DateTime?>("SchedulingPreview");
+
+                    b.Property<int?>("SelectionsPerBranch");
+
+                    b.Property<int>("SiteId");
+
+                    b.Property<string>("VendorCodeFormat")
+                        .HasMaxLength(255);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SiteId");
+
+                    b.ToTable("PsSettings");
+                });
+
             modelBuilder.Entity("GRA.Data.Model.Question", b =>
                 {
                     b.Property<int>("Id")
@@ -2339,6 +2748,150 @@ namespace GRA.Data.SQLite.Migrations
 
                     b.HasOne("GRA.Data.Model.Site")
                         .WithMany("Programs")
+                        .HasForeignKey("SiteId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.PsBackToBack", b =>
+                {
+                    b.HasOne("GRA.Data.Model.Branch", "Branch")
+                        .WithMany()
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GRA.Data.Model.PsAgeGroup", "PsAgeGroup")
+                        .WithMany()
+                        .HasForeignKey("PsAgeGroupId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.PsBranchSelection", b =>
+                {
+                    b.HasOne("GRA.Data.Model.PsAgeGroup", "AgeGroup")
+                        .WithMany()
+                        .HasForeignKey("AgeGroupId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GRA.Data.Model.Branch", "Branch")
+                        .WithMany()
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GRA.Data.Model.PsKit", "Kit")
+                        .WithMany()
+                        .HasForeignKey("KitId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GRA.Data.Model.PsProgram", "Program")
+                        .WithMany()
+                        .HasForeignKey("ProgramId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GRA.Data.Model.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.PsExcludeBranch", b =>
+                {
+                    b.HasOne("GRA.Data.Model.Branch", "Branch")
+                        .WithMany()
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.PsKitAgeGroup", b =>
+                {
+                    b.HasOne("GRA.Data.Model.PsAgeGroup", "AgeGroup")
+                        .WithMany()
+                        .HasForeignKey("AgeGroupId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GRA.Data.Model.PsKit", "Kit")
+                        .WithMany()
+                        .HasForeignKey("KitId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.PsKitImage", b =>
+                {
+                    b.HasOne("GRA.Data.Model.PsKit", "Kit")
+                        .WithMany()
+                        .HasForeignKey("KitId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.PsPerformer", b =>
+                {
+                    b.HasOne("GRA.Data.Model.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.PsPerformerBranch", b =>
+                {
+                    b.HasOne("GRA.Data.Model.Branch", "Branch")
+                        .WithMany()
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GRA.Data.Model.PsPerformer", "PsPerformer")
+                        .WithMany()
+                        .HasForeignKey("PsPerformerId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.PsPerformerImage", b =>
+                {
+                    b.HasOne("GRA.Data.Model.PsPerformer", "Performer")
+                        .WithMany()
+                        .HasForeignKey("PerformerId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.PsPerformerSchedule", b =>
+                {
+                    b.HasOne("GRA.Data.Model.PsPerformer", "Performer")
+                        .WithMany()
+                        .HasForeignKey("PerformerId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.PsProgram", b =>
+                {
+                    b.HasOne("GRA.Data.Model.PsPerformer", "Performer")
+                        .WithMany()
+                        .HasForeignKey("PerformerId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.PsProgramAgeGroup", b =>
+                {
+                    b.HasOne("GRA.Data.Model.PsAgeGroup", "AgeGroup")
+                        .WithMany()
+                        .HasForeignKey("AgeGroupId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GRA.Data.Model.PsProgram", "Program")
+                        .WithMany()
+                        .HasForeignKey("ProgramId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.PsProgramImage", b =>
+                {
+                    b.HasOne("GRA.Data.Model.PsProgram", "Program")
+                        .WithMany()
+                        .HasForeignKey("ProgramId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.PsSettings", b =>
+                {
+                    b.HasOne("GRA.Data.Model.Site", "Site")
+                        .WithMany()
                         .HasForeignKey("SiteId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });

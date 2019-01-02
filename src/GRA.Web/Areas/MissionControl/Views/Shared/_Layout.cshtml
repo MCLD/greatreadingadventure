@@ -121,6 +121,10 @@
                             </ul>
                         </li>
                     }
+                    @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.ShowPerformerScheduling))
+                    {
+                        <li ActiveBy routeKey="Controller" value="PerformerScheduling"><a asp-controller="PerformerScheduling" asp-action="Index" title="Performer Scheduling"><span class="fas fa-theater-masks"></span><span class="visible-xs-inline"> Performer Scheduling</span></a></li>
+                    }
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewAllReporting.ToString()))
                     {
                         <li ActiveBy routeKey="Controller" value="Reporting">
@@ -155,6 +159,10 @@
                                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewUnpublishedPages.ToString()))
                                 {
                                     <li><a asp-controller="Pages" asp-action="Index">Page management</a></li>
+                                }
+                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManagePerformers.ToString()))
+                                {
+                                    <li><a asp-controller="PerformerManagement" asp-action="Index">Performer management</a></li>
                                 }
                                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManagePrograms.ToString()))
                                 {

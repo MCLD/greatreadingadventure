@@ -207,7 +207,7 @@ namespace GRA.Controllers.MissionControl
 
             var systemList = await _siteService.GetSystemList();
             var programList = await _siteService.GetProgramList();
-            var programViewObject = _mapper.Map<List<ProgramViewModel>>(programList);
+            var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
             var districtList = await _schoolService.GetDistrictsAsync(true);
 
             var viewModel = new ParticipantsAddViewModel()
@@ -414,7 +414,7 @@ namespace GRA.Controllers.MissionControl
             }
             var systemList = await _siteService.GetSystemList();
             var programList = await _siteService.GetProgramList();
-            var programViewObject = _mapper.Map<List<ProgramViewModel>>(programList);
+            var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
             model.SystemList = new SelectList(systemList.ToList(), "Id", "Name");
             model.ProgramList = new SelectList(programList.ToList(), "Id", "Name");
             model.ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject);
@@ -531,7 +531,7 @@ namespace GRA.Controllers.MissionControl
                 var systemList = await _siteService.GetSystemList();
                 var programList = await _siteService.GetProgramList();
                 var userProgram = programList.Where(_ => _.Id == user.ProgramId).SingleOrDefault();
-                var programViewObject = _mapper.Map<List<ProgramViewModel>>(programList);
+                var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
 
                 await _vendorCodeService.PopulateVendorCodeStatusAsync(user);
 
@@ -749,7 +749,7 @@ namespace GRA.Controllers.MissionControl
 
             var systemList = await _siteService.GetSystemList();
             var programList = await _siteService.GetProgramList();
-            var programViewObject = _mapper.Map<List<ProgramViewModel>>(programList);
+            var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
             model.BranchList = new SelectList(branchList.ToList(), "Id", "Name");
             model.SystemList = new SelectList(systemList.ToList(), "Id", "Name");
             model.ProgramList = new SelectList(programList.ToList(), "Id", "Name");
@@ -1239,7 +1239,7 @@ namespace GRA.Controllers.MissionControl
                 var branchList = await _siteService.GetBranches(headOfHousehold.SystemId);
                 var systemList = await _siteService.GetSystemList();
                 var programList = await _siteService.GetProgramList();
-                var programViewObject = _mapper.Map<List<ProgramViewModel>>(programList);
+                var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
                 var districtList = await _schoolService.GetDistrictsAsync(true);
 
                 HouseholdAddViewModel viewModel = new HouseholdAddViewModel()
@@ -1410,7 +1410,7 @@ namespace GRA.Controllers.MissionControl
             }
             var systemList = await _siteService.GetSystemList();
             var programList = await _siteService.GetProgramList();
-            var programViewObject = _mapper.Map<List<ProgramViewModel>>(programList);
+            var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
             model.BranchList = new SelectList(branchList.ToList(), "Id", "Name");
             model.SystemList = new SelectList(systemList.ToList(), "Id", "Name");
             model.ProgramList = new SelectList(programList.ToList(), "Id", "Name");

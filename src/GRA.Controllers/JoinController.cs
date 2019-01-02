@@ -37,6 +37,7 @@ namespace GRA.Controllers
         private readonly UserService _userService;
 
         private readonly ICodeSanitizer _codeSanitizer;
+
         public JoinController(ILogger<JoinController> logger,
             ServiceFacade.Controller context,
             AuthenticationService authenticationService,
@@ -84,7 +85,7 @@ namespace GRA.Controllers
             }
             var siteStage = GetSiteStage();
 
-            if (useAuthCode == false)
+            if (!useAuthCode)
             {
                 if (siteStage == SiteStage.BeforeRegistration)
                 {
@@ -109,10 +110,10 @@ namespace GRA.Controllers
 
             var systemList = await _siteService.GetSystemList();
             var programList = await _siteService.GetProgramList();
-            var programViewObject = _mapper.Map<List<ProgramViewModel>>(programList);
+            var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
             var districtList = await _schoolService.GetDistrictsAsync(true);
 
-            SinglePageViewModel viewModel = new SinglePageViewModel()
+            var viewModel = new SinglePageViewModel
             {
                 RequirePostalCode = site.RequirePostalCode,
                 ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject),
@@ -169,7 +170,7 @@ namespace GRA.Controllers
                 viewModel.ShowSchool = program.AskSchool;
             }
 
-            if (districtList.Count() == 1)
+            if (districtList.Count == 1)
             {
                 viewModel.SchoolDistrictId = districtList.SingleOrDefault().Id;
                 var typeList = await _schoolService.GetTypesAsync(viewModel.SchoolDistrictId);
@@ -220,7 +221,7 @@ namespace GRA.Controllers
                 model.PublicSelected = true;
                 var districtList = await _schoolService.GetDistrictsAsync(true);
                 model.SchoolDistrictList = new SelectList(districtList, "Id", "Name");
-                if (districtList.Count() == 1)
+                if (districtList.Count == 1)
                 {
                     model.SchoolDistrictId = districtList.SingleOrDefault().Id;
                     var typeList = await _schoolService.GetTypesAsync(model.SchoolDistrictId);
@@ -252,7 +253,7 @@ namespace GRA.Controllers
             }
             var systemList = await _siteService.GetSystemList();
             var programList = await _siteService.GetProgramList();
-            var programViewObject = _mapper.Map<List<ProgramViewModel>>(programList);
+            var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
             model.SystemList = new SelectList(systemList.ToList(), "Id", "Name");
             model.ProgramList = new SelectList(programList.ToList(), "Id", "Name");
             model.ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject);
@@ -399,7 +400,7 @@ namespace GRA.Controllers
                         sanitized = _codeSanitizer.Sanitize(model.AuthorizationCode, 255);
                         useAuthCode = await _authorizationCodeService
                             .ValidateAuthorizationCode(sanitized);
-                        if (useAuthCode == false)
+                        if (!useAuthCode)
                         {
                             _logger.LogError($"Invalid auth code used on join: {model.AuthorizationCode}");
                         }
@@ -464,7 +465,7 @@ namespace GRA.Controllers
             }
             var systemList = await _siteService.GetSystemList();
             var programList = await _siteService.GetProgramList();
-            var programViewObject = _mapper.Map<List<ProgramViewModel>>(programList);
+            var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
             model.SystemList = new SelectList(systemList.ToList(), "Id", "Name");
             model.ProgramList = new SelectList(programList.ToList(), "Id", "Name");
             model.ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject);
@@ -563,7 +564,7 @@ namespace GRA.Controllers
                 return RedirectToAction("Index");
             }
 
-            if (useAuthCode == false)
+            if (!useAuthCode)
             {
                 var siteStage = GetSiteStage();
                 if (siteStage == SiteStage.BeforeRegistration)
@@ -588,7 +589,7 @@ namespace GRA.Controllers
             PageTitle = $"{site.Name} - Join Now!";
 
             var systemList = await _siteService.GetSystemList();
-            Step1ViewModel viewModel = new Step1ViewModel()
+            var viewModel = new Step1ViewModel
             {
                 RequirePostalCode = site.RequirePostalCode,
                 SystemList = new SelectList(systemList.ToList(), "Id", "Name")
@@ -686,10 +687,10 @@ namespace GRA.Controllers
             PageTitle = $"{site.Name} - Join Now!";
 
             var programList = await _siteService.GetProgramList();
-            var programViewObject = _mapper.Map<List<ProgramViewModel>>(programList);
+            var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
             var districtList = await _schoolService.GetDistrictsAsync(true);
 
-            Step2ViewModel viewModel = new Step2ViewModel()
+            var viewModel = new Step2ViewModel
             {
                 CategorySelectionAction = nameof(Step2SchoolCategory),
                 PublicSelected = true,
@@ -709,7 +710,7 @@ namespace GRA.Controllers
                 viewModel.ShowSchool = program.AskSchool;
             }
 
-            if (districtList.Count() == 1)
+            if (districtList.Count == 1)
             {
                 viewModel.SchoolDistrictId = districtList.SingleOrDefault().Id;
                 var typeList = await _schoolService.GetTypesAsync(viewModel.SchoolDistrictId);
@@ -755,7 +756,7 @@ namespace GRA.Controllers
                 model.PublicSelected = true;
                 var districtList = await _schoolService.GetDistrictsAsync(true);
                 model.SchoolDistrictList = new SelectList(districtList, "Id", "Name");
-                if (districtList.Count() == 1)
+                if (districtList.Count == 1)
                 {
                     model.SchoolDistrictId = districtList.SingleOrDefault().Id;
                     var typeList = await _schoolService.GetTypesAsync(model.SchoolDistrictId);
@@ -777,7 +778,7 @@ namespace GRA.Controllers
             PageTitle = $"{site.Name} - Join Now!";
 
             var programList = await _siteService.GetProgramList();
-            var programViewObject = _mapper.Map<List<ProgramViewModel>>(programList);
+            var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
             model.ProgramList = new SelectList(programList.ToList(), "Id", "Name");
             model.ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject);
             if (model.ProgramId.HasValue)
@@ -856,7 +857,7 @@ namespace GRA.Controllers
             PageTitle = $"{site.Name} - Join Now!";
 
             var programList = await _siteService.GetProgramList();
-            var programViewObject = _mapper.Map<List<ProgramViewModel>>(programList);
+            var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
             model.ProgramList = new SelectList(programList.ToList(), "Id", "Name");
             model.ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject);
             model.ShowAge = askAge;
@@ -943,7 +944,6 @@ namespace GRA.Controllers
 
             PageTitle = $"{site.Name} - Join Now!";
 
-
             var viewModel = new Step3ViewModel()
             {
                 AskEmailReminder = GetSiteStage() == SiteStage.RegistrationOpen
@@ -1018,7 +1018,7 @@ namespace GRA.Controllers
                 var step1 = JsonConvert.DeserializeObject<Step1ViewModel>(step1Json);
                 var step2 = JsonConvert.DeserializeObject<Step2ViewModel>(step2Json);
 
-                User user = new User();
+                var user = new User();
                 _mapper.Map<Step1ViewModel, User>(step1, user);
                 _mapper.Map<Step2ViewModel, User>(step2, user);
                 _mapper.Map<Step3ViewModel, User>(model, user);
@@ -1056,7 +1056,7 @@ namespace GRA.Controllers
                         sanitized = _codeSanitizer.Sanitize(step1.AuthorizationCode, 255);
                         useAuthCode = await _authorizationCodeService
                             .ValidateAuthorizationCode(sanitized);
-                        if (useAuthCode == false)
+                        if (!useAuthCode)
                         {
                             _logger.LogError($"Invalid auth code used on join: {step1.AuthorizationCode}");
                         }

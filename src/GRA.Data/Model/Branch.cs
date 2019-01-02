@@ -7,6 +7,7 @@ namespace GRA.Data.Model
     {
         [Required]
         public int SystemId { get; set; }
+
         public virtual System System { get; set; }
 
         [Required]
@@ -15,8 +16,10 @@ namespace GRA.Data.Model
 
         [MaxLength(500)]
         public string Url { get; set; }
+
         [MaxLength(255)]
         public string Address { get; set; }
+
         [MaxLength(50)]
         public string Telephone { get; set; }
 

@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData[GRA.Controllers.ViewDataKey.Title]</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5e3ab6">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="~/css/main.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/performerregistration.min.css" asp-append-version="true" />
+    @RenderSection("styles", required: false)
+    <style>
+        div.tooltip-inner {
+            width: 10rem;
+        }
+    </style>
+    @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.SiteCss))
+    {
+        <link rel="stylesheet" href="@Url.Content(Context.Items[GRA.Controllers.ItemKey.SiteCss].ToString())" />
+    }
+</head>
+<body id="mission-control-body">
+    <div class="navbar gra-performer-navbar navbar-static-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button"
+                        class="navbar-toggle mc-menu-button btn-sm"
+                        data-toggle="collapse"
+                        data-target=".navbar-collapse"
+                        style="color: white;">
+                    <span class="sr-only">Toggle navigation</span>
+                    Menu
+                </button>
+                <a asp-controller="Home"
+                   asp-action="Index"
+                   class="navbar-brand mc-navbar-brand">
+                    <span class="fa fa-theater-masks"></span>
+                    Performer Registration
+                </a>
+            </div>
+            <div class="navbar-collapse navbar-right collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a asp-area="PerformerRegistration" asp-controller="Home" asp-action="Index" title="Performer Registration" data-toggle="tooltip" data-placement="bottom"><span class="fa fa-theater-masks"></span><span class="visible-xs-inline"> Mission Control</span></a></li>
+                    <li><a asp-controller="Home" asp-action="Index" asp-area="" title="Home"><span class="fa fa-home"></span><span class="visible-xs-inline"> Home</span></a></li>
+                    <li><a asp-controller="Home" asp-action="Signout" asp-area="">Sign out</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        <noscript>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="alert alert-warning"><span class="fa fa-lg fa-warning text-primary"></span> This website relies on JavaScript. Please enable JavaScript in your browser to get the best experience.</div>
+                </div>
+            </div>
+        </noscript>
+        @RenderSection("Nav", required: false)
+
+        @if (TempData[GRA.Controllers.TempDataKey.AlertDanger] != null)
+        {
+            <div class="row mc-alertrow">
+                <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+                    <div class="alert alert-danger">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertDanger])</div>
+                </div>
+            </div>
+        }
+        @if (TempData[GRA.Controllers.TempDataKey.AlertWarning] != null)
+        {
+            <div class="row mc-alertrow">
+                <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+                    <div class="alert alert-warning">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertWarning])</div>
+                </div>
+            </div>
+        }
+        @if (TempData[GRA.Controllers.TempDataKey.AlertSuccess] != null)
+        {
+            <div class="row mc-alertrow">
+                <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+                    <div class="alert alert-success">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertSuccess])</div>
+                </div>
+            </div>
+        }
+        @if (TempData[GRA.Controllers.TempDataKey.AlertInfo] != null)
+        {
+            <div class="row mc-alertrow">
+                <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+                    <div class="alert alert-info">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertInfo])</div>
+                </div>
+            </div>
+        }
+        @RenderBody()
+        <footer style="clear: both; margin-top: 2rem;">
+            <grasite property="footer"></grasite>
+        </footer>
+    </div>
+    <script src="~/js/main.min.js" asp-append-version="true"></script>
+    <script src="~/js/performerregistration.min.js" asp-append-version="true"></script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

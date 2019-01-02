@@ -29,6 +29,7 @@ namespace GRA.Controllers
         private readonly DashboardContentService _dashboardContentService;
         private readonly EmailReminderService _emailReminderService;
         private readonly PageService _pageService;
+        private readonly PerformerSchedulingService _performerSchedulingService;
         private readonly SiteService _siteService;
         private readonly UserService _userService;
 
@@ -41,6 +42,7 @@ namespace GRA.Controllers
             DashboardContentService dashboardContentService,
             EmailReminderService emailReminderService,
             PageService pageService,
+            PerformerSchedulingService performerSchedulingService,
             SiteService siteService,
             UserService userService)
             : base(context)
@@ -59,6 +61,8 @@ namespace GRA.Controllers
             _emailReminderService = emailReminderService
                 ?? throw new ArgumentNullException(nameof(emailReminderService));
             _pageService = pageService ?? throw new ArgumentNullException(nameof(pageService));
+            _performerSchedulingService = performerSchedulingService
+                ?? throw new ArgumentNullException(nameof(performerSchedulingService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
@@ -72,6 +76,21 @@ namespace GRA.Controllers
             }
             if (AuthUser.Identity.IsAuthenticated)
             {
+                if (TempData.ContainsKey(TempDataKey.UserJoined)
+                    && UserHasPermission(Permission.AccessPerformerRegistration)
+                    && !UserHasPermission(Permission.AccessMissionControl))
+                {
+                    var dates = await _performerSchedulingService.GetSettingsAsync();
+                    var schedulingStage = _performerSchedulingService.GetSchedulingStage(dates);
+
+                    if (schedulingStage != PsSchedulingStage.Unavailable)
+                    {
+                        TempData.Remove(TempDataKey.UserJoined);
+                        return RedirectToAction(nameof(PerformerRegistration.HomeController.Index),
+                            "Home", new { Area = "PerformerRegistration" });
+                    }
+                }
+
                 User user = null;
                 // signed-in users can view the dashboard
                 try

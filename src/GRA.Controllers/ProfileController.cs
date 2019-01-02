@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using GRA.Abstract;
 using GRA.Controllers.ViewModel.Profile;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
@@ -41,7 +42,6 @@ namespace GRA.Controllers
 
         public ProfileController(ILogger<ProfileController> logger,
             ServiceFacade.Controller context,
-            Abstract.IPasswordValidator passwordValidator,
             ActivityService activityService,
             AuthenticationService authenticationService,
             AvatarService avatarService,
@@ -89,12 +89,12 @@ namespace GRA.Controllers
             var branchList = await _siteService.GetBranches(user.SystemId);
             var systemList = await _siteService.GetSystemList();
             var programList = await _siteService.GetProgramList();
-            var userProgram = programList.Where(_ => _.Id == user.ProgramId).SingleOrDefault();
-            var programViewObject = _mapper.Map<List<ProgramViewModel>>(programList);
+            var userProgram = programList.SingleOrDefault(_ => _.Id == user.ProgramId);
+            var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
 
             await _vendorCodeService.PopulateVendorCodeStatusAsync(user);
 
-            ProfileDetailViewModel viewModel = new ProfileDetailViewModel()
+            var viewModel = new ProfileDetailViewModel
             {
                 User = user,
                 HouseholdCount = householdCount,
@@ -116,11 +116,11 @@ namespace GRA.Controllers
 
             if (viewModel.RestrictChangingSystemBranch)
             {
-                viewModel.SystemName = systemList.Where(_ => _.Id == viewModel.User.SystemId)
-                    .FirstOrDefault()?
+                viewModel.SystemName = systemList
+                    .FirstOrDefault(_ => _.Id == viewModel.User.SystemId)?
                     .Name;
-                viewModel.BranchName = branchList.Where(_ => _.Id == viewModel.User.BranchId)
-                    .FirstOrDefault()?
+                viewModel.BranchName = branchList
+                    .FirstOrDefault(_ => _.Id == viewModel.User.BranchId)?
                     .Name;
             }
 
@@ -237,7 +237,7 @@ namespace GRA.Controllers
             var site = await GetCurrentSiteAsync();
             var systemList = await _siteService.GetSystemList();
             var programList = await _siteService.GetProgramList();
-            var programViewObject = _mapper.Map<List<ProgramViewModel>>(programList);
+            var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
             model.BranchList = new SelectList(branchList.ToList(), "Id", "Name");
             model.SystemList = new SelectList(systemList.ToList(), "Id", "Name");
             model.ProgramList = new SelectList(programList.ToList(), "Id", "Name");
@@ -355,7 +355,7 @@ namespace GRA.Controllers
             }
             var systemList = await _siteService.GetSystemList();
             var programList = await _siteService.GetProgramList();
-            var programViewObject = _mapper.Map<List<ProgramViewModel>>(programList);
+            var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
             model.BranchList = new SelectList(branchList.ToList(), "Id", "Name");
             model.SystemList = new SelectList(systemList.ToList(), "Id", "Name");
             model.ProgramList = new SelectList(programList.ToList(), "Id", "Name");
@@ -483,7 +483,7 @@ namespace GRA.Controllers
                 showVendorCodes, authUserIsHead);
 
             var siteStage = GetSiteStage();
-            HouseholdListViewModel viewModel = new HouseholdListViewModel()
+            var viewModel = new HouseholdListViewModel
             {
                 Users = household,
                 HouseholdCount = household.Count(),
@@ -571,23 +571,22 @@ namespace GRA.Controllers
             var user = await _userService.GetDetails(GetId(ClaimType.UserId));
             model.PointTranslation = await _pointTranslationService
                 .GetByProgramIdAsync(user.ProgramId, true);
-            if (model.ActivityAmount < 1 && model.PointTranslation.IsSingleEvent == false)
+            if (model.ActivityAmount < 1 && !model.PointTranslation.IsSingleEvent)
             {
                 TempData[ActivityMessage] = "You must enter how an amount!";
             }
-
             else if (!string.IsNullOrWhiteSpace(model.UserSelection))
             {
-                List<int> userSelection = model.UserSelection
+                var userSelection = model.UserSelection
                     .Split(',')
                     .Where(_ => !string.IsNullOrWhiteSpace(_))
-                    .Select(Int32.Parse)
+                    .Select(int.Parse)
                     .Distinct()
                     .ToList();
                 try
                 {
                     var activityAmount = 1;
-                    if (model.PointTranslation.IsSingleEvent == false)
+                    if (!model.PointTranslation.IsSingleEvent)
                     {
                         activityAmount = model.ActivityAmount;
                     }
@@ -613,13 +612,12 @@ namespace GRA.Controllers
             {
                 TempData[SecretCodeMessage] = "You must enter a code!";
             }
-
             else if (!string.IsNullOrWhiteSpace(model.UserSelection))
             {
-                List<int> userSelection = model.UserSelection
+                var userSelection = model.UserSelection
                     .Split(',')
                     .Where(_ => !string.IsNullOrWhiteSpace(_))
-                    .Select(Int32.Parse)
+                    .Select(int.Parse)
                     .Distinct()
                     .ToList();
                 try
@@ -665,7 +663,7 @@ namespace GRA.Controllers
             {
                 var groupTypes = await _userService.GetGroupTypeListAsync();
 
-                if (groupTypes.Count() == 0)
+                if (!groupTypes.Any())
                 {
                     _logger.LogError($"User {authUser.Id} should be forced to make a group but no group types are configured");
                 }
@@ -705,10 +703,10 @@ namespace GRA.Controllers
             var systemList = await _siteService.GetSystemList();
             var branchList = await _siteService.GetBranches(authUser.SystemId);
             var programList = await _siteService.GetProgramList();
-            var programViewObject = _mapper.Map<List<ProgramViewModel>>(programList);
+            var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
             var districtList = await _schoolService.GetDistrictsAsync(true);
 
-            HouseholdAddViewModel viewModel = new HouseholdAddViewModel()
+            var viewModel = new HouseholdAddViewModel
             {
                 User = userBase,
                 RequirePostalCode = (await GetCurrentSiteAsync()).RequirePostalCode,
@@ -732,7 +730,7 @@ namespace GRA.Controllers
                 viewModel.ShowSchool = program.AskSchool;
             }
 
-            if (districtList.Count() == 1)
+            if (districtList.Count == 1)
             {
                 viewModel.SchoolDistrictId = districtList.SingleOrDefault().Id;
                 var typeList = await _schoolService.GetTypesAsync(viewModel.SchoolDistrictId);
@@ -794,7 +792,7 @@ namespace GRA.Controllers
                 model.PublicSelected = true;
                 var districtList = await _schoolService.GetDistrictsAsync(true);
                 model.SchoolDistrictList = new SelectList(districtList, "Id", "Name");
-                if (districtList.Count() == 1)
+                if (districtList.Count == 1)
                 {
                     model.SchoolDistrictId = districtList.SingleOrDefault().Id;
                     var typeList = await _schoolService.GetTypesAsync(model.SchoolDistrictId);
@@ -820,7 +818,7 @@ namespace GRA.Controllers
             var site = await GetCurrentSiteAsync();
             var systemList = await _siteService.GetSystemList();
             var programList = await _siteService.GetProgramList();
-            var programViewObject = _mapper.Map<List<ProgramViewModel>>(programList);
+            var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
             model.BranchList = new SelectList(branchList.ToList(), "Id", "Name");
             model.SystemList = new SelectList(systemList.ToList(), "Id", "Name");
             model.ProgramList = new SelectList(programList.ToList(), "Id", "Name");
@@ -972,7 +970,7 @@ namespace GRA.Controllers
             }
             var systemList = await _siteService.GetSystemList();
             var programList = await _siteService.GetProgramList();
-            var programViewObject = _mapper.Map<List<ProgramViewModel>>(programList);
+            var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
             model.BranchList = new SelectList(branchList.ToList(), "Id", "Name");
             model.SystemList = new SelectList(systemList.ToList(), "Id", "Name");
             model.ProgramList = new SelectList(programList.ToList(), "Id", "Name");
@@ -1089,7 +1087,7 @@ namespace GRA.Controllers
                     {
                         var groupTypes = await _userService.GetGroupTypeListAsync();
 
-                        if (groupTypes.Count() == 0)
+                        if (!groupTypes.Any())
                         {
                             _logger.LogError($"User {authUser.Id} should be forced to make a group but no group types are configured");
                         }
@@ -1100,21 +1098,21 @@ namespace GRA.Controllers
                                 false,
                                 false);
 
-                            var addParticipants =
+                            var (totalAddCount, addUserId) =
                                 await _userService.CountParticipantsToAdd(model.Username, model.Password);
 
                             // +1 for household manager, counting the people we're adding so >
-                            if (currentHousehold.Count() + 1 + addParticipants.totalAddCount > maximumHousehold)
+                            if (currentHousehold.Count() + 1 + totalAddCount > maximumHousehold)
                             {
                                 var groupInfo
                                     = await _userService.GetGroupFromHouseholdHeadAsync(authUser.Id);
 
                                 if (groupInfo == null)
                                 {
-                                    _logger.LogInformation($"Redirecting user {authUser.Id} to create a group when adding member {maximumHousehold + 1}, group will total {currentHousehold.Count() + addParticipants.totalAddCount}");
+                                    _logger.LogInformation($"Redirecting user {authUser.Id} to create a group when adding member {maximumHousehold + 1}, group will total {currentHousehold.Count() + totalAddCount}");
                                     // add authenticated user id to session
                                     HttpContext.Session.SetString(SessionKey.AbsorbUserId,
-                                        addParticipants.addUserId.ToString());
+                                        addUserId.ToString());
                                     return View("GroupUpgrade", new GroupUpgradeViewModel
                                     {
                                         MaximumHouseholdAllowed = maximumHousehold,
@@ -1258,7 +1256,7 @@ namespace GRA.Controllers
         {
             var filter = new BookFilter(page);
 
-            bool isDescending = String.Equals(order, "Descending", StringComparison.OrdinalIgnoreCase);
+            bool isDescending = string.Equals(order, "Descending", StringComparison.OrdinalIgnoreCase);
             if (!string.IsNullOrWhiteSpace(sort) && Enum.IsDefined(typeof(SortBooksBy), sort))
             {
                 filter.SortBy = (SortBooksBy)Enum.Parse(typeof(SortBooksBy), sort);
@@ -1268,7 +1266,7 @@ namespace GRA.Controllers
             var books = await _userService
                 .GetPaginatedUserBookListAsync(GetActiveUserId(), filter);
 
-            PaginateViewModel paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel
             {
                 ItemCount = books.Count,
                 CurrentPage = page,
@@ -1285,7 +1283,7 @@ namespace GRA.Controllers
 
             User user = await _userService.GetDetails(GetActiveUserId());
 
-            BookListViewModel viewModel = new BookListViewModel()
+            var viewModel = new BookListViewModel
             {
                 Books = books.Data,
                 PaginateModel = paginateModel,
@@ -1326,7 +1324,7 @@ namespace GRA.Controllers
             {
                 page = model.PaginateModel.CurrentPage;
             }
-            return RedirectToAction("Books", new { page = page });
+            return RedirectToAction("Books", new { page });
         }
 
         [HttpPost]
@@ -1347,17 +1345,17 @@ namespace GRA.Controllers
             {
                 page = model.PaginateModel.CurrentPage;
             }
-            return RedirectToAction("Books", new { page = page });
+            return RedirectToAction("Books", new { page });
         }
 
         public async Task<IActionResult> History(int page = 1)
         {
-            int take = 15;
+            const int take = 15;
             int skip = take * (page - 1);
             var history = await _userService
                 .GetPaginatedUserHistoryAsync(GetActiveUserId(), skip, take);
 
-            PaginateViewModel paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel
             {
                 ItemCount = history.Count,
                 CurrentPage = page,
@@ -1374,7 +1372,7 @@ namespace GRA.Controllers
 
             User user = await _userService.GetDetails(GetActiveUserId());
 
-            HistoryListViewModel viewModel = new HistoryListViewModel()
+            var viewModel = new HistoryListViewModel
             {
                 Historys = new List<HistoryItemViewModel>(),
                 PaginateModel = paginateModel,
@@ -1391,7 +1389,7 @@ namespace GRA.Controllers
                     var url = Url.Action("Detail", "Challenges", new { id = item.ChallengeId });
                     item.Description = $"<a target='_blank' href='{url}'>{item.Description}</a>";
                 }
-                HistoryItemViewModel itemModel = new HistoryItemViewModel()
+                var itemModel = new HistoryItemViewModel
                 {
                     CreatedAt = item.CreatedAt.ToString("d"),
                     Description = item.Description,
@@ -1428,7 +1426,7 @@ namespace GRA.Controllers
                 return RedirectToAction("Index");
             }
 
-            ChangePasswordViewModel viewModel = new ChangePasswordViewModel()
+            var viewModel = new ChangePasswordViewModel
             {
                 HouseholdCount = await _userService
                     .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? user.Id),
@@ -1483,7 +1481,8 @@ namespace GRA.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> HandleHouseholdDonation(HouseholdListViewModel viewModel,
+        public async Task<IActionResult> HandleHouseholdDonation(
+            HouseholdListViewModel viewModel,
             string donateButton,
             string redeemButton)
         {
@@ -1512,7 +1511,9 @@ namespace GRA.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> HouseholdRedeemCode(HouseholdListViewModel viewModel, string redeemButton)
+        public async Task<IActionResult> HouseholdRedeemCode(
+            HouseholdListViewModel viewModel,
+            string redeemButton)
         {
             int userId = int.Parse(redeemButton);
             await _vendorCodeService.ResolveDonationStatusAsync(userId, false);
@@ -1540,7 +1541,7 @@ namespace GRA.Controllers
             }
             HttpContext.Session.SetString(SessionKey.CallItGroup, "True");
 
-            if (viewModel.AddExisting == true)
+            if (viewModel.AddExisting)
             {
                 return await AddExistingPreAuth();
             }

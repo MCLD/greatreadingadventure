@@ -58,11 +58,12 @@ namespace GRA.Domain.Service
                 authResult.PermissionNames
                     = await _roleRepository.GetPermisisonNamesForUserAsync(authResult.User.Id);
 
-                if (authResult.PermissionNames.Contains(Permission.ManageSites.ToString())) {
+                if (authResult.PermissionNames.Contains(nameof(Permission.ManageSites))) {
                     _logger.LogInformation("Site manager {username} authenticated", username);
                 }
 
-                if (!authResult.PermissionNames.Contains(Permission.AccessMissionControl.ToString())
+                if (!authResult.PermissionNames.Contains(nameof(Permission.AccessMissionControl))
+                    && !authResult.PermissionNames.Contains(nameof(Permission.AccessPerformerRegistration))
                     && !allowDuringCloseProgram)
                 {
                     var userContext = GetUserContext();
@@ -120,7 +121,7 @@ namespace GRA.Domain.Service
             var validTokens = tokens
                 .Where(_ => _.Token == fixedToken)
                 .OrderByDescending(_ => _.CreatedBy);
-            if (validTokens.Count() > 0)
+            if (validTokens.Any())
             {
                 if ((validTokens.First().CreatedAt - _dateTimeProvider.Now).TotalHours > 24)
                 {
@@ -208,7 +209,7 @@ namespace GRA.Domain.Service
             var lookupEmail = email.Trim();
             var usernames = await _userRepository.GetUserIdAndUsernames(lookupEmail);
 
-            if (usernames == null || usernames.Data.Count() == 0)
+            if (usernames?.Data.Any() != true)
             {
                 throw new GraException($"There are no usernames associated with email address: '{lookupEmail}'.");
             }
