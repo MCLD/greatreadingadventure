@@ -623,13 +623,13 @@ namespace GRA.Controllers.MissionControl
         }
 
         [Authorize(Policy = Policy.SchedulePerformers)]
-        public async Task<IActionResult> GetPerformerDaySchedule(int performerId, DateTime dateTime)
+        public async Task<IActionResult> GetPerformerDaySchedule(int performerId, DateTime date)
         {
             var performerSchedule = await _performerSchedulingService.GetPerformerDateScheduleAsync(
-                performerId, dateTime.Date);
+                performerId, date.Date);
 
             var branchSelections = (await _performerSchedulingService
-                .GetPerformerBranchSelectionsAsync(performerId, dateTime)).ToList();
+                .GetPerformerBranchSelectionsAsync(performerId, date)).ToList();
 
             var viewModel = new DayScheduleViewModel
             {
