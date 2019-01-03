@@ -607,7 +607,7 @@ namespace GRA.Domain.Service
 
             if (!addedPerformer.AllBranches)
             {
-                await _psPerformerRepository.AddPerformerBranchListAsync(performer.Id,
+                await _psPerformerRepository.AddPerformerBranchListAsync(addedPerformer.Id,
                     branchAvailability);
             }
 

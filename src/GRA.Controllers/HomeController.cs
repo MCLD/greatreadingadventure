@@ -121,8 +121,17 @@ namespace GRA.Controllers
                     SingleEvent = pointTranslation.IsSingleEvent,
                     ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural,
                     Badges = badges.Data,
-                    DisableSecretCode = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable)
+                    DisableSecretCode = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable),
                 };
+
+                try
+                {
+                    viewModel.SiteStage = (SiteStage)HttpContext.Items[ItemKey.SiteStage];
+                }
+                catch (Exception)
+                {
+                    viewModel.SiteStage = SiteStage.Unknown;
+                }
 
                 var program = await _siteService.GetProgramByIdAsync(user.ProgramId);
                 if (program.DailyLiteracyTipId.HasValue)
