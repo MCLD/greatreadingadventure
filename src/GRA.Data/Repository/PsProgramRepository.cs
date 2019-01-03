@@ -168,5 +168,12 @@ namespace GRA.Data.Repository
                     || _.performerbranches.Select(b => b.BranchId).Contains(branchId))
                 .AnyAsync();
         }
+
+        public async Task<int> GetProgramCountAsync()
+        {
+            return await DbSet
+                .AsNoTracking()
+                .CountAsync();
+        }
     }
 }

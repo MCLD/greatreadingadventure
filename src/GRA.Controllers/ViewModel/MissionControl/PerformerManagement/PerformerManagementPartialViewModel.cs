@@ -2,6 +2,6 @@
 {
     public abstract class PerformerManagementPartialViewModel
     {
-        public bool PerformerSchedulingEnbabled { get; set; }
+        public bool PerformerSchedulingEnabled { get; set; }
     }
 }

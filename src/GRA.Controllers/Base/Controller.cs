@@ -106,7 +106,7 @@ namespace GRA.Controllers.Base
                 claims.Add(new Claim(ClaimType.SiteId, authResult.User.SiteId.ToString()));
                 claims.Add(new Claim(ClaimType.SystemId, authResult.User.SystemId.ToString()));
                 claims.Add(new Claim(ClaimType.UserId, authResult.User.Id.ToString()));
-                claims.Add(new Claim(ClaimType.AuthenticatedAt, DateTime.Now.AddHours(-3).ToString("O")));
+                claims.Add(new Claim(ClaimType.AuthenticatedAt, _dateTimeProvider.Now.AddHours(-3).ToString("O")));
 
                 var identity = new ClaimsIdentity(claims, Authentication.TypeGRAPassword);
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl.PerformerManagement;
 using GRA.Controllers.ViewModel.Shared;
@@ -107,19 +108,52 @@ namespace GRA.Controllers.MissionControl
                 ? 100
                 : totalSelectedCount * 100 / totalBranchCount;
 
+            var performerStatus = await GetPerformerStatusAsync(schedulingStage);
+
             var viewModel = new StatusViewModel
             {
-                PerformerSchedulingEnbabled = true,
-                Now = DateTime.Now,
+                PerformerSchedulingEnabled = true,
+                Now = _dateTimeProvider.Now,
                 Settings = settings,
                 Systems = systems,
                 SummaryPercent = $"{summaryPercent}%",
                 Percent = percent,
                 Completion = completion,
-                Panel = panel
+                Panel = panel,
+                ProgramCount = performerStatus.ProgramCount,
+                PerformerCount = performerStatus.PerformerCount,
+                KitCount = performerStatus.KitCount,
+                SchedulingStage = performerStatus.SchedulingStage
             };
 
             return View(viewModel);
+        }
+
+        private class PerformerStatus
+        {
+            public int ProgramCount { get; set; }
+            public int PerformerCount { get; set; }
+            public int KitCount { get; set; }
+            public string SchedulingStage { get; set; }
+        }
+
+        public async Task<JsonResult> GetPerformerStatusAsync()
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
+            var result = await GetPerformerStatusAsync(schedulingStage);
+            return Json(result);
+        }
+
+        private async Task<PerformerStatus> GetPerformerStatusAsync(PsSchedulingStage schedulingStage)
+        {
+            return new PerformerStatus
+            {
+                ProgramCount = await _performerSchedulingService.GetProgramCountAsync(),
+                PerformerCount = await _performerSchedulingService.GetPerformerCountAsync(),
+                KitCount = await _performerSchedulingService.GetKitCountAsync(),
+                SchedulingStage = Regex.Replace(schedulingStage.ToString(), "(\\B[A-Z])", " $1")
+            };
         }
 
         #region Performers
@@ -167,7 +201,7 @@ namespace GRA.Controllers.MissionControl
             {
                 Performers = performerList.Data.ToList(),
                 PaginateModel = paginateModel,
-                PerformerSchedulingEnbabled = true,
+                PerformerSchedulingEnabled = true,
                 RegistrationClosed = schedulingStage >= PsSchedulingStage.RegistrationClosed,
                 SchedulingStage = schedulingStage
             };
@@ -1249,7 +1283,7 @@ namespace GRA.Controllers.MissionControl
             {
                 Kits = kitList.Data.ToList(),
                 PaginateModel = paginateModel,
-                PerformerSchedulingEnbabled = true,
+                PerformerSchedulingEnabled = true,
                 SchedulingStage = schedulingStage
             };
 
@@ -1782,7 +1816,7 @@ namespace GRA.Controllers.MissionControl
             {
                 AgeGroups = ageGroupList.Data,
                 PaginateModel = paginateModel,
-                PerformerSchedulingEnbabled = performerSchedulingEnabled,
+                PerformerSchedulingEnabled = performerSchedulingEnabled,
                 Systems = await _performerSchedulingService
                     .GetSystemListWithoutExcludedBranchesAsync()
             };
@@ -1917,7 +1951,7 @@ namespace GRA.Controllers.MissionControl
             {
                 BlackoutDates = blackoutDateList.Data,
                 PaginateModel = paginateModel,
-                PerformerSchedulingEnbabled = performerSchedulingEnabled
+                PerformerSchedulingEnabled = performerSchedulingEnabled
             };
 
             return View(viewModel);
@@ -2019,7 +2053,7 @@ namespace GRA.Controllers.MissionControl
                 ExcludedBranches = excludedBranchList.Data,
                 PaginateModel = paginateModel,
                 UnexcludedBranches = new SelectList(branches, "Id", "Name"),
-                PerformerSchedulingEnbabled = performerSchedulingEnabled
+                PerformerSchedulingEnabled = performerSchedulingEnabled
             };
 
             return View(viewModel);
@@ -2093,7 +2127,7 @@ namespace GRA.Controllers.MissionControl
             var viewModel = new SettingsViewModel
             {
                 Settings = settings,
-                PerformerSchedulingEnbabled = _performerSchedulingService
+                PerformerSchedulingEnabled = _performerSchedulingService
                     .GetSchedulingStage(settings) != PsSchedulingStage.Unavailable
             };
             return View(viewModel);
@@ -2145,7 +2179,7 @@ namespace GRA.Controllers.MissionControl
             var viewModel = new SettingsViewModel
             {
                 Settings = model.Settings,
-                PerformerSchedulingEnbabled = _performerSchedulingService
+                PerformerSchedulingEnabled = _performerSchedulingService
                     .GetSchedulingStage(currentSettings) != PsSchedulingStage.Unavailable
             };
             return View(viewModel);

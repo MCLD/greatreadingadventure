@@ -174,5 +174,12 @@ namespace GRA.Data.Repository
             _context.PsPerformerBranches.RemoveRange(performerBranches);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<int> GetPerformerCountAsync()
+        {
+            return await DbSet
+                .AsNoTracking()
+                .CountAsync();
+        }
     }
 }

@@ -17,5 +17,6 @@ namespace GRA.Domain.Repository
         Task AddProgramAgeGroupsAsync(int programId, List<int> ageGroupIds);
         Task RemoveProgramAgeGroupsAsync(int programId, List<int> ageGroupIds);
         Task<bool> AvailableAtBranchAsync(int programId, int branchId);
+        Task<int> GetProgramCountAsync();
     }
 }
