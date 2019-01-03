@@ -44,5 +44,6 @@ namespace GRA.Controllers.ViewModel.Home
         public bool FirstTimeParticipant { get; set; }
 
         public Carousel Carousel { get; set; }
+        public SiteStage SiteStage { get; set; }
     }
 }
