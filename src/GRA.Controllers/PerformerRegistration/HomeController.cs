@@ -181,16 +181,19 @@ namespace GRA.Controllers.PerformerRegistration
                 MaxUploadMB = MaxUploadMB
             };
 
-            if (performer.AllBranches)
+            if (performer != null)
             {
-                viewModel.BranchAvailability = systems
-                    .SelectMany(_ => _.Branches)
-                    .Select(_ => _.Id)
-                    .ToList();
-            }
-            else
-            {
-                viewModel.BranchAvailability = performer.Branches?.Select(_ => _.Id).ToList();
+                if (performer.AllBranches)
+                {
+                    viewModel.BranchAvailability = systems
+                        .SelectMany(_ => _.Branches)
+                        .Select(_ => _.Id)
+                        .ToList();
+                }
+                else
+                {
+                    viewModel.BranchAvailability = performer.Branches?.Select(_ => _.Id).ToList();
+                }
             }
 
             PageTitle = "Performer Information";
@@ -228,26 +231,29 @@ namespace GRA.Controllers.PerformerRegistration
                 ModelState.AddModelError("BranchAvailability", "Please select the libraries where you are willing to perform.");
             }
 
-            if (model.Images == null)
+            if (currentPerformer == null)
             {
-                ModelState.AddModelError("Images", "Please attach an image to submit.");
-            }
-            else if (model.Images?.Count > 0)
-            {
-                var extensions = model.Images.Select(_ => Path.GetExtension(_.FileName).ToLower());
-                if (extensions.Any(_ => _ != ".jpg" && _ != ".jpeg" && _ != ".png"))
+                if (model.Images == null)
                 {
-                    ModelState.AddModelError("Images", "Please only attach .jpg or .png images.");
+                    ModelState.AddModelError("Images", "Please attach an image to submit.");
                 }
-                else if (model.Images.Sum(_ => _.Length) > MaxUploadMB * MBSize)
+                else if (model.Images?.Count > 0)
                 {
-                    ModelState.AddModelError("Images", $"Please limit uploads to a max of {MaxUploadMB}MB.");
+                    var extensions = model.Images.Select(_ => Path.GetExtension(_.FileName).ToLower());
+                    if (extensions.Any(_ => _ != ".jpg" && _ != ".jpeg" && _ != ".png"))
+                    {
+                        ModelState.AddModelError("Images", "Please only attach .jpg or .png images.");
+                    }
+                    else if (model.Images.Sum(_ => _.Length) > MaxUploadMB * MBSize)
+                    {
+                        ModelState.AddModelError("Images", $"Please limit uploads to a max of {MaxUploadMB}MB.");
+                    }
                 }
-            }
 
-            if (model.References == null)
-            {
-                ModelState.AddModelError("References", "Please attach a list of references to submit.");
+                if (model.References == null)
+                {
+                    ModelState.AddModelError("References", "Please attach a list of references to submit.");
+                }
             }
 
             if (model.References != null

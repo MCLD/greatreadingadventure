@@ -524,6 +524,7 @@ namespace GRA.Controllers.MissionControl
             performerImages.ForEach(_ => _.Filename = _pathResolver.ResolveContentPath(_.Filename));
 
             model.MaxUploadMB = MaxUploadMB;
+            model.PerformerName = performer.Name;
             model.PerformerImages = performerImages;
             return View(model);
         }
