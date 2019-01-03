@@ -622,6 +622,8 @@ namespace GRA.Controllers.MissionControl
             });
         }
 
+#pragma warning disable MVC1004
+        // disable warning that "date" is named the same as a property on the object
         [Authorize(Policy = Policy.SchedulePerformers)]
         public async Task<IActionResult> GetPerformerDaySchedule(int performerId, DateTime date)
         {
@@ -659,6 +661,7 @@ namespace GRA.Controllers.MissionControl
 
             return PartialView("_DaySchedulePartial", viewModel);
         }
+#pragma warning restore MVC1004
 
         [Authorize(Policy = Policy.SchedulePerformers)]
         public async Task<JsonResult> CheckProgramTimeAvailability(int programId,

@@ -702,8 +702,8 @@ namespace GRA.Domain.Service
                 await RemovePerformerImageAsync(image);
             }
 
-            var performerProgram = await _psProgramRepository.GetByPerformerIdAsync(performer.Id);
-            foreach (var program in performerProgram)
+            var performerPrograms = await _psProgramRepository.GetByPerformerIdAsync(performer.Id);
+            foreach (var program in performerPrograms)
             {
                 await RemoveProgramAsync(program.Id);
             }
@@ -1114,7 +1114,7 @@ namespace GRA.Domain.Service
             var ageGroupIds = ageGroups.Select(_ => _.Id).ToList();
             await _psProgramRepository.RemoveProgramAgeGroupsAsync(programId, ageGroupIds);
 
-            var images = program.Images;
+            var images = await _psProgramImageRepository.GetByProgramIdAsync(programId);
             foreach (var image in images)
             {
                 await RemoveProgramImageAsync(image);
@@ -1412,7 +1412,7 @@ namespace GRA.Domain.Service
             }
 
             var program = await GetProgramByIdAsync(branchSelection.ProgramId.Value,
-                true);
+                onlyApproved: true);
 
             var validAgeGroup = await _psProgramRepository.IsValidAgeGroupAsync(program.Id,
                 branchSelection.AgeGroupId);
