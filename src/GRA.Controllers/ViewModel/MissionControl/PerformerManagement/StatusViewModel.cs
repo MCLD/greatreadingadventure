@@ -13,5 +13,9 @@ namespace GRA.Controllers.ViewModel.MissionControl.PerformerManagement
         public Dictionary<int, string> Percent { get; set; }
         public Dictionary<int, string> Panel { get; set; }
         public string SummaryPercent { get; set; }
+        public int PerformerCount { get; set; }
+        public int ProgramCount { get; set; }
+        public int KitCount { get; set; }
+        public string SchedulingStage { get; set; }
     }
 }

@@ -6,6 +6,29 @@
 
 @await Html.PartialAsync("_PerformerManagementPartial")
 
+<div class="row text-center">
+    <div class="col-sm-2 col-sm-offset-2">
+        <div class="ataglance-pill ataglance-pill-steelblue">
+            <span style="font-size: larger;" id="psPerformerCount">@Model.PerformerCount</span><br />Peformers
+        </div>
+    </div>
+    <div class="col-sm-2">
+        <div class="ataglance-pill ataglance-pill-steelblue">
+            <span style="font-size: larger;" id="psProgramCount">@Model.ProgramCount</span><br />Programs
+        </div>
+    </div>
+    <div class="col-sm-2">
+        <div class="ataglance-pill ataglance-pill-steelblue">
+            <span style="font-size: larger;" id="psKitCount">@Model.KitCount</span><br />Kits
+        </div>
+    </div>
+    <div class="col-sm-2">
+        <div class="ataglance-pill ataglance-pill-steelblue">
+            Performer Stage:<br />
+            <span id="psSchedulingStage">@Model.SchedulingStage</span>
+        </div>
+    </div>
+</div>
 
 <div class="row" style="margin-top: 2rem;">
     <div class="col-sm-8 col-sm-offset-2">
@@ -204,5 +227,19 @@
                 $('#modaldurationrow').show();
             }
         })
+
+        setInterval(function () {
+            $("#psProgramCount").html("<span class=\"fas fa-spinner fa-spin\"></span>");
+            $("#psPerformerCount").html("<span class=\"fas fa-spinner fa-spin\"></span>");
+            $("#psKitCount").html("<span class=\"fas fa-spinner fa-spin\"></span>");
+            $("#psSchedulingStage").html("<span class=\"fas fa-spinner fa-spin\"></span>");
+            $.ajax("@Url.Action("GetPerformerStatusAsync")")
+                .done(function (performerStatus) {
+                    $("#psProgramCount").text(performerStatus.programCount);
+                    $("#psPerformerCount").text(performerStatus.performerCount);
+                    $("#psKitCount").text(performerStatus.kitCount);
+                    $("#psSchedulingStage").text(performerStatus.schedulingStage);
+               });
+        }, 300000)
     </script>
 }

@@ -1450,7 +1450,7 @@ namespace GRA.Domain.Service
                 branchSelection.BackToBackProgram);
 
             branchSelection.KitId = null;
-            branchSelection.SelectedAt = DateTime.Now;
+            branchSelection.SelectedAt = _dateTimeProvider.Now;
             branchSelection.UserId = authId;
             branchSelection.ScheduleStartTime = branchSelection.RequestedStartTime
                 .AddMinutes(-program.SetupTimeMinutes);
@@ -1617,7 +1617,7 @@ namespace GRA.Domain.Service
             branchSelection.BackToBackProgram = false;
             branchSelection.ProgramId = null;
             branchSelection.RequestedStartTime = default(DateTime);
-            branchSelection.SelectedAt = DateTime.Now;
+            branchSelection.SelectedAt = _dateTimeProvider.Now;
             branchSelection.ScheduleStartTime = default(DateTime);
             branchSelection.ScheduleDuration = 0;
             branchSelection.UserId = authId;
@@ -1757,6 +1757,21 @@ namespace GRA.Domain.Service
             }
 
             return await _psBranchSelectionRepository.GetByBranchIdAsync(branchId);
+        }
+
+        public async Task<int> GetPerformerCountAsync()
+        {
+            return await _psPerformerRepository.GetPerformerCountAsync();
+        }
+
+        public async Task<int> GetProgramCountAsync()
+        {
+            return await _psProgramRepository.GetProgramCountAsync();
+        }
+
+        public async Task<int> GetKitCountAsync()
+        {
+            return await _psKitRepository.GetKitCountAsync();
         }
     }
 }

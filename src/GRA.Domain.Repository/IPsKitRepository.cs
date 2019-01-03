@@ -14,5 +14,6 @@ namespace GRA.Domain.Repository
         Task AddKitAgeGroupsAsync(int kitIdId, List<int> ageGroupIds);
         Task RemoveKitAgeGroupsAsync(int kitId, List<int> ageGroupIds);
         Task<bool> IsValidAgeGroupAsync(int kitId, int ageGroupId);
+        Task<int> GetKitCountAsync();
     }
 }

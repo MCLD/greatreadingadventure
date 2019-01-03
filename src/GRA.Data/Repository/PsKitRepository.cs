@@ -99,5 +99,12 @@ namespace GRA.Data.Repository
                     (kit, ageGroup) => kit)
                 .AnyAsync();
         }
+
+        public async Task<int> GetKitCountAsync()
+        {
+            return await DbSet
+                .AsNoTracking()
+                .CountAsync();
+        }
     }
 }
