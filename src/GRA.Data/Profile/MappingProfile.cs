@@ -56,6 +56,10 @@ namespace GRA.Data.Profile
                 opt => opt.MapFrom(src => src.Drawing.Name ?? src.Trigger.AwardPrizeName))
                 .ReverseMap();
             CreateMap<Model.EmailReminder, Domain.Model.EmailReminder>().ReverseMap();
+            CreateMap<Model.EmailSubscriptionAuditLog, Domain.Model.EmailSubscriptionAuditLog>()
+                .ForMember(dest => dest.CreatedByName, opt => opt
+                    .MapFrom(src => $"{src.CreatedByUser.FirstName} {src.CreatedByUser.LastName}"))
+                .ReverseMap();
             CreateMap<Model.Event, Domain.Model.Event>()
                 .ForMember(dest => dest.Challenge, opt => opt.Ignore())
                 .ForMember(dest => dest.ChallengeGroup, opt => opt.Ignore())

@@ -32,6 +32,7 @@ namespace GRA.Domain.Service
         private readonly IUserRepository _userRepository;
         private readonly IVendorCodeRepository _vendorCodeRepository;
         private readonly ActivityService _activityService;
+        private readonly EmailManagementService _emailManagementService;
         private readonly SampleDataService _configurationService;
         private readonly SchoolService _schoolService;
         private readonly SiteLookupService _siteLookupService;
@@ -59,6 +60,7 @@ namespace GRA.Domain.Service
             IUserRepository userRepository,
             IVendorCodeRepository vendorCodeRepository,
             ActivityService activityService,
+            EmailManagementService emailManagementService,
             SampleDataService configurationService,
             SchoolService schoolService,
             SiteLookupService siteLookupService,
@@ -93,6 +95,8 @@ namespace GRA.Domain.Service
             _activityService = Require.IsNotNull(activityService, nameof(activityService));
             _configurationService = Require.IsNotNull(configurationService,
                 nameof(configurationService));
+            _emailManagementService = emailManagementService
+                ?? throw new ArgumentNullException(nameof(emailManagementService));
             _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
             _siteLookupService = siteLookupService
                 ?? throw new ArgumentNullException(nameof(siteLookupService));
@@ -129,19 +133,44 @@ namespace GRA.Domain.Service
             user.PostalCode = user.PostalCode?.Trim();
             user.Username = user.Username?.Trim();
 
+            var emailSubscribe = false;
+            if (user.IsEmailSubscribed)
+            {
+                user.IsEmailSubscribed = false;
+                var (askEmailSubscription, askEmailSubscriptionText) = await _siteLookupService
+                    .GetSiteSettingStringAsync(GetCurrentSiteId(),
+                        SiteSettingKey.Users.AskEmailSubPermission);
+                if (askEmailSubscription)
+                {
+                    emailSubscribe = true;
+                }
+            }
+
             User registeredUser = null;
             if (MCRegistration)
             {
                 registeredUser = await _userRepository.AddSaveAsync(
                     GetClaimId(ClaimType.UserId), user);
+                if (emailSubscribe)
+                {
+                    registeredUser.IsEmailSubscribed = await _emailManagementService
+                        .SetUserEmailSubscriptionStatusAsync(registeredUser.Id, true);
+                }
             }
             else
             {
                 registeredUser = await _userRepository.AddSaveAsync(0, user);
+                if (emailSubscribe)
+                {
+                    registeredUser.IsEmailSubscribed = await _emailManagementService
+                        .SetUserEmailSubscriptionStatusAsync(registeredUser.Id, true, newUser: true);
+                }
             }
 
             await _userRepository
                 .SetUserPasswordAsync(registeredUser.Id, registeredUser.Id, password);
+
+
 
             await JoinedProgramNotificationBadge(registeredUser);
             await _activityService.AwardUserTriggersAsync(registeredUser.Id, false);
@@ -278,23 +307,29 @@ namespace GRA.Domain.Service
                     currentEntity.BranchId = userToUpdate.BranchId;
                 }
 
-                var askEmailReminder = await _siteLookupService.GetSiteSettingBoolAsync(
-                    currentEntity.SiteId, SiteSettingKey.Users.AskPreregistrationReminder);
-
-                if (askEmailReminder)
-                {
-                    var site = await _siteLookupService.GetByIdAsync(currentEntity.SiteId);
-                    if (_siteLookupService.GetSiteStage(site) == SiteStage.RegistrationOpen)
-                    {
-                        currentEntity.PreregistrationReminderRequested =
-                            userToUpdate.PreregistrationReminderRequested;
-                    }
-                }
-
                 await ValidateUserFields(currentEntity);
 
                 var updatedUser = await _userRepository
                     .UpdateSaveAsync(requestingUserId, currentEntity);
+
+                if (userToUpdate.IsEmailSubscribed != currentEntity.IsEmailSubscribed)
+                {
+                    var (askEmailSubscription, askEmailSubscriptionText) = await _siteLookupService
+                        .GetSiteSettingStringAsync(GetCurrentSiteId(),
+                            SiteSettingKey.Users.AskEmailSubPermission);
+                    if (askEmailSubscription)
+                    {
+                        updatedUser.IsEmailSubscribed = await _emailManagementService
+                            .SetUserEmailSubscriptionStatusAsync(updatedUser.Id,
+                                userToUpdate.IsEmailSubscribed);
+
+                    }
+                    else if (userToUpdate.IsEmailSubscribed)
+                    {
+                        updatedUser.IsEmailSubscribed = await _emailManagementService
+                            .SetUserEmailSubscriptionStatusAsync(updatedUser.Id, false);
+                    }
+                }
 
                 return updatedUser;
             }
@@ -349,23 +384,29 @@ namespace GRA.Domain.Service
                     }
                 }
 
-                var askEmailReminder = await _siteLookupService.GetSiteSettingBoolAsync(
-                    currentEntity.SiteId, SiteSettingKey.Users.AskPreregistrationReminder);
-
-                if (askEmailReminder)
-                {
-                    var site = await _siteLookupService.GetByIdAsync(currentEntity.SiteId);
-                    if (_siteLookupService.GetSiteStage(site) == SiteStage.RegistrationOpen)
-                    {
-                        currentEntity.PreregistrationReminderRequested =
-                            userToUpdate.PreregistrationReminderRequested;
-                    }
-                }
-
                 await ValidateUserFields(currentEntity);
 
                 var updatedUser = await _userRepository
                     .UpdateSaveAsync(requestedByUserId, currentEntity);
+
+                if (userToUpdate.IsEmailSubscribed != currentEntity.IsEmailSubscribed)
+                {
+                    var (askEmailSubscription, askEmailSubscriptionText) = await _siteLookupService
+                        .GetSiteSettingStringAsync(GetCurrentSiteId(),
+                            SiteSettingKey.Users.AskEmailSubPermission);
+                    if (askEmailSubscription)
+                    {
+                        updatedUser.IsEmailSubscribed = await _emailManagementService
+                            .SetUserEmailSubscriptionStatusAsync(updatedUser.Id,
+                                userToUpdate.IsEmailSubscribed);
+
+                    }
+                    else if (userToUpdate.IsEmailSubscribed)
+                    {
+                        updatedUser.IsEmailSubscribed = await _emailManagementService
+                            .SetUserEmailSubscriptionStatusAsync(updatedUser.Id, false);
+                    }
+                }
 
                 return updatedUser;
             }
@@ -526,9 +567,30 @@ namespace GRA.Domain.Service
                 memberToAdd.PostalCode = memberToAdd.PostalCode?.Trim();
                 memberToAdd.Username = memberToAdd.Username?.Trim();
 
+                var emailSubscribe = false;
+                if (memberToAdd.IsEmailSubscribed)
+                {
+                    memberToAdd.IsEmailSubscribed = false;
+                    var (askEmailSubscription, askEmailSubscriptionText) = await _siteLookupService
+                        .GetSiteSettingStringAsync(GetCurrentSiteId(),
+                            SiteSettingKey.Users.AskEmailSubPermission);
+                    if (askEmailSubscription)
+                    {
+                        emailSubscribe = true;
+                    }
+                }
+
                 await ValidateUserFields(memberToAdd);
 
                 var registeredUser = await _userRepository.AddSaveAsync(authUserId, memberToAdd);
+
+                if (emailSubscribe)
+                {
+                    registeredUser.IsEmailSubscribed = await _emailManagementService
+                        .SetUserEmailSubscriptionStatusAsync(registeredUser.Id, true,
+                        headOfHouseholdId: householdHeadUserId);
+                }
+
                 await JoinedProgramNotificationBadge(registeredUser);
                 await _activityService.AwardUserTriggersAsync(registeredUser.Id, false);
                 return registeredUser;
@@ -950,7 +1012,7 @@ namespace GRA.Domain.Service
 
         public async Task<GroupInfo> GetGroupInfoByIdAsync(int id)
         {
-            if (!HasPermission(Permission.ViewParticipantDetails) 
+            if (!HasPermission(Permission.ViewParticipantDetails)
                 && !HasPermission(Permission.ViewAllReporting))
             {
                 _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view group info.");

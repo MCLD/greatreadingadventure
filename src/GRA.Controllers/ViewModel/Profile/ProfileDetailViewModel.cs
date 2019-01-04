@@ -19,7 +19,8 @@ namespace GRA.Controllers.ViewModel.Profile
         public string SystemName { get; set; }
         public string BranchName { get; set; }
 
-        public bool AskEmailReminder { get; set; }
+        public bool AskEmailSubscription { get; set; }
+        public string AskEmailSubscriptionText { get; set; }
 
         public string TranslationDescriptionPastTense { get; set; }
         public string ActivityDescriptionPlural { get; set; }

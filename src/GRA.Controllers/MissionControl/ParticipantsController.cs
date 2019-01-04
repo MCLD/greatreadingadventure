@@ -28,6 +28,7 @@ namespace GRA.Controllers.MissionControl
         private readonly ActivityService _activityService;
         private readonly AuthenticationService _authenticationService;
         private readonly AvatarService _avatarService;
+        private readonly EmailManagementService _emailManagementService;
         private readonly GroupTypeService _groupTypeService;
         private readonly MailService _mailService;
         private readonly PointTranslationService _pointTranslationService;
@@ -44,6 +45,7 @@ namespace GRA.Controllers.MissionControl
             ActivityService activityService,
             AuthenticationService authenticationService,
             AvatarService avatarService,
+            EmailManagementService emailManagementService,
             GroupTypeService groupTypeService,
             MailService mailService,
             PointTranslationService pointTranslationService,
@@ -64,6 +66,8 @@ namespace GRA.Controllers.MissionControl
                 nameof(authenticationService));
             _avatarService = Require.IsNotNull(avatarService,
                 nameof(avatarService));
+            _emailManagementService = emailManagementService
+                ?? throw new ArgumentNullException(nameof(emailManagementService));
             _groupTypeService = groupTypeService
                 ?? throw new ArgumentNullException(nameof(groupTypeService));
             _mailService = Require.IsNotNull(mailService, nameof(mailService));
@@ -219,15 +223,21 @@ namespace GRA.Controllers.MissionControl
                 PublicSelected = true,
                 ShowPrivateOption = await _schoolService.AnyPrivateSchoolsAsync(),
                 ShowCharterOption = await _schoolService.AnyCharterSchoolsAsync(),
-                SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name"),
-                AskEmailReminder = siteStage == SiteStage.RegistrationOpen
-                    && await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskPreregistrationReminder)
+                SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name")
             };
 
             var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
             if (askIfFirstTime)
             {
                 viewModel.AskFirstTime = EmptyNoYes();
+            }
+
+            var (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
+                SiteSettingKey.Users.AskEmailSubPermission);
+            if (askEmailSubscription)
+            {
+                viewModel.AskEmailSubscription = EmptyNoYes();
+                viewModel.AskEmailSubscriptionText = askEmailSubscriptionText;
             }
 
             var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
@@ -294,14 +304,22 @@ namespace GRA.Controllers.MissionControl
                 ModelState.Remove(nameof(model.IsFirstTime));
             }
 
-            model.AskEmailReminder = GetSiteStage() == SiteStage.RegistrationOpen
-                && await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskPreregistrationReminder);
-
-            if (model.AskEmailReminder && model.PreregistrationReminderRequested
-                && string.IsNullOrWhiteSpace(model.Email))
+            var (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
+               SiteSettingKey.Users.AskEmailSubPermission);
+            if (!askEmailSubscription)
             {
-                ModelState.AddModelError(nameof(model.Email),
-                    "Please enter an email address to send the reminder to.");
+                ModelState.Remove(nameof(model.EmailSubscriptionRequested));
+            }
+            else
+            {
+                var subscriptionRequested = model.EmailSubscriptionRequested.Equals(
+                        DropDownTrueValue, StringComparison.OrdinalIgnoreCase);
+                if (subscriptionRequested && string.IsNullOrWhiteSpace(model.Email))
+                {
+                    ModelState.AddModelError(nameof(model.Email), " ");
+                    ModelState.AddModelError(nameof(model.EmailSubscriptionRequested),
+                    "To receive email updates please supply an email address to send them to.");
+                }
             }
 
             var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
@@ -362,9 +380,10 @@ namespace GRA.Controllers.MissionControl
                         StringComparison.OrdinalIgnoreCase);
                 }
 
-                if (!model.AskEmailReminder)
+                if (askEmailSubscription)
                 {
-                    user.PreregistrationReminderRequested = false;
+                    user.IsEmailSubscribed = model.EmailSubscriptionRequested.Equals(
+                        DropDownTrueValue, StringComparison.OrdinalIgnoreCase);
                 }
 
                 if (askActivityGoal && user.DailyPersonalGoal > 0)
@@ -486,6 +505,12 @@ namespace GRA.Controllers.MissionControl
                 model.AskFirstTime = EmptyNoYes();
             }
 
+            if (askEmailSubscription)
+            {
+                model.AskEmailSubscription = EmptyNoYes();
+                model.AskEmailSubscriptionText = askEmailSubscriptionText;
+            }
+
             if (askActivityGoal)
             {
                 var pointTranslation = programList.First().PointTranslation;
@@ -538,7 +563,7 @@ namespace GRA.Controllers.MissionControl
                 var groupInfo
                     = await _userService.GetGroupFromHouseholdHeadAsync(user.HouseholdHeadUserId ?? id);
 
-                ParticipantsDetailViewModel viewModel = new ParticipantsDetailViewModel()
+                var viewModel = new ParticipantsDetailViewModel()
                 {
                     User = user,
                     Id = user.Id,
@@ -558,8 +583,8 @@ namespace GRA.Controllers.MissionControl
                     SystemList = new SelectList(systemList.ToList(), "Id", "Name"),
                     ShowPrivateOption = await _schoolService.AnyPrivateSchoolsAsync(),
                     ShowCharterOption = await _schoolService.AnyCharterSchoolsAsync(),
-                    AskEmailReminder = GetSiteStage() == SiteStage.RegistrationOpen
-                        && await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskPreregistrationReminder)
+                    EmailSubscriptionEnabled = await IsSiteSettingSetAsync(
+                        SiteSettingKey.Users.AskEmailSubPermission)
                 };
 
                 if (UserHasPermission(Permission.ViewUserPrizes))
@@ -633,6 +658,14 @@ namespace GRA.Controllers.MissionControl
                     viewModel.CanEditUsername = true;
                 }
 
+                var (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
+                SiteSettingKey.Users.AskEmailSubPermission);
+                if (askEmailSubscription)
+                {
+                    viewModel.AskEmailSubscription = true;
+                    viewModel.AskEmailSubscriptionText = askEmailSubscriptionText;
+                }
+
                 var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
                 SiteSettingKey.Users.DefaultDailyPersonalGoal);
                 if (askActivityGoal)
@@ -677,14 +710,14 @@ namespace GRA.Controllers.MissionControl
                 ModelState.AddModelError("User.Username", "The Username field is required.");
             }
 
-            model.AskEmailReminder = GetSiteStage() == SiteStage.RegistrationOpen
-                && await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskPreregistrationReminder);
-
-            if (model.AskEmailReminder && model.User.PreregistrationReminderRequested
+            var (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
+                SiteSettingKey.Users.AskEmailSubPermission);
+            if (askEmailSubscription && model.User.IsEmailSubscribed
                 && string.IsNullOrWhiteSpace(model.User.Email))
             {
-                ModelState.AddModelError("User.Email",
-                    "Please enter an email address to send the reminder to.");
+                ModelState.AddModelError("User.Email", " ");
+                ModelState.AddModelError("User.IsEmailSubscribed",
+                "To receive email updates please supply an email address to send them to.");
             }
 
             var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
@@ -716,6 +749,11 @@ namespace GRA.Controllers.MissionControl
                         {
                             model.User.SchoolId = model.SchoolId;
                         }
+                    }
+
+                    if (!askEmailSubscription)
+                    {
+                        model.User.IsEmailSubscribed = false;
                     }
 
                     if (askActivityGoal && model.User.DailyPersonalGoal > 0)
@@ -824,6 +862,12 @@ namespace GRA.Controllers.MissionControl
                 }
             }
 
+            if (askEmailSubscription)
+            {
+                model.AskEmailSubscription = true;
+                model.AskEmailSubscriptionText = askEmailSubscriptionText;
+            }
+
             if (askActivityGoal)
             {
                 var pointTranslation = await _pointTranslationService
@@ -858,7 +902,9 @@ namespace GRA.Controllers.MissionControl
                 HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                 DisableSecretCode = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable),
                 PointTranslation = await _pointTranslationService
-                    .GetByProgramIdAsync(user.ProgramId, true)
+                    .GetByProgramIdAsync(user.ProgramId, true),
+                EmailSubscriptionEnabled = await IsSiteSettingSetAsync(
+                        SiteSettingKey.Users.AskEmailSubPermission)
             };
 
             if (UserHasPermission(Permission.ViewUserPrizes))
@@ -1039,7 +1085,9 @@ namespace GRA.Controllers.MissionControl
                     DisableSecretCode = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable),
                     ShowVendorCodes = showVendorCodes,
                     PointTranslation = await _pointTranslationService
-                        .GetByProgramIdAsync(user.ProgramId, true)
+                        .GetByProgramIdAsync(user.ProgramId, true),
+                    EmailSubscriptionEnabled = await IsSiteSettingSetAsync(
+                        SiteSettingKey.Users.AskEmailSubPermission)
                 };
 
                 if (UserHasPermission(Permission.ViewUserPrizes))
@@ -1242,7 +1290,7 @@ namespace GRA.Controllers.MissionControl
                 var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
                 var districtList = await _schoolService.GetDistrictsAsync(true);
 
-                HouseholdAddViewModel viewModel = new HouseholdAddViewModel()
+                var viewModel = new HouseholdAddViewModel()
                 {
                     User = userBase,
                     Id = id,
@@ -1262,6 +1310,14 @@ namespace GRA.Controllers.MissionControl
                 if (askIfFirstTime)
                 {
                     viewModel.AskFirstTime = EmptyNoYes();
+                }
+
+                var (askEmailSubscription, askEmailSubscriptionText) =
+                    await GetSiteSettingStringAsync(SiteSettingKey.Users.AskEmailSubPermission);
+                if (askEmailSubscription)
+                {
+                    viewModel.AskEmailSubscription = EmptyNoYes();
+                    viewModel.AskEmailSubscriptionText = askEmailSubscriptionText;
                 }
 
                 var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
@@ -1315,6 +1371,24 @@ namespace GRA.Controllers.MissionControl
             if (!askIfFirstTime)
             {
                 ModelState.Remove(nameof(model.IsFirstTime));
+            }
+
+            var (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
+                SiteSettingKey.Users.AskEmailSubPermission);
+            if (!askEmailSubscription)
+            {
+                ModelState.Remove(nameof(model.EmailSubscriptionRequested));
+            }
+            else
+            {
+                var subscriptionRequested = model.EmailSubscriptionRequested.Equals(
+                        DropDownTrueValue, StringComparison.OrdinalIgnoreCase);
+                if (subscriptionRequested && string.IsNullOrWhiteSpace(model.User.Email))
+                {
+                    ModelState.AddModelError("User.Email", " ");
+                    ModelState.AddModelError(nameof(model.EmailSubscriptionRequested),
+                    "To receive email updates please supply an email address to send them to.");
+                }
             }
 
             var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
@@ -1375,7 +1449,21 @@ namespace GRA.Controllers.MissionControl
                     if (askIfFirstTime)
                     {
                         model.User.IsFirstTime = model.IsFirstTime.Equals(DropDownTrueValue,
-                            StringComparison.OrdinalIgnoreCase);
+                           StringComparison.OrdinalIgnoreCase);
+                    }
+                    else
+                    {
+                        model.User.IsFirstTime = false;
+                    }
+
+                    if (askEmailSubscription)
+                    {
+                        model.User.IsEmailSubscribed = model.EmailSubscriptionRequested.Equals(
+                            DropDownTrueValue, StringComparison.OrdinalIgnoreCase);
+                    }
+                    else
+                    {
+                        model.User.IsEmailSubscribed = false;
                     }
 
                     if (askActivityGoal && model.User.DailyPersonalGoal > 0)
@@ -1481,6 +1569,12 @@ namespace GRA.Controllers.MissionControl
             if (askIfFirstTime)
             {
                 model.AskFirstTime = EmptyNoYes();
+            }
+
+            if (askEmailSubscription)
+            {
+                model.AskEmailSubscription = EmptyNoYes();
+                model.AskEmailSubscriptionText = askEmailSubscriptionText;
             }
 
             if (askActivityGoal)
@@ -1659,7 +1753,9 @@ namespace GRA.Controllers.MissionControl
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
                     HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                     CanEditBooks = UserHasPermission(Permission.LogActivityForAny),
-                    SortBooks = Enum.GetValues(typeof(SortBooksBy))
+                    SortBooks = Enum.GetValues(typeof(SortBooksBy)),
+                    EmailSubscriptionEnabled = await IsSiteSettingSetAsync(
+                        SiteSettingKey.Users.AskEmailSubPermission)
                 };
 
                 if (UserHasPermission(Permission.ViewUserPrizes))
@@ -1804,7 +1900,9 @@ namespace GRA.Controllers.MissionControl
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
                     HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                     CanRemoveHistory = UserHasPermission(Permission.LogActivityForAny),
-                    TotalPoints = user.PointsEarned
+                    TotalPoints = user.PointsEarned,
+                    EmailSubscriptionEnabled = await IsSiteSettingSetAsync(
+                        SiteSettingKey.Users.AskEmailSubPermission)
                 };
 
                 if (UserHasPermission(Permission.ViewUserPrizes))
@@ -1954,7 +2052,9 @@ namespace GRA.Controllers.MissionControl
                     IsGroup = groupInfo != null,
                     PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false),
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
-                    HasAccount = !string.IsNullOrWhiteSpace(user.Username)
+                    HasAccount = !string.IsNullOrWhiteSpace(user.Username),
+                    EmailSubscriptionEnabled = await IsSiteSettingSetAsync(
+                        SiteSettingKey.Users.AskEmailSubPermission)
                 };
 
                 if (UserHasPermission(Permission.ManageRoles) && viewModel.HasAccount)
@@ -2002,6 +2102,50 @@ namespace GRA.Controllers.MissionControl
         }
         #endregion
 
+        #region Email Subscription Log
+        public async Task<IActionResult> EmailSubscriptionLog(int id)
+        {
+            try
+            {
+                var auditLog = await _emailManagementService.GetUserAuditLogAsync(id);
+
+                var user = await _userService.GetDetails(id);
+                SetPageTitle(user);
+
+                var groupInfo
+                    = await _userService.GetGroupFromHouseholdHeadAsync(user.HouseholdHeadUserId ?? id);
+
+                var viewModel = new EmailSubscriptionLogViewModel
+                {
+                    SubscritionAuditLogs = auditLog,
+                    Id = id,
+                    HouseholdCount = await _userService
+                        .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
+                    IsGroup = groupInfo != null,
+                    HasAccount = !string.IsNullOrWhiteSpace(user.Username),
+                    EmailSubscriptionEnabled = await IsSiteSettingSetAsync(
+                        SiteSettingKey.Users.AskEmailSubPermission)
+                };
+
+                if (UserHasPermission(Permission.ViewUserPrizes))
+                {
+                    viewModel.PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false);
+                }
+                if (UserHasPermission(Permission.ManageRoles) && viewModel.HasAccount)
+                {
+                    viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
+                }
+
+                return View(viewModel);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning("Unable to view participant email subscription log: ", gex);
+                return RedirectToAction("Index");
+            }
+        }
+        #endregion
+
         #region Mail
         [Authorize(Policy = Policy.ReadAllMail)]
         public async Task<IActionResult> Mail(int id, int page = 1)
@@ -2046,7 +2190,9 @@ namespace GRA.Controllers.MissionControl
                     IsGroup = groupInfo != null,
                     HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                     CanRemoveMail = UserHasPermission(Permission.DeleteAnyMail),
-                    CanSendMail = UserHasPermission(Permission.MailParticipants)
+                    CanSendMail = UserHasPermission(Permission.MailParticipants),
+                    EmailSubscriptionEnabled = await IsSiteSettingSetAsync(
+                        SiteSettingKey.Users.AskEmailSubPermission)
                 };
 
                 if (UserHasPermission(Permission.ViewUserPrizes))
@@ -2172,7 +2318,9 @@ namespace GRA.Controllers.MissionControl
                         .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
                     HasAccount = !string.IsNullOrWhiteSpace(user.Username),
-                    IsGroup = groupInfo != null
+                    IsGroup = groupInfo != null,
+                    EmailSubscriptionEnabled = await IsSiteSettingSetAsync(
+                        SiteSettingKey.Users.AskEmailSubPermission)
                 };
 
                 if (UserHasPermission(Permission.ViewUserPrizes))
@@ -2241,7 +2389,9 @@ namespace GRA.Controllers.MissionControl
                     HouseholdCount = await _userService
                         .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
                     HasAccount = !string.IsNullOrWhiteSpace(user.Username),
-                    IsGroup = groupInfo != null
+                    IsGroup = groupInfo != null,
+                    EmailSubscriptionEnabled = await IsSiteSettingSetAsync(
+                        SiteSettingKey.Users.AskEmailSubPermission)
                 };
 
                 var userRoles = await _userService.GetUserRolesAsync(id);

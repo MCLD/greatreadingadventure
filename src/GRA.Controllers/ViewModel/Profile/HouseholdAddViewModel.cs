@@ -22,6 +22,11 @@ namespace GRA.Controllers.ViewModel.Profile
         [Required(ErrorMessage = "Please let us know if this is your first time participating in the program")]
         public string IsFirstTime { get; set; }
 
+        public SelectList AskEmailSubscription { get; set; }
+        public string AskEmailSubscriptionText { get; set; }
+        [Required(ErrorMessage = "Please let us know if you would like to receive emails throughout the program")]
+        public string EmailSubscriptionRequested { get; set; }
+
         public string TranslationDescriptionPastTense { get; set; }
         public string ActivityDescriptionPlural { get; set; }
     }

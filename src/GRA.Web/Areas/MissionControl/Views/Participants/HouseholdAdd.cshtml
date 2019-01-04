@@ -100,6 +100,19 @@
                 </div>
             }
 
+            @if (Model.AskEmailSubscription?.Count() > 1)
+            {
+                <div class="row row-spacing">
+                    <div class="col-xs-12">
+                        <label asp-for="EmailSubscriptionRequested" class="control-label">@Model.AskEmailSubscriptionText</label>
+                        <select asp-for="EmailSubscriptionRequested"
+                                asp-items="Model.AskEmailSubscription"
+                                class="form-control"></select>
+                        <span asp-validation-for="EmailSubscriptionRequested" class="text-danger"></span>
+                    </div>
+                </div>
+            }
+
             @if (!string.IsNullOrWhiteSpace(Model.TranslationDescriptionPastTense))
             {
                 <div class="row row-spacing">

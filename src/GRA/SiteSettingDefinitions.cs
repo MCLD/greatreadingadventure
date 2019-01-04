@@ -64,19 +64,19 @@ namespace GRA
                     Category = typeof(SiteSettingKey.Users).Name,
                     Format = SiteSettingFormat.Integer
                 },
+                [SiteSettingKey.Users.AskEmailSubPermission] =
+                new SiteSettingDefinition
+                {
+                    Name = "Ask email subscription permission",
+                    Info = "Set the text to be displayed when a user signs up to ask if they want to subscribe to emails.",
+                    Category = typeof(SiteSettingKey.Users).Name,
+                    Format = SiteSettingFormat.String
+                },
                 [SiteSettingKey.Users.AskIfFirstTime] =
                 new SiteSettingDefinition
                 {
                     Name = "Ask if first time",
-                    Info = "Put any text here to ask participants if it is their first time in the program",
-                    Category = typeof(SiteSettingKey.Users).Name,
-                    Format = SiteSettingFormat.Boolean
-                },
-                [SiteSettingKey.Users.AskPreregistrationReminder] =
-                new SiteSettingDefinition
-                {
-                    Name = "Ask reminder email during pre-registration",
-                    Info = "Put any text here to ask participants during pre-registration if they want to receive an email when the program starts. This software does not send the email, it just collects the addresses.",
+                    Info = "Put any text here to ask participants if it is their first time in the program.",
                     Category = typeof(SiteSettingKey.Users).Name,
                     Format = SiteSettingFormat.Boolean
                 },

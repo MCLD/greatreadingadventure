@@ -123,15 +123,21 @@ namespace GRA.Controllers
                 PublicSelected = true,
                 ShowPrivateOption = await _schoolService.AnyPrivateSchoolsAsync(),
                 ShowCharterOption = await _schoolService.AnyCharterSchoolsAsync(),
-                SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name"),
-                AskEmailReminder = siteStage == SiteStage.RegistrationOpen
-                    && await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskPreregistrationReminder)
+                SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name")
             };
 
             var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
             if (askIfFirstTime)
             {
                 viewModel.AskFirstTime = EmptyNoYes();
+            }
+
+            var (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
+                SiteSettingKey.Users.AskEmailSubPermission);
+            if (askEmailSubscription)
+            {
+                viewModel.AskEmailSubscription = EmptyNoYes();
+                viewModel.AskEmailSubscriptionText = askEmailSubscriptionText;
             }
 
             var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
@@ -258,8 +264,6 @@ namespace GRA.Controllers
             model.ProgramList = new SelectList(programList.ToList(), "Id", "Name");
             model.ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject);
             model.RequirePostalCode = site.RequirePostalCode;
-            model.AskEmailReminder = GetSiteStage() == SiteStage.RegistrationOpen
-                && await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskPreregistrationReminder);
 
             if (model.ProgramId.HasValue)
             {
@@ -272,6 +276,14 @@ namespace GRA.Controllers
             if (askIfFirstTime)
             {
                 model.AskFirstTime = EmptyNoYes();
+            }
+
+            var (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
+                SiteSettingKey.Users.AskEmailSubPermission);
+            if (askEmailSubscription)
+            {
+                model.AskEmailSubscription = EmptyNoYes();
+                model.AskEmailSubscriptionText = askEmailSubscriptionText;
             }
 
             var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
@@ -307,18 +319,26 @@ namespace GRA.Controllers
                 ModelState.Remove(nameof(model.IsFirstTime));
             }
 
-            model.AskEmailReminder = GetSiteStage() == SiteStage.RegistrationOpen
-                && await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskPreregistrationReminder);
-
-            if (model.AskEmailReminder && model.PreregistrationReminderRequested
-                && string.IsNullOrWhiteSpace(model.Email))
+            var (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
+                SiteSettingKey.Users.AskEmailSubPermission);
+            if (!askEmailSubscription)
             {
-                ModelState.AddModelError(nameof(model.Email),
-                    "Please enter an email address to send the reminder to.");
+                ModelState.Remove(nameof(model.EmailSubscriptionRequested));
+            }
+            else
+            {
+                var subscriptionRequested = model.EmailSubscriptionRequested.Equals(
+                        DropDownTrueValue, StringComparison.OrdinalIgnoreCase);
+                if (subscriptionRequested && string.IsNullOrWhiteSpace(model.Email))
+                {
+                    ModelState.AddModelError(nameof(model.Email), " ");
+                    ModelState.AddModelError(nameof(model.EmailSubscriptionRequested),
+                    "To receive email updates please supply an email address to send them to.");
+                }
             }
 
             var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
-                SiteSettingKey.Users.DefaultDailyPersonalGoal);
+            SiteSettingKey.Users.DefaultDailyPersonalGoal);
 
             bool askAge = false;
             bool askSchool = false;
@@ -371,12 +391,13 @@ namespace GRA.Controllers
                 if (askIfFirstTime)
                 {
                     user.IsFirstTime = model.IsFirstTime.Equals(DropDownTrueValue,
-                       System.StringComparison.OrdinalIgnoreCase);
+                       StringComparison.OrdinalIgnoreCase);
                 }
 
-                if (!model.AskEmailReminder)
+                if (askEmailSubscription)
                 {
-                    user.PreregistrationReminderRequested = false;
+                    user.IsEmailSubscribed = model.EmailSubscriptionRequested.Equals(
+                        DropDownTrueValue, StringComparison.OrdinalIgnoreCase);
                 }
 
                 if (askActivityGoal && user.DailyPersonalGoal > 0)
@@ -536,6 +557,12 @@ namespace GRA.Controllers
             if (askIfFirstTime)
             {
                 model.AskFirstTime = EmptyNoYes();
+            }
+
+            if (askEmailSubscription)
+            {
+                model.AskEmailSubscription = EmptyNoYes();
+                model.AskEmailSubscriptionText = askEmailSubscriptionText;
             }
 
             if (askActivityGoal)
@@ -944,16 +971,20 @@ namespace GRA.Controllers
 
             PageTitle = $"{site.Name} - Join Now!";
 
-            var viewModel = new Step3ViewModel()
-            {
-                AskEmailReminder = GetSiteStage() == SiteStage.RegistrationOpen
-                    && await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskPreregistrationReminder)
-            };
+            var viewModel = new Step3ViewModel();
 
             var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
             if (askIfFirstTime)
             {
                 viewModel.AskFirstTime = EmptyNoYes();
+            }
+
+            var (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
+                SiteSettingKey.Users.AskEmailSubPermission);
+            if (askEmailSubscription)
+            {
+                viewModel.AskEmailSubscription = EmptyNoYes();
+                viewModel.AskEmailSubscriptionText = askEmailSubscriptionText;
             }
 
             var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
@@ -984,14 +1015,22 @@ namespace GRA.Controllers
                 ModelState.Remove(nameof(model.IsFirstTime));
             }
 
-            model.AskEmailReminder = GetSiteStage() == SiteStage.RegistrationOpen
-                && await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskPreregistrationReminder);
-
-            if (model.AskEmailReminder && model.PreregistrationReminderRequested
-                && string.IsNullOrWhiteSpace(model.Email))
+            var (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
+                SiteSettingKey.Users.AskEmailSubPermission);
+            if (!askEmailSubscription)
             {
-                ModelState.AddModelError(nameof(model.Email),
-                    "Please enter an email address to send the reminder to.");
+                ModelState.Remove(nameof(model.EmailSubscriptionRequested));
+            }
+            else
+            {
+                var subscriptionRequested = model.EmailSubscriptionRequested.Equals(
+                        DropDownTrueValue, StringComparison.OrdinalIgnoreCase);
+                if (subscriptionRequested && string.IsNullOrWhiteSpace(model.Email))
+                {
+                    ModelState.AddModelError(nameof(model.Email), " ");
+                    ModelState.AddModelError(nameof(model.EmailSubscriptionRequested),
+                    "To receive email updates please supply an email address to send them to.");
+                }
             }
 
             var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
@@ -1027,12 +1066,13 @@ namespace GRA.Controllers
                 if (askIfFirstTime)
                 {
                     user.IsFirstTime = model.IsFirstTime.Equals(DropDownTrueValue,
-                       System.StringComparison.OrdinalIgnoreCase);
+                       StringComparison.OrdinalIgnoreCase);
                 }
 
-                if (!model.AskEmailReminder)
+                if (askEmailSubscription)
                 {
-                    user.PreregistrationReminderRequested = false;
+                    user.IsEmailSubscribed = model.EmailSubscriptionRequested.Equals(
+                        DropDownTrueValue, StringComparison.OrdinalIgnoreCase);
                 }
 
                 if (askActivityGoal && user.DailyPersonalGoal > 0)
@@ -1113,6 +1153,12 @@ namespace GRA.Controllers
             if (askIfFirstTime)
             {
                 model.AskFirstTime = EmptyNoYes();
+            }
+
+            if (askEmailSubscription)
+            {
+                model.AskEmailSubscription = EmptyNoYes();
+                model.AskEmailSubscriptionText = askEmailSubscriptionText;
             }
 
             if (askActivityGoal)

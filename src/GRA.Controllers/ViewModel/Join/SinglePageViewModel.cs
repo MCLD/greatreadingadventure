@@ -75,9 +75,10 @@ namespace GRA.Controllers.ViewModel.Join
         [Required(ErrorMessage = "Please let us know if this is your first time participating in the program")]
         public string IsFirstTime { get; set; }
 
-        public bool AskEmailReminder { get; set; }
-        [DisplayName("Would you like for us to send an email reminder when the program starts?")]
-        public bool PreregistrationReminderRequested { get; set; }
+        public SelectList AskEmailSubscription { get; set; }
+        public string AskEmailSubscriptionText { get; set; }
+        [Required(ErrorMessage = "Please let us know if you would like to receive emails throughout the program")]
+        public string EmailSubscriptionRequested { get; set; }
 
         [DisplayName("Set a personal goal")]
         public int? DailyPersonalGoal { get; set; }

@@ -194,6 +194,29 @@ namespace GRA.Domain.Service
         }
 
         /// <summary>
+        /// Look up if a site setting is set by site id and key.
+        /// </summary>
+        /// <param name="siteId">Site id that the setting is associated with</param>
+        /// <param name="key">The site setting key value (a string, up to 255 characters)</param>
+        /// <returns>True if the value is set in the database, false if the key is not present or
+        /// set to NULL.</returns>
+        public async Task<bool> IsSiteSettingSetAsync(int siteId, string key)
+        {
+            var settingDefinition = SiteSettingDefinitions.DefinitionDictionary[key];
+
+            if (settingDefinition == null)
+            {
+                throw new Exception($"Invalid key: {key}");
+            }
+
+            var site = (await GetSitesFromCacheAsync())
+                .SingleOrDefault(_ => _.Id == siteId);
+            return site.Settings
+                .FirstOrDefault(_ => _.Key == key)?
+                .Value != null;
+        }
+
+        /// <summary>
         /// Look up a boolean site setting by site id and key.
         /// </summary>
         /// <param name="siteId">Site id that the setting is associated with</param>
