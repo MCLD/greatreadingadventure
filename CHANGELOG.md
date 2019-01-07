@@ -9,7 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Improve analytics for sign-ups to include if it's a first-time participant (fix #330)
 - Ability to add carousel to dashboard
 - Performer scheduling
-- Email subscription signup
+- Ability to ask participants if they want to subscribe to emails during sign up
 
 ### Changed
 - Modify docker-build.bash to not build release images unless the branch starts with 'release/'
