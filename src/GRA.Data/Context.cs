@@ -153,6 +153,7 @@ namespace GRA.Data
         public DbSet<Model.DrawingCriterion> DrawingCriteria { get; set; }
         public DbSet<Model.DrawingCriterionProgram> DrawingCriterionPrograms { get; set; }
         public DbSet<Model.EmailReminder> EmailReminders { get; set; }
+        public DbSet<Model.EmailSubscriptionAuditLog> EmailSubscriptionAuditLogs { get; set; }
         public DbSet<Model.Event> Events { get; set; }
         public DbSet<Model.GroupInfo> GroupInfos { get; set; }
         public DbSet<Model.GroupType> GroupTypes { get; set; }

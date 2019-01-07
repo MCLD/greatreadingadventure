@@ -835,6 +835,27 @@ namespace GRA.Data.SqlServer.Migrations
                     b.ToTable("EmailReminders");
                 });
 
+            modelBuilder.Entity("GRA.Data.Model.EmailSubscriptionAuditLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("CreatedBy");
+
+                    b.Property<bool>("Subscribed");
+
+                    b.Property<int>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedBy");
+
+                    b.ToTable("EmailSubscriptionAuditLogs");
+                });
+
             modelBuilder.Entity("GRA.Data.Model.Event", b =>
                 {
                     b.Property<int>("Id")
@@ -2268,6 +2289,8 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<bool>("IsDeleted");
 
+                    b.Property<bool>("IsEmailSubscribed");
+
                     b.Property<bool>("IsFirstTime");
 
                     b.Property<bool>("IsHomeschooled");
@@ -2296,8 +2319,6 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<string>("PostalCode")
                         .HasMaxLength(32);
-
-                    b.Property<bool>("PreregistrationReminderRequested");
 
                     b.Property<int>("ProgramId");
 
@@ -2759,6 +2780,14 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.DrawingCriterion")
                         .WithMany("CriterionPrograms")
                         .HasForeignKey("DrawingCriterionId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.EmailSubscriptionAuditLog", b =>
+                {
+                    b.HasOne("GRA.Data.Model.User", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedBy")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 

@@ -38,6 +38,10 @@
                     </a>
                 </li>
             }
+            @if (Model.EmailSubscriptionEnabled)
+            {
+                <li ActiveBy routeKey="Action" value="EmailSubscriptionLog"><a asp-action="EmailSubscriptionLog" asp-route-id="@Model.Id">Email Subscription Log</a></li>
+            }
             @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ReadAllMail.ToString()))
             {
                 <li ActiveBy routeKey="Action" value="Mail"><a asp-action="Mail" asp-route-id="@Model.Id">Mail</a></li>

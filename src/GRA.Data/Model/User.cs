@@ -57,8 +57,8 @@ namespace GRA.Data.Model
         public DateTime? AchievedAt { get; set; }
         public DateTime? LastBroadcast { get; set; }
 
+        public bool IsEmailSubscribed { get; set; }
         public bool IsFirstTime { get; set; }
-        public bool PreregistrationReminderRequested { get; set; }
 
         public int? DailyPersonalGoal { get; set; }
     }

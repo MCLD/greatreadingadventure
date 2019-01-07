@@ -255,6 +255,17 @@ namespace GRA.Controllers.Base
         }
 
         /// <summary>
+        /// Look up if a site setting is set by key.
+        /// </summary>
+        /// <param name="key">The site setting key value (a string, up to 255 characters)</param>
+        /// <returns>True if the value is set in the database, false if the key is not present or
+        /// set to NULL.</returns>
+        protected async Task<bool> IsSiteSettingSetAsync(string key)
+        {
+            return await _siteLookupService.IsSiteSettingSetAsync(GetCurrentSiteId(), key);
+        }
+
+        /// <summary>
         /// Look up a boolean site setting by key.
         /// </summary>
         /// <param name="key">The site setting key value (a string, up to 255 characters)</param>
@@ -278,6 +289,18 @@ namespace GRA.Controllers.Base
         }
 
         /// <summary>
+        /// Look up an string site setting by key.
+        /// </summary>
+        /// <param name="key">The site setting key value (a string, up to 255 characters)</param>
+        /// <returns>A tuple, the bool is true if the setting is present and a string with the
+        /// value . The bool is false if the setting is not set.</returns>
+        /// integer.</returns>
+        protected async Task<(bool, string)> GetSiteSettingStringAsync(string key)
+        {
+            return await _siteLookupService.GetSiteSettingStringAsync(GetCurrentSiteId(), key);
+        }
+
+        /// <summary>
         /// Construct a drop-down list with a blank (default) option along with No and Yes options.
         /// </summary>
         /// <returns>A SelectList with empty, No, and Yes options. Keys are 
@@ -295,6 +318,5 @@ namespace GRA.Controllers.Base
             "Value",
             string.Empty);
         }
-
     }
 }

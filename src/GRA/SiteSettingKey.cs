@@ -40,10 +40,9 @@
             public static readonly string MaximumHouseholdSizeBeforeGroup
                 = "Users.MaximumHouseholdSizeBeforeGroup";
 
-            public static readonly string AskIfFirstTime = "Users.AskIfFirstTime";
+            public static readonly string AskEmailSubPermission = "Users.AskEmailSubPermission";
 
-            public static readonly string AskPreregistrationReminder
-                = "Users.AskPreregistrationReminder";
+            public static readonly string AskIfFirstTime = "Users.AskIfFirstTime";
 
             public static readonly string CollectAccessClosedEmails
                 = "Users.CollectAccessClosedEmails";

@@ -10,5 +10,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public int RoleCount { get; set; }
         public bool HasAccount { get; set; }
         public bool IsGroup { get; set; }
+        public bool EmailSubscriptionEnabled { get; set; }
     }
 }
