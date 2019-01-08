@@ -94,6 +94,16 @@
     }
   },
   {
+    "outputFileName": "wwwroot/js/slick.min.js",
+    "inputFiles": [
+      "wwwroot/lib/slick-carousel/slick/slick.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
     "outputFileName": "wwwroot/js/slick-avatar.min.js",
     "inputFiles": [
       "wwwroot/js/slick-avatar.js"

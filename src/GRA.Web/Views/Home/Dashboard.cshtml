@@ -100,8 +100,8 @@
             <div class="panel-body text-center">
                 <span class="lead">Welcome <strong>@Model.FirstName!</strong></span>
                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessPerformerRegistration))
-                 && !Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessMissionControl))
-                 && Model.SiteStage == GRA.Domain.Model.SiteStage.BeforeRegistration)
+               && !Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessMissionControl))
+               && Model.SiteStage == GRA.Domain.Model.SiteStage.BeforeRegistration)
                 {
                     <p class="lead" style="padding-top: 2rem;">
                         Welcome, performer! Please click on the theater masks icon at the top of the
@@ -406,7 +406,7 @@
             });
 
         </script>
-        <link rel="stylesheet" type="text/css" href="/lib/slick-carousel/slick/slick.css" />
-        <script type="text/javascript" src="/lib/slick-carousel/slick/slick.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="@Url.Content("~/css/slick.min.css")" />
+        <script type="text/javascript" src="@Url.Content("~/js/slick.min.js")"></script>
     }
 }
