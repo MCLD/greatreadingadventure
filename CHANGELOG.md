@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Fix instance name enrichment for logging
 - Error if account disappears while user is logged in
 - Avatar options now showing with single layer
+- Fix category color being unset on edit
 
 ## [4.1.1] - 2018-12-13
 ### Added

@@ -56,10 +56,10 @@ namespace GRA.Domain.Service
         {
             VerifyManagementPermission();
             var current = await _categoryRepository.GetByIdAsync(category.Id);
-            category.Name = category.Name.Trim();
-            category.Description = category.Description.Trim();
-            category.SiteId = current.SiteId;
-            return await _categoryRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), category);
+            current.Name = category.Name.Trim();
+            current.Description = category.Description.Trim();
+
+            return await _categoryRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), current);
         }
 
         public async Task RemoveAsync(int categoryId)
