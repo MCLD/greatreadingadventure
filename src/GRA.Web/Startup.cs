@@ -137,7 +137,7 @@ namespace GRA.Web
                     });
                     var redis = ConnectionMultiplexer.Connect(redisConfig);
                     services.AddDataProtection(_ => _.ApplicationDiscriminator = discriminator)
-                        .PersistKeysToRedis(redis, $"grainternal.{discriminator}.dpk")
+                        .PersistKeysToStackExchangeRedis(redis, $"grainternal.{discriminator}.dpk")
                         .SetApplicationName(discriminator);
                     _logger.LogInformation("Using Redis distributed cache {0} discriminator {1}",
                         redisConfig,
