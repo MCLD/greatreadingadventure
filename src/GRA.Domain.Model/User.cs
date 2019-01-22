@@ -84,5 +84,7 @@ namespace GRA.Domain.Model
         public bool IsFirstTime { get; set; }
         [DisplayName("Set a personal goal")]
         public int? DailyPersonalGoal { get; set; }
+
+        public bool IsNewsSubscribed { get; set; }
     }
 }

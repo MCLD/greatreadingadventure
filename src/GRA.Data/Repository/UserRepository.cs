@@ -434,5 +434,14 @@ namespace GRA.Data.Repository
                 .ProjectTo<User>()
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<int>> GetNewsSubscribedUserIdsAsync(int siteId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId && _.IsNewsSubscribed)
+                .Select(_ => _.Id)
+                .ToListAsync();
+        }
     }
 }

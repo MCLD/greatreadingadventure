@@ -61,5 +61,7 @@ namespace GRA.Data.Model
         public bool IsFirstTime { get; set; }
 
         public int? DailyPersonalGoal { get; set; }
+
+        public bool IsNewsSubscribed { get; set; }
     }
 }

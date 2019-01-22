@@ -243,6 +243,7 @@ ModelManifest.xml
 
 
 ##### Project-specific #####
+src/GRA.Web/private/
 src/GRA.Web/shared/
 
 src/GRA.Web/Properties/PublishProfiles/

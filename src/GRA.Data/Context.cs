@@ -159,6 +159,8 @@ namespace GRA.Data
         public DbSet<Model.GroupType> GroupTypes { get; set; }
         public DbSet<Model.Location> Locations { get; set; }
         public DbSet<Model.Mail> Mails { get; set; }
+        public DbSet<Model.NewsCategory> NewsCateories { get; set; }
+        public DbSet<Model.NewsPost> NewsPosts { get; set; }
         public DbSet<Model.Notification> Notifications { get; set; }
         public DbSet<Model.Page> Pages { get; set; }
         public DbSet<Model.Permission> Permissions { get; set; }

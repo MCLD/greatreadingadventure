@@ -29,6 +29,7 @@ namespace GRA.Domain.Model
         ManageEvents,
         ManageGroupTypes,
         ManageLocations,
+        ManageNews,
         ManagePointTranslations,
         ManagePerformers,
         ManagePrograms,
