@@ -14,7 +14,7 @@ namespace GRA.Data.SQLite.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.0-rtm-35687");
+                .HasAnnotation("ProductVersion", "2.2.1-servicing-10028");
 
             modelBuilder.Entity("GRA.Data.Model.Answer", b =>
                 {
@@ -1008,6 +1008,57 @@ namespace GRA.Data.SQLite.Migrations
                     b.HasIndex("ToUserId", "IsDeleted", "IsNew");
 
                     b.ToTable("Mails");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.NewsCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("CreatedBy");
+
+                    b.Property<bool>("DisplayInSidebar");
+
+                    b.Property<bool>("IsDefault");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255);
+
+                    b.Property<int>("SiteId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("NewsCateories");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.NewsPost", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("CategoryId");
+
+                    b.Property<string>("Content")
+                        .IsRequired();
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("CreatedBy");
+
+                    b.Property<DateTime?>("PublishedAt");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(255);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("NewsPosts");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Notification", b =>
@@ -2229,6 +2280,8 @@ namespace GRA.Data.SQLite.Migrations
 
                     b.Property<bool>("IsLockedOut");
 
+                    b.Property<bool>("IsNewsSubscribed");
+
                     b.Property<DateTime?>("LastAccess");
 
                     b.Property<DateTime?>("LastActivityDate");
@@ -2741,6 +2794,14 @@ namespace GRA.Data.SQLite.Migrations
                     b.HasOne("GRA.Data.Model.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.NewsPost", b =>
+                {
+                    b.HasOne("GRA.Data.Model.NewsCategory", "Category")
+                        .WithMany("Posts")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
