@@ -24,10 +24,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20190122185045_dev.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\GRA\GRA.csproj" />
     <ProjectReference Include="..\GRA.Data\GRA.Data.csproj" />
   </ItemGroup>
