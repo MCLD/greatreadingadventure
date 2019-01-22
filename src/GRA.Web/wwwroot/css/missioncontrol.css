@@ -29,6 +29,31 @@
     }
 }
 
+.ataglancepill-sidebar {
+    background-color: dimgray;
+    border: 1px solid;
+    border-radius: 1rem;
+    color: white;
+    line-height: 1.8em;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+}
+
+    .ataglancepill-sidebar .fa {
+        width: 1.5em;
+    }
+
+.ataglance-pill-darkslateblue {
+    background-color: darkslateblue;
+    color: white;
+}
+
+.ataglance-pill-teal {
+    background-color: teal;
+    color: white;
+}
+
 .ataglance-pill-steelblue {
     background-color: steelblue;
     color: white;
@@ -81,7 +106,7 @@ table > tbody > tr > td.gra-mc-icon {
 }
 
 .wide-tooltip + .tooltip .tooltip-inner {
-    max-width:25rem;
+    max-width: 25rem;
     width: 25rem;
 }
 

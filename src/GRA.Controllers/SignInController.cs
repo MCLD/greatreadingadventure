@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using GRA.Controllers.Filter;
 using GRA.Controllers.ViewModel.SignIn;
@@ -108,7 +109,19 @@ namespace GRA.Controllers
                         }
                         else
                         {
-                            return RedirectToAction("Index", "Home");
+                            // if the user has Mission Control access and we aren't open, send to MC
+                            if (loginAttempt.PermissionNames.Contains(nameof(Domain.Model.Permission.AccessMissionControl))
+                                && (GetSiteStage() == Domain.Model.SiteStage.BeforeRegistration
+                                    || GetSiteStage() == Domain.Model.SiteStage.AccessClosed))
+                            {
+                                return RedirectToAction(nameof(MissionControl.HomeController.Index),
+                                    "Home",
+                                    new { Area = nameof(MissionControl) });
+                            }
+                            else
+                            {
+                                return RedirectToAction(nameof(Index), "Home");
+                            }
                         }
                     }
                 }

@@ -86,6 +86,12 @@ namespace GRA.Controllers.MissionControl
             });
         }
 
+        public async Task<JsonResult> AtAGlanceReport()
+        {
+            var atAGlance = await GetAtAGlanceAsync();
+            return Json(atAGlance);
+        }
+
         private async Task<AtAGlanceReport> GetAtAGlanceAsync()
         {
             int currentUserBranchId = GetId(ClaimType.BranchId);
@@ -96,11 +102,9 @@ namespace GRA.Controllers.MissionControl
                 BranchId = currentUserBranchId
             });
 
-            var branchName = await _siteService.GetBranchName(currentUserBranchId);
-
             return new AtAGlanceReport
             {
-                FilteredBranchDescription = $"Your branch ({branchName})",
+                FilteredBranchDescription = await _siteService.GetBranchName(currentUserBranchId),
                 SiteStatus = siteStatus,
                 FilteredStatus = branchStatus
             };

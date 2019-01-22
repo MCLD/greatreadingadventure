@@ -3,7 +3,7 @@
 {
     <div class="row row-spacing" style="text-align: center;">
         <div class="col-sm-2">
-            <div class="ataglance-pill ataglance-pill-steelblue">
+            <div class="ataglance-pill ataglance-pill-teal">
                 <span class="fa fa-user fa-2x"></span><br />
                 <span class="mc-site-participants">
                     @Model.AtAGlanceReport.SiteStatus.RegisteredUsers.ToString("N0")
@@ -11,7 +11,7 @@
             </div>
         </div>
         <div class="col-sm-2">
-            <div class="ataglance-pill ataglance-pill-steelblue">
+            <div class="ataglance-pill ataglance-pill-teal">
                 <span class="fa fa-hashtag fa-2x"></span><br />
                 <span class="mc-site-points">
                     @Model.AtAGlanceReport.SiteStatus.PointsEarned.ToString("N0")
@@ -19,7 +19,7 @@
             </div>
         </div>
         <div class="col-sm-2">
-            <div class="ataglance-pill ataglance-pill-steelblue">
+            <div class="ataglance-pill ataglance-pill-teal">
                 <span class="fa fa-trophy fa-2x"></span><br />
                 <span class="mc-site-challenges">
                     @Model.AtAGlanceReport.SiteStatus.CompletedChallenges.ToString("N0")
@@ -27,7 +27,7 @@
             </div>
         </div>
         <div class="col-sm-2">
-            <div class="ataglance-pill ataglance-pill-steelblue">
+            <div class="ataglance-pill ataglance-pill-teal">
                 <span class="fa fa-shield fa-2x"></span><br />
                 <span class="mc-site-badges">
                     @Model.AtAGlanceReport.SiteStatus.BadgesEarned.ToString("N0")
@@ -37,7 +37,7 @@
         @if (Model.AtAGlanceReport.SiteStatus.DaysUntilEnd != null)
         {
             <div class="col-sm-2">
-                <div class="ataglance-pill ataglance-pill-steelblue">
+                <div class="ataglance-pill ataglance-pill-teal">
                     <span class="fa fa-calendar fa-2x"></span><br />
                     <span class="mc-site-days">
                         @Model.AtAGlanceReport.SiteStatus.DaysUntilEnd
@@ -46,7 +46,6 @@
             </div>
         }
     </div>
-
     <div class="row">
         <div class="col-xs-12">
             <span class="h3 mc-branch-description">@Model.AtAGlanceReport.FilteredBranchDescription:</span>
@@ -55,33 +54,33 @@
 
     <div class="row row-spacing" style="text-align: center;">
         <div class="col-sm-2">
-            <div class="ataglance-pill ataglance-pill-seagreen">
+            <div class="ataglance-pill ataglance-pill-darkslateblue">
                 <span class="fa fa-user fa-2x"></span><br />
-                <span class="mc-branch-participants">
+                <span class="mc-filtered-participants">
                     @Model.AtAGlanceReport.FilteredStatus.RegisteredUsers.ToString("N0")
                 </span> participant(s)
             </div>
         </div>
         <div class="col-sm-2">
-            <div class="ataglance-pill ataglance-pill-seagreen">
+            <div class="ataglance-pill ataglance-pill-darkslateblue">
                 <span class="fa fa-hashtag fa-2x"></span><br />
-                <span class="mc-branch-points">
+                <span class="mc-filtered-points">
                     @Model.AtAGlanceReport.FilteredStatus.PointsEarned.ToString("N0")
                 </span> point(s)
             </div>
         </div>
         <div class="col-sm-2">
-            <div class="ataglance-pill ataglance-pill-seagreen">
+            <div class="ataglance-pill ataglance-pill-darkslateblue">
                 <span class="fa fa-trophy fa-2x"></span><br />
-                <span class="mc-branch-challenges">
+                <span class="mc-filtered-challenges">
                     @Model.AtAGlanceReport.FilteredStatus.CompletedChallenges.ToString("N0")
                 </span> challenge(s)
             </div>
         </div>
         <div class="col-sm-2">
-            <div class="ataglance-pill ataglance-pill-seagreen">
+            <div class="ataglance-pill ataglance-pill-darkslateblue">
                 <span class="fa fa-shield fa-2x"></span><br />
-                <span class="mc-branch-badges">
+                <span class="mc-filtered-badges">
                     @Model.AtAGlanceReport.FilteredStatus.BadgesEarned.ToString("N0")
                 </span> badge(s)
             </div>
@@ -89,9 +88,9 @@
         @if (Model.AtAGlanceReport.FilteredStatus.DaysUntilEnd != null)
         {
             <div class="col-sm-2">
-                <div class="ataglance-pill ataglance-pill-seagreen">
+                <div class="ataglance-pill ataglance-pill-darkslateblue">
                     <span class="fa fa-calendar fa-2x"></span><br />
-                    <span class="mc-branch-days">
+                    <span class="mc-filtered-days">
                         @Model.AtAGlanceReport.FilteredStatus.DaysUntilEnd
                     </span> day(s) left
                 </div>
@@ -101,7 +100,7 @@
 }
 else
 {
-    <div class="row">
+    <div class="row row-spacing">
         <div class="col-sm-2">
             News Categories
         </div>
@@ -109,31 +108,57 @@ else
             News Posts
         </div>
         <div class="col-sm-2 col-md-3">
-            <div class="ataglance-pill ataglance-pill-steelblue"
-                 style="line-height: 1.8em; padding-top: 0.5rem; padding-bottom: 0.5rem;">
-                <div title="Participant(s)">
+            <div class="ataglancepill-sidebar ataglance-pill-darkslateblue ataglance-pill-filtered">
+                <div class="text-center hidden-sm">@Model.AtAGlanceReport.FilteredBranchDescription</div>
+                <div title="@Model.AtAGlanceReport.FilteredBranchDescription participant(s)">
+                    <span class="fa fa-user"></span>
+                    <span class="mc-filtered-participants">
+                        @Model.AtAGlanceReport.FilteredStatus.RegisteredUsers.ToString("N0")
+                    </span><span class="hidden-sm"> participant@(Model.AtAGlanceReport.FilteredStatus.RegisteredUsers != 1 ? "s" : "")</span>
+                </div>
+                <div title="@Model.AtAGlanceReport.FilteredBranchDescription point(s) earned">
+                    <span class="fa fa-hashtag"></span>
+                    <span class="mc-filtered-points">
+                        @Model.AtAGlanceReport.FilteredStatus.PointsEarned.ToString("N0")
+                    </span><span class="hidden-sm"> point@(Model.AtAGlanceReport.FilteredStatus.PointsEarned != 1 ? "s" : "")</span>
+                </div>
+                <div title="@Model.AtAGlanceReport.FilteredBranchDescription completed challenge(s)">
+                    <span class="fa fa-trophy"></span>
+                    <span class="mc-filtered-challenges">
+                        @Model.AtAGlanceReport.FilteredStatus.CompletedChallenges.ToString("N0")
+                    </span><span class="hidden-sm"> challenge@(Model.AtAGlanceReport.FilteredStatus.CompletedChallenges != 1 ? "s" : "")</span>
+                </div>
+                <div title="@Model.AtAGlanceReport.FilteredBranchDescription badge(s) earned">
+                    <span class="fa fa-shield"></span>
+                    <span class="mc-filtered-badges">
+                        @Model.AtAGlanceReport.FilteredStatus.BadgesEarned.ToString("N0")
+                    </span><span class="hidden-sm"> badge@(Model.AtAGlanceReport.FilteredStatus.BadgesEarned != 1 ? "s" : "")</span>
+                </div>
+            </div>
+            <div class="ataglancepill-sidebar ataglance-pill-teal ataglance-pill-site">
+                <div title="Total participant(s)">
                     <span class="fa fa-user"></span>
                     <span class="mc-site-participants">
                         @Model.AtAGlanceReport.SiteStatus.RegisteredUsers.ToString("N0")
-                    </span><span class="hidden-sm"> participant(s)</span>
+                    </span><span class="hidden-sm"> participant@(Model.AtAGlanceReport.SiteStatus.RegisteredUsers != 1 ? "s" : "")</span>
                 </div>
-                <div title="Point(s)">
+                <div title="Total point(s) earned">
                     <span class="fa fa-hashtag"></span>
                     <span class="mc-site-points">
                         @Model.AtAGlanceReport.SiteStatus.PointsEarned.ToString("N0")
-                    </span><span class="hidden-sm"> point(s)</span>
+                    </span><span class="hidden-sm"> point@(Model.AtAGlanceReport.SiteStatus.PointsEarned != 1 ? "s" : "")</span>
                 </div>
-                <div title="Challenge(s)">
+                <div title="Total completed challenge(s)">
                     <span class="fa fa-trophy"></span>
                     <span class="mc-site-challenges">
                         @Model.AtAGlanceReport.SiteStatus.CompletedChallenges.ToString("N0")
-                    </span><span class="hidden-sm"> challenge(s)</span>
+                    </span><span class="hidden-sm"> challenge@(Model.AtAGlanceReport.SiteStatus.CompletedChallenges != 1 ? "s" : "")</span>
                 </div>
-                <div title="Badge(s)">
+                <div title="Total badge(s) earned">
                     <span class="fa fa-shield"></span>
                     <span class="mc-site-badges">
                         @Model.AtAGlanceReport.SiteStatus.BadgesEarned.ToString("N0")
-                    </span><span class="hidden-sm"> badge(s)</span>
+                    </span><span class="hidden-sm"> badge@(Model.AtAGlanceReport.SiteStatus.BadgesEarned != 1 ? "s" : "")</span>
                 </div>
                 @if (Model.AtAGlanceReport.SiteStatus.DaysUntilEnd != null)
                 {
@@ -141,38 +166,9 @@ else
                         <span class="fa fa-calendar"></span>
                         <span class="mc-site-days">
                             @Model.AtAGlanceReport.SiteStatus.DaysUntilEnd
-                        </span><span class="hidden-sm"> day(s) left</span>
+                        </span><span class="hidden-sm"> day@(Model.AtAGlanceReport.SiteStatus.DaysUntilEnd != 1 ? "s" : "") left</span>
                     </div>
                 }
-            </div>
-
-            <div class="ataglance-pill ataglance-pill-seagreen"
-                 style="line-height: 1.8em; padding-top: 0.5rem; padding-bottom: 0.5rem;">
-                <div class="text-center hidden-sm">@Model.AtAGlanceReport.FilteredBranchDescription</div>
-                <div title="Participant(s)">
-                    <span class="fa fa-user"></span>
-                    <span class="mc-site-participants">
-                        @Model.AtAGlanceReport.FilteredStatus.RegisteredUsers.ToString("N0")
-                    </span><span class="hidden-sm"> participant(s)</span>
-                </div>
-                <div title="Point(s)">
-                    <span class="fa fa-hashtag"></span>
-                    <span class="mc-site-points">
-                        @Model.AtAGlanceReport.FilteredStatus.PointsEarned.ToString("N0")
-                    </span><span class="hidden-sm"> point(s)</span>
-                </div>
-                <div title="Challenge(s)">
-                    <span class="fa fa-trophy"></span>
-                    <span class="mc-site-challenges">
-                        @Model.AtAGlanceReport.FilteredStatus.CompletedChallenges.ToString("N0")
-                    </span><span class="hidden-sm"> challenge(s)</span>
-                </div>
-                <div title="Badge(s)">
-                    <span class="fa fa-shield"></span>
-                    <span class="mc-site-badges">
-                        @Model.AtAGlanceReport.FilteredStatus.BadgesEarned.ToString("N0")
-                    </span><span class="hidden-sm"> badge(s)</span>
-                </div>
             </div>
         </div>
     </div>
@@ -181,4 +177,50 @@ else
             display: none;
         }
     </style>
+}
+@section scripts {
+    <script>
+    var mcAagUpdateCount = 0;
+    var mcAagInterval;
+    var mcAagStarted;
+    var mcAagUpdateEvery = 60 * 1000;
+    var mcAagSlowDownAfter = 3 * 60 * 60 * 1000;
+
+    function updateAagReport(updateInterval) {
+        mcAagInterval = setInterval(function () {
+            mcAagUpdateCount++;
+            var durationSeconds = Math.floor((new Date().getTime() - mcAagStarted) / 1000);
+            if(updateInterval != mcAagSlowDownAfter && durationSeconds > mcAagSlowDownAfter / 1000) {
+                console.log("Update #" + mcAagUpdateCount + ", total duration " + durationSeconds + "s and slowing down to update every " + mcAagSlowDownAfter / 1000 + "s");
+                clearInterval(mcAagInterval);
+                updateAagReport(mcAagSlowDownAfter);
+            } else {
+                console.log("Update #" + mcAagUpdateCount + ", total duration " + durationSeconds + "s");
+            }
+            $.ajax("@Url.Action("AtAGlanceReport")")
+                .done(function (data, textStatus, jqXHR) {
+                    $(".mc-filtered-participants").text(data.filteredStatus.registeredUsers);
+                    $(".mc-filtered-points").text(data.filteredStatus.pointsEarned);
+                    $(".mc-filtered-challenges").text(data.filteredStatus.completedChallenges);
+                    $(".mc-filtered-badges").text(data.filteredStatus.badgesEarned);
+                    $(".mc-filtered-days").text(data.filteredStatus.daysUntilEnd);
+                    $(".mc-site-participants").text(data.siteStatus.registeredUsers);
+                    $(".mc-site-points").text(data.siteStatus.pointsEarned);
+                    $(".mc-site-challenges").text(data.siteStatus.completedChallenges);
+                    $(".mc-site-badges").text(data.siteStatus.badgesEarned);
+                    $(".mc-site-days").text(data.siteStatus.daysUntilEnd);
+                })
+                .fail(function (jqXHR, textStatus, errorThrown) {
+                    console.log("Failure: " + textStatus + " on At a Glance request, stopping updates");
+                    clearInterval(mcAagInterval);
+                });
+        }, updateInterval);
+    }
+
+    $().ready(function() {
+        mcAagStarted = Math.floor(new Date().getTime());
+        console.log("Updating At a Glance status every " + mcAagUpdateEvery / 1000 + "s and slowing down after " + mcAagSlowDownAfter / 1000 + "s");
+        updateAagReport(mcAagUpdateEvery);
+    });
+    </script>
 }
