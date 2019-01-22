@@ -4,6 +4,8 @@ using GRA.Domain.Model;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GRA.Controllers.MissionControl
@@ -68,9 +70,24 @@ namespace GRA.Controllers.MissionControl
                 });
             }
             Site site = await GetCurrentSiteAsync();
+
+            var newsPosts = new List<object>();
+            newsPosts.Add("Howdy");
+
             PageTitle = $"Mission Control: {site.Name}";
 
             // show the at-a-glance report
+            var atAGlance = await GetAtAGlanceAsync();
+
+            return View(new AtAGlanceViewModel
+            {
+                AtAGlanceReport = atAGlance,
+                NewsPosts = newsPosts
+            });
+        }
+
+        private async Task<AtAGlanceReport> GetAtAGlanceAsync()
+        {
             int currentUserBranchId = GetId(ClaimType.BranchId);
 
             var siteStatus = await _reportService.GetCurrentStatsAsync(new ReportCriterion());
@@ -78,14 +95,15 @@ namespace GRA.Controllers.MissionControl
             {
                 BranchId = currentUserBranchId
             });
-            var branchName = await _siteService.GetBranchName(GetId(ClaimType.BranchId));
 
-            return View(new AtAGlanceViewModel
+            var branchName = await _siteService.GetBranchName(currentUserBranchId);
+
+            return new AtAGlanceReport
             {
-                SiteStatus = siteStatus,
                 FilteredBranchDescription = $"Your branch ({branchName})",
+                SiteStatus = siteStatus,
                 FilteredStatus = branchStatus
-            });
+            };
         }
 
         [HttpGet]

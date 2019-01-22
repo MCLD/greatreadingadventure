@@ -1,79 +1,184 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Home.AtAGlanceViewModel
-
-<div class="row row-spacing" style="text-align: center;">
-    <div class="col-sm-2">
-        <div class="ataglance-pill ataglance-pill-steelblue">
-            <span class="fa fa-user fa-2x"></span><br />
-            @Model.SiteStatus.RegisteredUsers.ToString("N0") participants
-        </div>
-    </div>
-    <div class="col-sm-2">
-        <div class="ataglance-pill ataglance-pill-steelblue">
-            <span class="fa fa-hashtag fa-2x"></span><br />
-            @Model.SiteStatus.PointsEarned.ToString("N0") points
-        </div>
-    </div>
-    <div class="col-sm-2">
-        <div class="ataglance-pill ataglance-pill-steelblue">
-            <span class="fa fa-trophy fa-2x"></span><br />
-            @Model.SiteStatus.CompletedChallenges.ToString("N0") challenges
-        </div>
-    </div>
-    <div class="col-sm-2">
-        <div class="ataglance-pill ataglance-pill-steelblue">
-            <span class="fa fa-shield fa-2x"></span><br />
-            @Model.SiteStatus.BadgesEarned.ToString("N0") badges
-        </div>
-    </div>
-    @if (Model.SiteStatus.DaysUntilEnd != null)
-    {
+@if (Model.NewsPosts == null || Model.NewsPosts.Count() == 0)
+{
+    <div class="row row-spacing" style="text-align: center;">
         <div class="col-sm-2">
             <div class="ataglance-pill ataglance-pill-steelblue">
-                <span class="fa fa-calendar fa-2x"></span><br />
-                @Model.SiteStatus.DaysUntilEnd days left
+                <span class="fa fa-user fa-2x"></span><br />
+                <span class="mc-site-participants">
+                    @Model.AtAGlanceReport.SiteStatus.RegisteredUsers.ToString("N0")
+                </span> participant(s)
             </div>
         </div>
-    }
-</div>
+        <div class="col-sm-2">
+            <div class="ataglance-pill ataglance-pill-steelblue">
+                <span class="fa fa-hashtag fa-2x"></span><br />
+                <span class="mc-site-points">
+                    @Model.AtAGlanceReport.SiteStatus.PointsEarned.ToString("N0")
+                </span> point(s)
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="ataglance-pill ataglance-pill-steelblue">
+                <span class="fa fa-trophy fa-2x"></span><br />
+                <span class="mc-site-challenges">
+                    @Model.AtAGlanceReport.SiteStatus.CompletedChallenges.ToString("N0")
+                </span> challenge(s)
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="ataglance-pill ataglance-pill-steelblue">
+                <span class="fa fa-shield fa-2x"></span><br />
+                <span class="mc-site-badges">
+                    @Model.AtAGlanceReport.SiteStatus.BadgesEarned.ToString("N0")
+                </span> badge(s)
+            </div>
+        </div>
+        @if (Model.AtAGlanceReport.SiteStatus.DaysUntilEnd != null)
+        {
+            <div class="col-sm-2">
+                <div class="ataglance-pill ataglance-pill-steelblue">
+                    <span class="fa fa-calendar fa-2x"></span><br />
+                    <span class="mc-site-days">
+                        @Model.AtAGlanceReport.SiteStatus.DaysUntilEnd
+                    </span>day(s) left
+                </div>
+            </div>
+        }
+    </div>
 
-<div class="row">
-    <div class="col-xs-12">
-        <span class="h3">@Model.FilteredBranchDescription:</span>
+    <div class="row">
+        <div class="col-xs-12">
+            <span class="h3 mc-branch-description">@Model.AtAGlanceReport.FilteredBranchDescription:</span>
+        </div>
     </div>
-</div>
 
-<div class="row row-spacing" style="text-align: center;">
-    <div class="col-sm-2">
-        <div class="ataglance-pill ataglance-pill-seagreen">
-            <span class="fa fa-user fa-2x"></span><br />
-            @Model.FilteredStatus.RegisteredUsers.ToString("N0") participants
-        </div>
-    </div>
-    <div class="col-sm-2">
-        <div class="ataglance-pill ataglance-pill-seagreen">
-            <span class="fa fa-hashtag fa-2x"></span><br />
-            @Model.FilteredStatus.PointsEarned.ToString("N0") points
-        </div>
-    </div>
-    <div class="col-sm-2">
-        <div class="ataglance-pill ataglance-pill-seagreen">
-            <span class="fa fa-trophy fa-2x"></span><br />
-            @Model.FilteredStatus.CompletedChallenges.ToString("N0") challenges
-        </div>
-    </div>
-    <div class="col-sm-2">
-        <div class="ataglance-pill ataglance-pill-seagreen">
-            <span class="fa fa-shield fa-2x"></span><br />
-            @Model.FilteredStatus.BadgesEarned.ToString("N0") badges
-        </div>
-    </div>
-    @if (Model.FilteredStatus.DaysUntilEnd != null)
-    {
+    <div class="row row-spacing" style="text-align: center;">
         <div class="col-sm-2">
             <div class="ataglance-pill ataglance-pill-seagreen">
-                <span class="fa fa-calendar fa-2x"></span><br />
-                @Model.FilteredStatus.DaysUntilEnd days left
+                <span class="fa fa-user fa-2x"></span><br />
+                <span class="mc-branch-participants">
+                    @Model.AtAGlanceReport.FilteredStatus.RegisteredUsers.ToString("N0")
+                </span> participant(s)
             </div>
         </div>
-    }
-</div>
+        <div class="col-sm-2">
+            <div class="ataglance-pill ataglance-pill-seagreen">
+                <span class="fa fa-hashtag fa-2x"></span><br />
+                <span class="mc-branch-points">
+                    @Model.AtAGlanceReport.FilteredStatus.PointsEarned.ToString("N0")
+                </span> point(s)
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="ataglance-pill ataglance-pill-seagreen">
+                <span class="fa fa-trophy fa-2x"></span><br />
+                <span class="mc-branch-challenges">
+                    @Model.AtAGlanceReport.FilteredStatus.CompletedChallenges.ToString("N0")
+                </span> challenge(s)
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="ataglance-pill ataglance-pill-seagreen">
+                <span class="fa fa-shield fa-2x"></span><br />
+                <span class="mc-branch-badges">
+                    @Model.AtAGlanceReport.FilteredStatus.BadgesEarned.ToString("N0")
+                </span> badge(s)
+            </div>
+        </div>
+        @if (Model.AtAGlanceReport.FilteredStatus.DaysUntilEnd != null)
+        {
+            <div class="col-sm-2">
+                <div class="ataglance-pill ataglance-pill-seagreen">
+                    <span class="fa fa-calendar fa-2x"></span><br />
+                    <span class="mc-branch-days">
+                        @Model.AtAGlanceReport.FilteredStatus.DaysUntilEnd
+                    </span> day(s) left
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="row">
+        <div class="col-sm-2">
+            News Categories
+        </div>
+        <div class="col-sm-8 col-md-6">
+            News Posts
+        </div>
+        <div class="col-sm-2 col-md-3">
+            <div class="ataglance-pill ataglance-pill-steelblue"
+                 style="line-height: 1.8em; padding-top: 0.5rem; padding-bottom: 0.5rem;">
+                <div title="Participant(s)">
+                    <span class="fa fa-user"></span>
+                    <span class="mc-site-participants">
+                        @Model.AtAGlanceReport.SiteStatus.RegisteredUsers.ToString("N0")
+                    </span><span class="hidden-sm"> participant(s)</span>
+                </div>
+                <div title="Point(s)">
+                    <span class="fa fa-hashtag"></span>
+                    <span class="mc-site-points">
+                        @Model.AtAGlanceReport.SiteStatus.PointsEarned.ToString("N0")
+                    </span><span class="hidden-sm"> point(s)</span>
+                </div>
+                <div title="Challenge(s)">
+                    <span class="fa fa-trophy"></span>
+                    <span class="mc-site-challenges">
+                        @Model.AtAGlanceReport.SiteStatus.CompletedChallenges.ToString("N0")
+                    </span><span class="hidden-sm"> challenge(s)</span>
+                </div>
+                <div title="Badge(s)">
+                    <span class="fa fa-shield"></span>
+                    <span class="mc-site-badges">
+                        @Model.AtAGlanceReport.SiteStatus.BadgesEarned.ToString("N0")
+                    </span><span class="hidden-sm"> badge(s)</span>
+                </div>
+                @if (Model.AtAGlanceReport.SiteStatus.DaysUntilEnd != null)
+                {
+                    <div title="Day(s) left">
+                        <span class="fa fa-calendar"></span>
+                        <span class="mc-site-days">
+                            @Model.AtAGlanceReport.SiteStatus.DaysUntilEnd
+                        </span><span class="hidden-sm"> day(s) left</span>
+                    </div>
+                }
+            </div>
+
+            <div class="ataglance-pill ataglance-pill-seagreen"
+                 style="line-height: 1.8em; padding-top: 0.5rem; padding-bottom: 0.5rem;">
+                <div class="text-center hidden-sm">@Model.AtAGlanceReport.FilteredBranchDescription</div>
+                <div title="Participant(s)">
+                    <span class="fa fa-user"></span>
+                    <span class="mc-site-participants">
+                        @Model.AtAGlanceReport.FilteredStatus.RegisteredUsers.ToString("N0")
+                    </span><span class="hidden-sm"> participant(s)</span>
+                </div>
+                <div title="Point(s)">
+                    <span class="fa fa-hashtag"></span>
+                    <span class="mc-site-points">
+                        @Model.AtAGlanceReport.FilteredStatus.PointsEarned.ToString("N0")
+                    </span><span class="hidden-sm"> point(s)</span>
+                </div>
+                <div title="Challenge(s)">
+                    <span class="fa fa-trophy"></span>
+                    <span class="mc-site-challenges">
+                        @Model.AtAGlanceReport.FilteredStatus.CompletedChallenges.ToString("N0")
+                    </span><span class="hidden-sm"> challenge(s)</span>
+                </div>
+                <div title="Badge(s)">
+                    <span class="fa fa-shield"></span>
+                    <span class="mc-site-badges">
+                        @Model.AtAGlanceReport.FilteredStatus.BadgesEarned.ToString("N0")
+                    </span><span class="hidden-sm"> badge(s)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+        .mc-page-title {
+            display: none;
+        }
+    </style>
+}

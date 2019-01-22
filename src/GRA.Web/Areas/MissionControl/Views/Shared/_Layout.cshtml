@@ -234,7 +234,7 @@
         }
         else if (ViewData.ContainsKey(GRA.Controllers.ViewDataKey.Title))
         {
-            <div class="row">
+            <div class="row mc-page-title">
                 <div class="col-xs-12">
                     @RenderSection("inHeading", required: false)
                     <span class="h2">@ViewData[GRA.Controllers.ViewDataKey.Title]</span>
