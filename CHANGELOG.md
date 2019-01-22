@@ -22,6 +22,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Error if account disappears while user is logged in
 - Avatar options now showing with single layer
 - Fix category color being unset on edit
+- Bootstrap downdrop options popup position
 
 ## [4.1.1] - 2018-12-13
 ### Added
