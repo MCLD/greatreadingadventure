@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Ability to add carousel to dashboard
 - Performer scheduling
 - Ability to ask participants if they want to subscribe to emails during sign up
+- At a glance news posts
 
 ### Changed
 - Modify docker-build.bash to not build release images unless the branch starts with 'release/'
@@ -21,6 +22,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Error if account disappears while user is logged in
 - Avatar options now showing with single layer
 - Fix category color being unset on edit
+- Bootstrap downdrop options popup position
 
 ## [4.1.1] - 2018-12-13
 ### Added

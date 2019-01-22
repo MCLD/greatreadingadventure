@@ -30,6 +30,7 @@ namespace GRA.Domain.Model
         public const string ManageEvents = "ManageEvents";
         public const string ManageGroupTypes = "ManageGroupTypes";
         public const string ManageLocations = "ManageLocations";
+        public const string ManageNews = "ManageNews";
         public const string ManagePerformers = "ManagePerformers";
         public const string ManagePointTranslations = "ManagePointTranslations";
         public const string ManagePrograms = "ManagePrograms";

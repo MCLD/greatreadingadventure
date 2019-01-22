@@ -1,0 +1,36 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.News.CategoryDetailViewModel
+
+<form asp-action="@Model.Action" method="post" role="form">
+    <input asp-for="Action" type="hidden" />
+    @if (Model.Action == nameof(NewsController.EditCategory))
+    {
+        <input asp-for="Category.Id" type="hidden" />
+    }
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label asp-for="Category.Name" class="control-label"></label>
+                <input asp-for="Category.Name" class="form-control" />
+                <span asp-validation-for="Category.Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Category.DisplayInSidebar" class="control-label"></label>
+                <select asp-for="Category.DisplayInSidebar" class="form-control">
+                    <option value="false">No</option>
+                    <option value="true">Yes</option>
+                </select>
+                <span asp-validation-for="Category.DisplayInSidebar" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <a asp-action="Categories" class="btn btn-default">Return to List</a>
+                <button type="submit" class="btn btn-primary btn-spinner">
+                    <span class="buttonText">Save Category</span>
+                    <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</form>

@@ -1,11 +1,15 @@
-﻿using GRA.Domain.Model;
+﻿using System.Collections.Generic;
+using GRA.Controllers.ViewModel.Shared;
+using GRA.Domain.Model;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Home
 {
     public class AtAGlanceViewModel
     {
-        public StatusSummary SiteStatus { get; set; }
-        public string FilteredBranchDescription { get; set; }
-        public StatusSummary FilteredStatus { get; set; }
+        public IEnumerable<NewsPost> NewsPosts { get; set; }
+        public PaginateViewModel PaginateModel { get; set; }
+        public AtAGlanceReport AtAGlanceReport { get; set; }
+        public bool IsNewsSubcribed { get; set; }
+        public string SiteAdministratorEmail { get; set; }
     }
 }

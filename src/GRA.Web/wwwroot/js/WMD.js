@@ -231,6 +231,9 @@ Markdown.HookCollection = HookCollection;
         if (options.allowImages == null) {
             options.allowImages = true;
         }
+        if (options.privateUpload == null) {
+            options.privateUpload = false;
+        }
 
         if (typeof options.handler === "function") { //backwards compatible behavior
             options = { helpButton: options };
@@ -270,7 +273,7 @@ Markdown.HookCollection = HookCollection;
                 }
             }
 
-            uiManager = new UIManager(panels, undoManager, commandManager, options.allowUploads, options.allowImages, options.helpButton, getString);
+            uiManager = new UIManager(panels, undoManager, commandManager, options.allowUploads, options.allowImages, options.privateUpload, options.helpButton, getString);
             uiManager.setUndoRedoButtonStates();
         };
 
@@ -992,7 +995,7 @@ Markdown.HookCollection = HookCollection;
     // callback: The function which is executed when the prompt is dismissed, either via OK or Cancel.
     //      It receives a single argument; either the entered text (if OK was chosen) or null (if Cancel
     //      was chosen).
-    ui.prompt = function (text, textupload, defaultInputText, callback, allowUploads) {
+    ui.prompt = function (text, textupload, defaultInputText, callback, allowUploads, privateUpload) {
 
         // These variables need to be declared at this level since they are used
         // in multiple functions.
@@ -1035,8 +1038,16 @@ Markdown.HookCollection = HookCollection;
 
                     // Adding one more key to FormData object   
 
+                    var url = "";
+                    if (privateUpload) {
+                        url = "/MissionControl/Files/Upload";
+                    }
+                    else {
+                        url = "/MissionControl/Ajax/UploadFile";
+                    }
+
                     $.ajax({
-                        url: '/MissionControl/Ajax/UploadFile',
+                        url: url,
                         type: "POST",
                         contentType: false, // Not to set any content header  
                         processData: false, // Not to process data  
@@ -1069,7 +1080,7 @@ Markdown.HookCollection = HookCollection;
             if (isCancel) {
                 text = null;
             }
-            else {
+            else if (privateUpload == false) {
                 // Fixes common pasting errors.
                 text = text.replace(/^http:\/\/(https?|ftp):\/\//, '$1://');
                 if (!/^(?:https?|ftp):\/\//.test(text))
@@ -1273,7 +1284,7 @@ Markdown.HookCollection = HookCollection;
         }, 0);
     };
 
-    function UIManager(panels, undoManager, commandManager, allowUploads, allowImages, helpOptions, getString) {
+    function UIManager(panels, undoManager, commandManager, allowUploads, allowImages, privateUpload, helpOptions, getString) {
 
         var inputBox = panels.input,
             buttons = {}; // buttons.undo, buttons.link, etc. The actual DOM elements.
@@ -1531,13 +1542,13 @@ Markdown.HookCollection = HookCollection;
             buttons.italic = makeButton("wmd-italic-button", getString("italic"), "fa-italic", bindCommand("doItalic"));
             makeSpacer(1);
             buttons.link = makeButton("wmd-link-button", getString("link"), "fa-link", bindCommand(function (chunk, postProcessing) {
-                return this.doLinkOrImage(chunk, postProcessing, false, allowUploads);
+                return this.doLinkOrImage(chunk, postProcessing, false, allowUploads, privateUpload);
             }));
             buttons.quote = makeButton("wmd-quote-button", getString("quote"), "fa-quote-left", bindCommand("doBlockquote"));
             buttons.code = makeButton("wmd-code-button", getString("code"), "fa-code", bindCommand("doCode"));
             if (allowImages) {
                 buttons.image = makeButton("wmd-image-button", getString("image"), "fa-picture-o", bindCommand(function (chunk, postProcessing) {
-                    return this.doLinkOrImage(chunk, postProcessing, true, allowUploads);
+                    return this.doLinkOrImage(chunk, postProcessing, true, allowUploads, privateUpload);
                 }));
             }
             makeSpacer(2);
@@ -1854,7 +1865,7 @@ Markdown.HookCollection = HookCollection;
         });
     }
 
-    commandProto.doLinkOrImage = function (chunk, postProcessing, isImage, allowUploads) {
+    commandProto.doLinkOrImage = function (chunk, postProcessing, isImage, allowUploads, privateUpload) {
 
         chunk.trimWhitespace();
         chunk.findTags(/\s*!?\[/, /\][ ]?(?:\n[ ]*)?(\[.*?\])?/);
@@ -1929,10 +1940,10 @@ Markdown.HookCollection = HookCollection;
 
             if (isImage) {
                 if (!this.hooks.insertImageDialog(linkEnteredCallback))
-                    ui.prompt(this.getString("imagedialog"), this.getString("imagedialogupload"), imageDefaultText, linkEnteredCallback, allowUploads);
+                    ui.prompt(this.getString("imagedialog"), this.getString("imagedialogupload"), imageDefaultText, linkEnteredCallback, allowUploads, privateUpload);
             }
             else {
-                ui.prompt(this.getString("linkdialog"), this.getString("linkdialogupload"), linkDefaultText, linkEnteredCallback, allowUploads);
+                ui.prompt(this.getString("linkdialog"), this.getString("linkdialogupload"), linkDefaultText, linkEnteredCallback, allowUploads, privateUpload);
             }
             return true;
         }

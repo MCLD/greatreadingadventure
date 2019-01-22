@@ -124,6 +124,7 @@ namespace GRA.Domain.Service
 
             user.CanBeDeleted = true;
             user.IsLockedOut = false;
+            user.IsNewsSubscribed = false;
 
             user.CardNumber = user.CardNumber?.Trim();
             user.Email = user.Email?.Trim();
@@ -558,6 +559,7 @@ namespace GRA.Domain.Service
                 memberToAdd.CanBeDeleted = true;
                 memberToAdd.IsLockedOut = false;
                 memberToAdd.IsAdmin = false;
+                memberToAdd.IsNewsSubscribed = false;
 
                 memberToAdd.CardNumber = memberToAdd.CardNumber?.Trim();
                 memberToAdd.Email = memberToAdd.Email?.Trim();
@@ -1148,6 +1150,27 @@ namespace GRA.Domain.Service
             }
 
             await _userRepository.SaveAsync();
+        }
+
+        public async Task UserNewsSubscribe(bool subscribe)
+        {
+            VerifyPermission(Permission.AccessMissionControl);
+
+            var userId = GetClaimId(ClaimType.UserId);
+            var user = await _userRepository.GetByIdAsync(userId);
+
+            user.IsNewsSubscribed = subscribe;
+
+            await _userRepository.UpdateSaveAsync(userId, user);
+        }
+
+        public async Task<string> GetUsersNameByIdAsync(int userId)
+        {
+            VerifyPermission(Permission.AccessMissionControl);
+
+            var user = await _userRepository.GetByIdAsync(userId);
+
+            return user.FullName;
         }
     }
 }

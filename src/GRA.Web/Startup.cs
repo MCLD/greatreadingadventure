@@ -316,6 +316,7 @@ namespace GRA.Web
             services.AddScoped<EventService>();
             services.AddScoped<GroupTypeService>();
             services.AddScoped<MailService>();
+            services.AddScoped<NewsService>();
             services.AddScoped<PageService>();
             services.AddScoped<PerformerSchedulingService>();
             services.AddScoped<PointTranslationService>();
@@ -401,6 +402,8 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IGroupTypeRepository, Data.Repository.GroupTypeRepository>();
             services.AddScoped<Domain.Repository.ILocationRepository, Data.Repository.LocationRepository>();
             services.AddScoped<Domain.Repository.IMailRepository, Data.Repository.MailRepository>();
+            services.AddScoped<Domain.Repository.INewsCategoryRepository, Data.Repository.NewsCategoryRepository>();
+            services.AddScoped<Domain.Repository.INewsPostRepository, Data.Repository.NewsPostRepository>();
             services.AddScoped<Domain.Repository.INotificationRepository, Data.Repository.NotificationRepository>();
             services.AddScoped<Domain.Repository.IPageRepository, Data.Repository.PageRepository>();
             services.AddScoped<Domain.Repository.IPointTranslationRepository, Data.Repository.PointTranslationRepository>();

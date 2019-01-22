@@ -57,6 +57,10 @@ namespace GRA.Web
                     .ServiceProvider
                     .GetRequiredService<RoleService>().SyncPermissionsAsync();
 
+                stage = 65;
+                await _scope
+                    .ServiceProvider.GetRequiredService<NewsService>().EnsureDefaultCategoryAsync();
+
                 stage = 70;
                 _scope.ServiceProvider.GetRequiredService<TemplateService>().SetupTemplates();
             }
@@ -88,6 +92,9 @@ namespace GRA.Web
                         break;
                     case 60:
                         errorText = "Error synchronizing permissions: {Message}";
+                        break;
+                    case 65:
+                        errorText = "Error ensuring default news category: {Message}";
                         break;
                     case 70:
                         errorText = "Error copying templates to shared folder: {Message}";

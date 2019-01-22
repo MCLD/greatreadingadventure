@@ -68,6 +68,10 @@ namespace GRA.Data.Profile
             CreateMap<Model.GroupType, Domain.Model.GroupType>().ReverseMap();
             CreateMap<Model.Location, Domain.Model.Location>().ReverseMap();
             CreateMap<Model.Mail, Domain.Model.Mail>().ReverseMap();
+            CreateMap<Model.NewsCategory, Domain.Model.NewsCategory>()
+                .ForMember(dest => dest.PostCount, opt => opt.MapFrom(src => src.Posts.Count))
+                .ReverseMap();
+            CreateMap<Model.NewsPost, Domain.Model.NewsPost>().ReverseMap();
             CreateMap<Model.Notification, Domain.Model.Notification>().ReverseMap();
             CreateMap<Model.Page, Domain.Model.Page>().ReverseMap();
             CreateMap<Model.PointTranslation, Domain.Model.PointTranslation>().ReverseMap();

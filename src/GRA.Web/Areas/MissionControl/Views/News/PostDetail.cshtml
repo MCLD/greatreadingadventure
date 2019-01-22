@@ -1,0 +1,72 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.News.PostDetailViewModel
+
+@section styles {
+    <link rel="stylesheet" href="~/css/markdown.min.css" asp-append-version="true" />
+}
+
+<form asp-action="@Model.Action" method="post" role="form">
+    <input asp-for="Action" type="hidden" />
+    @if (Model.Action == nameof(NewsController.EditPost))
+    {
+        <input asp-for="Post.Id" type="hidden" />
+    }
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label asp-for="Post.Title" class="control-label"></label>
+                <input asp-for="Post.Title" class="form-control" />
+                <span asp-validation-for="Post.Title" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Post.CategoryId" class="control-label"></label>
+                <select asp-for="Post.CategoryId" asp-items="Model.Categories" class="form-control"></select>
+                <span asp-validation-for="Post.CategoryId" class="text-danger"></span>
+            </div>
+
+            <div class="row row-spacing">
+                <div class="col-xs-12">
+                    <label asp-for="Post.Content" class="control-label"></label>
+                    <div id="wmd-button-bar"></div>
+                    <textarea asp-for="Post.Content" id="wmd-input" class="form-control wmd-input"> </textarea>
+                    <br />
+                    <label class="control-label">Preview</label>
+                    <div id="preview"></div>
+                    <span asp-validation-for="Post.Content" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <a asp-action="Index" class="btn btn-default">Return to List</a>
+                @if (Model.Post?.PublishedAt != null)
+                {
+                    <button type="submit" class="btn btn-primary btn-spinner">
+                        <span class="buttonText">Save Post</span>
+                        <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                    </button>
+                }
+                else
+                {
+                    <button type="submit" name="Publish" value="False" class="btn btn-primary btn-spinner">
+                        <span class="buttonText">Save as Draft</span>
+                        <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                    </button>
+                    <button type="submit" name="Publish" value="True" class="btn btn-primary btn-spinner">
+                        <span class="buttonText">Save and Publish</span>
+                        <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+</form>
+
+@section scripts {
+    <script src="~/js/markdown.min.js" asp-append-version="true"></script>
+
+    <script>
+        var editor = new Markdown.Editor({ allowUploads: true, privateUpload: true });
+        editor.run();
+    </script>
+}

@@ -808,3 +808,9 @@ p.password-note {
         max-width: 130px;
     }
 
+.dropdown-label {
+    font-size: large;
+    position: relative;
+    top: .6rem;
+    vertical-align: top;
+}

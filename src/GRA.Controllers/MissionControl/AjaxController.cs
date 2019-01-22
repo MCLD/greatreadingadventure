@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.Logging;
 namespace GRA.Controllers.MissionControl
 {
     [Area("MissionControl")]
+    [Authorize(Policy = Policy.AccessMissionControl)]
     public class AjaxController : Base.MCController
     {
         private const string UploadFilesPath = "uploads";
