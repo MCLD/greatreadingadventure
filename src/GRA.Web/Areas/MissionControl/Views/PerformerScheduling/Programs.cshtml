@@ -16,16 +16,20 @@
 
 <div class="row row-spacing">
     <div class="col-xs-12">
-        <span style="font-size:large;">Age Groups:</span>
-        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-            @(Model.AgeGroups.Where(_ => _.Id == Model.AgeGroupId).FirstOrDefault()?.Name ?? "Show All") <span class="caret"></span>
-        </a>
-        <ul class="dropdown-menu">
-            <li><a asp-route-ageGroup="">Show All</a></li>
-            @foreach (var ageGroup in Model.AgeGroups)
-            {
-                <li><a asp-route-ageGroup="@ageGroup.Id">@ageGroup.Name</a></li>
-            }
+        <span class="dropdown-label">Age Groups:</span>
+        <ul class="nav" style="display: inline-table">
+            <li>
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    @(Model.AgeGroups.Where(_ => _.Id == Model.AgeGroupId).FirstOrDefault()?.Name ?? "Show All") <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a asp-route-ageGroup="">Show All</a></li>
+                    @foreach (var ageGroup in Model.AgeGroups)
+                    {
+                        <li><a asp-route-ageGroup="@ageGroup.Id">@ageGroup.Name</a></li>
+                    }
+                </ul>
+            </li>
         </ul>
     </div>
 </div>
