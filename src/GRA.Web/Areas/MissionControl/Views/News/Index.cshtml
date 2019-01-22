@@ -34,16 +34,20 @@
 
 <div class="row row-spacing">
     <div class="col-xs-12">
-        <span style="font-size:large;">Category:</span>
-        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-            @(Model.Category?.Name ?? "Show All") <span class="caret"></span>
-        </a>
-        <ul class="dropdown-menu">
-            <li><a asp-route-Search="@Model.Search">Show All</a></li>
-            @foreach (var category in Model.CategoryList)
-            {
-                <li><a asp-route-Search="@Model.Search" asp-route-Category="@category.Id">@category.Name</a></li>
-            }
+        <span class="dropdown-label">Category:</span>
+        <ul class="nav" style="display: inline-table;">
+            <li>
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    @(Model.Category?.Name ?? "Show All") <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a asp-route-Search="@Model.Search">Show All</a></li>
+                    @foreach (var category in Model.CategoryList)
+                    {
+                        <li><a asp-route-Search="@Model.Search" asp-route-Category="@category.Id">@category.Name</a></li>
+                    }
+                </ul>
+            </li>
         </ul>
     </div>
 </div>

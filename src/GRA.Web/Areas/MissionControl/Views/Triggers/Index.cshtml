@@ -61,17 +61,21 @@
 
 <div class="row row-spacing">
     <div class="col-xs-12">
-        <span style="font-size:large;">Limited to Program:</span>
-        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-            @(Model.ProgramName ?? "Show All") <span class="caret"></span>
-        </a>
-        <ul class="dropdown-menu">
-            <li><a asp-route-Search="@Model.Search" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-Mine="@Model.Mine">Show All</a></li>
-            <li><a asp-route-Search="@Model.Search" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-Mine="@Model.Mine" asp-route-ProgramId="0">Not Limited</a></li>
-            @foreach (var program in Model.ProgramList)
-            {
-                <li><a asp-route-Search="@Model.Search" asp-route-ProgramId="@program.Id" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-Mine="@Model.Mine">@program.Name</a></li>
-            }
+        <span class="dropdown-label">Limited to Program:</span>
+        <ul class="nav" style="display: inline-table;">
+            <li>
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    @(Model.ProgramName ?? "Show All") <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a asp-route-Search="@Model.Search" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-Mine="@Model.Mine">Show All</a></li>
+                    <li><a asp-route-Search="@Model.Search" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-Mine="@Model.Mine" asp-route-ProgramId="0">Not Limited</a></li>
+                    @foreach (var program in Model.ProgramList)
+                    {
+                        <li><a asp-route-Search="@Model.Search" asp-route-ProgramId="@program.Id" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-Mine="@Model.Mine">@program.Name</a></li>
+                    }
+                </ul>
+            </li>
         </ul>
     </div>
 </div>
@@ -171,7 +175,7 @@
 </div>
 
 @section scripts
-{
+    {
     <script>
         var eventUrl = "@Url.Action("Edit", "Events")";
         $(window).on("load", function() {

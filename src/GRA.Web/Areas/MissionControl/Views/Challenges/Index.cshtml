@@ -76,17 +76,21 @@
 
 <div class="row row-spacing">
     <div class="col-xs-12">
-        <span style="font-size:large;padding-top:10px;">Limited to Program:</span>
-        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-            @(Model.ProgramName ?? "Show All") <span class="caret"></span>
-        </a>
-        <ul class="dropdown-menu">
-            <li><a asp-route-Search="@Model.Search" asp-route-Categories="@Model.Categories" asp-route-System="@Model.System" asp-route-Branch="@Model.Branch" asp-route-Mine="@Model.Mine">Show All</a></li>
-            <li><a asp-route-Search="@Model.Search" asp-route-Categories="@Model.Categories" asp-route-Program="0" asp-route-System="@Model.System" asp-route-Branch="@Model.Branch" asp-route-Mine="@Model.Mine">Not Limited</a></li>
-            @foreach (var program in Model.ProgramList)
-            {
-                <li><a asp-route-Search="@Model.Search" asp-route-Categories="@Model.Categories" asp-route-Program="@program.Id" asp-route-System="@Model.System" asp-route-Branch="@Model.Branch" asp-route-Mine="@Model.Mine">@program.Name</a></li>
-            }
+        <span class="dropdown-label">Limited to Program:</span>
+        <ul class="nav" style="display: inline-table;">
+            <li>
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    @(Model.ProgramName ?? "Show All") <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a asp-route-Search="@Model.Search" asp-route-Categories="@Model.Categories" asp-route-System="@Model.System" asp-route-Branch="@Model.Branch" asp-route-Mine="@Model.Mine">Show All</a></li>
+                    <li><a asp-route-Search="@Model.Search" asp-route-Categories="@Model.Categories" asp-route-Program="0" asp-route-System="@Model.System" asp-route-Branch="@Model.Branch" asp-route-Mine="@Model.Mine">Not Limited</a></li>
+                    @foreach (var program in Model.ProgramList)
+                    {
+                        <li><a asp-route-Search="@Model.Search" asp-route-Categories="@Model.Categories" asp-route-Program="@program.Id" asp-route-System="@Model.System" asp-route-Branch="@Model.Branch" asp-route-Mine="@Model.Mine">@program.Name</a></li>
+                    }
+                </ul>
+            </li>
         </ul>
     </div>
 </div>
@@ -132,7 +136,7 @@
     }
 
     <div class="row row-spacing">
-        
+
         <div class="col-xs-6 col-sm-offset-8 col-sm-2">
             <a asp-action="Index" class="btn btn-default btn-block"> Clear</a>
         </div>
@@ -155,7 +159,7 @@
 <div class="row" style="padding: 10px 0;">
     <div class="col-xs-12">
         @if (Model.Challenges.Count() == 0)
-            {
+        {
             <div class="alert alert-warning">No Challenges</div>
         }
         else
@@ -237,7 +241,7 @@
                 </table>
             </div>
             @if (Model.PaginateModel.MaxPage > 1)
-                {
+            {
                 <paginate paginateModel="@Model.PaginateModel"></paginate>
             }
         }
