@@ -68,8 +68,6 @@ namespace GRA.Controllers.MissionControl
                 }
             }
 
-            var blah = Url.Action(nameof(Get), new { filePath });
-
             return Url.Action(nameof(Get), new { filePath });
         }
 

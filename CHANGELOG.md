@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Ability to add carousel to dashboard
 - Performer scheduling
 - Ability to ask participants if they want to subscribe to emails during sign up
+- At a glance news posts
 
 ### Changed
 - Modify docker-build.bash to not build release images unless the branch starts with 'release/'

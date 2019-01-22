@@ -1,4 +1,5 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Home.AtAGlanceViewModel
+
 @if (Model.NewsPosts == null || Model.NewsPosts.Count() == 0)
 {
     <div class="row row-spacing" style="text-align: center;">
@@ -100,12 +101,59 @@
 }
 else
 {
-    <div class="row row-spacing">
-        <div class="col-sm-2">
-            News Categories
+    <div class="row">
+        <div class="col-sm-2 text-center">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Categories
+                </div>
+                <div class="panel-body">
+                    <ul class="nav nav-pills nav-stacked">
+                        <li class="active">
+                            <a style="padding: 5px 10px;" href="#">News</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <form asp-action="NewsSubscribe">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        Subscribe via email
+                        <br />
+                        <button type="submit"
+                                name="Subscribe"
+                                value="@(Model.IsNewsSubcribed ? "False" : "True")"
+                                class="btn btn-link fa fa-lg @(Model.IsNewsSubcribed ? "fa-check-square-o" : "fa-square-o")"
+                                style="text-decoration:none;"></button>
+                    </div>
+                </div>
+            </form>
         </div>
-        <div class="col-sm-8 col-md-6">
-            News Posts
+        <div class="col-sm-8 col-md-7">
+            @foreach (var post in Model.NewsPosts)
+            {
+                <div class="news-post panel panel-default">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            @post.Title
+                        </div>
+                    </div>
+                    <div class="panel-body">
+
+                        <div class="news-post-content">
+                            @Html.Raw(post.Content)
+                        </div>
+                    </div>
+                    <div class="panel-footer" style="font-size: small; padding: 5px 15px;">
+                        <em>Posted on @post.PublishedAt.Value.ToShortDateString() by <a href="mailto:@(Model.SiteAdministratorEmail)?Subject=Post @(post.Title)" target="_top">@post.CreatedByName</a></em>
+                    </div>
+                </div>
+
+            }
+            @if (Model.PaginateModel.MaxPage > 1)
+            {
+                <paginate paginateModel="@Model.PaginateModel"></paginate>
+            }
         </div>
         <div class="col-sm-2 col-md-3">
             <div class="ataglancepill-sidebar ataglance-pill-darkslateblue ataglance-pill-filtered">

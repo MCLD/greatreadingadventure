@@ -18,5 +18,7 @@ namespace GRA.Domain.Model
         public string Content { get; set; }
 
         public DateTime? PublishedAt { get; set; }
+
+        public string CreatedByName { get; set; }
     }
 }
