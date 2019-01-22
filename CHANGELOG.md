@@ -24,6 +24,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Fix category color being unset on edit
 - Bootstrap downdrop options popup position
 
+### Removed
+- Recovery error logging at the controller level - it's logged in the service
+
 ## [4.1.1] - 2018-12-13
 ### Added
 - Add site.js to shared folder for customizing site scripting
