@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Modify docker-build.bash to not build release images unless the branch starts with 'release/'
 - Move from Google analytics.js to tag manager for analytics
 - Move favicons from wwwroot to shared/content so they can be easily customized
+- Logging level of password recovery misses are now information instead of warning
 
 ### Fixed
 - Fix instance name enrichment for logging

@@ -163,7 +163,7 @@ namespace GRA.Controllers
                 }
                 catch (GraException gex)
                 {
-                    _logger.LogWarning(gex, "Problem in password recovery for username {username}: {Message}",
+                    _logger.LogInformation(gex, "Could not recover password for {username}: {Message}",
                         username,
                         gex.Message);
                     ShowAlertWarning("Could not recover password: ", gex);
@@ -193,7 +193,7 @@ namespace GRA.Controllers
                 }
                 catch (GraException gex)
                 {
-                    _logger.LogWarning(gex, "Problem recovering username(s) for {email}: {Message}",
+                    _logger.LogInformation(gex, "Could not recover username(s) for {email}: {Message}",
                         email,
                         gex.Message);
                     ShowAlertWarning("Could not recover username(s): ", gex.Message);
