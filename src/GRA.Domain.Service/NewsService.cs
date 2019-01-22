@@ -81,7 +81,8 @@ namespace GRA.Domain.Service
             return await _newsPostRepository.GetByIdAsync(id);
         }
 
-        public async Task<NewsPost> CreatePostAsync(NewsPost post, bool publish = false)
+        public async Task<NewsPost> CreatePostAsync(NewsPost post, string postUrl,
+            bool publish = false)
         {
             VerifyManagementPermission();
 
@@ -97,13 +98,16 @@ namespace GRA.Domain.Service
 
             if (publish)
             {
-                await SendSubscriptionEmailsAsync(post);
+                addedPost.CategoryName =
+                    (await _newsCategoryRepository.GetByIdAsync(addedPost.CategoryId)).Name;
+                await SendSubscriptionEmailsAsync(addedPost, postUrl);
             }
 
             return addedPost;
         }
 
-        public async Task<NewsPost> EditPostAsync(NewsPost post, bool publish = false)
+        public async Task<NewsPost> EditPostAsync(NewsPost post, string postUrl,
+            bool publish = false)
         {
             VerifyManagementPermission();
 
@@ -125,7 +129,9 @@ namespace GRA.Domain.Service
 
             if (sendSubscriptionEmails)
             {
-                await SendSubscriptionEmailsAsync(currentPost);
+                currentPost.CategoryName =
+                    (await _newsCategoryRepository.GetByIdAsync(currentPost.CategoryId)).Name;
+                await SendSubscriptionEmailsAsync(currentPost, postUrl);
             }
 
             return currentPost;
@@ -200,15 +206,14 @@ namespace GRA.Domain.Service
             await _newsCategoryRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), categoryId);
         }
 
-        private async Task SendSubscriptionEmailsAsync(NewsPost post)
+        private async Task SendSubscriptionEmailsAsync(NewsPost post, string postUrl)
         {
             var siteId = GetCurrentSiteId();
             var site = await _siteRepository.GetByIdAsync(siteId);
 
             var subscribedUserIds = await _userRepository.GetNewsSubscribedUserIdsAsync(siteId);
 
-            var postUrl = "";
-            var subject = $"A new {site.Name} update has been posted in the {post.CategoryName} category!";
+            var subject = $"New {site.Name} post!";
             string mailBody = $"{post.Title} has been posted to the {post.CategoryName} category"
                 + $"\r\nThe post can be viewed at this page:"
                 + $"\n\r  {postUrl}";

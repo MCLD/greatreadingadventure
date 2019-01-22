@@ -112,7 +112,12 @@ namespace GRA.Controllers.MissionControl
         {
             if (ModelState.IsValid)
             {
-                var post = await _newsService.CreatePostAsync(model.Post, model.Publish);
+                var postUrl = Url.Action(nameof(HomeController.Index), 
+                    "Home",
+                    null,
+                    HttpContext.Request.Scheme);
+
+                var post = await _newsService.CreatePostAsync(model.Post, postUrl, model.Publish);
                 ShowAlertSuccess($"Added Post \"{post.Title}\"!");
                 return RedirectToAction(nameof(Index));
             }
@@ -140,7 +145,12 @@ namespace GRA.Controllers.MissionControl
         {
             if (ModelState.IsValid)
             {
-                var post = await _newsService.EditPostAsync(model.Post, model.Publish);
+                var postUrl = Url.Action(nameof(HomeController.Index),
+                    "Home",
+                    null,
+                    HttpContext.Request.Scheme);
+
+                var post = await _newsService.EditPostAsync(model.Post, postUrl, model.Publish);
                 ShowAlertSuccess($"Updated Post \"{post.Title}\"!");
                 return RedirectToAction(nameof(Index));
             }

@@ -1,9 +1,12 @@
 ﻿using GRA.Abstract;
 using GRA.Controllers.ViewModel.MissionControl.Home;
+using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,8 +16,11 @@ namespace GRA.Controllers.MissionControl
     [Area("MissionControl")]
     public class HomeController : Base.MCController
     {
+        private static int PostsPerPage = 5;
+
         private readonly ILogger<HomeController> _logger;
         private readonly AuthenticationService _authenticationService;
+        private readonly NewsService _newsService;
         private readonly ReportService _reportService;
         private readonly SampleDataService _sampleDataService;
         private readonly UserService _userService;
@@ -24,6 +30,7 @@ namespace GRA.Controllers.MissionControl
 
         public HomeController(ILogger<HomeController> logger,
             AuthenticationService authenticationService,
+            NewsService newsService,
             ReportService reportService,
             SampleDataService sampleDataService,
             UserService userService,
@@ -35,6 +42,7 @@ namespace GRA.Controllers.MissionControl
             _logger = Require.IsNotNull(logger, nameof(logger));
             _authenticationService = Require.IsNotNull(authenticationService,
                 nameof(authenticationService));
+            _newsService = newsService ?? throw new ArgumentNullException(nameof(newsService));
             _reportService = Require.IsNotNull(reportService, nameof(reportService));
             _sampleDataService = Require.IsNotNull(sampleDataService,
                 nameof(sampleDataService));
@@ -45,7 +53,7 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Mission Control";
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
             if (!AuthUser.Identity.IsAuthenticated)
             {
@@ -71,19 +79,56 @@ namespace GRA.Controllers.MissionControl
             }
             Site site = await GetCurrentSiteAsync();
 
-            var newsPosts = new List<object>();
-            newsPosts.Add("Howdy");
+            var filter = new BaseFilter(page, PostsPerPage)
+            {
+                IsActive = true
+            };
+
+            var postList = await _newsService.GetPaginatedPostListAsync(filter);
+
+            var paginateModel = new PaginateViewModel
+            {
+                ItemCount = postList.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
+            };
+            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
+            }
+
+            foreach (var post in postList.Data)
+            {
+                post.Content = CommonMark.CommonMarkConverter.Convert(post.Content);
+                post.CreatedByName = await _userService.GetUsersNameByIdAsync(post.CreatedBy);
+            }
 
             PageTitle = $"Mission Control: {site.Name}";
 
             // show the at-a-glance report
             var atAGlance = await GetAtAGlanceAsync();
 
+            var user = await _userService.GetDetails(GetId(ClaimType.UserId));
+
             return View(new AtAGlanceViewModel
             {
                 AtAGlanceReport = atAGlance,
-                NewsPosts = newsPosts
+                NewsPosts = postList.Data,
+                IsNewsSubcribed = user.IsNewsSubscribed,
+                PaginateModel = paginateModel,
+                SiteAdministratorEmail = site.FromEmailAddress
             });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> NewsSubscribe(bool subscribe)
+        {
+            await _userService.UserNewsSubscribe(subscribe);
+            return RedirectToAction(nameof(Index));
         }
 
         private async Task<AtAGlanceReport> GetAtAGlanceAsync()
