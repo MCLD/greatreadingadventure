@@ -439,7 +439,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.SiteId == siteId && _.IsNewsSubscribed)
+                .Where(_ => _.SiteId == siteId && !_.IsDeleted && _.IsNewsSubscribed)
                 .Select(_ => _.Id)
                 .ToListAsync();
         }
