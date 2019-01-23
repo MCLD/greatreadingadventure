@@ -35,6 +35,9 @@ namespace GRA.Controllers.MissionControl
             var typeProvider = new FileExtensionContentTypeProvider();
             typeProvider.TryGetContentType(file, out string contentType);
 
+            HttpContext.Response.Headers
+                .Add("content-disposition", $"inline; filename=\"{filename}\"");
+
             return PhysicalFile(file, contentType);
         }
 
