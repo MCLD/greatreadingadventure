@@ -76,18 +76,30 @@ namespace GRA.Controllers
             }
             if (AuthUser.Identity.IsAuthenticated)
             {
-                if (TempData.ContainsKey(TempDataKey.UserJoined)
-                    && UserHasPermission(Permission.AccessPerformerRegistration)
-                    && !UserHasPermission(Permission.AccessMissionControl))
+                if (TempData.ContainsKey(TempDataKey.UserJoined))
                 {
-                    var dates = await _performerSchedulingService.GetSettingsAsync();
-                    var schedulingStage = _performerSchedulingService.GetSchedulingStage(dates);
-
-                    if (schedulingStage != PsSchedulingStage.Unavailable)
+                    if (UserHasPermission(Permission.AccessMissionControl))
                     {
-                        TempData.Remove(TempDataKey.UserJoined);
-                        return RedirectToAction(nameof(PerformerRegistration.HomeController.Index),
-                            "Home", new { Area = "PerformerRegistration" });
+                        if (GetSiteStage() == SiteStage.BeforeRegistration
+                            || GetSiteStage() == SiteStage.AccessClosed)
+                        {
+                            return RedirectToAction(nameof(MissionControl.HomeController.Index),
+                                "Home",
+                                new { Area = nameof(MissionControl) });
+                        }
+                    }
+                    else if (UserHasPermission(Permission.AccessPerformerRegistration))
+                    {
+                        var dates = await _performerSchedulingService.GetSettingsAsync();
+                        var schedulingStage = _performerSchedulingService.GetSchedulingStage(dates);
+
+                        if (schedulingStage != PsSchedulingStage.Unavailable)
+                        {
+                            TempData.Remove(TempDataKey.UserJoined);
+                            return RedirectToAction(nameof(PerformerRegistration.HomeController.Index),
+                                "Home",
+                                new { Area = nameof(PerformerRegistration) });
+                        }
                     }
                 }
 
