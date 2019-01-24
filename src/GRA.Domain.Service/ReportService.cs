@@ -24,6 +24,7 @@ namespace GRA.Domain.Service
         private readonly IUserRepository _userRepository;
         private readonly IUserLogRepository _userLogRepository;
         private readonly ISystemRepository _systemRepository;
+
         public ReportService(ILogger<ReportService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
@@ -73,7 +74,8 @@ namespace GRA.Domain.Service
                     CompletedChallenges = await _userLogRepository
                         .CompletedChallengeCountAsync(request),
                     BadgesEarned = await _userLogRepository.EarnedBadgeCountAsync(request),
-                    DaysUntilEnd = await GetDaysUntilEnd()
+                    DaysUntilEnd = await GetDaysUntilEnd(),
+                    AsOf = _dateTimeProvider.Now
                 };
                 _cache.SetString(cacheKey, JsonConvert.SerializeObject(summary), ExpireIn());
                 return summary;
@@ -120,7 +122,7 @@ namespace GRA.Domain.Service
                         CreatedBy = criterion.CreatedBy,
                         ReportCriteriaId = criterion.Id,
                         ReportId = reportId,
-                        Name = GetReportList().Where(_ => _.Id == reportId).SingleOrDefault()?.Name,
+                        Name = GetReportList().SingleOrDefault(_ => _.Id == reportId)?.Name,
                         SiteId = criterion.SiteId,
                     });
 
@@ -163,7 +165,7 @@ namespace GRA.Domain.Service
                 token.Register(() =>
                 {
                     string duration = "";
-                    if (report != null && report.Elapsed != null)
+                    if (report?.Elapsed != null)
                     {
                         duration = $" after {((TimeSpan)report.Elapsed).TotalSeconds.ToString("N2")} seconds";
                     }
@@ -194,8 +196,7 @@ namespace GRA.Domain.Service
                 }
 
                 var reportDetails = new Catalog().Get()
-                    .Where(_ => _.Id == _request.ReportId)
-                    .SingleOrDefault();
+                    .SingleOrDefault(_ => _.Id == _request.ReportId);
 
                 if (reportDetails == null)
                 {

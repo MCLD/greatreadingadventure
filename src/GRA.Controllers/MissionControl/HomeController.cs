@@ -1,4 +1,6 @@
-﻿using GRA.Abstract;
+﻿using System;
+using System.Threading.Tasks;
+using GRA.Abstract;
 using GRA.Controllers.ViewModel.MissionControl.Home;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
@@ -6,18 +8,17 @@ using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Threading.Tasks;
 
 namespace GRA.Controllers.MissionControl
 {
     [Area("MissionControl")]
     public class HomeController : Base.MCController
     {
-        private static int PostsPerPage = 5;
+        private const int PostsPerPage = 5;
 
         private readonly ILogger<HomeController> _logger;
         private readonly AuthenticationService _authenticationService;
+        private readonly MailService _mailService;
         private readonly NewsService _newsService;
         private readonly ReportService _reportService;
         private readonly SampleDataService _sampleDataService;
@@ -28,6 +29,7 @@ namespace GRA.Controllers.MissionControl
 
         public HomeController(ILogger<HomeController> logger,
             AuthenticationService authenticationService,
+            MailService mailService,
             NewsService newsService,
             ReportService reportService,
             SampleDataService sampleDataService,
@@ -37,16 +39,19 @@ namespace GRA.Controllers.MissionControl
             ICodeSanitizer codeSanitizer)
             : base(context)
         {
-            _logger = Require.IsNotNull(logger, nameof(logger));
-            _authenticationService = Require.IsNotNull(authenticationService,
-                nameof(authenticationService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _authenticationService = authenticationService
+                ?? throw new ArgumentNullException(nameof(authenticationService));
+            _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
             _newsService = newsService ?? throw new ArgumentNullException(nameof(newsService));
-            _reportService = Require.IsNotNull(reportService, nameof(reportService));
-            _sampleDataService = Require.IsNotNull(sampleDataService,
-                nameof(sampleDataService));
-            _userService = Require.IsNotNull(userService, nameof(userService));
-            _siteService = Require.IsNotNull(siteService, nameof(siteService));
-            _codeSanitizer = Require.IsNotNull(codeSanitizer, nameof(codeSanitizer));
+            _reportService = reportService
+                ?? throw new ArgumentNullException(nameof(reportService));
+            _sampleDataService = sampleDataService
+                ?? throw new ArgumentNullException(nameof(sampleDataService));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
+            _codeSanitizer = codeSanitizer
+                ?? throw new ArgumentNullException(nameof(codeSanitizer));
 
             PageTitle = "Mission Control";
         }
@@ -116,7 +121,7 @@ namespace GRA.Controllers.MissionControl
             {
                 AtAGlanceReport = atAGlance,
                 NewsPosts = postList.Data,
-                IsNewsSubcribed = user.IsNewsSubscribed,
+                IsNewsSubscribed = user.IsNewsSubscribed,
                 PaginateModel = paginateModel,
                 SiteAdministratorEmail = site.FromEmailAddress
             });
@@ -150,7 +155,8 @@ namespace GRA.Controllers.MissionControl
             {
                 FilteredBranchDescription = await _siteService.GetBranchName(currentUserBranchId),
                 SiteStatus = siteStatus,
-                FilteredStatus = branchStatus
+                FilteredStatus = branchStatus,
+                LatestNewsId = await _newsService.GetLatestNewsIdAsync()
             };
         }
 
@@ -237,6 +243,19 @@ namespace GRA.Controllers.MissionControl
                 await LogoutUserAsync();
             }
             return RedirectToRoute(new { area = string.Empty, action = "Index" });
+        }
+
+        public async Task<JsonResult> GetUnreadMailCount()
+        {
+            if (UserHasPermission(Permission.ReadAllMail))
+            {
+                var unreadCount = await _mailService.GetAdminUnreadCountAsync();
+                return Json(unreadCount);
+            }
+            else
+            {
+                return Json(0);
+            }
         }
     }
 }

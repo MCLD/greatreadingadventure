@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace GRA.Data.Repository
 {
-    public class NewsPostRepository 
+    public class NewsPostRepository
         : AuditingRepository<Model.NewsPost, NewsPost>, INewsPostRepository
     {
         public NewsPostRepository(ServiceFacade.Repository repositoryFacade,
@@ -52,6 +52,18 @@ namespace GRA.Data.Repository
                 Data = data,
                 Count = count
             };
+        }
+
+        public async Task<int> GetLatestActiveIdAsync(BaseFilter filter)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.Category.SiteId == filter.SiteId
+                    && _.PublishedAt.HasValue
+                    && _.Category.IsDefault)
+                .OrderByDescending(_ => _.PublishedAt)
+                .Select(_ => _.Id)
+                .FirstOrDefaultAsync();
         }
     }
 }

@@ -6,12 +6,14 @@ using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Service
 {
     public class NewsService : Abstract.BaseUserService<NewsService>
     {
+        private readonly IDistributedCache _cache;
         private readonly INewsCategoryRepository _newsCategoryRepository;
         private readonly INewsPostRepository _newsPostRepository;
         private readonly ISiteRepository _siteRepository;
@@ -20,15 +22,17 @@ namespace GRA.Domain.Service
 
         public NewsService(ILogger<NewsService> logger,
             IDateTimeProvider dateTimeProvider,
-            IUserContextProvider userContextProvider,
+            IDistributedCache cache,
             INewsCategoryRepository newsCategoryRepository,
             INewsPostRepository newsPostRepository,
             ISiteRepository siteRepository,
+            IUserContextProvider userContextProvider,
             IUserRepository userRepository,
             EmailService emailService)
             : base(logger, dateTimeProvider, userContextProvider)
         {
             SetManagementPermission(Permission.ManageNews);
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
             _newsCategoryRepository = newsCategoryRepository
                 ?? throw new ArgumentNullException(nameof(newsCategoryRepository));
             _newsPostRepository = newsPostRepository
@@ -103,6 +107,11 @@ namespace GRA.Domain.Service
                 await SendSubscriptionEmailsAsync(addedPost, postUrl);
             }
 
+            if(publish)
+            {
+                _cache.Remove($"s{GetClaimId(ClaimType.SiteId)}.{CacheKey.LatestNewsPostId}");
+            }
+
             return addedPost;
         }
 
@@ -132,6 +141,11 @@ namespace GRA.Domain.Service
                 currentPost.CategoryName =
                     (await _newsCategoryRepository.GetByIdAsync(currentPost.CategoryId)).Name;
                 await SendSubscriptionEmailsAsync(currentPost, postUrl);
+            }
+
+            if (publish)
+            {
+                _cache.Remove($"s{GetClaimId(ClaimType.SiteId)}.{CacheKey.LatestNewsPostId}");
             }
 
             return currentPost;
@@ -213,20 +227,43 @@ namespace GRA.Domain.Service
 
             var subscribedUserIds = await _userRepository.GetNewsSubscribedUserIdsAsync(siteId);
 
-            var subject = $"New {site.Name} post!";
-            string mailBody = $"{post.Title} has been posted to the {post.CategoryName} category"
-                + $"\r\nThe post can be viewed at this page:"
-                + $"\n\r  {postUrl}";
+            var subject = post.Title;
 
-            string htmlBody = $"<p>A new {site.Name} update has been posted in the {post.CategoryName} category!</p>"
-                + "<p>Access the "
-                + $"<a href=\"{postUrl}\">"
-                + "mission control home page</a> to view it.</p>";
+            string mailBody = $"A new post has been made to {site.Name} in the {post.CategoryName} category."
+                + $"\r\n\r\nView it in Mission Control:\r\n\r\n  {postUrl}";
+
+            string htmlBody = $"<p>A new post has been made to {site.Name} in the "
+                + $"<strong>{post.CategoryName}</strong> category.</p>"
+                + $"<p>View it in <a href=\"{postUrl}\">Mission Control</a>.</p>";
 
             foreach (var userId in subscribedUserIds)
             {
                 await _emailService.Send(userId, subject, mailBody, htmlBody);
             }
+        }
+
+        public async Task<int> GetLatestNewsIdAsync()
+        {
+            var siteId = GetClaimId(ClaimType.SiteId);
+            string cacheKey = $"s{siteId}.{CacheKey.LatestNewsPostId}";
+
+            int lastId;
+            var lastIdString = _cache.GetString(cacheKey);
+            if (string.IsNullOrEmpty(lastIdString))
+            {
+                lastId = await _newsPostRepository.GetLatestActiveIdAsync(new BaseFilter
+                {
+                    SiteId = siteId
+                });
+                lastIdString = lastId.ToString();
+                _cache.SetString(cacheKey, lastId.ToString(), ExpireIn(30));
+            }
+            else
+            {
+                lastId = int.Parse(lastIdString);
+            }
+
+            return lastId;
         }
     }
 }

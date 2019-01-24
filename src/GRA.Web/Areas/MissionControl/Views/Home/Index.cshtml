@@ -2,102 +2,114 @@
 
 @if (Model.NewsPosts == null || Model.NewsPosts.Count() == 0)
 {
-    <div class="row row-spacing" style="text-align: center;">
+    <div class="row row-spacing text-center">
         <div class="col-sm-2">
             <div class="ataglance-pill ataglance-pill-teal">
-                <span class="fa fa-user fa-2x"></span><br />
+                <span class="fas fa-users fa-2x"></span><br />
                 <span class="mc-site-participants">
                     @Model.AtAGlanceReport.SiteStatus.RegisteredUsers.ToString("N0")
-                </span> participant(s)
+                </span> participant@(Model.AtAGlanceReport.SiteStatus.RegisteredUsers != 1 ? "s" : "")
             </div>
         </div>
         <div class="col-sm-2">
             <div class="ataglance-pill ataglance-pill-teal">
-                <span class="fa fa-hashtag fa-2x"></span><br />
+                <span class="fas fa-hashtag fa-2x"></span><br />
                 <span class="mc-site-points">
                     @Model.AtAGlanceReport.SiteStatus.PointsEarned.ToString("N0")
-                </span> point(s)
+                </span> point@(Model.AtAGlanceReport.SiteStatus.PointsEarned != 1 ? "s" : "")
             </div>
         </div>
         <div class="col-sm-2">
             <div class="ataglance-pill ataglance-pill-teal">
-                <span class="fa fa-trophy fa-2x"></span><br />
+                <span class="fas fa-trophy fa-2x"></span><br />
                 <span class="mc-site-challenges">
                     @Model.AtAGlanceReport.SiteStatus.CompletedChallenges.ToString("N0")
-                </span> challenge(s)
+                </span> challenge@(Model.AtAGlanceReport.SiteStatus.CompletedChallenges != 1 ? "s" : "")
             </div>
         </div>
         <div class="col-sm-2">
             <div class="ataglance-pill ataglance-pill-teal">
-                <span class="fa fa-shield fa-2x"></span><br />
+                <span class="fas fa-certificate fa-2x"></span><br />
                 <span class="mc-site-badges">
                     @Model.AtAGlanceReport.SiteStatus.BadgesEarned.ToString("N0")
-                </span> badge(s)
+                </span> badge@(Model.AtAGlanceReport.SiteStatus.BadgesEarned != 1 ? "s" : "")
             </div>
         </div>
         @if (Model.AtAGlanceReport.SiteStatus.DaysUntilEnd != null)
         {
             <div class="col-sm-2">
                 <div class="ataglance-pill ataglance-pill-teal">
-                    <span class="fa fa-calendar fa-2x"></span><br />
+                    <span class="far fa-calendar-alt fa-2x"></span><br />
                     <span class="mc-site-days">
                         @Model.AtAGlanceReport.SiteStatus.DaysUntilEnd
-                    </span>day(s) left
+                    </span> day@(Model.AtAGlanceReport.SiteStatus.BadgesEarned != 1 ? "s" : "") left
                 </div>
             </div>
         }
+        <div class="col-sm-2">
+            <div class="ataglance-pill ataglance-pill-teal">
+                <span class="far fa-clock fa-2x"></span><br />
+                as of <span class="mc-site-asof">@Model.AtAGlanceReport.SiteStatus.AsOfDisplay</span>
+            </div>
+        </div>
     </div>
     <div class="row">
         <div class="col-xs-12">
             <span class="h3 mc-branch-description">@Model.AtAGlanceReport.FilteredBranchDescription:</span>
         </div>
     </div>
-
-    <div class="row row-spacing" style="text-align: center;">
+    <div class="row row-spacing text-center">
         <div class="col-sm-2">
             <div class="ataglance-pill ataglance-pill-darkslateblue">
-                <span class="fa fa-user fa-2x"></span><br />
+                <span class="fas fa-users fa-2x"></span><br />
                 <span class="mc-filtered-participants">
                     @Model.AtAGlanceReport.FilteredStatus.RegisteredUsers.ToString("N0")
-                </span> participant(s)
+                </span> participant@(Model.AtAGlanceReport.FilteredStatus.RegisteredUsers != 1 ? "s" : "")
             </div>
         </div>
         <div class="col-sm-2">
             <div class="ataglance-pill ataglance-pill-darkslateblue">
-                <span class="fa fa-hashtag fa-2x"></span><br />
+                <span class="fas fa-hashtag fa-2x"></span><br />
                 <span class="mc-filtered-points">
                     @Model.AtAGlanceReport.FilteredStatus.PointsEarned.ToString("N0")
-                </span> point(s)
+                </span> point@(Model.AtAGlanceReport.FilteredStatus.PointsEarned != 1 ? "s" : "")
             </div>
         </div>
         <div class="col-sm-2">
             <div class="ataglance-pill ataglance-pill-darkslateblue">
-                <span class="fa fa-trophy fa-2x"></span><br />
+                <span class="fas fa-trophy fa-2x"></span><br />
                 <span class="mc-filtered-challenges">
                     @Model.AtAGlanceReport.FilteredStatus.CompletedChallenges.ToString("N0")
-                </span> challenge(s)
+                </span> challenge@(Model.AtAGlanceReport.FilteredStatus.CompletedChallenges != 1 ? "s" : "")
             </div>
         </div>
         <div class="col-sm-2">
             <div class="ataglance-pill ataglance-pill-darkslateblue">
-                <span class="fa fa-shield fa-2x"></span><br />
+                <span class="fas fa-certificate fa-2x"></span><br />
                 <span class="mc-filtered-badges">
                     @Model.AtAGlanceReport.FilteredStatus.BadgesEarned.ToString("N0")
-                </span> badge(s)
+                </span> badge@(Model.AtAGlanceReport.FilteredStatus.BadgesEarned != 1 ? "s" : "")
             </div>
         </div>
         @if (Model.AtAGlanceReport.FilteredStatus.DaysUntilEnd != null)
         {
             <div class="col-sm-2">
                 <div class="ataglance-pill ataglance-pill-darkslateblue">
-                    <span class="fa fa-calendar fa-2x"></span><br />
+                    <span class="far fa-calendar-alt fa-2x"></span><br />
                     <span class="mc-filtered-days">
                         @Model.AtAGlanceReport.FilteredStatus.DaysUntilEnd
-                    </span> day(s) left
+                    </span> day@(Model.AtAGlanceReport.FilteredStatus.DaysUntilEnd != 1 ? "s" : "") left
                 </div>
             </div>
         }
+        <div class="col-sm-2">
+            <div class="ataglance-pill ataglance-pill-darkslateblue">
+                <span class="far fa-clock fa-2x"></span><br />
+                as of <span class="mc-filtered-asof">@Model.AtAGlanceReport.SiteStatus.AsOfDisplay</span>
+            </div>
+        </div>
     </div>
+    <input type="hidden" class="md-news-latestid" value="0" />
 }
 else
 {
@@ -122,14 +134,18 @@ else
                         <br />
                         <button type="submit"
                                 name="Subscribe"
-                                value="@(Model.IsNewsSubcribed ? "False" : "True")"
-                                class="btn btn-link fa fa-lg @(Model.IsNewsSubcribed ? "fa-check-square-o" : "fa-square-o")"
-                                style="text-decoration:none;"></button>
+                                value="@(Model.IsNewsSubscribed ? "False" : "True")"
+                                class="btn btn-link far fa-lg @(Model.IsNewsSubscribed ? "fa-check-square" : "fa-square") mc-news-subscribe"></button>
                     </div>
                 </div>
             </form>
         </div>
         <div class="col-sm-8 col-md-7">
+            <div class="alert alert-info mc-news-banner text-center" style="display: none;">
+                There is a news update!
+                <a href="@Url.Action("Index")" class="mc-refresh-link">Click to refresh</a>
+                <a href="@Url.Action("Index")" class="mc-refresh-link"><span class="fas fa-sync-alt mc-refresh-spinner"></span></a>
+            </div>
             @foreach (var post in Model.NewsPosts)
             {
                 <div class="news-post panel panel-default">
@@ -139,16 +155,14 @@ else
                         </div>
                     </div>
                     <div class="panel-body">
-
                         <div class="news-post-content">
                             @Html.Raw(post.Content)
                         </div>
                     </div>
-                    <div class="panel-footer" style="font-size: small; padding: 5px 15px;">
+                    <div class="panel-footer mc-news-panel-footer">
                         <em>Posted on @post.PublishedAt.Value.ToShortDateString() by <a href="mailto:@(Model.SiteAdministratorEmail)?Subject=Post @(post.Title)" target="_top">@post.CreatedByName</a></em>
                     </div>
                 </div>
-
             }
             @if (Model.PaginateModel.MaxPage > 1)
             {
@@ -159,51 +173,54 @@ else
             <div class="ataglancepill-sidebar ataglance-pill-darkslateblue ataglance-pill-filtered">
                 <div class="text-center hidden-sm">@Model.AtAGlanceReport.FilteredBranchDescription</div>
                 <div title="@Model.AtAGlanceReport.FilteredBranchDescription participant(s)">
-                    <span class="fa fa-user"></span>
+                    <span class="fas fa-users"></span>
                     <span class="mc-filtered-participants">
                         @Model.AtAGlanceReport.FilteredStatus.RegisteredUsers.ToString("N0")
                     </span><span class="hidden-sm"> participant@(Model.AtAGlanceReport.FilteredStatus.RegisteredUsers != 1 ? "s" : "")</span>
                 </div>
                 <div title="@Model.AtAGlanceReport.FilteredBranchDescription point(s) earned">
-                    <span class="fa fa-hashtag"></span>
+                    <span class="fas fa-hashtag"></span>
                     <span class="mc-filtered-points">
                         @Model.AtAGlanceReport.FilteredStatus.PointsEarned.ToString("N0")
                     </span><span class="hidden-sm"> point@(Model.AtAGlanceReport.FilteredStatus.PointsEarned != 1 ? "s" : "")</span>
                 </div>
                 <div title="@Model.AtAGlanceReport.FilteredBranchDescription completed challenge(s)">
-                    <span class="fa fa-trophy"></span>
+                    <span class="fas fa-trophy"></span>
                     <span class="mc-filtered-challenges">
                         @Model.AtAGlanceReport.FilteredStatus.CompletedChallenges.ToString("N0")
                     </span><span class="hidden-sm"> challenge@(Model.AtAGlanceReport.FilteredStatus.CompletedChallenges != 1 ? "s" : "")</span>
                 </div>
                 <div title="@Model.AtAGlanceReport.FilteredBranchDescription badge(s) earned">
-                    <span class="fa fa-shield"></span>
+                    <span class="fas fa-certificate"></span>
                     <span class="mc-filtered-badges">
                         @Model.AtAGlanceReport.FilteredStatus.BadgesEarned.ToString("N0")
                     </span><span class="hidden-sm"> badge@(Model.AtAGlanceReport.FilteredStatus.BadgesEarned != 1 ? "s" : "")</span>
                 </div>
+                <div class="text-center mc-filtered-asof-container">
+                    <em>as of <span class="mc-filtered-asof">@Model.AtAGlanceReport.FilteredStatus.AsOfDisplay</span></em>
+                </div>
             </div>
             <div class="ataglancepill-sidebar ataglance-pill-teal ataglance-pill-site">
                 <div title="Total participant(s)">
-                    <span class="fa fa-user"></span>
+                    <span class="fas fa-users"></span>
                     <span class="mc-site-participants">
                         @Model.AtAGlanceReport.SiteStatus.RegisteredUsers.ToString("N0")
                     </span><span class="hidden-sm"> participant@(Model.AtAGlanceReport.SiteStatus.RegisteredUsers != 1 ? "s" : "")</span>
                 </div>
                 <div title="Total point(s) earned">
-                    <span class="fa fa-hashtag"></span>
+                    <span class="fas fa-hashtag"></span>
                     <span class="mc-site-points">
                         @Model.AtAGlanceReport.SiteStatus.PointsEarned.ToString("N0")
                     </span><span class="hidden-sm"> point@(Model.AtAGlanceReport.SiteStatus.PointsEarned != 1 ? "s" : "")</span>
                 </div>
                 <div title="Total completed challenge(s)">
-                    <span class="fa fa-trophy"></span>
+                    <span class="fas fa-trophy"></span>
                     <span class="mc-site-challenges">
                         @Model.AtAGlanceReport.SiteStatus.CompletedChallenges.ToString("N0")
                     </span><span class="hidden-sm"> challenge@(Model.AtAGlanceReport.SiteStatus.CompletedChallenges != 1 ? "s" : "")</span>
                 </div>
                 <div title="Total badge(s) earned">
-                    <span class="fa fa-shield"></span>
+                    <span class="fas fa-certificate"></span>
                     <span class="mc-site-badges">
                         @Model.AtAGlanceReport.SiteStatus.BadgesEarned.ToString("N0")
                     </span><span class="hidden-sm"> badge@(Model.AtAGlanceReport.SiteStatus.BadgesEarned != 1 ? "s" : "")</span>
@@ -211,18 +228,26 @@ else
                 @if (Model.AtAGlanceReport.SiteStatus.DaysUntilEnd != null)
                 {
                     <div title="Day(s) left">
-                        <span class="fa fa-calendar"></span>
+                        <span class="far fa-calendar-alt"></span>
                         <span class="mc-site-days">
                             @Model.AtAGlanceReport.SiteStatus.DaysUntilEnd
                         </span><span class="hidden-sm"> day@(Model.AtAGlanceReport.SiteStatus.DaysUntilEnd != 1 ? "s" : "") left</span>
                     </div>
                 }
+                <div class="text-center mc-site-asof-container">
+                    <em>as of <span class="mc-site-asof">@Model.AtAGlanceReport.SiteStatus.AsOfDisplay</span></em>
+                </div>
             </div>
         </div>
     </div>
+    <input type="hidden" class="md-news-latestid" value="@Model.AtAGlanceReport.LatestNewsId" />
     <style>
         .mc-page-title {
             display: none;
+        }
+
+        .news-post-content :last-child {
+            margin-bottom : 0;
         }
     </style>
 }
@@ -233,18 +258,21 @@ else
     var mcAagStarted;
     var mcAagUpdateEvery = 60 * 1000;
     var mcAagSlowDownAfter = 3 * 60 * 60 * 1000;
+    var mcAagSlowDownRate = 30 * 60 * 1000;
 
     function updateAagReport(updateInterval) {
         mcAagInterval = setInterval(function () {
             mcAagUpdateCount++;
             var durationSeconds = Math.floor((new Date().getTime() - mcAagStarted) / 1000);
-            if(updateInterval != mcAagSlowDownAfter && durationSeconds > mcAagSlowDownAfter / 1000) {
-                console.log("Update #" + mcAagUpdateCount + ", total duration " + durationSeconds + "s and slowing down to update every " + mcAagSlowDownAfter / 1000 + "s");
+            if (updateInterval != mcAagSlowDownAfter && durationSeconds > mcAagSlowDownAfter / 1000) {
+                console.log("Update #" + mcAagUpdateCount + ", total duration " + durationSeconds + "s and slowing down to update every " + mcAagSlowDownRate / 1000 + "s");
                 clearInterval(mcAagInterval);
-                updateAagReport(mcAagSlowDownAfter);
+                updateAagReport(mcAagSlowDownRate);
             } else {
                 console.log("Update #" + mcAagUpdateCount + ", total duration " + durationSeconds + "s");
             }
+            $(".mc-filtered-asof").html(" &hellip;");
+            $(".mc-site-asof").html(" &hellip;");
             $.ajax("@Url.Action("AtAGlanceReport")")
                 .done(function (data, textStatus, jqXHR) {
                     $(".mc-filtered-participants").text(data.filteredStatus.registeredUsers);
@@ -252,11 +280,20 @@ else
                     $(".mc-filtered-challenges").text(data.filteredStatus.completedChallenges);
                     $(".mc-filtered-badges").text(data.filteredStatus.badgesEarned);
                     $(".mc-filtered-days").text(data.filteredStatus.daysUntilEnd);
+                    $(".mc-filtered-asof").text(data.filteredStatus.asOfDisplay);
                     $(".mc-site-participants").text(data.siteStatus.registeredUsers);
                     $(".mc-site-points").text(data.siteStatus.pointsEarned);
                     $(".mc-site-challenges").text(data.siteStatus.completedChallenges);
                     $(".mc-site-badges").text(data.siteStatus.badgesEarned);
                     $(".mc-site-days").text(data.siteStatus.daysUntilEnd);
+                    $(".mc-site-asof").text(data.siteStatus.asOfDisplay);
+                    var latestNewsId = $(".md-news-latestid").val();
+                    console.log("Old latest post id: " + latestNewsId);
+                    if (latestNewsId != "0" && latestNewsId != data.latestNewsId) {
+                        console.log("New post, old: " + latestNewsId + " new: " + data.latestNewsId);
+                        $(".md-news-latestid").val("0");
+                        $(".mc-news-banner").show();
+                    }
                 })
                 .fail(function (jqXHR, textStatus, errorThrown) {
                     console.log("Failure: " + textStatus + " on At a Glance request, stopping updates");
@@ -269,6 +306,9 @@ else
         mcAagStarted = Math.floor(new Date().getTime());
         console.log("Updating At a Glance status every " + mcAagUpdateEvery / 1000 + "s and slowing down after " + mcAagSlowDownAfter / 1000 + "s");
         updateAagReport(mcAagUpdateEvery);
+        $(".mc-refresh-link").click(function () {
+            $(".mc-refresh-spinner").addClass("fa-spin");
+        });
     });
     </script>
 }
