@@ -50,21 +50,17 @@
             <div class="navbar-collapse navbar-right collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Home" asp-action="Index" title="Back to the site" data-toggle="tooltip" data-placement="bottom" class="gra-homelink"><span class="fa fa-sitemap"></span><span class="visible-xs-inline"> Back to the site</span></a></li>
-                    @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ReadAllMail.ToString()))
+                    @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.ReadAllMail)))
                     {
+                        var newMail = (int)Context.Items[GRA.Controllers.ItemKey.UnreadCount] > 0;
+                        var newMailClass = newMail ? "text-danger" : "";
+                        var newMailDisplay = newMail ? "inline" : "none";
                         <li ActiveBy routeKey="Controller" value="Mail">
                             <a asp-controller="Mail" asp-action="Index" title="Mail">
-                                @if ((int)Context.Items[GRA.Controllers.ItemKey.UnreadCount] > 0)
-                                {
-                                    <span class="fas fa-envelope fa-lg text-danger" title="New message(s)!"></span><span class="visible-xs-inline"> Mail</span>
-                                    <span class="label label-default label-as-badge" style="background-color: #a94442;">
-                                        @Context.Items[GRA.Controllers.ItemKey.UnreadCount]
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="far fa-envelope"></span><span class="visible-xs-inline"> Mail</span>
-                                }
+                                <span class="fas fa-envelope mc-mail-icon @newMailClass"></span><span class="visible-xs-inline"> Mail</span>
+                                <span class="label label-default label-as-badge mc-mail-incoming-count" style="display: @newMailDisplay">
+                                    @Context.Items[GRA.Controllers.ItemKey.UnreadCount]
+                                </span>
                             </a>
                         </li>
                     }
@@ -223,7 +219,7 @@
         </noscript>
 
         @if (ViewData.ContainsKey(GRA.Controllers.ViewDataKey.TitleHtml)
-   && ViewData[GRA.Controllers.ViewDataKey.TitleHtml] != null)
+&& ViewData[GRA.Controllers.ViewDataKey.TitleHtml] != null)
         {
             <div class="row">
                 <div class="col-xs-12">
@@ -284,9 +280,39 @@
     @RenderSection("scripts", required: false)
     <script>
         $(function () {
-            $('[data-toggle="tooltip"]').tooltip()
+            $("[data-toggle=\"tooltip\"]").tooltip()
         })
     </script>
+    @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.ReadAllMail)))
+    {
+        <script>
+            var mcMailUpdateEvery = 60 * 1000;
+            function updateUnreadMailCount(updateInterval) {
+                var mcMailInterval = setInterval(function () {
+                    $.ajax("@Url.Action("GetUnreadMailCount", "Home", new { area = "MissionControl" })")
+                        .done(function (data, textStatus, jqXHR) {
+                            if (data === 0) {
+                                $(".mc-mail-icon").removeClass("text-danger");
+                                $(".mc-mail-incoming-count").hide();
+                                $(".mc-mail-incoming-count").text("0");
+                            } else {
+                                $(".mc-mail-icon").addClass("text-danger");
+                                $(".mc-mail-incoming-count").text(data);
+                                $(".mc-mail-incoming-count").show();
+                            }
+                        })
+                        .fail(function (jqXHR, textStatus, errorThrown) {
+                            console.log("Failure: " + textStatus + " on unread mail count, stopping updates");
+                            clearInterval(mcMailInterval);
+                        });
+                }, updateInterval);
+         }
+        $().ready(function() {
+            updateUnreadMailCount(mcMailUpdateEvery);
+        });
+        </script>
+    }
+
     @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.SiteJs))
     {
         <script src="@Url.Content(Context.Items[GRA.Controllers.ItemKey.SiteJs].ToString())"></script>

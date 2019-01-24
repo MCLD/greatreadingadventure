@@ -54,5 +54,37 @@ namespace GRA
                 return path;
             }
         }
+
+        public string ResolvePrivatePath(string filePath = default(string))
+        {
+            string path = _config[ConfigurationKey.ContentPath];
+            if (string.IsNullOrEmpty(path))
+            {
+                path = "private";
+            }
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                if (!path.EndsWith("/") && !filePath.StartsWith("/"))
+                {
+                    path += "/";
+                }
+                path += filePath;
+            }
+            return path;
+        }
+
+        public string ResolvePrivateFilePath(string filePath = default(string))
+        {
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "shared", "private");
+
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                return Path.Combine(path, filePath);
+            }
+            else
+            {
+                return path;
+            }
+        }
     }
 }

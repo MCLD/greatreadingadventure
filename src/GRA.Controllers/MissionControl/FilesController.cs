@@ -23,26 +23,28 @@ namespace GRA.Controllers.MissionControl
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public FileResult Get(string filePath)
+        public FileResult Get(string filename)
         {
-            var file = ResolvePrivateContentFilePath(filePath);
+            var filePath = Path.Combine($"site{GetCurrentSiteId()}", UploadFilesPath, filename);
+            var file = _pathResolver.ResolvePrivateFilePath(filePath);
             if (!System.IO.File.Exists(file))
             {
                 return null;
             }
 
-            var fileBytes = System.IO.File.ReadAllBytes(file);
-
             var typeProvider = new FileExtensionContentTypeProvider();
             typeProvider.TryGetContentType(file, out string contentType);
 
-            return File(fileBytes, contentType);
+            HttpContext.Response.Headers
+                .Add("content-disposition", $"inline; filename=\"{filename}\"");
+
+            return PhysicalFile(file, contentType);
         }
 
         public string Upload(IFormFile file)
         {
             var folderPath = Path.Combine($"site{GetCurrentSiteId()}", UploadFilesPath);
-            var contentDir = ResolvePrivateContentFilePath(folderPath);
+            var contentDir = _pathResolver.ResolvePrivateFilePath(folderPath);
 
             if (!Directory.Exists(contentDir))
             {
@@ -68,21 +70,7 @@ namespace GRA.Controllers.MissionControl
                 }
             }
 
-            return Url.Action(nameof(Get), new { filePath });
-        }
-
-        private string ResolvePrivateContentFilePath(string filePath = default(string))
-        {
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "private", "content");
-
-            if (!string.IsNullOrEmpty(filePath))
-            {
-                return Path.Combine(path, filePath);
-            }
-            else
-            {
-                return path;
-            }
+            return Url.Action(nameof(Get), new { filename });
         }
     }
 }

@@ -222,9 +222,6 @@ namespace GRA.Controllers
                 }
                 catch (GraException gex)
                 {
-                    _logger.LogWarning(gex, "Unable to reset password for {Username}: {Message}",
-                        model.Username,
-                        gex.Message);
                     ShowAlertWarning("Unable to reset password: ", gex);
                 }
             }

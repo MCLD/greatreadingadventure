@@ -8,22 +8,24 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Ping analytics upon account login
 - Improve analytics for sign-ups to include if it's a first-time participant (fix #330)
 - Ability to add carousel to dashboard
-- Performer scheduling
+- System to facilitate performer registration and scheduling
 - Ability to ask participants if they want to subscribe to emails during sign up
-- At a glance news posts
+- News posts in Mission Control
+- Automatic updating Mission Control at-a-glance report and unread mail status and count
 
 ### Changed
 - Modify docker-build.bash to not build release images unless the branch starts with 'release/'
 - Move from Google analytics.js to tag manager for analytics
 - Move favicons from wwwroot to shared/content so they can be easily customized
-- Logging level of password recovery misses are now information instead of warning
+- Logging level of password recovery misses and password reset errors are now information instead of warning
+- Redirect administrative users to Mission Control if the program isn't currently open
 
 ### Fixed
 - Fix instance name enrichment for logging
 - Error if account disappears while user is logged in
 - Avatar options now showing with single layer
 - Fix category color being unset on edit
-- Bootstrap downdrop options popup position
+- Fix display of Bootstrap drop-downs
 
 ### Removed
 - Recovery error logging at the controller level - it's logged in the service

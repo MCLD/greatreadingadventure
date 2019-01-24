@@ -3,6 +3,7 @@
     public static class CacheKey
     {
         public static readonly string CurrentStats = "CurrentStats";
+        public static readonly string LatestNewsPostId = "LatestNewsPostId";
         public static readonly string SiteCss = "SiteCss";
         public static readonly string SiteJs = "SiteJs";
         public static readonly string Sites = "Sites";
