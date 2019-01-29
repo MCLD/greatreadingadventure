@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using GRA.Controllers.Filter;
 using GRA.Controllers.ViewModel.MissionControl.Events;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
@@ -18,7 +17,6 @@ namespace GRA.Controllers.MissionControl
 {
     [Area("MissionControl")]
     [Authorize(Policy = Policy.ManageEvents)]
-    [EventUrlFilter]
     public class EventsController : Base.MCController
     {
         private readonly ILogger<EventsController> _logger;
@@ -27,6 +25,7 @@ namespace GRA.Controllers.MissionControl
         private readonly EventService _eventService;
         private readonly SiteService _siteService;
         private readonly TriggerService _triggerService;
+
         public EventsController(ILogger<EventsController> logger,
             ServiceFacade.Controller context,
             BadgeService badgeService,
@@ -48,12 +47,17 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Index(string search,
             int? systemId, int? branchId, bool? mine, int? programId, int page = 1)
         {
+            var site = await GetCurrentSiteAsync();
+            if (!string.IsNullOrEmpty(site.ExternalEventListUrl))
+            {
+                ShowAlertWarning($"Events will not be seen becuase all event requests will be <a href=\"{site.ExternalEventListUrl}\"> redirected to another site</a>.");
+            }
+
             try
             {
                 var viewModel = await GetEventList(0, search, systemId, branchId, mine, programId, page);
 
-                if (viewModel.PaginateModel.MaxPage > 0
-                    && viewModel.PaginateModel.CurrentPage > viewModel.PaginateModel.MaxPage)
+                if (viewModel.PaginateModel.PastMaxPage)
                 {
                     return RedirectToRoute(
                         new
@@ -74,12 +78,17 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> CommunityExperiences(string search,
             int? systemId, int? branchId, bool? mine, int? programId, int page = 1)
         {
+            var site = await GetCurrentSiteAsync();
+            if (!string.IsNullOrEmpty(site.ExternalEventListUrl))
+            {
+                ShowAlertWarning($"Events will not be seen becuase all event requests will be <a href=\"{site.ExternalEventListUrl}\"> redirected to another site</a>.");
+            }
+
             try
             {
                 var viewModel = await GetEventList(1, search, systemId, branchId, mine, programId, page);
 
-                if (viewModel.PaginateModel.MaxPage > 0
-                    && viewModel.PaginateModel.CurrentPage > viewModel.PaginateModel.MaxPage)
+                if (viewModel.PaginateModel.PastMaxPage)
                 {
                     return RedirectToRoute(
                         new
@@ -87,6 +96,7 @@ namespace GRA.Controllers.MissionControl
                             page = viewModel.PaginateModel.LastPage ?? 1
                         });
                 }
+
                 viewModel.CommunityExperience = true;
                 PageTitle = "Community Experiences";
                 return View("Index", viewModel);
@@ -102,7 +112,7 @@ namespace GRA.Controllers.MissionControl
         private async Task<EventsListViewModel> GetEventList(int? eventType, string search,
             int? systemId, int? branchId, bool? mine, int? programId, int page = 1)
         {
-            EventFilter filter = new EventFilter(page)
+            var filter = new EventFilter(page)
             {
                 EventType = eventType
             };
@@ -139,7 +149,7 @@ namespace GRA.Controllers.MissionControl
 
             var eventList = await _eventService.GetPaginatedListAsync(filter, true);
 
-            PaginateViewModel paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel
             {
                 ItemCount = eventList.Count,
                 CurrentPage = page,
@@ -149,7 +159,7 @@ namespace GRA.Controllers.MissionControl
             var systemList = (await _siteService.GetSystemList())
                 .OrderByDescending(_ => _.Id == GetId(ClaimType.SystemId)).ThenBy(_ => _.Name);
 
-            EventsListViewModel viewModel = new EventsListViewModel()
+            var viewModel = new EventsListViewModel
             {
                 Events = eventList.Data,
                 PaginateModel = paginateModel,
@@ -177,7 +187,7 @@ namespace GRA.Controllers.MissionControl
                 var branch = await _siteService.GetBranchByIdAsync(branchId.Value);
                 viewModel.BranchName = branch.Name;
                 viewModel.SystemName = systemList
-                    .Where(_ => _.Id == branch.SystemId).SingleOrDefault().Name;
+                    .SingleOrDefault(_ => _.Id == branch.SystemId)?.Name;
                 viewModel.BranchList = (await _siteService.GetBranches(branch.SystemId))
                     .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
                     .ThenBy(_ => _.Name);
@@ -186,7 +196,7 @@ namespace GRA.Controllers.MissionControl
             else if (systemId.HasValue)
             {
                 viewModel.SystemName = systemList
-                    .Where(_ => _.Id == systemId.Value).SingleOrDefault().Name;
+                    .SingleOrDefault(_ => _.Id == systemId.Value)?.Name;
                 viewModel.BranchList = (await _siteService.GetBranches(systemId.Value))
                     .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
                     .ThenBy(_ => _.Name);
@@ -217,7 +227,7 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> Create(int? id, bool communityExperience = false)
         {
-            PageTitle = communityExperience == true
+            PageTitle = communityExperience
                 ? "Create Community Experience"
                 : "Create Event";
 
@@ -226,10 +236,10 @@ namespace GRA.Controllers.MissionControl
             var systemList = await _siteService.GetSystemList(true);
             var locationList = await _eventService.GetLocations();
             var programList = await _siteService.GetProgramList();
-            EventsDetailViewModel viewModel = new EventsDetailViewModel()
+            var viewModel = new EventsDetailViewModel
             {
-                CanAddSecretCode = requireSecretCode ||
-                    UserHasPermission(Permission.ManageTriggers),
+                CanAddSecretCode = requireSecretCode
+                    || UserHasPermission(Permission.ManageTriggers),
                 CanManageLocations = UserHasPermission(Permission.ManageLocations),
                 CanRelateChallenge = UserHasPermission(Permission.ViewAllChallenges),
                 SystemList = new SelectList(systemList, "Id", "Name"),
@@ -395,8 +405,8 @@ namespace GRA.Controllers.MissionControl
                     {
                         byte[] badgeBytes;
                         string filename;
-                        if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage) &&
-                            (model.BadgeUploadImage == null || model.UseBadgeMaker))
+                        if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage)
+                            && (model.BadgeUploadImage == null || model.UseBadgeMaker))
                         {
                             var badgeString = model.BadgeMakerImage.Split(',').Last();
                             badgeBytes = Convert.FromBase64String(badgeString);
@@ -414,12 +424,12 @@ namespace GRA.Controllers.MissionControl
                             }
                             filename = Path.GetFileName(model.BadgeUploadImage.FileName);
                         }
-                        Badge newBadge = new Badge()
+                        var newBadge = new Badge
                         {
                             Filename = filename
                         };
                         var badge = await _badgeService.AddBadgeAsync(newBadge, badgeBytes);
-                        Trigger trigger = new Trigger
+                        var trigger = new Trigger
                         {
                             Name = $"Event '{model.Event.Name}' code",
                             SecretCode = model.SecretCode,
@@ -488,7 +498,7 @@ namespace GRA.Controllers.MissionControl
                 var branchList = await _siteService.GetBranches(GetId(ClaimType.SystemId));
                 var locationList = await _eventService.GetLocations();
                 var programList = await _siteService.GetProgramList();
-                EventsDetailViewModel viewModel = new EventsDetailViewModel()
+                var viewModel = new EventsDetailViewModel
                 {
                     Event = graEvent,
                     UseLocation = graEvent.AtLocationId.HasValue,
@@ -689,18 +699,18 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.ManageLocations)]
         public async Task<IActionResult> Locations(int page = 1)
         {
-            BaseFilter filter = new BaseFilter(page);
+            var filter = new BaseFilter(page);
 
             var locationList = await _eventService.GetPaginatedLocationsListAsync(filter);
 
-            PaginateViewModel paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel
             {
                 ItemCount = locationList.Count,
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
 
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new
@@ -709,7 +719,7 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
-            LocationsListViewModel viewModel = new LocationsListViewModel()
+            var viewModel = new LocationsListViewModel
             {
                 Locations = locationList.Data,
                 PaginateModel = paginateModel,
@@ -759,8 +769,7 @@ namespace GRA.Controllers.MissionControl
             {
                 try
                 {
-                    model.Location.Url = new UriBuilder(
-                        model.Location.Url).Uri.AbsoluteUri;
+                    model.Location.Url = new UriBuilder(model.Location.Url).Uri.AbsoluteUri;
                 }
                 catch (Exception)
                 {
@@ -814,7 +823,7 @@ namespace GRA.Controllers.MissionControl
                     return Json(new { success = false, message = "Invalid URL" });
                 }
             }
-            Location location = new Location()
+            var location = new Location
             {
                 Name = name,
                 Address = address,

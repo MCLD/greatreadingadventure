@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
 using System.Threading.Tasks;
-using GRA.Controllers.Filter;
 using GRA.Controllers.ViewModel.Events;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model.Filters;
@@ -14,12 +13,12 @@ using Microsoft.Extensions.Logging;
 
 namespace GRA.Controllers
 {
-    [EventUrlFilter]
     public class EventsController : Base.UserController
     {
         private readonly ILogger<EventsController> _logger;
         private readonly EventService _eventService;
         private readonly SiteService _siteService;
+
         public EventsController(ILogger<EventsController> logger,
             ServiceFacade.Controller context,
             EventService eventService,
@@ -31,6 +30,7 @@ namespace GRA.Controllers
             _siteService = Require.IsNotNull(siteService, nameof(SiteService));
             PageTitle = "Events";
         }
+
         public async Task<IActionResult> CommunityExperiences(int page = 1,
             string search = null,
             int? system = null,
@@ -40,6 +40,12 @@ namespace GRA.Controllers
             string StartDate = null,
             string EndDate = null)
         {
+            var site = await GetCurrentSiteAsync();
+            if (!string.IsNullOrEmpty(site.ExternalEventListUrl))
+            {
+                return new RedirectResult(site.ExternalEventListUrl);
+            }
+
             PageTitle = "Community Experiences";
             return await Index(page, search, system, branch, location, program, StartDate, EndDate, true);
         }
@@ -54,8 +60,14 @@ namespace GRA.Controllers
             string EndDate = null,
             bool CommunityExperiences = false)
         {
+            var site = await GetCurrentSiteAsync();
+            if (!string.IsNullOrEmpty(site.ExternalEventListUrl))
+            {
+                return new RedirectResult(site.ExternalEventListUrl);
+            }
+
             ModelState.Clear();
-            EventFilter filter = new EventFilter(page)
+            var filter = new EventFilter(page)
             {
                 Search = search,
                 EventType = CommunityExperiences ? 1 : 0
@@ -80,12 +92,11 @@ namespace GRA.Controllers
                 filter.ProgramIds = new List<int?>() { program.Value };
             }
 
-            if (!String.Equals(StartDate, "False", StringComparison.OrdinalIgnoreCase))
+            if (!string.Equals(StartDate, "False", StringComparison.OrdinalIgnoreCase))
             {
                 if (!string.IsNullOrWhiteSpace(StartDate))
                 {
-                    DateTime startDate;
-                    if (DateTime.TryParse(StartDate, out startDate))
+                    if (DateTime.TryParse(StartDate, out var startDate))
                     {
                         filter.StartDate = startDate.Date;
                     }
@@ -98,8 +109,7 @@ namespace GRA.Controllers
 
             if (!string.IsNullOrWhiteSpace(EndDate))
             {
-                DateTime endDate;
-                if (DateTime.TryParse(EndDate, out endDate))
+                if (DateTime.TryParse(EndDate, out var endDate))
                 {
                     filter.EndDate = endDate.Date;
                 }
@@ -107,14 +117,14 @@ namespace GRA.Controllers
 
             var eventList = await _eventService.GetPaginatedListAsync(filter);
 
-            PaginateViewModel paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel
             {
                 ItemCount = eventList.Count,
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
 
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new
@@ -123,7 +133,7 @@ namespace GRA.Controllers
                     });
             }
 
-            EventsListViewModel viewModel = new EventsListViewModel()
+            var viewModel = new EventsListViewModel
             {
                 Events = eventList.Data,
                 PaginateModel = paginateModel,
@@ -131,9 +141,9 @@ namespace GRA.Controllers
                 StartDate = filter.StartDate,
                 EndDate = filter.EndDate,
                 ProgramId = program,
-                SystemList = new SelectList((await _siteService.GetSystemList()), "Id", "Name"),
-                LocationList = new SelectList((await _eventService.GetLocations()), "Id", "Name"),
-                ProgramList = new SelectList((await _siteService.GetProgramList()), "Id", "Name"),
+                SystemList = new SelectList(await _siteService.GetSystemList(), "Id", "Name"),
+                LocationList = new SelectList(await _eventService.GetLocations(), "Id", "Name"),
+                ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
                 CommunityExperiences = CommunityExperiences
             };
 
@@ -142,20 +152,21 @@ namespace GRA.Controllers
                 var selectedBranch = await _siteService.GetBranchByIdAsync(branch.Value);
                 viewModel.SystemId = selectedBranch.SystemId;
                 viewModel.BranchList = new SelectList(
-                    (await _siteService.GetBranches(selectedBranch.SystemId)),
+                    await _siteService.GetBranches(selectedBranch.SystemId),
                     "Id", "Name", branch.Value);
             }
             else if (system.HasValue)
             {
                 viewModel.SystemId = system;
                 viewModel.BranchList = new SelectList(
-                    (await _siteService.GetBranches(system.Value)), "Id", "Name");
+                    await _siteService.GetBranches(system.Value), "Id", "Name");
             }
             else
             {
-                viewModel.BranchList = new SelectList((await _siteService.GetAllBranches()),
+                viewModel.BranchList = new SelectList(await _siteService.GetAllBranches(),
                     "Id", "Name");
             }
+
             if (location.HasValue && !branch.HasValue)
             {
                 viewModel.LocationId = location.Value;
@@ -191,24 +202,32 @@ namespace GRA.Controllers
             {
                 startDate = model.StartDate.Value.ToString("MM-dd-yyyy");
             }
+
             if (model.EndDate.HasValue
                 && (!model.StartDate.HasValue || model.EndDate >= model.StartDate))
             {
                 endDate = model.EndDate.Value.ToString("MM-dd-yyyy");
             }
+
             if (model.CommunityExperiences)
             {
                 isCommunityExperience = true;
             }
 
-            return RedirectToAction("Index", new { Search = model.Search, System = model.SystemId, Branch = model.BranchId, Location = model.LocationId, Program = model.ProgramId, StartDate = startDate, EndDate = endDate, CommunityExperiences = isCommunityExperience });
+            return RedirectToAction("Index", new { model.Search, System = model.SystemId, Branch = model.BranchId, Location = model.LocationId, Program = model.ProgramId, StartDate = startDate, EndDate = endDate, CommunityExperiences = isCommunityExperience });
         }
 
         public async Task<IActionResult> Detail(int id)
         {
+            var site = await GetCurrentSiteAsync();
+            if (!string.IsNullOrEmpty(site.ExternalEventListUrl))
+            {
+                return new RedirectResult(site.ExternalEventListUrl);
+            }
+
             try
             {
-                EventsDetailViewModel viewModel = new EventsDetailViewModel()
+                var viewModel = new EventsDetailViewModel
                 {
                     Event = await _eventService.GetDetails(id)
                 };
@@ -218,19 +237,19 @@ namespace GRA.Controllers
                     && !string.IsNullOrEmpty(viewModel.Event.EventLocationAddress))
                 {
                     viewModel.ShowStructuredData = true;
-                    if (viewModel.Event.AllDay == true)
+                    if (viewModel.Event.AllDay)
                     {
-                        viewModel.EventStart = viewModel.Event.StartDate.ToString("yyyy-MM-dd", 
+                        viewModel.EventStart = viewModel.Event.StartDate.ToString("yyyy-MM-dd",
                             CultureInfo.InvariantCulture);
                     }
                     else
                     {
-                        viewModel.EventStart = viewModel.Event.StartDate.ToString("s", 
+                        viewModel.EventStart = viewModel.Event.StartDate.ToString("s",
                             CultureInfo.InvariantCulture);
                         if (viewModel.Event.EndDate != null)
                         {
                             var endDate = (DateTime)viewModel.Event.EndDate;
-                            viewModel.EventEnd = endDate.ToString("s", 
+                            viewModel.EventEnd = endDate.ToString("s",
                                 CultureInfo.InvariantCulture);
                         }
                     }
@@ -254,10 +273,11 @@ namespace GRA.Controllers
         {
             try
             {
-                EventsDetailViewModel viewModel = new EventsDetailViewModel()
+                var viewModel = new EventsDetailViewModel
                 {
                     Event = await _eventService.GetDetails(eventId)
                 };
+
                 if (viewModel.Event.ProgramId.HasValue)
                 {
                     var program = await _siteService.GetProgramByIdAsync(viewModel.Event.ProgramId.Value);
