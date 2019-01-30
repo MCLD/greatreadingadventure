@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using GRA.Abstract;
 using GRA.Controllers.ViewModel.MissionControl.Home;
@@ -21,7 +21,6 @@ namespace GRA.Controllers.MissionControl
         private readonly MailService _mailService;
         private readonly NewsService _newsService;
         private readonly ReportService _reportService;
-        private readonly SampleDataService _sampleDataService;
         private readonly UserService _userService;
         private readonly SiteService _siteService;
 
@@ -32,7 +31,6 @@ namespace GRA.Controllers.MissionControl
             MailService mailService,
             NewsService newsService,
             ReportService reportService,
-            SampleDataService sampleDataService,
             UserService userService,
             SiteService siteService,
             ServiceFacade.Controller context,
@@ -46,8 +44,6 @@ namespace GRA.Controllers.MissionControl
             _newsService = newsService ?? throw new ArgumentNullException(nameof(newsService));
             _reportService = reportService
                 ?? throw new ArgumentNullException(nameof(reportService));
-            _sampleDataService = sampleDataService
-                ?? throw new ArgumentNullException(nameof(sampleDataService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             _codeSanitizer = codeSanitizer
@@ -227,13 +223,6 @@ namespace GRA.Controllers.MissionControl
             {
                 SiteLogoUrl = siteLogoUrl
             });
-        }
-
-        public async Task<IActionResult> LoadSampleData()
-        {
-            await _sampleDataService.InsertSampleData(GetId(ClaimType.UserId));
-            AlertSuccess = "Inserted sample data.";
-            return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Signout()
