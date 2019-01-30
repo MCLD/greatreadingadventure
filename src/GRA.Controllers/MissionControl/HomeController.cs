@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using GRA.Abstract;
 using GRA.Controllers.ViewModel.MissionControl.Home;
@@ -6,6 +6,7 @@ using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -119,6 +120,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpGet]
+        [Authorize(Policy = Policy.AccessMissionControl)]
         public async Task<JsonResult> AtAGlanceReport()
         {
             var atAGlance = await GetAtAGlanceAsync();
@@ -126,12 +128,14 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
+        [Authorize(Policy = Policy.AccessMissionControl)]
         public async Task<IActionResult> NewsSubscribe(bool subscribe)
         {
             await _userService.UserNewsSubscribe(subscribe);
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Policy = Policy.AccessMissionControl)]
         private async Task<AtAGlanceReport> GetAtAGlanceAsync()
         {
             int currentUserBranchId = GetId(ClaimType.BranchId);
@@ -240,17 +244,11 @@ namespace GRA.Controllers.MissionControl
             return RedirectToRoute(new { area = string.Empty, action = "Index" });
         }
 
+        [Authorize(Policy = Policy.ReadAllMail)]
         public async Task<JsonResult> GetUnreadMailCount()
         {
-            if (UserHasPermission(Permission.ReadAllMail))
-            {
-                var unreadCount = await _mailService.GetAdminUnreadCountAsync();
-                return Json(unreadCount);
-            }
-            else
-            {
-                return Json(0);
-            }
+            var unreadCount = await _mailService.GetAdminUnreadCountAsync();
+            return Json(unreadCount);
         }
     }
 }
