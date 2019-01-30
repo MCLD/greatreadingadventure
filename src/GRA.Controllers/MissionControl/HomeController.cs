@@ -61,7 +61,7 @@ namespace GRA.Controllers.MissionControl
                 {
                     area = string.Empty,
                     controller = "SignIn",
-                    ReturnUrl = "/MissionControl"
+                    ReturnUrl = Url.Action()
                 });
             }
 
@@ -69,12 +69,7 @@ namespace GRA.Controllers.MissionControl
             {
                 // not authorized for Mission Control, redirect to authorization code
 
-                return RedirectToRoute(new
-                {
-                    area = "MissionControl",
-                    controller = "Home",
-                    action = "AuthorizationCode"
-                });
+                return RedirectToAction(nameof(AuthorizationCode));
             }
             Site site = await GetCurrentSiteAsync();
 
@@ -159,6 +154,17 @@ namespace GRA.Controllers.MissionControl
         [HttpGet]
         public async Task<IActionResult> AuthorizationCode()
         {
+            if (!AuthUser.Identity.IsAuthenticated)
+            {
+                // not logged in, redirect to login page
+                return RedirectToRoute(new
+                {
+                    area = string.Empty,
+                    controller = "SignIn",
+                    ReturnUrl = Url.Action()
+                });
+            }
+
             var site = await GetCurrentSiteAsync();
             string siteLogoUrl = site.SiteLogoUrl
                 ?? Url.Content(Defaults.SiteLogoPath);
@@ -179,7 +185,7 @@ namespace GRA.Controllers.MissionControl
                 {
                     area = string.Empty,
                     controller = "SignIn",
-                    ReturnUrl = "/MissionControl"
+                    ReturnUrl = Url.Action()
                 });
             }
 
