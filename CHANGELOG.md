@@ -26,7 +26,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Avatar options now showing with single layer
 - Fix category color being unset on edit
 - Fix display of Bootstrap drop-downs
-- Fix insert sample data accessibility
+- Fix accessibility for insert sample data call
 
 ### Removed
 - Recovery error logging at the controller level - it's logged in the service
