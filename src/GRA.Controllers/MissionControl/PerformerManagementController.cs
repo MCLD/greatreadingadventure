@@ -1100,7 +1100,7 @@ namespace GRA.Controllers.MissionControl
 
             viewModel.DayScheduleModel = dayScheduleViewModel;
 
-            return PartialView("_performerCalendarPartial", viewModel);
+            return PartialView("_PerformerCalendarPartial", viewModel);
         }
 
 #pragma warning disable MVC1004

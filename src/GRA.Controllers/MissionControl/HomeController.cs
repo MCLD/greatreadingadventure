@@ -6,6 +6,7 @@ using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -21,7 +22,6 @@ namespace GRA.Controllers.MissionControl
         private readonly MailService _mailService;
         private readonly NewsService _newsService;
         private readonly ReportService _reportService;
-        private readonly SampleDataService _sampleDataService;
         private readonly UserService _userService;
         private readonly SiteService _siteService;
 
@@ -32,7 +32,6 @@ namespace GRA.Controllers.MissionControl
             MailService mailService,
             NewsService newsService,
             ReportService reportService,
-            SampleDataService sampleDataService,
             UserService userService,
             SiteService siteService,
             ServiceFacade.Controller context,
@@ -46,8 +45,6 @@ namespace GRA.Controllers.MissionControl
             _newsService = newsService ?? throw new ArgumentNullException(nameof(newsService));
             _reportService = reportService
                 ?? throw new ArgumentNullException(nameof(reportService));
-            _sampleDataService = sampleDataService
-                ?? throw new ArgumentNullException(nameof(sampleDataService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             _codeSanitizer = codeSanitizer
@@ -65,7 +62,7 @@ namespace GRA.Controllers.MissionControl
                 {
                     area = string.Empty,
                     controller = "SignIn",
-                    ReturnUrl = "/MissionControl"
+                    ReturnUrl = Url.Action()
                 });
             }
 
@@ -73,12 +70,7 @@ namespace GRA.Controllers.MissionControl
             {
                 // not authorized for Mission Control, redirect to authorization code
 
-                return RedirectToRoute(new
-                {
-                    area = "MissionControl",
-                    controller = "Home",
-                    action = "AuthorizationCode"
-                });
+                return RedirectToAction(nameof(AuthorizationCode));
             }
             Site site = await GetCurrentSiteAsync();
 
@@ -128,6 +120,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpGet]
+        [Authorize(Policy = Policy.AccessMissionControl)]
         public async Task<JsonResult> AtAGlanceReport()
         {
             var atAGlance = await GetAtAGlanceAsync();
@@ -135,12 +128,14 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
+        [Authorize(Policy = Policy.AccessMissionControl)]
         public async Task<IActionResult> NewsSubscribe(bool subscribe)
         {
             await _userService.UserNewsSubscribe(subscribe);
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Policy = Policy.AccessMissionControl)]
         private async Task<AtAGlanceReport> GetAtAGlanceAsync()
         {
             int currentUserBranchId = GetId(ClaimType.BranchId);
@@ -163,6 +158,17 @@ namespace GRA.Controllers.MissionControl
         [HttpGet]
         public async Task<IActionResult> AuthorizationCode()
         {
+            if (!AuthUser.Identity.IsAuthenticated)
+            {
+                // not logged in, redirect to login page
+                return RedirectToRoute(new
+                {
+                    area = string.Empty,
+                    controller = "SignIn",
+                    ReturnUrl = Url.Action()
+                });
+            }
+
             var site = await GetCurrentSiteAsync();
             string siteLogoUrl = site.SiteLogoUrl
                 ?? Url.Content(Defaults.SiteLogoPath);
@@ -183,7 +189,7 @@ namespace GRA.Controllers.MissionControl
                 {
                     area = string.Empty,
                     controller = "SignIn",
-                    ReturnUrl = "/MissionControl"
+                    ReturnUrl = Url.Action()
                 });
             }
 
@@ -229,13 +235,6 @@ namespace GRA.Controllers.MissionControl
             });
         }
 
-        public async Task<IActionResult> LoadSampleData()
-        {
-            await _sampleDataService.InsertSampleData(GetId(ClaimType.UserId));
-            AlertSuccess = "Inserted sample data.";
-            return RedirectToAction("Index");
-        }
-
         public async Task<IActionResult> Signout()
         {
             if (AuthUser.Identity.IsAuthenticated)
@@ -245,17 +244,11 @@ namespace GRA.Controllers.MissionControl
             return RedirectToRoute(new { area = string.Empty, action = "Index" });
         }
 
+        [Authorize(Policy = Policy.ReadAllMail)]
         public async Task<JsonResult> GetUnreadMailCount()
         {
-            if (UserHasPermission(Permission.ReadAllMail))
-            {
-                var unreadCount = await _mailService.GetAdminUnreadCountAsync();
-                return Json(unreadCount);
-            }
-            else
-            {
-                return Json(0);
-            }
+            var unreadCount = await _mailService.GetAdminUnreadCountAsync();
+            return Json(unreadCount);
         }
     }
 }
