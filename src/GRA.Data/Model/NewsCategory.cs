@@ -11,8 +11,6 @@ namespace GRA.Data.Model
         [MaxLength(255)]
         public string Name { get; set; }
 
-        public bool DisplayInSidebar { get; set; }
-
         public bool IsDefault { get; set; }
 
         public ICollection<NewsPost> Posts { get; set; }

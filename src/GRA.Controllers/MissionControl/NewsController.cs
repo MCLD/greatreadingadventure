@@ -31,7 +31,7 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> Index(string search, int? category, int page = 1)
         {
-            var filter = new BaseFilter(page)
+            var filter = new NewsFilter(page)
             {
                 Search = search
             };
@@ -64,7 +64,7 @@ namespace GRA.Controllers.MissionControl
                 PaginateModel = paginateModel,
                 Search = search,
                 CategoryId = category,
-                CategoryList = await _newsService.GetCategoriesAsync()
+                CategoryList = await _newsService.GetAllCategoriesAsync()
             };
 
             if (category.HasValue)
@@ -101,7 +101,7 @@ namespace GRA.Controllers.MissionControl
             var viewModel = new PostDetailViewModel
             {
                 Action = nameof(CreatePost),
-                Categories = new SelectList(await _newsService.GetCategoriesAsync(), "Id", "Name")
+                Categories = new SelectList(await _newsService.GetAllCategoriesAsync(), "Id", "Name")
             };
 
             return View("PostDetail", viewModel);
@@ -123,7 +123,7 @@ namespace GRA.Controllers.MissionControl
             }
 
             model.Action = nameof(CreatePost);
-            model.Categories = new SelectList(await _newsService.GetCategoriesAsync(), "Id", "Name");
+            model.Categories = new SelectList(await _newsService.GetAllCategoriesAsync(), "Id", "Name");
 
             return View("PostDetail", model);
         }
@@ -134,7 +134,7 @@ namespace GRA.Controllers.MissionControl
             {
                 Post = await _newsService.GetPostByIdAsync(id),
                 Action = nameof(EditPost),
-                Categories = new SelectList(await _newsService.GetCategoriesAsync(), "Id", "Name")
+                Categories = new SelectList(await _newsService.GetAllCategoriesAsync(), "Id", "Name")
             };
 
             return View("PostDetail", viewModel);
@@ -156,7 +156,7 @@ namespace GRA.Controllers.MissionControl
             }
 
             model.Action = nameof(CreatePost);
-            model.Categories = new SelectList(await _newsService.GetCategoriesAsync(), "Id", "Name");
+            model.Categories = new SelectList(await _newsService.GetAllCategoriesAsync(), "Id", "Name");
 
             return View("PostDetail", model);
         }

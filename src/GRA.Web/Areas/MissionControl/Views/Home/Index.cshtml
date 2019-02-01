@@ -1,6 +1,6 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Home.AtAGlanceViewModel
 
-@if (Model.NewsPosts == null || Model.NewsPosts.Count() == 0)
+@if (!Model.ShowPosts)
 {
     <div class="row row-spacing text-center">
         <div class="col-sm-2">
@@ -121,24 +121,26 @@ else
                 </div>
                 <div class="panel-body">
                     <ul class="nav nav-pills nav-stacked">
-                        <li class="active">
-                            <a style="padding: 5px 10px;" href="#">News</a>
-                        </li>
+                        @foreach (var category in Model.NewsCategories)
+                        {
+                            <li ActiveBy routeKey="Category" value="@(category.IsDefault ? $",{category.Id}" : $"{category.Id}")">
+                                <a style="padding: 5px 10px;" asp-route-category="@(category.IsDefault ? "" : $"{category.Id}")">@category.Name</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
-            <form asp-action="NewsSubscribe">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        Subscribe via email
-                        <br />
-                        <button type="submit"
-                                name="Subscribe"
-                                value="@(Model.IsNewsSubscribed ? "False" : "True")"
-                                class="btn btn-link far fa-lg @(Model.IsNewsSubscribed ? "fa-check-square" : "fa-square") mc-news-subscribe"></button>
-                    </div>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    Subscribe via email
+                    <br />
+                    <button id="subscribeButton"
+                            type="button"
+                            name="Subscribe"
+                            class="btn btn-link far fa-lg @(Model.IsNewsSubscribed ? "fa-check-square" : "fa-square") mc-news-subscribe"
+                            data-subscribed="@Model.IsNewsSubscribed"></button>
                 </div>
-            </form>
+            </div>
         </div>
         <div class="col-sm-8 col-md-7">
             <div class="alert alert-info mc-news-banner text-center" style="display: none;">
@@ -146,28 +148,36 @@ else
                 <a href="@Url.Action("Index")" class="mc-refresh-link">Click to refresh</a>
                 <a href="@Url.Action("Index")" class="mc-refresh-link"><span class="fas fa-sync-alt mc-refresh-spinner"></span></a>
             </div>
-            @foreach (var post in Model.NewsPosts)
+            @if (!Model.NewsPosts.Any())
             {
-                <div class="news-post panel panel-default">
-                    <div class="panel-heading">
-                        <div class="panel-title">
-                            @post.Title
+                <div class="alert alert-info">No posts in this category.</div>
+            }
+            else
+            {
+                foreach (var post in Model.NewsPosts)
+                {
+                    <div class="news-post panel panel-default">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                @post.Title
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="news-post-content">
+                                @Html.Raw(post.Content)
+                            </div>
+                        </div>
+                        <div class="panel-footer mc-news-panel-footer">
+                            <em>Posted on @post.PublishedAt.Value.ToShortDateString() by <a href="mailto:@(Model.SiteAdministratorEmail)?Subject=Post @(post.Title)" target="_top">@post.CreatedByName</a></em>
                         </div>
                     </div>
-                    <div class="panel-body">
-                        <div class="news-post-content">
-                            @Html.Raw(post.Content)
-                        </div>
-                    </div>
-                    <div class="panel-footer mc-news-panel-footer">
-                        <em>Posted on @post.PublishedAt.Value.ToShortDateString() by <a href="mailto:@(Model.SiteAdministratorEmail)?Subject=Post @(post.Title)" target="_top">@post.CreatedByName</a></em>
-                    </div>
-                </div>
+                }
+                if (Model.PaginateModel.MaxPage > 1)
+                {
+                    <paginate paginateModel="@Model.PaginateModel"></paginate>
+                }
             }
-            @if (Model.PaginateModel.MaxPage > 1)
-            {
-                <paginate paginateModel="@Model.PaginateModel"></paginate>
-            }
+
         </div>
         <div class="col-sm-2 col-md-3">
             <div class="ataglancepill-sidebar ataglance-pill-darkslateblue ataglance-pill-filtered">
@@ -247,68 +257,107 @@ else
         }
 
         .news-post-content :last-child {
-            margin-bottom : 0;
+            margin-bottom: 0;
         }
     </style>
 }
+
 @section scripts {
     <script>
-    var mcAagUpdateCount = 0;
-    var mcAagInterval;
-    var mcAagStarted;
-    var mcAagUpdateEvery = 60 * 1000;
-    var mcAagSlowDownAfter = 3 * 60 * 60 * 1000;
-    var mcAagSlowDownRate = 30 * 60 * 1000;
+        var newsSubscribeUrl = "@(Url.Action(nameof(HomeController.NewsSubscribe)))";
 
-    function updateAagReport(updateInterval) {
-        mcAagInterval = setInterval(function () {
-            mcAagUpdateCount++;
-            var durationSeconds = Math.floor((new Date().getTime() - mcAagStarted) / 1000);
-            if (updateInterval != mcAagSlowDownAfter && durationSeconds > mcAagSlowDownAfter / 1000) {
-                console.log("Update #" + mcAagUpdateCount + ", total duration " + durationSeconds + "s and slowing down to update every " + mcAagSlowDownRate / 1000 + "s");
-                clearInterval(mcAagInterval);
-                updateAagReport(mcAagSlowDownRate);
-            } else {
-                console.log("Update #" + mcAagUpdateCount + ", total duration " + durationSeconds + "s");
-            }
-            $(".mc-filtered-asof").html(" &hellip;");
-            $(".mc-site-asof").html(" &hellip;");
-            $.ajax("@Url.Action("AtAGlanceReport")")
-                .done(function (data, textStatus, jqXHR) {
-                    $(".mc-filtered-participants").text(data.filteredStatus.registeredUsers);
-                    $(".mc-filtered-points").text(data.filteredStatus.pointsEarned);
-                    $(".mc-filtered-challenges").text(data.filteredStatus.completedChallenges);
-                    $(".mc-filtered-badges").text(data.filteredStatus.badgesEarned);
-                    $(".mc-filtered-days").text(data.filteredStatus.daysUntilEnd);
-                    $(".mc-filtered-asof").text(data.filteredStatus.asOfDisplay);
-                    $(".mc-site-participants").text(data.siteStatus.registeredUsers);
-                    $(".mc-site-points").text(data.siteStatus.pointsEarned);
-                    $(".mc-site-challenges").text(data.siteStatus.completedChallenges);
-                    $(".mc-site-badges").text(data.siteStatus.badgesEarned);
-                    $(".mc-site-days").text(data.siteStatus.daysUntilEnd);
-                    $(".mc-site-asof").text(data.siteStatus.asOfDisplay);
-                    var latestNewsId = $(".md-news-latestid").val();
-                    console.log("Old latest post id: " + latestNewsId);
-                    if (latestNewsId != "0" && latestNewsId != data.latestNewsId) {
-                        console.log("New post, old: " + latestNewsId + " new: " + data.latestNewsId);
-                        $(".md-news-latestid").val("0");
-                        $(".mc-news-banner").show();
+        var mcAagUpdateCount = 0;
+        var mcAagInterval;
+        var mcAagStarted;
+        var mcAagUpdateEvery = 60 * 1000;
+        var mcAagSlowDownAfter = 3 * 60 * 60 * 1000;
+        var mcAagSlowDownRate = 30 * 60 * 1000;
+
+        function updateAagReport(updateInterval) {
+            mcAagInterval = setInterval(function () {
+                mcAagUpdateCount++;
+                var durationSeconds = Math.floor((new Date().getTime() - mcAagStarted) / 1000);
+                if (updateInterval != mcAagSlowDownAfter && durationSeconds > mcAagSlowDownAfter / 1000) {
+                    console.log("Update #" + mcAagUpdateCount + ", total duration " + durationSeconds + "s and slowing down to update every " + mcAagSlowDownRate / 1000 + "s");
+                    clearInterval(mcAagInterval);
+                    updateAagReport(mcAagSlowDownRate);
+                } else {
+                    console.log("Update #" + mcAagUpdateCount + ", total duration " + durationSeconds + "s");
+                }
+                $(".mc-filtered-asof").html(" &hellip;");
+                $(".mc-site-asof").html(" &hellip;");
+                $.ajax("@Url.Action("AtAGlanceReport")")
+                    .done(function (data, textStatus, jqXHR) {
+                        $(".mc-filtered-participants").text(data.filteredStatus.registeredUsers);
+                        $(".mc-filtered-points").text(data.filteredStatus.pointsEarned);
+                        $(".mc-filtered-challenges").text(data.filteredStatus.completedChallenges);
+                        $(".mc-filtered-badges").text(data.filteredStatus.badgesEarned);
+                        $(".mc-filtered-days").text(data.filteredStatus.daysUntilEnd);
+                        $(".mc-filtered-asof").text(data.filteredStatus.asOfDisplay);
+                        $(".mc-site-participants").text(data.siteStatus.registeredUsers);
+                        $(".mc-site-points").text(data.siteStatus.pointsEarned);
+                        $(".mc-site-challenges").text(data.siteStatus.completedChallenges);
+                        $(".mc-site-badges").text(data.siteStatus.badgesEarned);
+                        $(".mc-site-days").text(data.siteStatus.daysUntilEnd);
+                        $(".mc-site-asof").text(data.siteStatus.asOfDisplay);
+                        var latestNewsId = $(".md-news-latestid").val();
+                        console.log("Old latest post id: " + latestNewsId);
+                        if (latestNewsId != "0" && latestNewsId != data.latestNewsId) {
+                            console.log("New post, old: " + latestNewsId + " new: " + data.latestNewsId);
+                            $(".md-news-latestid").val("0");
+                            $(".mc-news-banner").show();
+                        }
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrown) {
+                        console.log("Failure: " + textStatus + " on At a Glance request, stopping updates");
+                        clearInterval(mcAagInterval);
+                    });
+            }, updateInterval);
+        }
+
+        $().ready(function() {
+            mcAagStarted = Math.floor(new Date().getTime());
+            console.log("Updating At a Glance status every " + mcAagUpdateEvery / 1000 + "s and slowing down after " + mcAagSlowDownAfter / 1000 + "s");
+            updateAagReport(mcAagUpdateEvery);
+            $(".mc-refresh-link").click(function () {
+                $(".mc-refresh-spinner").addClass("fa-spin");
+            });
+        });
+
+        $("#subscribeButton").on("click", function () {
+            var button = $(this);
+            if (button.hasClass("disabled") == false) {
+                button.addClass("disabled").removeClass("far fa-square fa-check-square").addClass("fas fa-spinner fa-pulse");
+                var subscribe = button.data("subscribed") == "False";
+
+                $.post(newsSubscribeUrl, { subscribe: subscribe }, function (response) {
+                    if (response.success) {
+                        if (subscribe) {
+                            button.addClass("fa-check-square");
+                            button.data("subscribed", "True");
+                        }
+                        else {
+                            button.addClass("fa-square");
+                            button.data("subscribed", "False");
+                        }
+                    }
+                    else {
+                        alert(response.message);
+                        if (subscribe) {
+                            button.addClass("fa-square");
+                        }
+                        else {
+                            button.addClass("fa-check-square");
+                        }
                     }
                 })
-                .fail(function (jqXHR, textStatus, errorThrown) {
-                    console.log("Failure: " + textStatus + " on At a Glance request, stopping updates");
-                    clearInterval(mcAagInterval);
+                .fail(function () {
+                    alert("Error updating news subscription");
+                })
+                .always(function () {
+                    button.removeClass("fas fa-spinner fa-pulse disabled").addClass("far");
                 });
-        }, updateInterval);
-    }
-
-    $().ready(function() {
-        mcAagStarted = Math.floor(new Date().getTime());
-        console.log("Updating At a Glance status every " + mcAagUpdateEvery / 1000 + "s and slowing down after " + mcAagSlowDownAfter / 1000 + "s");
-        updateAagReport(mcAagUpdateEvery);
-        $(".mc-refresh-link").click(function () {
-            $(".mc-refresh-spinner").addClass("fa-spin");
+            }
         });
-    });
     </script>
 }

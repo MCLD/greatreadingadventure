@@ -56,7 +56,6 @@ namespace GRA.Domain.Service
                 {
                     var category = new NewsCategory
                     {
-                        DisplayInSidebar = true,
                         IsDefault = true,
                         Name = "News",
                         SiteId = site.Id
@@ -67,8 +66,13 @@ namespace GRA.Domain.Service
             }
         }
 
+        public async Task<bool> AnyPublishedPostsAsync()
+        {
+            return await _newsPostRepository.AnyPublishedPostsAsync(GetCurrentSiteId());
+        }
+
         public async Task<DataWithCount<IEnumerable<NewsPost>>> GetPaginatedPostListAsync(
-            BaseFilter filter)
+            NewsFilter filter)
         {
             if (filter.IsActive != true)
             {
@@ -157,7 +161,7 @@ namespace GRA.Domain.Service
             await _newsPostRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), postId);
         }
 
-        public async Task<IEnumerable<NewsCategory>> GetCategoriesAsync()
+        public async Task<IEnumerable<NewsCategory>> GetAllCategoriesAsync()
         {
             return await _newsCategoryRepository.GetAllAsync(GetCurrentSiteId());
         }
@@ -196,7 +200,6 @@ namespace GRA.Domain.Service
             var currentCategory = await _newsCategoryRepository.GetByIdAsync(category.Id);
 
             currentCategory.Name = category.Name.Trim();
-            currentCategory.DisplayInSidebar = category.DisplayInSidebar;
 
             return await _newsCategoryRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
                 currentCategory);

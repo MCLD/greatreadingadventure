@@ -7,7 +7,8 @@ namespace GRA.Domain.Repository
 {
     public interface INewsPostRepository : IRepository<NewsPost>
     {
-        Task<DataWithCount<IEnumerable<NewsPost>>> PageAsync(BaseFilter filter);
+        Task<bool> AnyPublishedPostsAsync(int siteId);
+        Task<DataWithCount<IEnumerable<NewsPost>>> PageAsync(NewsFilter filter);
         Task<int> GetLatestActiveIdAsync(BaseFilter filter);
     }
 }
