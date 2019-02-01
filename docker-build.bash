@@ -7,6 +7,7 @@ BLD_INCLUDE_AVATARS=false
 BLD_DOCKERFILE="Dockerfile"
 BLD_COMMIT=$(git rev-parse --short HEAD)
 BLD_VERSION=unknown
+BLD_VERSION_DATE=$(date -u +'%Y%m%d_%H%M%SZ')
 BLD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
 
 if [[ -z $BLD_DOCKER_IMAGE ]]; then
@@ -32,12 +33,12 @@ fi
 
 if [[ $BLD_BRANCH = "master" ]]; then
   BLD_DOCKER_TAG="latest"
-  BLD_VERSION=${BLD_BRANCH}-${BLD_DATE}
+  BLD_VERSION=${BLD_BRANCH}-${BLD_VERSION_DATE}
   BLD_PUSH=true
   BLD_INCLUDE_AVATARS=true
 elif [[ $BLD_BRANCH = "develop" ]]; then
   BLD_DOCKER_TAG="develop"
-  BLD_VERSION=${BLD_BRANCH}-{$BLD_DATE}
+  BLD_VERSION=${BLD_BRANCH}-${BLD_VERSION_DATE}
   BLD_PUSH=true
 elif [[ $BLD_BRANCH =~ release/([0-9]+\.[0-9]+\.[0-9]+.*) ]]; then
   BLD_RELEASE_VERSION=${BASH_REMATCH[1]}
@@ -49,7 +50,7 @@ elif [[ $BLD_BRANCH =~ release/([0-9]+\.[0-9]+\.[0-9]+.*) ]]; then
   echo "=== Building release artifacts for $BLD_RELEASE_VERSION"
 else
   BLD_DOCKER_TAG=$BLD_COMMIT
-  BLD_VERSION=${BLD_COMMIT}-${BLD_DATE}
+  BLD_VERSION=${BLD_COMMIT}-${BLD_VERSION_DATE}
 fi
 
 if [[ $BLD_INCLUDE_AVATARS = "true" ]]; then
