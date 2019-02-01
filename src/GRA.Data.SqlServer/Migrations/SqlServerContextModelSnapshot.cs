@@ -1054,8 +1054,6 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<int>("CreatedBy");
 
-                    b.Property<bool>("DisplayInSidebar");
-
                     b.Property<bool>("IsDefault");
 
                     b.Property<string>("Name")
