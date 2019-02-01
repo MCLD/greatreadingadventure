@@ -139,6 +139,11 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Setup"><span class="fa fa-wrench"></span><span class="visible-xs-inline"> Setup</span> <span class="caret"></span></a>
 
                             <ul class="dropdown-menu">
+                                <li>
+                                    <a asp-controller="Home" asp-action="AuthorizationCode">
+                                        Authorization code
+                                    </a>
+                                </li>
                                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.ManageCarousels)))
                                 {
                                     <li><a asp-controller="Carousels" asp-action="Index">Carousel management</a></li>
@@ -218,8 +223,8 @@
             </div>
         </noscript>
 
-        @if (ViewData.ContainsKey(GRA.Controllers.ViewDataKey.TitleHtml)
-&& ViewData[GRA.Controllers.ViewDataKey.TitleHtml] != null)
+        @if (ViewData.ContainsKey(GRA.Controllers.ViewDataKey.TitleHtml) 
+            && ViewData[GRA.Controllers.ViewDataKey.TitleHtml] != null)
         {
             <div class="row">
                 <div class="col-xs-12">

@@ -6,6 +6,8 @@ BLD_RELEASE=false
 BLD_INCLUDE_AVATARS=false
 BLD_DOCKERFILE="Dockerfile"
 BLD_COMMIT=$(git rev-parse --short HEAD)
+BLD_VERSION=unknown
+BLD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
 
 if [[ -z $BLD_DOCKER_IMAGE ]]; then
   BLD_DIRECTORY=${PWD##*/}
@@ -30,20 +32,24 @@ fi
 
 if [[ $BLD_BRANCH = "master" ]]; then
   BLD_DOCKER_TAG="latest"
+  BLD_VERSION=${BLD_BRANCH}-${BLD_DATE}
   BLD_PUSH=true
   BLD_INCLUDE_AVATARS=true
 elif [[ $BLD_BRANCH = "develop" ]]; then
   BLD_DOCKER_TAG="develop"
+  BLD_VERSION=${BLD_BRANCH}-{$BLD_DATE}
   BLD_PUSH=true
 elif [[ $BLD_BRANCH =~ release/([0-9]+\.[0-9]+\.[0-9]+.*) ]]; then
   BLD_RELEASE_VERSION=${BASH_REMATCH[1]}
   BLD_DOCKER_TAG=v${BLD_RELEASE_VERSION}
+  BLD_VERSION=v${BLD_RELEASE_VERSION}
   BLD_RELEASE=true
   BLD_PUSH=true
   BLD_INCLUDE_AVATARS=true
   echo "=== Building release artifacts for $BLD_RELEASE_VERSION"
 else
   BLD_DOCKER_TAG=$BLD_COMMIT
+  BLD_VERSION=${BLD_COMMIT}-${BLD_DATE}
 fi
 
 if [[ $BLD_INCLUDE_AVATARS = "true" ]]; then
@@ -59,7 +65,12 @@ if [ $# -gt 0 ]; then
 fi
 
 echo "=== Building branch $BLD_BRANCH commit $BLD_COMMIT as Docker image $BLD_DOCKER_IMAGE:$BLD_DOCKER_TAG"
-docker build -f $BLD_DOCKERFILE -t $BLD_DOCKER_IMAGE:$BLD_DOCKER_TAG --build-arg commit="$BLD_COMMIT" --build-arg branch="$BLD_BRANCH" .
+docker build -f $BLD_DOCKERFILE -t $BLD_DOCKER_IMAGE:$BLD_DOCKER_TAG \
+    --build-arg BRANCH="$BLD_BRANCH" \
+    --build-arg IMAGE_CREATED="$BLD_DATE" \
+    --build-arg IMAGE_REVISION="$BLD_COMMIT" \
+    --build-arg IMAGE_VERSION="$BLD_VERSION" .
+
 if [[ -z $BLD_DOCKER_REPOSITORY ]]; then
   echo '=== Not pushing docker image: no Docker repository configured.'
 else

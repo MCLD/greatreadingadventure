@@ -6,11 +6,9 @@ namespace GRA.Controllers.ViewModel.MissionControl
     {
         public string Assembly { get; set; }
         public string Version { get; set; }
-        public string Migration { get; set; }
         public Dictionary<string, string> Assemblies { get; set; }
-        public string Instance { get; set; }
-        public string Deploy { get; set; }
         public string SiteLogoUrl { get; set; }
         public Dictionary<string, string> Settings { get; set; }
+        public Dictionary<string, string> RuntimeSettings { get; set; }
     }
 }
