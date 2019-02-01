@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
-using System;
+﻿using System;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace GRA.Controllers.Filter
 {
@@ -11,7 +10,8 @@ namespace GRA.Controllers.Filter
         {
             if (context.HttpContext.User.Identity.IsAuthenticated)
             {
-                context.Result = new RedirectToActionResult("Index", "Home", null);
+                context.Result
+                    = new RedirectToActionResult(nameof(HomeController.Index), "Home", null);
             }
         }
     }

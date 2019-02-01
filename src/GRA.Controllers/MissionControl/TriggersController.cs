@@ -1,17 +1,17 @@
-﻿using GRA.Controllers.ViewModel.Shared;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl.Triggers;
+using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.IO;
-using System.Collections.Generic;
-using System;
-using GRA.Domain.Model.Filters;
+using Microsoft.Extensions.Logging;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -26,6 +26,7 @@ namespace GRA.Controllers.MissionControl
         private readonly SiteService _siteService;
         private readonly TriggerService _triggerService;
         private readonly VendorCodeService _vendorCodeService;
+
         public TriggersController(ILogger<TriggersController> logger,
             ServiceFacade.Controller context,
             AvatarService avatarService,
@@ -36,13 +37,16 @@ namespace GRA.Controllers.MissionControl
             VendorCodeService vendorCodeService)
             : base(context)
         {
-            _logger = Require.IsNotNull(logger, nameof(logger));
-            _avatarService = Require.IsNotNull(avatarService, nameof(avatarService));
-            _badgeService = Require.IsNotNull(badgeService, nameof(badgeService));
-            _eventService = Require.IsNotNull(eventService, nameof(eventService));
-            _siteService = Require.IsNotNull(siteService, nameof(SiteService));
-            _triggerService = Require.IsNotNull(triggerService, nameof(triggerService));
-            _vendorCodeService = Require.IsNotNull(vendorCodeService, nameof(vendorCodeService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _avatarService = avatarService
+                ?? throw new ArgumentNullException(nameof(avatarService));
+            _badgeService = badgeService ?? throw new ArgumentNullException(nameof(badgeService));
+            _eventService = eventService ?? throw new ArgumentNullException(nameof(eventService));
+            _siteService = siteService ?? throw new ArgumentNullException(nameof(SiteService));
+            _triggerService = triggerService
+                ?? throw new ArgumentNullException(nameof(triggerService));
+            _vendorCodeService = vendorCodeService
+                ?? throw new ArgumentNullException(nameof(vendorCodeService));
             PageTitle = "Triggers";
         }
 
@@ -89,7 +93,7 @@ namespace GRA.Controllers.MissionControl
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new
@@ -140,7 +144,7 @@ namespace GRA.Controllers.MissionControl
                 var branch = await _siteService.GetBranchByIdAsync(branchId.Value);
                 viewModel.BranchName = branch.Name;
                 viewModel.SystemName = systemList
-                    .Where(_ => _.Id == branch.SystemId).SingleOrDefault().Name;
+                    .SingleOrDefault(_ => _.Id == branch.SystemId)?.Name;
                 viewModel.BranchList = (await _siteService.GetBranches(branch.SystemId))
                     .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
                     .ThenBy(_ => _.Name);
@@ -149,7 +153,7 @@ namespace GRA.Controllers.MissionControl
             else if (systemId.HasValue)
             {
                 viewModel.SystemName = systemList
-                    .Where(_ => _.Id == systemId.Value).SingleOrDefault().Name;
+                    .SingleOrDefault(_ => _.Id == systemId.Value)?.Name;
                 viewModel.BranchList = (await _siteService.GetBranches(systemId.Value))
                     .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
                     .ThenBy(_ => _.Name);
@@ -191,15 +195,15 @@ namespace GRA.Controllers.MissionControl
                 EditAvatarBundle = UserHasPermission(Permission.ManageAvatars),
                 EditMail = UserHasPermission(Permission.ManageTriggerMail),
                 EditVendorCode = UserHasPermission(Permission.ManageVendorCodes),
-                SystemList = new SelectList((await _siteService.GetSystemList()), "Id", "Name"),
-                BranchList = new SelectList((await _siteService.GetAllBranches()), "Id", "Name"),
-                ProgramList = new SelectList((await _siteService.GetProgramList()), "Id", "Name")
+                SystemList = new SelectList(await _siteService.GetSystemList(), "Id", "Name"),
+                BranchList = new SelectList(await _siteService.GetAllBranches(), "Id", "Name"),
+                ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name")
             };
 
             if (viewModel.EditVendorCode)
             {
                 viewModel.VendorCodeTypeList = new SelectList(
-                    (await _vendorCodeService.GetTypeAllAsync()), "Id", "Description");
+                    await _vendorCodeService.GetTypeAllAsync(), "Id", "Description");
             }
             if (viewModel.EditAvatarBundle)
             {
@@ -240,11 +244,9 @@ namespace GRA.Controllers.MissionControl
             }
             else if (model.BadgeUploadImage != null
                 && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker)
-                && (Path.GetExtension(model.BadgeUploadImage.FileName).ToLower() != ".jpg"
-                    && Path.GetExtension(model.BadgeUploadImage.FileName).ToLower() != ".jpeg"
-                    && Path.GetExtension(model.BadgeUploadImage.FileName).ToLower() != ".png"))
+                && (!ValidImageExtensions.Contains(Path.GetExtension(model.BadgeUploadImage.FileName).ToLower())))
             {
-                ModelState.AddModelError("BadgeUploadImage", "Please use a .jpg or .png image.");
+                ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
             }
             if (!model.IsSecretCode)
             {
@@ -328,8 +330,8 @@ namespace GRA.Controllers.MissionControl
                     {
                         byte[] badgeBytes;
                         string filename;
-                        if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage) &&
-                            (model.BadgeUploadImage == null || model.UseBadgeMaker))
+                        if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage)
+                            && (model.BadgeUploadImage == null || model.UseBadgeMaker))
                         {
                             var badgeString = model.BadgeMakerImage.Split(',').Last();
                             badgeBytes = Convert.FromBase64String(badgeString);
@@ -364,17 +366,17 @@ namespace GRA.Controllers.MissionControl
                 }
             }
             model.Action = "Create";
-            model.SystemList = new SelectList((await _siteService.GetSystemList()), "Id", "Name");
+            model.SystemList = new SelectList(await _siteService.GetSystemList(), "Id", "Name");
             if (model.Trigger.LimitToSystemId.HasValue)
             {
                 model.BranchList = new SelectList(
-                    (await _siteService.GetBranches(model.Trigger.LimitToSystemId.Value)), "Id", "Name");
+                    await _siteService.GetBranches(model.Trigger.LimitToSystemId.Value), "Id", "Name");
             }
             else
             {
-                model.BranchList = new SelectList((await _siteService.GetAllBranches()), "Id", "Name");
+                model.BranchList = new SelectList(await _siteService.GetAllBranches(), "Id", "Name");
             }
-            model.ProgramList = new SelectList((await _siteService.GetProgramList()), "Id", "Name");
+            model.ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name");
             model.TriggerRequirements = await _triggerService
                 .GetRequirementsByIdsAsync(badgeRequiredList, challengeRequiredList);
             foreach (var requirement in model.TriggerRequirements)
@@ -384,7 +386,7 @@ namespace GRA.Controllers.MissionControl
             if (model.EditVendorCode)
             {
                 model.VendorCodeTypeList = new SelectList(
-                    (await _vendorCodeService.GetTypeAllAsync()), "Id", "Description");
+                    await _vendorCodeService.GetTypeAllAsync(), "Id", "Description");
             }
             if (model.EditAvatarBundle)
             {
@@ -400,7 +402,7 @@ namespace GRA.Controllers.MissionControl
         {
             var trigger = await _triggerService.GetByIdAsync(id);
 
-            if(trigger == null)
+            if (trigger == null)
             {
                 ShowAlertWarning($"Could not find trigger id {id}, possibly it has been deleted.");
                 return RedirectToAction("Index");
@@ -423,14 +425,14 @@ namespace GRA.Controllers.MissionControl
                 TriggerRequirements = await _triggerService.GetTriggerRequirementsAsync(trigger),
                 BadgeRequiredList = string.Join(",", trigger.BadgeIds),
                 ChallengeRequiredList = string.Join(",", trigger.ChallengeIds),
-                SystemList = new SelectList((await _siteService.GetSystemList()), "Id", "Name"),
-                ProgramList = new SelectList((await _siteService.GetProgramList()), "Id", "Name")
+                SystemList = new SelectList(await _siteService.GetSystemList(), "Id", "Name"),
+                ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name")
             };
 
             if (viewModel.EditVendorCode)
             {
                 viewModel.VendorCodeTypeList = new SelectList(
-                    (await _vendorCodeService.GetTypeAllAsync()), "Id", "Description");
+                    await _vendorCodeService.GetTypeAllAsync(), "Id", "Description");
             }
             else if (viewModel.Trigger.AwardVendorCodeTypeId.HasValue)
             {
@@ -452,11 +454,11 @@ namespace GRA.Controllers.MissionControl
             if (viewModel.Trigger.LimitToSystemId.HasValue)
             {
                 viewModel.BranchList = new SelectList(
-                    (await _siteService.GetBranches(viewModel.Trigger.LimitToSystemId.Value)), "Id", "Name");
+                    await _siteService.GetBranches(viewModel.Trigger.LimitToSystemId.Value), "Id", "Name");
             }
             else
             {
-                viewModel.BranchList = new SelectList((await _siteService.GetAllBranches()), "Id", "Name");
+                viewModel.BranchList = new SelectList(await _siteService.GetAllBranches(), "Id", "Name");
             }
             foreach (var requirement in viewModel.TriggerRequirements)
             {
@@ -503,11 +505,9 @@ namespace GRA.Controllers.MissionControl
 
             if (model.BadgeUploadImage != null
                 && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker)
-                && (Path.GetExtension(model.BadgeUploadImage.FileName).ToLower() != ".jpg"
-                    && Path.GetExtension(model.BadgeUploadImage.FileName).ToLower() != ".jpeg"
-                    && Path.GetExtension(model.BadgeUploadImage.FileName).ToLower() != ".png"))
+                && (!ValidImageExtensions.Contains(Path.GetExtension(model.BadgeUploadImage.FileName).ToLower())))
             {
-                ModelState.AddModelError("BadgeImage", "Please use a .jpg or .png image.");
+                ModelState.AddModelError("BadgeImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
             }
 
             if (!model.IsSecretCode)
@@ -589,8 +589,8 @@ namespace GRA.Controllers.MissionControl
                     {
                         byte[] badgeBytes;
                         string filename;
-                        if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage) &&
-                            (model.BadgeUploadImage == null || model.UseBadgeMaker))
+                        if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage)
+                            && (model.BadgeUploadImage == null || model.UseBadgeMaker))
                         {
                             var badgeString = model.BadgeMakerImage.Split(',').Last();
                             badgeBytes = Convert.FromBase64String(badgeString);
@@ -625,17 +625,17 @@ namespace GRA.Controllers.MissionControl
 
             model.Action = "Edit";
             model.DependentTriggers = await _triggerService.GetDependentsAsync(model.Trigger.Id);
-            model.SystemList = new SelectList((await _siteService.GetSystemList()), "Id", "Name");
+            model.SystemList = new SelectList(await _siteService.GetSystemList(), "Id", "Name");
             if (model.Trigger.LimitToSystemId.HasValue)
             {
                 model.BranchList = new SelectList(
-                    (await _siteService.GetBranches(model.Trigger.LimitToSystemId.Value)), "Id", "Name");
+                    await _siteService.GetBranches(model.Trigger.LimitToSystemId.Value), "Id", "Name");
             }
             else
             {
-                model.BranchList = new SelectList((await _siteService.GetAllBranches()), "Id", "Name");
+                model.BranchList = new SelectList(await _siteService.GetAllBranches(), "Id", "Name");
             }
-            model.ProgramList = new SelectList((await _siteService.GetProgramList()), "Id", "Name");
+            model.ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name");
             model.TriggerRequirements = await _triggerService
                 .GetRequirementsByIdsAsync(badgeRequiredList, challengeRequiredList);
             foreach (var requirement in model.TriggerRequirements)
@@ -646,7 +646,7 @@ namespace GRA.Controllers.MissionControl
             if (model.EditVendorCode)
             {
                 model.VendorCodeTypeList = new SelectList(
-                    (await _vendorCodeService.GetTypeAllAsync()), "Id", "Description");
+                    await _vendorCodeService.GetTypeAllAsync(), "Id", "Description");
             }
             else if (model.Trigger.AwardVendorCodeTypeId.HasValue)
             {
@@ -679,7 +679,7 @@ namespace GRA.Controllers.MissionControl
                 if (requireSecretCode)
                 {
                     var relatedEvents = await _eventService.GetRelatedEventsForTriggerAsync(id);
-                    if (relatedEvents.Any())
+                    if (relatedEvents.Count > 0)
                     {
                         ShowAlertWarning("Unable to delete trigger: Trigger has related events");
                         return RedirectToAction("Index");
@@ -688,7 +688,6 @@ namespace GRA.Controllers.MissionControl
 
                 await _triggerService.RemoveAsync(id);
                 ShowAlertSuccess("Trigger deleted.");
-
             }
             catch (GraException gex)
             {

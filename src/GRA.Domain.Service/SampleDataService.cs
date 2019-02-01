@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GRA.Domain.Service
 {
-    public class SampleDataService : BaseService<SampleDataService>
+    public class SampleDataService : BaseUserService<SampleDataService>
     {
         private readonly IChallengeRepository _challengeRepository;
         private readonly IChallengeTaskRepository _challengeTaskRepository;
@@ -20,6 +20,7 @@ namespace GRA.Domain.Service
         private readonly SchoolService _schoolService;
         public SampleDataService(ILogger<SampleDataService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
+            IUserContextProvider userContextProvider,
             IChallengeRepository challengeRepository,
             IChallengeTaskRepository challengeTaskRepository,
             IMailRepository mailRepository,
@@ -27,7 +28,7 @@ namespace GRA.Domain.Service
             ISiteRepository siteRepository,
             IUserRepository userRepository,
             ActivityService activityService,
-            SchoolService schoolService) : base(logger, dateTimeProvider)
+            SchoolService schoolService) : base(logger, dateTimeProvider, userContextProvider)
         {
             _challengeRepository = Require.IsNotNull(challengeRepository,
                 nameof(challengeRepository));
@@ -62,6 +63,8 @@ namespace GRA.Domain.Service
 
         public async Task InsertSampleData(int userId)
         {
+            VerifyPermission(Permission.AccessFlightController);
+
             var user = await _userRepository.GetByIdAsync(userId);
 
             var programs = await _programRepository.GetAllAsync(user.SiteId);

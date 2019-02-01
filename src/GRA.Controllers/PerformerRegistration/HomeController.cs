@@ -49,6 +49,17 @@ namespace GRA.Controllers.PerformerRegistration
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
+            if (!AuthUser.Identity.IsAuthenticated)
+            {
+                // not logged in, redirect to login page
+                return RedirectToRoute(new
+                {
+                    area = string.Empty,
+                    controller = "SignIn",
+                    ReturnUrl = Url.Action()
+                });
+            }
+
             if (!UserHasPermission(Permission.AccessPerformerRegistration))
             {
                 // not authorized for Performer registration, redirect to authorization code
@@ -89,6 +100,18 @@ namespace GRA.Controllers.PerformerRegistration
         [AllowAnonymous]
         public async Task<IActionResult> AuthorizationCode()
         {
+            if (!AuthUser.Identity.IsAuthenticated)
+            {
+                // not logged in, redirect to login page
+                return RedirectToRoute(new
+                {
+                    area = string.Empty,
+                    controller = "SignIn",
+                    action = "Index",
+                    ReturnUrl = Url.Action()
+                });
+            }
+
             var site = await GetCurrentSiteAsync();
             string siteLogoUrl = site.SiteLogoUrl
                 ?? Url.Content(Defaults.SiteLogoPath);
@@ -110,7 +133,8 @@ namespace GRA.Controllers.PerformerRegistration
                 {
                     area = string.Empty,
                     controller = "SignIn",
-                    ReturnUrl = "/MissionControl"
+                    action = "Index",
+                    ReturnUrl = Url.Action()
                 });
             }
 
@@ -240,9 +264,9 @@ namespace GRA.Controllers.PerformerRegistration
                 else if (model.Images?.Count > 0)
                 {
                     var extensions = model.Images.Select(_ => Path.GetExtension(_.FileName).ToLower());
-                    if (extensions.Any(_ => _ != ".jpg" && _ != ".jpeg" && _ != ".png"))
+                    if (extensions.Any(_ => !ValidImageExtensions.Contains(_)))
                     {
-                        ModelState.AddModelError("Images", "Please only attach .jpg or .png images.");
+                        ModelState.AddModelError("Images", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                     }
                     else if (model.Images.Sum(_ => _.Length) > MaxUploadMB * MBSize)
                     {
@@ -542,9 +566,9 @@ namespace GRA.Controllers.PerformerRegistration
             if (model.Images?.Count > 0)
             {
                 var extensions = model.Images.Select(_ => Path.GetExtension(_.FileName).ToLower());
-                if (extensions.Any(_ => _ != ".jpg" && _ != ".jpeg" && _ != ".png"))
+                if (extensions.Any(_ => !ValidImageExtensions.Contains(_)))
                 {
-                    ModelState.AddModelError("Images", "Please only attach .jpg or .png images.");
+                    ModelState.AddModelError("Images", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                 }
                 else if (model.Images.Sum(_ => _.Length) > MaxUploadMB * MBSize)
                 {
@@ -723,9 +747,9 @@ namespace GRA.Controllers.PerformerRegistration
             else if (model.Images.Count > 0)
             {
                 var extensions = model.Images.Select(_ => Path.GetExtension(_.FileName).ToLower());
-                if (extensions.Any(_ => _ != ".jpg" && _ != ".jpeg" && _ != ".png"))
+                if (extensions.Any(_ => !ValidImageExtensions.Contains(_)))
                 {
-                    ModelState.AddModelError("Images", "Please only attach .jpg or .png images.");
+                    ModelState.AddModelError("Images", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                 }
                 else if (model.Images.Sum(_ => _.Length) > MaxUploadMB * MBSize)
                 {
@@ -930,9 +954,9 @@ namespace GRA.Controllers.PerformerRegistration
             else if (model.Images.Count > 0)
             {
                 var extensions = model.Images.Select(_ => Path.GetExtension(_.FileName).ToLower());
-                if (extensions.Any(_ => _ != ".jpg" && _ != ".jpeg" && _ != ".png"))
+                if (extensions.Any(_ => !ValidImageExtensions.Contains(_)))
                 {
-                    ModelState.AddModelError("Images", "Please only attach .jpg or .png images.");
+                    ModelState.AddModelError("Images", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                 }
                 else if (model.Images.Sum(_ => _.Length) > MaxUploadMB * MBSize)
                 {

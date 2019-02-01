@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ namespace GRA.Controllers.MissionControl
         private readonly ILogger<FlightController> _logger;
         private readonly ActivityService _activityService;
         private readonly QuestionnaireService _questionnaireService;
+        private readonly SampleDataService _sampleDataService;
         private readonly VendorCodeService _vendorCodeService;
         private readonly IHostingEnvironment _hostingEnvironment;
 
@@ -25,6 +27,7 @@ namespace GRA.Controllers.MissionControl
             ServiceFacade.Controller context,
             ActivityService activityService,
             QuestionnaireService questionnaireService,
+            SampleDataService sampleDataService,
             VendorCodeService vendorCodeService,
             IHostingEnvironment hostingEnvironment)
             : base(context)
@@ -33,6 +36,8 @@ namespace GRA.Controllers.MissionControl
             _activityService = Require.IsNotNull(activityService, nameof(activityService));
             _questionnaireService = Require.IsNotNull(questionnaireService,
                 nameof(questionnaireService));
+            _sampleDataService = sampleDataService
+                ?? throw new ArgumentNullException(nameof(sampleDataService));
             _vendorCodeService = Require.IsNotNull(vendorCodeService, nameof(vendorCodeService));
             _hostingEnvironment = Require.IsNotNull(hostingEnvironment, nameof(hostingEnvironment));
             PageTitle = "Flight Director";
@@ -62,6 +67,14 @@ namespace GRA.Controllers.MissionControl
                 });
             }
             return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LoadSampleData()
+        {
+            await _sampleDataService.InsertSampleData(GetId(ClaimType.UserId));
+            AlertSuccess = "Inserted sample data.";
+            return RedirectToAction("Index");
         }
 
         [HttpPost]

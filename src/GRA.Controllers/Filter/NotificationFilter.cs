@@ -1,30 +1,29 @@
-﻿using GRA.Domain.Service;
-using Microsoft.AspNetCore.Mvc.Filters;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Controllers;
 using System.Reflection;
+using System.Threading.Tasks;
+using GRA.Domain.Service;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace GRA.Controllers.Filter
 {
     public class NotificationFilter : Attribute, IAsyncResultFilter
     {
-        private const int MaxNotifications = 3;
-
         private readonly UserService _userService;
+
         public NotificationFilter(UserService userService)
         {
-            _userService = Require.IsNotNull(userService, nameof(userService));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 
-        public async Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
+        public async Task OnResultExecutionAsync(ResultExecutingContext context,
+            ResultExecutionDelegate next)
         {
-            var httpContext = context.HttpContext;
-            if (httpContext.User.Identity.IsAuthenticated)
+            if (context.HttpContext.User.Identity.IsAuthenticated)
             {
-                var controllerActionDescriptor = context.ActionDescriptor as ControllerActionDescriptor;
+                var controllerActionDescriptor
+                    = context.ActionDescriptor as ControllerActionDescriptor;
                 if (!controllerActionDescriptor.ControllerTypeInfo
                         .IsDefined(typeof(Attributes.SuppressNotifications))
                     && !controllerActionDescriptor.MethodInfo
@@ -33,13 +32,12 @@ namespace GRA.Controllers.Filter
                     var notifications = await _userService.GetNotificationsForUser();
                     if (notifications.Any())
                     {
-                        httpContext.Items[ItemKey.NotificationsList] = notifications;
+                        context.HttpContext.Items[ItemKey.NotificationsList] = notifications;
                     }
 
                     await next();
 
-                    if (httpContext.Items[ItemKey.NotificationsDisplayed] != null
-                        && (bool)httpContext.Items[ItemKey.NotificationsDisplayed] == true)
+                    if (context.HttpContext.Items[ItemKey.NotificationsDisplayed] as bool? == true)
                     {
                         await _userService.ClearNotificationsForUser();
                     }

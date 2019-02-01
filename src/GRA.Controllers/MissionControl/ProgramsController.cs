@@ -23,6 +23,7 @@ namespace GRA.Controllers.MissionControl
         private readonly DailyLiteracyTipService _dailyLiteracyTipService;
         private readonly PointTranslationService _pointTranslationService;
         private readonly SiteService _siteService;
+
         public ProgramsController(ILogger<ProgramsController> logger,
             ServiceFacade.Controller context,
             BadgeService badgeService,
@@ -51,13 +52,13 @@ namespace GRA.Controllers.MissionControl
 
             var programList = await _siteService.GetPaginatedProgramListAsync(filter);
 
-            PaginateViewModel paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel
             {
                 ItemCount = programList.Count,
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new
@@ -113,11 +114,9 @@ namespace GRA.Controllers.MissionControl
                 }
                 else if (model.BadgeUploadImage != null
                     && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker)
-                    && (Path.GetExtension(model.BadgeUploadImage.FileName).ToLower() != ".jpg"
-                        && Path.GetExtension(model.BadgeUploadImage.FileName).ToLower() != ".jpeg"
-                        && Path.GetExtension(model.BadgeUploadImage.FileName).ToLower() != ".png"))
+                    && (!ValidImageExtensions.Contains(Path.GetExtension(model.BadgeUploadImage.FileName).ToLower())))
                 {
-                    ModelState.AddModelError("BadgeUploadImage", "Please use a .jpg or .png image.");
+                    ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                 }
             }
 
@@ -135,8 +134,8 @@ namespace GRA.Controllers.MissionControl
                     {
                         byte[] badgeBytes;
                         string filename;
-                        if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage) &&
-                            (model.BadgeUploadImage == null || model.UseBadgeMaker))
+                        if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage)
+                            && (model.BadgeUploadImage == null || model.UseBadgeMaker))
                         {
                             var badgeString = model.BadgeMakerImage.Split(',').Last();
                             badgeBytes = Convert.FromBase64String(badgeString);
@@ -246,18 +245,16 @@ namespace GRA.Controllers.MissionControl
             if (!string.IsNullOrWhiteSpace(model.Program.JoinBadgeName)
                 && string.IsNullOrWhiteSpace(model.BadgeMakerImage)
                 && model.BadgeUploadImage == null
-                && currentProgram.JoinBadgeId.HasValue == false)
+                && !currentProgram.JoinBadgeId.HasValue)
             {
                 ModelState.AddModelError("BadgemakerImage", "Please provide an image for the badge.");
             }
 
             if (model.BadgeUploadImage != null
                     && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker)
-                    && (Path.GetExtension(model.BadgeUploadImage.FileName).ToLower() != ".jpg"
-                        && Path.GetExtension(model.BadgeUploadImage.FileName).ToLower() != ".jpeg"
-                        && Path.GetExtension(model.BadgeUploadImage.FileName).ToLower() != ".png"))
+                    && (!ValidImageExtensions.Contains(Path.GetExtension(model.BadgeUploadImage.FileName).ToLower())))
             {
-                ModelState.AddModelError("BadgeUploadImage", "Please use a .jpg or .png image.");
+                ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
             }
 
             if (model.Program.AgeMaximum < model.Program.AgeMinimum)
@@ -274,8 +271,8 @@ namespace GRA.Controllers.MissionControl
                     {
                         byte[] badgeBytes;
                         string filename;
-                        if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage) &&
-                            (model.BadgeUploadImage == null || model.UseBadgeMaker))
+                        if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage)
+                            && (model.BadgeUploadImage == null || model.UseBadgeMaker))
                         {
                             var badgeString = model.BadgeMakerImage.Split(',').Last();
                             badgeBytes = Convert.FromBase64String(badgeString);
@@ -398,7 +395,7 @@ namespace GRA.Controllers.MissionControl
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new

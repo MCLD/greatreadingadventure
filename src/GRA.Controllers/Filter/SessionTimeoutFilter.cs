@@ -11,8 +11,6 @@ namespace GRA.Controllers.Filter
         // TODO move this message to a customizable location
         private const string ExpiredMessage = "Your session has expired. Please sign in again.";
 
-        private CurrentDateTimeProvider _dateTimeProvider { get; set; }
-
         public async Task OnActionExecutionAsync(ActionExecutingContext context,
             ActionExecutionDelegate next)
         {

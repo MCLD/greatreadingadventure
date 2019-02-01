@@ -1,18 +1,18 @@
-﻿using GRA.Controllers.ViewModel.MissionControl.Challenges;
-using GRA.Controllers.ViewModel.Shared;
-using GRA.Domain.Model;
-using GRA.Domain.Model.Filters;
-using GRA.Domain.Service;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using GRA.Controllers.ViewModel.MissionControl.Challenges;
+using GRA.Controllers.ViewModel.Shared;
+using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
+using GRA.Domain.Service;
 using GRA.Domain.Service.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -30,6 +30,7 @@ namespace GRA.Controllers.MissionControl
         private readonly ChallengeService _challengeService;
         private readonly EventService _eventService;
         private readonly SiteService _siteService;
+
         public ChallengesController(ILogger<ChallengesController> logger,
             ServiceFacade.Controller context,
             BadgeService badgeService,
@@ -39,12 +40,14 @@ namespace GRA.Controllers.MissionControl
             SiteService siteService)
             : base(context)
         {
-            _logger = Require.IsNotNull(logger, nameof(logger));
-            _badgeService = Require.IsNotNull(badgeService, nameof(badgeService));
-            _categoryService = Require.IsNotNull(categoryService, nameof(categoryService));
-            _challengeService = Require.IsNotNull(challengeService, nameof(challengeService));
-            _eventService = Require.IsNotNull(eventService, nameof(eventService));
-            _siteService = Require.IsNotNull(siteService, nameof(SiteService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _badgeService = badgeService ?? throw new ArgumentNullException(nameof(badgeService));
+            _categoryService = categoryService
+                ?? throw new ArgumentNullException(nameof(categoryService));
+            _challengeService = challengeService
+                ?? throw new ArgumentNullException(nameof(challengeService));
+            _eventService = eventService ?? throw new ArgumentNullException(nameof(eventService));
+            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             PageTitle = "Challenges";
         }
 
@@ -118,7 +121,7 @@ namespace GRA.Controllers.MissionControl
         private async Task<ChallengesListViewModel> GetChallengeList(string Search, string Categories, int? Program,
             int? System, int? Branch, bool? Mine, int page = 1, bool pending = false)
         {
-            ChallengeFilter filter = new ChallengeFilter(page);
+            var filter = new ChallengeFilter(page);
             if (!string.IsNullOrWhiteSpace(Search))
             {
                 filter.Search = Search;
@@ -128,8 +131,7 @@ namespace GRA.Controllers.MissionControl
                 var categoryIds = new List<int>();
                 foreach (var category in Categories.Split(','))
                 {
-                    int result;
-                    if (int.TryParse(category, out result))
+                    if (int.TryParse(category, out int result))
                     {
                         categoryIds.Add(result);
                     }
@@ -174,7 +176,7 @@ namespace GRA.Controllers.MissionControl
                 }
             }
 
-            PaginateViewModel paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel
             {
                 ItemCount = challengeList.Count,
                 CurrentPage = (filter.Skip.Value / filter.Take.Value) + 1,
@@ -185,7 +187,7 @@ namespace GRA.Controllers.MissionControl
                 .OrderByDescending(_ => _.Id == GetId(ClaimType.SystemId)).ThenBy(_ => _.Name);
 
             var categoryList = await _categoryService.GetListAsync();
-            ChallengesListViewModel viewModel = new ChallengesListViewModel()
+            var viewModel = new ChallengesListViewModel
             {
                 Challenges = challengeList.Data,
                 PaginateModel = paginateModel,
@@ -212,7 +214,7 @@ namespace GRA.Controllers.MissionControl
                 if (pending && !UserHasPermission(Permission.ActivateAllChallenges))
                 {
                     viewModel.SystemName = systemList
-                    .Where(_ => _.Id == GetId(ClaimType.SystemId)).SingleOrDefault().Name;
+                    .SingleOrDefault(_ => _.Id == GetId(ClaimType.SystemId))?.Name;
                 }
             }
             else if (Branch.HasValue)
@@ -220,7 +222,7 @@ namespace GRA.Controllers.MissionControl
                 var branch = await _siteService.GetBranchByIdAsync(viewModel.Branch.Value);
                 viewModel.BranchName = branch.Name;
                 viewModel.SystemName = systemList
-                    .Where(_ => _.Id == branch.SystemId).SingleOrDefault().Name;
+                    .SingleOrDefault(_ => _.Id == branch.SystemId)?.Name;
                 viewModel.BranchList = (await _siteService.GetBranches(branch.SystemId))
                     .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
                     .ThenBy(_ => _.Name);
@@ -229,7 +231,7 @@ namespace GRA.Controllers.MissionControl
             else if (System.HasValue)
             {
                 viewModel.SystemName = systemList
-                    .Where(_ => _.Id == viewModel.System.Value).SingleOrDefault().Name;
+                    .SingleOrDefault(_ => _.Id == viewModel.System.Value)?.Name;
                 viewModel.BranchList = (await _siteService.GetBranches(viewModel.System.Value))
                     .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
                     .ThenBy(_ => _.Name);
@@ -266,8 +268,7 @@ namespace GRA.Controllers.MissionControl
             var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
             PageTitle = "Create Challenge";
 
-
-            ChallengesDetailViewModel viewModel = new ChallengesDetailViewModel()
+            var viewModel = new ChallengesDetailViewModel
             {
                 BadgeMakerUrl = GetBadgeMakerUrl(siteUrl, site.FromEmailAddress),
                 UseBadgeMaker = true
@@ -299,11 +300,9 @@ namespace GRA.Controllers.MissionControl
             if (model.BadgeUploadImage != null
                 && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker))
             {
-                if (Path.GetExtension(model.BadgeUploadImage.FileName).ToLower() != ".jpg"
-                    && Path.GetExtension(model.BadgeUploadImage.FileName).ToLower() != ".jpeg"
-                    && Path.GetExtension(model.BadgeUploadImage.FileName).ToLower() != ".png")
+                if (!ValidImageExtensions.Contains(Path.GetExtension(model.BadgeUploadImage.FileName).ToLower()))
                 {
-                    ModelState.AddModelError("BadgeUploadImage", "Please use a .jpg or .png image");
+                    ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                 }
             }
             if (ModelState.IsValid)
@@ -316,8 +315,8 @@ namespace GRA.Controllers.MissionControl
                     {
                         byte[] badgeBytes;
                         string filename;
-                        if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage) &&
-                            (model.BadgeUploadImage != null || model.UseBadgeMaker))
+                        if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage)
+                            && (model.BadgeUploadImage != null || model.UseBadgeMaker))
                         {
                             var badgeString = model.BadgeMakerImage.Split(',').Last();
                             badgeBytes = Convert.FromBase64String(badgeString);
@@ -335,7 +334,7 @@ namespace GRA.Controllers.MissionControl
                             }
                             filename = Path.GetFileName(model.BadgeUploadImage.FileName);
                         }
-                        Badge newBadge = new Badge()
+                        var newBadge = new Badge
                         {
                             Filename = filename
                         };
@@ -367,7 +366,7 @@ namespace GRA.Controllers.MissionControl
         {
             var site = await GetCurrentSiteAsync();
             var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
-            Challenge challenge = new Challenge();
+            var challenge = new Challenge();
             try
             {
                 challenge = await _challengeService.MCGetChallengeDetailsAsync(id);
@@ -420,7 +419,7 @@ namespace GRA.Controllers.MissionControl
                     || (UserHasPermission(Permission.ActivateSystemChallenges)
                         && challenge.RelatedSystemId == GetId(ClaimType.SystemId)));
 
-            ChallengesDetailViewModel viewModel = new ChallengesDetailViewModel()
+            var viewModel = new ChallengesDetailViewModel
             {
                 Challenge = challenge,
                 CanActivate = canActivate,
@@ -488,11 +487,9 @@ namespace GRA.Controllers.MissionControl
             if (model.BadgeUploadImage != null
                 && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker))
             {
-                if (Path.GetExtension(model.BadgeUploadImage.FileName).ToLower() != ".jpg"
-                    && Path.GetExtension(model.BadgeUploadImage.FileName).ToLower() != ".jpeg"
-                    && Path.GetExtension(model.BadgeUploadImage.FileName).ToLower() != ".png")
+                if (!ValidImageExtensions.Contains(Path.GetExtension(model.BadgeUploadImage.FileName).ToLower()))
                 {
-                    ModelState.AddModelError("BadgeUploadImage", "Please use a .jpg or .png image");
+                    ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                 }
             }
             if (ModelState.IsValid)
@@ -503,8 +500,8 @@ namespace GRA.Controllers.MissionControl
                 {
                     byte[] badgeBytes;
                     string filename;
-                    if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage) &&
-                        (model.BadgeUploadImage != null || model.UseBadgeMaker))
+                    if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage)
+                        && (model.BadgeUploadImage != null || model.UseBadgeMaker))
                     {
                         var badgeString = model.BadgeMakerImage.Split(',').Last();
                         badgeBytes = Convert.FromBase64String(badgeString);
@@ -524,7 +521,7 @@ namespace GRA.Controllers.MissionControl
                     }
                     if (challenge.BadgeId == null)
                     {
-                        Badge newBadge = new Badge()
+                        var newBadge = new Badge
                         {
                             Filename = filename
                         };
@@ -674,12 +671,9 @@ namespace GRA.Controllers.MissionControl
 
             if (viewModel.TaskUploadFile != null)
             {
-                if (Path.GetExtension(viewModel.TaskUploadFile.FileName).ToLower() != ".jpg"
-                    && Path.GetExtension(viewModel.TaskUploadFile.FileName).ToLower() != ".jpeg"
-                    && Path.GetExtension(viewModel.TaskUploadFile.FileName).ToLower() != ".png"
-                    && Path.GetExtension(viewModel.TaskUploadFile.FileName).ToLower() != ".pdf")
+                if (!ValidUploadExtensions.Contains(Path.GetExtension(viewModel.TaskUploadFile.FileName).ToLower()))
                 {
-                    ModelState.AddModelError("BadgeUploadImage", "Only .jpg, .png and .pdf files are allowed.");
+                    ModelState.AddModelError("BadgeUploadImage", $"File upload must be one of the following types: {string.Join(", ", ValidUploadExtensions)}");
                 }
             }
 
@@ -706,7 +700,6 @@ namespace GRA.Controllers.MissionControl
                 }
                 viewModel.Task.ChallengeId = viewModel.Challenge.Id;
                 await _challengeService.AddTaskAsync(viewModel.Task, fileBytes);
-
             }
             else
             {
@@ -753,12 +746,9 @@ namespace GRA.Controllers.MissionControl
 
             if (viewModel.TaskUploadFile != null)
             {
-                if (Path.GetExtension(viewModel.TaskUploadFile.FileName).ToLower() != ".jpg"
-                    && Path.GetExtension(viewModel.TaskUploadFile.FileName).ToLower() != ".jpeg"
-                    && Path.GetExtension(viewModel.TaskUploadFile.FileName).ToLower() != ".png"
-                    && Path.GetExtension(viewModel.TaskUploadFile.FileName).ToLower() != ".pdf")
+                if (!ValidUploadExtensions.Contains(Path.GetExtension(viewModel.TaskUploadFile.FileName).ToLower()))
                 {
-                    ModelState.AddModelError("BadgeUploadImage", "Only .jpg, .png and .pdf files are allowed.");
+                    ModelState.AddModelError("BadgeUploadImage", $"File upload must be one of the following types: {string.Join(", ", ValidUploadExtensions)}");
                 }
             }
 
@@ -857,13 +847,13 @@ namespace GRA.Controllers.MissionControl
 
             var groupList = await _challengeService.GetPaginatedGroupListAsync(filter);
 
-            PaginateViewModel paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel
             {
                 ItemCount = groupList.Count,
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new

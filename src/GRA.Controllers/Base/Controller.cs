@@ -1,20 +1,20 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using GRA.Domain.Model;
-using System.Security.Claims;
+﻿using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc.Filters;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using GRA.Abstract;
+using GRA.Controllers.Filter;
+using GRA.Domain.Model;
 using GRA.Domain.Service;
 using GRA.Domain.Service.Abstract;
-using GRA.Controllers.Filter;
-using System;
-using System.Text;
-using GRA.Abstract;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Configuration;
 
 namespace GRA.Controllers.Base
 {
@@ -26,6 +26,8 @@ namespace GRA.Controllers.Base
         protected const string DropDownTrueValue = "True";
         protected const string DropDownFalseValue = "False";
 
+        protected static readonly string[] ValidImageExtensions = { ".jpeg", ".jpg", ".png" };
+
         protected readonly IConfiguration _config;
         protected readonly IDateTimeProvider _dateTimeProvider;
         protected readonly IPathResolver _pathResolver;
@@ -33,6 +35,7 @@ namespace GRA.Controllers.Base
         protected readonly SiteLookupService _siteLookupService;
         protected string PageTitle { get; set; }
         protected string PageTitleHtml { get; set; }
+
         protected Controller(ServiceFacade.Controller context)
         {
             _config = context.Config;
@@ -41,6 +44,7 @@ namespace GRA.Controllers.Base
             _userContextProvider = context.UserContextProvider;
             _siteLookupService = context.SiteLookupService;
         }
+
         public override void OnActionExecuted(ActionExecutedContext context)
         {
             base.OnActionExecuted(context);
@@ -49,8 +53,8 @@ namespace GRA.Controllers.Base
             string pageTitle = _config[ConfigurationKey.DefaultSiteName];
 
             // set page title
-            var controller = context.Controller as Controller;
-            if (controller != null && !string.IsNullOrWhiteSpace(controller.PageTitle))
+            if (context.Controller is Controller controller
+                && !string.IsNullOrWhiteSpace(controller.PageTitle))
             {
                 pageTitle = controller.PageTitle;
             }
@@ -73,6 +77,7 @@ namespace GRA.Controllers.Base
                 TempData[TempDataKey.AlertWarning] = value;
             }
         }
+
         protected string AlertInfo
         {
             set
@@ -80,6 +85,7 @@ namespace GRA.Controllers.Base
                 TempData[TempDataKey.AlertInfo] = value;
             }
         }
+
         protected string AlertSuccess
         {
             set
@@ -106,7 +112,9 @@ namespace GRA.Controllers.Base
                 claims.Add(new Claim(ClaimType.SiteId, authResult.User.SiteId.ToString()));
                 claims.Add(new Claim(ClaimType.SystemId, authResult.User.SystemId.ToString()));
                 claims.Add(new Claim(ClaimType.UserId, authResult.User.Id.ToString()));
-                claims.Add(new Claim(ClaimType.AuthenticatedAt, _dateTimeProvider.Now.AddHours(-3).ToString("O")));
+                claims.Add(new Claim(ClaimType.AuthenticatedAt, _dateTimeProvider
+                    .Now
+                    .ToString("O")));
 
                 var identity = new ClaimsIdentity(claims, Authentication.TypeGRAPassword);
 
@@ -163,8 +171,7 @@ namespace GRA.Controllers.Base
 
         protected int GetCurrentSiteId()
         {
-            var context = _userContextProvider.GetContext();
-            return context.SiteId;
+            return _userContextProvider.GetContext().SiteId;
         }
 
         protected async Task<Site> GetCurrentSiteAsync()
@@ -174,11 +181,8 @@ namespace GRA.Controllers.Base
 
         protected int GetActiveUserId()
         {
-            int? activeUserId = HttpContext.Session.GetInt32(SessionKey.ActiveUserId);
-            if (activeUserId == null)
-            {
-                activeUserId = GetId(ClaimType.UserId);
-            }
+            int? activeUserId = HttpContext.Session.GetInt32(SessionKey.ActiveUserId)
+                ?? (int?)GetId(ClaimType.UserId);
             return (int)activeUserId;
         }
 
@@ -197,7 +201,7 @@ namespace GRA.Controllers.Base
                 var formatted = new StringBuilder("<ul>");
                 foreach (string line in lines)
                 {
-                    formatted.Append($"<li>{line}</li>");
+                    formatted.Append("<li>").Append(line).Append("</li>");
                 }
                 formatted.Append("</ul>");
                 return formatted.ToString();
@@ -232,26 +236,16 @@ namespace GRA.Controllers.Base
 
         protected void ShowAlertSuccess(string message, string faIconName = null)
         {
-            if (!string.IsNullOrEmpty(faIconName))
-            {
-                AlertSuccess = $"{Fa(faIconName)} {message}";
-            }
-            else
-            {
-                AlertSuccess = $"{Fa("thumbs-o-up")} {message}";
-            }
+            AlertSuccess = string.IsNullOrEmpty(faIconName)
+                ? $"{Fa("thumbs-o-up")} {message}"
+                : $"{Fa(faIconName)} {message}";
         }
 
         protected void ShowAlertInfo(string message, string faIconName = null)
         {
-            if (!string.IsNullOrEmpty(faIconName))
-            {
-                AlertInfo = $"{Fa(faIconName)} {message}";
-            }
-            else
-            {
-                AlertInfo = $"{Fa("check-circle")} {message}";
-            }
+            AlertInfo = string.IsNullOrEmpty(faIconName)
+                ? $"{Fa("check-circle")} {message}"
+                : $"{Fa(faIconName)} {message}";
         }
 
         /// <summary>
@@ -281,8 +275,8 @@ namespace GRA.Controllers.Base
         /// </summary>
         /// <param name="key">The site setting key value (a string, up to 255 characters)</param>
         /// <returns>A tuple, the bool is true if the setting is present and a number with the
-        /// value being the number. The bool is false if the setting is not set or is not a parsable
-        /// integer.</returns>
+        /// value being the number. The bool is false if the setting is not set or is not a
+        /// parsable integer.</returns>
         protected async Task<(bool, int)> GetSiteSettingIntAsync(string key)
         {
             return await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(), key);

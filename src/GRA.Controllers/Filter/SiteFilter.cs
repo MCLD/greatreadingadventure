@@ -45,6 +45,7 @@ namespace GRA.Controllers.Filter
         {
             Site site = null;
             var httpContext = context.HttpContext;
+            await httpContext.Session.LoadAsync();
             // if we've already fetched it on this request it's present in Items
             int? siteId = null;
             if (httpContext.User.Identity.IsAuthenticated)
@@ -195,7 +196,6 @@ namespace GRA.Controllers.Filter
             {
                 httpContext.Items[ItemKey.HouseholdTitle] = "Group";
             }
-
             if (!string.IsNullOrWhiteSpace(site.ExternalEventListUrl))
             {
                 httpContext.Items[ItemKey.ExternalEventListUrl] = site.ExternalEventListUrl;
