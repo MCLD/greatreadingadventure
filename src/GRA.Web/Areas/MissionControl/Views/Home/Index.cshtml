@@ -137,8 +137,8 @@ else
                     <button id="subscribeButton"
                             type="button"
                             name="Subscribe"
-                            class="btn btn-link far fa-lg @(Model.IsNewsSubscribed ? "fa-check-square" : "fa-square") mc-news-subscribe"
-                            data-subscribed="@Model.IsNewsSubscribed"></button>
+                            class="btn btn-link"
+                            data-subscribed="@Model.IsNewsSubscribed"><span id="subscribeCheck" class="far fa-lg @(Model.IsNewsSubscribed ? "fa-check-square" : "fa-square") mc-news-subscribe"></span></button>
                 </div>
             </div>
         </div>
@@ -327,27 +327,29 @@ else
         $("#subscribeButton").on("click", function () {
             var button = $(this);
             if (button.hasClass("disabled") == false) {
-                button.addClass("disabled").removeClass("far fa-square fa-check-square").addClass("fas fa-spinner fa-pulse");
+                var checkIcon = $('#subscribeCheck');
+                console.log(checkIcon);
+                checkIcon.addClass("disabled").removeClass("far fa-square fa-check-square").addClass("fas fa-spinner fa-pulse");
                 var subscribe = button.data("subscribed") == "False";
 
                 $.post(newsSubscribeUrl, { subscribe: subscribe }, function (response) {
                     if (response.success) {
                         if (subscribe) {
-                            button.addClass("fa-check-square");
+                            checkIcon.addClass("fa-check-square");
                             button.data("subscribed", "True");
                         }
                         else {
-                            button.addClass("fa-square");
+                            checkIcon.addClass("fa-square");
                             button.data("subscribed", "False");
                         }
                     }
                     else {
                         alert(response.message);
                         if (subscribe) {
-                            button.addClass("fa-square");
+                            checkIcon.addClass("fa-square");
                         }
                         else {
-                            button.addClass("fa-check-square");
+                            checkIcon.addClass("fa-check-square");
                         }
                     }
                 })
@@ -355,7 +357,7 @@ else
                     alert("Error updating news subscription");
                 })
                 .always(function () {
-                    button.removeClass("fas fa-spinner fa-pulse disabled").addClass("far");
+                    checkIcon.removeClass("fas fa-spinner fa-pulse disabled").addClass("far");
                 });
             }
         });
