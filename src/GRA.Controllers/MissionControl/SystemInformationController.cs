@@ -47,10 +47,17 @@ namespace GRA.Controllers.MissionControl
                 thisAssemblyVersion = Assembly.GetEntryAssembly()
                     .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
                     .InformationalVersion;
-                int build = Assembly.GetEntryAssembly().GetName().Version.Build;
-                if (build != 0)
+                var fileVersion = Assembly
+                    .GetEntryAssembly()
+                    .GetCustomAttribute<AssemblyFileVersionAttribute>()?
+                    .Version;
+                if(fileVersion.Contains('.') && fileVersion.Length > fileVersion.LastIndexOf('.'))
                 {
-                    thisAssemblyVersion += " build " + build;
+                    var revision = fileVersion.Substring(fileVersion.LastIndexOf('.') + 1);
+                    if(!string.IsNullOrEmpty(revision) && revision != "0")
+                    {
+                        thisAssemblyVersion += " revision " + revision;
+                    }
                 }
             }
             catch (Exception ex)
