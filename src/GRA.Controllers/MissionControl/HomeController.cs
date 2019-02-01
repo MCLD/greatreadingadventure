@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using GRA.Abstract;
 using GRA.Controllers.ViewModel.MissionControl.Home;
@@ -53,7 +54,7 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Mission Control";
         }
 
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(int? category, int page = 1)
         {
             if (!AuthUser.Identity.IsAuthenticated)
             {
@@ -74,48 +75,86 @@ namespace GRA.Controllers.MissionControl
             }
             Site site = await GetCurrentSiteAsync();
 
-            var filter = new BaseFilter(page, PostsPerPage)
+            var viewModel = new AtAGlanceViewModel
             {
-                IsActive = true
+                AtAGlanceReport = await GetAtAGlanceAsync(),
+                ShowPosts = await _newsService.AnyPublishedPostsAsync()
             };
 
-            var postList = await _newsService.GetPaginatedPostListAsync(filter);
+            if (viewModel.ShowPosts)
+            {
+                var filter = new NewsFilter(page, PostsPerPage)
+                {
+                    IsActive = true
+                };
 
-            var paginateModel = new PaginateViewModel
-            {
-                ItemCount = postList.Count,
-                CurrentPage = page,
-                ItemsPerPage = filter.Take.Value
-            };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
-            {
-                return RedirectToRoute(
-                    new
-                    {
-                        page = paginateModel.LastPage ?? 1
-                    });
-            }
+                if (category.HasValue)
+                {
+                    filter.CategoryIds = new List<int> { category.Value };
+                }
+                else
+                {
+                    filter.DefaultCategory = true;
+                }
 
-            foreach (var post in postList.Data)
-            {
-                post.Content = CommonMark.CommonMarkConverter.Convert(post.Content);
-                post.CreatedByName = await _userService.GetUsersNameByIdAsync(post.CreatedBy);
+                var postList = await _newsService.GetPaginatedPostListAsync(filter);
+
+                var paginateModel = new PaginateViewModel
+                {
+                    ItemCount = postList.Count,
+                    CurrentPage = page,
+                    ItemsPerPage = filter.Take.Value
+                };
+                if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+                {
+                    return RedirectToRoute(
+                        new
+                        {
+                            page = paginateModel.LastPage ?? 1
+                        });
+                }
+
+                foreach (var post in postList.Data)
+                {
+                    post.Content = CommonMark.CommonMarkConverter.Convert(post.Content);
+                    post.CreatedByName = await _userService.GetUsersNameByIdAsync(post.CreatedBy);
+                }
+
+                var user = await _userService.GetDetails(GetId(ClaimType.UserId));
+
+                viewModel.IsNewsSubscribed = user.IsNewsSubscribed;
+                viewModel.NewsPosts = postList.Data;
+                viewModel.NewsCategories = await _newsService.GetAllCategoriesAsync();
+                viewModel.PaginateModel = paginateModel;
+                viewModel.SiteAdministratorEmail = site.FromEmailAddress;
             }
 
             PageTitle = $"Mission Control: {site.Name}";
 
-            // show the at-a-glance report
-            var atAGlance = await GetAtAGlanceAsync();
+            return View(viewModel);
+        }
 
-            var user = await _userService.GetDetails(GetId(ClaimType.UserId));
-
-            return View(new AtAGlanceViewModel
+        [HttpPost]
+        [Authorize(Policy = Policy.AccessMissionControl)]
+        public async Task<JsonResult> NewsSubscribe(bool subscribe)
+        {
+            var success = false;
+            var message = "";
+            try
             {
-                AtAGlanceReport = atAGlance,
-                NewsPosts = postList.Data,
-                IsNewsSubscribed = user.IsNewsSubscribed,
-                PaginateModel = paginateModel,
-                SiteAdministratorEmail = site.FromEmailAddress
+                await _userService.UserNewsSubscribe(subscribe);
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error updating new subscription status for user {GetId(ClaimType.UserId)}", ex);
+                message = "Error updating news subscription";
+            }
+
+            return Json(new
+            {
+                success,
+                message
             });
         }
 
@@ -125,14 +164,6 @@ namespace GRA.Controllers.MissionControl
         {
             var atAGlance = await GetAtAGlanceAsync();
             return Json(atAGlance);
-        }
-
-        [HttpPost]
-        [Authorize(Policy = Policy.AccessMissionControl)]
-        public async Task<IActionResult> NewsSubscribe(bool subscribe)
-        {
-            await _userService.UserNewsSubscribe(subscribe);
-            return RedirectToAction(nameof(Index));
         }
 
         [Authorize(Policy = Policy.AccessMissionControl)]

@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace GRA.Data.Repository
 {
-    public class NewsCategoryRepository 
+    public class NewsCategoryRepository
         : AuditingRepository<Model.NewsCategory, NewsCategory>, INewsCategoryRepository
     {
         public NewsCategoryRepository(ServiceFacade.Repository repositoryFacade,

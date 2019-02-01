@@ -17,7 +17,15 @@ namespace GRA.Data.Repository
         public NewsPostRepository(ServiceFacade.Repository repositoryFacade,
             ILogger<NewsPostRepository> logger) : base(repositoryFacade, logger) { }
 
-        public async Task<DataWithCount<IEnumerable<NewsPost>>> PageAsync(BaseFilter filter)
+        public async Task<bool> AnyPublishedPostsAsync(int siteId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.Category.SiteId == siteId && _.PublishedAt.HasValue)
+                .AnyAsync();
+        }
+
+        public async Task<DataWithCount<IEnumerable<NewsPost>>> PageAsync(NewsFilter filter)
         {
             var posts = DbSet
                 .AsNoTracking()
@@ -31,6 +39,11 @@ namespace GRA.Data.Repository
             if (filter.CategoryIds?.Count > 0)
             {
                 posts = posts.Where(_ => filter.CategoryIds.Contains(_.CategoryId));
+            }
+
+            if (filter.DefaultCategory)
+            {
+                posts = posts.Where(_ => _.Category.IsDefault);
             }
 
             if (!string.IsNullOrWhiteSpace(filter.Search))

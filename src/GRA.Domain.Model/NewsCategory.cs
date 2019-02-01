@@ -11,9 +11,6 @@ namespace GRA.Domain.Model
         [MaxLength(255)]
         public string Name { get; set; }
 
-        [DisplayName("Display in sidebar")]
-        public bool DisplayInSidebar { get; set; }
-
         public bool IsDefault { get; set; }
 
         public int PostCount { get; set; }
