@@ -19,6 +19,7 @@ namespace GRA.Controllers.MissionControl
     {
         private readonly ILogger<NewsController> _logger;
         private readonly NewsService _newsService;
+
         public NewsController(ILogger<NewsController> logger,
             ServiceFacade.Controller context,
             NewsService newsService)
@@ -49,13 +50,9 @@ namespace GRA.Controllers.MissionControl
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
-                return RedirectToRoute(
-                    new
-                    {
-                        page = paginateModel.LastPage ?? 1
-                    });
+                return RedirectToRoute(new { page = paginateModel.LastPage ?? 1 });
             }
 
             var viewModel = new PostListViewModel
@@ -101,7 +98,8 @@ namespace GRA.Controllers.MissionControl
             var viewModel = new PostDetailViewModel
             {
                 Action = nameof(CreatePost),
-                Categories = new SelectList(await _newsService.GetAllCategoriesAsync(), "Id", "Name")
+                Categories
+                    = new SelectList(await _newsService.GetAllCategoriesAsync(), "Id", "Name")
             };
 
             return View("PostDetail", viewModel);
@@ -112,7 +110,7 @@ namespace GRA.Controllers.MissionControl
         {
             if (ModelState.IsValid)
             {
-                var postUrl = Url.Action(nameof(HomeController.Index), 
+                var postUrl = Url.Action(nameof(HomeController.Index),
                     "Home",
                     null,
                     HttpContext.Request.Scheme);
@@ -123,21 +121,21 @@ namespace GRA.Controllers.MissionControl
             }
 
             model.Action = nameof(CreatePost);
-            model.Categories = new SelectList(await _newsService.GetAllCategoriesAsync(), "Id", "Name");
+            model.Categories
+                = new SelectList(await _newsService.GetAllCategoriesAsync(), "Id", "Name");
 
             return View("PostDetail", model);
         }
 
         public async Task<IActionResult> EditPost(int id)
         {
-            var viewModel = new PostDetailViewModel
+            return View("PostDetail", new PostDetailViewModel
             {
                 Post = await _newsService.GetPostByIdAsync(id),
                 Action = nameof(EditPost),
-                Categories = new SelectList(await _newsService.GetAllCategoriesAsync(), "Id", "Name")
-            };
-
-            return View("PostDetail", viewModel);
+                Categories
+                    = new SelectList(await _newsService.GetAllCategoriesAsync(), "Id", "Name")
+            });
         }
 
         [HttpPost]
@@ -156,7 +154,8 @@ namespace GRA.Controllers.MissionControl
             }
 
             model.Action = nameof(CreatePost);
-            model.Categories = new SelectList(await _newsService.GetAllCategoriesAsync(), "Id", "Name");
+            model.Categories
+                = new SelectList(await _newsService.GetAllCategoriesAsync(), "Id", "Name");
 
             return View("PostDetail", model);
         }
@@ -173,13 +172,9 @@ namespace GRA.Controllers.MissionControl
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
-                return RedirectToRoute(
-                    new
-                    {
-                        page = paginateModel.LastPage ?? 1
-                    });
+                return RedirectToRoute(new { page = paginateModel.LastPage ?? 1 });
             }
 
             var viewModel = new CategoryListViewModel
@@ -212,12 +207,10 @@ namespace GRA.Controllers.MissionControl
 
         public IActionResult CreateCategory()
         {
-            var viewModel = new CategoryDetailViewModel
+            return View("CategoryDetail", new CategoryDetailViewModel
             {
                 Action = nameof(CreateCategory)
-            };
-
-            return View("CategoryDetail", viewModel);
+            });
         }
 
         [HttpPost]
@@ -237,13 +230,11 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> EditCategory(int id)
         {
-            var viewModel = new CategoryDetailViewModel
+            return View("CategoryDetail", new CategoryDetailViewModel
             {
                 Category = await _newsService.GetCategoryByIdAsync(id),
                 Action = nameof(EditCategory)
-            };
-
-            return View("CategoryDetail", viewModel);
+            });
         }
 
         [HttpPost]
