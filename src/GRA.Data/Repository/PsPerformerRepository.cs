@@ -93,7 +93,7 @@ namespace GRA.Data.Repository
                 .Join(_context.PsProgramAgeGroups,
                     program => program.Id,
                     ageGroups => ageGroups.ProgramId,
-                    (program, ageGroups) => ageGroups)
+                    (_, ageGroups) => ageGroups)
                 .Select(_ => _.AgeGroup)
                 .Distinct()
                 .ProjectTo<PsAgeGroup>()

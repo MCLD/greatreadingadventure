@@ -29,10 +29,10 @@ namespace GRA.Data.Repository
             return await DbSet.AsNoTracking()
                                     .Where(_ => _.SiteId == siteId
                                         && !takenQuestionnaires.Contains(_.QuestionnaireId)
-                                        && (_.AgeMinimum.HasValue == false || _.AgeMinimum <= userAge)
-                                        && (_.AgeMaximum.HasValue == false || _.AgeMaximum >= userAge)
-                                        && (_.StartDate.HasValue == false || _.StartDate <= time)
-                                        && (_.EndDate.HasValue == false || _.EndDate >= time))
+                                        && (!_.AgeMinimum.HasValue || _.AgeMinimum <= userAge)
+                                        && (!_.AgeMaximum.HasValue || _.AgeMaximum >= userAge)
+                                        && (!_.StartDate.HasValue || _.StartDate <= time)
+                                        && (!_.EndDate.HasValue || _.EndDate >= time))
                                     .Select(_ => _.QuestionnaireId)
                                     .ToListAsync();
         }
@@ -50,10 +50,10 @@ namespace GRA.Data.Repository
                                     .Where(_ => _.SiteId == siteId
                                         && _.QuestionnaireId == questionnaireId
                                         && !takenQuestionnaires.Contains(_.QuestionnaireId)
-                                        && (_.AgeMinimum.HasValue == false || _.AgeMinimum <= userAge)
-                                        && (_.AgeMaximum.HasValue == false || _.AgeMaximum >= userAge)
-                                        && (_.StartDate.HasValue == false || _.StartDate <= time)
-                                        && (_.EndDate.HasValue == false || _.EndDate >= time))
+                                        && (!_.AgeMinimum.HasValue || _.AgeMinimum <= userAge)
+                                        && (!_.AgeMaximum.HasValue || _.AgeMaximum >= userAge)
+                                        && (!_.StartDate.HasValue || _.StartDate <= time)
+                                        && (!_.EndDate.HasValue || _.EndDate >= time))
                                     .Select(_ => _.QuestionnaireId)
                                     .AnyAsync();
         }
