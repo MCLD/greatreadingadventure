@@ -130,14 +130,14 @@ namespace GRA.Data.Repository
 
         public async Task<bool> GetPerformerSystemAvailability(int performerId, int systemId)
         {
+            var performerBranchesInSystem = _context.PsPerformerBranches
+                .AsNoTracking()
+                .Where(_ => _.PsPerformerId == performerId && _.Branch.SystemId == systemId);
+
             return await DbSet
                 .AsNoTracking()
-                .GroupJoin(_context.PsPerformerBranches,
-                    performer => performer.Id,
-                    branches => branches.PsPerformerId,
-                    (performer, branches) => new { performer, branches})
-                .Where(_ => _.performer.Id == performerId
-                    && (_.performer.AllBranches || _.branches.Select(b => b.Branch.SystemId).Contains(systemId)))
+                .Where(_ => _.Id == performerId
+                    && (_.AllBranches || performerBranchesInSystem.Any()))
                 .AnyAsync();
         }
 

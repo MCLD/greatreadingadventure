@@ -458,7 +458,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.UserId == userId && _.IsDeleted == false && _.ActivityEarned.HasValue)
-                .SumAsync(_ => Convert.ToInt64(_.ActivityEarned));
+                .SumAsync(_ => Convert.ToInt64(_.ActivityEarned.Value));
         }
 
         public async Task<bool> PointTranslationHasBeenUsedAsync(int translationId)

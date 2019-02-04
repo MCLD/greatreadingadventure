@@ -21,16 +21,19 @@ namespace GRA.Data.Repository
         public async Task<ICollection<int>> GetForUser(int siteId, int userId, int? userAge)
         {
             var time = _dateTimeProvider.Now;
+            var takenQuestionnaires = _context.UserQuestionnaires
+                .AsNoTracking()
+                .Where(_ => _.UserId == userId)
+                .Select(_ => _.QuestionnaireId);
+
             return await DbSet.AsNoTracking()
                                     .Where(_ => _.SiteId == siteId
+                                        && !takenQuestionnaires.Contains(_.QuestionnaireId)
                                         && (_.AgeMinimum.HasValue == false || _.AgeMinimum <= userAge)
                                         && (_.AgeMaximum.HasValue == false || _.AgeMaximum >= userAge)
                                         && (_.StartDate.HasValue == false || _.StartDate <= time)
                                         && (_.EndDate.HasValue == false || _.EndDate >= time))
                                     .Select(_ => _.QuestionnaireId)
-                                    .Except(_context.UserQuestionnaires
-                                                .Where(_ => _.UserId == userId)
-                                                .Select(_ => _.QuestionnaireId))
                                     .ToListAsync();
         }
 
@@ -38,17 +41,20 @@ namespace GRA.Data.Repository
             int questionnaireId)
         {
             var time = _dateTimeProvider.Now;
+            var takenQuestionnaires = _context.UserQuestionnaires
+                .AsNoTracking()
+                .Where(_ => _.UserId == userId)
+                .Select(_ => _.QuestionnaireId);
+
             return await DbSet.AsNoTracking()
                                     .Where(_ => _.SiteId == siteId
                                         && _.QuestionnaireId == questionnaireId
+                                        && !takenQuestionnaires.Contains(_.QuestionnaireId)
                                         && (_.AgeMinimum.HasValue == false || _.AgeMinimum <= userAge)
                                         && (_.AgeMaximum.HasValue == false || _.AgeMaximum >= userAge)
                                         && (_.StartDate.HasValue == false || _.StartDate <= time)
                                         && (_.EndDate.HasValue == false || _.EndDate >= time))
                                     .Select(_ => _.QuestionnaireId)
-                                    .Except(_context.UserQuestionnaires
-                                                .Where(_ => _.UserId == userId)
-                                                .Select(_ => _.QuestionnaireId))
                                     .AnyAsync();
         }
 

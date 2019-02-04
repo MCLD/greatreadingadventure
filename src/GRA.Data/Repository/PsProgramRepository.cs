@@ -158,14 +158,17 @@ namespace GRA.Data.Repository
 
         public async Task<bool> AvailableAtBranchAsync(int programId, int branchId)
         {
+            var performsAtBranch = DbSet
+                    .GroupJoin(_context.PsPerformerBranches,
+                        program => program.PerformerId,
+                        performerbranches => performerbranches.PsPerformerId,
+                        (program, performerbranches) => new { program, performerbranches })
+                    .SelectMany(_ => _.performerbranches)
+                    .Where(_ => _.BranchId == branchId);
+
             return await DbSet.AsNoTracking()
-                .Where(_ => _.Id == programId)
-                .GroupJoin(_context.PsPerformerBranches,
-                    program => program.PerformerId,
-                    performerbranches => performerbranches.PsPerformerId,
-                    (program, performerbranches) => new { program, performerbranches })
-                .Where(_ => _.program.Performer.AllBranches
-                    || _.performerbranches.Select(b => b.BranchId).Contains(branchId))
+                .Where(_ => _.Id == programId 
+                    && (_.Performer.AllBranches || performsAtBranch.Any()))
                 .AnyAsync();
         }
 
