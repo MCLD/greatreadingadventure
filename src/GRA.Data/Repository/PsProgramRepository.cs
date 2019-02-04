@@ -55,7 +55,7 @@ namespace GRA.Data.Repository
                     .Join(_context.PsProgramAgeGroups.Where(_ => _.AgeGroupId == filter.AgeGroupId.Value),
                         program => program.Id,
                         ageGroup => ageGroup.ProgramId,
-                        (program, ageGroup) => program);
+                        (program, _) => program);
             }
             if (filter.IsApproved.HasValue)
             {
@@ -89,7 +89,7 @@ namespace GRA.Data.Repository
                     .Join(_context.PsProgramAgeGroups.Where(_ => _.AgeGroupId == ageGroupId.Value),
                         program => program.Id,
                         ageGroup => ageGroup.ProgramId,
-                        (program, ageGroup) => program);
+                        (program, _) => program);
             }
             if (onlyApproved)
             {
@@ -119,7 +119,7 @@ namespace GRA.Data.Repository
                 .Join(_context.PsProgramAgeGroups.Where(_ => _.AgeGroupId == ageGroupId),
                     program => program.Id,
                     ageGroup => ageGroup.ProgramId,
-                    (program, ageGroup) => program)
+                    (program, _) => program)
                 .AnyAsync();
         }
 
@@ -158,14 +158,17 @@ namespace GRA.Data.Repository
 
         public async Task<bool> AvailableAtBranchAsync(int programId, int branchId)
         {
+            var performsAtBranch = DbSet
+                    .GroupJoin(_context.PsPerformerBranches,
+                        program => program.PerformerId,
+                        performerbranches => performerbranches.PsPerformerId,
+                        (program, performerbranches) => new { program, performerbranches })
+                    .SelectMany(_ => _.performerbranches)
+                    .Where(_ => _.BranchId == branchId);
+
             return await DbSet.AsNoTracking()
-                .Where(_ => _.Id == programId)
-                .GroupJoin(_context.PsPerformerBranches,
-                    program => program.PerformerId,
-                    performerbranches => performerbranches.PsPerformerId,
-                    (program, performerbranches) => new { program, performerbranches })
-                .Where(_ => _.program.Performer.AllBranches
-                    || _.performerbranches.Select(b => b.BranchId).Contains(branchId))
+                .Where(_ => _.Id == programId
+                    && (_.Performer.AllBranches || performsAtBranch.Any()))
                 .AnyAsync();
         }
 

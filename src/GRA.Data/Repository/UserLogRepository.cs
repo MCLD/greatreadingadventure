@@ -34,7 +34,7 @@ namespace GRA.Data.Repository
             var userLogs = await DbSet
                .AsNoTracking()
                .Where(_ => _.UserId == userId
-                      && _.IsDeleted == false)
+                      && !_.IsDeleted)
                .OrderBy(_ => _.CreatedAt)
                .Skip(skip)
                .Take(take)
@@ -101,14 +101,14 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.UserId == userId
-                       && _.IsDeleted == false)
+                       && !_.IsDeleted)
                 .CountAsync();
         }
 
         public override async Task RemoveSaveAsync(int userId, int id)
         {
             var entity = await DbSet
-                .Where(_ => _.IsDeleted == false && _.Id == id)
+                .Where(_ => !_.IsDeleted && _.Id == id)
                 .SingleAsync();
             entity.IsDeleted = true;
             await base.UpdateAsync(userId, entity, null);
@@ -123,7 +123,7 @@ namespace GRA.Data.Repository
             {
                 var eligibleUsers = _context.Users
                     .AsNoTracking()
-                    .Where(_ => _.SiteId == request.SiteId && _.IsDeleted == false);
+                    .Where(_ => _.SiteId == request.SiteId && !_.IsDeleted);
                 if (request.ProgramId != null)
                 {
                     eligibleUsers = eligibleUsers.Where(_ => _.ProgramId == request.ProgramId);
@@ -152,8 +152,8 @@ namespace GRA.Data.Repository
             var challengeCount = DbSet
                 .AsNoTracking()
                 .Where(_ => _.ChallengeId != null
-                    && _.IsDeleted == false
-                    && _.User.IsDeleted == false);
+                    && !_.IsDeleted
+                    && !_.User.IsDeleted);
 
             if (eligibleUserIds != null)
             {
@@ -186,7 +186,7 @@ namespace GRA.Data.Repository
             var eligibleUserIds = await GetEligibleUserIds(request);
 
             var pointCount = DbSet
-                .Where(_ => _.IsDeleted == false && _.User.IsDeleted == false)
+                .Where(_ => !_.IsDeleted && !_.User.IsDeleted)
                 .AsNoTracking();
 
             if (eligibleUserIds != null)
@@ -223,8 +223,8 @@ namespace GRA.Data.Repository
             var earnedFilter = DbSet
                 .AsNoTracking()
                 .Where(_ => _.PointTranslationId != null
-                    && _.IsDeleted == false
-                    && _.User.IsDeleted == false);
+                    && !_.IsDeleted
+                    && !_.User.IsDeleted);
 
             // filter by users if necessary
             if (eligibleUserIds != null)
@@ -254,7 +254,7 @@ namespace GRA.Data.Repository
                 })
                 .ToListAsync();
 
-            Dictionary<string, long> result = new Dictionary<string, long>();
+            var result = new Dictionary<string, long>();
             foreach (var earned in earnedTotals)
             {
                 long earnedSum = earned.ActivityTotal;
@@ -272,7 +272,7 @@ namespace GRA.Data.Repository
                 }
             }
 
-            Dictionary<string, long> namedResult = new Dictionary<string, long>();
+            var namedResult = new Dictionary<string, long>();
             foreach (var item in result)
             {
                 if (item.Value > 1)
@@ -297,7 +297,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.UserId == userId
-                    && _.IsDeleted == false
+                    && !_.IsDeleted
                     && _.PointsEarned > 0
                     && _.CreatedAt >= criterion.StartDate
                     && _.CreatedAt <= criterion.EndDate)
@@ -309,7 +309,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.UserId == userId
-                    && _.IsDeleted == false
+                    && !_.IsDeleted
                     && _.PointsEarned > 0
                     && _.CreatedAt < endDate)
                 .SumAsync(_ => Convert.ToInt64(_.PointsEarned));
@@ -323,8 +323,8 @@ namespace GRA.Data.Repository
             var badgeCount = DbSet
                 .AsNoTracking()
                 .Where(_ => _.BadgeId != null
-                    && _.IsDeleted == false
-                    && _.User.IsDeleted == false);
+                    && !_.IsDeleted
+                    && !_.User.IsDeleted);
 
             if (eligibleUserIds != null)
             {
@@ -360,9 +360,9 @@ namespace GRA.Data.Repository
 
             var earnedFilter = DbSet
                 .AsNoTracking()
-                .Where(_ => _.IsDeleted == false
+                .Where(_ => !_.IsDeleted
                     && _.ActivityEarned != null
-                    && _.User.IsDeleted == false
+                    && !_.User.IsDeleted
                     && _.PointTranslationId != null
                     && translationIds.Contains(_.PointTranslationId));
 
@@ -409,8 +409,8 @@ namespace GRA.Data.Repository
                 var eligibleUserLogs = DbSet
                     .AsNoTracking()
                     .Where(_ => _.User.SiteId == request.SiteId
-                        && _.IsDeleted == false
-                        && _.User.IsDeleted == false);
+                        && !_.IsDeleted
+                        && !_.User.IsDeleted);
 
                 if (request.ProgramId != null)
                 {
@@ -431,11 +431,10 @@ namespace GRA.Data.Repository
                 return DbSet
                     .AsNoTracking()
                     .Where(_ => _.User.SiteId == request.SiteId
-                        && _.IsDeleted == false
-                        && _.User.IsDeleted == false);
+                        && !_.IsDeleted
+                        && !_.User.IsDeleted);
             }
         }
-
 
         public async Task<ICollection<int>> UserIdsEarnedBadgeAsync(int badgeId, ReportCriterion criterion)
         {
@@ -457,8 +456,8 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.UserId == userId && _.IsDeleted == false && _.ActivityEarned.HasValue)
-                .SumAsync(_ => Convert.ToInt64(_.ActivityEarned));
+                .Where(_ => _.UserId == userId && !_.IsDeleted && _.ActivityEarned.HasValue)
+                .SumAsync(_ => Convert.ToInt64(_.ActivityEarned.Value));
         }
 
         public async Task<bool> PointTranslationHasBeenUsedAsync(int translationId)
