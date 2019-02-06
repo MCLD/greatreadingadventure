@@ -22,7 +22,6 @@ One connection string is required (either `SqlServer` or `SQLite`).
 ## General settings
 
 - `GraConnectionStringName` - which connection string to use (either `SqlServer` or `SQLite`)
-- `GraCulture` - *optional* - defaults to "en-US", the culture to use for displaying things like dates and times - for valid options see the language tags listed in the Microsoft [National Language Support (NLS) API Reference](http://go.microsoft.com/fwlink/?LinkId=200048)
 - `GraInitialAuthCode` - the Authorization Code entered to grant users full access to the site - **it's important that you change this!**
 - `GraInitialProgramSetup` - *optional* - defaults to "multiple" which creates four age-based programs and sets up a point translation of one minute read equals one point, can also be set to "single" which creates one program and sets up a point translation of one book read equals one point
 - `GraMaximumAllowableActivity` (v4.1.0) - *optional* - for reporting purposes, limit participant activity above this amount to the "achiever" level configured for the participant's program

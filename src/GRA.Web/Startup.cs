@@ -31,8 +31,6 @@ namespace GRA.Web
 {
     public class Startup
     {
-        private const string DefaultCulture = "en-US";
-
         private const string ConfigurationSingleProgramValue = "Single";
         private const string ConfigurationMultipleProgramValue = "Multiple";
 
@@ -48,8 +46,16 @@ namespace GRA.Web
             { ConfigurationKey.DefaultSitePath, "gra" },
             { ConfigurationKey.DefaultFooter, "This site is running the open source <a href=\"http://www.greatreadingadventure.com/\">Great Reading Adventure</a> software developed by the <a href=\"https://mcldaz.org/\">Maricopa County Library District</a> with support by the <a href=\"http://www.azlibrary.gov/\">Arizona State Library, Archives and Public Records</a>, a division of the Secretary of State, and with federal funds from the <a href=\"http://www.imls.gov/\">Institute of Museum and Library Services</a>." },
             { ConfigurationKey.InitialAuthorizationCode, "gra4adminmagic" },
-            { ConfigurationKey.ContentPath, "content" },
-            { ConfigurationKey.Culture, "en-US" }
+            { ConfigurationKey.ContentPath, "content" }
+        };
+
+        private static readonly CultureInfo CultureEnUs = new CultureInfo("en-US");
+        private static readonly CultureInfo CultureEsUs = new CultureInfo("es-US");
+
+        private static readonly IList<CultureInfo> SupportedCultures = new List<CultureInfo>
+        {
+            CultureEnUs,
+            CultureEsUs
         };
 
         private readonly IConfiguration _config;
@@ -77,14 +83,13 @@ namespace GRA.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // set a default culture of en-US if none is specified
-            string culture = _config[ConfigurationKey.Culture] ?? DefaultCulture;
-            _logger.LogDebug("Configuring for culture: {0}", culture);
+            services.AddLocalization();
+
             services.Configure<RequestLocalizationOptions>(_ =>
             {
-                _.DefaultRequestCulture = new RequestCulture(culture);
-                _.SupportedCultures = new List<CultureInfo> { new CultureInfo(culture) };
-                _.SupportedUICultures = new List<CultureInfo> { new CultureInfo(culture) };
+                _.DefaultRequestCulture = new RequestCulture(CultureEnUs);
+                _.SupportedCultures = SupportedCultures;
+                _.SupportedUICultures = SupportedCultures;
             });
 
             // Add framework services.
@@ -153,7 +158,9 @@ namespace GRA.Web
 
             // add MVC
             services.AddMvc()
-                .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_2);
+                .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_2)
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+                .AddDataAnnotationsLocalization();
 
             // Add custom view directory
             services.Configure<RazorViewEngineOptions>(options =>
@@ -445,6 +452,13 @@ namespace GRA.Web
                 app.UseStatusCodePagesWithReExecute("/Error/Index/{0}");
             }
 
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture(CultureEnUs),
+                SupportedCultures = SupportedCultures,
+                SupportedUICultures = SupportedCultures
+            });
+
             if (!string.IsNullOrEmpty(_config[ConfigurationKey.ReverseProxyAddress]))
             {
                 app.UseForwardedHeaders(new ForwardedHeadersOptions
@@ -467,8 +481,6 @@ namespace GRA.Web
                     await next.Invoke();
                 }
             });
-
-            app.UseRequestLocalization();
 
             app.UseResponseCompression();
 

@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Localization;
 
 namespace GRA.Controllers.Base
 {
@@ -32,6 +33,7 @@ namespace GRA.Controllers.Base
         protected readonly IDateTimeProvider _dateTimeProvider;
         protected readonly IPathResolver _pathResolver;
         protected readonly IUserContextProvider _userContextProvider;
+        protected readonly IStringLocalizer<Resources.Shared> _sharedLocalizer;
         protected readonly SiteLookupService _siteLookupService;
         protected string PageTitle { get; set; }
         protected string PageTitleHtml { get; set; }
@@ -42,6 +44,7 @@ namespace GRA.Controllers.Base
             _dateTimeProvider = context.DateTimeProvider;
             _pathResolver = context.PathResolver;
             _userContextProvider = context.UserContextProvider;
+            _sharedLocalizer = context.SharedLocalizer;
             _siteLookupService = context.SiteLookupService;
         }
 
