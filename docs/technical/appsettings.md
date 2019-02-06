@@ -52,8 +52,7 @@ These settings are used when the program runs for the first time to insert some 
 
 When operating in a load-balanced environment these settings are used to configure instances to keep settings and data shared or unique as necessary.
 
-- `GraApplicationDescriminator` - defaults to "gra", application discriminator to use for data protection
-- `GraDataProtectionPath` - defaults to "shared/dataprotection", location to save the [data protection key](https://docs.microsoft.com/en-us/aspnet/core/security/data-protection/?view=aspnetcore-2.2) if not using Redis as a distributed cache
+- `GraApplicationDescriminator` - defaults to "gra", application discriminator to use for caching
 - `GraDistributedCache` - *optional* - select a system to use for distributed cache: "Redis" or "SqlServer", anything else uses an in-memory distributed cache
 - `GraInstanceName` - the name of this deployed instance
 - `GraRedisConfiguration` - *optional* - address of a Redis server for distributed cache, only used if `GraDistributedCache` is set to "Redis"

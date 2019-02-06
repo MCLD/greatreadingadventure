@@ -2616,6 +2616,20 @@ namespace GRA.Data.SQLite.Migrations
                     b.ToTable("VendorCodeTypes");
                 });
 
+            modelBuilder.Entity("Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.DataProtectionKey", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("FriendlyName");
+
+                    b.Property<string>("Xml");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DataProtectionKeys");
+                });
+
             modelBuilder.Entity("GRA.Data.Model.Answer", b =>
                 {
                     b.HasOne("GRA.Data.Model.Question", "Question")
