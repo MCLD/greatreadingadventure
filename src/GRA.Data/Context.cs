@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace GRA.Data
 {
-    public abstract class Context : DbContext
+    public abstract class Context : DbContext, IDataProtectionKeyContext
     {
         protected Context(DbContextOptions options) : base(options) { }
 
@@ -149,6 +150,7 @@ namespace GRA.Data
         public DbSet<Model.ChallengeTask> ChallengeTasks { get; set; }
         public DbSet<Model.ChallengeTaskType> ChallengeTaskTypes { get; set; }
         public DbSet<Model.DashboardContent> DashboardContents { get; set; }
+        public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
         public DbSet<Model.Drawing> Drawings { get; set; }
         public DbSet<Model.DrawingCriterion> DrawingCriteria { get; set; }
         public DbSet<Model.DrawingCriterionProgram> DrawingCriterionPrograms { get; set; }

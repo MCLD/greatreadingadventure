@@ -26,7 +26,6 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Serilog.Context;
-using StackExchange.Redis;
 
 namespace GRA.Web
 {
@@ -112,11 +111,6 @@ namespace GRA.Web
                 });
             });
 
-            // configure distributed cache
-            string protectionPath =
-                !string.IsNullOrEmpty(_config[ConfigurationKey.DataProtectionPath])
-                ? _config[ConfigurationKey.DataProtectionPath]
-                : Path.Combine(Directory.GetCurrentDirectory(), "shared", "dataprotection");
             string discriminator = _config[ConfigurationKey.ApplicationDiscriminator]
                     ?? "gra";
 
@@ -135,10 +129,6 @@ namespace GRA.Web
                         _.Configuration = redisConfig;
                         _.InstanceName = redisInstance;
                     });
-                    var redis = ConnectionMultiplexer.Connect(redisConfig);
-                    services.AddDataProtection(_ => _.ApplicationDiscriminator = discriminator)
-                        .PersistKeysToStackExchangeRedis(redis, $"grainternal.{discriminator}.dpk")
-                        .SetApplicationName(discriminator);
                     _logger.LogInformation("Using Redis distributed cache {0} discriminator {1}",
                         redisConfig,
                         redisInstance);
@@ -154,16 +144,10 @@ namespace GRA.Web
                         _.SchemaName = _config[ConfigurationKey.SqlSessionSchemaName] ?? "dbo";
                         _.TableName = sessionTable;
                     });
-                    services.AddDataProtection(_ => _.ApplicationDiscriminator = discriminator)
-                        .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(protectionPath, "keys")))
-                        .SetApplicationName(discriminator);
                     break;
                 default:
                     _logger.LogInformation("Using memory-based distributed cache");
                     services.AddDistributedMemoryCache();
-                    services.AddDataProtection(_ => _.ApplicationDiscriminator = discriminator)
-                        .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(protectionPath, "keys")))
-                        .SetApplicationName(discriminator);
                     break;
             }
 
@@ -277,6 +261,9 @@ namespace GRA.Web
                 default:
                     throw new Exception($"Unknown GraConnectionStringName: {csName}");
             }
+
+            // store the data protection key in the database
+            services.AddDataProtection().PersistKeysToDbContext<Data.Context>();
 
             // utilities
             services.AddScoped<ICodeGenerator, CodeGenerator>();

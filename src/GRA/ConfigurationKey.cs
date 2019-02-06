@@ -11,12 +11,10 @@ namespace GRA
         public static readonly string ContentPath = "GraContentPath";
         public static readonly string Culture = "GraCulture";
         public static readonly string DatabaseWarningLogging = "GraDatabaseWarningLogging";
-        public static readonly string DataProtectionPath = "GraDataProtectionPath";
         public static readonly string DefaultFooter = "GraDefaultFooter";
         public static readonly string DefaultOutgoingMailHost = "GraDefaultOutgoingMailHost";
         public static readonly string DefaultOutgoingMailLogin = "GraDefaultOutgoingMailLogin";
-        public static readonly string DefaultOutgoingMailPassword 
-            = "GraDefaultOutgoingMailPassword";
+        public static readonly string DefaultOutgoingMailPassword = "GraDefaultOutgoingMailPassword";
         public static readonly string DefaultOutgoingMailPort = "GraDefaultOutgoingMailPort";
         public static readonly string DefaultPageTitle = "GraDefaultPageTitle";
         public static readonly string DefaultSiteName = "GraDefaultSiteName";
