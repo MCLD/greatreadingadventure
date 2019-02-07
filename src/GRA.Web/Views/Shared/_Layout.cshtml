@@ -63,6 +63,18 @@
             </div>
             <div class="navbar-collapse navbar-right collapse">
                 <ul class="nav navbar-nav">
+                    @if (Context.Items[GRA.Controllers.ItemKey.L10n] != null)
+                    {
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Languages"><span class="fas fa-language"></span><span class="visible-xs-inline"> Languages</span> <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                @foreach (var item in ((IEnumerable<SelectListItem>)Context.Items[GRA.Controllers.ItemKey.L10n]))
+                                {
+                                    <li><a href="@item.Value">@item.Text</a></li>
+                                }
+                            </ul>
+                        </li>
+                    }
                     @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.ShowMissionControl))
                     {
                         <li><a asp-area="MissionControl" asp-controller="Home" asp-action="Index" title="Mission Control" data-toggle="tooltip" data-placement="bottom" class="gra-mclink"><span class="fa fa-rocket"></span><span class="visible-xs-inline"> @SharedLocalizer["Mission Control"]</span></a></li>

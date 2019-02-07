@@ -5,6 +5,7 @@
         public static readonly string ExternalEventListUrl = "ExternalEventListUrl";
         public static readonly string GoogleAnalytics = "GoogleAnalytics";
         public static readonly string HouseholdTitle = "HouseholdTitle";
+        public static readonly string L10n = "L10n";
         public static readonly string NotificationsDisplayed = "NotificationsDisplayed";
         public static readonly string NotificationsList = "NotificationsList";
         public static readonly string NotificationsModal = "NotificationsModal";
