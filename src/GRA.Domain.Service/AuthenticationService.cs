@@ -1,10 +1,10 @@
 ﻿using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using GRA.Domain.Model;
-using GRA.Domain.Service.Abstract;
-using GRA.Domain.Repository;
 using System.Text;
+using System.Threading.Tasks;
+using GRA.Domain.Model;
+using GRA.Domain.Repository;
+using GRA.Domain.Service.Abstract;
+using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Service
 {
@@ -43,7 +43,10 @@ namespace GRA.Domain.Service
             string password, bool allowDuringCloseProgram = false)
         {
             string trimmedUsername = username.Trim();
-            var authResult = await _userRepository.AuthenticateUserAsync(trimmedUsername, password);
+            var authResult = await _userRepository.AuthenticateUserAsync(
+                trimmedUsername,
+                password,
+                _userContextProvider.GetCurrentCulture().Name);
 
             if (!authResult.FoundUser)
             {
@@ -58,7 +61,8 @@ namespace GRA.Domain.Service
                 authResult.PermissionNames
                     = await _roleRepository.GetPermisisonNamesForUserAsync(authResult.User.Id);
 
-                if (authResult.PermissionNames.Contains(nameof(Permission.ManageSites))) {
+                if (authResult.PermissionNames.Contains(nameof(Permission.ManageSites)))
+                {
                     _logger.LogInformation("Site manager {username} authenticated", username);
                 }
 
@@ -216,16 +220,22 @@ namespace GRA.Domain.Service
 
             var sb = new StringBuilder($"{site.Name} has received a request for usernames associated with this email address.");
             var sbH = new StringBuilder($"<p>{site.Name} has received a request for usernames associated with this email address.</p>");
-            sbH.AppendLine($"<p>The following usernames are associated with <strong>{lookupEmail}</strong>:<ul>");
-            sb.AppendLine();
-            sb.AppendLine();
-            sb.AppendLine($"The following usernames are associated with '{lookupEmail}':");
-            sb.AppendLine();
+            sbH.Append("<p>The following usernames are associated with <strong>")
+                .Append(lookupEmail)
+                .AppendLine("</strong>:<ul>")
+                .AppendLine()
+                .AppendLine()
+                .Append("The following usernames are associated with '")
+                .Append(lookupEmail)
+                .AppendLine("':")
+                .AppendLine();
 
             foreach (string username in usernames.Data)
             {
-                sb.AppendLine($"- {username}");
-                sbH.AppendLine($"<li>{username}</li>");
+                sb.Append("- ").AppendLine(username);
+                sbH.Append("<li>")
+                    .Append(username)
+                    .AppendLine("</li>");
             }
             sbH.AppendLine("</ul></p>");
             string subject = $"{site.Name} usernames associated with your email address";

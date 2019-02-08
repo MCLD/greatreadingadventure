@@ -49,14 +49,14 @@ namespace GRA.Web
             { ConfigurationKey.ContentPath, "content" }
         };
 
-        private static readonly CultureInfo CultureEnUs = new CultureInfo("en-US");
-        private static readonly CultureInfo CultureEsUs = new CultureInfo("es-US");
+        //private static readonly CultureInfo CultureEnUs = new CultureInfo("en-US");
+        //private static readonly CultureInfo CultureEsUs = new CultureInfo("es-US");
 
-        private static readonly IList<CultureInfo> SupportedCultures = new List<CultureInfo>
-        {
-            CultureEnUs,
-            CultureEsUs
-        };
+        //private static readonly IList<CultureInfo> SupportedCultures = new List<CultureInfo>
+        //{
+        //    CultureEnUs,
+        //    CultureEsUs
+        //};
 
         private readonly IConfiguration _config;
         private readonly bool _isDevelopment;
@@ -87,9 +87,9 @@ namespace GRA.Web
 
             services.Configure<RequestLocalizationOptions>(_ =>
             {
-                _.DefaultRequestCulture = new RequestCulture(CultureEnUs);
-                _.SupportedCultures = SupportedCultures;
-                _.SupportedUICultures = SupportedCultures;
+                _.DefaultRequestCulture = new RequestCulture(Culture.DefaultCulture);
+                _.SupportedCultures = Culture.SupportedCultures;
+                _.SupportedUICultures = Culture.SupportedCultures;
             });
 
             // Add framework services.
@@ -309,6 +309,7 @@ namespace GRA.Web
             services.AddScoped<EventImportService>();
             services.AddScoped<EventService>();
             services.AddScoped<GroupTypeService>();
+            services.AddScoped<LanguageService>();
             services.AddScoped<MailService>();
             services.AddScoped<NewsService>();
             services.AddScoped<PageService>();
@@ -395,6 +396,7 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IEventRepository, Data.Repository.EventRepository>();
             services.AddScoped<Domain.Repository.IGroupInfoRepository, Data.Repository.GroupInfoRepository>();
             services.AddScoped<Domain.Repository.IGroupTypeRepository, Data.Repository.GroupTypeRepository>();
+            services.AddScoped<Domain.Repository.ILanguageRepository, Data.Repository.LanguageRepository>();
             services.AddScoped<Domain.Repository.ILocationRepository, Data.Repository.LocationRepository>();
             services.AddScoped<Domain.Repository.IMailRepository, Data.Repository.MailRepository>();
             services.AddScoped<Domain.Repository.INewsCategoryRepository, Data.Repository.NewsCategoryRepository>();
@@ -454,9 +456,9 @@ namespace GRA.Web
 
             app.UseRequestLocalization(new RequestLocalizationOptions
             {
-                DefaultRequestCulture = new RequestCulture(CultureEnUs),
-                SupportedCultures = SupportedCultures,
-                SupportedUICultures = SupportedCultures
+                DefaultRequestCulture = new RequestCulture(Culture.DefaultCulture),
+                SupportedCultures = Culture.SupportedCultures,
+                SupportedUICultures = Culture.SupportedCultures
             });
 
             if (!string.IsNullOrEmpty(_config[ConfigurationKey.ReverseProxyAddress]))

@@ -66,7 +66,7 @@
                     @if (Context.Items[GRA.Controllers.ItemKey.L10n] != null)
                     {
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Languages"><span class="fas fa-language"></span><span class="visible-xs-inline"> Languages</span> <span class="caret"></span></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Languages"><span class="fas fa-globe-americas"></span><span class="visible-xs-inline"> @SharedLocalizer["Language"]</span> <span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 @foreach (var item in ((IEnumerable<SelectListItem>)Context.Items[GRA.Controllers.ItemKey.L10n]))
                                 {

@@ -9,9 +9,18 @@ namespace GRA.Domain.Repository
     {
         Task AddRoleAsync(int currentUserId, int userId, int roleId);
         Task<ICollection<int>> GetUserRolesAsync(int userId);
-        Task UpdateUserRolesAsync(int currentUserId, int userId, IEnumerable<int> rolesToAdd,
+
+        Task UpdateUserRolesAsync(
+            int currentUserId,
+            int userId,
+            IEnumerable<int> rolesToAdd,
             IEnumerable<int> rolesToRemove);
-        Task<AuthenticationResult> AuthenticateUserAsync(string username, string password);
+
+        Task<AuthenticationResult> AuthenticateUserAsync(
+            string username,
+            string password,
+            string culture);
+
         Task<IEnumerable<int>> GetAllUserIds(int siteId);
         Task<User> GetByUsernameAsync(string username);
         Task<int> GetCountAsync(UserFilter filter);
@@ -20,8 +29,12 @@ namespace GRA.Domain.Repository
         Task<int> GetHouseholdCountAsync(int householdHeadUserId);
         Task<DataWithId<IEnumerable<string>>> GetUserIdAndUsernames(string email);
         Task<IEnumerable<Model.User>> PageAllAsync(UserFilter filter);
-        Task<IEnumerable<Model.User>>
-            PageHouseholdAsync(int householdHeadUserId, int skip, int take);
+
+        Task<IEnumerable<Model.User>> PageHouseholdAsync(
+            int householdHeadUserId,
+            int skip,
+            int take);
+
         Task SetUserPasswordAsync(int currentUserId, int userId, string password);
         Task<IEnumerable<User>> GetHouseholdAsync(int householdHeadUserId);
         Task<bool> UsernameInUseAsync(int siteId, string username);

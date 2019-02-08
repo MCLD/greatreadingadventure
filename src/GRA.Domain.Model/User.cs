@@ -8,9 +8,11 @@ namespace GRA.Domain.Model
     {
         [Required]
         public int SiteId { get; set; }
+
         [EmailAddress]
         [MaxLength(254)]
         public string Email { get; set; }
+
         public bool IsDeleted { get; set; }
         public bool CanBeDeleted { get; set; }
         public bool IsLockedOut { get; set; }
@@ -19,6 +21,7 @@ namespace GRA.Domain.Model
         public bool IsAdmin { get; set; }
         public bool IsActive { get; set; }
         public DateTime? LastActivityDate { get; set; }
+
         [MaxLength(36)]
         public string Username { get; set; }
 
@@ -26,34 +29,45 @@ namespace GRA.Domain.Model
         [Required]
         [MaxLength(255)]
         public string FirstName { get; set; }
+
         [DisplayName("Last Name")]
         [MaxLength(255)]
         public string LastName { get; set; }
+
         [DisplayName("Phone Number")]
         [Phone]
         [MaxLength(15)]
         public string PhoneNumber { get; set; }
+
         [DisplayName("Zip Code")]
         [MaxLength(32)]
         public string PostalCode { get; set; }
+
         [MaxLength(64)]
         public string CardNumber { get; set; }
+
         public DateTime? LastAccess { get; set; }
+
         [DisplayName("Branch")]
         [Range(0, int.MaxValue, ErrorMessage = "The Branch field is required.")]
         public int BranchId { get; set; }
+
         [DisplayName("System")]
         [Range(0, int.MaxValue, ErrorMessage = "The System field is required.")]
         public int SystemId { get; set; }
+
         public int PointsEarned { get; set; }
+
         [DisplayName("Program")]
         [Range(0, int.MaxValue, ErrorMessage = "The Program field is required.")]
         public int ProgramId { get; set; }
+
         public string StaticAvatarFilename { get; set; }
         public int? HouseholdHeadUserId { get; set; }
         public string BranchName { get; set; }
         public string SystemName { get; set; }
         public string ProgramName { get; set; }
+
         public string FullName
         {
             get
@@ -61,9 +75,12 @@ namespace GRA.Domain.Model
                 return FirstName + " " + LastName;
             }
         }
+
         public int? Age { get; set; }
+
         [DisplayName("School")]
         public int? SchoolId { get; set; }
+
         public bool SchoolNotListed { get; set; }
         public bool IsHomeschooled { get; set; }
 
@@ -80,11 +97,16 @@ namespace GRA.Domain.Model
         public bool? Donated { get; set; }
 
         public bool IsEmailSubscribed { get; set; }
+
         [DisplayName("Is this your first time participating?")]
         public bool IsFirstTime { get; set; }
+
         [DisplayName("Set a personal goal")]
         public int? DailyPersonalGoal { get; set; }
 
         public bool IsNewsSubscribed { get; set; }
+
+        [MaxLength(8)]
+        public string Culture { get; set; }
     }
 }

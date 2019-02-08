@@ -1,6 +1,7 @@
 ﻿using GRA.Domain.Model;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using System.Globalization;
 
 namespace GRA.Domain.Service.Abstract
 {
@@ -11,5 +12,6 @@ namespace GRA.Domain.Service.Abstract
         bool UserHasPermission(ClaimsPrincipal user, string permissionName);
         string UserClaim(ClaimsPrincipal user, string claimType);
         int GetId(ClaimsPrincipal user, string claimType);
+        CultureInfo GetCurrentCulture();
     }
 }

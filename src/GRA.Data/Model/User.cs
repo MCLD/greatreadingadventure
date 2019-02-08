@@ -8,9 +8,12 @@ namespace GRA.Data.Model
     {
         [Required]
         public int SiteId { get; set; }
+
         public virtual Site Site { get; set; }
+
         [MaxLength(254)]
         public string Email { get; set; }
+
         public bool IsDeleted { get; set; }
         public bool CanBeDeleted { get; set; }
         public bool IsLockedOut { get; set; }
@@ -23,19 +26,25 @@ namespace GRA.Data.Model
 
         [MaxLength(36)]
         public string Username { get; set; }
+
         public string PasswordHash { get; set; }
 
         [Required]
         [MaxLength(255)]
         public string FirstName { get; set; }
+
         [MaxLength(255)]
         public string LastName { get; set; }
+
         [MaxLength(15)]
         public string PhoneNumber { get; set; }
+
         [MaxLength(32)]
         public string PostalCode { get; set; }
+
         [MaxLength(64)]
         public string CardNumber { get; set; }
+
         public DateTime? LastAccess { get; set; }
 
         public int BranchId { get; set; }
@@ -63,5 +72,8 @@ namespace GRA.Data.Model
         public int? DailyPersonalGoal { get; set; }
 
         public bool IsNewsSubscribed { get; set; }
+
+        [MaxLength(8)]
+        public string Culture { get; set; }
     }
 }

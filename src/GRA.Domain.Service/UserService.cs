@@ -37,6 +37,7 @@ namespace GRA.Domain.Service
         private readonly SchoolService _schoolService;
         private readonly SiteLookupService _siteLookupService;
         private readonly VendorCodeService _vendorCodeService;
+
         public UserService(ILogger<UserService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
@@ -107,7 +108,7 @@ namespace GRA.Domain.Service
         public async Task<User> RegisterUserAsync(User user, string password,
             bool MCRegistration = false, bool allowDuringCloseProgram = false)
         {
-            if (allowDuringCloseProgram == false)
+            if (!allowDuringCloseProgram)
             {
                 VerifyCanRegister();
             }
@@ -160,6 +161,12 @@ namespace GRA.Domain.Service
             }
             else
             {
+                string cultureName = _userContextProvider.GetCurrentCulture().Name;
+                if (cultureName != Culture.DefaultName)
+                {
+                    user.Culture = cultureName;
+                }
+
                 registeredUser = await _userRepository.AddSaveAsync(0, user);
                 if (emailSubscribe)
                 {
@@ -170,8 +177,6 @@ namespace GRA.Domain.Service
 
             await _userRepository
                 .SetUserPasswordAsync(registeredUser.Id, registeredUser.Id, password);
-
-
 
             await JoinedProgramNotificationBadge(registeredUser);
             await _activityService.AwardUserTriggersAsync(registeredUser.Id, false);
@@ -323,7 +328,6 @@ namespace GRA.Domain.Service
                         updatedUser.IsEmailSubscribed = await _emailManagementService
                             .SetUserEmailSubscriptionStatusAsync(updatedUser.Id,
                                 userToUpdate.IsEmailSubscribed);
-
                     }
                     else if (userToUpdate.IsEmailSubscribed)
                     {
@@ -400,7 +404,6 @@ namespace GRA.Domain.Service
                         updatedUser.IsEmailSubscribed = await _emailManagementService
                             .SetUserEmailSubscriptionStatusAsync(updatedUser.Id,
                                 userToUpdate.IsEmailSubscribed);
-
                     }
                     else if (userToUpdate.IsEmailSubscribed)
                     {
@@ -683,7 +686,11 @@ namespace GRA.Domain.Service
                 throw new GraException("Only a family or group manager can add members");
             }
 
-            var authenticationResult = await _userRepository.AuthenticateUserAsync(trimmedUsername, password);
+            var authenticationResult = await _userRepository.AuthenticateUserAsync(
+                trimmedUsername,
+                password,
+                _userContextProvider.GetCurrentCulture().Name);
+
             if (!authenticationResult.PasswordIsValid)
             {
                 throw new GraException("The username and password entered do not match");
@@ -735,7 +742,7 @@ namespace GRA.Domain.Service
             var isGroup = await _groupInfoRepository.GetByUserIdAsync(authUser.Id);
             var callIt = isGroup != null ? "group" : "family";
 
-            if (hasFamily == true)
+            if (hasFamily)
             {
                 var infoGroup
                     = await _groupInfoRepository.GetByUserIdAsync(user.Id);
@@ -756,7 +763,6 @@ namespace GRA.Domain.Service
             return addedMembers;
         }
 
-
         public async Task<string> AddParticipantToHouseholdAsync(string username, string password)
         {
             VerifyCanHouseholdAction();
@@ -769,7 +775,11 @@ namespace GRA.Domain.Service
             }
 
             string trimmedUsername = username.Trim();
-            var authenticationResult = await _userRepository.AuthenticateUserAsync(trimmedUsername, password);
+            var authenticationResult = await _userRepository.AuthenticateUserAsync(
+                trimmedUsername,
+                password,
+                _userContextProvider.GetCurrentCulture().Name);
+
             if (!authenticationResult.PasswordIsValid)
             {
                 throw new GraException("The username and password entered do not match");
@@ -833,7 +843,7 @@ namespace GRA.Domain.Service
                     if (includePendingQuestionnaire)
                     {
                         member.HasPendingQuestionnaire = (await _requireQuestionnaireRepository
-                            .GetForUser(siteId, member.Id, member.Age)).Any();
+                            .GetForUser(siteId, member.Id, member.Age)).Count > 0;
                     }
                 }
             }
@@ -851,7 +861,7 @@ namespace GRA.Domain.Service
                 throw new GraException("Permission denied.");
             }
 
-            var user = await _userRepository.GetByIdAsync(userId); ;
+            var user = await _userRepository.GetByIdAsync(userId);
             if (string.IsNullOrWhiteSpace(user.Username))
             {
                 _logger.LogError($"User {userId} cannot be promoted to family/group manager without a username.");
@@ -955,7 +965,7 @@ namespace GRA.Domain.Service
         private async Task<bool> UserHasRoles(int userId)
         {
             var roles = await _roleRepository.GetPermisisonNamesForUserAsync(userId);
-            return roles != null && roles.Count() > 0;
+            return roles?.Count() > 0;
         }
 
         private async Task JoinedProgramNotificationBadge(User registeredUser)
@@ -1124,7 +1134,7 @@ namespace GRA.Domain.Service
             var userRoles = await _userRepository.GetUserRolesAsync(userId);
 
             if (await _roleRepository.ListContainsAdminRoleAsync(userRoles)
-                && await _roleRepository.ListContainsAdminRoleAsync(roleIds) == false)
+                && !await _roleRepository.ListContainsAdminRoleAsync(roleIds))
             {
                 var adminCount = await _roleRepository.GetUsersWithAdminRoleCountAsync();
                 if (adminCount <= 1)
@@ -1138,12 +1148,12 @@ namespace GRA.Domain.Service
 
             await _userRepository.UpdateUserRolesAsync(authId, userId, rolesToAdd, rolesToRemove);
 
-            if (user.IsAdmin && roleIds.Count() == 0)
+            if (user.IsAdmin && !roleIds.Any())
             {
                 user.IsAdmin = false;
                 await _userRepository.UpdateAsync(authId, user);
             }
-            else if (user.IsAdmin == false && roleIds.Count() > 0)
+            else if (!user.IsAdmin && roleIds.Any())
             {
                 user.IsAdmin = true;
                 await _userRepository.UpdateAsync(authId, user);
@@ -1171,6 +1181,17 @@ namespace GRA.Domain.Service
             var user = await _userRepository.GetByIdAsync(userId);
 
             return user.FullName;
+        }
+
+        public async Task UpdateCulture(string cultureName)
+        {
+            int authUserId = GetClaimId(ClaimType.UserId);
+            var authUser = await _userRepository.GetByIdAsync(authUserId);
+            if (authUser.Culture != cultureName)
+            {
+                authUser.Culture = cultureName;
+            }
+            await _userRepository.UpdateSaveNoAuditAsync(authUser);
         }
     }
 }

@@ -15,6 +15,7 @@ namespace GRA.Data.Repository
         : AuditingRepository<Model.User, User>, IUserRepository
     {
         private readonly Security.Abstract.IPasswordHasher _passwordHasher;
+
         public UserRepository(ServiceFacade.Repository repositoryFacade,
             ILogger<UserRepository> logger,
             Security.Abstract.IPasswordHasher passwordHasher) : base(repositoryFacade, logger)
@@ -26,7 +27,7 @@ namespace GRA.Data.Repository
         {
             var userLookup = await DbSet
                 .AsNoTracking()
-                .Where(_ => _.Id == userId && _.IsDeleted == false)
+                .Where(_ => _.Id == userId && !_.IsDeleted)
                 .SingleOrDefaultAsync();
 
             if (userLookup == null)
@@ -78,11 +79,12 @@ namespace GRA.Data.Repository
             user.PasswordHash = _passwordHasher.HashPassword(password);
             await UpdateSaveAsync(currentUserId, user, original);
         }
+
         public async Task<User> GetByUsernameAsync(string username)
         {
             var lookupUser = await DbSet
                 .AsNoTracking()
-                .Where(_ => _.Username == username && _.IsDeleted == false)
+                .Where(_ => _.Username == username && !_.IsDeleted)
                 .SingleOrDefaultAsync();
             if (lookupUser != null)
             {
@@ -95,7 +97,8 @@ namespace GRA.Data.Repository
         }
 
         public async Task<AuthenticationResult> AuthenticateUserAsync(string username,
-            string password)
+            string password,
+            string culture)
         {
             var result = new AuthenticationResult
             {
@@ -104,7 +107,7 @@ namespace GRA.Data.Repository
             };
 
             var lookupUser = await DbSet
-                .Where(_ => _.Username == username && _.IsDeleted == false)
+                .Where(_ => _.Username == username && !_.IsDeleted)
                 .SingleOrDefaultAsync();
             if (lookupUser != null)
             {
@@ -115,6 +118,16 @@ namespace GRA.Data.Repository
                 {
                     result.User = _mapper.Map<Model.User, User>(lookupUser);
                     lookupUser.LastAccess = _dateTimeProvider.Now;
+
+                    if (culture != Culture.DefaultName)
+                    {
+                        // if the user is using a non-default culture, update their record
+                        if (lookupUser.Culture != culture)
+                        {
+                            lookupUser.Culture = culture;
+                        }
+                    }
+
                     await SaveAsync();
                 }
             }
@@ -213,7 +226,7 @@ namespace GRA.Data.Repository
         private IQueryable<Model.User> ApplyUserFilter(UserFilter filter)
         {
             var userList = DbSet.AsNoTracking()
-                .Where(_ => _.IsDeleted == false && _.SiteId == filter.SiteId);
+                .Where(_ => !_.IsDeleted && _.SiteId == filter.SiteId);
 
             if (filter.SystemIds?.Any() == true)
             {
@@ -256,7 +269,7 @@ namespace GRA.Data.Repository
         private IQueryable<Model.User> ApplyUserFilter(ReportCriterion criterion)
         {
             var userList = DbSet.AsNoTracking()
-                .Where(_ => _.IsDeleted == false && _.SiteId == criterion.SiteId);
+                .Where(_ => !_.IsDeleted && _.SiteId == criterion.SiteId);
 
             if (criterion.SystemId != null)
             {
@@ -302,7 +315,6 @@ namespace GRA.Data.Repository
             return userList;
         }
 
-
         public async Task<int> GetCountAsync(ReportCriterion request)
         {
             return await ApplyUserFilter(request).CountAsync();
@@ -311,7 +323,7 @@ namespace GRA.Data.Repository
         public async Task<int> GetFirstTimeCountAsync(ReportCriterion request)
         {
             var users = ApplyUserFilter(request);
-            return await users.Where(_ => _.IsFirstTime == true).CountAsync();
+            return await users.Where(_ => _.IsFirstTime).CountAsync();
         }
 
         public async Task<int> GetAchieverCountAsync(ReportCriterion request)
@@ -326,7 +338,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.IsDeleted == false
+                .Where(_ => !_.IsDeleted
                        && _.HouseholdHeadUserId == householdHeadUserId)
                 .OrderBy(_ => _.LastName)
                 .ThenBy(_ => _.FirstName)
@@ -341,7 +353,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.IsDeleted == false
+                .Where(_ => !_.IsDeleted
                        && _.HouseholdHeadUserId == householdHeadUserId)
                        .CountAsync();
         }
@@ -350,7 +362,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.Id == id && _.IsDeleted == false)
+                .Where(_ => _.Id == id && !_.IsDeleted)
                 .ProjectTo<User>()
                 .SingleOrDefaultAsync();
         }
@@ -359,7 +371,7 @@ namespace GRA.Data.Repository
         {
             var userIdLookup = await DbSet
                 .AsNoTracking()
-                .Where(_ => _.Email == email && _.IsDeleted == false)
+                .Where(_ => _.Email == email && !_.IsDeleted)
                 .FirstOrDefaultAsync();
 
             if (userIdLookup == null)
@@ -374,7 +386,7 @@ namespace GRA.Data.Repository
                     .AsNoTracking()
                     .Where(_ => _.Email == email
                         && !string.IsNullOrEmpty(_.Username)
-                        && _.IsDeleted == false)
+                        && !_.IsDeleted)
                     .Select(_ => _.Username)
                     .ToListAsync()
             };
@@ -384,7 +396,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.SiteId == siteId && _.IsDeleted == false)
+                .Where(_ => _.SiteId == siteId && !_.IsDeleted)
                 .Select(_ => _.Id)
                 .ToListAsync();
         }
@@ -393,7 +405,7 @@ namespace GRA.Data.Repository
         {
             var household = await DbSet
                 .AsNoTracking()
-                .Where(_ => _.IsDeleted == false
+                .Where(_ => !_.IsDeleted
                        && _.HouseholdHeadUserId == householdHeadUserId)
                 .ProjectTo<User>()
                 .ToListAsync();
@@ -404,7 +416,7 @@ namespace GRA.Data.Repository
         public async Task<bool> UsernameInUseAsync(int siteId, string username)
         {
             return await DbSet.AsNoTracking()
-                .Where(_ => _.SiteId == siteId && _.Username == username && _.IsDeleted == false)
+                .Where(_ => _.SiteId == siteId && _.Username == username && !_.IsDeleted)
                 .AnyAsync();
         }
 
@@ -412,7 +424,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.IsDeleted == false
+                .Where(_ => !_.IsDeleted
                     && _.BranchId == criterion.BranchId
                     && _.ProgramId == criterion.ProgramId)
                 .Select(_ => _.Id)

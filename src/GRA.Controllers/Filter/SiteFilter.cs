@@ -30,6 +30,7 @@ namespace GRA.Controllers.Filter
         private readonly SiteLookupService _siteLookupService;
         private readonly IUserContextProvider _userContextProvider;
         private readonly IOptions<RequestLocalizationOptions> _l10nOptions;
+        private readonly UserService _userService;
 
         public SiteFilter(ILogger<SiteFilter> logger,
             IDistributedCache cache,
@@ -37,7 +38,8 @@ namespace GRA.Controllers.Filter
             IPathResolver pathResolver,
             SiteLookupService siteLookupService,
             IUserContextProvider userContextProvider,
-            IOptions<RequestLocalizationOptions> l10nOptions)
+            IOptions<RequestLocalizationOptions> l10nOptions,
+            UserService userService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _cache = cache ?? throw new ArgumentNullException(nameof(cache));
@@ -48,6 +50,7 @@ namespace GRA.Controllers.Filter
             _userContextProvider = userContextProvider
                 ?? throw new ArgumentNullException(nameof(userContextProvider));
             _l10nOptions = l10nOptions ?? throw new ArgumentNullException(nameof(l10nOptions));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 
         public async Task OnResourceExecutionAsync(ResourceExecutingContext context,
@@ -216,32 +219,50 @@ namespace GRA.Controllers.Filter
             {
                 var uriBuilder = new UriBuilder(httpContext.Request.GetEncodedUrl());
                 var qs = HttpUtility.ParseQueryString(uriBuilder.Query);
-                var qsCultureProvider = new QueryStringRequestCultureProvider();
-                string qsCulture = qs[qsCultureProvider.QueryStringKey];
+                var queryStringKey = new QueryStringRequestCultureProvider().QueryStringKey;
+                string qsCulture = qs[queryStringKey];
                 if (!string.IsNullOrEmpty(qsCulture))
                 {
-                    if (_l10nOptions.Value.SupportedCultures.Any(_ => _.Name == qsCulture))
+                    // set in querystring
+                    var matchingCulture = _l10nOptions
+                        .Value
+                        .SupportedCultures
+                        .FirstOrDefault(_ => _.Name == qsCulture);
+
+                    if (matchingCulture != null && matchingCulture.Name != Culture.DefaultName)
                     {
+                        // valid culture
                         var cookieCulture = httpContext
                             .Request
                             .Cookies[CookieRequestCultureProvider.DefaultCookieName];
 
-                        if (string.IsNullOrEmpty(cookieCulture) || cookieCulture != qsCulture)
+                        if (string.IsNullOrEmpty(cookieCulture)
+                            || cookieCulture != matchingCulture.Name)
                         {
+                            // no cookie or new culture selected, reset cookie
                             httpContext.Response.Cookies.Append(
                                 CookieRequestCultureProvider.DefaultCookieName,
                                 CookieRequestCultureProvider
-                                    .MakeCookieValue(new RequestCulture(qsCulture)),
+                                    .MakeCookieValue(new RequestCulture(matchingCulture.Name)),
                                 new CookieOptions { Expires = DateTimeOffset.UtcNow.AddDays(14) }
                             );
+                            if (_userContextProvider.GetContext().ActiveUserId != null)
+                            {
+                                await _userService.UpdateCulture(matchingCulture.Name);
+                            }
                         }
                     }
                     else
                     {
+                        // invalid culture or default culture, remove cookie
                         httpContext
                             .Response
                             .Cookies
                             .Delete(CookieRequestCultureProvider.DefaultCookieName);
+                        if (_userContextProvider.GetContext().ActiveUserId != null)
+                        {
+                            await _userService.UpdateCulture(null);
+                        }
                     }
                 }
 
@@ -252,7 +273,7 @@ namespace GRA.Controllers.Filter
                         ? culture.Parent.NativeName
                         : culture.NativeName;
                     qs = HttpUtility.ParseQueryString(uriBuilder.Query);
-                    qs[qsCultureProvider.QueryStringKey] = culture.Name;
+                    qs[queryStringKey] = culture.Name;
                     uriBuilder.Query = qs.ToString();
                     cultureList.Add(new SelectListItem(text, uriBuilder.ToString()));
                 }

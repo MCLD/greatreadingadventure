@@ -20,6 +20,7 @@ namespace GRA.Controllers.MissionControl
 
         private readonly ILogger<HomeController> _logger;
         private readonly AuthenticationService _authenticationService;
+        private readonly LanguageService _languageService;
         private readonly MailService _mailService;
         private readonly NewsService _newsService;
         private readonly ReportService _reportService;
@@ -30,6 +31,7 @@ namespace GRA.Controllers.MissionControl
 
         public HomeController(ILogger<HomeController> logger,
             AuthenticationService authenticationService,
+            LanguageService languageService,
             MailService mailService,
             NewsService newsService,
             ReportService reportService,
@@ -42,6 +44,8 @@ namespace GRA.Controllers.MissionControl
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _authenticationService = authenticationService
                 ?? throw new ArgumentNullException(nameof(authenticationService));
+            _languageService = languageService
+                ?? throw new ArgumentNullException(nameof(languageService));
             _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
             _newsService = newsService ?? throw new ArgumentNullException(nameof(newsService));
             _reportService = reportService
@@ -73,6 +77,9 @@ namespace GRA.Controllers.MissionControl
 
                 return RedirectToAction(nameof(AuthorizationCode));
             }
+
+            await _languageService.SyncLanguagesAsync(GetActiveUserId());
+
             Site site = await GetCurrentSiteAsync();
 
             var viewModel = new AtAGlanceViewModel

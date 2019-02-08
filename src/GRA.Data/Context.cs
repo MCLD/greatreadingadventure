@@ -159,6 +159,7 @@ namespace GRA.Data
         public DbSet<Model.Event> Events { get; set; }
         public DbSet<Model.GroupInfo> GroupInfos { get; set; }
         public DbSet<Model.GroupType> GroupTypes { get; set; }
+        public DbSet<Model.Language> Languages { get; set; }
         public DbSet<Model.Location> Locations { get; set; }
         public DbSet<Model.Mail> Mails { get; set; }
         public DbSet<Model.NewsCategory> NewsCateories { get; set; }
