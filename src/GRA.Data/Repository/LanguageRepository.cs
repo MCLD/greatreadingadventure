@@ -17,6 +17,17 @@ namespace GRA.Data.Repository
         {
         }
 
+        public async Task<ICollection<Language>> GetActiveAsync()
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.IsActive)
+                .OrderBy(_ => _.IsDefault)
+                .ThenBy(_ => _.Name)
+                .ProjectTo<Language>()
+                .ToListAsync();
+        }
+
         public async Task<ICollection<Language>> GetAllAsync()
         {
             return await DbSet

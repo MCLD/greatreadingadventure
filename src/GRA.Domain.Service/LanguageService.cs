@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GRA.Abstract;
@@ -82,6 +83,11 @@ namespace GRA.Domain.Service
                     Name = culture.Name
                 });
             }
+        }
+
+        public async Task<ICollection<Model.Language>> GetActiveAsync()
+        {
+            return await _languageRepository.GetActiveAsync();
         }
     }
 }
