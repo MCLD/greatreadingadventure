@@ -133,6 +133,7 @@ namespace GRA.Controllers.Filter
             httpContext.Items[ItemKey.SiteId] = (int)siteId;
             httpContext.Items[ItemKey.ShowChallenges] = showChallenges;
             httpContext.Items[ItemKey.ShowEvents] = showEvents;
+            httpContext.Items[ItemKey.WebScheme] = site.IsHttpsForced ? "https" : "http";
 
             // only check if the site.css and site.js have changed periodically by default and
             // cache the last modification time

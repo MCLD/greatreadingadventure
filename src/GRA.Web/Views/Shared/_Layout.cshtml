@@ -1,15 +1,12 @@
-﻿@using System.Globalization
-@using GRA.Domain.Model
-@using Microsoft.AspNetCore.Http.Features
-@using Microsoft.AspNetCore.Localization
+﻿@using GRA.Domain.Model
 @using Microsoft.AspNetCore.Mvc.Localization
 @using Microsoft.Extensions.Localization
 
 @inject IStringLocalizer<GRA.Controllers.Resources.Shared> SharedLocalizer
 @inject IViewLocalizer Localizer
 
-<!DOCTYPE html lang="@Context.Items[GRA.Controllers.ItemKey.ISOLanguageName]">
-<html>
+<!DOCTYPE html>
+<html lang="@Context.Items[GRA.Controllers.ItemKey.ISOLanguageName]">
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -17,9 +14,9 @@
     <title>@ViewData[GRA.Controllers.ViewDataKey.Title]</title>
     @if (Context.Items[GRA.Controllers.ItemKey.HrefLang] != null)
     {
-        @foreach (var item in ((IDictionary<string,string>)Context.Items[GRA.Controllers.ItemKey.HrefLang]))
+        @foreach (var item in ((IDictionary<string, string>)Context.Items[GRA.Controllers.ItemKey.HrefLang]))
         {
-            <link rel="alternate" hreflang="@item.Key" href="@Url.RouteUrl(null, new { culture = item.Value }, Context.Request.Scheme)" />
+            <link rel="alternate" hreflang="@item.Key" href="@Url.RouteUrl(null, new { culture = item.Value }, Context.Items[GRA.Controllers.ItemKey.WebScheme].ToString())" />
         }
     }
     <link rel="apple-touch-icon" sizes="180x180" href="/content/apple-touch-icon.png">
