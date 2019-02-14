@@ -15,6 +15,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData[GRA.Controllers.ViewDataKey.Title]</title>
+    @if (Context.Items[GRA.Controllers.ItemKey.HrefLang] != null)
+    {
+        @foreach (var item in ((IDictionary<string,string>)Context.Items[GRA.Controllers.ItemKey.HrefLang]))
+        {
+            <link rel="alternate" hreflang="@item.Key" href="@Url.RouteUrl(null, new { culture = item.Value }, Context.Request.Scheme)" />
+        }
+    }
     <link rel="apple-touch-icon" sizes="180x180" href="/content/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/content/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/content/favicon-16x16.png">

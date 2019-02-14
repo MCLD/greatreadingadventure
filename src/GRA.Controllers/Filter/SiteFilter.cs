@@ -255,13 +255,27 @@ namespace GRA.Controllers.Filter
 
                 // generate list for drop-down
                 var cultureList = new List<SelectListItem>();
+                var cultureHrefLang = new Dictionary<string, string>
+                {
+                    { "x-default", Culture.DefaultName }
+                };
                 foreach (var culture in _l10nOptions.Value.SupportedCultures)
                 {
                     var text = culture.Parent != null
                         ? culture.Parent.NativeName
                         : culture.NativeName;
                     cultureList.Add(new SelectListItem(text, culture.Name));
+                    if (!cultureHrefLang.Keys.Contains(culture.Name))
+                    {
+                        cultureHrefLang.Add(culture.Name, culture.Name);
+                        if (culture.Parent != null
+                            && !cultureHrefLang.Keys.Contains(culture.Parent.Name))
+                        {
+                            cultureHrefLang.Add(culture.Parent.Name, culture.Parent.Name);
+                        }
+                    }
                 }
+                httpContext.Items[ItemKey.HrefLang] = cultureHrefLang;
                 httpContext.Items[ItemKey.L10n] = cultureList.OrderBy(_ => _.Text);
             }
 

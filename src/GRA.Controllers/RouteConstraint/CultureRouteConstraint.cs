@@ -25,7 +25,7 @@ namespace GRA.Controllers.RouteConstraint
             return _l10nOptions
                     .Value
                     .SupportedCultures
-                    .Any(_ => _.Name == culture);
+                    .Any(_ => _.Name == culture || _.Parent?.Name == culture);
         }
     }
 }
