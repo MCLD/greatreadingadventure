@@ -8,7 +8,7 @@
 @inject IStringLocalizer<GRA.Controllers.Resources.Shared> SharedLocalizer
 @inject IViewLocalizer Localizer
 
-<!DOCTYPE html>
+<!DOCTYPE html lang="@Context.Items[GRA.Controllers.ItemKey.ISOLanguageName]">
 <html>
 <head>
     <meta charset="utf-8" />
@@ -70,7 +70,7 @@
                             <ul class="dropdown-menu">
                                 @foreach (var item in ((IEnumerable<SelectListItem>)Context.Items[GRA.Controllers.ItemKey.L10n]))
                                 {
-                                    <li><a href="@item.Value">@item.Text</a></li>
+                                    <li><a href="@Url.RouteUrl(new { culture = item.Value})">@item.Text</a></li>
                                 }
                             </ul>
                         </li>
@@ -215,17 +215,17 @@
         <script async src="https://www.googletagmanager.com/gtag/js?id=@Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics].ToString()"></script>
         <script>
             window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
+                                        function gtag(){dataLayer.push(arguments);}
+                                        gtag('js', new Date());
 
-            gtag('config', '@Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics].ToString()', {
-                'custom_map': {
-                    'dimension1': 'Program Name',
+                                        gtag('config', '@Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics].ToString()', {
+                                            'custom_map': {
+                                                'dimension1': 'Program Name',
                     'dimension2': 'First Time Participant'
-                }
-            });
+                                            }
+                                        });
 
-            @if(Context.Items[GRA.Controllers.ItemKey.SignedIn] != null) {
+                                        @if(Context.Items[GRA.Controllers.ItemKey.SignedIn] != null) {
                 @:gtag('event', 'login');
             }
         </script>

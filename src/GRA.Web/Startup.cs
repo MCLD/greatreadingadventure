@@ -15,8 +15,10 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Localization.Routing;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -90,6 +92,11 @@ namespace GRA.Web
                 _.DefaultRequestCulture = new RequestCulture(Culture.DefaultCulture);
                 _.SupportedCultures = Culture.SupportedCultures;
                 _.SupportedUICultures = Culture.SupportedCultures;
+                _.RequestCultureProviders.Insert(0,
+                    new RouteDataRequestCultureProvider { Options = _ });
+                _.RequestCultureProviders
+                    .Remove(_.RequestCultureProviders
+                        .Single(p => p.GetType() == typeof(QueryStringRequestCultureProvider)));
             });
 
             // Add framework services.
@@ -156,6 +163,11 @@ namespace GRA.Web
                     break;
             }
 
+            services.Configure<RouteOptions>(_ =>
+            {
+                _.ConstraintMap.Add("cultureConstraint", typeof(CultureRouteConstraint));
+            });
+
             // add MVC
             services.AddMvc()
                 .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_2)
@@ -189,10 +201,6 @@ namespace GRA.Web
                         nameof(Permission.ActivateAllChallenges),
                         nameof(Permission.ActivateSystemChallenges)));
             });
-
-            // path validator
-            services.AddScoped<Controllers.Base.ISitePathValidator,
-                Controllers.Validator.SitePathValidator>();
 
             // service facades
             services.AddScoped<Controllers.ServiceFacade.Controller,
@@ -441,9 +449,7 @@ namespace GRA.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app,
-            IPathResolver pathResolver,
-            Controllers.Base.ISitePathValidator sitePathValidator)
+        public void Configure(IApplicationBuilder app, IPathResolver pathResolver)
         {
             if (_isDevelopment)
             {
@@ -454,12 +460,23 @@ namespace GRA.Web
                 app.UseStatusCodePagesWithReExecute("/Error/Index/{0}");
             }
 
-            app.UseRequestLocalization(new RequestLocalizationOptions
+            var requestLocalizationOptions = new RequestLocalizationOptions
             {
                 DefaultRequestCulture = new RequestCulture(Culture.DefaultCulture),
                 SupportedCultures = Culture.SupportedCultures,
                 SupportedUICultures = Culture.SupportedCultures
-            });
+            };
+            requestLocalizationOptions.RequestCultureProviders.Insert(0,
+                new RouteDataRequestCultureProvider { Options = requestLocalizationOptions });
+
+            requestLocalizationOptions
+                .RequestCultureProviders
+                .Remove(requestLocalizationOptions
+                    .RequestCultureProviders
+                    .Single(_ => _.GetType() == typeof(QueryStringRequestCultureProvider)));
+
+
+            //app.UseRequestLocalization(requestLocalizationOptions);
 
             if (!string.IsNullOrEmpty(_config[ConfigurationKey.ReverseProxyAddress]))
             {
@@ -549,32 +566,20 @@ namespace GRA.Web
             {
                 routes.MapRoute(
                     name: null,
-                    template: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-
-                routes.MapRoute(
-                    name: null,
-                    template: "{sitePath}/Info/{stub}",
-                    defaults: new { controller = "Info", action = "Index" },
-                    constraints: new
-                    {
-                        sitePath = new SiteRouteConstraint(sitePathValidator)
-                    });
-                routes.MapRoute(
-                    name: null,
                     template: "Info/{stub}",
                     defaults: new { controller = "Info", action = "Index" });
-
                 routes.MapRoute(
                     name: null,
-                    template: "{sitePath}/{controller}/{action}/{id?}",
-                    defaults: new { controller = "Home", action = "Index" },
-                    constraints: new
-                    {
-                        sitePath = new SiteRouteConstraint(sitePathValidator)
-                    });
+                    template: "{area:exists}/{controller}/{action}/{id?}",
+                    defaults: new { controller = "Home", action = "Index" });
                 routes.MapRoute(
                     name: null,
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{culture:cultureConstraint}/{controller}/{action}/{id?}",
+                    defaults: new { controller = "Home", action = "Index" });
+                routes.MapRoute(
+                    name: null,
+                    template: "{controller}/{action}/{id?}",
+                    defaults: new { controller = "Home", action = "Index" });
             });
 
             app.UseWebSockets(new WebSocketOptions

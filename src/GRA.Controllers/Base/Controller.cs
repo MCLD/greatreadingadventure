@@ -21,6 +21,7 @@ namespace GRA.Controllers.Base
 {
     [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     [ServiceFilter(typeof(SiteFilter), Order = 1)]
+    [MiddlewareFilter(typeof(Middleware.LocalizationMiddleware))]
     [SessionTimeoutFilter]
     public abstract class Controller : Microsoft.AspNetCore.Mvc.Controller
     {
