@@ -1,0 +1,236 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="BookAuthor" xml:space="preserve">
+    <value>Author</value>
+    <comment>Dashboard prompt for entering a book author</comment>
+  </data>
+  <data name="BookTitle" xml:space="preserve">
+    <value>Title</value>
+    <comment>Dashboard prompt for entering a book title</comment>
+  </data>
+  <data name="Challenges" xml:space="preserve">
+    <value />
+    <comment>Navigation bar link to Challenges</comment>
+  </data>
+  <data name="DashboardActivityHistory" xml:space="preserve">
+    <value>See your activity history.</value>
+    <comment>Dashboard link to view history of program activities</comment>
+  </data>
+  <data name="DashboardAfterClose" xml:space="preserve">
+    <value>The program has ended, thanks for participating!</value>
+    <comment>Dashboard information about the program ending.</comment>
+  </data>
+  <data name="DashboardBeforeOpen" xml:space="preserve">
+    <value>Once the program starts, you will enter your activity right here!</value>
+    <comment>Dashboard explanation that the program hasn't started yet and what to do once it has</comment>
+  </data>
+  <data name="DashboardEnterActivityRead" xml:space="preserve">
+    <value>Enter {0} read</value>
+    <comment>Dashboard entry of activity performed, {0} is plural (for example "minutes" or "pages")</comment>
+  </data>
+  <data name="DashboardNoBadgesExplanation" xml:space="preserve">
+    <value>Participate in program activities to earn badges!</value>
+    <comment>Dashboard text displayed when the participant has no badges.</comment>
+  </data>
+  <data name="DashboardReadABook" xml:space="preserve">
+    <value>I read a book!</value>
+    <comment>Dashboard button for logging activity of reading one book</comment>
+  </data>
+  <data name="DashboardSecretCodeExplanation" xml:space="preserve">
+    <value>Secret codes can be found by attending library events and on promotional materials. If you find one, enter it below!</value>
+    <comment>Dashboard explanation of what secret codes are</comment>
+  </data>
+  <data name="DashboardSeeBadges" xml:space="preserve">
+    <value>See more of your badges in your history!</value>
+    <comment>Dashboard link to view participant's history, displayed underneath their badges</comment>
+  </data>
+  <data name="DashboardSubmitActivityRead" xml:space="preserve">
+    <value>Log {0}</value>
+    <comment>Dashboard submit button for activity performed, {0} is plural (for example "minutes" or "pages")</comment>
+  </data>
+  <data name="Events" xml:space="preserve">
+    <value />
+    <comment>Navigation bar link to Events</comment>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value />
+    <comment>Navigation bar link to home page</comment>
+  </data>
+  <data name="JavaScriptWarning" xml:space="preserve">
+    <value>This website relies on JavaScript. Please enable JavaScript in your browser to get the best experience.</value>
+    <comment>Text to display if the user's browser does not have JavaScript functional</comment>
+  </data>
+  <data name="Join" xml:space="preserve">
+    <value />
+    <comment>Navigation bar link to join/sign up page</comment>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value />
+    <comment>Navigation bar drop-down for language selection</comment>
+  </data>
+  <data name="Mail" xml:space="preserve">
+    <value />
+    <comment>Navigation bar link to in-software mail facility</comment>
+  </data>
+  <data name="Menu" xml:space="preserve">
+    <value />
+    <comment>Text for display when the window is small to expand the top navigation bar</comment>
+  </data>
+  <data name="MissionControl" xml:space="preserve">
+    <value>Mission Control</value>
+    <comment>Navigation bar link to system administration area (colloquially how NASA refers to the mission control center/operations center)</comment>
+  </data>
+  <data name="MyProfile" xml:space="preserve">
+    <value>My Profile</value>
+    <comment>Navigation bar link to the participant's user profile</comment>
+  </data>
+  <data name="SecretCode" xml:space="preserve">
+    <value>Secret Code</value>
+    <comment>Dashboard prompt for entering a secret code</comment>
+  </data>
+  <data name="SignIn" xml:space="preserve">
+    <value>Sign in</value>
+    <comment>Navigation bar link to sign in/authenticate</comment>
+  </data>
+  <data name="SignOut" xml:space="preserve">
+    <value>Sign out</value>
+    <comment>Navigation bar link to sign out</comment>
+  </data>
+  <data name="SubmitCode" xml:space="preserve">
+    <value>Submit Code</value>
+    <comment>Dashboard button to submit a secret code</comment>
+  </data>
+  <data name="ToggleNavigation" xml:space="preserve">
+    <value>Toggle navigation</value>
+    <comment>Text for screen readers when the window is small to expand the top navigation when it is collapsed</comment>
+  </data>
+  <data name="WelcomeName" xml:space="preserve">
+    <value>Welcome &lt;strong&gt;{0}!&lt;/strong&gt;</value>
+    <comment>Dashboard friendly greeting, {0} is the participant's first name</comment>
+  </data>
+  <data name="YourBadges" xml:space="preserve">
+    <value>Your badges</value>
+    <comment>Dashboard link to view participant's history, displayed above their badges on the dashboard</comment>
+  </data>
+  <data name="YourPointStatus" xml:space="preserve">
+    <value>You have &lt;strong&gt;{0}&lt;/strong&gt; points.</value>
+    <comment>Dashboard display of current points, {0} is a number of points they've earned</comment>
+  </data>
+</root>
