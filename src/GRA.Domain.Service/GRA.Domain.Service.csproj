@@ -35,6 +35,7 @@
     <PackageReference Include="CsvHelper" Version="12.1.2" />
     <PackageReference Include="ExcelDataReader" Version="3.4.2" />
     <PackageReference Include="MailKit" Version="2.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Localization" version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.2" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.2.0" />
@@ -44,12 +45,6 @@
     <PackageReference Include="SmartFormat.NET" Version="2.4.2" />
     <PackageReference Include="System.Security.Claims" Version="4.3.0" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Microsoft.AspNetCore.Localization">
-      <HintPath>..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.aspnetcore.localization\2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Localization.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

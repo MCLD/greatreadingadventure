@@ -7,24 +7,24 @@ namespace GRA.Controllers.ViewModel.Join
 {
     public class SinglePageViewModel : SchoolSelectionViewModel
     {
-        [Required]
+        [Required(ErrorMessage = Annotations.RequiredField)]
         [MaxLength(36)]
         public string Username { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = Annotations.RequiredField)]
         public string Password { get; set; }
 
-        [Required]
-        [Compare("Password", ErrorMessage = "Passwords do not match")]
+        [Required(ErrorMessage = Annotations.RequiredField)]
+        [Compare("Password", ErrorMessage = Annotations.ValidatePasswordsMatch)]
         [DisplayName("Confirm Password")]
         public string ConfirmPassword { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = Annotations.RequiredField)]
         [DisplayName("First Name")]
         [MaxLength(255)]
         public string FirstName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = Annotations.RequiredField)]
         [DisplayName("Last Name")]
         [MaxLength(255)]
         public string LastName { get; set; }
@@ -33,19 +33,19 @@ namespace GRA.Controllers.ViewModel.Join
         [MaxLength(32)]
         public string PostalCode { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = Annotations.RequiredSelection)]
         [DisplayName("System")]
-        [Range(0, int.MaxValue, ErrorMessage = "The System field is required.")]
+        [Range(0, int.MaxValue, ErrorMessage = Annotations.RequiredSystem)]
         public int? SystemId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = Annotations.RequiredSelection)]
         [DisplayName("Branch")]
-        [Range(0, int.MaxValue, ErrorMessage = "The Branch field is required.")]
+        [Range(0, int.MaxValue, ErrorMessage = Annotations.RequiredBranch)]
         public int? BranchId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = Annotations.RequiredSelection)]
         [DisplayName("Program")]
-        [Range(0, int.MaxValue, ErrorMessage = "The Program field is required.")]
+        [Range(0, int.MaxValue, ErrorMessage = Annotations.RequiredProgramSelection)]
         public int? ProgramId { get; set; }
 
         public int? Age { get; set; }
@@ -72,16 +72,18 @@ namespace GRA.Controllers.ViewModel.Join
         public SelectList AskFirstTime { get; set; }
 
         [DisplayName("Is this your first time participating?")]
-        [Required(ErrorMessage = "Please let us know if this is your first time participating in the program")]
+        [Required(ErrorMessage = Annotations.ValidateFirstTime)]
         public string IsFirstTime { get; set; }
 
         public SelectList AskEmailSubscription { get; set; }
         public string AskEmailSubscriptionText { get; set; }
-        [Required(ErrorMessage = "Please let us know if you would like to receive emails throughout the program")]
+
+        [Required(ErrorMessage = Annotations.ValidateEmailSubscription)]
         public string EmailSubscriptionRequested { get; set; }
 
         [DisplayName("Set a personal goal")]
         public int? DailyPersonalGoal { get; set; }
+
         public string TranslationDescriptionPastTense { get; set; }
         public string ActivityDescriptionPlural { get; set; }
 

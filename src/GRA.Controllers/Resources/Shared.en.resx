@@ -117,120 +117,396 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="BookAuthor" xml:space="preserve">
+  <data name="Age" xml:space="preserve">
+    <value>Age</value>
+    <comment>Prompt for a participant's age in years. </comment>
+  </data>
+  <data name="Author" xml:space="preserve">
     <value>Author</value>
     <comment>Dashboard prompt for entering a book author</comment>
   </data>
-  <data name="BookTitle" xml:space="preserve">
-    <value>Title</value>
-    <comment>Dashboard prompt for entering a book title</comment>
+  <data name="Authorization Code" xml:space="preserve">
+    <value>Authorization Code</value>
+    <comment>A code used to grant more priviledges to an administrative user</comment>
+  </data>
+  <data name="Branch" xml:space="preserve">
+    <value>Branch</value>
+    <comment>Prompt for a participant's library branch from a drop-down list, examples might be 'Aguila Library' or 'Mesquite Library' or 'Sunset Library'</comment>
   </data>
   <data name="Challenges" xml:space="preserve">
-    <value />
+    <value>Challenges</value>
     <comment>Navigation bar link to Challenges</comment>
   </data>
-  <data name="DashboardActivityHistory" xml:space="preserve">
-    <value>See your activity history.</value>
-    <comment>Dashboard link to view history of program activities</comment>
+  <data name="Charter School" xml:space="preserve">
+    <value>Charter School</value>
+    <comment>A school type - charter school</comment>
   </data>
-  <data name="DashboardAfterClose" xml:space="preserve">
-    <value>The program has ended, thanks for participating!</value>
-    <comment>Dashboard information about the program ending.</comment>
+  <data name="Confirm New Password" xml:space="preserve">
+    <value>Confirm New Password</value>
+    <comment>Prompt for a participant to enter their new password again to ensure they did not make a typo.</comment>
   </data>
-  <data name="DashboardBeforeOpen" xml:space="preserve">
-    <value>Once the program starts, you will enter your activity right here!</value>
-    <comment>Dashboard explanation that the program hasn't started yet and what to do once it has</comment>
+  <data name="Confirm Password" xml:space="preserve">
+    <value>Confirm Password</value>
+    <comment>Prompt for a participant to enter their password again to ensure they did not make a typo.</comment>
   </data>
-  <data name="DashboardEnterActivityRead" xml:space="preserve">
-    <value>Enter {0} read</value>
-    <comment>Dashboard entry of activity performed, {0} is plural (for example "minutes" or "pages")</comment>
+  <data name="Could not create your account: {0}" xml:space="preserve">
+    <value>Could not create your account: {0}</value>
+    <comment>Error creating the participant's account, {0} is replaced with the explanation as to why</comment>
   </data>
-  <data name="DashboardNoBadgesExplanation" xml:space="preserve">
-    <value>Participate in program activities to earn badges!</value>
-    <comment>Dashboard text displayed when the participant has no badges.</comment>
-  </data>
-  <data name="DashboardReadABook" xml:space="preserve">
-    <value>I read a book!</value>
-    <comment>Dashboard button for logging activity of reading one book</comment>
+  <data name="Could not find username '{0}'." xml:space="preserve">
+    <value>Could not find username '{0}'.</value>
+    <comment>Could not find a username when a participant is trying to authenticate.</comment>
   </data>
   <data name="DashboardSecretCodeExplanation" xml:space="preserve">
     <value>Secret codes can be found by attending library events and on promotional materials. If you find one, enter it below!</value>
     <comment>Dashboard explanation of what secret codes are</comment>
   </data>
-  <data name="DashboardSeeBadges" xml:space="preserve">
-    <value>See more of your badges in your history!</value>
-    <comment>Dashboard link to view participant's history, displayed underneath their badges</comment>
+  <data name="Email Address" xml:space="preserve">
+    <value>Email Address</value>
+    <comment>Prompt for a participant's email address</comment>
   </data>
-  <data name="DashboardSubmitActivityRead" xml:space="preserve">
-    <value>Log {0}</value>
-    <comment>Dashboard submit button for activity performed, {0} is plural (for example "minutes" or "pages")</comment>
+  <data name="Email and Phone Number are not required however at least one is needed in order to be eligible for prizes." xml:space="preserve">
+    <value>Email and Phone Number are not required however at least one is needed in order to be eligible for prizes.</value>
+    <comment>Explanation about contact information being necessary to win prizes.</comment>
+  </data>
+  <data name="Enter {0} read" xml:space="preserve">
+    <value>Enter {0} read</value>
+    <comment>Dashboard entry of activity performed, {0} is plural (for example "minutes" or "pages")</comment>
   </data>
   <data name="Events" xml:space="preserve">
-    <value />
+    <value>Events</value>
     <comment>Navigation bar link to Events</comment>
   </data>
+  <data name="First Name" xml:space="preserve">
+    <value>First Name</value>
+    <comment>Prompt for a participant's first name (given name, forename, Christian name)</comment>
+  </data>
+  <data name="Forgot Password" xml:space="preserve">
+    <value>Forgot Password</value>
+    <comment>Title of the page for sending a participant their password recovery link</comment>
+  </data>
+  <data name="Forgot your password?" xml:space="preserve">
+    <value>Forgot your password?</value>
+    <comment>Link for a participant to click if they've forgotten their password</comment>
+  </data>
+  <data name="Forgot your username?" xml:space="preserve">
+    <value>Forgot your username?</value>
+    <comment>Link for a participant to click if they've forgotten their username</comment>
+  </data>
   <data name="Home" xml:space="preserve">
-    <value />
+    <value>Home</value>
     <comment>Navigation bar link to home page</comment>
+  </data>
+  <data name="Homeschool" xml:space="preserve">
+    <value>Homeschool</value>
+    <comment>A school type - homeschool</comment>
+  </data>
+  <data name="I read a book!" xml:space="preserve">
+    <value>I read a book!</value>
+    <comment>Dashboard button for logging activity of reading one book</comment>
+  </data>
+  <data name="I will {0}" xml:space="preserve">
+    <value>I will {0}</value>
+    <comment>Daily personal goal, an explanation of activity, {0} is the action such as "read". See '{0} a day' for completion of this sentence - when combined they will say something similar to "I will read _ minutes a day"</comment>
+  </data>
+  <data name="Is this your first time participating?" xml:space="preserve">
+    <value>Is this your first time participating?</value>
+    <comment>Prompt for a participant about if this is their first time participating in the program.</comment>
   </data>
   <data name="JavaScriptWarning" xml:space="preserve">
     <value>This website relies on JavaScript. Please enable JavaScript in your browser to get the best experience.</value>
     <comment>Text to display if the user's browser does not have JavaScript functional</comment>
   </data>
   <data name="Join" xml:space="preserve">
-    <value />
-    <comment>Navigation bar link to join/sign up page</comment>
+    <value>Join</value>
+    <comment>Navigation bar link or page title for  join/sign up</comment>
+  </data>
+  <data name="Join!" xml:space="preserve">
+    <value>Join!</value>
+    <comment>Text of the button to create a participant account</comment>
   </data>
   <data name="Language" xml:space="preserve">
-    <value />
+    <value>Language</value>
     <comment>Navigation bar drop-down for language selection</comment>
   </data>
+  <data name="Last Name" xml:space="preserve">
+    <value>Last Name</value>
+    <comment>Prompt for a participant's last name (surname, family name)</comment>
+  </data>
+  <data name="Log {0}" xml:space="preserve">
+    <value>Log {0}</value>
+    <comment>Dashboard submit button for activity performed, {0} is plural (for example "minutes" or "pages")</comment>
+  </data>
   <data name="Mail" xml:space="preserve">
-    <value />
+    <value>Mail</value>
     <comment>Navigation bar link to in-software mail facility</comment>
   </data>
   <data name="Menu" xml:space="preserve">
-    <value />
+    <value>Menu</value>
     <comment>Text for display when the window is small to expand the top navigation bar</comment>
   </data>
-  <data name="MissionControl" xml:space="preserve">
+  <data name="Mission Control" xml:space="preserve">
     <value>Mission Control</value>
     <comment>Navigation bar link to system administration area (colloquially how NASA refers to the mission control center/operations center)</comment>
   </data>
-  <data name="MyProfile" xml:space="preserve">
+  <data name="My Profile" xml:space="preserve">
     <value>My Profile</value>
     <comment>Navigation bar link to the participant's user profile</comment>
   </data>
-  <data name="SecretCode" xml:space="preserve">
+  <data name="New Password" xml:space="preserve">
+    <value>New Password</value>
+    <comment>Prompt for a participant's new password</comment>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>No</value>
+    <comment>No, negative response to inquiry</comment>
+  </data>
+  <data name="Once the program starts, you will enter your activity right here!" xml:space="preserve">
+    <value>Once the program starts, you will enter your activity right here!</value>
+    <comment>Dashboard explanation that the program hasn't started yet and what to do once it has</comment>
+  </data>
+  <data name="Participate in program activities to earn badges!" xml:space="preserve">
+    <value>Participate in program activities to earn badges!</value>
+    <comment>Dashboard text displayed when the participant has no badges.</comment>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Password</value>
+    <comment>Prompt for a participant's password to access the system.</comment>
+  </data>
+  <data name="Password and password confirmation do not match." xml:space="preserve">
+    <value>Password and password confirmation do not match.</value>
+    <comment>Validation prompt explaining that the password and password confirmation fields do not match.</comment>
+  </data>
+  <data name="Password Recovery" xml:space="preserve">
+    <value>Password Recovery</value>
+    <comment>Title of the page for allowing a participant to reset their password</comment>
+  </data>
+  <data name="Permission denied." xml:space="preserve">
+    <value>Permission denied.</value>
+    <comment>General message when a participant does not have permission to execute an action.</comment>
+  </data>
+  <data name="Phone Number" xml:space="preserve">
+    <value>Phone Number</value>
+    <comment>Prompt for a participant's telephone number</comment>
+  </data>
+  <data name="Please correct the issues with your password." xml:space="preserve">
+    <value>Please correct the issues with your password.</value>
+    <comment>Validation prompt if there are issues with the participant's password on the join form.</comment>
+  </data>
+  <data name="Please let us know if this is your first time participating in the program." xml:space="preserve">
+    <value>Please let us know if this is your first time participating in the program.</value>
+    <comment>Validation prompt if the participant did not select whether or not this is their first time participating in the program.</comment>
+  </data>
+  <data name="Please let us know if you would like to receive emails throughout the program." xml:space="preserve">
+    <value>Please let us know if you would like to receive emails throughout the program.</value>
+    <comment>Validation prompt if the participant did not select whether or not they want to receive periodic emails during the program.</comment>
+  </data>
+  <data name="Please select a branch." xml:space="preserve">
+    <value>Please select a branch.</value>
+    <comment>Validation prompt if the participant did not select a library branch.</comment>
+  </data>
+  <data name="Please select a program." xml:space="preserve">
+    <value>Please select a program.</value>
+    <comment>Validation prompt if no value was selected for the program from a drop-down and it's required, examples might be 'Adult' or 'Teen' - the context is that of a summer or winter library reading program</comment>
+  </data>
+  <data name="Please select a system." xml:space="preserve">
+    <value>Please select a system.</value>
+    <comment>Validation prompt if the participant did not select a library system.</comment>
+  </data>
+  <data name="Please select a value for {0}." xml:space="preserve">
+    <value>Please select a value for {0}.</value>
+    <comment>No value was selected for the field and it's required, {0} is the field name (such as 'System' or 'Branch')</comment>
+  </data>
+  <data name="Private School" xml:space="preserve">
+    <value>Private School</value>
+    <comment>A school type - private school</comment>
+  </data>
+  <data name="Program" xml:space="preserve">
+    <value>Program</value>
+    <comment>Prompt for a participant's program selection from a drop-down list, examples might be 'Adult' or 'Teen' - the context is that of a summer or winter library reading program</comment>
+  </data>
+  <data name="Public School" xml:space="preserve">
+    <value>Public School</value>
+    <comment>A school type - public school</comment>
+  </data>
+  <data name="Registration for {0} has not opened yet." xml:space="preserve">
+    <value>Registration for {0} has not opened yet.</value>
+    <comment>Alert shown to a participant if they attempt to join prior to registration opening for the program; {0} is the name of the program</comment>
+  </data>
+  <data name="Reset Password" xml:space="preserve">
+    <value>Reset Password</value>
+    <comment>Button to save a participant's new password</comment>
+  </data>
+  <data name="Return to Sign In" xml:space="preserve">
+    <value>Return to Sign In</value>
+    <comment>Button to take a participant back to the sign in page</comment>
+  </data>
+  <data name="School" xml:space="preserve">
+    <value>School</value>
+    <comment>Prompt for the name of the participant's school</comment>
+  </data>
+  <data name="School District" xml:space="preserve">
+    <value>School District</value>
+    <comment>Prompt for a participant's school district</comment>
+  </data>
+  <data name="School not listed" xml:space="preserve">
+    <value>School not listed</value>
+    <comment>Prompt for a participant indicating their school is not listed</comment>
+  </data>
+  <data name="School Type" xml:space="preserve">
+    <value>School Type</value>
+    <comment>Prompt for a participant's school type</comment>
+  </data>
+  <data name="Secret Code" xml:space="preserve">
     <value>Secret Code</value>
     <comment>Dashboard prompt for entering a secret code</comment>
   </data>
-  <data name="SignIn" xml:space="preserve">
+  <data name="See more of your badges in your history!" xml:space="preserve">
+    <value>See more of your badges in your history!</value>
+    <comment>Dashboard link to view participant's history, displayed underneath their badges</comment>
+  </data>
+  <data name="See your activity history." xml:space="preserve">
+    <value>See your activity history.</value>
+    <comment>Dashboard link to view history of program activities</comment>
+  </data>
+  <data name="Send Recovery Email" xml:space="preserve">
+    <value>Send Recovery Email</value>
+    <comment>Button to send a user their username or password recovery email</comment>
+  </data>
+  <data name="Set a personal goal" xml:space="preserve">
+    <value>Set a personal goal</value>
+    <comment>Prompt participant for a personal goal when participating in the program</comment>
+  </data>
+  <data name="Sign in" xml:space="preserve">
     <value>Sign in</value>
     <comment>Navigation bar link to sign in/authenticate</comment>
   </data>
-  <data name="SignOut" xml:space="preserve">
+  <data name="Sign out" xml:space="preserve">
     <value>Sign out</value>
     <comment>Navigation bar link to sign out</comment>
   </data>
-  <data name="SubmitCode" xml:space="preserve">
+  <data name="Someone has already chosen that username." xml:space="preserve">
+    <value>Someone has already chosen that username.</value>
+    <comment>Validation prompt if the username is already in use.</comment>
+  </data>
+  <data name="Step {0}" xml:space="preserve">
+    <value>Step {0}</value>
+    <comment>Which step of a process we are on, {0} is replaced with a number like 1, 2, or 3</comment>
+  </data>
+  <data name="Submit Code" xml:space="preserve">
     <value>Submit Code</value>
     <comment>Dashboard button to submit a secret code</comment>
   </data>
-  <data name="ToggleNavigation" xml:space="preserve">
+  <data name="System" xml:space="preserve">
+    <value>System</value>
+    <comment>Prompt for a participant's library system from a drop-down list, examples might be 'Maricopa County Library District' or 'Phoenix Public Library'</comment>
+  </data>
+  <data name="That username is available!" xml:space="preserve">
+    <value>That username is available!</value>
+    <comment>Validation prompt that the username selected is available.</comment>
+  </data>
+  <data name="The branch you've selected is not valid, please select another branch." xml:space="preserve">
+    <value>The branch you've selected is not valid, please select another branch.</value>
+    <comment>The participant has selected a branch that is not valid. This should not occur but could happen if a branch became invalid while they were signing up.</comment>
+  </data>
+  <data name="The program has ended, thanks for participating!" xml:space="preserve">
+    <value>The program has ended, thanks for participating!</value>
+    <comment>Dashboard information about the program ending.</comment>
+  </data>
+  <data name="The program is not accepting registrations at this time." xml:space="preserve">
+    <value>The program is not accepting registrations at this time.</value>
+    <comment>A participant tried to sign up when the program was not open for sign-ups.</comment>
+  </data>
+  <data name="The program is not open for activity at this time." xml:space="preserve">
+    <value>The program is not open for activity at this time.</value>
+    <comment>A participant tried to enter activity when the program was not permitting it.</comment>
+  </data>
+  <data name="The program you've selected is not valid, please select another program." xml:space="preserve">
+    <value>The program you've selected is not valid, please select another program.</value>
+    <comment>The participant has selected a program that is not valid. This should not occur but could happen if a program became invalid while they were signing up.</comment>
+  </data>
+  <data name="The school you've selected is not valid, please select another school." xml:space="preserve">
+    <value>The school you've selected is not valid, please select another school.</value>
+    <comment>The participant has selected a school that is not valid. This should not occur but could happen if a school became invalid while they were signing up.</comment>
+  </data>
+  <data name="The system you've selected is not valid, please select another system." xml:space="preserve">
+    <value>The system you've selected is not valid, please select another system.</value>
+    <comment>The participant has selected a system that is not valid. This should not occur but could happen if a system became invalid while they were signing up.</comment>
+  </data>
+  <data name="The {0} field is required." xml:space="preserve">
+    <value>Please provide a value for {0}.</value>
+    <comment>No value was entered for the field and it's required, {0} is the field name (such as 'First Name')</comment>
+  </data>
+  <data name="This program may be better-suited to your age:" xml:space="preserve">
+    <value>This program may be better-suited to your age:</value>
+    <comment>Validation prompt that the user should perhaps select another program - this text is followed by the name of the recommended program.</comment>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Title</value>
+    <comment>Dashboard prompt for entering a book title</comment>
+  </data>
+  <data name="To receive email updates please supply an email address to send them to." xml:space="preserve">
+    <value>To receive email updates please supply an email address to send them to.</value>
+    <comment>Validation prompt if the participant requested email updates but neglected to provide an email address.</comment>
+  </data>
+  <data name="Toggle navigation" xml:space="preserve">
     <value>Toggle navigation</value>
     <comment>Text for screen readers when the window is small to expand the top navigation when it is collapsed</comment>
   </data>
-  <data name="WelcomeName" xml:space="preserve">
+  <data name="Token" xml:space="preserve">
+    <value>Token</value>
+    <comment>A set of characters that a participant enters to verify their identity, typically alphanumeric</comment>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Username</value>
+    <comment>Prompt for a participant's unique username which is used to access the system.</comment>
+  </data>
+  <data name="Username Recovery" xml:space="preserve">
+    <value>Username Recovery</value>
+    <comment>Title of the page for sending a participant their username if they've forgotten it</comment>
+  </data>
+  <data name="Validate code" xml:space="preserve">
+    <value>Validate code</value>
+    <comment>Text of the button used to validate an Authorization Code</comment>
+  </data>
+  <data name="Welcome &lt;strong&gt;{0}!&lt;/strong&gt;" xml:space="preserve">
     <value>Welcome &lt;strong&gt;{0}!&lt;/strong&gt;</value>
     <comment>Dashboard friendly greeting, {0} is the participant's first name</comment>
   </data>
-  <data name="YourBadges" xml:space="preserve">
+  <data name="Yes" xml:space="preserve">
+    <value>Yes</value>
+    <comment>Yes, positive response to inquiry</comment>
+  </data>
+  <data name="You can join {0} on {1}." xml:space="preserve">
+    <value>You can join {0} on {1}.</value>
+    <comment>Alert shown to a participant if they attempt to join prior to the start of the program; {0} is the name of the program, {1} is a the date the program starts</comment>
+  </data>
+  <data name="You have &lt;strong&gt;{0}&lt;/strong&gt; points." xml:space="preserve">
+    <value>You have &lt;strong&gt;{0}&lt;/strong&gt; points.</value>
+    <comment>Dashboard display of current points, {0} is a number of points they've earned</comment>
+  </data>
+  <data name="Your badges" xml:space="preserve">
     <value>Your badges</value>
     <comment>Dashboard link to view participant's history, displayed above their badges on the dashboard</comment>
   </data>
-  <data name="YourPointStatus" xml:space="preserve">
-    <value>You have &lt;strong&gt;{0}&lt;/strong&gt; points.</value>
-    <comment>Dashboard display of current points, {0} is a number of points they've earned</comment>
+  <data name="Your password must be at least 6 characters long and include a number." xml:space="preserve">
+    <value>Your password must be at least 6 characters long and include a number.</value>
+    <comment>Password requirements shown to participants.</comment>
+  </data>
+  <data name="Zip Code" xml:space="preserve">
+    <value>Zip Code</value>
+    <comment>Prompt for a participant's zip code or postal code</comment>
+  </data>
+  <data name="{0} - Join Now!" xml:space="preserve">
+    <value>{0} - Join Now!</value>
+    <comment>Page title/call to action for joining; {0} is the name of the program</comment>
+  </data>
+  <data name="{0} a day" xml:space="preserve">
+    <value>{0} a day</value>
+    <comment>Daily personal goal, completion of sentence, {0} is a plural activity description such as "minutes". See 'I will {0}' for the first half of this sentence - when combined they will say something similar to "I will read _ minutes a day"</comment>
+  </data>
+  <data name="{0} has ended, please join us next time!" xml:space="preserve">
+    <value>{0} has ended, please join us next time!</value>
+    <comment>Alert shown to a participant if they access after the program has ended; {0} is the name of the program</comment>
   </data>
 </root>

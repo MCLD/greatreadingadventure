@@ -96,8 +96,8 @@
                     </a>
                 </p>
                 <div class="dashboard-activity">
-                    <p style="font-size: x-large;">@SharedHtmlLocalizer["YourPointStatus", Model.CurrentPointTotal]</p>
-                    <p><a asp-controller="Profile" asp-action="History">@SharedLocalizer["DashboardActivityHistory"]</a></p>
+                    <p style="font-size: x-large;">@SharedHtmlLocalizer["You have <strong>{0}</strong> points.", Model.CurrentPointTotal]</p>
+                    <p><a asp-controller="Profile" asp-action="History">@SharedLocalizer["See your activity history."]</a></p>
                     @if (Model.TotalProgramGoal.HasValue)
                     {
                         <p style="font-size:large">My progress</p>
@@ -116,7 +116,7 @@
     <div class="col-sm-6">
         <div class="panel panel-default">
             <div class="panel-body text-center">
-                <span class="lead">@SharedHtmlLocalizer["WelcomeName", Model.FirstName]</span>
+                <span class="lead">@SharedHtmlLocalizer["Welcome <strong>{0}!</strong>", Model.FirstName]</span>
                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessPerformerRegistration))
                     && !Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessMissionControl))
                     && Model.SiteStage == GRA.Domain.Model.SiteStage.BeforeRegistration)
@@ -131,13 +131,13 @@
                 @if (Model.SiteStage == GRA.Domain.Model.SiteStage.RegistrationOpen)
                 {
                     <p class="lead" style="padding-top: 2rem;">
-                        @SharedLocalizer["DashboardBeforeOpen"]
+                        @SharedLocalizer["Once the program starts, you will enter your activity right here!"]
                     </p>
                 }
                 else if (Model.SiteStage == GRA.Domain.Model.SiteStage.ProgramEnded)
                 {
                     <p class="lead" style="padding-top: 2rem;">
-                        @SharedLocalizer["DashboardAfterClose"]
+                        @SharedLocalizer["The program has ended, thanks for participating!"]
                     </p>
                 }
             </div>
@@ -152,7 +152,7 @@
                         <form asp-controller="Home" asp-action="LogActivity" method="post" role="form">
                             <input asp-for="SingleEvent" type="hidden" />
                             <div class="row row-spacing">
-                                <label asp-for="Title" class="control-label col-sm-3 col-md-2">@SharedLocalizer["BookTitle"]</label>
+                                <label asp-for="Title" class="control-label col-sm-3 col-md-2"></label>
                                 <div class="col-sm-9 col-md-10">
                                     <input asp-for="Title" class="form-control" />
                                     <span asp-validation-for="Title" class="text-danger"></span>
@@ -160,7 +160,7 @@
                             </div>
 
                             <div class="row row-spacing">
-                                <label asp-for="Author" class="control-label col-sm-3 col-md-2">@SharedLocalizer["BookAuthor"]</label>
+                                <label asp-for="Author" class="control-label col-sm-3 col-md-2"></label>
                                 <div class="col-sm-9 col-md-10">
                                     <input asp-for="Author" class="form-control" />
                                     <span asp-validation-for="Author" class="text-danger"></span>
@@ -168,7 +168,7 @@
                             </div>
 
                             <button type="submit" class="btn center-block btn-success btn-lg btn-spinner">
-                                <span class="buttonText">@SharedLocalizer["DashboardReadABook"]</span>
+                                <span class="buttonText">@SharedLocalizer["I read a book!"]</span>
                                 <span class="fas fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
                         </form>
@@ -181,7 +181,7 @@
                     <div class="panel-body">
                         <form asp-controller="Home" asp-action="LogActivity" method="post" role="form" class="form-horizontal">
                             <div class="row row-spacing">
-                                <label class="control-label col-sm-7 col-md-5 col-lg-4">@SharedLocalizer["DashboardEnterActivityRead", Model.ActivityDescriptionPlural]</label>
+                                <label class="control-label col-sm-7 col-md-5 col-lg-4">@SharedLocalizer["Enter {0} read", Model.ActivityDescriptionPlural]</label>
                                 <div class="col-sm-5 col-md-7 col-lg-8">
                                     <input asp-for="ActivityAmount" type="text" value="@Model.ActivityAmount" class="form-control" />
                                     <span asp-validation-for="ActivityAmount" class="text-danger"></span>
@@ -189,7 +189,7 @@
                             </div>
 
                             <div class="row row-spacing">
-                                <label asp-for="Title" class="control-label col-sm-3 col-md-2">@SharedLocalizer["BookTitle"]</label>
+                                <label asp-for="Title" class="control-label col-sm-3 col-md-2"></label>
                                 <div class="col-sm-9 col-md-10">
                                     <input asp-for="Title" class="form-control" />
                                     <span asp-validation-for="Title" class="text-danger"></span>
@@ -197,7 +197,7 @@
                             </div>
 
                             <div class="row row-spacing">
-                                <label asp-for="Author" class="control-label col-sm-3 col-md-2">@SharedLocalizer["BookAuthor"]</label>
+                                <label asp-for="Author" class="control-label col-sm-3 col-md-2"></label>
                                 <div class="col-sm-9 col-md-10">
                                     <input asp-for="Author" class="form-control" />
                                     <span asp-validation-for="Author" class="text-danger"></span>
@@ -205,7 +205,7 @@
                             </div>
 
                             <button type="submit" class="btn center-block btn-success btn-lg btn-spinner">
-                                <span class="buttonText">@SharedLocalizer["DashboardSubmitActivityRead", Model.ActivityDescriptionPlural]</span>
+                                <span class="buttonText">@SharedLocalizer["Log {0}", Model.ActivityDescriptionPlural]</span>
                                 <span class="fas fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
                         </form>
@@ -226,7 +226,7 @@
                             </div>
 
                             <div class="row row-spacing">
-                                <label asp-for="SecretCode" class="control-label col-sm-5 col-md-4 col-lg-3">@SharedLocalizer["SecretCode"]</label>
+                                <label asp-for="SecretCode" class="control-label col-sm-5 col-md-4 col-lg-3"></label>
                                 <div class="col-sm-7 col-md-8 col-lg-9">
                                     <input asp-for="SecretCode" class="form-control" />
                                 </div>
@@ -239,7 +239,7 @@
                             </div>
 
                             <button type="submit" class="btn center-block btn-success btn-lg btn-spinner">
-                                <span class="buttonText">@SharedLocalizer["SubmitCode"]</span>
+                                <span class="buttonText">@SharedLocalizer["Submit Code"]</span>
                                 <span class="fas fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
                         </form>
@@ -261,7 +261,7 @@
         {
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <a asp-controller="Profile" asp-action="History" class="lead">@SharedLocalizer["YourBadges"]</a>
+                    <a asp-controller="Profile" asp-action="History" class="lead">@SharedLocalizer["Your badges"]</a>
                 </div>
                 <div class="panel-body">
                     <div class="row">
@@ -287,7 +287,7 @@
                                 if (display >= 6)
                                 {
                                     <div class="col-xs-12 visible-lg visible-md visible-xs">
-                                        <a asp-controller="Profile" asp-action="History" class="lead">@SharedLocalizer["DashboardSeeBadges"]</a>
+                                        <a asp-controller="Profile" asp-action="History" class="lead">@SharedLocalizer["See more of your badges in your history!"]</a>
                                     </div>
                                     break;
                                 }
@@ -295,13 +295,13 @@
                             if (display >= 3)
                             {
                                 <div class="col-xs-12 visible-sm">
-                                    <a asp-controller="Profile" asp-action="History" class="lead">@SharedLocalizer["DashboardSeeBadges"]</a>
+                                    <a asp-controller="Profile" asp-action="History" class="lead">@SharedLocalizer["See more of your badges in your history!"]</a>
                                 </div>
                             }
                         }
                         else
                         {
-                            <p>@SharedLocalizer["DashboardNoBadgesExplanation"]</p>
+                            <p>@SharedLocalizer["Participate in program activities to earn badges!"]</p>
                         }
                     </div>
                 </div>

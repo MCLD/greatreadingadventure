@@ -116,7 +116,7 @@ namespace GRA.Domain.Service
             var existingUser = await _userRepository.GetByUsernameAsync(user.Username);
             if (existingUser != null)
             {
-                throw new GraException("Someone has already chosen that username, please try another.");
+                throw new GraException(Annotations.ValidateUsernameTaken);
             }
 
             await ValidateUserFields(user);
@@ -1003,21 +1003,21 @@ namespace GRA.Domain.Service
         {
             if (!(await _systemRepository.ValidateAsync(user.SystemId, user.SiteId)))
             {
-                throw new GraException("Invalid System selection.");
+                throw new GraException(Annotations.ValidateSystem);
             }
             if (!(await _branchRepository.ValidateAsync(user.BranchId, user.SystemId)))
             {
-                throw new GraException("Invalid Branch selection.");
+                throw new GraException(Annotations.ValidateBranch);
             }
             if (!(await _programRepository.ValidateAsync(user.ProgramId, user.SiteId)))
             {
-                throw new GraException("Invalid Program selection.");
+                throw new GraException(Annotations.ValidateProgram);
             }
             if (user.SchoolId.HasValue)
             {
                 if (!(await _schoolRepository.ValidateAsync(user.SchoolId.Value, user.SiteId)))
                 {
-                    throw new GraException("Invalid School selection.");
+                    throw new GraException(Annotations.ValidateSchool);
                 }
             }
         }

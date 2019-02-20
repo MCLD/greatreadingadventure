@@ -84,7 +84,7 @@ namespace GRA.Domain.Service.Abstract
             if (userContext.SiteStage != SiteStage.RegistrationOpen
                 && userContext.SiteStage != SiteStage.ProgramOpen)
             {
-                throw new GraException("The program is not accepting registrations at this time.");
+                throw new GraException(Annotations.ValidateNotOpen);
             }
         }
 
@@ -93,7 +93,7 @@ namespace GRA.Domain.Service.Abstract
             var userContext = GetUserContext();
             if (userContext.SiteStage != SiteStage.ProgramOpen)
             {
-                throw new GraException("The program is not open for activity at this time.");
+                throw new GraException(Annotations.ValidateNotOpenActivity);
             }
         }
 
@@ -103,7 +103,7 @@ namespace GRA.Domain.Service.Abstract
             if (userContext.SiteStage != SiteStage.ProgramOpen
                 && userContext.SiteStage != SiteStage.RegistrationOpen)
             {
-                throw new GraException("These changes cannot be made at this time.");
+                throw new GraException(Annotations.ValidateNotOpenActivity);
             }
         }
 
@@ -112,7 +112,7 @@ namespace GRA.Domain.Service.Abstract
             if (!HasPermission(permission))
             {
                 _logger.LogError($"User id {GetClaimId(ClaimType.UserId)} does not have permission {permission}.");
-                throw new GraException("Permission denied.");
+                throw new GraException(Annotations.ValidatePermission);
             }
         }
 
@@ -132,7 +132,7 @@ namespace GRA.Domain.Service.Abstract
             if (!HasPermission(permission))
             {
                 _logger.LogError($"User id {GetClaimId(ClaimType.UserId)} does not have permission {permission}.");
-                throw new GraException("Permission denied.");
+                throw new GraException(Annotations.ValidatePermission);
             }
         }
 

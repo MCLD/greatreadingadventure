@@ -20,7 +20,7 @@ namespace GRA.Controllers.ViewModel.SignIn
         public string NewPassword { get; set; }
 
         [Required]
-        [Compare("NewPassword", ErrorMessage = "Passwords do not match")]
+        [Compare("NewPassword", ErrorMessage = Annotations.ValidatePasswordsMatch)]
         [DisplayName("Confirm New Password")]
         public string ConfirmPassword { get; set; }
     }

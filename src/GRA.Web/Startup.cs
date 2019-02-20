@@ -172,7 +172,11 @@ namespace GRA.Web
             services.AddMvc()
                 .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_2)
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
-                .AddDataAnnotationsLocalization();
+                .AddDataAnnotationsLocalization(_ =>
+                {
+                    _.DataAnnotationLocalizerProvider = (__, factory)
+                        => factory.Create(typeof(Controllers.Resources.Shared));
+                });
 
             // Add custom view directory
             services.Configure<RazorViewEngineOptions>(options =>

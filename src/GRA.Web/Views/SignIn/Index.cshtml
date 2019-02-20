@@ -37,13 +37,13 @@
                 <div class="panel-footer clearfix">
                     <div class="pull-left">
                         <table>
-                            <tr><td><a asp-action="ForgotPassword">Forgot your password?</a></td></tr>
-                            <tr><td><a asp-action="ForgotUsername">Forgot your username?</a></td></tr>
+                            <tr><td><a asp-action="ForgotPassword">@SharedLocalizer["Forgot your password?"]</a></td></tr>
+                            <tr><td><a asp-action="ForgotUsername">@SharedLocalizer["Forgot your username?"]</a></td></tr>
                         </table>
                     </div>
                     <div class="pull-right">
                         <button class="btn btn-success btn-lg">
-                            <span class="fa fa-sign-in"></span> Sign in
+                            <span class="fa fa-sign-in"></span> @SharedLocalizer["Sign in"]
                         </button>
                     </div>
                 </div>

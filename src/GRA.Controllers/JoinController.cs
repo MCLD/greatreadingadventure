@@ -66,7 +66,7 @@ namespace GRA.Controllers
                 nameof(questionnaireService));
             _userService = Require.IsNotNull(userService, nameof(userService));
             _codeSanitizer = Require.IsNotNull(codeSanitizer, nameof(codeSanitizer));
-            PageTitle = "Join";
+            PageTitle = _sharedLocalizer["Join"];
         }
 
         public async Task<IActionResult> Index()
@@ -91,22 +91,26 @@ namespace GRA.Controllers
                 {
                     if (site.RegistrationOpens.HasValue)
                     {
-                        AlertInfo = $"You can join {site.Name} on {site.RegistrationOpens.Value.ToString("d")}";
+                        AlertInfo = _sharedLocalizer["You can join {0} on {1}.",
+                            site.Name,
+                            site.RegistrationOpens.Value.ToString("d")];
                     }
                     else
                     {
-                        AlertInfo = $"Registration for {site.Name} has not opened yet";
+                        AlertInfo = _sharedLocalizer["Registration for {0} has not opened yet.",
+                            site.Name];
                     }
                     return RedirectToAction("Index", "Home");
                 }
                 else if (siteStage >= SiteStage.ProgramEnded)
                 {
-                    AlertInfo = $"{site.Name} has ended, please join us next time!";
+                    AlertInfo = _sharedLocalizer["{0} has ended, please join us next time!",
+                        site.Name];
                     return RedirectToAction("Index", "Home");
                 }
             }
 
-            PageTitle = $"{site.Name} - Join Now!";
+            PageTitle = _sharedLocalizer["{0} - Join Now!", site.Name];
 
             var systemList = await _siteService.GetSystemList();
             var programList = await _siteService.GetProgramList();
@@ -189,7 +193,8 @@ namespace GRA.Controllers
             }
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.PostalCode))
             {
-                ModelState.AddModelError("PostalCode", "The Zip Code field is required.");
+                ModelState.AddModelError("PostalCode",
+                    _sharedLocalizer[Annotations.RequiredField, _sharedLocalizer["Zip Code"]]);
             }
 
             var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
@@ -213,7 +218,7 @@ namespace GRA.Controllers
                 {
                     ModelState.AddModelError(nameof(model.Email), " ");
                     ModelState.AddModelError(nameof(model.EmailSubscriptionRequested),
-                    "To receive email updates please supply an email address to send them to.");
+                        _sharedLocalizer[Annotations.RequiredEmailForSubscription]);
                 }
             }
 
@@ -229,12 +234,14 @@ namespace GRA.Controllers
                 askSchool = program.AskSchool;
                 if (program.AgeRequired && !model.Age.HasValue)
                 {
-                    ModelState.AddModelError("Age", "The Age field is required.");
+                    ModelState.AddModelError("Age",
+                        _sharedLocalizer[Annotations.RequiredField, _sharedLocalizer["Age"]]);
                 }
                 if (program.SchoolRequired && !model.SchoolId.HasValue && !model.SchoolNotListed
                     && !model.IsHomeschooled)
                 {
-                    ModelState.AddModelError("SchoolId", "The School field is required.");
+                    ModelState.AddModelError("SchoolId",
+                        _sharedLocalizer[Annotations.RequiredField, _sharedLocalizer["School"]]);
                 }
             }
 
@@ -339,15 +346,17 @@ namespace GRA.Controllers
                 }
                 catch (GraException gex)
                 {
-                    ShowAlertDanger("Could not create your account: ", gex);
+                    ShowAlertDanger(_sharedLocalizer["Could not create your account: {0}",
+                        _sharedLocalizer[gex.Message]]);
                     if (gex.Message.Contains("password"))
                     {
-                        ModelState.AddModelError("Password", "Please correct the issues with your password.");
+                        ModelState.AddModelError("Password",
+                            _sharedLocalizer["Please correct the issues with your password."]);
                     }
                 }
             }
 
-            PageTitle = $"{site.Name} - Join Now!";
+            PageTitle = _sharedLocalizer["{0} - Join Now!", site.Name];
 
             if (model.SystemId.HasValue)
             {
@@ -428,7 +437,7 @@ namespace GRA.Controllers
                 }
             }
 
-            PageTitle = $"{site.Name} - Join Now!";
+            PageTitle = _sharedLocalizer["{0} - Join Now!", site.Name];
 
             var systemList = await _siteService.GetSystemList();
             var viewModel = new Step1ViewModel
@@ -492,7 +501,7 @@ namespace GRA.Controllers
                 return RedirectToAction("Step2");
             }
 
-            PageTitle = $"{site.Name} - Join Now!";
+            PageTitle = _sharedLocalizer["{0} - Join Now!", site.Name];
             var systemList = await _siteService.GetSystemList();
             model.SystemList = new SelectList(systemList.ToList(), "Id", "Name");
             if (model.SystemId.HasValue)
@@ -526,7 +535,7 @@ namespace GRA.Controllers
                 return RedirectToAction("Step1");
             }
 
-            PageTitle = $"{site.Name} - Join Now!";
+            PageTitle = _sharedLocalizer["{0} - Join Now!", site.Name];
 
             var programList = await _siteService.GetProgramList();
             var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
@@ -607,7 +616,7 @@ namespace GRA.Controllers
                 return RedirectToAction("Step3");
             }
 
-            PageTitle = $"{site.Name} - Join Now!";
+            PageTitle = _sharedLocalizer["{0} - Join Now!", site.Name];
 
             var programList = await _siteService.GetProgramList();
             var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
@@ -636,7 +645,7 @@ namespace GRA.Controllers
                 return RedirectToAction("Step2");
             }
 
-            PageTitle = $"{site.Name} - Join Now!";
+            PageTitle = _sharedLocalizer["{0} - Join Now!", site.Name];
 
             var viewModel = new Step3ViewModel();
 
@@ -839,7 +848,7 @@ namespace GRA.Controllers
                 model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
             }
 
-            PageTitle = $"{site.Name} - Join Now!";
+            PageTitle = _sharedLocalizer["{0} - Join Now!", site.Name];
 
             return View(model);
         }

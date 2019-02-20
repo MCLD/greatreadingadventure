@@ -1,24 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GRA.Controllers.ViewModel.Join
 {
     public class Step3ViewModel
     {
-        [Required]
+        [Required(ErrorMessage = Annotations.RequiredField)]
         [MaxLength(36)]
         public string Username { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = Annotations.RequiredField)]
         public string Password { get; set; }
 
-        [Required]
-        [Compare("Password", ErrorMessage = "Passwords do not match")]
+        [Required(ErrorMessage = Annotations.RequiredField)]
+        [Compare("Password", ErrorMessage = Annotations.ValidatePasswordsMatch)]
         [DisplayName("Confirm Password")]
         public string ConfirmPassword { get; set; }
 
@@ -35,16 +31,18 @@ namespace GRA.Controllers.ViewModel.Join
         public SelectList AskFirstTime { get; set; }
 
         [DisplayName("Is this your first time participating?")]
-        [Required(ErrorMessage = "Please let us know if this is your first time participating in the program")]
+        [Required(ErrorMessage = Annotations.ValidateFirstTime)]
         public string IsFirstTime { get; set; }
 
         public SelectList AskEmailSubscription { get; set; }
         public string AskEmailSubscriptionText { get; set; }
-        [Required(ErrorMessage = "Please let us know if you would like to receive emails throughout the program")]
+
+        [Required(ErrorMessage = Annotations.ValidateEmailSubscription)]
         public string EmailSubscriptionRequested { get; set; }
 
         [DisplayName("Set a personal goal")]
         public int? DailyPersonalGoal { get; set; }
+
         public string TranslationDescriptionPastTense { get; set; }
         public string ActivityDescriptionPlural { get; set; }
     }
