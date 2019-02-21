@@ -1,4 +1,4 @@
-﻿namespace GRA.Controllers.Resources
+﻿namespace GRA.Resources
 {
     public class Shared
     {

@@ -175,7 +175,7 @@ namespace GRA.Web
                 .AddDataAnnotationsLocalization(_ =>
                 {
                     _.DataAnnotationLocalizerProvider = (__, factory)
-                        => factory.Create(typeof(Controllers.Resources.Shared));
+                        => factory.Create(typeof(Resources.Shared));
                 });
 
             // Add custom view directory
