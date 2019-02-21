@@ -1228,7 +1228,7 @@ namespace GRA.Controllers.MissionControl
                 return Json(new
                 {
                     success = false,
-                    sanitizedSecretCode,
+                    secretCode = sanitizedSecretCode,
                     message = gex.Message
                 });
             }
@@ -1236,7 +1236,7 @@ namespace GRA.Controllers.MissionControl
             return Json(new
             {
                 success = true,
-                sanitizedSecretCode
+                secretCode = sanitizedSecretCode
             });
         }
         #endregion

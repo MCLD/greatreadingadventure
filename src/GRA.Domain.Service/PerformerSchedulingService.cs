@@ -1634,22 +1634,22 @@ namespace GRA.Domain.Service
 
             if (string.IsNullOrWhiteSpace(sanitizedSecretCode))
             {
-                throw new ArgumentNullException("Please enter a Secret Code.");
+                throw new GraException("Please enter a Secret Code.");
             }
             else if (!sanitizedSecretCode.All(char.IsLetterOrDigit))
             {
-                throw new ArgumentNullException("Only letters and numbers are allowed.");
+                throw new GraException("Only letters and numbers are allowed.");
             }
             else if (sanitizedSecretCode.Length > 50)
             {
-                throw new ArgumentNullException("Please enter less than 50 characters.");
+                throw new GraException("Please enter less than 50 characters.");
             }
 
             var existingTrigger = await _triggerRepository.GetByCodeAsync(GetCurrentSiteId(),
                 sanitizedSecretCode, false);
             if (existingTrigger != null)
             {
-                throw new ArgumentNullException("Code is already in use by a trigger.");
+                throw new GraException("Code is already in use by a trigger.");
             }
 
             var currentSelection = await _psBranchSelectionRepository.GetByIdAsync(selectionId);
@@ -1659,7 +1659,7 @@ namespace GRA.Domain.Service
                     .GetByCodeAsync(sanitizedSecretCode);
                 if (existingSelection != null)
                 {
-                    throw new ArgumentNullException("Code is already in use by a performer selection.");
+                    throw new GraException("Code is already in use by a performer selection.");
                 }
 
                 currentSelection.SecretCode = sanitizedSecretCode;
