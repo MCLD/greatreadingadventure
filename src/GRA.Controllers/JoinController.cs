@@ -322,7 +322,8 @@ namespace GRA.Controllers
                         {
                             var auth = await _authenticationService
                                 .RevalidateUserAsync(loginAttempt.User.Id);
-                            auth.AuthenticationMessage = $"Code applied, you are a member of the role: <strong>{role}</strong>.";
+                            // TODO globalize
+                            auth.Message = $"Code applied, you are a member of the role: {role}.";
                             await LoginUserAsync(auth);
                         }
                     }
@@ -794,7 +795,8 @@ namespace GRA.Controllers
                         {
                             var auth = await _authenticationService
                                 .RevalidateUserAsync(loginAttempt.User.Id);
-                            auth.AuthenticationMessage = $"Code applied, you are a member of the role: <strong>{role}</strong>.";
+                            // TODO globalize
+                            auth.Message = $"Code applied, you are a member of the role: {role}.";
                             await LoginUserAsync(auth);
                         }
                     }

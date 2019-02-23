@@ -509,4 +509,48 @@
     <value>{0} has ended, please join us next time!</value>
     <comment>Alert shown to a participant if they access after the program has ended; {0} is the name of the program</comment>
   </data>
+  <data name="A list of usernames associated with the email address '{0}' has been sent." xml:space="preserve">
+    <value>A list of usernames associated with the email address '{0}' has been sent.</value>
+    <comment>Informing the user that a list of usernames email has been sent; {0} is the associated email address</comment>
+  </data>
+  <data name="A password recovery email has been sent to the email for username '{0}'." xml:space="preserve">
+    <value>A password recovery email has been sent to the email for username '{0}'.</value>
+    <comment>Informing the user that a password recovery email has been sent; {0} is their username</comment>
+  </data>
+  <data name="Could not recover username(s): {0}" xml:space="preserve">
+    <value>Could not recover username(s): {0}</value>
+    <comment>A username recovery email could not be sent for the reason specified in {0}</comment>
+  </data>
+  <data name="Password reset for: {0}" xml:space="preserve">
+    <value>Password reset for: {0}</value>
+    <comment>Telling the user that their password was reset, {0} is their username</comment>
+  </data>
+  <data name="Password reset token '{0}' has expired, please start the password reset process over." xml:space="preserve">
+    <value>Password reset token '{0}' has expired, please start the password reset process over.</value>
+    <comment>Password reset token has expired becuase the user waited too long between asking to reset their password and clicking the link. They must restart the password reset process and generate a new token.</comment>
+  </data>
+  <data name="Password reset token '{0}' is not valid, please start the password reset process over." xml:space="preserve">
+    <value>Password reset token '{0}' is not valid, please start the password reset process over.</value>
+    <comment>Password reset token is not valid, they must restart the password reset process and generate a new token.</comment>
+  </data>
+  <data name="The program is not accepting sign-ins at this time." xml:space="preserve">
+    <value>The program is not accepting sign-ins at this time.</value>
+    <comment>A participant tried to sign in when the program was not open for sign-ins.</comment>
+  </data>
+  <data name="The provided password is incorrect." xml:space="preserve">
+    <value>The provided password is incorrect.</value>
+    <comment>Validation prompt that the user entered an invalid password.</comment>
+  </data>
+  <data name="There are no usernames associated with the email address: {0}." xml:space="preserve">
+    <value>There are no usernames associated with the email address: {0}.</value>
+    <comment>An attempt was made to find usernames associated with an email address and none were found; {0} is the email address that was searched for</comment>
+  </data>
+  <data name="Unable to reset password: {0}" xml:space="preserve">
+    <value>Unable to reset password: {0}</value>
+    <comment>Telling the user why their password could not be reset, {0} is the explanation</comment>
+  </data>
+  <data name="Username '{0}' does not have an email address configured." xml:space="preserve">
+    <value>Username '{0}' does not have an email address configured.</value>
+    <comment>The user does not have an email address configured so we cannot email them to perform a password reset; {0} is their username</comment>
+  </data>
 </root>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -127,14 +128,14 @@ namespace GRA.Controllers.Base
 
                 HttpContext.Session.SetInt32(SessionKey.ActiveUserId, authResult.User.Id);
 
-                if (!string.IsNullOrEmpty(authResult.AuthenticationMessage))
+                if (!string.IsNullOrEmpty(authResult.Message))
                 {
-                    AlertInfo = authResult.AuthenticationMessage;
+                    AlertInfo = _sharedLocalizer[authResult.Message, authResult.Arguments];
                 }
             }
             else
             {
-                ShowAlertDanger(authResult.AuthenticationMessage);
+                ShowAlertDanger(_sharedLocalizer[authResult.Message, authResult.Arguments]);
             }
         }
 
