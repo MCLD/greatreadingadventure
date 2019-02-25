@@ -148,8 +148,8 @@ namespace GRA.Controllers
         {
             if (string.IsNullOrWhiteSpace(username))
             {
-                ModelState.AddModelError("", _sharedLocalizer[Annotations.RequiredField,
-                    _sharedLocalizer["Username"]]); ;
+                ModelState.AddModelError("", _sharedLocalizer[Annotations.Required.Field,
+                    _sharedLocalizer["Username"]]);
             }
             if (ModelState.IsValid)
             {

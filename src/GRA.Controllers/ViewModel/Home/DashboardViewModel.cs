@@ -15,15 +15,17 @@ namespace GRA.Controllers.ViewModel.Home
 
         public int? ActivityAmount { get; set; }
 
-        [MaxLength(500)]
+        [MaxLength(500, ErrorMessage = Annotations.Validate.MinLength)]
+        [DisplayName(DisplayNames.Title)]
         public string Title { get; set; }
 
-        [MaxLength(255)]
+        [MaxLength(255, ErrorMessage = Annotations.Validate.MinLength)]
+        [DisplayName(DisplayNames.Author)]
         public string Author { get; set; }
 
         public bool DisableSecretCode { get; set; }
 
-        [DisplayName("Secret Code")]
+        [DisplayName(DisplayNames.SecretCode)]
         public string SecretCode { get; set; }
 
         public string SecretCodeMessage { get; set; }

@@ -50,12 +50,12 @@ namespace GRA.Domain.Service
 
             if (!authResult.FoundUser)
             {
-                authResult.Message = Annotations.ValidateUsername;
+                authResult.Message = Annotations.Validate.Username;
                 authResult.Arguments = new string[] { trimmedUsername };
             }
             else if (!authResult.PasswordIsValid)
             {
-                authResult.Message = Annotations.ValidatePassword;
+                authResult.Message = Annotations.Validate.Password;
             }
             else
             {
@@ -75,7 +75,7 @@ namespace GRA.Domain.Service
                     if (userContext.SiteStage == SiteStage.BeforeRegistration
                         || userContext.SiteStage == SiteStage.AccessClosed)
                     {
-                        throw new GraException(Annotations.ValidateNotOpenSignins);
+                        throw new GraException(Annotations.Validate.NotOpenSignins);
                     }
                 }
             }
@@ -106,7 +106,7 @@ namespace GRA.Domain.Service
             else
             {
                 _logger.LogError($"User {authUserId} doesn't have permission to reset password for {userIdToReset}.");
-                throw new GraException(Annotations.ValidatePermission);
+                throw new GraException(Annotations.Validate.Permission);
             }
         }
 
@@ -122,7 +122,7 @@ namespace GRA.Domain.Service
                 return new Models.ServiceResult
                 {
                     Status = Models.ServiceResultStatus.Error,
-                    Message = Annotations.ValidateUsername,
+                    Message = Annotations.Validate.Username,
                     Arguments = new string[] { trimmedUsername }
                 };
             }
@@ -138,7 +138,7 @@ namespace GRA.Domain.Service
                     return new Models.ServiceResult
                     {
                         Status = Models.ServiceResultStatus.Error,
-                        Message = Annotations.ValidateTokenExpired,
+                        Message = Annotations.Validate.TokenExpired,
                         Arguments = new string[] { token }
                     };
                 }
@@ -155,7 +155,7 @@ namespace GRA.Domain.Service
                 return new Models.ServiceResult
                 {
                     Status = Models.ServiceResultStatus.Error,
-                    Message = Annotations.ValidateTokenExpired,
+                    Message = Annotations.Validate.TokenExpired,
                     Arguments = new string[] { token }
                 };
             }
@@ -174,7 +174,7 @@ namespace GRA.Domain.Service
                 return new Models.ServiceResult
                 {
                     Status = Models.ServiceResultStatus.Error,
-                    Message = Annotations.ValidateUsername,
+                    Message = Annotations.Validate.Username,
                     Arguments = new string[] { trimmedUsername }
                 };
             }
@@ -185,7 +185,7 @@ namespace GRA.Domain.Service
                 return new Models.ServiceResult
                 {
                     Status = Models.ServiceResultStatus.Error,
-                    Message = Annotations.ValidateEmailConfigured,
+                    Message = Annotations.Validate.EmailConfigured,
                     Arguments = new string[] { trimmedUsername }
                 };
             }

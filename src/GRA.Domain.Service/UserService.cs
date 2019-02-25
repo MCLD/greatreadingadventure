@@ -116,7 +116,7 @@ namespace GRA.Domain.Service
             var existingUser = await _userRepository.GetByUsernameAsync(user.Username);
             if (existingUser != null)
             {
-                throw new GraException(Annotations.ValidateUsernameTaken);
+                throw new GraException(Annotations.Validate.UsernameTaken);
             }
 
             await ValidateUserFields(user);
@@ -1003,21 +1003,21 @@ namespace GRA.Domain.Service
         {
             if (!(await _systemRepository.ValidateAsync(user.SystemId, user.SiteId)))
             {
-                throw new GraException(Annotations.ValidateSystem);
+                throw new GraException(Annotations.Validate.System);
             }
             if (!(await _branchRepository.ValidateAsync(user.BranchId, user.SystemId)))
             {
-                throw new GraException(Annotations.ValidateBranch);
+                throw new GraException(Annotations.Validate.Branch);
             }
             if (!(await _programRepository.ValidateAsync(user.ProgramId, user.SiteId)))
             {
-                throw new GraException(Annotations.ValidateProgram);
+                throw new GraException(Annotations.Validate.Program);
             }
             if (user.SchoolId.HasValue)
             {
                 if (!(await _schoolRepository.ValidateAsync(user.SchoolId.Value, user.SiteId)))
                 {
-                    throw new GraException(Annotations.ValidateSchool);
+                    throw new GraException(Annotations.Validate.School);
                 }
             }
         }

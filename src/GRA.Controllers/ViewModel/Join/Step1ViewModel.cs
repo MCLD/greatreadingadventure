@@ -6,12 +6,12 @@ namespace GRA.Controllers.ViewModel.Join
 {
     public class Step1ViewModel
     {
-        [Required(ErrorMessage = Annotations.RequiredField)]
+        [Required(ErrorMessage = Annotations.Required.Field)]
         [DisplayName("First Name")]
         [MaxLength(255)]
         public string FirstName { get; set; }
 
-        [Required(ErrorMessage = Annotations.RequiredField)]
+        [Required(ErrorMessage = Annotations.Required.Field)]
         [DisplayName("Last Name")]
         [MaxLength(255)]
         public string LastName { get; set; }
@@ -20,14 +20,14 @@ namespace GRA.Controllers.ViewModel.Join
         [MaxLength(32)]
         public string PostalCode { get; set; }
 
-        [Required(ErrorMessage = Annotations.RequiredSelection)]
+        [Required(ErrorMessage = Annotations.Required.Selection)]
         [DisplayName("System")]
-        [Range(0, int.MaxValue, ErrorMessage = Annotations.RequiredSystem)]
+        [Range(0, int.MaxValue, ErrorMessage = Annotations.Required.System)]
         public int? SystemId { get; set; }
 
-        [Required(ErrorMessage = Annotations.RequiredSelection)]
+        [Required(ErrorMessage = Annotations.Required.Selection)]
         [DisplayName("Branch")]
-        [Range(0, int.MaxValue, ErrorMessage = Annotations.RequiredBranch)]
+        [Range(0, int.MaxValue, ErrorMessage = Annotations.Required.Branch)]
         public int? BranchId { get; set; }
 
         public bool RequirePostalCode { get; set; }

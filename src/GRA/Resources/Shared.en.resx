@@ -119,7 +119,7 @@
   </resheader>
   <data name="Age" xml:space="preserve">
     <value>Age</value>
-    <comment>Prompt for a participant's age in years. </comment>
+    <comment>Prompt for a participant's age in years.</comment>
   </data>
   <data name="Author" xml:space="preserve">
     <value>Author</value>
@@ -127,7 +127,7 @@
   </data>
   <data name="Authorization Code" xml:space="preserve">
     <value>Authorization Code</value>
-    <comment>A code used to grant more priviledges to an administrative user</comment>
+    <comment>A code used to grant more privileges to an administrative user</comment>
   </data>
   <data name="Branch" xml:space="preserve">
     <value>Branch</value>
@@ -527,7 +527,7 @@
   </data>
   <data name="Password reset token '{0}' has expired, please start the password reset process over." xml:space="preserve">
     <value>Password reset token '{0}' has expired, please start the password reset process over.</value>
-    <comment>Password reset token has expired becuase the user waited too long between asking to reset their password and clicking the link. They must restart the password reset process and generate a new token.</comment>
+    <comment>Password reset token has expired because the user waited too long between asking to reset their password and clicking the link. They must restart the password reset process and generate a new token.</comment>
   </data>
   <data name="Password reset token '{0}' is not valid, please start the password reset process over." xml:space="preserve">
     <value>Password reset token '{0}' is not valid, please start the password reset process over.</value>
@@ -552,5 +552,29 @@
   <data name="Username '{0}' does not have an email address configured." xml:space="preserve">
     <value>Username '{0}' does not have an email address configured.</value>
     <comment>The user does not have an email address configured so we cannot email them to perform a password reset; {0} is their username</comment>
+  </data>
+  <data name="Please enter a whole number greater than 0." xml:space="preserve">
+    <value>Please enter a whole number greater than 0.</value>
+    <comment>Validation prompt if the participant entered a non-integer, number less than 0, or 0.</comment>
+  </data>
+  <data name="When providing an author of a book, please also provide a title." xml:space="preserve">
+    <value>When providing an author of a book, please also provide a title.</value>
+    <comment>Validation prompt if the participant entered an author but not the title of a book.</comment>
+  </data>
+  <data name="Sorry, we couldn't log your activity: {0}" xml:space="preserve">
+    <value>Sorry, we couldn't log your activity: {0}</value>
+    <comment>Due to a software problem, the participant's activity could not be saved.</comment>
+  </data>
+  <data name="Thanks! We'll let you know when you can join the program." xml:space="preserve">
+    <value>Thanks! We'll let you know when you can join the program.</value>
+    <comment>Inform the participant that we will email them when they can participate in the program.</comment>
+  </data>
+  <data name="The field {0} must be a string or array type with a maximum length of '{1}'." xml:space="preserve">
+    <value>Please enter less than {1} characters for {0}.</value>
+    <comment>Validation prompt that a particular field - name replaces {0} - has a maximum allowed length of characters - replaced by {1}.</comment>
+  </data>
+  <data name="The field {0} must be a string or array type with a minimum length of '{1}'." xml:space="preserve">
+    <value>Please enter more than {1} characters for {0}.</value>
+    <comment>Validation prompt that a particular field - name replaces {0} - has a minimum allowed length of characters - replaced by {1}.</comment>
   </data>
 </root>
