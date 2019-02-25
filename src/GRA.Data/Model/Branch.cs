@@ -17,11 +17,15 @@ namespace GRA.Data.Model
         [MaxLength(500)]
         public string Url { get; set; }
 
+        [Required]
         [MaxLength(255)]
         public string Address { get; set; }
 
         [MaxLength(50)]
         public string Telephone { get; set; }
+
+        [MaxLength(50)]
+        public string Geolocation { get; set; }
 
         public virtual ICollection<User> Users { get; set; }
     }

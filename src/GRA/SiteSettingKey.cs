@@ -12,6 +12,11 @@
 
         public struct Events : System.IEquatable<Events>
         {
+            public static readonly string CommunityExperienceDescription
+                = "Events.CommunityExperienceDescription";
+
+            public static readonly string GoogleMapsAPIKey = "Events.GoogleMapsAPIKey";
+
             public static readonly string HideUntilRegistrationOpen
                 = "Events.HideUntilRegistrationOpen";
 

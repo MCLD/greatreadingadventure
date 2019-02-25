@@ -328,7 +328,6 @@ else
             var button = $(this);
             if (button.hasClass("disabled") == false) {
                 var checkIcon = $('#subscribeCheck');
-                console.log(checkIcon);
                 checkIcon.addClass("disabled").removeClass("far fa-square fa-check-square").addClass("fas fa-spinner fa-pulse");
                 var subscribe = button.data("subscribed") == "False";
 

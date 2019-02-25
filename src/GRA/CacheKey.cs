@@ -2,6 +2,7 @@
 {
     public static class CacheKey
     {
+        public static readonly string AddressGeocoding = "AddressGeocoding";
         public static readonly string CurrentStats = "CurrentStats";
         public static readonly string LatestNewsPostId = "LatestNewsPostId";
         public static readonly string SiteCss = "SiteCss";

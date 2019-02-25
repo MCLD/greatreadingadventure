@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Container labels following opencontainers.org annotation specification
 - More information in Mission Control system information
 - Mission Control menu item for entering an Authorization Code
+- Event proximity searching
 
 ### Changed
 - Script docker-build.bash to not build release images unless the branch starts with 'release/'
@@ -31,6 +32,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Category color being unset on edit
 - Display of Bootstrap drop-downs
 - Permissions for insert sample data call
+- Admin role permission updating using client-side evaluation
 
 ### Removed
 - Recovery error logging at the controller level - it's logged in the service

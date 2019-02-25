@@ -56,6 +56,7 @@ namespace GRA.Domain.Service
             {
                 SystemId = system.Id,
                 Name = "Main Library",
+                Address = "123 Test Street"
             };
             branch = await _branchRepository.AddSaveAsync(userId, branch);
 

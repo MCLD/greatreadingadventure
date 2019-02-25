@@ -147,6 +147,10 @@
                             <th>Name</th>
                             <th>Address</th>
                             <th># of Events</th>
+                            @if (Model.ShowGeolocation)
+                            {
+                                <th>Geolocation</th>
+                            }
                             <th width="100">&nbsp;</th>
                         </tr>
                     </thead>
@@ -163,6 +167,22 @@
                                 <td>
                                     @location.EventCount
                                 </td>
+                                @if (Model.ShowGeolocation)
+                                {
+                                    <td>
+                                        @if (!string.IsNullOrWhiteSpace(location.Geolocation))
+                                        {
+                                            <span class="fas fa-check colored-icon"></span>
+                                        }
+                                        else
+                                        {
+                                            <button type="button" class="btn btn-xs btn-primary geolocateButton" data-id="@location.Id">
+                                                Add geolocation
+                                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                            </button>
+                                        }
+                                    </td>
+                                }
                                 <td>
                                     <button type="submit"
                                             class="btn btn-primary btn-xs"
@@ -198,9 +218,10 @@
     </div>
 </div>
 
-@section scripts
-{
+@section scripts {
     <script>
+        var geolocationUrl = "@Url.Action(nameof(EventsController.SetLocationGeolocation))";
+
         $('#editModal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget);
             var id = button.data('id');
@@ -225,5 +246,28 @@
             modal.find('#modal-text').text('Are you sure you wish to delete the location "' + name + '" ?');
             modal.find('#Id').val(id);
         })
+
+        $(".geolocateButton").on("click", function () {
+            var button = $(this);
+            if (button.hasClass("disabled") == false) {
+                button.attr("disabled", "disabled");
+                button.children("span").removeClass("hidden");
+                $.post(geolocationUrl, { id: button.data("id") }, function (response) {
+                    if (response.success) {
+                        button.parent().html("<span class=\"fas fa-check colored-icon\"></span>");
+                    }
+                    else {
+                        alert("Unable to set geolocation: " + response.message);
+                        button.removeAttr("disabled");
+                        button.children("span").addClass("hidden");
+                    }
+                })
+                .fail(function () {
+                    alert("Error setting geolocation");
+                    button.removeAttr("disabled");
+                    button.children("span").addClass("hidden");
+                })
+            }
+        });
     </script>
 }

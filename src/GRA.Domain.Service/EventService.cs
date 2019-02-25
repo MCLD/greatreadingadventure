@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using GRA.Domain.Service.Abstract;
-using Microsoft.Extensions.Logging;
-using GRA.Domain.Repository;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
+using GRA.Domain.Repository;
+using GRA.Domain.Service.Abstract;
+using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Service
 {
@@ -16,6 +17,8 @@ namespace GRA.Domain.Service
         private readonly IEventRepository _eventRepository;
         private readonly ILocationRepository _locationRepository;
         private readonly IProgramRepository _programRepository;
+        private readonly ISpatialDistanceRepository _spatialDistanceRepository;
+
         public EventService(ILogger<EventService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
@@ -24,7 +27,8 @@ namespace GRA.Domain.Service
             IChallengeGroupRepository challengeGroupRepository,
             IEventRepository eventRepository,
             ILocationRepository locationRepository,
-            IProgramRepository programRepository)
+            IProgramRepository programRepository,
+            ISpatialDistanceRepository spatialDistanceRepository)
             : base(logger, dateTimeProvider, userContextProvider)
         {
             _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
@@ -35,6 +39,8 @@ namespace GRA.Domain.Service
             _eventRepository = Require.IsNotNull(eventRepository, nameof(eventRepository));
             _locationRepository = Require.IsNotNull(locationRepository, nameof(locationRepository));
             _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));
+            _spatialDistanceRepository = spatialDistanceRepository 
+                ?? throw new ArgumentNullException(nameof(spatialDistanceRepository));
         }
 
         public async Task<DataWithCount<IEnumerable<Event>>>
@@ -58,20 +64,6 @@ namespace GRA.Domain.Service
                 filter.IsActive = true;
                 data = await _eventRepository.PageAsync(filter);
                 count = await _eventRepository.CountAsync(filter);
-            }
-
-            foreach (var item in data)
-            {
-                if (item.AtBranchId != null)
-                {
-                    var branch = await _branchRepository.GetByIdAsync((int)item.AtBranchId);
-                    item.EventLocationName = branch.Name;
-                }
-                if (item.AtLocationId != null)
-                {
-                    var location = await _locationRepository.GetByIdAsync((int)item.AtLocationId);
-                    item.EventLocationName = location.Name;
-                }
             }
 
             return new DataWithCount<IEnumerable<Event>>
@@ -106,9 +98,7 @@ namespace GRA.Domain.Service
                 graEvent.EventLocationLink = location.Url;
             }
 
-            graEvent = await GetRelatedChallengeDetails(graEvent, showInactiveChallenge);
-
-            return graEvent;
+            return await GetRelatedChallengeDetails(graEvent, showInactiveChallenge);
         }
 
         public async Task<Event> Add(Event graEvent)
@@ -117,7 +107,7 @@ namespace GRA.Domain.Service
             graEvent.SiteId = GetCurrentSiteId();
             graEvent.RelatedBranchId = GetClaimId(ClaimType.BranchId);
             graEvent.RelatedSystemId = GetClaimId(ClaimType.SystemId);
-            if (HasPermission(Permission.ViewAllChallenges) == false)
+            if (!HasPermission(Permission.ViewAllChallenges))
             {
                 graEvent.ChallengeId = null;
                 graEvent.ChallengeGroupId = null;
@@ -131,7 +121,7 @@ namespace GRA.Domain.Service
             VerifyPermission(Permission.ManageEvents);
             var currentEvent = await _eventRepository.GetByIdAsync(graEvent.Id);
             graEvent.SiteId = currentEvent.SiteId;
-            if (HasPermission(Permission.ViewAllChallenges) == false)
+            if (!HasPermission(Permission.ViewAllChallenges))
             {
                 graEvent.ChallengeId = currentEvent.ChallengeId;
                 graEvent.ChallengeGroupId = currentEvent.ChallengeGroupId;
@@ -163,28 +153,69 @@ namespace GRA.Domain.Service
             };
         }
 
-        public async Task<Location> AddLocation(Location location)
+        public async Task<Location> GetLocationByIdAsync(int id)
+        {
+            return await _locationRepository.GetByIdAsync(id);
+        }
+
+        public async Task<Location> AddLocationAsync(Location location)
         {
             VerifyPermission(Permission.ManageLocations);
+
+            location.Address = location.Address.Trim();
+            location.Name = location.Name.Trim();
             location.SiteId = GetCurrentSiteId();
+            location.Telephone = location.Telephone?.Trim();
+            location.Url = location.Url?.Trim();
+
             return await _locationRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), location);
         }
 
-        public async Task<Location> EditLocation(Location location)
+        public async Task<Location> UpdateLocationAsync(Location location)
         {
             VerifyPermission(Permission.ManageLocations);
-            location.SiteId = GetCurrentSiteId();
-            return await _locationRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), location);
+
+            var currentLocation = await _locationRepository.GetByIdAsync(location.Id);
+
+            var invalidateSpatialHeaders = false;
+            if (currentLocation.Geolocation != location.Geolocation)
+            {
+                invalidateSpatialHeaders = true;
+            }
+
+            currentLocation.Address = location.Address.Trim();
+            currentLocation.Geolocation = location.Geolocation;
+            currentLocation.Name = location.Name.Trim();
+            currentLocation.Telephone = location.Telephone?.Trim();
+            currentLocation.Url = location.Url?.Trim();
+
+            currentLocation = await _locationRepository.UpdateSaveAsync(
+                GetClaimId(ClaimType.UserId), currentLocation);
+
+            if (invalidateSpatialHeaders)
+            {
+                await _spatialDistanceRepository.InvalidateHeadersAsync(GetCurrentSiteId());
+            }
+
+            return currentLocation;
         }
 
-        public async Task RemoveLocation(int locationId)
+        public async Task RemoveLocationAsync(int locationId)
         {
             VerifyPermission(Permission.ManageLocations);
             if (await _eventRepository.LocationInUse(GetCurrentSiteId(), locationId))
             {
                 throw new GraException("The location is being used by events.");
             }
+
+            var location = await _locationRepository.GetByIdAsync(locationId);
+
             await _locationRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), locationId);
+
+            if (!string.IsNullOrWhiteSpace(location.Geolocation))
+            {
+                await _spatialDistanceRepository.InvalidateHeadersAsync(GetCurrentSiteId());
+            }
         }
 
         public async Task<ICollection<Event>> GetRelatedEventsForTriggerAsync(int triggerId)

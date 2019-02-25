@@ -19,11 +19,13 @@ namespace GRA.Data.Repository
         {
         }
 
-        public async Task<ICollection<Location>> GetAll(int siteId)
+        public async Task<ICollection<Location>> GetAll(int siteId,
+            bool requireGeolocation = false)
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.SiteId == siteId)
+                .Where(_ => _.SiteId == siteId
+                    && (!requireGeolocation || !string.IsNullOrWhiteSpace(_.Geolocation)))
                 .OrderBy(_ => _.Name)
                 .ProjectTo<Location>()
                 .ToListAsync();
@@ -40,17 +42,18 @@ namespace GRA.Data.Repository
             return await ApplyFilters(filter)
                 .OrderBy(_ => _.Name)
                 .ApplyPagination(filter)
-                .GroupJoin(_context.Events, l => l.Id, e => e.AtLocationId, (l, e) => new { l, e })
-                .Select(_ => new Location {
-                    Id = _.l.Id,
-                    Address = _.l.Address,
-                    CreatedAt = _.l.CreatedAt,
-                    CreatedBy = _.l.CreatedBy,
-                    Name = _.l.Name,
-                    SiteId = _.l.SiteId,
-                    Telephone = _.l.Telephone,
-                    Url = _.l.Url,
-                    EventCount = _.e.Count()
+                .Select(_ => new Location
+                {
+                    Id = _.Id,
+                    Address = _.Address,
+                    CreatedAt = _.CreatedAt,
+                    CreatedBy = _.CreatedBy,
+                    Geolocation = _.Geolocation,
+                    Name = _.Name,
+                    SiteId = _.SiteId,
+                    Telephone = _.Telephone,
+                    Url = _.Url,
+                    EventCount = _context.Events.Where(e => e.AtLocationId == _.Id).Count()
                 })
                 .ToListAsync();
         }

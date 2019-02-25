@@ -509,7 +509,10 @@
         $(document).on("click", "#addLocation", function() {
 
             var name = $("#Location_Name");
-            if (name.valid())
+            var address = $("#Location_Address")
+            name.valid();
+            address.valid();
+            if (name.valid() && address.valid())
             {
                 var address = $("#Location_Address");
                 var url = $("#Location_Url");
@@ -528,6 +531,10 @@
                         address.val("");
                         url.val("");
                         telephone.val("");
+
+                        if (response.message != null) {
+                            alert(response.message);
+                        }
                     }
                     else {
                         alert(response.message)
@@ -537,7 +544,7 @@
         });
         </text>
         }
-/**/
+
         @if (Model.CanRelateChallenge)
         {
             <text>

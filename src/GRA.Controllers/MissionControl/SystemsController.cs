@@ -1,15 +1,16 @@
-﻿using GRA.Domain.Model;
-using GRA.Domain.Model.Filters;
-using GRA.Domain.Service;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Logging;
-using System.IO;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl.Systems;
 using GRA.Controllers.ViewModel.Shared;
+using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
+using GRA.Domain.Service;
+using GRA.Domain.Service.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -19,12 +20,17 @@ namespace GRA.Controllers.MissionControl
     {
         private readonly ILogger<SystemsController> _logger;
         private readonly SiteService _siteService;
+        private readonly SpatialService _spatialService;
+
         public SystemsController(ILogger<SystemsController> logger,
             ServiceFacade.Controller context,
-            SiteService siteService) : base(context)
+            SiteService siteService,
+            SpatialService spatialService) : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
             _siteService = Require.IsNotNull(siteService, nameof(siteService));
+            _spatialService = spatialService
+                ?? throw new ArgumentNullException(nameof(spatialService));
             PageTitle = "System & branch management";
         }
 
@@ -37,7 +43,7 @@ namespace GRA.Controllers.MissionControl
 
             var systemList = await _siteService.GetPaginatedSystemListAsync(filter);
 
-            PaginateViewModel paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel()
             {
                 ItemCount = systemList.Count,
                 CurrentPage = page,
@@ -53,7 +59,7 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
-            SystemListViewModel viewModel = new SystemListViewModel()
+            var viewModel = new SystemListViewModel()
             {
                 Systems = systemList.Data.ToList(),
                 PaginateModel = paginateModel,
@@ -104,7 +110,7 @@ namespace GRA.Controllers.MissionControl
             {
                 ShowAlertDanger("Unable to delete System: ", gex);
             }
-            return RedirectToAction("Index", new { search = search });
+            return RedirectToAction("Index", new { search });
         }
 
         public async Task<IActionResult> Branches(string search, int page = 1)
@@ -116,7 +122,7 @@ namespace GRA.Controllers.MissionControl
 
             var branchList = await _siteService.GetPaginatedBranchListAsync(filter);
 
-            PaginateViewModel paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel()
             {
                 ItemCount = branchList.Count,
                 CurrentPage = page,
@@ -131,10 +137,12 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
-            BranchesListViewModel viewModel = new BranchesListViewModel()
+            var viewModel = new BranchesListViewModel()
             {
                 Branches = branchList.Data.ToList(),
                 PaginateModel = paginateModel,
+                ShowGeolocation = await _siteLookupService.IsSiteSettingSetAsync(GetCurrentSiteId(),
+                    SiteSettingKey.Events.GoogleMapsAPIKey),
                 SystemList = new SelectList(await _siteService.GetSystemList(), "Id", "Name")
             };
 
@@ -146,14 +154,38 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
-                await _siteService.AddBranchAsync(model.Branch);
-                ShowAlertSuccess($"Added Branch '{model.Branch.Name}'");
+                model.Branch.Geolocation = null;
+                var branch = await _siteService.AddBranchAsync(model.Branch);
+                ShowAlertSuccess($"Added Branch '{branch.Name}'");
+
+                if (await _siteLookupService.IsSiteSettingSetAsync(GetCurrentSiteId(),
+                    SiteSettingKey.Events.GoogleMapsAPIKey))
+                {
+                    var result = await _spatialService
+                        .GetGeocodedAddressAsync(branch.Address);
+                    if (result.Status == ServiceResultStatus.Success)
+                    {
+                        branch.Geolocation = result.Data;
+                        await _siteService.UpdateBranchAsync(branch);
+                    }
+                    else if (result.Status == ServiceResultStatus.Warning)
+                    {
+                        ShowAlertWarning("Unable to set branch geolocation: ", result.Message);
+                    }
+                    else
+                    {
+                        ShowAlertDanger("Unable to set branch geolocation: ", result.Message);
+                    }
+                }
             }
             catch (GraException gex)
             {
                 ShowAlertDanger("Unable to add Branch: ", gex);
             }
-            return RedirectToAction("Branches", new { search = model.Search });
+            return RedirectToAction("Branches", new
+            {
+                search = model.Search
+            });
         }
 
         [HttpPost]
@@ -161,6 +193,33 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
+                if (await _siteLookupService.IsSiteSettingSetAsync(GetCurrentSiteId(),
+                    SiteSettingKey.Events.GoogleMapsAPIKey))
+                {
+                    model.Branch.Geolocation = null;
+                    var newAddress = model.Branch.Address?.Trim();
+                    var currentBranch = await _siteService.GetBranchByIdAsync(model.Branch.Id);
+                    if (string.IsNullOrWhiteSpace(currentBranch.Geolocation)
+                        || !string.Equals(currentBranch.Address, newAddress,
+                            StringComparison.OrdinalIgnoreCase))
+                    {
+                        var result = await _spatialService
+                            .GetGeocodedAddressAsync(newAddress);
+                        if (result.Status == ServiceResultStatus.Success)
+                        {
+                            model.Branch.Geolocation = result.Data;
+                        }
+                        else if (result.Status == ServiceResultStatus.Warning)
+                        {
+                            ShowAlertWarning("Unable to set branch geolocation: ", result.Message);
+                        }
+                        else
+                        {
+                            ShowAlertDanger("Unable to set branch geolocation: ", result.Message);
+                        }
+                    }
+                }
+
                 await _siteService.UpdateBranchAsync(model.Branch);
                 ShowAlertSuccess($"Branch  '{model.Branch.Name}' updated");
             }
@@ -183,7 +242,50 @@ namespace GRA.Controllers.MissionControl
             {
                 ShowAlertDanger("Unable to delete Branch: ", gex);
             }
-            return RedirectToAction("Branches", new { search = search });
+            return RedirectToAction("Branches", new { search });
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> SetBranchGeolocation(int id)
+        {
+            var success = false;
+            var message = string.Empty;
+
+            if (await _siteLookupService.IsSiteSettingSetAsync(GetCurrentSiteId(),
+                    SiteSettingKey.Events.GoogleMapsAPIKey))
+            {
+                var branch = await _siteService.GetBranchByIdAsync(id);
+                if (string.IsNullOrEmpty(branch.Geolocation))
+                {
+                    var result = await _spatialService
+                            .GetGeocodedAddressAsync(branch.Address);
+                    if (result.Status == ServiceResultStatus.Success)
+                    {
+                        branch.Geolocation = result.Data;
+                        await _siteService.UpdateBranchAsync(branch);
+
+                        success = true;
+                    }
+                    else
+                    {
+                        message = result.Message;
+                    }
+                }
+                else
+                {
+                    message = "Geolocation is already set.";
+                }
+            }
+            else
+            {
+                message = "Geolocation is not set up.";
+            }
+
+            return Json(new
+            {
+                success,
+                message
+            });
         }
     }
 }

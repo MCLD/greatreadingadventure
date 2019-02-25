@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GRA.Data.Model
 {
@@ -49,5 +50,10 @@ namespace GRA.Data.Model
         public virtual Challenge Challenge { get; set; }
         public int? ChallengeGroupId { get; set; }
         public virtual ChallengeGroup ChallengeGroup { get; set; }
+
+        [NotMapped]
+        public string EventLocationName { get; set; }
+        [NotMapped]
+        public double EventLocationDistance { get; set; }
     }
 }
