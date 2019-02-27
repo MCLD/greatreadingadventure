@@ -31,6 +31,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Category color being unset on edit
 - Display of Bootstrap drop-downs
 - Permissions for insert sample data call
+- Fix #437 Edit Point Translation in MC is not saving
 
 ### Removed
 - Recovery error logging at the controller level - it's logged in the service
