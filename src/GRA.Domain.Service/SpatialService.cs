@@ -55,7 +55,11 @@ namespace GRA.Domain.Service
             if (!geocodingEnabled)
             {
                 _logger.LogCritical("Geocoding called without geocoding enabled");
-                throw new Exception("Geocoding is not enabled.");
+
+                serviceResult.Message = "Geocoding is not enabled.";
+                serviceResult.Status = ServiceResultStatus.Error;
+
+                return serviceResult;
             }
 
             var formattedAddress = address.Trim();
@@ -207,7 +211,7 @@ namespace GRA.Domain.Service
             var a = (Math.Sin(latitudeArc / 2) * Math.Sin(latitudeArc / 2))
                 + (Math.Sin(longitudeArc / 2) * Math.Sin(longitudeArc / 2)
                 * Math.Cos(latitude1Radians) * Math.Cos(latitude2Radians));
-            var c = 2 * Math.Asin(Math.Sqrt(a));
+
             return R * 2 * Math.Asin(Math.Sqrt(a));
         }
 

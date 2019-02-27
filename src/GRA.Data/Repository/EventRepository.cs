@@ -69,21 +69,18 @@ namespace GRA.Data.Repository
                              };
             }
 
-            switch (filter.SortBy)
+            if (filter.SortBy == SortEventsBy.StartDate)
             {
-                // case StartDate
-                default:
-                    eventQuery = eventQuery
-                        .OrderBy(_ => _.StartDate)
-                        .ThenBy(_ => _.Name);
-                    break;
-
-                case SortEventsBy.Distance:
-                    eventQuery = eventQuery
+                eventQuery = eventQuery
+                    .OrderBy(_ => _.StartDate)
+                    .ThenBy(_ => _.Name);
+            }
+            else
+            {
+                eventQuery = eventQuery
                         .OrderBy(_ => _.EventLocationDistance)
                         .ThenBy(_ => _.StartDate)
                         .ThenBy(_ => _.Name);
-                    break;
             }
 
             return await eventQuery.ApplyPagination(filter)

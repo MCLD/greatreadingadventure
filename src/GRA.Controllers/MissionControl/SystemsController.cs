@@ -59,7 +59,7 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
-            var viewModel = new SystemListViewModel()
+            var viewModel = new SystemListViewModel
             {
                 Systems = systemList.Data.ToList(),
                 PaginateModel = paginateModel,
@@ -122,7 +122,7 @@ namespace GRA.Controllers.MissionControl
 
             var branchList = await _siteService.GetPaginatedBranchListAsync(filter);
 
-            var paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel
             {
                 ItemCount = branchList.Count,
                 CurrentPage = page,
@@ -137,7 +137,7 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
-            var viewModel = new BranchesListViewModel()
+            var viewModel = new BranchesListViewModel
             {
                 Branches = branchList.Data.ToList(),
                 PaginateModel = paginateModel,
