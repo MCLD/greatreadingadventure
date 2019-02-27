@@ -7,6 +7,7 @@
       "wwwroot/lib/font-awesome/web-fonts-with-css/css/v4-shims.css",
       "wwwroot/lib/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css",
       "wwwroot/lib/bootstrap-multiselect/dist/css/bootstrap-multiselect.css",
+      "wwwroot/lib/bootstrap-select/dist/css/bootstrap-select.min.css",
       "wwwroot/css/gra.css"
     ],
     "minify": {
@@ -24,6 +25,7 @@
       "wwwroot/lib/moment/moment.js",
       "wwwroot/lib/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js",
       "wwwroot/lib/bootstrap-multiselect/dist/js/bootstrap-multiselect.js",
+      "wwwroot/lib/bootstrap-select/dist/js/bootstrap-select.min.js",
       "wwwroot/js/gra.js"
     ],
     "minify": {

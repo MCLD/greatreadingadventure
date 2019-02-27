@@ -24,6 +24,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Location of favicons from wwwroot to shared/content so they can be easily customized
 - Logging level of password recovery misses and password reset errors are now information instead of warning
 - Persist the data protection key to the database
+- Improve school selection
 
 ### Fixed
 - Instance name enrichment for logging

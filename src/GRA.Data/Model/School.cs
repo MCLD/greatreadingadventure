@@ -9,10 +9,8 @@ namespace GRA.Data.Model
 
         [Required]
         public int SchoolDistrictId { get; set; }
-        public SchoolDistrict SchoolDistrict { get; set; }
 
-        public int? SchoolTypeId { get; set; }
-        public SchoolType SchoolType { get; set; }
+        public SchoolDistrict SchoolDistrict { get; set; }
 
         [Required]
         [MaxLength(255)]

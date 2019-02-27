@@ -451,11 +451,11 @@ p.password-note {
     padding: 10px 15px;
 }
 
-.school-not-listed-checkbox {
+.school-selection-checkbox {
     display: none;
 }
 
-    .school-not-listed-checkbox + label {
+    .school-selection-checkbox + label {
         background-color: #f0f0f0;
         border: 1px solid transparent;
         border-color: #e8e8e8;
@@ -476,47 +476,40 @@ p.password-note {
         white-space: nowrap;
     }
 
-        .school-not-listed-checkbox + label:hover {
+        .school-selection-checkbox + label:hover {
             background-color: #d4d4d4;
             border-color: #969696;
             color: #5e5e5e;
         }
 
-        .school-not-listed-checkbox + label:active {
+        .school-selection-checkbox + label:active {
             box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
             outline: 0;
             -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
         }
 
-        .school-not-listed-checkbox + label::before {
+        .school-selection-checkbox + label::before {
             content: "\f0c8";
             font-family: 'Font Awesome 5 Free';
             margin-right: 6px;
         }
 
 
-    .school-not-listed-checkbox:checked + label {
+    .school-selection-checkbox:checked + label {
         background-color: #dff0d8;
         border-color: #d6e9c6;
         color: #3c763d;
     }
 
-        .school-not-listed-checkbox:checked + label:hover {
+        .school-selection-checkbox:checked + label:hover {
             background-color: #c3d4bb;
             border-color: #859676;
             color: #245e27;
         }
 
-        .school-not-listed-checkbox:checked + label::before {
+        .school-selection-checkbox:checked + label::before {
             content: "\f14a";
         }
-
-@media only screen and (max-width : 767px) {
-    .school-category-button {
-        margin: 0 0 1rem 0 !important;
-        width: 100%;
-    }
-}
 
 .avatar-layer-selector {
     cursor: pointer;

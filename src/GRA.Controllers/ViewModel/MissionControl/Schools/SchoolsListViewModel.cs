@@ -11,6 +11,5 @@ namespace GRA.Controllers.ViewModel.MissionControl.Schools
         public GRA.Domain.Model.School School { get; set; }
         public string Search { get; set; }
         public ICollection<GRA.Domain.Model.SchoolDistrict> DistrictList { get; set; }
-        public SelectList SchoolTypes { get; set; }
     }
 }

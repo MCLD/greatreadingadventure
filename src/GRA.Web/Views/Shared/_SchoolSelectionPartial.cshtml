@@ -1,61 +1,29 @@
 ﻿@model GRA.Controllers.ViewModel.Shared.SchoolSelectionViewModel
 
-<input asp-for="ShowCharterOption" type="hidden" />
-<input asp-for="ShowPrivateOption" type="hidden" />
-<input asp-for="PublicSelected" class="schoolCategory" type="hidden" />
-<input asp-for="IsHomeschooled" class="schoolCategory" type="hidden" />
-@if (Model.ShowPrivateOption)
-{
-    <input asp-for="PrivateSelected" class="schoolCategory" type="hidden" />
-}
-@if (Model.ShowCharterOption)
-{
-    <input asp-for="CharterSelected" class="schoolCategory" type="hidden" />
-}
+<noscript>
+    <style>
+        select.selectpicker {
+            display: block !important;
+        }
+    </style>
+</noscript>
 
-<div class="row" style="margin-bottom:20px;">
-    <div class="col-xs-12" style="text-align:left;">
-        <label class="control-label" style="margin: 10px 0;">My School is:</label>
-        <div>
-            <button id="setPublic" asp-action="@Model.CategorySelectionAction" type="@(Model.PublicSelected || string.IsNullOrWhiteSpace(Model.CategorySelectionAction) ? "button" : "submit")" class="categorySelector school-category-button btn @(Model.PublicSelected ? "btn-primary" : "btn-info")" style="margin-right:10px;" name="SetPublic" value="true">Public</button>
-            @if (Model.ShowPrivateOption)
-            {
-                <button id="setPrivate" asp-action="@Model.CategorySelectionAction" type="@(Model.PrivateSelected || string.IsNullOrWhiteSpace(Model.CategorySelectionAction) ? "button" : "submit")" class="categorySelector school-category-button btn @(Model.PrivateSelected ? "btn-primary" : "btn-info")" style="margin:0 10px;" name="SetPrivate" value="true">Private</button>
-            }
-            @if (Model.ShowCharterOption)
-            {
-                <button id="setCharter" asp-action="@Model.CategorySelectionAction" type="@(Model.CharterSelected || string.IsNullOrWhiteSpace(Model.CategorySelectionAction) ? "button" : "submit")" class="categorySelector school-category-button btn @(Model.CharterSelected ? "btn-primary" : "btn-info")" style="margin:0 10px;" name="SetCharter" value="true">Charter</button>
-            }
-            <button id="setHomeschool" asp-action="@Model.CategorySelectionAction" type="@(Model.IsHomeschooled || string.IsNullOrWhiteSpace(Model.CategorySelectionAction) ? "button" : "submit")" class="categorySelector school-category-button btn @(Model.IsHomeschooled ? "btn-primary" : "btn-info")" style="margin:0 20px 0 10px;" name="SetHomeschool" value="true">Homeschool</button>
-            <input asp-for="SchoolNotListed" class="school-not-listed-checkbox" />
-            <label id="notListedLabel" for="SchoolNotListed" class="school-category-button @(Model.IsHomeschooled ? "hide" : "")">School not listed</label>
-        </div>
-    </div>
-</div>
-
-<div id="districtGroup" class="row @(Model.PublicSelected ? "" : "hide")">
-    <div class="col-xs-12 col-sm-6 row-spacing">
-        <label class="control-label">School District</label>
-        <select asp-for="SchoolDistrictId" asp-items="Model.SchoolDistrictList" class="form-control">
-            <option></option>
-        </select>
-        <span asp-validation-for="SchoolDistrictId" class="text-danger"></span>
-    </div>
-
-    <div class="col-xs-12 col-sm-6 row-spacing">
-        <label class="control-label">School Type</label>
-        <select asp-for="SchoolTypeId" asp-items="Model.SchoolTypeList" class="form-control">
-            <option></option>
-        </select>
-    </div>
-</div>
-
-<div id="schoolGroup" class="row row-spacing @(Model.IsHomeschooled ? "hide" : "")">
+<div id="schoolGroup" class="row row-spacing">
     <div class="col-xs-12">
         <label asp-for="SchoolId" class="control-label"></label>
-        <select asp-for="SchoolId" asp-items="Model.SchoolList" class="form-control">
+        <select asp-for="SchoolId" asp-items="Model.SchoolList" class="selectpicker form-control" data-live-search="true" data-none-selected-text="">
             <option></option>
         </select>
         <span asp-validation-for="SchoolId" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="row row-spacing">
+    <div class="col-xs-12">
+        <input asp-for="IsHomeschooled" class="school-selection-checkbox" />
+        <label asp-for="IsHomeschooled">Homeschooled</label>
+
+        <input asp-for="SchoolNotListed" class="school-selection-checkbox" />
+        <label asp-for="SchoolNotListed">School not listed</label>
     </div>
 </div>

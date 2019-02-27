@@ -19,23 +19,12 @@ namespace GRA.Data.Repository
         {
         }
 
-        public async Task<ICollection<SchoolDistrict>> GetAllAsync(int siteId,
-            bool excludeUserUnselectable)
+        public async Task<ICollection<SchoolDistrict>> GetAllAsync(int siteId)
         {
-            var districtList = DbSet
+            return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.SiteId == siteId);
-
-            if (excludeUserUnselectable)
-            {
-                districtList = districtList
-                    .Where(_ => _.IsPrivate == false && _.IsCharter == false);
-            }
-
-            return await districtList
-                .OrderByDescending(_ => _.IsPrivate)
-                    .ThenByDescending(_ => _.IsCharter)
-                    .ThenBy(_ => _.Name)
+                .Where(_ => _.SiteId == siteId)
+                .OrderBy(_ => _.Name)
                 .ProjectTo<SchoolDistrict>()
                 .ToListAsync();
         }
@@ -49,9 +38,7 @@ namespace GRA.Data.Repository
         public async Task<ICollection<SchoolDistrict>> PageAsync(BaseFilter filter)
         {
             return await ApplyFilters(filter)
-                .OrderByDescending(_ => _.IsPrivate)
-                    .ThenByDescending(_ => _.IsCharter)
-                    .ThenBy(_ => _.Name)
+                .OrderBy(_ => _.Name)
                 .ApplyPagination(filter)
                 .ProjectTo<SchoolDistrict>()
                 .ToListAsync();

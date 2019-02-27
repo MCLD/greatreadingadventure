@@ -13,6 +13,7 @@ namespace GRA.Domain.Service
     public class SchoolImportService : BaseUserService<SchoolImportService>
     {
         private readonly SchoolService _schoolService;
+
         public SchoolImportService(ILogger<SchoolImportService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
@@ -31,24 +32,17 @@ namespace GRA.Domain.Service
                 {
                     int recordCount = 0;
                     int issues = 0;
-                    int typesAdded = 0;
                     int districtsAdded = 0;
                     int schoolsAdded = 0;
-                    var types = await _schoolService.GetTypesAsync();
                     var districts = await _schoolService.GetDistrictsAsync();
                     var schools = await _schoolService.GetSchoolsAsync();
 
-                    var typeIndex = types.ToDictionary(_ => _.Name, _ => _.Id);
-                    var districtIndex = types.ToDictionary(_ => _.Name, _ => _.Id);
+                    var districtIndex = districts.ToDictionary(_ => _.Name, _ => _.Id);
 
                     foreach (var record in csv.GetRecords<SchoolImportExport>())
                     {
                         try
                         {
-                            if (string.IsNullOrEmpty(record.Type))
-                            {
-                                throw new Exception($"School type is blank on record {recordCount + 2}");
-                            }
                             if (string.IsNullOrEmpty(record.District))
                             {
                                 throw new Exception($"School district is blank on record {recordCount + 2}");
@@ -58,19 +52,9 @@ namespace GRA.Domain.Service
                                 throw new Exception($"School name is blank on record {recordCount + 2}");
                             }
 
-                            if (record.Type.Length > 255)
-                            {
-                                record.Type = record.Type.Substring(0, 255);
-                                string warning = $"<li>Type too long, truncated: <strong>{record.Type}</strong>.</li>";
-                                if (!notes.Contains(warning))
-                                {
-                                    notes.Add(warning);
-                                }
-                            }
-
                             if (record.District.Length > 255)
                             {
-                                record.Type = record.District.Substring(0, 255);
+                                record.District = record.District.Substring(0, 255);
                                 string warning = $"<li>District too long, truncated: <strong>{record.District}</strong>.</li>";
                                 if (!notes.Contains(warning))
                                 {
@@ -86,20 +70,6 @@ namespace GRA.Domain.Service
                                 {
                                     notes.Add(warning);
                                 }
-                            }
-
-                            int typeId;
-                            if (typeIndex.Keys.Contains(record.Type.Trim()))
-                            {
-                                typeId = typeIndex[record.Type.Trim()];
-                            }
-                            else
-                            {
-                                _logger.LogDebug($"Adding school type: {record.Type.Trim()}");
-                                var type = await _schoolService.AddSchoolType(record.Type.Trim());
-                                typeIndex.Add(record.Type.Trim(), type.Id);
-                                typeId = type.Id;
-                                typesAdded++;
                             }
 
                             int districtId;
@@ -119,14 +89,14 @@ namespace GRA.Domain.Service
                                 districtsAdded++;
                             }
 
-                            var schoolExists = schools.Where(_ => _.SchoolDistrictId == districtId
-                                && _.Name == record.Name.Trim()).Any();
+                            var schoolExists = schools.Any(_ => _.SchoolDistrictId == districtId
+                                && _.Name == record.Name.Trim());
 
                             if (!schoolExists)
                             {
                                 _logger.LogDebug($"Adding school: {record.Name.Trim()}");
                                 await _schoolService
-                                    .AddSchool(record.Name.Trim(), districtId, typeId);
+                                    .AddSchool(record.Name.Trim(), districtId);
                                 schoolsAdded++;
                             }
 
@@ -147,7 +117,7 @@ namespace GRA.Domain.Service
                             }
                         }
                     }
-                    var returnMessage = new StringBuilder($"<p><strong>Imported {recordCount} records ({typesAdded} types, {districtsAdded} districts, {schoolsAdded} schools) and skipped {issues} rows due to issues.</strong></p>");
+                    var returnMessage = new StringBuilder($"<p><strong>Imported {recordCount} records ({districtsAdded} districts, {schoolsAdded} schools) and skipped {issues} rows due to issues.</strong></p>");
                     foreach (var note in notes)
                     {
                         returnMessage.AppendLine(note);

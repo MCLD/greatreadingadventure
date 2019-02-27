@@ -417,7 +417,6 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IPsProgramRepository, Data.Repository.PsProgramRepository>();
             services.AddScoped<Domain.Repository.ISchoolDistrictRepository, Data.Repository.SchoolDistrictRepository>();
             services.AddScoped<Domain.Repository.ISchoolRepository, Data.Repository.SchoolRepository>();
-            services.AddScoped<Domain.Repository.ISchoolTypeRepository, Data.Repository.SchoolTypeRepository>();
             services.AddScoped<Domain.Repository.ISiteRepository, Data.Repository.SiteRepository>();
             services.AddScoped<Domain.Repository.ISiteSettingRepository, Data.Repository.SiteSettingRepository>();
             services.AddScoped<Domain.Repository.ISpatialDistanceRepository, Data.Repository.SpatialDistanceRepository>();

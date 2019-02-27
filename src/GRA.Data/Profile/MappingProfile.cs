@@ -112,7 +112,6 @@ namespace GRA.Data.Profile
             CreateMap<Model.Role, Domain.Model.Role>().ReverseMap();
             CreateMap<Model.School, Domain.Model.School>().ReverseMap();
             CreateMap<Model.SchoolDistrict, Domain.Model.SchoolDistrict>().ReverseMap();
-            CreateMap<Model.SchoolType, Domain.Model.SchoolType>().ReverseMap();
             CreateMap<Model.Site, Domain.Model.Site>().ReverseMap();
             CreateMap<Model.SiteSetting, Domain.Model.SiteSetting>().ReverseMap();
             CreateMap<Model.SpatialDistanceDetail, Domain.Model.SpatialDistanceDetail>().ReverseMap();

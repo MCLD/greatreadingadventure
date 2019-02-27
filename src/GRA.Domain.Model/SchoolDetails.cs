@@ -7,6 +7,5 @@ namespace GRA.Domain.Model
         public School School { get; set; }
         public ICollection<School> Schools { get; set; }
         public int SchoolDistrictId { get; set; }
-        public int? SchoolTypeId { get; set; }
     }
 }
