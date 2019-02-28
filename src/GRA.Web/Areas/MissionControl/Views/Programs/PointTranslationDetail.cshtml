@@ -17,7 +17,7 @@
                 <label asp-for="PointTranslation.IsSingleEvent" class="control-label"></label>
                 <select asp-for="PointTranslation.IsSingleEvent" class="form-control" disabled="@(Model.HasBeenUsed ? "readonly" : null)">
                     <option value="false">No</option>
-                    <option value="false">Yes</option>
+                    <option value="true">Yes</option>
                 </select>
                 <span asp-validation-for="PointTranslation.IsSingleEvent" class="text-danger"></span>
             </div>

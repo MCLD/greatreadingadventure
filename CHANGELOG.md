@@ -33,6 +33,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Display of Bootstrap drop-downs
 - Permissions for insert sample data call
 - Admin role permission updating using client-side evaluation
+- Edit Point Translation in Mission Control so that it saves properly
 
 ### Removed
 - Recovery error logging at the controller level - it's logged in the service
