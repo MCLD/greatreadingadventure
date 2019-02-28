@@ -17,6 +17,7 @@ namespace GRA.Domain.Service
         private readonly IProgramRepository _programRepository;
         private readonly ISiteRepository _siteRepository;
         private readonly ISiteSettingRepository _siteSettingRepository;
+        private readonly ISpatialDistanceRepository _spatialDistanceRepository;
         private readonly ISystemRepository _systemRepository;
         private readonly SiteLookupService _siteLookupService;
 
@@ -27,6 +28,7 @@ namespace GRA.Domain.Service
             IProgramRepository programRepository,
             ISiteRepository siteRepository,
             ISiteSettingRepository siteSettingRepository,
+            ISpatialDistanceRepository spatialDistanceRepository,
             ISystemRepository systemRepository,
             SiteLookupService siteLookupService)
             : base(logger, dateTimeProvider, userContextProvider)
@@ -37,6 +39,8 @@ namespace GRA.Domain.Service
             _siteRepository = Require.IsNotNull(siteRepository, nameof(siteRepository));
             _siteSettingRepository = siteSettingRepository
                 ?? throw new ArgumentNullException(nameof(siteSettingRepository));
+            _spatialDistanceRepository = spatialDistanceRepository
+                ?? throw new ArgumentNullException(nameof(spatialDistanceRepository));
             _systemRepository = Require.IsNotNull(systemRepository, nameof(systemRepository));
             _siteLookupService = siteLookupService
                 ?? throw new ArgumentException(nameof(siteLookupService));
@@ -60,14 +64,12 @@ namespace GRA.Domain.Service
             VerifyManagementPermission();
             var currentSiteSettings = await _siteSettingRepository.GetBySiteIdAsync(siteId);
             var siteSettingsToAdd = siteSettings
-                .Where(_ => currentSiteSettings.Select(s => s.Key).Contains(_.Key) == false);
+                .Where(_ => !currentSiteSettings.Select(s => s.Key).Contains(_.Key));
             var siteSettingsToRemove = currentSiteSettings
-                .Where(_ => siteSettings.Select(s => s.Key).Contains(_.Key) == false)
+                .Where(_ => !siteSettings.Select(s => s.Key).Contains(_.Key))
                 .Select(_ => _.Id);
             var siteSettingsToUpdate = siteSettings
-                .Where(_ => currentSiteSettings
-                    .Where(s => s.Key == _.Key)
-                    .Any(s => s.Value != _.Value));
+                .Where(_ => currentSiteSettings.Any(s => s.Key == _.Key && s.Value != _.Value));
 
             var userId = GetClaimId(ClaimType.UserId);
             await _siteSettingRepository.AddListAsync(userId, siteSettingsToAdd);
@@ -182,6 +184,12 @@ namespace GRA.Domain.Service
         public async Task<Branch> AddBranchAsync(Branch branch)
         {
             VerifyPermission(Permission.ManageSystems);
+
+            branch.Address = branch.Address.Trim();
+            branch.Name = branch.Name.Trim();
+            branch.Telephone = branch.Telephone?.Trim();
+            branch.Url = branch.Url?.Trim();
+
             return await _branchRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), branch);
         }
 
@@ -189,22 +197,35 @@ namespace GRA.Domain.Service
         {
             VerifyPermission(Permission.ManageSystems);
             var currentBranch = await _branchRepository.GetByIdAsync(branch.Id);
-            if (await _branchRepository.ValidateBySiteAsync(currentBranch.Id, GetCurrentSiteId()) == false)
+            if (!await _branchRepository.ValidateBySiteAsync(currentBranch.Id, GetCurrentSiteId()))
             {
                 throw new GraException($"Permission denied - branch belongs to a different site.");
             }
 
-            currentBranch.Address = branch.Address;
-            currentBranch.Name = branch.Name;
-            currentBranch.Telephone = branch.Telephone;
-            currentBranch.Url = branch.Url;
+            var invalidateSpatialHeaders = false;
+            if (currentBranch.Geolocation != branch.Geolocation)
+            {
+                invalidateSpatialHeaders = true;
+            }
+
+            currentBranch.Address = branch.Address.Trim();
+            currentBranch.Geolocation = branch.Geolocation;
+            currentBranch.Name = branch.Name.Trim();
+            currentBranch.Telephone = branch.Telephone?.Trim();
+            currentBranch.Url = branch.Url?.Trim();
+
             await _branchRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), currentBranch);
+
+            if (invalidateSpatialHeaders)
+            {
+                await _spatialDistanceRepository.InvalidateHeadersAsync(GetCurrentSiteId());
+            }
         }
 
         public async Task RemoveBranchAsync(int branchId)
         {
             VerifyPermission(Permission.ManageSystems);
-            if (await _branchRepository.ValidateBySiteAsync(branchId, GetCurrentSiteId()) == false)
+            if (!await _branchRepository.ValidateBySiteAsync(branchId, GetCurrentSiteId()))
             {
                 throw new GraException($"Permission denied - branch belongs to a different site.");
             }
@@ -214,6 +235,11 @@ namespace GRA.Domain.Service
                 throw new GraException($"Users currently have branch {branch.Name} selected.");
             }
             await _branchRepository.RemoveSaveAsync(GetActiveUserId(), branchId);
+
+            if (!string.IsNullOrWhiteSpace(branch.Geolocation))
+            {
+                await _spatialDistanceRepository.InvalidateHeadersAsync(GetCurrentSiteId());
+            }
         }
 
         public async Task<Branch> GetBranchByIdAsync(int branchId)
@@ -407,18 +433,18 @@ namespace GRA.Domain.Service
 
             var sb = new StringBuilder();
             sb.AppendLine("BEGIN:VCALENDAR");
-            sb.AppendLine($"PRODID:-//{project}//EN");
+            sb.Append("PRODID:-//").Append(project).AppendLine("//EN");
             sb.AppendLine("VERSION:2.0");
             sb.AppendLine("BEGIN:VEVENT");
-            sb.AppendLine($"SUMMARY; LANGUAGE = en - us:{site.Name}");
+            sb.Append("SUMMARY; LANGUAGE = en - us:").AppendLine(site.Name);
             sb.AppendLine("CLASS:PUBLIC");
-            sb.AppendLine($"CREATED:{DateTime.UtcNow:yyyyMMddTHHmmssZ}");
-            sb.AppendLine($"DESCRIPTION:Remember to join {site.Name}: {siteUrl}");
-            sb.AppendLine($"DTSTART:{localStartTime:yyyyMMddTHHmmss}");
-            sb.AppendLine($"DTEND:{localStartTime:yyyyMMddTHHmmss}");
+            sb.Append("CREATED:").AppendFormat("{0:yyyyMMddTHHmmssZ}", DateTime.UtcNow).AppendLine();
+            sb.Append("DESCRIPTION:Remember to join ").Append(site.Name).Append(": ").AppendLine(siteUrl);
+            sb.Append("DTSTART:").AppendFormat("{0:yyyyMMddTHHmmss}", localStartTime).AppendLine();
+            sb.Append("DTEND:").AppendFormat("{0:yyyyMMddTHHmmss}", localStartTime).AppendLine();
             sb.AppendLine("SEQUENCE:0");
-            sb.AppendLine($"UID:{Guid.NewGuid()}");
-            sb.AppendLine($"LOCATION:{siteUrl}");
+            sb.Append("UID:").Append(Guid.NewGuid()).AppendLine();
+            sb.Append("LOCATION:").AppendLine(siteUrl);
             sb.AppendLine("END:VEVENT");
             sb.AppendLine("END:VCALENDAR");
             return Encoding.UTF8.GetBytes(sb.ToString());

@@ -24,6 +24,22 @@ namespace GRA
                     Category = typeof(SiteSettingKey.Challenges).Name,
                     Format = SiteSettingFormat.Boolean
                 },
+                [SiteSettingKey.Events.CommunityExperienceDescription] =
+                new SiteSettingDefinition
+                {
+                    Name = "Community experience definition",
+                    Info = "Set the text to add as a tool tip explaining community experiences to participants",
+                    Category = typeof(SiteSettingKey.Events).Name,
+                    Format = SiteSettingFormat.String
+                },
+                [SiteSettingKey.Events.GoogleMapsAPIKey] =
+                new SiteSettingDefinition
+                {
+                    Name = "Google Maps API key",
+                    Info = "Put the Google Maps API key here to enable proximity-based event searching",
+                    Category = typeof(SiteSettingKey.Events).Name,
+                    Format = SiteSettingFormat.String
+                },
                 [SiteSettingKey.Events.HideUntilRegistrationOpen] =
                 new SiteSettingDefinition
                 {

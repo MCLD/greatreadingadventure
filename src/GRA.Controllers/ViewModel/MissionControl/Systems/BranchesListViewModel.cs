@@ -13,5 +13,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.Systems
         public GRA.Domain.Model.Branch Branch { get; set; }
         public string Search { get; set; }
         public SelectList SystemList { get; set; }
+        public bool ShowGeolocation { get; set; }
     }
 }

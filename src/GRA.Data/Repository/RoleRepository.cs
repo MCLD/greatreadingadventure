@@ -122,15 +122,24 @@ namespace GRA.Data.Repository
                 CreatedBy = -1
             });
 
-            var rolePermissions = DbSet.AsNoTracking()
+            var adminRoles = await DbSet.AsNoTracking()
                 .Where(_ => _.IsAdmin)
-                .SelectMany(_ => permissions, (r, p) => new Model.RolePermission
+                .ToListAsync();
+
+            var rolePermissions = new List<Model.RolePermission>();
+            foreach (var permission in permissions)
+            {
+                foreach (var adminRole in adminRoles)
                 {
-                    RoleId = r.Id,
-                    Permission = p,
-                    CreatedAt = now,
-                    CreatedBy = -1
-                });
+                    rolePermissions.Add(new Model.RolePermission
+                    {
+                        RoleId = adminRole.Id,
+                        Permission = permission,
+                        CreatedAt = now,
+                        CreatedBy = -1
+                    });
+                }
+            }
 
             await _context.RolePermissions.AddRangeAsync(rolePermissions);
         }

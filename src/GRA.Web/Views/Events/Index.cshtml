@@ -23,7 +23,13 @@
                                 <a asp-action="Index">Events</a>
                             </li>
                             <li role="presentation" class="@(Model.CommunityExperiences ? "active" : "")">
-                                <a asp-action="CommunityExperiences">Community Experiences</a>
+                                <a asp-action="CommunityExperiences">
+                                    Community Experiences
+                                    @if (!string.IsNullOrWhiteSpace(Model.CommunityExperienceDescription))
+                                    {
+                                        <span class="fa fa-question-circle-o wide-tooltip" title="@Model.CommunityExperienceDescription" data-toggle="tooltip" data-placement="top"></span>
+                                    }
+                                </a>
                             </li>
                         </ul>
                     </div>
@@ -55,59 +61,89 @@
                         </div>
                     </div>
 
+                    @if (Model.ShowNearSearch)
+                    {
+                        <div class="row row-spacing">
+                            <div class="col-xs-6">
+                                <label asp-for="ProgramId" class="control-label"></label>
+                                <select asp-for="ProgramId" asp-items="Model.ProgramList" class="form-control">
+                                    <option>All Programs</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-6">
+                                <label asp-for="Near" class="control-label"></label>
+                                @if (!string.IsNullOrWhiteSpace(Model.UserZipCode))
+                                {
+                                    <button type="submit" class="btn btn-xs btn-primary gra-zipcode-button" name="near" value="@Model.UserZipCode">Use my zip code</button>
+                                }
+                                <input asp-for="Near"
+                                       class="form-control"
+                                       placeholder="Enter an address or zip code" />
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row row-spacing">
+                            <div class="col-xs-12">
+                                <label asp-for="ProgramId" class="control-label"></label>
+                                <select asp-for="ProgramId" asp-items="Model.ProgramList" class="form-control">
+                                    <option>All Programs</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <label asp-for="SystemId" class="control-label"></label>
+                                    <select asp-for="SystemId" asp-items="Model.SystemList" class="form-control">
+                                        <option></option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="BranchId" class="control-label"></label>
+                                    <select asp-for="BranchId" asp-items="Model.BranchList" class="form-control">
+                                        <option></option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-6">
+                                <label asp-for="LocationId" class="control-label"></label>
+                                <select asp-for="LocationId" asp-items="Model.LocationList" class="form-control">
+                                    <option></option>
+                                </select>
+                            </div>
+                        </div>
+                    }
+
                     <div class="row row-spacing">
                         <div class="col-xs-12">
-                            <label asp-for="ProgramId" class="control-label"></label>
-                            <select asp-for="ProgramId" asp-items="Model.ProgramList" class="form-control">
-                                <option>All Programs</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-xs-6">
-                            <div class="form-group">
-                                <label asp-for="SystemId" class="control-label"></label>
-                                <select asp-for="SystemId" asp-items="Model.SystemList" class="form-control">
-                                    <option></option>
-                                </select>
+                            <label asp-for="Search" class="control-label"></label>
+                            <div class="row">
+                                <div class="col-sm-8 gra-search-container">
+                                    <input asp-for="Search"
+                                           class="form-control"
+                                           placeholder="Enter text to search for an event here" />
+                                </div>
+                                <div class="col-sm-2 col-xs-6">
+                                    @if (Model.CommunityExperiences)
+                                    {
+                                        <a asp-action="CommunityExperiences" class="btn btn-default btn-block"><span class="hidden-sm fa fa-minus-circle"></span> Clear</a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-action="Index" class="btn btn-default btn-block"><span class="hidden-sm fa fa-minus-circle"></span> Clear</a>
+                                    }
+                                </div>
+                                <div class="col-sm-2 col-xs-6">
+                                    <button type="submit" class="btn btn-primary btn-block"><span class="hidden-sm fa fa-search"></span> Find</button>
+                                </div>
                             </div>
-
-                            <div class="form-group">
-                                <label asp-for="BranchId" class="control-label"></label>
-                                <select asp-for="BranchId" asp-items="Model.BranchList" class="form-control">
-                                    <option></option>
-                                </select>
-                            </div>
                         </div>
 
-                        <div class="col-xs-6">
-                            <label asp-for="LocationId" class="control-label"></label>
-                            <select asp-for="LocationId" asp-items="Model.LocationList" class="form-control">
-                                <option></option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="row row-spacing">
-                        <div class="col-sm-8 gra-search-container">
-                            <input asp-for="Search"
-                                   class="form-control"
-                                   placeholder="Enter text to search for an event here" />
-                        </div>
-                        <div class="col-sm-2 col-xs-6">
-                            @if (Model.CommunityExperiences)
-                            {
-                                <a asp-action="CommunityExperiences" class="btn btn-default btn-block"><span class="hidden-sm fa fa-minus-circle"></span> Clear</a>
-                            }
-                            else
-                            {
-                                <a asp-action="Index" class="btn btn-default btn-block"><span class="hidden-sm fa fa-minus-circle"></span> Clear</a>
-                            }
-                        </div>
-                        <div class="col-sm-2 col-xs-6">
-                            <button type="submit" class="btn btn-primary btn-block"><span class="hidden-sm fa fa-search"></span> Find</button>
-                        </div>
                     </div>
                 </form>
 
@@ -124,8 +160,20 @@
                                     <thead>
                                         <tr>
                                             <th>What</th>
-                                            <th>When</th>
+                                            @if (!string.IsNullOrWhiteSpace(Model.Near))
+                                            {
+                                                <th><a sort sortColumn="@(Model.Sort == nameof(GRA.Domain.Model.SortEventsBy.StartDate))" asp-action="@(Model.CommunityExperiences ? nameof(EventsController.CommunityExperiences) : nameof(EventsController.Index))" asp-route-Search="@Model.Search" asp-route-Near="@Model.Near" asp-route-StartDate="@Model.StartDate?.ToShortDateString()" asp-route-EndDate="@Model.EndDate?.ToShortDateString()" asp-route-Program="@Model.ProgramId" asp-route-Sort="@nameof(GRA.Domain.Model.SortEventsBy.StartDate)">When</a></th>
+                                            }
+                                            else
+                                            {
+                                                <th>When</th>
+                                            }
                                             <th>Where</th>
+                                            @if (Model.ShowNearSearch && !string.IsNullOrWhiteSpace(Model.Near))
+                                            {
+                                                <th><a sort sortColumn="@(Model.Sort == nameof(GRA.Domain.Model.SortEventsBy.Distance))" asp-action="@(Model.CommunityExperiences ? nameof(EventsController.CommunityExperiences) : nameof(EventsController.Index))" asp-route-Search="@Model.Search" asp-route-Near="@Model.Near" asp-route-StartDate="@Model.StartDate?.ToShortDateString()" asp-route-EndDate="@Model.EndDate?.ToShortDateString()" asp-route-Program="@Model.ProgramId" asp-route-Sort="@nameof(GRA.Domain.Model.SortEventsBy.Distance)">Distance</a></th>
+
+                                            }
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -149,6 +197,10 @@
                                                     <td>@eventItem.StartDate.ToString("d") at @eventItem.StartDate.ToString("t")</td>
                                                 }
                                                 <td>@eventItem.EventLocationName</td>
+                                                @if (Model.ShowNearSearch && !string.IsNullOrWhiteSpace(Model.Near))
+                                                {
+                                                    <td>@Math.Round(eventItem.EventLocationDistance, 1) miles</td>
+                                                }
                                             </tr>
                                         }
                                     </tbody>
@@ -167,7 +219,7 @@
 </div>
 
 @section scripts
-{
+    {
     <script>
         $(document).ready(function() {
             $('.td-class').each(function() {

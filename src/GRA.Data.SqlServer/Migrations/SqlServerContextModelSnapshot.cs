@@ -15,7 +15,7 @@ namespace GRA.Data.SqlServer.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.1-servicing-10028")
+                .HasAnnotation("ProductVersion", "2.2.2-servicing-10034")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -325,11 +325,15 @@ namespace GRA.Data.SqlServer.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Address")
+                        .IsRequired()
                         .HasMaxLength(255);
 
                     b.Property<DateTime>("CreatedAt");
 
                     b.Property<int>("CreatedBy");
+
+                    b.Property<string>("Geolocation")
+                        .HasMaxLength(50);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -972,11 +976,16 @@ namespace GRA.Data.SqlServer.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Address");
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(255);
 
                     b.Property<DateTime>("CreatedAt");
 
                     b.Property<int>("CreatedBy");
+
+                    b.Property<string>("Geolocation")
+                        .HasMaxLength(50);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -2175,6 +2184,53 @@ namespace GRA.Data.SqlServer.Migrations
                     b.ToTable("SiteSettings");
                 });
 
+            modelBuilder.Entity("GRA.Data.Model.SpatialDistanceDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("BranchId");
+
+                    b.Property<double>("Distance");
+
+                    b.Property<int?>("LocationId");
+
+                    b.Property<int>("SpatialDistanceHeaderId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BranchId");
+
+                    b.HasIndex("LocationId");
+
+                    b.HasIndex("SpatialDistanceHeaderId");
+
+                    b.ToTable("SpatialDistanceDetails");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.SpatialDistanceHeader", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("CreatedBy");
+
+                    b.Property<string>("Geolocation")
+                        .HasMaxLength(50);
+
+                    b.Property<bool>("IsValid");
+
+                    b.Property<int>("SiteId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SpatialDistanceHeaders");
+                });
+
             modelBuilder.Entity("GRA.Data.Model.System", b =>
                 {
                     b.Property<int>("Id")
@@ -3104,6 +3160,24 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.SchoolType", "SchoolType")
                         .WithMany()
                         .HasForeignKey("SchoolTypeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.SpatialDistanceDetail", b =>
+                {
+                    b.HasOne("GRA.Data.Model.Branch", "Branch")
+                        .WithMany()
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GRA.Data.Model.Location", "Location")
+                        .WithMany()
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GRA.Data.Model.SpatialDistanceHeader", "SpatialDistanceHeader")
+                        .WithMany()
+                        .HasForeignKey("SpatialDistanceHeaderId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 

@@ -19,11 +19,13 @@ namespace GRA.Data.Repository
         {
         }
 
-        public async Task<IEnumerable<Branch>> GetAllAsync(int siteId)
+        public async Task<IEnumerable<Branch>> GetAllAsync(int siteId,
+            bool requireGeolocation = false)
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.System.SiteId == siteId)
+                .Where(_ => _.System.SiteId == siteId 
+                    && (!requireGeolocation || !string.IsNullOrWhiteSpace(_.Geolocation)))
                 .OrderBy(_ => _.Name)
                 .ThenBy(_ => _.System.Name)
                 .ProjectTo<Branch>()

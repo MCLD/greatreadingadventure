@@ -27,12 +27,65 @@ namespace GRA.Data.Repository
 
         public async Task<ICollection<Event>> PageAsync(EventFilter filter)
         {
-            var events = await ApplyFilters(filter)
-                .ApplyPagination(filter)
+            var eventQuery = ApplyFilters(filter);
+
+            if (filter.SpatialDistanceHeaderId.HasValue)
+            {
+                var spatialDetails = _context.SpatialDistanceDetails
+                    .AsNoTracking()
+                    .Where(_ => _.SpatialDistanceHeaderId == filter.SpatialDistanceHeaderId);
+
+                // tables joined with Cross Apply
+                eventQuery = from eventInfo in eventQuery
+                             from spatial in spatialDetails
+                                 .Where(_ => (_.BranchId.HasValue
+                                         && _.BranchId == eventInfo.AtBranchId)
+                                     || (_.LocationId.HasValue
+                                         && _.LocationId == eventInfo.AtLocationId))
+                                .DefaultIfEmpty()
+                             select new Model.Event
+                             {
+                                 Id = eventInfo.Id,
+                                 Name = eventInfo.Name,
+                                 StartDate = eventInfo.StartDate,
+                                 EventLocationName = spatial.BranchId.HasValue ? spatial.Branch.Name : spatial.Location.Name,
+                                 EventLocationDistance = spatial.Distance
+                             };
+            }
+            else
+            {
+                // tables joined with Left Outer Join
+                eventQuery = from eventInfo in eventQuery
+                             join branches in _context.Branches on eventInfo.AtBranchId equals branches.Id into b
+                             from branch in b.DefaultIfEmpty()
+                             join locations in _context.Locations on eventInfo.AtLocationId equals locations.Id into l
+                             from location in l.DefaultIfEmpty()
+                             select new Model.Event
+                             {
+                                 Id = eventInfo.Id,
+                                 Name = eventInfo.Name,
+                                 StartDate = eventInfo.StartDate,
+                                 EventLocationName = eventInfo.AtBranchId.HasValue ? branch.Name : location.Name,
+                             };
+            }
+
+            if (filter.SortBy == SortEventsBy.StartDate)
+            {
+                eventQuery = eventQuery
+                    .OrderBy(_ => _.StartDate)
+                    .ThenBy(_ => _.Name);
+            }
+            else
+            {
+                eventQuery = eventQuery
+                        .OrderBy(_ => _.EventLocationDistance)
+                        .ThenBy(_ => _.StartDate)
+                        .ThenBy(_ => _.Name);
+            }
+
+            return await eventQuery.ApplyPagination(filter)
                 .ProjectTo<Event>()
                 .ToListAsync();
-            await AddLocationData(events);
-            return events;
         }
 
         public override async Task<Event> GetByIdAsync(int id)
@@ -64,14 +117,6 @@ namespace GRA.Data.Repository
                    .Where(_ => _.ChallengeGroupId == challengeGroupId)
                    .ProjectTo<Event>()
                    .ToListAsync();
-        }
-
-        private async Task AddLocationData(ICollection<Event> events)
-        {
-            foreach (var evt in events)
-            {
-                await AddLocationData(evt);
-            }
         }
 
         private async Task AddLocationData(Event evt)
@@ -123,15 +168,13 @@ namespace GRA.Data.Repository
             {
                 switch (filter.EventType.Value)
                 {
-                    case 0:
-                        events = events.Where(_ => _.IsCommunityExperience == false);
+                    // case 0
+                    default:
+                        events = events.Where(_ => !_.IsCommunityExperience);
                         break;
 
                     case 1:
-                        events = events.Where(_ => _.IsCommunityExperience == true);
-                        break;
-
-                    default:
+                        events = events.Where(_ => _.IsCommunityExperience);
                         break;
                 }
             }
@@ -194,13 +237,13 @@ namespace GRA.Data.Repository
             if (filter.StartDate != null)
             {
                 events = events.Where(_ =>
-                ((_.AllDay == false || _.EndDate.HasValue == false) && _.StartDate.Date >= filter.StartDate.Value.Date)
+                ((!_.AllDay || !_.EndDate.HasValue) && _.StartDate.Date >= filter.StartDate.Value.Date)
                 || _.EndDate.Value.Date >= filter.StartDate.Value.Date);
             }
             if (filter.EndDate != null)
             {
                 events = events.Where(_ =>
-                ((_.AllDay == false || _.EndDate.HasValue == false) && _.StartDate.Date <= filter.EndDate.Value.Date)
+                ((!_.AllDay || !_.EndDate.HasValue) && _.StartDate.Date <= filter.EndDate.Value.Date)
                 || _.StartDate.Date <= filter.EndDate.Value.Date);
             }
 
@@ -211,7 +254,28 @@ namespace GRA.Data.Repository
                     || _.Description.Contains(filter.Search));
             }
 
-            return events.OrderBy(_ => _.StartDate);
+            // for spatial searches make sure events have a corresponding geolocation 
+            if (filter.SpatialDistanceHeaderId.HasValue)
+            {
+                var spatialDetails = _context.SpatialDistanceDetails
+                    .AsNoTracking()
+                    .Where(_ => _.SpatialDistanceHeaderId == filter.SpatialDistanceHeaderId);
+
+                var spatialBranchIds = spatialDetails
+                    .Where(_ => _.BranchId.HasValue)
+                    .Select(_ => _.BranchId);
+
+                var spatialLocationIds = spatialDetails
+                    .Where(_ => _.LocationId.HasValue)
+                    .Select(_ => _.LocationId);
+
+                events = events.Where(_ =>
+                    (_.AtBranchId.HasValue && spatialBranchIds.Contains(_.AtBranchId.Value))
+                    || (_.AtLocationId.HasValue
+                        && spatialLocationIds.Contains(_.AtLocationId.Value)));
+            }
+
+            return events;
         }
 
         public async Task<bool> LocationInUse(int siteId, int locationId)
@@ -282,8 +346,8 @@ namespace GRA.Data.Repository
             var experienceWithCount = communityExperiences
                 .ProjectTo<Event>()
                 .GroupJoin(_context.UserTriggers,
-                    c => c.RelatedTriggerId.Value, 
-                    ut => ut.TriggerId, 
+                    c => c.RelatedTriggerId.Value,
+                    ut => ut.TriggerId,
                     (c, e) => new { c, e })
                 .Select(_ => new DataWithCount<Event>()
                 {
