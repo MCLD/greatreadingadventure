@@ -43,7 +43,7 @@ namespace GRA.Controllers.MissionControl
 
             var systemList = await _siteService.GetPaginatedSystemListAsync(filter);
 
-            var paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel
             {
                 ItemCount = systemList.Count,
                 CurrentPage = page,
