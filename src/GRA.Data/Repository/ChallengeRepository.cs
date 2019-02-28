@@ -46,7 +46,7 @@ namespace GRA.Data.Repository
         private IQueryable<Data.Model.Challenge> ApplyFilters(ChallengeFilter filter)
         {
             var challenges = _context.Challenges.AsNoTracking()
-                    .Where(_ => _.IsDeleted == false
+                    .Where(_ => !_.IsDeleted
                         && _.SiteId == filter.SiteId);
 
             if (filter.SystemIds?.Any() == true)
@@ -60,7 +60,7 @@ namespace GRA.Data.Repository
             if (filter.ProgramIds?.Any() == true)
             {
                 challenges = challenges
-                    .Where(_ => filter.ProgramIds.Any(p => p == _.LimitToProgramId));
+                    .Where(_ => filter.ProgramIds.Any(p => p == _.AssociatedProgramId));
             }
             if (filter.UserIds?.Any() == true)
             {
@@ -69,7 +69,7 @@ namespace GRA.Data.Repository
 
             if (filter.ChallengeIds?.Any() == true)
             {
-                challenges = challenges.Where(_ => filter.ChallengeIds.Contains(_.Id) == false);
+                challenges = challenges.Where(_ => !filter.ChallengeIds.Contains(_.Id));
             }
 
             if (filter.CategoryIds?.Any() == true)
@@ -96,7 +96,6 @@ namespace GRA.Data.Repository
             {
                 var challengeGroup = _context.ChallengeGroups
                     .AsNoTracking()
-                    .Include(_ => _.ChallengeGroupChallenges)
                     .Where(_ => _.Id == filter.GroupId)
                     .SelectMany(_ => _.ChallengeGroupChallenges)
                     .Select(_ => _.ChallengeId);
@@ -126,7 +125,7 @@ namespace GRA.Data.Repository
         {
             var challenge = await DbSet
                 .AsNoTracking()
-                .Where(_ => _.IsDeleted == false && _.Id == id)
+                .Where(_ => !_.IsDeleted && _.Id == id)
                 .ProjectTo<Challenge>()
                 .SingleOrDefaultAsync();
 
@@ -166,7 +165,7 @@ namespace GRA.Data.Repository
         {
             var challenges = DbSet
                 .AsNoTracking()
-                .Where(_ => _.SiteId == siteId && _.IsDeleted == false && ids.Contains(_.Id));
+                .Where(_ => _.SiteId == siteId && !_.IsDeleted && ids.Contains(_.Id));
 
             if (ActiveOnly)
             {
@@ -178,7 +177,6 @@ namespace GRA.Data.Repository
                 .Distinct()
                 .ProjectTo<Challenge>()
                 .ToListAsync();
-
         }
 
         public async Task<Challenge> GetActiveByIdAsync(int id, int? userId = null)
@@ -187,7 +185,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Include(_ => _.ChallengeCategories)
                     .ThenInclude(_ => _.Category)
-                .Where(_ => _.IsDeleted == false && _.Id == id && _.IsActive == true)
+                .Where(_ => !_.IsDeleted && _.Id == id && _.IsActive)
                 .SingleOrDefaultAsync());
 
             if (challenge != null)
@@ -216,7 +214,7 @@ namespace GRA.Data.Repository
                     // determine if challenge is completed
                     var challengeStatus = await _context.UserLogs
                         .AsNoTracking()
-                        .Where(_ => _.UserId == userId && _.ChallengeId == id && _.IsDeleted == false)
+                        .Where(_ => _.UserId == userId && _.ChallengeId == id && !_.IsDeleted)
                         .SingleOrDefaultAsync();
                     if (challengeStatus != null)
                     {
@@ -232,8 +230,7 @@ namespace GRA.Data.Repository
                     foreach (var userChallengeTask in userChallengeTasks)
                     {
                         var task = challenge.Tasks
-                            .Where(_ => _.Id == userChallengeTask.ChallengeTaskId)
-                            .SingleOrDefault();
+                            .SingleOrDefault(_ => _.Id == userChallengeTask.ChallengeTaskId);
                         if (task != null && userChallengeTask.IsCompleted)
                         {
                             task.IsCompleted = true;
@@ -313,7 +310,7 @@ namespace GRA.Data.Repository
         {
             var entity = await _context.Challenges
                 .Include(_ => _.ChallengeGroupChallenges)
-                .Where(_ => _.IsDeleted == false && _.Id == id)
+                .Where(_ => !_.IsDeleted && _.Id == id)
                 .SingleAsync();
             entity.IsDeleted = true;
             await base.UpdateAsync(userId, entity, null);
@@ -444,8 +441,7 @@ namespace GRA.Data.Repository
 
             var challengeList = ApplyFilters(filter)
                 .Where(_ => (_.LimitToSystemId == null || _.LimitToSystemId == user.SystemId)
-                        && (_.LimitToBranchId == null || _.LimitToBranchId == user.BranchId)
-                        && (_.LimitToProgramId == null || _.LimitToProgramId == user.ProgramId));
+                        && (_.LimitToBranchId == null || _.LimitToBranchId == user.BranchId));
 
             var data = await challengeList
                 .OrderBy(_ => _.Name)
@@ -515,7 +511,7 @@ namespace GRA.Data.Repository
         public async Task UpdateUserFavoritesAsync(int authUserId, int userId,
             IEnumerable<int> favoritesToAdd, IEnumerable<int> favoritesToRemove)
         {
-            if (favoritesToAdd.Count() > 0)
+            if (favoritesToAdd.Any())
             {
                 var time = _dateTimeProvider.Now;
                 var userFavoriteList = new List<Model.UserFavoriteChallenge>();
@@ -531,7 +527,7 @@ namespace GRA.Data.Repository
                 }
                 await _context.UserFavoriteChallenges.AddRangeAsync(userFavoriteList);
             }
-            if (favoritesToRemove.Count() > 0)
+            if (favoritesToRemove.Any())
             {
                 var removeList = _context.UserFavoriteChallenges
                     .Where(_ => _.UserId == userId && favoritesToRemove

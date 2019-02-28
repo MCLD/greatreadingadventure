@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 
 namespace GRA.Controllers
@@ -25,6 +24,7 @@ namespace GRA.Controllers
         private readonly CategoryService _categoryService;
         private readonly ChallengeService _challengeService;
         private readonly SiteService _siteService;
+
         public ChallengesController(ILogger<ChallengesController> logger,
             ServiceFacade.Controller context,
             ActivityService activityService,
@@ -41,30 +41,37 @@ namespace GRA.Controllers
             PageTitle = "Challenges";
         }
 
-        public async Task<IActionResult> Index(string Search, string Categories, string Group,
-            bool Favorites = false, int page = 1)
+        public async Task<IActionResult> Index(string Search = null,
+            int? Program = null,
+            string Categories = null,
+            string Group = null,
+            bool Favorites = false,
+            int page = 1)
         {
             int siteId = GetCurrentSiteId();
 
-            ChallengeFilter filter = new ChallengeFilter(page);
+            var filter = new ChallengeFilter(page);
             if (!string.IsNullOrWhiteSpace(Search))
             {
                 filter.Search = Search;
+            }
+            if (Program.HasValue)
+            {
+                filter.ProgramIds = new List<int?> { Program };
             }
             if (!string.IsNullOrWhiteSpace(Categories))
             {
                 var categoryIds = new List<int>();
                 foreach (var category in Categories.Split(','))
                 {
-                    int result;
-                    if (int.TryParse(category, out result))
+                    if (int.TryParse(category, out int result))
                     {
                         categoryIds.Add(result);
                     }
                 }
                 filter.CategoryIds = categoryIds;
             }
-            if (Favorites == true && AuthUser.Identity.IsAuthenticated)
+            if (Favorites && AuthUser.Identity.IsAuthenticated)
             {
                 filter.Favorites = true;
             }
@@ -81,7 +88,7 @@ namespace GRA.Controllers
 
             var challengeList = await _challengeService.GetPaginatedChallengeListAsync(filter);
 
-            PaginateViewModel paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel()
             {
                 ItemCount = challengeList.Count,
                 CurrentPage = page,
@@ -111,23 +118,25 @@ namespace GRA.Controllers
 
             var siteStage = GetSiteStage();
 
-            var isActive = (siteStage == SiteStage.ProgramOpen
-                || siteStage == SiteStage.ProgramEnded);
+            var isActive = siteStage == SiteStage.ProgramOpen
+                || siteStage == SiteStage.ProgramEnded;
 
             var categoryList = await _categoryService.GetListAsync(true);
 
-            ChallengesListViewModel viewModel = new ChallengesListViewModel()
+            var viewModel = new ChallengesListViewModel()
             {
                 Challenges = challengeList.Data.ToList(),
                 ChallengeGroup = challengeGroup,
                 PaginateModel = paginateModel,
                 Search = Search,
+                Program = Program,
                 Categories = Categories,
                 Favorites = Favorites,
                 IsActive = isActive,
                 IsLoggedIn = AuthUser.Identity.IsAuthenticated,
                 CategoryIds = filter.CategoryIds,
-                CategoryList = new SelectList(categoryList, "Id", "Name")
+                CategoryList = new SelectList(categoryList, "Id", "Name"),
+                ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name")
             };
 
             if (!string.IsNullOrWhiteSpace(Search))
@@ -143,27 +152,18 @@ namespace GRA.Controllers
             return View(nameof(Index), viewModel);
         }
 
-        public async Task<IActionResult> List(string id, string Search, string Categories,
-            bool Favorites = false, int page = 1)
+        public async Task<IActionResult> List(string id, int page = 1)
         {
             if (!string.IsNullOrWhiteSpace(id))
             {
                 var challengeGroup = await _challengeService.GetActiveGroupByStubAsync(id);
                 if (challengeGroup != null)
                 {
-                    return await Index(Search, Categories, id, Favorites, page);
+                    return await Index(Group: id, page: page);
                 }
             }
 
-            var routeValues = new RouteValueDictionary();
-            routeValues.Add("Search", Search);
-            routeValues.Add("Categories", Categories);
-            if (Favorites)
-            {
-                routeValues.Add("Favorites", Favorites);
-            }
-
-            return RedirectToAction(nameof(Index), routeValues);
+            return RedirectToAction(nameof(Index));
         }
 
         [Authorize]
@@ -193,7 +193,7 @@ namespace GRA.Controllers
             {
                 success = serviceResult.Status == ServiceResultStatus.Success,
                 message = serviceResult.Message,
-                favorite = favorite
+                favorite
             });
         }
 
@@ -214,15 +214,18 @@ namespace GRA.Controllers
             }
             return RedirectToAction("Index", new
             {
-                page = page,
-                Search = model.Search,
-                Categories = model.Categories
+                page,
+                model.Search,
+                model.Program,
+                model.Categories,
+                model.Favorites,
+                Group = model.ChallengeGroup?.Stub
             });
         }
 
         public async Task<IActionResult> Detail(int id)
         {
-            Challenge challenge = new Domain.Model.Challenge();
+            var challenge = new Domain.Model.Challenge();
             try
             {
                 challenge = await _challengeService.GetChallengeDetailsAsync(id);
@@ -243,7 +246,7 @@ namespace GRA.Controllers
             bool showCompleted = siteStage == SiteStage.ProgramOpen
                 || siteStage == SiteStage.ProgramEnded;
 
-            ChallengeDetailViewModel viewModel = new ChallengeDetailViewModel()
+            var viewModel = new ChallengeDetailViewModel()
             {
                 Challenge = challenge,
                 BadgePath = challenge.BadgeFilename,
@@ -266,7 +269,7 @@ namespace GRA.Controllers
             var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
             foreach (var task in challenge.Tasks)
             {
-                TaskDetailViewModel taskModel = new TaskDetailViewModel()
+                var taskModel = new TaskDetailViewModel()
                 {
                     Id = task.Id,
                     IsCompleted = task.IsCompleted ?? false,
@@ -316,7 +319,7 @@ namespace GRA.Controllers
                     if (challenge.TasksToComplete != null
                         && challenge.TasksToComplete > 0)
                     {
-                        int tasksCompleted = model.Tasks.Where(_ => _.IsCompleted == true).Count();
+                        int tasksCompleted = model.Tasks.Count(_ => _.IsCompleted);
                         int percentage = tasksCompleted * 100 / (int)challenge.TasksToComplete;
                         ShowAlertSuccess($"Your status has been saved. You have completed {percentage}% of the required tasks for the challenge: {challenge.Name}!");
                     }

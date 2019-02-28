@@ -25,6 +25,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Logging level of password recovery misses and password reset errors are now information instead of warning
 - Persist the data protection key to the database
 - Improve school selection
+- Challenge limit to program to associate with program
 
 ### Fixed
 - Instance name enrichment for logging
