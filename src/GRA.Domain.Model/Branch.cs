@@ -17,10 +17,15 @@ namespace GRA.Domain.Model
         [MaxLength(255)]
         public string Url { get; set; }
 
+        [Required]
+        [MaxLength(255)]
         public string Address { get; set; }
 
         [MaxLength(50)]
         public string Telephone { get; set; }
+
+        [MaxLength(50)]
+        public string Geolocation { get; set; }
 
         public string SystemName { get; set; }
 

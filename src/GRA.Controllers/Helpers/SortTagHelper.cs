@@ -1,12 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GRA.Controllers.Helpers
 {
@@ -16,7 +13,10 @@ namespace GRA.Controllers.Helpers
         private readonly IUrlHelperFactory _urlHelperFactory;
 
         [HtmlAttributeName("asp-route-Sort")]
-        public string sortValue { get; set; }
+        public string SortValue { get; set; }
+
+        [HtmlAttributeName("sortColumn")]
+        public bool SortColumn { get; set; }
 
         public SortTagHelper(IUrlHelperFactory urlHelperFactory)
         {
@@ -33,9 +33,9 @@ namespace GRA.Controllers.Helpers
             string sortBy = url.ActionContext.HttpContext.Request.Query["Sort"].ToString();
             string ascDesc = url.ActionContext.HttpContext.Request.Query["Order"].ToString();
 
-            if (String.Equals(sortBy, sortValue, StringComparison.OrdinalIgnoreCase))
+            if (SortColumn || string.Equals(sortBy, SortValue, StringComparison.OrdinalIgnoreCase))
             {
-                if (String.Equals(ascDesc, "Descending", StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(ascDesc, "Descending", StringComparison.OrdinalIgnoreCase))
                 {
                     output.PostContent.AppendHtml("<span class='fa fa-lg fa-sort-desc sort-desc'></span>");
                 }

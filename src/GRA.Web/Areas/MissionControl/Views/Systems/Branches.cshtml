@@ -33,14 +33,14 @@
                             <span asp-validation-for="Branch.SystemId" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Branch.Url" class="control-label"></label>
-                            <input asp-for="Branch.Url" class="form-control" />
-                            <span asp-validation-for="Branch.Url" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
                             <label asp-for="Branch.Address" class="control-label"></label>
                             <input asp-for="Branch.Address" class="form-control" />
                             <span asp-validation-for="Branch.Address" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Branch.Url" class="control-label"></label>
+                            <input asp-for="Branch.Url" class="form-control" />
+                            <span asp-validation-for="Branch.Url" class="text-danger"></span>
                         </div>
                         <div class="form-group">
                             <label asp-for="Branch.Telephone" class="control-label"></label>
@@ -79,14 +79,14 @@
                             <span asp-validation-for="Branch.Name" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Branch.Url" class="control-label"></label>
-                            <input asp-for="Branch.Url" class="form-control" />
-                            <span asp-validation-for="Branch.Url" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
                             <label asp-for="Branch.Address" class="control-label"></label>
                             <input asp-for="Branch.Address" class="form-control" />
                             <span asp-validation-for="Branch.Address" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Branch.Url" class="control-label"></label>
+                            <input asp-for="Branch.Url" class="form-control" />
+                            <span asp-validation-for="Branch.Url" class="text-danger"></span>
                         </div>
                         <div class="form-group">
                             <label asp-for="Branch.Telephone" class="control-label"></label>
@@ -170,6 +170,10 @@
                         <tr>
                             <th>Name</th>
                             <th>System</th>
+                            @if (Model.ShowGeolocation)
+                            {
+                                <th>Geolocation</th>
+                            }
                             <th width="100">&nbsp;</th>
                         </tr>
                     </thead>
@@ -183,6 +187,22 @@
                                 <td>
                                     @branch.SystemName
                                 </td>
+                                @if (Model.ShowGeolocation)
+                                {
+                                    <td>
+                                        @if (!string.IsNullOrWhiteSpace(branch.Geolocation))
+                                        {
+                                            <span class="fas fa-check colored-icon"></span>
+                                        }
+                                        else
+                                        {
+                                            <button type="button" class="btn btn-xs btn-primary geolocateButton" data-id="@branch.Id">
+                                                Add geolocation
+                                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                            </button>
+                                        }
+                                    </td>
+                                }
                                 <td class="gra-mc-icon">
                                     <button type="submit"
                                             class="btn btn-primary btn-xs"
@@ -220,6 +240,8 @@
 
 @section scripts {
     <script>
+        var geolocationUrl = "@Url.Action(nameof(SystemsController.SetBranchGeolocation))";
+
         $('#editModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
             var id = button.data('id');
@@ -244,6 +266,32 @@
             var modal = $(this);
             modal.find('#modal-text').text('Are you sure you wish to delete the branch "' + name + '" ?');
             modal.find('#Id').val(id);
+        });
+
+        $(".geolocateButton").on("click", function () {
+            var button = $(this);
+            if (button.hasClass("disabled") == false)
+            {
+                button.attr("disabled", "disabled");
+                button.children("span").removeClass("hidden");
+                $.post(geolocationUrl, { id: button.data("id") }, function (response) {
+                    if (response.success)
+                    {
+                        button.parent().html("<span class=\"fas fa-check colored-icon\"></span>");
+                    }
+                    else
+                    {
+                        alert("Unable to set geolocation: " + response.message);
+                        button.removeAttr("disabled");
+                        button.children("span").addClass("hidden");
+                    }
+                })
+                .fail(function() {
+                    alert("Error setting geolocation");
+                    button.removeAttr("disabled");
+                    button.children("span").addClass("hidden");
+                })
+            }
         });
     </script>
 }

@@ -61,6 +61,7 @@ namespace GRA.Domain.Model
 
         public string EventLocationName { get; set; }
         public string EventLocationAddress { get; set; }
+        public double EventLocationDistance { get; set; }
         public string EventLocationLink { get; set; }
         public string EventLocationTelephone { get; set; }
     }

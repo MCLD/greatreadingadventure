@@ -198,6 +198,8 @@ namespace GRA.Data
         public DbSet<Model.SchoolType> SchoolTypes { get; set; }
         public DbSet<Model.Site> Sites { get; set; }
         public DbSet<Model.SiteSetting> SiteSettings { get; set; }
+        public DbSet<Model.SpatialDistanceDetail> SpatialDistanceDetails { get; set; }
+        public DbSet<Model.SpatialDistanceHeader> SpatialDistanceHeaders { get; set; }
         public DbSet<Model.System> Systems { get; set; }
         public DbSet<Model.Trigger> Triggers { get; set; }
         public DbSet<Model.TriggerBadge> TriggerBadges { get; set; }

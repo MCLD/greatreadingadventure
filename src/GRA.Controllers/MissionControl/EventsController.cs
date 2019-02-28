@@ -8,6 +8,7 @@ using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
+using GRA.Domain.Service.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -24,6 +25,7 @@ namespace GRA.Controllers.MissionControl
         private readonly EventImportService _eventImportService;
         private readonly EventService _eventService;
         private readonly SiteService _siteService;
+        private readonly SpatialService _spatialService;
         private readonly TriggerService _triggerService;
 
         public EventsController(ILogger<EventsController> logger,
@@ -32,7 +34,8 @@ namespace GRA.Controllers.MissionControl
             EventImportService eventImportService,
             EventService eventService,
             SiteService siteService,
-            TriggerService triggerService)
+            TriggerService triggerService,
+            SpatialService spatialService)
             : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
@@ -40,6 +43,8 @@ namespace GRA.Controllers.MissionControl
             _eventImportService = Require.IsNotNull(eventImportService, nameof(eventImportService));
             _eventService = Require.IsNotNull(eventService, nameof(eventService));
             _siteService = Require.IsNotNull(siteService, nameof(SiteService));
+            _spatialService = spatialService
+                ?? throw new ArgumentNullException(nameof(spatialService));
             _triggerService = Require.IsNotNull(triggerService, nameof(TriggerService));
             PageTitle = "Events";
         }
@@ -721,6 +726,8 @@ namespace GRA.Controllers.MissionControl
             {
                 Locations = locationList.Data,
                 PaginateModel = paginateModel,
+                ShowGeolocation = await _siteLookupService.IsSiteSettingSetAsync(GetCurrentSiteId(),
+                    SiteSettingKey.Events.GoogleMapsAPIKey)
             };
 
             return View(viewModel);
@@ -748,8 +755,29 @@ namespace GRA.Controllers.MissionControl
             {
                 try
                 {
-                    await _eventService.AddLocation(model.Location);
+                    model.Location.Geolocation = null;
+                    var location = await _eventService.AddLocationAsync(model.Location);
                     ShowAlertSuccess($"Added Location '{model.Location.Name}'");
+
+                    if (await _siteLookupService.IsSiteSettingSetAsync(GetCurrentSiteId(),
+                    SiteSettingKey.Events.GoogleMapsAPIKey))
+                    {
+                        var result = await _spatialService
+                            .GetGeocodedAddressAsync(location.Address);
+                        if (result.Status == ServiceResultStatus.Success)
+                        {
+                            location.Geolocation = result.Data;
+                            await _eventService.UpdateLocationAsync(location);
+                        }
+                        else if (result.Status == ServiceResultStatus.Warning)
+                        {
+                            ShowAlertWarning("Unable to set location geolocation: ", result.Message);
+                        }
+                        else
+                        {
+                            ShowAlertDanger("Unable to set location geolocation: ", result.Message);
+                        }
+                    }
                 }
                 catch (GraException gex)
                 {
@@ -779,7 +807,35 @@ namespace GRA.Controllers.MissionControl
             {
                 try
                 {
-                    await _eventService.EditLocation(model.Location);
+                    if (await _siteLookupService.IsSiteSettingSetAsync(GetCurrentSiteId(),
+                    SiteSettingKey.Events.GoogleMapsAPIKey))
+                    {
+                        model.Location.Geolocation = null;
+                        var newAddress = model.Location.Address?.Trim();
+                        var currentLocation = await _eventService
+                            .GetLocationByIdAsync(model.Location.Id);
+                        if (string.IsNullOrWhiteSpace(currentLocation.Geolocation)
+                            || !string.Equals(currentLocation.Address, newAddress,
+                                StringComparison.OrdinalIgnoreCase))
+                        {
+                            var result = await _spatialService
+                                .GetGeocodedAddressAsync(newAddress);
+                            if (result.Status == ServiceResultStatus.Success)
+                            {
+                                model.Location.Geolocation = result.Data;
+                            }
+                            else if (result.Status == ServiceResultStatus.Warning)
+                            {
+                                ShowAlertWarning("Unable to set location geolocation: ", result.Message);
+                            }
+                            else
+                            {
+                                ShowAlertDanger("Unable to set location geolocation: ", result.Message);
+                            }
+                        }
+                    }
+
+                    await _eventService.UpdateLocationAsync(model.Location);
                     ShowAlertSuccess($"Location '{model.Location.Name}' updated");
                 }
                 catch (GraException gex)
@@ -796,7 +852,7 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
-                await _eventService.RemoveLocation(id);
+                await _eventService.RemoveLocationAsync(id);
                 ShowAlertSuccess("Location removed");
             }
             catch (GraException gex)
@@ -828,12 +884,74 @@ namespace GRA.Controllers.MissionControl
                 Url = url,
                 Telephone = telephone
             };
-            var newLocation = await _eventService.AddLocation(location);
+            location = await _eventService.AddLocationAsync(location);
+
+            string message = null;
+            if (await _siteLookupService.IsSiteSettingSetAsync(GetCurrentSiteId(),
+                    SiteSettingKey.Events.GoogleMapsAPIKey))
+            {
+                var result = await _spatialService
+                        .GetGeocodedAddressAsync(location.Address);
+                if (result.Status == ServiceResultStatus.Success)
+                {
+                    location.Geolocation = result.Data;
+                    await _eventService.UpdateLocationAsync(location);
+                }
+                else
+                {
+                    message = result.Message;
+                }
+            }
+
             var locationList = await _eventService.GetLocations();
             return Json(new
             {
                 success = true,
-                data = new SelectList(locationList, "Id", "Name", newLocation.Id)
+                data = new SelectList(locationList, "Id", "Name", location.Id),
+                message
+            });
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> SetLocationGeolocation(int id)
+        {
+            var success = false;
+            var message = string.Empty;
+
+            if (await _siteLookupService.IsSiteSettingSetAsync(GetCurrentSiteId(),
+                    SiteSettingKey.Events.GoogleMapsAPIKey))
+            {
+                var location = await _eventService.GetLocationByIdAsync(id);
+                if (string.IsNullOrEmpty(location.Geolocation))
+                {
+                    var result = await _spatialService
+                            .GetGeocodedAddressAsync(location.Address);
+                    if (result.Status == ServiceResultStatus.Success)
+                    {
+                        location.Geolocation = result.Data;
+                        await _eventService.UpdateLocationAsync(location);
+
+                        success = true;
+                    }
+                    else
+                    {
+                        message = result.Message;
+                    }
+                }
+                else
+                {
+                    message = "Geolocation is already set.";
+                }
+            }
+            else
+            {
+                message = "Geolocation is not set up.";
+            }
+
+            return Json(new
+            {
+                success,
+                message
             });
         }
 

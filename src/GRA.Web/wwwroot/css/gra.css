@@ -269,6 +269,11 @@ input.form-checkbox {
     margin-bottom: 0.25em;
 }
 
+.gra-zipcode-button {
+    position: relative;
+    top: -0.2rem;
+}
+
 .colored-icon.fa-times {
     color: red;
 }

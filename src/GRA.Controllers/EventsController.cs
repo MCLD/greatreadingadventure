@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.Events;
 using GRA.Controllers.ViewModel.Shared;
+using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
+using GRA.Domain.Service.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
@@ -18,21 +21,30 @@ namespace GRA.Controllers
         private readonly ILogger<EventsController> _logger;
         private readonly EventService _eventService;
         private readonly SiteService _siteService;
+        private readonly SpatialService _spatialService;
+        private readonly UserService _userService;
 
         public EventsController(ILogger<EventsController> logger,
             ServiceFacade.Controller context,
             EventService eventService,
-            SiteService siteService)
+            SiteService siteService,
+            SpatialService spatialService,
+            UserService userService)
             : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
             _eventService = Require.IsNotNull(eventService, nameof(eventService));
             _siteService = Require.IsNotNull(siteService, nameof(SiteService));
+            _spatialService = spatialService
+                ?? throw new ArgumentNullException(nameof(spatialService));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             PageTitle = "Events";
         }
 
         public async Task<IActionResult> CommunityExperiences(int page = 1,
+            string sort = null,
             string search = null,
+            string near = null,
             int? system = null,
             int? branch = null,
             int? location = null,
@@ -47,11 +59,13 @@ namespace GRA.Controllers
             }
 
             PageTitle = "Community Experiences";
-            return await Index(page, search, system, branch, location, program, StartDate, EndDate, true);
+            return await Index(page, sort, search, near, system, branch, location, program, StartDate, EndDate, true);
         }
 
         public async Task<IActionResult> Index(int page = 1,
+            string sort = null,
             string search = null,
+            string near = null,
             int? system = null,
             int? branch = null,
             int? location = null,
@@ -73,18 +87,48 @@ namespace GRA.Controllers
                 EventType = CommunityExperiences ? 1 : 0
             };
 
-            // ignore location if branch has value
-            if (branch.HasValue)
+            var nearSearchEnabled = await _siteLookupService
+                .IsSiteSettingSetAsync(site.Id, SiteSettingKey.Events.GoogleMapsAPIKey);
+
+            if (!string.IsNullOrWhiteSpace(sort) && Enum.IsDefined(typeof(SortEventsBy), sort))
             {
-                filter.BranchIds = new List<int>() { branch.Value };
+                filter.SortBy = (SortEventsBy)Enum.Parse(typeof(SortEventsBy), sort);
             }
-            else if (system.HasValue)
+            else
             {
-                filter.SystemIds = new List<int>() { system.Value };
+                if (nearSearchEnabled && !string.IsNullOrWhiteSpace(near))
+                {
+                    filter.SortBy = SortEventsBy.Distance;
+                }
             }
-            else if (location.HasValue)
+
+            if (nearSearchEnabled)
             {
-                filter.LocationIds = new List<int?>() { location.Value };
+                if (!string.IsNullOrWhiteSpace(near))
+                {
+                    var geocodeResult = await _spatialService.GetGeocodedAddressAsync(near);
+                    if (geocodeResult.Status == ServiceResultStatus.Success)
+                    {
+                        filter.SpatialDistanceHeaderId = await _spatialService
+                            .GetSpatialDistanceIdForGeolocationAsync(geocodeResult.Data);
+                    }
+                }
+            }
+            else
+            {
+                // ignore location if branch has value
+                if (branch.HasValue)
+                {
+                    filter.BranchIds = new List<int>() { branch.Value };
+                }
+                else if (system.HasValue)
+                {
+                    filter.SystemIds = new List<int>() { system.Value };
+                }
+                else if (location.HasValue)
+                {
+                    filter.LocationIds = new List<int?>() { location.Value };
+                }
             }
 
             if (program.HasValue)
@@ -107,12 +151,9 @@ namespace GRA.Controllers
                 }
             }
 
-            if (!string.IsNullOrWhiteSpace(EndDate))
+            if (!string.IsNullOrWhiteSpace(EndDate) && DateTime.TryParse(EndDate, out var endDate))
             {
-                if (DateTime.TryParse(EndDate, out var endDate))
-                {
-                    filter.EndDate = endDate.Date;
-                }
+                filter.EndDate = endDate.Date;
             }
 
             var eventList = await _eventService.GetPaginatedListAsync(filter);
@@ -137,40 +178,70 @@ namespace GRA.Controllers
             {
                 Events = eventList.Data,
                 PaginateModel = paginateModel,
+                Sort = filter.SortBy.ToString(),
                 Search = search,
                 StartDate = filter.StartDate,
                 EndDate = filter.EndDate,
                 ProgramId = program,
-                SystemList = new SelectList(await _siteService.GetSystemList(), "Id", "Name"),
-                LocationList = new SelectList(await _eventService.GetLocations(), "Id", "Name"),
                 ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
-                CommunityExperiences = CommunityExperiences
+                CommunityExperiences = CommunityExperiences,
+                ShowNearSearch = nearSearchEnabled
             };
 
-            if (branch.HasValue)
+            if (nearSearchEnabled)
             {
-                var selectedBranch = await _siteService.GetBranchByIdAsync(branch.Value);
-                viewModel.SystemId = selectedBranch.SystemId;
-                viewModel.BranchList = new SelectList(
-                    await _siteService.GetBranches(selectedBranch.SystemId),
-                    "Id", "Name", branch.Value);
-            }
-            else if (system.HasValue)
-            {
-                viewModel.SystemId = system;
-                viewModel.BranchList = new SelectList(
-                    await _siteService.GetBranches(system.Value), "Id", "Name");
+                viewModel.Near = near?.Trim();
+
+                if (HttpContext.User.Identity.IsAuthenticated)
+                {
+                    var user = await _userService.GetDetails(GetActiveUserId());
+                    if (!string.IsNullOrWhiteSpace(user.PostalCode))
+                    {
+                        viewModel.UserZipCode = user.PostalCode;
+                    }
+                }
             }
             else
             {
-                viewModel.BranchList = new SelectList(await _siteService.GetAllBranches(),
-                    "Id", "Name");
+                viewModel.SystemList = new SelectList(
+                    await _siteService.GetSystemList(), "Id", "Name");
+                viewModel.LocationList = new SelectList(
+                    await _eventService.GetLocations(), "Id", "Name");
+
+                if (branch.HasValue)
+                {
+                    var selectedBranch = await _siteService.GetBranchByIdAsync(branch.Value);
+                    viewModel.SystemId = selectedBranch.SystemId;
+                    viewModel.BranchList = new SelectList(
+                        await _siteService.GetBranches(selectedBranch.SystemId),
+                        "Id", "Name", branch.Value);
+                }
+                else if (system.HasValue)
+                {
+                    viewModel.SystemId = system;
+                    viewModel.BranchList = new SelectList(
+                        await _siteService.GetBranches(system.Value), "Id", "Name");
+                }
+                else
+                {
+                    viewModel.BranchList = new SelectList(await _siteService.GetAllBranches(),
+                        "Id", "Name");
+                }
+
+                if (location.HasValue && !branch.HasValue)
+                {
+                    viewModel.LocationId = location.Value;
+                    viewModel.UseLocation = true;
+                }
             }
 
-            if (location.HasValue && !branch.HasValue)
+            var (descriptionTextSet, communityExperienceDescription) = await _siteLookupService
+                .GetSiteSettingStringAsync(site.Id,
+                    SiteSettingKey.Events.CommunityExperienceDescription);
+
+            if (descriptionTextSet)
             {
-                viewModel.LocationId = location.Value;
-                viewModel.UseLocation = true;
+                viewModel.CommunityExperienceDescription = communityExperienceDescription;
             }
 
             return View("Index", viewModel);
@@ -214,7 +285,7 @@ namespace GRA.Controllers
                 isCommunityExperience = true;
             }
 
-            return RedirectToAction("Index", new { model.Search, System = model.SystemId, Branch = model.BranchId, Location = model.LocationId, Program = model.ProgramId, StartDate = startDate, EndDate = endDate, CommunityExperiences = isCommunityExperience });
+            return RedirectToAction("Index", new { model.Sort, model.Search, model.Near, System = model.SystemId, Branch = model.BranchId, Location = model.LocationId, Program = model.ProgramId, StartDate = startDate, EndDate = endDate, CommunityExperiences = isCommunityExperience });
         }
 
         public async Task<IActionResult> Detail(int id)

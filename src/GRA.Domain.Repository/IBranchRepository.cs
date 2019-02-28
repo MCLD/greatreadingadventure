@@ -7,7 +7,7 @@ namespace GRA.Domain.Repository
 {
     public interface IBranchRepository : IRepository<Branch>
     {
-        Task<IEnumerable<Branch>> GetAllAsync(int siteId);
+        Task<IEnumerable<Branch>> GetAllAsync(int siteId, bool requireGeolocation = false);
         Task<IEnumerable<Branch>> GetBySystemAsync(int systemId);
         Task<ICollection<Branch>> PageAsync(BaseFilter filter);
         Task<int> CountAsync(BaseFilter filter);
