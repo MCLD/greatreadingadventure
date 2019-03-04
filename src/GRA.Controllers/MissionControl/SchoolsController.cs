@@ -42,7 +42,7 @@ namespace GRA.Controllers.MissionControl
 
             var schoolList = await _schoolService.GetPaginatedListAsync(filter);
 
-            var paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel
             {
                 ItemCount = schoolList.Count,
                 CurrentPage = page,
@@ -57,7 +57,7 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
-            var viewModel = new SchoolsListViewModel()
+            var viewModel = new SchoolsListViewModel
             {
                 Schools = schoolList.Data.ToList(),
                 PaginateModel = paginateModel,
