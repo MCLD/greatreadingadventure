@@ -329,8 +329,8 @@
     <value>Public School</value>
     <comment>A school type - public school</comment>
   </data>
-  <data name="Registration for {0} has not opened yet." xml:space="preserve">
-    <value>Registration for {0} has not opened yet.</value>
+  <data name="Registration for {0} is not open yet." xml:space="preserve">
+    <value>Registration for {0} is not open yet.</value>
     <comment>Alert shown to a participant if they attempt to join prior to registration opening for the program; {0} is the name of the program</comment>
   </data>
   <data name="Reset Password" xml:space="preserve">
@@ -576,5 +576,13 @@
   <data name="The field {0} must be a string or array type with a minimum length of '{1}'." xml:space="preserve">
     <value>Please enter more than {1} characters for {0}.</value>
     <comment>Validation prompt that a particular field - name replaces {0} - has a minimum allowed length of characters - replaced by {1}.</comment>
+  </data>
+  <data name="The {0} field is not a valid e-mail address." xml:space="preserve">
+    <value>The {0} field is not a valid email address.</value>
+    <comment>Validation prompt for an invalid email address.</comment>
+  </data>
+  <data name="The {0} field is not a valid phone number." xml:space="preserve">
+    <value>The {0} field is not a valid phone number.</value>
+    <comment>Validation prompt for an invalid telephone number.</comment>
   </data>
 </root>

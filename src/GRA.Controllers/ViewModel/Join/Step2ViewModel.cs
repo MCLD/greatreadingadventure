@@ -8,10 +8,11 @@ namespace GRA.Controllers.ViewModel.Join
     public class Step2ViewModel : SchoolSelectionViewModel
     {
         [Required(ErrorMessage = Annotations.Required.Selection)]
-        [DisplayName("Program")]
+        [DisplayName(DisplayNames.Program)]
         [Range(0, int.MaxValue, ErrorMessage = Annotations.Required.ProgramSelection)]
         public int? ProgramId { get; set; }
 
+        [DisplayName(DisplayNames.Age)]
         public int? Age { get; set; }
 
         public bool ShowAge { get; set; }

@@ -8,56 +8,59 @@ namespace GRA.Controllers.ViewModel.Join
     public class SinglePageViewModel : SchoolSelectionViewModel
     {
         [Required(ErrorMessage = Annotations.Required.Field)]
-        [MaxLength(36)]
+        [DisplayName(DisplayNames.Username)]
+        [MaxLength(36, ErrorMessage = Annotations.Validate.MaxLength)]
         public string Username { get; set; }
 
         [Required(ErrorMessage = Annotations.Required.Field)]
+        [DisplayName(DisplayNames.Password)]
         public string Password { get; set; }
 
         [Required(ErrorMessage = Annotations.Required.Field)]
-        [Compare("Password", ErrorMessage = Annotations.Validate.PasswordsMatch)]
-        [DisplayName("Confirm Password")]
+        [Compare(DisplayNames.Password, ErrorMessage = Annotations.Validate.PasswordsMatch)]
+        [DisplayName(DisplayNames.Password)]
         public string ConfirmPassword { get; set; }
 
         [Required(ErrorMessage = Annotations.Required.Field)]
-        [DisplayName("First Name")]
-        [MaxLength(255)]
+        [DisplayName(DisplayNames.FirstName)]
+        [MaxLength(255, ErrorMessage = Annotations.Validate.MaxLength)]
         public string FirstName { get; set; }
 
         [Required(ErrorMessage = Annotations.Required.Field)]
-        [DisplayName("Last Name")]
-        [MaxLength(255)]
+        [DisplayName(DisplayNames.LastName)]
+        [MaxLength(255, ErrorMessage = Annotations.Validate.MaxLength)]
         public string LastName { get; set; }
 
-        [DisplayName("Zip Code")]
-        [MaxLength(32)]
+        [DisplayName(DisplayNames.ZipCode)]
+        [MaxLength(32, ErrorMessage = Annotations.Validate.MaxLength)]
         public string PostalCode { get; set; }
 
         [Required(ErrorMessage = Annotations.Required.Selection)]
-        [DisplayName("System")]
+        [DisplayName(DisplayNames.System)]
         [Range(0, int.MaxValue, ErrorMessage = Annotations.Required.System)]
         public int? SystemId { get; set; }
 
         [Required(ErrorMessage = Annotations.Required.Selection)]
-        [DisplayName("Branch")]
+        [DisplayName(DisplayNames.Branch)]
         [Range(0, int.MaxValue, ErrorMessage = Annotations.Required.Branch)]
         public int? BranchId { get; set; }
 
         [Required(ErrorMessage = Annotations.Required.Selection)]
-        [DisplayName("Program")]
+        [DisplayName(DisplayNames.Program)]
         [Range(0, int.MaxValue, ErrorMessage = Annotations.Required.ProgramSelection)]
         public int? ProgramId { get; set; }
 
+        [DisplayName(DisplayNames.Age)]
         public int? Age { get; set; }
 
-        [DisplayName("Email Address")]
-        [EmailAddress]
-        [MaxLength(254)]
+        [DisplayName(DisplayNames.EmailAddress)]
+        [EmailAddress(ErrorMessage = Annotations.Validate.Email)]
+        [MaxLength(254, ErrorMessage = Annotations.Validate.MaxLength)]
         public string Email { get; set; }
 
-        [DisplayName("Phone Number")]
-        [Phone]
-        [MaxLength(15)]
+        [DisplayName(DisplayNames.PhoneNumber)]
+        [Phone(ErrorMessage = Annotations.Validate.Phone)]
+        [MaxLength(15, ErrorMessage = Annotations.Validate.MaxLength)]
         public string PhoneNumber { get; set; }
 
         public bool RequirePostalCode { get; set; }
@@ -71,7 +74,7 @@ namespace GRA.Controllers.ViewModel.Join
 
         public SelectList AskFirstTime { get; set; }
 
-        [DisplayName("Is this your first time participating?")]
+        [DisplayName(DisplayNames.IsFirstTime)]
         [Required(ErrorMessage = Annotations.Validate.FirstTime)]
         public string IsFirstTime { get; set; }
 
@@ -81,7 +84,7 @@ namespace GRA.Controllers.ViewModel.Join
         [Required(ErrorMessage = Annotations.Validate.EmailSubscription)]
         public string EmailSubscriptionRequested { get; set; }
 
-        [DisplayName("Set a personal goal")]
+        [DisplayName(DisplayNames.DailyPersonalGoal)]
         public int? DailyPersonalGoal { get; set; }
 
         public string TranslationDescriptionPastTense { get; set; }

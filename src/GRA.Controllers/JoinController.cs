@@ -91,21 +91,20 @@ namespace GRA.Controllers
                 {
                     if (site.RegistrationOpens.HasValue)
                     {
-                        AlertInfo = _sharedLocalizer["You can join {0} on {1}.",
+                        AlertInfo = _sharedLocalizer[Annotations.Info.YouCanJoinOn,
                             site.Name,
                             site.RegistrationOpens.Value.ToString("d")];
                     }
                     else
                     {
-                        AlertInfo = _sharedLocalizer["Registration for {0} has not opened yet.",
+                        AlertInfo = _sharedLocalizer[Annotations.Info.RegistrationNotOpenYet,
                             site.Name];
                     }
                     return RedirectToAction("Index", "Home");
                 }
                 else if (siteStage >= SiteStage.ProgramEnded)
                 {
-                    AlertInfo = _sharedLocalizer["{0} has ended, please join us next time!",
-                        site.Name];
+                    AlertInfo = _sharedLocalizer[Annotations.Info.ProgramEnded, site.Name];
                     return RedirectToAction("Index", "Home");
                 }
             }
@@ -194,7 +193,8 @@ namespace GRA.Controllers
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.PostalCode))
             {
                 ModelState.AddModelError("PostalCode",
-                    _sharedLocalizer[Annotations.Required.Field, _sharedLocalizer["Zip Code"]]);
+                    _sharedLocalizer[Annotations.Required.Field,
+                        _sharedLocalizer[DisplayNames.ZipCode]]);
             }
 
             var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
@@ -234,14 +234,16 @@ namespace GRA.Controllers
                 askSchool = program.AskSchool;
                 if (program.AgeRequired && !model.Age.HasValue)
                 {
-                    ModelState.AddModelError("Age",
-                        _sharedLocalizer[Annotations.Required.Field, _sharedLocalizer["Age"]]);
+                    ModelState.AddModelError(DisplayNames.Age,
+                        _sharedLocalizer[Annotations.Required.Field,
+                            _sharedLocalizer[DisplayNames.Age]]);
                 }
                 if (program.SchoolRequired && !model.SchoolId.HasValue && !model.SchoolNotListed
                     && !model.IsHomeschooled)
                 {
                     ModelState.AddModelError("SchoolId",
-                        _sharedLocalizer[Annotations.Required.Field, _sharedLocalizer["School"]]);
+                        _sharedLocalizer[Annotations.Required.Field, 
+                            _sharedLocalizer[DisplayNames.School]]);
                 }
             }
 
@@ -351,7 +353,7 @@ namespace GRA.Controllers
                         _sharedLocalizer[gex.Message]]);
                     if (gex.Message.Contains("password"))
                     {
-                        ModelState.AddModelError("Password",
+                        ModelState.AddModelError(DisplayNames.Password,
                             _sharedLocalizer["Please correct the issues with your password."]);
                     }
                 }
@@ -423,6 +425,9 @@ namespace GRA.Controllers
                 {
                     if (site.RegistrationOpens.HasValue)
                     {
+                        AlertInfo = _sharedLocalizer[Annotations.Info.YouCanJoinOn, 
+                            site.Name, 
+                            site.RegistrationOpens.Value.ToString("d")];
                         AlertInfo = $"You can join {site.Name} on {site.RegistrationOpens.Value.ToString("d")}";
                     }
                     else
@@ -486,13 +491,14 @@ namespace GRA.Controllers
             }
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.PostalCode))
             {
-                ModelState.AddModelError("PostalCode", "The Zip Code field is required.");
+                ModelState.AddModelError("PostalCode",
+                    _sharedLocalizer[Annotations.Required.Field, _sharedLocalizer["Zip Code"]]);
             }
             if (model.SystemId.HasValue && model.BranchId.HasValue)
             {
                 if (!await _siteService.ValidateBranch(model.BranchId.Value, model.SystemId.Value))
                 {
-                    ModelState.AddModelError("BranchId", "Invalid branch selection for system.");
+                    ModelState.AddModelError("BranchId", _sharedLocalizer[Annotations.Validate.Branch]);
                 }
             }
 
@@ -582,7 +588,9 @@ namespace GRA.Controllers
                 askSchool = program.AskSchool;
                 if (program.AgeRequired && !model.Age.HasValue)
                 {
-                    ModelState.AddModelError("Age", "The Age field is required.");
+                    ModelState.AddModelError(DisplayNames.Age,
+                        _sharedLocalizer[Annotations.Required.Field,
+                            _sharedLocalizer[DisplayNames.Age]]);
                 }
                 if (program.SchoolRequired && !model.SchoolId.HasValue && !model.SchoolNotListed
                     && !model.IsHomeschooled)

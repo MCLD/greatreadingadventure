@@ -7,30 +7,32 @@ namespace GRA.Controllers.ViewModel.Join
     public class Step3ViewModel
     {
         [Required(ErrorMessage = Annotations.Required.Field)]
-        [MaxLength(36)]
+        [DisplayName(DisplayNames.Username)]
+        [MaxLength(36, ErrorMessage = Annotations.Validate.MaxLength)]
         public string Username { get; set; }
 
         [Required(ErrorMessage = Annotations.Required.Field)]
+        [DisplayName(DisplayNames.Password)]
         public string Password { get; set; }
 
         [Required(ErrorMessage = Annotations.Required.Field)]
-        [Compare("Password", ErrorMessage = Annotations.Validate.PasswordsMatch)]
-        [DisplayName("Confirm Password")]
+        [Compare(DisplayNames.Password, ErrorMessage = Annotations.Validate.PasswordsMatch)]
+        [DisplayName(DisplayNames.Password)]
         public string ConfirmPassword { get; set; }
 
-        [DisplayName("Email Address")]
-        [EmailAddress]
-        [MaxLength(254)]
+        [DisplayName(DisplayNames.EmailAddress)]
+        [EmailAddress(ErrorMessage = Annotations.Validate.Email)]
+        [MaxLength(254, ErrorMessage = Annotations.Validate.MaxLength)]
         public string Email { get; set; }
 
-        [DisplayName("Phone Number")]
-        [Phone]
-        [MaxLength(15)]
+        [DisplayName(DisplayNames.PhoneNumber)]
+        [Phone(ErrorMessage = Annotations.Validate.Phone)]
+        [MaxLength(15, ErrorMessage = Annotations.Validate.MaxLength)]
         public string PhoneNumber { get; set; }
 
         public SelectList AskFirstTime { get; set; }
 
-        [DisplayName("Is this your first time participating?")]
+        [DisplayName(DisplayNames.IsFirstTime)]
         [Required(ErrorMessage = Annotations.Validate.FirstTime)]
         public string IsFirstTime { get; set; }
 
@@ -40,7 +42,7 @@ namespace GRA.Controllers.ViewModel.Join
         [Required(ErrorMessage = Annotations.Validate.EmailSubscription)]
         public string EmailSubscriptionRequested { get; set; }
 
-        [DisplayName("Set a personal goal")]
+        [DisplayName(DisplayNames.DailyPersonalGoal)]
         public int? DailyPersonalGoal { get; set; }
 
         public string TranslationDescriptionPastTense { get; set; }

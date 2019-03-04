@@ -4,7 +4,10 @@
     {
         public static class Info
         {
-            public static string LetYouKnowWhen = "Thanks! We'll let you know when you can join the program.";
+            public const string LetYouKnowWhen = "Thanks! We'll let you know when you can join the program.";
+            public const string YouCanJoinOn = "You can join {0} on {1}.";
+            public const string RegistrationNotOpenYet = "Registration for {0} is not open yet.";
+            public const string ProgramEnded = "{0} has ended, please join us next time!";
         }
 
         public static class Required
@@ -40,7 +43,10 @@
             public const string WholeNumber = "Please enter a whole number greater than 0.";
             public const string BookTitle = "When providing an author of a book, please also provide a title.";
             public const string CouldNotLog = "Sorry, we couldn't log your activity: {0}";
-            public const string MinLength = "The field {0} must be a string or array type with a maximum length of '{1}'.";
+            public const string MaxLength = "The field {0} must be a string or array type with a maximum length of '{1}'.";
+            public const string MinLength = "The field {0} must be a string or array type with a minimum length of '{1}'.";
+            public const string Email = "The {0} field is not a valid e-mail address.";
+            public const string Phone = "The {0} field is not a valid phone number.";
         }
     }
 }
