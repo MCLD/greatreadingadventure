@@ -126,7 +126,7 @@ namespace GRA.Controllers.MissionControl
 
             var districtList = await _schoolService.GetPaginatedDistrictListAsync(filter);
 
-            var paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel
             {
                 ItemCount = districtList.Count,
                 CurrentPage = page,
@@ -141,7 +141,7 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
-            var viewModel = new DistrictListViewModel()
+            var viewModel = new DistrictListViewModel
             {
                 SchoolDistricts = districtList.Data.ToList(),
                 PaginateModel = paginateModel
