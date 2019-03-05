@@ -124,11 +124,6 @@ table > tbody > tr > td.gra-mc-icon {
     white-space: nowrap;
 }
 
-.wide-tooltip + .tooltip .tooltip-inner {
-    max-width: 25rem;
-    width: 25rem;
-}
-
 .move-right {
     float: right;
     margin-left: 20px;

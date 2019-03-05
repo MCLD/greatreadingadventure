@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - More information in Mission Control system information
 - Mission Control menu item for entering an Authorization Code
 - Improve Event and Community Experience discoverability with spatial proximity searching (requires Google Maps API key)
+- Settable maximum activity amount
 
 ### Changed
 - Script docker-build.bash to not build release images unless the branch starts with 'release/'

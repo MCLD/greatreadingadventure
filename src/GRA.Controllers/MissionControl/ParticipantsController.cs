@@ -1502,7 +1502,7 @@ namespace GRA.Controllers.MissionControl
             {
                 try
                 {
-                    await _activityService.AddBookAsync(model.Id, model.Book);
+                    await _activityService.AddBookAsync(model.Id, model.Book, true);
                     ShowAlertSuccess($"Added book '{model.Book.Title}'");
                 }
                 catch (GraException gex)
