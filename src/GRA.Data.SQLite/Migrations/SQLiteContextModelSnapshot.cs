@@ -1933,15 +1933,11 @@ namespace GRA.Data.SQLite.Migrations
 
                     b.Property<int>("SchoolDistrictId");
 
-                    b.Property<int?>("SchoolTypeId");
-
                     b.Property<int>("SiteId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("SchoolDistrictId");
-
-                    b.HasIndex("SchoolTypeId");
 
                     b.ToTable("Schools");
                 });
@@ -1955,10 +1951,6 @@ namespace GRA.Data.SQLite.Migrations
 
                     b.Property<int>("CreatedBy");
 
-                    b.Property<bool>("IsCharter");
-
-                    b.Property<bool>("IsPrivate");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255);
@@ -1968,26 +1960,6 @@ namespace GRA.Data.SQLite.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("SchoolDistricts");
-                });
-
-            modelBuilder.Entity("GRA.Data.Model.SchoolType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("CreatedAt");
-
-                    b.Property<int>("CreatedBy");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255);
-
-                    b.Property<int>("SiteId");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SchoolTypes");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Site", b =>
@@ -3077,11 +3049,6 @@ namespace GRA.Data.SQLite.Migrations
                     b.HasOne("GRA.Data.Model.SchoolDistrict", "SchoolDistrict")
                         .WithMany("Schools")
                         .HasForeignKey("SchoolDistrictId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GRA.Data.Model.SchoolType", "SchoolType")
-                        .WithMany()
-                        .HasForeignKey("SchoolTypeId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 

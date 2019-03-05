@@ -80,6 +80,10 @@ The Great Reading Adventure uses open source components. You can find informatio
 - JQuery multiselect plugin based on Twitter Bootstrap [Bootstrap-Multiselect](http://davidstutz.github.io/bootstrap-multiselect/)
 - Source on GitHub: [davidstutz/bootstrap-multiselect](https://github.com/davidstutz/bootstrap-multiselect) - [Apache License, Version 2.0 & BSD-3-Clause](https://github.com/davidstutz/bootstrap-multiselect/blob/master/LICENSE.md)
 
+### Bootstrap-Select
+- The jQuery plugin that brings select elements into the 21st century with intuitive multiselection, searching, and much more [Bootstrap-Select](https://developer.snapappointments.com/bootstrap-select/)
+- Source on GitHub: [snapappointments/bootstrap-select](https://github.com/snapappointments/bootstrap-select/) - [MIT License](https://github.com/snapappointments/bootstrap-select/blob/master/LICENSE)
+
 ### CommandLineUtils
 - Command line parsing and utilities for .NET Core and .NET Framework
 - Source on GitHub: [natemcmaster/CommandLineUtils](https://github.com/natemcmaster/CommandLineUtils) - [Apache License, Version 2.0](https://github.com/natemcmaster/CommandLineUtils/blob/master/LICENSE.txt)

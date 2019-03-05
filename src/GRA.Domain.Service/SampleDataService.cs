@@ -159,14 +159,11 @@ namespace GRA.Domain.Service
             {
                 Name = "International Confederation of Wizards"
             });
-            var typeInstitute = await _schoolService.AddSchoolType("Institute");
-            var typeAcademy = await _schoolService.AddSchoolType("Academy");
-            var typeSchool = await _schoolService.AddSchoolType("School of Witchcraft and Wizardry");
 
-            var schoolHogwarts = await _schoolService.AddSchool("Hogwarts", district.Id, typeSchool.Id);
-            await _schoolService.AddSchool("Ilvermorny", district.Id, typeSchool.Id);
-            var schoolBeauxbatons = await _schoolService.AddSchool("Beauxbatons", district.Id, typeAcademy.Id);
-            var schoolDurmstrang = await _schoolService.AddSchool("Durmstrang", district.Id, typeInstitute.Id);
+            var schoolHogwarts = await _schoolService.AddSchool("Hogwarts", district.Id);
+            await _schoolService.AddSchool("Ilvermorny", district.Id);
+            var schoolBeauxbatons = await _schoolService.AddSchool("Beauxbatons", district.Id);
+            var schoolDurmstrang = await _schoolService.AddSchool("Durmstrang", district.Id);
 
             var userCheck = await _userRepository.GetByUsernameAsync("aweasley");
             if (userCheck == null)

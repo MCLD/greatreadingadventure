@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using GRA.Abstract;
 using GRA.Controllers.ViewModel.Profile;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
@@ -106,10 +105,11 @@ namespace GRA.Controllers
                 BranchList = new SelectList(branchList.ToList(), "Id", "Name"),
                 SystemList = new SelectList(systemList.ToList(), "Id", "Name"),
                 ProgramList = new SelectList(programList.ToList(), "Id", "Name"),
+                SchoolList = new SelectList(await _schoolService.GetSchoolsAsync(), "Id", "Name"),
+                SchoolId = user.SchoolId,
+                IsHomeschooled = user.IsHomeschooled,
+                SchoolNotListed = user.SchoolNotListed,
                 RestrictChangingSystemBranch = (await GetSiteSettingBoolAsync(SiteSettingKey.Users.RestrictChangingSystemBranch)),
-                CategorySelectionAction = nameof(SchoolCategory),
-                ShowPrivateOption = await _schoolService.AnyPrivateSchoolsAsync(),
-                ShowCharterOption = await _schoolService.AnyCharterSchoolsAsync()
             };
 
             if (viewModel.RestrictChangingSystemBranch)
@@ -120,60 +120,6 @@ namespace GRA.Controllers
                 viewModel.BranchName = branchList
                     .FirstOrDefault(_ => _.Id == viewModel.User.BranchId)?
                     .Name;
-            }
-
-            var districtList = await _schoolService.GetDistrictsAsync(true);
-            if (user.SchoolId.HasValue)
-            {
-                viewModel.SchoolId = user.SchoolId;
-                var schoolDetails = await _schoolService.GetSchoolDetailsAsync(user.SchoolId.Value);
-                var schoolDistrict = await _schoolService.GetDistrictByIdAsync(
-                    schoolDetails.SchoolDistrictId);
-                if (schoolDistrict.IsPrivate || schoolDistrict.IsCharter)
-                {
-                    viewModel.SchoolDistrictList = new SelectList(
-                        districtList.ToList(), "Id", "Name");
-                    viewModel.SchoolList = new SelectList(
-                        schoolDetails.Schools.ToList(), "Id", "Name");
-
-                    if (schoolDistrict.IsPrivate)
-                    {
-                        viewModel.PrivateSelected = true;
-                    }
-                    else
-                    {
-                        viewModel.CharterSelected = true;
-                    }
-                }
-                else
-                {
-                    var typeList = await _schoolService.GetTypesAsync(schoolDetails.SchoolDistrictId);
-                    viewModel.SchoolDistrictList = new SelectList(
-                        districtList.ToList(), "Id", "Name", schoolDetails.SchoolDistrictId);
-                    viewModel.SchoolTypeList = new SelectList(
-                        typeList.ToList(), "Id", "Name", schoolDetails.SchoolTypeId);
-                    viewModel.SchoolList = new SelectList(
-                        schoolDetails.Schools.ToList(), "Id", "Name");
-
-                    viewModel.PublicSelected = true;
-                }
-            }
-            else
-            {
-                viewModel.SchoolDistrictList = new SelectList(
-                    districtList.ToList(), "Id", "Name");
-                if (user.IsHomeschooled)
-                {
-                    viewModel.IsHomeschooled = true;
-                }
-                else
-                {
-                    viewModel.PublicSelected = true;
-                    if (user.SchoolNotListed)
-                    {
-                        viewModel.SchoolNotListed = true;
-                    }
-                }
             }
 
             var (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
@@ -196,87 +142,6 @@ namespace GRA.Controllers
             }
 
             return View(viewModel);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> SchoolCategory(ProfileDetailViewModel model)
-        {
-            ModelState.Clear();
-
-            model.PublicSelected = false;
-            model.PrivateSelected = false;
-            model.CharterSelected = false;
-            model.IsHomeschooled = false;
-            if (model.SetPrivate)
-            {
-                model.PrivateSelected = true;
-                model.SchoolList = new SelectList(
-                    await _schoolService.GetPrivateSchoolListAsync(), "Id", "Name");
-            }
-            else if (model.SetCharter)
-            {
-                model.CharterSelected = true;
-                model.SchoolList = new SelectList(
-                    await _schoolService.GetCharterSchoolListAsync(), "Id", "Name");
-            }
-            else if (model.SetHomeschool)
-            {
-                model.IsHomeschooled = true;
-            }
-            else
-            {
-                model.PublicSelected = true;
-            }
-
-            model.CategorySelectionAction = nameof(SchoolCategory);
-            model.SchoolDistrictList = new SelectList(
-                await _schoolService.GetDistrictsAsync(true), "Id", "Name");
-            model.SchoolId = null;
-            model.SchoolDistrictId = null;
-            model.SchoolNotListed = false;
-
-            var branchList = await _siteService.GetBranches(model.User.SystemId);
-            if (model.User.BranchId < 1)
-            {
-                branchList = branchList.Prepend(new Branch() { Id = -1 });
-            }
-            var site = await GetCurrentSiteAsync();
-            var systemList = await _siteService.GetSystemList();
-            var programList = await _siteService.GetProgramList();
-            var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
-            model.BranchList = new SelectList(branchList.ToList(), "Id", "Name");
-            model.SystemList = new SelectList(systemList.ToList(), "Id", "Name");
-            model.ProgramList = new SelectList(programList.ToList(), "Id", "Name");
-            model.ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject);
-            model.RequirePostalCode = site.RequirePostalCode;
-
-            if (model.User.ProgramId >= 0)
-            {
-                var program = await _siteService.GetProgramByIdAsync(model.User.ProgramId);
-                model.ShowAge = program.AskAge;
-                model.ShowSchool = program.AskSchool;
-            }
-
-            var (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
-                SiteSettingKey.Users.AskEmailSubPermission);
-            if (askEmailSubscription)
-            {
-                model.AskEmailSubscription = true;
-                model.AskEmailSubscriptionText = askEmailSubscriptionText;
-            }
-
-            var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
-                SiteSettingKey.Users.DefaultDailyPersonalGoal);
-            if (askActivityGoal)
-            {
-                var pointTranslation = await _pointTranslationService
-                    .GetByProgramIdAsync(model.User.ProgramId);
-                model.TranslationDescriptionPastTense =
-                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
-                model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
-            }
-
-            return View(nameof(Index), model);
         }
 
         [HttpPost]
@@ -376,77 +241,11 @@ namespace GRA.Controllers
             model.BranchList = new SelectList(branchList.ToList(), "Id", "Name");
             model.SystemList = new SelectList(systemList.ToList(), "Id", "Name");
             model.ProgramList = new SelectList(programList.ToList(), "Id", "Name");
+            model.SchoolList = new SelectList(await _schoolService.GetSchoolsAsync(), "Id", "Name");
             model.ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject);
             model.RequirePostalCode = site.RequirePostalCode;
             model.ShowAge = program.AskAge;
             model.ShowSchool = program.AskSchool;
-
-            model.CategorySelectionAction = nameof(SchoolCategory);
-            var districtList = await _schoolService.GetDistrictsAsync(true);
-            if (model.PrivateSelected)
-            {
-                model.PublicSelected = false;
-                model.CharterSelected = false;
-                model.IsHomeschooled = false;
-                model.SchoolDistrictList = new SelectList(
-                    districtList.ToList(), "Id", "Name");
-                model.SchoolList = new SelectList(
-                    await _schoolService.GetPrivateSchoolListAsync(), "Id", "Name");
-            }
-            else if (model.CharterSelected)
-            {
-                model.PublicSelected = false;
-                model.PrivateSelected = false;
-                model.IsHomeschooled = false;
-                model.SchoolDistrictList = new SelectList(
-                    districtList.ToList(), "Id", "Name");
-                model.SchoolList = new SelectList(
-                    await _schoolService.GetCharterSchoolListAsync(), "Id", "Name");
-            }
-            else if (model.IsHomeschooled)
-            {
-                model.PublicSelected = false;
-                model.PrivateSelected = false;
-                model.CharterSelected = false;
-                model.SchoolDistrictList = new SelectList(
-                    districtList.ToList(), "Id", "Name");
-            }
-            else
-            {
-                model.PublicSelected = true;
-                model.PrivateSelected = false;
-                model.CharterSelected = false;
-                model.IsHomeschooled = false;
-
-                if (model.SchoolId.HasValue)
-                {
-                    var schoolDetails = await _schoolService.GetSchoolDetailsAsync(
-                        model.SchoolId.Value);
-                    var typeList = await _schoolService.GetTypesAsync(
-                        schoolDetails.SchoolDistrictId);
-                    model.SchoolDistrictList = new SelectList(
-                        districtList.ToList(), "Id", "Name", schoolDetails.SchoolDistrictId);
-                    model.SchoolTypeList = new SelectList(
-                        typeList.ToList(), "Id", "Name", schoolDetails.SchoolTypeId);
-                    model.SchoolList = new SelectList(
-                        schoolDetails.Schools.ToList(), "Id", "Name");
-                    ModelState.Remove(nameof(model.SchoolTypeId));
-                }
-                else
-                {
-                    model.SchoolDistrictList = new SelectList(
-                        districtList.ToList(), "Id", "Name");
-                    if (model.SchoolDistrictId.HasValue)
-                    {
-                        var typeList = await _schoolService.GetTypesAsync(model.SchoolDistrictId);
-                        model.SchoolTypeList = new SelectList(
-                            typeList.ToList(), "Id", "Name", model.SchoolTypeId);
-                        var schoolList = await _schoolService.GetSchoolsAsync(
-                            model.SchoolDistrictId, model.SchoolTypeId);
-                        model.SchoolList = new SelectList(schoolList.ToList(), "Id", "Name");
-                    }
-                }
-            }
 
             if (askEmailSubscription)
             {
@@ -726,7 +525,6 @@ namespace GRA.Controllers
             var branchList = await _siteService.GetBranches(authUser.SystemId);
             var programList = await _siteService.GetProgramList();
             var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
-            var districtList = await _schoolService.GetDistrictsAsync(true);
 
             var viewModel = new HouseholdAddViewModel
             {
@@ -735,31 +533,17 @@ namespace GRA.Controllers
                 ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject),
                 BranchList = new SelectList(branchList.ToList(), "Id", "Name"),
                 ProgramList = new SelectList(programList.ToList(), "Id", "Name"),
+                SchoolList = new SelectList(await _schoolService.GetSchoolsAsync(), "Id", "Name"),
                 SystemList = new SelectList(systemList.ToList(), "Id", "Name"),
-                CategorySelectionAction = nameof(HouseholdAddSchoolCategory),
-                PublicSelected = true,
-                ShowPrivateOption = await _schoolService.AnyPrivateSchoolsAsync(),
-                ShowCharterOption = await _schoolService.AnyCharterSchoolsAsync(),
-                SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name")
             };
 
             if (programList.Count() == 1)
             {
-                var programId = programList.SingleOrDefault().Id;
+                var programId = programList.Single().Id;
                 var program = await _siteService.GetProgramByIdAsync(programId);
-                viewModel.User.ProgramId = programList.SingleOrDefault().Id;
+                viewModel.User.ProgramId = programId;
                 viewModel.ShowAge = program.AskAge;
                 viewModel.ShowSchool = program.AskSchool;
-            }
-
-            if (districtList.Count == 1)
-            {
-                viewModel.SchoolDistrictId = districtList.SingleOrDefault().Id;
-                var typeList = await _schoolService.GetTypesAsync(viewModel.SchoolDistrictId);
-                viewModel.SchoolTypeList = new SelectList(typeList.ToList(), "Id", "Name");
-                var schoolList = await _schoolService.GetSchoolsAsync(viewModel.SchoolDistrictId,
-                    viewModel.SchoolTypeId);
-                viewModel.SchoolList = new SelectList(schoolList.ToList(), "Id", "Name");
             }
 
             var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
@@ -788,105 +572,6 @@ namespace GRA.Controllers
             }
 
             return View("HouseholdAdd", viewModel);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> HouseholdAddSchoolCategory(HouseholdAddViewModel model)
-        {
-            ModelState.Clear();
-
-            model.PublicSelected = false;
-            model.PrivateSelected = false;
-            model.CharterSelected = false;
-            model.IsHomeschooled = false;
-            if (model.SetPrivate)
-            {
-                model.PrivateSelected = true;
-                model.SchoolList = new SelectList(
-                    await _schoolService.GetPrivateSchoolListAsync(), "Id", "Name");
-                model.SchoolDistrictId = null;
-            }
-            else if (model.SetCharter)
-            {
-                model.CharterSelected = true;
-                model.SchoolList = new SelectList(
-                    await _schoolService.GetCharterSchoolListAsync(), "Id", "Name");
-                model.SchoolDistrictId = null;
-            }
-            else if (model.SetHomeschool)
-            {
-                model.IsHomeschooled = true;
-                model.SchoolDistrictId = null;
-            }
-            else
-            {
-                model.PublicSelected = true;
-                var districtList = await _schoolService.GetDistrictsAsync(true);
-                model.SchoolDistrictList = new SelectList(districtList, "Id", "Name");
-                if (districtList.Count == 1)
-                {
-                    model.SchoolDistrictId = districtList.SingleOrDefault().Id;
-                    var typeList = await _schoolService.GetTypesAsync(model.SchoolDistrictId);
-                    model.SchoolTypeList = new SelectList(typeList.ToList(), "Id", "Name");
-                    var schoolList = await _schoolService.GetSchoolsAsync(model.SchoolDistrictId);
-                    model.SchoolList = new SelectList(schoolList.ToList(), "Id", "Name");
-                }
-                else
-                {
-                    model.SchoolDistrictId = null;
-                }
-            }
-
-            model.CategorySelectionAction = nameof(HouseholdAddSchoolCategory);
-            model.SchoolId = null;
-            model.SchoolNotListed = false;
-
-            var branchList = await _siteService.GetBranches(model.User.SystemId);
-            if (model.User.BranchId < 1)
-            {
-                branchList = branchList.Prepend(new Branch() { Id = -1 });
-            }
-            var site = await GetCurrentSiteAsync();
-            var systemList = await _siteService.GetSystemList();
-            var programList = await _siteService.GetProgramList();
-            var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
-            model.BranchList = new SelectList(branchList.ToList(), "Id", "Name");
-            model.SystemList = new SelectList(systemList.ToList(), "Id", "Name");
-            model.ProgramList = new SelectList(programList.ToList(), "Id", "Name");
-            model.ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject);
-            model.RequirePostalCode = site.RequirePostalCode;
-            if (model.User.ProgramId >= 0)
-            {
-                var program = await _siteService.GetProgramByIdAsync(model.User.ProgramId);
-                model.ShowAge = program.AskAge;
-                model.ShowSchool = program.AskSchool;
-            }
-
-            var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
-            if (askIfFirstTime)
-            {
-                model.AskFirstTime = EmptyNoYes();
-            }
-
-            var (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
-                SiteSettingKey.Users.AskEmailSubPermission);
-            if (askEmailSubscription)
-            {
-                model.AskEmailSubscription = EmptyNoYes();
-                model.AskEmailSubscriptionText = askEmailSubscriptionText;
-            }
-
-            var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
-                SiteSettingKey.Users.DefaultDailyPersonalGoal);
-            if (askActivityGoal)
-            {
-                var pointTranslation = programList.First().PointTranslation;
-                model.TranslationDescriptionPastTense =
-                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
-                model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
-            }
-
-            return View("HouseholdAdd", model);
         }
 
         [HttpPost]
@@ -941,12 +626,6 @@ namespace GRA.Controllers
                 if (program.AgeRequired && !model.User.Age.HasValue)
                 {
                     ModelState.AddModelError("User.Age", "The Age field is required.");
-                }
-                if (program.SchoolRequired && !model.SchoolId.HasValue
-                    && !model.SchoolDistrictId.HasValue && !model.SchoolNotListed
-                    && !model.IsHomeschooled)
-                {
-                    ModelState.AddModelError("SchoolDistrictId", "The School District field is required.");
                 }
                 if (program.SchoolRequired && !model.SchoolId.HasValue
                     && !model.SchoolNotListed && !model.IsHomeschooled)
@@ -1045,70 +724,11 @@ namespace GRA.Controllers
             model.BranchList = new SelectList(branchList.ToList(), "Id", "Name");
             model.SystemList = new SelectList(systemList.ToList(), "Id", "Name");
             model.ProgramList = new SelectList(programList.ToList(), "Id", "Name");
+            model.SchoolList = new SelectList(await _schoolService.GetSchoolsAsync(), "Id", "Name");
             model.ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject);
             model.RequirePostalCode = site.RequirePostalCode;
             model.ShowAge = askAge;
             model.ShowSchool = askSchool;
-
-            model.CategorySelectionAction = nameof(HouseholdAddSchoolCategory);
-            var districtList = await _schoolService.GetDistrictsAsync(true);
-            if (model.PrivateSelected)
-            {
-                model.PublicSelected = false;
-                model.CharterSelected = false;
-                model.IsHomeschooled = false;
-                model.SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name");
-                model.SchoolList = new SelectList(
-                    await _schoolService.GetPrivateSchoolListAsync(), "Id", "Name");
-            }
-            else if (model.CharterSelected)
-            {
-                model.PublicSelected = false;
-                model.PrivateSelected = false;
-                model.IsHomeschooled = false;
-                model.SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name");
-                model.SchoolList = new SelectList(
-                    await _schoolService.GetCharterSchoolListAsync(), "Id", "Name");
-            }
-            else if (model.IsHomeschooled)
-            {
-                model.PublicSelected = false;
-                model.PrivateSelected = false;
-                model.CharterSelected = false;
-                model.SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name");
-            }
-            else
-            {
-                model.PublicSelected = true;
-                model.PrivateSelected = false;
-                model.CharterSelected = false;
-                model.IsHomeschooled = false;
-
-                if (model.SchoolId.HasValue)
-                {
-                    var schoolDetails = await _schoolService.GetSchoolDetailsAsync(model.SchoolId.Value);
-                    var typeList = await _schoolService.GetTypesAsync(schoolDetails.SchoolDistrictId);
-                    model.SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name",
-                        schoolDetails.SchoolDistrictId);
-                    model.SchoolTypeList = new SelectList(typeList.ToList(), "Id", "Name",
-                        schoolDetails.SchoolTypeId);
-                    model.SchoolList = new SelectList(schoolDetails.Schools.ToList(), "Id", "Name");
-                    ModelState.Remove(nameof(model.SchoolTypeId));
-                }
-                else
-                {
-                    model.SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name");
-                    if (model.SchoolDistrictId.HasValue)
-                    {
-                        var typeList = await _schoolService.GetTypesAsync(model.SchoolDistrictId);
-                        model.SchoolTypeList = new SelectList(typeList.ToList(), "Id", "Name",
-                            model.SchoolTypeId);
-                        var schoolList = await _schoolService.GetSchoolsAsync(model.SchoolDistrictId,
-                            model.SchoolTypeId);
-                        model.SchoolList = new SelectList(schoolList.ToList(), "Id", "Name");
-                    }
-                }
-            }
 
             if (askIfFirstTime)
             {

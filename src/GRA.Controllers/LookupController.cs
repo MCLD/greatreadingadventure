@@ -59,28 +59,11 @@ namespace GRA.Controllers
             return Json(new SelectList(branchList, "Id", "Name", branchId));
         }
 
-        public async Task<JsonResult> GetSchoolTypes(int? districtId, int? typeId)
+        public async Task<JsonResult> GetSchools(int? districtId, int? schoolId,
+            string schoolName = null)
         {
-            var schoolTypeList = await _schoolService.GetTypesAsync(districtId);
-            return Json(new SelectList(schoolTypeList, "Id", "Name", typeId));
-        }
+            var schoolList = await _schoolService.GetSchoolsAsync(districtId);
 
-        public async Task<JsonResult> GetSchools(int? districtId, int? typeId, int? schoolId,
-            string schoolName = null, bool privateList = false, bool charterList = false)
-        {
-            ICollection<School> schoolList;
-            if (privateList)
-            {
-                schoolList = await _schoolService.GetPrivateSchoolListAsync();
-            }
-            else if (charterList)
-            {
-                schoolList = await _schoolService.GetCharterSchoolListAsync();
-            }
-            else
-            {
-                schoolList = await _schoolService.GetSchoolsAsync(districtId, typeId);
-            }
             if (!string.IsNullOrWhiteSpace(schoolName))
             {
                 foreach (var school in schoolList)

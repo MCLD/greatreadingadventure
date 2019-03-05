@@ -4,6 +4,7 @@
   "dependencies": {
     "bootstrap": "3.3.7",
     "bootstrap-multiselect": "v0.9.15",
+    "bootstrap-select": "1.13.5",
     "commonmark": "0.28.1",
     "eonasdan-bootstrap-datetimepicker": "4.17.47",
     "font-awesome": "5.5.0",

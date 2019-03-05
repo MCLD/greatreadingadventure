@@ -19,21 +19,18 @@ namespace GRA.Domain.Report
     {
         private readonly ISchoolDistrictRepository _schoolDistrictRepository;
         private readonly ISchoolRepository _schoolRepository;
-        private readonly ISchoolTypeRepository _schoolTypeRepository;
         private readonly IUserRepository _userRepository;
+
         public RegistrationsAchieversBySchoolReport(ILogger<RegistrationsAchieversReport> logger,
             ServiceFacade.Report serviceFacade,
             ISchoolDistrictRepository schoolDistrictRepository,
             ISchoolRepository schoolRepository,
-            ISchoolTypeRepository schoolTypeRepository,
             IUserRepository userRepository) : base(logger, serviceFacade)
         {
             _schoolDistrictRepository = schoolDistrictRepository
                 ?? throw new ArgumentNullException(nameof(schoolDistrictRepository));
             _schoolRepository = schoolRepository
                 ?? throw new ArgumentNullException(nameof(schoolRepository));
-            _schoolTypeRepository = schoolTypeRepository
-                ?? throw new ArgumentNullException(nameof(schoolTypeRepository));
             _userRepository = userRepository
                 ?? throw new ArgumentNullException(nameof(userRepository));
         }
@@ -136,18 +133,9 @@ namespace GRA.Domain.Report
                 totalRegistered += users;
                 totalAchiever += achievers;
 
-                string schoolTypeName = null;
-                if (school.SchoolTypeId.HasValue)
-                {
-                    var schoolType = await _schoolTypeRepository
-                        .GetByIdAsync(school.SchoolTypeId.Value);
-                    schoolTypeName = schoolType.Name;
-                }
-
                 var row = new List<object>()
                 {
                     school.Name,
-                    schoolTypeName,
                     users
                 };
 
