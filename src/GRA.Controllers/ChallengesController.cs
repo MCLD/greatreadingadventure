@@ -88,7 +88,7 @@ namespace GRA.Controllers
 
             var challengeList = await _challengeService.GetPaginatedChallengeListAsync(filter);
 
-            var paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel
             {
                 ItemCount = challengeList.Count,
                 CurrentPage = page,
@@ -123,7 +123,7 @@ namespace GRA.Controllers
 
             var categoryList = await _categoryService.GetListAsync(true);
 
-            var viewModel = new ChallengesListViewModel()
+            var viewModel = new ChallengesListViewModel
             {
                 Challenges = challengeList.Data.ToList(),
                 ChallengeGroup = challengeGroup,
@@ -246,7 +246,7 @@ namespace GRA.Controllers
             bool showCompleted = siteStage == SiteStage.ProgramOpen
                 || siteStage == SiteStage.ProgramEnded;
 
-            var viewModel = new ChallengeDetailViewModel()
+            var viewModel = new ChallengeDetailViewModel
             {
                 Challenge = challenge,
                 BadgePath = challenge.BadgeFilename,
@@ -269,7 +269,7 @@ namespace GRA.Controllers
             var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
             foreach (var task in challenge.Tasks)
             {
-                var taskModel = new TaskDetailViewModel()
+                var taskModel = new TaskDetailViewModel
                 {
                     Id = task.Id,
                     IsCompleted = task.IsCompleted ?? false,
