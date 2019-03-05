@@ -75,6 +75,10 @@ namespace GRA.Data.Repository
         public async Task SetUserPasswordAsync(int currentUserId, int userId, string password)
         {
             var user = DbSet.Find(userId);
+            if(user.IsSystemUser)
+            {
+                throw new GraException("Cannot set a password for the System User.");
+            }
             string original = _entitySerializer.Serialize(user);
             user.PasswordHash = _passwordHasher.HashPassword(password);
             await UpdateSaveAsync(currentUserId, user, original);
@@ -454,6 +458,65 @@ namespace GRA.Data.Repository
                 .Where(_ => _.SiteId == siteId && !_.IsDeleted && _.IsNewsSubscribed)
                 .Select(_ => _.Id)
                 .ToListAsync();
+        }
+
+        public async Task<int> GetSystemUserId()
+        {
+            var systemUser = await DbSet
+                .AsNoTracking()
+                .SingleOrDefaultAsync(_ => _.IsSystemUser);
+
+            if (systemUser == null)
+            {
+                await DbSet.AddAsync(new Model.User
+                {
+                    BranchId = (await _context.Branches.OrderBy(_ => _.Id).FirstAsync()).Id,
+                    CanBeDeleted = false,
+                    CreatedAt = _dateTimeProvider.Now,
+                    CreatedBy = -1,
+                    FirstName = "System Account",
+                    IsActive = false,
+                    IsAdmin = true,
+                    IsDeleted = true,
+                    IsLockedOut = true,
+                    IsSystemUser = true,
+                    LockedOutAt = _dateTimeProvider.Now,
+                    LockedOutFor = "System Account",
+                    SiteId = (await _context.Sites.SingleAsync(_ => _.IsDefault)).Id,
+                    SystemId = (await _context.Systems.OrderBy(_ => _.Id).FirstAsync()).Id,
+                    ProgramId = (await _context.Programs.OrderBy(_ => _.Id).FirstAsync()).Id
+                });
+                await _context.SaveChangesAsync();
+
+                systemUser = await DbSet
+                    .SingleOrDefaultAsync(_ => _.IsSystemUser);
+
+                _logger.LogInformation("Inserted System Account, id is: {0}", systemUser.Id);
+
+                var site = await _context.Sites.SingleOrDefaultAsync(_ => _.IsDefault);
+                if (site != null)
+                {
+                    site.CreatedBy = systemUser.Id;
+                    _context.Sites.Update(site);
+                }
+
+                systemUser.CreatedBy = systemUser.Id;
+                DbSet.Update(systemUser);
+
+                await _context.SaveChangesAsync();
+            }
+            return systemUser.Id;
+        }
+
+        public async Task ChangeDeletedUsersProgramAsync(int oldProgram, int newProgram)
+        {
+            var usersToMove = DbSet.Where(_ => _.ProgramId == oldProgram && _.IsDeleted);
+            foreach (var user in usersToMove)
+            {
+                user.ProgramId = newProgram;
+            }
+            DbSet.UpdateRange(usersToMove);
+            await _context.SaveChangesAsync();
         }
     }
 }

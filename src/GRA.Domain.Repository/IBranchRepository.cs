@@ -15,5 +15,6 @@ namespace GRA.Domain.Repository
 
         Task<bool> ValidateAsync(int branchId, int systemId);
         Task<bool> ValidateBySiteAsync(int branchId, int siteId);
+        Task UpdateCreatedByAsync(int userId, int branchId);
     }
 }

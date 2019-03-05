@@ -20,6 +20,7 @@ namespace GRA.Domain.Service
         private readonly ISpatialDistanceRepository _spatialDistanceRepository;
         private readonly ISystemRepository _systemRepository;
         private readonly SiteLookupService _siteLookupService;
+        private readonly IUserRepository _userRepository;
 
         public SiteService(ILogger<SiteService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
@@ -30,7 +31,8 @@ namespace GRA.Domain.Service
             ISiteSettingRepository siteSettingRepository,
             ISpatialDistanceRepository spatialDistanceRepository,
             ISystemRepository systemRepository,
-            SiteLookupService siteLookupService)
+            SiteLookupService siteLookupService,
+            IUserRepository userRepository)
             : base(logger, dateTimeProvider, userContextProvider)
         {
             SetManagementPermission(Permission.ManageSites);
@@ -44,6 +46,8 @@ namespace GRA.Domain.Service
             _systemRepository = Require.IsNotNull(systemRepository, nameof(systemRepository));
             _siteLookupService = siteLookupService
                 ?? throw new ArgumentException(nameof(siteLookupService));
+            _userRepository = userRepository
+                ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
         public async Task<DataWithCount<IEnumerable<Site>>> GetPaginatedListAsync(BaseFilter filter)
@@ -338,6 +342,13 @@ namespace GRA.Domain.Service
             if (await _programRepository.IsInUseAsync(programId, siteId))
             {
                 throw new GraException($"Users currently belong to the program \"{program.Name}\".");
+            }
+            var allPrograms = await _programRepository.GetAllAsync(siteId);
+            var programsEx = allPrograms.Where(_ => _.Id != programId);
+            if (programsEx.Any())
+            {
+                await _userRepository
+                    .ChangeDeletedUsersProgramAsync(programId, programsEx.First().Id);
             }
             await _programRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), program);
         }

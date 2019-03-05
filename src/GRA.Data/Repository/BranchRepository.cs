@@ -1,13 +1,13 @@
-﻿using GRA.Domain.Repository;
-using GRA.Domain.Model;
-using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
+using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
+using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace GRA.Data.Repository
 {
@@ -24,7 +24,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.System.SiteId == siteId 
+                .Where(_ => _.System.SiteId == siteId
                     && (!requireGeolocation || !string.IsNullOrWhiteSpace(_.Geolocation)))
                 .OrderBy(_ => _.Name)
                 .ThenBy(_ => _.System.Name)
@@ -76,7 +76,7 @@ namespace GRA.Data.Repository
         {
             return await _context.Users
                 .AsNoTracking()
-                .AnyAsync(_ => _.IsDeleted == false && _.BranchId == branchId);
+                .AnyAsync(_ => !_.IsDeleted && _.BranchId == branchId);
         }
 
         public async Task<bool> ValidateAsync(int branchId, int systemId)
@@ -93,6 +93,20 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.Id == branchId && _.System.SiteId == siteId)
                 .AnyAsync();
+        }
+
+        public async Task UpdateCreatedByAsync(int userId, int branchId)
+        {
+            var branch = DbSet.Where(_ => _.Id == branchId).SingleOrDefault();
+            if (branch != null)
+            {
+                if (branch.CreatedBy == Defaults.InitialInsertUserId)
+                {
+                    branch.CreatedBy = userId;
+                    DbSet.Update(branch);
+                    await _context.SaveChangesAsync();
+                }
+            }
         }
     }
 }

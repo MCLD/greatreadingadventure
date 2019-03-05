@@ -1,13 +1,13 @@
-﻿using AutoMapper.QueryableExtensions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GRA.Data.Repository
 {
@@ -83,6 +83,20 @@ namespace GRA.Data.Repository
                 return null;
             }
             return _mapper.Map<PointTranslation>(translation);
+        }
+
+        public async Task UpdateCreatedByAsync(int userId, int pointTranslationId)
+        {
+            var pointTranslation = DbSet.Where(_ => _.Id == pointTranslationId).SingleOrDefault();
+            if (pointTranslation != null)
+            {
+                if (pointTranslation.CreatedBy == Defaults.InitialInsertUserId)
+                {
+                    pointTranslation.CreatedBy = userId;
+                    DbSet.Update(pointTranslation);
+                    await _context.SaveChangesAsync();
+                }
+            }
         }
     }
 }

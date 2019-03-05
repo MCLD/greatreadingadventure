@@ -37,5 +37,23 @@ namespace GRA.Data.Repository
                 .ProjectTo<Language>()
                 .ToListAsync();
         }
+
+        public async Task<int> GetDefaultLanguageId()
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.IsActive && _.IsDefault)
+                .Select(_ => _.Id)
+                .SingleOrDefaultAsync();
+        }
+
+        public async Task<int> GetLanguageId(string culture)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.IsActive && _.Name == culture)
+                .Select(_ => _.Id)
+                .SingleOrDefaultAsync();
+        }
     }
 }

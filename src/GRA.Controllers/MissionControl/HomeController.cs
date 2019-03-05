@@ -78,8 +78,6 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(AuthorizationCode));
             }
 
-            await _languageService.SyncLanguagesAsync(GetActiveUserId());
-
             Site site = await GetCurrentSiteAsync();
 
             var viewModel = new AtAGlanceViewModel

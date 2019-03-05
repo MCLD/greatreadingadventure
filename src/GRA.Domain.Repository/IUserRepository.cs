@@ -43,5 +43,7 @@ namespace GRA.Domain.Repository
         Task<IEnumerable<User>> GetTopScoresAsync(ReportCriterion criterion, int scoresToReturn);
         Task<IEnumerable<User>> GetUsersByCriterionAsync(ReportCriterion criterion);
         Task<IEnumerable<int>> GetNewsSubscribedUserIdsAsync(int siteId);
+        Task<int> GetSystemUserId();
+        Task ChangeDeletedUsersProgramAsync(int oldProgram, int newProgram);
     }
 }

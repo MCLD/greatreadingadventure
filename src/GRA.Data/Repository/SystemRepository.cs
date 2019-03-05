@@ -1,12 +1,12 @@
-﻿using AutoMapper.QueryableExtensions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GRA.Data.Repository
 {
@@ -17,6 +17,7 @@ namespace GRA.Data.Repository
             ILogger<SystemRepository> logger) : base(repositoryFacade, logger)
         {
         }
+
         public async Task<IEnumerable<Domain.Model.System>> GetAllAsync(int siteId)
         {
             return await _context.Systems
@@ -67,6 +68,20 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.Id == systemId && _.SiteId == siteId)
                 .AnyAsync();
+        }
+
+        public async Task UpdateCreatedByAsync(int userId, int systemId)
+        {
+            var system = DbSet.Where(_ => _.Id == systemId).SingleOrDefault();
+            if (system != null)
+            {
+                if (system.CreatedBy == Defaults.InitialInsertUserId)
+                {
+                    system.CreatedBy = userId;
+                    DbSet.Update(system);
+                    await _context.SaveChangesAsync();
+                }
+            }
         }
     }
 }

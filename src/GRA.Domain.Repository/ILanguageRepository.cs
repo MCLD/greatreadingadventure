@@ -7,5 +7,7 @@ namespace GRA.Domain.Repository
     {
         Task<ICollection<Model.Language>> GetActiveAsync();
         Task<ICollection<Model.Language>> GetAllAsync();
+        Task<int> GetDefaultLanguageId();
+        Task<int> GetLanguageId(string culture);
     }
 }

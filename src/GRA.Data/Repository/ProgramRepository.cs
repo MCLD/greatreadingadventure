@@ -1,14 +1,14 @@
-﻿using AutoMapper.QueryableExtensions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GRA.Data.Repository
 {
@@ -19,6 +19,7 @@ namespace GRA.Data.Repository
             ILogger<ProgramRepository> logger) : base(repositoryFacade, logger)
         {
         }
+
         public async Task<IEnumerable<Program>> GetAllAsync(int siteId)
         {
             return await DbSet
@@ -70,7 +71,7 @@ namespace GRA.Data.Repository
         {
             return await _context.Users
                 .AsNoTracking()
-                .Where(_ => _.ProgramId == programId && _.SiteId == siteId && _.IsDeleted == false)
+                .Where(_ => _.ProgramId == programId && _.SiteId == siteId && !_.IsDeleted)
                 .AnyAsync();
         }
 
@@ -85,7 +86,6 @@ namespace GRA.Data.Repository
         public async Task DecreasePositionAsync(int programId, int siteId)
         {
             var program = await DbSet
- 
                 .Where(_ => _.Id == programId && _.SiteId == siteId)
                 .SingleOrDefaultAsync();
             if (program == null)
@@ -125,6 +125,23 @@ namespace GRA.Data.Repository
             nextProgram.Position--;
             program.Position++;
             await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateCreatedByAsync(int userId, int[] programIds)
+        {
+            var programs = DbSet.Where(_ => programIds.Contains(_.Id));
+            if (programs.Any())
+            {
+                foreach (var program in programs)
+                {
+                    if (program.CreatedBy == Defaults.InitialInsertUserId)
+                    {
+                        program.CreatedBy = userId;
+                    }
+                }
+                DbSet.UpdateRange(programs);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

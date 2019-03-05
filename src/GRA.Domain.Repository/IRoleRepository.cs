@@ -10,10 +10,12 @@ namespace GRA.Domain.Repository
         Task<IEnumerable<Role>> GetAllAsync();
         Task<DataWithCount<IEnumerable<Role>>> PageAsync(BaseFilter filter);
         Task<Role> AddSaveAsync(int userId, Role role, IEnumerable<string> permissions);
+
         Task UpdateSaveAsync(int userId, Role role, List<string> permissionsToAdd,
-            List<string> PermissionsToRemove);
+            List<string> permissionsToRemove);
+
         Task<IEnumerable<string>> GetAllPermissionsAsync();
-        Task AddPermissionListAsync(IEnumerable<string> names);
+        Task AddPermissionListAsync(int userId, IEnumerable<string> names);
         void RemovePermissionList(IEnumerable<string> names);
         Task<IEnumerable<string>> GetPermisisonNamesForUserAsync(int userId);
         Task<IEnumerable<string>> GetPermissionNamesForRoleAsync(int roleId);

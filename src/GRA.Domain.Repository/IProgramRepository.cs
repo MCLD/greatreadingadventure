@@ -15,5 +15,6 @@ namespace GRA.Domain.Repository
         Task<bool> ValidateAsync(int programId, int siteId);
         Task DecreasePositionAsync(int programId, int siteId);
         Task IncreasePositionAsync(int programId, int siteId);
+        Task UpdateCreatedByAsync(int userId, int[] programIds);
     }
 }

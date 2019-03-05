@@ -75,5 +75,7 @@ namespace GRA.Data.Model
 
         [MaxLength(8)]
         public string Culture { get; set; }
+
+        public bool IsSystemUser { get; set; }
     }
 }

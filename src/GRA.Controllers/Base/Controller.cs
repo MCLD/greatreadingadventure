@@ -130,12 +130,16 @@ namespace GRA.Controllers.Base
 
                 if (!string.IsNullOrEmpty(authResult.Message))
                 {
-                    AlertInfo = _sharedLocalizer[authResult.Message, authResult.Arguments];
+                    AlertInfo = authResult.Arguments == null
+                        ? _sharedLocalizer[authResult.Message]
+                        : _sharedLocalizer[authResult.Message, authResult.Arguments];
                 }
             }
             else
             {
-                ShowAlertDanger(_sharedLocalizer[authResult.Message, authResult.Arguments]);
+                ShowAlertDanger(authResult.Arguments == null
+                        ? _sharedLocalizer[authResult.Message]
+                        : _sharedLocalizer[authResult.Message, authResult.Arguments]);
             }
         }
 

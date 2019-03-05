@@ -352,14 +352,12 @@ namespace GRA.Domain.Service
             if (HasPermission(Permission.EditParticipants))
             {
                 var currentEntity = await _userRepository.GetByIdAsync(userToUpdate.Id);
-                currentEntity.IsAdmin = await UserHasRoles(userToUpdate.Id);
+
                 currentEntity.Age = userToUpdate.Age;
                 currentEntity.BranchId = userToUpdate.BranchId;
                 currentEntity.BranchName = null;
                 currentEntity.CardNumber = userToUpdate.CardNumber?.Trim();
                 currentEntity.DailyPersonalGoal = userToUpdate.DailyPersonalGoal;
-                currentEntity.Email = userToUpdate.Email?.Trim();
-                currentEntity.FirstName = userToUpdate.FirstName?.Trim();
                 currentEntity.IsHomeschooled = userToUpdate.IsHomeschooled;
                 currentEntity.LastName = userToUpdate.LastName?.Trim();
                 currentEntity.PhoneNumber = userToUpdate.PhoneNumber?.Trim();
@@ -370,21 +368,43 @@ namespace GRA.Domain.Service
                 currentEntity.SchoolNotListed = userToUpdate.SchoolNotListed;
                 currentEntity.SystemId = userToUpdate.SystemId;
                 currentEntity.SystemName = null;
+                currentEntity.Email = null;
 
-                if (HasPermission(Permission.EditParticipantUsernames)
-                    && !string.IsNullOrWhiteSpace(currentEntity.Username)
-                    && !string.IsNullOrWhiteSpace(userToUpdate.Username))
+                if (currentEntity.IsSystemUser)
                 {
-                    if (!string.Equals(userToUpdate.Username, currentEntity.Username,
-                    System.StringComparison.OrdinalIgnoreCase))
+                    if(!string.IsNullOrEmpty(userToUpdate.Username))
                     {
-                        if (await UsernameInUseAsync(userToUpdate.Username))
+                        throw new GraException("The System Account cannot have a username configured.");
+                    }
+                    if (!string.IsNullOrEmpty(userToUpdate.Email))
+                    {
+                        throw new GraException("The System Account cannot have an email address configured.");
+                    }
+                    currentEntity.FirstName = "System Account";
+                    currentEntity.IsAdmin = false;
+                    currentEntity.Username = null;
+                }
+                else
+                {
+                    currentEntity.FirstName = userToUpdate.FirstName?.Trim();
+                    currentEntity.Email = userToUpdate.Email?.Trim();
+                    currentEntity.IsAdmin = await UserHasRoles(userToUpdate.Id);
+
+                    if (HasPermission(Permission.EditParticipantUsernames)
+                        && !string.IsNullOrWhiteSpace(currentEntity.Username)
+                        && !string.IsNullOrWhiteSpace(userToUpdate.Username))
+                    {
+                        if (!string.Equals(userToUpdate.Username, currentEntity.Username,
+                        System.StringComparison.OrdinalIgnoreCase))
                         {
-                            throw new GraException("Username is in use by another user.");
-                        }
-                        else
-                        {
-                            currentEntity.Username = userToUpdate.Username?.Trim();
+                            if (await UsernameInUseAsync(userToUpdate.Username))
+                            {
+                                throw new GraException("Username is in use by another user.");
+                            }
+                            else
+                            {
+                                currentEntity.Username = userToUpdate.Username?.Trim();
+                            }
                         }
                     }
                 }
@@ -1192,6 +1212,11 @@ namespace GRA.Domain.Service
                 authUser.Culture = cultureName;
             }
             await _userRepository.UpdateSaveNoAuditAsync(authUser);
+        }
+
+        public async Task<int> GetSystemUserId()
+        {
+            return await _userRepository.GetSystemUserId();
         }
     }
 }
