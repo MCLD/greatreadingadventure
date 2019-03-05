@@ -8,6 +8,9 @@ namespace GRA.Data.SqlServer.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql("UPDATE [Branches] SET [Address] = 'The Geographic Center, Lebanon, KS 66952' WHERE [Address] IS NULL");
+            migrationBuilder.Sql("UPDATE [Locations] SET [Address] = 'The Geographic Center, Lebanon, KS 66952' WHERE [Address] IS NULL");
+
             migrationBuilder.AlterColumn<string>(
                 name: "Address",
                 table: "Locations",
