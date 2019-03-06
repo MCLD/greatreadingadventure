@@ -83,11 +83,11 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Challenge.LimitToProgramId" class="control-label"></label>
-            <select asp-for="Challenge.LimitToProgramId" asp-items="Model.ProgramList" class="form-control">
+            <label asp-for="Challenge.AssociatedProgramId" class="control-label"></label>
+            <select asp-for="Challenge.AssociatedProgramId" asp-items="Model.ProgramList" class="form-control">
                 <option value="">No</option>
             </select>
-            <span asp-validation-for="Challenge.LimitToProgramId" class="text-danger"></span>
+            <span asp-validation-for="Challenge.AssociatedProgramId" class="text-danger"></span>
         </div>
     </div>
 

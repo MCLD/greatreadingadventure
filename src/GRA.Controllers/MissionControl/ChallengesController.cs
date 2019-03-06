@@ -394,7 +394,7 @@ namespace GRA.Controllers.MissionControl
                     challenge.TasksToComplete = storedChallenge.TasksToComplete;
                     challenge.LimitToSystemId = storedChallenge.LimitToSystemId;
                     challenge.LimitToBranchId = storedChallenge.LimitToBranchId;
-                    challenge.LimitToProgramId = storedChallenge.LimitToProgramId;
+                    challenge.AssociatedProgramId = storedChallenge.AssociatedProgramId;
                     challenge.CategoryIds = storedChallenge.CategoryIds;
                 }
                 else

@@ -31,7 +31,8 @@ namespace GRA.Data.Model
 
         public int? LimitToSystemId { get; set; }
         public int? LimitToBranchId { get; set; }
-        public int? LimitToProgramId { get; set; }
+
+        public int? AssociatedProgramId { get; set; }
 
         public virtual ICollection<ChallengeCategory> ChallengeCategories { get; set; }
         public virtual ICollection<ChallengeTask> Tasks { get; set; }

@@ -42,8 +42,9 @@ namespace GRA.Domain.Model
         public int? LimitToSystemId { get; set; }
         [DisplayName("Limit to Branch?")]
         public int? LimitToBranchId { get; set; }
-        [DisplayName("Limit to Program?")]
-        public int? LimitToProgramId { get; set; }
+
+        [DisplayName("Associate with Program?")]
+        public int? AssociatedProgramId { get; set; }
 
         public IEnumerable<ChallengeTask> Tasks { get; set; }
         public bool? IsCompleted { get; set; }
