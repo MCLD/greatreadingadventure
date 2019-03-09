@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
@@ -30,7 +31,7 @@ namespace GRA.Web
 
             // now that we have logging present in our config, we must create the webhost
             IWebHost webhost = CreateWebHostBuilder(args).Build();
-            
+
             // perform initialization
             using (IServiceScope scope = webhost.Services.CreateScope())
             {
@@ -43,15 +44,30 @@ namespace GRA.Web
             // run the application
             string applicationName
                 = instance.ToLowerInvariant() != "gra" ? $"GRA {instance}" : "GRA";
-            string version = "v" + Assembly.GetEntryAssembly()
+
+            // output the version and revision
+            var thisAssemblyVersion = Assembly.GetEntryAssembly()
                 .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
                 .InformationalVersion;
-
+            var fileVersion = Assembly
+                .GetEntryAssembly()
+                .GetCustomAttribute<AssemblyFileVersionAttribute>()?
+                .Version;
+            if (!string.IsNullOrEmpty(fileVersion)
+                && fileVersion.Count(_ => _ == '.') > 2
+                && fileVersion.Length > fileVersion.LastIndexOf('.'))
+            {
+                var revision = fileVersion.Substring(fileVersion.LastIndexOf('.') + 1);
+                if (!string.IsNullOrEmpty(revision) && revision != "0")
+                {
+                    thisAssemblyVersion += " revision " + revision;
+                }
+            }
             try
             {
                 Log.Warning("{0} {1} starting up in {2}",
                     applicationName,
-                    version,
+                    thisAssemblyVersion,
                     webRootPath);
 
                 webhost.Run();
@@ -61,7 +77,7 @@ namespace GRA.Web
             {
                 Log.Warning("{0} {1} exited unexpectedly: {2}",
                     applicationName,
-                    version,
+                    thisAssemblyVersion,
                     ex.Message);
                 return 1;
             }

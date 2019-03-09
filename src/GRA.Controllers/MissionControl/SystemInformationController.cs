@@ -51,7 +51,9 @@ namespace GRA.Controllers.MissionControl
                     .GetEntryAssembly()
                     .GetCustomAttribute<AssemblyFileVersionAttribute>()?
                     .Version;
-                if(fileVersion.Contains('.') && fileVersion.Length > fileVersion.LastIndexOf('.'))
+                if(!string.IsNullOrEmpty(fileVersion)
+                    && fileVersion.Count(_ => _ == '.') > 2
+                    && fileVersion.Length > fileVersion.LastIndexOf('.'))
                 {
                     var revision = fileVersion.Substring(fileVersion.LastIndexOf('.') + 1);
                     if(!string.IsNullOrEmpty(revision) && revision != "0")
