@@ -6,7 +6,8 @@ namespace GRA.Domain.Model
     {
         public bool FoundUser { get; set; }
         public bool PasswordIsValid { get; set; }
-        public string AuthenticationMessage { get; set; }
+        public string Message { get; set; }
+        public string[] Arguments { get; set; }
         public User User { get; set; }
         public IEnumerable<string> PermissionNames { get; set; }
     }

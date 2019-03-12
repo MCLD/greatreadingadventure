@@ -14,18 +14,22 @@ namespace GRA.Domain.Service
     {
         private readonly IRoleRepository _roleRepository;
         private readonly ISiteRepository _siteRepository;
+        private readonly IUserRepository _userRepository;
 
         public RoleService(ILogger<RoleService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             IRoleRepository roleRepository,
-            ISiteRepository siteRepository) : base(logger, dateTimeProvider, userContextProvider)
+            ISiteRepository siteRepository,
+            IUserRepository userRepository) : base(logger, dateTimeProvider, userContextProvider)
         {
             SetManagementPermission(Permission.ManageRoles);
             _roleRepository = roleRepository
                 ?? throw new ArgumentNullException(nameof(roleRepository));
             _siteRepository = siteRepository
                 ?? throw new ArgumentNullException(nameof(siteRepository));
+            _userRepository = userRepository
+                ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
         public async Task<Role> GetByIdAsync(int id)
@@ -59,7 +63,7 @@ namespace GRA.Domain.Service
             role.Name = role.Name.Trim();
             role.IsAdmin = false;
 
-            if (permissions.Count() > 0)
+            if (permissions.Any())
             {
                 role.CreatedAt = _dateTimeProvider.Now;
                 role.CreatedBy = authId;
@@ -80,7 +84,7 @@ namespace GRA.Domain.Service
 
             var permissionsToAdd = new List<string>();
             var permissionsToRemove = new List<string>();
-            if (currentRole.IsAdmin == false)
+            if (!currentRole.IsAdmin)
             {
                 var currentPermissions = await _roleRepository
                     .GetPermissionNamesForRoleAsync(currentRole.Id);
@@ -117,12 +121,12 @@ namespace GRA.Domain.Service
         public async Task SyncPermissionsAsync()
         {
             var sites = await _siteRepository.GetAllAsync();
-            if (sites.Count() > 0)
+            if (sites.Any())
             {
                 var adminRole = await _roleRepository.GetByIdAsync(1);
                 if (adminRole != null)
                 {
-                    if (adminRole.IsAdmin != true)
+                    if (!adminRole.IsAdmin)
                     {
                         _logger.LogError("Role ID 1 is not set as IsAdmin, fixing.");
                         adminRole.IsAdmin = true;
@@ -142,13 +146,14 @@ namespace GRA.Domain.Service
                 var permissionsToAdd = permissionList.Except(currentPermissions);
                 var permissionsToRemove = currentPermissions.Except(permissionList);
 
-                if (permissionsToAdd.Count() > 0 || permissionsToRemove.Count() > 0)
+                if (permissionsToAdd.Any() || permissionsToRemove.Any())
                 {
-                    if (permissionsToAdd.Count() > 0)
+                    if (permissionsToAdd.Any())
                     {
-                        await _roleRepository.AddPermissionListAsync(permissionsToAdd);
+                        var userId = await _userRepository.GetSystemUserId();
+                        await _roleRepository.AddPermissionListAsync(userId, permissionsToAdd);
                     }
-                    if (permissionsToRemove.Count() > 0)
+                    if (permissionsToRemove.Any())
                     {
                         _roleRepository.RemovePermissionList(permissionsToRemove);
                     }

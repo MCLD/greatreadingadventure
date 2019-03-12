@@ -7,6 +7,8 @@ using System.Security.Claims;
 using System;
 using Microsoft.Extensions.Logging;
 using System.Linq;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 
 namespace GRA.Controllers
 {
@@ -79,8 +81,7 @@ namespace GRA.Controllers
                     return claim.First().Value;
                 default:
                     string userId = user.Claims
-                        .Where(_ => _.Type == ClaimType.UserId)
-                        .FirstOrDefault()?.Value ?? "Unknown";
+                        .FirstOrDefault(_ => _.Type == ClaimType.UserId)?.Value ?? "Unknown";
                     var distinct = claim.Select(_ => _.Value).Distinct();
                     if (distinct.Count() > 1)
                     {
@@ -97,8 +98,8 @@ namespace GRA.Controllers
             }
         }
 
-
         public int GetId(ClaimsPrincipal user, string claimType)
+
         {
             string result = UserClaim(user, claimType);
             if (string.IsNullOrEmpty(result))
@@ -115,5 +116,14 @@ namespace GRA.Controllers
             }
         }
 
+        public CultureInfo GetCurrentCulture()
+        {
+            return _httpContextAccessor
+                .HttpContext
+                .Features
+                .Get<IRequestCultureFeature>()
+                .RequestCulture
+                .Culture;
+        }
     }
 }

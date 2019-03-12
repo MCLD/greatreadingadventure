@@ -4,7 +4,9 @@
     {
         public static readonly string AddressGeocoding = "AddressGeocoding";
         public static readonly string CurrentStats = "CurrentStats";
+        public static readonly string DefaultLanguageId = "DefaultLanguageId";
         public static readonly string LatestNewsPostId = "LatestNewsPostId";
+        public static readonly string LanguageId = "LanguageId.{0}";
         public static readonly string SiteCss = "SiteCss";
         public static readonly string SiteJs = "SiteJs";
         public static readonly string Sites = "Sites";

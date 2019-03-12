@@ -52,6 +52,10 @@ namespace GRA.Web
                 stage = 50;
                 await siteLookupService.GetDefaultSiteIdAsync();
 
+                stage = 55;
+                var languageService = _scope.ServiceProvider.GetRequiredService<LanguageService>();
+                await languageService.SyncLanguagesAsync();
+
                 stage = 60;
                 await _scope
                     .ServiceProvider
@@ -59,7 +63,8 @@ namespace GRA.Web
 
                 stage = 65;
                 await _scope
-                    .ServiceProvider.GetRequiredService<NewsService>().EnsureDefaultCategoryAsync();
+                    .ServiceProvider.GetRequiredService<NewsService>()
+                    .EnsureDefaultCategoryAsync();
 
                 stage = 70;
                 _scope.ServiceProvider.GetRequiredService<TemplateService>().SetupTemplates();
@@ -89,6 +94,9 @@ namespace GRA.Web
                         break;
                     case 50:
                         errorText = "Error loading sites into cache: {Message}";
+                        break;
+                    case 55:
+                        errorText = "Error syncing available languages with database: {Message}";
                         break;
                     case 60:
                         errorText = "Error synchronizing permissions: {Message}";

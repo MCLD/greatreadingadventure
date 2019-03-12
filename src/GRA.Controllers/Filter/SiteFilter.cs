@@ -1,16 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using GRA.Abstract;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
 using GRA.Domain.Service.Abstract;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace GRA.Controllers.Filter
 {
@@ -22,13 +29,17 @@ namespace GRA.Controllers.Filter
         private readonly IPathResolver _pathResolver;
         private readonly SiteLookupService _siteLookupService;
         private readonly IUserContextProvider _userContextProvider;
+        private readonly IOptions<RequestLocalizationOptions> _l10nOptions;
+        private readonly UserService _userService;
 
         public SiteFilter(ILogger<SiteFilter> logger,
             IDistributedCache cache,
             IConfiguration config,
             IPathResolver pathResolver,
             SiteLookupService siteLookupService,
-            IUserContextProvider userContextProvider)
+            IUserContextProvider userContextProvider,
+            IOptions<RequestLocalizationOptions> l10nOptions,
+            UserService userService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _cache = cache ?? throw new ArgumentNullException(nameof(cache));
@@ -38,6 +49,8 @@ namespace GRA.Controllers.Filter
                 ?? throw new ArgumentNullException(nameof(siteLookupService));
             _userContextProvider = userContextProvider
                 ?? throw new ArgumentNullException(nameof(userContextProvider));
+            _l10nOptions = l10nOptions ?? throw new ArgumentNullException(nameof(l10nOptions));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 
         public async Task OnResourceExecutionAsync(ResourceExecutingContext context,
@@ -57,7 +70,9 @@ namespace GRA.Controllers.Filter
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"Unable to get SiteId claim for user {httpContext.User.Identity.Name}: {ex.Message}");
+                    _logger.LogError("Unable to get SiteId claim for user {Name}: {Message}",
+                        httpContext.User.Identity.Name,
+                        ex.Message);
                 }
             }
 
@@ -100,11 +115,15 @@ namespace GRA.Controllers.Filter
                 // hide means that if the value is set then we want showChallenges to be false
                 // hence == null rather than != null
                 showChallenges = site.Settings
-                    .FirstOrDefault(_ => _.Key == SiteSettingKey.Challenges.HideUntilRegistrationOpen)?
+                    .FirstOrDefault(_ => _.Key == SiteSettingKey
+                        .Challenges
+                        .HideUntilRegistrationOpen)?
                     .Value == null;
 
                 showEvents = site.Settings
-                    .FirstOrDefault(_ => _.Key == SiteSettingKey.Events.HideUntilRegistrationOpen)?
+                    .FirstOrDefault(_ => _.Key == SiteSettingKey
+                        .Events
+                        .HideUntilRegistrationOpen)?
                     .Value == null;
             }
 
@@ -114,9 +133,10 @@ namespace GRA.Controllers.Filter
             httpContext.Items[ItemKey.SiteId] = (int)siteId;
             httpContext.Items[ItemKey.ShowChallenges] = showChallenges;
             httpContext.Items[ItemKey.ShowEvents] = showEvents;
+            httpContext.Items[ItemKey.WebScheme] = site.IsHttpsForced ? "https" : "http";
 
-            // only check if the site.css and site.js have changed periodically by default and cache
-            // the last modification time
+            // only check if the site.css and site.js have changed periodically by default and
+            // cache the last modification time
             string siteCssCacheKey = $"s{siteId}.{CacheKey.SiteCss}";
             string siteJsCacheKey = $"s{siteId}.{CacheKey.SiteJs}";
 
@@ -130,12 +150,10 @@ namespace GRA.Controllers.Filter
                 .FirstOrDefault(_ => _.Key == SiteSettingKey.Web.CacheSiteCustomizationsMinutes)?
                 .Value;
 
-            if (cacheSiteCustomizationsMinutes != null)
+            if (cacheSiteCustomizationsMinutes != null
+                && !int.TryParse(cacheSiteCustomizationsMinutes, out cacheMinutes))
             {
-                if (!int.TryParse(cacheSiteCustomizationsMinutes, out cacheMinutes))
-                {
-                    _logger.LogError("Could not convert cache site customizations value to a number: {cacheSiteCustomizationsMinutes}", cacheSiteCustomizationsMinutes);
-                }
+                _logger.LogError("Could not convert cache site customizations value to a number: {cacheSiteCustomizationsMinutes}", cacheSiteCustomizationsMinutes);
             }
 
             // kill any cached values if the cache value was set to 0
@@ -188,17 +206,78 @@ namespace GRA.Controllers.Filter
                 }
             }
 
-            if (string.IsNullOrEmpty(httpContext.Session.GetString(SessionKey.CallItGroup)))
-            {
-                httpContext.Items[ItemKey.HouseholdTitle] = "Family";
-            }
-            else
-            {
-                httpContext.Items[ItemKey.HouseholdTitle] = "Group";
-            }
+            httpContext.Items[ItemKey.HouseholdTitle]
+                = string.IsNullOrEmpty(httpContext.Session.GetString(SessionKey.CallItGroup))
+                ? "Family"
+                : "Group";
+
             if (!string.IsNullOrWhiteSpace(site.ExternalEventListUrl))
             {
                 httpContext.Items[ItemKey.ExternalEventListUrl] = site.ExternalEventListUrl;
+            }
+
+            var currentCulture = _userContextProvider.GetCurrentCulture();
+            httpContext.Items[ItemKey.ISOLanguageName] = currentCulture.TwoLetterISOLanguageName;
+
+            if (_l10nOptions.Value?.SupportedCultures.Count > 1)
+            {
+                var cookieCulture = httpContext
+                    .Request
+                    .Cookies[CookieRequestCultureProvider.DefaultCookieName];
+
+                if (currentCulture.Name == Culture.DefaultName)
+                {
+                    if (cookieCulture != null)
+                    {
+                        httpContext
+                            .Response
+                            .Cookies
+                            .Delete(CookieRequestCultureProvider.DefaultCookieName);
+                        if (_userContextProvider.GetContext().ActiveUserId != null)
+                        {
+                            await _userService.UpdateCulture(null);
+                        }
+                    }
+                }
+                else
+                {
+                    // no cookie or new culture selected, reset cookie
+                    httpContext.Response.Cookies.Append(
+                        CookieRequestCultureProvider.DefaultCookieName,
+                        CookieRequestCultureProvider
+                            .MakeCookieValue(new RequestCulture(currentCulture.Name)),
+                        new CookieOptions { Expires = DateTimeOffset.UtcNow.AddDays(14) }
+                    );
+                    if (_userContextProvider.GetContext().ActiveUserId != null)
+                    {
+                        await _userService.UpdateCulture(currentCulture.Name);
+                    }
+                }
+
+                // generate list for drop-down
+                var cultureList = new List<SelectListItem>();
+                var cultureHrefLang = new Dictionary<string, string>
+                {
+                    { "x-default", Culture.DefaultName }
+                };
+                foreach (var culture in _l10nOptions.Value.SupportedCultures)
+                {
+                    var text = culture.Parent != null
+                        ? culture.Parent.NativeName
+                        : culture.NativeName;
+                    cultureList.Add(new SelectListItem(text, culture.Name));
+                    if (!cultureHrefLang.Keys.Contains(culture.Name))
+                    {
+                        cultureHrefLang.Add(culture.Name, culture.Name);
+                        if (culture.Parent != null
+                            && !cultureHrefLang.Keys.Contains(culture.Parent.Name))
+                        {
+                            cultureHrefLang.Add(culture.Parent.Name, culture.Parent.Name);
+                        }
+                    }
+                }
+                httpContext.Items[ItemKey.HrefLang] = cultureHrefLang;
+                httpContext.Items[ItemKey.L10n] = cultureList.OrderBy(_ => _.Text);
             }
 
             await next();

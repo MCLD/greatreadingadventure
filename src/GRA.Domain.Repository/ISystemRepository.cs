@@ -11,5 +11,6 @@ namespace GRA.Domain.Repository
         Task<int> CountAsync(BaseFilter filter);
         Task<bool> IsInUseAsync(int systemId);
         Task<bool> ValidateAsync(int systemId, int siteId);
+        Task UpdateCreatedByAsync(int userId, int systemId);
     }
 }

@@ -81,7 +81,7 @@ namespace GRA.Data.Repository
                     CreatedBy = userId
                 });
             var removePermissions = _context.RolePermissions
-                .Where(_ => _.RoleId == role.Id && role.IsAdmin == false
+                .Where(_ => _.RoleId == role.Id && !role.IsAdmin
                     && permissionsToRemove.Contains(_.Permission.Name));
 
             await _context.RolePermissions.AddRangeAsync(addPermissions);
@@ -89,15 +89,15 @@ namespace GRA.Data.Repository
             await _context.SaveChangesAsync();
         }
 
-        public override async Task RemoveSaveAsync(int userId, int roleId)
+        public override async Task RemoveSaveAsync(int userId, int id)
         {
-            var rolePermissions = _context.RolePermissions.Where(_ => _.RoleId == roleId);
+            var rolePermissions = _context.RolePermissions.Where(_ => _.RoleId == id);
             _context.RolePermissions.RemoveRange(rolePermissions);
 
-            var userRoles = _context.UserRoles.Where(_ => _.RoleId == roleId);
+            var userRoles = _context.UserRoles.Where(_ => _.RoleId == id);
             _context.UserRoles.RemoveRange(userRoles);
 
-            await RemoveAsync(userId, roleId);
+            await RemoveAsync(userId, id);
 
             await _context.SaveChangesAsync();
         }
@@ -111,7 +111,7 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task AddPermissionListAsync(IEnumerable<string> names)
+        public async Task AddPermissionListAsync(int userId, IEnumerable<string> names)
         {
             var now = _dateTimeProvider.Now;
 
@@ -119,7 +119,7 @@ namespace GRA.Data.Repository
             {
                 Name = _,
                 CreatedAt = now,
-                CreatedBy = -1
+                CreatedBy = userId
             });
 
             var adminRoles = await DbSet.AsNoTracking()
@@ -136,7 +136,7 @@ namespace GRA.Data.Repository
                         RoleId = adminRole.Id,
                         Permission = permission,
                         CreatedAt = now,
-                        CreatedBy = -1
+                        CreatedBy = userId
                     });
                 }
             }
@@ -210,7 +210,7 @@ namespace GRA.Data.Repository
                 .ToListAsync();
 
             return roleIds.Except(validRoleIds).Any();
-        } 
+        }
     }
 }
 

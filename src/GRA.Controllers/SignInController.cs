@@ -148,22 +148,26 @@ namespace GRA.Controllers
         {
             if (string.IsNullOrWhiteSpace(username))
             {
-                ModelState.AddModelError("", "The Username field is required");
+                ModelState.AddModelError("", _sharedLocalizer[Annotations.Required.Field,
+                    _sharedLocalizer["Username"]]);
             }
             if (ModelState.IsValid)
             {
-                try
+                string recoveryUrl = Url.Action("PasswordRecovery",
+                    "SignIn",
+                    null,
+                    HttpContext.Request.Scheme);
+                var result = await _authenticationService
+                    .GenerateTokenAndEmail(username, recoveryUrl);
+
+                if (result.Status == Domain.Service.Models.ServiceResultStatus.Success)
                 {
-                    string recoveryUrl = Url.Action("PasswordRecovery",
-                        "SignIn",
-                        null,
-                        HttpContext.Request.Scheme);
-                    await _authenticationService.GenerateTokenAndEmail(username, recoveryUrl);
-                    AlertSuccess = $"A password recovery email has been sent to the email of <strong>{username}</strong>.";
+                    AlertSuccess = _sharedLocalizer["A password recovery email has been sent to the email for username '{0}'.", username];
                 }
-                catch (GraException gex)
+                else
                 {
-                    ShowAlertWarning("Could not recover password: ", gex);
+                    ShowAlertWarning(_sharedLocalizer["Unable to reset password: {0}",
+                        _sharedLocalizer[result.Message, result.Arguments]]);
                 }
             }
             return View();
@@ -183,14 +187,15 @@ namespace GRA.Controllers
             }
             if (ModelState.IsValid)
             {
-                try
+                var result = await _authenticationService.EmailAllUsernames(email);
+                if (result.Status == Domain.Service.Models.ServiceResultStatus.Success)
                 {
-                    await _authenticationService.EmailAllUsernames(email);
-                    AlertSuccess = $"A list of usernames associated with <strong>{email}</strong> has been sent.";
+                    AlertSuccess = _sharedLocalizer["A list of usernames associated with the email address '{0}' has been sent.", email];
                 }
-                catch (GraException gex)
+                else
                 {
-                    ShowAlertWarning("Could not recover username(s): ", gex.Message);
+                    ShowAlertWarning(_sharedLocalizer["Could not recover username(s): {0}",
+                        _sharedLocalizer[result.Message, result.Arguments]]);
                 }
             }
 
@@ -212,17 +217,18 @@ namespace GRA.Controllers
         {
             if (ModelState.IsValid)
             {
-                try
+                var result = await _authenticationService.ResetPassword(model.Username,
+                    model.NewPassword,
+                    model.Token);
+                if (result.Status == Domain.Service.Models.ServiceResultStatus.Success)
                 {
-                    await _authenticationService.ResetPassword(model.Username,
-                        model.NewPassword,
-                        model.Token);
-                    AlertSuccess = $"Password reset for {model.Username}";
+                    AlertSuccess = _sharedLocalizer["Password reset for: {0}", model.Username];
                     return RedirectToAction("Index");
                 }
-                catch (GraException gex)
+                else
                 {
-                    ShowAlertWarning("Unable to reset password: ", gex);
+                    ShowAlertWarning(_sharedLocalizer["Unable to reset password: {0}",
+                        _sharedLocalizer[result.Message, result.Arguments]]);
                 }
             }
             return View(model);

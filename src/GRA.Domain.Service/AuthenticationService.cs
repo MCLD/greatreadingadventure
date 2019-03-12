@@ -1,10 +1,10 @@
 ﻿using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using GRA.Domain.Model;
-using GRA.Domain.Service.Abstract;
-using GRA.Domain.Repository;
 using System.Text;
+using System.Threading.Tasks;
+using GRA.Domain.Model;
+using GRA.Domain.Repository;
+using GRA.Domain.Service.Abstract;
+using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Service
 {
@@ -43,22 +43,27 @@ namespace GRA.Domain.Service
             string password, bool allowDuringCloseProgram = false)
         {
             string trimmedUsername = username.Trim();
-            var authResult = await _userRepository.AuthenticateUserAsync(trimmedUsername, password);
+            var authResult = await _userRepository.AuthenticateUserAsync(
+                trimmedUsername,
+                password,
+                _userContextProvider.GetCurrentCulture().Name);
 
             if (!authResult.FoundUser)
             {
-                authResult.AuthenticationMessage = $"Could not find username '{trimmedUsername}'";
+                authResult.Message = Annotations.Validate.Username;
+                authResult.Arguments = new [] { trimmedUsername };
             }
             else if (!authResult.PasswordIsValid)
             {
-                authResult.AuthenticationMessage = "The provided password is incorrect.";
+                authResult.Message = Annotations.Validate.Password;
             }
             else
             {
                 authResult.PermissionNames
                     = await _roleRepository.GetPermisisonNamesForUserAsync(authResult.User.Id);
 
-                if (authResult.PermissionNames.Contains(nameof(Permission.ManageSites))) {
+                if (authResult.PermissionNames.Contains(nameof(Permission.ManageSites)))
+                {
                     _logger.LogInformation("Site manager {username} authenticated", username);
                 }
 
@@ -70,7 +75,7 @@ namespace GRA.Domain.Service
                     if (userContext.SiteStage == SiteStage.BeforeRegistration
                         || userContext.SiteStage == SiteStage.AccessClosed)
                     {
-                        throw new GraException("The program is not accepting sign-ins at this time.");
+                        throw new GraException(Annotations.Validate.NotOpenSignins);
                     }
                 }
             }
@@ -101,11 +106,11 @@ namespace GRA.Domain.Service
             else
             {
                 _logger.LogError($"User {authUserId} doesn't have permission to reset password for {userIdToReset}.");
-                throw new GraException("Permission denied.");
+                throw new GraException(Annotations.Validate.Permission);
             }
         }
 
-        public async Task ResetPassword(string username, string password, string token)
+        public async Task<Models.ServiceResult> ResetPassword(string username, string password, string token)
         {
             string trimmedUsername = username.Trim();
             _passwordValidator.Validate(password);
@@ -114,7 +119,12 @@ namespace GRA.Domain.Service
             var user = await _userRepository.GetByUsernameAsync(trimmedUsername);
             if (user == null)
             {
-                throw new GraException($"User {trimmedUsername} does not exist.");
+                return new Models.ServiceResult
+                {
+                    Status = Models.ServiceResultStatus.Error,
+                    Message = Annotations.Validate.Username,
+                    Arguments = new string[] { trimmedUsername }
+                };
             }
 
             var tokens = await _recoveryTokenRepository.GetByUserIdAsync(user.Id);
@@ -125,7 +135,12 @@ namespace GRA.Domain.Service
             {
                 if ((validTokens.First().CreatedAt - _dateTimeProvider.Now).TotalHours > 24)
                 {
-                    throw new GraException($"Token {token} has expired.");
+                    return new Models.ServiceResult
+                    {
+                        Status = Models.ServiceResultStatus.Error,
+                        Message = Annotations.Validate.TokenExpired,
+                        Arguments = new string[] { token }
+                    };
                 }
 
                 foreach (var request in tokens)
@@ -137,11 +152,18 @@ namespace GRA.Domain.Service
             }
             else
             {
-                throw new GraException($"Token {token} is not valid.");
+                return new Models.ServiceResult
+                {
+                    Status = Models.ServiceResultStatus.Error,
+                    Message = Annotations.Validate.TokenExpired,
+                    Arguments = new [] { token }
+                };
             }
+
+            return new Models.ServiceResult(Models.ServiceResultStatus.Success);
         }
 
-        public async Task GenerateTokenAndEmail(string username, string recoveryUrl)
+        public async Task<Models.ServiceResult> GenerateTokenAndEmail(string username, string recoveryUrl)
         {
             string trimmedUsername = username.Trim();
             var user = await _userRepository.GetByUsernameAsync(trimmedUsername);
@@ -149,13 +171,23 @@ namespace GRA.Domain.Service
             if (user == null)
             {
                 _logger.LogInformation($"Username '{trimmedUsername}' doesn't exist so can't create a recovery token.");
-                throw new GraException($"User '{trimmedUsername}' not found.");
+                return new Models.ServiceResult
+                {
+                    Status = Models.ServiceResultStatus.Error,
+                    Message = Annotations.Validate.Username,
+                    Arguments = new string[] { trimmedUsername }
+                };
             }
 
             if (string.IsNullOrEmpty(user.Email))
             {
                 _logger.LogInformation($"User {user.Id} doesn't have an email address configured so cannot send a recovery token.");
-                throw new GraException($"User '{trimmedUsername}' doesn't have an email address configured.");
+                return new Models.ServiceResult
+                {
+                    Status = Models.ServiceResultStatus.Error,
+                    Message = Annotations.Validate.EmailConfigured,
+                    Arguments = new [] { trimmedUsername }
+                };
             }
 
             // clear any existing tokens
@@ -200,9 +232,11 @@ namespace GRA.Domain.Service
                 + $"<li>Token: {tokenString}</li></ul></p>";
 
             await _emailService.Send(user.Id, subject, mailBody, htmlBody);
+
+            return new Models.ServiceResult(Models.ServiceResultStatus.Success);
         }
 
-        public async Task EmailAllUsernames(string email)
+        public async Task<Models.ServiceResult> EmailAllUsernames(string email)
         {
             var site = await _siteRepository.GetByIdAsync(GetCurrentSiteId());
 
@@ -211,25 +245,37 @@ namespace GRA.Domain.Service
 
             if (usernames?.Data.Any() != true)
             {
-                throw new GraException($"There are no usernames associated with email address: '{lookupEmail}'.");
+                return new Models.ServiceResult
+                {
+                    Status = Models.ServiceResultStatus.Error,
+                    Message = "There are no usernames associated with the email address: {0}.",
+                    Arguments = new [] { lookupEmail }
+                };
             }
 
             var sb = new StringBuilder($"{site.Name} has received a request for usernames associated with this email address.");
             var sbH = new StringBuilder($"<p>{site.Name} has received a request for usernames associated with this email address.</p>");
-            sbH.AppendLine($"<p>The following usernames are associated with <strong>{lookupEmail}</strong>:<ul>");
-            sb.AppendLine();
-            sb.AppendLine();
-            sb.AppendLine($"The following usernames are associated with '{lookupEmail}':");
-            sb.AppendLine();
+            sbH.Append("<p>The following usernames are associated with <strong>")
+                .Append(lookupEmail)
+                .AppendLine("</strong>:<ul>")
+                .AppendLine()
+                .AppendLine()
+                .Append("The following usernames are associated with '")
+                .Append(lookupEmail)
+                .AppendLine("':")
+                .AppendLine();
 
             foreach (string username in usernames.Data)
             {
-                sb.AppendLine($"- {username}");
-                sbH.AppendLine($"<li>{username}</li>");
+                sb.Append("- ").AppendLine(username);
+                sbH.Append("<li>")
+                    .Append(username)
+                    .AppendLine("</li>");
             }
             sbH.AppendLine("</ul></p>");
             string subject = $"{site.Name} usernames associated with your email address";
             await _emailService.Send(usernames.Id, subject, sb.ToString(), sbH.ToString());
+            return new Models.ServiceResult(Models.ServiceResultStatus.Success);
         }
     }
 }

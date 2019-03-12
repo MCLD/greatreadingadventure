@@ -1,9 +1,9 @@
-﻿using GRA.Domain.Repository;
-using GRA.Domain.Service.Abstract;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using GRA.Domain.Repository;
+using GRA.Domain.Service.Abstract;
+using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Service
 {
@@ -17,6 +17,7 @@ namespace GRA.Domain.Service
         private readonly IRoleRepository _roleRepository;
         private readonly ISystemRepository _systemRepository;
         private readonly IPointTranslationRepository _pointTranslationRepository;
+        private readonly IUserRepository _userRepository;
 
         public SetupSingleProgramService(ILogger<SetupSingleProgramService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
@@ -26,7 +27,8 @@ namespace GRA.Domain.Service
             IProgramRepository programRepository,
             IRoleRepository roleRepository,
             ISystemRepository systemRepository,
-            IPointTranslationRepository pointTranslationRepository) : base(logger, dateTimeProvider)
+            IPointTranslationRepository pointTranslationRepository,
+            IUserRepository userRepository) : base(logger, dateTimeProvider)
         {
             _authorizationCodeRepository = Require.IsNotNull(authorizationCodeRepository,
                 nameof(authorizationCodeRepository));
@@ -39,12 +41,16 @@ namespace GRA.Domain.Service
             _systemRepository = Require.IsNotNull(systemRepository, nameof(systemRepository));
             _pointTranslationRepository = Require.IsNotNull(pointTranslationRepository,
                 nameof(pointTranslationRepository));
+            _userRepository = userRepository
+                ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
-        public async Task InsertAsync(int siteId, string initialAuthorizationCode, int userId = -1)
+        public async Task InsertAsync(int siteId, string initialAuthorizationCode)
         {
+            int userId = Defaults.InitialInsertUserId;
             //_config[ConfigurationKey.InitialAuthorizationCode]
             // this is the data required for a user to register
+
             var system = new Model.System
             {
                 SiteId = siteId,
@@ -84,6 +90,14 @@ namespace GRA.Domain.Service
             };
             program = await _programRepository.AddSaveAsync(userId, program);
 
+            // insert system user
+            userId = await _userRepository.GetSystemUserId();
+
+            await _systemRepository.UpdateCreatedByAsync(userId, system.Id);
+            await _branchRepository.UpdateCreatedByAsync(userId, branch.Id);
+            await _pointTranslationRepository.UpdateCreatedByAsync(userId, pointTranslation.Id);
+            await _programRepository.UpdateCreatedByAsync(userId, new int[] { program.Id });
+
             // required for a user to be an administrator
             var adminRole = await _roleRepository.AddSaveAsync(userId, new Model.Role
             {
@@ -105,7 +119,7 @@ namespace GRA.Domain.Service
             var permissionList = Enum.GetValues(typeof(Model.Permission))
                     .Cast<Model.Permission>()
                     .Select(_ => _.ToString());
-            await _roleRepository.AddPermissionListAsync(permissionList);
+            await _roleRepository.AddPermissionListAsync(userId, permissionList);
             await _roleRepository.SaveAsync();
 
             foreach (var value in Enum.GetValues(typeof(Model.ChallengeTaskType)))

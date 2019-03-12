@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,11 +16,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Localization;
 
 namespace GRA.Controllers.Base
 {
     [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     [ServiceFilter(typeof(SiteFilter), Order = 1)]
+    [MiddlewareFilter(typeof(Middleware.LocalizationMiddleware))]
     [SessionTimeoutFilter]
     public abstract class Controller : Microsoft.AspNetCore.Mvc.Controller
     {
@@ -32,6 +35,7 @@ namespace GRA.Controllers.Base
         protected readonly IDateTimeProvider _dateTimeProvider;
         protected readonly IPathResolver _pathResolver;
         protected readonly IUserContextProvider _userContextProvider;
+        protected readonly IStringLocalizer<Resources.Shared> _sharedLocalizer;
         protected readonly SiteLookupService _siteLookupService;
         protected string PageTitle { get; set; }
         protected string PageTitleHtml { get; set; }
@@ -42,6 +46,7 @@ namespace GRA.Controllers.Base
             _dateTimeProvider = context.DateTimeProvider;
             _pathResolver = context.PathResolver;
             _userContextProvider = context.UserContextProvider;
+            _sharedLocalizer = context.SharedLocalizer;
             _siteLookupService = context.SiteLookupService;
         }
 
@@ -123,14 +128,18 @@ namespace GRA.Controllers.Base
 
                 HttpContext.Session.SetInt32(SessionKey.ActiveUserId, authResult.User.Id);
 
-                if (!string.IsNullOrEmpty(authResult.AuthenticationMessage))
+                if (!string.IsNullOrEmpty(authResult.Message))
                 {
-                    AlertInfo = authResult.AuthenticationMessage;
+                    AlertInfo = authResult.Arguments == null
+                        ? _sharedLocalizer[authResult.Message]
+                        : _sharedLocalizer[authResult.Message, authResult.Arguments];
                 }
             }
             else
             {
-                ShowAlertDanger(authResult.AuthenticationMessage);
+                ShowAlertDanger(authResult.Arguments == null
+                        ? _sharedLocalizer[authResult.Message]
+                        : _sharedLocalizer[authResult.Message, authResult.Arguments]);
             }
         }
 
@@ -305,8 +314,8 @@ namespace GRA.Controllers.Base
             return new SelectList(new Dictionary<string, string>
             {
                 {string.Empty, string.Empty},
-                {DropDownFalseValue, "No" },
-                {DropDownTrueValue, "Yes" }
+                {DropDownFalseValue, _sharedLocalizer["No"] },
+                {DropDownTrueValue, _sharedLocalizer["Yes"] }
             },
             "Key",
             "Value",

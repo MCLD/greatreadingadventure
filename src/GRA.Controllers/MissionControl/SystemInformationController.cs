@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Versioning;
+using System.Text;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl;
 using GRA.Domain.Service;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -15,15 +18,18 @@ namespace GRA.Controllers.MissionControl
     public class SystemInformationController : Base.MCController
     {
         private readonly ILogger<SystemInformationController> _logger;
+        private readonly IOptions<RequestLocalizationOptions> _l10nOptions;
         private readonly SystemInformationService _systemInformationService;
 
         public SystemInformationController(ILogger<SystemInformationController> logger,
             ServiceFacade.Controller context,
+            IOptions<RequestLocalizationOptions> l10nOptions,
             SystemInformationService systemInformationService) : base(context)
         {
-            _logger = Require.IsNotNull(logger, nameof(logger));
-            _systemInformationService = Require.IsNotNull(systemInformationService,
-                nameof(systemInformationService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _l10nOptions = l10nOptions ?? throw new ArgumentNullException(nameof(l10nOptions));
+            _systemInformationService = systemInformationService
+                ?? throw new ArgumentNullException(nameof(systemInformationService));
         }
 
         public async Task<IActionResult> Index()
@@ -82,9 +88,12 @@ namespace GRA.Controllers.MissionControl
                     _config[ConfigurationKey.ApplicationDiscriminator]);
             }
 
-            if (!string.IsNullOrEmpty(_config[ConfigurationKey.Culture]))
+            if(_l10nOptions.Value?.SupportedCultures.Count > 0)
             {
-                settings.Add("Culture", _config[ConfigurationKey.Culture]);
+                settings.Add("Supported Cultures", string.Join(",", _l10nOptions
+                    .Value
+                    .SupportedCultures
+                    .Select(_ => $"{_.DisplayName} [{_.Name}]")));
             }
 
             if (!string.IsNullOrEmpty(_config[ConfigurationKey.DatabaseWarningLogging]))

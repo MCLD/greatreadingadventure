@@ -12,5 +12,6 @@ namespace GRA.Domain.Repository
         Task<int> CountAsync(BaseFilter filter);
         Task<bool> IsInUseAsync(int pointTranslationId);
         Task<Model.PointTranslation> GetByProgramIdAsync(int programId);
+        Task UpdateCreatedByAsync(int userId, int pointTranslationId);
     }
 }

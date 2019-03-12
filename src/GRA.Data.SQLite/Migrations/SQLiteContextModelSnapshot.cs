@@ -938,6 +938,30 @@ namespace GRA.Data.SQLite.Migrations
                     b.ToTable("GroupTypes");
                 });
 
+            modelBuilder.Entity("GRA.Data.Model.Language", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("CreatedBy");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(255);
+
+                    b.Property<bool>("IsActive");
+
+                    b.Property<bool>("IsDefault");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(255);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Languages");
+                });
+
             modelBuilder.Entity("GRA.Data.Model.Location", b =>
                 {
                     b.Property<int>("Id")
@@ -2279,6 +2303,9 @@ namespace GRA.Data.SQLite.Migrations
 
                     b.Property<int>("CreatedBy");
 
+                    b.Property<string>("Culture")
+                        .HasMaxLength(8);
+
                     b.Property<int?>("DailyPersonalGoal");
 
                     b.Property<string>("Email")
@@ -2305,6 +2332,8 @@ namespace GRA.Data.SQLite.Migrations
                     b.Property<bool>("IsLockedOut");
 
                     b.Property<bool>("IsNewsSubscribed");
+
+                    b.Property<bool>("IsSystemUser");
 
                     b.Property<DateTime?>("LastAccess");
 

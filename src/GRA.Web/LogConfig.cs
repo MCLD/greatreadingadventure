@@ -48,7 +48,9 @@ namespace GRA.Web
                 }
                 rollingLogLocation += "log-";
 
-                string rollingLogFile = rollingLogLocation + instance + "-{Date}.txt";
+                string rollingLogFile = !string.IsNullOrEmpty(instance)
+                    ? rollingLogLocation + instance + "-{Date}.txt"
+                    : rollingLogLocation + "{Date}.txt";
 
                 loggerConfig.WriteTo.Logger(_ => _
                     .Filter.ByExcluding(Matching.FromSource(ErrorControllerName))
@@ -57,11 +59,9 @@ namespace GRA.Web
                 string httpErrorFileTag = config[ConfigurationKey.RollingLogHttp];
                 if (!string.IsNullOrEmpty(httpErrorFileTag))
                 {
-                    string httpLogFile = rollingLogLocation
-                        + instance
-                        + "-"
-                        + httpErrorFileTag
-                        + "-{Date}.txt";
+                    string httpLogFile = !string.IsNullOrEmpty(instance)
+                        ? rollingLogLocation + instance + "-" + httpErrorFileTag + "-{Date}.txt"
+                        : rollingLogLocation + httpErrorFileTag + "-{Date}.txt";
 
                     loggerConfig.WriteTo.Logger(_ => _
                         .Filter.ByIncludingOnly(Matching.FromSource(ErrorControllerName))

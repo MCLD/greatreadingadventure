@@ -21,6 +21,7 @@ namespace GRA.Domain.Service
         private readonly IBranchRepository _branchRepository;
         private readonly ILocationRepository _locationRepository;
         private readonly ISpatialDistanceRepository _spatialDistanceRepository;
+        private readonly IUserRepository _userRepository;
 
         public SpatialService(ILogger<SpatialService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
@@ -29,7 +30,8 @@ namespace GRA.Domain.Service
             SiteLookupService siteLookupService,
             IBranchRepository branchRepository,
             ILocationRepository locationRepository,
-            ISpatialDistanceRepository spatialDistanceRepository)
+            ISpatialDistanceRepository spatialDistanceRepository,
+            IUserRepository userRepository)
             : base(logger, dateTimeProvider, userContextProvider)
         {
             _cache = cache ?? throw new ArgumentNullException(nameof(cache));
@@ -41,6 +43,8 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(locationRepository));
             _spatialDistanceRepository = spatialDistanceRepository
                 ?? throw new ArgumentNullException(nameof(spatialDistanceRepository));
+            _userRepository = userRepository 
+                ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
         public async Task<ServiceResult<string>>
@@ -69,7 +73,6 @@ namespace GRA.Domain.Service
 
             if (!string.IsNullOrWhiteSpace(geolocation))
             {
-
                 serviceResult.Status = ServiceResultStatus.Success;
                 serviceResult.Data = geolocation;
             }
@@ -145,7 +148,7 @@ namespace GRA.Domain.Service
             var spatialDistanceHeader = new SpatialDistanceHeader
             {
                 CreatedAt = _dateTimeProvider.Now,
-                CreatedBy = -1,
+                CreatedBy = await _userRepository.GetSystemUserId(),
                 Geolocation = geolocation,
                 IsValid = true,
                 SiteId = siteId

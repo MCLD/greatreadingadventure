@@ -6,26 +6,28 @@ namespace GRA.Controllers.ViewModel.Join
 {
     public class Step1ViewModel
     {
-        [Required]
-        [DisplayName("First Name")]
-        [MaxLength(255)]
+        [Required(ErrorMessage = Annotations.Required.Field)]
+        [DisplayName(DisplayNames.FirstName)]
+        [MaxLength(255, ErrorMessage = Annotations.Validate.MaxLength)]
         public string FirstName { get; set; }
 
-        [Required]
-        [DisplayName("Last Name")]
-        [MaxLength(255)]
+        [Required(ErrorMessage = Annotations.Required.Field)]
+        [DisplayName(DisplayNames.LastName)]
+        [MaxLength(255, ErrorMessage = Annotations.Validate.MaxLength)]
         public string LastName { get; set; }
 
-        [DisplayName("Zip Code")]
-        [MaxLength(32)]
+        [DisplayName(DisplayNames.ZipCode)]
+        [MaxLength(32, ErrorMessage = Annotations.Validate.MaxLength)]
         public string PostalCode { get; set; }
 
-        [Required]
-        [DisplayName("System")]
+        [Required(ErrorMessage = Annotations.Required.Selection)]
+        [DisplayName(DisplayNames.System)]
+        [Range(0, int.MaxValue, ErrorMessage = Annotations.Required.System)]
         public int? SystemId { get; set; }
 
-        [Required]
-        [DisplayName("Branch")]
+        [Required(ErrorMessage = Annotations.Required.Selection)]
+        [DisplayName(DisplayNames.Branch)]
+        [Range(0, int.MaxValue, ErrorMessage = Annotations.Required.Branch)]
         public int? BranchId { get; set; }
 
         public bool RequirePostalCode { get; set; }

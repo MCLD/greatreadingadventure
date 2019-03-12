@@ -1,9 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System;
 using GRA.Abstract;
+using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Service.Abstract
 {
@@ -12,10 +9,12 @@ namespace GRA.Domain.Service.Abstract
         protected readonly ILogger<Service> _logger;
         protected readonly IDateTimeProvider _dateTimeProvider;
 
-        protected BaseService(ILogger<Service> logger, IDateTimeProvider dateTimeProvider)
+        protected BaseService(ILogger<Service> logger,
+            IDateTimeProvider dateTimeProvider)
         {
-            _logger = Require.IsNotNull(logger, nameof(logger));
-            _dateTimeProvider = Require.IsNotNull(dateTimeProvider, nameof(dateTimeProvider));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _dateTimeProvider = dateTimeProvider
+                ?? throw new ArgumentNullException(nameof(dateTimeProvider));
         }
     }
 }

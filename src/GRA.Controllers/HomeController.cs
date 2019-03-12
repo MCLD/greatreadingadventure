@@ -300,7 +300,7 @@ namespace GRA.Controllers
             {
                 await _emailReminderService
                     .AddEmailReminderAsync(viewModel.Email, viewModel.SignUpSource);
-                ShowAlertInfo("Thanks! We'll let you know when you can join the program.", "envelope");
+                ShowAlertInfo(_sharedLocalizer[Annotations.Info.LetYouKnowWhen, "envelope"]);
             }
             return RedirectToAction("Index");
         }
@@ -339,7 +339,8 @@ namespace GRA.Controllers
                 && (viewModel.ActivityAmount == null || viewModel.ActivityAmount <= 0))
             {
                 valid = false;
-                TempData[ActivityErrorMessage] = "Please enter a whole number greater than 0.";
+                TempData[ActivityErrorMessage]
+                    = _sharedLocalizer[Annotations.Validate.WholeNumber].Value;
             }
             if (!ModelState.IsValid)
             {
@@ -357,7 +358,8 @@ namespace GRA.Controllers
                 && !string.IsNullOrWhiteSpace(viewModel.Author))
             {
                 valid = false;
-                TempData[TitleErrorMessage] = "Please include the Title of the book";
+                TempData[TitleErrorMessage]
+                    = _sharedLocalizer[Annotations.Validate.BookTitle].Value;
             }
             if (!valid)
             {
@@ -365,7 +367,7 @@ namespace GRA.Controllers
             }
             else
             {
-                var book = new Domain.Model.Book
+                var book = new Book
                 {
                     Author = viewModel.Author,
                     Title = viewModel.Title
@@ -378,7 +380,7 @@ namespace GRA.Controllers
                 }
                 catch (GraException gex)
                 {
-                    ShowAlertDanger("Could not log activity: ", gex);
+                    ShowAlertDanger(_sharedLocalizer[Annotations.Validate.CouldNotLog, gex.Message]);
                 }
             }
             return RedirectToAction("Index");

@@ -15,8 +15,10 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Localization.Routing;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -31,8 +33,6 @@ namespace GRA.Web
 {
     public class Startup
     {
-        private const string DefaultCulture = "en-US";
-
         private const string ConfigurationSingleProgramValue = "Single";
         private const string ConfigurationMultipleProgramValue = "Multiple";
 
@@ -48,8 +48,7 @@ namespace GRA.Web
             { ConfigurationKey.DefaultSitePath, "gra" },
             { ConfigurationKey.DefaultFooter, "This site is running the open source <a href=\"http://www.greatreadingadventure.com/\">Great Reading Adventure</a> software developed by the <a href=\"https://mcldaz.org/\">Maricopa County Library District</a> with support by the <a href=\"http://www.azlibrary.gov/\">Arizona State Library, Archives and Public Records</a>, a division of the Secretary of State, and with federal funds from the <a href=\"http://www.imls.gov/\">Institute of Museum and Library Services</a>." },
             { ConfigurationKey.InitialAuthorizationCode, "gra4adminmagic" },
-            { ConfigurationKey.ContentPath, "content" },
-            { ConfigurationKey.Culture, "en-US" }
+            { ConfigurationKey.ContentPath, "content" }
         };
 
         private readonly IConfiguration _config;
@@ -77,14 +76,18 @@ namespace GRA.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // set a default culture of en-US if none is specified
-            string culture = _config[ConfigurationKey.Culture] ?? DefaultCulture;
-            _logger.LogDebug("Configuring for culture: {0}", culture);
+            services.AddLocalization();
+
             services.Configure<RequestLocalizationOptions>(_ =>
             {
-                _.DefaultRequestCulture = new RequestCulture(culture);
-                _.SupportedCultures = new List<CultureInfo> { new CultureInfo(culture) };
-                _.SupportedUICultures = new List<CultureInfo> { new CultureInfo(culture) };
+                _.DefaultRequestCulture = new RequestCulture(Culture.DefaultCulture);
+                _.SupportedCultures = Culture.SupportedCultures;
+                _.SupportedUICultures = Culture.SupportedCultures;
+                _.RequestCultureProviders.Insert(0,
+                    new RouteDataRequestCultureProvider { Options = _ });
+                _.RequestCultureProviders
+                    .Remove(_.RequestCultureProviders
+                        .Single(p => p.GetType() == typeof(QueryStringRequestCultureProvider)));
             });
 
             // Add framework services.
@@ -151,9 +154,20 @@ namespace GRA.Web
                     break;
             }
 
+            services.Configure<RouteOptions>(_ =>
+            {
+                _.ConstraintMap.Add("cultureConstraint", typeof(CultureRouteConstraint));
+            });
+
             // add MVC
             services.AddMvc()
-                .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_2);
+                .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_2)
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+                .AddDataAnnotationsLocalization(_ =>
+                {
+                    _.DataAnnotationLocalizerProvider = (__, factory)
+                        => factory.Create(typeof(Resources.Shared));
+                });
 
             // Add custom view directory
             services.Configure<RazorViewEngineOptions>(options =>
@@ -182,10 +196,6 @@ namespace GRA.Web
                         nameof(Permission.ActivateAllChallenges),
                         nameof(Permission.ActivateSystemChallenges)));
             });
-
-            // path validator
-            services.AddScoped<Controllers.Base.ISitePathValidator,
-                Controllers.Validator.SitePathValidator>();
 
             // service facades
             services.AddScoped<Controllers.ServiceFacade.Controller,
@@ -302,6 +312,7 @@ namespace GRA.Web
             services.AddScoped<EventImportService>();
             services.AddScoped<EventService>();
             services.AddScoped<GroupTypeService>();
+            services.AddScoped<LanguageService>();
             services.AddScoped<MailService>();
             services.AddScoped<NewsService>();
             services.AddScoped<PageService>();
@@ -388,6 +399,7 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IEventRepository, Data.Repository.EventRepository>();
             services.AddScoped<Domain.Repository.IGroupInfoRepository, Data.Repository.GroupInfoRepository>();
             services.AddScoped<Domain.Repository.IGroupTypeRepository, Data.Repository.GroupTypeRepository>();
+            services.AddScoped<Domain.Repository.ILanguageRepository, Data.Repository.LanguageRepository>();
             services.AddScoped<Domain.Repository.ILocationRepository, Data.Repository.LocationRepository>();
             services.AddScoped<Domain.Repository.IMailRepository, Data.Repository.MailRepository>();
             services.AddScoped<Domain.Repository.INewsCategoryRepository, Data.Repository.NewsCategoryRepository>();
@@ -432,9 +444,7 @@ namespace GRA.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app,
-            IPathResolver pathResolver,
-            Controllers.Base.ISitePathValidator sitePathValidator)
+        public void Configure(IApplicationBuilder app, IPathResolver pathResolver)
         {
             if (_isDevelopment)
             {
@@ -444,6 +454,23 @@ namespace GRA.Web
             {
                 app.UseStatusCodePagesWithReExecute("/Error/Index/{0}");
             }
+
+            var requestLocalizationOptions = new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture(Culture.DefaultCulture),
+                SupportedCultures = Culture.SupportedCultures,
+                SupportedUICultures = Culture.SupportedCultures
+            };
+            requestLocalizationOptions.RequestCultureProviders.Insert(0,
+                new RouteDataRequestCultureProvider { Options = requestLocalizationOptions });
+
+            requestLocalizationOptions
+                .RequestCultureProviders
+                .Remove(requestLocalizationOptions
+                    .RequestCultureProviders
+                    .Single(_ => _.GetType() == typeof(QueryStringRequestCultureProvider)));
+
+            app.UseRequestLocalization(requestLocalizationOptions);
 
             if (!string.IsNullOrEmpty(_config[ConfigurationKey.ReverseProxyAddress]))
             {
@@ -467,8 +494,6 @@ namespace GRA.Web
                     await next.Invoke();
                 }
             });
-
-            app.UseRequestLocalization();
 
             app.UseResponseCompression();
 
@@ -535,32 +560,20 @@ namespace GRA.Web
             {
                 routes.MapRoute(
                     name: null,
-                    template: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-
-                routes.MapRoute(
-                    name: null,
-                    template: "{sitePath}/Info/{stub}",
-                    defaults: new { controller = "Info", action = "Index" },
-                    constraints: new
-                    {
-                        sitePath = new SiteRouteConstraint(sitePathValidator)
-                    });
-                routes.MapRoute(
-                    name: null,
                     template: "Info/{stub}",
                     defaults: new { controller = "Info", action = "Index" });
-
                 routes.MapRoute(
                     name: null,
-                    template: "{sitePath}/{controller}/{action}/{id?}",
-                    defaults: new { controller = "Home", action = "Index" },
-                    constraints: new
-                    {
-                        sitePath = new SiteRouteConstraint(sitePathValidator)
-                    });
+                    template: "{area:exists}/{controller}/{action}/{id?}",
+                    defaults: new { controller = "Home", action = "Index" });
                 routes.MapRoute(
                     name: null,
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{culture:cultureConstraint}/{controller}/{action}/{id?}",
+                    defaults: new { controller = "Home", action = "Index" });
+                routes.MapRoute(
+                    name: null,
+                    template: "{controller}/{action}/{id?}",
+                    defaults: new { controller = "Home", action = "Index" });
             });
 
             app.UseWebSockets(new WebSocketOptions

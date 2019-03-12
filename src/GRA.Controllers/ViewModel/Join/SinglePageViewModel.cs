@@ -7,57 +7,60 @@ namespace GRA.Controllers.ViewModel.Join
 {
     public class SinglePageViewModel : SchoolSelectionViewModel
     {
-        [Required]
-        [MaxLength(36)]
+        [Required(ErrorMessage = Annotations.Required.Field)]
+        [DisplayName(DisplayNames.Username)]
+        [MaxLength(36, ErrorMessage = Annotations.Validate.MaxLength)]
         public string Username { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = Annotations.Required.Field)]
+        [DisplayName(DisplayNames.Password)]
         public string Password { get; set; }
 
-        [Required]
-        [Compare("Password", ErrorMessage = "Passwords do not match")]
-        [DisplayName("Confirm Password")]
+        [Required(ErrorMessage = Annotations.Required.Field)]
+        [Compare(DisplayNames.Password, ErrorMessage = Annotations.Validate.PasswordsMatch)]
+        [DisplayName(DisplayNames.Password)]
         public string ConfirmPassword { get; set; }
 
-        [Required]
-        [DisplayName("First Name")]
-        [MaxLength(255)]
+        [Required(ErrorMessage = Annotations.Required.Field)]
+        [DisplayName(DisplayNames.FirstName)]
+        [MaxLength(255, ErrorMessage = Annotations.Validate.MaxLength)]
         public string FirstName { get; set; }
 
-        [Required]
-        [DisplayName("Last Name")]
-        [MaxLength(255)]
+        [Required(ErrorMessage = Annotations.Required.Field)]
+        [DisplayName(DisplayNames.LastName)]
+        [MaxLength(255, ErrorMessage = Annotations.Validate.MaxLength)]
         public string LastName { get; set; }
 
-        [DisplayName("Zip Code")]
-        [MaxLength(32)]
+        [DisplayName(DisplayNames.ZipCode)]
+        [MaxLength(32, ErrorMessage = Annotations.Validate.MaxLength)]
         public string PostalCode { get; set; }
 
-        [Required]
-        [DisplayName("System")]
-        [Range(0, int.MaxValue, ErrorMessage = "The System field is required.")]
+        [Required(ErrorMessage = Annotations.Required.Selection)]
+        [DisplayName(DisplayNames.System)]
+        [Range(0, int.MaxValue, ErrorMessage = Annotations.Required.System)]
         public int? SystemId { get; set; }
 
-        [Required]
-        [DisplayName("Branch")]
-        [Range(0, int.MaxValue, ErrorMessage = "The Branch field is required.")]
+        [Required(ErrorMessage = Annotations.Required.Selection)]
+        [DisplayName(DisplayNames.Branch)]
+        [Range(0, int.MaxValue, ErrorMessage = Annotations.Required.Branch)]
         public int? BranchId { get; set; }
 
-        [Required]
-        [DisplayName("Program")]
-        [Range(0, int.MaxValue, ErrorMessage = "The Program field is required.")]
+        [Required(ErrorMessage = Annotations.Required.Selection)]
+        [DisplayName(DisplayNames.Program)]
+        [Range(0, int.MaxValue, ErrorMessage = Annotations.Required.ProgramSelection)]
         public int? ProgramId { get; set; }
 
+        [DisplayName(DisplayNames.Age)]
         public int? Age { get; set; }
 
-        [DisplayName("Email Address")]
-        [EmailAddress]
-        [MaxLength(254)]
+        [DisplayName(DisplayNames.EmailAddress)]
+        [EmailAddress(ErrorMessage = Annotations.Validate.Email)]
+        [MaxLength(254, ErrorMessage = Annotations.Validate.MaxLength)]
         public string Email { get; set; }
 
-        [DisplayName("Phone Number")]
-        [Phone]
-        [MaxLength(15)]
+        [DisplayName(DisplayNames.PhoneNumber)]
+        [Phone(ErrorMessage = Annotations.Validate.Phone)]
+        [MaxLength(15, ErrorMessage = Annotations.Validate.MaxLength)]
         public string PhoneNumber { get; set; }
 
         public bool RequirePostalCode { get; set; }
@@ -71,17 +74,19 @@ namespace GRA.Controllers.ViewModel.Join
 
         public SelectList AskFirstTime { get; set; }
 
-        [DisplayName("Is this your first time participating?")]
-        [Required(ErrorMessage = "Please let us know if this is your first time participating in the program")]
+        [DisplayName(DisplayNames.IsFirstTime)]
+        [Required(ErrorMessage = Annotations.Validate.FirstTime)]
         public string IsFirstTime { get; set; }
 
         public SelectList AskEmailSubscription { get; set; }
         public string AskEmailSubscriptionText { get; set; }
-        [Required(ErrorMessage = "Please let us know if you would like to receive emails throughout the program")]
+
+        [Required(ErrorMessage = Annotations.Validate.EmailSubscription)]
         public string EmailSubscriptionRequested { get; set; }
 
-        [DisplayName("Set a personal goal")]
+        [DisplayName(DisplayNames.DailyPersonalGoal)]
         public int? DailyPersonalGoal { get; set; }
+
         public string TranslationDescriptionPastTense { get; set; }
         public string ActivityDescriptionPlural { get; set; }
 

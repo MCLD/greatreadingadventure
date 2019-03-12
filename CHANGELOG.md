@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Improve Event and Community Experience discoverability with spatial proximity searching (requires Google Maps API key)
 - Ability to configure a maximum activity amount in Site Settings
 - Dashboard alert for pending vendor code redemption
+- Default "System Account" for system-created items
 
 ### Changed
 - Script docker-build.bash to not build release images unless the branch starts with 'release/'
@@ -38,6 +39,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Permissions for insert sample data call
 - Admin role permission updating using client-side evaluation
 - Edit Point Translation in Mission Control so that it saves properly
+- Bug with deleting a program with associated deleted users
 
 ### Removed
 - Recovery error logging at the controller level - it's logged in the service
