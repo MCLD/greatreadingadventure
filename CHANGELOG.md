@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Mission Control menu item for entering an Authorization Code
 - Improve Event and Community Experience discoverability with spatial proximity searching (requires Google Maps API key)
 - Ability to configure a maximum activity amount in Site Settings
+- Dashboard alert for pending earned books
 
 ### Changed
 - Script docker-build.bash to not build release images unless the branch starts with 'release/'

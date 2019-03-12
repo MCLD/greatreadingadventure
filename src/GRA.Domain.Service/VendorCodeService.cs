@@ -1,17 +1,17 @@
-﻿using GRA.Abstract;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using ExcelDataReader;
+using GRA.Abstract;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using ExcelDataReader;
-using System;
-using System.Text;
-using System.Threading;
-using System.Diagnostics;
-using System.IO;
 
 namespace GRA.Domain.Service
 {
@@ -22,6 +22,7 @@ namespace GRA.Domain.Service
         private readonly IVendorCodeRepository _vendorCodeRepository;
         private readonly IVendorCodeTypeRepository _vendorCodeTypeRepository;
         private readonly MailService _mailService;
+
         public VendorCodeService(ILogger<VendorCodeService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
@@ -141,6 +142,7 @@ namespace GRA.Domain.Service
                     var codeType = await _vendorCodeTypeRepository
                         .GetByIdAsync(vendorCode.VendorCodeTypeId);
                     vendorCode.CanBeDonated = !string.IsNullOrEmpty(codeType.DonationMessage);
+                    vendorCode.ExpirationDate = codeType.ExpirationDate;
                     if (!string.IsNullOrEmpty(codeType.Url))
                     {
                         vendorCode.Url = codeType.Url.Contains(TemplateToken.VendorCodeToken)
@@ -165,7 +167,6 @@ namespace GRA.Domain.Service
         private const string OrderDateRowHeading = "Order Date";
         private const string ShipDateRowHeading = "Ship Date";
 
-
         public async Task<OperationStatus> UpdateStatusFromExcel(string filename,
             CancellationToken token,
             IProgress<OperationStatus> progress = null)
@@ -179,7 +180,7 @@ namespace GRA.Domain.Service
                 token.Register(() =>
                 {
                     string duration = "";
-                    if (sw != null && sw.Elapsed != null)
+                    if (sw?.Elapsed != null)
                     {
                         duration = $" after {((TimeSpan)sw.Elapsed).TotalSeconds.ToString("N2")} seconds";
                     }
@@ -266,7 +267,6 @@ namespace GRA.Domain.Service
                                         && excelReader.GetValue(orderDateColumnId) != null
                                         && excelReader.GetValue(shipDateColumnId) != null)
                                     {
-
                                         string coupon = null;
                                         DateTime? orderDate = null;
                                         DateTime? shipDate = null;
@@ -349,7 +349,7 @@ namespace GRA.Domain.Service
                         var sb = new StringBuilder("<strong>Import complete</strong>");
                         if (updated > 0)
                         {
-                            sb.Append($": {updated} records were updated");
+                            sb.Append(": ").Append(updated).Append(" records were updated");
                         }
                         if (alreadyCurrent > 0)
                         {
@@ -361,17 +361,17 @@ namespace GRA.Domain.Service
                             {
                                 sb.Append(": ");
                             }
-                            sb.Append($"{alreadyCurrent} records were already current");
+                            sb.Append(alreadyCurrent).Append(" records were already current");
                         }
                         sb.Append(".");
 
                         if (issues.Count > 0)
                         {
-                            _logger.LogInformation($"Import complete with issues: {sb.ToString()}");
+                            _logger.LogInformation($"Import complete with issues: {sb}");
                             sb.Append(" Issues detected:<ul>");
                             foreach (string issue in issues)
                             {
-                                sb.Append($"<li>{issue}</li>");
+                                sb.Append("<li>").Append(issue).Append("</li>");
                             }
                             sb.Append("</ul>");
                             return new OperationStatus
@@ -435,10 +435,18 @@ namespace GRA.Domain.Service
                 var siteId = GetClaimId(ClaimType.SiteId);
 
                 var vendorCode = await _vendorCodeRepository.GetUserVendorCode(userId);
+
+                var vendorCodeType = await _vendorCodeTypeRepository.GetByIdAsync(
+                    vendorCode.VendorCodeTypeId);
+
+                if (_dateTimeProvider.Now >= vendorCodeType.ExpirationDate)
+                {
+                    _logger.LogError($"Vendor code {vendorCodeType.Id} has expired.");
+                    throw new GraException("The code you are trying to redeem has expired.");
+                }
+
                 vendorCode.IsDonated = donate;
                 await _vendorCodeRepository.UpdateSaveAsync(userId, vendorCode);
-
-                var vendorCodeType = await _vendorCodeTypeRepository.GetByIdAsync(vendorCode.VendorCodeTypeId);
 
                 if (donate == null || donate == false)
                 {
@@ -465,9 +473,14 @@ namespace GRA.Domain.Service
             if (vendorCode != null)
             {
                 user.Donated = vendorCode.IsDonated;
+
                 if (vendorCode.CanBeDonated && vendorCode.IsDonated == null)
                 {
-                    user.NeedsToAnswerDonationQuestion = true;
+                    if (!vendorCode.ExpirationDate.HasValue
+                        || vendorCode.ExpirationDate.Value > _dateTimeProvider.Now)
+                    {
+                        user.NeedsToAnswerDonationQuestion = true;
+                    }
                 }
                 else if (vendorCode.CanBeDonated && vendorCode.IsDonated == true)
                 {
@@ -479,6 +492,7 @@ namespace GRA.Domain.Service
                 {
                     user.VendorCode = vendorCode.Code;
                     user.VendorCodeUrl = vendorCode.Url;
+
                     if (vendorCode.ShipDate.HasValue)
                     {
                         user.VendorCodeMessage = $"Shipped: {vendorCode.ShipDate.Value.ToString("d")}";
