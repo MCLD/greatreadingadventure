@@ -51,15 +51,6 @@ namespace GRA.Web
             { ConfigurationKey.ContentPath, "content" }
         };
 
-        //private static readonly CultureInfo CultureEnUs = new CultureInfo("en-US");
-        //private static readonly CultureInfo CultureEsUs = new CultureInfo("es-US");
-
-        //private static readonly IList<CultureInfo> SupportedCultures = new List<CultureInfo>
-        //{
-        //    CultureEnUs,
-        //    CultureEsUs
-        //};
-
         private readonly IConfiguration _config;
         private readonly bool _isDevelopment;
         private readonly ILogger _logger;
@@ -479,8 +470,7 @@ namespace GRA.Web
                     .RequestCultureProviders
                     .Single(_ => _.GetType() == typeof(QueryStringRequestCultureProvider)));
 
-
-            //app.UseRequestLocalization(requestLocalizationOptions);
+            app.UseRequestLocalization(requestLocalizationOptions);
 
             if (!string.IsNullOrEmpty(_config[ConfigurationKey.ReverseProxyAddress]))
             {

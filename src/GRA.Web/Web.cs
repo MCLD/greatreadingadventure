@@ -50,7 +50,7 @@ namespace GRA.Web
                 await siteLookupService.ReloadSiteCacheAsync();
 
                 stage = 50;
-                var siteId = await siteLookupService.GetDefaultSiteIdAsync();
+                await siteLookupService.GetDefaultSiteIdAsync();
 
                 stage = 55;
                 var languageService = _scope.ServiceProvider.GetRequiredService<LanguageService>();

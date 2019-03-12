@@ -51,7 +51,7 @@ namespace GRA.Domain.Service
             if (!authResult.FoundUser)
             {
                 authResult.Message = Annotations.Validate.Username;
-                authResult.Arguments = new string[] { trimmedUsername };
+                authResult.Arguments = new [] { trimmedUsername };
             }
             else if (!authResult.PasswordIsValid)
             {
@@ -156,7 +156,7 @@ namespace GRA.Domain.Service
                 {
                     Status = Models.ServiceResultStatus.Error,
                     Message = Annotations.Validate.TokenExpired,
-                    Arguments = new string[] { token }
+                    Arguments = new [] { token }
                 };
             }
 
@@ -186,7 +186,7 @@ namespace GRA.Domain.Service
                 {
                     Status = Models.ServiceResultStatus.Error,
                     Message = Annotations.Validate.EmailConfigured,
-                    Arguments = new string[] { trimmedUsername }
+                    Arguments = new [] { trimmedUsername }
                 };
             }
 
@@ -249,7 +249,7 @@ namespace GRA.Domain.Service
                 {
                     Status = Models.ServiceResultStatus.Error,
                     Message = "There are no usernames associated with the email address: {0}.",
-                    Arguments = new string[] { lookupEmail }
+                    Arguments = new [] { lookupEmail }
                 };
             }
 

@@ -126,10 +126,7 @@ namespace GRA.Data.Repository
                     if (culture != Culture.DefaultName)
                     {
                         // if the user is using a non-default culture, update their record
-                        if (lookupUser.Culture != culture)
-                        {
-                            lookupUser.Culture = culture;
-                        }
+                        lookupUser.Culture = culture;
                     }
 
                     await SaveAsync();
