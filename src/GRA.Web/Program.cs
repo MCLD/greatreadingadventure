@@ -46,28 +46,11 @@ namespace GRA.Web
                 = instance.ToLowerInvariant() != "gra" ? $"GRA {instance}" : "GRA";
 
             // output the version and revision
-            var thisAssemblyVersion = Assembly.GetEntryAssembly()
-                .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
-                .InformationalVersion;
-            var fileVersion = Assembly
-                .GetEntryAssembly()
-                .GetCustomAttribute<AssemblyFileVersionAttribute>()?
-                .Version;
-            if (!string.IsNullOrEmpty(fileVersion)
-                && fileVersion.Count(_ => _ == '.') > 2
-                && fileVersion.Length > fileVersion.LastIndexOf('.'))
-            {
-                var revision = fileVersion.Substring(fileVersion.LastIndexOf('.') + 1);
-                if (!string.IsNullOrEmpty(revision) && revision != "0")
-                {
-                    thisAssemblyVersion += " revision " + revision;
-                }
-            }
             try
             {
                 Log.Warning("{0} {1} starting up in {2}",
                     applicationName,
-                    thisAssemblyVersion,
+                    new Version().GetVersion(),
                     webRootPath);
 
                 webhost.Run();
@@ -77,7 +60,7 @@ namespace GRA.Web
             {
                 Log.Warning("{0} {1} exited unexpectedly: {2}",
                     applicationName,
-                    thisAssemblyVersion,
+                    new Version().GetVersion(),
                     ex.Message);
                 return 1;
             }

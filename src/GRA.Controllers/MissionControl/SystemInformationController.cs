@@ -44,23 +44,7 @@ namespace GRA.Controllers.MissionControl
             try
             {
                 thisAssemblyName = Assembly.GetEntryAssembly().GetName().Name;
-                thisAssemblyVersion = Assembly.GetEntryAssembly()
-                    .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
-                    .InformationalVersion;
-                var fileVersion = Assembly
-                    .GetEntryAssembly()
-                    .GetCustomAttribute<AssemblyFileVersionAttribute>()?
-                    .Version;
-                if(!string.IsNullOrEmpty(fileVersion)
-                    && fileVersion.Count(_ => _ == '.') > 2
-                    && fileVersion.Length > fileVersion.LastIndexOf('.'))
-                {
-                    var revision = fileVersion.Substring(fileVersion.LastIndexOf('.') + 1);
-                    if(!string.IsNullOrEmpty(revision) && revision != "0")
-                    {
-                        thisAssemblyVersion += " revision " + revision;
-                    }
-                }
+                thisAssemblyVersion = new Version().GetVersion();
             }
             catch (Exception ex)
             {
