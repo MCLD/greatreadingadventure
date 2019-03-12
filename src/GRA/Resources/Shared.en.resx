@@ -197,9 +197,9 @@
     <value>Home</value>
     <comment>Navigation bar link to home page</comment>
   </data>
-  <data name="Homeschool" xml:space="preserve">
-    <value>Homeschool</value>
-    <comment>A school type - homeschool</comment>
+  <data name="Homeschooled" xml:space="preserve">
+    <value>Homeschooled</value>
+    <comment>A school type - homeschooled</comment>
   </data>
   <data name="I read a book!" xml:space="preserve">
     <value>I read a book!</value>
