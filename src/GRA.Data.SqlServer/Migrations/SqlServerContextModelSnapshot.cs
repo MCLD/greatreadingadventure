@@ -474,6 +474,8 @@ namespace GRA.Data.SqlServer.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("AssociatedProgramId");
+
                     b.Property<int?>("BadgeId");
 
                     b.Property<DateTime>("CreatedAt");
@@ -490,8 +492,6 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<bool>("IsValid");
 
                     b.Property<int?>("LimitToBranchId");
-
-                    b.Property<int?>("LimitToProgramId");
 
                     b.Property<int?>("LimitToSystemId");
 
@@ -2697,6 +2697,8 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<string>("DonationSubject")
                         .HasMaxLength(255);
+
+                    b.Property<DateTime?>("ExpirationDate");
 
                     b.Property<string>("Mail")
                         .IsRequired()
