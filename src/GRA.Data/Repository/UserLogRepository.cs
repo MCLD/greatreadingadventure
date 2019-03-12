@@ -452,12 +452,12 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task<long> GetActivityEarnedForUserAsync(int userId)
+        public async Task<int> GetActivityEarnedForUserAsync(int userId)
         {
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.UserId == userId && !_.IsDeleted && _.ActivityEarned.HasValue)
-                .SumAsync(_ => Convert.ToInt64(_.ActivityEarned.Value));
+                .SumAsync(_ => _.ActivityEarned.Value);
         }
 
         public async Task<bool> PointTranslationHasBeenUsedAsync(int translationId)

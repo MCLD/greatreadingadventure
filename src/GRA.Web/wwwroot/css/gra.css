@@ -812,3 +812,8 @@ p.password-note {
     top: .6rem;
     vertical-align: top;
 }
+
+.wide-tooltip + .tooltip .tooltip-inner {
+    max-width: 25rem;
+    width: 25rem;
+}

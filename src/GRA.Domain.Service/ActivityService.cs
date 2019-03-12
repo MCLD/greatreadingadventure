@@ -102,18 +102,15 @@ namespace GRA.Domain.Service
         {
             VerifyCanLog();
 
-            if (activityAmountEarned < 0)
+            if (activityAmountEarned < 1)
             {
-                throw new GraException($"Cannot log negative activity amounts!");
+                throw new GraException("Cannot log activity amounts less than 1!");
             }
 
-            if (book != null)
-            {
-                if (string.IsNullOrWhiteSpace(book.Title)
+            if (book != null && string.IsNullOrWhiteSpace(book.Title)
                     && !string.IsNullOrWhiteSpace(book.Author))
-                {
-                    throw new GraException("When providing an author you must also provide a title.");
-                }
+            {
+                throw new GraException("When providing an author you must also provide a title.");
             }
 
             int activeUserId = GetActiveUserId();
@@ -133,93 +130,138 @@ namespace GRA.Domain.Service
             }
 
             if ((await _requiredQuestionnaireRepository.GetForUser(GetCurrentSiteId(), userToLog.Id,
-                userToLog.Age)).Any())
+                userToLog.Age)).Count > 0)
             {
                 string error = $"User id {activeUserId} cannot log activity for user id {userIdToLog} who has a pending questionnaire.";
                 _logger.LogError(error);
                 throw new GraException("Activity cannot be logged while there is a pending questionnaire to be taken.");
             }
-            var translation
-                = await _pointTranslationRepository.GetByProgramIdAsync(userToLog.ProgramId);
 
-            int pointsEarned
-                = (activityAmountEarned / translation.ActivityAmount) * translation.PointsEarned;
+            var activityLogResult = new ActivityLogResult();
 
-            // cap points at setting or int.MaxValue
-            long totalPoints = Convert.ToInt64(userToLog.PointsEarned)
-                + Convert.ToInt64(pointsEarned);
-            var maximumPoints = await GetMaximumAllowedPointsAsync(userToLog.SiteId);
-            if (totalPoints > maximumPoints)
+            var maximumActivity = await GetMaximumAllowedActivityAsync(userToLog.SiteId);
+            var userActivityAmount = await _userLogRepository.GetActivityEarnedForUserAsync(
+                userToLog.Id);
+            var totalActivity = Convert.ToInt64(userActivityAmount)
+                + Convert.ToInt64(activityAmountEarned);
+            var activityAmountToAdd = activityAmountEarned;
+            if (totalActivity > maximumActivity)
             {
-                pointsEarned = maximumPoints - userToLog.PointsEarned;
+                activityAmountToAdd = maximumActivity - userActivityAmount;
             }
 
-            // add the row to the user's point log
-            var userLog = new UserLog
+            if (activityAmountToAdd > 0)
             {
-                ActivityEarned = activityAmountEarned,
-                IsDeleted = false,
-                PointsEarned = pointsEarned,
-                UserId = userToLog.Id,
-                PointTranslationId = translation.Id
-            };
-            if (activeUserId != userToLog.Id)
-            {
-                userLog.AwardedBy = activeUserId;
-            }
-            userLog = await _userLogRepository.AddSaveAsync(activeUserId, userLog);
+                var translation
+                    = await _pointTranslationRepository.GetByProgramIdAsync(userToLog.ProgramId);
 
-            // update the score in the user record
-            userToLog = await AddPointsSaveAsync(authUserId,
-                activeUserId,
-                userToLog.Id,
-                pointsEarned);
+                int pointsEarned
+                    = (activityAmountToAdd / translation.ActivityAmount) * translation.PointsEarned;
 
-            // prepare the notification text
-            string activityDescription = "for <strong>";
-            if (translation.TranslationDescriptionPresentTense.Contains("{0}"))
-            {
-                activityDescription += string.Format(
-                    translation.TranslationDescriptionPresentTense,
-                    userLog.ActivityEarned);
-                if (userLog.ActivityEarned == 1)
+                // cap points at setting or int.MaxValue
+                long totalPoints = Convert.ToInt64(userToLog.PointsEarned)
+                    + Convert.ToInt64(pointsEarned);
+                var maximumPoints = await GetMaximumAllowedPointsAsync(userToLog.SiteId);
+                if (totalPoints > maximumPoints)
                 {
-                    activityDescription += $" {translation.ActivityDescription}";
+                    pointsEarned = maximumPoints - userToLog.PointsEarned;
+                }
+
+                // add the row to the user's point log
+                var userLog = new UserLog
+                {
+                    ActivityEarned = activityAmountToAdd,
+                    IsDeleted = false,
+                    PointsEarned = pointsEarned,
+                    UserId = userToLog.Id,
+                    PointTranslationId = translation.Id
+                };
+                if (activeUserId != userToLog.Id)
+                {
+                    userLog.AwardedBy = activeUserId;
+                }
+                userLog = await _userLogRepository.AddSaveAsync(activeUserId, userLog);
+
+                activityLogResult.UserLogId = userLog.Id;
+
+                // update the score in the user record
+                userToLog = await AddPointsSaveAsync(authUserId,
+                    activeUserId,
+                    userToLog.Id,
+                    pointsEarned);
+
+                // prepare the notification text
+                string activityDescription = "for <strong>";
+                if (translation.TranslationDescriptionPresentTense.Contains("{0}"))
+                {
+                    activityDescription += string.Format(
+                        translation.TranslationDescriptionPresentTense,
+                        userLog.ActivityEarned);
+                    if (userLog.ActivityEarned == 1)
+                    {
+                        activityDescription += $" {translation.ActivityDescription}";
+                    }
+                    else
+                    {
+                        activityDescription += $" {translation.ActivityDescriptionPlural}";
+                    }
                 }
                 else
                 {
-                    activityDescription += $" {translation.ActivityDescriptionPlural}";
+                    activityDescription = $"{translation.TranslationDescriptionPresentTense} {translation.ActivityDescription}";
+                }
+                activityDescription += "</strong>";
+
+                // create the notification record
+                var notification = new Notification
+                {
+                    PointsEarned = pointsEarned,
+                    Text = $"<span class=\"fa fa-star\"></span> You earned <strong>{pointsEarned} points</strong> {activityDescription}!",
+                    UserId = userToLog.Id
+                };
+
+                // add the book if one was supplied
+                if (book != null && !string.IsNullOrWhiteSpace(book.Title))
+                {
+                    activityLogResult.BookId = await AddBookAsync(GetActiveUserId(), book);
+                    notification.Text += $" The book <strong><em>{book.Title}</em></strong> by <strong>{book.Author}</strong> was added to your book list.";
+                }
+
+                await _notificationRepository.AddSaveAsync(authUserId, notification);
+
+
+                // add userlog and notification if the max activity amount has been reached
+                if (activityAmountToAdd < activityAmountEarned || totalActivity == maximumActivity)
+                {
+                    string descriptionPastTense = translation.TranslationDescriptionPastTense
+                        .Replace("{0}", "").Trim();
+
+                    var maxDescription = $"Congratulations, you have {descriptionPastTense} the maximum amount of {translation.ActivityDescriptionPlural} for this program. Good job!";
+
+                    var maxActivityLog = new UserLog
+                    {
+                        Description = maxDescription,
+                        IsDeleted = false,
+                        UserId = userToLog.Id,
+                    };
+
+                    await _userLogRepository.AddSaveAsync(activeUserId, maxActivityLog);
+
+                    var maxNotification = new Notification
+                    {
+                        Text = maxDescription,
+                        UserId = userToLog.Id
+                    };
+
+                    await _notificationRepository.AddSaveAsync(authUserId, maxNotification);
                 }
             }
-            else
+            else if (book != null && !string.IsNullOrWhiteSpace(book.Title))
             {
-                activityDescription = $"{translation.TranslationDescriptionPresentTense} {translation.ActivityDescription}";
-            }
-            activityDescription += "</strong>";
-
-            // create the notification record
-            var notification = new Notification
-            {
-                PointsEarned = pointsEarned,
-                Text = $"<span class=\"fa fa-star\"></span> You earned <strong>{pointsEarned} points</strong> {activityDescription}!",
-                UserId = userToLog.Id
-            };
-
-            int? bookId = null;
-            // add the book if one was supplied
-            if (book != null && !string.IsNullOrWhiteSpace(book.Title))
-            {
-                bookId = await AddBookAsync(GetActiveUserId(), book);
-                notification.Text += $" The book <strong><em>{book.Title}</em></strong> by <strong>{book.Author}</strong> was added to your book list.";
+                activityLogResult.BookId = await AddBookAsync(GetActiveUserId(), book, true);
             }
 
-            await _notificationRepository.AddSaveAsync(authUserId, notification);
-
-            return new ActivityLogResult
-            {
-                UserLogId = userLog.Id,
-                BookId = bookId
-            };
+            return activityLogResult;
         }
 
         public async Task<User> RemoveActivityAsync(int userIdToLog,
@@ -258,7 +300,7 @@ namespace GRA.Domain.Service
                     {
                         prize = await _prizeWinnerService.GetUserTriggerPrizeAsync(userIdToLog,
                             trigger.Id);
-                        if (prize != null && prize.RedeemedAt.HasValue)
+                        if (prize?.RedeemedAt.HasValue == true)
                         {
                             throw new GraException("The prize for this trigger has already been reedeemed.");
                         }
@@ -294,7 +336,7 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<int> AddBookAsync(int userId, Book book)
+        public async Task<int> AddBookAsync(int userId, Book book, bool addNotification = false)
         {
             VerifyCanLog();
             int activeUserId = GetActiveUserId();
@@ -312,15 +354,27 @@ namespace GRA.Domain.Service
             var user = await _userRepository.GetByIdAsync(userId);
 
             if ((await _requiredQuestionnaireRepository.GetForUser(GetCurrentSiteId(), user.Id,
-                user.Age)).Any())
+                user.Age)).Count > 0)
             {
                 string error = $"User id {activeUserId} cannot add a book for user {userId} who has a pending questionnaire.";
                 _logger.LogError(error);
                 throw new GraException("Books cannot be added while there is a pending questionnaire to be taken.");
             }
 
+            var addedBook = await _bookRepository.AddSaveForUserAsync(activeUserId, userId, book);
 
-            return await _bookRepository.AddSaveForUserAsync(activeUserId, userId, book);
+            if (addNotification)
+            {
+                var notification = new Notification
+                {
+                    UserId = userId,
+                    Text = $"The book <strong><em>{book.Title}</em></strong> by <strong>{book.Author}</strong> was added to your book list."
+                };
+
+                await _notificationRepository.AddSaveAsync(authUserId, notification);
+            }
+
+            return addedBook;
         }
 
         public async Task UpdateBookAsync(Book book, int? userId = null)
@@ -334,7 +388,7 @@ namespace GRA.Domain.Service
                 var bookUserCount = await _bookRepository.GetUserCountForBookAsync(book.Id);
                 if (bookUserCount > 1)
                 {
-                    Book newBook = new Book()
+                    var newBook = new Book
                     {
                         Title = book.Title,
                         Author = book.Author,
@@ -388,7 +442,7 @@ namespace GRA.Domain.Service
             var activeUser = await _userRepository.GetByIdAsync(activeUserId);
 
             if ((await _requiredQuestionnaireRepository.GetForUser(GetCurrentSiteId(), activeUser.Id,
-                activeUser.Age)).Any())
+                activeUser.Age)).Count > 0)
             {
                 string error = $"User id {activeUserId} cannot complete challenges tasks while having a pending questionnaire.";
                 _logger.LogError(error);
@@ -412,9 +466,10 @@ namespace GRA.Domain.Service
             // loop tasks to see if we need to perform any additional point translation/book tasks
             foreach (var updateStatus in updateStatuses)
             {
-                var challengeTaskDetails = challenge.Tasks.Where(_ => _.Id == updateStatus.ChallengeTask.Id).SingleOrDefault();
+                var challengeTaskDetails = challenge.Tasks
+                    .SingleOrDefault(_ => _.Id == updateStatus.ChallengeTask.Id);
                 // is there work we need to do on this item
-                if ((challengeTaskDetails.ActivityCount != null
+                if ((challengeTaskDetails.ActivityCount > 0
                     && challengeTaskDetails.PointTranslationId != null)
                     || challengeTaskDetails.ChallengeTaskType == ChallengeTaskType.Book)
                 {
@@ -438,7 +493,7 @@ namespace GRA.Domain.Service
                                 };
                             }
 
-                            if (challengeTaskDetails.ActivityCount != null
+                            if (challengeTaskDetails.ActivityCount > 0
                                 && challengeTaskDetails.PointTranslationId != null)
                             {
                                 _logger.LogDebug($"Logging activity for {activeUserId} based on challenge task {updateStatus.ChallengeTask.Id}");
@@ -447,15 +502,15 @@ namespace GRA.Domain.Service
                                     book);
 
                                 // update record with user log result
-                                _logger.LogDebug($"Update success, recording UserLogId {userLogResult.UserLogId.Value} and BookId {userLogResult.BookId}");
+                                _logger.LogDebug($"Update success, recording UserLogId {userLogResult.UserLogId} and BookId {userLogResult.BookId}");
                                 await _challengeRepository.UpdateUserChallengeTaskAsync(activeUserId,
                                     updateStatus.ChallengeTask.Id,
-                                    userLogResult.UserLogId.Value,
+                                    userLogResult.UserLogId,
                                     userLogResult.BookId);
                             }
                             else if (book != null)
                             {
-                                var bookId = await AddBookAsync(activeUserId, book);
+                                var bookId = await AddBookAsync(activeUserId, book, true);
                                 await _challengeRepository.UpdateUserChallengeTaskAsync(activeUserId,
                                     updateStatus.ChallengeTask.Id,
                                     null,
@@ -506,7 +561,7 @@ namespace GRA.Domain.Service
                 pointsAwarded = maximumPoints - activeUser.PointsEarned;
             }
 
-            int completedTasks = challengeTasks.Where(_ => _.IsCompleted == true).Count();
+            int completedTasks = challengeTasks.Count(_ => _.IsCompleted == true);
             if (completedTasks >= challenge.TasksToComplete)
             {
                 var userLog = new UserLog
@@ -547,7 +602,7 @@ namespace GRA.Domain.Service
                 {
                     notification.BadgeId = challenge.BadgeId;
                     notification.BadgeFilename = badge.Filename;
-                };
+                }
 
                 await _notificationRepository.AddSaveAsync(authUserId, notification);
 
@@ -569,7 +624,7 @@ namespace GRA.Domain.Service
             if (awardHousehold)
             {
                 var householdMemebers = await _userRepository.GetHouseholdAsync(userId);
-                if (householdMemebers.Count() > 0)
+                if (householdMemebers.Any())
                 {
                     foreach (var member in householdMemebers)
                     {
@@ -702,13 +757,13 @@ namespace GRA.Domain.Service
             // load the initial list of triggers that might have been achieved
             var triggers = await _triggerRepository.GetTriggersAsync(userId);
             // if three are no triggers in the current query or in the queue then we are done
-            if (triggers == null || triggers.Count() == 0)
+            if (triggers == null || triggers.Count == 0)
             {
                 return;
             }
 
             // if any triggers came back let's check them
-            while (triggers.Count() > 0)
+            while (triggers.Count > 0)
             {
                 // pull the first trigger off the list and remove it from the list
                 var trigger = triggers.First();
@@ -868,7 +923,7 @@ namespace GRA.Domain.Service
             }
 
             if ((await _requiredQuestionnaireRepository.GetForUser(GetCurrentSiteId(), userToLog.Id,
-                userToLog.Age)).Any())
+                userToLog.Age)).Count > 0)
             {
                 string error = $"User id {activeUserId} cannot log secret code for user {userToLog.Id} who has a pending questionnaire.";
                 _logger.LogError(error);
@@ -979,7 +1034,7 @@ namespace GRA.Domain.Service
 
             if (activityAmount < 1)
             {
-                throw new GraException($"Amount must be at least 1.");
+                throw new GraException("Amount must be at least 1.");
             }
             int authUserId = GetClaimId(ClaimType.UserId);
 
@@ -1098,12 +1153,12 @@ namespace GRA.Domain.Service
             var validChallenges = challenges.Where(_ => validChallengeIds.Contains(_.Id));
 
             var favoritesToAdd = validChallenges
-                .Where(_ => _.IsFavorited == true)
+                .Where(_ => _.IsFavorited)
                 .Select(_ => _.Id)
                 .Except(userFavorites);
 
             var favoritesToRemove = validChallenges
-                .Where(_ => _.IsFavorited == false && userFavorites.Contains(_.Id))
+                .Where(_ => !_.IsFavorited && userFavorites.Contains(_.Id))
                 .Select(_ => _.Id);
 
             await _challengeRepository.UpdateUserFavoritesAsync(authUserId, activeUserId,
@@ -1175,7 +1230,7 @@ namespace GRA.Domain.Service
                     PointsEarned = 0,
                     Text = $"<span class=\"fa fa-shopping-bag\"></span> You've unlocked the <strong>{bundle.Name}</strong> avatar bundle!",
                     UserId = userId,
-                    BadgeFilename = bundle.AvatarItems.FirstOrDefault().Thumbnail
+                    BadgeFilename = bundle.AvatarItems.FirstOrDefault()?.Thumbnail
                 };
 
                 if (bundle.AvatarItems.Count > 1)
@@ -1202,27 +1257,25 @@ namespace GRA.Domain.Service
             }
         }
 
+        private async Task<int> GetMaximumAllowedActivityAsync(int siteId)
+        {
+            var (IsSet, SetValue) = await _siteLookupService.GetSiteSettingIntAsync(siteId,
+                SiteSettingKey.Users.MaximumActivityPermitted);
+
+            return IsSet ? SetValue : int.MaxValue;
+        }
+
         private async Task<int> GetMaximumAllowedPointsAsync(int siteId)
         {
-            var maximumPermitted = await _siteLookupService.GetSiteSettingIntAsync(siteId,
+            var (IsSet, SetValue) = await _siteLookupService.GetSiteSettingIntAsync(siteId,
                 SiteSettingKey.Points.MaximumPermitted);
 
-            return maximumPermitted.IsSet ? maximumPermitted.SetValue : int.MaxValue;
+            return IsSet ? SetValue : int.MaxValue;
         }
 
         public async Task<int> GetActivityEarnedAsync()
         {
-            var activityEarned = await _userLogRepository.GetActivityEarnedForUserAsync(
-                GetActiveUserId());
-
-            if (activityEarned > int.MaxValue)
-            {
-                return int.MaxValue;
-            }
-            else
-            {
-                return (int)activityEarned;
-            }
+            return await _userLogRepository.GetActivityEarnedForUserAsync(GetActiveUserId());
         }
     }
 }

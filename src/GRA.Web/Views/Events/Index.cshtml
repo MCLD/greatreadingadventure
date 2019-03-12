@@ -35,6 +35,7 @@
                     </div>
                 </div>
                 <form asp-controller="Events" asp-action="Index" method="post" role="form">
+                    <button type="submit" class="hide"></button>
                     <input asp-for="UseLocation" type="hidden" />
                     <input asp-for="CommunityExperiences"
                            type="hidden"
@@ -74,7 +75,7 @@
                                 <label asp-for="Near" class="control-label"></label>
                                 @if (!string.IsNullOrWhiteSpace(Model.UserZipCode))
                                 {
-                                    <button type="submit" class="btn btn-xs btn-primary gra-zipcode-button" name="near" value="@Model.UserZipCode">Use my zip code</button>
+                                    <button type="submit" class="btn btn-xs btn-info gra-zipcode-button" name="near" value="@Model.UserZipCode">Use my zip code</button>
                                 }
                                 <input asp-for="Near"
                                        class="form-control"
@@ -162,7 +163,7 @@
                                             <th>What</th>
                                             @if (!string.IsNullOrWhiteSpace(Model.Near))
                                             {
-                                                <th><a sort sortColumn="@(Model.Sort == nameof(GRA.Domain.Model.SortEventsBy.StartDate))" asp-action="@(Model.CommunityExperiences ? nameof(EventsController.CommunityExperiences) : nameof(EventsController.Index))" asp-route-Search="@Model.Search" asp-route-Near="@Model.Near" asp-route-StartDate="@Model.StartDate?.ToShortDateString()" asp-route-EndDate="@Model.EndDate?.ToShortDateString()" asp-route-Program="@Model.ProgramId" asp-route-Sort="@nameof(GRA.Domain.Model.SortEventsBy.StartDate)">When</a></th>
+                                                <th><a class="text-nowrap" sort sortColumn="@(Model.Sort == nameof(GRA.Domain.Model.SortEventsBy.StartDate))" asp-action="@(Model.CommunityExperiences ? nameof(EventsController.CommunityExperiences) : nameof(EventsController.Index))" asp-route-Search="@Model.Search" asp-route-Near="@Model.Near" asp-route-StartDate="@Model.StartDate?.ToShortDateString()" asp-route-EndDate="@Model.EndDate?.ToShortDateString()" asp-route-Program="@Model.ProgramId" asp-route-Sort="@nameof(GRA.Domain.Model.SortEventsBy.StartDate)">When</a></th>
                                             }
                                             else
                                             {
@@ -171,7 +172,7 @@
                                             <th>Where</th>
                                             @if (Model.ShowNearSearch && !string.IsNullOrWhiteSpace(Model.Near))
                                             {
-                                                <th><a sort sortColumn="@(Model.Sort == nameof(GRA.Domain.Model.SortEventsBy.Distance))" asp-action="@(Model.CommunityExperiences ? nameof(EventsController.CommunityExperiences) : nameof(EventsController.Index))" asp-route-Search="@Model.Search" asp-route-Near="@Model.Near" asp-route-StartDate="@Model.StartDate?.ToShortDateString()" asp-route-EndDate="@Model.EndDate?.ToShortDateString()" asp-route-Program="@Model.ProgramId" asp-route-Sort="@nameof(GRA.Domain.Model.SortEventsBy.Distance)">Distance</a></th>
+                                                <th><a class="text-nowrap" sort sortColumn="@(Model.Sort == nameof(GRA.Domain.Model.SortEventsBy.Distance))" asp-action="@(Model.CommunityExperiences ? nameof(EventsController.CommunityExperiences) : nameof(EventsController.Index))" asp-route-Search="@Model.Search" asp-route-Near="@Model.Near" asp-route-StartDate="@Model.StartDate?.ToShortDateString()" asp-route-EndDate="@Model.EndDate?.ToShortDateString()" asp-route-Program="@Model.ProgramId" asp-route-Sort="@nameof(GRA.Domain.Model.SortEventsBy.Distance)">Distance</a></th>
 
                                             }
                                         </tr>

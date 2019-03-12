@@ -120,6 +120,14 @@ namespace GRA
                     Category = typeof(SiteSettingKey.Users).Name,
                     Format = SiteSettingFormat.Integer
                 },
+                [SiteSettingKey.Users.MaximumActivityPermitted] =
+                new SiteSettingDefinition
+                {
+                    Name = "Maximum activity",
+                    Info = "A number representing the maximum amount of activity permitted for a participant.",
+                    Category = typeof(SiteSettingKey.Users).Name,
+                    Format = SiteSettingFormat.Integer
+                },
                 [SiteSettingKey.Users.SurveyUrl] =
                 new SiteSettingDefinition
                 {
