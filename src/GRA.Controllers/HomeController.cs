@@ -233,9 +233,15 @@ namespace GRA.Controllers
                         site.ProgramEnds.Value - site.ProgramStarts.Value).TotalDays);
                     viewModel.TotalProgramGoal = programDays * user.DailyPersonalGoal.Value;
                     viewModel.ActivityEarned = await _activityService.GetActivityEarnedAsync();
-                    viewModel.PercentComplete = Math.Min(
-                        (int)(viewModel.ActivityEarned * 100 / viewModel.TotalProgramGoal), 100);
                 }
+                else
+                {
+                    viewModel.TotalProgramGoal = program.AchieverPointAmount;
+                    viewModel.ActivityEarned = user.PointsEarned;
+                    viewModel.ProgressMessage = $"The goal of this program is {program.AchieverPointAmount} points.";
+                }
+                viewModel.PercentComplete = Math.Min(
+                        (int)(viewModel.ActivityEarned * 100 / viewModel.TotalProgramGoal), 100);
 
                 var userVendorCode = await _vendorCodeService.GetUserVendorCodeAsync(user.Id);
                 if (userVendorCode?.CanBeDonated == true && userVendorCode.IsDonated == null

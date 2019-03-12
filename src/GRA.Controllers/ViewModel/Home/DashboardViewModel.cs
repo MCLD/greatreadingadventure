@@ -38,6 +38,7 @@ namespace GRA.Controllers.ViewModel.Home
         public int? ActivityEarned { get; set; }
         public int? TotalProgramGoal { get; set; }
         public int? PercentComplete { get; set; }
+        public string ProgressMessage { get; set; }
 
         public IEnumerable<Badge> Badges { get; set; }
         public ICollection<AvatarElement> AvatarElements { get; set; }

@@ -140,6 +140,7 @@
                             <th>Email Address</th>
                             <th>Branch</th>
                             <th hidden>Program</th>
+                            <th>Points</th>
                             @if (Model.CanRemoveParticipant)
                             {
                                 <th>&nbsp;</th>
@@ -168,6 +169,7 @@
                                 <td>@user.Email</td>
                                 <td>@user.BranchName</td>
                                 <td hidden>@user.ProgramName</td>
+                                <td>@user.PointsEarned</td>
                                 @if (Model.CanRemoveParticipant)
                                 {
                                     <td class="on-top gra-mc-icon">
