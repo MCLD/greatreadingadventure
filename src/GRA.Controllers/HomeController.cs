@@ -32,6 +32,7 @@ namespace GRA.Controllers
         private readonly PerformerSchedulingService _performerSchedulingService;
         private readonly SiteService _siteService;
         private readonly UserService _userService;
+        private readonly VendorCodeService _vendorCodeService;
 
         public HomeController(ILogger<HomeController> logger,
             ServiceFacade.Controller context,
@@ -44,7 +45,8 @@ namespace GRA.Controllers
             PageService pageService,
             PerformerSchedulingService performerSchedulingService,
             SiteService siteService,
-            UserService userService)
+            UserService userService,
+            VendorCodeService vendorCodeService)
             : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -65,6 +67,8 @@ namespace GRA.Controllers
                 ?? throw new ArgumentNullException(nameof(performerSchedulingService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            _vendorCodeService = vendorCodeService
+                ?? throw new ArgumentNullException(nameof(vendorCodeService));
         }
 
         public async Task<IActionResult> Index()
@@ -133,7 +137,7 @@ namespace GRA.Controllers
                     SingleEvent = pointTranslation.IsSingleEvent,
                     ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural,
                     Badges = badges.Data,
-                    DisableSecretCode = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable),
+                    DisableSecretCode = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable)
                 };
 
                 try
@@ -231,6 +235,15 @@ namespace GRA.Controllers
                     viewModel.ActivityEarned = await _activityService.GetActivityEarnedAsync();
                     viewModel.PercentComplete = Math.Min(
                         (int)(viewModel.ActivityEarned * 100 / viewModel.TotalProgramGoal), 100);
+                }
+
+                var userVendorCode = await _vendorCodeService.GetUserVendorCodeAsync(user.Id);
+                if (userVendorCode?.CanBeDonated == true && userVendorCode.IsDonated == null
+                    && (!userVendorCode.ExpirationDate.HasValue
+                        || userVendorCode.ExpirationDate.Value > _dateTimeProvider.Now))
+                {
+                    viewModel.HasPendingDonationQuestion = true;
+                    viewModel.VendorCodeExpiration = userVendorCode.ExpirationDate;
                 }
 
                 return View("Dashboard", viewModel);

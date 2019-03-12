@@ -229,7 +229,6 @@ namespace GRA.Domain.Service
 
                 await _notificationRepository.AddSaveAsync(authUserId, notification);
 
-
                 // add userlog and notification if the max activity amount has been reached
                 if (activityAmountToAdd < activityAmountEarned || totalActivity == maximumActivity)
                 {

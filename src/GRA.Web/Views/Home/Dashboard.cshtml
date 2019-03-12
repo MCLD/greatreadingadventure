@@ -47,6 +47,21 @@
     </div>
 }
 
+@if (Model.HasPendingDonationQuestion)
+{
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <div class="alert alert-success" style="font-size:large">
+                You've earned a free book! Head over to <a asp-controller="Profile" asp-action="Index"><strong>My Profile</strong></a> page
+                @if (Model.VendorCodeExpiration.HasValue)
+                {
+                    <text>by @Model.VendorCodeExpiration.Value.AddMilliseconds(-1).ToString("MMMM dd")</text>
+                }
+                to redeem or donate it!
+            </div>
+        </div>
+    </div>
+}
 
 <div class="row" style="font-size: larger;">
     <div class="col-sm-3 text-center">
@@ -100,8 +115,8 @@
             <div class="panel-body text-center">
                 <span class="lead">Welcome <strong>@Model.FirstName!</strong></span>
                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessPerformerRegistration))
-               && !Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessMissionControl))
-               && Model.SiteStage == GRA.Domain.Model.SiteStage.BeforeRegistration)
+                    && !Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessMissionControl))
+                    && Model.SiteStage == GRA.Domain.Model.SiteStage.BeforeRegistration)
                 {
                     <p class="lead" style="padding-top: 2rem;">
                         Welcome, performer! Please click on the theater masks icon at the top of the

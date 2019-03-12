@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using GRA.Domain.Model;
@@ -45,5 +46,8 @@ namespace GRA.Controllers.ViewModel.Home
 
         public Carousel Carousel { get; set; }
         public SiteStage SiteStage { get; set; }
+
+        public bool HasPendingDonationQuestion { get; set; }
+        public DateTime? VendorCodeExpiration { get; set; }
     }
 }
