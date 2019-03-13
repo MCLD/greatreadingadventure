@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Ability to configure a maximum activity amount in Site Settings
 - Dashboard alert for pending vendor code redemption
 - Default "System Account" for system-created items
+- Show points earned in participant list
 
 ### Changed
 - Script docker-build.bash to not build release images unless the branch starts with 'release/'
@@ -29,6 +30,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Persist the data protection key to the database
 - Improve school selection
 - 'Limit to program' in Challenges is now 'associate with program'
+- Participant progress bar to default to program goal is no personal reading goal is set
 
 ### Fixed
 - Instance name enrichment for logging

@@ -102,7 +102,17 @@
                     {
                         <p style="font-size:large">My progress</p>
                         <div class="progress" style="margin:0px;">
-                            <div class="progress-bar progress-bar-striped@(Model.PercentComplete == 100 ? " progress-bar-success" : "")" role="progressbar" aria-valuenow="@Model.PercentComplete" aria-valuemin="0" aria-valuemax="100" style="width: @Model.PercentComplete%;">@Model.PercentComplete%</div>
+                            <div class="progress-bar progress-bar-striped@(Model.PercentComplete == 100 ? " progress-bar-success" : "") wide-tooltip" 
+                                    role="progressbar" 
+                                    aria-valuenow="@Model.PercentComplete" 
+                                    aria-valuemin="0" 
+                                    aria-valuemax="100" 
+                                    style="width: @Model.PercentComplete%;" 
+                                    title="@Model.ProgressMessage" 
+                                    data-toggle="tooltip" 
+                                    data-placement="top">
+                                @Model.PercentComplete%
+                            </div>
                         </div>
                     }
                 </div>
