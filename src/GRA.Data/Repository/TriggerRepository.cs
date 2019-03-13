@@ -609,5 +609,16 @@ namespace GRA.Data.Repository
                 .ProjectTo<Trigger>()
                 .AnyAsync();
         }
+
+        public async Task<ICollection<Trigger>> GetTriggersAwardingPrizesAsync(int siteId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId && !_.IsDeleted
+                    && !string.IsNullOrWhiteSpace(_.AwardPrizeName))
+                .OrderBy(_ => _.AwardPrizeName)
+                .ProjectTo<Trigger>()
+                .ToListAsync();
+        }
     }
 }

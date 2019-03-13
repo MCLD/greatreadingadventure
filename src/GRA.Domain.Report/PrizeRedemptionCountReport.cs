@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
@@ -11,36 +12,28 @@ using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Report
 {
-    [ReportInformation(15,
-        "Vendor Code Donations Report",
-        "Vendor prizes by program filterable by system.",
+    [ReportInformation(20,
+        "Prize Redemption Count Report",
+        "Number of times a prize was redeemed by system or branch",
         "Participants")]
-    public class VendorCodeDonationsReport : BaseReport
+    public class PrizeRedemptionCountReport : BaseReport
     {
         private readonly IBranchRepository _branchRepository;
-        private readonly IProgramRepository _programRepository;
+        private readonly IPrizeWinnerRepository _prizeWinnerRepository;
         private readonly ISystemRepository _systemRepository;
-        private readonly IUserRepository _userRepository;
-        private readonly IVendorCodeRepository _vendorCodeRepository;
 
-        public VendorCodeDonationsReport(ILogger<VendorCodeDonationsReport> logger,
+        public PrizeRedemptionCountReport(ILogger<PrizeRedemptionCountReport> logger,
             Domain.Report.ServiceFacade.Report serviceFacade,
             IBranchRepository branchRepository,
-            IProgramRepository programRepository,
-            ISystemRepository systemRepository,
-            IUserRepository userRepository,
-            IVendorCodeRepository vendorCodeRepository) : base(logger, serviceFacade)
+            IPrizeWinnerRepository prizeWinnerRepository,
+            ISystemRepository systemRepository) : base(logger, serviceFacade)
         {
             _branchRepository = branchRepository
                 ?? throw new ArgumentException(nameof(branchRepository));
-            _programRepository = programRepository
-                ?? throw new ArgumentNullException(nameof(programRepository));
+            _prizeWinnerRepository = prizeWinnerRepository
+                ?? throw new ArgumentNullException(nameof(prizeWinnerRepository));
             _systemRepository = systemRepository
                 ?? throw new ArgumentException(nameof(systemRepository));
-            _userRepository = userRepository
-                ?? throw new ArgumentNullException(nameof(userRepository));
-            _vendorCodeRepository = vendorCodeRepository
-                ?? throw new ArgumentException(nameof(vendorCodeRepository));
         }
 
         public override async Task ExecuteAsync(ReportRequest request,
@@ -64,44 +57,49 @@ namespace GRA.Domain.Report
                 throw new ArgumentNullException(nameof(criterion.SiteId));
             }
 
-            string title = "";
-
-            if (criterion.SystemId.HasValue)
-            {
-                title = (await _systemRepository.GetByIdAsync(criterion.SystemId.Value)).Name;
-            }
-
             var report = new StoredReport
             {
-                Title = title,
+                Title = ReportAttribute?.Name,
                 AsOf = _serviceFacade.DateTimeProvider.Now
             };
+
             var reportData = new List<object[]>();
             #endregion Reporting initialization
+
+            #region Adjust report criteria as needed
+            IEnumerable<int> triggerIds = null;
+
+            if (!string.IsNullOrEmpty(criterion.TriggerList))
+            {
+                try
+                {
+                    triggerIds = criterion.TriggerList.Split(',').Select(int.Parse);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Unable to convert trigger id list to numbers: {ex.Message}");
+                    _logger.LogError($"Badge id list: {criterion.TriggerList}");
+                }
+            }
+            else
+            {
+                throw new GraException("No prizes selected.");
+            }
+            #endregion Adjust report criteria as needed
 
             #region Collect data
             UpdateProgress(progress, 1, "Starting report...", request.Name);
 
             // header row
             report.HeaderRow = new object[] {
-                criterion.SystemId.HasValue ? "Branch Name" : "System Name"
+                criterion.SystemId.HasValue ? "Branch Name" : "System Name",
+                "# Redeemed"
             };
 
-            var programs = await _programRepository.GetAllAsync(criterion.SiteId.Value);
-            foreach (var program in programs)
-            {
-                report.HeaderRow = report.HeaderRow.Append(program.Name);
-            }
-
-            report.HeaderRow = report.HeaderRow.Append("Total");
-
             int count = 0;
-
-            var users = await _userRepository.GetUsersByCriterionAsync(criterion);
-
+            int totalRedemptionCount = 0;
             if (criterion.SystemId.HasValue)
             {
-                users = users.Where(_ => _.SystemId == criterion.SystemId);
                 var branches = await _branchRepository.GetBySystemAsync(criterion.SystemId.Value);
                 foreach (var branch in branches)
                 {
@@ -115,16 +113,15 @@ namespace GRA.Domain.Report
                         $"Processing: {branch.SystemName} - {branch.Name}",
                         request.Name);
 
-                    var branchUsers = users.Where(_ => _.BranchId == branch.Id);
+                    var redemptionCount = await _prizeWinnerRepository
+                        .GetBranchPrizeRedemptionCountAsync(branch.Id, triggerIds);
+                    totalRedemptionCount += redemptionCount;
+
                     IEnumerable<object> row = new object[]
                     {
-                        branch.Name
+                        branch.Name,
+                       redemptionCount
                     };
-                    foreach (var program in programs)
-                    {
-                        row = row.Append(branchUsers.Count(_ => _.ProgramId == program.Id));
-                    }
-                    row = row.Append(branchUsers.Count());
                     reportData.Add(row.ToArray());
                 }
             }
@@ -143,16 +140,15 @@ namespace GRA.Domain.Report
                         $"Processing: {system.Name}",
                         request.Name);
 
-                    var systemUsers = users.Where(_ => _.SystemId == system.Id);
+                    var redemptionCount = await _prizeWinnerRepository
+                        .GetSystemPrizeRedemptionCountAsync(system.Id, triggerIds);
+                    totalRedemptionCount += redemptionCount;
+
                     IEnumerable<object> row = new object[]
                     {
-                        system.Name
+                        system.Name,
+                        redemptionCount
                     };
-                    foreach (var program in programs)
-                    {
-                        row = row.Append(systemUsers.Where(_ => _.ProgramId == program.Id).Count());
-                    }
-                    row = row.Append(systemUsers.Count());
                     reportData.Add(row.ToArray());
                 }
             }
@@ -161,14 +157,9 @@ namespace GRA.Domain.Report
 
             IEnumerable<object> footerRow = new object[]
             {
-                "Total"
+                "Total",
+                totalRedemptionCount
             };
-            foreach (var program in programs)
-            {
-                footerRow = footerRow.Append(users.Count(_ => _.ProgramId == program.Id));
-            }
-            footerRow = footerRow.Append(users.Count());
-
             report.FooterRow = footerRow.ToArray();
 
             #endregion Collect data

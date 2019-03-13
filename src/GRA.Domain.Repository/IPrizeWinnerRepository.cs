@@ -11,5 +11,7 @@ namespace GRA.Domain.Repository
         Task<PrizeWinner> GetUserTriggerPrizeAsync(int userId, int triggerId);
         Task<ICollection<PrizeWinner>> GetRedemptionsAsync(ReportCriterion criterion);
         Task<ICollection<PrizeWinner>> GetUserPrizesAsync(ReportCriterion criterion);
+        Task<int> GetSystemPrizeRedemptionCountAsync(int systemId, IEnumerable<int> triggerIds);
+        Task<int> GetBranchPrizeRedemptionCountAsync(int branchId, IEnumerable<int> triggerIds);
     }
 }

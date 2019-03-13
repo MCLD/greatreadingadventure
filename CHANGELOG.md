@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Dashboard alert for pending vendor code redemption
 - Default "System Account" for system-created items
 - Show points earned in participant list
+- Report for tracking prize redemptions
 
 ### Changed
 - Script docker-build.bash to not build release images unless the branch starts with 'release/'

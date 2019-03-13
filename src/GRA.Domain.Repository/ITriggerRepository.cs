@@ -29,5 +29,6 @@ namespace GRA.Domain.Repository
         Task RemoveUserTriggerAsync(int userId, int triggerId);
         Task<ICollection<Trigger>> GetTriggersAwardingBundleAsync(int bundleId);
         Task<bool> BundleIsInUseAsync(int bundleId);
+        Task<ICollection<Trigger>> GetTriggersAwardingPrizesAsync(int siteId);
     }
 }
