@@ -1280,6 +1280,10 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<int?>("RedeemedBy");
 
+                    b.Property<int?>("RedeemedByBranch");
+
+                    b.Property<int?>("RedeemedBySystem");
+
                     b.Property<int>("SiteId");
 
                     b.Property<int?>("TriggerId");
@@ -1897,6 +1901,8 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<DateTime?>("StartDate");
 
                     b.Property<int?>("SystemId");
+
+                    b.Property<string>("TriggerList");
 
                     b.Property<int?>("VendorCodeTypeId");
 

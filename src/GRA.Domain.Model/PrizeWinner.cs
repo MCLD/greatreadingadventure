@@ -10,6 +10,8 @@ namespace GRA.Domain.Model
         public int UserId { get; set; }
         public DateTime? RedeemedAt { get; set; }
         public int? RedeemedBy { get; set; }
+        public int? RedeemedByBranch { get; set; }
+        public int? RedeemedBySystem { get; set; }
         public int? MailId { get; set; }
 
         public string UserFirstName { get; set; }

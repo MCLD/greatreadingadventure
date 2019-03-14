@@ -1,11 +1,11 @@
-﻿using AutoMapper.QueryableExtensions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GRA.Data.Repository
 {
@@ -80,7 +80,7 @@ namespace GRA.Data.Repository
         public async Task<ICollection<PrizeWinner>> GetUserPrizesAsync(ReportCriterion criterion)
         {
             var validUsers = _context.Users.AsNoTracking()
-                .Where(_ => _.IsDeleted == false && _.SiteId == criterion.SiteId);
+                .Where(_ => !_.IsDeleted && _.SiteId == criterion.SiteId);
 
             if (criterion.BranchId.HasValue)
             {
@@ -97,6 +97,26 @@ namespace GRA.Data.Repository
                           select prizes)
                           .ProjectTo<PrizeWinner>()
                           .ToListAsync();
+        }
+
+        public async Task<int> GetSystemPrizeRedemptionCountAsync(int systemId,
+            IEnumerable<int> triggerIds)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.RedeemedBySystem == systemId && _.TriggerId.HasValue
+                    && triggerIds.Contains(_.TriggerId.Value))
+                .CountAsync();
+        }
+
+        public async Task<int> GetBranchPrizeRedemptionCountAsync(int branchId,
+            IEnumerable<int> triggerIds)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.RedeemedByBranch == branchId && _.TriggerId.HasValue
+                    && triggerIds.Contains(_.TriggerId.Value))
+                .CountAsync();
         }
     }
 }

@@ -30,6 +30,7 @@ namespace GRA.Controllers.MissionControl
         private readonly ReportService _reportService;
         private readonly SchoolService _schoolService;
         private readonly SiteService _siteService;
+        private readonly TriggerService _triggerService;
         private readonly UserService _userService;
         private readonly VendorCodeService _vendorCodeService;
 
@@ -38,6 +39,7 @@ namespace GRA.Controllers.MissionControl
             ReportService reportService,
             SchoolService schoolService,
             SiteService siteService,
+            TriggerService triggerService,
             UserService userService,
             VendorCodeService vendorCodeService) : base(context)
         {
@@ -45,6 +47,8 @@ namespace GRA.Controllers.MissionControl
             _reportService = Require.IsNotNull(reportService, nameof(reportService));
             _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
             _siteService = Require.IsNotNull(siteService, nameof(siteService));
+            _triggerService = triggerService
+                ?? throw new ArgumentNullException(nameof(triggerService));
             _userService = Require.IsNotNull(userService, nameof(userService));
             _vendorCodeService = vendorCodeService
                 ?? throw new ArgumentNullException(nameof(vendorCodeService));
@@ -80,7 +84,7 @@ namespace GRA.Controllers.MissionControl
         [HttpGet]
         public async Task<IActionResult> Configure(int id)
         {
-            var report = _reportService.GetReportList().Where(_ => _.Id == id).SingleOrDefault();
+            var report = _reportService.GetReportList().SingleOrDefault(_ => _.Id == id);
             if (report == null)
             {
                 AlertDanger = $"Could not find report of type {id}.";
@@ -103,6 +107,12 @@ namespace GRA.Controllers.MissionControl
             var vendorCodeTypeList = await _vendorCodeService.GetTypeAllAsync();
             var site = await GetCurrentSiteAsync();
 
+            var triggerList = await _triggerService.GetTriggersAwardingPrizesAsync();
+            foreach (var trigger in triggerList)
+            {
+                trigger.AwardPrizeName += $" ({trigger.Name})";
+            }
+
             return View($"{viewName}Criteria", new ReportCriteriaViewModel
             {
                 ReportId = id,
@@ -113,7 +123,8 @@ namespace GRA.Controllers.MissionControl
                 SchoolDistrictList = new SelectList(schoolDistrictList, "Id", "Name"),
                 SchoolList = new SelectList(schoolList, "Id", "Name"),
                 GroupInfosList = new SelectList(groupInfoList, "Id", "Name"),
-                VendorCodeTypeList = new SelectList(vendorCodeTypeList, "Id", "Description")
+                VendorCodeTypeList = new SelectList(vendorCodeTypeList, "Id", "Description"),
+                PrizeList = new SelectList(triggerList, "Id", "AwardPrizeName")
             });
         }
 
@@ -138,6 +149,11 @@ namespace GRA.Controllers.MissionControl
                 ChallengeRequiredList = viewModel.ChallengeRequiredList
             };
 
+            if (viewModel.TriggerList?.Count > 0)
+            {
+                criterion.TriggerList = string.Join(",", viewModel.TriggerList);
+            }
+
             var reportRequestId = await _reportService
                 .RequestReport(criterion, viewModel.ReportId);
 
@@ -155,9 +171,9 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
-                var storedReport = await _reportService.GetReportResultsAsync(id);
+                var (request, criterion) = await _reportService.GetReportResultsAsync(id);
 
-                PageTitle = storedReport.request.Name ?? "Report Results";
+                PageTitle = request.Name ?? "Report Results";
 
                 var viewModel = new ReportResultsViewModel
                 {
@@ -165,52 +181,52 @@ namespace GRA.Controllers.MissionControl
                     ReportResultId = id
                 };
 
-                if (storedReport.criterion.StartDate.HasValue)
+                if (criterion.StartDate.HasValue)
                 {
-                    viewModel.StartDate = storedReport.criterion.StartDate;
+                    viewModel.StartDate = criterion.StartDate;
                 }
-                if (storedReport.criterion.EndDate.HasValue)
+                if (criterion.EndDate.HasValue)
                 {
-                    viewModel.EndDate = storedReport.criterion.EndDate;
+                    viewModel.EndDate = criterion.EndDate;
                 }
-                if (storedReport.criterion.SystemId.HasValue)
+                if (criterion.SystemId.HasValue)
                 {
                     viewModel.SystemName = (await _siteService
-                        .GetSystemByIdAsync(storedReport.criterion.SystemId.Value)).Name;
+                        .GetSystemByIdAsync(criterion.SystemId.Value)).Name;
                 }
-                if (storedReport.criterion.BranchId.HasValue)
+                if (criterion.BranchId.HasValue)
                 {
                     viewModel.BranchName = await _siteService
-                        .GetBranchName(storedReport.criterion.BranchId.Value);
+                        .GetBranchName(criterion.BranchId.Value);
                 }
-                if (storedReport.criterion.ProgramId.HasValue)
+                if (criterion.ProgramId.HasValue)
                 {
                     viewModel.ProgramName = (await _siteService
-                        .GetProgramByIdAsync(storedReport.criterion.ProgramId.Value)).Name;
+                        .GetProgramByIdAsync(criterion.ProgramId.Value)).Name;
                 }
-                if (storedReport.criterion.GroupInfoId.HasValue)
+                if (criterion.GroupInfoId.HasValue)
                 {
                     viewModel.GroupName = (await _userService
-                        .GetGroupInfoByIdAsync(storedReport.criterion.GroupInfoId.Value)).Name;
+                        .GetGroupInfoByIdAsync(criterion.GroupInfoId.Value)).Name;
                 }
-                if (storedReport.criterion.SchoolDistrictId.HasValue)
+                if (criterion.SchoolDistrictId.HasValue)
                 {
                     viewModel.SchoolDistrictName = (await _schoolService
-                        .GetDistrictByIdAsync(storedReport.criterion.SchoolDistrictId.Value)).Name;
+                        .GetDistrictByIdAsync(criterion.SchoolDistrictId.Value)).Name;
                 }
-                if (storedReport.criterion.SchoolId.HasValue)
+                if (criterion.SchoolId.HasValue)
                 {
                     viewModel.SchoolName = (await _schoolService
-                        .GetByIdAsync(storedReport.criterion.SchoolId.Value)).Name;
+                        .GetByIdAsync(criterion.SchoolId.Value)).Name;
                 }
-                if (storedReport.criterion.VendorCodeTypeId.HasValue)
+                if (criterion.VendorCodeTypeId.HasValue)
                 {
                     viewModel.VendorCodeName = (await _vendorCodeService
-                        .GetTypeById(storedReport.criterion.VendorCodeTypeId.Value)).Description;
+                        .GetTypeById(criterion.VendorCodeTypeId.Value)).Description;
                 }
 
                 viewModel.ReportSet = JsonConvert
-                    .DeserializeObject<StoredReportSet>(storedReport.request.ResultJson);
+                    .DeserializeObject<StoredReportSet>(request.ResultJson);
 
                 foreach (var report in viewModel.ReportSet.Reports)
                 {
@@ -346,7 +362,7 @@ namespace GRA.Controllers.MissionControl
                     var relationshipId = workbook.WorkbookPart.GetIdOfPart(sheetPart);
 
                     uint sheetId = 1;
-                    if (sheets.Elements<Sheet>().Count() > 0)
+                    if (sheets.Elements<Sheet>().Any())
                     {
                         sheetId = sheets.Elements<Sheet>()
                             .Select(_ => _.SheetId.Value).Max() + 1;
@@ -456,7 +472,7 @@ namespace GRA.Controllers.MissionControl
                         {
                             var columnElements = cs.Elements<Column>()
                                 .Where(_ => _.Min == columnId && _.Max == columnId);
-                            if (columnElements.Count() > 0)
+                            if (columnElements.Any())
                             {
                                 var column = columnElements.First();
                                 column.Width = width;
@@ -498,13 +514,13 @@ namespace GRA.Controllers.MissionControl
                 var criteriaRelationshipId = workbook.WorkbookPart.GetIdOfPart(criteriaSheetPart);
 
                 uint criteriaSheetId = 1;
-                if (criteriaSheets.Elements<Sheet>().Count() > 0)
+                if (criteriaSheets.Elements<Sheet>().Any())
                 {
                     criteriaSheetId = criteriaSheets.Elements<Sheet>()
                         .Select(_ => _.SheetId.Value).Max() + 1;
                 }
 
-                string criteriaSheetName = "Report Criteria";
+                const string criteriaSheetName = "Report Criteria";
 
                 var criteriaSheet = new Sheet
                 {
@@ -556,7 +572,7 @@ namespace GRA.Controllers.MissionControl
                     {
                         var columnElements = cs.Elements<Column>()
                             .Where(_ => _.Min == columnId && _.Max == columnId);
-                        if (columnElements.Count() > 0)
+                        if (columnElements.Any())
                         {
                             var column = columnElements.First();
                             column.Width = width;
@@ -599,6 +615,7 @@ namespace GRA.Controllers.MissionControl
                 return fileOutput;
             }
         }
+
         private string FormatDataItem(object dataItem)
         {
             switch (dataItem)

@@ -11,11 +11,16 @@ namespace GRA.Data.Model
         public Drawing Drawing { get; set; }
         public int? TriggerId { get; set; }
         public Trigger Trigger { get; set; }
+
         [Required]
         public int UserId { get; set; }
+
         public User User { get; set; }
+
         public DateTime? RedeemedAt { get; set; }
         public int? RedeemedBy { get; set; }
+        public int? RedeemedByBranch { get; set; }
+        public int? RedeemedBySystem { get; set; }
         public int? MailId { get; set; }
     }
 }

@@ -18,19 +18,19 @@ namespace GRA.Domain.Report
     public class PrizeRedemptionReport : BaseReport
     {
         private readonly IBranchRepository _branchRepository;
-        private readonly IPrizeWinnerRepository _prizeWinnterRepository;
+        private readonly IPrizeWinnerRepository _prizeWinnerRepository;
         private readonly ISystemRepository _systemRepository;
 
-        public PrizeRedemptionReport(ILogger<TopScoresReport> logger,
+        public PrizeRedemptionReport(ILogger<PrizeRedemptionReport> logger,
             Domain.Report.ServiceFacade.Report serviceFacade,
             IBranchRepository branchRepository,
-            IPrizeWinnerRepository prizeWinnterRepository,
+            IPrizeWinnerRepository prizeWinnerRepository,
             ISystemRepository systemRepository) : base(logger, serviceFacade)
         {
-            _branchRepository = branchRepository 
+            _branchRepository = branchRepository
                 ?? throw new ArgumentException(nameof(branchRepository));
-            _prizeWinnterRepository = prizeWinnterRepository
-                ?? throw new ArgumentNullException(nameof(prizeWinnterRepository));
+            _prizeWinnerRepository = prizeWinnerRepository
+                ?? throw new ArgumentNullException(nameof(prizeWinnerRepository));
             _systemRepository = systemRepository
                 ?? throw new ArgumentException(nameof(systemRepository));
         }
@@ -67,7 +67,7 @@ namespace GRA.Domain.Report
             {
                 title = (await _systemRepository.GetByIdAsync(criterion.SystemId.Value)).Name;
             }
-            else 
+            else
             {
                 throw new GraException("No system or branch selected.");
             }
@@ -91,13 +91,13 @@ namespace GRA.Domain.Report
 
             int count = 0;
 
-            var prizes = await _prizeWinnterRepository.GetRedemptionsAsync(criterion);
+            var prizes = await _prizeWinnerRepository.GetRedemptionsAsync(criterion);
 
             var prizeGroups = prizes.GroupBy(_ => new
             {
-                PrizeName = _.PrizeName,
-                DrawingId = _.DrawingId,
-                TriggerId = _.TriggerId
+                _.PrizeName,
+                _.DrawingId,
+                _.TriggerId
             })
             .Select(_ => new
             {

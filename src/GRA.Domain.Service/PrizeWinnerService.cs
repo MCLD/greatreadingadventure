@@ -14,18 +14,25 @@ namespace GRA.Domain.Service
         private readonly IDrawingRepository _drawingRepository;
         private readonly IPrizeWinnerRepository _prizeWinnerRepository;
         private readonly ITriggerRepository _triggerRepository;
+        private readonly IUserRepository _userRepository;
+
         public PrizeWinnerService(ILogger<PrizeWinnerService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             IDrawingRepository drawingRepository,
             IPrizeWinnerRepository prizeWinnerRepository,
-            ITriggerRepository triggerRepository)
+            ITriggerRepository triggerRepository,
+            IUserRepository userRepository)
             : base(logger, dateTimeProvider, userContextProvider)
         {
-            _drawingRepository = Require.IsNotNull(drawingRepository, nameof(drawingRepository));
-            _prizeWinnerRepository = Require.IsNotNull(prizeWinnerRepository,
-                nameof(prizeWinnerRepository));
-            _triggerRepository = Require.IsNotNull(triggerRepository, nameof(triggerRepository));
+            _drawingRepository = drawingRepository
+                ?? throw new ArgumentNullException(nameof(drawingRepository));
+            _prizeWinnerRepository = prizeWinnerRepository
+                ?? throw new ArgumentNullException(nameof(prizeWinnerRepository));
+            _triggerRepository = triggerRepository
+                ?? throw new ArgumentNullException(nameof(triggerRepository));
+            _userRepository = userRepository
+                ?? throw new ArgumentNullException(nameof(userRepository));
             SetManagementPermission(Permission.ViewUserPrizes);
         }
 
@@ -60,8 +67,12 @@ namespace GRA.Domain.Service
                 }
                 else
                 {
+                    var authUser = await _userRepository.GetByIdAsync(authUserId);
                     prize.RedeemedAt = _dateTimeProvider.Now;
                     prize.RedeemedBy = authUserId;
+                    prize.RedeemedByBranch = authUser.BranchId;
+                    prize.RedeemedBySystem = authUser.SystemId;
+
                     await _prizeWinnerRepository.UpdateSaveAsync(authUserId, prize);
                 }
             }

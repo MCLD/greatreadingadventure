@@ -18,6 +18,7 @@ namespace GRA.Domain.Service
         private readonly ISystemRepository _systemRepository;
         private readonly ITriggerRepository _triggerRepository;
         private readonly SiteLookupService _siteLookupService;
+
         public TriggerService(ILogger<TriggerService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
@@ -184,6 +185,12 @@ namespace GRA.Domain.Service
         public async Task<Trigger> GetByBadgeIdAsync(int badgeId)
         {
             return await _triggerRepository.GetByBadgeIdAsync(badgeId);
+        }
+
+        public async Task<ICollection<Trigger>> GetTriggersAwardingPrizesAsync()
+        {
+            VerifyPermission(Permission.ViewAllReporting);
+            return await _triggerRepository.GetTriggersAwardingPrizesAsync(GetCurrentSiteId());
         }
 
         private async Task ValidateTriggerAsync(Trigger trigger)
