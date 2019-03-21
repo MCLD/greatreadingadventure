@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 BLD_PUSH=false
 BLD_BRANCH_FOUND=false
 BLD_RELEASE=false
