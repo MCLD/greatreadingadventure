@@ -4,10 +4,17 @@
     {
         public static class Info
         {
+            public const string Goal = "The goal of this program is {0} points.";
             public const string LetYouKnowWhen = "Thanks! We'll let you know when you can join the program.";
             public const string ProgramEnded = "{0} has ended, please join us next time!";
             public const string RegistrationNotOpenYet = "Registration for {0} is not open yet.";
             public const string YouCanJoinOn = "You can join {0} on {1}.";
+        }
+
+        public static class Title
+        {
+            public const string Join = "Join";
+            public const string JoinNow = "{0} - Join Now!";
         }
 
         public static class Required
@@ -24,6 +31,7 @@
         {
             public const string BookTitle = "When providing an author of a book, please also provide a title.";
             public const string Branch = "The branch you've selected is not valid, please select another branch.";
+            public const string CouldNotCreate = "Could not create your account: {0}";
             public const string CouldNotLog = "Sorry, we couldn't log your activity: {0}";
             public const string Email = "The {0} field is not a valid e-mail address.";
             public const string EmailConfigured = "Username '{0}' does not have an email address configured.";
@@ -35,6 +43,12 @@
             public const string NotOpenActivity = "The program is not open for activity at this time.";
             public const string NotOpenSignins = "The program is not accepting sign-ins at this time.";
             public const string Password = "The provided password is incorrect.";
+            public const string PasswordIssue = "Please correct the issues with your password.";
+            public const string PasswordLength = "The password you've provided is too short, it must be at least {0} characters long.";
+            public const string PasswordRequiresDigit = "You must include a number in your password.";
+            public const string PasswordRequiresLowercase = "You must include a lowercase letter in your password.";
+            public const string PasswordRequiresUppercase = "You must include an uppercase letter in your password.";
+            public const string PasswordRequiresSymbol = "You must include a special character in your password.";
             public const string PasswordsMatch = "Password and password confirmation do not match.";
             public const string Permission = "Permission denied.";
             public const string Phone = "The {0} field is not a valid phone number.";

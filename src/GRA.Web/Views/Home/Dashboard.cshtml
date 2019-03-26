@@ -100,7 +100,7 @@
                     <p><a asp-controller="Profile" asp-action="History">@SharedLocalizer["See your activity history."]</a></p>
                     @if (Model.TotalProgramGoal.HasValue)
                     {
-                        <p style="font-size:large">My progress</p>
+                        <p style="font-size:large">@SharedLocalizer[GRA.DisplayNames.MyProgress]</p>
                         <div class="progress" style="margin:0px;">
                             <div class="progress-bar progress-bar-striped@(Model.PercentComplete == 100 ? " progress-bar-success" : "") wide-tooltip" 
                                     role="progressbar" 

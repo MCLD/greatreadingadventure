@@ -321,5 +321,10 @@ namespace GRA.Controllers.Base
             "Value",
             string.Empty);
         }
+
+        protected SelectList NameIdSelectList(System.Collections.IEnumerable listData)
+        {
+            return new SelectList(listData, "Id", "Name");
+        }
     }
 }
