@@ -37,7 +37,7 @@
                 <div class="panel-footer clearfix">
                     <div class="pull-right">
                         <button type="submit" class="btn btn-primary btn-lg btn-spinner">
-                            @SharedLocalizer["Final Step"] <span class="fa fa-arrow-right"></span>
+                            @SharedLocalizer[GRA.DisplayNames.FinalStep] <span class="fa fa-arrow-right"></span>
                             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                         </button>
                     </div>
@@ -101,7 +101,7 @@
                     message.removeClass('field-validation-valid field-validation-error text-danger');
                     message.addClass('text-primary');
                     $("#Age").removeClass("input-validation-error")
-                    message.text("@SharedLocalizer["This program may be better-suited to your age:"] " + program.Name)
+                    message.text("@SharedLocalizer[GRA.Annotations.Info.BetterSuitedOption] " + program.Name)
                 }
             }
             else

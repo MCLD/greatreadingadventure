@@ -213,7 +213,7 @@
     <value>Is this your first time participating?</value>
     <comment>Prompt for a participant about if this is their first time participating in the program.</comment>
   </data>
-  <data name="JavaScriptWarning" xml:space="preserve">
+  <data name="This website relies on JavaScript. Please enable JavaScript in your browser to get the best experience." xml:space="preserve">
     <value>This website relies on JavaScript. Please enable JavaScript in your browser to get the best experience.</value>
     <comment>Text to display if the user's browser does not have JavaScript functional</comment>
   </data>
@@ -385,8 +385,8 @@
     <value>Sign out</value>
     <comment>Navigation bar link to sign out</comment>
   </data>
-  <data name="Someone has already chosen that username." xml:space="preserve">
-    <value>Someone has already chosen that username.</value>
+  <data name="Someone has already chosen that username, please try another." xml:space="preserve">
+    <value>Someone has already chosen that username, please try another.</value>
     <comment>Validation prompt if the username is already in use.</comment>
   </data>
   <data name="Step {0}" xml:space="preserve">
@@ -624,5 +624,13 @@
   <data name="The goal of this program is {0} points." xml:space="preserve">
     <value>The goal of this program is {0} points.</value>
     <comment>Inform the user how many points are required to reach the goal of the program, {0} is replaced with a number of points.</comment>
+  </data>
+  <data name="The username and password entered do not match." xml:space="preserve">
+    <value>The username and password entered do not match.</value>
+    <comment>Prompt the user that the username and password entered are not accurate.</comment>
+  </data>
+  <data name="Sign in to {0}" xml:space="preserve">
+    <value>Sign in to {0}</value>
+    <comment>Prompt a user to sign in to the site, {0} is replaced with the name of the site</comment>
   </data>
 </root>

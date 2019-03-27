@@ -109,7 +109,7 @@
             <div class="row row-spacing">
                 <div class="col-xs-12">
                     <p>
-                        Email and Phone Number are not required however at least one is needed in order to be eligible for prizes.
+                        @GRA.Annotations.Validate.EmailPhoneNeededForPrizes
                     </p>
                 </div>
             </div>
@@ -187,7 +187,7 @@
 </form>
 
 @section scripts {
-    <script>
+<script>
         var programs = JSON.parse('@Html.Raw(Model.ProgramJson)');
         var selectedProgram = $.grep(programs, function(obj) {
             return obj.Id == $("#ProgramId").val();
@@ -280,7 +280,7 @@
                         $("#Username").addClass("input-validation-error");
                         $("#Username-Validation").removeClass("field-validation-valid");
                         $("#Username-Validation").addClass("field-validation-error");
-                        $("#Username-Validation").text("Someone has already chosen that username.");
+                        $("#Username-Validation").text("@GRA.Annotations.Validate.UsernameTaken");
                         icon.removeClass("fa-spinner fa-spin");
                         icon.addClass("fa-times");
                     }
@@ -297,7 +297,7 @@
         $("#Username").on("keypress", function () {
             $("#Username-Icon").addClass("hide");
         });
-    </script>
+</script>
 
     @await Html.PartialAsync("_SchoolSelectionScripts", Model)
 }

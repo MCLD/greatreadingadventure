@@ -19,6 +19,8 @@ namespace GRA.Controllers
         private readonly QuestionnaireService _questionnaireService;
         private readonly UserService _userService;
 
+        public static string Name { get { return "SignIn"; } }
+
         public SignInController(ILogger<SignInController> logger,
             ServiceFacade.Controller context,
             ActivityService activityService,
@@ -35,13 +37,13 @@ namespace GRA.Controllers
             _questionnaireService = questionnaireService
                 ?? throw new ArgumentNullException(nameof(questionnaireService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-            PageTitle = "Sign In";
+            PageTitle = _sharedLocalizer[Annotations.Title.SignIn];
         }
 
         public async Task<IActionResult> Index(string ReturnUrl = null)
         {
             var site = await GetCurrentSiteAsync();
-            PageTitle = $"Sign In to {site.Name}";
+            PageTitle = _sharedLocalizer[Annotations.Title.SignInTo, site.Name];
 
             var viewModel = new SignInViewModel
             {
@@ -69,7 +71,9 @@ namespace GRA.Controllers
                         _logger.LogTrace("Awarding triggers for {Username}", model.Username);
                         await _activityService.AwardUserTriggersAsync(loginAttempt.User.Id, true);
 
-                        _logger.LogTrace("Checking household count for {Username}", model.Username);
+                        _logger.LogTrace("Checking household count for {Username}",
+                            model.Username);
+
                         var householdCount = await _userService.FamilyMemberCountAsync(
                             loginAttempt.User.Id, true);
                         if (householdCount > 0)
@@ -109,18 +113,21 @@ namespace GRA.Controllers
                         }
                         else
                         {
-                            // if the user has Mission Control access and we aren't open, send to MC
-                            if (loginAttempt.PermissionNames.Contains(nameof(Domain.Model.Permission.AccessMissionControl))
+                            // if the user has MC access and we aren't open, send to MC
+                            if (loginAttempt
+                                .PermissionNames
+                                .Contains(nameof(Domain.Model.Permission.AccessMissionControl))
                                 && (GetSiteStage() == Domain.Model.SiteStage.BeforeRegistration
                                     || GetSiteStage() == Domain.Model.SiteStage.AccessClosed))
                             {
-                                return RedirectToAction(nameof(MissionControl.HomeController.Index),
-                                    "Home",
+                                return RedirectToAction(
+                                    nameof(MissionControl.HomeController.Index),
+                                    HomeController.Name,
                                     new { Area = nameof(MissionControl) });
                             }
                             else
                             {
-                                return RedirectToAction(nameof(Index), "Home");
+                                return RedirectToAction(nameof(Index), HomeController.Name);
                             }
                         }
                     }
@@ -131,9 +138,10 @@ namespace GRA.Controllers
                         model.Username,
                         gex.Message);
                     AlertInfo = gex.Message;
-                    return RedirectToAction(nameof(Index), "Home");
+                    return RedirectToAction(nameof(Index), HomeController.Name);
                 }
-                model.ErrorMessage = "The username and password entered do not match";
+                model.ErrorMessage
+                    = _sharedLocalizer[Annotations.Validate.UsernamePasswordMismatch];
             }
             return View(model);
         }
@@ -149,12 +157,12 @@ namespace GRA.Controllers
             if (string.IsNullOrWhiteSpace(username))
             {
                 ModelState.AddModelError("", _sharedLocalizer[Annotations.Required.Field,
-                    _sharedLocalizer["Username"]]);
+                    _sharedLocalizer[DisplayNames.Username]]);
             }
             if (ModelState.IsValid)
             {
-                string recoveryUrl = Url.Action("PasswordRecovery",
-                    "SignIn",
+                string recoveryUrl = Url.Action(nameof(PasswordRecovery),
+                    Name,
                     null,
                     HttpContext.Request.Scheme);
                 var result = await _authenticationService
@@ -162,11 +170,12 @@ namespace GRA.Controllers
 
                 if (result.Status == Domain.Service.Models.ServiceResultStatus.Success)
                 {
-                    AlertSuccess = _sharedLocalizer["A password recovery email has been sent to the email for username '{0}'.", username];
+                    AlertSuccess = _sharedLocalizer[Annotations.Info.PasswordRecoverySent,
+                        username];
                 }
                 else
                 {
-                    ShowAlertWarning(_sharedLocalizer["Unable to reset password: {0}",
+                    ShowAlertWarning(_sharedLocalizer[Annotations.Validate.UnableToReset,
                         _sharedLocalizer[result.Message, result.Arguments]]);
                 }
             }
@@ -183,18 +192,19 @@ namespace GRA.Controllers
         {
             if (string.IsNullOrWhiteSpace(email))
             {
-                ModelState.AddModelError("", "The Email field is required");
+                ModelState.AddModelError("", _sharedLocalizer[Annotations.Required.Field,
+                    _sharedLocalizer[DisplayNames.EmailAddress]]);
             }
             if (ModelState.IsValid)
             {
                 var result = await _authenticationService.EmailAllUsernames(email);
                 if (result.Status == Domain.Service.Models.ServiceResultStatus.Success)
                 {
-                    AlertSuccess = _sharedLocalizer["A list of usernames associated with the email address '{0}' has been sent.", email];
+                    AlertSuccess = _sharedLocalizer[Annotations.Info.UsernameListSent, email];
                 }
                 else
                 {
-                    ShowAlertWarning(_sharedLocalizer["Could not recover username(s): {0}",
+                    ShowAlertWarning(_sharedLocalizer[Annotations.Validate.CouldNotRecover,
                         _sharedLocalizer[result.Message, result.Arguments]]);
                 }
             }
@@ -222,12 +232,13 @@ namespace GRA.Controllers
                     model.Token);
                 if (result.Status == Domain.Service.Models.ServiceResultStatus.Success)
                 {
-                    AlertSuccess = _sharedLocalizer["Password reset for: {0}", model.Username];
-                    return RedirectToAction("Index");
+                    AlertSuccess = _sharedLocalizer[Annotations.Info.PasswordResetFor,
+                        model.Username];
+                    return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    ShowAlertWarning(_sharedLocalizer["Unable to reset password: {0}",
+                    ShowAlertWarning(_sharedLocalizer[Annotations.Validate.UnableToReset,
                         _sharedLocalizer[result.Message, result.Arguments]]);
                 }
             }

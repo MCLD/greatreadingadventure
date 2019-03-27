@@ -43,7 +43,7 @@
 </form>
 
 @section scripts {
-    <script>
+<script>
         $.validator.setDefaults({
             ignore: ".ignore"
         });
@@ -61,7 +61,7 @@
                         $("#Username").addClass("input-validation-error");
                         $("#Username-Validation").removeClass("field-validation-valid");
                         $("#Username-Validation").addClass("field-validation-error");
-                        $("#Username-Validation").text("Someone has already chosen that username.");
+                        $("#Username-Validation").text("@GRA.Annotations.Validate.UsernameTaken");
                         icon.removeClass("fa-spinner fa-spin");
                         icon.addClass("fa-times");
                     }
@@ -78,5 +78,5 @@
         $("#Username").on("keypress", function () {
             $("#Username-Icon").addClass("hide");
         });
-    </script>
+</script>
 }
