@@ -10,7 +10,6 @@ using GRA.Domain.Model;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -66,7 +65,7 @@ namespace GRA.Controllers
                 nameof(questionnaireService));
             _userService = Require.IsNotNull(userService, nameof(userService));
             _codeSanitizer = Require.IsNotNull(codeSanitizer, nameof(codeSanitizer));
-            PageTitle = _sharedLocalizer["Join"];
+            PageTitle = _sharedLocalizer[Annotations.Title.Join];
         }
 
         public async Task<IActionResult> Index()
@@ -81,7 +80,7 @@ namespace GRA.Controllers
             var site = await GetCurrentSiteAsync();
             if (!site.SinglePageSignUp)
             {
-                return RedirectToAction("Step1");
+                return RedirectToAction(nameof(Step1));
             }
             var siteStage = GetSiteStage();
 
@@ -100,16 +99,16 @@ namespace GRA.Controllers
                         AlertInfo = _sharedLocalizer[Annotations.Info.RegistrationNotOpenYet,
                             site.Name];
                     }
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
                 }
                 else if (siteStage >= SiteStage.ProgramEnded)
                 {
                     AlertInfo = _sharedLocalizer[Annotations.Info.ProgramEnded, site.Name];
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
                 }
             }
 
-            PageTitle = _sharedLocalizer["{0} - Join Now!", site.Name];
+            PageTitle = _sharedLocalizer[Annotations.Title.JoinNow, site.Name];
 
             var systemList = await _siteService.GetSystemList();
             var programList = await _siteService.GetProgramList();
@@ -118,10 +117,10 @@ namespace GRA.Controllers
             var viewModel = new SinglePageViewModel
             {
                 RequirePostalCode = site.RequirePostalCode,
-                ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject),
-                SystemList = new SelectList(systemList.ToList(), "Id", "Name"),
-                ProgramList = new SelectList(programList.ToList(), "Id", "Name"),
-                SchoolList = new SelectList(await _schoolService.GetSchoolsAsync(), "Id", "Name")
+                ProgramJson = JsonConvert.SerializeObject(programViewObject),
+                SystemList = NameIdSelectList(systemList.ToList()),
+                ProgramList = NameIdSelectList(programList.ToList()),
+                SchoolList = NameIdSelectList(await _schoolService.GetSchoolsAsync())
             };
 
             var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
@@ -161,7 +160,7 @@ namespace GRA.Controllers
                 {
                     viewModel.BranchId = branchList.SingleOrDefault()?.Id;
                 }
-                viewModel.BranchList = new SelectList(branchList.ToList(), "Id", "Name");
+                viewModel.BranchList = NameIdSelectList(branchList.ToList());
                 viewModel.SystemId = systemId;
             }
 
@@ -188,11 +187,11 @@ namespace GRA.Controllers
             var site = await GetCurrentSiteAsync();
             if (!site.SinglePageSignUp)
             {
-                return RedirectToAction("Step1");
+                return RedirectToAction(nameof(Step1));
             }
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.PostalCode))
             {
-                ModelState.AddModelError("PostalCode",
+                ModelState.AddModelError(nameof(model.PostalCode),
                     _sharedLocalizer[Annotations.Required.Field,
                         _sharedLocalizer[DisplayNames.ZipCode]]);
             }
@@ -241,8 +240,8 @@ namespace GRA.Controllers
                 if (program.SchoolRequired && !model.SchoolId.HasValue && !model.SchoolNotListed
                     && !model.IsHomeschooled)
                 {
-                    ModelState.AddModelError("SchoolId",
-                        _sharedLocalizer[Annotations.Required.Field, 
+                    ModelState.AddModelError(nameof(model.SchoolId),
+                        _sharedLocalizer[Annotations.Required.Field,
                             _sharedLocalizer[DisplayNames.School]]);
                 }
             }
@@ -324,7 +323,6 @@ namespace GRA.Controllers
                         {
                             var auth = await _authenticationService
                                 .RevalidateUserAsync(loginAttempt.User.Id);
-                            // TODO globalize
                             auth.Message = $"Code applied, you are a member of the role: {role}.";
                             await LoginUserAsync(auth);
                         }
@@ -345,21 +343,21 @@ namespace GRA.Controllers
                         TempData.Add(TempDataKey.UserJoined, true);
                     }
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
                 }
                 catch (GraException gex)
                 {
-                    ShowAlertDanger(_sharedLocalizer["Could not create your account: {0}",
-                        _sharedLocalizer[gex.Message]]);
-                    if (gex.Message.Contains("password"))
+                    ShowAlertDanger(_sharedLocalizer[Annotations.Validate.CouldNotCreate,
+                       _sharedLocalizer[gex.Message]]);
+                    if (gex.Message.Contains(nameof(model.Password)))
                     {
                         ModelState.AddModelError(DisplayNames.Password,
-                            _sharedLocalizer["Please correct the issues with your password."]);
+                            Annotations.Validate.PasswordIssue);
                     }
                 }
             }
 
-            PageTitle = _sharedLocalizer["{0} - Join Now!", site.Name];
+            PageTitle = _sharedLocalizer[Annotations.Title.JoinNow, site.Name];
 
             if (model.SystemId.HasValue)
             {
@@ -368,15 +366,15 @@ namespace GRA.Controllers
                 {
                     branchList = branchList.Prepend(new Branch() { Id = -1 });
                 }
-                model.BranchList = new SelectList(branchList.ToList(), "Id", "Name");
+                model.BranchList = NameIdSelectList(branchList.ToList());
             }
             var systemList = await _siteService.GetSystemList();
             var programList = await _siteService.GetProgramList();
             var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
-            model.SystemList = new SelectList(systemList.ToList(), "Id", "Name");
-            model.ProgramList = new SelectList(programList.ToList(), "Id", "Name");
-            model.SchoolList = new SelectList(await _schoolService.GetSchoolsAsync(), "Id", "Name");
-            model.ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject);
+            model.SystemList = NameIdSelectList(systemList.ToList());
+            model.ProgramList = NameIdSelectList(programList.ToList());
+            model.SchoolList = NameIdSelectList(await _schoolService.GetSchoolsAsync());
+            model.ProgramJson = JsonConvert.SerializeObject(programViewObject);
             model.RequirePostalCode = site.RequirePostalCode;
             model.ShowAge = askAge;
             model.ShowSchool = askSchool;
@@ -415,7 +413,7 @@ namespace GRA.Controllers
             var site = await GetCurrentSiteAsync();
             if (site.SinglePageSignUp)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
 
             if (!useAuthCode)
@@ -425,36 +423,36 @@ namespace GRA.Controllers
                 {
                     if (site.RegistrationOpens.HasValue)
                     {
-                        AlertInfo = _sharedLocalizer[Annotations.Info.YouCanJoinOn, 
-                            site.Name, 
+                        AlertInfo = _sharedLocalizer[Annotations.Info.YouCanJoinOn,
+                            site.Name,
                             site.RegistrationOpens.Value.ToString("d")];
-                        AlertInfo = $"You can join {site.Name} on {site.RegistrationOpens.Value.ToString("d")}";
                     }
                     else
                     {
-                        AlertInfo = $"Registration for {site.Name} has not opened yet";
+                        AlertInfo = _sharedLocalizer[Annotations.Info.RegistrationNotOpenYet,
+                            site.Name];
                     }
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
                 }
                 else if (siteStage >= SiteStage.ProgramEnded)
                 {
-                    AlertInfo = $"{site.Name} has ended, please join us next time!";
-                    return RedirectToAction("Index", "Home");
+                    AlertInfo = _sharedLocalizer[Annotations.Info.ProgramEnded, site.Name];
+                    return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
                 }
             }
 
-            PageTitle = _sharedLocalizer["{0} - Join Now!", site.Name];
+            PageTitle = _sharedLocalizer[Annotations.Title.JoinNow, site.Name];
 
             var systemList = await _siteService.GetSystemList();
             var viewModel = new Step1ViewModel
             {
                 RequirePostalCode = site.RequirePostalCode,
-                SystemList = new SelectList(systemList.ToList(), "Id", "Name")
+                SystemList = NameIdSelectList(systemList.ToList())
             };
 
             if (systemList.Count() == 1)
             {
-                var systemId = systemList.SingleOrDefault().Id;
+                var systemId = systemList.Single().Id;
                 var branchList = await _siteService.GetBranches(systemId);
                 if (branchList.Count() > 1)
                 {
@@ -462,15 +460,14 @@ namespace GRA.Controllers
                 }
                 else
                 {
-                    viewModel.BranchId = branchList.SingleOrDefault().Id;
+                    viewModel.BranchId = branchList.SingleOrDefault()?.Id;
                 }
-                viewModel.BranchList = new SelectList(branchList.ToList(), "Id", "Name");
+                viewModel.BranchList = NameIdSelectList(branchList.ToList());
                 viewModel.SystemId = systemId;
             }
             else
             {
-                viewModel.BranchList = new SelectList(await _siteService.GetAllBranches(true),
-                    "Id", "Name");
+                viewModel.BranchList = NameIdSelectList(await _siteService.GetAllBranches(true));
             }
 
             if (useAuthCode)
@@ -487,30 +484,31 @@ namespace GRA.Controllers
             var site = await GetCurrentSiteAsync();
             if (site.SinglePageSignUp)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.PostalCode))
             {
-                ModelState.AddModelError("PostalCode",
-                    _sharedLocalizer[Annotations.Required.Field, _sharedLocalizer["Zip Code"]]);
+                ModelState.AddModelError(nameof(model.PostalCode),
+                    _sharedLocalizer[Annotations.Required.Field,
+                    _sharedLocalizer[DisplayNames.ZipCode]]);
             }
-            if (model.SystemId.HasValue && model.BranchId.HasValue)
+            if (model.SystemId.HasValue
+                && model.BranchId.HasValue
+                && !await _siteService.ValidateBranch(model.BranchId.Value, model.SystemId.Value))
             {
-                if (!await _siteService.ValidateBranch(model.BranchId.Value, model.SystemId.Value))
-                {
-                    ModelState.AddModelError("BranchId", _sharedLocalizer[Annotations.Validate.Branch]);
-                }
+                ModelState.AddModelError(nameof(model.BranchId),
+                    _sharedLocalizer[Annotations.Validate.Branch]);
             }
 
             if (ModelState.IsValid)
             {
-                TempData[TempStep1] = Newtonsoft.Json.JsonConvert.SerializeObject(model);
-                return RedirectToAction("Step2");
+                TempData[TempStep1] = JsonConvert.SerializeObject(model);
+                return RedirectToAction(nameof(Step2));
             }
 
-            PageTitle = _sharedLocalizer["{0} - Join Now!", site.Name];
+            PageTitle = _sharedLocalizer[Annotations.Title.JoinNow, site.Name];
             var systemList = await _siteService.GetSystemList();
-            model.SystemList = new SelectList(systemList.ToList(), "Id", "Name");
+            model.SystemList = NameIdSelectList(systemList.ToList());
             if (model.SystemId.HasValue)
             {
                 var branchList = await _siteService.GetBranches(model.SystemId.Value);
@@ -518,12 +516,11 @@ namespace GRA.Controllers
                 {
                     branchList = branchList.Prepend(new Branch() { Id = -1 });
                 }
-                model.BranchList = new SelectList(branchList.ToList(), "Id", "Name");
+                model.BranchList = NameIdSelectList(branchList.ToList());
             }
             else if (systemList.Count() > 1)
             {
-                model.BranchList = new SelectList(await _siteService.GetAllBranches(true),
-                    "Id", "Name");
+                model.BranchList = NameIdSelectList(await _siteService.GetAllBranches(true));
             }
             model.RequirePostalCode = site.RequirePostalCode;
 
@@ -535,30 +532,30 @@ namespace GRA.Controllers
             var site = await GetCurrentSiteAsync();
             if (site.SinglePageSignUp)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
             if (!TempData.ContainsKey(TempStep1))
             {
-                return RedirectToAction("Step1");
+                return RedirectToAction(nameof(Step1));
             }
 
-            PageTitle = _sharedLocalizer["{0} - Join Now!", site.Name];
+            PageTitle = _sharedLocalizer[Annotations.Title.JoinNow, site.Name];
 
             var programList = await _siteService.GetProgramList();
             var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
 
             var viewModel = new Step2ViewModel
             {
-                ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject),
-                ProgramList = new SelectList(programList.ToList(), "Id", "Name"),
-                SchoolList = new SelectList(await _schoolService.GetSchoolsAsync(), "Id", "Name")
+                ProgramJson = JsonConvert.SerializeObject(programViewObject),
+                ProgramList = NameIdSelectList(programList.ToList()),
+                SchoolList = NameIdSelectList(await _schoolService.GetSchoolsAsync())
             };
 
             if (programList.Count() == 1)
             {
-                var programId = programList.SingleOrDefault().Id;
+                var programId = programList.Single().Id;
                 var program = await _siteService.GetProgramByIdAsync(programId);
-                viewModel.ProgramId = programList.SingleOrDefault().Id;
+                viewModel.ProgramId = programList.SingleOrDefault()?.Id;
                 viewModel.ShowAge = program.AskAge;
                 viewModel.ShowSchool = program.AskSchool;
             }
@@ -572,11 +569,11 @@ namespace GRA.Controllers
             var site = await GetCurrentSiteAsync();
             if (site.SinglePageSignUp)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
             if (!TempData.ContainsKey(TempStep1))
             {
-                return RedirectToAction("Step1");
+                return RedirectToAction(nameof(Step1));
             }
 
             bool askAge = false;
@@ -595,7 +592,9 @@ namespace GRA.Controllers
                 if (program.SchoolRequired && !model.SchoolId.HasValue && !model.SchoolNotListed
                     && !model.IsHomeschooled)
                 {
-                    ModelState.AddModelError("SchoolId", "The School field is required.");
+                    ModelState.AddModelError(nameof(model.SchoolId),
+                        _sharedLocalizer[Annotations.Required.Field,
+                        _sharedLocalizer[DisplayNames.School]]);
                 }
             }
 
@@ -621,17 +620,17 @@ namespace GRA.Controllers
                     model.SchoolId = null;
                 }
 
-                TempData[TempStep2] = Newtonsoft.Json.JsonConvert.SerializeObject(model);
-                return RedirectToAction("Step3");
+                TempData[TempStep2] = JsonConvert.SerializeObject(model);
+                return RedirectToAction(nameof(Step3));
             }
 
-            PageTitle = _sharedLocalizer["{0} - Join Now!", site.Name];
+            PageTitle = _sharedLocalizer[Annotations.Title.JoinNow, site.Name];
 
             var programList = await _siteService.GetProgramList();
             var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
-            model.ProgramList = new SelectList(programList.ToList(), "Id", "Name");
-            model.SchoolList = new SelectList(await _schoolService.GetSchoolsAsync(), "Id", "Name");
-            model.ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject);
+            model.ProgramList = NameIdSelectList(programList.ToList());
+            model.SchoolList = NameIdSelectList(await _schoolService.GetSchoolsAsync());
+            model.ProgramJson = JsonConvert.SerializeObject(programViewObject);
             model.ShowAge = askAge;
             model.ShowSchool = askSchool;
 
@@ -643,18 +642,18 @@ namespace GRA.Controllers
             var site = await GetCurrentSiteAsync();
             if (site.SinglePageSignUp)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
             if (!TempData.ContainsKey(TempStep1))
             {
-                return RedirectToAction("Step1");
+                return RedirectToAction(nameof(Step1));
             }
             else if (!TempData.ContainsKey(TempStep2))
             {
-                return RedirectToAction("Step2");
+                return RedirectToAction(nameof(Step2));
             }
 
-            PageTitle = _sharedLocalizer["{0} - Join Now!", site.Name];
+            PageTitle = _sharedLocalizer[Annotations.Title.JoinNow, site.Name];
 
             var viewModel = new Step3ViewModel();
 
@@ -714,7 +713,7 @@ namespace GRA.Controllers
                 {
                     ModelState.AddModelError(nameof(model.Email), " ");
                     ModelState.AddModelError(nameof(model.EmailSubscriptionRequested),
-                    "To receive email updates please supply an email address to send them to.");
+                    _sharedLocalizer[Annotations.Required.EmailForSubscription]);
                 }
             }
 
@@ -723,15 +722,15 @@ namespace GRA.Controllers
 
             if (site.SinglePageSignUp)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
             if (!TempData.ContainsKey(TempStep1))
             {
-                return RedirectToAction("Step1");
+                return RedirectToAction(nameof(Step1));
             }
             else if (!TempData.ContainsKey(TempStep2))
             {
-                return RedirectToAction("Step2");
+                return RedirectToAction(nameof(Step2));
             }
 
             if (ModelState.IsValid)
@@ -803,7 +802,6 @@ namespace GRA.Controllers
                         {
                             var auth = await _authenticationService
                                 .RevalidateUserAsync(loginAttempt.User.Id);
-                            // TODO globalize
                             auth.Message = $"Code applied, you are a member of the role: {role}.";
                             await LoginUserAsync(auth);
                         }
@@ -824,14 +822,16 @@ namespace GRA.Controllers
                         TempData.Add(TempDataKey.UserJoined, true);
                     }
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
                 }
                 catch (GraException gex)
                 {
-                    ShowAlertDanger("Could not create your account: ", gex);
-                    if (gex.Message.Contains("password"))
+                    ShowAlertDanger(_sharedLocalizer[Annotations.Validate.CouldNotCreate,
+                       _sharedLocalizer[gex.Message]]);
+                    if (gex.Message.Contains(nameof(model.Password)))
                     {
-                        ModelState.AddModelError("Password", "Please correct the issues with your password.");
+                        ModelState.AddModelError(DisplayNames.Password,
+                            Annotations.Validate.PasswordIssue);
                     }
                 }
             }
@@ -858,7 +858,7 @@ namespace GRA.Controllers
                 model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
             }
 
-            PageTitle = _sharedLocalizer["{0} - Join Now!", site.Name];
+            PageTitle = _sharedLocalizer[Annotations.Title.JoinNow, site.Name];
 
             return View(model);
         }
@@ -868,7 +868,7 @@ namespace GRA.Controllers
             if (TempData.ContainsKey(AuthCodeAttempts) && (int)TempData.Peek(AuthCodeAttempts) >= 5)
             {
                 ShowAlertDanger("Too many failed authorization attempts.");
-                return RedirectToAction(nameof(HomeController.Index), nameof(HomeController));
+                return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
             }
             var site = await GetCurrentSiteAsync();
             string siteLogoUrl = site.SiteLogoUrl
@@ -915,7 +915,7 @@ namespace GRA.Controllers
             if (TempData.ContainsKey(AuthCodeAttempts) && (int)TempData.Peek(AuthCodeAttempts) >= 5)
             {
                 ShowAlertDanger("Too many failed authorization attempts.");
-                return RedirectToAction(nameof(HomeController.Index), nameof(HomeController));
+                return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
             }
             ShowAlertDanger("Invalid authorization code.");
 

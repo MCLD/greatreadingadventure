@@ -585,4 +585,44 @@
     <value>The {0} field is not a valid phone number.</value>
     <comment>Validation prompt for an invalid telephone number.</comment>
   </data>
+  <data name="Join Now!" xml:space="preserve">
+    <value>Join Now!</value>
+    <comment>Shown on top of join page as participant signs up for the program after the name of the program and a hyphen (e.g. "The Great Reading Adventure - &lt;this message&gt;")</comment>
+  </data>
+  <data name="My progress" xml:space="preserve">
+    <value>My progress</value>
+    <comment>Display prior to progress bar showing the participant's progress in the program</comment>
+  </data>
+  <data name="Final Step" xml:space="preserve">
+    <value>Final Step</value>
+    <comment>Text inside a button to indicate clicking takes the user to the last step of a multi-step process.</comment>
+  </data>
+  <data name="Next Step" xml:space="preserve">
+    <value>Next Step</value>
+    <comment>Text inside a button to indicate clicking takes the user to the next step of a multi-step process. Often pictured next to a right arrow.</comment>
+  </data>
+  <data name="The password you've provided is too short, it must be at least {0} characters long." xml:space="preserve">
+    <value>The password you've provided is too short, it must be at least {0} characters long.</value>
+    <comment>Password provided is two short, {0} will be replaced with the required number of characters.</comment>
+  </data>
+  <data name="You must include a lowercase letter in your password." xml:space="preserve">
+    <value>You must include a lowercase letter in your password.</value>
+    <comment>Password provided does not contain a lowercase letter and must contain at least one.</comment>
+  </data>
+  <data name="You must include a number in your password." xml:space="preserve">
+    <value>You must include a number in your password.</value>
+    <comment>Password provided does not contain a digit and must contain at least one.</comment>
+  </data>
+  <data name="You must include a special character in your password." xml:space="preserve">
+    <value>You must include a special character in your password.</value>
+    <comment>Password provided does not contain any symbols (e.g. !, @, #) and must contain at least one.</comment>
+  </data>
+  <data name="You must include an uppercase letter in your password." xml:space="preserve">
+    <value>You must include an uppercase letter in your password.</value>
+    <comment>Password provided does not contain an uppercase letter and must contain at least one.</comment>
+  </data>
+  <data name="The goal of this program is {0} points." xml:space="preserve">
+    <value>The goal of this program is {0} points.</value>
+    <comment>Inform the user how many points are required to reach the goal of the program, {0} is replaced with a number of points.</comment>
+  </data>
 </root>

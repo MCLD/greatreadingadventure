@@ -28,11 +28,12 @@ namespace GRA.Controllers
         private readonly DailyLiteracyTipService _dailyLiteracyTipService;
         private readonly DashboardContentService _dashboardContentService;
         private readonly EmailReminderService _emailReminderService;
-        private readonly PageService _pageService;
         private readonly PerformerSchedulingService _performerSchedulingService;
         private readonly SiteService _siteService;
         private readonly UserService _userService;
         private readonly VendorCodeService _vendorCodeService;
+
+        public static string Name { get { return "Home"; } }
 
         public HomeController(ILogger<HomeController> logger,
             ServiceFacade.Controller context,
@@ -42,7 +43,6 @@ namespace GRA.Controllers
             DailyLiteracyTipService dailyLiteracyTipService,
             DashboardContentService dashboardContentService,
             EmailReminderService emailReminderService,
-            PageService pageService,
             PerformerSchedulingService performerSchedulingService,
             SiteService siteService,
             UserService userService,
@@ -62,7 +62,6 @@ namespace GRA.Controllers
                 ?? throw new ArgumentNullException(nameof(dashboardContentService));
             _emailReminderService = emailReminderService
                 ?? throw new ArgumentNullException(nameof(emailReminderService));
-            _pageService = pageService ?? throw new ArgumentNullException(nameof(pageService));
             _performerSchedulingService = performerSchedulingService
                 ?? throw new ArgumentNullException(nameof(performerSchedulingService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
@@ -88,7 +87,7 @@ namespace GRA.Controllers
                             || GetSiteStage() == SiteStage.AccessClosed)
                         {
                             return RedirectToAction(nameof(MissionControl.HomeController.Index),
-                                "Home",
+                                HomeController.Name,
                                 new { Area = nameof(MissionControl) });
                         }
                     }
@@ -101,7 +100,7 @@ namespace GRA.Controllers
                         {
                             TempData.Remove(TempDataKey.UserJoined);
                             return RedirectToAction(nameof(PerformerRegistration.HomeController.Index),
-                                "Home",
+                                HomeController.Name,
                                 new { Area = nameof(PerformerRegistration) });
                         }
                     }
@@ -238,7 +237,8 @@ namespace GRA.Controllers
                 {
                     viewModel.TotalProgramGoal = program.AchieverPointAmount;
                     viewModel.ActivityEarned = user.PointsEarned;
-                    viewModel.ProgressMessage = $"The goal of this program is {program.AchieverPointAmount} points.";
+                    viewModel.ProgressMessage
+                        = _sharedLocalizer[Annotations.Info.Goal, program.AchieverPointAmount];
                 }
                 viewModel.PercentComplete = Math.Min(
                         (int)(viewModel.ActivityEarned * 100 / viewModel.TotalProgramGoal), 100);
@@ -256,7 +256,6 @@ namespace GRA.Controllers
             }
             else
             {
-                // TODO handle pages if they are assigned in lieu of views
                 switch (GetSiteStage())
                 {
                     case SiteStage.BeforeRegistration:
@@ -308,7 +307,7 @@ namespace GRA.Controllers
                     .AddEmailReminderAsync(viewModel.Email, viewModel.SignUpSource);
                 ShowAlertInfo(_sharedLocalizer[Annotations.Info.LetYouKnowWhen, "envelope"]);
             }
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
@@ -328,12 +327,12 @@ namespace GRA.Controllers
             {
                 await LogoutUserAsync();
             }
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult LogActivity()
         {
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
 
         [Authorize]
@@ -389,7 +388,7 @@ namespace GRA.Controllers
                     ShowAlertDanger(_sharedLocalizer[Annotations.Validate.CouldNotLog, gex.Message]);
                 }
             }
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
 
         [Authorize]
@@ -404,7 +403,7 @@ namespace GRA.Controllers
             {
                 TempData[SecretCodeMessage] = gex.Message;
             }
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
 
         [ProducesResponseType(200, Type = typeof(string))]

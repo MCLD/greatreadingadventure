@@ -11,7 +11,9 @@
         public const string FirstName = "First Name";
         public const string Homeschooled = "Homeschooled";
         public const string IsFirstTime = "Is this your first time participating?";
+        public const string JoinNow = "Join Now!";
         public const string LastName = "Last Name";
+        public const string MyProgress = "My progress";
         public const string Password = "Password";
         public const string PhoneNumber = "Phone Number";
         public const string Program = "Program";
