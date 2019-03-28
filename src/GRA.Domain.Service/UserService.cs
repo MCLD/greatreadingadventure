@@ -6,6 +6,7 @@ using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Service
@@ -30,13 +31,11 @@ namespace GRA.Domain.Service
         private readonly ISystemRepository _systemRepository;
         private readonly IUserLogRepository _userLogRepository;
         private readonly IUserRepository _userRepository;
-        private readonly IVendorCodeRepository _vendorCodeRepository;
         private readonly ActivityService _activityService;
         private readonly EmailManagementService _emailManagementService;
-        private readonly SampleDataService _configurationService;
-        private readonly SchoolService _schoolService;
         private readonly SiteLookupService _siteLookupService;
         private readonly VendorCodeService _vendorCodeService;
+        private readonly IStringLocalizer<Resources.Shared> _sharedLocalizer;
 
         public UserService(ILogger<UserService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
@@ -59,50 +58,59 @@ namespace GRA.Domain.Service
             ISystemRepository systemRepository,
             IUserLogRepository userLogRepository,
             IUserRepository userRepository,
-            IVendorCodeRepository vendorCodeRepository,
             ActivityService activityService,
             EmailManagementService emailManagementService,
-            SampleDataService configurationService,
-            SchoolService schoolService,
             SiteLookupService siteLookupService,
-            VendorCodeService vendorCodeService)
+            VendorCodeService vendorCodeService,
+            IStringLocalizer<Resources.Shared> sharedLocalizer)
             : base(logger, dateTimeProvider, userContextProvider)
         {
-            _passwordValidator = Require.IsNotNull(passwordValidator, nameof(passwordValidator));
-            _authorizationCodeRepository = Require.IsNotNull(authorizationCodeRepository,
-                nameof(authorizationCodeRepository));
-            _badgeRepository = Require.IsNotNull(badgeRepository, nameof(badgeRepository));
-            _bookRepository = Require.IsNotNull(bookRepository, nameof(bookRepository));
-            _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
+            _passwordValidator = passwordValidator
+                ?? throw new ArgumentNullException(nameof(passwordValidator));
+            _authorizationCodeRepository = authorizationCodeRepository
+                ?? throw new ArgumentNullException(nameof(authorizationCodeRepository));
+            _badgeRepository = badgeRepository
+                ?? throw new ArgumentNullException(nameof(badgeRepository));
+            _bookRepository = bookRepository
+                ?? throw new ArgumentNullException(nameof(bookRepository));
+            _branchRepository = branchRepository
+                ?? throw new ArgumentNullException(nameof(branchRepository));
             _groupInfoRepository = groupInfoRepository
                 ?? throw new ArgumentNullException(nameof(groupInfoRepository));
             _groupTypeRepository = groupTypeRepository
                 ?? throw new ArgumentNullException(nameof(groupTypeRepository));
-            _mailRepository = Require.IsNotNull(mailRepository, nameof(mailRepository));
-            _notificationRepository = Require.IsNotNull(notificationRepository,
-                nameof(notificationRepository));
-            _prizeWinnerRepository = Require.IsNotNull(prizeWinnerRepository,
-                nameof(prizeWinnerRepository));
-            _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));
-            _requireQuestionnaireRepository = Require.IsNotNull(requireQuestionnaireRepository,
-                nameof(requireQuestionnaireRepository));
-            _roleRepository = Require.IsNotNull(roleRepository, nameof(roleRepository));
-            _schoolRepository = Require.IsNotNull(schoolRepository, nameof(schoolRepository));
-            _siteRepository = Require.IsNotNull(siteRepository, nameof(siteRepository));
-            _systemRepository = Require.IsNotNull(systemRepository, nameof(systemRepository));
-            _userLogRepository = Require.IsNotNull(userLogRepository, nameof(userLogRepository));
-            _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
-            _vendorCodeRepository = Require.IsNotNull(vendorCodeRepository, nameof(vendorCodeRepository));
-            _activityService = Require.IsNotNull(activityService, nameof(activityService));
-            _configurationService = Require.IsNotNull(configurationService,
-                nameof(configurationService));
+            _mailRepository = mailRepository
+                ?? throw new ArgumentNullException(nameof(mailRepository));
+            _notificationRepository = notificationRepository
+                ?? throw new ArgumentNullException(nameof(notificationRepository));
+            _prizeWinnerRepository = prizeWinnerRepository
+                ?? throw new ArgumentNullException(nameof(prizeWinnerRepository));
+            _programRepository = programRepository
+                ?? throw new ArgumentNullException(nameof(programRepository));
+            _requireQuestionnaireRepository = requireQuestionnaireRepository
+                ?? throw new ArgumentNullException(nameof(requireQuestionnaireRepository));
+            _roleRepository = roleRepository
+                ?? throw new ArgumentNullException(nameof(roleRepository));
+            _schoolRepository = schoolRepository
+                ?? throw new ArgumentNullException(nameof(schoolRepository));
+            _siteRepository = siteRepository
+                ?? throw new ArgumentNullException(nameof(siteRepository));
+            _systemRepository = systemRepository
+                ?? throw new ArgumentNullException(nameof(systemRepository));
+            _userLogRepository = userLogRepository
+                ?? throw new ArgumentNullException(nameof(userLogRepository));
+            _userRepository = userRepository
+                ?? throw new ArgumentNullException(nameof(userRepository));
+            _activityService = activityService
+                ?? throw new ArgumentNullException(nameof(activityService));
             _emailManagementService = emailManagementService
                 ?? throw new ArgumentNullException(nameof(emailManagementService));
-            _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
             _siteLookupService = siteLookupService
                 ?? throw new ArgumentNullException(nameof(siteLookupService));
             _vendorCodeService = vendorCodeService
-                ?? throw new ArgumentNullException(nameof(VendorCodeService));
+                ?? throw new ArgumentNullException(nameof(vendorCodeService));
+            _sharedLocalizer = sharedLocalizer
+                ?? throw new ArgumentNullException(nameof(sharedLocalizer));
         }
 
         public async Task<User> RegisterUserAsync(User user, string password,
@@ -372,7 +380,7 @@ namespace GRA.Domain.Service
 
                 if (currentEntity.IsSystemUser)
                 {
-                    if(!string.IsNullOrEmpty(userToUpdate.Username))
+                    if (!string.IsNullOrEmpty(userToUpdate.Username))
                     {
                         throw new GraException("The System Account cannot have a username configured.");
                     }
@@ -392,19 +400,17 @@ namespace GRA.Domain.Service
 
                     if (HasPermission(Permission.EditParticipantUsernames)
                         && !string.IsNullOrWhiteSpace(currentEntity.Username)
-                        && !string.IsNullOrWhiteSpace(userToUpdate.Username))
+                        && !string.IsNullOrWhiteSpace(userToUpdate.Username)
+                        && !string.Equals(userToUpdate.Username, currentEntity.Username,
+                            StringComparison.OrdinalIgnoreCase))
                     {
-                        if (!string.Equals(userToUpdate.Username, currentEntity.Username,
-                        System.StringComparison.OrdinalIgnoreCase))
+                        if (await UsernameInUseAsync(userToUpdate.Username))
                         {
-                            if (await UsernameInUseAsync(userToUpdate.Username))
-                            {
-                                throw new GraException("Username is in use by another user.");
-                            }
-                            else
-                            {
-                                currentEntity.Username = userToUpdate.Username?.Trim();
-                            }
+                            throw new GraException("Username is in use by another user.");
+                        }
+                        else
+                        {
+                            currentEntity.Username = userToUpdate.Username?.Trim();
                         }
                     }
                 }
@@ -645,13 +651,13 @@ namespace GRA.Domain.Service
                 var existingUser = await _userRepository.GetByUsernameAsync(memberToRegister.Username);
                 if (existingUser != null)
                 {
-                    throw new GraException("Someone has already chosen that username, please try another.");
+                    throw new GraException(_sharedLocalizer[Annotations.Validate.UsernameTaken]);
                 }
 
                 _passwordValidator.Validate(password);
 
                 user.Username = memberToRegister.Username?.Trim();
-                var registeredUser = await _userRepository.UpdateSaveAsync(authUserId, user);
+                await _userRepository.UpdateSaveAsync(authUserId, user);
                 await _userRepository
                     .SetUserPasswordAsync(authUserId, user.Id, password);
             }
@@ -713,7 +719,9 @@ namespace GRA.Domain.Service
 
             if (!authenticationResult.PasswordIsValid)
             {
-                throw new GraException("The username and password entered do not match");
+                throw new GraException(_sharedLocalizer[Annotations
+                    .Validate
+                    .UsernamePasswordMismatch]);
             }
             if (authenticationResult.User.Id == authUser.Id)
             {
@@ -802,7 +810,9 @@ namespace GRA.Domain.Service
 
             if (!authenticationResult.PasswordIsValid)
             {
-                throw new GraException("The username and password entered do not match");
+                throw new GraException(_sharedLocalizer[Annotations
+                    .Validate
+                    .UsernamePasswordMismatch]);
             }
             if (authenticationResult.User.Id == authUser.Id)
             {
@@ -1033,12 +1043,10 @@ namespace GRA.Domain.Service
             {
                 throw new GraException(Annotations.Validate.Program);
             }
-            if (user.SchoolId.HasValue)
+            if (user.SchoolId.HasValue
+                && !(await _schoolRepository.ValidateAsync(user.SchoolId.Value, user.SiteId)))
             {
-                if (!(await _schoolRepository.ValidateAsync(user.SchoolId.Value, user.SiteId)))
-                {
-                    throw new GraException(Annotations.Validate.School);
-                }
+                throw new GraException(Annotations.Validate.School);
             }
         }
 
@@ -1066,15 +1074,12 @@ namespace GRA.Domain.Service
         public async Task<GroupInfo> CreateGroup(int currentUserId,
             GroupInfo groupInfo)
         {
-            if (currentUserId != groupInfo.UserId)
+            if (currentUserId != groupInfo.UserId
+                && !HasPermission(Permission.EditParticipants))
             {
-                // verify user has modify users permission
-                if (!HasPermission(Permission.EditParticipants))
-                {
-                    int userId = GetClaimId(ClaimType.UserId);
-                    _logger.LogError($"User {userId} doesn't have permission to create a group.");
-                    throw new GraException("Permission denied.");
-                }
+                int userId = GetClaimId(ClaimType.UserId);
+                _logger.LogError($"User {userId} doesn't have permission to create a group.");
+                throw new GraException("Permission denied.");
             }
 
             var sanitizedGroupInfo = new GroupInfo
@@ -1084,20 +1089,16 @@ namespace GRA.Domain.Service
                 UserId = groupInfo.UserId
             };
 
-            return await _groupInfoRepository.AddSaveAsync(currentUserId, groupInfo);
+            return await _groupInfoRepository.AddSaveAsync(currentUserId, sanitizedGroupInfo);
         }
 
         public async Task<GroupInfo> UpdateGroupName(int currentUserId, GroupInfo groupInfo)
         {
-            if (currentUserId != groupInfo.UserId)
+            if (currentUserId != groupInfo.UserId && !HasPermission(Permission.EditParticipants))
             {
-                // verify user has modify users permission
-                if (!HasPermission(Permission.EditParticipants))
-                {
-                    int userId = GetClaimId(ClaimType.UserId);
-                    _logger.LogError($"User {userId} doesn't have permission to update a group name.");
-                    throw new GraException("Permission denied.");
-                }
+                int userId = GetClaimId(ClaimType.UserId);
+                _logger.LogError($"User {userId} doesn't have permission to update a group name.");
+                throw new GraException("Permission denied.");
             }
 
             var currentGroup = await _groupInfoRepository.GetByUserIdAsync(groupInfo.UserId);

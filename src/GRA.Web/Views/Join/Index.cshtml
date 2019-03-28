@@ -29,7 +29,7 @@
                         <div class="col-xs-12">
                             <label asp-for="Password" class="control-label"></label>
                             <p class="password-note">
-                                @SharedLocalizer["Your password must be at least 6 characters long and include a number."]
+                                @SharedLocalizer[GRA.Annotations.Validate.PasswordRequirement]
                             </p>
                             <input asp-for="Password" type="password" class="form-control" />
                             <span asp-validation-for="Password" class="text-danger"></span>
@@ -138,7 +138,7 @@
                     <div class="row row-spacing">
                         <div class="col-xs-12">
                             <p>
-                                @SharedLocalizer["Email and Phone Number are not required however at least one is needed in order to be eligible for prizes."]
+                                @SharedLocalizer[GRA.Annotations.Validate.EmailPhoneNeededForPrizes]
                             </p>
                         </div>
                     </div>
@@ -203,7 +203,7 @@
                 <div class="panel-footer clearfix">
                     <div class="pull-right">
                         <button type="submit" class="btn btn-primary btn-lg btn-spinner">
-                            <span class="fa fa-book"></span> @SharedLocalizer["Join!"]
+                            <span class="fa fa-book"></span> @SharedLocalizer[GRA.DisplayNames.JoinNow]
                             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                         </button>
                     </div>
@@ -285,7 +285,7 @@
                     message.removeClass('field-validation-valid field-validation-error text-danger');
                     message.addClass('text-primary');
                     $("#Age").removeClass("input-validation-error")
-                    message.text("@SharedLocalizer["This program may be better-suited to your age:"] " + program.Name);
+                    message.text("@SharedLocalizer[GRA.Annotations.Info.BetterSuitedOption] " + program.Name);
                 }
             }
             else
@@ -313,7 +313,7 @@
                     }
                     else {
                         $("#Username-Validation").removeClass("field-validation-valid");
-                        $("#Username-Validation").text("@SharedLocalizer["That username is available!"]");
+                        $("#Username-Validation").text("@SharedLocalizer[GRA.Annotations.Info.UsernameIsAvailable]");
                         icon.removeClass("fa-spinner fa-spin");
                         icon.addClass("fa-check");
                     }

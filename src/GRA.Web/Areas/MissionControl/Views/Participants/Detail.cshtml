@@ -241,7 +241,7 @@
 </form>
 
 @section scripts {
-    <script>
+<script>
         @if (!Model.CanEditDetails)
         {
         <text>
@@ -346,7 +346,7 @@
                             $("#User_Username").addClass("input-validation-error");
                             $("#Username-Validation").removeClass("field-validation-valid");
                             $("#Username-Validation").addClass("field-validation-error");
-                            $("#Username-Validation").text("Someone has already chosen that username.");
+                            $("#Username-Validation").text("@GRA.Annotations.Validate.UsernameTaken");
                             icon.removeClass("fa-spinner fa-spin");
                             icon.addClass("fa-times");
                         }
@@ -372,7 +372,7 @@
         });
         </text>
         }
-    </script>
+</script>
     @if (Model.CanEditDetails)
     {
         @await Html.PartialAsync("_SchoolSelectionScripts", Model);

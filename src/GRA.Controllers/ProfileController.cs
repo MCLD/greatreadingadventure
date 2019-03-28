@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.Profile;
 using GRA.Controllers.ViewModel.Shared;
@@ -53,23 +54,27 @@ namespace GRA.Controllers
             UserService userService,
             VendorCodeService vendorCodeService) : base(context)
         {
-            _logger = Require.IsNotNull(logger, nameof(logger));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = context.Mapper;
-            _activityService = Require.IsNotNull(activityService, nameof(activityService));
-            _authenticationService = Require.IsNotNull(authenticationService,
-                nameof(authenticationService));
-            _avatarService = Require.IsNotNull(avatarService, nameof(avatarService));
-            _dailyLiteracyTipService = Require.IsNotNull(dailyLiteracyTipService,
-                nameof(dailyLiteracyTipService));
-            _mailService = Require.IsNotNull(mailService, nameof(mailService));
-            _pointTranslationService = Require.IsNotNull(pointTranslationService,
-                nameof(pointTranslationService));
-            _questionnaireService = Require.IsNotNull(questionnaireService,
-                nameof(questionnaireService));
-            _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
-            _siteService = Require.IsNotNull(siteService, nameof(siteService));
-            _userService = Require.IsNotNull(userService, nameof(userService));
-            _vendorCodeService = Require.IsNotNull(vendorCodeService, nameof(vendorCodeService));
+            _activityService = activityService
+                ?? throw new ArgumentNullException(nameof(activityService));
+            _authenticationService = authenticationService
+                ?? throw new ArgumentNullException(nameof(authenticationService));
+            _avatarService = avatarService
+                ?? throw new ArgumentNullException(nameof(avatarService));
+            _dailyLiteracyTipService = dailyLiteracyTipService
+                ?? throw new ArgumentNullException(nameof(dailyLiteracyTipService));
+            _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
+            _pointTranslationService = pointTranslationService
+                ?? throw new ArgumentNullException(nameof(pointTranslationService));
+            _questionnaireService = questionnaireService
+                ?? throw new ArgumentNullException(nameof(questionnaireService));
+            _schoolService = schoolService
+                ?? throw new ArgumentNullException(nameof(schoolService));
+            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            _vendorCodeService = vendorCodeService
+                ?? throw new ArgumentNullException(nameof(vendorCodeService));
             PageTitle = "My Profile";
         }
 
@@ -1086,10 +1091,10 @@ namespace GRA.Controllers
                     var url = Url.Action("Detail", "Challenges", new { id = item.ChallengeId });
                     item.Description = $"<a target='_blank' href='{url}'>{item.Description}</a>";
                 }
+                var description = new StringBuilder(item.Description);
                 var itemModel = new HistoryItemViewModel
                 {
                     CreatedAt = item.CreatedAt.ToString("d"),
-                    Description = item.Description,
                     PointsEarned = item.PointsEarned,
                 };
                 if (!string.IsNullOrWhiteSpace(item.BadgeFilename))
@@ -1103,13 +1108,15 @@ namespace GRA.Controllers
                     if (bundle.AvatarItems.Count > 0)
                     {
                         itemModel.BadgeFilename = _pathResolver.ResolveContentPath(
-                            bundle.AvatarItems.FirstOrDefault().Thumbnail);
+                            bundle.AvatarItems.First().Thumbnail);
                         if (bundle.AvatarItems.Count > 1)
                         {
-                            itemModel.Description += $" <strong><a class=\"bundle-link\" data-id=\"{item.AvatarBundleId.Value}\">Click here</a></strong> to see all the items you unlocked.";
+                            description.AppendFormat(" <strong><a class=\"bundle-link\" data-id=\"{0}\">Click here</a></strong> to see all the items you unlocked.",
+                                item.AvatarBundleId.Value);
                         }
                     }
                 }
+                itemModel.Description = description.ToString();
                 viewModel.Historys.Add(itemModel);
             }
             return View(viewModel);
@@ -1157,7 +1164,8 @@ namespace GRA.Controllers
                 }
                 else
                 {
-                    model.ErrorMessage = "The username and password entered do not match";
+                    model.ErrorMessage
+                        = _sharedLocalizer[Annotations.Validate.UsernamePasswordMismatch];
                 }
             }
             return View(model);

@@ -25,7 +25,7 @@
                         <div class="col-xs-12">
                             <label asp-for="Password" class="control-label"></label>
                             <p class="password-note">
-                                @SharedLocalizer["Your password must be at least 6 characters long and include a number."]
+                                @SharedLocalizer[GRA.Annotations.Validate.PasswordRequirement]
                             </p>
                             <input asp-for="Password" type="password" class="form-control" />
                             <span asp-validation-for="Password" class="text-danger"></span>
@@ -45,7 +45,7 @@
                     <div class="row row-spacing">
                         <div class="col-xs-12">
                             <p>
-                                @SharedLocalizer["Email and Phone Number are not required however at least one is needed in order to be eligible for prizes."]
+                                @SharedLocalizer[GRA.Annotations.Validate.EmailPhoneNeededForPrizes]
                             </p>
                         </div>
                     </div>
@@ -135,13 +135,13 @@
                         $("#Username").addClass("input-validation-error");
                         $("#Username-Validation").removeClass("field-validation-valid");
                         $("#Username-Validation").addClass("field-validation-error");
-                        $("#Username-Validation").text("@SharedLocalizer["Someone has already chosen that username."]");
+                        $("#Username-Validation").text("@SharedLocalizer[GRA.Annotations.Validate.UsernameTaken]");
                         icon.removeClass("fa-spinner fa-spin");
                         icon.addClass("fa-times");
                     }
                     else {
                         $("#Username-Validation").removeClass("field-validation-valid");
-                        $("#Username-Validation").text("@SharedLocalizer["That username is available!"]");
+                        $("#Username-Validation").text("@SharedLocalizer[GRA.Annotations.Info.UsernameIsAvailable]");
                         icon.removeClass("fa-spinner fa-spin");
                         icon.addClass("fa-check");
                     }
