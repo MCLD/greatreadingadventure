@@ -59,8 +59,8 @@
                             if (Model.CanEditHousehold)
                             {
                                 <div class="alert alert-warning">Click below to create a @Context.Items[GRA.Controllers.ItemKey.HouseholdTitle].ToString().ToLower()</div>
-                                <a asp-action="AddHouseholdMember" class="btn btn-default">Add @Context.Items[GRA.Controllers.ItemKey.HouseholdTitle] Member</a>
-                                <a asp-action="AddExistingParticipant" class="btn btn-default">Add Existing Participant</a>
+                                <a asp-action="AddHouseholdMember" class="btn btn-default">Register new @Context.Items[GRA.Controllers.ItemKey.HouseholdTitle] Member</a>
+                                <a asp-action="AddExistingParticipant" class="btn btn-default">Add existing participant to your @Context.Items[GRA.Controllers.ItemKey.HouseholdTitle]</a>
                             }
                             else
                             {
@@ -69,6 +69,15 @@
                         }
                         else
                         {
+                            <div class="row" style="padding-bottom: 2rem;">
+                                <div class="col-xs-12">
+                                    @if (Model.AuthUserIsHead && Model.CanEditHousehold)
+                                    {
+                                        <a asp-action="AddHouseholdMember" class="btn btn-default">Register new @Context.Items[GRA.Controllers.ItemKey.HouseholdTitle] Member</a>
+                                        <a asp-action="AddExistingParticipant" class="btn btn-default">Add existing participant to your @Context.Items[GRA.Controllers.ItemKey.HouseholdTitle]</a>
+                                    }
+                                </div>
+                            </div>
                             <form id="form" asp-controller="Profile" method="post" role="form">
                                 @if (Model.AuthUserIsHead && Model.CanLogActivity)
                                 {
@@ -164,6 +173,10 @@
                                                 @if (Model.ShowVendorCodes)
                                                 {
                                                     <th>Book Code</th>
+                                                }
+                                                @if (Model.AuthUserIsHead && Model.CanEditHousehold)
+                                                {
+                                                    <th width="36px">&nbsp;</th>
                                                 }
                                             </tr>
                                             <tr class="warning @(Model.ActiveUser == Model.Head.Id ? "text-strong" : null)">
@@ -272,6 +285,10 @@
                                                             }
                                                         }
                                                     </td>
+                                                }
+                                                @if (Model.AuthUserIsHead && Model.CanEditHousehold)
+                                                {
+                                                    <td>&nbsp;</td>
                                                 }
                                             </tr>
                                         </thead>
@@ -407,101 +424,32 @@
                                                             }
                                                         </td>
                                                     }
+                                                    @if (Model.AuthUserIsHead && Model.CanEditHousehold)
+                                                    {
+                                                        <td>
+                                                            <a asp-action="@nameof(ProfileController.RemoveHouseholdMember)" asp-route-id="@user.Id" class="btn btn-xs btn-danger">
+                                                                <span class="fa fa-sign-out"></span>
+                                                            </a>
+                                                        </td>
+                                                    }
                                                 </tr>
                                             }
                                         </tbody>
                                     </table>
                                 </div>
-                                @if (Model.AuthUserIsHead && Model.CanLogActivity)
-                                {
-                                    <div class="row">
-                                        <div class="col-xs-12 col-sm-6 row-spacing">
-                                            <table>
-                                                <tr>
-                                                    @if (Model.PointTranslation.IsSingleEvent == false)
-                                                    {
-                                                        <td style="padding-right:6px;">@Model.PointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim()</td>
-                                                        <td width="80px" style="padding-right:6px;">
-                                                            <input data-action="HouseholdApplyActivity" value="" class="form-control activityInput" />
-                                                        </td>
-                                                    }
-                                                    <td>
-                                                        <button type="submit" class="btn btn-primary btn-spinner activityButton" data-action="HouseholdApplyActivity">
-                                                            <span>
-                                                                @if (Model.PointTranslation.IsSingleEvent)
-                                                                {
-                                                                    <span>
-                                                                        @($"{Model.PointTranslation.TranslationDescriptionPastTense.Replace("{0}", "1")} {Model.PointTranslation.ActivityDescription}")
-                                                                    </span>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <span>
-                                                                        @Model.PointTranslation.ActivityDescriptionPlural
-                                                                    </span>
-                                                                }
-                                                            </span>
-                                                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                @if (!string.IsNullOrWhiteSpace(Model.ActivityMessage))
-                                                {
-                                                    <tr>
-                                                        @if (Model.PointTranslation.IsSingleEvent == false)
-                                                        {
-                                                            <td>&nbsp;</td>
-                                                        }
-                                                        <td colspan="2">@Model.ActivityMessage</td>
-                                                    </tr>
-                                                }
-                                            </table>
-
-                                        </div>
-                                        @if (!Model.DisableSecretCode)
-                                        {
-                                            <div class="col-xs-12 col-sm-6 row-spacing">
-                                                <table>
-                                                    <tr>
-                                                        <td style="padding-right:6px;">Apply</td>
-                                                        <td width="200px">
-                                                            <input data-action="HouseholdApplySecretCode" class="form-control codeInput" />
-                                                        </td>
-                                                        <td style="padding-left:6px;">
-                                                            <button type="submit" class="btn btn-primary btn-spinner codeButton" data-action="HouseholdApplySecretCode">
-                                                                <span class="buttonText">Secret Code</span>
-                                                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                    @if (!string.IsNullOrWhiteSpace(Model.SecretCodeMessage))
-                                                    {
-                                                        <tr>
-                                                            <td>&nbsp;</td>
-                                                            <td colspan="2">@Html.Raw(Model.SecretCodeMessage)</td>
-                                                        </tr>
-                                                    }
-                                                </table>
-                                            </div>
-                                        }
-                                    </div>
-
-                                }
                             </form>
-                            @if (Model.AuthUserIsHead && Model.CanEditHousehold)
-                            {
-                                <a asp-action="AddHouseholdMember" class="btn btn-default">Register new @Context.Items[GRA.Controllers.ItemKey.HouseholdTitle] Member</a>
-                                <a asp-action="AddExistingParticipant" class="btn btn-default">Add existing participant to your @Context.Items[GRA.Controllers.ItemKey.HouseholdTitle]</a>
-                            }
                         }
                     </div>
                 </div>
+                @if (Model.HouseholdCount > 0)
+                {
+                    <a href="#" class="btn btn-default pull-right">Return to Top</a>
+                }
             </div>
         </div>
     </div>
 </div>
-@section scripts
-    {
+@section scripts {
     <script>
         var submitting = false;
 

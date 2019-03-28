@@ -21,8 +21,8 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public bool CanRemoveParticipant { get; set; }
         public bool CanSignUpParticipants { get; set; }
         public bool CanViewDetails { get; set; }
+        public bool ShowGroupsButton { get; set; }
         public System.Array SortUsers { get; set; }
-
 
         public IEnumerable<GRA.Domain.Model.Branch> BranchList { get; set; }
         public IEnumerable<GRA.Domain.Model.System> SystemList { get; set; }

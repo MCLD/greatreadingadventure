@@ -17,6 +17,15 @@ namespace GRA.Data.Repository
         {
         }
 
+        public async Task<GroupType> GetDefaultAsync(int siteid)
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.SiteId == siteid)
+                .OrderBy(_ => _.Id)
+                .ProjectTo<GroupType>()
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<IEnumerable<GroupType>> GetAllForListAsync(int siteId)
         {
             return await DbSet

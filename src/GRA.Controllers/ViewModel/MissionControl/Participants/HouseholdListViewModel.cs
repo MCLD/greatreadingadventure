@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using GRA.Domain.Model;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Participants
 {
@@ -8,6 +9,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public IEnumerable<GRA.Domain.Model.User> Users { get; set; }
         public int? HeadOfHouseholdId { get; set; }
         public bool CanEditDetails { get; set; }
+        public bool CanImportNewMembers { get; set; }
         public bool CanLogActivity { get; set; }
         public bool CanReadMail { get; set; }
         public bool CanViewPrizes { get; set; }
@@ -20,6 +22,9 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public string SecretCodeMessage { get; set; }
         public bool ShowVendorCodes { get; set; }
         public PointTranslation PointTranslation { get; set; }
+
+        public List<SelectListItem> HouseholdPrizeList { get; set; }
+        public string Prize { get; set; }
 
         public int SystemId { get; set; }
 

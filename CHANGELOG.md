@@ -22,6 +22,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Default "System Account" for system-created items
 - Show points earned in participant list
 - Report for tracking prize redemptions
+- Ability for participants to remove household members
+- Household bulk prize redemption
+- Group import from csv
+- Group lookup
 
 ### Changed
 - Script docker-build.bash to not build release images unless the branch starts with 'release/'
@@ -32,6 +36,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Improve school selection
 - 'Limit to program' in Challenges is now 'associate with program'
 - Participant progress bar to default to program goal is no personal reading goal is set
+- Household member list to be sorted alphabetically
+- Household page layout
 
 ### Fixed
 - Instance name enrichment for logging

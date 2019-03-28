@@ -46,6 +46,14 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
+        public async Task<PrizeWinner> GetUserDrawingPrizeAsync(int userId, int drawingId)
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.UserId == userId && _.DrawingId == drawingId)
+                .ProjectTo<PrizeWinner>()
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<PrizeWinner> GetUserTriggerPrizeAsync(int userId, int triggerId)
         {
             return await DbSet.AsNoTracking()
@@ -117,6 +125,60 @@ namespace GRA.Data.Repository
                 .Where(_ => _.RedeemedByBranch == branchId && _.TriggerId.HasValue
                     && triggerIds.Contains(_.TriggerId.Value))
                 .CountAsync();
+        }
+
+        public async Task<List<PrizeCount>> GetHouseholdUnredeemedPrizesAsync(int headId)
+        {
+            var householdMemberIds = _context.Users
+                .AsNoTracking()
+                .Where(_ => !_.IsDeleted && (_.Id == headId || _.HouseholdHeadUserId == headId))
+                .Select(_ => _.Id);
+
+            var prizeWinnerList = DbSet.AsNoTracking()
+                .Where(_ => !_.RedeemedAt.HasValue && householdMemberIds.Contains(_.UserId));
+
+            var prizeGroups = await (from prize in prizeWinnerList
+                                     group prize by new { prize.TriggerId, prize.DrawingId } into prizeGroup
+                                     select new
+                                     {
+                                         Count = prizeGroup.Count(),
+                                         prizeGroup.Key.DrawingId,
+                                         prizeGroup.Key.TriggerId
+
+                                     })
+                       .ToListAsync();
+
+            var prizeList = await (from prize in prizeWinnerList
+                                   join triggers in _context.Triggers on prize.TriggerId equals triggers.Id into t
+                                   from trigger in t.DefaultIfEmpty()
+                                   join drawings in _context.Drawings on prize.DrawingId equals drawings.Id into d
+                                   from drawing in d.DefaultIfEmpty()
+                                   select new
+                                   {
+                                       DrawingId = drawing != null ? (int?)drawing.Id : null,
+                                       TriggerId = trigger != null ? (int?)trigger.Id : null,
+                                       Name = drawing.Name ?? trigger.AwardPrizeName
+                                   })
+                       .Distinct()
+                       .ToListAsync();
+
+            return prizeList.Join(prizeGroups,
+                    list => list.DrawingId,
+                    group => group.DrawingId,
+                    (list, group) => new { list, group })
+                .Union(prizeList.Join(prizeGroups,
+                    list => list.TriggerId,
+                    group => group.TriggerId,
+                    (list, group) => new { list, group }))
+                .Select(_ => new PrizeCount
+                {
+                    Count = _.group.Count,
+                    Name = _.list.Name,
+                    DrawingId = _.group.DrawingId,
+                    TriggerId = _.group.TriggerId
+                })
+                .OrderBy(_ => _.Name)
+                .ToList();
         }
     }
 }

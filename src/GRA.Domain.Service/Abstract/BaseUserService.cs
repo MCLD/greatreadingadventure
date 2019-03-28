@@ -97,7 +97,7 @@ namespace GRA.Domain.Service.Abstract
             }
         }
 
-        protected void VerifyCanHouseholdAction()
+        public void VerifyCanHouseholdAction()
         {
             var userContext = GetUserContext();
             if (userContext.SiteStage != SiteStage.ProgramOpen

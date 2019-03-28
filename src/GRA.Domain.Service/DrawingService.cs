@@ -280,6 +280,15 @@ namespace GRA.Domain.Service
             }
         }
 
+        public async Task<string> GetDrawingNameAsync(int id)
+        {
+            VerifyPermission(Permission.ViewUserPrizes);
+
+            var drawing = await _drawingRepository.GetByIdAsync(id);
+
+            return drawing?.Name;
+        }
+
         private async Task ValidateCriterionAsync(DrawingCriterion criterion)
         {
             if (criterion.SystemId.HasValue)

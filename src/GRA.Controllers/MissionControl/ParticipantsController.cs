@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl.Participants;
 using GRA.Controllers.ViewModel.Shared;
@@ -22,12 +24,15 @@ namespace GRA.Controllers.MissionControl
         private const string ActivityMessage = "ActivityMessage";
         private const string SecretCodeMessage = "SecretCodeMessage";
         private const string VendorCodeMessage = "VendorCodeMessage";
+        private const string DrawingPrizeKey = "d";
+        private const string TriggerPrizeKey = "t";
 
         private readonly ILogger<ParticipantsController> _logger;
         private readonly AutoMapper.IMapper _mapper;
         private readonly ActivityService _activityService;
         private readonly AuthenticationService _authenticationService;
         private readonly AvatarService _avatarService;
+        private readonly DrawingService _drawingService;
         private readonly EmailManagementService _emailManagementService;
         private readonly GroupTypeService _groupTypeService;
         private readonly MailService _mailService;
@@ -38,6 +43,7 @@ namespace GRA.Controllers.MissionControl
         private readonly SchoolService _schoolService;
         private readonly SiteService _siteService;
         private readonly TriggerService _triggerService;
+        private readonly UserImportService _userImportService;
         private readonly UserService _userService;
         private readonly VendorCodeService _vendorCodeService;
 
@@ -46,6 +52,7 @@ namespace GRA.Controllers.MissionControl
             ActivityService activityService,
             AuthenticationService authenticationService,
             AvatarService avatarService,
+            DrawingService drawingService,
             EmailManagementService emailManagementService,
             GroupTypeService groupTypeService,
             MailService mailService,
@@ -56,33 +63,43 @@ namespace GRA.Controllers.MissionControl
             SchoolService schoolService,
             SiteService siteService,
             TriggerService triggerService,
+            UserImportService userImportService,
             UserService userService,
             VendorCodeService vendorCodeService)
             : base(context)
         {
-            _logger = Require.IsNotNull(logger, nameof(logger));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = context.Mapper;
-            _activityService = Require.IsNotNull(activityService, nameof(activityService));
-            _authenticationService = Require.IsNotNull(authenticationService,
-                nameof(authenticationService));
-            _avatarService = Require.IsNotNull(avatarService,
-                nameof(avatarService));
+            _activityService = activityService
+                ?? throw new ArgumentNullException(nameof(activityService));
+            _authenticationService = authenticationService
+                ?? throw new ArgumentNullException(nameof(authenticationService));
+            _avatarService = avatarService
+                ?? throw new ArgumentNullException(nameof(avatarService));
+            _drawingService = drawingService
+                ?? throw new ArgumentNullException(nameof(drawingService));
             _emailManagementService = emailManagementService
                 ?? throw new ArgumentNullException(nameof(emailManagementService));
             _groupTypeService = groupTypeService
                 ?? throw new ArgumentNullException(nameof(groupTypeService));
-            _mailService = Require.IsNotNull(mailService, nameof(mailService));
-            _pointTranslationService = Require.IsNotNull(pointTranslationService,
-                nameof(pointTranslationService));
-            _prizeWinnerService = Require.IsNotNull(prizeWinnerService, nameof(prizeWinnerService));
-            _questionnaireService = Require.IsNotNull(questionnaireService,
-                nameof(questionnaireService));
+            _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
+            _pointTranslationService = pointTranslationService
+                ?? throw new ArgumentNullException(nameof(pointTranslationService));
+            _prizeWinnerService = prizeWinnerService
+                ?? throw new ArgumentNullException(nameof(prizeWinnerService));
+            _questionnaireService = questionnaireService
+                ?? throw new ArgumentNullException(nameof(questionnaireService));
             _roleService = roleService ?? throw new ArgumentNullException(nameof(roleService));
-            _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
-            _siteService = Require.IsNotNull(siteService, nameof(siteService));
-            _triggerService = Require.IsNotNull(triggerService, nameof(triggerService));
-            _userService = Require.IsNotNull(userService, nameof(userService));
-            _vendorCodeService = Require.IsNotNull(vendorCodeService, nameof(vendorCodeService));
+            _schoolService = schoolService
+                ?? throw new ArgumentNullException(nameof(schoolService));
+            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
+            _triggerService = triggerService
+                ?? throw new ArgumentNullException(nameof(triggerService));
+            _userImportService = userImportService
+                ?? throw new ArgumentNullException(nameof(userImportService));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            _vendorCodeService = vendorCodeService
+                ?? throw new ArgumentNullException(nameof(vendorCodeService));
             PageTitle = "Participants";
         }
 
@@ -157,7 +174,7 @@ namespace GRA.Controllers.MissionControl
                 var branch = await _siteService.GetBranchByIdAsync(branchId.Value);
                 viewModel.BranchName = branch.Name;
                 viewModel.SystemName = systemList
-                    .SingleOrDefault(_ => _.Id == branch.SystemId).Name;
+                    .SingleOrDefault(_ => _.Id == branch.SystemId)?.Name;
                 viewModel.BranchList = (await _siteService.GetBranches(branch.SystemId))
                     .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
                     .ThenBy(_ => _.Name);
@@ -166,7 +183,7 @@ namespace GRA.Controllers.MissionControl
             else if (systemId.HasValue)
             {
                 viewModel.SystemName = systemList
-                    .SingleOrDefault(_ => _.Id == systemId.Value).Name;
+                    .SingleOrDefault(_ => _.Id == systemId.Value)?.Name;
                 viewModel.BranchList = (await _siteService.GetBranches(systemId.Value))
                     .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
                     .ThenBy(_ => _.Name);
@@ -189,6 +206,12 @@ namespace GRA.Controllers.MissionControl
             if (siteStage == SiteStage.RegistrationOpen || siteStage == SiteStage.ProgramOpen)
             {
                 viewModel.CanSignUpParticipants = true;
+            }
+
+            if (UserHasPermission(Permission.ViewGroupList)
+                && await IsSiteSettingSetAsync(SiteSettingKey.Users.MaximumHouseholdSizeBeforeGroup))
+            {
+                viewModel.ShowGroupsButton = true;
             }
 
             return View(viewModel);
@@ -250,7 +273,7 @@ namespace GRA.Controllers.MissionControl
 
             if (systemList.Count() == 1)
             {
-                var systemId = systemList.SingleOrDefault().Id;
+                var systemId = systemList.Single().Id;
                 var branchList = await _siteService.GetBranches(systemId);
                 if (branchList.Count() > 1)
                 {
@@ -258,7 +281,7 @@ namespace GRA.Controllers.MissionControl
                 }
                 else
                 {
-                    viewModel.BranchId = branchList.SingleOrDefault().Id;
+                    viewModel.BranchId = branchList.SingleOrDefault()?.Id;
                 }
                 viewModel.BranchList = new SelectList(branchList.ToList(), "Id", "Name");
                 viewModel.SystemId = systemId;
@@ -266,9 +289,9 @@ namespace GRA.Controllers.MissionControl
 
             if (programList.Count() == 1)
             {
-                var programId = programList.SingleOrDefault().Id;
+                var programId = programList.Single().Id;
                 var program = await _siteService.GetProgramByIdAsync(programId);
-                viewModel.ProgramId = programList.SingleOrDefault().Id;
+                viewModel.ProgramId = programList.SingleOrDefault()?.Id;
                 viewModel.ShowAge = program.AskAge;
                 viewModel.ShowSchool = program.AskSchool;
             }
@@ -422,7 +445,7 @@ namespace GRA.Controllers.MissionControl
             model.RequirePostalCode = site.RequirePostalCode;
             model.ShowAge = askAge;
             model.ShowSchool = askSchool;
-            
+
             if (askIfFirstTime)
             {
                 model.AskFirstTime = EmptyNoYes();
@@ -503,7 +526,7 @@ namespace GRA.Controllers.MissionControl
                     ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject),
                     BranchList = new SelectList(branchList.ToList(), "Id", "Name"),
                     ProgramList = new SelectList(programList.ToList(), "Id", "Name"),
-                    SchoolList = new SelectList(await _schoolService.GetSchoolsAsync(), 
+                    SchoolList = new SelectList(await _schoolService.GetSchoolsAsync(),
                         "Id", "Name"),
                     SchoolId = user.SchoolId,
                     IsHomeschooled = user.IsHomeschooled,
@@ -849,7 +872,7 @@ namespace GRA.Controllers.MissionControl
                     await _mailService.SendUserBroadcastsAsync(head.Id, true);
                     head.HasNewMail = await _mailService.UserHasUnreadAsync(head.Id);
                 }
-                if (ViewUserPrizes && UserHasPermission(Permission.ViewUserPrizes))
+                if (ViewUserPrizes)
                 {
                     head.HasUnclaimedPrize = (await _prizeWinnerService
                         .GetUserWinCount(head.Id, false)) > 0;
@@ -872,6 +895,7 @@ namespace GRA.Controllers.MissionControl
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
                     HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                     CanEditDetails = UserHasPermission(Permission.EditParticipants),
+                    CanImportNewMembers = UserHasPermission(Permission.ImportHouseholdMembers),
                     CanLogActivity = UserHasPermission(Permission.LogActivityForAny),
                     CanReadMail = ReadAllMail,
                     CanViewPrizes = ViewUserPrizes,
@@ -887,9 +911,29 @@ namespace GRA.Controllers.MissionControl
                         SiteSettingKey.Users.AskEmailSubPermission)
                 };
 
-                if (UserHasPermission(Permission.ViewUserPrizes))
+                if (ViewUserPrizes)
                 {
                     viewModel.PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false);
+
+                    var prizeList = await _prizeWinnerService
+                        .GetHouseholdUnredeemedPrizesAsync(head.Id);
+                    var prizeSelectList = new List<SelectListItem>();
+                    foreach (var prize in prizeList)
+                    {
+                        var prizeName = $"{prize.Name} ({prize.Count})";
+                        string prizeId;
+                        if (prize.DrawingId.HasValue)
+                        {
+                            prizeId = $"{DrawingPrizeKey}{prize.DrawingId}";
+                        }
+                        else
+                        {
+                            prizeId = $"{TriggerPrizeKey}{prize.TriggerId}";
+                        }
+                        prizeSelectList.Add(new SelectListItem(prizeName, prizeId));
+                    }
+
+                    viewModel.HouseholdPrizeList = prizeSelectList;
                 }
                 if (UserHasPermission(Permission.ManageRoles) && viewModel.HasAccount)
                 {
@@ -906,8 +950,7 @@ namespace GRA.Controllers.MissionControl
                 }
 
                 var groupInfo
-                    = await _userService.GetGroupFromHouseholdHeadAsync(user.HouseholdHeadUserId
-                    ?? user.Id);
+                    = await _userService.GetGroupFromHouseholdHeadAsync(head.Id);
 
                 if (groupInfo != null)
                 {
@@ -1092,7 +1135,7 @@ namespace GRA.Controllers.MissionControl
                     ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject),
                     BranchList = new SelectList(branchList.ToList(), "Id", "Name"),
                     ProgramList = new SelectList(programList.ToList(), "Id", "Name"),
-                    SchoolList = new SelectList(await _schoolService.GetSchoolsAsync(), 
+                    SchoolList = new SelectList(await _schoolService.GetSchoolsAsync(),
                         "Id", "Name"),
                     SystemList = new SelectList(systemList.ToList(), "Id", "Name")
                 };
@@ -1415,6 +1458,418 @@ namespace GRA.Controllers.MissionControl
 
             return PartialView("_ParticipantListPartial", viewModel);
         }
+
+        [Authorize(Policy = Policy.ImportHouseholdMembers)]
+        public async Task<IActionResult> HouseholdImport(int id)
+        {
+            try
+            {
+                _userService.VerifyCanHouseholdAction();
+
+                var headOfHousehold = await _userService.GetDetails(id);
+                if (headOfHousehold.HouseholdHeadUserId != null)
+                {
+                    return RedirectToAction(nameof(HouseholdImport),
+                        new { id = headOfHousehold.Id });
+                }
+
+                var branchList = await _siteService.GetBranches(headOfHousehold.SystemId);
+                var systemList = await _siteService.GetSystemList();
+                var programList = await _siteService.GetProgramList();
+                var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
+
+                var viewModel = new HouseholdImportViewModel
+                {
+                    Id = id,
+                    SystemId = headOfHousehold.SystemId,
+                    BranchId = headOfHousehold.BranchId,
+                    ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject),
+                    BranchList = new SelectList(branchList.ToList(), "Id", "Name"),
+                    ProgramList = new SelectList(programList.ToList(), "Id", "Name"),
+                    SchoolList = new SelectList(await _schoolService.GetSchoolsAsync(),
+                            "Id", "Name"),
+                    SystemList = new SelectList(systemList.ToList(), "Id", "Name")
+                };
+
+                var askIfFirstTime
+                        = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
+                if (askIfFirstTime)
+                {
+                    viewModel.AskFirstTime = EmptyNoYes();
+                }
+
+                var groupInfo = await _userService
+                    .GetGroupFromHouseholdHeadAsync(headOfHousehold.Id);
+
+                string callIt = groupInfo == null ? "Family" : "Group";
+                SetPageTitle(headOfHousehold, $"Import {callIt} Members");
+
+                return View(viewModel);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning("Unable to edit participant's family/group: ", gex);
+                return RedirectToAction("Index");
+            }
+        }
+
+        [Authorize(Policy = Policy.ImportHouseholdMembers)]
+        [HttpPost]
+        public async Task<IActionResult> HouseholdImport(HouseholdImportViewModel model)
+        {
+            try
+            {
+                _userService.VerifyCanHouseholdAction();
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning("Unable to edit participant's family/group: ", gex);
+                return RedirectToAction("Index");
+            }
+
+            var headOfHousehold = await _userService.GetDetails(model.Id);
+            if (headOfHousehold.HouseholdHeadUserId != null)
+            {
+                headOfHousehold = await _userService
+                    .GetDetails(headOfHousehold.HouseholdHeadUserId.Value);
+            }
+
+            var groupInfo = await _userService.GetGroupFromHouseholdHeadAsync(headOfHousehold.Id);
+            string callIt = groupInfo == null ? "Family" : "Group";
+
+            var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
+            if (!askIfFirstTime)
+            {
+                ModelState.Remove(nameof(model.IsFirstTime));
+            }
+
+            bool askSchool = false;
+            if (model.ProgramId.HasValue)
+            {
+                var program = await _siteService.GetProgramByIdAsync(model.ProgramId.Value);
+                askSchool = program.AskSchool;
+                if (program.SchoolRequired && !model.SchoolId.HasValue && !model.SchoolNotListed
+                    && !model.IsHomeschooled)
+                {
+                    ModelState.AddModelError("SchoolId", "The School field is required.");
+                }
+            }
+
+            if (model.UserCsvFile != null && !ValidCsvExtensions
+                .Contains(Path.GetExtension(model.UserCsvFile.FileName).ToLowerInvariant()))
+            {
+                ModelState.AddModelError("UserCsvFile", "File must be a .csv file.");
+            }
+
+            if (ModelState.IsValid)
+            {
+                var userImportResult = new UserImportResult();
+                using (var streamReader = new StreamReader(model.UserCsvFile.OpenReadStream()))
+                {
+                    userImportResult = await _userImportService.GetFromCsvAsync(streamReader,
+                        model.ProgramId.Value);
+                }
+
+                if (userImportResult.Errors?.Count > 0)
+                {
+                    var errorMessages = new StringBuilder("<ul>");
+                    foreach (var error in userImportResult.Errors)
+                    {
+                        errorMessages.Append("<li>").Append(error).Append("</li>");
+                    }
+
+                    errorMessages.Append("</ul>");
+
+                    ShowAlertDanger("Could not import users due to the following error(s):",
+                        errorMessages.ToString());
+                }
+                else if (userImportResult == null || userImportResult.Users.Count == 0)
+                {
+                    ShowAlertWarning("No users to add found.");
+                }
+                else
+                {
+                    bool isFirstTime = askIfFirstTime && model.IsFirstTime?.Equals(DropDownTrueValue,
+                        StringComparison.OrdinalIgnoreCase) == true;
+
+                    int? schoolId = null;
+                    bool isHomeSchooled = false;
+                    bool schoolNotListed = false;
+                    if (askSchool)
+                    {
+                        if (model.IsHomeschooled)
+                        {
+                            isHomeSchooled = true;
+                        }
+                        else if (model.SchoolNotListed)
+                        {
+                            schoolNotListed = true;
+                        }
+                        else if (model.SchoolId.HasValue)
+                        {
+                            schoolId = model.SchoolId;
+                        }
+                    }
+
+                    var users = new List<User>();
+                    foreach (var user in userImportResult.Users)
+                    {
+                        users.Add(new User
+                        {
+                            Age = user.Age,
+                            BranchId = model.BranchId.Value,
+                            FirstName = user.FirstName,
+                            IsFirstTime = isFirstTime,
+                            IsHomeschooled = isHomeSchooled,
+                            LastName = user.LastName,
+                            PostalCode = headOfHousehold.PostalCode,
+                            ProgramId = model.ProgramId.Value,
+                            SchoolId = schoolId,
+                            SchoolNotListed = schoolNotListed,
+                            SystemId = model.SystemId.Value
+                        });
+                    }
+
+                    bool upgradedToGroup = false;
+                    if (groupInfo == null)
+                    {
+                        var householdLimitExceeded = await _userService
+                            .UsersToAddExceedsHouseholdLimitAsync(headOfHousehold.Id, users.Count);
+
+                        if (householdLimitExceeded)
+                        {
+                            var defaultGroupType = await _userService.GetDefaultGroupTypeAsync();
+                            if (defaultGroupType == null)
+                            {
+                                _logger.LogError($"Household import for {headOfHousehold.Id} should be forced to make a group but no group types are configured");
+                            }
+                            else
+                            {
+                                var group = new GroupInfo
+                                {
+                                    GroupTypeId = defaultGroupType.Id,
+                                    Name = $"{headOfHousehold.FullName}'s Group",
+                                    UserId = headOfHousehold.Id
+                                };
+
+                                await _userService.CreateGroup(GetId(ClaimType.UserId), group);
+
+                                upgradedToGroup = true;
+                            }
+                        }
+                    }
+
+                    foreach (var user in users)
+                    {
+                        await _userService.AddHouseholdMemberAsync(headOfHousehold.Id, user);
+                    }
+
+                    if (upgradedToGroup)
+                    {
+                        ShowAlertSuccess($"{users.Count} members added and upgraded to group!");
+                        return RedirectToAction(nameof(UpdateGroup), new { id = headOfHousehold.Id });
+                    }
+                    else
+                    {
+                        ShowAlertSuccess($"{users.Count} members added to {callIt}!");
+                        return RedirectToAction(nameof(Household), new { id = headOfHousehold.Id });
+                    }
+                }
+            }
+
+            model.BranchList = new SelectList(await _siteService
+                    .GetBranches(headOfHousehold.SystemId), "Id", "Name");
+            model.SystemList = new SelectList(await _siteService.GetSystemList(), "Id", "Name");
+
+            var programList = await _siteService.GetProgramList();
+            var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
+            model.ProgramList = new SelectList(programList, "Id", "Name");
+            model.ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject);
+
+            if (askIfFirstTime)
+            {
+                model.AskFirstTime = EmptyNoYes();
+            }
+
+            SetPageTitle(headOfHousehold, $"Import {callIt} Members");
+
+            return View(model);
+        }
+
+        [Authorize(Policy = Policy.ViewUserPrizes)]
+        public async Task<IActionResult> HouseholdPrize(int id, string prize)
+        {
+            try
+            {
+                if (prize == null || prize.Length < 2)
+                {
+                    throw new GraException("No prize selected");
+                }
+
+                var user = await _userService.GetDetails(id);
+                SetPageTitle(user);
+
+                var head = user.HouseholdHeadUserId.HasValue
+                    ? await _userService.GetDetails(user.HouseholdHeadUserId.Value)
+                    : user;
+
+                var prizeKey = prize.Substring(0, 1);
+                var prizeValue = prize.Substring(1);
+
+                int? drawingId = null;
+                int? triggerId = null;
+                var prizeName = string.Empty;
+
+                if (int.TryParse(prizeValue, out int prizeId))
+                {
+                    if (string.Equals(prizeKey, DrawingPrizeKey,
+                        StringComparison.OrdinalIgnoreCase))
+                    {
+                        var drawingName = await _drawingService.GetDrawingNameAsync(prizeId);
+                        if (string.IsNullOrWhiteSpace(drawingName))
+                        {
+                            throw new GraException("Prize not found.");
+                        }
+
+                        drawingId = prizeId;
+                        prizeName = drawingName;
+                    }
+                    else if (string.Equals(prizeKey, TriggerPrizeKey,
+                        StringComparison.OrdinalIgnoreCase))
+                    {
+                        var triggerName = await _triggerService.GetTriggerPrizeNameAsync(prizeId);
+                        if (string.IsNullOrWhiteSpace(triggerName))
+                        {
+                            throw new GraException("Prize not found.");
+                        }
+
+                        triggerId = prizeId;
+                        prizeName = triggerName;
+                    }
+                    else
+                    {
+                        throw new GraException("Invalid prize selected");
+                    }
+                }
+                else
+                {
+                    throw new GraException("Invalid prize selected");
+                }
+
+                var users = await _userService.GetHouseholdUsersWithAvailablePrizeAsync(head.Id,
+                    drawingId, triggerId);
+
+                if (users.Count == 0)
+                {
+                    throw new GraException("No members with the specified prize.");
+                }
+
+                var viewModel = new HouseholdPrizeViewModel
+                {
+                    Id = id,
+                    DrawingId = drawingId,
+                    TriggerId = triggerId,
+                    PrizeName = prizeName,
+                    Users = users
+                };
+
+                var groupInfo
+                    = await _userService.GetGroupFromHouseholdHeadAsync(head.Id);
+
+                if (groupInfo != null)
+                {
+                    viewModel.GroupName = groupInfo.Name;
+                }
+
+                return View(viewModel);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to redeem household prize: ", gex);
+                return RedirectToAction(nameof(Household), new { id });
+            }
+        }
+
+        [Authorize(Policy = Policy.ViewUserPrizes)]
+        [HttpPost]
+        public async Task<IActionResult> HouseholdPrize(HouseholdPrizeViewModel model)
+        {
+            var user = await _userService.GetDetails(model.Id);
+            SetPageTitle(user);
+
+            var head = user.HouseholdHeadUserId.HasValue
+                ? await _userService.GetDetails(user.HouseholdHeadUserId.Value)
+                : user;
+
+            var selectedUsers = model.UserSelection
+                    .Split(',')
+                    .Where(_ => !string.IsNullOrWhiteSpace(_))
+                    .Select(int.Parse)
+                    .Distinct()
+                    .ToList();
+
+            var users = await _userService.GetHouseholdUsersWithAvailablePrizeAsync(head.Id,
+                    model.DrawingId, model.TriggerId);
+
+            var prizeUsers = users.Where(_ => selectedUsers.Contains(_.Id));
+            if (prizeUsers.Any())
+            {
+                int redeemedCount = 0;
+                int unredeemedCount = 0;
+                foreach (var prizeUser in prizeUsers)
+                {
+                    PrizeWinner prize;
+                    if (model.DrawingId.HasValue)
+                    {
+                        prize = await _prizeWinnerService
+                            .GetUserDrawingPrizeAsync(prizeUser.Id, model.DrawingId.Value);
+                    }
+                    else
+                    {
+                        prize = await _prizeWinnerService
+                            .GetUserTriggerPrizeAsync(prizeUser.Id, model.TriggerId.Value);
+                    }
+
+                    try
+                    {
+                        await _prizeWinnerService.RedeemPrizeAsync(prize.Id);
+                        redeemedCount++;
+                    }
+                    catch (GraException)
+                    {
+                        unredeemedCount++;
+                    }
+                }
+
+                if (redeemedCount == 0)
+                {
+                    ShowAlertDanger($"Prize <strong>{model.PrizeName}</strong> could not be redeemed for any of the selected members.");
+                }
+                else if (unredeemedCount == 0)
+                {
+                    ShowAlertSuccess($"Prize <strong>{model.PrizeName}</strong> redeemed for <strong>{redeemedCount}</strong> members.");
+                }
+                else
+                {
+                    ShowAlertWarning($"Prize <strong>{model.PrizeName}</strong> redeemed for <strong>{redeemedCount}</strong> of <strong>{prizeUsers.Count()}</strong> selected members.");
+                }
+
+                return RedirectToAction(nameof(Household), new { id = model.Id });
+            }
+
+            ShowAlertDanger("No members were selected");
+            model.Users = users;
+
+            var groupInfo
+                    = await _userService.GetGroupFromHouseholdHeadAsync(head.Id);
+
+            if (groupInfo != null)
+            {
+                model.GroupName = groupInfo.Name;
+            }
+
+            return View(model);
+        }
         #endregion
 
         #region Books
@@ -1670,7 +2125,7 @@ namespace GRA.Controllers.MissionControl
                         if (bundle.AvatarItems.Count > 0)
                         {
                             itemModel.BadgeFilename = _pathResolver.ResolveContentPath(
-                                bundle.AvatarItems.FirstOrDefault().Thumbnail);
+                                bundle.AvatarItems.FirstOrDefault()?.Thumbnail);
                             if (bundle.AvatarItems.Count > 1)
                             {
                                 itemModel.Description += $" <strong><a class=\"bundle-link\" data-id=\"{item.AvatarBundleId.Value}\">Click here</a></strong> to see all the items you unlocked.";
@@ -1683,13 +2138,13 @@ namespace GRA.Controllers.MissionControl
                         if (item.BadgeId.HasValue && !item.ChallengeId.HasValue)
                         {
                             var trigger = await _triggerService.GetByBadgeIdAsync(item.BadgeId.Value);
-                            if (trigger != null && !trigger.AwardAvatarBundleId.HasValue
+                            if (trigger?.AwardAvatarBundleId.HasValue == false
                                 && !trigger.AwardVendorCodeTypeId.HasValue
                                 && string.IsNullOrWhiteSpace(trigger.AwardMail))
                             {
                                 var prize = await _prizeWinnerService.GetUserTriggerPrizeAsync(id,
                                     trigger.Id);
-                                if (prize == null || !prize.RedeemedAt.HasValue)
+                                if (prize?.RedeemedAt.HasValue != true)
                                 {
                                     itemModel.IsDeletable = true;
                                 }
@@ -2268,7 +2723,7 @@ namespace GRA.Controllers.MissionControl
             catch (Exception ex)
             {
                 AlertDanger = $"Couldn't create group: {ex.Message}";
-                return View("GroupUpgrade", viewModel);
+                return View("UpgradeToGroup", viewModel);
             }
 
             AlertSuccess = "Group successfully created, now you may add additional members.";
@@ -2316,6 +2771,61 @@ namespace GRA.Controllers.MissionControl
             await _userService.UpdateGroup(GetActiveUserId(), groupInfo);
 
             return RedirectToAction("Household", new { id = viewModel.HouseholdHeadUserId });
+        }
+
+        public async Task<IActionResult> Groups(string search, int? type, int page = 1)
+        {
+            if (!await IsSiteSettingSetAsync(SiteSettingKey.Users.MaximumHouseholdSizeBeforeGroup))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var groupTypes = await _userService.GetGroupTypeListAsync();
+            int? groupTypeId = null;
+
+            if (type.HasValue && groupTypes.Select(_ => _.Id).Contains(type.Value))
+            {
+                groupTypeId = type;
+            }
+
+            var filter = new GroupFilter(page)
+            {
+                Search = search?.Trim()
+            };
+
+            if (groupTypeId.HasValue)
+            {
+                filter.GroupTypeIds = new List<int> { groupTypeId.Value };
+            }
+
+            var groupList = await _userService.GetPaginatedGroupListAsync(filter);
+
+            var paginateModel = new PaginateViewModel
+            {
+                ItemCount = groupList.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
+            };
+            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
+            }
+
+            var viewModel = new GroupListViewModel
+            {
+                Groups = groupList.Data,
+                PaginateModel = paginateModel,
+                Search = search?.Trim(),
+                Type = groupTypeId,
+                GroupType = groupTypes.SingleOrDefault(_ => _.Id == groupTypeId),
+                GroupTypeList = groupTypes
+            };
+
+            return View(viewModel);
         }
     }
 }

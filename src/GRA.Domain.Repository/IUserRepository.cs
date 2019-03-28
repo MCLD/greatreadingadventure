@@ -45,5 +45,7 @@ namespace GRA.Domain.Repository
         Task<IEnumerable<int>> GetNewsSubscribedUserIdsAsync(int siteId);
         Task<int> GetSystemUserId();
         Task ChangeDeletedUsersProgramAsync(int oldProgram, int newProgram);
+        Task<ICollection<User>> GetHouseholdUsersWithAvailablePrizeAsync(
+            int headId, int? drawingId, int? triggerId);
     }
 }

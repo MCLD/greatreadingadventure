@@ -942,13 +942,14 @@ namespace GRA.Domain.Service
             VerifyCanHouseholdAction();
 
             var authId = GetClaimId(ClaimType.UserId);
-            if (!HasPermission(Permission.EditParticipants))
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (!HasPermission(Permission.EditParticipants)
+                && user.HouseholdHeadUserId != authId)
             {
                 _logger.LogError($"User {authId} doesn't have permission to remove family/group members.");
                 throw new GraException("Permission denied.");
             }
 
-            var user = await _userRepository.GetByIdAsync(userId);
             if (string.IsNullOrWhiteSpace(user.Username))
             {
                 _logger.LogError($"User {userId} cannot be removed from a family/group without a username.");
@@ -1080,6 +1081,12 @@ namespace GRA.Domain.Service
                 int userId = GetClaimId(ClaimType.UserId);
                 _logger.LogError($"User {userId} doesn't have permission to create a group.");
                 throw new GraException("Permission denied.");
+            }
+
+            var existingGroup = await _groupInfoRepository.GetByUserIdAsync(groupInfo.UserId);
+            if (existingGroup != null)
+            {
+                throw new GraException("Participant is already a member of a group");
             }
 
             var sanitizedGroupInfo = new GroupInfo
@@ -1215,6 +1222,56 @@ namespace GRA.Domain.Service
         public async Task<int> GetSystemUserId()
         {
             return await _userRepository.GetSystemUserId();
+        }
+
+        public async Task<DataWithCount<ICollection<GroupInfo>>> GetPaginatedGroupListAsync(
+            GroupFilter filter)
+        {
+            VerifyPermission(Permission.ViewParticipantDetails);
+
+            filter.SiteId = GetCurrentSiteId();
+
+            return await _groupInfoRepository.PageAsync(filter);
+        }
+
+        public async Task<bool> UsersToAddExceedsHouseholdLimitAsync(int householdHeadId,
+            int usersToAdd)
+        {
+            (bool IsSet, int maximumHouseholdSize) = await _siteLookupService
+                .GetSiteSettingIntAsync(GetCurrentSiteId(),
+                    SiteSettingKey.Users.MaximumHouseholdSizeBeforeGroup);
+
+            if (IsSet)
+            {
+                var householdCount = await _userRepository.GetHouseholdCountAsync(householdHeadId);
+                householdCount++;
+
+                if (householdCount + usersToAdd > maximumHouseholdSize)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public async Task<GroupType> GetDefaultGroupTypeAsync()
+        {
+            return await _groupTypeRepository.GetDefaultAsync(GetCurrentSiteId());
+        }
+
+        public async Task<ICollection<User>> GetHouseholdUsersWithAvailablePrizeAsync(int headId,
+            int? drawingId, int? triggerId)
+        {
+            VerifyPermission(Permission.ViewUserPrizes);
+
+            if (!drawingId.HasValue && !triggerId.HasValue)
+            {
+                throw new GraException("No prize specified.");
+            }
+
+            return await _userRepository.GetHouseholdUsersWithAvailablePrizeAsync(headId,
+                drawingId, triggerId);
         }
     }
 }
