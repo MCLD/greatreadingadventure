@@ -1303,7 +1303,7 @@ namespace GRA.Controllers
             }
             catch (GraException gex)
             {
-                ShowAlertDanger($"Unable to remove member from {HouseholdTitle.ToLower()} : ", gex);
+                ShowAlertDanger($"Unable to remove member from {HouseholdTitle.ToLowerInvariant()} : ", gex);
                 return RedirectToAction(nameof(Household));
             }
         }
@@ -1352,7 +1352,7 @@ namespace GRA.Controllers
                     }
 
                     await _userService.RemoveFromHouseholdAsync(member.Id);
-                    ShowAlertSuccess($"{member.FullName} has been removed from the {HouseholdTitle.ToLower()}.");
+                    ShowAlertSuccess($"{member.FullName} has been removed from the {HouseholdTitle.ToLowerInvariant()}.");
 
                     return RedirectToAction(nameof(Household));
                 }

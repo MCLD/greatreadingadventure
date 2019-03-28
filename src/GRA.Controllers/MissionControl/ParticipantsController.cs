@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl.Participants;
 using GRA.Controllers.ViewModel.Shared;
@@ -173,7 +174,7 @@ namespace GRA.Controllers.MissionControl
                 var branch = await _siteService.GetBranchByIdAsync(branchId.Value);
                 viewModel.BranchName = branch.Name;
                 viewModel.SystemName = systemList
-                    .SingleOrDefault(_ => _.Id == branch.SystemId).Name;
+                    .SingleOrDefault(_ => _.Id == branch.SystemId)?.Name;
                 viewModel.BranchList = (await _siteService.GetBranches(branch.SystemId))
                     .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
                     .ThenBy(_ => _.Name);
@@ -182,7 +183,7 @@ namespace GRA.Controllers.MissionControl
             else if (systemId.HasValue)
             {
                 viewModel.SystemName = systemList
-                    .SingleOrDefault(_ => _.Id == systemId.Value).Name;
+                    .SingleOrDefault(_ => _.Id == systemId.Value)?.Name;
                 viewModel.BranchList = (await _siteService.GetBranches(systemId.Value))
                     .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
                     .ThenBy(_ => _.Name);
@@ -272,7 +273,7 @@ namespace GRA.Controllers.MissionControl
 
             if (systemList.Count() == 1)
             {
-                var systemId = systemList.SingleOrDefault().Id;
+                var systemId = systemList.Single().Id;
                 var branchList = await _siteService.GetBranches(systemId);
                 if (branchList.Count() > 1)
                 {
@@ -280,7 +281,7 @@ namespace GRA.Controllers.MissionControl
                 }
                 else
                 {
-                    viewModel.BranchId = branchList.SingleOrDefault().Id;
+                    viewModel.BranchId = branchList.SingleOrDefault()?.Id;
                 }
                 viewModel.BranchList = new SelectList(branchList.ToList(), "Id", "Name");
                 viewModel.SystemId = systemId;
@@ -288,9 +289,9 @@ namespace GRA.Controllers.MissionControl
 
             if (programList.Count() == 1)
             {
-                var programId = programList.SingleOrDefault().Id;
+                var programId = programList.Single().Id;
                 var program = await _siteService.GetProgramByIdAsync(programId);
-                viewModel.ProgramId = programList.SingleOrDefault().Id;
+                viewModel.ProgramId = programList.SingleOrDefault()?.Id;
                 viewModel.ShowAge = program.AskAge;
                 viewModel.ShowSchool = program.AskSchool;
             }
@@ -1555,7 +1556,7 @@ namespace GRA.Controllers.MissionControl
             }
 
             if (model.UserCsvFile != null && !ValidCsvExtensions
-                .Contains(Path.GetExtension(model.UserCsvFile.FileName).ToLower()))
+                .Contains(Path.GetExtension(model.UserCsvFile.FileName).ToLowerInvariant()))
             {
                 ModelState.AddModelError("UserCsvFile", "File must be a .csv file.");
             }
@@ -1571,17 +1572,18 @@ namespace GRA.Controllers.MissionControl
 
                 if (userImportResult.Errors?.Count > 0)
                 {
-                    var errorMessages = "<ul>";
+                    var errorMessages = new StringBuilder("<ul>");
                     foreach (var error in userImportResult.Errors)
                     {
-                        errorMessages += $"<li>{error}</li>";
+                        errorMessages.Append("<li>").Append(error).Append("</li>");
                     }
-                    errorMessages += "</ul>";
+
+                    errorMessages.Append("</ul>");
 
                     ShowAlertDanger("Could not import users due to the following error(s):",
-                        errorMessages);
+                        errorMessages.ToString());
                 }
-                else if (!(userImportResult?.Users.Count > 0))
+                else if (userImportResult == null || userImportResult.Users.Count == 0)
                 {
                     ShowAlertWarning("No users to add found.");
                 }
@@ -1640,7 +1642,6 @@ namespace GRA.Controllers.MissionControl
                             if (defaultGroupType == null)
                             {
                                 _logger.LogError($"Household import for {headOfHousehold.Id} should be forced to make a group but no group types are configured");
-
                             }
                             else
                             {
@@ -1700,7 +1701,7 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
-                if (!(prize?.Length >= 2))
+                if (prize == null || prize.Length < 2)
                 {
                     throw new GraException("No prize selected");
                 }
@@ -1732,7 +1733,6 @@ namespace GRA.Controllers.MissionControl
 
                         drawingId = prizeId;
                         prizeName = drawingName;
-
                     }
                     else if (string.Equals(prizeKey, TriggerPrizeKey,
                         StringComparison.OrdinalIgnoreCase))
@@ -1794,7 +1794,6 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> HouseholdPrize(HouseholdPrizeViewModel model)
         {
-
             var user = await _userService.GetDetails(model.Id);
             SetPageTitle(user);
 
@@ -2126,7 +2125,7 @@ namespace GRA.Controllers.MissionControl
                         if (bundle.AvatarItems.Count > 0)
                         {
                             itemModel.BadgeFilename = _pathResolver.ResolveContentPath(
-                                bundle.AvatarItems.FirstOrDefault().Thumbnail);
+                                bundle.AvatarItems.FirstOrDefault()?.Thumbnail);
                             if (bundle.AvatarItems.Count > 1)
                             {
                                 itemModel.Description += $" <strong><a class=\"bundle-link\" data-id=\"{item.AvatarBundleId.Value}\">Click here</a></strong> to see all the items you unlocked.";
@@ -2139,13 +2138,13 @@ namespace GRA.Controllers.MissionControl
                         if (item.BadgeId.HasValue && !item.ChallengeId.HasValue)
                         {
                             var trigger = await _triggerService.GetByBadgeIdAsync(item.BadgeId.Value);
-                            if (trigger != null && !trigger.AwardAvatarBundleId.HasValue
+                            if (trigger?.AwardAvatarBundleId.HasValue == false
                                 && !trigger.AwardVendorCodeTypeId.HasValue
                                 && string.IsNullOrWhiteSpace(trigger.AwardMail))
                             {
                                 var prize = await _prizeWinnerService.GetUserTriggerPrizeAsync(id,
                                     trigger.Id);
-                                if (prize == null || !prize.RedeemedAt.HasValue)
+                                if (prize?.RedeemedAt.HasValue != true)
                                 {
                                     itemModel.IsDeletable = true;
                                 }
