@@ -20,6 +20,7 @@ namespace GRA.Domain.Model
         public const string EditPages = "EditPages";
         public const string EditParticipants = "EditParticipants";
         public const string EditParticipantUsernames = "EditParticipantUsernames";
+        public const string ImportHouseholdMembers = "ImportHouseholdMembers";
         public const string LogActivityForAny = "LogActivityForAny";
         public const string MailParticipants = "MailParticipants";
         public const string ManageAvatars = "ManageAvatars";
@@ -50,6 +51,7 @@ namespace GRA.Domain.Model
         public const string UnDonateVendorCode = "UnDonateVendorCode";
         public const string ViewAllChallenges = "ViewAllChallenges";
         public const string ViewAllReporting = "ViewAllReporting";
+        public const string ViewGroupList = "ViewGroupList";
         public const string ViewParticipantDetails = "ViewParticipantDetails";
         public const string ViewParticipantList = "ViewParticipantList";
         public const string ViewPerformerDetails = "ViewPerformerDetails";

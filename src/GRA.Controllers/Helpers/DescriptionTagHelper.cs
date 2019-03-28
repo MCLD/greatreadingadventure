@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace Gra.Controllers.Helpers
+namespace GRA.Controllers.Helpers
 {
     /// <summary>
     /// <see cref="ITagHelper"/> implementation outputting the description attribute.

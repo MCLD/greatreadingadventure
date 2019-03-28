@@ -75,7 +75,7 @@ namespace GRA.Data.Repository
         public async Task SetUserPasswordAsync(int currentUserId, int userId, string password)
         {
             var user = DbSet.Find(userId);
-            if(user.IsSystemUser)
+            if (user.IsSystemUser)
             {
                 throw new GraException("Cannot set a password for the System User.");
             }
@@ -404,14 +404,14 @@ namespace GRA.Data.Repository
 
         public async Task<IEnumerable<User>> GetHouseholdAsync(int householdHeadUserId)
         {
-            var household = await DbSet
+            return await DbSet
                 .AsNoTracking()
-                .Where(_ => !_.IsDeleted
-                       && _.HouseholdHeadUserId == householdHeadUserId)
+                .Where(_ => !_.IsDeleted && _.HouseholdHeadUserId == householdHeadUserId)
+                .OrderBy(_ => _.FirstName)
+                .ThenBy(_ => _.LastName)
+                .ThenBy(_ => _.Username)
                 .ProjectTo<User>()
                 .ToListAsync();
-
-            return household;
         }
 
         public async Task<bool> UsernameInUseAsync(int siteId, string username)
@@ -514,6 +514,28 @@ namespace GRA.Data.Repository
             }
             DbSet.UpdateRange(usersToMove);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<ICollection<User>> GetHouseholdUsersWithAvailablePrizeAsync(
+            int headId, int? drawingId, int? triggerId)
+        {
+            var householdMemberIds = DbSet
+                .AsNoTracking()
+                .Where(_ => !_.IsDeleted && (_.Id == headId || _.HouseholdHeadUserId == headId))
+                .Select(_ => _.Id);
+
+            return await _context.PrizeWinners
+                .Where(_ => !_.RedeemedAt.HasValue
+                    && _.DrawingId == drawingId
+                    && _.TriggerId == triggerId
+                    && householdMemberIds.Contains(_.UserId))
+                .Select(_ => _.User)
+                .OrderBy(_ => _.HouseholdHeadUserId.HasValue)
+                .ThenBy(_ => _.FirstName)
+                .ThenBy(_ => _.LastName)
+                .ThenBy(_ => _.Username)
+                .ProjectTo<User>()
+                .ToListAsync();
         }
     }
 }

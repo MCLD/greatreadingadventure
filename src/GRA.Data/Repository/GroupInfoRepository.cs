@@ -3,7 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
+using GRA.Domain.Repository.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -46,6 +48,36 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.GroupTypeId == groupTypeId)
                 .CountAsync();
+        }
+
+        public async Task<DataWithCount<ICollection<GroupInfo>>> PageAsync(GroupFilter filter)
+        {
+            var groups = DbSet.AsNoTracking();
+
+            if (filter.GroupTypeIds?.Any() == true)
+            {
+                groups = groups.Where(_ => filter.GroupTypeIds.Contains(_.GroupTypeId));
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.Search))
+            {
+                groups = groups.Where(_ => _.Name.Contains(filter.Search)
+                    || (_.User.FirstName + " " + _.User.LastName).Contains(filter.Search));
+            }
+
+            var count = await groups.CountAsync();
+
+            var groupList = await groups
+                .OrderBy(_ => _.Name)
+                .ApplyPagination(filter)
+                .ProjectTo<GroupInfo>()
+                .ToListAsync();
+
+            return new DataWithCount<ICollection<GroupInfo>>
+            {
+                Data = groupList,
+                Count = count
+            };
         }
     }
 }

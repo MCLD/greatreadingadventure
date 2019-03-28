@@ -176,9 +176,23 @@ namespace GRA.Domain.Service
                 redeemed);
         }
 
+        public async Task<PrizeWinner> GetUserDrawingPrizeAsync(int userId, int drawingId)
+        {
+            return await _prizeWinnerRepository.GetUserDrawingPrizeAsync(userId, drawingId);
+        }
+
         public async Task<PrizeWinner> GetUserTriggerPrizeAsync(int userId, int triggerId)
         {
             return await _prizeWinnerRepository.GetUserTriggerPrizeAsync(userId, triggerId);
         }
+
+        public async Task<List<PrizeCount>> GetHouseholdUnredeemedPrizesAsync(int headId)
+        {
+            VerifyManagementPermission();
+
+            return await _prizeWinnerRepository.GetHouseholdUnredeemedPrizesAsync(headId);
+        }
+
+        
     }
 }

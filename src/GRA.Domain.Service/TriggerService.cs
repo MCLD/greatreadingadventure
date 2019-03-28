@@ -193,6 +193,15 @@ namespace GRA.Domain.Service
             return await _triggerRepository.GetTriggersAwardingPrizesAsync(GetCurrentSiteId());
         }
 
+        public async Task<string> GetTriggerPrizeNameAsync(int id)
+        {
+            VerifyPermission(Permission.ViewUserPrizes);
+
+            var trigger = await _triggerRepository.GetByIdAsync(id);
+
+            return trigger?.AwardPrizeName;
+        }
+
         private async Task ValidateTriggerAsync(Trigger trigger)
         {
             if (trigger.LimitToSystemId.HasValue)

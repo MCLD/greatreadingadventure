@@ -1284,5 +1284,89 @@ namespace GRA.Controllers
             await _userService.UpdateGroupName(authUser.Id, groupInfo);
             return RedirectToAction("Household");
         }
+
+        public async Task<IActionResult> RemoveHouseholdMember(int id)
+        {
+            try
+            {
+                var member = await _userService.GetDetails(id);
+
+                var viewModel = new HouseholdRemoveViewModel
+                {
+                    MemberId = member.Id,
+                    MemberName = member.FullName,
+                    MemberUsername = member.Username,
+                    HouseholdTitle = HouseholdTitle
+                };
+
+                return View("HouseholdRemove", viewModel);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger($"Unable to remove member from {HouseholdTitle.ToLower()} : ", gex);
+                return RedirectToAction(nameof(Household));
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveHouseholdMember(HouseholdRemoveViewModel model)
+        {
+            var member = await _userService.GetDetails(model.MemberId);
+            var memberUsername = member.Username;
+            var registerMember = string.IsNullOrWhiteSpace(memberUsername);
+
+            if (!registerMember)
+            {
+                ModelState.Remove("Username");
+                ModelState.Remove("Password");
+                ModelState.Remove("ConfirmPassword");
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    if (registerMember)
+                    {
+                        member.Username = model.Username;
+                        await _userService.RegisterHouseholdMemberAsync(member, model.Password);
+                    }
+
+                    if (GetActiveUserId() == member.Id)
+                    {
+                        var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
+
+                        HttpContext.Session.SetInt32(SessionKey.ActiveUserId, authUser.Id);
+
+                        var questionnaireId = await _questionnaireService
+                            .GetRequiredQuestionnaire(authUser.Id, authUser.Age);
+                        if (questionnaireId.HasValue)
+                        {
+                            HttpContext.Session.SetInt32(SessionKey.PendingQuestionnaire,
+                                questionnaireId.Value);
+                        }
+                        else
+                        {
+                            HttpContext.Session.Remove(SessionKey.PendingQuestionnaire);
+                        }
+                    }
+
+                    await _userService.RemoveFromHouseholdAsync(member.Id);
+                    ShowAlertSuccess($"{member.FullName} has been removed from the {HouseholdTitle.ToLower()}.");
+
+                    return RedirectToAction(nameof(Household));
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger($"Unable to remove {HouseholdTitle} member: ", gex);
+                }
+            }
+
+            model.MemberId = member.Id;
+            model.MemberName = member.FullName;
+            model.MemberUsername = memberUsername;
+            model.HouseholdTitle = HouseholdTitle;
+            return View("HouseholdRemove", model);
+        }
     }
 }

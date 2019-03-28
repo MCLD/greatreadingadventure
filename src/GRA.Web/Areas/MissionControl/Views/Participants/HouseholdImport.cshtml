@@ -1,0 +1,153 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.HouseholdImportViewModel
+
+<form asp-controller="Participants" asp-action="@nameof(ParticipantsController.HouseholdImport)" method="post" role="form" enctype="multipart/form-data">
+    <input asp-for="Id" type="hidden" />
+
+    <div class="row" style="padding:10px 0">
+        <div class="col-xs-12">
+            <div class="row row-spacing">
+                <div class="col-xs-12">
+                    <label asp-for="SystemId" class="control-label"></label>
+                    <select asp-for="SystemId" asp-items="Model.SystemList" class="form-control"></select>
+                    <span asp-validation-for="SystemId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row row-spacing">
+                <div class="col-xs-12">
+                    <label asp-for="BranchId" class="control-label"></label>
+                    <select asp-for="BranchId" asp-items="Model.BranchList" class="form-control"></select>
+                    <span asp-validation-for="BranchId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row row-spacing">
+                <div class="col-xs-12">
+                    <label asp-for="ProgramId" class="control-label"></label>
+                    <select asp-for="ProgramId" asp-items="Model.ProgramList" class="form-control">
+                        <option></option>
+                    </select>
+                    <span asp-validation-for="ProgramId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div id="schoolFields" class="@(Model.ShowSchool ? "": "hide")">
+                @await Html.PartialAsync("_SchoolSelectionPartial", Model)
+            </div>
+
+            @if (Model?.AskFirstTime?.Count() > 1)
+            {
+                <div class="row row-spacing">
+                    <div class="col-xs-12">
+                        <label asp-for="IsFirstTime" class="control-label"></label>
+                        <select asp-for="IsFirstTime"
+                                asp-items="Model.AskFirstTime"
+                                class="form-control"></select>
+                        <span asp-validation-for="IsFirstTime" class="text-danger"></span>
+                    </div>
+                </div>
+            }
+
+            <div class="row row-spacing">
+                <div class="col-xs-12">
+                    <label for="selectedFile">Select CSV file:</label>
+                    <div class="input-group">
+                        <label class="input-group-btn">
+                            <span class="btn btn-default btn-file">
+                                <span class="fa fa-file-image-o"></span>
+                                Select an CSV file<input type="file" asp-for="UserCsvFile" accept=".csv" />
+                            </span>
+                        </label>
+                        <input type="text" class="form-control" readonly id="selectedFile">
+                    </div>
+                    <div>
+                        <span asp-validation-for="UserCsvFile" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row row-spacing">
+                <div class="col-xs-12">
+                    <a asp-action="Household" asp-route-id="@Model.Id" class="btn btn-default">Return to Household</a>
+                    <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-primary btn-spinner">
+                        <span class="buttonText">Import Members</span>
+                        <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section scripts {
+    <script>
+        var programs = JSON.parse('@Html.Raw(Model.ProgramJson)');
+        var selectedProgram = $.grep(programs, function(obj) {
+            return obj.Id == $("#ProgramId").val();
+        })[0];
+
+        $("#SystemId").on("change", function() {
+            var systemId = $(this).val();
+            var branchList = $("#BranchId");
+            var branchId = branchList.val();
+            var url = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
+
+            $.getJSON(url, { systemId: systemId, branchId: branchId }, function(response) {
+                branchList.empty();
+                if (response.length > 1)
+                {
+                    branchList.append(new Option("", "-1"));
+                }
+                $.each(response, function(index, item) {
+                    branchList.append(new Option(item.text, item.value, item.selected, item.selected))
+                });
+            });
+        });
+
+        $("#ProgramId").on("change", function() {
+            var programId = $(this).val();
+            selectedProgram = $.grep(programs, function(obj) {
+                return obj.Id == programId;
+            })[0];
+            if (selectedProgram != null)
+            {
+                if (selectedProgram.AskSchool)
+                {
+                    $("#schoolFields").removeClass("hide");
+                }
+                else
+                {
+                    $("#schoolFields").addClass("hide");
+                }
+            }
+        });
+
+        $(':file').on('fileselect', function (event, numFiles, label) {
+            var input = $(this).parents('.input-group').find(':text'),
+                log = numFiles > 1 ? numFiles = ' files selected' : label;
+
+            if (input.length) {
+                input.val(log);
+                $('.btn-file').removeClass('btn-default');
+                $('.btn-file').addClass('btn-success');
+                $("#badgeImage").removeAttr("src");
+                $("#badgeImage").height(200);
+                $("#BadgeMakerImage").val("");
+            }
+            else {
+                input.val('');
+                $('.btn-file').addClass('btn-default');
+                $('.btn-file').removeClass('btn-success');
+            }
+        });
+
+        $(document).on('change', ':file', function () {
+            var input = $(this),
+                numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+            input.trigger('fileselect', [numFiles, label]);
+        });
+    </script>
+
+    @await Html.PartialAsync("_SchoolSelectionScripts", Model)
+}
