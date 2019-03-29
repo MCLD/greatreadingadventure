@@ -1,11 +1,8 @@
-﻿using GRA.Domain.Model;
+﻿using System;
+using System.Threading.Tasks;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GRA.Controllers
 {
@@ -18,15 +15,15 @@ namespace GRA.Controllers
             PageService pageService)
             : base(context)
         {
-            _logger = Require.IsNotNull(logger, nameof(logger));
-            _pageService = Require.IsNotNull(pageService, nameof(pageService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _pageService = pageService ?? throw new ArgumentNullException(nameof(pageService));
         }
 
         public async Task<IActionResult> Index(string stub)
         {
             try
             {
-                var page = await _pageService.GetByStubAsync(stub, true);
+                var page = await _pageService.GetByStubAsync(stub);
                 PageTitle = page.Title;
                 return View("Index", CommonMark.CommonMarkConverter.Convert(page.Content));
             }

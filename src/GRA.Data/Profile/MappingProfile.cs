@@ -74,6 +74,7 @@ namespace GRA.Data.Profile
                 .ReverseMap();
             CreateMap<Model.NewsPost, Domain.Model.NewsPost>().ReverseMap();
             CreateMap<Model.Notification, Domain.Model.Notification>().ReverseMap();
+            CreateMap<Model.PageHeader, Domain.Model.PageHeader>().ReverseMap();
             CreateMap<Model.Page, Domain.Model.Page>().ReverseMap();
             CreateMap<Model.PointTranslation, Domain.Model.PointTranslation>().ReverseMap();
             CreateMap<Model.Program, Domain.Model.Program>().ReverseMap();

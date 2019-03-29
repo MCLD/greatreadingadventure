@@ -76,7 +76,7 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Create(PagesEditViewModel model)
         {
             Regex checkStub = new Regex(@"^[\w\-]*$");
-            if (!checkStub.IsMatch(model.Page.Stub))
+            if (!checkStub.IsMatch(model.Page.PageStub))
             {
                 ModelState.AddModelError("Page.Stub", "Invalid stub, only letters, numbers, hypens and underscores are allowed");
             }
@@ -101,14 +101,14 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
-                var page = await _pageService.GetByStubAsync(stub, false);
+                var page = await _pageService.GetByStubAsync(stub);
                 var baseUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
 
                 PagesEditViewModel viewModel = new PagesEditViewModel()
                 {
                     Page = page,
                     CanEdit = UserHasPermission(Permission.EditPages),
-                    PageUrl = $"{baseUrl}{Url.Action("Index", "Info", new { area = "", stub = page.Stub })}"
+                    PageUrl = $"{baseUrl}{Url.Action("Index", "Info", new { area = "", stub = page.PageStub })}"
                 };
                 PageTitle = "Edit Page";
                 return View(viewModel);
@@ -147,7 +147,7 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
-                var page = await _pageService.GetByStubAsync(stub, false);
+                var page = await _pageService.GetByStubAsync(stub);
                 PageTitle = $"Preview - {page.Title}";
 
                 PagePreviewViewModel viewModel = new PagePreviewViewModel()

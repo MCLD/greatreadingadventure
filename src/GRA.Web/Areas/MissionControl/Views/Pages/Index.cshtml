@@ -67,12 +67,12 @@
                         {
                             <tr>
                                 <td class="td-class">
-                                    <a asp-action="Edit" asp-route-stub="@graPage.Stub" class="rowlink">
+                                    <a asp-action="Edit" asp-route-stub="@graPage.PageStub" class="rowlink">
                                         @graPage.Title
                                     </a>
                                 </td>
                                 <td>
-                                    @graPage.Stub
+                                    @graPage.PageStub
                                 </td>
                                 <td>
                                     <span class="colored-icon fa @(string.IsNullOrWhiteSpace(graPage.NavText) ? "fa-times" : "fa-check")"></span>
