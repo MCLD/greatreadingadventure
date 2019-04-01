@@ -299,6 +299,11 @@ namespace GRA.Controllers.MissionControl
                 viewModel.UseLocation = true;
             }
 
+            var (IsSet, SetValue) = await _siteLookupService.GetSiteSettingStringAsync(
+                GetCurrentSiteId(), SiteSettingKey.Events.GoogleMapsAPIKey);
+            viewModel.ShowGeolocation = IsSet;
+            viewModel.GoogleMapsAPIKey = SetValue;
+
             return View(viewModel);
         }
 
@@ -485,6 +490,12 @@ namespace GRA.Controllers.MissionControl
             model.LocationList = new SelectList(locationList, "Id", "Name");
             model.ProgramList = new SelectList(programList, "Id", "Name");
             model.RequireSecretCode = requireSecretCode;
+
+            var (IsSet, SetValue) = await _siteLookupService.GetSiteSettingStringAsync(
+                GetCurrentSiteId(), SiteSettingKey.Events.GoogleMapsAPIKey);
+            model.ShowGeolocation = IsSet;
+            model.GoogleMapsAPIKey = SetValue;
+
             return View(model);
         }
 
@@ -535,6 +546,11 @@ namespace GRA.Controllers.MissionControl
                     graEvent.Challenge.BadgeFilename = _pathResolver
                         .ResolveContentPath(badge.Filename);
                 }
+
+                var (IsSet, SetValue) = await _siteLookupService.GetSiteSettingStringAsync(
+                    GetCurrentSiteId(), SiteSettingKey.Events.GoogleMapsAPIKey);
+                viewModel.ShowGeolocation = IsSet;
+                viewModel.GoogleMapsAPIKey = SetValue;
 
                 return View(viewModel);
             }
@@ -663,6 +679,12 @@ namespace GRA.Controllers.MissionControl
             model.BranchList = new SelectList(branchList, "Id", "Name");
             model.LocationList = new SelectList(locationList, "Id", "Name");
             model.ProgramList = new SelectList(programList, "Id", "Name");
+
+            var (IsSet, SetValue) = await _siteLookupService.GetSiteSettingStringAsync(
+                GetCurrentSiteId(), SiteSettingKey.Events.GoogleMapsAPIKey);
+            model.ShowGeolocation = IsSet;
+            model.GoogleMapsAPIKey = SetValue;
+
             return View(model);
         }
 
@@ -726,9 +748,12 @@ namespace GRA.Controllers.MissionControl
             {
                 Locations = locationList.Data,
                 PaginateModel = paginateModel,
-                ShowGeolocation = await _siteLookupService.IsSiteSettingSetAsync(GetCurrentSiteId(),
-                    SiteSettingKey.Events.GoogleMapsAPIKey)
             };
+
+            var (IsSet, SetValue) = await _siteLookupService.GetSiteSettingStringAsync(
+                GetCurrentSiteId(), SiteSettingKey.Events.GoogleMapsAPIKey);
+            viewModel.ShowGeolocation = IsSet;
+            viewModel.GoogleMapsAPIKey = SetValue;
 
             return View(viewModel);
         }

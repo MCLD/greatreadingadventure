@@ -13,15 +13,18 @@ namespace GRA.Controllers.ViewModel.MissionControl.Events
 
         public bool RequireSecretCode { get; set; }
         public bool IncludeSecretCode { get; set; }
+
         [MaxLength(50)]
         [DisplayName("Secret code")]
         [RegularExpression("([a-zA-Z0-9]+)", ErrorMessage = "Only letters and numbers are allowed.")]
         [Required]
         public string SecretCode { get; set; }
+
         [MaxLength(1000)]
         [DisplayName("Notification")]
         [Required]
         public string AwardMessage { get; set; }
+
         [DisplayName("Award points")]
         [Range(0, int.MaxValue, ErrorMessage = "{0} cannot be less than {1}.")]
         public int AwardPoints { get; set; }
@@ -37,8 +40,12 @@ namespace GRA.Controllers.ViewModel.MissionControl.Events
         public bool CanRelateChallenge { get; set; }
         public GRA.Domain.Model.Location Location { get; set; }
 
+        public bool ShowGeolocation { get; set; }
+        public string GoogleMapsAPIKey { get; set; }
+
         [DisplayName("System")]
         public int SystemId { get; set; }
+
         public SelectList SystemList { get; set; }
         public SelectList BranchList { get; set; }
         public SelectList LocationList { get; set; }

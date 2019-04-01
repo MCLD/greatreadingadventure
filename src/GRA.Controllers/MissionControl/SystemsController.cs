@@ -146,6 +146,11 @@ namespace GRA.Controllers.MissionControl
                 SystemList = new SelectList(await _siteService.GetSystemList(), "Id", "Name")
             };
 
+            var (IsSet, SetValue) = await _siteLookupService.GetSiteSettingStringAsync(
+                GetCurrentSiteId(), SiteSettingKey.Events.GoogleMapsAPIKey);
+            viewModel.ShowGeolocation = IsSet;
+            viewModel.GoogleMapsAPIKey = SetValue;
+
             return View(viewModel);
         }
 

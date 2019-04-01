@@ -155,10 +155,16 @@
                                 <span asp-validation-for="Location.Name" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label asp-for="Location.Address" class="control-label"></label>
-                                <input asp-for="Location.Address" class="form-control" />
+                                <label asp-for="Location.Address" class="control-label">Address (include city, state and zip)</label>
+                                <input asp-for="Location.Address" class="form-control addressInput" />
                                 <span asp-validation-for="Location.Address" class="text-danger"></span>
                             </div>
+                            @if (Model.ShowGeolocation)
+                            {
+                                <div class="form-group hide mapContainer">
+                                    <iframe height="180" width="400" frameborder="0" style="border:0"></iframe>
+                                </div>
+                            }
                             <div class="form-group">
                                 <label asp-for="Location.Url" class="control-label"></label>
                                 <input asp-for="Location.Url" class="form-control" />
@@ -525,7 +531,6 @@
         {
             <text>
             $(document).on("click", "#addLocation", function() {
-
                 var name = $("#Location_Name");
                 var address = $("#Location_Address")
                 name.valid();
@@ -561,6 +566,27 @@
                 }
             });
             </text>
+
+            @if (Model.ShowGeolocation)
+            {
+                <text>
+                var mapsUrl = "https://www.google.com/maps/embed/v1/place?key=@Model.GoogleMapsAPIKey&q=";
+
+                $(".addressInput").on("change", function () {
+                    var input = $(this);
+                    var address = input.val();
+                    var mapContainer = input.parent().siblings(".mapContainer");
+
+                    if (address.length == 0) {
+                        mapContainer.addClass("hide");
+                    }
+                    else {
+                        mapContainer.removeClass("hide");
+                        mapContainer.children().attr("src", mapsUrl + address);
+                    }
+                });
+                </text>
+            }
         }
 
         @if (Model.CanAddSecretCode)
