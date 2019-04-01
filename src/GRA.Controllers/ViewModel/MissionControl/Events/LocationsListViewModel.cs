@@ -9,5 +9,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.Events
         public PaginateViewModel PaginateModel { get; set; }
         public GRA.Domain.Model.Location Location { get; set; }
         public bool ShowGeolocation { get; set; }
+        public string GoogleMapsAPIKey { get; set; }
     }
 }

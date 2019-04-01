@@ -14,5 +14,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.Systems
         public string Search { get; set; }
         public SelectList SystemList { get; set; }
         public bool ShowGeolocation { get; set; }
+        public string GoogleMapsAPIKey { get; set; }
     }
 }
