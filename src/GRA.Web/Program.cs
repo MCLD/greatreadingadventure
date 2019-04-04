@@ -1,7 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
@@ -15,8 +12,8 @@ namespace GRA.Web
     {
         public static int Main(string[] args)
         {
-            string instance = "gra";
-            string webRootPath = Path.GetDirectoryName(".");
+            string instance = null;
+            string webRootPath = null;
 
             // create a webhost to read configuration values for logging setup
             using (IWebHost configWebhost = CreateWebHostBuilder(args).Build())
@@ -26,6 +23,10 @@ namespace GRA.Web
                     var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
 
                     Log.Logger = new LogConfig().Build(config).CreateLogger();
+                    if (!string.IsNullOrEmpty(config[ConfigurationKey.InstanceName]))
+                    {
+                        instance = " instance " + config[ConfigurationKey.InstanceName];
+                    }
                 }
             }
 
@@ -41,40 +42,30 @@ namespace GRA.Web
                     .GetRequiredService<IHostingEnvironment>().WebRootPath;
             }
 
-            // run the application
-            string applicationName
-                = instance.ToLowerInvariant() != "gra" ? $"GRA {instance}" : "GRA";
+            string appDetails = string.Format("GRA {0}{1}", new Version().GetVersion(), instance);
 
             // output the version and revision
             try
             {
-                Log.Warning("{0} {1} starting up in {2}",
-                    applicationName,
-                    new Version().GetVersion(),
-                    webRootPath);
-
+                Log.Warning(appDetails + " starting up in {webRootPath}", webRootPath);
                 webhost.Run();
                 return 0;
             }
             catch (Exception ex)
             {
-                Log.Warning("{0} {1} exited unexpectedly: {2}",
-                    applicationName,
-                    new Version().GetVersion(),
-                    ex.Message);
+                Log.Warning(appDetails + " exited unexpectedly: {Message}", ex.Message);
                 return 1;
             }
             finally
             {
-                Log.Warning("{0} shutting down.", applicationName);
+                Log.Warning(appDetails + " shutting down.");
                 Log.CloseAndFlush();
             }
-
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration((hostContext, config) =>
+                .ConfigureAppConfiguration((_, config) =>
                 {
                     config.AddJsonFile("shared/appsettings.json",
                         optional: true,

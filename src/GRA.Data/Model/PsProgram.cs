@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GRA.Data.Model
 {
@@ -29,6 +29,7 @@ namespace GRA.Data.Model
         [Required]
         public string Description { get; set; }
 
+        [Column(TypeName = "decimal(19,4)")]
         public decimal Cost { get; set; }
 
         [MaxLength(1000)]

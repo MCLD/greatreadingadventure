@@ -49,6 +49,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Admin role permission updating using client-side evaluation
 - Edit Point Translation in Mission Control so that it saves properly
 - Bug with deleting a program with associated deleted users
+- Startup log message about PsProgram Cost column precision
 
 ### Removed
 - Recovery error logging at the controller level - it's logged in the service
