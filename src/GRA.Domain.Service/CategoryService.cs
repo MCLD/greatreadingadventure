@@ -42,8 +42,8 @@ namespace GRA.Domain.Service
         public async Task<Category> AddAsync(Category category)
         {
             VerifyManagementPermission();
-            category.Name = category.Name.Trim();
-            category.Description = category.Description.Trim();
+            category.Name = category.Name?.Trim();
+            category.Description = category.Description?.Trim();
             category.SiteId = GetCurrentSiteId();
             if (string.IsNullOrWhiteSpace(category.Color))
             {
@@ -56,8 +56,8 @@ namespace GRA.Domain.Service
         {
             VerifyManagementPermission();
             var current = await _categoryRepository.GetByIdAsync(category.Id);
-            current.Name = category.Name.Trim();
-            current.Description = category.Description.Trim();
+            current.Name = category.Name?.Trim();
+            current.Description = category.Description?.Trim();
 
             return await _categoryRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), current);
         }

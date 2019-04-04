@@ -50,6 +50,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Edit Point Translation in Mission Control so that it saves properly
 - Bug with deleting a program with associated deleted users
 - Startup log message about PsProgram Cost column precision
+- Category empty description null reference exception
 
 ### Removed
 - Recovery error logging at the controller level - it's logged in the service
