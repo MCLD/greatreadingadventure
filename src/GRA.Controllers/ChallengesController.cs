@@ -20,7 +20,7 @@ namespace GRA.Controllers
     {
         private readonly ILogger<ChallengesController> _logger;
         private readonly AutoMapper.IMapper _mapper;
-        public readonly ActivityService _activityService;
+        private readonly ActivityService _activityService;
         private readonly CategoryService _categoryService;
         private readonly ChallengeService _challengeService;
         private readonly SiteService _siteService;
@@ -48,7 +48,6 @@ namespace GRA.Controllers
             bool Favorites = false,
             int page = 1)
         {
-            int siteId = GetCurrentSiteId();
 
             var filter = new ChallengeFilter(page);
             if (!string.IsNullOrWhiteSpace(Search))
@@ -173,9 +172,9 @@ namespace GRA.Controllers
             var serviceResult = new ServiceResult();
             try
             {
-                var challengeList = new List<Challenge>()
+                var challengeList = new List<Challenge>
                 {
-                    new Challenge()
+                    new Challenge
                     {
                         Id = challengeId,
                         IsFavorited = favorite

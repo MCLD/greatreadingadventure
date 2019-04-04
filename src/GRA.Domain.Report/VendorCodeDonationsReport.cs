@@ -150,7 +150,7 @@ namespace GRA.Domain.Report
                     };
                     foreach (var program in programs)
                     {
-                        row = row.Append(systemUsers.Where(_ => _.ProgramId == program.Id).Count());
+                        row = row.Append(systemUsers.Count(_ => _.ProgramId == program.Id));
                     }
                     row = row.Append(systemUsers.Count());
                     reportData.Add(row.ToArray());
