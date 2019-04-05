@@ -332,6 +332,7 @@ namespace GRA.Web
             services.AddScoped<TemplateService>();
             services.AddScoped<TriggerService>();
             services.AddScoped<UserService>();
+            services.AddScoped<UserImportService>();
             services.AddScoped<VendorCodeService>();
 
             services.AddScoped<Domain.Report.ActivityByProgramReport>();
@@ -345,6 +346,7 @@ namespace GRA.Web
             services.AddScoped<Domain.Report.ParticipantPrizeReport>();
             services.AddScoped<Domain.Report.ParticipantProgressReport>();
             services.AddScoped<Domain.Report.PrizeRedemptionReport>();
+            services.AddScoped<Domain.Report.PrizeRedemptionCountReport>();
             services.AddScoped<Domain.Report.RegistrationsAchieversBySchoolReport>();
             services.AddScoped<Domain.Report.RegistrationsAchieversReport>();
             services.AddScoped<Domain.Report.TopScoresReport>();
