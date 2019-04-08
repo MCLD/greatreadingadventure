@@ -13,7 +13,8 @@ namespace GRA
 
         public static readonly CultureInfo[] SupportedCultures = new[]
         {
-            new CultureInfo(EnglishUS)
+            new CultureInfo(EnglishUS),
+            new CultureInfo(EspanolUS)
         };
     }
 }
