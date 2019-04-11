@@ -1183,6 +1183,9 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<int>("LanguageId");
 
+                    b.Property<string>("MetaDescription")
+                        .HasMaxLength(150);
+
                     b.Property<string>("NavText")
                         .HasMaxLength(255);
 
@@ -1193,6 +1196,10 @@ namespace GRA.Data.SqlServer.Migrations
                         .HasMaxLength(255);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("LanguageId");
+
+                    b.HasIndex("PageHeaderId");
 
                     b.ToTable("Pages");
                 });
@@ -2977,6 +2984,19 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.NewsCategory", "Category")
                         .WithMany("Posts")
                         .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.Page", b =>
+                {
+                    b.HasOne("GRA.Data.Model.Language", "Language")
+                        .WithMany()
+                        .HasForeignKey("LanguageId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GRA.Data.Model.PageHeader", "PageHeader")
+                        .WithMany("Pages")
+                        .HasForeignKey("PageHeaderId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 

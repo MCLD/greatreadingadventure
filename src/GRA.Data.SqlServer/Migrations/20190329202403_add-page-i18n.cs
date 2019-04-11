@@ -34,10 +34,52 @@ namespace GRA.Data.SqlServer.Migrations
                 nullable: false,
                 oldClrType: typeof(int),
                 oldNullable: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Pages_LanguageId",
+                table: "Pages",
+                column: "LanguageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Pages_PageHeaderId",
+                table: "Pages",
+                column: "PageHeaderId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Pages_Languages_LanguageId",
+                table: "Pages",
+                column: "LanguageId",
+                principalTable: "Languages",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Pages_PageHeaders_PageHeaderId",
+                table: "Pages",
+                column: "PageHeaderId",
+                principalTable: "PageHeaders",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Pages_Languages_LanguageId",
+                table: "Pages");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Pages_PageHeaders_PageHeaderId",
+                table: "Pages");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Pages_LanguageId",
+                table: "Pages");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Pages_PageHeaderId",
+                table: "Pages");
+
             migrationBuilder.AlterColumn<int>(
                 name: "PageHeaderId",
                 table: "Pages",
