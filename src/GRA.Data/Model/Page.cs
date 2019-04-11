@@ -22,8 +22,12 @@ namespace GRA.Data.Model
         [Required]
         public int LanguageId { get; set; }
 
+        public Language Language { get; set; }
+
         [Required]
         public int PageHeaderId { get; set; }
+
+        public PageHeader PageHeader { get; set; }
 
         [MaxLength(150)]
         public string MetaDescription { get; set; }

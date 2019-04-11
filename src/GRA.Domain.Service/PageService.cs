@@ -2,114 +2,144 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Service
 {
     public class PageService : Abstract.BaseUserService<PageService>
     {
+        private readonly IPageHeaderRepository _pageHeaderRepository;
         private readonly IPageRepository _pageRepository;
         private readonly LanguageService _languageService;
 
         public PageService(ILogger<PageService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
+            IPageHeaderRepository pageHeaderRepository,
             IPageRepository pageRepository,
             LanguageService languageService) : base(logger, dateTimeProvider, userContextProvider)
         {
+            SetManagementPermission(Permission.ManagePages);
+            _pageHeaderRepository = pageHeaderRepository
+                ?? throw new ArgumentNullException(nameof(pageHeaderRepository));
             _pageRepository = pageRepository
                 ?? throw new ArgumentNullException(nameof(pageRepository));
             _languageService = languageService
                 ?? throw new ArgumentNullException(nameof(languageService));
         }
 
-        public async Task<DataWithCount<IEnumerable<Page>>> GetPaginatedPageListAsync(int skip,
-            int take)
+        public async Task<DataWithCount<IEnumerable<PageHeader>>> GetPaginatedHeaderListAsync(
+            BaseFilter filter)
         {
-            throw new NotImplementedException();
-            int siteId = GetClaimId(ClaimType.SiteId);
-            if (HasPermission(Permission.ViewUnpublishedPages))
+            VerifyManagementPermission();
+
+            filter.SiteId = GetCurrentSiteId();
+
+            return await _pageHeaderRepository.PageAsync(filter);
+        }
+
+        public async Task<PageHeader> GetHeaderByIdAsync(int id)
+        {
+            VerifyManagementPermission();
+
+            return await _pageHeaderRepository.GetByIdAsync(id);
+        }
+
+        public async Task<PageHeader> AddPageHeaderAsync(PageHeader header)
+        {
+            VerifyManagementPermission();
+
+            var siteId = GetCurrentSiteId();
+            var stub = header.Stub?.Trim().ToLowerInvariant();
+            if (await _pageHeaderRepository.StubExistsAsync(siteId, stub))
             {
-                return new DataWithCount<IEnumerable<Page>>
-                {
-                    Data = await _pageRepository.PageAllAsync(siteId, skip, take),
-                    Count = await _pageRepository.GetCountAsync(siteId)
-                };
+                throw new GraException("The stub already exists, please enter a different one.");
             }
-            else
+
+            header.PageName = header.PageName?.Trim();
+            header.SiteId = siteId;
+            header.Stub = stub;
+
+            return await _pageHeaderRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), header);
+        }
+
+        public async Task<PageHeader> EditPageHeaderAsync(PageHeader header)
+        {
+            VerifyManagementPermission();
+
+            var currentHeader = await _pageHeaderRepository.GetByIdAsync(header.Id);
+
+            currentHeader.PageName = header.PageName?.Trim();
+
+            return await _pageHeaderRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
+                currentHeader);
+        }
+
+        public async Task DeletePageHeaderAsync(int headerId)
+        {
+            VerifyManagementPermission();
+
+            var authId = GetClaimId(ClaimType.UserId);
+
+            var pages = await _pageRepository.GetByHeaderIdAsync(headerId);
+            foreach (var page in pages)
             {
-                int userId = GetClaimId(ClaimType.UserId);
-                _logger.LogError($"User {userId} doesn't have permission to view all pages.");
-                throw new GraException("Permission denied.");
+                await _pageRepository.RemoveSaveAsync(authId, page.Id);
             }
+
+            await _pageHeaderRepository.RemoveSaveAsync(authId, headerId);
+        }
+
+        public async Task<Page> GetByHeaderAndLanguageAsync(int headerId, int languageId)
+        {
+            VerifyManagementPermission();
+
+            return await _pageRepository.GetByHeaderAndLanguageAsync(headerId, languageId);
         }
 
         public async Task<Page> AddPageAsync(Page page)
         {
-            throw new NotImplementedException();
-            //if (HasPermission(Permission.AddPages))
-            //{
-            //    var siteId = GetClaimId(ClaimType.SiteId);
-            //    var existingPage = await _pageRepository.GetByStubAsync(siteId, page.Stub);
-            //    if (existingPage != null)
-            //    {
-            //        throw new GraException("The stub already exists, please enter a different one.");
-            //    }
+            VerifyManagementPermission();
 
-            //    page.SiteId = siteId;
-            //    page.Stub = page.Stub.ToLower();
-            //    return await _pageRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), page);
-            //}
-            //else
-            //{
-            //    int userId = GetClaimId(ClaimType.UserId);
-            //    _logger.LogError($"User {userId} doesn't have permission to add pages.");
-            //    throw new GraException("Permission denied.");
-            //}
-        }
+            var currentPage = await _pageRepository.GetByHeaderAndLanguageAsync(page.PageHeaderId,
+                page.LanguageId);
+            if (currentPage != null)
+            {
+                throw new GraException("Page already exists for header and language.");
+            }
 
-        public async Task DeletePageAsync(int id)
-        {
-            throw new NotImplementedException();
-            if (HasPermission(Permission.DeletePages))
-            {
-                await _pageRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), id);
-            }
-            else
-            {
-                int userId = GetClaimId(ClaimType.UserId);
-                _logger.LogError($"User {userId} doesn't have permission to delete pages.");
-                throw new GraException("Permission denied.");
-            }
+            page.FooterText = page.FooterText?.Trim();
+            page.MetaDescription = page.MetaDescription?.Trim();
+            page.NavText = page.NavText?.Trim();
+            page.Title = page.Title?.Trim();
+
+            return await _pageRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), page);
         }
 
         public async Task<Page> EditPageAsync(Page page)
         {
-            throw new NotImplementedException();
-            //if (HasPermission(Permission.EditPages))
-            //{
-            //    var siteId = GetClaimId(ClaimType.SiteId);
-            //    var currentPage = await _pageRepository
-            //        .GetByStubAsync(GetClaimId(ClaimType.SiteId), page.Stub);
+            VerifyManagementPermission();
 
-            //    currentPage.Title = page.Title;
-            //    currentPage.Content = page.Content;
-            //    currentPage.FooterText = page.FooterText;
-            //    currentPage.NavText = page.NavText;
-            //    currentPage.IsPublished = page.IsPublished;
+            var currentPage = await _pageRepository.GetByHeaderAndLanguageAsync(page.PageHeaderId,
+                page.LanguageId);
 
-            //    return await _pageRepository
-            //        .UpdateSaveAsync(GetClaimId(ClaimType.UserId), currentPage);
-            //}
-            //else
-            //{
-            //    int userId = GetClaimId(ClaimType.UserId);
-            //    _logger.LogError($"User {userId} doesn't have permission to edit pages.");
-            //    throw new GraException("Permission denied.");
-            //}
+            currentPage.Content = page.Content;
+            currentPage.IsPublished = page.IsPublished;
+            currentPage.FooterText = page.FooterText?.Trim();
+            currentPage.MetaDescription = page.MetaDescription?.Trim();
+            currentPage.NavText = page.NavText?.Trim();
+            currentPage.Title = page.Title?.Trim();
+
+            return await _pageRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), currentPage);
+        }
+
+        public async Task DeletePageAsync(int id)
+        {
+            VerifyManagementPermission();
+            await _pageRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), id);
         }
 
         public async Task<Page> GetByStubAsync(string pageStub)
@@ -119,7 +149,7 @@ namespace GRA.Domain.Service
             var currentCultureName = _userContextProvider.GetCurrentCulture()?.Name;
             if (currentCultureName != null)
             {
-                var currentLanguageId = await _languageService.GetLanguageId(currentCultureName);
+                var currentLanguageId = await _languageService.GetLanguageIdAsync(currentCultureName);
                 var localPage
                     = await _pageRepository.GetByStubAsync(siteId, pageStub, currentLanguageId);
                 if (localPage != null
@@ -128,7 +158,7 @@ namespace GRA.Domain.Service
                     return localPage;
                 }
             }
-            var defaultLanguageId = await _languageService.GetDefaultLanguageId();
+            var defaultLanguageId = await _languageService.GetDefaultLanguageIdAsync();
             var defaultPage
                 = await _pageRepository.GetByStubAsync(siteId, pageStub, defaultLanguageId);
 
@@ -148,9 +178,9 @@ namespace GRA.Domain.Service
             var currentCultureName = _userContextProvider.GetCurrentCulture()?.Name;
             if (currentCultureName != null)
             {
-                var currentLanguageId = await _languageService.GetLanguageId(currentCultureName);
-                return await _pageRepository.GetAreaPagesAsync(GetCurrentSiteId(), 
-                    navPages, 
+                var currentLanguageId = await _languageService.GetLanguageIdAsync(currentCultureName);
+                return await _pageRepository.GetAreaPagesAsync(GetCurrentSiteId(),
+                    navPages,
                     currentLanguageId);
             }
             else

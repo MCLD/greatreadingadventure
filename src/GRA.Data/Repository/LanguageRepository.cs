@@ -22,7 +22,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.IsActive)
-                .OrderBy(_ => _.IsDefault)
+                .OrderByDescending(_ => _.IsDefault)
                 .ThenBy(_ => _.Name)
                 .ProjectTo<Language>()
                 .ToListAsync();
@@ -36,6 +36,15 @@ namespace GRA.Data.Repository
                 .ThenBy(_ => _.Name)
                 .ProjectTo<Language>()
                 .ToListAsync();
+        }
+
+        public async Task<Language> GetActiveByIdAsync(int id)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.IsActive && _.Id == id)
+                .ProjectTo<Language>()
+                .SingleOrDefaultAsync();
         }
 
         public async Task<int> GetDefaultLanguageId()

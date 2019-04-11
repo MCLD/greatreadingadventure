@@ -1,11 +1,89 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Pages.PagesListViewModel
 
-@if (Model.CanDeletePage)
-{
-    <div class="row">
-        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
-            <div class="modal-dialog" role="document">
+<div class="row">
+    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
+        <div class="modal-dialog" role="document">
+            <form asp-controller="Pages" asp-action="@nameof(PagesController.Create)" method="post" role="form" style="display:inline">
+                <input id="addCurrentPage" asp-for="PaginateModel.CurrentPage" type="hidden" />
+
                 <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="addModalLabel">Add page</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label asp-for="PageHeader.PageName" class="control-label"></label>
+                            <input id="addName" asp-for="PageHeader.PageName" class="form-control" />
+                            <span asp-validation-for="PageHeader.PageName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PageHeader.Stub" class="control-label"></label>
+                            <input id="addStub" asp-for="PageHeader.Stub" class="form-control" />
+                            <span asp-validation-for="PageHeader.Stub" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                        <button type="submit" class="btn btn-primary btn-spinner pull-right" aria-label="Confirm">
+                            Add
+                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+        <div class="modal-dialog" role="document">
+            <form asp-controller="Pages" asp-action="@nameof(PagesController.Edit)" method="post" role="form" style="display:inline">
+                <input id="editId" asp-for="PageHeader.Id" type="hidden" />
+                <input id="editCurrentPage" asp-for="PaginateModel.CurrentPage" type="hidden" />
+
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="editModalLabel">Edit page</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label asp-for="PageHeader.PageName" class="control-label"></label>
+                                <input id="editName" asp-for="PageHeader.PageName" class="form-control" />
+                                <span asp-validation-for="PageHeader.PageName" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="PageHeader.Stub" class="control-label"></label>
+                                <input id="editStub" asp-for="PageHeader.Stub" class="form-control" readonly />
+                                <span asp-validation-for="PageHeader.Stub" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                        <button type="submit" class="btn btn-primary btn-spinner pull-right" aria-label="Confirm">
+                            Save
+                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form asp-controller="Pages" asp-action="@nameof(PagesController.Delete)" method="post" role="form" style="display:inline">
+                    <input id="deleteId" asp-for="PageHeader.Id" type="hidden" />
+                    <input id="deleteName" asp-for="PageHeader.PageName" type="hidden" />
+                    <input id="deleteCurrentPage" asp-for="PaginateModel.CurrentPage" type="hidden" />
+
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         <h4 class="modal-title" id="deleteModalLabel">Delete page</h4>
@@ -16,32 +94,32 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <form asp-controller="Pages" asp-action="Delete" method="post" role="form" style="display:inline">
-                            <input id="Id" name="Id" type="hidden" />
-                            <button type="submit" class="btn btn-danger pull-right" aria-label="Confirm">
-                                <span class="fa fa-remove" aria-hidden="true"></span>
-                                Delete
-                            </button>
-                        </form>
+                        <button type="submit" class="btn btn-danger pull-right" aria-label="Confirm">
+                            <span class="fa fa-remove" aria-hidden="true"></span>
+                            Delete
+                        </button>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>
-}
-
-@if (Model.CanAddPage)
-{
-    <div class="row" style="padding: 10px 0;">
-        <div class="col-xs-12">
-            <a asp-action="Create" class="btn btn-default">Create a new page</a>
-        </div>
-    </div>
-}
+</div>
 
 <div class="row" style="padding: 10px 0;">
     <div class="col-xs-12">
-        @if (Model.Pages.Count() == 0)
+        <button type="button"
+                class="btn btn-default"
+                data-toggle="modal"
+                data-target="#addModal">
+            Create a new page
+        </button>
+    </div>
+</div>
+
+
+<div class="row" style="padding: 10px 0;">
+    <div class="col-xs-12">
+        @if (Model.PageHeaders.Count() == 0)
         {
             <div class="alert alert-warning">No Pages</div>
         }
@@ -51,49 +129,46 @@
                 <table class="table table-condensed table-bordered link-table">
                     <thead>
                         <tr>
-                            <th>Title</th>
+                            <th>Name</th>
                             <th>Stub</th>
-                            <th>Shown in Nav</th>
-                            <th>Shown in Footer</th>
-                            <th>Published</th>
-                            @if (Model.CanDeletePage)
-                            {
-                                <th>&nbsp;</th>
-                            }
+                            <th>Languages</th>
+                            <th>&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var graPage in Model.Pages)
+                        @foreach (var header in Model.PageHeaders)
                         {
                             <tr>
                                 <td class="td-class">
-                                    <a asp-action="Edit" asp-route-stub="@graPage.PageStub" class="rowlink">
-                                        @graPage.Title
+                                    <a asp-action="@nameof(PagesController.Detail)" asp-route-id="@header.Id" class="rowlink">
+                                        @header.PageName
                                     </a>
                                 </td>
                                 <td>
-                                    @graPage.PageStub
+                                    @header.Stub
                                 </td>
                                 <td>
-                                    <span class="colored-icon fa @(string.IsNullOrWhiteSpace(graPage.NavText) ? "fa-times" : "fa-check")"></span>
+                                    @string.Join(", ", header.PageLanguages)
                                 </td>
-                                <td>
-                                    <span class="colored-icon fa @(string.IsNullOrWhiteSpace(graPage.FooterText) ? "fa-times" : "fa-check")"></span>
+                                <td class="on-top gra-mc-icon">
+                                    <button type="button"
+                                            class="btn btn-primary btn-sm"
+                                            data-toggle="modal"
+                                            data-target="#editModal"
+                                            data-id="@header.Id"
+                                            data-name="@header.PageName"
+                                            data-stub="@header.Stub">
+                                        <span class="fa fa-pencil" aria-hidden="true"></span>
+                                    </button>
+                                    <button type="button"
+                                            class="btn btn-danger btn-sm"
+                                            data-toggle="modal"
+                                            data-target="#deleteModal"
+                                            data-id="@header.Id"
+                                            data-name="@header.PageName">
+                                        <span class="fa fa-remove" aria-hidden="true"></span>
+                                    </button>
                                 </td>
-                                <td>@(graPage.IsPublished ? "Yes" : "No")</td>
-                                @if (Model.CanDeletePage)
-                                {
-                                    <td class="on-top gra-mc-icon">
-                                        <button type="button"
-                                                class="btn btn-danger btn-xs"
-                                                data-toggle="modal"
-                                                data-target="#deleteModal"
-                                                data-id="@graPage.Id"
-                                                data-name="@graPage.Title">
-                                            <span class="fa fa-remove" aria-hidden="true"></span>
-                                        </button>
-                                    </td>
-                                }
                             </tr>
                         }
                     </tbody>
@@ -108,7 +183,7 @@
 </div>
 
 @section scripts
-{
+    {
     <script>
         $(document).ready(function () {
             $('.td-class').each(function () {
@@ -121,13 +196,36 @@
             });
         });
 
-        $('#deleteModal').on('show.bs.modal', function (event) {
+        $("#editModal").on("show.bs.modal", function (event) {
             var button = $(event.relatedTarget);
-            var id = button.data('id');
-            var name = button.data('name');
+            var id = button.data("id");
+            var name = button.data("name");
+            var stub = button.data("stub");
+            modal.find("#editId").val(id);
+            modal.find("#editName").val(name);
+            modal.find("#editStub").val(stub);
+        });
+
+        $("#deleteModal").on("show.bs.modal", function (event) {
+            var button = $(event.relatedTarget);
+            var id = button.data("id");
+            var name = button.data("name");
             var modal = $(this);
-            modal.find('#modal-text').text('Are you sure you wish to delete the page "' + name + '" ?');
-            modal.find('#Id').val(id);
-        })
+            modal.find("#modal-text").text("Are you sure you want to delete the page \"" + name + "\"?");
+            modal.find("#deleteId").val(id);
+            modal.find("#deleteName").val(name);
+        });
+
+        $("#addName").on("keyup", function () {
+            // From https://gist.github.com/mathewbyrne/1280286
+            var slug = $(this).val().toLowerCase()
+                .replace(/\s+/g, "-")
+                .replace(/&/g, "-and-")
+                .replace(/[^\w\-]+/g, "")
+                .replace(/\-\-+/g, "-")
+                .replace(/^-+/, "")
+                .replace(/-+$/, "");
+            $("#addStub").val(slug);
+        });
     </script>
 }

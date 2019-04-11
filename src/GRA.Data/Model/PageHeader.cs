@@ -14,5 +14,7 @@ namespace GRA.Data.Model
         [Required]
         [MaxLength(255)]
         public string Stub { get; set; }
+
+        public ICollection<Page> Pages { get; set; }
     }
 }

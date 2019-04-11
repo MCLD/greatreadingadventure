@@ -29,6 +29,7 @@ namespace GRA.Domain.Model
         [Required]
         public int PageHeaderId { get; set; }
 
+        [DisplayName("Meta Description")]
         [MaxLength(150)]
         public string MetaDescription { get; set; }
 

@@ -30,10 +30,9 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> UploadFile(IFormFile file)
         {
-            if (UserHasPermission(Permission.AddPages)
-                || UserHasPermission(Permission.EditPages)
-                || UserHasPermission(Permission.EditChallenges)
-                || UserHasPermission(Permission.ManageDashboardContent))
+            if (UserHasPermission(Permission.EditChallenges)
+                || UserHasPermission(Permission.ManageDashboardContent)
+                || UserHasPermission(Permission.ManagePages))
             {
                 if (file != null)
                 {

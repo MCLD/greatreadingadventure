@@ -1,13 +1,13 @@
 ﻿using GRA.Controllers.ViewModel.Shared;
+using GRA.Domain.Model;
 using System.Collections.Generic;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Pages
 {
     public class PagesListViewModel
     {
-        public List<GRA.Domain.Model.Page> Pages { get; set; }
+        public List<PageHeader> PageHeaders { get; set; }
         public PaginateViewModel PaginateModel { get; set; }
-        public bool CanAddPage { get; set; }
-        public bool CanDeletePage { get; set; }
+        public PageHeader PageHeader { get; set; }
     }
 }

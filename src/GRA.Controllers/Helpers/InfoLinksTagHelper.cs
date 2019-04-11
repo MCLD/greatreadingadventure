@@ -40,7 +40,7 @@ namespace GRA.Controllers.Helpers
                 var pageList = new List<string>();
                 foreach (var page in pages)
                 {
-                    var link = url.Action("Index", "Info", new { stub = page.PageStub });
+                    var link = url.Action("Index", "Info", new { id = page.PageStub });
                     if (navPages)
                     {
                         if (page.PageStub == activeStub)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GRA.Abstract;
+using GRA.Domain.Model;
 using GRA.Domain.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Caching.Distributed;
@@ -85,12 +86,12 @@ namespace GRA.Domain.Service
 
             foreach (var missingCultureName in namesMissingFromDb)
             {
-                if(systemUser == null)
+                if (systemUser == null)
                 {
                     systemUser = await _userService.GetSystemUserId();
                 }
                 var culture = siteCultures.Single(_ => _.Name == missingCultureName);
-                await _languageRepository.AddSaveNoAuditAsync(new Model.Language
+                await _languageRepository.AddSaveNoAuditAsync(new Language
                 {
                     CreatedAt = _dateTimeProvider.Now,
                     CreatedBy = (int)systemUser,
@@ -108,12 +109,17 @@ namespace GRA.Domain.Service
             _cache.Remove(CacheKey.DefaultLanguageId);
         }
 
-        public async Task<ICollection<Model.Language>> GetActiveAsync()
+        public async Task<ICollection<Language>> GetActiveAsync()
         {
             return await _languageRepository.GetActiveAsync();
         }
 
-        public async Task<int> GetDefaultLanguageId()
+        public async Task<Language> GetActiveByIdAsync(int id)
+        {
+            return await _languageRepository.GetActiveByIdAsync(id);
+        }
+
+        public async Task<int> GetDefaultLanguageIdAsync()
         {
             var cachedDefaultLanguageId = _cache.Get(CacheKey.DefaultLanguageId);
             if (cachedDefaultLanguageId == null)
@@ -125,7 +131,7 @@ namespace GRA.Domain.Service
             return BitConverter.ToInt32(cachedDefaultLanguageId, 0);
         }
 
-        public async Task<int> GetLanguageId(string culture)
+        public async Task<int> GetLanguageIdAsync(string culture)
         {
             var key = string.Format(CacheKey.LanguageId, culture);
             var cachedLanguageId = _cache.Get(key);

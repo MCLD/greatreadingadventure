@@ -18,8 +18,26 @@ namespace GRA.Data.Repository
         {
         }
 
-        public async Task<Page> GetByStubAsync(int siteId, 
-            string pageStub, 
+        public async Task<IEnumerable<Page>> GetByHeaderIdAsync(int headerId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.PageHeaderId == headerId)
+                .ProjectTo<Page>()
+                .ToListAsync();
+        }
+
+        public async Task<Page> GetByHeaderAndLanguageAsync(int headerId, int languageId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.PageHeaderId == headerId && _.LanguageId == languageId)
+                .ProjectTo<Page>()
+                .SingleOrDefaultAsync();
+        }
+
+        public async Task<Page> GetByStubAsync(int siteId,
+            string pageStub,
             int languageId)
         {
             var pageHeaderId = _context.PageHeaders
@@ -89,7 +107,7 @@ namespace GRA.Data.Repository
 
             var finalPages = await pages.ProjectTo<Page>().ToListAsync();
 
-            foreach(var page in finalPages)
+            foreach (var page in finalPages)
             {
                 page.PageStub = pageHeaders
                     .Where(_ => _.Id == page.PageHeaderId)

@@ -19,13 +19,14 @@ namespace GRA.Controllers
             _pageService = pageService ?? throw new ArgumentNullException(nameof(pageService));
         }
 
-        public async Task<IActionResult> Index(string stub)
+        public async Task<IActionResult> Index(string id)
         {
             try
             {
-                var page = await _pageService.GetByStubAsync(stub);
+                var page = await _pageService.GetByStubAsync(id);
                 PageTitle = page.Title;
-                return View("Index", CommonMark.CommonMarkConverter.Convert(page.Content));
+                page.Content = CommonMark.CommonMarkConverter.Convert(page.Content);
+                return View(page);
             }
             catch (GraException)
             {
