@@ -77,7 +77,7 @@ namespace GRA.Data
             modelBuilder.Entity<Model.PrizeWinner>()
                 .HasIndex(_ => new { _.DrawingId, _.UserId, _.RedeemedAt })
                 .IsUnique();
-            modelBuilder.Entity<Model.Page>()
+            modelBuilder.Entity<Model.PageHeader>()
                 .HasIndex(_ => new { _.SiteId, _.Stub })
                 .IsUnique();
             modelBuilder.Entity<Model.User>()
@@ -165,6 +165,7 @@ namespace GRA.Data
         public DbSet<Model.NewsCategory> NewsCateories { get; set; }
         public DbSet<Model.NewsPost> NewsPosts { get; set; }
         public DbSet<Model.Notification> Notifications { get; set; }
+        public DbSet<Model.PageHeader> PageHeaders { get; set; }
         public DbSet<Model.Page> Pages { get; set; }
         public DbSet<Model.Permission> Permissions { get; set; }
         public DbSet<Model.PointTranslation> PointTranslations { get; set; }

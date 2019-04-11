@@ -11,13 +11,10 @@ namespace GRA.Domain.Model
         public const string ActivateSystemChallenges = "ActivateSystemChallenges";
         public const string AddChallengeGroups = "AddChallengeGroups";
         public const string AddChallenges = "AddChallenges";
-        public const string AddPages = "AddPages";
         public const string DeleteAnyMail = "DeleteAnyMail";
-        public const string DeletePages = "DeletePages";
         public const string DeleteParticipants = "DeleteParticipants";
         public const string EditChallengeGroups = "EditChallengeGroups";
         public const string EditChallenges = "EditChallenges";
-        public const string EditPages = "EditPages";
         public const string EditParticipants = "EditParticipants";
         public const string EditParticipantUsernames = "EditParticipantUsernames";
         public const string ImportHouseholdMembers = "ImportHouseholdMembers";
@@ -33,6 +30,7 @@ namespace GRA.Domain.Model
         public const string ManageLocations = "ManageLocations";
         public const string ManageNews = "ManageNews";
         public const string ManagePerformers = "ManagePerformers";
+        public const string ManagePages = "ManagePages";
         public const string ManagePointTranslations = "ManagePointTranslations";
         public const string ManagePrograms = "ManagePrograms";
         public const string ManageQuestionnaires = "ManageQuestionnaires";

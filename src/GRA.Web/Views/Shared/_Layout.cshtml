@@ -69,7 +69,7 @@
                             <ul class="dropdown-menu">
                                 @foreach (var item in ((IEnumerable<SelectListItem>)Context.Items[GRA.Controllers.ItemKey.L10n]))
                                 {
-                                    <li><a href="@Url.RouteUrl(new { culture = item.Value})">@item.Text</a></li>
+                                    <li><a href="@Url.RouteUrl(new { culture = item.Value, id = Context.Items[ItemKey.RouteId]})">@item.Text</a></li>
                                 }
                             </ul>
                         </li>

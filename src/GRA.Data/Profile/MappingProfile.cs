@@ -51,10 +51,6 @@ namespace GRA.Data.Profile
                 .ForMember(dest => dest.ProgramIds, opt => opt.MapFrom(src
                 => src.CriterionPrograms.Select(_ => _.ProgramId).ToList()))
                 .ReverseMap();
-            CreateMap<Model.PrizeWinner, Domain.Model.PrizeWinner>()
-                .ForMember(dest => dest.PrizeName,
-                opt => opt.MapFrom(src => src.Drawing.Name ?? src.Trigger.AwardPrizeName))
-                .ReverseMap();
             CreateMap<Model.EmailReminder, Domain.Model.EmailReminder>().ReverseMap();
             CreateMap<Model.EmailSubscriptionAuditLog, Domain.Model.EmailSubscriptionAuditLog>()
                 .ForMember(dest => dest.CreatedByName, opt => opt
@@ -74,8 +70,16 @@ namespace GRA.Data.Profile
                 .ReverseMap();
             CreateMap<Model.NewsPost, Domain.Model.NewsPost>().ReverseMap();
             CreateMap<Model.Notification, Domain.Model.Notification>().ReverseMap();
+            CreateMap<Model.PageHeader, Domain.Model.PageHeader>()
+                .ForMember(dest => dest.PageLanguages, 
+                    opt => opt.MapFrom(src => src.Pages.Select(_ => _.Language.Name)))
+                .ReverseMap();
             CreateMap<Model.Page, Domain.Model.Page>().ReverseMap();
             CreateMap<Model.PointTranslation, Domain.Model.PointTranslation>().ReverseMap();
+            CreateMap<Model.PrizeWinner, Domain.Model.PrizeWinner>()
+                .ForMember(dest => dest.PrizeName,
+                    opt => opt.MapFrom(src => src.Drawing.Name ?? src.Trigger.AwardPrizeName))
+                .ReverseMap();
             CreateMap<Model.Program, Domain.Model.Program>().ReverseMap();
             CreateMap<Model.PsAgeGroup, Domain.Model.PsAgeGroup>().ReverseMap();
             CreateMap<Model.PsBlackoutDate, Domain.Model.PsBlackoutDate>().ReverseMap();
