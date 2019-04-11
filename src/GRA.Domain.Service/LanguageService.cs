@@ -64,11 +64,22 @@ namespace GRA.Domain.Service
                 }
                 else
                 {
+                    bool doSave = false;
                     // ensure default is set properly
                     if ((dbCulture.IsDefault && dbCulture.Name != Culture.DefaultName)
                         || (!dbCulture.IsDefault && dbCulture.Name == Culture.DefaultName))
                     {
                         dbCulture.IsDefault = dbCulture.Name == Culture.DefaultName;
+                        doSave = true;
+                    }
+                    if(dbCulture.IsDefault 
+                        && dbCulture.Description != Culture.DefaultCulture.DisplayName)
+                    {
+                        dbCulture.Description = Culture.DefaultCulture.DisplayName;
+                        doSave = true;
+                    }
+                    if(doSave)
+                    {
                         await _languageRepository.UpdateSaveNoAuditAsync(dbCulture);
                     }
                 }
