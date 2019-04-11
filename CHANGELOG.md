@@ -26,6 +26,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Household bulk prize redemption
 - Group import from csv
 - Group lookup
+- Avatar update google analytics event
 
 ### Changed
 - Script docker-build.bash to not build release images unless the branch starts with 'release/'
