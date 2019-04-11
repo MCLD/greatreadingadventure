@@ -18,7 +18,6 @@ The Great Reading Adventure is open source software developed with the help of [
 - [Justin Meiners](https://justinmeiners.github.io/)
 
 ### <a name="people-support"></a>Support
-
 - [Caris O'Malley](https://www.linkedin.com/in/caris-o-malley-28b5a547) &#9734;
 - Brianna King
 - Danette Barton
@@ -32,6 +31,9 @@ The Great Reading Adventure is open source software developed with the help of [
 - [Tammy Gross](https://www.tamdoll.com/)
 - [Tara Carpenter](http://www.taracarpenter.com/)
 - [Tony Apodaca](https://antonioramonapodaca.wordpress.com/)
+
+## <a name="translations"></a>Translations
+- Spanish translations provided by [Maricopa County Library District](https://mcldaz.org/) via [The Weinstein Organization](https://www.twochicago.com/)
 
 ## <a name="servicessoftware"></a>Services and software
 

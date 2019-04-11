@@ -4,14 +4,16 @@ using GRA.Data.SqlServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GRA.Data.SqlServer.Migrations
 {
     [DbContext(typeof(SqlServerContext))]
-    partial class SqlServerContextModelSnapshot : ModelSnapshot
+    [Migration("20190329202403_add-page-i18n")]
+    partial class addpagei18n
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1183,9 +1185,6 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<int>("LanguageId");
 
-                    b.Property<string>("MetaDescription")
-                        .HasMaxLength(150);
-
                     b.Property<string>("NavText")
                         .HasMaxLength(255);
 
@@ -1196,10 +1195,6 @@ namespace GRA.Data.SqlServer.Migrations
                         .HasMaxLength(255);
 
                     b.HasKey("Id");
-
-                    b.HasIndex("LanguageId");
-
-                    b.HasIndex("PageHeaderId");
 
                     b.ToTable("Pages");
                 });
@@ -2984,19 +2979,6 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.NewsCategory", "Category")
                         .WithMany("Posts")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("GRA.Data.Model.Page", b =>
-                {
-                    b.HasOne("GRA.Data.Model.Language", "Language")
-                        .WithMany()
-                        .HasForeignKey("LanguageId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GRA.Data.Model.PageHeader", "PageHeader")
-                        .WithMany("Pages")
-                        .HasForeignKey("PageHeaderId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 

@@ -11,6 +11,7 @@
         public static readonly string NotificationsDisplayed = "NotificationsDisplayed";
         public static readonly string NotificationsList = "NotificationsList";
         public static readonly string NotificationsModal = "NotificationsModal";
+        public static readonly string RouteId = "RouteId";
         public static readonly string ShowMissionControl = "ShowMissionControl";
         public static readonly string ShowPerformerRegistration = "ShowPerformerRegistration";
         public static readonly string ShowPerformerScheduling = "ShowPerformerScheduling";

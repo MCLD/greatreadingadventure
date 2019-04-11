@@ -40,10 +40,10 @@ namespace GRA.Controllers.Helpers
                 var pageList = new List<string>();
                 foreach (var page in pages)
                 {
-                    var link = url.Action("Index", "Info", new { stub = page.Stub });
+                    var link = url.Action("Index", "Info", new { id = page.PageStub });
                     if (navPages)
                     {
-                        if (page.Stub == activeStub)
+                        if (page.PageStub == activeStub)
                         {
                             pageList.Add($"<li class=\"active\"><a href=\"{link}\">{page.NavText}</a></li>");
                         }
@@ -54,7 +54,7 @@ namespace GRA.Controllers.Helpers
                     }
                     else
                     {
-                        if (page.Stub == activeStub)
+                        if (page.PageStub == activeStub)
                         {
                             pageList.Add($"<a class=\"active\" href=\"{link}\">{page.FooterText}</a>");
 

@@ -123,7 +123,7 @@ namespace GRA.Controllers
                 .Features
                 .Get<IRequestCultureFeature>()
                 .RequestCulture
-                .Culture;
+                .UICulture;
         }
     }
 }

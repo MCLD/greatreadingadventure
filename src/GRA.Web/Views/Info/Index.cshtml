@@ -1,5 +1,12 @@
-﻿@model string
+﻿@model GRA.Domain.Model.Page
+
+@if (!string.IsNullOrWhiteSpace(Model.MetaDescription))
+{
+    @section metadata {
+        <meta name="description" content="@Model.MetaDescription" />
+    }
+}
 
 <div class="info-page">
-    @Html.Raw(Model)
+    @Html.Raw(Model.Content)
 </div>
