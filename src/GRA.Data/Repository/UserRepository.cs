@@ -537,5 +537,22 @@ namespace GRA.Data.Repository
                 .ProjectTo<User>()
                 .ToListAsync();
         }
+
+        public async Task<bool> UnsubscribeTokenExists(int siteId, string token)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId && _.UnsubscribeToken == token)
+                .AnyAsync();
+        }
+
+        public async Task<User> GetByUnsubscribeToken(int siteId, string token)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId && _.UnsubscribeToken == token)
+                .ProjectTo<User>()
+                .SingleOrDefaultAsync();
+        }
     }
 }

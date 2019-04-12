@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GRA.Abstract;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
@@ -13,7 +14,10 @@ namespace GRA.Domain.Service
 {
     public class UserService : Abstract.BaseUserService<UserService>
     {
-        private readonly GRA.Abstract.IPasswordValidator _passwordValidator;
+        private const int UnsubscribeTokenLength = 16;
+
+        private readonly ICodeGenerator _codeGenerator;
+        private readonly IPasswordValidator _passwordValidator;
         private readonly IAuthorizationCodeRepository _authorizationCodeRepository;
         private readonly IBadgeRepository _badgeRepository;
         private readonly IBookRepository _bookRepository;
@@ -40,7 +44,8 @@ namespace GRA.Domain.Service
         public UserService(ILogger<UserService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
-            GRA.Abstract.IPasswordValidator passwordValidator,
+            ICodeGenerator codeGenerator,
+            IPasswordValidator passwordValidator,
             IAuthorizationCodeRepository authorizationCodeRepository,
             IBadgeRepository badgeRepository,
             IBookRepository bookRepository,
@@ -65,6 +70,8 @@ namespace GRA.Domain.Service
             IStringLocalizer<Resources.Shared> sharedLocalizer)
             : base(logger, dateTimeProvider, userContextProvider)
         {
+            _codeGenerator = codeGenerator
+                ?? throw new ArgumentNullException(nameof(codeGenerator));
             _passwordValidator = passwordValidator
                 ?? throw new ArgumentNullException(nameof(passwordValidator));
             _authorizationCodeRepository = authorizationCodeRepository
@@ -116,6 +123,8 @@ namespace GRA.Domain.Service
         public async Task<User> RegisterUserAsync(User user, string password,
             bool MCRegistration = false, bool allowDuringCloseProgram = false)
         {
+            var siteId = GetCurrentSiteId();
+
             if (!allowDuringCloseProgram)
             {
                 VerifyCanRegister();
@@ -143,13 +152,19 @@ namespace GRA.Domain.Service
             user.PostalCode = user.PostalCode?.Trim();
             user.Username = user.Username?.Trim();
 
+            var unsubscribeToken = _codeGenerator.Generate(UnsubscribeTokenLength, false);
+            while (await _userRepository.UnsubscribeTokenExists(siteId, unsubscribeToken))
+            {
+                unsubscribeToken = _codeGenerator.Generate(UnsubscribeTokenLength, false);
+            }
+            user.UnsubscribeToken = unsubscribeToken;
+
             var emailSubscribe = false;
             if (user.IsEmailSubscribed)
             {
                 user.IsEmailSubscribed = false;
                 var (askEmailSubscription, askEmailSubscriptionText) = await _siteLookupService
-                    .GetSiteSettingStringAsync(GetCurrentSiteId(),
-                        SiteSettingKey.Users.AskEmailSubPermission);
+                    .GetSiteSettingStringAsync(siteId, SiteSettingKey.Users.AskEmailSubPermission);
                 if (askEmailSubscription)
                 {
                     emailSubscribe = true;
@@ -571,6 +586,7 @@ namespace GRA.Domain.Service
         {
             VerifyCanHouseholdAction();
 
+            var siteId = GetCurrentSiteId();
             int authUserId = GetClaimId(ClaimType.UserId);
             var householdHead = await _userRepository.GetByIdAsync(householdHeadUserId);
 
@@ -598,12 +614,19 @@ namespace GRA.Domain.Service
                 memberToAdd.PostalCode = memberToAdd.PostalCode?.Trim();
                 memberToAdd.Username = memberToAdd.Username?.Trim();
 
+                var unsubscribeToken = _codeGenerator.Generate(UnsubscribeTokenLength, false);
+                while (await _userRepository.UnsubscribeTokenExists(siteId, unsubscribeToken))
+                {
+                    unsubscribeToken = _codeGenerator.Generate(UnsubscribeTokenLength, false);
+                }
+                memberToAdd.UnsubscribeToken = unsubscribeToken;
+
                 var emailSubscribe = false;
                 if (memberToAdd.IsEmailSubscribed)
                 {
                     memberToAdd.IsEmailSubscribed = false;
                     var (askEmailSubscription, askEmailSubscriptionText) = await _siteLookupService
-                        .GetSiteSettingStringAsync(GetCurrentSiteId(),
+                        .GetSiteSettingStringAsync(siteId,
                             SiteSettingKey.Users.AskEmailSubPermission);
                     if (askEmailSubscription)
                     {

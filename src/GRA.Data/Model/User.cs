@@ -76,6 +76,9 @@ namespace GRA.Data.Model
         [MaxLength(8)]
         public string Culture { get; set; }
 
+        [MaxLength(16)]
+        public string UnsubscribeToken { get; set; }
+
         public bool IsSystemUser { get; set; }
     }
 }

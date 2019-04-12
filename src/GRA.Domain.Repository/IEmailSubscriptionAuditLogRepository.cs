@@ -7,6 +7,6 @@ namespace GRA.Domain.Repository
     public interface IEmailSubscriptionAuditLogRepository
     {
         Task<ICollection<EmailSubscriptionAuditLog>> GetUserAuditLogAsync(int userId);
-        Task AddEntryAsync(int auditId, int userId, bool subscribe);
+        Task AddEntryAsync(int auditId, int userId, bool subscribe, bool token = false);
     }
 }
