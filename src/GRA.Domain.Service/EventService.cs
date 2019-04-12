@@ -39,7 +39,7 @@ namespace GRA.Domain.Service
             _eventRepository = Require.IsNotNull(eventRepository, nameof(eventRepository));
             _locationRepository = Require.IsNotNull(locationRepository, nameof(locationRepository));
             _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));
-            _spatialDistanceRepository = spatialDistanceRepository 
+            _spatialDistanceRepository = spatialDistanceRepository
                 ?? throw new ArgumentNullException(nameof(spatialDistanceRepository));
         }
 

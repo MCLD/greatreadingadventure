@@ -120,7 +120,7 @@ namespace GRA.Domain.Report
                     IEnumerable<object> row = new object[]
                     {
                         branch.Name,
-                       redemptionCount
+                        redemptionCount
                     };
                     reportData.Add(row.ToArray());
                 }

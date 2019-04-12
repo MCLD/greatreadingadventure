@@ -12,4 +12,4 @@ src/GRA.Data.SqlServer/Migrations/* linguist-generated
 *.min.js linguist-generated=true
 
 # fix CHANGELOG.md to default to union merge
-CHANGELOG merge=union
+CHANGELOG.md merge=union

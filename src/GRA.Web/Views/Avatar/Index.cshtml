@@ -419,10 +419,21 @@
         function SaveAvatar() {
             $.post("@Url.Action("SaveAvatar")", { selectionJson: GetAvatarSelection() }, function (response) {
                 if (response.success == true) {
-                    SetUnsavedChanges(false);
                     $(".avatar-save-message").removeClass("text-danger").addClass("text-success");
                     $(".avatar-save-message").text("Avatar Saved!");
                     $(".avatar-save-message").show().delay(2000).fadeOut("slow");
+
+                    @if (Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null)
+                    {
+                        <text>
+                        if (unsavedChanges)
+                        {
+                            gtag('event', 'avatar_update');
+                        }
+                        </text>
+                    }
+                    
+                    SetUnsavedChanges(false);
                 }
                 else {
                     $(".avatar-save-message").removeClass("text-success").addClass("text-danger");
@@ -488,6 +499,11 @@
 
         $("#shareForm").on("submit", function (e) {
             if (unsavedChanges) {
+                @if (Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null)
+                {
+                    @:gtag('event', 'avatar_update');
+                }
+
                 $("<input />")
                     .attr("type", "hidden")
                     .attr("name", "selectionJson")
