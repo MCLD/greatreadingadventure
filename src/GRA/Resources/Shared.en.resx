@@ -633,4 +633,64 @@
     <value>Sign in to {0}</value>
     <comment>Prompt a user to sign in to the site, {0} is replaced with the name of the site</comment>
   </data>
+  <data name="Remind Me!" xml:space="preserve">
+    <value>Remind Me!</value>
+    <comment>Submission button text for the participant's email address to be reminded prior to the program starting.</comment>
+  </data>
+  <data name="Submit your email address below and we'll remind you when the program starts." xml:space="preserve">
+    <value>Submit your email address below and we'll remind you when the program starts.</value>
+    <comment>Prompt for a participant's email to send a reminder when the program starts.</comment>
+  </data>
+  <data name="Add a calendar reminder" xml:space="preserve">
+    <value>Add a calendar reminder</value>
+    <comment>Landing page button to download a calendar reminder file (when opened it will add a calendar reminder on the visitor's computer)</comment>
+  </data>
+  <data name="For more information about this reading program, visit your local library!" xml:space="preserve">
+    <value>For more information about this reading program, visit your local library!</value>
+    <comment>Landing page call to action for learning more</comment>
+  </data>
+  <data name="Join to get started on your reading adventure!" xml:space="preserve">
+    <value>Join to get started on your reading adventure!</value>
+    <comment>Landing page text encouraging registration once the program has started.</comment>
+  </data>
+  <data name="Our program starts soon but you can join now to be ready to go when the program starts!" xml:space="preserve">
+    <value>Our program starts soon but you can join now to be ready to go when the program starts!</value>
+    <comment>Landing page text encouraging registration once registration is open but prior to the program start date.</comment>
+  </data>
+  <data name="Reading for 20 minutes a day helps build a strong lifelong reading habit." xml:space="preserve">
+    <value>Reading for 20 minutes a day helps build a strong lifelong reading habit.</value>
+    <comment>Landing page message to encourage reading 20 minutes a day.</comment>
+  </data>
+  <data name="Reading is fundamental for developing literacy skills!" xml:space="preserve">
+    <value>Reading is fundamental for developing literacy skills!</value>
+    <comment>Landing page message informing that reading is fundamental for developing literacy skills.</comment>
+  </data>
+  <data name="Thanks for participating in {0}. You can still sign in to review your history and achievements." xml:space="preserve">
+    <value>Thanks for participating in {0}. You can still sign in to review your history and achievements.</value>
+    <comment>Landing page text thanking visitors for participating after the program has ended when they can still log in to see their history and achievements.</comment>
+  </data>
+  <data name="Welcome to {0}." xml:space="preserve">
+    <value>Welcome to {0}.</value>
+    <comment>Landing page welcome text; {0} is replaced with the name of the site.</comment>
+  </data>
+  <data name="When the program starts, you'll be able to join right here. Come back soon!" xml:space="preserve">
+    <value>When the program starts, you'll be able to join right here. Come back soon!</value>
+    <comment>Landing page message to show visitors when the start date of the program isn't specified.</comment>
+  </data>
+  <data name="While you're there, go on a journey of discovery! Visit fabulous destinations such as Hogwarts, Narnia, Oz, and Middle Earth!" xml:space="preserve">
+    <value>While you're there, go on a journey of discovery! Visit fabulous destinations such as Hogwarts, Narnia, Oz, and Middle Earth!</value>
+    <comment>Landing page after the call to action for learning more; things to experience at the library</comment>
+  </data>
+  <data name="Would you like a reminder email for our next reading program? Enter your email address below and click the 'Remind me' button and we'll send you a reminder when you can join." xml:space="preserve">
+    <value>Would you like a reminder email for our next reading program? Enter your email address below and click the 'Remind me' button and we'll send you a reminder when you can join.</value>
+    <comment>Landing page text asking if visitors want a reminder for the next program.</comment>
+  </data>
+  <data name="You can join our program starting on {0}!" xml:space="preserve">
+    <value>You can join our program starting on {0}!</value>
+    <comment>Landing page message to show visitors when the start date of the program is; {0} is replaced with the start date of the program.</comment>
+  </data>
+  <data name="You must enter a code!" xml:space="preserve">
+    <value>You must enter a code!</value>
+    <comment>Validation prompt if the user clicked the secret code submission button without entering a secret code.</comment>
+  </data>
 </root>

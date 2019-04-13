@@ -437,7 +437,7 @@ namespace GRA.Controllers
         {
             if (string.IsNullOrWhiteSpace(model.SecretCode))
             {
-                TempData[SecretCodeMessage] = "You must enter a code!";
+                TempData[SecretCodeMessage] = Annotations.Required.SecretCode;
             }
             else if (!string.IsNullOrWhiteSpace(model.UserSelection))
             {
