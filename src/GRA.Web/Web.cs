@@ -67,6 +67,11 @@ namespace GRA.Web
                     .EnsureDefaultCategoryAsync();
 
                 stage = 70;
+                await _scope
+                    .ServiceProvider.GetRequiredService<UserService>()
+                    .EnsureUserUnsubscribeTokensAsync();
+
+                stage = 80;
                 _scope.ServiceProvider.GetRequiredService<TemplateService>().SetupTemplates();
             }
             catch (Exception ex)
@@ -105,6 +110,9 @@ namespace GRA.Web
                         errorText = "Error ensuring default news category: {Message}";
                         break;
                     case 70:
+                        errorText = "Error insuring all users have unsubscribe tokens: {Message}";
+                        break;
+                    case 80:
                         errorText = "Error copying templates to shared folder: {Message}";
                         break;
                     default:

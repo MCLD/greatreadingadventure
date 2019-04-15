@@ -554,5 +554,14 @@ namespace GRA.Data.Repository
                 .ProjectTo<User>()
                 .SingleOrDefaultAsync();
         }
+
+        public async Task<ICollection<User>> GetAllUsersWithoutUnsubscribeToken()
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => !_.IsSystemUser && string.IsNullOrWhiteSpace(_.UnsubscribeToken))
+                .ProjectTo<User>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
     }
 }

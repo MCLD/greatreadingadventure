@@ -49,5 +49,6 @@ namespace GRA.Domain.Repository
             int headId, int? drawingId, int? triggerId);
         Task<bool> UnsubscribeTokenExists(int siteId, string token);
         Task<User> GetByUnsubscribeToken(int siteId, string token);
+        Task<ICollection<User>> GetAllUsersWithoutUnsubscribeToken();
     }
 }

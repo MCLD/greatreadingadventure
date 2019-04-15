@@ -1296,5 +1296,31 @@ namespace GRA.Domain.Service
             return await _userRepository.GetHouseholdUsersWithAvailablePrizeAsync(headId,
                 drawingId, triggerId);
         }
+
+        public async Task EnsureUserUnsubscribeTokensAsync()
+        {
+            var users = await _userRepository.GetAllUsersWithoutUnsubscribeToken();
+            if (users.Count > 0)
+            {
+                _logger.LogInformation($"{users.Count} users without an unsubscribe token found.");
+
+                var systemUserId = await _userRepository.GetSystemUserId();
+                foreach (var user in users)
+                {
+                    var unsubscribeToken = _codeGenerator.Generate(UnsubscribeTokenLength, false);
+                    while (await _userRepository.UnsubscribeTokenExists(user.SiteId,
+                        unsubscribeToken))
+                    {
+                        unsubscribeToken = _codeGenerator.Generate(UnsubscribeTokenLength, false);
+                    }
+                    user.UnsubscribeToken = unsubscribeToken;
+
+                    await _userRepository.UpdateAsync(systemUserId, user);
+                }
+                await _userRepository.SaveAsync();
+
+                _logger.LogInformation($"Unsubsribe token added to {users.Count} users.");
+            }
+        }
     }
 }
