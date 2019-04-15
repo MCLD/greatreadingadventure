@@ -31,7 +31,7 @@ namespace GRA.Data.Repository
                 return await schoolList
                     .Where(_ => _.SchoolDistrictId == (int)districtId)
                     .OrderBy(_ => _.Name)
-                    .ProjectTo<School>()
+                    .ProjectTo<School>(_mapper.ConfigurationProvider)
                     .ToListAsync();
             }
             else
@@ -65,7 +65,7 @@ namespace GRA.Data.Repository
             return await ApplyFilters(filter)
                 .OrderBy(_ => _.Name)
                 .ApplyPagination(filter)
-                .ProjectTo<School>()
+                .ProjectTo<School>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 

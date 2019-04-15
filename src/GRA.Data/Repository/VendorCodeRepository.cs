@@ -74,7 +74,7 @@ namespace GRA.Data.Repository
             return await DbSet.AsNoTracking()
                 .Where(_ => _.UserId == userId)
                 .OrderByDescending(_ => _.CreatedAt)
-                .ProjectTo<VendorCode>()
+                .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync();
         }
 
@@ -112,7 +112,7 @@ namespace GRA.Data.Repository
                           join users in validUsers
                           on vendorCodes.UserId equals users.Id
                           select vendorCodes)
-                          .ProjectTo<VendorCode>()
+                          .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
                           .ToListAsync();
         }
     }

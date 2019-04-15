@@ -119,7 +119,7 @@ namespace GRA.Data
                 .OrderBy(_ => _.Id)
                 .Skip(skip)
                 .Take(take)
-                .ProjectTo<DomainEntity>()
+                .ProjectTo<DomainEntity>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 

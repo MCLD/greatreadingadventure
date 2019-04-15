@@ -41,6 +41,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Participant progress bar to default to program goal is no personal reading goal is set
 - Household member list to be sorted alphabetically
 - Household page layout
+- Upgrade Automapper from 6.0.2 to 8.0.0
 
 ### Fixed
 - Instance name enrichment for logging

@@ -27,7 +27,7 @@ namespace GRA.Data.Repository
                 .Where(_ => _.SiteId == siteId
                     && (!requireGeolocation || !string.IsNullOrWhiteSpace(_.Geolocation)))
                 .OrderBy(_ => _.Name)
-                .ProjectTo<Location>()
+                .ProjectTo<Location>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 

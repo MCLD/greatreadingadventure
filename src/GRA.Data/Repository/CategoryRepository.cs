@@ -40,7 +40,7 @@ namespace GRA.Data.Repository
 
             return await categoryList
                 .OrderBy(_ => _.Name)
-                .ProjectTo<Category>()
+                .ProjectTo<Category>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -55,7 +55,7 @@ namespace GRA.Data.Repository
             return await ApplyFilters(filter)
                 .OrderBy(_ => _.Name)
                 .ApplyPagination(filter)
-                .ProjectTo<Category>()
+                .ProjectTo<Category>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 

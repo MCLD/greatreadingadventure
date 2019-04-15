@@ -22,7 +22,7 @@ namespace GRA.Data.Repository
             return await DbSet.AsNoTracking()
                 .Where(_ => _.SiteId == siteid)
                 .OrderBy(_ => _.Id)
-                .ProjectTo<GroupType>()
+                .ProjectTo<GroupType>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync();
         }
 
@@ -51,7 +51,7 @@ namespace GRA.Data.Repository
                 .OrderBy(_ => _.Name)
                 .Skip(skip)
                 .Take(take)
-                .ProjectTo<GroupType>()
+                .ProjectTo<GroupType>(_mapper.ConfigurationProvider)
                 .ToListAsync();
             return (list, count);
         }

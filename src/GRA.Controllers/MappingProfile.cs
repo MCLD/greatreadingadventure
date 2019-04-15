@@ -12,6 +12,7 @@ namespace GRA.Controllers
     {
         public MappingProfile()
         {
+            // Domain to ViewModel Mappings
             CreateMap<ViewModel.Shared.ProgramSettingsViewModel, GRA.Domain.Model.Program>().ReverseMap();
             CreateMap<SinglePageViewModel, User>().ReverseMap();
             CreateMap<Step1ViewModel, User>().ReverseMap();
@@ -32,6 +33,20 @@ namespace GRA.Controllers
             CreateMap<SiteConfigurationViewModel, Site>().ReverseMap();
             CreateMap<SiteScheduleViewModel, Site>().ReverseMap();
             CreateMap<SiteSocialMediaViewModel, Site>().ReverseMap();
+
+            // ViewModel to Domain Mappings
+            CreateMap<GRA.Domain.Model.Program, ViewModel.Shared.ProgramSettingsViewModel>();
+            CreateMap<User, SinglePageViewModel>();
+            CreateMap<User, Step1ViewModel>();
+            CreateMap<User, Step2ViewModel>();
+            CreateMap<User, Step3ViewModel>();
+            CreateMap<User, ParticipantsAddViewModel>();
+            CreateMap<ChallengeTask, TaskDetailViewModel>();
+            CreateMap<AvatarJsonModel.AvatarLayer, AvatarLayer>();
+            CreateMap<Site, SiteDetailViewModel>();
+            CreateMap<Site, SiteConfigurationViewModel>();
+            CreateMap<Site, SiteScheduleViewModel>();
+            CreateMap<Site, SiteSocialMediaViewModel>();
         }
     }
 }

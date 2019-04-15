@@ -28,7 +28,7 @@ namespace GRA.Data.Repository
                     && (!requireGeolocation || !string.IsNullOrWhiteSpace(_.Geolocation)))
                 .OrderBy(_ => _.Name)
                 .ThenBy(_ => _.System.Name)
-                .ProjectTo<Branch>()
+                .ProjectTo<Branch>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -38,7 +38,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.SystemId == systemId)
                 .OrderBy(_ => _.Name)
-                .ProjectTo<Branch>()
+                .ProjectTo<Branch>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -53,7 +53,7 @@ namespace GRA.Data.Repository
             return await ApplyFilters(filter)
                 .OrderBy(_ => _.Name)
                 .ApplyPagination(filter)
-                .ProjectTo<Branch>()
+                .ProjectTo<Branch>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 

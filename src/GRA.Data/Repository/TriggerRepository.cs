@@ -62,7 +62,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.Id == id)
-                .ProjectTo<Trigger>()
+                .ProjectTo<Trigger>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
         }
 
@@ -78,7 +78,7 @@ namespace GRA.Data.Repository
             var triggerList = await ApplyFilters(filter)
                 .OrderBy(_ => _.Name)
                 .ApplyPagination(filter)
-                .ProjectTo<Trigger>()
+                .ProjectTo<Trigger>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
             foreach (var trigger in triggerList)
@@ -552,7 +552,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.BadgeId == triggerBadgeId)
                 .Select(_ => _.Trigger)
-                .ProjectTo<Trigger>()
+                .ProjectTo<Trigger>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -562,7 +562,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.ChallengeId == challengeId)
                 .Select(_ => _.Trigger)
-                .ProjectTo<Trigger>()
+                .ProjectTo<Trigger>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -577,7 +577,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet.AsNoTracking()
                 .Where(_ => _.AwardBadgeId == badgeId)
-                .ProjectTo<Trigger>()
+                .ProjectTo<Trigger>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync();
         }
 
@@ -598,7 +598,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet.AsNoTracking()
                 .Where(_ => _.IsDeleted == false && _.AwardAvatarBundleId == bundleId)
-                .ProjectTo<Trigger>()
+                .ProjectTo<Trigger>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -606,7 +606,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet.AsNoTracking()
                 .Where(_ => _.IsDeleted == false && _.AwardAvatarBundleId == bundleId)
-                .ProjectTo<Trigger>()
+                .ProjectTo<Trigger>(_mapper.ConfigurationProvider)
                 .AnyAsync();
         }
 
@@ -617,7 +617,7 @@ namespace GRA.Data.Repository
                 .Where(_ => _.SiteId == siteId && !_.IsDeleted
                     && !string.IsNullOrWhiteSpace(_.AwardPrizeName))
                 .OrderBy(_ => _.AwardPrizeName)
-                .ProjectTo<Trigger>()
+                .ProjectTo<Trigger>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
     }

@@ -25,7 +25,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.Date.Date == date.Date)
-                .ProjectTo<PsBlackoutDate>()
+                .ProjectTo<PsBlackoutDate>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync();
         }
 
@@ -34,7 +34,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .OrderBy(_ => _.Date)
-                .ProjectTo<PsBlackoutDate>()
+                .ProjectTo<PsBlackoutDate>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -48,7 +48,7 @@ namespace GRA.Data.Repository
             var blackoutDateList = await blackoutDates
                 .OrderBy(_ => _.Date)
                 .ApplyPagination(filter)
-                .ProjectTo<PsBlackoutDate>()
+                .ProjectTo<PsBlackoutDate>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
             return new DataWithCount<ICollection<PsBlackoutDate>>

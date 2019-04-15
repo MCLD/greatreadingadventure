@@ -25,7 +25,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.SiteId == siteId)
                 .OrderBy(_ => _.Name)
-                .ProjectTo<SchoolDistrict>()
+                .ProjectTo<SchoolDistrict>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -40,7 +40,7 @@ namespace GRA.Data.Repository
             return await ApplyFilters(filter)
                 .OrderBy(_ => _.Name)
                 .ApplyPagination(filter)
-                .ProjectTo<SchoolDistrict>()
+                .ProjectTo<SchoolDistrict>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 

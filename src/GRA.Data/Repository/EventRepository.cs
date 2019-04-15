@@ -84,7 +84,7 @@ namespace GRA.Data.Repository
             }
 
             return await eventQuery.ApplyPagination(filter)
-                .ProjectTo<Event>()
+                .ProjectTo<Event>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -93,7 +93,7 @@ namespace GRA.Data.Repository
             var evt = await DbSet
                 .AsNoTracking()
                 .Where(_ => _.Id == id)
-                .ProjectTo<Event>()
+                .ProjectTo<Event>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
 
             if (evt != null)
@@ -107,7 +107,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet.AsNoTracking()
                 .Where(_ => _.ChallengeId == challengeId)
-                .ProjectTo<Event>()
+                .ProjectTo<Event>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -115,7 +115,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet.AsNoTracking()
                    .Where(_ => _.ChallengeGroupId == challengeGroupId)
-                   .ProjectTo<Event>()
+                   .ProjectTo<Event>(_mapper.ConfigurationProvider)
                    .ToListAsync();
         }
 
@@ -298,7 +298,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet.AsNoTracking()
                 .Where(_ => _.RelatedTriggerId == triggerId)
-                .ProjectTo<Event>()
+                .ProjectTo<Event>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -344,7 +344,7 @@ namespace GRA.Data.Repository
             }
 
             var experienceWithCount = communityExperiences
-                .ProjectTo<Event>()
+                .ProjectTo<Event>(_mapper.ConfigurationProvider)
                 .GroupJoin(_context.UserTriggers,
                     c => c.RelatedTriggerId.Value,
                     ut => ut.TriggerId,

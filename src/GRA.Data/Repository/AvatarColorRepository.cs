@@ -22,7 +22,7 @@ namespace GRA.Data.Repository
             return await DbSet.AsNoTracking()
                 .Where(_ => _.AvatarLayerId == layerId)
                 .OrderBy(_ => _.SortOrder)
-                .ProjectTo<AvatarColor>()
+                .ProjectTo<AvatarColor>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
     }

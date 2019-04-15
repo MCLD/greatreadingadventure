@@ -25,7 +25,7 @@ namespace GRA.Data.Repository
             return await ApplyFilters(filter)
                 .OrderByDescending(_ => _.Id)
                 .ApplyPagination(filter)
-                .ProjectTo<Drawing>()
+                .ProjectTo<Drawing>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -101,7 +101,7 @@ namespace GRA.Data.Repository
             var drawing = await DbSet
                 .AsNoTracking()
                 .Where(_ => _.Id == id)
-                .ProjectTo<Drawing>()
+                .ProjectTo<Drawing>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
 
             if (drawing == null)
@@ -117,7 +117,7 @@ namespace GRA.Data.Repository
                 .ThenBy(_ => _.UserId)
                 .Skip(skip)
                 .Take(take)
-                .ProjectTo<PrizeWinner>()
+                .ProjectTo<PrizeWinner>(_mapper.ConfigurationProvider)
                 .ToListAsync();
             return drawing;
         }

@@ -32,7 +32,7 @@ namespace GRA.Data.Repository
             return await ApplyFilters(filter)
                 .OrderBy(_ => _.Name)
                 .ApplyPagination(filter)
-                .ProjectTo<Questionnaire>()
+                .ProjectTo<Questionnaire>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -52,13 +52,16 @@ namespace GRA.Data.Repository
             if (includeAnswers)
             {
                 return await questionnaire
-                    .ProjectTo<Questionnaire>(_ => _.Questions.Select(a => a.Answers))
+                    .ProjectTo<Questionnaire>(
+                        _mapper.ConfigurationProvider,
+                        _ => _.Questions.Select(a => a.Answers)
+                    )
                     .SingleOrDefaultAsync();
             }
             else
             {
                 return await questionnaire
-                    .ProjectTo<Questionnaire>()
+                    .ProjectTo<Questionnaire>(_mapper.ConfigurationProvider)
                     .SingleOrDefaultAsync();
             }
         }

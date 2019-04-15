@@ -25,7 +25,7 @@ namespace GRA.Data.Repository
             return await ApplyFilters(filter)
                 .OrderBy(_ => _.StartTime)
                 .ApplyPagination(filter)
-                .ProjectTo<DashboardContent>()
+                .ProjectTo<DashboardContent>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -70,7 +70,7 @@ namespace GRA.Data.Repository
                     .Where(_ => _.StartTime <= _dateTimeProvider.Now)
                     .OrderByDescending(_ => _.StartTime)
                     .Take(1)
-                    .ProjectTo<DashboardContent>()
+                    .ProjectTo<DashboardContent>(_mapper.ConfigurationProvider)
                     .SingleOrDefaultAsync();
         }
     }

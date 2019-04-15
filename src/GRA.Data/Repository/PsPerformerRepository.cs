@@ -31,7 +31,7 @@ namespace GRA.Data.Repository
             }
 
             return await performer
-                .ProjectTo<PsPerformer>()
+                .ProjectTo<PsPerformer>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync();
         }
 
@@ -40,7 +40,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.UserId == userId)
-                .ProjectTo<PsPerformer>()
+                .ProjectTo<PsPerformer>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
         }
 
@@ -59,7 +59,7 @@ namespace GRA.Data.Repository
             var performerList = await performers
                 .OrderBy(_ => _.Name)
                 .ApplyPagination(filter)
-                .ProjectTo<PsPerformer>()
+                .ProjectTo<PsPerformer>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
             return new DataWithCount<ICollection<PsPerformer>>
@@ -96,7 +96,7 @@ namespace GRA.Data.Repository
                     (_, ageGroups) => ageGroups)
                 .Select(_ => _.AgeGroup)
                 .Distinct()
-                .ProjectTo<PsAgeGroup>()
+                .ProjectTo<PsAgeGroup>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -106,7 +106,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.PsPerformerId == performerId)
                 .Select(_ => _.Branch)
-                .ProjectTo<Branch>()
+                .ProjectTo<Branch>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 

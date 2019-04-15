@@ -26,7 +26,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.CarouselId == carouselId)
                 .OrderBy(_ => _.SortOrder)
-                .ProjectTo<CarouselItem>()
+                .ProjectTo<CarouselItem>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 

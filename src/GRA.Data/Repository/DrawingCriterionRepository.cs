@@ -26,7 +26,7 @@ namespace GRA.Data.Repository
                 .OrderBy(_ => _.Name)
                 .ThenBy(_ => _.Id)
                 .ApplyPagination(filter)
-                .ProjectTo<DrawingCriterion>()
+                .ProjectTo<DrawingCriterion>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -83,7 +83,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet.AsNoTracking()
                 .Where(_ => _.Id == id)
-                .ProjectTo<DrawingCriterion>()
+                .ProjectTo<DrawingCriterion>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
         }
 

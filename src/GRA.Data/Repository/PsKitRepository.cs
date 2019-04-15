@@ -23,7 +23,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .ProjectTo<PsKit>()
+                .ProjectTo<PsKit>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -36,7 +36,7 @@ namespace GRA.Data.Repository
             var kitList = await kits
                 .OrderBy(_ => _.Name)
                 .ApplyPagination(filter)
-                .ProjectTo<PsKit>()
+                .ProjectTo<PsKit>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
             return new DataWithCount<ICollection<PsKit>>
@@ -61,7 +61,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.KitId == kitId)
                 .Select(_ => _.AgeGroup)
-                .ProjectTo<PsAgeGroup>()
+                .ProjectTo<PsAgeGroup>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 

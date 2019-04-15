@@ -24,7 +24,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.UserId == userId)
                 .OrderByDescending(_ => _.CreatedAt)
-                .ProjectTo<RecoveryToken>()
+                .ProjectTo<RecoveryToken>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
     }

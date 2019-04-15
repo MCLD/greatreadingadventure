@@ -31,7 +31,7 @@ namespace GRA.Data.Repository
             var data = await pages
                 .OrderBy(_ => _.PageName)
                 .ApplyPagination(filter)
-                .ProjectTo<PageHeader>()
+                .ProjectTo<PageHeader>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
             return new DataWithCount<IEnumerable<PageHeader>>

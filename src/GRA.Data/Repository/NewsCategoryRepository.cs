@@ -22,7 +22,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.SiteId == siteId && _.IsDefault)
-                .ProjectTo<NewsCategory>()
+                .ProjectTo<NewsCategory>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
         }
 
@@ -31,7 +31,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.Id == id)
-                .ProjectTo<NewsCategory>()
+                .ProjectTo<NewsCategory>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
         }
 
@@ -42,7 +42,7 @@ namespace GRA.Data.Repository
                 .Where(_ => _.SiteId == siteId)
                 .OrderByDescending(_ => _.IsDefault)
                 .ThenBy(_ => _.Name)
-                .ProjectTo<NewsCategory>()
+                .ProjectTo<NewsCategory>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -56,7 +56,7 @@ namespace GRA.Data.Repository
             var data = await posts
                 .OrderByDescending(_ => _.Name)
                 .ApplyPagination(filter)
-                .ProjectTo<NewsCategory>()
+                .ProjectTo<NewsCategory>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
             return new DataWithCount<IEnumerable<NewsCategory>>

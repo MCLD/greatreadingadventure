@@ -42,7 +42,7 @@ namespace GRA.Data.Repository
                 .ThenByDescending(_ => _.RedeemedAt.Value)
                 .Skip(skip)
                 .Take(take)
-                .ProjectTo<PrizeWinner>()
+                .ProjectTo<PrizeWinner>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -50,7 +50,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet.AsNoTracking()
                 .Where(_ => _.UserId == userId && _.DrawingId == drawingId)
-                .ProjectTo<PrizeWinner>()
+                .ProjectTo<PrizeWinner>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync();
         }
 
@@ -58,7 +58,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet.AsNoTracking()
                 .Where(_ => _.UserId == userId && _.TriggerId == triggerId)
-                .ProjectTo<PrizeWinner>()
+                .ProjectTo<PrizeWinner>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync();
         }
 
@@ -81,7 +81,7 @@ namespace GRA.Data.Repository
                           join users in validUsers
                           on prizes.RedeemedBy equals users.Id
                           select prizes)
-                          .ProjectTo<PrizeWinner>()
+                          .ProjectTo<PrizeWinner>(_mapper.ConfigurationProvider)
                           .ToListAsync();
         }
 
@@ -103,7 +103,7 @@ namespace GRA.Data.Repository
                           join users in validUsers
                           on prizes.UserId equals users.Id
                           select prizes)
-                          .ProjectTo<PrizeWinner>()
+                          .ProjectTo<PrizeWinner>(_mapper.ConfigurationProvider)
                           .ToListAsync();
         }
 

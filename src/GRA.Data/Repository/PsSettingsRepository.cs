@@ -24,7 +24,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.SiteId == siteId)
-                .ProjectTo<PsSettings>()
+                .ProjectTo<PsSettings>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
         }
 
@@ -39,7 +39,7 @@ namespace GRA.Data.Repository
                 .Select(_ => _.Branch)
                 .OrderBy(_ => _.Name)
                 .ApplyPagination(filter)
-                .ProjectTo<Branch>()
+                .ProjectTo<Branch>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
             return new DataWithCount<ICollection<Branch>>
@@ -78,7 +78,7 @@ namespace GRA.Data.Repository
             }
 
             return await branches
-                .ProjectTo<Branch>()
+                .ProjectTo<Branch>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -91,7 +91,7 @@ namespace GRA.Data.Repository
             return await _context.Branches
                 .AsNoTracking()
                 .Where(_ => _.Id == branchId && !branchExcluded.Any())
-                .ProjectTo<Branch>()
+                .ProjectTo<Branch>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync();
         }
 

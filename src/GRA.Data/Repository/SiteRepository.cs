@@ -23,7 +23,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .ProjectTo<Site>()
+                .ProjectTo<Site>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -33,7 +33,7 @@ namespace GRA.Data.Repository
             var data = await sites
                 .OrderBy(_ => _.Name)
                 .ApplyPagination(filter)
-                .ProjectTo<Site>()
+                .ProjectTo<Site>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
             return new DataWithCount<IEnumerable<Site>>()

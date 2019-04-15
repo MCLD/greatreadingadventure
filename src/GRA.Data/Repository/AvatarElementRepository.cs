@@ -22,7 +22,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet.AsNoTracking()
                 .Where(_ => _.AvatarItemId == item && _.AvatarColorId == color)
-                .ProjectTo<AvatarElement>()
+                .ProjectTo<AvatarElement>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
         }
 
@@ -31,7 +31,7 @@ namespace GRA.Data.Repository
             return await _context.UserAvatars.AsNoTracking()
                 .Where(_ => _.UserId == userId)
                 .Select(_ => _.AvatarElement)
-                .ProjectTo<AvatarElement>()
+                .ProjectTo<AvatarElement>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 

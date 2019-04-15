@@ -24,7 +24,7 @@ namespace GRA.Data.Repository
             return await DbSet.AsNoTracking()
                 .Where(_ => _.AvatarLayerId == layerId)
                 .OrderBy(_ => _.SortOrder)
-                .ProjectTo<AvatarItem>()
+                .ProjectTo<AvatarItem>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -40,7 +40,7 @@ namespace GRA.Data.Repository
                 .Where(_ => _.AvatarLayerId == layerId
                 && (_.Unlockable == false || userUnlockedItems.Select(u => u.Id).Contains(_.Id)))
                 .OrderBy(_ => _.SortOrder)
-                .ProjectTo<AvatarItem>()
+                .ProjectTo<AvatarItem>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -83,7 +83,7 @@ namespace GRA.Data.Repository
             return await ApplyFilters(filter)
                 .OrderBy(_ => _.SortOrder)
                 .ApplyPagination(filter)
-                .ProjectTo<AvatarItem>()
+                .ProjectTo<AvatarItem>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -119,7 +119,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet.AsNoTracking()
                 .Where(_ => ids.Contains(_.Id))
-                .ProjectTo<AvatarItem>()
+                .ProjectTo<AvatarItem>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -128,7 +128,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet.AsNoTracking()
                 .Where(_ => _.AvatarLayer.Position == layerPosition && _.SortOrder == sortOrder)
-                .ProjectTo<AvatarItem>()
+                .ProjectTo<AvatarItem>(_mapper.ConfigurationProvider)
                 .SingleAsync();
         }
 

@@ -24,7 +24,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.SiteId == siteId)
                 .OrderBy(_ => _.Name)
-                .ProjectTo<Domain.Model.System>()
+                .ProjectTo<Domain.Model.System>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -39,7 +39,7 @@ namespace GRA.Data.Repository
             return await ApplyFilters(filter)
                 .OrderBy(_ => _.Name)
                 .ApplyPagination(filter)
-                .ProjectTo<Domain.Model.System>()
+                .ProjectTo<Domain.Model.System>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
