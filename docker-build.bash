@@ -68,11 +68,16 @@ if [ $# -gt 0 ]; then
 fi
 
 echo "=== Building branch $BLD_BRANCH commit $BLD_COMMIT as Docker image $BLD_DOCKER_IMAGE:$BLD_DOCKER_TAG"
-docker build -f $BLD_DOCKERFILE -t $BLD_DOCKER_IMAGE:$BLD_DOCKER_TAG \
-    --build-arg BRANCH="$BLD_BRANCH" \
-    --build-arg IMAGE_CREATED="$BLD_DATE" \
-    --build-arg IMAGE_REVISION="$BLD_COMMIT" \
-    --build-arg IMAGE_VERSION="$BLD_VERSION" .
+
+if [[ $BLD_PUSH = true ]]; then
+    docker build -f $BLD_DOCKERFILE -t $BLD_DOCKER_IMAGE:$BLD_DOCKER_TAG \
+        --build-arg BRANCH="$BLD_BRANCH" \
+        --build-arg IMAGE_CREATED="$BLD_DATE" \
+        --build-arg IMAGE_REVISION="$BLD_COMMIT" \
+        --build-arg IMAGE_VERSION="$BLD_VERSION" .
+else
+    docker build -f $BLD_DOCKERFILE -t $BLD_DOCKER_IMAGE:$BLD_DOCKER_TAG --target build-stage .
+fi
 
 if [[ -z $BLD_DOCKER_REPOSITORY ]]; then
   echo '=== Not pushing docker image: no Docker repository configured.'
