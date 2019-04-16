@@ -39,7 +39,7 @@ ENV org.opencontainers.image.created=$IMAGE_CREATED \
     org.opencontainers.image.version=$IMAGE_VERSION
 
 # Copy source
-COPY --from=dotnet-sdk "/app/publish/" .
+COPY --from=build-stage "/app/publish/" .
 
 # Persist shared directory
 VOLUME ["/app/shared"]
