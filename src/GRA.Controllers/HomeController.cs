@@ -27,6 +27,7 @@ namespace GRA.Controllers
         private readonly CarouselService _carouselService;
         private readonly DailyLiteracyTipService _dailyLiteracyTipService;
         private readonly DashboardContentService _dashboardContentService;
+        private readonly EmailManagementService _emailManagementService;
         private readonly EmailReminderService _emailReminderService;
         private readonly PerformerSchedulingService _performerSchedulingService;
         private readonly SiteService _siteService;
@@ -42,6 +43,7 @@ namespace GRA.Controllers
             CarouselService carouselService,
             DailyLiteracyTipService dailyLiteracyTipService,
             DashboardContentService dashboardContentService,
+            EmailManagementService emailManagementService,
             EmailReminderService emailReminderService,
             PerformerSchedulingService performerSchedulingService,
             SiteService siteService,
@@ -60,6 +62,8 @@ namespace GRA.Controllers
                 ?? throw new ArgumentNullException(nameof(dailyLiteracyTipService));
             _dashboardContentService = dashboardContentService
                 ?? throw new ArgumentNullException(nameof(dashboardContentService));
+            _emailManagementService = emailManagementService
+                ?? throw new ArgumentNullException(nameof(emailManagementService));
             _emailReminderService = emailReminderService
                 ?? throw new ArgumentNullException(nameof(emailReminderService));
             _performerSchedulingService = performerSchedulingService
@@ -430,6 +434,24 @@ namespace GRA.Controllers
             {
                 return Ok(CommonMark.CommonMarkConverter.Convert(carouselItemDescription));
             }
+        }
+
+        public async Task<IActionResult> Unsubscribe(string id)
+        {
+            if (!string.IsNullOrWhiteSpace(id))
+            {
+                try
+                {
+                    await _emailManagementService.TokenUnsubscribe(id);
+                    ShowAlertSuccess("You are now unsubscribed from emails!");
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger(gex.Message);
+                }
+            }
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

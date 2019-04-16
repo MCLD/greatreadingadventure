@@ -6,7 +6,10 @@ namespace GRA.Data.Model
     {
         public int UserId { get; set; }
         public bool Subscribed { get; set; }
+
         [ForeignKey("CreatedBy")]
         public User CreatedByUser { get; set; }
+
+        public bool TokenUsed { get; set; }
     }
 }

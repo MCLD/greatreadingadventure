@@ -47,5 +47,8 @@ namespace GRA.Domain.Repository
         Task ChangeDeletedUsersProgramAsync(int oldProgram, int newProgram);
         Task<ICollection<User>> GetHouseholdUsersWithAvailablePrizeAsync(
             int headId, int? drawingId, int? triggerId);
+        Task<bool> UnsubscribeTokenExists(int siteId, string token);
+        Task<User> GetByUnsubscribeToken(int siteId, string token);
+        Task<ICollection<User>> GetAllUsersWithoutUnsubscribeToken();
     }
 }
