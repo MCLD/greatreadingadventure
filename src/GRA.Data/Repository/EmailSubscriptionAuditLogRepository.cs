@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
 using GRA.Abstract;
@@ -47,13 +46,14 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task AddEntryAsync(int auditId, int userId, bool subscribe)
+        public async Task AddEntryAsync(int auditId, int userId, bool subscribe, bool token = false)
         {
             var auditLogEntry = new Model.EmailSubscriptionAuditLog
             {
                 CreatedAt = _dateTimeProvider.Now,
                 CreatedBy = auditId,
                 Subscribed = subscribe,
+                TokenUsed = token,
                 UserId = userId
             };
 

@@ -25,7 +25,16 @@
                             <tr>
                                 <td>@auditLog.CreatedAt</td>
                                 <td>@(auditLog.Subscribed ? "Subscribed" : "Unsubscribed")</td>
-                                <td><a asp-action="Detail" asp-route-id="@auditLog.CreatedBy" target="_blank">@auditLog.CreatedByName</a></td>
+                                <td>
+                                    @if (auditLog.TokenUsed)
+                                    {
+                                        @:Token
+                                    }
+                                    else
+                                    {
+                                        <a asp-action="Detail" asp-route-id="@auditLog.CreatedBy" target="_blank">@auditLog.CreatedByName</a>
+                                    }
+                                </td>
                             </tr>
                         }
                     </tbody>
