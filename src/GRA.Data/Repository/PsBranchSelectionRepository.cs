@@ -24,7 +24,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.Branch.Id == branchId)
                 .OrderBy(_ => _.SelectedAt)
-                .ProjectTo<PsBranchSelection>()
+                .ProjectTo<PsBranchSelection>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -41,7 +41,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.KitId.HasValue && _.KitId == kitId)
-                .ProjectTo<PsBranchSelection>()
+                .ProjectTo<PsBranchSelection>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -67,7 +67,7 @@ namespace GRA.Data.Repository
 
             return await query
                 .OrderBy(_ => _.RequestedStartTime)
-                .ProjectTo<PsBranchSelection>()
+                .ProjectTo<PsBranchSelection>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -76,7 +76,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.SecretCode == secretCode)
-                .ProjectTo<PsBranchSelection>()
+                .ProjectTo<PsBranchSelection>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync();
         }
 

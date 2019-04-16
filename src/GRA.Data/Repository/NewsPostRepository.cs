@@ -57,7 +57,7 @@ namespace GRA.Data.Repository
                 .OrderByDescending(_ => !_.PublishedAt.HasValue)
                 .ThenByDescending(_ => _.PublishedAt)
                 .ApplyPagination(filter)
-                .ProjectTo<NewsPost>()
+                .ProjectTo<NewsPost>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
             return new DataWithCount<IEnumerable<NewsPost>>

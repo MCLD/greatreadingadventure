@@ -31,7 +31,7 @@ namespace GRA.Data.Repository
             }
 
             return await program
-                .ProjectTo<PsProgram>()
+                .ProjectTo<PsProgram>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync();
         }
 
@@ -40,7 +40,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.PerformerId == performerId)
-                .ProjectTo<PsProgram>()
+                .ProjectTo<PsProgram>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -68,7 +68,7 @@ namespace GRA.Data.Repository
                 .OrderBy(_ => _.Performer.Name)
                 .ThenBy(_ => _.Title)
                 .ApplyPagination(filter)
-                .ProjectTo<PsProgram>()
+                .ProjectTo<PsProgram>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
             return new DataWithCount<ICollection<PsProgram>>
@@ -129,7 +129,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.ProgramId == programId)
                 .Select(_ => _.AgeGroup)
-                .ProjectTo<PsAgeGroup>()
+                .ProjectTo<PsAgeGroup>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 

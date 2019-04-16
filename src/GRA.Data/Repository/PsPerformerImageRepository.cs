@@ -22,7 +22,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.PerformerId == performerId)
-                .ProjectTo<PsPerformerImage>()
+                .ProjectTo<PsPerformerImage>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
     }

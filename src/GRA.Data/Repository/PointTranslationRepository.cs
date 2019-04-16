@@ -24,7 +24,7 @@ namespace GRA.Data.Repository
             return await DbSet.AsNoTracking()
                 .Where(_ => _.SiteId == siteId)
                 .OrderBy(_ => _.TranslationName)
-                .ProjectTo<PointTranslation>()
+                .ProjectTo<PointTranslation>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -39,7 +39,7 @@ namespace GRA.Data.Repository
             return await ApplyFilters(filter)
                 .OrderBy(_ => _.TranslationName)
                 .ApplyPagination(filter)
-                .ProjectTo<PointTranslation>()
+                .ProjectTo<PointTranslation>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 

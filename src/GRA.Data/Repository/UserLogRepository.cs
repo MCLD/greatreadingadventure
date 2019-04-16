@@ -38,7 +38,7 @@ namespace GRA.Data.Repository
                .OrderBy(_ => _.CreatedAt)
                .Skip(skip)
                .Take(take)
-               .ProjectTo<UserLog>()
+               .ProjectTo<UserLog>(_mapper.ConfigurationProvider)
                .ToListAsync();
 
             foreach (var userLog in userLogs)

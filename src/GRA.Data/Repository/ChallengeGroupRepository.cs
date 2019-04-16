@@ -25,7 +25,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.Id == id)
-                .ProjectTo<ChallengeGroup>()
+                .ProjectTo<ChallengeGroup>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
         }
 
@@ -36,7 +36,7 @@ namespace GRA.Data.Repository
                 .Where(_ => _.Id == id 
                     && _.ChallengeGroupChallenges.Any(c => c.Challenge.IsActive == true
                        && c.Challenge.IsDeleted == false))
-                .ProjectTo<ChallengeGroup>()
+                .ProjectTo<ChallengeGroup>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
         }
 
@@ -47,7 +47,7 @@ namespace GRA.Data.Repository
                 .Where(_ => _.SiteId == siteId && _.Stub == stub
                     && _.ChallengeGroupChallenges.Any(c => c.Challenge.IsActive == true 
                         && c.Challenge.IsDeleted == false))
-                .ProjectTo<ChallengeGroup>()
+                .ProjectTo<ChallengeGroup>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
         }
 
@@ -57,7 +57,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.SiteId == siteId
                     && _.ChallengeGroupChallenges.Select(c => c.ChallengeId).Contains(challengeId))
-                .ProjectTo<ChallengeGroup>()
+                .ProjectTo<ChallengeGroup>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -72,7 +72,7 @@ namespace GRA.Data.Repository
             return await ApplyFilters(filter)
                 .OrderBy(_ => _.Name)
                 .ApplyPagination(filter)
-                .ProjectTo<ChallengeGroup>()
+                .ProjectTo<ChallengeGroup>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 

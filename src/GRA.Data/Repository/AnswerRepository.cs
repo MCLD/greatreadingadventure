@@ -23,7 +23,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.QuestionId == questionId)
                 .OrderBy(_ => _.SortOrder)
-                .ProjectTo<Answer>()
+                .ProjectTo<Answer>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
             return answers;

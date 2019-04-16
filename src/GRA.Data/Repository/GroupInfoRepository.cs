@@ -29,7 +29,7 @@ namespace GRA.Data.Repository
                     (group, user) => new { group, user })
                 .Where(_ => _.user.SiteId == siteId)
                 .Select(_ => _.group)
-                .ProjectTo<GroupInfo>()
+                .ProjectTo<GroupInfo>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -38,7 +38,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.UserId == householdHeadUserId)
-                .ProjectTo<GroupInfo>()
+                .ProjectTo<GroupInfo>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
         }
 
@@ -70,7 +70,7 @@ namespace GRA.Data.Repository
             var groupList = await groups
                 .OrderBy(_ => _.Name)
                 .ApplyPagination(filter)
-                .ProjectTo<GroupInfo>()
+                .ProjectTo<GroupInfo>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
             return new DataWithCount<ICollection<GroupInfo>>

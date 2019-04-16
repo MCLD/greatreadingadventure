@@ -33,7 +33,7 @@ namespace GRA.Data.Repository
             return await ApplyFilters(filter)
                 .OrderBy(_ => _.Day)
                 .ApplyPagination(filter)
-                .ProjectTo<DailyLiteracyTipImage>()
+                .ProjectTo<DailyLiteracyTipImage>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -79,7 +79,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet.AsNoTracking()
                 .Where(_ => _.DailyLiteracyTipId == dailyLiteracyTipId && _.Day == day)
-                .ProjectTo<DailyLiteracyTipImage>()
+                .ProjectTo<DailyLiteracyTipImage>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
         }
     }

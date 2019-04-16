@@ -26,7 +26,7 @@ namespace GRA.Data.Repository
             var data = await authorizationCodes
                 .OrderBy(_ => _.Code)
                 .ApplyPagination(filter)
-                .ProjectTo<AuthorizationCode>()
+                .ProjectTo<AuthorizationCode>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
             return new DataWithCount<IEnumerable<AuthorizationCode>>
@@ -42,7 +42,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.SiteId == siteId
                     && _.Code == authorizationCode)
-                .ProjectTo<AuthorizationCode>()
+                .ProjectTo<AuthorizationCode>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
         }
     }

@@ -22,7 +22,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.KitId == kitId)
-                .ProjectTo<PsKitImage>()
+                .ProjectTo<PsKitImage>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
     }

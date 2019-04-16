@@ -23,7 +23,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .ProjectTo<PsAgeGroup>()
+                .ProjectTo<PsAgeGroup>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -36,7 +36,7 @@ namespace GRA.Data.Repository
 
             var ageGroupList = await ageGroups
                 .ApplyPagination(filter)
-                .ProjectTo<PsAgeGroup>()
+                .ProjectTo<PsAgeGroup>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
             return new DataWithCount<ICollection<PsAgeGroup>>

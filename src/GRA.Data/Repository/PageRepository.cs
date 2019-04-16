@@ -23,7 +23,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.PageHeaderId == headerId)
-                .ProjectTo<Page>()
+                .ProjectTo<Page>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -32,7 +32,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.PageHeaderId == headerId && _.LanguageId == languageId)
-                .ProjectTo<Page>()
+                .ProjectTo<Page>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
         }
 
@@ -49,7 +49,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => pageHeaderId.Contains(_.PageHeaderId)
                     && _.LanguageId == languageId)
-                .ProjectTo<Page>()
+                .ProjectTo<Page>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
         }
 
@@ -63,7 +63,7 @@ namespace GRA.Data.Repository
                 .OrderBy(_ => _.PageName)
                 .Skip(skip)
                 .Take(take)
-                .ProjectTo<Page>()
+                .ProjectTo<Page>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -105,7 +105,7 @@ namespace GRA.Data.Repository
                     .OrderBy(_ => _.FooterText);
             }
 
-            var finalPages = await pages.ProjectTo<Page>().ToListAsync();
+            var finalPages = await pages.ProjectTo<Page>(_mapper.ConfigurationProvider).ToListAsync();
 
             foreach (var page in finalPages)
             {

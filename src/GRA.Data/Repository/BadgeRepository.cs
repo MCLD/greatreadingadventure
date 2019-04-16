@@ -48,7 +48,7 @@ namespace GRA.Data.Repository
                 .Skip(skip)
                 .Take(take)
                 .Select(_ => _.Badge)
-                .ProjectTo<Badge>()
+                .ProjectTo<Badge>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 

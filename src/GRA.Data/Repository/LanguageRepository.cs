@@ -24,7 +24,7 @@ namespace GRA.Data.Repository
                 .Where(_ => _.IsActive)
                 .OrderByDescending(_ => _.IsDefault)
                 .ThenBy(_ => _.Name)
-                .ProjectTo<Language>()
+                .ProjectTo<Language>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -34,7 +34,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .OrderBy(_ => _.IsDefault)
                 .ThenBy(_ => _.Name)
-                .ProjectTo<Language>()
+                .ProjectTo<Language>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -43,7 +43,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.IsActive && _.Id == id)
-                .ProjectTo<Language>()
+                .ProjectTo<Language>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
         }
 

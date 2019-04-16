@@ -28,7 +28,7 @@ namespace GRA.Data.Repository
                 .OrderByDescending(_ => _.CreatedAt)
                 .Skip(skip)
                 .Take(take)
-                .ProjectTo<Mail>()
+                .ProjectTo<Mail>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -62,7 +62,7 @@ namespace GRA.Data.Repository
                 .OrderByDescending(_ => _.CreatedAt)
                 .Skip(skip)
                 .Take(take)
-                .ProjectTo<Mail>()
+                .ProjectTo<Mail>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -103,7 +103,7 @@ namespace GRA.Data.Repository
                 .OrderByDescending(_ => _.CreatedAt)
                 .Skip(skip)
                 .Take(take)
-                .ProjectTo<Mail>()
+                .ProjectTo<Mail>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -116,7 +116,7 @@ namespace GRA.Data.Repository
                 .OrderByDescending(_ => _.CreatedAt)
                 .Skip(skip)
                 .Take(take)
-                .ProjectTo<Mail>()
+                .ProjectTo<Mail>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -149,7 +149,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.IsDeleted == false && _.Id == id)
-                .ProjectTo<Mail>()
+                .ProjectTo<Mail>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
         }
 
@@ -175,7 +175,7 @@ namespace GRA.Data.Repository
             return await DbSet.AsNoTracking()
                 .Where(_ => _.Id == threadId || _.ThreadId == threadId)
                 .OrderBy(_ => _.CreatedAt)
-                .ProjectTo<Mail>()
+                .ProjectTo<Mail>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
     }

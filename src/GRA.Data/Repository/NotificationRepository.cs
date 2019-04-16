@@ -24,7 +24,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.UserId == userId)
                 .OrderBy(_ => _.CreatedAt)
-                .ProjectTo<Notification>()
+                .ProjectTo<Notification>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 

@@ -214,7 +214,7 @@ namespace GRA.Data.Repository
 
             return await userList
                 .ApplyPagination(filter)
-                .ProjectTo<User>()
+                .ProjectTo<User>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -346,7 +346,7 @@ namespace GRA.Data.Repository
                 .ThenBy(_ => _.Username)
                 .Skip(skip)
                 .Take(take)
-                .ProjectTo<User>()
+                .ProjectTo<User>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -364,7 +364,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.Id == id && !_.IsDeleted)
-                .ProjectTo<User>()
+                .ProjectTo<User>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
         }
 
@@ -410,7 +410,7 @@ namespace GRA.Data.Repository
                 .OrderBy(_ => _.FirstName)
                 .ThenBy(_ => _.LastName)
                 .ThenBy(_ => _.Username)
-                .ProjectTo<User>()
+                .ProjectTo<User>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -437,14 +437,14 @@ namespace GRA.Data.Repository
             return await ApplyUserFilter(criterion)
                 .OrderByDescending(_ => _.PointsEarned)
                 .Take(scoresToReturn)
-                .ProjectTo<User>()
+                .ProjectTo<User>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<User>> GetUsersByCriterionAsync(ReportCriterion criterion)
         {
             return await ApplyUserFilter(criterion)
-                .ProjectTo<User>()
+                .ProjectTo<User>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -534,7 +534,7 @@ namespace GRA.Data.Repository
                 .ThenBy(_ => _.FirstName)
                 .ThenBy(_ => _.LastName)
                 .ThenBy(_ => _.Username)
-                .ProjectTo<User>()
+                .ProjectTo<User>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 

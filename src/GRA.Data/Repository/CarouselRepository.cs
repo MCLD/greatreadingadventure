@@ -25,7 +25,7 @@ namespace GRA.Data.Repository
         {
             return await ApplyFilters(filter)
                 .Where(_ => _.IsForDashboard)
-                .ProjectTo<Carousel>()
+                .ProjectTo<Carousel>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync();
         }
 
@@ -39,7 +39,7 @@ namespace GRA.Data.Repository
         {
             return await ApplyFilters(filter)
                 .ApplyPagination(filter)
-                .ProjectTo<Carousel>()
+                .ProjectTo<Carousel>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
         #endregion

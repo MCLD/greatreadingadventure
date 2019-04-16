@@ -19,7 +19,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="[6.0.2]" />
+    <PackageReference Include="AutoMapper" Version="8.0.0" />
     <PackageReference Include="Bogus" Version="26.0.2" />
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.3.4" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />

@@ -32,7 +32,7 @@ namespace GRA.Data.Repository
             }
 
             return await bundles
-                .ProjectTo<AvatarBundle>()
+                .ProjectTo<AvatarBundle>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
         }
 
@@ -47,7 +47,7 @@ namespace GRA.Data.Repository
             return await ApplyFilters(filter)
                 .OrderBy(_ => _.Name)
                 .ApplyPagination(filter)
-                .ProjectTo<AvatarBundle>()
+                .ProjectTo<AvatarBundle>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -119,7 +119,7 @@ namespace GRA.Data.Repository
                     && _.IsDeleted == false);
             }
 
-            return await bundles.ProjectTo<AvatarBundle>().ToListAsync();
+            return await bundles.ProjectTo<AvatarBundle>(_mapper.ConfigurationProvider).ToListAsync();
         }
 
         public async Task<bool> IsItemInBundle(int itemId, bool? unlockable = null)

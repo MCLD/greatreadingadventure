@@ -24,7 +24,7 @@ namespace GRA.Data.Repository
                .Where(_ => _.SiteId == siteId)
                .OrderBy(_ => _.GroupId)
                .ThenBy(_ => _.SortOrder)
-               .ProjectTo<AvatarLayer>()
+               .ProjectTo<AvatarLayer>(_mapper.ConfigurationProvider)
                .ToListAsync();
         }
 
@@ -34,7 +34,7 @@ namespace GRA.Data.Repository
                 .Where(_ => _.SiteId == siteId)
                 .OrderBy(_ => _.GroupId)
                 .ThenBy(_ => _.SortOrder)
-                .ProjectTo<AvatarLayer>(_ => _.AvatarColors)
+                .ProjectTo<AvatarLayer>(_mapper.ConfigurationProvider, _ => _.AvatarColors)
                 .ToListAsync();
         }
     }

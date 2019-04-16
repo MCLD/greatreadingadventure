@@ -25,7 +25,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.SiteId == siteId)
-                .ProjectTo<VendorCodeType>()
+                .ProjectTo<VendorCodeType>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -41,7 +41,7 @@ namespace GRA.Data.Repository
             return await ApplyFilters(filter)
                 .OrderBy(_ => _.Description)
                 .ApplyPagination(filter)
-                .ProjectTo<VendorCodeType>()
+                .ProjectTo<VendorCodeType>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 

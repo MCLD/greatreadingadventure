@@ -44,7 +44,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.UserId == userId)
                 .Select(_ => _.Book)
-                .ProjectTo<Book>()
+                .ProjectTo<Book>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -128,7 +128,7 @@ namespace GRA.Data.Repository
 
             var data = await bookList
                 .ApplyPagination(filter)
-                .ProjectTo<Book>()
+                .ProjectTo<Book>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
             return new DataWithCount<ICollection<Book>>()

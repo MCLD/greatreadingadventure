@@ -42,7 +42,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.UserId == userId)
                 .OrderBy(_ => _.CreatedAt)
-                .ProjectTo<EmailSubscriptionAuditLog>()
+                .ProjectTo<EmailSubscriptionAuditLog>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 

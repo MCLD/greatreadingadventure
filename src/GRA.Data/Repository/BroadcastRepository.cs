@@ -33,7 +33,7 @@ namespace GRA.Data.Repository
             }
             return await broadcasts
                 .ApplyPagination(filter)
-                .ProjectTo<Broadcast>()
+                .ProjectTo<Broadcast>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -72,7 +72,7 @@ namespace GRA.Data.Repository
 
             return await broadcasts
                 .OrderBy(_ => _.SendAt)
-                .ProjectTo<Broadcast>()
+                .ProjectTo<Broadcast>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
     }

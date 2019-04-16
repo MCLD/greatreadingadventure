@@ -23,7 +23,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.PerformerId == performerId)
-                .ProjectTo<PsPerformerSchedule>()
+                .ProjectTo<PsPerformerSchedule>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -32,7 +32,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet.AsNoTracking()
                 .Where(_ => _.PerformerId == performerId && _.Date == date.Date)
-                .ProjectTo<PsPerformerSchedule>()
+                .ProjectTo<PsPerformerSchedule>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync();
         }
 

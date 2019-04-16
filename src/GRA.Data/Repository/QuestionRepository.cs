@@ -27,13 +27,13 @@ namespace GRA.Data.Repository
             if (includeAnswer)
             {
                 return await questions
-                .ProjectTo<Question>(_ => _.Answers)
+                .ProjectTo<Question>(_mapper.ConfigurationProvider, _ => _.Answers)
                 .ToListAsync();
             }
             else
             {
                 return await questions
-                .ProjectTo<Question>()
+                .ProjectTo<Question>(_mapper.ConfigurationProvider)
                 .ToListAsync();
             }
         }
