@@ -69,6 +69,7 @@ namespace GRA.Controllers
                             model.Username);
                         await LoginUserAsync(loginAttempt);
                         _logger.LogTrace("Awarding triggers for {Username}", model.Username);
+                        await _userService.AwardMissingJoinBadgeAsync(loginAttempt.User.Id);
                         await _activityService.AwardUserTriggersAsync(loginAttempt.User.Id, true);
 
                         _logger.LogTrace("Checking household count for {Username}",

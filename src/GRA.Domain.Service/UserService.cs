@@ -1053,6 +1053,97 @@ namespace GRA.Domain.Service
             await _notificationRepository.AddSaveAsync(registeredUser.Id, notification);
         }
 
+        public async Task AwardMissingJoinBadgeAsync(int userId)
+        {
+            var site = await _siteLookupService.GetByIdAsync(GetCurrentSiteId());
+
+            var user = await _userRepository.GetByIdAsync(userId);
+
+            var program = await _programRepository.GetByIdAsync(user.ProgramId);
+
+            var badgeList = new List<Badge>();
+            if (program.JoinBadgeId.HasValue
+                && !await _badgeRepository.UserHasJoinBadgeAsync(user.Id))
+            {
+                var badge = await _badgeRepository.GetByIdAsync(program.JoinBadgeId.Value);
+                await _badgeRepository.AddUserBadge(user.Id, badge.Id);
+
+                await _userLogRepository.AddAsync(user.Id, new UserLog
+                {
+                    UserId = user.Id,
+                    PointsEarned = 0,
+                    IsDeleted = false,
+                    BadgeId = badge.Id,
+                    Description = $"Joined {site.Name}!"
+                });
+
+                var notification = new Notification
+                {
+                    BadgeFilename = badge.Filename,
+                    BadgeId = badge.Id,
+                    PointsEarned = 0,
+                    Text = $"<span class=\"fa fa-thumbs-o-up\"></span> You've successfully joined <strong>{site.Name}</strong>!",
+                    UserId = user.Id,
+                    IsJoining = true
+                };
+
+                await _notificationRepository.AddSaveAsync(user.Id, notification);
+            }
+
+            var householdMemebers = await _userRepository.GetHouseholdAsync(userId);
+            if (householdMemebers.Any())
+            {
+                var programList = new List<Program> { program };
+                foreach (var member in householdMemebers)
+                {
+                    var memberProgram = programList
+                        .SingleOrDefault(_ => _.Id == member.ProgramId);
+                    if (memberProgram == null)
+                    {
+                        memberProgram = await _programRepository.GetByIdAsync(member.ProgramId);
+                        programList.Add(memberProgram);
+                    }
+
+                    if (memberProgram.JoinBadgeId.HasValue
+                         && !await _badgeRepository.UserHasJoinBadgeAsync(member.Id))
+                    {
+                        var badge = badgeList
+                            .SingleOrDefault(_ => _.Id == memberProgram.JoinBadgeId.Value);
+                        if (badge == null)
+                        {
+                            badge = await _badgeRepository.GetByIdAsync(
+                                memberProgram.JoinBadgeId.Value);
+                            badgeList.Add(badge);
+                        }
+
+                        await _badgeRepository.AddUserBadge(member.Id,
+                            memberProgram.JoinBadgeId.Value);
+
+                        await _userLogRepository.AddAsync(user.Id, new UserLog
+                        {
+                            UserId = member.Id,
+                            PointsEarned = 0,
+                            IsDeleted = false,
+                            BadgeId = badge.Id,
+                            Description = $"Joined {site.Name}!"
+                        });
+
+                        var notification = new Notification
+                        {
+                            BadgeFilename = badge.Filename,
+                            BadgeId = badge.Id,
+                            PointsEarned = 0,
+                            Text = $"<span class=\"fa fa-thumbs-o-up\"></span> You've successfully joined <strong>{site.Name}</strong>!",
+                            UserId = member.Id,
+                            IsJoining = true
+                        };
+
+                        await _notificationRepository.AddSaveAsync(member.Id, notification);
+                    }
+                }
+            }
+        }
+
         private async Task ValidateUserFields(User user)
         {
             if (!(await _systemRepository.ValidateAsync(user.SystemId, user.SiteId)))
