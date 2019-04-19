@@ -21,6 +21,7 @@ namespace GRA.Domain.Service
         private readonly IAvatarLayerRepository _avatarLayerRepository;
         private readonly ITriggerRepository _triggerRepository;
         private readonly IPathResolver _pathResolver;
+
         public AvatarService(ILogger<AvatarService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
@@ -73,8 +74,8 @@ namespace GRA.Domain.Service
 
                     if (userAvatar.Count > 0)
                     {
-                        var layerSelection = userAvatar.Where(_ =>
-                        _.AvatarItem.AvatarLayerId == layer.Id).SingleOrDefault();
+                        var layerSelection = userAvatar.SingleOrDefault(_ =>
+                            _.AvatarItem.AvatarLayerId == layer.Id);
                         if (layerSelection != null)
                         {
                             layer.SelectedItem = layerSelection.AvatarItemId;
@@ -97,8 +98,8 @@ namespace GRA.Domain.Service
 
                         if (bundleItems.Count > 0)
                         {
-                            var layerSelection = bundleItems.Where(_ =>
-                            _.AvatarLayerId == layer.Id).SingleOrDefault();
+                            var layerSelection = bundleItems.SingleOrDefault(_ =>
+                                _.AvatarLayerId == layer.Id);
                             if (layerSelection != null)
                             {
                                 layer.SelectedItem = layerSelection.Id;
@@ -130,6 +131,24 @@ namespace GRA.Domain.Service
         {
             VerifyManagementPermission();
             return await _avatarLayerRepository.GetAllAsync(GetCurrentSiteId());
+        }
+
+        public async Task<int> GetLayerAvailableItemCountAsync(int layerId)
+        {
+            VerifyManagementPermission();
+            return await _avatarItemRepository.GetLayerAvailableItemCountAsync(layerId);
+        }
+
+        public async Task<int> GetLayerUnavailableItemCountAsync(int layerId)
+        {
+            VerifyManagementPermission();
+            return await _avatarItemRepository.GetLayerUnavailableItemCountAsync(layerId);
+        }
+
+        public async Task<int> GetLayerUnlockableItemCountAsync(int layerId)
+        {
+            VerifyManagementPermission();
+            return await _avatarItemRepository.GetLayerUnlockableItemCountAsync(layerId);
         }
 
         public async Task<AvatarLayer> AddLayerAsync(AvatarLayer layer)
@@ -327,13 +346,13 @@ namespace GRA.Domain.Service
         {
             VerifyManagementPermission();
             var items = await _avatarItemRepository.GetByIdsAsync(itemIds);
-            if (items.Where(_ => _.Unlockable != bundle.CanBeUnlocked).Any())
+            if (items.Any(_ => _.Unlockable != bundle.CanBeUnlocked))
             {
                 throw new GraException($"Not all items are {(bundle.CanBeUnlocked ? "Unlockable" : "Available")}.");
             }
 
-            if (bundle.CanBeUnlocked == false
-                && items.GroupBy(_ => _.AvatarLayerId).Where(_ => _.Skip(1).Any()).Any())
+            if (!bundle.CanBeUnlocked
+                && items.GroupBy(_ => _.AvatarLayerId).Any(_ => _.Skip(1).Any()))
             {
                 throw new GraException($"Default bundles cannot have multiple items per layer.");
             }
@@ -359,13 +378,13 @@ namespace GRA.Domain.Service
             }
 
             var items = await _avatarItemRepository.GetByIdsAsync(itemIds);
-            if (items.Where(_ => _.Unlockable != currentBundle.CanBeUnlocked).Any())
+            if (items.Any(_ => _.Unlockable != currentBundle.CanBeUnlocked))
             {
                 throw new GraException($"Not all items are {(bundle.CanBeUnlocked ? "Unlockable" : "Available")}.");
             }
 
-            if (currentBundle.CanBeUnlocked == false
-                && items.GroupBy(_ => _.AvatarLayerId).Where(_ => _.Skip(1).Any()).Any())
+            if (!currentBundle.CanBeUnlocked
+                && items.GroupBy(_ => _.AvatarLayerId).Any(_ => _.Skip(1).Any()))
             {
                 throw new GraException($"Default bundles cannot have multiple items per layer.");
             }
@@ -410,14 +429,14 @@ namespace GRA.Domain.Service
             var elementList = new List<int>();
             foreach (var layer in layers)
             {
-                var selection = selectionLayers.Where(_ => _.Id == layer.Id).FirstOrDefault();
+                var selection = selectionLayers.FirstOrDefault(_ => _.Id == layer.Id);
                 if (selection != default(AvatarLayer))
                 {
                     var element = await _avatarElementRepository.GetByItemAndColorAsync(
                         selection.SelectedItem.Value, selection.SelectedColor);
 
                     if (element != default(AvatarElement)
-                        && (element.AvatarItem.Unlockable == false
+                        && (!element.AvatarItem.Unlockable
                         || await _avatarItemRepository
                             .HasUserUnlockedItemAsync(activeUserId, element.AvatarItemId)))
                     {

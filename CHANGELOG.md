@@ -31,6 +31,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Spanish language translations of join, sign in, and the dashboard
 - Email unsubscribe with token
 - Checking for user join badges on sign in
+- Avatar unavailable items list
 
 ### Changed
 - Script docker-build.bash to not build release images unless the branch starts with 'release/'

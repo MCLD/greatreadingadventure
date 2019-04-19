@@ -28,7 +28,7 @@ namespace GRA.Data.Repository
 
             if (!includeDeleted)
             {
-                bundles = bundles.Where(_ => _.IsDeleted == false);
+                bundles = bundles.Where(_ => !_.IsDeleted);
             }
 
             return await bundles
@@ -55,11 +55,11 @@ namespace GRA.Data.Repository
         {
             var bundles = DbSet
                 .AsNoTracking()
-                .Where(_ => _.SiteId == filter.SiteId && _.IsDeleted == false);
+                .Where(_ => _.SiteId == filter.SiteId && !_.IsDeleted);
 
-            if (filter.Unlockable.HasValue)
+            if (filter.Unlockable)
             {
-                bundles = bundles.Where(_ => _.CanBeUnlocked == filter.Unlockable.Value);
+                bundles = bundles.Where(_ => _.CanBeUnlocked);
             }
 
             return bundles;
@@ -92,7 +92,7 @@ namespace GRA.Data.Repository
         public async Task<ICollection<AvatarItem>> GetRandomDefaultBundleAsync(int siteId)
         {
             var bundleItems = await DbSet.AsNoTracking()
-               .Where(_ => _.SiteId == siteId && _.CanBeUnlocked == false && _.IsDeleted == false)
+               .Where(_ => _.SiteId == siteId && !_.CanBeUnlocked && !_.IsDeleted)
                .OrderBy(_ => Guid.NewGuid())
                .Take(1)
                .Select(_ => _.AvatarBundleItems.Select(i => i.AvatarItem))
@@ -115,18 +115,18 @@ namespace GRA.Data.Repository
 
             if (unlockable.HasValue)
             {
-                bundles = bundles.Where(_ => _.CanBeUnlocked == unlockable.Value
-                    && _.IsDeleted == false);
+                bundles = bundles.Where(_ => _.CanBeUnlocked == unlockable.Value && !_.IsDeleted);
             }
 
-            return await bundles.ProjectTo<AvatarBundle>(_mapper.ConfigurationProvider).ToListAsync();
+            return await bundles.ProjectTo<AvatarBundle>(_mapper.ConfigurationProvider)
+                .ToListAsync();
         }
 
         public async Task<bool> IsItemInBundle(int itemId, bool? unlockable = null)
         {
             var inBundle = _context.AvatarBundleItems
                 .AsNoTracking()
-                .Where(_ => _.AvatarItemId == itemId && _.AvatarBundle.IsDeleted == false);
+                .Where(_ => _.AvatarItemId == itemId && !_.AvatarBundle.IsDeleted);
 
             if (unlockable.HasValue)
             {

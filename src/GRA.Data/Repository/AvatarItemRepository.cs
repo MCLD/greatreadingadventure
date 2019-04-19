@@ -38,7 +38,7 @@ namespace GRA.Data.Repository
 
             return await DbSet.AsNoTracking()
                 .Where(_ => _.AvatarLayerId == layerId
-                && (_.Unlockable == false || userUnlockedItems.Select(u => u.Id).Contains(_.Id)))
+                    && (!_.Unlockable || userUnlockedItems.Select(u => u.Id).Contains(_.Id)))
                 .OrderBy(_ => _.SortOrder)
                 .ProjectTo<AvatarItem>(_mapper.ConfigurationProvider)
                 .ToListAsync();
@@ -92,9 +92,30 @@ namespace GRA.Data.Repository
             var items = DbSet.AsNoTracking()
                 .Where(_ => _.AvatarLayer.SiteId == filter.SiteId);
 
-            if (filter.Unlockable.HasValue)
+            if (filter.Available)
             {
-                items = items.Where(_ => _.Unlockable == filter.Unlockable.Value);
+                items = items.Where(_ => !_.Unlockable);
+            }
+            else if (filter.CanBeUnlocked || filter.Unavailable || filter.Unlockable)
+            {
+                items = items.Where(_ => _.Unlockable);
+
+                if (filter.Unavailable || filter.Unlockable)
+                {
+                    var unlockableItems = _context.AvatarBundleItems
+                       .Where(_ => !_.AvatarBundle.IsDeleted && _.AvatarBundle.CanBeUnlocked)
+                       .Select(_ => _.AvatarItemId)
+                       .Distinct();
+
+                    if (filter.Unavailable)
+                    {
+                        items = items.Where(_ => !unlockableItems.Contains(_.Id));
+                    }
+                    else
+                    {
+                        items = items.Where(_ => unlockableItems.Contains(_.Id));
+                    }
+                }
             }
 
             if (filter.LayerId.HasValue)
@@ -113,6 +134,42 @@ namespace GRA.Data.Repository
             }
 
             return items;
+        }
+
+        public async Task<int> GetLayerAvailableItemCountAsync(int layerId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.AvatarLayerId == layerId && !_.Unlockable)
+                .CountAsync();
+        }
+
+        public async Task<int> GetLayerUnavailableItemCountAsync(int layerId)
+        {
+            var unlockableItems = _context.AvatarBundleItems
+                       .Where(_ => !_.AvatarBundle.IsDeleted && _.AvatarBundle.CanBeUnlocked)
+                       .Select(_ => _.AvatarItemId)
+                       .Distinct();
+
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.AvatarLayerId == layerId && _.Unlockable
+                    && !unlockableItems.Contains(_.Id))
+                .CountAsync();
+        }
+
+        public async Task<int> GetLayerUnlockableItemCountAsync(int layerId)
+        {
+            var unlockableItems = _context.AvatarBundleItems
+                       .Where(_ => !_.AvatarBundle.IsDeleted && _.AvatarBundle.CanBeUnlocked)
+                       .Select(_ => _.AvatarItemId)
+                       .Distinct();
+
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.AvatarLayerId == layerId && _.Unlockable
+                    && unlockableItems.Contains(_.Id))
+                .CountAsync();
         }
 
         public async Task<ICollection<AvatarItem>> GetByIdsAsync(List<int> ids)
@@ -171,10 +228,10 @@ namespace GRA.Data.Repository
         public async Task<bool> IsLastInRequiredLayer(int itemId)
         {
             var layer = await DbSet.AsNoTracking().Where(_ => _.Id == itemId).Select(_ => _.AvatarLayer).SingleAsync();
-            if (layer.CanBeEmpty == false)
+            if (!layer.CanBeEmpty)
             {
                 var availableItems = await DbSet.AsNoTracking()
-                    .Where(_ => _.AvatarLayerId == layer.Id && _.Unlockable == false)
+                    .Where(_ => _.AvatarLayerId == layer.Id && !_.Unlockable)
                     .CountAsync();
                 if (availableItems <= 1)
                 {
@@ -194,7 +251,7 @@ namespace GRA.Data.Repository
 
             var inUseBy = _context.UserAvatars
                 .AsNoTracking()
-                .Where(_ => _.User.IsDeleted == false
+                .Where(_ => !_.User.IsDeleted
                     && elements.Contains(_.AvatarElementId));
 
             if (ignoreUnlockedUsers)
@@ -204,7 +261,7 @@ namespace GRA.Data.Repository
                 .Where(_ => _.AvatarItemId == itemId)
                 .Select(_ => _.UserId);
 
-                inUseBy = inUseBy.Where(_ => unlockedUsers.Contains(_.UserId) == false);
+                inUseBy = inUseBy.Where(_ => !unlockedUsers.Contains(_.UserId));
             }
 
             return await inUseBy.AnyAsync();
@@ -217,7 +274,7 @@ namespace GRA.Data.Repository
                 .Where(_ => _.AvatarItemId == id)
                 .Select(_ => _.Id);
 
-            var userElements =  _context.UserAvatars
+            var userElements = _context.UserAvatars
                 .Where(_ => elements.Contains(_.AvatarElementId));
             if (await userElements.CountAsync() > 0)
             {
@@ -229,7 +286,7 @@ namespace GRA.Data.Repository
                     .Where(_ => _.Id == id)
                     .SingleAsync();
 
-                if (item.AvatarLayer.CanBeEmpty == false)
+                if (!item.AvatarLayer.CanBeEmpty)
                 {
                     var firstElement = _context.AvatarElements
                         .AsNoTracking()
@@ -238,7 +295,7 @@ namespace GRA.Data.Repository
                         .OrderBy(_ => _.AvatarItem.SortOrder)
                         .Select(_ => _.Id)
                         .First();
-                    
+
                     var newUserElements = userElements
                         .Select(_ => new Model.UserAvatar()
                         {

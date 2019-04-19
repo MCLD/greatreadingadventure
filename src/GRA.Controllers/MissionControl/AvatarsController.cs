@@ -17,7 +17,6 @@ using Newtonsoft.Json;
 
 namespace GRA.Controllers.MissionControl
 {
-
     [Area("MissionControl")]
     [Authorize(Policy = Policy.ManageAvatars)]
     public class AvatarsController : Base.MCController
@@ -26,6 +25,7 @@ namespace GRA.Controllers.MissionControl
         private readonly AvatarService _avatarService;
         private readonly SiteService _siteService;
         private readonly IHostingEnvironment _hostingEnvironment;
+
         public AvatarsController(ILogger<AvatarsController> logger,
             ServiceFacade.Controller context,
             AvatarService avatarService,
@@ -43,9 +43,16 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Index()
         {
             var layers = await _avatarService.GetLayersAsync();
-            foreach(var layer in layers)
+            foreach (var layer in layers)
             {
                 layer.Icon = _pathResolver.ResolveContentPath(layer.Icon);
+
+                layer.AvailableItems = await _avatarService.GetLayerAvailableItemCountAsync(
+                    layer.Id);
+                layer.UnavailableItems = await _avatarService.GetLayerUnavailableItemCountAsync(
+                    layer.Id);
+                layer.UnlockableItems = await _avatarService.GetLayerUnlockableItemCountAsync(
+                    layer.Id);
             }
             return View(layers);
         }
@@ -53,7 +60,7 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> SetupDefaultAvatars()
         {
-            Stopwatch sw = new Stopwatch();
+            var sw = new Stopwatch();
             sw.Start();
 
             var layers = await _avatarService.GetLayersAsync();
@@ -150,8 +157,8 @@ namespace GRA.Controllers.MissionControl
                 await _avatarService.AddItemListAsync(items);
                 items = await _avatarService.GetItemsByLayerAsync(addedLayer.Id);
 
-                List<AvatarElement> elementList = new List<AvatarElement>();
-                _logger.LogInformation($"Processing {items.Count()} items in {addedLayer.Name}...");
+                var elementList = new List<AvatarElement>();
+                _logger.LogInformation($"Processing {items.Count} items in {addedLayer.Name}...");
 
                 foreach (var item in items)
                 {
@@ -235,19 +242,37 @@ namespace GRA.Controllers.MissionControl
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Layer(int id, string search, bool? unlockable = null, 
+        public async Task<IActionResult> Layer(int id,
+            string search,
+            bool available = false,
+            bool unavailable = false,
+            bool unlockable = false,
             int page = 1)
         {
             var filter = new AvatarFilter(page, 12)
             {
                 LayerId = id,
-                Search = search,
-                Unlockable = unlockable
+                Search = search
             };
+            if (available)
+            {
+                filter.Available = true;
+                unavailable = false;
+                unlockable = false;
+            }
+            else if (unavailable)
+            {
+                filter.Unavailable = true;
+                unlockable = false;
+            }
+            else if (unlockable)
+            {
+                filter.Unlockable = true;
+            }
 
             var itemList = await _avatarService.PageItemsAsync(filter);
 
-            PaginateViewModel paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel
             {
                 ItemCount = itemList.Count,
                 CurrentPage = page,
@@ -267,17 +292,19 @@ namespace GRA.Controllers.MissionControl
                 item.Thumbnail = _pathResolver.ResolveContentPath(item.Thumbnail);
             }
 
-            if (itemList.Data.Any())
+            if (itemList.Data.Count > 0)
             {
                 PageTitle = $"Avatar Items: {itemList.Data.First().AvatarLayerName}";
             }
 
-            var viewModel = new ItemsListViewModel()
+            var viewModel = new ItemsListViewModel
             {
                 Items = itemList.Data,
                 PaginateModel = paginateModel,
                 Id = id,
                 Search = search,
+                Available = available,
+                Unavailable = unavailable,
                 Unlockable = unlockable
             };
 
@@ -290,9 +317,11 @@ namespace GRA.Controllers.MissionControl
             await _avatarService.DescreaseItemSortAsync(model.ItemId);
             return RedirectToAction(nameof(Layer), new
             {
-                model.Id,
-                model.Search,
-                model.Unlockable,
+                id = model.Id,
+                search = model.Search,
+                available = model.Available,
+                unavailable = model.Unavailable,
+                unlockable = model.Unlockable,
                 page = model.PaginateModel.CurrentPage
             });
         }
@@ -303,9 +332,11 @@ namespace GRA.Controllers.MissionControl
             await _avatarService.IncreaseItemSortAsync(model.ItemId);
             return RedirectToAction(nameof(Layer), new
             {
-                model.Id,
-                model.Search,
-                model.Unlockable,
+                id = model.Id,
+                search = model.Search,
+                available = model.Available,
+                unavailable = model.Unavailable,
+                unlockable = model.Unlockable,
                 page = model.PaginateModel.CurrentPage
             });
         }
@@ -324,9 +355,11 @@ namespace GRA.Controllers.MissionControl
             }
             return RedirectToAction(nameof(Layer), new
             {
-                model.Id,
-                model.Search,
-                model.Unlockable,
+                id = model.Id,
+                search = model.Search,
+                available = model.Available,
+                unavailable = model.Unavailable,
+                unlockable = model.Unlockable,
                 page = model.PaginateModel.CurrentPage
             });
         }
@@ -345,9 +378,11 @@ namespace GRA.Controllers.MissionControl
             }
             return RedirectToAction(nameof(Layer), new
             {
-                model.Id,
-                model.Search,
-                model.Unlockable,
+                id = model.Id,
+                search = model.Search,
+                available = model.Available,
+                unavailable = model.Unavailable,
+                unlockable = model.Unlockable,
                 page = model.PaginateModel.CurrentPage
             });
         }
@@ -366,9 +401,11 @@ namespace GRA.Controllers.MissionControl
             }
             return RedirectToAction(nameof(Layer), new
             {
-                model.Id,
-                model.Search,
-                model.Unlockable,
+                id = model.Id,
+                search = model.Search,
+                available = model.Available,
+                unavailable = model.Unavailable,
+                unlockable = model.Unlockable,
                 page = model.PaginateModel.CurrentPage
             });
         }
@@ -552,14 +589,14 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> GetItemsList(string itemIds,
             int? layerId,
             string search,
-            bool unlockable,
+            bool canBeUnlocked,
             int page = 1)
         {
             var filter = new AvatarFilter(page, 10)
             {
                 Search = search,
                 LayerId = layerId,
-                Unlockable = unlockable
+                CanBeUnlocked = canBeUnlocked
             };
 
             if (!string.IsNullOrWhiteSpace(itemIds))
