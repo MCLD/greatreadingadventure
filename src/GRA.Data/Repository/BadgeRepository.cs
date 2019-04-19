@@ -59,6 +59,22 @@ namespace GRA.Data.Repository
                 .SingleOrDefaultAsync();
         }
 
+        public async Task<bool> UserHasJoinBadgeAsync(int userId)
+        {
+            var joinBadges = _context.Programs.AsNoTracking()
+                .Where(_ => _.JoinBadgeId.HasValue)
+                .Join(_context.Users.Where(_ => _.Id == userId),
+                    program => program.SiteId,
+                    u => u.SiteId,
+                    (program, _) => program)
+                .Select(_ => _.JoinBadgeId.Value);
+
+            return await _context.UserBadges
+                .AsNoTracking()
+                .Where(_ => _.UserId == userId && joinBadges.Contains(_.BadgeId))
+                .AnyAsync();
+        }
+
         public async Task RemoveUserBadgeAsync(int userId, int badgeId)
         {
             var userBadge = await _context.UserBadges
