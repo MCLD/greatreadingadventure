@@ -34,7 +34,6 @@ namespace GRA.Controllers.MissionControl
         private readonly AvatarService _avatarService;
         private readonly DrawingService _drawingService;
         private readonly EmailManagementService _emailManagementService;
-        private readonly GroupTypeService _groupTypeService;
         private readonly MailService _mailService;
         private readonly PointTranslationService _pointTranslationService;
         private readonly PrizeWinnerService _prizeWinnerService;
@@ -54,7 +53,6 @@ namespace GRA.Controllers.MissionControl
             AvatarService avatarService,
             DrawingService drawingService,
             EmailManagementService emailManagementService,
-            GroupTypeService groupTypeService,
             MailService mailService,
             PointTranslationService pointTranslationService,
             PrizeWinnerService prizeWinnerService,
@@ -80,8 +78,6 @@ namespace GRA.Controllers.MissionControl
                 ?? throw new ArgumentNullException(nameof(drawingService));
             _emailManagementService = emailManagementService
                 ?? throw new ArgumentNullException(nameof(emailManagementService));
-            _groupTypeService = groupTypeService
-                ?? throw new ArgumentNullException(nameof(groupTypeService));
             _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
             _pointTranslationService = pointTranslationService
                 ?? throw new ArgumentNullException(nameof(pointTranslationService));
@@ -1026,7 +1022,7 @@ namespace GRA.Controllers.MissionControl
         {
             if (string.IsNullOrWhiteSpace(model.SecretCode))
             {
-                TempData[SecretCodeMessage] = "You must enter a code!";
+                TempData[SecretCodeMessage] = Annotations.Required.SecretCode;
             }
             else if (!string.IsNullOrWhiteSpace(model.UserSelection))
             {
@@ -1563,7 +1559,7 @@ namespace GRA.Controllers.MissionControl
 
             if (ModelState.IsValid)
             {
-                var userImportResult = new UserImportResult();
+                UserImportResult userImportResult = null;
                 using (var streamReader = new StreamReader(model.UserCsvFile.OpenReadStream()))
                 {
                     userImportResult = await _userImportService.GetFromCsvAsync(streamReader,

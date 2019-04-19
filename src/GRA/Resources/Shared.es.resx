@@ -633,4 +633,8 @@
     <value>Iniciar la sesión para {0}</value>
     <comment>Prompt a user to sign in to the site, {0} is replaced with the name of the site</comment>
   </data>
+  <data name="Submit your email address below and we'll remind you when the program starts." xml:space="preserve">
+    <value>Envíe su dirección de correo electrónico a continuación y le avisaremos cuando comience el programa.</value>
+    <comment>Prompt for a participant's email to send a reminder when the program starts.</comment>
+  </data>
 </root>

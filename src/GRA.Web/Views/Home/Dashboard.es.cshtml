@@ -1,0 +1,438 @@
+﻿@model GRA.Controllers.ViewModel.Home.DashboardViewModel
+
+@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
+@inject Microsoft.AspNetCore.Mvc.Localization.IHtmlLocalizer<GRA.Resources.Shared> SharedHtmlLocalizer
+
+@if (!string.IsNullOrWhiteSpace(Model.DailyImageMessage))
+{
+    <div class="row">
+        <div class="modal fade" id="dailyImageModal" style="text-align:center;" tabindex="-1" role="dialog" aria-labelledby="dailyImageModalLabel">
+            <div class="modal-dialog" style="display: inline-block;" role="document">
+                <div class="modal-content">
+                    <span class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute" data-dismiss="modal">
+                        <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
+                        <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
+                    </span>
+                    <div style="padding: 25px;">
+                        <img class="img img-responsive daily-image" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (Model.Carousel != null)
+{
+    <div class="row">
+        <div class="modal gra-carousel-modal" id="graCarouselModal" tabindex="-1" role="dialog" aria-labelledby="graCarouselModal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <span class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute" data-dismiss="modal">
+                            <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
+                            <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
+                        </span>
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-3 ">
+                                <img id="graCarouselModalImage"
+                                     class="center-block gra-carousel-modal-image" />
+                            </div>
+                            <div class="col-xs-12 col-sm-9">
+                                <p style="font-size: 2rem; font-weight: bold;" id="graCarouselModalHeader"></p>
+                                <p id="graCarouselModalContent" class="gra-carousel-modal-content"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (Model.HasPendingDonationQuestion)
+{
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <div class="alert alert-success" style="font-size:large">
+                You've earned a free book! Head over to <a asp-controller="Profile" asp-action="Index"><strong>My Profile</strong></a> page
+                @if (Model.VendorCodeExpiration.HasValue)
+                {
+                    <text>by @Model.VendorCodeExpiration.Value.AddMilliseconds(-1).ToString("MMMM dd")</text>
+                }
+                to redeem or donate it!
+            </div>
+        </div>
+    </div>
+}
+
+<div class="row" style="font-size: larger;">
+    <div class="col-sm-3 text-center">
+        @if (Model.SiteStage != GRA.Domain.Model.SiteStage.BeforeRegistration)
+        {
+            <div class="panel panel-default">
+                <p>
+                    <a asp-controller="Avatar" asp-action="Index">
+                        @if (Model.AvatarElements?.Count > 0)
+                        {
+
+                            <div class="avatar-container-dashboard">
+                                @foreach (var layer in Model.AvatarElements)
+                                {
+                                    <img src="~/@layer.Filename"
+                                         style="z-index: @(layer.AvatarItem.AvatarLayerPosition + 1)"
+                                         class="avatar-layer-dashboard" />
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <img src="~/images/no_avatar.png"
+                                 class="img img-responsive center-block"
+                                 style="width:200px;"
+                                 asp-append-version="true" />
+
+                        }
+                    </a>
+                </p>
+                <div class="dashboard-activity">
+                    <p style="font-size: x-large;">@SharedHtmlLocalizer["You have <strong>{0}</strong> points.", Model.CurrentPointTotal]</p>
+                    <p><a asp-controller="Profile" asp-action="History">@SharedLocalizer["See your activity history."]</a></p>
+                    @if (Model.TotalProgramGoal.HasValue)
+                    {
+                        <p style="font-size:large">@SharedLocalizer[GRA.DisplayNames.MyProgress]</p>
+                        <div class="progress" style="margin:0px;">
+                            <div class="progress-bar progress-bar-striped@(Model.PercentComplete == 100 ? " progress-bar-success" : "") wide-tooltip" 
+                                    role="progressbar" 
+                                    aria-valuenow="@Model.PercentComplete" 
+                                    aria-valuemin="0" 
+                                    aria-valuemax="100" 
+                                    style="width: @Model.PercentComplete%;" 
+                                    title="@Model.ProgressMessage" 
+                                    data-toggle="tooltip" 
+                                    data-placement="top">
+                                @Model.PercentComplete%
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+        else
+        {
+            @:&nbsp;
+        }
+    </div>
+    <div class="col-sm-6">
+        <div class="panel panel-default">
+            <div class="panel-body text-center">
+                <span class="lead">@SharedHtmlLocalizer["Welcome <strong>{0}!</strong>", Model.FirstName]</span>
+                @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessPerformerRegistration))
+                    && !Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessMissionControl))
+                    && Model.SiteStage == GRA.Domain.Model.SiteStage.BeforeRegistration)
+                {
+                    <p class="lead" style="padding-top: 2rem;">
+                        Welcome, performer! Please click on the theater masks icon at the top of the
+                        screen (<a asp-area="PerformerRegistration" asp-controller="Home" asp-action="Index"><span class="fas fa-theater-masks"></span></a>)
+                        and enter your performer information and details about the programs you are
+                        able to perform!
+                    </p>
+                }
+                @if (Model.SiteStage == GRA.Domain.Model.SiteStage.RegistrationOpen)
+                {
+                    <p class="lead" style="padding-top: 2rem;">
+                        @SharedLocalizer["Once the program starts, you will enter your activity right here!"]
+                    </p>
+                }
+                else if (Model.SiteStage == GRA.Domain.Model.SiteStage.ProgramEnded)
+                {
+                    <p class="lead" style="padding-top: 2rem;">
+                        @SharedLocalizer["The program has ended, thanks for participating!"]
+                    </p>
+                }
+            </div>
+        </div>
+
+        @if (Model.SiteStage == GRA.Domain.Model.SiteStage.ProgramOpen)
+        {
+            @if (Model.SingleEvent)
+            {
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <form asp-controller="Home" asp-action="LogActivity" method="post" role="form">
+                            <input asp-for="SingleEvent" type="hidden" />
+                            <div class="row row-spacing">
+                                <label asp-for="Title" class="control-label col-sm-3 col-md-2"></label>
+                                <div class="col-sm-9 col-md-10">
+                                    <input asp-for="Title" class="form-control" />
+                                    <span asp-validation-for="Title" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="row row-spacing">
+                                <label asp-for="Author" class="control-label col-sm-3 col-md-2"></label>
+                                <div class="col-sm-9 col-md-10">
+                                    <input asp-for="Author" class="form-control" />
+                                    <span asp-validation-for="Author" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn center-block btn-success btn-lg btn-spinner">
+                                <span class="buttonText">@SharedLocalizer["I read a book!"]</span>
+                                <span class="fas fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <form asp-controller="Home" asp-action="LogActivity" method="post" role="form" class="form-horizontal">
+                            <div class="row row-spacing">
+                                <label class="control-label col-sm-7 col-md-5 col-lg-4">@SharedLocalizer["Enter {0} read", Model.ActivityDescriptionPlural]</label>
+                                <div class="col-sm-5 col-md-7 col-lg-8">
+                                    <input asp-for="ActivityAmount" type="text" value="@Model.ActivityAmount" class="form-control" />
+                                    <span asp-validation-for="ActivityAmount" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="row row-spacing">
+                                <label asp-for="Title" class="control-label col-sm-3 col-md-2"></label>
+                                <div class="col-sm-9 col-md-10">
+                                    <input asp-for="Title" class="form-control" />
+                                    <span asp-validation-for="Title" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="row row-spacing">
+                                <label asp-for="Author" class="control-label col-sm-3 col-md-2"></label>
+                                <div class="col-sm-9 col-md-10">
+                                    <input asp-for="Author" class="form-control" />
+                                    <span asp-validation-for="Author" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn center-block btn-success btn-lg btn-spinner">
+                                <span class="buttonText">@SharedLocalizer["Log {0}", Model.ActivityDescriptionPlural]</span>
+                                <span class="fas fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            }
+            @if (!Model.DisableSecretCode)
+            {
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <form asp-controller="Home" asp-action="LogSecretCode" method="post" role="form" class="form-horizontal">
+                            <div class="row row-spacing" style="text-align:center;">
+                                <div class="col-xs-12 ">
+                                    <small>
+                                        @SharedLocalizer["DashboardSecretCodeExplanation"]
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div class="row row-spacing">
+                                <label asp-for="SecretCode" class="control-label col-sm-5 col-md-4 col-lg-3"></label>
+                                <div class="col-sm-7 col-md-8 col-lg-9">
+                                    <input asp-for="SecretCode" class="form-control" />
+                                </div>
+                                @if (!string.IsNullOrWhiteSpace(Model.SecretCodeMessage))
+                                {
+                                    <div class="text-center">
+                                        <span class="text-danger">@Html.Raw(Model.SecretCodeMessage)</span>
+                                    </div>
+                                }
+                            </div>
+
+                            <button type="submit" class="btn center-block btn-success btn-lg btn-spinner">
+                                <span class="buttonText">@SharedLocalizer["Submit Code"]</span>
+                                <span class="fas fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            }
+        }
+        @if (!string.IsNullOrWhiteSpace(Model.DashboardPageContent))
+        {
+            <div class="panel panel-default visible-sm visible-md visible-lg">
+                <div class="dashboard-page-container">
+                    @Html.Raw(Model.DashboardPageContent)
+                </div>
+            </div>
+        }
+    </div>
+    <div class="col-sm-3 text-center">
+        @if (Model.SiteStage != GRA.Domain.Model.SiteStage.BeforeRegistration)
+        {
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <a asp-controller="Profile" asp-action="History" class="lead">@SharedLocalizer["Your badges"]</a>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        @if (Model.Badges.Count() > 0)
+                        {
+                            int display = 0;
+                            foreach (var badge in Model.Badges)
+                            {
+                                if (display < 3)
+                                {
+                                    <div class="col-md-6 col-sm-12 col-xs-4 dashboard-badge">
+                                        <img class="img-thumbnail badge-sm" src="~/@badge.Filename" asp-append-version="true" />
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-md-6 col-sm-12 col-xs-4 visible-lg visible-md visible-xs dashboard-badge">
+                                        <img class="img-thumbnail badge-sm" src="~/@badge.Filename" asp-append-version="true" />
+                                    </div>
+                                }
+                                display++;
+
+                                if (display >= 6)
+                                {
+                                    <div class="col-xs-12 visible-lg visible-md visible-xs">
+                                        <a asp-controller="Profile" asp-action="History" class="lead">@SharedLocalizer["See more of your badges in your history!"]</a>
+                                    </div>
+                                    break;
+                                }
+                            }
+                            if (display >= 3)
+                            {
+                                <div class="col-xs-12 visible-sm">
+                                    <a asp-controller="Profile" asp-action="History" class="lead">@SharedLocalizer["See more of your badges in your history!"]</a>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p>@SharedLocalizer["Participate in program activities to earn badges!"]</p>
+                        }
+                    </div>
+                </div>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(Model.DailyImageMessage))
+            {
+                <div class="panel panel-default">
+                    <div class="panel-body text-center">
+                        <div class="row">
+                            <button type="button"
+                                    id="viewDailyImage"
+                                    class="btn btn-primary"
+                                    style="margin:0 8px; white-space: normal; font-size: large;"
+                                    data-src="@Url.Content($"~/{Model.DailyImagePath}")">
+                                @Model.DailyImageMessage
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            @:&nbsp;
+        }
+    </div>
+</div>
+
+@if (!string.IsNullOrWhiteSpace(Model.DashboardPageContent))
+{
+    <div class="row visible-xs">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="dashboard-page-container">
+                    @Html.Raw(Model.DashboardPageContent)
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (Model.Carousel != null)
+{
+    <div class="row gra-js-required">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                @if (!string.IsNullOrEmpty(Model.Carousel.Heading))
+                {
+                    <div class="panel-heading">
+                        @Model.Carousel.Heading
+                    </div>
+                }
+                <div class="panel-body">
+                    <div class="gra-carousel text-center">
+                        @foreach (var item in Model.Carousel.Items)
+                        {
+                            <div>
+                                <a href="#"
+                                   class="gra-carousel-link"
+                                   data-itemid="@item.Id"
+                                   data-title="@item.Title"
+                                   data-img="@item.ImageUrl">
+                                    <img src="@item.ImageUrl" />
+                                    <p>@item.Title</p>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script>
+            @if (!string.IsNullOrWhiteSpace(Model.DailyImageMessage))
+            {
+                <text>
+                    $("#viewDailyImage").on("click", function() {
+                            var src = $(this).data("src");
+                        $(".daily-image").attr("src", src);
+                        $("#dailyImageModal").modal().show();
+                        });
+                </text>
+            }
+            @if (Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null && Model.UserJoined)
+            {
+                <text>
+                    gtag('event', 'sign_up', {
+                        'Program Name': '@Model.ProgramName',
+                        'First Time Participant': '@Model.FirstTimeParticipant'
+                    });
+                </text>
+            }
+    </script>
+    @if (Model.Carousel != null)
+    {
+        <script>
+            $(".gra-carousel-link").on("click", function (event) {
+                event.stopPropagation();
+                event.stopImmediatePropagation();
+                $("#graCarouselModalContent").html("<div class=\"gra-carousel-spinner\"><span class=\"fas fa-spinner fa-3x fa-spin\"></span></div>");
+                var id = $(this).data("itemid");
+
+                var jqXHR = $.get("@Url.Action("GetCarouselDescription", "Home")/" + id,
+                    function (data) {
+                        $("#graCarouselModalContent").html(data);
+                    }
+                ).fail(function () {
+                    $("#graCarouselModalContent").html("Could not find details for this item, sorry!");
+                });
+
+                $("#graCarouselModalHeader").text($(this).data("title"));
+                $("#graCarouselModalImage").attr("src", $(this).data("img"));
+
+                $("#graCarouselModal").modal().show();
+            });
+
+        </script>
+        <link rel="stylesheet" type="text/css" href="@Url.Content("~/css/slick.min.css")" />
+        <script type="text/javascript" src="@Url.Content("~/js/slick.min.js")"></script>
+    }
+}

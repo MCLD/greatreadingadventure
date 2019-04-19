@@ -19,7 +19,6 @@ namespace GRA.Domain.Service
         private readonly IBookRepository _bookRepository;
         private readonly IChallengeRepository _challengeRepository;
         private readonly IChallengeTaskRepository _challengeTaskRepository;
-        private readonly IDrawingRepository _drawingRepository;
         private readonly INotificationRepository _notificationRepository;
         private readonly IPointTranslationRepository _pointTranslationRepository;
         private readonly IProgramRepository _programRepository;
@@ -44,7 +43,6 @@ namespace GRA.Domain.Service
             IBookRepository bookRepository,
             IChallengeRepository challengeRepository,
             IChallengeTaskRepository challengeTaskRepository,
-            IDrawingRepository drawingRepository,
             INotificationRepository notificationRepository,
             IPointTranslationRepository pointTranslationRepository,
             IProgramRepository programRepository,
@@ -70,7 +68,6 @@ namespace GRA.Domain.Service
                 nameof(challengeRepository));
             _challengeTaskRepository = Require.IsNotNull(challengeTaskRepository,
                 nameof(challengeTaskRepository));
-            _drawingRepository = Require.IsNotNull(drawingRepository, nameof(drawingRepository));
             _notificationRepository = Require.IsNotNull(notificationRepository,
                 nameof(notificationRepository));
             _pointTranslationRepository = Require.IsNotNull(pointTranslationRepository,
@@ -577,7 +574,7 @@ namespace GRA.Domain.Service
                 await _userLogRepository.AddSaveAsync(activeUserId, userLog);
 
                 // update the score in the user record
-                var postUpdateUser = await AddPointsSaveAsync(authUserId,
+                await AddPointsSaveAsync(authUserId,
                     activeUserId,
                     activeUserId,
                     pointsAwarded);
@@ -856,7 +853,7 @@ namespace GRA.Domain.Service
 
                 try
                 {
-                    var assignedCode = await _vendorCodeRepository.AssignCodeAsync((int)vendorCodeTypeId, userId);
+                    await _vendorCodeRepository.AssignCodeAsync((int)vendorCodeTypeId, userId);
 
                     // if donation is not an option then send the email with the code
                     if (string.IsNullOrEmpty(codeType.DonationMessage))
@@ -900,7 +897,7 @@ namespace GRA.Domain.Service
 
             if (string.IsNullOrWhiteSpace(secretCode))
             {
-                throw new GraException("You must enter a code!");
+                throw new GraException(Annotations.Required.SecretCode);
             }
 
             secretCode = _codeSanitizer.Sanitize(secretCode);
@@ -1070,7 +1067,7 @@ namespace GRA.Domain.Service
 
             if (string.IsNullOrWhiteSpace(secretCode))
             {
-                throw new GraException("You must enter a code!");
+                throw new GraException(Annotations.Required.SecretCode);
             }
 
             secretCode = _codeSanitizer.Sanitize(secretCode);

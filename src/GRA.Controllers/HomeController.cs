@@ -98,13 +98,15 @@ namespace GRA.Controllers
                     else if (UserHasPermission(Permission.AccessPerformerRegistration))
                     {
                         var dates = await _performerSchedulingService.GetSettingsAsync();
-                        var schedulingStage = _performerSchedulingService.GetSchedulingStage(dates);
+                        var schedulingStage
+                            = _performerSchedulingService.GetSchedulingStage(dates);
 
                         if (schedulingStage != PsSchedulingStage.Unavailable)
                         {
                             TempData.Remove(TempDataKey.UserJoined);
-                            return RedirectToAction(nameof(PerformerRegistration.HomeController.Index),
-                                HomeController.Name,
+                            return RedirectToAction(
+                                nameof(PerformerRegistration.HomeController.Index),
+                                Name,
                                 new { Area = nameof(PerformerRegistration) });
                         }
                     }
@@ -140,7 +142,8 @@ namespace GRA.Controllers
                     SingleEvent = pointTranslation.IsSingleEvent,
                     ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural,
                     Badges = badges.Data,
-                    DisableSecretCode = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable)
+                    DisableSecretCode
+                        = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable)
                 };
 
                 try
@@ -165,12 +168,14 @@ namespace GRA.Controllers
                             var imagePath = Path.Combine($"site{site.Id}", "dailyimages",
                                 $"dailyliteracytip{program.DailyLiteracyTipId}",
                                 $"{image.Id}{image.Extension}");
-                            if (System.IO.File.Exists(_pathResolver.ResolveContentFilePath(imagePath)))
+                            if (System.IO.File.Exists(_pathResolver
+                                .ResolveContentFilePath(imagePath)))
                             {
                                 var dailyLiteracyTip = await _dailyLiteracyTipService
                                     .GetByIdAsync(program.DailyLiteracyTipId.Value);
                                 viewModel.DailyImageMessage = dailyLiteracyTip.Message;
-                                viewModel.DailyImagePath = _pathResolver.ResolveContentPath(imagePath);
+                                viewModel.DailyImagePath
+                                    = _pathResolver.ResolveContentPath(imagePath);
                             }
                         }
                     }
@@ -214,20 +219,24 @@ namespace GRA.Controllers
                 }
                 if (TempData.ContainsKey(ActivityErrorMessage))
                 {
-                    ModelState.AddModelError("ActivityAmount", (string)TempData[ActivityErrorMessage]);
+                    ModelState.AddModelError("ActivityAmount",
+                        _sharedLocalizer[(string)TempData[ActivityErrorMessage]]);
                     viewModel.ActivityAmount = null;
                 }
                 if (TempData.ContainsKey(TitleErrorMessage))
                 {
-                    ModelState.AddModelError("Title", (string)TempData[TitleErrorMessage]);
+                    ModelState.AddModelError("Title",
+                        _sharedLocalizer[(string)TempData[TitleErrorMessage]]);
                 }
                 if (TempData.ContainsKey(AuthorErrorMessage))
                 {
-                    ModelState.AddModelError("Author", (string)TempData[AuthorErrorMessage]);
+                    ModelState.AddModelError("Author",
+                        _sharedLocalizer[(string)TempData[AuthorErrorMessage]]);
                 }
                 if (TempData.ContainsKey(SecretCodeMessage))
                 {
-                    viewModel.SecretCodeMessage = (string)TempData[SecretCodeMessage];
+                    viewModel.SecretCodeMessage
+                        = _sharedLocalizer[(string)TempData[SecretCodeMessage]];
                 }
 
                 if (user.DailyPersonalGoal.HasValue)
@@ -256,7 +265,7 @@ namespace GRA.Controllers
                     viewModel.VendorCodeExpiration = userVendorCode.ExpirationDate;
                 }
 
-                return View("Dashboard", viewModel);
+                return View(TemplateService.TemplateDashboard, viewModel);
             }
             else
             {
@@ -265,10 +274,12 @@ namespace GRA.Controllers
                     case SiteStage.BeforeRegistration:
                         var viewModel = new BeforeRegistrationViewModel
                         {
-                            SignUpSource = "BeforeRegistration"
+                            SignUpSource = "BeforeRegistration",
+                            SiteName = "our site"
                         };
                         if (site != null)
                         {
+                            viewModel.SiteName = site.Name;
                             viewModel.CollectEmail = await _siteLookupService
                                 .GetSiteSettingBoolAsync(site.Id,
                                     SiteSettingKey.Users.CollectPreregistrationEmails);
@@ -278,26 +289,29 @@ namespace GRA.Controllers
                                     = ((DateTime)site.RegistrationOpens).ToString("D");
                             }
                         }
-                        return View("IndexBeforeRegistration", viewModel);
+                        return View(TemplateService.TemplateBeforeRegistration, viewModel);
                     case SiteStage.RegistrationOpen:
-                        return View("IndexRegistrationOpen");
+                        return View(TemplateService.TemplateRegistrationOpen,
+                            site?.Name ?? "our site");
                     case SiteStage.ProgramEnded:
-                        return View("IndexProgramEnded");
+                        return View(TemplateService.TemplateProgramEnded,
+                            site?.Name ?? "our site");
                     case SiteStage.AccessClosed:
                         var acViewModel = new AccessClosedViewModel
                         {
-                            SignUpSource = "AccessClosed"
+                            SignUpSource = "AccessClosed",
+                            SiteName = "our site"
                         };
                         if (site != null)
                         {
+                            acViewModel.SiteName = site.Name;
                             acViewModel.CollectEmail = await _siteLookupService
                                 .GetSiteSettingBoolAsync(site.Id,
                                     SiteSettingKey.Users.CollectAccessClosedEmails);
                         }
-                        return View("IndexAccessClosed", acViewModel);
-                    case SiteStage.ProgramOpen:
+                        return View(TemplateService.TemplateAccessClosed, acViewModel);
                     default:
-                        return View("IndexProgramOpen");
+                        return View(TemplateService.TemplateProgramOpen, site?.Name ?? "our site");
                 }
             }
         }
@@ -309,7 +323,7 @@ namespace GRA.Controllers
             {
                 await _emailReminderService
                     .AddEmailReminderAsync(viewModel.Email, viewModel.SignUpSource);
-                ShowAlertInfo(_sharedLocalizer[Annotations.Info.LetYouKnowWhen, "envelope"]);
+                ShowAlertInfo(_sharedLocalizer[Annotations.Info.LetYouKnowWhen], "envelope");
             }
             return RedirectToAction(nameof(Index));
         }
@@ -360,7 +374,10 @@ namespace GRA.Controllers
                 }
                 if (ModelState["Author"].Errors.Count > 0)
                 {
-                    TempData[AuthorErrorMessage] = ModelState["Author"].Errors.First().ErrorMessage;
+                    TempData[AuthorErrorMessage] = ModelState["Author"]
+                        .Errors
+                        .First()
+                        .ErrorMessage;
                 }
             }
             if (string.IsNullOrWhiteSpace(viewModel.Title)
@@ -389,7 +406,8 @@ namespace GRA.Controllers
                 }
                 catch (GraException gex)
                 {
-                    ShowAlertDanger(_sharedLocalizer[Annotations.Validate.CouldNotLog, gex.Message]);
+                    ShowAlertDanger(_sharedLocalizer[Annotations.Validate.CouldNotLog,
+                        gex.Message]);
                 }
             }
             return RedirectToAction(nameof(Index));
@@ -405,7 +423,7 @@ namespace GRA.Controllers
             }
             catch (GraException gex)
             {
-                TempData[SecretCodeMessage] = gex.Message;
+                TempData[SecretCodeMessage] = _sharedLocalizer[gex.Message];
             }
             return RedirectToAction(nameof(Index));
         }
