@@ -23,19 +23,16 @@ namespace GRA.Controllers.MissionControl
     {
         private readonly ILogger<AvatarsController> _logger;
         private readonly AvatarService _avatarService;
-        private readonly SiteService _siteService;
         private readonly IHostingEnvironment _hostingEnvironment;
 
         public AvatarsController(ILogger<AvatarsController> logger,
             ServiceFacade.Controller context,
             AvatarService avatarService,
-            SiteService siteService,
             IHostingEnvironment hostingEnvironment)
             : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
             _avatarService = Require.IsNotNull(avatarService, nameof(avatarService));
-            _siteService = Require.IsNotNull(siteService, nameof(SiteService));
             _hostingEnvironment = Require.IsNotNull(hostingEnvironment, nameof(hostingEnvironment));
             PageTitle = "Avatars";
         }
@@ -231,7 +228,7 @@ namespace GRA.Controllers.MissionControl
                         items.Add(item.Id);
                     }
                     bundle.AvatarItems = null;
-                    var newBundle = await _avatarService.AddBundleAsync(bundle, items);
+                    await _avatarService.AddBundleAsync(bundle, items);
                 }
             }
 
@@ -244,28 +241,32 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> Layer(int id,
             string search,
-            bool available = false,
-            bool unavailable = false,
-            bool unlockable = false,
+            bool isAvailable = false,
+            bool isUnavailable = false,
+            bool isUnlockable = false,
             int page = 1)
         {
+            var computedAvailable = isAvailable;
+            var computedUnavailable = isUnavailable;
+            var computedUnlockable = isUnlockable;
+
             var filter = new AvatarFilter(page, 12)
             {
                 LayerId = id,
                 Search = search
             };
-            if (available)
+            if (computedAvailable)
             {
                 filter.Available = true;
-                unavailable = false;
-                unlockable = false;
+                computedUnavailable = false;
+                computedUnlockable = false;
             }
-            else if (unavailable)
+            else if (computedUnavailable)
             {
                 filter.Unavailable = true;
-                unlockable = false;
+                computedUnlockable = false;
             }
-            else if (unlockable)
+            else if (computedUnlockable)
             {
                 filter.Unlockable = true;
             }
@@ -303,9 +304,9 @@ namespace GRA.Controllers.MissionControl
                 PaginateModel = paginateModel,
                 Id = id,
                 Search = search,
-                Available = available,
-                Unavailable = unavailable,
-                Unlockable = unlockable
+                Available = computedAvailable,
+                Unavailable = computedUnavailable,
+                Unlockable = computedUnlockable
             };
 
             return View(viewModel);
@@ -499,7 +500,7 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> BundleEdit(int id)
         {
-            var bundle = new Domain.Model.AvatarBundle();
+            AvatarBundle bundle = null;
             try
             {
                 bundle = await _avatarService.GetBundleByIdAsync(id);
