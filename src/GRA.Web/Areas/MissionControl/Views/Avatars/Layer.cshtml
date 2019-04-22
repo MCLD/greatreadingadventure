@@ -6,7 +6,9 @@
             <form asp-action="@nameof(AvatarsController.DeleteItem)" method="post" role="form" style="display:inline">
                 <input name="Id" value="@Model.Id" type="hidden" />
                 <input name="Search" value="@Model.Search" type="hidden" />
-                <input name="Unlockable" value="@Model.Unlockable?.ToString()" type="hidden" />
+                <input asp-for="Available" type="hidden" />
+                <input asp-for="Unavailable" type="hidden" />
+                <input asp-for="Unlockable" type="hidden" />
                 <input name="PaginateModel.CurrentPage" value="@Model.PaginateModel.CurrentPage" type="hidden" />
                 <input asp-for="ItemId" type="hidden" />
                 <div class="modal-content">
@@ -35,15 +37,18 @@
 <div class="row">
     <div class="col-xs-12">
         <ul class="nav nav-pills" style="padding: 10px 0;">
-            <li ActiveBy routeKey="Unlockable" value=""><a asp-route-search="@Model.Search">All</a></li>
-            <li ActiveBy routeKey="Unlockable" value="False"><a asp-route-search="@Model.Search" asp-route-Unlockable="False">Available</a></li>
-            <li ActiveBy routeKey="Unlockable" value="True"><a asp-route-search="@Model.Search" asp-route-Unlockable="True">Unlockable</a></li>
+            <li class="@(!Model.Available && !Model.Unavailable && !Model.Unlockable ? "active" : null)"><a asp-route-search="@Model.Search">All</a></li>
+            <li class="@(Model.Available ? "active" : null)"><a asp-route-search="@Model.Search" asp-route-available="True">Available</a></li>
+            <li class="@(Model.Unavailable ? "active" : null)"><a asp-route-search="@Model.Search" asp-route-unavailable="True">Unavailable</a></li>
+            <li class="@(Model.Unlockable ? "active" : null)"><a asp-route-search="@Model.Search" asp-route-unlockable="True">Unlockable</a></li>
         </ul>
     </div>
 </div>
 
 <form asp-controller="Avatars" asp-action="Layer" method="get" role="form">
-    <input name="Unlockable" value="@Model.Unlockable?.ToString()" type="hidden" />
+    <input asp-for="Available" type="hidden" />
+    <input asp-for="Unavailable" type="hidden" />
+    <input asp-for="Unlockable" type="hidden" />
     <div class="row row-spacing" style="padding-top: 10px;">
         <div class="col-xs-8">
             <input name="Search" value="@Model.Search" class="form-control" />
@@ -62,7 +67,9 @@
             <form asp-controller="Avatars" method="post" role="form">
                 <input name="Id" value="@Model.Id" type="hidden" />
                 <input name="Search" value="@Model.Search" type="hidden" />
-                <input name="Unlockable" value="@Model.Unlockable?.ToString()" type="hidden" />
+                <input asp-for="Available" type="hidden" />
+                <input asp-for="Unavailable" type="hidden" />
+                <input asp-for="Unlockable" type="hidden" />
                 <input name="PaginateModel.CurrentPage" value="@Model.PaginateModel.CurrentPage" type="hidden" />
                 @foreach (var item in Model.Items)
                 {

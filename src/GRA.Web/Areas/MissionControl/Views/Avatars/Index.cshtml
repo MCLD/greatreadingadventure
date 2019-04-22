@@ -22,6 +22,9 @@
                     <thead>
                         <tr>
                             <th>Name</th>
+                            <th>Available Items</th>
+                            <th>Unavailable Items</th>
+                            <th>Unlockable Items</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -34,6 +37,9 @@
                                         @layer.Name
                                     </a>
                                 </td>
+                                <td>@layer.AvailableItems</td>
+                                <td>@layer.UnavailableItems</td>
+                                <td>@layer.UnlockableItems</td>
                             </tr>
                         }
                     </tbody>
