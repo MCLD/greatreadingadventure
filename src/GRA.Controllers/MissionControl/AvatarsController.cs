@@ -241,14 +241,14 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> Layer(int id,
             string search,
-            bool isAvailable = false,
-            bool isUnavailable = false,
-            bool isUnlockable = false,
+            bool available = false,
+            bool unavailable = false,
+            bool unlockable = false,
             int page = 1)
         {
-            var computedAvailable = isAvailable;
-            var computedUnavailable = isUnavailable;
-            var computedUnlockable = isUnlockable;
+            var computedAvailable = available;
+            var computedUnavailable = unavailable;
+            var computedUnlockable = unlockable;
 
             var filter = new AvatarFilter(page, 12)
             {
