@@ -329,7 +329,6 @@ namespace GRA.Web
             services.AddScoped<SiteService>();
             services.AddScoped<SpatialService>();
             services.AddScoped<SystemInformationService>();
-            services.AddScoped<TemplateService>();
             services.AddScoped<TriggerService>();
             services.AddScoped<UserService>();
             services.AddScoped<UserImportService>();

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
@@ -14,6 +16,8 @@ namespace GRA.Web
         {
             string instance = null;
             string webRootPath = null;
+
+            var issues = ViewTemplates.CopyToShared();
 
             // create a webhost to read configuration values for logging setup
             using (IWebHost configWebhost = CreateWebHostBuilder(args).Build())
@@ -32,6 +36,11 @@ namespace GRA.Web
 
             // now that we have logging present in our config, we must create the webhost
             IWebHost webhost = CreateWebHostBuilder(args).Build();
+
+            foreach(string issue in issues)
+            {
+                Log.Error(issue);
+            }
 
             // perform initialization
             using (IServiceScope scope = webhost.Services.CreateScope())
