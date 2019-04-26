@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using GRA.Domain.Service;
@@ -70,9 +72,6 @@ namespace GRA.Web
                 await _scope
                     .ServiceProvider.GetRequiredService<UserService>()
                     .EnsureUserUnsubscribeTokensAsync();
-
-                stage = 80;
-                _scope.ServiceProvider.GetRequiredService<TemplateService>().SetupTemplates();
             }
             catch (Exception ex)
             {
@@ -111,9 +110,6 @@ namespace GRA.Web
                         break;
                     case 70:
                         errorText = "Error insuring all users have unsubscribe tokens: {Message}";
-                        break;
-                    case 80:
-                        errorText = "Error copying templates to shared folder: {Message}";
                         break;
                     default:
                         errorText = "Unknown error during application startup: {Message}";

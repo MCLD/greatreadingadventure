@@ -265,7 +265,7 @@ namespace GRA.Controllers
                     viewModel.VendorCodeExpiration = userVendorCode.ExpirationDate;
                 }
 
-                return View(TemplateService.TemplateDashboard, viewModel);
+                return View(ViewTemplates.Dashboard, viewModel);
             }
             else
             {
@@ -289,12 +289,12 @@ namespace GRA.Controllers
                                     = ((DateTime)site.RegistrationOpens).ToString("D");
                             }
                         }
-                        return View(TemplateService.TemplateBeforeRegistration, viewModel);
+                        return View(ViewTemplates.BeforeRegistration, viewModel);
                     case SiteStage.RegistrationOpen:
-                        return View(TemplateService.TemplateRegistrationOpen,
+                        return View(ViewTemplates.RegistrationOpen,
                             site?.Name ?? "our site");
                     case SiteStage.ProgramEnded:
-                        return View(TemplateService.TemplateProgramEnded,
+                        return View(ViewTemplates.ProgramEnded,
                             site?.Name ?? "our site");
                     case SiteStage.AccessClosed:
                         var acViewModel = new AccessClosedViewModel
@@ -309,9 +309,9 @@ namespace GRA.Controllers
                                 .GetSiteSettingBoolAsync(site.Id,
                                     SiteSettingKey.Users.CollectAccessClosedEmails);
                         }
-                        return View(TemplateService.TemplateAccessClosed, acViewModel);
+                        return View(ViewTemplates.AccessClosed, acViewModel);
                     default:
-                        return View(TemplateService.TemplateProgramOpen, site?.Name ?? "our site");
+                        return View(ViewTemplates.ProgramOpen, site?.Name ?? "our site");
                 }
             }
         }
