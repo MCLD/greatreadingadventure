@@ -493,9 +493,9 @@
     <value>Your password must be at least 6 characters long and include a number.</value>
     <comment>Password requirements shown to participants.</comment>
   </data>
-  <data name="Zip Code" xml:space="preserve">
-    <value>Zip Code</value>
-    <comment>Prompt for a participant's zip code or postal code</comment>
+  <data name="ZIP Code" xml:space="preserve">
+    <value>ZIP Code</value>
+    <comment>Prompt for a participant's ZIP code or postal code</comment>
   </data>
   <data name="{0} - Join Now!" xml:space="preserve">
     <value>{0} - Join Now!</value>
@@ -692,5 +692,89 @@
   <data name="You must enter a code!" xml:space="preserve">
     <value>You must enter a code!</value>
     <comment>Validation prompt if the user clicked the secret code submission button without entering a secret code.</comment>
+  </data>
+  <data name="Can we send you a few emails throughout the program?" xml:space="preserve">
+    <value>Can we send you a few emails throughout the program?</value>
+    <comment>Prompt as to whether or not emails can be sent throughout the program - this is user configurable so it may not match</comment>
+  </data>
+  <data name="All Programs" xml:space="preserve">
+    <value>All Programs</value>
+    <comment>Select all programs in a program selection drop-down list</comment>
+  </data>
+  <data name="Clear" xml:space="preserve">
+    <value>Clear</value>
+    <comment>Button text to clear out entries from a form</comment>
+  </data>
+  <data name="Community Experiences" xml:space="preserve">
+    <value>Community Experiences</value>
+    <comment>Name for community experiences</comment>
+  </data>
+  <data name="Distance" xml:space="preserve">
+    <value>Distance</value>
+    <comment>Column title showing events: approximate distance from the search location</comment>
+  </data>
+  <data name="End Date" xml:space="preserve">
+    <value>End Date</value>
+    <comment>Prompt to select an ending date for a date range</comment>
+  </data>
+  <data name="Enter an address or ZIP code" xml:space="preserve">
+    <value>Enter an address or ZIP code</value>
+    <comment>Prompt to enter an address or ZIP code to search for events</comment>
+  </data>
+  <data name="Enter text to search for an event here" xml:space="preserve">
+    <value>Enter text to search for an event here</value>
+    <comment>Prompt to enter text to search for events</comment>
+  </data>
+  <data name="Events &amp; Community Experiences" xml:space="preserve">
+    <value>Events &amp; Community Experiences</value>
+    <comment>Page title for showing Events and Community Experiences</comment>
+  </data>
+  <data name="Find" xml:space="preserve">
+    <value>Find</value>
+    <comment>Button text to perform a search</comment>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>Location</value>
+    <comment>Prompt to select the name of a location</comment>
+  </data>
+  <data name="Near Location" xml:space="preserve">
+    <value>Near Location</value>
+    <comment>Prompt to search for items near this location</comment>
+  </data>
+  <data name="No Events" xml:space="preserve">
+    <value>No Events</value>
+    <comment>Explain that no matching events were found when a search was performed</comment>
+  </data>
+  <data name="Search Title &amp; Description" xml:space="preserve">
+    <value>Search Title &amp; Description</value>
+    <comment>Prompt to search by title and description</comment>
+  </data>
+  <data name="Start Date" xml:space="preserve">
+    <value>Start Date</value>
+    <comment>Prompt to select a beginning date for a date range</comment>
+  </data>
+  <data name="What" xml:space="preserve">
+    <value>What</value>
+    <comment>Column title showing events: what the event is</comment>
+  </data>
+  <data name="When" xml:space="preserve">
+    <value>When</value>
+    <comment>Column title showing events: when the event occurs</comment>
+  </data>
+  <data name="Where" xml:space="preserve">
+    <value>Where</value>
+    <comment>Column title showing events: where the event occurs</comment>
+  </data>
+  <data name="{0} at {1}" xml:space="preserve">
+    <value>{0} at {1}</value>
+    <comment>When an event is at a specific time on a date it will displayed using this template; {0} is the date, {1} is the time</comment>
+  </data>
+  <data name="{0} mile(s)" xml:space="preserve">
+    <value>{0} mile(s)</value>
+    <comment>Express a distance; {0} replaced with the number of mile(s)</comment>
+  </data>
+  <data name="Use my ZIP code" xml:space="preserve">
+    <value>Use my ZIP code</value>
+    <comment>Button text when searching to use the current participant's ZIP code</comment>
   </data>
 </root>

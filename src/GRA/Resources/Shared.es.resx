@@ -170,7 +170,7 @@
     <comment>Explanation about contact information being necessary to win prizes.</comment>
   </data>
   <data name="Enter {0} read" xml:space="preserve">
-    <value>Ingresar {0} lee</value>
+    <value>Ingrese {0} minutos que ha leído</value>
     <comment>Dashboard entry of activity performed, {0} is plural (for example "minutes" or "pages")</comment>
   </data>
   <data name="Events" xml:space="preserve">
@@ -402,7 +402,7 @@
     <comment>Prompt for a participant's library system from a drop-down list, examples might be 'Maricopa County Library District' or 'Phoenix Public Library'</comment>
   </data>
   <data name="That username is available!" xml:space="preserve">
-    <value>Ese nombre de usuario está disponible!</value>
+    <value>¡Ese nombre de usuario está disponible!</value>
     <comment>Validation prompt that the username selected is available.</comment>
   </data>
   <data name="The branch you've selected is not valid, please select another branch." xml:space="preserve">
@@ -474,7 +474,7 @@
     <comment>Dashboard friendly greeting, {0} is the participant's first name</comment>
   </data>
   <data name="Yes" xml:space="preserve">
-    <value>Si</value>
+    <value>Sí</value>
     <comment>Yes, positive response to inquiry</comment>
   </data>
   <data name="You can join {0} on {1}." xml:space="preserve">
@@ -493,9 +493,9 @@
     <value>Su contraseña debe de ser por lo menos de 6 caracteres de largo y que incluya un número.</value>
     <comment>Password requirements shown to participants.</comment>
   </data>
-  <data name="Zip Code" xml:space="preserve">
+  <data name="ZIP Code" xml:space="preserve">
     <value>Código Postal</value>
-    <comment>Prompt for a participant's zip code or postal code</comment>
+    <comment>Prompt for a participant's ZIP code or postal code</comment>
   </data>
   <data name="{0} - Join Now!" xml:space="preserve">
     <value>{0} - ¡Participe ahora!</value>
@@ -636,5 +636,49 @@
   <data name="Submit your email address below and we'll remind you when the program starts." xml:space="preserve">
     <value>Envíe su dirección de correo electrónico a continuación y le avisaremos cuando comience el programa.</value>
     <comment>Prompt for a participant's email to send a reminder when the program starts.</comment>
+  </data>
+  <data name="Can we send you a few emails throughout the program?" xml:space="preserve">
+    <value>¿Podemos enviarle algunos correos electrónicos durante el programa?</value>
+    <comment>Prompt as to whether or not emails can be sent throughout the program - this is user configurable so it may not match</comment>
+  </data>
+  <data name="Clear" xml:space="preserve">
+    <value>Limpiar</value>
+    <comment>Button text to clear out entries from a form</comment>
+  </data>
+  <data name="Community Experiences" xml:space="preserve">
+    <value>Experiencias comunitarias</value>
+    <comment>Name for community experiences</comment>
+  </data>
+  <data name="End Date" xml:space="preserve">
+    <value>Fecha de finalización</value>
+    <comment>Prompt to select an ending date for a date range</comment>
+  </data>
+  <data name="Events &amp; Community Experiences" xml:space="preserve">
+    <value>Eventos y experiencias comunitarias</value>
+    <comment>Page title for showing Events and Community Experiences</comment>
+  </data>
+  <data name="Find" xml:space="preserve">
+    <value>Encontrar</value>
+    <comment>Button text to perform a search</comment>
+  </data>
+  <data name="Near Location" xml:space="preserve">
+    <value>Ubicación cercana</value>
+    <comment>Prompt to search for items near this location</comment>
+  </data>
+  <data name="Start Date" xml:space="preserve">
+    <value>Fecha de inicio</value>
+    <comment>Prompt to select a beginning date for a date range</comment>
+  </data>
+  <data name="What" xml:space="preserve">
+    <value>Que</value>
+    <comment>Column title showing events: what the event is</comment>
+  </data>
+  <data name="When" xml:space="preserve">
+    <value>Cuando</value>
+    <comment>Column title showing events: when the event occurs</comment>
+  </data>
+  <data name="Where" xml:space="preserve">
+    <value>Donde</value>
+    <comment>Column title showing events: where the event occurs</comment>
   </data>
 </root>

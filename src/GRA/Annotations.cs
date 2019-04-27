@@ -13,9 +13,9 @@
             public const string RemindMe = "Remind Me!";
             public const string StartAdventure = "Join to get started on your reading adventure!";
             public const string StartsSoon = "Our program starts soon but you can join now to be ready to go when the program starts!";
+            public const string StillSignIn = "You can still sign in to review your history and achievements.";
             public const string SubmitEmailBelow = "Submit your email address below and we'll remind you when the program starts.";
             public const string Thanks = "Thanks for participating in {0}!";
-            public const string StillSignIn = "You can still sign in to review your history and achievements.";
             public const string WantAReminder = "Would you like a reminder email for our next reading program? Enter your email address below and click the 'Remind me' button and we'll send you a reminder when you can join.";
             public const string WelcomeTo = "Welcome to {0}.";
             public const string WhenProgramStarts = "When the program starts, you'll be able to join right here. Come back soon!";
@@ -35,11 +35,29 @@
             public const string YouCanJoinOn = "You can join {0} on {1}.";
         }
 
+        public static class Interface
+        {
+            public const string AllPrograms = "All Programs";
+            public const string Clear = "Clear";
+            public const string CommunityExperiences = "Community Experiences";
+            public const string Distance = "Distance";
+            public const string EnterAddressOrZipCode = "Enter an address or ZIP code";
+            public const string EnterEventSearch = "Enter text to search for an event here";
+            public const string Events = "Events";
+            public const string Find = "Find";
+            public const string NoEvents = "No Events";
+            public const string UseMyZipCode = "Use my ZIP code";
+            public const string What = "What";
+            public const string When = "When";
+            public const string Where = "Where";
+        }
+
         public static class Title
         {
+            public const string EventsAndCommunityExperiences = "Events & Community Experiences";
+            public const string ForgotPassword = "Forgot Password";
             public const string Join = "Join";
             public const string JoinNow = "{0} - Join Now!";
-            public const string ForgotPassword = "Forgot Password";
             public const string SignIn = "Sign in";
             public const string SignInTo = "Sign in to {0}";
             public const string UsernameRecovery = "Username Recovery";
@@ -80,8 +98,8 @@
             public const string PasswordRequirement = "Your password must be at least 6 characters long and include a number.";
             public const string PasswordRequiresDigit = "You must include a number in your password.";
             public const string PasswordRequiresLowercase = "You must include a lowercase letter in your password.";
-            public const string PasswordRequiresUppercase = "You must include an uppercase letter in your password.";
             public const string PasswordRequiresSymbol = "You must include a special character in your password.";
+            public const string PasswordRequiresUppercase = "You must include an uppercase letter in your password.";
             public const string PasswordsMatch = "Password and password confirmation do not match.";
             public const string Permission = "Permission denied.";
             public const string Phone = "The {0} field is not a valid phone number.";

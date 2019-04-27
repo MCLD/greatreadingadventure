@@ -9,6 +9,7 @@
         public const string ConfirmPassword = "ConfirmPassword";
         public const string DailyPersonalGoal = "Set a personal goal";
         public const string EmailAddress = "Email Address";
+        public const string EndDate = "End Date";
         public const string Events = "Events";
         public const string FinalStep = "Final Step";
         public const string FirstName = "First Name";
@@ -21,11 +22,13 @@
         public const string JoinNow = "Join Now!";
         public const string Language = "Language";
         public const string LastName = "Last Name";
+        public const string Location = "Location";
         public const string Mail = "Mail";
         public const string Menu = "Menu";
         public const string MissionControl = "Mission Control";
         public const string MyProfile = "My Profile";
         public const string MyProgress = "My progress";
+        public const string NearLocation = "Near Location";
         public const string NextStep = "Next Step";
         public const string Password = "Password";
         public const string PhoneNumber = "Phone Number";
@@ -34,14 +37,16 @@
         public const string School = "School";
         public const string SchoolDistrict = "School District";
         public const string SchoolNotListed = "School not listed";
+        public const string SearchTitleAndDescription = "Search Title And Description";
         public const string SecretCode = "Secret Code";
         public const string SendRecoveryEmail = "Send Recovery Email";
         public const string SignIn = "Sign in";
         public const string SignOut = "Sign out";
+        public const string StartDate = "Start Date";
         public const string System = "System";
         public const string Title = "Title";
         public const string ToggleNavigation = "Toggle navigation";
         public const string Username = "Username";
-        public const string ZipCode = "Zip Code";
+        public const string ZipCode = "ZIP Code";
     }
 }
