@@ -356,17 +356,20 @@ namespace GRA.Controllers
                                 program.DailyLiteracyTipId.Value, day.Value);
                             if (image != null)
                             {
-                                var imagePath = _pathResolver.ResolveContentFilePath(
-                                    Path.Combine($"site{site.Id}", "dailyimages",
+                                var imagePath = Path.Combine($"site{site.Id}", "dailyimages",
                                     $"dailyliteracytip{program.DailyLiteracyTipId}",
-                                    $"{image.Id}.{image.Extension}"));
-                                if (System.IO.File.Exists(imagePath))
+                                    $"{image.Id}{image.Extension}");
+                                if (System.IO.File.Exists(_pathResolver
+                                    .ResolveContentFilePath(imagePath)))
                                 {
+                                    var dailyLiteracyTip = await _dailyLiteracyTipService
+                                        .GetByIdAsync(program.DailyLiteracyTipId.Value);
                                     var dailyImageViewModel = new DailyImageViewModel()
                                     {
-                                        DailyImageMessage = program.DailyLiteracyTip.Message,
-                                        DailyImagePath = imagePath
-                                    };
+                                        DailyImageMessage = dailyLiteracyTip.Message,
+                                        DailyImagePath = _pathResolver.ResolveContentPath(imagePath),
+                                        IsLarge = dailyLiteracyTip.IsLarge
+                                };
                                     dailyImageDictionary.Add(program.Id, dailyImageViewModel);
                                 }
                             }

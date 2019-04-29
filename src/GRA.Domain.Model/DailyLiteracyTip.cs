@@ -18,6 +18,8 @@ namespace GRA.Domain.Model
         [Required]
         public string Message { get; set; }
 
+        public bool IsLarge { get; set; }
+
         public ICollection<DailyLiteracyTipImage> DailyLiteracyTipImages { get; set; }
     }
 }
