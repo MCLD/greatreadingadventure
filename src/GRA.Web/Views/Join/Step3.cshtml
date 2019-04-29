@@ -83,7 +83,7 @@
                     {
                         <div class="row row-spacing">
                             <div class="col-xs-12">
-                                <label asp-for="EmailSubscriptionRequested" class="control-label">@Model.AskEmailSubscriptionText</label>
+                                <label asp-for="EmailSubscriptionRequested" class="control-label">@SharedLocalizer[Model.AskEmailSubscriptionText]</label>
                                 <select asp-for="EmailSubscriptionRequested"
                                         asp-items="Model.AskEmailSubscription"
                                         class="form-control"></select>
@@ -135,13 +135,13 @@
                         $("#Username").addClass("input-validation-error");
                         $("#Username-Validation").removeClass("field-validation-valid");
                         $("#Username-Validation").addClass("field-validation-error");
-                        $("#Username-Validation").text("@SharedLocalizer[GRA.Annotations.Validate.UsernameTaken]");
+                        $("#Username-Validation").html("@SharedLocalizer[GRA.Annotations.Validate.UsernameTaken]");
                         icon.removeClass("fa-spinner fa-spin");
                         icon.addClass("fa-times");
                     }
                     else {
                         $("#Username-Validation").removeClass("field-validation-valid");
-                        $("#Username-Validation").text("@SharedLocalizer[GRA.Annotations.Info.UsernameIsAvailable]");
+                        $("#Username-Validation").html("@SharedLocalizer[GRA.Annotations.Info.UsernameIsAvailable]");
                         icon.removeClass("fa-spinner fa-spin");
                         icon.addClass("fa-check");
                     }

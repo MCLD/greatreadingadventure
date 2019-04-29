@@ -1,8 +1,8 @@
-﻿using GRA.Controllers.ViewModel.Shared;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using GRA.Controllers.ViewModel.Shared;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GRA.Controllers.ViewModel.Events
 {
@@ -17,28 +17,28 @@ namespace GRA.Controllers.ViewModel.Events
         public string CommunityExperienceDescription { get; set; }
         public string UserZipCode { get; set; }
 
-        [DisplayName("Search Title & Description")]
+        [DisplayName(DisplayNames.SearchTitleAndDescription)]
         public string Search { get; set; }
 
-        [DisplayName("Near Location")]
+        [DisplayName(DisplayNames.NearLocation)]
         public string Near { get; set; }
 
-        [DisplayName("System")]
+        [DisplayName(DisplayNames.System)]
         public int? SystemId { get; set; }
 
-        [DisplayName("Branch")]
+        [DisplayName(DisplayNames.Branch)]
         public int? BranchId { get; set; }
 
-        [DisplayName("Location")]
+        [DisplayName(DisplayNames.Location)]
         public int? LocationId { get; set; }
 
-        [DisplayName("Program")]
+        [DisplayName(DisplayNames.Program)]
         public int? ProgramId { get; set; }
 
-        [DisplayName("Start Date")]
+        [DisplayName(DisplayNames.StartDate)]
         public DateTime? StartDate { get; set; }
 
-        [DisplayName("End Date")]
+        [DisplayName(DisplayNames.EndDate)]
         public DateTime? EndDate { get; set; }
 
         public SelectList SystemList { get; set; }
