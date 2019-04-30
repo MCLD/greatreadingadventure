@@ -31,6 +31,7 @@
             public const string CompletedOnDate = "Completed on: {0}";
             public const string CompleteTasksEarnPoints = "When you complete <strong>{0}</strong>, you will earn <strong>{1}</strong>.";
             public const string CompleteTasksEarnPointsBadge = "When you complete <strong>{0}</strong>, you will earn <strong>{1}</strong> and a badge.";
+            public const string EventLimitedToProgram = "This event is limited to the program: {0}";
             public const string Goal = "The goal of this program is {0} points.";
             public const string LetYouKnowWhen = "Thanks! We'll let you know when you can join the program.";
             public const string PasswordRecoverySent = "A password recovery email has been sent to the email for username '{0}'.";
@@ -54,10 +55,12 @@
             public const string AvatarSaved = "Avatar saved.";
             public const string Back = "Back";
             public const string BackToChallenges = "Back to Challenges";
+            public const string BackToEventsCommunityExperiences = "Back to Events & Community Experiences";
             public const string Badge = "Badge";
             public const string Clear = "Clear";
             public const string CommunityExperiences = "Community Experiences";
             public const string Completed = "Completed!";
+            public const string DateAtTime = "{0} at {1}";
             public const string Distance = "Distance";
             public const string DownloadToShare = "Download to Share";
             public const string EnterAddressOrZipCode = "Enter an address or ZIP code";
@@ -65,12 +68,15 @@
             public const string EnterEventSearch = "Enter text to search for an event here";
             public const string Events = "Events";
             public const string Find = "Find";
+            public const string MoreInformation = "More information";
             public const string MyFavorites = "My Favorites";
             public const string Name = "Name";
             public const string NoChallenges = "No Challenges";
             public const string NoEvents = "No Events";
             public const string PointsYoullEarn = "Points you'll earn";
             public const string Progress = "Progress";
+            public const string RelatedChallenge = "Related Challenge";
+            public const string RelatedChallenges = "Related Challenges";
             public const string Save = "Save";
             public const string SaveMyFavorites = "Save My Favorites";
             public const string Share = "Share";

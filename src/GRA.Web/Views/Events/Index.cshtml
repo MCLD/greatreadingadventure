@@ -226,7 +226,7 @@
                                                 }
                                                 else
                                                 {
-                                                    <td>@SharedLocalizer["{0} at {1}", eventItem.StartDate.ToString("d"), eventItem.StartDate.ToString("t")]</td>
+                                                    <td>@SharedLocalizer[GRA.Annotations.Interface.DateAtTime, eventItem.StartDate.ToString("d"), eventItem.StartDate.ToString("t")]</td>
                                                 }
                                                 <td>@eventItem.EventLocationName</td>
                                                 @if (Model.ShowNearSearch && !string.IsNullOrWhiteSpace(Model.Near))

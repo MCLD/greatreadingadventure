@@ -300,7 +300,7 @@ namespace GRA.Controllers
                     Event = await _eventService.GetDetails(id)
                 };
 
-                PageTitle = $"{viewModel.Event.Name} @ {viewModel.Event.EventLocationName}";
+                PageTitle = _sharedLocalizer[Annotations.Interface.DateAtTime, viewModel.Event.Name, viewModel.Event.EventLocationName];
                 if (!string.IsNullOrEmpty(viewModel.Event.EventLocationName)
                     && !string.IsNullOrEmpty(viewModel.Event.EventLocationAddress))
                 {
@@ -326,7 +326,7 @@ namespace GRA.Controllers
                 if (viewModel.Event.ProgramId.HasValue)
                 {
                     var program = await _siteService.GetProgramByIdAsync(viewModel.Event.ProgramId.Value);
-                    viewModel.ProgramString = $"This event is limited to the {program.Name} program.";
+                    viewModel.ProgramString = _sharedLocalizer[Annotations.Info.EventLimitedToProgram, program.Name];
                 }
                 return View(viewModel);
             }
@@ -349,7 +349,7 @@ namespace GRA.Controllers
                 if (viewModel.Event.ProgramId.HasValue)
                 {
                     var program = await _siteService.GetProgramByIdAsync(viewModel.Event.ProgramId.Value);
-                    viewModel.ProgramString = $"This event is limited to the {program.Name} program.";
+                    viewModel.ProgramString = _sharedLocalizer[Annotations.Info.EventLimitedToProgram, program.Name];
                 }
 
                 return PartialView("_DetailPartial", viewModel);

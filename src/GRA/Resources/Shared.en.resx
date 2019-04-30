@@ -925,4 +925,24 @@
     <value>{0} tasks</value>
     <comment>Indicating a number of challenge tasks other than 1, {0} will be replaced with 0 or a number more than 1</comment>
   </data>
+  <data name="Back to Events &amp; Community Experiences" xml:space="preserve">
+    <value>Back to Events &amp; Community Experiences</value>
+    <comment>Button text for returning to the list of events or community experiences</comment>
+  </data>
+  <data name="More information" xml:space="preserve">
+    <value>More information</value>
+    <comment>Text shown before a link to an external site where the user can find more information about an event</comment>
+  </data>
+  <data name="Related Challenge" xml:space="preserve">
+    <value>Related Challenge</value>
+    <comment>Text shown before a link to challenge related to a shown event</comment>
+  </data>
+  <data name="Related Challenges" xml:space="preserve">
+    <value>Related Challenges</value>
+    <comment>Text shown before a link to multiple challenges related to a shown event</comment>
+  </data>
+  <data name="This event is limited to the program: {0}" xml:space="preserve">
+    <value>This event is limited to the program: {0}</value>
+    <comment>Shown to a user when an event is limited to a specific program.</comment>
+  </data>
 </root>
