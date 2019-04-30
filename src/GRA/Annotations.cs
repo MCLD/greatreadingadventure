@@ -24,12 +24,26 @@
         public static class Info
         {
             public const string BetterSuitedOption = "This program may be better-suited to your age:";
+            public const string ChallengeBookLinkTitle = "Read <strong><em><a href=\"{0}\" target=\"_blank\">{1}</a></em></strong>";
+            public const string ChallengeBookLinkTitleAuthor = "Read <strong><em><a href=\"{0}\" target=\"_blank\">{1}</a></em></strong> by <strong>{2}</strong>";
+            public const string ChallengeBookTitle = "Read <strong><em>{0}</em></strong>";
+            public const string ChallengeBookTitleAuthor = "Read <strong><em>{0}</em></strong> by <strong>{1}</strong>";
+            public const string CompletedOnDate = "Completed on: {0}";
+            public const string CompleteTasksEarnPoints = "When you complete <strong>{0}</strong>, you will earn <strong>{1}</strong>.";
+            public const string CompleteTasksEarnPointsBadge = "When you complete <strong>{0}</strong>, you will earn <strong>{1}</strong> and a badge.";
+            public const string EventLimitedToProgram = "This event is limited to the program: {0}";
             public const string Goal = "The goal of this program is {0} points.";
             public const string LetYouKnowWhen = "Thanks! We'll let you know when you can join the program.";
             public const string PasswordRecoverySent = "A password recovery email has been sent to the email for username '{0}'.";
             public const string PasswordResetFor = "Password reset for: {0}";
+            public const string PointSingular = "{0} point";
+            public const string PointsPlural = "{0} points";
             public const string ProgramEnded = "{0} has ended, please join us next time!";
             public const string RegistrationNotOpenYet = "Registration for {0} is not open yet.";
+            public const string StatusSaved = "Your status has been saved!";
+            public const string StatusSavedPercentage = "Your status has been saved. You have completed {0}% of the required tasks for the challenge: {1}!";
+            public const string TaskSingular = "{0} task";
+            public const string TasksPlural = "{0} tasks";
             public const string UsernameIsAvailable = "That username is available!";
             public const string UsernameListSent = "A list of usernames associated with the email address '{0}' has been sent.";
             public const string YouCanJoinOn = "You can join {0} on {1}.";
@@ -38,14 +52,37 @@
         public static class Interface
         {
             public const string AllPrograms = "All Programs";
+            public const string AvatarSaved = "Avatar saved.";
+            public const string Back = "Back";
+            public const string BackToChallenges = "Back to Challenges";
+            public const string BackToEventsCommunityExperiences = "Back to Events & Community Experiences";
+            public const string Badge = "Badge";
             public const string Clear = "Clear";
             public const string CommunityExperiences = "Community Experiences";
+            public const string Completed = "Completed!";
+            public const string DateAtTime = "{0} at {1}";
             public const string Distance = "Distance";
+            public const string DownloadToShare = "Download to Share";
             public const string EnterAddressOrZipCode = "Enter an address or ZIP code";
+            public const string EnterChallengeSearch = "Enter text to search for a challenge here";
             public const string EnterEventSearch = "Enter text to search for an event here";
             public const string Events = "Events";
             public const string Find = "Find";
+            public const string MoreInformation = "More information";
+            public const string MyFavorites = "My Favorites";
+            public const string Name = "Name";
+            public const string NoChallenges = "No Challenges";
             public const string NoEvents = "No Events";
+            public const string PointsYoullEarn = "Points you'll earn";
+            public const string ProfileUpdated = "Profile updated.";
+            public const string Progress = "Progress";
+            public const string RelatedChallenge = "Related Challenge";
+            public const string RelatedChallenges = "Related Challenges";
+            public const string Save = "Save";
+            public const string SaveMyFavorites = "Save My Favorites";
+            public const string Share = "Share";
+            public const string ViewAttachment = "View Attachment";
+            public const string Unsubscribed = "You are now unsubscribed and will not receive any more emails from {0}.";
             public const string UseMyZipCode = "Use my ZIP code";
             public const string What = "What";
             public const string When = "When";
@@ -54,10 +91,18 @@
 
         public static class Title
         {
+            public const string Avatar = "Avatar";
+            public const string ChallengeDetails = "Challenge: {0}";
+            public const string Challenges = "Challenges";
+            public const string CommunityExperiences = "Community Experiences";
+            public const string ChallengeGroup = "Challenge Group: {0}";
+            public const string Events = "Events";
             public const string EventsAndCommunityExperiences = "Events & Community Experiences";
             public const string ForgotPassword = "Forgot Password";
             public const string Join = "Join";
             public const string JoinNow = "{0} - Join Now!";
+            public const string RegistrationOpens = "{0} - registration opens {1}";
+            public const string ShareYourAvatar = "Share Your Avatar";
             public const string SignIn = "Sign in";
             public const string SignInTo = "Sign in to {0}";
             public const string UsernameRecovery = "Username Recovery";
@@ -80,8 +125,11 @@
             public const string BookTitle = "When providing an author of a book, please also provide a title.";
             public const string Branch = "The branch you've selected is not valid, please select another branch.";
             public const string CouldNotCreate = "Could not create your account: {0}";
+            public const string CouldNotSaveAvatar = "Couldn't save your avatar, sorry!";
+            public const string CouldNotSaveAvatarReason = "Could not save avatar: {0}";
             public const string CouldNotLog = "Sorry, we couldn't log your activity: {0}";
             public const string CouldNotRecover = "Could not recover username(s): {0}";
+            public const string CustomizeAvatarFirst = "Please customize your avatar and save it, then you can share it!";
             public const string Email = "The {0} field is not a valid e-mail address.";
             public const string EmailConfigured = "Username '{0}' does not have an email address configured.";
             public const string EmailPhoneNeededForPrizes = "Email and Phone Number are not required however at least one is needed in order to be eligible for prizes.";

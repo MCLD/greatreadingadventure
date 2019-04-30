@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -54,15 +53,25 @@ namespace GRA.Controllers.Base
         {
             base.OnActionExecuted(context);
 
-            // sensible default
-            string pageTitle = _config[ConfigurationKey.DefaultSiteName];
+            string siteName = HttpContext.Items[ItemKey.SiteName]?.ToString();
+            string pageTitle;
 
             // set page title
             if (context.Controller is Controller controller
                 && !string.IsNullOrWhiteSpace(controller.PageTitle))
             {
-                pageTitle = controller.PageTitle;
+                pageTitle =
+                    !string.IsNullOrEmpty(siteName) && !controller.PageTitle.Contains(siteName)
+                    ? $"{controller.PageTitle} - {siteName}"
+                    : controller.PageTitle;
             }
+            else
+            {
+                pageTitle = !string.IsNullOrEmpty(siteName)
+                    ? siteName
+                    : _config[ConfigurationKey.DefaultSiteName];
+            }
+
             ViewData[ViewDataKey.Title] = pageTitle;
             ViewData[ViewDataKey.TitleHtml] = PageTitleHtml;
         }

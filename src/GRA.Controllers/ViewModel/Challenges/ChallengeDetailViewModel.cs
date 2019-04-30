@@ -8,7 +8,9 @@ namespace GRA.Controllers.ViewModel.Challenges
         public bool IsActive { get; set; }
         public bool IsLoggedIn { get; set; }
         public bool ShowCompleted { get; set; }
-        public string Details { get; set; }
+        public string TaskCountAndDescription { get; set; }
+        public string PointCountAndDescription { get; set; }
+        public bool IsBadgeEarning { get; set; }
         public string BadgePath { get; set; }
         public List<TaskDetailViewModel> Tasks { get; set; }
     }

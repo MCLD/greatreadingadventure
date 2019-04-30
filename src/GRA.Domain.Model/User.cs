@@ -9,6 +9,7 @@ namespace GRA.Domain.Model
         [Required]
         public int SiteId { get; set; }
 
+        [DisplayName("Email Address")]
         [EmailAddress]
         [MaxLength(254)]
         public string Email { get; set; }
@@ -22,6 +23,7 @@ namespace GRA.Domain.Model
         public bool IsActive { get; set; }
         public DateTime? LastActivityDate { get; set; }
 
+        [DisplayName("Username")]
         [MaxLength(36)]
         public string Username { get; set; }
 
@@ -39,7 +41,7 @@ namespace GRA.Domain.Model
         [MaxLength(15)]
         public string PhoneNumber { get; set; }
 
-        [DisplayName("Zip Code")]
+        [DisplayName("ZIP Code")]
         [MaxLength(32)]
         public string PostalCode { get; set; }
 
@@ -76,6 +78,7 @@ namespace GRA.Domain.Model
             }
         }
 
+        [DisplayName("Age")]
         public int? Age { get; set; }
 
         [DisplayName("School")]

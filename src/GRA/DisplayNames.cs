@@ -5,6 +5,7 @@
         public const string Age = "Age";
         public const string Author = "Author";
         public const string Branch = "Branch";
+        public const string Category = "Category";
         public const string Challenges = "Challenges";
         public const string ConfirmPassword = "ConfirmPassword";
         public const string DailyPersonalGoal = "Set a personal goal";

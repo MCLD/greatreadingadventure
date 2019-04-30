@@ -85,7 +85,7 @@
                     <div style="text-align:center;vertical-align:top;">
                         <a asp-controller="Home" asp-action="Index" class="btn btn-lg btn-default" style="margin:5px;">
                             <span class="fa fa-home"></span>
-                            Home
+                            @SharedLocalizer[GRA.DisplayNames.Home]
                         </a>
                         <button id="removeButton" class="btn btn-lg btn-default hide" style="margin:5px;">
                             <span class="fa fa-ban"></span>
@@ -93,14 +93,14 @@
                         </button>
                         <button id="saveAvatar" class="btn btn-lg @(Model.NewAvatar ? "btn-success" : "btn-default")" style="margin:5px;">
                             <span class="fa fa-floppy-o"></span>
-                            Save
+                            @SharedLocalizer[GRA.Annotations.Interface.Save]
                             <span id="saveSpinner" class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                         </button>
                         <form id="shareForm" asp-action="Share" method="post" role="form" style="display: inline-block">
 
                             <button class="btn btn-lg btn-default" style="margin:5px;">
                                 <span class="fa fa-share-alt"></span>
-                                Share
+                                @SharedLocalizer[GRA.Annotations.Interface.Share]
                             </button>
                         </form>
                     </div>
@@ -420,7 +420,7 @@
             $.post("@Url.Action("SaveAvatar")", { selectionJson: GetAvatarSelection() }, function (response) {
                 if (response.success == true) {
                     $(".avatar-save-message").removeClass("text-danger").addClass("text-success");
-                    $(".avatar-save-message").text("Avatar Saved!");
+                    $(".avatar-save-message").text("@SharedLocalizer[GRA.Annotations.Interface.AvatarSaved]");
                     $(".avatar-save-message").show().delay(2000).fadeOut("slow");
 
                     @if (Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null)
@@ -442,7 +442,7 @@
                 }
             }).fail(function () {
                 $(".avatar-save-message").removeClass("text-success").addClass("text-danger");
-                $(".avatar-save-message").text("Error saving Avatar");
+                $(".avatar-save-message").text("@SharedLocalizer[GRA.Annotations.Validate.CouldNotSaveAvatar]");
                 $(".avatar-save-message").show();
             })
             .always(function() {

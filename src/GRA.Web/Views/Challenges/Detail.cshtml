@@ -17,7 +17,7 @@
                         <tr>
                             <td>
                                 <span class="lead">
-                                    Challenge: @Model.Challenge.Name
+                                    @SharedLocalizer[GRA.Annotations.Title.ChallengeDetails, Model.Challenge.Name]
                                 </span>
                             </td>
                             @if (Model.IsLoggedIn)
@@ -33,7 +33,21 @@
                     <div class="row">
                         <div class="col-xs-8 col-sm-9">
                             <p>@Model.Challenge.Description</p>
-                            <p>@Html.Raw(Model.Details)</p>
+
+                            <p>
+                                @if (Model.IsBadgeEarning)
+                                {
+                                    @SharedHtmlLocalizer[GRA.Annotations.Info.CompleteTasksEarnPoints,
+                                        Model.TaskCountAndDescription,
+                                        Model.PointCountAndDescription]
+                                }
+                                else
+                                {
+                                    @SharedHtmlLocalizer[GRA.Annotations.Info.CompleteTasksEarnPointsBadge,
+                                        Model.TaskCountAndDescription,
+                                        Model.PointCountAndDescription]
+                                }
+                            </p>
                         </div>
                         <div class="col-xs-4 col-sm-3" style="min-width: 110px;">
                             @if (!string.IsNullOrEmpty(Model.BadgePath))
@@ -63,12 +77,48 @@
                             }
                             <td>
                                 <div class="task-description">
-                                    @Html.Raw(Model.Tasks[i].Description)
+                                    @if (Model.Tasks[i].TaskType == "Book")
+                                    {
+                                        string title = Model.Tasks[i].Title;
+                                        if (!string.IsNullOrEmpty(Model.Tasks[i].Url))
+                                        {
+                                            if (string.IsNullOrEmpty(Model.Tasks[i].Author))
+                                            {
+                                                @SharedHtmlLocalizer[GRA.Annotations.Info.ChallengeBookLinkTitle,
+                                                    Model.Tasks[i].Url,
+                                                    Model.Tasks[i].Title];
+                                            }
+                                            else
+                                            {
+                                                @SharedHtmlLocalizer[GRA.Annotations.Info.ChallengeBookLinkTitleAuthor,
+                                                    Model.Tasks[i].Url,
+                                                    Model.Tasks[i].Title,
+                                                    Model.Tasks[i].Author];
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (string.IsNullOrEmpty(Model.Tasks[i].Author))
+                                            {
+                                                @SharedHtmlLocalizer[GRA.Annotations.Info.ChallengeBookTitle,
+                                                    Model.Tasks[i].Title];
+                                            }
+                                            else
+                                            {
+                                                @SharedHtmlLocalizer[GRA.Annotations.Info.ChallengeBookTitleAuthor,
+                                                    Model.Tasks[i].Author];
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw(Model.Tasks[i].Description)
+                                    }
                                     @if (!string.IsNullOrWhiteSpace(Model.Tasks[i].FilePath))
                                     {
                                         <a href="@Model.Tasks[i].FilePath" target="_blank" class="btn btn-xs btn-default" style="margin-top:5px;">
                                             <span class="fa fa-file-o"></span>
-                                            View Attachment
+                                            @SharedLocalizer[GRA.Annotations.Interface.ViewAttachment]
                                         </a>
                                     }
                                 </div>
@@ -78,13 +128,13 @@
                 </table>
                 <div class="panel-footer clearfix hidden-print">
                     <div class="pull-left">
-                        <return asp-action="Index" class="btn btn-default btn-lg">Return to Challenges</return>
+                        <return asp-action="Index" class="btn btn-default btn-lg">@SharedLocalizer[GRA.Annotations.Interface.BackToChallenges]</return>
                     </div>
                     @if (Model.Challenge.IsCompleted == true && Model.ShowCompleted)
                     {
                         <div class="pull-right">
                             <div class="btn-lg" style="border:1px solid transparent">
-                                Completed on: @Model.Challenge.CompletedAt?.ToString("d")
+                                @SharedLocalizer[GRA.Annotations.Info.CompletedOnDate, Model.Challenge.CompletedAt?.ToString("d")]
                             </div>
                         </div>
 
@@ -94,7 +144,7 @@
                         <input asp-for="Challenge.Id" type="hidden" />
                         <div class="pull-right">
                             <button type="submit" class="btn center-block btn-success btn-lg btn-spinner">
-                                <span class="buttonText">Save Tasks!</span>
+                                <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.Save]</span>
                                 <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
                         </div>

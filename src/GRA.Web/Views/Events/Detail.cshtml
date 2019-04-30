@@ -14,14 +14,14 @@
             </div>
             <div class="panel-body">
                 <div class="row-spacing" style="font-size:medium;">
-                    <strong>When: </strong>
+                    <strong>@SharedLocalizer[GRA.Annotations.Interface.When]:&nbsp;</strong>
                     @if (Model.Event.AllDay)
                     {
                         @:@Model.Event.StartDate.ToString("d") @(Model.Event.EndDate.HasValue ? "– " + Model.Event.EndDate.Value.ToString("d") : "")
                     }
                     else
                     {
-                        @:@Model.Event.StartDate.ToString("d") at @Model.Event.StartDate.ToString("t")
+                        @SharedLocalizer[GRA.Annotations.Interface.DateAtTime, Model.Event.StartDate.ToString("d"), Model.Event.StartDate.ToString("t")]
                     }
                 </div>
 
@@ -29,12 +29,12 @@
 
                 @if (!string.IsNullOrWhiteSpace(Model.Event.ExternalLink))
                 {
-                    <div class="row-spacing" style="font-size:medium;"><strong>More information: </strong><a target="_blank" href="@Model.Event.ExternalLink">@Model.Event.Name</a> <a target="_blank" href="@Model.Event.ExternalLink"><span class="fa fa-external-link"></span></a></div>
+                    <div class="row-spacing" style="font-size:medium;"><strong>@SharedLocalizer[GRA.Annotations.Interface.MoreInformation]: </strong><a target="_blank" href="@Model.Event.ExternalLink">@Model.Event.Name</a> <a target="_blank" href="@Model.Event.ExternalLink"><span class="fa fa-external-link"></span></a></div>
                 }
                 <div class="row-spacing" style="font-size:medium;">
                     <table>
                         <tr>
-                            <td><strong>Where:&nbsp;</strong></td>
+                            <td><strong>@SharedLocalizer[GRA.Annotations.Interface.Where]:&nbsp;</strong></td>
                             <td>
                                 @if (string.IsNullOrWhiteSpace(Model.Event.EventLocationLink))
                                 {
@@ -71,14 +71,14 @@
                 {
 
                     <div class="row-space" style="font-size:medium">
-                        <strong>Related Challenge:&nbsp;</strong>
+                        <strong>@SharedLocalizer[GRA.Annotations.Interface.RelatedChallenge]:&nbsp;</strong>
                         <a asp-controller="Challenges" asp-action="Detail" asp-route-id="@Model.Event.Challenge.Id" target="_blank">@Model.Event.Challenge.Name</a>
                     </div>
                 }
                 else if (Model.Event.ChallengeGroup != null)
                 {
                     <div class="row-space" style="font-size:medium">
-                        <strong>Related Challenges:&nbsp;</strong>
+                        <strong>@SharedLocalizer[GRA.Annotations.Interface.RelatedChallenges]:&nbsp;</strong>
                         <a asp-controller="Challenges" asp-action="List" asp-route-id="@Model.Event.ChallengeGroup.Stub" target="_blank">@Model.Event.ChallengeGroup.Name</a>
                     </div>
 
@@ -86,7 +86,7 @@
             </div>
             <div class="panel-footer clearfix hidden-print">
                 <div class="pull-left">
-                    <return asp-action="Index" class="btn btn-default btn-lg">Return to Events &amp; Community Experiences</return>
+                    <return asp-action="Index" class="btn btn-default btn-lg">@SharedLocalizer[GRA.Annotations.Interface.BackToEventsCommunityExperiences]</return>
                 </div>
             </div>
         </div>

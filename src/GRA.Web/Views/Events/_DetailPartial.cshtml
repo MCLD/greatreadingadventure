@@ -6,14 +6,14 @@
 </div>
 <div class="modal-body">
     <div class="row-spacing" style="font-size:medium;">
-        <strong>When: </strong>
+        <strong>@SharedLocalizer[GRA.Annotations.Interface.When]:&nbsp;</strong>
         @if (Model.Event.AllDay)
         {
             @:@Model.Event.StartDate.ToString("d") @(Model.Event.EndDate.HasValue ? "– " + Model.Event.EndDate.Value.ToString("d") : "")
         }
         else
         {
-            @:@Model.Event.StartDate.ToString("d") at @Model.Event.StartDate.ToString("t")
+            @SharedLocalizer[GRA.Annotations.Interface.DateAtTime, Model.Event.StartDate.ToString("d"), Model.Event.StartDate.ToString("t")]
         }
     </div>
 
@@ -26,7 +26,7 @@
     <div class="row-spacing" style="font-size:medium;">
         <table>
             <tr>
-                <td><strong>Where:&nbsp;</strong></td>
+                <td><strong>@SharedLocalizer[GRA.Annotations.Interface.Where]:&nbsp;</strong></td>
                 <td>
                     @if (string.IsNullOrWhiteSpace(Model.Event.EventLocationLink))
                     {
@@ -63,19 +63,19 @@
     {
 
         <div class="row-space" style="font-size:medium">
-            <strong>Related Challenge:&nbsp;</strong>
+            <strong>@SharedLocalizer[GRA.Annotations.Interface.RelatedChallenge]:&nbsp;</strong>
             <a asp-controller="Challenges" asp-action="Detail" asp-route-id="@Model.Event.Challenge.Id" target="_blank">@Model.Event.Challenge.Name</a>
         </div>
     }
     else if (Model.Event.ChallengeGroup != null)
     {
         <div class="row-space" style="font-size:medium">
-            <strong>Related Challenges:&nbsp;</strong>
+            <strong>@SharedLocalizer[GRA.Annotations.Interface.RelatedChallenges]:&nbsp;</strong>
             <a asp-controller="Challenges" asp-action="List" asp-route-id="@Model.Event.ChallengeGroup.Stub" target="_blank">@Model.Event.ChallengeGroup.Name</a>
         </div>
 
     }
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Close</button>
+    <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">@SharedLocalizer[GRA.Annotations.Interface.BackToEventsCommunityExperiences]</button>
 </div>

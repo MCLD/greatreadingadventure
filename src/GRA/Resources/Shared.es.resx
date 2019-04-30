@@ -262,7 +262,7 @@
     <comment>No, negative response to inquiry</comment>
   </data>
   <data name="Once the program starts, you will enter your activity right here!" xml:space="preserve">
-    <value>En cuanto comience el programa, ¡Entrara su actividad aquí!</value>
+    <value>¡En cuanto comience el programa, Entrara su actividad aquí!</value>
     <comment>Dashboard explanation that the program hasn't started yet and what to do once it has</comment>
   </data>
   <data name="Participate in program activities to earn badges!" xml:space="preserve">
@@ -680,5 +680,54 @@
   <data name="Where" xml:space="preserve">
     <value>Donde</value>
     <comment>Column title showing events: where the event occurs</comment>
+  </data>
+  <data name="Badge" xml:space="preserve">
+    <value>Credencial</value>
+    <comment>Column heading showing which badge will be unlocked when a task is completed</comment>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Categoria</value>
+    <comment>Prompt or display title for which category an item is in (such as a challenge)</comment>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Nombre</value>
+    <comment>Column heading for the name of an item (like a challenge or an event)</comment>
+  </data>
+  <data name="Points you'll earn" xml:space="preserve">
+    <value>Puntos que ganara</value>
+    <comment>Column heading showing many points a participant will earn for completing a task</comment>
+  </data>
+  <data name="Add a calendar reminder" xml:space="preserve">
+    <value>Agregar un recordatorio en el calendario</value>
+    <comment>Landing page button to download a calendar reminder file (when opened it will add a calendar reminder on the visitor's computer)</comment>
+  </data>
+  <data name="For more information about this reading program, visit your local library!" xml:space="preserve">
+    <value>¡Para más información sobre este programa de lectura, visite su biblioteca local!</value>
+    <comment>Landing page call to action for learning more</comment>
+  </data>
+  <data name="Reading for 20 minutes a day helps build a strong lifelong reading habit." xml:space="preserve">
+    <value>Leer 20 minutos al día ayuda a desarrollar un fuerte hábito de lectura para toda la vida.</value>
+    <comment>Landing page message to encourage reading 20 minutes a day.</comment>
+  </data>
+  <data name="Remind Me!" xml:space="preserve">
+    <value>¡Recuérdame!</value>
+    <comment>Submission button text for the participant's email address to be reminded prior to the program starting.</comment>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value>¡La lectura es fundamental para desarrollar las habilidades de alfabetización!</value>
+    <comment>Landing page message informing that reading is fundamental for developing literacy skills.</comment>
+  </data>
+  <data name="While you're there, go on a journey of discovery! Visit fabulous destinations such as Hogwarts, Narnia, Oz, and Middle Earth!" xml:space="preserve">
+    <value>Mientras este ahí, ¡vaya en un viaje de descubrimiento! ¡Visite a fabulosos destinos tal como
+Hogwarts, Narnia, Oz, y el centro de la tierra!</value>
+    <comment>Landing page after the call to action for learning more; things to experience at the library</comment>
+  </data>
+  <data name="You can join our program starting on {0}!" xml:space="preserve">
+    <value>¡Usted puede participar en nuestro programa a partir del {0}!</value>
+    <comment>Landing page message to show visitors when the start date of the program is; {0} is replaced with the start date of the program.</comment>
+  </data>
+  <data name="Reading is fundamental for developing literacy skills!" xml:space="preserve">
+    <value>¡La lectura es fundamental para desarrollar las habilidades de alfabetización!</value>
+    <comment>Landing page message informing that reading is fundamental for developing literacy skills.</comment>
   </data>
 </root>

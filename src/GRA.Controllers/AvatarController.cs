@@ -24,22 +24,19 @@ namespace GRA.Controllers
         private readonly AutoMapper.IMapper _mapper;
         private readonly AvatarService _avatarService;
         private readonly SiteService _siteService;
-        private readonly UserService _userService;
 
         public AvatarController(ILogger<AvatarController> logger,
             ServiceFacade.Controller context,
             AvatarService avatarService,
-            SiteService siteService,
-            UserService userService)
+            SiteService siteService)
             : base(context)
         {
-            _logger = Require.IsNotNull(logger, nameof(logger));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = context.Mapper;
-            _avatarService = Require.IsNotNull(avatarService,
-                nameof(avatarService));
+            _avatarService = avatarService
+                ?? throw new ArgumentNullException(nameof(avatarService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
-            _userService = Require.IsNotNull(userService, nameof(userService));
-            PageTitle = "Avatar";
+            PageTitle = _sharedLocalizer[Annotations.Title.Avatar];
         }
 
         public async Task<IActionResult> Index()
@@ -47,21 +44,25 @@ namespace GRA.Controllers
             var userWardrobe = await _avatarService.GetUserWardrobeAsync();
             if (userWardrobe.Count == 0)
             {
-                ShowAlertDanger("Avatars have not been set up.");
-                return RedirectToAction("Index", "Home");
+                ShowAlertDanger("Avatars have not been configured.");
+                _logger.LogError("User {id} tried to customize their avatar but avatars have not been configured!",
+                    GetActiveUserId());
+                return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
             }
 
-            AvatarJsonModel model = new AvatarJsonModel();
-            model.Layers = _mapper
-                .Map<ICollection<AvatarJsonModel.AvatarLayer>>(userWardrobe);
+            var model = new AvatarJsonModel
+            {
+                Layers = _mapper
+                .Map<ICollection<AvatarJsonModel.AvatarLayer>>(userWardrobe)
+            };
             var layerGroupings = userWardrobe
                 .GroupBy(_ => _.GroupId)
                 .Select(_ => _.ToList())
                 .ToList();
-            AvatarViewModel viewModel = new AvatarViewModel()
+            var viewModel = new AvatarViewModel
             {
                 LayerGroupings = layerGroupings,
-                DefaultLayer = userWardrobe.Where(_ => _.DefaultLayer).First().Id,
+                DefaultLayer = userWardrobe.First(_ => _.DefaultLayer).Id,
                 ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/"),
                 AvatarPiecesJson = Newtonsoft.Json.JsonConvert.SerializeObject(model)
             };
@@ -90,8 +91,9 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> Share()
         {
+            PageTitle = _sharedLocalizer[Annotations.Title.ShareYourAvatar];
             var userAvatar = await _avatarService.GetUserAvatarAsync();
-            if (userAvatar != null && userAvatar.Count > 0)
+            if (userAvatar?.Count > 0)
             {
                 var site = await GetCurrentSiteAsync();
                 var directory = _pathResolver
@@ -115,7 +117,7 @@ namespace GRA.Controllers
                     var filePath = _pathResolver.ResolveContentFilePath(path);
                     if (!System.IO.File.Exists(filePath))
                     {
-                        using (Image<Rgba32> image = new Image<Rgba32>(1200, 630))
+                        using (var image = new Image<Rgba32>(1200, 630))
                         {
                             var background = _pathResolver
                                 .ResolveContentFilePath($"site{site.Id}/avatarbackgrounds/background.png");
@@ -138,7 +140,7 @@ namespace GRA.Controllers
                         .Replace("\\", "/");
 
                     var shareUrl = siteUrl + Url.Action(nameof(ShareController.Avatar), "Share")
-                        + "/" + filename;
+                        + $"/{filename}";
                     var facebookShareUrl = $"https://www.facebook.com/sharer/sharer.php?u={shareUrl}";
                     var twitterShareUrl = $"https://twitter.com/intent/tweet?url={shareUrl}";
                     if (!string.IsNullOrWhiteSpace(site.TwitterAvatarMessage))
@@ -158,7 +160,8 @@ namespace GRA.Controllers
                 }
                 return View(viewModel);
             }
-            TempData[TempDataKey.AlertDanger] = "No avatar saved.";
+            TempData[TempDataKey.AlertDanger]
+                = _sharedLocalizer[Annotations.Validate.CustomizeAvatarFirst];
             return RedirectToAction(nameof(Index));
         }
 
@@ -170,11 +173,15 @@ namespace GRA.Controllers
                 try
                 {
                     await UpdateAvatar(selectionJson);
-                    ShowAlertSuccess("Avatar saved.");
+                    ShowAlertSuccess(_sharedLocalizer[Annotations.Interface.AvatarSaved]);
                 }
                 catch (GraException gex)
                 {
-                    ShowAlertDanger($"Unable to save avater: {gex}");
+                    _logger.LogError(gex,
+                        "Could not save avatar for sharing: {Message}",
+                        gex.Message);
+                    ShowAlertDanger(_sharedLocalizer[Annotations.Validate.CouldNotSaveAvatarReason,
+                        gex.Message]);
                 }
             }
             return RedirectToAction(nameof(Share));
@@ -208,7 +215,7 @@ namespace GRA.Controllers
                     Directory.CreateDirectory(directory);
                 }
 
-                using (Image<Rgba32> image = Image.Load(avatarPath))
+                using (var image = Image.Load(avatarPath))
                 {
                     image.Mutate(_ => _.Resize(1080, 567));
                     image.Mutate(_ => _.Crop(new Rectangle(0, 0, 1080, 566)));
@@ -218,7 +225,8 @@ namespace GRA.Controllers
                 return File(imageBytes, "image/png");
             }
 
-            TempData[TempDataKey.AlertDanger] = "No avatar saved.";
+            TempData[TempDataKey.AlertDanger]
+                = _sharedLocalizer[Annotations.Validate.CustomizeAvatarFirst];
             return RedirectToAction(nameof(Index));
         }
     }

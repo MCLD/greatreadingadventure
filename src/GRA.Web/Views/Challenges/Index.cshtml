@@ -16,7 +16,17 @@
     <div class="col-xs-12 col-sm-10 col-sm-offset-1">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <span class="lead">@(Model.ChallengeGroup != null ? $"Challenge Group: {Model.ChallengeGroup.Name}" : "Challenges")</span>
+                <span class="lead">
+                    @if (Model.ChallengeGroup != null)
+                    {
+                        @SharedLocalizer[GRA.Annotations.Title.ChallengeGroup,
+                            Model.ChallengeGroup.Name]
+                    }
+                    else
+                    {
+                        @SharedLocalizer[GRA.Annotations.Title.Challenges]
+                    }
+                </span>
             </div>
             <div class="panel-body">
                 @if (Model.ChallengeGroup != null)
@@ -38,17 +48,17 @@
                             <div class="col-xs-12 col-sm-10 gra-search-container">
                                 <input asp-for="Search"
                                        class="form-control"
-                                       placeholder="Enter text to search for a challenge here" />
+                                       placeholder="@SharedLocalizer[GRA.Annotations.Interface.EnterChallengeSearch]" />
                             </div>
                         </div>
 
                         <div class="row row-spacing">
                             <div class="col-xs-12 col-sm-2" style="margin-bottom:5px;">
-                                <span style="font-size:large;">Program:</span>
+                                <span style="font-size:large;">@SharedLocalizer[GRA.DisplayNames.Program]:</span>
                             </div>
                             <div class="col-xs-12 col-sm-10">
                                 <select asp-for="Program" asp-items="Model.ProgramList" class="form-control">
-                                    <option value="">All Programs</option>
+                                    <option value="">@SharedLocalizer[GRA.Annotations.Interface.AllPrograms]</option>
                                 </select>
                             </div>
                         </div>
@@ -57,16 +67,22 @@
                         {
                             <div id="Category" class="row row-spacing">
                                 <div class="col-xs-12 col-sm-2" style="margin-bottom:5px;">
-                                    <span style="font-size:large;">Category:</span>
+                                    <span style="font-size:large;">@SharedLocalizer[GRA.DisplayNames.Category]:</span>
                                 </div>
                                 <div class="col-xs-12 col-sm-10">
                                     <noscript id="noscript">
-                                        <select asp-for="Categories" asp-items="Model.CategoryList" class="form-control">
+                                        <select asp-for="Categories"
+                                                asp-items="Model.CategoryList"
+                                                class="form-control">
                                             <option></option>
                                         </select>
                                     </noscript>
                                     <input id="CategoryPlaceholder" class="form-control" />
-                                    <select asp-for="CategoryIds" asp-items="Model.CategoryList" class="form-control hidden" disabled="disabled" multiple="multiple"></select>
+                                    <select asp-for="CategoryIds"
+                                            asp-items="Model.CategoryList"
+                                            class="form-control hidden"
+                                            disabled="disabled"
+                                            multiple="multiple"></select>
                                 </div>
                             </div>
                         }
@@ -75,23 +91,36 @@
                             {
                                 <div class="col-xs-12 col-sm-4 col-md-3 row-spacing">
                                     <a asp-action="Index" asp-route-Search="@Model.Search" asp-route-Program="@Model.Program" asp-route-Categories="@Model.Categories" asp-route-Favorites="@(Model.Favorites == true ? null : "True")" class="btn btn-block @(Model.Favorites == true ? "btn-success" : "btn-default")">
-                                        <span class="fa @(Model.Favorites == true ? "fa-star" : "fa-star-o")"></span> My Favorites
+                                        <span class="fa @(Model.Favorites == true ? "fa-star" : "fa-star-o")"></span>
+                                        @SharedLocalizer[GRA.Annotations.Interface.MyFavorites]
                                     </a>
                                 </div>
                                 <div class="col-xs-6 col-sm-2 col-sm-offset-4 col-md-offset-5 row-spacing">
-                                    <a asp-action="Index" class="btn btn-default btn-block"><span class="hidden-sm fa fa-minus-circle"></span> Clear</a>
+                                    <a asp-action="Index" class="btn btn-default btn-block">
+                                        <span class="hidden-sm fa fa-minus-circle"></span>
+                                        @SharedLocalizer[GRA.Annotations.Interface.Clear]
+                                    </a>
                                 </div>
                                 <div class="col-xs-6 col-sm-2 row-spacing">
-                                    <button type="submit" class="btn btn-primary btn-block"><span class="hidden-sm fa fa-search"></span> Find</button>
+                                    <button type="submit" class="btn btn-primary btn-block">
+                                        <span class="hidden-sm fa fa-search"></span>
+                                        @SharedLocalizer[GRA.Annotations.Interface.Find]
+                                    </button>
                                 </div>
                             }
                             else
                             {
                                 <div class="col-xs-6 col-sm-2 col-sm-offset-8 col-md-offset-8 row-spacing">
-                                    <a asp-action="Index" class="btn btn-default btn-block"><span class="hidden-sm fa fa-minus-circle"></span> Clear</a>
+                                    <a asp-action="Index" class="btn btn-default btn-block">
+                                        <span class="hidden-sm fa fa-minus-circle"></span>
+                                        @SharedLocalizer[GRA.Annotations.Interface.MyFavorites]
+                                    </a>
                                 </div>
                                 <div class="col-xs-6 col-sm-2 row-spacing">
-                                    <button type="submit" class="btn btn-primary btn-block"><span class="hidden-sm fa fa-search"></span> Find</button>
+                                    <button type="submit" class="btn btn-primary btn-block">
+                                        <span class="hidden-sm fa fa-search"></span>
+                                        @SharedLocalizer[GRA.Annotations.Interface.Find]
+                                    </button>
                                 </div>
                             }
 
@@ -102,7 +131,7 @@
                     <div class="col-xs-12">
                         @if (Model.Challenges.Count() == 0)
                         {
-                            <div class="alert alert-warning">No Challenges</div>
+                            <div class="alert alert-warning">@SharedLocalizer[GRA.Annotations.Interface.NoChallenges]</div>
                         }
                         else
                         {
@@ -123,13 +152,13 @@
                                                 {
                                                     <th width="58px">&nbsp;</th>
                                                 }
-                                                <th>Name</th>
+                                                <th>@SharedLocalizer[GRA.Annotations.Interface.Name]</th>
                                                 @if (Model.IsActive && Model.IsLoggedIn)
                                                 {
-                                                    <th>Progress</th>
+                                                    <th>@SharedLocalizer[GRA.Annotations.Interface.Progress]</th>
                                                 }
-                                                <th>Points you'll earn</th>
-                                                <th>Badge</th>
+                                                <th>@SharedLocalizer[GRA.Annotations.Interface.PointsYoullEarn]</th>
+                                                <th>@SharedLocalizer[GRA.Annotations.Interface.Badge]</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -189,7 +218,7 @@
                                 @if (Model.IsLoggedIn)
                                 {
                                     <noscript>
-                                        <button type="submit" class="btn btn-primary">Save My Favorites</button>
+                                        <button type="submit" class="btn btn-primary">@SharedLocalizer[GRA.Annotations.Interface.SaveMyFavorites]</button>
                                     </noscript>
                                 }
                                 @if (Model.PaginateModel.MaxPage > 1)
