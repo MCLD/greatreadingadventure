@@ -18,6 +18,7 @@
         public static readonly string SiteCss = "SiteCss";
         public static readonly string SiteId = "SiteId";
         public static readonly string SiteJs = "SiteJs";
+        public static readonly string SiteName = "SiteName";
         public static readonly string SiteStage = "SiteStage";
         public static readonly string UnreadCount = "UnreadCount";
         public static readonly string ShowChallenges = "ShowChallenges";

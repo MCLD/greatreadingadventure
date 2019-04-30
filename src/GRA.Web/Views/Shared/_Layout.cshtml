@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData[GRA.Controllers.ViewDataKey.Title]</title>
+    <title>@SharedLocalizer[ViewData[GRA.Controllers.ViewDataKey.Title]?.ToString()]</title>
     @if (Context.Items[GRA.Controllers.ItemKey.HrefLang] != null)
     {
         @foreach (var item in ((IDictionary<string, string>)Context.Items[GRA.Controllers.ItemKey.HrefLang]))

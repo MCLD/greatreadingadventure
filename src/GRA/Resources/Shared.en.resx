@@ -777,4 +777,152 @@
     <value>Use my ZIP code</value>
     <comment>Button text when searching to use the current participant's ZIP code</comment>
   </data>
+  <data name="Avatar" xml:space="preserve">
+    <value>Avatar</value>
+    <comment>A representation of the participant that they can customize (e.g. with different outfits or accessories)</comment>
+  </data>
+  <data name="Avatar saved." xml:space="preserve">
+    <value>Avatar saved.</value>
+    <comment>Tell the participant that their avatar changes have been saved.</comment>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Back</value>
+    <comment>Navigate back to the prior page</comment>
+  </data>
+  <data name="Back to Challenges" xml:space="preserve">
+    <value>Back to Challenges</value>
+    <comment>Button text to return to the list of challenges</comment>
+  </data>
+  <data name="Badge" xml:space="preserve">
+    <value>Badge</value>
+    <comment>Column heading showing which badge will be unlocked when a task is completed</comment>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Category</value>
+    <comment>Prompt or display title for which category an item is in (such as a challenge)</comment>
+  </data>
+  <data name="Challenge Group: {0}" xml:space="preserve">
+    <value>Challenge Group: {0}</value>
+    <comment>Display which challenge group was selected; {0} is replaced with the name of the challenge group</comment>
+  </data>
+  <data name="Challenge: {0}" xml:space="preserve">
+    <value>Challenge: {0}</value>
+    <comment>Page title for viewing the details of a specific challenge; {0} will be replaced with the name of the challenge</comment>
+  </data>
+  <data name="Completed on: {0}" xml:space="preserve">
+    <value>Completed on: {0}</value>
+    <comment>Challenge task completion date, {0} is replaced with the date the task was completed</comment>
+  </data>
+  <data name="Completed!" xml:space="preserve">
+    <value>Completed!</value>
+    <comment>Status to show when a challenge or challenge task is marked complete.</comment>
+  </data>
+  <data name="Could not save avatar: {0}" xml:space="preserve">
+    <value>Could not save avatar: {0}</value>
+    <comment>Tell the participant that we could not save their avatar changes, {0} will be replaced with a reason why</comment>
+  </data>
+  <data name="Couldn't save your avatar, sorry!" xml:space="preserve">
+    <value>Couldn't save your avatar, sorry!</value>
+    <comment>Apologize to the user for a technical problem while saving their customzied avatar.</comment>
+  </data>
+  <data name="Download to Share" xml:space="preserve">
+    <value>Download to Share</value>
+    <comment>Download an image in order to share it on social media platforms</comment>
+  </data>
+  <data name="Enter text to search for a challenge here" xml:space="preserve">
+    <value>Enter text to search for a challenge here</value>
+    <comment>Prompt to enter text to search for challenges</comment>
+  </data>
+  <data name="My Favorites" xml:space="preserve">
+    <value>My Favorites</value>
+    <comment>Button which will display to a participant items that they flagged as their favorites</comment>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+    <comment>Column heading for the name of an item (like a challenge or an event)</comment>
+  </data>
+  <data name="No Challenges" xml:space="preserve">
+    <value>No Challenges</value>
+    <comment>Explain that no matching challenges were found when a search was performed</comment>
+  </data>
+  <data name="Please customize your avatar and save it, then you can share it!" xml:space="preserve">
+    <value>Please customize your avatar and save it, then you can share it!</value>
+    <comment>Participant has tried to share their avatar before saving it, inform them they must customize and save it first and then they can try sharing it.</comment>
+  </data>
+  <data name="Points you'll earn" xml:space="preserve">
+    <value>Points you'll earn</value>
+    <comment>Column heading showing many points a participant will earn for completing a task</comment>
+  </data>
+  <data name="Progress" xml:space="preserve">
+    <value>Progress</value>
+    <comment>Column heading showing far a participant is towards completing an item (i.e. their progress)</comment>
+  </data>
+  <data name="Read &lt;strong&gt;&lt;em&gt;&lt;a href=\&quot;{0}\&quot; target=\&quot;_blank\&quot;&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt;" xml:space="preserve">
+    <value>Read &lt;strong&gt;&lt;em&gt;&lt;a href=\"{0}\" target=\"_blank\"&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt;</value>
+    <comment>Challenge task of book with a link (replacing {0}) and a book title (replacing {1})</comment>
+  </data>
+  <data name="Read &lt;strong&gt;&lt;em&gt;&lt;a href=\&quot;{0}\&quot; target=\&quot;_blank\&quot;&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{2}&lt;/strong&gt;" xml:space="preserve">
+    <value>Read &lt;strong&gt;&lt;em&gt;&lt;a href=\"{0}\" target=\"_blank\"&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{2}&lt;/strong&gt;</value>
+    <comment>Challenge task of book with a link (replacing {0}), a book title (replacing {1}) and the author of the book (replacing {2})</comment>
+  </data>
+  <data name="Read &lt;strong&gt;&lt;em&gt;{0}&lt;/em&gt;&lt;/strong&gt;" xml:space="preserve">
+    <value>Read &lt;strong&gt;&lt;em&gt;{0}&lt;/em&gt;&lt;/strong&gt;</value>
+    <comment>Challenge tasks of book with the book title replacing {0}</comment>
+  </data>
+  <data name="Read &lt;strong&gt;&lt;em&gt;{0}&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{1}&lt;/strong&gt;" xml:space="preserve">
+    <value>Read &lt;strong&gt;&lt;em&gt;{0}&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{1}&lt;/strong&gt;</value>
+    <comment> Challenge task of a book with the book title replacing {0} and the author replacing {1}</comment>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+    <comment>Button text for saving changes</comment>
+  </data>
+  <data name="Save My Favorites" xml:space="preserve">
+    <value>Save My Favorites</value>
+    <comment>Button allowing a participant to save their selected favorites</comment>
+  </data>
+  <data name="Share" xml:space="preserve">
+    <value>share</value>
+    <comment>Button text for sharing avatar images</comment>
+  </data>
+  <data name="Share Your Avatar" xml:space="preserve">
+    <value>Share Your Avatar</value>
+    <comment>Title for the avatar sharing page</comment>
+  </data>
+  <data name="View Attachment" xml:space="preserve">
+    <value>View Attachment</value>
+    <comment>Button text to view an attached file to a challenge task</comment>
+  </data>
+  <data name="When you complete &lt;strong&gt;{0}&lt;strong&gt;, you will earn &lt;strong&gt;{1}&lt;/strong&gt; and a badge." xml:space="preserve">
+    <value>When you complete &lt;strong&gt;{0}&lt;/strong&gt;, you will earn &lt;strong&gt;{1}&lt;/strong&gt; and a badge.</value>
+    <comment>Describe what completing a challenge will achieve. {0} replaced with singular or plural task information (e.g. "1 task"or "2 tasks") and {1} is replaced with singular or plural point information (e.g. "1 point" or "2 points")</comment>
+  </data>
+  <data name="When you complete &lt;strong&gt;{0}&lt;strong&gt;, you will earn &lt;strong&gt;{1}&lt;/strong&gt;." xml:space="preserve">
+    <value>When you complete &lt;strong&gt;{0}&lt;/strong&gt;, you will earn &lt;strong&gt;{1}&lt;/strong&gt;.</value>
+    <comment>Describe what completing a challenge will achieve. {0} replaced with singular or plural task information (e.g. "1 task"or "2 tasks") and {1} is replaced with singular or plural point information (e.g. "1 point" or "2 points")</comment>
+  </data>
+  <data name="Your status has been saved!" xml:space="preserve">
+    <value>Your status has been saved!</value>
+    <comment>Participant's status on completing tasks has been saved.</comment>
+  </data>
+  <data name="Your status has been saved. You have completed {0}% of the required tasks for the challenge: {1}!" xml:space="preserve">
+    <value>Your status has been saved. You have completed {0}% of the required tasks for the challenge: {1}!</value>
+    <comment>Participant's status on completing tasks has been saved, {0} replaced with the percentage of the required tasks which have been completed and {1} is replaced with the name of the challenge.</comment>
+  </data>
+  <data name="{0} point" xml:space="preserve">
+    <value>{0} point</value>
+    <comment>Indicating a single point, {0} will be replaced with 1</comment>
+  </data>
+  <data name="{0} points" xml:space="preserve">
+    <value>{0} points</value>
+    <comment>Indicating a number of points other than 1, {0} will be replaced with 0 or a number more than 1</comment>
+  </data>
+  <data name="{0} task" xml:space="preserve">
+    <value>{0} task</value>
+    <comment>Indicating a single challenge task, {0} will be replaced with 1</comment>
+  </data>
+  <data name="{0} tasks" xml:space="preserve">
+    <value>{0} tasks</value>
+    <comment>Indicating a number of challenge tasks other than 1, {0} will be replaced with 0 or a number more than 1</comment>
+  </data>
 </root>

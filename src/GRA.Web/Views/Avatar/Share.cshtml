@@ -10,24 +10,24 @@
     <div class="col-xs-12">
         <a asp-action="Index" class="btn btn-default row-spacing">
             <span class="fa fa-arrow-left"></span>
-            Return
+            @SharedLocalizer[GRA.Annotations.Interface.Back]
         </a>
 
         <a href="@Model.FacebookShareUrl" class="btn btn-default row-spacing" target="_blank">
             <span class="fa fa-facebook"></span>
-            Share
+            @SharedLocalizer[GRA.Annotations.Interface.Share]
         </a>
 
         <a href="@Model.TwitterShareUrl" class="btn btn-default row-spacing" target="_blank">
             <span class="fa fa-twitter"></span>
-            Share
+            @SharedLocalizer[GRA.Annotations.Interface.Share]
         </a>
         <a asp-action="InstagramImage"
            asp-route-id="@Model.AvatarId"
            class="btn btn-default row-spacing"
            download="avatar.jpg">
             <span class="fa fa-instagram"></span>
-            Download to Share
+            @SharedLocalizer[GRA.Annotations.Interface.DownloadToShare]
         </a>
     </div>
 </div>

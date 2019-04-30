@@ -32,13 +32,16 @@ namespace GRA.Controllers
             ChallengeService challengeService,
             SiteService siteService) : base(context)
         {
-            _logger = Require.IsNotNull(logger, nameof(logger));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = context.Mapper;
-            _activityService = Require.IsNotNull(activityService, nameof(activityService));
-            _categoryService = Require.IsNotNull(categoryService, nameof(categoryService));
-            _challengeService = Require.IsNotNull(challengeService, nameof(challengeService));
-            _siteService = Require.IsNotNull(siteService, nameof(siteService));
-            PageTitle = "Challenges";
+            _activityService = activityService
+                ?? throw new ArgumentNullException(nameof(activityService));
+            _categoryService = categoryService
+                ?? throw new ArgumentNullException(nameof(categoryService));
+            _challengeService = challengeService
+                ?? throw new ArgumentNullException(nameof(challengeService));
+            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
+            PageTitle = _sharedLocalizer[Annotations.Title.Challenges];
         }
 
         public async Task<IActionResult> Index(string Search = null,
@@ -48,7 +51,6 @@ namespace GRA.Controllers
             bool Favorites = false,
             int page = 1)
         {
-
             var filter = new ChallengeFilter(page);
             if (!string.IsNullOrWhiteSpace(Search))
             {
@@ -83,6 +85,8 @@ namespace GRA.Controllers
                 {
                     filter.GroupId = challengeGroup.Id;
                 }
+                PageTitle
+                    = _sharedLocalizer[Annotations.Title.ChallengeGroup, challengeGroup.Name];
             }
 
             var challengeList = await _challengeService.GetPaginatedChallengeListAsync(filter);
@@ -111,7 +115,7 @@ namespace GRA.Controllers
                 }
                 if (challenge.IsCompleted == true)
                 {
-                    challenge.Status = "Completed!";
+                    challenge.Status = _sharedLocalizer[Annotations.Interface.Completed];
                 }
             }
 
@@ -184,7 +188,9 @@ namespace GRA.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error updaing user favorite challenges", ex);
+                _logger.LogError(ex,
+                    "Error updaing user favorite challenges: {Message}",
+                    ex.Message);
                 serviceResult.Status = ServiceResultStatus.Error;
                 serviceResult.Message = "An error occured while trying to update the challenge.";
             }
@@ -211,7 +217,7 @@ namespace GRA.Controllers
             {
                 page = model.PaginateModel.CurrentPage;
             }
-            return RedirectToAction("Index", new
+            return RedirectToAction(nameof(Index), new
             {
                 page,
                 model.Search,
@@ -224,7 +230,7 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> Detail(int id)
         {
-            var challenge = new Domain.Model.Challenge();
+            Challenge challenge = null;
             try
             {
                 challenge = await _challengeService.GetChallengeDetailsAsync(id);
@@ -232,7 +238,7 @@ namespace GRA.Controllers
             catch (GraException gex)
             {
                 ShowAlertWarning("Unable to view challenge: ", gex);
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
             var siteStage = GetSiteStage();
 
@@ -252,18 +258,15 @@ namespace GRA.Controllers
                 IsActive = isActive,
                 IsLoggedIn = AuthUser.Identity.IsAuthenticated,
                 ShowCompleted = showCompleted,
-                Tasks = new List<TaskDetailViewModel>()
+                Tasks = new List<TaskDetailViewModel>(),
+                IsBadgeEarning = challenge.BadgeId.HasValue,
+                PointCountAndDescription = challenge.PointsAwarded == 1
+                    ? _sharedLocalizer[Annotations.Info.PointSingular, challenge.PointsAwarded]
+                    : _sharedLocalizer[Annotations.Info.PointsPlural, challenge.PointsAwarded],
+                TaskCountAndDescription = challenge.TasksToComplete == 1
+                    ? _sharedLocalizer[Annotations.Info.TaskSingular, challenge.TasksToComplete]
+                    : _sharedLocalizer[Annotations.Info.TasksPlural, challenge.TasksToComplete]
             };
-
-            viewModel.Details = $"Completing <strong>{challenge.TasksToComplete} "
-                + $"{(challenge.TasksToComplete > 1 ? "Tasks" : "Task")}</strong> will earn: "
-                + $"<strong>{challenge.PointsAwarded} "
-                + $"{(challenge.PointsAwarded > 1 ? "Points" : "Point")}</strong>";
-
-            if (challenge.BadgeId.HasValue)
-            {
-                viewModel.Details += " and <strong>a badge</strong>.";
-            }
 
             var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
             foreach (var task in challenge.Tasks)
@@ -273,23 +276,11 @@ namespace GRA.Controllers
                     Id = task.Id,
                     IsCompleted = task.IsCompleted ?? false,
                     TaskType = task.ChallengeTaskType.ToString(),
-                    Url = task.Url
+                    Url = task.Url,
+                    Title = task.Title,
+                    Author = task.Author
                 };
-                var title = task.Title;
-                if (!string.IsNullOrWhiteSpace(task.Url))
-                {
-                    title = $"<a href=\"{task.Url}\" target=\"_blank\">{title}</a>";
-                }
-                if (task.ChallengeTaskType.ToString() == "Book")
-                {
-                    string description = $"Read <strong><em>{title}</em></strong>";
-                    if (!string.IsNullOrWhiteSpace(task.Author))
-                    {
-                        description += $" by <strong>{task.Author}</strong>";
-                    }
-                    taskModel.Description = description;
-                }
-                else
+                if(taskModel.TaskType != "Book")
                 {
                     taskModel.Description = CommonMark.CommonMarkConverter.Convert(task.Title);
                 }
@@ -300,6 +291,7 @@ namespace GRA.Controllers
                 }
                 viewModel.Tasks.Add(taskModel);
             }
+            PageTitle = _sharedLocalizer[Annotations.Title.ChallengeDetails, challenge.Name];
             return View(viewModel);
         }
 
@@ -320,11 +312,13 @@ namespace GRA.Controllers
                     {
                         int tasksCompleted = model.Tasks.Count(_ => _.IsCompleted);
                         int percentage = tasksCompleted * 100 / (int)challenge.TasksToComplete;
-                        ShowAlertSuccess($"Your status has been saved. You have completed {percentage}% of the required tasks for the challenge: {challenge.Name}!");
+                        ShowAlertSuccess(_sharedLocalizer[Annotations.Info.StatusSavedPercentage,
+                            percentage,
+                            challenge.Name]);
                     }
                     else
                     {
-                        ShowAlertSuccess("Your status has been saved!");
+                        ShowAlertSuccess(_sharedLocalizer[Annotations.Info.StatusSaved]);
                     }
                 }
             }
@@ -332,7 +326,7 @@ namespace GRA.Controllers
             {
                 AlertInfo = gex.Message;
             }
-            return RedirectToAction("Detail", new { id = model.Challenge.Id });
+            return RedirectToAction(nameof(Detail), new { id = model.Challenge.Id });
         }
     }
 }

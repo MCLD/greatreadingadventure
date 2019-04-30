@@ -18,27 +18,24 @@ namespace GRA.Controllers
 {
     public class EventsController : Base.UserController
     {
-        private readonly ILogger<EventsController> _logger;
         private readonly EventService _eventService;
         private readonly SiteService _siteService;
         private readonly SpatialService _spatialService;
         private readonly UserService _userService;
 
-        public EventsController(ILogger<EventsController> logger,
-            ServiceFacade.Controller context,
+        public EventsController(ServiceFacade.Controller context,
             EventService eventService,
             SiteService siteService,
             SpatialService spatialService,
             UserService userService)
             : base(context)
         {
-            _logger = Require.IsNotNull(logger, nameof(logger));
             _eventService = Require.IsNotNull(eventService, nameof(eventService));
             _siteService = Require.IsNotNull(siteService, nameof(SiteService));
             _spatialService = spatialService
                 ?? throw new ArgumentNullException(nameof(spatialService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-            PageTitle = "Events";
+            PageTitle = _sharedLocalizer[Annotations.Title.Events];
         }
 
         public async Task<IActionResult> CommunityExperiences(int page = 1,
@@ -58,7 +55,7 @@ namespace GRA.Controllers
                 return new RedirectResult(site.ExternalEventListUrl);
             }
 
-            PageTitle = "Community Experiences";
+            PageTitle = _sharedLocalizer[Annotations.Title.CommunityExperiences];
             return await Index(page, sort, search, near, system, branch, location, program, StartDate, EndDate, true);
         }
 
@@ -244,7 +241,7 @@ namespace GRA.Controllers
                 viewModel.CommunityExperienceDescription = communityExperienceDescription;
             }
 
-            return View("Index", viewModel);
+            return View(nameof(Index), viewModel);
         }
 
         [HttpPost]
@@ -285,7 +282,7 @@ namespace GRA.Controllers
                 isCommunityExperience = true;
             }
 
-            return RedirectToAction("Index", new { model.Sort, model.Search, model.Near, System = model.SystemId, Branch = model.BranchId, Location = model.LocationId, Program = model.ProgramId, StartDate = startDate, EndDate = endDate, CommunityExperiences = isCommunityExperience });
+            return RedirectToAction(nameof(Index), new { model.Sort, model.Search, model.Near, System = model.SystemId, Branch = model.BranchId, Location = model.LocationId, Program = model.ProgramId, StartDate = startDate, EndDate = endDate, CommunityExperiences = isCommunityExperience });
         }
 
         public async Task<IActionResult> Detail(int id)
@@ -336,7 +333,7 @@ namespace GRA.Controllers
             catch (GraException gex)
             {
                 ShowAlertWarning("Unable to view event: ", gex);
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
         }
 
