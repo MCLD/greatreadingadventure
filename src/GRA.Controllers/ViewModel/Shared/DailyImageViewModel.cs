@@ -4,5 +4,6 @@
     {
         public string DailyImageMessage { get; set; }
         public string DailyImagePath { get; set; }
+        public bool IsLarge { get; set; }
     }
 }

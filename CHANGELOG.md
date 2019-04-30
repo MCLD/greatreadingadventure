@@ -32,6 +32,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Email unsubscribe with token
 - Checking for user join badges on sign in
 - Avatar unavailable items list
+- Daily image size setting
 
 ### Changed
 - Script docker-build.bash to not build release images unless the branch starts with 'release/'
@@ -58,6 +59,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Bug with deleting a program with associated deleted users
 - Startup log message about PsProgram Cost column precision
 - Category empty description null reference exception
+- Viewing daily images on the household page
 
 ### Removed
 - Recovery error logging at the controller level - it's logged in the service

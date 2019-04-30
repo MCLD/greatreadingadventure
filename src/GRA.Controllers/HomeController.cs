@@ -173,6 +173,7 @@ namespace GRA.Controllers
                             {
                                 var dailyLiteracyTip = await _dailyLiteracyTipService
                                     .GetByIdAsync(program.DailyLiteracyTipId.Value);
+                                viewModel.DailyImageLarge = dailyLiteracyTip.IsLarge;
                                 viewModel.DailyImageMessage = dailyLiteracyTip.Message;
                                 viewModel.DailyImagePath
                                     = _pathResolver.ResolveContentPath(imagePath);
