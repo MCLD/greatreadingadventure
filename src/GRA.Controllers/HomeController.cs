@@ -270,50 +270,7 @@ namespace GRA.Controllers
             }
             else
             {
-                switch (GetSiteStage())
-                {
-                    case SiteStage.BeforeRegistration:
-                        var viewModel = new BeforeRegistrationViewModel
-                        {
-                            SignUpSource = "BeforeRegistration",
-                            SiteName = "our site"
-                        };
-                        if (site != null)
-                        {
-                            viewModel.SiteName = site.Name;
-                            viewModel.CollectEmail = await _siteLookupService
-                                .GetSiteSettingBoolAsync(site.Id,
-                                    SiteSettingKey.Users.CollectPreregistrationEmails);
-                            if (site.RegistrationOpens != null)
-                            {
-                                viewModel.RegistrationOpens
-                                    = ((DateTime)site.RegistrationOpens).ToString("D");
-                            }
-                        }
-                        return View(ViewTemplates.BeforeRegistration, viewModel);
-                    case SiteStage.RegistrationOpen:
-                        return View(ViewTemplates.RegistrationOpen,
-                            site?.Name ?? "our site");
-                    case SiteStage.ProgramEnded:
-                        return View(ViewTemplates.ProgramEnded,
-                            site?.Name ?? "our site");
-                    case SiteStage.AccessClosed:
-                        var acViewModel = new AccessClosedViewModel
-                        {
-                            SignUpSource = "AccessClosed",
-                            SiteName = "our site"
-                        };
-                        if (site != null)
-                        {
-                            acViewModel.SiteName = site.Name;
-                            acViewModel.CollectEmail = await _siteLookupService
-                                .GetSiteSettingBoolAsync(site.Id,
-                                    SiteSettingKey.Users.CollectAccessClosedEmails);
-                        }
-                        return View(ViewTemplates.AccessClosed, acViewModel);
-                    default:
-                        return View(ViewTemplates.ProgramOpen, site?.Name ?? "our site");
-                }
+                return await ShowPageAsync(site, GetSiteStage());
             }
         }
 
@@ -471,6 +428,85 @@ namespace GRA.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        private async Task<IActionResult> ShowPageAsync(Site site, SiteStage siteStage)
+        {
+            switch (siteStage)
+            {
+                case SiteStage.BeforeRegistration:
+                    var viewModel = new BeforeRegistrationViewModel
+                    {
+                        SignUpSource = "BeforeRegistration",
+                        SiteName = "our site"
+                    };
+                    if (site != null)
+                    {
+                        viewModel.SiteName = site.Name;
+                        viewModel.CollectEmail = await _siteLookupService
+                            .GetSiteSettingBoolAsync(site.Id,
+                                SiteSettingKey.Users.CollectPreregistrationEmails);
+                        if (site.RegistrationOpens != null)
+                        {
+                            viewModel.RegistrationOpens
+                                = ((DateTime)site.RegistrationOpens).ToString("D");
+                        }
+                    }
+                    return View(ViewTemplates.BeforeRegistration, viewModel);
+                case SiteStage.RegistrationOpen:
+                    return View(ViewTemplates.RegistrationOpen,
+                        site?.Name ?? "our site");
+                case SiteStage.ProgramEnded:
+                    return View(ViewTemplates.ProgramEnded,
+                        site?.Name ?? "our site");
+                case SiteStage.AccessClosed:
+                    var acViewModel = new AccessClosedViewModel
+                    {
+                        SignUpSource = "AccessClosed",
+                        SiteName = "our site"
+                    };
+                    if (site != null)
+                    {
+                        acViewModel.SiteName = site.Name;
+                        acViewModel.CollectEmail = await _siteLookupService
+                            .GetSiteSettingBoolAsync(site.Id,
+                                SiteSettingKey.Users.CollectAccessClosedEmails);
+                    }
+                    return View(ViewTemplates.AccessClosed, acViewModel);
+                default:
+                    return View(ViewTemplates.ProgramOpen, site?.Name ?? "our site");
+            }
+        }
+
+        public async Task<IActionResult> Preview(string id)
+        {
+            if (UserHasPermission(Permission.AccessMissionControl))
+            {
+                SiteStage stage;
+                switch (id)
+                {
+                    case nameof(SiteStage.BeforeRegistration):
+                        stage = SiteStage.BeforeRegistration;
+                        break;
+                    case nameof(SiteStage.RegistrationOpen):
+                        stage = SiteStage.RegistrationOpen;
+                        break;
+                    case nameof(SiteStage.ProgramEnded):
+                        stage = SiteStage.ProgramEnded;
+                        break;
+                    case nameof(SiteStage.AccessClosed):
+                        stage = SiteStage.AccessClosed;
+                        break;
+                    default:
+                        stage = SiteStage.ProgramOpen;
+                        break;
+                }
+                return await ShowPageAsync(await GetCurrentSiteAsync(), stage);
+            }
+            else
+            {
+                return RedirectToAction(nameof(Index));
+            }
         }
     }
 }
