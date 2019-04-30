@@ -157,16 +157,22 @@ namespace GRA.Controllers
 
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.User.PostalCode))
             {
-                ModelState.AddModelError("User.PostalCode", "The Zip Code field is required.");
+                ModelState.AddModelError("User.PostalCode",
+                    _sharedLocalizer[Annotations.Required.Field, 
+                        _sharedLocalizer[DisplayNames.ZipCode]]);
             }
             if (program.AgeRequired && !model.User.Age.HasValue)
             {
-                ModelState.AddModelError("User.Age", "The Age field is required.");
+                ModelState.AddModelError("User.Age",
+                    _sharedLocalizer[Annotations.Required.Field,
+                        _sharedLocalizer[DisplayNames.Age]]);
             }
             if (program.SchoolRequired && !model.SchoolId.HasValue && !model.SchoolNotListed
                 && !model.IsHomeschooled)
             {
-                ModelState.AddModelError("SchoolId", "The School field is required.");
+                ModelState.AddModelError("SchoolId",
+                    _sharedLocalizer[Annotations.Required.Field,
+                        _sharedLocalizer[DisplayNames.School]]);
             }
 
             var (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
@@ -175,8 +181,8 @@ namespace GRA.Controllers
                 && string.IsNullOrWhiteSpace(model.User.Email))
             {
                 ModelState.AddModelError("User.Email", " ");
-                ModelState.AddModelError("User.IsEmailSubscribed",
-                "To receive email updates please supply an email address to send them to.");
+                ModelState.AddModelError("User.IsEmailSubscribed", 
+                    _sharedLocalizer[Annotations.Validate.EmailSubscription]);
             }
 
             var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
@@ -227,8 +233,8 @@ namespace GRA.Controllers
                     }
 
                     await _userService.Update(model.User);
-                    AlertSuccess = "Updated profile";
-                    return RedirectToAction("Index");
+                    AlertSuccess = _sharedLocalizer[GRA.Annotations.Interface.ProfileUpdated];
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (GraException gex)
                 {
@@ -403,7 +409,7 @@ namespace GRA.Controllers
                 .GetByProgramIdAsync(user.ProgramId, true);
             if (model.ActivityAmount < 1 && !model.PointTranslation.IsSingleEvent)
             {
-                TempData[ActivityMessage] = "You must enter how an amount!";
+                TempData[ActivityMessage] = "You must enter an amount!";
             }
             else if (!string.IsNullOrWhiteSpace(model.UserSelection))
             {
@@ -433,7 +439,7 @@ namespace GRA.Controllers
                 TempData[ActivityMessage] = "No members selected.";
             }
 
-            return RedirectToAction("Household");
+            return RedirectToAction(nameof(Household));
         }
 
         public async Task<IActionResult> HouseholdApplySecretCode(HouseholdListViewModel model)
@@ -473,7 +479,7 @@ namespace GRA.Controllers
                 TempData[SecretCodeMessage] = "No members selected.";
             }
 
-            return RedirectToAction("Household");
+            return RedirectToAction(nameof(Household));
         }
 
         public async Task<IActionResult> AddHouseholdMember()
@@ -482,7 +488,7 @@ namespace GRA.Controllers
             if (authUser.HouseholdHeadUserId != null)
             {
                 // if the authUser has a household head then they are not the household head
-                return RedirectToAction("Household");
+                return RedirectToAction(nameof(Household));
             }
 
             var (useGroups, maximumHousehold) =
@@ -588,13 +594,15 @@ namespace GRA.Controllers
             var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
             if (authUser.HouseholdHeadUserId != null)
             {
-                return RedirectToAction("Household");
+                return RedirectToAction(nameof(Household));
             }
 
             var site = await GetCurrentSiteAsync();
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.User.PostalCode))
             {
-                ModelState.AddModelError("User.PostalCode", "The Zip Code field is required.");
+                ModelState.AddModelError("User.PostalCode",
+                    _sharedLocalizer[Annotations.Required.Field,
+                        _sharedLocalizer[DisplayNames.ZipCode]]);
             }
 
             var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
@@ -617,7 +625,7 @@ namespace GRA.Controllers
                 {
                     ModelState.AddModelError("User.Email", " ");
                     ModelState.AddModelError(nameof(model.EmailSubscriptionRequested),
-                    "To receive email updates please supply an email address to send them to.");
+                        _sharedLocalizer[Annotations.Validate.EmailSubscription]);
                 }
             }
 
@@ -633,12 +641,16 @@ namespace GRA.Controllers
                 askSchool = program.AskSchool;
                 if (program.AgeRequired && !model.User.Age.HasValue)
                 {
-                    ModelState.AddModelError("User.Age", "The Age field is required.");
+                    ModelState.AddModelError("User.Age", 
+                        _sharedLocalizer[Annotations.Required.Field,
+                            _sharedLocalizer[DisplayNames.Age]]);
                 }
                 if (program.SchoolRequired && !model.SchoolId.HasValue
                     && !model.SchoolNotListed && !model.IsHomeschooled)
                 {
-                    ModelState.AddModelError("SchoolId", "The School field is required.");
+                    ModelState.AddModelError("SchoolId",
+                        _sharedLocalizer[Annotations.Required.Field,
+                            _sharedLocalizer[DisplayNames.School]]);
                 }
             }
 
@@ -714,7 +726,7 @@ namespace GRA.Controllers
                     {
                         AlertSuccess = "Added group member";
                     }
-                    return RedirectToAction("Household");
+                    return RedirectToAction(nameof(Household));
                 }
                 catch (GraException gex)
                 {
@@ -765,7 +777,7 @@ namespace GRA.Controllers
             var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
             if (authUser.HouseholdHeadUserId != null)
             {
-                return RedirectToAction("Household");
+                return RedirectToAction(nameof(Household));
             }
 
             return View();
@@ -777,7 +789,7 @@ namespace GRA.Controllers
             var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
             if (authUser.HouseholdHeadUserId != null)
             {
-                return RedirectToAction("Household");
+                return RedirectToAction(nameof(Household));
             }
 
             if (ModelState.IsValid)
@@ -834,7 +846,7 @@ namespace GRA.Controllers
                         .AddParticipantToHouseholdAsync(model.Username, model.Password);
                     HttpContext.Session.SetString(SessionKey.HeadOfHousehold, "True");
                     ShowAlertSuccess($"{addedMembers} has been added to your {HouseholdTitle.ToLower()}");
-                    return RedirectToAction("Household");
+                    return RedirectToAction(nameof(Household));
                 }
                 catch (GraException gex)
                 {
@@ -850,13 +862,13 @@ namespace GRA.Controllers
             var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
             if (authUser.HouseholdHeadUserId != null)
             {
-                return RedirectToAction("Household");
+                return RedirectToAction(nameof(Household));
             }
 
             if (!int.TryParse(HttpContext.Session.GetString(SessionKey.AbsorbUserId),
                 out int userId))
             {
-                return RedirectToAction("Household");
+                return RedirectToAction(nameof(Household));
             }
 
             try
@@ -872,12 +884,12 @@ namespace GRA.Controllers
                 HttpContext.Session.Remove(SessionKey.AbsorbUserId);
                 ShowAlertDanger($"Could not add participant as {HouseholdTitle.ToLower()} Member: ", gex);
             }
-            return RedirectToAction("Household");
+            return RedirectToAction(nameof(Household));
         }
 
         public IActionResult RegisterHouseholdMember()
         {
-            return RedirectToAction("Household");
+            return RedirectToAction(nameof(Household));
         }
 
         public IActionResult CancelGroupUpgrade()
@@ -886,7 +898,7 @@ namespace GRA.Controllers
             {
                 HttpContext.Session.Remove(SessionKey.AbsorbUserId);
             }
-            return RedirectToAction("Household");
+            return RedirectToAction(nameof(Household));
         }
 
         [HttpPost]
@@ -896,7 +908,7 @@ namespace GRA.Controllers
             var authUser = GetId(ClaimType.UserId);
             if (user.HouseholdHeadUserId != authUser || !string.IsNullOrWhiteSpace(user.Username))
             {
-                return RedirectToAction("Household");
+                return RedirectToAction(nameof(Household));
             }
 
             if (model.Validate)
@@ -908,7 +920,7 @@ namespace GRA.Controllers
                     {
                         await _userService.RegisterHouseholdMemberAsync(user, model.Password);
                         AlertSuccess = $"{HouseholdTitle} member registered!";
-                        return RedirectToAction("Household");
+                        return RedirectToAction(nameof(Household));
                     }
                     catch (GraException gex)
                     {
@@ -949,11 +961,11 @@ namespace GRA.Controllers
             }
             if (goToMail)
             {
-                return RedirectToAction("Index", "Mail");
+                return RedirectToAction(nameof(MailController.Index), "Mail");
             }
             else
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction(nameof(HomeController.Index), "Home");
             }
         }
 
@@ -1029,7 +1041,7 @@ namespace GRA.Controllers
             {
                 page = model.PaginateModel.CurrentPage;
             }
-            return RedirectToAction("Books", new { page });
+            return RedirectToAction(nameof(Books), new { page });
         }
 
         [HttpPost]
@@ -1050,7 +1062,7 @@ namespace GRA.Controllers
             {
                 page = model.PaginateModel.CurrentPage;
             }
-            return RedirectToAction("Books", new { page });
+            return RedirectToAction(nameof(Books), new { page });
         }
 
         public async Task<IActionResult> History(int page = 1)
@@ -1130,7 +1142,7 @@ namespace GRA.Controllers
             User user = await _userService.GetDetails(GetActiveUserId());
             if (string.IsNullOrWhiteSpace(user.Username))
             {
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
 
             var viewModel = new ChangePasswordViewModel
@@ -1158,7 +1170,7 @@ namespace GRA.Controllers
                         await _authenticationService.ResetPassword(GetActiveUserId(),
                             model.NewPassword);
                         AlertSuccess = "Password changed";
-                        return RedirectToAction("ChangePassword");
+                        return RedirectToAction(nameof(ChangePassword));
                     }
                     catch (GraException gex)
                     {
@@ -1178,14 +1190,14 @@ namespace GRA.Controllers
         public async Task<IActionResult> DonateCode(ProfileDetailViewModel viewModel)
         {
             await _vendorCodeService.ResolveDonationStatusAsync(viewModel.User.Id, true);
-            return RedirectToAction("Index", "Profile");
+            return RedirectToAction(nameof(ProfileController.Index), "Profile");
         }
 
         [HttpPost]
         public async Task<IActionResult> RedeemCode(ProfileDetailViewModel viewModel)
         {
             await _vendorCodeService.ResolveDonationStatusAsync(viewModel.User.Id, false);
-            return RedirectToAction("Index", "Profile");
+            return RedirectToAction(nameof(ProfileController.Index), "Profile");
         }
 
         [HttpPost]
@@ -1215,7 +1227,7 @@ namespace GRA.Controllers
             {
                 await _vendorCodeService.ResolveDonationStatusAsync(userId, donationStatus);
             }
-            return RedirectToAction("Household", "Profile");
+            return RedirectToAction(nameof(ProfileController.Household), "Profile");
         }
 
         [HttpPost]
@@ -1225,7 +1237,7 @@ namespace GRA.Controllers
         {
             int userId = int.Parse(redeemButton);
             await _vendorCodeService.ResolveDonationStatusAsync(userId, false);
-            return RedirectToAction("Household", "Profile");
+            return RedirectToAction(nameof(ProfileController.Household), "Profile");
         }
 
         [HttpPost]
@@ -1266,7 +1278,7 @@ namespace GRA.Controllers
 
             if (groupInfo == null)
             {
-                return RedirectToAction("Household");
+                return RedirectToAction(nameof(Household));
             }
             else
             {
@@ -1285,7 +1297,7 @@ namespace GRA.Controllers
             var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
             groupInfo.UserId = authUser.Id;
             await _userService.UpdateGroupName(authUser.Id, groupInfo);
-            return RedirectToAction("Household");
+            return RedirectToAction(nameof(Household));
         }
 
         public async Task<IActionResult> RemoveHouseholdMember(int id)

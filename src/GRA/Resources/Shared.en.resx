@@ -945,4 +945,12 @@
     <value>This event is limited to the program: {0}</value>
     <comment>Shown to a user when an event is limited to a specific program.</comment>
   </data>
+  <data name="You are now unsubscribed and will not receive any more emails from {0}." xml:space="preserve">
+    <value>You are now unsubscribed and will not receive any more emails from {0}.</value>
+    <comment>Message to the user that they've unsubscribed and won't receive any more emails. {0} is replaced with the name of the site.</comment>
+  </data>
+  <data name="{0} - registration opens {1}" xml:space="preserve">
+    <value>{0} - registration opens {1}</value>
+    <comment>Page title prior to registration, {0} is replaced with the name of the site, {1} with the date registration opens</comment>
+  </data>
 </root>

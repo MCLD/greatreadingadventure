@@ -76,11 +76,8 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> Index()
         {
+            PageTitle = HttpContext.Items[ItemKey.SiteName].ToString();
             var site = await GetCurrentSiteAsync();
-            if (site != null)
-            {
-                PageTitle = site.Name;
-            }
             if (AuthUser.Identity.IsAuthenticated)
             {
                 if (TempData.ContainsKey(TempDataKey.UserJoined))
@@ -165,9 +162,11 @@ namespace GRA.Controllers
                             program.DailyLiteracyTipId.Value, day.Value);
                         if (image != null)
                         {
-                            var imagePath = Path.Combine($"site{site.Id}", "dailyimages",
+                            var imagePath = Path.Combine($"site{site.Id}",
+                                "dailyimages",
                                 $"dailyliteracytip{program.DailyLiteracyTipId}",
                                 $"{image.Id}{image.Extension}");
+
                             if (System.IO.File.Exists(_pathResolver
                                 .ResolveContentFilePath(imagePath)))
                             {
@@ -226,12 +225,12 @@ namespace GRA.Controllers
                 }
                 if (TempData.ContainsKey(TitleErrorMessage))
                 {
-                    ModelState.AddModelError("Title",
+                    ModelState.AddModelError(DisplayNames.Title,
                         _sharedLocalizer[(string)TempData[TitleErrorMessage]]);
                 }
                 if (TempData.ContainsKey(AuthorErrorMessage))
                 {
-                    ModelState.AddModelError("Author",
+                    ModelState.AddModelError(DisplayNames.Author,
                         _sharedLocalizer[(string)TempData[AuthorErrorMessage]]);
                 }
                 if (TempData.ContainsKey(SecretCodeMessage))
@@ -326,13 +325,14 @@ namespace GRA.Controllers
             if (!ModelState.IsValid)
             {
                 valid = false;
-                if (ModelState["Title"].Errors.Count > 0)
+                if (ModelState[DisplayNames.Title].Errors.Count > 0)
                 {
-                    TempData[TitleErrorMessage] = ModelState["Title"].Errors.First().ErrorMessage;
+                    TempData[TitleErrorMessage]
+                        = ModelState[DisplayNames.Title].Errors.First().ErrorMessage;
                 }
-                if (ModelState["Author"].Errors.Count > 0)
+                if (ModelState[DisplayNames.Author].Errors.Count > 0)
                 {
-                    TempData[AuthorErrorMessage] = ModelState["Author"]
+                    TempData[AuthorErrorMessage] = ModelState[DisplayNames.Author]
                         .Errors
                         .First()
                         .ErrorMessage;
@@ -419,7 +419,8 @@ namespace GRA.Controllers
                 try
                 {
                     await _emailManagementService.TokenUnsubscribe(id);
-                    ShowAlertSuccess("You are now unsubscribed from emails!");
+                    ShowAlertSuccess(_sharedLocalizer[Annotations.Interface.Unsubscribed],
+                        HttpContext.Items[ItemKey.SiteName]?.ToString());
                 }
                 catch (GraException gex)
                 {
@@ -432,17 +433,18 @@ namespace GRA.Controllers
 
         private async Task<IActionResult> ShowPageAsync(Site site, SiteStage siteStage)
         {
+            string siteName = HttpContext.Items[ItemKey.SiteName]?.ToString();
+            PageTitle = siteName;
             switch (siteStage)
             {
                 case SiteStage.BeforeRegistration:
                     var viewModel = new BeforeRegistrationViewModel
                     {
-                        SignUpSource = "BeforeRegistration",
-                        SiteName = "our site"
+                        SignUpSource = nameof(SiteStage.BeforeRegistration),
+                        SiteName = siteName
                     };
                     if (site != null)
                     {
-                        viewModel.SiteName = site.Name;
                         viewModel.CollectEmail = await _siteLookupService
                             .GetSiteSettingBoolAsync(site.Id,
                                 SiteSettingKey.Users.CollectPreregistrationEmails);
@@ -450,20 +452,21 @@ namespace GRA.Controllers
                         {
                             viewModel.RegistrationOpens
                                 = ((DateTime)site.RegistrationOpens).ToString("D");
+                            PageTitle = _sharedLocalizer[Annotations.Title.RegistrationOpens,
+                                siteName,
+                                viewModel.RegistrationOpens];
                         }
                     }
                     return View(ViewTemplates.BeforeRegistration, viewModel);
                 case SiteStage.RegistrationOpen:
-                    return View(ViewTemplates.RegistrationOpen,
-                        site?.Name ?? "our site");
+                    PageTitle = _sharedLocalizer[Annotations.Title.JoinNow, siteName];
+                    return View(ViewTemplates.RegistrationOpen, siteName);
                 case SiteStage.ProgramEnded:
-                    return View(ViewTemplates.ProgramEnded,
-                        site?.Name ?? "our site");
+                    return View(ViewTemplates.ProgramEnded, siteName);
                 case SiteStage.AccessClosed:
                     var acViewModel = new AccessClosedViewModel
                     {
-                        SignUpSource = "AccessClosed",
-                        SiteName = "our site"
+                        SignUpSource = nameof(SiteStage.AccessClosed),
                     };
                     if (site != null)
                     {
@@ -474,7 +477,8 @@ namespace GRA.Controllers
                     }
                     return View(ViewTemplates.AccessClosed, acViewModel);
                 default:
-                    return View(ViewTemplates.ProgramOpen, site?.Name ?? "our site");
+                    PageTitle = _sharedLocalizer[Annotations.Title.JoinNow, siteName];
+                    return View(ViewTemplates.ProgramOpen, siteName);
             }
         }
 

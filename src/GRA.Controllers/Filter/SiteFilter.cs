@@ -129,7 +129,8 @@ namespace GRA.Controllers.Filter
 
             httpContext.Items[ItemKey.GoogleAnalytics] = site.GoogleAnalyticsTrackingId;
             httpContext.Items[ItemKey.RouteId] = context.RouteData.Values["id"];
-            httpContext.Items[ItemKey.SiteName] = site?.Name;
+            httpContext.Items[ItemKey.SiteName] = site?.Name
+                ?? _config[ConfigurationKey.DefaultSiteName];
             httpContext.Items[ItemKey.SiteStage] = siteStage;
             httpContext.Session.SetInt32(SessionKey.SiteId, (int)siteId);
             httpContext.Items[ItemKey.SiteId] = (int)siteId;

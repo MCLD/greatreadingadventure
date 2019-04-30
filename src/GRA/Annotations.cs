@@ -74,6 +74,7 @@
             public const string NoChallenges = "No Challenges";
             public const string NoEvents = "No Events";
             public const string PointsYoullEarn = "Points you'll earn";
+            public const string ProfileUpdated = "Profile updated.";
             public const string Progress = "Progress";
             public const string RelatedChallenge = "Related Challenge";
             public const string RelatedChallenges = "Related Challenges";
@@ -81,6 +82,7 @@
             public const string SaveMyFavorites = "Save My Favorites";
             public const string Share = "Share";
             public const string ViewAttachment = "View Attachment";
+            public const string Unsubscribed = "You are now unsubscribed and will not receive any more emails from {0}.";
             public const string UseMyZipCode = "Use my ZIP code";
             public const string What = "What";
             public const string When = "When";
@@ -99,6 +101,7 @@
             public const string ForgotPassword = "Forgot Password";
             public const string Join = "Join";
             public const string JoinNow = "{0} - Join Now!";
+            public const string RegistrationOpens = "{0} - registration opens {1}";
             public const string ShareYourAvatar = "Share Your Avatar";
             public const string SignIn = "Sign in";
             public const string SignInTo = "Sign in to {0}";

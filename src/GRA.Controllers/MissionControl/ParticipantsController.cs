@@ -301,7 +301,7 @@ namespace GRA.Controllers.MissionControl
             var site = await GetCurrentSiteAsync();
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.PostalCode))
             {
-                ModelState.AddModelError("PostalCode", "The Zip Code field is required.");
+                ModelState.AddModelError("PostalCode", "The ZIP Code field is required.");
             }
 
             var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
@@ -583,7 +583,7 @@ namespace GRA.Controllers.MissionControl
             var program = await _siteService.GetProgramByIdAsync(model.User.ProgramId);
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.User.PostalCode))
             {
-                ModelState.AddModelError("User.PostalCode", "The Zip Code field is required.");
+                ModelState.AddModelError("User.PostalCode", "The ZIP Code field is required.");
             }
             if (program.AgeRequired && !model.User.Age.HasValue)
             {
@@ -1185,7 +1185,7 @@ namespace GRA.Controllers.MissionControl
 
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.User.PostalCode))
             {
-                ModelState.AddModelError("User.PostalCode", "The Zip Code field is required.");
+                ModelState.AddModelError("User.PostalCode", "The ZIP Code field is required.");
             }
 
             var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);

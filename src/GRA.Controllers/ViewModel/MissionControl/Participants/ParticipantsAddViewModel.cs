@@ -24,7 +24,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         [MaxLength(255)]
         public string LastName { get; set; }
 
-        [DisplayName("Zip Code")]
+        [DisplayName("ZIP Code")]
         [MaxLength(32)]
         public string PostalCode { get; set; }
 

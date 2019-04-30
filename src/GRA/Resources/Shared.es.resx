@@ -262,7 +262,7 @@
     <comment>No, negative response to inquiry</comment>
   </data>
   <data name="Once the program starts, you will enter your activity right here!" xml:space="preserve">
-    <value>En cuanto comience el programa, ¡Entrara su actividad aquí!</value>
+    <value>¡En cuanto comience el programa, Entrara su actividad aquí!</value>
     <comment>Dashboard explanation that the program hasn't started yet and what to do once it has</comment>
   </data>
   <data name="Participate in program activities to earn badges!" xml:space="preserve">
