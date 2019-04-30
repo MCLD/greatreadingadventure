@@ -33,6 +33,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Checking for user join badges on sign in
 - Avatar unavailable items list
 - Daily image size setting
+- Landing page preview ability (/Home/Preview/StageName)
 
 ### Changed
 - Script docker-build.bash to not build release images unless the branch starts with 'release/'
