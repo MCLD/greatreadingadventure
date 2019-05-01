@@ -61,6 +61,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Startup log message about PsProgram Cost column precision
 - Category empty description null reference exception
 - Viewing daily images on the household page
+- Password recovery validation error handling
 
 ### Removed
 - Recovery error logging at the controller level - it's logged in the service

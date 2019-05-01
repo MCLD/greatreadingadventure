@@ -7,7 +7,8 @@
         public const string Branch = "Branch";
         public const string Category = "Category";
         public const string Challenges = "Challenges";
-        public const string ConfirmPassword = "ConfirmPassword";
+        public const string ConfirmPassword = "Confirm Password";
+        public const string ConfirmNewPassword = "Confirm New Password";
         public const string DailyPersonalGoal = "Set a personal goal";
         public const string EmailAddress = "Email Address";
         public const string EndDate = "End Date";
@@ -31,6 +32,7 @@
         public const string MyProgress = "My progress";
         public const string NearLocation = "Near Location";
         public const string NextStep = "Next Step";
+        public const string NewPassword = "New Password";
         public const string Password = "Password";
         public const string PhoneNumber = "Phone Number";
         public const string Program = "Program";
@@ -47,6 +49,7 @@
         public const string System = "System";
         public const string Title = "Title";
         public const string ToggleNavigation = "Toggle navigation";
+        public const string Token = "Token";
         public const string Username = "Username";
         public const string ZipCode = "ZIP Code";
     }

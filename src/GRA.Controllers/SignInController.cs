@@ -228,19 +228,32 @@ namespace GRA.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _authenticationService.ResetPassword(model.Username,
-                    model.NewPassword,
-                    model.Token);
-                if (result.Status == Domain.Service.Models.ServiceResultStatus.Success)
+                try
                 {
-                    AlertSuccess = _sharedLocalizer[Annotations.Info.PasswordResetFor,
-                        model.Username];
-                    return RedirectToAction(nameof(Index));
+                    var result = await _authenticationService.ResetPassword(model.Username,
+                        model.NewPassword,
+                        model.Token);
+                    if (result.Status == Domain.Service.Models.ServiceResultStatus.Success)
+                    {
+                        AlertSuccess = _sharedLocalizer[Annotations.Info.PasswordResetFor,
+                            model.Username];
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else
+                    {
+                        ShowAlertWarning(_sharedLocalizer[Annotations.Validate.UnableToReset,
+                            _sharedLocalizer[result.Message, result.Arguments]]);
+                    }
                 }
-                else
+                catch (GraException gex)
                 {
-                    ShowAlertWarning(_sharedLocalizer[Annotations.Validate.UnableToReset,
-                        _sharedLocalizer[result.Message, result.Arguments]]);
+                    ShowAlertDanger(_sharedLocalizer[Annotations.Validate.UnableToReset,
+                       _sharedLocalizer[gex.Message]]);
+                    if (gex.GetType() == typeof(GraPasswordValidationException))
+                    {
+                        ModelState.AddModelError(nameof(model.NewPassword),
+                            _sharedLocalizer[Annotations.Validate.PasswordIssue]);
+                    }
                 }
             }
             return View(model);

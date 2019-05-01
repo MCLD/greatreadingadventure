@@ -17,8 +17,8 @@ namespace GRA.Controllers.ViewModel.Join
         public string Password { get; set; }
 
         [Required(ErrorMessage = Annotations.Required.Field)]
-        [Compare(DisplayNames.Password, ErrorMessage = Annotations.Validate.PasswordsMatch)]
-        [DisplayName(DisplayNames.Password)]
+        [Compare(nameof(Password), ErrorMessage = Annotations.Validate.PasswordsMatch)]
+        [DisplayName(DisplayNames.ConfirmPassword)]
         public string ConfirmPassword { get; set; }
 
         [Required(ErrorMessage = Annotations.Required.Field)]
