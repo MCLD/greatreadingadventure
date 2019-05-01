@@ -192,7 +192,7 @@ namespace GRA.Controllers
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.PostalCode))
             {
                 ModelState.AddModelError(nameof(model.PostalCode),
-                    _sharedLocalizer[Annotations.Required.Field,
+                    _sharedLocalizer[ErrorMessages.Field,
                         _sharedLocalizer[DisplayNames.ZipCode]]);
             }
 
@@ -234,14 +234,14 @@ namespace GRA.Controllers
                 if (program.AgeRequired && !model.Age.HasValue)
                 {
                     ModelState.AddModelError(DisplayNames.Age,
-                        _sharedLocalizer[Annotations.Required.Field,
+                        _sharedLocalizer[ErrorMessages.Field,
                             _sharedLocalizer[DisplayNames.Age]]);
                 }
                 if (program.SchoolRequired && !model.SchoolId.HasValue && !model.SchoolNotListed
                     && !model.IsHomeschooled)
                 {
                     ModelState.AddModelError(nameof(model.SchoolId),
-                        _sharedLocalizer[Annotations.Required.Field,
+                        _sharedLocalizer[ErrorMessages.Field,
                             _sharedLocalizer[DisplayNames.School]]);
                 }
             }
@@ -489,7 +489,7 @@ namespace GRA.Controllers
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.PostalCode))
             {
                 ModelState.AddModelError(nameof(model.PostalCode),
-                    _sharedLocalizer[Annotations.Required.Field,
+                    _sharedLocalizer[ErrorMessages.Field,
                     _sharedLocalizer[DisplayNames.ZipCode]]);
             }
             if (model.SystemId.HasValue
@@ -586,14 +586,14 @@ namespace GRA.Controllers
                 if (program.AgeRequired && !model.Age.HasValue)
                 {
                     ModelState.AddModelError(DisplayNames.Age,
-                        _sharedLocalizer[Annotations.Required.Field,
+                        _sharedLocalizer[ErrorMessages.Field,
                             _sharedLocalizer[DisplayNames.Age]]);
                 }
                 if (program.SchoolRequired && !model.SchoolId.HasValue && !model.SchoolNotListed
                     && !model.IsHomeschooled)
                 {
                     ModelState.AddModelError(nameof(model.SchoolId),
-                        _sharedLocalizer[Annotations.Required.Field,
+                        _sharedLocalizer[ErrorMessages.Field,
                         _sharedLocalizer[DisplayNames.School]]);
                 }
             }

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GRA.Controllers.Filter;
 using GRA.Controllers.ViewModel.SignIn;
+using GRA.Domain.Model;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -157,7 +158,7 @@ namespace GRA.Controllers
         {
             if (string.IsNullOrWhiteSpace(username))
             {
-                ModelState.AddModelError("", _sharedLocalizer[Annotations.Required.Field,
+                ModelState.AddModelError("", _sharedLocalizer[ErrorMessages.Field,
                     _sharedLocalizer[DisplayNames.Username]]);
             }
             if (ModelState.IsValid)
@@ -193,7 +194,7 @@ namespace GRA.Controllers
         {
             if (string.IsNullOrWhiteSpace(email))
             {
-                ModelState.AddModelError("", _sharedLocalizer[Annotations.Required.Field,
+                ModelState.AddModelError("", _sharedLocalizer[ErrorMessages.Field,
                     _sharedLocalizer[DisplayNames.EmailAddress]]);
             }
             if (ModelState.IsValid)

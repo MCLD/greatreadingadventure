@@ -953,4 +953,8 @@
     <value>{0} - registration opens {1}</value>
     <comment>Page title prior to registration, {0} is replaced with the name of the site, {1} with the date registration opens</comment>
   </data>
+  <data name="Old Password" xml:space="preserve">
+    <value>Old Password</value>
+    <comment>Prompt a participant for their old password when they want to change their password</comment>
+  </data>
 </root>

@@ -1,4 +1,4 @@
-﻿namespace GRA
+﻿namespace GRA.Domain.Model
 {
     public static class DisplayNames
     {
@@ -7,8 +7,8 @@
         public const string Branch = "Branch";
         public const string Category = "Category";
         public const string Challenges = "Challenges";
-        public const string ConfirmPassword = "Confirm Password";
         public const string ConfirmNewPassword = "Confirm New Password";
+        public const string ConfirmPassword = "Confirm Password";
         public const string DailyPersonalGoal = "Set a personal goal";
         public const string EmailAddress = "Email Address";
         public const string EndDate = "End Date";
@@ -31,8 +31,9 @@
         public const string MyProfile = "My Profile";
         public const string MyProgress = "My progress";
         public const string NearLocation = "Near Location";
-        public const string NextStep = "Next Step";
         public const string NewPassword = "New Password";
+        public const string NextStep = "Next Step";
+        public const string OldPassword = "Old Password";
         public const string Password = "Password";
         public const string PhoneNumber = "Phone Number";
         public const string Program = "Program";
@@ -52,5 +53,8 @@
         public const string Token = "Token";
         public const string Username = "Username";
         public const string ZipCode = "ZIP Code";
+
+        public const string GroupName = "Group name";
+        public const string GroupType = "Group type";
     }
 }

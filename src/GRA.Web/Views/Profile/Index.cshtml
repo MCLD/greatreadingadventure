@@ -1,11 +1,10 @@
 ﻿@model GRA.Controllers.ViewModel.Profile.ProfileDetailViewModel
 
-
 <div class="row">
     <div class="col-xs-12 col-sm-10 col-sm-offset-1">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <span class="lead">My Profile</span>
+                <span class="lead">@SharedLocalizer[GRA.Domain.Model.DisplayNames.MyProfile]</span>
             </div>
             <div class="panel-body">
 
@@ -29,20 +28,20 @@
                                         <div class="alert alert-info" style="padding: 1em;">
                                             @if (Model.User.NeedsToAnswerDonationQuestion)
                                             {
-                                                <p><strong>Congratulations, you've earned a free book!</strong></p>
+                                                <p><strong>@SharedLocalizer[GRA.Annotations.Interface.FreeBookCongratulations]</strong></p>
                                                 <p>
                                                     You may:
                                                     <button class="btn btn-info btn-spinner"
                                                             asp-action="RedeemCode"
                                                             style="margin-top: 0.25em; margin-bottom: 0.25em;">
-                                                        <span class="buttonText">Redeem your code</span>
+                                                        <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.RedeemYourCode]</span>
                                                         <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                                                     </button>
                                                     or
                                                     <button class="btn btn-success btn-spinner"
                                                             asp-action="DonateCode"
                                                             style="margin-top: 0.25em; margin-bottom: 0.25em;">
-                                                        <span class="buttonText">Donate your book</span>
+                                                        <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.DonateYourBook]</span>
                                                         <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                                                     </button>
                                                 </p>
@@ -50,7 +49,7 @@
                                             else
                                             {
                                                 <p>
-                                                    Free book code:
+                                                    @SharedLocalizer[GRA.Annotations.Interface.FreeBookCode]:
                                                     @if (!string.IsNullOrEmpty(Model.User.VendorCodeUrl))
                                                     {
                                                         <strong><a href="@Model.User.VendorCodeUrl" target="_blank">@Model.User.VendorCode</a></strong>

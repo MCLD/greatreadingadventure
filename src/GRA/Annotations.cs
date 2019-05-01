@@ -47,6 +47,11 @@
             public const string UsernameIsAvailable = "That username is available!";
             public const string UsernameListSent = "A list of usernames associated with the email address '{0}' has been sent.";
             public const string YouCanJoinOn = "You can join {0} on {1}.";
+
+            public const string NoBooksLogged = "No books logged.";
+            public const string ConfirmBookDelete = "Are you sure you want to delete this book from your book list:";
+            public const string UpgradeToGroupDescription = "It appears that you have more than {0} members in your family. We'd like you to convert your family to a group in order to add more members.";
+            public const string NoHistory = "No history to display.";
         }
 
         public static class Interface
@@ -87,6 +92,25 @@
             public const string What = "What";
             public const string When = "When";
             public const string Where = "Where";
+
+            public const string Details = "Details";
+            public const string Group = "Group";
+            public const string GroupSentence = "group";
+            public const string Family = "Family";
+            public const string FamilySentence = "family";
+            public const string BookList = "Book List";
+            public const string History = "History";
+            public const string ChangePassword = "ChangePassword";
+            public const string FreeBookCongratulations = "Congratulations, you've earned a free book!";
+            public const string RedeemYourCode = "Redeem your code";
+            public const string DonateYourBook = "Donate your book";
+            public const string FreeBookCode = "Free book code";
+            public const string AddParticipant = "Add Participant";
+            public const string AddExistingExplanation = "Add an existing participant into your {0}, if that participant is the head of a {0} their {0} members will be moved into your {0} as well.";
+            public const string Delete = "Delete";
+            public const string Cancel = "Cancel";
+            public const string UpgradeToGroup = "Upgrade to group";
+            public const string TotalPoints = "Total Points";
         }
 
         public static class Title
@@ -106,17 +130,26 @@
             public const string SignIn = "Sign in";
             public const string SignInTo = "Sign in to {0}";
             public const string UsernameRecovery = "Username Recovery";
+
+            public const string AddExistingParticipant = "Add Existing Participant";
+            public const string EditBook = "Edit Book";
+            public const string DeleteBook = "Delete Book";
+            public const string Date = "Date";
+            public const string UpdateGroupDetails = "Update group details";
+            public const string UpgradeToGroup = "Upgrade from family to group";
+            public const string BundleItems = "Bundle Items";
+            public const string Activity = "Activity";
+            public const string Badge = "Badge";
+            public const string Points = "Points";
         }
 
         public static class Required
         {
             public const string Branch = "Please select a branch.";
             public const string EmailForSubscription = "To receive email updates please supply an email address to send them to.";
-            public const string Field = "The {0} field is required.";
             public const string JavaScriptWarning = "This website relies on JavaScript. Please enable JavaScript in your browser to get the best experience.";
             public const string ProgramSelection = "Please select a program.";
             public const string SecretCode = "You must enter a code!";
-            public const string Selection = "Please select a value for {0}.";
             public const string System = "Please select a system.";
         }
 
@@ -135,8 +168,6 @@
             public const string EmailPhoneNeededForPrizes = "Email and Phone Number are not required however at least one is needed in order to be eligible for prizes.";
             public const string EmailSubscription = "Please let us know if you would like to receive emails throughout the program.";
             public const string FirstTime = "Please let us know if this is your first time participating in the program.";
-            public const string MaxLength = "The field {0} must be a string or array type with a maximum length of '{1}'.";
-            public const string MinLength = "The field {0} must be a string or array type with a minimum length of '{1}'.";
             public const string NotOpen = "The program is not accepting registrations at this time.";
             public const string NotOpenActivity = "The program is not open for activity at this time.";
             public const string NotOpenSignins = "The program is not accepting sign-ins at this time.";

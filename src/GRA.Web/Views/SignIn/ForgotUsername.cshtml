@@ -9,18 +9,18 @@
                     <div asp-validation-summary="All"></div>
                     <div class="row row-spacing">
                         <div class="col-xs-12">
-                            <label class="control-label">@SharedLocalizer[GRA.DisplayNames.EmailAddress]</label>
+                            <label class="control-label">@SharedLocalizer[GRA.Domain.Model.DisplayNames.EmailAddress]</label>
                             <input name="email" class="form-control input-lg" autofocus />
                         </div>
                     </div>
                 </div>
                 <div class="panel-footer clearfix">
                     <div class="pull-left">
-                        <a asp-action="Index" class="btn btn-default btn-lg">@SharedLocalizer[GRA.DisplayNames.ReturnToSignIn]</a>
+                        <a asp-action="Index" class="btn btn-default btn-lg">@SharedLocalizer[GRA.Domain.Model.DisplayNames.ReturnToSignIn]</a>
                     </div>
                     <div class="pull-right">
                         <button class="btn btn-primary btn-lg">
-                            @SharedLocalizer[GRA.DisplayNames.SendRecoveryEmail]
+                            @SharedLocalizer[GRA.Domain.Model.DisplayNames.SendRecoveryEmail]
                         </button>
                     </div>
                 </div>

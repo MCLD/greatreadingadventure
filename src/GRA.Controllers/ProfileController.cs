@@ -81,7 +81,8 @@ namespace GRA.Controllers
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             base.OnActionExecuting(context);
-            HouseholdTitle = HttpContext.Items[ItemKey.HouseholdTitle] as string ?? "Family";
+            HouseholdTitle = HttpContext.Items[ItemKey.HouseholdTitle] as string
+                ?? GRA.Annotations.Interface.Family;
         }
 
         public async Task<IActionResult> Index()
@@ -158,20 +159,20 @@ namespace GRA.Controllers
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.User.PostalCode))
             {
                 ModelState.AddModelError("User.PostalCode",
-                    _sharedLocalizer[Annotations.Required.Field, 
+                    _sharedLocalizer[ErrorMessages.Field, 
                         _sharedLocalizer[DisplayNames.ZipCode]]);
             }
             if (program.AgeRequired && !model.User.Age.HasValue)
             {
                 ModelState.AddModelError("User.Age",
-                    _sharedLocalizer[Annotations.Required.Field,
+                    _sharedLocalizer[ErrorMessages.Field,
                         _sharedLocalizer[DisplayNames.Age]]);
             }
             if (program.SchoolRequired && !model.SchoolId.HasValue && !model.SchoolNotListed
                 && !model.IsHomeschooled)
             {
                 ModelState.AddModelError("SchoolId",
-                    _sharedLocalizer[Annotations.Required.Field,
+                    _sharedLocalizer[ErrorMessages.Field,
                         _sharedLocalizer[DisplayNames.School]]);
             }
 
@@ -601,7 +602,7 @@ namespace GRA.Controllers
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.User.PostalCode))
             {
                 ModelState.AddModelError("User.PostalCode",
-                    _sharedLocalizer[Annotations.Required.Field,
+                    _sharedLocalizer[ErrorMessages.Field,
                         _sharedLocalizer[DisplayNames.ZipCode]]);
             }
 
@@ -642,14 +643,14 @@ namespace GRA.Controllers
                 if (program.AgeRequired && !model.User.Age.HasValue)
                 {
                     ModelState.AddModelError("User.Age", 
-                        _sharedLocalizer[Annotations.Required.Field,
+                        _sharedLocalizer[ErrorMessages.Field,
                             _sharedLocalizer[DisplayNames.Age]]);
                 }
                 if (program.SchoolRequired && !model.SchoolId.HasValue
                     && !model.SchoolNotListed && !model.IsHomeschooled)
                 {
                     ModelState.AddModelError("SchoolId",
-                        _sharedLocalizer[Annotations.Required.Field,
+                        _sharedLocalizer[ErrorMessages.Field,
                             _sharedLocalizer[DisplayNames.School]]);
                 }
             }
