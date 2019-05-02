@@ -17,6 +17,8 @@
         public const string FirstName = "First Name";
         public const string ForgotPassword = "Forgot your password?";
         public const string ForgotUsername = "Forgot your username?";
+        public const string GroupName = "Group name";
+        public const string GroupType = "Group type";
         public const string Home = "Home";
         public const string Homeschooled = "Homeschooled";
         public const string IsFirstTime = "Is this your first time participating?";
@@ -53,8 +55,5 @@
         public const string Token = "Token";
         public const string Username = "Username";
         public const string ZipCode = "ZIP Code";
-
-        public const string GroupName = "Group name";
-        public const string GroupType = "Group type";
     }
 }

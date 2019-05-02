@@ -957,4 +957,128 @@
     <value>Old Password</value>
     <comment>Prompt a participant for their old password when they want to change their password</comment>
   </data>
+  <data name="Activity" xml:space="preserve">
+    <value>Activity</value>
+    <comment>Title for the participant's activity</comment>
+  </data>
+  <data name="Add an existing participant into your {0}, if that participant is the head of a {0} their {0} members will be moved into your {0} as well." xml:space="preserve">
+    <value>Add an existing participant into your {0}, if that participant is the head of a {0} their {0} members will be moved into your {0} as well.</value>
+    <comment>Explanation of how adding an existing participant into the current participant's Group or Family works. {0} is replaced with either "Family" or "Group"as translated in this file.</comment>
+  </data>
+  <data name="Add Existing Participant" xml:space="preserve">
+    <value>Add Existing Participant</value>
+    <comment>Title for area to add an existing program participant to the current participant's Family or Group</comment>
+  </data>
+  <data name="Add Participant" xml:space="preserve">
+    <value>Add Participant</value>
+    <comment>Button text to add a participant to a Group or Family</comment>
+  </data>
+  <data name="Are you sure you want to delete this book from your book list:" xml:space="preserve">
+    <value>Are you sure you want to delete this book from your book list:</value>
+    <comment>Prompt for the user when they request to delete a book from the list; the book name is specified directly after this message is printed.</comment>
+  </data>
+  <data name="Book list" xml:space="preserve">
+    <value>Book list</value>
+    <comment>Button to view the participant's book list.</comment>
+  </data>
+  <data name="Bundle Items" xml:space="preserve">
+    <value>Bundle Items</value>
+    <comment>Title for a pop-up showing a collection of avatar items awarded as a bundle</comment>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+    <comment>Button text to exit a dialog without saving changes.</comment>
+  </data>
+  <data name="Change Password" xml:space="preserve">
+    <value>Change Password</value>
+    <comment>Button to change the user's password.</comment>
+  </data>
+  <data name="Congratulations, you've earned a free book!" xml:space="preserve">
+    <value>Congratulations, you've earned a free book!</value>
+    <comment>Message to the participant that they've earned a free book.</comment>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Date</value>
+    <comment>Heading or title to display a date</comment>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+    <comment>Button text to delete an item.</comment>
+  </data>
+  <data name="Delete Book" xml:space="preserve">
+    <value>Delete Book</value>
+    <comment>Title to delete a book from the participant's book list</comment>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>Details</value>
+    <comment>Button to view more details about the currently shown record.</comment>
+  </data>
+  <data name="Donate your book" xml:space="preserve">
+    <value>Donate your book</value>
+    <comment>Button text for the participant to donate their book to charity rather than redeem it for personal use.</comment>
+  </data>
+  <data name="Edit Book" xml:space="preserve">
+    <value>Edit Book</value>
+    <comment>Title to edit a book in the participant's book list</comment>
+  </data>
+  <data name="Family" xml:space="preserve">
+    <value>Family</value>
+    <comment>Title shown when viewing a Family of participants. Will also be used in a sentence.</comment>
+  </data>
+  <data name="Free book code" xml:space="preserve">
+    <value>Free book code</value>
+    <comment>Description of the code a customer will use for obtaining their free book that they've earned.</comment>
+  </data>
+  <data name="Group" xml:space="preserve">
+    <value>Group</value>
+    <comment>Title shown when viewing a Group of participants. Will also be used in a sentence.</comment>
+  </data>
+  <data name="Group name" xml:space="preserve">
+    <value>Group name</value>
+    <comment>The name for a group of participants, for example a summer camp name.</comment>
+  </data>
+  <data name="Group type" xml:space="preserve">
+    <value>Group type</value>
+    <comment>The type for a group of participants, for example: summer camp or daycare</comment>
+  </data>
+  <data name="History" xml:space="preserve">
+    <value>History</value>
+    <comment>Button to view the paritcipant's history.</comment>
+  </data>
+  <data name="It appears that you have more than {0} members in your family. We'd like you to convert your family to a group in order to add more members." xml:space="preserve">
+    <value>It appears that you have more than {0} members in your family. We'd like you to convert your family to a group in order to add more members.</value>
+    <comment>The participant is attempting to add an additional user to their family which pushes them over the family/group threshhold to turn them into a group.</comment>
+  </data>
+  <data name="No books logged." xml:space="preserve">
+    <value>No books logged.</value>
+    <comment>Message shown when the book list is viewed with no books in the log.</comment>
+  </data>
+  <data name="No history to display." xml:space="preserve">
+    <value>No history to display.</value>
+    <comment>Message shown when the history is viewed with no entries in the log.</comment>
+  </data>
+  <data name="Points" xml:space="preserve">
+    <value>Points</value>
+    <comment>Title for showing points earned by the participant</comment>
+  </data>
+  <data name="Redeem your code" xml:space="preserve">
+    <value>Redeem your code</value>
+    <comment>Button text for the participant to obtain their code for a free book.</comment>
+  </data>
+  <data name="Total Points" xml:space="preserve">
+    <value>Total Points</value>
+    <comment>Heading shown before the total number of participant's points</comment>
+  </data>
+  <data name="Update Group details" xml:space="preserve">
+    <value>Update Group details</value>
+    <comment>Title for updating group details</comment>
+  </data>
+  <data name="Upgrade from Family to Group" xml:space="preserve">
+    <value>Upgrade from Family to Group</value>
+    <comment>Title for interface to upgrade a Family to a Group</comment>
+  </data>
+  <data name="Upgrade to Group" xml:space="preserve">
+    <value>Upgrade to Group</value>
+    <comment>Button text for upgrading a family to a group</comment>
+  </data>
 </root>

@@ -209,16 +209,10 @@ namespace GRA.Controllers.Filter
                 }
             }
 
-            if(string.IsNullOrEmpty(httpContext.Session.GetString(SessionKey.CallItGroup)))
-            {
-                httpContext.Items[ItemKey.HouseholdTitle] = Annotations.Interface.Family;
-                httpContext.Items[ItemKey.HouseholdSentence] = Annotations.Interface.FamilySentence;
-            }
-            else
-            {
-                httpContext.Items[ItemKey.HouseholdTitle] = Annotations.Interface.Group;
-                httpContext.Items[ItemKey.HouseholdSentence] = Annotations.Interface.GroupSentence;
-            }
+            httpContext.Items[ItemKey.HouseholdTitle]
+                = string.IsNullOrEmpty(httpContext.Session.GetString(SessionKey.CallItGroup))
+                ? Annotations.Interface.Family
+                : Annotations.Interface.Group;
 
             if (!string.IsNullOrWhiteSpace(site.ExternalEventListUrl))
             {

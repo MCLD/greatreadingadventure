@@ -232,12 +232,15 @@ namespace GRA.Domain.Service
 
             var subject = post.Title;
 
-            string mailBody = $"A new post has been made to {site.Name} in the {post.CategoryName} category."
+            string mailBody 
+                = $"A new post has been made to {site.Name} in the {post.CategoryName} category."
                 + $"\r\n\r\nView it in Mission Control:\r\n\r\n  {postUrl}";
 
-            string htmlBody = $"<p>A new post has been made to {site.Name} in the "
-                + $"<strong>{post.CategoryName}</strong> category.</p>"
-                + $"<p>View it in <a href=\"{postUrl}\">Mission Control</a>.</p>";
+            string htmlBody = $"<p style=\"font-size: larger; font-family: sans-serif;\">"
+                + $"A new post has been made to {site.Name} in the <a href=\"{postUrl}\">"
+                + $"<strong>{post.CategoryName}</strong></a> category.</p>"
+                + "<p style=\"font-size: larger; font-family: sans-serif;\">View it in "
+                + $"<a href=\"{postUrl}\">Mission Control</a>.</p>";
 
             foreach (var userId in subscribedUserIds)
             {

@@ -112,7 +112,7 @@ namespace GRA.Controllers.MissionControl
             {
                 var postUrl = Url.Action(nameof(HomeController.Index),
                     "Home",
-                    null,
+                    new { category = model.Post.CategoryId },
                     HttpContext.Request.Scheme);
 
                 var post = await _newsService.CreatePostAsync(model.Post, postUrl, model.Publish);
@@ -145,7 +145,7 @@ namespace GRA.Controllers.MissionControl
             {
                 var postUrl = Url.Action(nameof(HomeController.Index),
                     "Home",
-                    null,
+                    new { category = model.Post.CategoryId },
                     HttpContext.Request.Scheme);
 
                 var post = await _newsService.EditPostAsync(model.Post, postUrl, model.Publish);
