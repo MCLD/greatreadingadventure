@@ -349,10 +349,10 @@ namespace GRA.Controllers
                 {
                     ShowAlertDanger(_sharedLocalizer[Annotations.Validate.CouldNotCreate,
                        _sharedLocalizer[gex.Message]]);
-                    if (gex.Message.Contains(nameof(model.Password)))
+                    if (gex.GetType() == typeof(GraPasswordValidationException))
                     {
-                        ModelState.AddModelError(DisplayNames.Password,
-                            Annotations.Validate.PasswordIssue);
+                        ModelState.AddModelError(nameof(model.Password),
+                            _sharedLocalizer[Annotations.Validate.PasswordIssue]);
                     }
                 }
             }
@@ -828,10 +828,10 @@ namespace GRA.Controllers
                 {
                     ShowAlertDanger(_sharedLocalizer[Annotations.Validate.CouldNotCreate,
                        _sharedLocalizer[gex.Message]]);
-                    if (gex.Message.Contains(nameof(model.Password)))
+                    if (gex.GetType() == typeof(GraPasswordValidationException))
                     {
-                        ModelState.AddModelError(DisplayNames.Password,
-                            Annotations.Validate.PasswordIssue);
+                        ModelState.AddModelError(nameof(model.Password),
+                            _sharedLocalizer[Annotations.Validate.PasswordIssue]);
                     }
                 }
             }

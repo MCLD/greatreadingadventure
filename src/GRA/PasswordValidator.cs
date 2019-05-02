@@ -58,7 +58,7 @@ namespace GRA
             }
             if (errors.Length > 0)
             {
-                throw new GraException(errors.ToString());
+                throw new GraPasswordValidationException(errors.ToString());
             }
         }
 

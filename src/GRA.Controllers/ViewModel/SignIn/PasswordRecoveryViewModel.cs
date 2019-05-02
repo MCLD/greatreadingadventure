@@ -1,27 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GRA.Controllers.ViewModel.SignIn
 {
     public class PasswordRecoveryViewModel
     {
-        [Required]
+        [Required(ErrorMessage = Annotations.Required.Field)]
+        [DisplayName(DisplayNames.Username)]
         public string Username { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = Annotations.Required.Field)]
+        [DisplayName(DisplayNames.Token)]
         public string Token { get; set; }
 
-        [Required]
-        [DisplayName("New Password")]
+        [Required(ErrorMessage = Annotations.Required.Field)]
+        [DisplayName(DisplayNames.NewPassword)]
         public string NewPassword { get; set; }
 
-        [Required]
-        [Compare("NewPassword", ErrorMessage = Annotations.Validate.PasswordsMatch)]
-        [DisplayName("Confirm New Password")]
+        [Required(ErrorMessage = Annotations.Required.Field)]
+        [Compare(nameof(NewPassword), ErrorMessage = Annotations.Validate.PasswordsMatch)]
+        [DisplayName(DisplayNames.ConfirmNewPassword)]
         public string ConfirmPassword { get; set; }
     }
 }
