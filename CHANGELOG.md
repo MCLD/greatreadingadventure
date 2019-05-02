@@ -62,6 +62,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Category empty description null reference exception
 - Viewing daily images on the household page
 - Password recovery validation error handling
+- Challenge task type not being set correctly
 
 ### Removed
 - Recovery error logging at the controller level - it's logged in the service

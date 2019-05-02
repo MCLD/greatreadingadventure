@@ -325,12 +325,14 @@ namespace GRA.Domain.Service
                 throw new Exception("Permission denied.");
             }
         }
+
         public async Task<ChallengeTask> AddTaskAsync(ChallengeTask task, byte[] fileBytes = null)
         {
             int authUserId = GetClaimId(ClaimType.UserId);
             if (HasPermission(Permission.EditChallenges))
             {
                 var newTask = await _challengeTaskRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), task);
+                newTask.ChallengeTaskType = task.ChallengeTaskType;
                 if (fileBytes != null)
                 {
                     newTask.Filename = WriteTaskFile(newTask, fileBytes);

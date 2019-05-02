@@ -79,36 +79,40 @@
                                 <div class="task-description">
                                     @if (Model.Tasks[i].TaskType == "Book")
                                     {
-                                        string title = Model.Tasks[i].Title;
-                                        if (!string.IsNullOrEmpty(Model.Tasks[i].Url))
-                                        {
-                                            if (string.IsNullOrEmpty(Model.Tasks[i].Author))
-                                            {
-                                                @SharedHtmlLocalizer[GRA.Annotations.Info.ChallengeBookLinkTitle,
-                                                    Model.Tasks[i].Url,
-                                                    Model.Tasks[i].Title];
+                                        <div>
+                                            @{
+                                                string title = Model.Tasks[i].Title;
+                                                if (!string.IsNullOrEmpty(Model.Tasks[i].Url))
+                                                {
+                                                    if (string.IsNullOrEmpty(Model.Tasks[i].Author))
+                                                    {
+                                                        @SharedHtmlLocalizer[GRA.Annotations.Info.ChallengeBookLinkTitle,
+                                                            Model.Tasks[i].Url,
+                                                            Model.Tasks[i].Title];
+                                                    }
+                                                    else
+                                                    {
+                                                        @SharedHtmlLocalizer[GRA.Annotations.Info.ChallengeBookLinkTitleAuthor,
+                                                            Model.Tasks[i].Url,
+                                                            Model.Tasks[i].Title,
+                                                            Model.Tasks[i].Author];
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    if (string.IsNullOrEmpty(Model.Tasks[i].Author))
+                                                    {
+                                                        @SharedHtmlLocalizer[GRA.Annotations.Info.ChallengeBookTitle,
+                                                            Model.Tasks[i].Title];
+                                                    }
+                                                    else
+                                                    {
+                                                        @SharedHtmlLocalizer[GRA.Annotations.Info.ChallengeBookTitleAuthor,
+                                                            Model.Tasks[i].Author];
+                                                    }
+                                                }
                                             }
-                                            else
-                                            {
-                                                @SharedHtmlLocalizer[GRA.Annotations.Info.ChallengeBookLinkTitleAuthor,
-                                                    Model.Tasks[i].Url,
-                                                    Model.Tasks[i].Title,
-                                                    Model.Tasks[i].Author];
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (string.IsNullOrEmpty(Model.Tasks[i].Author))
-                                            {
-                                                @SharedHtmlLocalizer[GRA.Annotations.Info.ChallengeBookTitle,
-                                                    Model.Tasks[i].Title];
-                                            }
-                                            else
-                                            {
-                                                @SharedHtmlLocalizer[GRA.Annotations.Info.ChallengeBookTitleAuthor,
-                                                    Model.Tasks[i].Author];
-                                            }
-                                        }
+                                        </div>
                                     }
                                     else
                                     {
