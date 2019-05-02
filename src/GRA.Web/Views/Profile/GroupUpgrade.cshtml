@@ -5,13 +5,11 @@
             <input asp-for="AddExisting" type="hidden" />
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Upgrade from family to group</h3>
+                    <h3 class="panel-title">@SharedLocalizer[GRA.Annotations.Title.UpgradeToGroup]</h3>
                 </div>
                 <div class="panel-body">
                     <p>
-                        It appears that you have more than @Model.MaximumHouseholdAllowed members in
-                        your family. We'd like you to convert your family to a group in order to
-                        add more members.
+                        @SharedLocalizer[GRA.Annotations.Info.UpgradeToGroupDescription, Model.MaximumHouseholdAllowed]
                     </p>
                     <div class="form-group">
                         <label asp-for="GroupInfo.Name" class="control-label"></label>
@@ -29,14 +27,14 @@
                 <div class="panel-footer clearfix">
                     <div class="pull-right">
                         <a class="btn btn-danger" asp-action="CancelGroupUpgrade">
-                            <span class="buttonText">Cancel</span>
+                            <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.Cancel]</span>
                         </a>
                         <button type="submit"
                                 id="Submit"
                                 name="Submit"
                                 value="Submit"
                                 class="btn btn-primary btn-spinner">
-                            <span class="buttonText">Upgrade to group</span>
+                            <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.UpgradeToGroup]</span>
                             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                         </button>
                     </div>

@@ -15,11 +15,11 @@ namespace GRA.Controllers.ViewModel.Home
 
         public int? ActivityAmount { get; set; }
 
-        [MaxLength(500, ErrorMessage = Annotations.Validate.MinLength)]
+        [MaxLength(500, ErrorMessage = ErrorMessages.MinLength)]
         [DisplayName(DisplayNames.Title)]
         public string Title { get; set; }
 
-        [MaxLength(255, ErrorMessage = Annotations.Validate.MinLength)]
+        [MaxLength(255, ErrorMessage = ErrorMessages.MinLength)]
         [DisplayName(DisplayNames.Author)]
         public string Author { get; set; }
 

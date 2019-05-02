@@ -32,8 +32,8 @@ namespace GRA
                 try
                 {
                     string filename = Path.GetFileName(supportFile);
-                    File.Copy(supportFile, Path.Combine(sharedViewsPath, filename));
-                    File.Copy(supportFile, Path.Combine(templatePath, filename));
+                    File.Copy(supportFile, Path.Combine(sharedViewsPath, filename), true);
+                    File.Copy(supportFile, Path.Combine(templatePath, filename), true);
                 }
                 catch (Exception ex)
                 {

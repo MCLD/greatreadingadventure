@@ -1,13 +1,14 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using GRA.Controllers.ViewModel.Shared;
+using GRA.Domain.Model;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GRA.Controllers.ViewModel.Join
 {
     public class Step2ViewModel : SchoolSelectionViewModel
     {
-        [Required(ErrorMessage = Annotations.Required.Selection)]
+        [Required(ErrorMessage = ErrorMessages.Selection)]
         [DisplayName(DisplayNames.Program)]
         [Range(0, int.MaxValue, ErrorMessage = Annotations.Required.ProgramSelection)]
         public int? ProgramId { get; set; }

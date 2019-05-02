@@ -49,12 +49,21 @@ namespace GRA.Domain.Service
             var user = await _userRepository.GetByIdAsync(userId);
             var site = await _siteRepository.GetByIdAsync(user.SiteId);
 
-            await SendEmailAsync(site,
-                user.Email,
-                subject,
-                body,
-                htmlBody,
-                user.FullName);
+            if (!string.IsNullOrEmpty(user.Email))
+            {
+                await SendEmailAsync(site,
+                    user.Email,
+                    subject,
+                    body,
+                    htmlBody,
+                    user.FullName);
+            }
+            else
+            {
+                _logger.LogError("Unable to send email to user {userId} with subject {subject}: no email address configured.",
+                    userId,
+                    subject);
+            }
         }
 
         public async Task SendEmailToAddressAsync(int siteId, string emailAddress, string subject,
@@ -131,7 +140,11 @@ namespace GRA.Domain.Service
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"Unable to send email: {ex.Message}");
+                    _logger.LogError(ex, 
+                        "Unable to send email to {emailAddress} with subject {subject}: {Message}",
+                        emailAddress,
+                        subject,
+                        ex.Message);
                     throw new GraException("Unable to send email.", ex);
                 }
                 await client.DisconnectAsync(true);

@@ -1329,8 +1329,11 @@ namespace GRA.Domain.Service
         {
             int authUserId = GetClaimId(ClaimType.UserId);
             var authUser = await _userRepository.GetByIdAsync(authUserId);
-            authUser.Culture = cultureName;
-            await _userRepository.UpdateSaveNoAuditAsync(authUser);
+            if (authUser != null)
+            {
+                authUser.Culture = cultureName;
+                await _userRepository.UpdateSaveNoAuditAsync(authUser);
+            }
         }
 
         public async Task<int> GetSystemUserId()

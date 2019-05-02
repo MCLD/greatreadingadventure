@@ -1,51 +1,52 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using GRA.Controllers.ViewModel.Shared;
+using GRA.Domain.Model;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GRA.Controllers.ViewModel.Join
 {
     public class SinglePageViewModel : SchoolSelectionViewModel
     {
-        [Required(ErrorMessage = Annotations.Required.Field)]
+        [Required(ErrorMessage = ErrorMessages.Field)]
         [DisplayName(DisplayNames.Username)]
-        [MaxLength(36, ErrorMessage = Annotations.Validate.MaxLength)]
+        [MaxLength(36, ErrorMessage = ErrorMessages.MaxLength)]
         public string Username { get; set; }
 
-        [Required(ErrorMessage = Annotations.Required.Field)]
+        [Required(ErrorMessage = ErrorMessages.Field)]
         [DisplayName(DisplayNames.Password)]
         public string Password { get; set; }
 
-        [Required(ErrorMessage = Annotations.Required.Field)]
+        [Required(ErrorMessage = ErrorMessages.Field)]
         [Compare(nameof(Password), ErrorMessage = Annotations.Validate.PasswordsMatch)]
         [DisplayName(DisplayNames.ConfirmPassword)]
         public string ConfirmPassword { get; set; }
 
-        [Required(ErrorMessage = Annotations.Required.Field)]
+        [Required(ErrorMessage = ErrorMessages.Field)]
         [DisplayName(DisplayNames.FirstName)]
-        [MaxLength(255, ErrorMessage = Annotations.Validate.MaxLength)]
+        [MaxLength(255, ErrorMessage = ErrorMessages.MaxLength)]
         public string FirstName { get; set; }
 
-        [Required(ErrorMessage = Annotations.Required.Field)]
+        [Required(ErrorMessage = ErrorMessages.Field)]
         [DisplayName(DisplayNames.LastName)]
-        [MaxLength(255, ErrorMessage = Annotations.Validate.MaxLength)]
+        [MaxLength(255, ErrorMessage = ErrorMessages.MaxLength)]
         public string LastName { get; set; }
 
         [DisplayName(DisplayNames.ZipCode)]
-        [MaxLength(32, ErrorMessage = Annotations.Validate.MaxLength)]
+        [MaxLength(32, ErrorMessage = ErrorMessages.MaxLength)]
         public string PostalCode { get; set; }
 
-        [Required(ErrorMessage = Annotations.Required.Selection)]
+        [Required(ErrorMessage = ErrorMessages.Selection)]
         [DisplayName(DisplayNames.System)]
         [Range(0, int.MaxValue, ErrorMessage = Annotations.Required.System)]
         public int? SystemId { get; set; }
 
-        [Required(ErrorMessage = Annotations.Required.Selection)]
+        [Required(ErrorMessage = ErrorMessages.Selection)]
         [DisplayName(DisplayNames.Branch)]
         [Range(0, int.MaxValue, ErrorMessage = Annotations.Required.Branch)]
         public int? BranchId { get; set; }
 
-        [Required(ErrorMessage = Annotations.Required.Selection)]
+        [Required(ErrorMessage = ErrorMessages.Selection)]
         [DisplayName(DisplayNames.Program)]
         [Range(0, int.MaxValue, ErrorMessage = Annotations.Required.ProgramSelection)]
         public int? ProgramId { get; set; }
@@ -55,12 +56,12 @@ namespace GRA.Controllers.ViewModel.Join
 
         [DisplayName(DisplayNames.EmailAddress)]
         [EmailAddress(ErrorMessage = Annotations.Validate.Email)]
-        [MaxLength(254, ErrorMessage = Annotations.Validate.MaxLength)]
+        [MaxLength(254, ErrorMessage = ErrorMessages.MaxLength)]
         public string Email { get; set; }
 
         [DisplayName(DisplayNames.PhoneNumber)]
         [Phone(ErrorMessage = Annotations.Validate.Phone)]
-        [MaxLength(15, ErrorMessage = Annotations.Validate.MaxLength)]
+        [MaxLength(15, ErrorMessage = ErrorMessages.MaxLength)]
         public string PhoneNumber { get; set; }
 
         public bool RequirePostalCode { get; set; }

@@ -470,7 +470,7 @@
     <comment>Text of the button used to validate an Authorization Code</comment>
   </data>
   <data name="Welcome &lt;strong&gt;{0}!&lt;/strong&gt;" xml:space="preserve">
-    <value>Bienvenido &lt;strong&gt;{0}!&lt;/strong&gt;</value>
+    <value>¡Bienvenido &lt;strong&gt;{0}!&lt;/strong&gt;</value>
     <comment>Dashboard friendly greeting, {0} is the participant's first name</comment>
   </data>
   <data name="Yes" xml:space="preserve">
@@ -698,15 +698,15 @@
     <comment>Column heading showing many points a participant will earn for completing a task</comment>
   </data>
   <data name="Add a calendar reminder" xml:space="preserve">
-    <value>Agregar un recordatorio en el calendario</value>
+    <value>Añadir un aviso de calendario</value>
     <comment>Landing page button to download a calendar reminder file (when opened it will add a calendar reminder on the visitor's computer)</comment>
   </data>
   <data name="For more information about this reading program, visit your local library!" xml:space="preserve">
-    <value>¡Para más información sobre este programa de lectura, visite su biblioteca local!</value>
+    <value>¡Para más información sobre este programa de lectura de verano, visite a su biblioteca local!</value>
     <comment>Landing page call to action for learning more</comment>
   </data>
   <data name="Reading for 20 minutes a day helps build a strong lifelong reading habit." xml:space="preserve">
-    <value>Leer 20 minutos al día ayuda a desarrollar un fuerte hábito de lectura para toda la vida.</value>
+    <value>Leer 20 minutos al día ayuda a desarrollar un fuerte hábito de lectura para toda la vida</value>
     <comment>Landing page message to encourage reading 20 minutes a day.</comment>
   </data>
   <data name="Remind Me!" xml:space="preserve">
@@ -729,5 +729,37 @@ Hogwarts, Narnia, Oz, y el centro de la tierra!</value>
   <data name="Reading is fundamental for developing literacy skills!" xml:space="preserve">
     <value>¡La lectura es fundamental para desarrollar las habilidades de alfabetización!</value>
     <comment>Landing page message informing that reading is fundamental for developing literacy skills.</comment>
+  </data>
+  <data name="Join to get started on your reading adventure!" xml:space="preserve">
+    <value>¡Únete para comenzar tu aventura de lectura!</value>
+    <comment>Landing page text encouraging registration once the program has started.</comment>
+  </data>
+  <data name="Our program starts soon but you can join now to be ready to go when the program starts!" xml:space="preserve">
+    <value>¡Nuestro programa comienza pronto, pero puede unirse ahora para estar listo para comenzar cuando comience el programa!</value>
+    <comment>Landing page text encouraging registration once registration is open but prior to the program start date.</comment>
+  </data>
+  <data name="Thanks for participating in {0}. You can still sign in to review your history and achievements." xml:space="preserve">
+    <value>Gracias por participar en {0}. Todavía puede acceder a revisar su historia y logros.</value>
+    <comment>Landing page text thanking visitors for participating after the program has ended when they can still log in to see their history and achievements.</comment>
+  </data>
+  <data name="Welcome to {0}." xml:space="preserve">
+    <value>Bienvenido a {0}</value>
+    <comment>Landing page welcome text; {0} is replaced with the name of the site.</comment>
+  </data>
+  <data name="When the program starts, you'll be able to join right here. Come back soon!" xml:space="preserve">
+    <value>Cuando empiece el programa, podrás unirte aquí. ¡Vuelve pronto!</value>
+    <comment>Landing page message to show visitors when the start date of the program isn't specified.</comment>
+  </data>
+  <data name="Would you like a reminder email for our next reading program? Enter your email address below and click the 'Remind me' button and we'll send you a reminder when you can join." xml:space="preserve">
+    <value>¿Desea recibir un recordatorio por correo electrónico para nuestro próximo programa de lectura? Introduzca su dirección de correo electrónico a continuación y haga clic en el botón de ‘Recuérdame' y te enviaremos un recordatorio cuando puedas unirte.</value>
+    <comment>Landing page text asking if visitors want a reminder for the next program.</comment>
+  </data>
+  <data name="You must enter a code!" xml:space="preserve">
+    <value>¡Debes introducir un código!</value>
+    <comment>Validation prompt if the user clicked the secret code submission button without entering a secret code.</comment>
+  </data>
+  <data name="Family" xml:space="preserve">
+    <value>Familia</value>
+    <comment>Famiy [remove]</comment>
   </data>
 </root>

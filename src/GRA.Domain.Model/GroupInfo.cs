@@ -7,16 +7,21 @@ namespace GRA.Domain.Model
     {
         [Required]
         public int UserId { get; set; }
+
         public User User { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = ErrorMessages.Field)]
+        [DisplayName(DisplayNames.GroupName)]
         [MaxLength(255)]
-        [DisplayName("Group name")]
         public string Name { get; set; }
-        [Required]
-        [DisplayName("Group type")]
+
+        [Required(ErrorMessage = ErrorMessages.Field)]
+        [DisplayName(DisplayNames.GroupType)]
         public int GroupTypeId { get; set; }
+
         public GroupType GroupType { get; set; }
-        [DisplayName("Group type")]
+
+        [DisplayName(DisplayNames.GroupType)]
         public string GroupTypeName { get; set; }
     }
 }

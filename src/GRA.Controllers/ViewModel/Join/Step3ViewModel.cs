@@ -1,33 +1,34 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using GRA.Domain.Model;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GRA.Controllers.ViewModel.Join
 {
     public class Step3ViewModel
     {
-        [Required(ErrorMessage = Annotations.Required.Field)]
+        [Required(ErrorMessage = ErrorMessages.Field)]
         [DisplayName(DisplayNames.Username)]
-        [MaxLength(36, ErrorMessage = Annotations.Validate.MaxLength)]
+        [MaxLength(36, ErrorMessage = ErrorMessages.MaxLength)]
         public string Username { get; set; }
 
-        [Required(ErrorMessage = Annotations.Required.Field)]
+        [Required(ErrorMessage = ErrorMessages.Field)]
         [DisplayName(DisplayNames.Password)]
         public string Password { get; set; }
 
-        [Required(ErrorMessage = Annotations.Required.Field)]
+        [Required(ErrorMessage = ErrorMessages.Field)]
         [Compare(nameof(Password), ErrorMessage = Annotations.Validate.PasswordsMatch)]
         [DisplayName(DisplayNames.ConfirmPassword)]
         public string ConfirmPassword { get; set; }
 
         [DisplayName(DisplayNames.EmailAddress)]
         [EmailAddress(ErrorMessage = Annotations.Validate.Email)]
-        [MaxLength(254, ErrorMessage = Annotations.Validate.MaxLength)]
+        [MaxLength(254, ErrorMessage = ErrorMessages.MaxLength)]
         public string Email { get; set; }
 
         [DisplayName(DisplayNames.PhoneNumber)]
         [Phone(ErrorMessage = Annotations.Validate.Phone)]
-        [MaxLength(15, ErrorMessage = Annotations.Validate.MaxLength)]
+        [MaxLength(15, ErrorMessage = ErrorMessages.MaxLength)]
         public string PhoneNumber { get; set; }
 
         public SelectList AskFirstTime { get; set; }

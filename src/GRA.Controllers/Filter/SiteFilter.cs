@@ -211,8 +211,8 @@ namespace GRA.Controllers.Filter
 
             httpContext.Items[ItemKey.HouseholdTitle]
                 = string.IsNullOrEmpty(httpContext.Session.GetString(SessionKey.CallItGroup))
-                ? "Family"
-                : "Group";
+                ? Annotations.Interface.Family
+                : Annotations.Interface.Group;
 
             if (!string.IsNullOrWhiteSpace(site.ExternalEventListUrl))
             {
