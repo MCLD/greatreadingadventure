@@ -16,6 +16,8 @@ namespace GRA.Controllers
         private readonly ILogger<MailController> _logger;
         private readonly MailService _mailService;
 
+        public static string Name { get { return "Mail"; } }
+
         public MailController(ILogger<MailController> logger,
             ServiceFacade.Controller context,
             MailService mailService) : base(context)

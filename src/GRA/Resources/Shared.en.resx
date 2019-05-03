@@ -1081,4 +1081,16 @@
     <value>Upgrade to Group</value>
     <comment>Button text for upgrading a family to a group</comment>
   </data>
+  <data name="If you can't find something, please &lt;a href=\&quot;{0}\&quot;&gt;send us a mail&lt;/a&gt; and let us know what you were looking for, we'll do our best to help." xml:space="preserve">
+    <value>If you can't find something, please &lt;a href=\"{0}\"&gt;send us a mail&lt;/a&gt; and let us know what you were looking for, we'll do our best to help.</value>
+    <comment>Ask participant to use the in-software mail facility to contact site owners if they require assistance; {0} will be replaced automatically with the URL to the mail facility.</comment>
+  </data>
+  <data name="Page not found" xml:space="preserve">
+    <value>Page not found</value>
+    <comment>Page title and header for 404 not found error.</comment>
+  </data>
+  <data name="We couldn't find what you were looking for. Sorry about that!" xml:space="preserve">
+    <value>We couldn't find what you were looking for. Sorry about that!</value>
+    <comment>Explain to user a 404 not found error.</comment>
+  </data>
 </root>

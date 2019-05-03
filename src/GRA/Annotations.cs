@@ -32,9 +32,11 @@
             public const string CompleteTasksEarnPointsBadge = "When you complete <strong>{0}</strong>, you will earn <strong>{1}</strong> and a badge.";
             public const string CompletedOnDate = "Completed on: {0}";
             public const string ConfirmBookDelete = "Are you sure you want to delete this book from your book list:";
+            public const string CouldNotFind = "We couldn't find what you were looking for. Sorry about that!";
             public const string EventLimitedToProgram = "This event is limited to the program: {0}";
             public const string Goal = "The goal of this program is {0} points.";
             public const string LetYouKnowWhen = "Thanks! We'll let you know when you can join the program.";
+            public const string MailForHelp = "If you can't find something, please <a href=\"{0}\">send us a mail</a> and let us know what you were looking for, we'll do our best to help.";
             public const string NoBooksLogged = "No books logged.";
             public const string NoHistory = "No history to display.";
             public const string PasswordRecoverySent = "A password recovery email has been sent to the email for username '{0}'.";
@@ -128,6 +130,7 @@
             public const string ForgotPassword = "Forgot Password";
             public const string Join = "Join";
             public const string JoinNow = "{0} - Join Now!";
+            public const string PageNotFound = "Page not found";
             public const string Points = "Points";
             public const string RegistrationOpens = "{0} - registration opens {1}";
             public const string ShareYourAvatar = "Share Your Avatar";
