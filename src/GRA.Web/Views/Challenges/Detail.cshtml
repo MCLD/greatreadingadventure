@@ -37,13 +37,13 @@
                             <p>
                                 @if (Model.IsBadgeEarning)
                                 {
-                                    @SharedHtmlLocalizer[GRA.Annotations.Info.CompleteTasksEarnPoints,
+                                    @SharedHtmlLocalizer[GRA.Annotations.Info.CompleteTasksEarnPointsBadge,
                                         Model.TaskCountAndDescription,
                                         Model.PointCountAndDescription]
                                 }
                                 else
                                 {
-                                    @SharedHtmlLocalizer[GRA.Annotations.Info.CompleteTasksEarnPointsBadge,
+                                    @SharedHtmlLocalizer[GRA.Annotations.Info.CompleteTasksEarnPoints,
                                         Model.TaskCountAndDescription,
                                         Model.PointCountAndDescription]
                                 }
@@ -108,6 +108,7 @@
                                                     else
                                                     {
                                                         @SharedHtmlLocalizer[GRA.Annotations.Info.ChallengeBookTitleAuthor,
+                                                            Model.Tasks[i].Title,
                                                             Model.Tasks[i].Author];
                                                     }
                                                 }

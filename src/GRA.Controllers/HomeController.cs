@@ -381,7 +381,7 @@ namespace GRA.Controllers
             }
             catch (GraException gex)
             {
-                TempData[SecretCodeMessage] = _sharedLocalizer[gex.Message];
+                TempData[SecretCodeMessage] = gex.Message;
             }
             return RedirectToAction(nameof(Index));
         }
