@@ -4,6 +4,7 @@
     {
         public const string Age = "Age";
         public const string Author = "Author";
+        public const string Body = "Mail message";
         public const string Branch = "Branch";
         public const string Category = "Category";
         public const string Challenges = "Challenges";
@@ -49,6 +50,7 @@
         public const string SignIn = "Sign in";
         public const string SignOut = "Sign out";
         public const string StartDate = "Start Date";
+        public const string Subject = "Subject";
         public const string System = "System";
         public const string Title = "Title";
         public const string ToggleNavigation = "Toggle navigation";

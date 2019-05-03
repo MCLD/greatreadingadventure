@@ -10,7 +10,7 @@ namespace GRA.Controllers.ViewModel.Join
     {
         [Required(ErrorMessage = ErrorMessages.Selection)]
         [DisplayName(DisplayNames.Program)]
-        [Range(0, int.MaxValue, ErrorMessage = Annotations.Required.ProgramSelection)]
+        [Range(0, int.MaxValue, ErrorMessage = ErrorMessages.FieldProgram)]
         public int? ProgramId { get; set; }
 
         [DisplayName(DisplayNames.Age)]

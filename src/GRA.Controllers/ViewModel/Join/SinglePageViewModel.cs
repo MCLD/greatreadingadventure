@@ -38,17 +38,17 @@ namespace GRA.Controllers.ViewModel.Join
 
         [Required(ErrorMessage = ErrorMessages.Selection)]
         [DisplayName(DisplayNames.System)]
-        [Range(0, int.MaxValue, ErrorMessage = Annotations.Required.System)]
+        [Range(0, int.MaxValue, ErrorMessage = ErrorMessages.FieldSystem)]
         public int? SystemId { get; set; }
 
         [Required(ErrorMessage = ErrorMessages.Selection)]
         [DisplayName(DisplayNames.Branch)]
-        [Range(0, int.MaxValue, ErrorMessage = Annotations.Required.Branch)]
+        [Range(0, int.MaxValue, ErrorMessage = ErrorMessages.FieldBranch)]
         public int? BranchId { get; set; }
 
         [Required(ErrorMessage = ErrorMessages.Selection)]
         [DisplayName(DisplayNames.Program)]
-        [Range(0, int.MaxValue, ErrorMessage = Annotations.Required.ProgramSelection)]
+        [Range(0, int.MaxValue, ErrorMessage = ErrorMessages.FieldProgram)]
         public int? ProgramId { get; set; }
 
         [DisplayName(DisplayNames.Age)]

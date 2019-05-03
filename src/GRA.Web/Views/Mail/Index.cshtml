@@ -11,6 +11,7 @@
             .nojs-hide {
                 display: none;
             }
+
             .nojs-show {
                 display: table-cell;
             }
@@ -22,14 +23,16 @@
     <div class="col-xs-12 col-sm-10 col-sm-offset-1">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <span class="lead">Mail</span>
+                <span class="lead">@SharedLocalizer[GRA.Domain.Model.DisplayNames.Mail]</span>
             </div>
             <div class="panel-body">
                 <div class="row">
                     <div class="col-xs-12">
                         @if (Model.Mail.Count() == 0)
                         {
-                            <div class="alert alert-warning">No Mail</div>
+                            <div class="alert alert-warning">
+                                @SharedLocalizer[GRA.Annotations.Interface.NoMail]
+                            </div>
                         }
                         else
                         {
@@ -37,8 +40,8 @@
                                 <table class="table table-condensed table-bordered link-table">
                                     <thead>
                                         <tr>
-                                            <th>Date</th>
-                                            <th>Subject</th>
+                                            <th>@SharedLocalizer[GRA.Annotations.Title.Date]</th>
+                                            <th>@SharedLocalizer[GRA.Annotations.Title.Subject]</th>
                                             <th class="nojs-show">&nbsp;</th>
                                         </tr>
                                     </thead>
@@ -50,14 +53,18 @@
                                                     <noscript>
                                                         @mail.CreatedAt.ToString("d")
                                                     </noscript>
-                                                    <a asp-action="Read" asp-route-id="@mail.Id" class="rowlink nojs-hide">
+                                                    <a asp-action="Read"
+                                                       asp-route-id="@mail.Id"
+                                                       class="rowlink nojs-hide">
                                                         @mail.CreatedAt.ToString("d")
                                                     </a>
                                                 </td>
                                                 <td>@mail.Subject</td>
                                                 <td class="nojs-show">
-                                                    <a asp-action="Read" asp-route-id="@mail.Id" class="btn btn-default btn-xs">
-                                                        Read
+                                                    <a asp-action="Read"
+                                                       asp-route-id="@mail.Id"
+                                                       class="btn btn-default btn-xs">
+                                                        @SharedLocalizer[GRA.Annotations.Interface.Read]
                                                     </a>
                                                 </td>
                                             </tr>
@@ -70,7 +77,7 @@
                                 <paginate paginateModel="@Model.PaginateModel"></paginate>
                             }
                         }
-                        <a asp-action="Send" class="btn btn-primary">Send Mail</a>
+                        <a asp-action="Send" class="btn btn-primary">@SharedLocalizer[GRA.Annotations.Interface.SendMail]</a>
                     </div>
                 </div>
             </div>
