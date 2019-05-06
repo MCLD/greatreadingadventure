@@ -1,0 +1,4 @@
+exclude_paths:
+  - src/GRA.Web/wwwroot/lib/*
+  - src/GRA.Data.SQLite/Migrations/*
+  - src/GRA.Data.SqlServer/Migrations/*
