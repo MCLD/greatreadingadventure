@@ -1,20 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+using GRA.Domain.Model;
 
 namespace GRA.Controllers.ViewModel.Mail
 {
     public class MailCreateViewModel
     {
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.Field)]
+        [DisplayName(DisplayNames.Subject)]
         [MaxLength(500)]
         public string Subject { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = ErrorMessages.Field)]
+        [DisplayName(DisplayNames.Body)]
         [MaxLength(2000)]
         public string Body { get; set; }
+
         public int? InReplyToId { get; set; }
+
+        [DisplayName(Annotations.Interface.ReplyTo)]
         public string InReplyToSubject { get; set; }
     }
 }

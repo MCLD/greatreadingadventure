@@ -1081,4 +1081,100 @@
     <value>Upgrade to Group</value>
     <comment>Button text for upgrading a family to a group</comment>
   </data>
+  <data name="If you can't find something, please &lt;a href=\&quot;{0}\&quot;&gt;send us a mail&lt;/a&gt; and let us know what you were looking for, we'll do our best to help." xml:space="preserve">
+    <value>If you can't find something, please &lt;a href=\"{0}\"&gt;send us a mail&lt;/a&gt; and let us know what you were looking for, we'll do our best to help.</value>
+    <comment>Ask participant to use the in-software mail facility to contact site owners if they require assistance; {0} will be replaced automatically with the URL to the mail facility.</comment>
+  </data>
+  <data name="Page not found" xml:space="preserve">
+    <value>Page not found</value>
+    <comment>Page title and header for 404 not found error.</comment>
+  </data>
+  <data name="We couldn't find what you were looking for. Sorry about that!" xml:space="preserve">
+    <value>We couldn't find what you were looking for. Sorry about that!</value>
+    <comment>Explain to user a 404 not found error.</comment>
+  </data>
+  <data name="Are you sure you wish to delete this mail: {0}" xml:space="preserve">
+    <value>Are you sure you wish to delete this mail: {0}</value>
+    <comment>Confirm message deletion, {0} is replaced with the mail subject.</comment>
+  </data>
+  <data name="Back to Mailbox" xml:space="preserve">
+    <value>Back to Mailbox</value>
+    <comment>Button to return to the participant's mailbox</comment>
+  </data>
+  <data name="Delete Mail" xml:space="preserve">
+    <value>Delete Mail</value>
+    <comment>Header for delete mail page/dialog</comment>
+  </data>
+  <data name="Mail message" xml:space="preserve">
+    <value>Mail message</value>
+    <comment>Display prompt for mail content</comment>
+  </data>
+  <data name="Mail sent: {0}" xml:space="preserve">
+    <value>Mail sent: {0}</value>
+    <comment>Inform a participant that their mail was sent, {0} is replaced with the subject of the mail.</comment>
+  </data>
+  <data name="Re: {0}" xml:space="preserve">
+    <value>Re: {0}</value>
+    <comment>The subject of a message is changed to this when it is replied to with {0} replaced with the original subject.</comment>
+  </data>
+  <data name="Read" xml:space="preserve">
+    <value>Read</value>
+    <comment>Button to read a mail.</comment>
+  </data>
+  <data name="Reply" xml:space="preserve">
+    <value>Reply</value>
+    <comment>Button to reply to a mail</comment>
+  </data>
+  <data name="Reply to:" xml:space="preserve">
+    <value>Reply to:</value>
+    <comment>Inform a participant what they are replying to, the subject is output after this message. Should end with an indicator that text follows such as a colon (:)</comment>
+  </data>
+  <data name="Send Mail" xml:space="preserve">
+    <value>Send Mail</value>
+    <comment>Button to send a mail, also used as a page/dialog header</comment>
+  </data>
+  <data name="Send Reply" xml:space="preserve">
+    <value>Send Reply</value>
+    <comment>Button to send a reply to a mail</comment>
+  </data>
+  <data name="Sent to you on {0}" xml:space="preserve">
+    <value>Sent to you on {0}</value>
+    <comment>Inform a participant when a mail was sent to them.</comment>
+  </data>
+  <data name="Subject" xml:space="preserve">
+    <value>Subject</value>
+    <comment>Header/display prompt for a mail subject</comment>
+  </data>
+  <data name="Subject: {0}" xml:space="preserve">
+    <value>Subject: {0}</value>
+    <comment>Show the subject of a mail; {0} is replaced with the mail subject</comment>
+  </data>
+  <data name="There was an issue deleting that mail item." xml:space="preserve">
+    <value>There was an issue deleting that mail item.</value>
+    <comment>Unable to delete a mail due to a software error.</comment>
+  </data>
+  <data name="Unable to read mail: {0}" xml:space="preserve">
+    <value>Unable to read mail: {0}</value>
+    <comment>Unable to display a mail due to a software error, {0} is replaced with the text of the error.</comment>
+  </data>
+  <data name="Unable to reply to mail: {0}" xml:space="preserve">
+    <value>Unable to reply to mail: {0}</value>
+    <comment>Unable to reply to a mail due to a software error, {0} is replaced with the text of the error.</comment>
+  </data>
+  <data name="You currently have no mail." xml:space="preserve">
+    <value>You currently have no mail.</value>
+    <comment>Inform a participant that their mailbox is empty.</comment>
+  </data>
+  <data name="You must select a branch." xml:space="preserve">
+    <value>You must select a branch.</value>
+    <comment>Inform the user they must select a library branch.</comment>
+  </data>
+  <data name="You must select a program." xml:space="preserve">
+    <value>You must select a program.</value>
+    <comment>Inform the user they must select a program.</comment>
+  </data>
+  <data name="You must select a system." xml:space="preserve">
+    <value>You must select a system.</value>
+    <comment>Inform the user they must select a library system.</comment>
+  </data>
 </root>

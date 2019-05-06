@@ -9,7 +9,7 @@ namespace GRA.Domain.Model
         [Required]
         public int SiteId { get; set; }
 
-        [DisplayName("Email Address")]
+        [DisplayName(DisplayNames.EmailAddress)]
         [EmailAddress]
         [MaxLength(254)]
         public string Email { get; set; }
@@ -23,25 +23,25 @@ namespace GRA.Domain.Model
         public bool IsActive { get; set; }
         public DateTime? LastActivityDate { get; set; }
 
-        [DisplayName("Username")]
+        [DisplayName(DisplayNames.Username)]
         [MaxLength(36)]
         public string Username { get; set; }
 
-        [DisplayName("First Name")]
-        [Required]
+        [DisplayName(DisplayNames.FirstName)]
+        [Required(ErrorMessage = ErrorMessages.Field)]
         [MaxLength(255)]
         public string FirstName { get; set; }
 
-        [DisplayName("Last Name")]
+        [DisplayName(DisplayNames.LastName)]
         [MaxLength(255)]
         public string LastName { get; set; }
 
-        [DisplayName("Phone Number")]
+        [DisplayName(DisplayNames.PhoneNumber)]
         [Phone]
         [MaxLength(15)]
         public string PhoneNumber { get; set; }
 
-        [DisplayName("ZIP Code")]
+        [DisplayName(DisplayNames.ZipCode)]
         [MaxLength(32)]
         public string PostalCode { get; set; }
 
@@ -50,18 +50,18 @@ namespace GRA.Domain.Model
 
         public DateTime? LastAccess { get; set; }
 
-        [DisplayName("Branch")]
-        [Range(0, int.MaxValue, ErrorMessage = "The Branch field is required.")]
+        [DisplayName(DisplayNames.Branch)]
+        [Range(0, int.MaxValue, ErrorMessage = ErrorMessages.FieldBranch)]
         public int BranchId { get; set; }
 
-        [DisplayName("System")]
-        [Range(0, int.MaxValue, ErrorMessage = "The System field is required.")]
+        [DisplayName(DisplayNames.System)]
+        [Range(0, int.MaxValue, ErrorMessage = ErrorMessages.FieldSystem)]
         public int SystemId { get; set; }
 
         public int PointsEarned { get; set; }
 
-        [DisplayName("Program")]
-        [Range(0, int.MaxValue, ErrorMessage = "The Program field is required.")]
+        [DisplayName(DisplayNames.Program)]
+        [Range(0, int.MaxValue, ErrorMessage = ErrorMessages.FieldProgram)]
         public int ProgramId { get; set; }
 
         public string StaticAvatarFilename { get; set; }
@@ -78,10 +78,10 @@ namespace GRA.Domain.Model
             }
         }
 
-        [DisplayName("Age")]
+        [DisplayName(DisplayNames.Age)]
         public int? Age { get; set; }
 
-        [DisplayName("School")]
+        [DisplayName(DisplayNames.School)]
         public int? SchoolId { get; set; }
 
         public bool SchoolNotListed { get; set; }
@@ -101,10 +101,10 @@ namespace GRA.Domain.Model
 
         public bool IsEmailSubscribed { get; set; }
 
-        [DisplayName("Is this your first time participating?")]
+        [DisplayName(DisplayNames.IsFirstTime)]
         public bool IsFirstTime { get; set; }
 
-        [DisplayName("Set a personal goal")]
+        [DisplayName(DisplayNames.DailyPersonalGoal)]
         public int? DailyPersonalGoal { get; set; }
 
         public bool IsNewsSubscribed { get; set; }

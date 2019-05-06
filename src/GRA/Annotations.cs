@@ -32,9 +32,11 @@
             public const string CompleteTasksEarnPointsBadge = "When you complete <strong>{0}</strong>, you will earn <strong>{1}</strong> and a badge.";
             public const string CompletedOnDate = "Completed on: {0}";
             public const string ConfirmBookDelete = "Are you sure you want to delete this book from your book list:";
+            public const string CouldNotFind = "We couldn't find what you were looking for. Sorry about that!";
             public const string EventLimitedToProgram = "This event is limited to the program: {0}";
             public const string Goal = "The goal of this program is {0} points.";
             public const string LetYouKnowWhen = "Thanks! We'll let you know when you can join the program.";
+            public const string MailForHelp = "If you can't find something, please <a href=\"{0}\">send us a mail</a> and let us know what you were looking for, we'll do our best to help.";
             public const string NoBooksLogged = "No books logged.";
             public const string NoHistory = "No history to display.";
             public const string PasswordRecoverySent = "A password recovery email has been sent to the email for username '{0}'.";
@@ -62,6 +64,7 @@
             public const string Back = "Back";
             public const string BackToChallenges = "Back to Challenges";
             public const string BackToEventsCommunityExperiences = "Back to Events & Community Experiences";
+            public const string BackToMailbox = "Back to Mailbox";
             public const string Badge = "Badge";
             public const string BookList = "Book List";
             public const string Cancel = "Cancel";
@@ -71,6 +74,7 @@
             public const string Completed = "Completed!";
             public const string DateAtTime = "{0} at {1}";
             public const string Delete = "Delete";
+            public const string DeleteMail = "Are you sure you wish to delete this mail: {0}";
             public const string Details = "Details";
             public const string Distance = "Distance";
             public const string DonateYourBook = "Donate your book";
@@ -85,20 +89,30 @@
             public const string FreeBookCongratulations = "Congratulations, you've earned a free book!";
             public const string Group = "Group";
             public const string History = "History";
+            public const string MailReplyPrefix = "Re: {0}";
+            public const string MailSent = "Mail sent: {0}";
             public const string MoreInformation = "More information";
             public const string MyFavorites = "My Favorites";
             public const string Name = "Name";
             public const string NoChallenges = "No Challenges";
             public const string NoEvents = "No Events";
+            public const string NoMail = "You currently have no mail.";
             public const string PointsYoullEarn = "Points you'll earn";
             public const string ProfileUpdated = "Profile updated.";
             public const string Progress = "Progress";
+            public const string Read = "Read";
             public const string RedeemYourCode = "Redeem your code";
             public const string RelatedChallenge = "Related Challenge";
             public const string RelatedChallenges = "Related Challenges";
+            public const string Reply = "Reply";
+            public const string ReplyTo = "Reply to:";
             public const string Save = "Save";
             public const string SaveMyFavorites = "Save My Favorites";
+            public const string SendMail = "Send Mail";
+            public const string SendReply = "Send Reply";
+            public const string SentOn = "Sent to you on {0}";
             public const string Share = "Share";
+            public const string Subject = "Subject: {0}";
             public const string TotalPoints = "Total Points";
             public const string Unsubscribed = "You are now unsubscribed and will not receive any more emails from {0}.";
             public const string UpgradeToGroup = "Upgrade to Group";
@@ -122,17 +136,21 @@
             public const string CommunityExperiences = "Community Experiences";
             public const string Date = "Date";
             public const string DeleteBook = "Delete Book";
+            public const string DeleteMail = "Delete Mail";
             public const string EditBook = "Edit Book";
             public const string Events = "Events";
             public const string EventsAndCommunityExperiences = "Events & Community Experiences";
             public const string ForgotPassword = "Forgot Password";
             public const string Join = "Join";
             public const string JoinNow = "{0} - Join Now!";
+            public const string PageNotFound = "Page not found";
             public const string Points = "Points";
             public const string RegistrationOpens = "{0} - registration opens {1}";
+            public const string SendMail = "Send Mail";
             public const string ShareYourAvatar = "Share Your Avatar";
             public const string SignIn = "Sign in";
             public const string SignInTo = "Sign in to {0}";
+            public const string Subject = "Subject";
             public const string UpdateGroupDetails = "Update Group details";
             public const string UpgradeToGroup = "Upgrade from Family to Group";
             public const string UsernameRecovery = "Username Recovery";
@@ -140,12 +158,9 @@
 
         public static class Required
         {
-            public const string Branch = "Please select a branch.";
             public const string EmailForSubscription = "To receive email updates please supply an email address to send them to.";
             public const string JavaScriptWarning = "This website relies on JavaScript. Please enable JavaScript in your browser to get the best experience.";
-            public const string ProgramSelection = "Please select a program.";
             public const string SecretCode = "You must enter a code!";
-            public const string System = "Please select a system.";
         }
 
         public static class Validate

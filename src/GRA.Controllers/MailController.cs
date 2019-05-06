@@ -1,12 +1,12 @@
-﻿using GRA.Controllers.ViewModel.Mail;
+﻿using System;
+using System.Threading.Tasks;
+using GRA.Controllers.ViewModel.Mail;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
-using System;
 
 namespace GRA.Controllers
 {
@@ -16,28 +16,31 @@ namespace GRA.Controllers
         private readonly ILogger<MailController> _logger;
         private readonly MailService _mailService;
 
+        public static string Name { get { return "Mail"; } }
+
         public MailController(ILogger<MailController> logger,
             ServiceFacade.Controller context,
             MailService mailService) : base(context)
         {
-            _logger = Require.IsNotNull(logger, nameof(logger));
-            _mailService = Require.IsNotNull(mailService, nameof(mailService));
-            PageTitle = "My Profile";
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
+            PageTitle = "Mail";
         }
 
         public async Task<IActionResult> Index(int page = 1)
         {
-            int take = 15;
+            const int take = 15;
             int skip = take * (page - 1);
             var mailList = await _mailService.GetUserInboxPaginatedAsync(skip, take);
 
-            PaginateViewModel paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel
             {
                 ItemCount = mailList.Count,
                 CurrentPage = page,
                 ItemsPerPage = take
             };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new
@@ -46,7 +49,7 @@ namespace GRA.Controllers
                     });
             }
 
-            MailListViewModel viewModel = new MailListViewModel()
+            var viewModel = new MailListViewModel
             {
                 Mail = mailList.Data,
                 PaginateModel = paginateModel
@@ -71,8 +74,8 @@ namespace GRA.Controllers
             }
             catch (GraException gex)
             {
-                ShowAlertWarning("Unable to read mail: ", gex);
-                return RedirectToAction("Index");
+                ShowAlertWarning(_sharedLocalizer[ErrorMessages.MailUnableToRead, gex.Message]);
+                return RedirectToAction(nameof(Index));
             }
         }
 
@@ -81,9 +84,10 @@ namespace GRA.Controllers
             try
             {
                 var mail = await _mailService.GetParticipantMailAsync(id);
-                MailCreateViewModel viewModel = new MailCreateViewModel()
+                var viewModel = new MailCreateViewModel
                 {
-                    Subject = $"Re: {mail.Subject}",
+                    Subject
+                        = _sharedLocalizer[Annotations.Interface.MailReplyPrefix, mail.Subject],
                     InReplyToId = mail.Id,
                     InReplyToSubject = mail.Subject,
                 };
@@ -91,8 +95,8 @@ namespace GRA.Controllers
             }
             catch (GraException gex)
             {
-                ShowAlertWarning("Unable to reply to mail: ", gex);
-                return RedirectToAction("Index");
+                ShowAlertWarning(_sharedLocalizer[ErrorMessages.MailUnableToReply, gex.Message]);
+                return RedirectToAction(nameof(Index));
             }
         }
 
@@ -101,19 +105,19 @@ namespace GRA.Controllers
         {
             if (model.InReplyToId == null)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
             if (ModelState.IsValid)
             {
-                Mail mail = new Mail()
+                var mail = new Mail
                 {
                     Subject = model.Subject,
                     Body = model.Body,
                     InReplyToId = model.InReplyToId
                 };
                 await _mailService.SendReplyAsync(mail);
-                AlertSuccess = $"Reply \"<strong>{mail.Subject}</strong>\" sent";
-                return RedirectToAction("Index");
+                AlertSuccess = _sharedLocalizer[Annotations.Interface.MailSent, mail.Subject];
+                return RedirectToAction(nameof(Index));
             }
             else
             {
@@ -131,14 +135,14 @@ namespace GRA.Controllers
         {
             if (ModelState.IsValid)
             {
-                Mail mail = new Mail()
+                var mail = new Mail
                 {
                     Subject = model.Subject,
                     Body = model.Body
                 };
                 await _mailService.SendAsync(mail);
-                AlertSuccess = $"Mail \"<strong>{mail.Subject}</strong>\" sent";
-                return RedirectToAction("Index");
+                AlertSuccess = _sharedLocalizer[Annotations.Interface.MailSent, mail.Subject];
+                return RedirectToAction(nameof(Index));
             }
             else
             {
@@ -155,10 +159,14 @@ namespace GRA.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Problem with user {GetActiveUserId()} deleting mail id {id}: {ex.Message}");
-                AlertWarning = "There was an issue deleting that mail item.";
+                _logger.LogError(ex,
+                    "Problem with user {GetActiveUserId} deleting mail id {id}: {Message}",
+                    GetActiveUserId(),
+                    id,
+                    ex.Message);
+                AlertWarning = _sharedLocalizer[ErrorMessages.MailUnableToDelete];
             }
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
     }
 }
