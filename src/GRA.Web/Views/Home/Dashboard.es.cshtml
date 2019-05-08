@@ -102,15 +102,15 @@
                     {
                         <p style="font-size:large">@SharedLocalizer[GRA.Domain.Model.DisplayNames.MyProgress]</p>
                         <div class="progress" style="margin:0px;">
-                            <div class="progress-bar progress-bar-striped@(Model.PercentComplete == 100 ? " progress-bar-success" : "") wide-tooltip" 
-                                    role="progressbar" 
-                                    aria-valuenow="@Model.PercentComplete" 
-                                    aria-valuemin="0" 
-                                    aria-valuemax="100" 
-                                    style="width: @Model.PercentComplete%;" 
-                                    title="@Model.ProgressMessage" 
-                                    data-toggle="tooltip" 
-                                    data-placement="top">
+                            <div class="progress-bar progress-bar-striped@(Model.PercentComplete == 100 ? " progress-bar-success" : "") wide-tooltip"
+                                 role="progressbar"
+                                 aria-valuenow="@Model.PercentComplete"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100"
+                                 style="width: @Model.PercentComplete%;"
+                                 title="@Model.ProgressMessage"
+                                 data-toggle="tooltip"
+                                 data-placement="top">
                                 @Model.PercentComplete%
                             </div>
                         </div>
@@ -128,8 +128,8 @@
             <div class="panel-body text-center">
                 <span class="lead">@SharedHtmlLocalizer["Welcome <strong>{0}!</strong>", Model.FirstName]</span>
                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessPerformerRegistration))
-                    && !Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessMissionControl))
-                    && Model.SiteStage == GRA.Domain.Model.SiteStage.BeforeRegistration)
+                   && !Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessMissionControl))
+                   && Model.SiteStage == GRA.Domain.Model.SiteStage.BeforeRegistration)
                 {
                     <p class="lead" style="padding-top: 2rem;">
                         Welcome, performer! Please click on the theater masks icon at the top of the
@@ -191,7 +191,7 @@
                     <div class="panel-body">
                         <form asp-controller="Home" asp-action="LogActivity" method="post" role="form" class="form-horizontal">
                             <div class="row row-spacing">
-                                <label class="control-label col-sm-7 col-md-5 col-lg-4">@SharedLocalizer["Enter {0} read", Model.ActivityDescriptionPlural]</label>
+                                <label class="control-label col-sm-7 col-md-5 col-lg-4">@SharedLocalizer["Enter {0} read", SharedLocalizer[Model.ActivityDescriptionPlural]]</label>
                                 <div class="col-sm-5 col-md-7 col-lg-8">
                                     <input asp-for="ActivityAmount" type="text" value="@Model.ActivityAmount" class="form-control" />
                                     <span asp-validation-for="ActivityAmount" class="text-danger"></span>
@@ -215,7 +215,7 @@
                             </div>
 
                             <button type="submit" class="btn center-block btn-success btn-lg btn-spinner">
-                                <span class="buttonText">@SharedLocalizer["Log {0}", Model.ActivityDescriptionPlural]</span>
+                                <span class="buttonText">@SharedLocalizer["Log {0}", SharedLocalizer[Model.ActivityDescriptionPlural]]</span>
                                 <span class="fas fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
                         </form>
@@ -402,8 +402,8 @@
             {
                 <text>
                     gtag('event', 'sign_up', {
-                        'Program Name': '@Model.ProgramName',
-                        'First Time Participant': '@Model.FirstTimeParticipant'
+                        'First Time Participant': '@Model.FirstTimeParticipant',
+                        'Program Name': '@Model.ProgramName'
                     });
                 </text>
             }

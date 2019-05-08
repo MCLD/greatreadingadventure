@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using GRA.Controllers.ViewModel.Shared;
+using GRA.Domain.Model;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Participants
@@ -14,43 +15,43 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         [Required]
         public string Password { get; set; }
 
-        [Required]
-        [DisplayName("First Name")]
+        [DisplayName(DisplayNames.FirstName)]
+        [Required(ErrorMessage = ErrorMessages.Field)]
         [MaxLength(255)]
         public string FirstName { get; set; }
 
-        [Required]
-        [DisplayName("Last Name")]
+        [DisplayName(DisplayNames.LastName)]
+        [Required(ErrorMessage = ErrorMessages.Field)]
         [MaxLength(255)]
         public string LastName { get; set; }
 
-        [DisplayName("ZIP Code")]
+        [DisplayName(DisplayNames.ZipCode)]
         [MaxLength(32)]
         public string PostalCode { get; set; }
 
         [Required]
-        [DisplayName("System")]
-        [Range(0, int.MaxValue, ErrorMessage = "The System field is required.")]
+        [DisplayName(DisplayNames.System)]
+        [Range(0, int.MaxValue, ErrorMessage = ErrorMessages.FieldSystem)]
         public int? SystemId { get; set; }
 
         [Required]
-        [DisplayName("Branch")]
-        [Range(0, int.MaxValue, ErrorMessage = "The Branch field is required.")]
+        [DisplayName(DisplayNames.Branch)]
+        [Range(0, int.MaxValue, ErrorMessage = ErrorMessages.FieldBranch)]
         public int? BranchId { get; set; }
 
         [Required]
-        [DisplayName("Program")]
-        [Range(0, int.MaxValue, ErrorMessage = "The Program field is required.")]
+        [DisplayName(DisplayNames.Program)]
+        [Range(0, int.MaxValue, ErrorMessage = ErrorMessages.FieldProgram)]
         public int? ProgramId { get; set; }
 
         public int? Age { get; set; }
 
-        [DisplayName("Email Address")]
+        [DisplayName(DisplayNames.EmailAddress)]
         [EmailAddress]
         [MaxLength(254)]
         public string Email { get; set; }
 
-        [DisplayName("Phone Number")]
+        [DisplayName(DisplayNames.PhoneNumber)]
         [Phone]
         [MaxLength(15)]
         public string PhoneNumber { get; set; }
@@ -66,17 +67,19 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
 
         public SelectList AskFirstTime { get; set; }
 
-        [DisplayName("Is this your first time participating?")]
-        [Required(ErrorMessage = "Please let us know if this is your first time participating in the program")]
+        [DisplayName(DisplayNames.IsFirstTime)]
+        [Required(ErrorMessage = Annotations.Validate.FirstTime)]
         public string IsFirstTime { get; set; }
 
         public SelectList AskEmailSubscription { get; set; }
         public string AskEmailSubscriptionText { get; set; }
-        [Required(ErrorMessage = "Please let us know if you would like to receive emails throughout the program")]
+
+        [Required(ErrorMessage = Annotations.Validate.EmailSubscription)]
         public string EmailSubscriptionRequested { get; set; }
 
-        [DisplayName("Set a personal goal")]
+        [DisplayName(DisplayNames.DailyPersonalGoal)]
         public int? DailyPersonalGoal { get; set; }
+
         public string TranslationDescriptionPastTense { get; set; }
         public string ActivityDescriptionPlural { get; set; }
     }

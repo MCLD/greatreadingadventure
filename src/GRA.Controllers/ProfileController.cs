@@ -40,6 +40,8 @@ namespace GRA.Controllers
 
         private string HouseholdTitle;
 
+        public static string Name { get { return "Profile"; } }
+
         public ProfileController(ILogger<ProfileController> logger,
             ServiceFacade.Controller context,
             ActivityService activityService,
@@ -82,7 +84,7 @@ namespace GRA.Controllers
         {
             base.OnActionExecuting(context);
             HouseholdTitle = HttpContext.Items[ItemKey.HouseholdTitle] as string
-                ?? GRA.Annotations.Interface.Family;
+                ?? Annotations.Interface.Family;
         }
 
         public async Task<IActionResult> Index()
@@ -115,7 +117,9 @@ namespace GRA.Controllers
                 SchoolId = user.SchoolId,
                 IsHomeschooled = user.IsHomeschooled,
                 SchoolNotListed = user.SchoolNotListed,
-                RestrictChangingSystemBranch = (await GetSiteSettingBoolAsync(SiteSettingKey.Users.RestrictChangingSystemBranch)),
+                RestrictChangingSystemBranch = await GetSiteSettingBoolAsync(SiteSettingKey
+                    .Users
+                    .RestrictChangingSystemBranch),
             };
 
             if (viewModel.RestrictChangingSystemBranch)
@@ -128,8 +132,8 @@ namespace GRA.Controllers
                     .Name;
             }
 
-            var (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
-                SiteSettingKey.Users.AskEmailSubPermission);
+            var (askEmailSubscription, askEmailSubscriptionText)
+                = await GetSiteSettingStringAsync(SiteSettingKey.Users.AskEmailSubPermission);
             if (askEmailSubscription)
             {
                 viewModel.AskEmailSubscription = true;
@@ -159,7 +163,7 @@ namespace GRA.Controllers
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.User.PostalCode))
             {
                 ModelState.AddModelError("User.PostalCode",
-                    _sharedLocalizer[ErrorMessages.Field, 
+                    _sharedLocalizer[ErrorMessages.Field,
                         _sharedLocalizer[DisplayNames.ZipCode]]);
             }
             if (program.AgeRequired && !model.User.Age.HasValue)
@@ -182,7 +186,7 @@ namespace GRA.Controllers
                 && string.IsNullOrWhiteSpace(model.User.Email))
             {
                 ModelState.AddModelError("User.Email", " ");
-                ModelState.AddModelError("User.IsEmailSubscribed", 
+                ModelState.AddModelError("User.IsEmailSubscribed",
                     _sharedLocalizer[Annotations.Validate.EmailSubscription]);
             }
 
@@ -253,7 +257,8 @@ namespace GRA.Controllers
             model.BranchList = new SelectList(branchList.ToList(), "Id", "Name");
             model.SystemList = new SelectList(systemList.ToList(), "Id", "Name");
             model.ProgramList = new SelectList(programList.ToList(), "Id", "Name");
-            model.SchoolList = new SelectList(await _schoolService.GetSchoolsAsync(), "Id", "Name");
+            model.SchoolList
+                = new SelectList(await _schoolService.GetSchoolsAsync(), "Id", "Name");
             model.ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject);
             model.RequirePostalCode = site.RequirePostalCode;
             model.ShowAge = program.AskAge;
@@ -328,10 +333,13 @@ namespace GRA.Controllers
                 CanLogActivity = siteStage == SiteStage.ProgramOpen,
                 CanEditHousehold = siteStage == SiteStage.RegistrationOpen
                     || siteStage == SiteStage.ProgramOpen,
-                DisableSecretCode = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable),
+                DisableSecretCode
+                    = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable),
                 ShowVendorCodes = showVendorCodes,
                 PointTranslation = await _pointTranslationService
-                        .GetByProgramIdAsync(authUser.ProgramId, true)
+                        .GetByProgramIdAsync(authUser.ProgramId),
+                LocalizedHouseholdTitle
+                    = _sharedLocalizer[HttpContext.Items[ItemKey.HouseholdTitle].ToString()]
             };
 
             if (groupInfo != null)
@@ -374,9 +382,10 @@ namespace GRA.Controllers
                                     var dailyImageViewModel = new DailyImageViewModel()
                                     {
                                         DailyImageMessage = dailyLiteracyTip.Message,
-                                        DailyImagePath = _pathResolver.ResolveContentPath(imagePath),
+                                        DailyImagePath
+                                            = _pathResolver.ResolveContentPath(imagePath),
                                         IsLarge = dailyLiteracyTip.IsLarge
-                                };
+                                    };
                                     dailyImageDictionary.Add(program.Id, dailyImageViewModel);
                                 }
                             }
@@ -410,7 +419,8 @@ namespace GRA.Controllers
                 .GetByProgramIdAsync(user.ProgramId, true);
             if (model.ActivityAmount < 1 && !model.PointTranslation.IsSingleEvent)
             {
-                TempData[ActivityMessage] = "You must enter an amount!";
+                TempData[ActivityMessage]
+                    = _sharedLocalizer[Annotations.Required.MustEnterAmount].ToString();
             }
             else if (!string.IsNullOrWhiteSpace(model.UserSelection))
             {
@@ -422,13 +432,11 @@ namespace GRA.Controllers
                     .ToList();
                 try
                 {
-                    var activityAmount = 1;
-                    if (!model.PointTranslation.IsSingleEvent)
-                    {
-                        activityAmount = model.ActivityAmount;
-                    }
-                    await _activityService.LogHouseholdActivityAsync(userSelection, activityAmount);
-                    ShowAlertSuccess("Activity applied!");
+                    await _activityService.LogHouseholdActivityAsync(userSelection,
+                        model.PointTranslation.IsSingleEvent
+                            ? 1
+                            : model.ActivityAmount);
+                    ShowAlertSuccess(_sharedLocalizer[Annotations.Interface.ActivityApplied]);
                 }
                 catch (GraException gex)
                 {
@@ -437,7 +445,8 @@ namespace GRA.Controllers
             }
             else
             {
-                TempData[ActivityMessage] = "No members selected.";
+                TempData[ActivityMessage]
+                    = _sharedLocalizer[Annotations.Required.SelectFirst].ToString();
             }
 
             return RedirectToAction(nameof(Household));
@@ -447,7 +456,8 @@ namespace GRA.Controllers
         {
             if (string.IsNullOrWhiteSpace(model.SecretCode))
             {
-                TempData[SecretCodeMessage] = Annotations.Required.SecretCode;
+                TempData[SecretCodeMessage]
+                    = _sharedLocalizer[Annotations.Required.SecretCode].ToString();
             }
             else if (!string.IsNullOrWhiteSpace(model.UserSelection))
             {
@@ -463,11 +473,14 @@ namespace GRA.Controllers
                         .LogHouseholdSecretCodeAsync(userSelection, model.SecretCode);
                     if (codeApplied)
                     {
-                        ShowAlertSuccess("Secret Code applied!");
+                        ShowAlertSuccess(_sharedLocalizer[Annotations
+                            .Interface
+                            .SecretCodeApplied]);
                     }
                     else
                     {
-                        TempData[SecretCodeMessage] = "All selected members have already entered that Secret Code.";
+                        TempData[SecretCodeMessage]
+                            = _sharedLocalizer[Annotations.Validate.CodeAlready].ToString();
                     }
                 }
                 catch (GraException gex)
@@ -477,7 +490,8 @@ namespace GRA.Controllers
             }
             else
             {
-                TempData[SecretCodeMessage] = "No members selected.";
+                TempData[ActivityMessage]
+                    = _sharedLocalizer[Annotations.Required.SelectFirst].ToString();
             }
 
             return RedirectToAction(nameof(Household));
@@ -561,14 +575,15 @@ namespace GRA.Controllers
                 viewModel.ShowSchool = program.AskSchool;
             }
 
-            var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
+            var askIfFirstTime
+                = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
             if (askIfFirstTime)
             {
                 viewModel.AskFirstTime = EmptyNoYes();
             }
 
-            var (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
-                SiteSettingKey.Users.AskEmailSubPermission);
+            var (askEmailSubscription, askEmailSubscriptionText)
+                = await GetSiteSettingStringAsync(SiteSettingKey.Users.AskEmailSubPermission);
             if (askEmailSubscription)
             {
                 viewModel.AskEmailSubscription = EmptyNoYes();
@@ -606,14 +621,15 @@ namespace GRA.Controllers
                         _sharedLocalizer[DisplayNames.ZipCode]]);
             }
 
-            var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
+            var askIfFirstTime
+                = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
             if (!askIfFirstTime)
             {
                 ModelState.Remove(nameof(model.IsFirstTime));
             }
 
-            var (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
-                SiteSettingKey.Users.AskEmailSubPermission);
+            var (askEmailSubscription, askEmailSubscriptionText)
+                = await GetSiteSettingStringAsync(SiteSettingKey.Users.AskEmailSubPermission);
             if (!askEmailSubscription)
             {
                 ModelState.Remove(nameof(model.EmailSubscriptionRequested));
@@ -642,7 +658,7 @@ namespace GRA.Controllers
                 askSchool = program.AskSchool;
                 if (program.AgeRequired && !model.User.Age.HasValue)
                 {
-                    ModelState.AddModelError("User.Age", 
+                    ModelState.AddModelError("User.Age",
                         _sharedLocalizer[ErrorMessages.Field,
                             _sharedLocalizer[DisplayNames.Age]]);
                 }
@@ -695,7 +711,8 @@ namespace GRA.Controllers
                     if (askEmailSubscription)
                     {
                         model.User.IsEmailSubscribed = model.EmailSubscriptionRequested.Equals(
-                            DropDownTrueValue, StringComparison.OrdinalIgnoreCase);
+                            DropDownTrueValue,
+                            StringComparison.OrdinalIgnoreCase);
                     }
                     else
                     {
@@ -718,20 +735,20 @@ namespace GRA.Controllers
                         model.User);
                     await _mailService.SendUserBroadcastsAsync(newMember.Id, false, true);
                     HttpContext.Session.SetString(SessionKey.HeadOfHousehold, "True");
-                    var group = await _userService.GetGroupFromHouseholdHeadAsync(authUser.Id);
-                    if (group == null)
-                    {
-                        AlertSuccess = "Added family member";
-                    }
-                    else
-                    {
-                        AlertSuccess = "Added group member";
-                    }
+                    string groupTypeName
+                        = await _userService.GetGroupFromHouseholdHeadAsync(authUser.Id) == null
+                            ? Annotations.Interface.Family
+                            : Annotations.Interface.Group;
+                    ShowAlertSuccess(
+                        _sharedLocalizer[Annotations.Interface.AddedParticipantGroupFamily,
+                            model.User.FullName,
+                            _sharedLocalizer[groupTypeName]]);
                     return RedirectToAction(nameof(Household));
                 }
                 catch (GraException gex)
                 {
-                    ShowAlertDanger("Unable to add member: ", gex);
+                    ShowAlertDanger(
+                        _sharedLocalizer[Annotations.Validate.UnableToAdd, gex.Message]);
                 }
             }
             var branchList = await _siteService.GetBranches(model.User.SystemId);
@@ -745,7 +762,8 @@ namespace GRA.Controllers
             model.BranchList = new SelectList(branchList.ToList(), "Id", "Name");
             model.SystemList = new SelectList(systemList.ToList(), "Id", "Name");
             model.ProgramList = new SelectList(programList.ToList(), "Id", "Name");
-            model.SchoolList = new SelectList(await _schoolService.GetSchoolsAsync(), "Id", "Name");
+            model.SchoolList
+                = new SelectList(await _schoolService.GetSchoolsAsync(), "Id", "Name");
             model.ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject);
             model.RequirePostalCode = site.RequirePostalCode;
             model.ShowAge = askAge;
@@ -799,7 +817,9 @@ namespace GRA.Controllers
                 {
                     // check if we're going to trip group membership requirements
                     var (useGroups, maximumHousehold) =
-                        await GetSiteSettingIntAsync(SiteSettingKey.Users.MaximumHouseholdSizeBeforeGroup);
+                        await GetSiteSettingIntAsync(SiteSettingKey
+                            .Users
+                            .MaximumHouseholdSizeBeforeGroup);
 
                     if (useGroups)
                     {
@@ -811,13 +831,15 @@ namespace GRA.Controllers
                         }
                         else
                         {
-                            var currentHousehold = await _userService.GetHouseholdAsync(authUser.Id,
+                            var currentHousehold
+                                = await _userService.GetHouseholdAsync(authUser.Id,
                                 false,
                                 false,
                                 false);
 
                             var (totalAddCount, addUserId) =
-                                await _userService.CountParticipantsToAdd(model.Username, model.Password);
+                                await _userService.CountParticipantsToAdd(model.Username,
+                                    model.Password);
 
                             // +1 for household manager, counting the people we're adding so >
                             if (currentHousehold.Count() + 1 + totalAddCount > maximumHousehold)
@@ -834,7 +856,8 @@ namespace GRA.Controllers
                                     return View("GroupUpgrade", new GroupUpgradeViewModel
                                     {
                                         MaximumHouseholdAllowed = maximumHousehold,
-                                        GroupTypes = new SelectList(groupTypes.ToList(), "Id", "Name"),
+                                        GroupTypes
+                                            = new SelectList(groupTypes.ToList(), "Id", "Name"),
                                         AddExisting = true
                                     });
                                 }
@@ -846,13 +869,17 @@ namespace GRA.Controllers
                     string addedMembers = await _userService
                         .AddParticipantToHouseholdAsync(model.Username, model.Password);
                     HttpContext.Session.SetString(SessionKey.HeadOfHousehold, "True");
-                    ShowAlertSuccess($"{addedMembers} has been added to your {HouseholdTitle.ToLower()}");
+                    ShowAlertSuccess(
+                        _sharedLocalizer[Annotations.Interface.AddedParticipantGroupFamily,
+                            addedMembers,
+                            _sharedLocalizer[HouseholdTitle]]);
                     return RedirectToAction(nameof(Household));
                 }
                 catch (GraException gex)
                 {
                     HttpContext.Session.Remove(SessionKey.AbsorbUserId);
-                    ShowAlertDanger($"Could not add participant as {HouseholdTitle.ToLower()} Member: ", gex);
+                    ShowAlertDanger(_sharedLocalizer[Annotations.Validate.UnableToAdd,
+                        gex.Message]);
                 }
             }
             return View(model);
@@ -878,12 +905,16 @@ namespace GRA.Controllers
                     .AddParticipantToHouseholdAlreadyAuthorizedAsync(userId);
                 HttpContext.Session.SetString(SessionKey.HeadOfHousehold, "True");
                 HttpContext.Session.Remove(SessionKey.AbsorbUserId);
-                ShowAlertSuccess($"{addedMembers} has been added to your {HouseholdTitle.ToLower()}");
+                ShowAlertSuccess(
+                    _sharedLocalizer[Annotations.Interface.AddedParticipantGroupFamily,
+                    addedMembers,
+                    HouseholdTitle]);
             }
             catch (GraException gex)
             {
                 HttpContext.Session.Remove(SessionKey.AbsorbUserId);
-                ShowAlertDanger($"Could not add participant as {HouseholdTitle.ToLower()} Member: ", gex);
+                ShowAlertDanger(_sharedLocalizer[Annotations.Validate.UnableToAdd,
+                    gex.Message]);
             }
             return RedirectToAction(nameof(Household));
         }
@@ -920,12 +951,16 @@ namespace GRA.Controllers
                     try
                     {
                         await _userService.RegisterHouseholdMemberAsync(user, model.Password);
-                        AlertSuccess = $"{HouseholdTitle} member registered!";
+                        ShowAlertSuccess(
+                            _sharedLocalizer[Annotations.Interface.AddedParticipantGroupFamily,
+                                user.FullName,
+                                _sharedLocalizer[HouseholdTitle]]);
                         return RedirectToAction(nameof(Household));
                     }
                     catch (GraException gex)
                     {
-                        ShowAlertDanger($"Unable to register {HouseholdTitle.ToLower()} member: ", gex);
+                        ShowAlertDanger(_sharedLocalizer[Annotations.Validate.UnableToAdd,
+                            gex.Message]);
                     }
                 }
                 return View("HouseholdRegisterMember", model);
@@ -944,7 +979,8 @@ namespace GRA.Controllers
             var authUser = GetId(ClaimType.UserId);
             var activeUser = GetActiveUserId();
 
-            if ((user.Id == authUser || user.HouseholdHeadUserId == authUser) && activeUser != loginId)
+            if ((user.Id == authUser || user.HouseholdHeadUserId == authUser)
+                && activeUser != loginId)
             {
                 HttpContext.Session.SetInt32(SessionKey.ActiveUserId, loginId);
                 var questionnaireId = await _questionnaireService
@@ -958,15 +994,17 @@ namespace GRA.Controllers
                 {
                     HttpContext.Session.Remove(SessionKey.PendingQuestionnaire);
                 }
-                ShowAlertSuccess($"You are now signed in as {user.FullName}.", "user");
+                ShowAlertSuccess(_sharedLocalizer[Annotations.Interface.SignedInAs, user.FullName],
+                    "user");
             }
+
             if (goToMail)
             {
-                return RedirectToAction(nameof(MailController.Index), "Mail");
+                return RedirectToAction(nameof(MailController.Index), MailController.Name);
             }
             else
             {
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
             }
         }
 
@@ -974,7 +1012,9 @@ namespace GRA.Controllers
         {
             var filter = new BookFilter(page);
 
-            bool isDescending = string.Equals(order, "Descending", StringComparison.OrdinalIgnoreCase);
+            bool isDescending = string.Equals(order,
+                "Descending",
+                StringComparison.OrdinalIgnoreCase);
             if (!string.IsNullOrWhiteSpace(sort) && Enum.IsDefined(typeof(SortBooksBy), sort))
             {
                 filter.SortBy = (SortBooksBy)Enum.Parse(typeof(SortBooksBy), sort);
@@ -1025,16 +1065,21 @@ namespace GRA.Controllers
                 try
                 {
                     await _activityService.UpdateBookAsync(model.Book);
-                    ShowAlertSuccess($"'{model.Book.Title}' updated!");
+                    ShowAlertSuccess(_sharedLocalizer[Annotations.Interface.UpdatedItem,
+                        model.Book.Title]);
                 }
                 catch (GraException gex)
                 {
-                    ShowAlertDanger("Could not edit book: ", gex.Message);
+                    ShowAlertDanger(_sharedLocalizer[Annotations.Interface.CouldNotUpdate,
+                        model.Book.Title,
+                        gex.Message]);
                 }
             }
             else
             {
-                ShowAlertDanger("Could not edit book: Missing required fields.");
+                ShowAlertDanger(_sharedLocalizer[Annotations.Interface.CouldNotUpdate,
+                    model.Book.Title,
+                    _sharedLocalizer[Annotations.Required.Missing]]);
             }
 
             int? page = null;
@@ -1051,11 +1096,14 @@ namespace GRA.Controllers
             try
             {
                 await _activityService.RemoveBookAsync(model.Book.Id);
-                ShowAlertSuccess($"'{model.Book.Title}' removed!");
+                ShowAlertSuccess(_sharedLocalizer[Annotations.Interface.RemovedItem,
+                    model.Book.Title]);
             }
             catch (GraException gex)
             {
-                ShowAlertDanger("Could not remove book: ", gex.Message);
+                ShowAlertDanger(_sharedLocalizer[Annotations.Interface.CouldNotRemove,
+                    model.Book.Title,
+                    gex.Message]);
             }
 
             int? page = null;
@@ -1127,8 +1175,10 @@ namespace GRA.Controllers
                             bundle.AvatarItems.First().Thumbnail);
                         if (bundle.AvatarItems.Count > 1)
                         {
-                            description.AppendFormat(" <strong><a class=\"bundle-link\" data-id=\"{0}\">Click here</a></strong> to see all the items you unlocked.",
-                                item.AvatarBundleId.Value);
+                            description.AppendFormat(
+                                " <strong><a class=\"bundle-link\" data-id=\"{0}\">{1}</a></strong>.",
+                                item.AvatarBundleId.Value,
+                                _sharedLocalizer[Annotations.Interface.SeeItemsUnlocked]);
                         }
                     }
                 }
@@ -1170,12 +1220,15 @@ namespace GRA.Controllers
                     {
                         await _authenticationService.ResetPassword(GetActiveUserId(),
                             model.NewPassword);
-                        AlertSuccess = "Password changed";
+                        ShowAlertSuccess(_sharedLocalizer[Annotations.Interface.PasswordChanged]);
                         return RedirectToAction(nameof(ChangePassword));
                     }
                     catch (GraException gex)
                     {
-                        ShowAlertDanger("Unable to change password: ", gex);
+                        ShowAlertDanger(_sharedLocalizer[Annotations
+                                .Validate
+                                .UnableToChangePassword,
+                            gex.Message]);
                     }
                 }
                 else
@@ -1191,14 +1244,14 @@ namespace GRA.Controllers
         public async Task<IActionResult> DonateCode(ProfileDetailViewModel viewModel)
         {
             await _vendorCodeService.ResolveDonationStatusAsync(viewModel.User.Id, true);
-            return RedirectToAction(nameof(ProfileController.Index), "Profile");
+            return RedirectToAction(nameof(ProfileController.Index), ProfileController.Name);
         }
 
         [HttpPost]
         public async Task<IActionResult> RedeemCode(ProfileDetailViewModel viewModel)
         {
             await _vendorCodeService.ResolveDonationStatusAsync(viewModel.User.Id, false);
-            return RedirectToAction(nameof(ProfileController.Index), "Profile");
+            return RedirectToAction(nameof(ProfileController.Index), ProfileController.Name);
         }
 
         [HttpPost]
@@ -1222,13 +1275,13 @@ namespace GRA.Controllers
             if (userId == 0)
             {
                 _logger.LogError($"User {GetActiveUserId()} unsuccessfully attempted to change donation for user {userId} to {donationStatus}");
-                AlertDanger = "Could not register your choice, please mail the administrators.";
+                ShowAlertDanger(_sharedLocalizer[Annotations.Validate.SomethingWentWrong]);
             }
             else
             {
                 await _vendorCodeService.ResolveDonationStatusAsync(userId, donationStatus);
             }
-            return RedirectToAction(nameof(ProfileController.Household), "Profile");
+            return RedirectToAction(nameof(ProfileController.Household), ProfileController.Name);
         }
 
         [HttpPost]
@@ -1238,7 +1291,7 @@ namespace GRA.Controllers
         {
             int userId = int.Parse(redeemButton);
             await _vendorCodeService.ResolveDonationStatusAsync(userId, false);
-            return RedirectToAction(nameof(ProfileController.Household), "Profile");
+            return RedirectToAction(nameof(ProfileController.Household), ProfileController.Name);
         }
 
         [HttpPost]
@@ -1246,7 +1299,7 @@ namespace GRA.Controllers
         {
             if (string.IsNullOrEmpty(viewModel.GroupInfo?.Name?.Trim()))
             {
-                AlertDanger = "You must specify a group name.";
+                ShowAlertDanger(_sharedLocalizer[Annotations.Required.GroupName]);
                 return View("GroupUpgrade", viewModel);
             }
 
@@ -1257,7 +1310,9 @@ namespace GRA.Controllers
             }
             catch (Exception ex)
             {
-                AlertDanger = $"Couldn't create group: {ex.Message}";
+                ShowAlertDanger(_sharedLocalizer[Annotations.Interface.CouldNotCreate,
+                    _sharedLocalizer[Annotations.Interface.Group],
+                    ex.Message]);
                 return View("GroupUpgrade", viewModel);
             }
             HttpContext.Session.SetString(SessionKey.CallItGroup, "True");
@@ -1303,9 +1358,10 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> RemoveHouseholdMember(int id)
         {
+            User member = null;
             try
             {
-                var member = await _userService.GetDetails(id);
+                member = await _userService.GetDetails(id);
 
                 var viewModel = new HouseholdRemoveViewModel
                 {
@@ -1319,7 +1375,9 @@ namespace GRA.Controllers
             }
             catch (GraException gex)
             {
-                ShowAlertDanger($"Unable to remove member from {HouseholdTitle.ToLowerInvariant()} : ", gex);
+                ShowAlertDanger(_sharedLocalizer[Annotations.Interface.CouldNotRemove,
+                    member?.FullName ?? _sharedLocalizer[Annotations.Title.Participant],
+                    gex.Message]);
                 return RedirectToAction(nameof(Household));
             }
         }
@@ -1368,13 +1426,15 @@ namespace GRA.Controllers
                     }
 
                     await _userService.RemoveFromHouseholdAsync(member.Id);
-                    ShowAlertSuccess($"{member.FullName} has been removed from the {HouseholdTitle.ToLowerInvariant()}.");
-
+                    ShowAlertSuccess(_sharedLocalizer[Annotations.Interface.RemovedItem,
+                        member.FullName]);
                     return RedirectToAction(nameof(Household));
                 }
                 catch (GraException gex)
                 {
-                    ShowAlertDanger($"Unable to remove {HouseholdTitle} member: ", gex);
+                    ShowAlertDanger(_sharedLocalizer[Annotations.Interface.CouldNotRemove,
+                        member.FullName,
+                        gex.Message]);
                 }
             }
 

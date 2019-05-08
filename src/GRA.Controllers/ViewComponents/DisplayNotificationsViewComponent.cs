@@ -1,12 +1,11 @@
-﻿using GRA.Abstract;
-using GRA.Controllers.ViewModel.Shared;
-using GRA.Domain.Service;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using GRA.Abstract;
+using GRA.Controllers.ViewModel.Shared;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Localization;
+using Microsoft.Extensions.Localization;
 
 namespace GRA.Controllers.ViewComponents
 {
@@ -16,23 +15,29 @@ namespace GRA.Controllers.ViewComponents
         private const int MaxNotifications = 3;
 
         private readonly IPathResolver _pathResolver;
-        private readonly UserService _userService;
+        private readonly IStringLocalizer<Resources.Shared> _sharedLocalizer;
+        private readonly IHtmlLocalizer<GRA.Resources.Shared> _sharedHtmlLocalizer;
+
         public DisplayNotificationsViewComponent(IPathResolver pathResolver,
-            UserService userService)
+            IStringLocalizer<Resources.Shared> sharedLocalizer,
+            IHtmlLocalizer<GRA.Resources.Shared> sharedHtmlLocalizer)
         {
-            _pathResolver = pathResolver;
-            _userService = Require.IsNotNull(userService, nameof(userService));
+            _pathResolver = pathResolver ?? throw new ArgumentNullException(nameof(pathResolver));
+            _sharedLocalizer = sharedLocalizer
+                ?? throw new ArgumentNullException(nameof(sharedLocalizer));
+            _sharedHtmlLocalizer = sharedHtmlLocalizer
+                ?? throw new ArgumentNullException(nameof(sharedHtmlLocalizer));
         }
+
         public IViewComponentResult Invoke()
         {
             var notifications =
-                (List<GRA.Domain.Model.Notification>)HttpContext.Items[ItemKey.NotificationsList];
-
+                (List<Domain.Model.Notification>)HttpContext.Items[ItemKey.NotificationsList];
             var totalNotifications = notifications.Count;
 
             var notificationDisplayList = new List<GRA.Domain.Model.Notification>();
             int? totalPointsEarned = 0;
-            bool earnedBadge = false;
+            var earnedBadge = false;
 
             foreach (var notification in notifications.Where(m => m.IsAchiever).ToList())
             {
@@ -41,7 +46,8 @@ namespace GRA.Controllers.ViewComponents
                 {
                     if (!string.IsNullOrWhiteSpace(notification.BadgeFilename))
                     {
-                        notification.BadgeFilename = _pathResolver.ResolveContentPath(notification.BadgeFilename);
+                        notification.BadgeFilename
+                            = _pathResolver.ResolveContentPath(notification.BadgeFilename);
                         earnedBadge = true;
                     }
                     notificationDisplayList.Add(notification);
@@ -49,16 +55,21 @@ namespace GRA.Controllers.ViewComponents
                 notifications.Remove(notification);
             }
 
-            foreach (var notification in notifications.Where(m => m.IsJoining).ToList())
+            foreach (var notification in notifications.Where(m => m.IsJoiner).ToList())
             {
                 totalPointsEarned += notification.PointsEarned;
                 if (notificationDisplayList.Count < MaxNotifications)
                 {
                     if (!string.IsNullOrWhiteSpace(notification.BadgeFilename))
                     {
-                        notification.BadgeFilename = _pathResolver.ResolveContentPath(notification.BadgeFilename);
+                        notification.BadgeFilename
+                            = _pathResolver.ResolveContentPath(notification.BadgeFilename);
                         earnedBadge = true;
                     }
+                    notification.LocalizedText
+                        = _sharedHtmlLocalizer[Annotations.Info.SuccessfullyJoined,
+                            HttpContext.Items[ItemKey.SiteName]];
+                    notification.DisplayIcon = "far fa-thumbs-up";
                     notificationDisplayList.Add(notification);
                 }
                 notifications.Remove(notification);
@@ -66,12 +77,14 @@ namespace GRA.Controllers.ViewComponents
 
             foreach (var notification in notifications
                 .Where(m => !string.IsNullOrWhiteSpace(m.BadgeFilename))
-                .OrderByDescending(m => m.PointsEarned).ThenByDescending(m => m.CreatedAt).ToList())
+                .OrderByDescending(m => m.PointsEarned)
+                .ThenByDescending(m => m.CreatedAt).ToList())
             {
                 totalPointsEarned += notification.PointsEarned;
                 if (notificationDisplayList.Count < MaxNotifications)
                 {
-                    notification.BadgeFilename = _pathResolver.ResolveContentPath(notification.BadgeFilename);
+                    notification.BadgeFilename
+                        = _pathResolver.ResolveContentPath(notification.BadgeFilename);
                     earnedBadge = true;
                     notificationDisplayList.Add(notification);
                 }
@@ -79,7 +92,8 @@ namespace GRA.Controllers.ViewComponents
             }
 
             foreach (var notification in notifications
-                .OrderByDescending(m => m.PointsEarned).ThenByDescending(m => m.CreatedAt))
+                .OrderByDescending(m => m.PointsEarned)
+                .ThenByDescending(m => m.CreatedAt))
             {
                 totalPointsEarned += notification.PointsEarned;
                 if (notificationDisplayList.Count < MaxNotifications)
@@ -89,22 +103,21 @@ namespace GRA.Controllers.ViewComponents
             }
 
             string summaryText = "";
-            if (notificationDisplayList.Count() > 1)
+            if (notificationDisplayList.Count > 1 && totalNotifications > MaxNotifications)
             {
-                if (totalNotifications > MaxNotifications)
-                {
-                    summaryText = $"...and <a href='{Url.Action("History", "Profile")}'>other activities</a>!";
-                }
+                summaryText = $"<a href='{Url.Action("History", "Profile")}'>" +
+                    _sharedLocalizer[Annotations.Interface.AndOtherActivities] +
+                    "</a>";
             }
 
-            DisplayNotificationsViewModel viewModel = new DisplayNotificationsViewModel()
+            var viewModel = new DisplayNotificationsViewModel
             {
                 Notifications = notificationDisplayList,
                 SummaryText = summaryText
             };
 
             HttpContext.Items[ItemKey.NotificationsDisplayed] = true;
-            if (earnedBadge == true)
+            if (earnedBadge)
             {
                 HttpContext.Items[ItemKey.NotificationsModal] = true;
                 return View("Modal", viewModel);

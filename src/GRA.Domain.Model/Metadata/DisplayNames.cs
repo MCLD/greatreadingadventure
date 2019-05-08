@@ -44,7 +44,7 @@
         public const string School = "School";
         public const string SchoolDistrict = "School District";
         public const string SchoolNotListed = "School not listed";
-        public const string SearchTitleAndDescription = "Search Title And Description";
+        public const string SearchTitleAndDescription = "Search Title & Description";
         public const string SecretCode = "Secret Code";
         public const string SendRecoveryEmail = "Send Recovery Email";
         public const string SignIn = "Sign in";

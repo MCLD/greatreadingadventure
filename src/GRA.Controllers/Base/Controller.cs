@@ -22,7 +22,7 @@ namespace GRA.Controllers.Base
     [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     [ServiceFilter(typeof(SiteFilter), Order = 1)]
     [MiddlewareFilter(typeof(Middleware.LocalizationMiddleware))]
-    [SessionTimeoutFilter]
+    [ServiceFilter(typeof(SessionTimeoutFilterAttribute), Order = 2)]
     public abstract class Controller : Microsoft.AspNetCore.Mvc.Controller
     {
         protected const string DropDownTrueValue = "True";
