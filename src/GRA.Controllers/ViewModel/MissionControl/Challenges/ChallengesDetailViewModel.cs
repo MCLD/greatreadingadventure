@@ -18,6 +18,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Challenges
         public bool CanActivate { get; set; }
         public bool CanEditGroups { get; set; }
         public bool CanManageEvents { get; set; }
+        public bool CanViewParticipants { get; set; }
         public bool CanViewTriggers { get; set; }
         public string MaxPointsMessage { get; set; }
         public string BadgeMakerUrl { get; set; }
@@ -34,5 +35,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Challenges
         public SelectList BranchList { get; set; }
         public SelectList ProgramList { get; set; }
         public SelectList CategoryList { get; set; }
+
+        public string CreatedByName { get; set; }
     }
 }

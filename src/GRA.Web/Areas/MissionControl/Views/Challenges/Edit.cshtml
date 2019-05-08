@@ -245,9 +245,10 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <button type="submit" id="DeleteTask" asp-action="DeleteTask" class="btn btn-danger pull-right" aria-label="Confirm">
+                        <button type="submit" id="DeleteTask" asp-action="DeleteTask" class="btn btn-danger pull-right btn-spinner" aria-label="Confirm">
                             <span class="fa fa-remove" aria-hidden="true"></span>
                             Delete
+                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                         </button>
                     </div>
                 </div>
@@ -531,6 +532,18 @@
                 <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
             </button>
         }
+            <div class="pull-right" style="font-size:large;">
+                Created by:
+                @if (Model.CanViewParticipants)
+                {
+                    <a asp-controller="Participants" asp-action="@nameof(ParticipantsController.Detail)" asp-route-id="@Model.Challenge.CreatedBy" target="_blank">@Model.CreatedByName</a>
+                }
+                else
+                {
+                    @Model.CreatedByName
+                }
+
+            </div>
     </div>
 
     <h3>
