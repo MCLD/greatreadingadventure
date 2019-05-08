@@ -26,5 +26,7 @@ namespace GRA.Controllers.ViewModel.Profile
         public Dictionary<int, DailyImageViewModel> DailyImageDictionary { get; set; }
         public string GroupName { get; set; }
         public bool GroupLeader { get; set; }
+
+        public string LocalizedHouseholdTitle { get; set; }
     }
 }

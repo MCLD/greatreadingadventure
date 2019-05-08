@@ -3,13 +3,20 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Localization;
 
 namespace GRA.Controllers.Filter
 {
-    public class SessionTimeoutFilter : Attribute, IAsyncActionFilter
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    public class SessionTimeoutFilterAttribute : Attribute, IAsyncActionFilter
     {
-        // TODO move this message to a customizable location
-        private const string ExpiredMessage = "Your session has expired. Please sign in again.";
+        private readonly IStringLocalizer<Resources.Shared> _sharedLocalizer;
+
+        public SessionTimeoutFilterAttribute(IStringLocalizer<Resources.Shared> sharedLocalizer)
+        {
+            _sharedLocalizer = sharedLocalizer
+                ?? throw new ArgumentNullException(nameof(sharedLocalizer));
+        }
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context,
             ActionExecutionDelegate next)
@@ -21,7 +28,7 @@ namespace GRA.Controllers.Filter
                 var controller = (Base.Controller)context.Controller;
 
                 // by default redirect to Home/Index
-                string redirectController = "Home";
+                string redirectController = HomeController.Name;
 
                 // if the user logged in recently we can redirect them to the authentication page
                 var claim = context.HttpContext
@@ -36,9 +43,10 @@ namespace GRA.Controllers.Filter
                     out DateTime authenticatedAt)
                     && (DateTime.Now - authenticatedAt).TotalHours < 2)
                 {
-                    redirectController = "SignIn";
+                    redirectController = SignInController.Name;
 
-                    controller.TempData[TempDataKey.AlertWarning] = ExpiredMessage;
+                    controller.TempData[TempDataKey.AlertWarning]
+                        = _sharedLocalizer[Annotations.Validate.SessionExpired].ToString();
                 }
 
                 await controller.LogoutUserAsync();
@@ -47,7 +55,9 @@ namespace GRA.Controllers.Filter
                 {
                     area = string.Empty,
                     controller = redirectController,
-                    action = "Index"
+                    action = redirectController == HomeController.Name
+                        ? nameof(HomeController.Index)
+                        : nameof(SignInController.Index)
                 });
             }
             else

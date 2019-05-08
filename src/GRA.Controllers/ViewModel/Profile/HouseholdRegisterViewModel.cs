@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using GRA.Domain.Model;
 
 namespace GRA.Controllers.ViewModel.Profile
 {
@@ -14,9 +15,9 @@ namespace GRA.Controllers.ViewModel.Profile
         [Required]
         public string Password { get; set; }
 
-        [Required]
-        [Compare("Password", ErrorMessage = "Passwords do not match")]
-        [DisplayName("Confirm Password")]
+        [Compare(nameof(Password), ErrorMessage = Annotations.Validate.PasswordsMatch)]
+        [Required(ErrorMessage = ErrorMessages.Field)]
+        [DisplayName(DisplayNames.ConfirmNewPassword)]
         public string ConfirmPassword { get; set; }
 
         public bool Validate { get; set; }

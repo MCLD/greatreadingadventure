@@ -191,7 +191,7 @@
                     <div class="panel-body">
                         <form asp-controller="Home" asp-action="LogActivity" method="post" role="form" class="form-horizontal">
                             <div class="row row-spacing">
-                                <label class="control-label col-sm-7 col-md-5 col-lg-4">@SharedLocalizer["Enter {0} read", Model.ActivityDescriptionPlural]</label>
+                                <label class="control-label col-sm-7 col-md-5 col-lg-4">@SharedLocalizer["Enter {0} read", SharedLocalizer[Model.ActivityDescriptionPlural]]</label>
                                 <div class="col-sm-5 col-md-7 col-lg-8">
                                     <input asp-for="ActivityAmount" type="text" value="@Model.ActivityAmount" class="form-control" />
                                     <span asp-validation-for="ActivityAmount" class="text-danger"></span>
@@ -215,7 +215,7 @@
                             </div>
 
                             <button type="submit" class="btn center-block btn-success btn-lg btn-spinner">
-                                <span class="buttonText">@SharedLocalizer["Log {0}", Model.ActivityDescriptionPlural]</span>
+                                <span class="buttonText">@SharedLocalizer["Log {0}", SharedLocalizer[Model.ActivityDescriptionPlural]]</span>
                                 <span class="fas fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
                         </form>
@@ -402,8 +402,8 @@
             {
                 <text>
                     gtag('event', 'sign_up', {
+                        'First Time Participant': '@Model.FirstTimeParticipant',
                         'Program Name': '@Model.ProgramName',
-                        'First Time Participant': '@Model.FirstTimeParticipant'
                     });
                 </text>
             }

@@ -6,8 +6,10 @@ namespace GRA.Data.Model
     {
         [Required]
         public int UserId { get; set; }
+
         [Required]
         public string Text { get; set; }
+
         public int? BadgeId { get; set; }
         public string BadgeFilename { get; set; }
         public int? ChallengeId { get; set; }

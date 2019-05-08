@@ -155,9 +155,7 @@ namespace GRA.Web
             }
 
             services.Configure<RouteOptions>(_ =>
-            {
-                _.ConstraintMap.Add("cultureConstraint", typeof(CultureRouteConstraint));
-            });
+                _.ConstraintMap.Add("cultureConstraint", typeof(CultureRouteConstraint)));
 
             // add MVC
             services.AddMvc()
@@ -290,6 +288,7 @@ namespace GRA.Web
             // filters
             services.AddScoped<Controllers.Filter.MissionControlFilter>();
             services.AddScoped<Controllers.Filter.NotificationFilter>();
+            services.AddScoped<Controllers.Filter.SessionTimeoutFilterAttribute>();
             services.AddScoped<Controllers.Filter.SiteFilter>();
             services.AddScoped<Controllers.Filter.UserFilter>();
 

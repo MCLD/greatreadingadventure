@@ -42,7 +42,7 @@ namespace GRA.Domain.Service
         private readonly IStringLocalizer<Resources.Shared> _sharedLocalizer;
 
         public UserService(ILogger<UserService> logger,
-            GRA.Abstract.IDateTimeProvider dateTimeProvider,
+            IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             ICodeGenerator codeGenerator,
             IPasswordValidator passwordValidator,
@@ -223,7 +223,7 @@ namespace GRA.Domain.Service
             {
                 int userId = GetClaimId(ClaimType.UserId);
                 _logger.LogError($"User {userId} doesn't have permission to view all participants.");
-                throw new GraException("Permission denied.");
+                throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
         }
 
@@ -249,7 +249,7 @@ namespace GRA.Domain.Service
             else
             {
                 _logger.LogError($"User {authUserId} doesn't have permission to view family/group participants.");
-                throw new GraException("Permission denied.");
+                throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
         }
 
@@ -273,7 +273,7 @@ namespace GRA.Domain.Service
                 else
                 {
                     _logger.LogError($"User {authUserId} doesn't have permission to get a count of family/group participants.");
-                    throw new GraException("Permission denied.");
+                    throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
                 }
             }
         }
@@ -297,7 +297,7 @@ namespace GRA.Domain.Service
             else
             {
                 _logger.LogError($"User {authUserId} doesn't have permission to view participant details.");
-                throw new GraException("Permission denied.");
+                throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
         }
 
@@ -364,7 +364,7 @@ namespace GRA.Domain.Service
             else
             {
                 _logger.LogError($"User {requestingUserId} doesn't have permission to update user {userToUpdate.Id}.");
-                throw new GraException("Permission denied.");
+                throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
         }
 
@@ -421,7 +421,10 @@ namespace GRA.Domain.Service
                     {
                         if (await UsernameInUseAsync(userToUpdate.Username))
                         {
-                            throw new GraException("Username is in use by another user.");
+                            throw new GraException(_sharedLocalizer[GRA
+                                .Annotations
+                                .Validate
+                                .UsernameTaken]);
                         }
                         else
                         {
@@ -458,7 +461,7 @@ namespace GRA.Domain.Service
             else
             {
                 _logger.LogError($"User {requestedByUserId} doesn't have permission to update user {userToUpdate.Id}.");
-                throw new GraException("Permission denied.");
+                throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
         }
 
@@ -491,7 +494,7 @@ namespace GRA.Domain.Service
             else
             {
                 _logger.LogError($"User {requestedByUserId} doesn't have permission to remove user {userIdToRemove}.");
-                throw new GraException("Permission denied.");
+                throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
         }
 
@@ -513,7 +516,7 @@ namespace GRA.Domain.Service
             else
             {
                 _logger.LogError($"User {requestedByUserId} doesn't have permission to view details for {userId}.");
-                throw new GraException("Permission denied.");
+                throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
         }
 
@@ -530,7 +533,7 @@ namespace GRA.Domain.Service
             else
             {
                 _logger.LogError($"User {requestedByUserId} doesn't have permission to view details for {userId}.");
-                throw new GraException("Permission denied.");
+                throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
         }
 
@@ -652,7 +655,7 @@ namespace GRA.Domain.Service
             else
             {
                 _logger.LogError($"User {authUserId} doesn't have permission to add a family/group member to {householdHeadUserId}.");
-                throw new GraException("Permission denied.");
+                throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
         }
 
@@ -687,7 +690,7 @@ namespace GRA.Domain.Service
             else
             {
                 _logger.LogError($"User {authUserId} doesn't have permission to register family/group member {memberToRegister.Id}.");
-                throw new GraException("Permission denied.");
+                throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
         }
 
@@ -708,7 +711,7 @@ namespace GRA.Domain.Service
             else
             {
                 _logger.LogError($"User {activeUserId} doesn't have permission to view details for {userId}.");
-                throw new GraException("Permission denied.");
+                throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
         }
 
@@ -791,7 +794,9 @@ namespace GRA.Domain.Service
             }
 
             var isGroup = await _groupInfoRepository.GetByUserIdAsync(authUser.Id);
-            var callIt = isGroup != null ? "group" : "family";
+            var callIt = isGroup != null
+                ? _sharedLocalizer[GRA.Annotations.Interface.Group]
+                : _sharedLocalizer[GRA.Annotations.Interface.Family];
 
             if (hasFamily)
             {
@@ -809,7 +814,7 @@ namespace GRA.Domain.Service
             string addedMembers = user.FullName;
             if (hasFamily)
             {
-                addedMembers += $" and their {callIt}";
+                addedMembers += " " + _sharedLocalizer[Annotations.Interface.AndTheir, callIt];
             }
             return addedMembers;
         }
@@ -857,7 +862,7 @@ namespace GRA.Domain.Service
                 if (authUser.HouseholdHeadUserId != householdHeadUserId)
                 {
                     _logger.LogError($"User {authId} doesn't have permission to view details for {householdHeadUserId}.");
-                    throw new GraException("Permission denied.");
+                    throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
                 }
             }
 
@@ -869,13 +874,13 @@ namespace GRA.Domain.Service
                     && !HasPermission(Permission.ReadAllMail))
                 {
                     _logger.LogError($"User {authId} doesn't have permission to view mail for {householdHeadUserId}.");
-                    throw new GraException("Permission denied.");
+                    throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
                 }
 
                 if (includePrize && !HasPermission(Permission.ViewUserPrizes))
                 {
                     _logger.LogError($"User {authId} doesn't have permission to view prizes for {householdHeadUserId}.");
-                    throw new GraException("Permission denied.");
+                    throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
                 }
                 var siteId = GetCurrentSiteId();
                 foreach (var member in household)
@@ -911,7 +916,7 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.EditParticipants))
             {
                 _logger.LogError($"User {authId} doesn't have permission to promote family/group members to manager.");
-                throw new GraException("Permission denied.");
+                throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
 
             var user = await _userRepository.GetByIdAsync(userId);
@@ -970,7 +975,7 @@ namespace GRA.Domain.Service
                 && user.HouseholdHeadUserId != authId)
             {
                 _logger.LogError($"User {authId} doesn't have permission to remove family/group members.");
-                throw new GraException("Permission denied.");
+                throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
 
             if (string.IsNullOrWhiteSpace(user.Username))
@@ -995,7 +1000,7 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.EditParticipants))
             {
                 _logger.LogError($"User {authId} doesn't add existing participants to family/group.");
-                throw new GraException("Permission denied.");
+                throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
             var userToAdd = await _userRepository.GetByIdAsync(userToAddId);
             if (userToAdd.HouseholdHeadUserId.HasValue
@@ -1027,12 +1032,13 @@ namespace GRA.Domain.Service
             var program = await _programRepository.GetByIdAsync(registeredUser.ProgramId);
             var site = await _siteRepository.GetByIdAsync(registeredUser.SiteId);
 
+            // note this text is localized and displayed properly in SessionTimeoutFilterAttribute
             var notification = new Notification
             {
                 PointsEarned = 0,
                 Text = $"<span class=\"fa fa-thumbs-o-up\"></span> You've successfully joined <strong>{site.Name}</strong>!",
                 UserId = registeredUser.Id,
-                IsJoining = true
+                IsJoiner = true
             };
 
             if (program.JoinBadgeId != null)
@@ -1045,7 +1051,7 @@ namespace GRA.Domain.Service
                     PointsEarned = 0,
                     IsDeleted = false,
                     BadgeId = badge.Id,
-                    Description = $"Joined {site.Name}!"
+                    Description = _sharedLocalizer[Annotations.Interface.Joined, site.Name]
                 });
                 notification.BadgeId = badge.Id;
                 notification.BadgeFilename = badge.Filename;
@@ -1074,9 +1080,10 @@ namespace GRA.Domain.Service
                     PointsEarned = 0,
                     IsDeleted = false,
                     BadgeId = badge.Id,
-                    Description = $"Joined {site.Name}!"
+                    Description = _sharedLocalizer[Annotations.Interface.Joined, site.Name]
                 });
 
+                // note this text is localized and displayed properly in SessionTimeoutFilterAttribute
                 var notification = new Notification
                 {
                     BadgeFilename = badge.Filename,
@@ -1084,7 +1091,7 @@ namespace GRA.Domain.Service
                     PointsEarned = 0,
                     Text = $"<span class=\"fa fa-thumbs-o-up\"></span> You've successfully joined <strong>{site.Name}</strong>!",
                     UserId = user.Id,
-                    IsJoining = true
+                    IsJoiner = true
                 };
 
                 await _notificationRepository.AddSaveAsync(user.Id, notification);
@@ -1125,9 +1132,10 @@ namespace GRA.Domain.Service
                             PointsEarned = 0,
                             IsDeleted = false,
                             BadgeId = badge.Id,
-                            Description = $"Joined {site.Name}!"
+                            Description = _sharedLocalizer[Annotations.Interface.Joined, site.Name]
                         });
 
+                        // note this text is localized and displayed properly in SessionTimeoutFilterAttribute
                         var notification = new Notification
                         {
                             BadgeFilename = badge.Filename,
@@ -1135,7 +1143,7 @@ namespace GRA.Domain.Service
                             PointsEarned = 0,
                             Text = $"<span class=\"fa fa-thumbs-o-up\"></span> You've successfully joined <strong>{site.Name}</strong>!",
                             UserId = member.Id,
-                            IsJoining = true
+                            IsJoiner = true
                         };
 
                         await _notificationRepository.AddSaveAsync(member.Id, notification);
@@ -1171,7 +1179,7 @@ namespace GRA.Domain.Service
                 && !HasPermission(Permission.ViewAllReporting))
             {
                 _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view group info.");
-                throw new GraException("Permission denied.");
+                throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
             return await _groupInfoRepository.GetByIdAsync(id);
         }
@@ -1194,7 +1202,7 @@ namespace GRA.Domain.Service
             {
                 int userId = GetClaimId(ClaimType.UserId);
                 _logger.LogError($"User {userId} doesn't have permission to create a group.");
-                throw new GraException("Permission denied.");
+                throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
 
             var existingGroup = await _groupInfoRepository.GetByUserIdAsync(groupInfo.UserId);
@@ -1219,7 +1227,7 @@ namespace GRA.Domain.Service
             {
                 int userId = GetClaimId(ClaimType.UserId);
                 _logger.LogError($"User {userId} doesn't have permission to update a group name.");
-                throw new GraException("Permission denied.");
+                throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
 
             var currentGroup = await _groupInfoRepository.GetByUserIdAsync(groupInfo.UserId);
@@ -1235,7 +1243,7 @@ namespace GRA.Domain.Service
             {
                 int userId = GetClaimId(ClaimType.UserId);
                 _logger.LogError($"User {userId} doesn't have permission to update a group.");
-                throw new GraException("Permission denied.");
+                throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
 
             var currentGroup = await _groupInfoRepository.GetByUserIdAsync(groupInfo.UserId);

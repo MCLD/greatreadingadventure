@@ -3,13 +3,23 @@
 <div class="row">
     <div class="col-xs-12 col-sm-6 col-sm-offset-3">
         <div class="alert alert-success">
-
             @foreach (var notification in Model.Notifications)
             {
-                @Html.Raw(notification.Text)
-                <br />
+                if (notification.LocalizedText != null)
+                {
+                    if (!string.IsNullOrEmpty(notification.DisplayIcon))
+                    {
+                        <span class="@notification.DisplayIcon"></span>
+                    }
+                    @notification.LocalizedText
+                    <br />
+                }
+                else
+                {
+                    @Html.Raw(notification.Text)
+                    <br />
+                }
             }
-
             @if (!string.IsNullOrWhiteSpace(Model.SummaryText))
             {
                 <span>@Html.Raw(Model.SummaryText)</span>

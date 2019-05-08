@@ -7,7 +7,7 @@ namespace GRA.Domain.Model
     {
         public int SiteId { get; set; }
 
-        [DisplayName("School District")]
+        [DisplayName(DisplayNames.SchoolDistrict)]
         [Required]
         public int SchoolDistrictId { get; set; }
 
