@@ -30,6 +30,7 @@ namespace GRA.Controllers.MissionControl
         private readonly ChallengeService _challengeService;
         private readonly EventService _eventService;
         private readonly SiteService _siteService;
+        private readonly UserService _userService;
 
         public ChallengesController(ILogger<ChallengesController> logger,
             ServiceFacade.Controller context,
@@ -37,7 +38,8 @@ namespace GRA.Controllers.MissionControl
             CategoryService categoryService,
             ChallengeService challengeService,
             EventService eventService,
-            SiteService siteService)
+            SiteService siteService,
+            UserService userService)
             : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -48,6 +50,7 @@ namespace GRA.Controllers.MissionControl
                 ?? throw new ArgumentNullException(nameof(challengeService));
             _eventService = eventService ?? throw new ArgumentNullException(nameof(eventService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             PageTitle = "Challenges";
         }
 
@@ -425,7 +428,9 @@ namespace GRA.Controllers.MissionControl
                 CanActivate = canActivate,
                 CanEditGroups = UserHasPermission(Permission.EditChallengeGroups),
                 CanManageEvents = UserHasPermission(Permission.ManageEvents),
+                CanViewParticipants = UserHasPermission(Permission.ViewParticipantDetails),
                 CanViewTriggers = UserHasPermission(Permission.ManageTriggers),
+                CreatedByName = await _userService.GetUsersNameByIdAsync(challenge.CreatedBy),
                 DependentTriggers = await _challengeService.GetDependentsAsync(challenge.Id),
                 Groups = await _challengeService.GetGroupsByChallengeId(challenge.Id),
                 RelatedEvents = await _eventService.GetByChallengeIdAsync(challenge.Id),
