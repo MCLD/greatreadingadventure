@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace GRA
 {
@@ -13,10 +10,8 @@ namespace GRA
             var thisAssemblyVersion = Assembly.GetEntryAssembly()
                 .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
                 .InformationalVersion;
-            var fileVersion = Assembly
-                .GetEntryAssembly()
-                .GetCustomAttribute<AssemblyFileVersionAttribute>()?
-                .Version;
+            var fileVersion = GetShortVersion();
+
             if (!string.IsNullOrEmpty(fileVersion)
                 && fileVersion.Count(_ => _ == '.') > 2
                 && fileVersion.Length > fileVersion.LastIndexOf('.'))
@@ -28,6 +23,14 @@ namespace GRA
                 }
             }
             return thisAssemblyVersion;
+        }
+
+        public string GetShortVersion()
+        {
+            return Assembly
+                 .GetEntryAssembly()
+                 .GetCustomAttribute<AssemblyFileVersionAttribute>()?
+                 .Version;
         }
     }
 }

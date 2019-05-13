@@ -14,27 +14,25 @@ namespace GRA.Web
     {
         private const string ErrorControllerName = "GRA.Controllers.ErrorController";
 
-        private const string ApplicationEnrichment = "Application";
-        private const string VersionEnrichment = "Version";
-        private const string IdentifierEnrichment = "Identifier";
-        private const string InstanceEnrichment = "Instance";
-        private const string RemoteAddressEnrichment = "RemoteAddress";
+        public const string ApplicationEnrichment = "Application";
+        public const string VersionEnrichment = "Version";
+        public const string IdentifierEnrichment = "Identifier";
+        public const string InstanceEnrichment = "Instance";
+        public const string RemoteAddressEnrichment = "RemoteAddress";
 
         public LoggerConfiguration Build(IConfiguration config)
         {
-            var applicationName = Assembly.GetExecutingAssembly().GetName().Name;
-            var version = Assembly.GetExecutingAssembly().GetName().Version;
-
             LoggerConfiguration loggerConfig = new LoggerConfiguration()
                 .ReadFrom.Configuration(config)
-                .Enrich.WithProperty(ApplicationEnrichment, applicationName)
-                .Enrich.WithProperty(VersionEnrichment, version)
+                .Enrich.WithProperty(ApplicationEnrichment,
+                    Assembly.GetExecutingAssembly().GetName().Name)
+                .Enrich.WithProperty(VersionEnrichment, new Version().GetShortVersion())
                 .Enrich.FromLogContext()
                 .WriteTo.Console();
 
             string instance = config[ConfigurationKey.InstanceName];
 
-            if(!string.IsNullOrEmpty(instance))
+            if (!string.IsNullOrEmpty(instance))
             {
                 loggerConfig.Enrich.WithProperty(InstanceEnrichment, instance);
             }

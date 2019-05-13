@@ -46,11 +46,14 @@ namespace GRA.Controllers
             var site = await GetCurrentSiteAsync();
             PageTitle = _sharedLocalizer[Annotations.Title.SignInTo, site.Name];
 
-            var viewModel = new SignInViewModel
+            string sendTo = ReturnUrl;
+            if (string.IsNullOrEmpty(sendTo) && TempData.ContainsKey(TempDataKey.ReturnUrl))
             {
-                ReturnUrl = ReturnUrl
-            };
-            return View(viewModel);
+                sendTo = TempData[TempDataKey.ReturnUrl].ToString();
+                TempData.Remove(TempDataKey.ReturnUrl);
+            }
+
+            return View(new SignInViewModel { ReturnUrl = sendTo });
         }
 
         [HttpPost]
@@ -118,9 +121,9 @@ namespace GRA.Controllers
                             // if the user has MC access and we aren't open, send to MC
                             if (loginAttempt
                                 .PermissionNames
-                                .Contains(nameof(Domain.Model.Permission.AccessMissionControl))
-                                && (GetSiteStage() == Domain.Model.SiteStage.BeforeRegistration
-                                    || GetSiteStage() == Domain.Model.SiteStage.AccessClosed))
+                                .Contains(nameof(Permission.AccessMissionControl))
+                                && (GetSiteStage() == SiteStage.BeforeRegistration
+                                    || GetSiteStage() == SiteStage.AccessClosed))
                             {
                                 return RedirectToAction(
                                     nameof(MissionControl.HomeController.Index),

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using AutoMapper;
@@ -203,7 +202,7 @@ namespace GRA.Web
             // database
             if (string.IsNullOrEmpty(_config[ConfigurationKey.ConnectionStringName]))
             {
-                throw new Exception("GraConnectionStringName is not configured in appsettings.json - cannot continue");
+                throw new GraFatalException("GraConnectionStringName is not configured in appsettings.json - cannot continue");
             }
 
             string csName = _config[ConfigurationKey.ConnectionStringName]
@@ -267,7 +266,7 @@ namespace GRA.Web
                                 .Ignore(ignoreEvents.ToArray())));
                     break;
                 default:
-                    throw new Exception($"Unknown GraConnectionStringName: {csName}");
+                    throw new GraFatalException($"Unknown GraConnectionStringName: {csName}");
             }
 
             // store the data protection key in the database
@@ -289,7 +288,7 @@ namespace GRA.Web
             services.AddScoped<Controllers.Filter.MissionControlFilter>();
             services.AddScoped<Controllers.Filter.NotificationFilter>();
             services.AddScoped<Controllers.Filter.SessionTimeoutFilterAttribute>();
-            services.AddScoped<Controllers.Filter.SiteFilter>();
+            services.AddScoped<Controllers.Filter.SiteFilterAttribute>();
             services.AddScoped<Controllers.Filter.UserFilter>();
 
             // services
@@ -368,7 +367,7 @@ namespace GRA.Web
                     services.AddScoped<IInitialSetupService, SetupSingleProgramService>();
                     break;
                 default:
-                    throw new Exception($"Unable to perform initial setup - unrecognized GraDefaultProgramSetup: {initialProgramSetup}");
+                    throw new GraFatalException($"Unable to perform initial setup - unrecognized GraDefaultProgramSetup: {initialProgramSetup}");
             }
 
             // repositories
@@ -489,8 +488,10 @@ namespace GRA.Web
             // insert remote address and trace identifier into the log context for each request
             app.Use(async (context, next) =>
             {
-                using (LogContext.PushProperty("Identifier", context.TraceIdentifier))
-                using (LogContext.PushProperty("RemoteAddress", context.Connection.RemoteIpAddress))
+                using (LogContext.PushProperty(LogConfig.IdentifierEnrichment,
+                    context.TraceIdentifier))
+                using (LogContext.PushProperty(LogConfig.RemoteAddressEnrichment,
+                    context.Connection.RemoteIpAddress))
                 {
                     await next.Invoke();
                 }
@@ -556,7 +557,7 @@ namespace GRA.Web
 
             app.UseAuthentication();
 
-            // sitePath is also referenced in GRA.Controllers.Filter.SiteFilter
+            // sitePath is also referenced in GRA.Controllers.Filter.SiteFilterAttribute
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
