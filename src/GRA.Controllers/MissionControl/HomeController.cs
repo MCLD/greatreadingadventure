@@ -20,7 +20,6 @@ namespace GRA.Controllers.MissionControl
 
         private readonly ILogger<HomeController> _logger;
         private readonly AuthenticationService _authenticationService;
-        private readonly LanguageService _languageService;
         private readonly MailService _mailService;
         private readonly NewsService _newsService;
         private readonly ReportService _reportService;
@@ -31,7 +30,6 @@ namespace GRA.Controllers.MissionControl
 
         public HomeController(ILogger<HomeController> logger,
             AuthenticationService authenticationService,
-            LanguageService languageService,
             MailService mailService,
             NewsService newsService,
             ReportService reportService,
@@ -44,8 +42,6 @@ namespace GRA.Controllers.MissionControl
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _authenticationService = authenticationService
                 ?? throw new ArgumentNullException(nameof(authenticationService));
-            _languageService = languageService
-                ?? throw new ArgumentNullException(nameof(languageService));
             _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
             _newsService = newsService ?? throw new ArgumentNullException(nameof(newsService));
             _reportService = reportService
@@ -62,13 +58,7 @@ namespace GRA.Controllers.MissionControl
         {
             if (!AuthUser.Identity.IsAuthenticated)
             {
-                // not logged in, redirect to login page
-                return RedirectToRoute(new
-                {
-                    area = string.Empty,
-                    controller = "SignIn",
-                    ReturnUrl = Url.Action()
-                });
+                return RedirectToSignIn();
             }
 
             if (!UserHasPermission(Permission.AccessMissionControl))
@@ -196,13 +186,7 @@ namespace GRA.Controllers.MissionControl
         {
             if (!AuthUser.Identity.IsAuthenticated)
             {
-                // not logged in, redirect to login page
-                return RedirectToRoute(new
-                {
-                    area = string.Empty,
-                    controller = "SignIn",
-                    ReturnUrl = Url.Action()
-                });
+                return RedirectToSignIn();
             }
 
             var site = await GetCurrentSiteAsync();
@@ -220,13 +204,7 @@ namespace GRA.Controllers.MissionControl
         {
             if (!AuthUser.Identity.IsAuthenticated)
             {
-                // not logged in, redirect to login page
-                return RedirectToRoute(new
-                {
-                    area = string.Empty,
-                    controller = "SignIn",
-                    ReturnUrl = Url.Action()
-                });
+                return RedirectToSignIn();
             }
 
             if (ModelState.IsValid)

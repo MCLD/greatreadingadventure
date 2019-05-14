@@ -51,13 +51,7 @@ namespace GRA.Controllers.PerformerRegistration
         {
             if (!AuthUser.Identity.IsAuthenticated)
             {
-                // not logged in, redirect to login page
-                return RedirectToRoute(new
-                {
-                    area = string.Empty,
-                    controller = "SignIn",
-                    ReturnUrl = Url.Action()
-                });
+                return RedirectToSignIn();
             }
 
             if (!UserHasPermission(Permission.AccessPerformerRegistration))
@@ -102,14 +96,7 @@ namespace GRA.Controllers.PerformerRegistration
         {
             if (!AuthUser.Identity.IsAuthenticated)
             {
-                // not logged in, redirect to login page
-                return RedirectToRoute(new
-                {
-                    area = string.Empty,
-                    controller = "SignIn",
-                    action = "Index",
-                    ReturnUrl = Url.Action()
-                });
+                return RedirectToSignIn();
             }
 
             var site = await GetCurrentSiteAsync();
@@ -129,13 +116,7 @@ namespace GRA.Controllers.PerformerRegistration
             if (!AuthUser.Identity.IsAuthenticated)
             {
                 // not logged in, redirect to login page
-                return RedirectToRoute(new
-                {
-                    area = string.Empty,
-                    controller = "SignIn",
-                    action = "Index",
-                    ReturnUrl = Url.Action()
-                });
+                return RedirectToSignIn();
             }
 
             if (ModelState.IsValid)
@@ -680,12 +661,10 @@ namespace GRA.Controllers.PerformerRegistration
                     performer.Images[0].Filename);
             }
 
-            if (!string.IsNullOrWhiteSpace(performer.Website))
+            if (!string.IsNullOrWhiteSpace(performer.Website)
+                && Uri.TryCreate(performer.Website, UriKind.Absolute, out Uri absoluteUri))
             {
-                if (Uri.TryCreate(performer.Website, UriKind.Absolute, out Uri absoluteUri))
-                {
-                    viewModel.Uri = absoluteUri;
-                }
+                viewModel.Uri = absoluteUri;
             }
 
             return View(viewModel);
@@ -904,7 +883,7 @@ namespace GRA.Controllers.PerformerRegistration
                 return RedirectToAction(nameof(Information));
             }
 
-            var program = new PsProgram();
+            PsProgram program;
             try
             {
                 program = await _performerSchedulingService.GetProgramByIdAsync(id,
@@ -982,7 +961,7 @@ namespace GRA.Controllers.PerformerRegistration
                 return RedirectToAction(nameof(ProgramImages), new { id = model.ProgramId });
             }
 
-            var program = new PsProgram();
+            PsProgram program;
             try
             {
                 program = await _performerSchedulingService.GetProgramByIdAsync(model.ProgramId,

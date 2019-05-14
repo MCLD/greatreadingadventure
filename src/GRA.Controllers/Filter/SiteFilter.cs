@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using GRA.Abstract;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
 using GRA.Domain.Service.Abstract;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -18,12 +16,14 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Serilog.Context;
 
 namespace GRA.Controllers.Filter
 {
-    public class SiteFilter : Attribute, IAsyncResourceFilter
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = false)]
+    public class SiteFilterAttribute : Attribute, IAsyncResourceFilter
     {
-        private readonly ILogger<SiteFilter> _logger;
+        private readonly ILogger<SiteFilterAttribute> _logger;
         private readonly IDistributedCache _cache;
         private readonly IConfiguration _config;
         private readonly IPathResolver _pathResolver;
@@ -32,7 +32,7 @@ namespace GRA.Controllers.Filter
         private readonly IOptions<RequestLocalizationOptions> _l10nOptions;
         private readonly UserService _userService;
 
-        public SiteFilter(ILogger<SiteFilter> logger,
+        public SiteFilterAttribute(ILogger<SiteFilterAttribute> logger,
             IDistributedCache cache,
             IConfiguration config,
             IPathResolver pathResolver,
@@ -222,6 +222,8 @@ namespace GRA.Controllers.Filter
             var currentCulture = _userContextProvider.GetCurrentCulture();
             httpContext.Items[ItemKey.ISOLanguageName] = currentCulture.TwoLetterISOLanguageName;
 
+            int? activeUserId = _userContextProvider.GetContext().ActiveUserId;
+
             if (_l10nOptions.Value?.SupportedCultures.Count > 1)
             {
                 var cookieCulture = httpContext
@@ -236,7 +238,7 @@ namespace GRA.Controllers.Filter
                             .Response
                             .Cookies
                             .Delete(CookieRequestCultureProvider.DefaultCookieName);
-                        if (_userContextProvider.GetContext().ActiveUserId != null)
+                        if (activeUserId != null)
                         {
                             await _userService.UpdateCulture(null);
                         }
@@ -251,7 +253,7 @@ namespace GRA.Controllers.Filter
                             .MakeCookieValue(new RequestCulture(currentCulture.Name)),
                         new CookieOptions { Expires = DateTimeOffset.UtcNow.AddDays(14) }
                     );
-                    if (_userContextProvider.GetContext().ActiveUserId != null)
+                    if (activeUserId != null)
                     {
                         await _userService.UpdateCulture(currentCulture.Name);
                     }
@@ -283,7 +285,16 @@ namespace GRA.Controllers.Filter
                 httpContext.Items[ItemKey.L10n] = cultureList.OrderBy(_ => _.Text);
             }
 
-            await next();
+            using (LogContext.PushProperty("GRAActiveUserId", activeUserId))
+            using (LogContext.PushProperty("GRALanguageId", currentCulture?.TwoLetterISOLanguageName))
+            using (LogContext.PushProperty("GRARouteAction", context.RouteData?.Values["action"]))
+            using (LogContext.PushProperty("GRARouteArea", context.RouteData?.Values["area"]))
+            using (LogContext.PushProperty("GRARouteController", context.RouteData?.Values["controller"]))
+            using (LogContext.PushProperty("GRARouteId", context.RouteData?.Values["id"]))
+            using (LogContext.PushProperty("GRASiteStage", siteStage))
+            {
+                await next();
+            }
         }
 
         private async Task<string> UpdateCacheAsync(string file,
@@ -292,18 +303,15 @@ namespace GRA.Controllers.Filter
             string cacheKey)
         {
             var updatedLastModified = lastModified;
-            if (string.IsNullOrEmpty(lastModified))
+            if (string.IsNullOrEmpty(lastModified) && File.Exists(file))
             {
-                if (File.Exists(file))
+                updatedLastModified = File.GetLastWriteTime(file).ToString("yyMMddHHmmss");
+                if (cacheMinutes > 0)
                 {
-                    updatedLastModified = File.GetLastWriteTime(file).ToString("yyMMddHHmmss");
-                    if (cacheMinutes > 0)
-                    {
-                        await _cache.SetStringAsync(cacheKey,
-                            updatedLastModified,
-                            new DistributedCacheEntryOptions()
-                                .SetAbsoluteExpiration(TimeSpan.FromMinutes(cacheMinutes)));
-                    }
+                    await _cache.SetStringAsync(cacheKey,
+                        updatedLastModified,
+                        new DistributedCacheEntryOptions()
+                            .SetAbsoluteExpiration(TimeSpan.FromMinutes(cacheMinutes)));
                 }
             }
             return updatedLastModified;

@@ -20,7 +20,7 @@ using Microsoft.Extensions.Localization;
 namespace GRA.Controllers.Base
 {
     [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
-    [ServiceFilter(typeof(SiteFilter), Order = 1)]
+    [ServiceFilter(typeof(SiteFilterAttribute), Order = 1)]
     [MiddlewareFilter(typeof(Middleware.LocalizationMiddleware))]
     [ServiceFilter(typeof(SessionTimeoutFilterAttribute), Order = 2)]
     public abstract class Controller : Microsoft.AspNetCore.Mvc.Controller
@@ -334,6 +334,20 @@ namespace GRA.Controllers.Base
         protected SelectList NameIdSelectList(System.Collections.IEnumerable listData)
         {
             return new SelectList(listData, "Id", "Name");
+        }
+
+        protected IActionResult RedirectToSignIn()
+        {
+            TempData[TempDataKey.ReturnUrl] = HttpContext.Request.QueryString.HasValue
+                ? Url.Action() + HttpContext.Request.QueryString.ToString()
+                : Url.Action();
+
+            return RedirectToRoute(new
+            {
+                area = string.Empty,
+                controller = SignInController.Name,
+                action = nameof(SignInController.Index)
+            });
         }
     }
 }

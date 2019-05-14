@@ -18,9 +18,10 @@ using McMaster.Extensions.CommandLineUtils;
 
 namespace GRA.CommandLine
 {
-    static class Program
+    internal static class Program
     {
         private const string VersionSuffix = "-alpha1";
+
         public static int Main(string[] args)
         {
             var sw = new Stopwatch();
@@ -93,7 +94,7 @@ namespace GRA.CommandLine
             // filters
             services.AddScoped<Controllers.Filter.MissionControlFilter>();
             services.AddScoped<Controllers.Filter.NotificationFilter>();
-            services.AddScoped<Controllers.Filter.SiteFilter>();
+            services.AddScoped<Controllers.Filter.SiteFilterAttribute>();
             services.AddScoped<Controllers.Filter.UserFilter>();
 
             // services
@@ -201,7 +202,7 @@ namespace GRA.CommandLine
             // loop through commands to ensure they are all instantiated
             foreach (var command in commands)
             {
-                var instantiated = serviceProvider.GetService(command);
+                serviceProvider.GetService(command);
             }
 
             // notate that we're done with initialization

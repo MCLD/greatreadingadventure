@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using AutoMapper;
@@ -41,16 +40,6 @@ namespace GRA.Web
         private const string ConnectionStringNameSqlServer = "SqlServer";
         private const string ConnectionStringNameSQLite = "SQLite";
 
-        private readonly IDictionary<string, string> _defaultSettings = new Dictionary<string, string>
-        {
-            { ConfigurationKey.DefaultSiteName, "The Great Reading Adventure" },
-            { ConfigurationKey.DefaultPageTitle, "Great Reading Adventure" },
-            { ConfigurationKey.DefaultSitePath, "gra" },
-            { ConfigurationKey.DefaultFooter, "This site is running the open source <a href=\"http://www.greatreadingadventure.com/\">Great Reading Adventure</a> software developed by the <a href=\"https://mcldaz.org/\">Maricopa County Library District</a> with support by the <a href=\"http://www.azlibrary.gov/\">Arizona State Library, Archives and Public Records</a>, a division of the Secretary of State, and with federal funds from the <a href=\"http://www.imls.gov/\">Institute of Museum and Library Services</a>." },
-            { ConfigurationKey.InitialAuthorizationCode, "gra4adminmagic" },
-            { ConfigurationKey.ContentPath, "content" }
-        };
-
         private readonly IConfiguration _config;
         private readonly bool _isDevelopment;
         private readonly ILogger _logger;
@@ -62,18 +51,27 @@ namespace GRA.Web
             _config = config ?? throw new ArgumentNullException(nameof(config));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-            foreach (string configKey in _defaultSettings.Keys)
+            var defaults = new Dictionary<string, string>
+            {
+                { ConfigurationKey.DefaultSiteName, "The Great Reading Adventure" },
+                { ConfigurationKey.DefaultPageTitle, "Great Reading Adventure" },
+                { ConfigurationKey.DefaultSitePath, "gra" },
+                { ConfigurationKey.DefaultFooter, "This site is running the open source <a href=\"http://www.greatreadingadventure.com/\">Great Reading Adventure</a> software developed by the <a href=\"https://mcldaz.org/\">Maricopa County Library District</a> with support by the <a href=\"http://www.azlibrary.gov/\">Arizona State Library, Archives and Public Records</a>, a division of the Secretary of State, and with federal funds from the <a href=\"http://www.imls.gov/\">Institute of Museum and Library Services</a>." },
+                { ConfigurationKey.InitialAuthorizationCode, "gra4adminmagic" },
+                { ConfigurationKey.ContentPath, "content" }
+            };
+
+            foreach (string configKey in defaults.Keys)
             {
                 if (string.IsNullOrEmpty(_config[configKey]))
                 {
-                    _config[configKey] = _defaultSettings[configKey];
+                    _config[configKey] = defaults[configKey];
                 }
             }
 
             _isDevelopment = env.IsDevelopment();
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddLocalization();
@@ -121,7 +119,7 @@ namespace GRA.Web
             {
                 case "redis":
                     string redisConfig = _config[ConfigurationKey.RedisConfiguration]
-                        ?? throw new Exception($"{ConfigurationKey.DistributedCache} has Redis selected but {ConfigurationKey.RedisConfiguration} is not set.");
+                        ?? throw new GraFatalException($"{ConfigurationKey.DistributedCache} has Redis selected but {ConfigurationKey.RedisConfiguration} is not set.");
                     string redisInstance = "gra." + discriminator;
                     if (!redisInstance.EndsWith("."))
                     {
@@ -138,9 +136,11 @@ namespace GRA.Web
                     break;
                 case "sqlserver":
                     string sessionCs = _config.GetConnectionString("SqlServerSessions")
-                        ?? throw new Exception($"{ConfigurationKey.DistributedCache} has SQL Server selected but SqlServerSessions connection string is not set.");
+                        ?? throw new GraFatalException($"{ConfigurationKey.DistributedCache} has SQL Server selected but SqlServerSessions connection string is not set.");
                     string sessionTable = _config[ConfigurationKey.SqlSessionTable] ?? "Sessions";
-                    _logger.LogInformation("Using SQL Server distributed cache in table {sessionTable}", sessionTable);
+                    _logger
+                        .LogInformation("Using SQL Server distributed cache in table {sessionTable}",
+                            sessionTable);
                     services.AddDistributedSqlServerCache(_ =>
                     {
                         _.ConnectionString = sessionCs;
@@ -203,11 +203,11 @@ namespace GRA.Web
             // database
             if (string.IsNullOrEmpty(_config[ConfigurationKey.ConnectionStringName]))
             {
-                throw new Exception("GraConnectionStringName is not configured in appsettings.json - cannot continue");
+                throw new GraFatalException("GraConnectionStringName is not configured in appsettings.json - cannot continue");
             }
 
             string csName = _config[ConfigurationKey.ConnectionStringName]
-                ?? throw new Exception($"{ConfigurationKey.ConnectionStringName} must be provided.");
+                ?? throw new GraFatalException($"{ConfigurationKey.ConnectionStringName} must be provided.");
 
             // configure ef errors to throw, log, or ignore as appropriate for the environment
             // see https://docs.microsoft.com/en-us/ef/core/querying/related-data#ignored-includes
@@ -235,7 +235,7 @@ namespace GRA.Web
             }
 
             string cs = _config.GetConnectionString(csName)
-                ?? throw new Exception($"A {csName} connection string must be provided.");
+                ?? throw new GraFatalException($"A {csName} connection string must be provided.");
             switch (_config[ConfigurationKey.ConnectionStringName])
             {
                 case ConnectionStringNameSqlServer:
@@ -267,7 +267,7 @@ namespace GRA.Web
                                 .Ignore(ignoreEvents.ToArray())));
                     break;
                 default:
-                    throw new Exception($"Unknown GraConnectionStringName: {csName}");
+                    throw new GraFatalException($"Unknown GraConnectionStringName: {csName}");
             }
 
             // store the data protection key in the database
@@ -289,7 +289,7 @@ namespace GRA.Web
             services.AddScoped<Controllers.Filter.MissionControlFilter>();
             services.AddScoped<Controllers.Filter.NotificationFilter>();
             services.AddScoped<Controllers.Filter.SessionTimeoutFilterAttribute>();
-            services.AddScoped<Controllers.Filter.SiteFilter>();
+            services.AddScoped<Controllers.Filter.SiteFilterAttribute>();
             services.AddScoped<Controllers.Filter.UserFilter>();
 
             // services
@@ -368,7 +368,7 @@ namespace GRA.Web
                     services.AddScoped<IInitialSetupService, SetupSingleProgramService>();
                     break;
                 default:
-                    throw new Exception($"Unable to perform initial setup - unrecognized GraDefaultProgramSetup: {initialProgramSetup}");
+                    throw new GraFatalException($"Unable to perform initial setup - unrecognized GraDefaultProgramSetup: {initialProgramSetup}");
             }
 
             // repositories
@@ -489,8 +489,10 @@ namespace GRA.Web
             // insert remote address and trace identifier into the log context for each request
             app.Use(async (context, next) =>
             {
-                using (LogContext.PushProperty("Identifier", context.TraceIdentifier))
-                using (LogContext.PushProperty("RemoteAddress", context.Connection.RemoteIpAddress))
+                using (LogContext.PushProperty(LogConfig.IdentifierEnrichment,
+                    context.TraceIdentifier))
+                using (LogContext.PushProperty(LogConfig.RemoteAddressEnrichment,
+                    context.Connection.RemoteIpAddress))
                 {
                     await next.Invoke();
                 }
@@ -556,7 +558,7 @@ namespace GRA.Web
 
             app.UseAuthentication();
 
-            // sitePath is also referenced in GRA.Controllers.Filter.SiteFilter
+            // sitePath is also referenced in GRA.Controllers.Filter.SiteFilterAttribute
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

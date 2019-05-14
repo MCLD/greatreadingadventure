@@ -109,7 +109,7 @@ namespace GRA.Controllers
                     }
                 }
 
-                User user = null;
+                User user;
                 // signed-in users can view the dashboard
                 try
                 {

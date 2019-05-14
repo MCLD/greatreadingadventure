@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
@@ -14,58 +13,51 @@ namespace GRA.Web
     {
         private const string ErrorControllerName = "GRA.Controllers.ErrorController";
 
-        private const string ApplicationEnrichment = "Application";
-        private const string VersionEnrichment = "Version";
-        private const string IdentifierEnrichment = "Identifier";
-        private const string InstanceEnrichment = "Instance";
-        private const string RemoteAddressEnrichment = "RemoteAddress";
+        public static readonly string ApplicationEnrichment = "Application";
+        public static readonly string VersionEnrichment = "Version";
+        public static readonly string IdentifierEnrichment = "Identifier";
+        public static readonly string InstanceEnrichment = "Instance";
+        public static readonly string RemoteAddressEnrichment = "RemoteAddress";
 
         public LoggerConfiguration Build(IConfiguration config)
         {
-            var applicationName = Assembly.GetExecutingAssembly().GetName().Name;
-            var version = Assembly.GetExecutingAssembly().GetName().Version;
-
             LoggerConfiguration loggerConfig = new LoggerConfiguration()
                 .ReadFrom.Configuration(config)
-                .Enrich.WithProperty(ApplicationEnrichment, applicationName)
-                .Enrich.WithProperty(VersionEnrichment, version)
+                .Enrich.WithProperty(ApplicationEnrichment,
+                    Assembly.GetExecutingAssembly().GetName().Name)
+                .Enrich.WithProperty(VersionEnrichment, new Version().GetShortVersion())
                 .Enrich.FromLogContext()
                 .WriteTo.Console();
 
             string instance = config[ConfigurationKey.InstanceName];
 
-            if(!string.IsNullOrEmpty(instance))
+            if (!string.IsNullOrEmpty(instance))
             {
                 loggerConfig.Enrich.WithProperty(InstanceEnrichment, instance);
             }
 
-            string rollingLogLocation = config[ConfigurationKey.RollingLogPath];
+            string rollingLogLocation
+                = Path.Combine("shared", config[ConfigurationKey.RollingLogPath]);
             if (!string.IsNullOrEmpty(rollingLogLocation))
             {
-                if (!rollingLogLocation.EndsWith(Path.DirectorySeparatorChar))
-                {
-                    rollingLogLocation += Path.DirectorySeparatorChar;
-                }
-                rollingLogLocation += "log-";
-
                 string rollingLogFile = !string.IsNullOrEmpty(instance)
-                    ? rollingLogLocation + instance + "-{Date}.txt"
-                    : rollingLogLocation + "{Date}.txt";
+                    ? Path.Combine(rollingLogLocation, $"log-{instance}-.txt")
+                    : Path.Combine(rollingLogLocation, "log-.txt");
 
                 loggerConfig.WriteTo.Logger(_ => _
                     .Filter.ByExcluding(Matching.FromSource(ErrorControllerName))
-                    .WriteTo.RollingFile(rollingLogFile));
+                    .WriteTo.File(rollingLogFile, rollingInterval: RollingInterval.Day));
 
                 string httpErrorFileTag = config[ConfigurationKey.RollingLogHttp];
                 if (!string.IsNullOrEmpty(httpErrorFileTag))
                 {
                     string httpLogFile = !string.IsNullOrEmpty(instance)
-                        ? rollingLogLocation + instance + "-" + httpErrorFileTag + "-{Date}.txt"
-                        : rollingLogLocation + httpErrorFileTag + "-{Date}.txt";
+                        ? Path.Combine(rollingLogLocation, $"{httpErrorFileTag}-{instance}-.txt")
+                        : Path.Combine(rollingLogLocation + $"{httpErrorFileTag}-.txt");
 
                     loggerConfig.WriteTo.Logger(_ => _
                         .Filter.ByIncludingOnly(Matching.FromSource(ErrorControllerName))
-                        .WriteTo.RollingFile(httpLogFile));
+                        .WriteTo.File(httpLogFile, rollingInterval: RollingInterval.Day));
                 }
             }
 
