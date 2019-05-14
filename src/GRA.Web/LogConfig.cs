@@ -13,11 +13,11 @@ namespace GRA.Web
     {
         private const string ErrorControllerName = "GRA.Controllers.ErrorController";
 
-        public const string ApplicationEnrichment = "Application";
-        public const string VersionEnrichment = "Version";
-        public const string IdentifierEnrichment = "Identifier";
-        public const string InstanceEnrichment = "Instance";
-        public const string RemoteAddressEnrichment = "RemoteAddress";
+        public static readonly string ApplicationEnrichment = "Application";
+        public static readonly string VersionEnrichment = "Version";
+        public static readonly string IdentifierEnrichment = "Identifier";
+        public static readonly string InstanceEnrichment = "Instance";
+        public static readonly string RemoteAddressEnrichment = "RemoteAddress";
 
         public LoggerConfiguration Build(IConfiguration config)
         {

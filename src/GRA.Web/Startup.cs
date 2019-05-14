@@ -40,17 +40,6 @@ namespace GRA.Web
         private const string ConnectionStringNameSqlServer = "SqlServer";
         private const string ConnectionStringNameSQLite = "SQLite";
 
-        private readonly Dictionary<string, string> _defaultSettings
-            = new Dictionary<string, string>
-        {
-            { ConfigurationKey.DefaultSiteName, "The Great Reading Adventure" },
-            { ConfigurationKey.DefaultPageTitle, "Great Reading Adventure" },
-            { ConfigurationKey.DefaultSitePath, "gra" },
-            { ConfigurationKey.DefaultFooter, "This site is running the open source <a href=\"http://www.greatreadingadventure.com/\">Great Reading Adventure</a> software developed by the <a href=\"https://mcldaz.org/\">Maricopa County Library District</a> with support by the <a href=\"http://www.azlibrary.gov/\">Arizona State Library, Archives and Public Records</a>, a division of the Secretary of State, and with federal funds from the <a href=\"http://www.imls.gov/\">Institute of Museum and Library Services</a>." },
-            { ConfigurationKey.InitialAuthorizationCode, "gra4adminmagic" },
-            { ConfigurationKey.ContentPath, "content" }
-        };
-
         private readonly IConfiguration _config;
         private readonly bool _isDevelopment;
         private readonly ILogger _logger;
@@ -62,11 +51,21 @@ namespace GRA.Web
             _config = config ?? throw new ArgumentNullException(nameof(config));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-            foreach (string configKey in _defaultSettings.Keys)
+            var defaults = new Dictionary<string, string>
+            {
+                { ConfigurationKey.DefaultSiteName, "The Great Reading Adventure" },
+                { ConfigurationKey.DefaultPageTitle, "Great Reading Adventure" },
+                { ConfigurationKey.DefaultSitePath, "gra" },
+                { ConfigurationKey.DefaultFooter, "This site is running the open source <a href=\"http://www.greatreadingadventure.com/\">Great Reading Adventure</a> software developed by the <a href=\"https://mcldaz.org/\">Maricopa County Library District</a> with support by the <a href=\"http://www.azlibrary.gov/\">Arizona State Library, Archives and Public Records</a>, a division of the Secretary of State, and with federal funds from the <a href=\"http://www.imls.gov/\">Institute of Museum and Library Services</a>." },
+                { ConfigurationKey.InitialAuthorizationCode, "gra4adminmagic" },
+                { ConfigurationKey.ContentPath, "content" }
+            };
+
+            foreach (string configKey in defaults.Keys)
             {
                 if (string.IsNullOrEmpty(_config[configKey]))
                 {
-                    _config[configKey] = _defaultSettings[configKey];
+                    _config[configKey] = defaults[configKey];
                 }
             }
 

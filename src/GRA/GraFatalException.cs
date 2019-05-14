@@ -4,7 +4,7 @@ namespace GRA
 {
     public class GraFatalException : GraException
     {
-        public GraFatalException() : base()
+        public GraFatalException()
         {
         }
 
