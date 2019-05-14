@@ -26,7 +26,8 @@ One connection string is required (either `SqlServer` or `SQLite`).
 - `GraInitialProgramSetup` - *optional* - defaults to "multiple" which creates four age-based programs and sets up a point translation of one minute read equals one point, can also be set to "single" which creates one program and sets up a point translation of one book read equals one point
 - `GraMaximumAllowableActivity` (v4.1.0) - *optional* - for reporting purposes, limit participant activity above this amount to the "achiever" level configured for the participant's program
 - `GraReverseProxyAddress` - *optional* - if provided, internally the software will disregard proxy IP addresses
-- `GraRollingLogPath` - defaults to "shared/logs", a path to save a daily-rotating log file - if `GraInstanceName` is specified in `appsettings.json` it will be included in the log file name
+- `GraRollingLogPath` - *optional* - a path to save a daily-rotating log file inside the "shared" directory, typical would be "logs" - if `GraInstanceName` is specified in `appsettings.json` it will be included in the log file name
+- `GraRollingLogHttp` - *optional* - prefix for a filename of a rolling log of 404 errors
 - `GraSqlServer2008` - *optional* - if you are using SQL Server 2008, put text into this setting (any text will do)
 
 ## Default settings

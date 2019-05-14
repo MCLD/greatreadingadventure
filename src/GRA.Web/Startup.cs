@@ -40,7 +40,8 @@ namespace GRA.Web
         private const string ConnectionStringNameSqlServer = "SqlServer";
         private const string ConnectionStringNameSQLite = "SQLite";
 
-        private readonly IDictionary<string, string> _defaultSettings = new Dictionary<string, string>
+        private readonly Dictionary<string, string> _defaultSettings
+            = new Dictionary<string, string>
         {
             { ConfigurationKey.DefaultSiteName, "The Great Reading Adventure" },
             { ConfigurationKey.DefaultPageTitle, "Great Reading Adventure" },
@@ -72,7 +73,6 @@ namespace GRA.Web
             _isDevelopment = env.IsDevelopment();
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddLocalization();
@@ -120,7 +120,7 @@ namespace GRA.Web
             {
                 case "redis":
                     string redisConfig = _config[ConfigurationKey.RedisConfiguration]
-                        ?? throw new Exception($"{ConfigurationKey.DistributedCache} has Redis selected but {ConfigurationKey.RedisConfiguration} is not set.");
+                        ?? throw new GraFatalException($"{ConfigurationKey.DistributedCache} has Redis selected but {ConfigurationKey.RedisConfiguration} is not set.");
                     string redisInstance = "gra." + discriminator;
                     if (!redisInstance.EndsWith("."))
                     {
@@ -137,9 +137,11 @@ namespace GRA.Web
                     break;
                 case "sqlserver":
                     string sessionCs = _config.GetConnectionString("SqlServerSessions")
-                        ?? throw new Exception($"{ConfigurationKey.DistributedCache} has SQL Server selected but SqlServerSessions connection string is not set.");
+                        ?? throw new GraFatalException($"{ConfigurationKey.DistributedCache} has SQL Server selected but SqlServerSessions connection string is not set.");
                     string sessionTable = _config[ConfigurationKey.SqlSessionTable] ?? "Sessions";
-                    _logger.LogInformation("Using SQL Server distributed cache in table {sessionTable}", sessionTable);
+                    _logger
+                        .LogInformation("Using SQL Server distributed cache in table {sessionTable}",
+                            sessionTable);
                     services.AddDistributedSqlServerCache(_ =>
                     {
                         _.ConnectionString = sessionCs;
@@ -206,7 +208,7 @@ namespace GRA.Web
             }
 
             string csName = _config[ConfigurationKey.ConnectionStringName]
-                ?? throw new Exception($"{ConfigurationKey.ConnectionStringName} must be provided.");
+                ?? throw new GraFatalException($"{ConfigurationKey.ConnectionStringName} must be provided.");
 
             // configure ef errors to throw, log, or ignore as appropriate for the environment
             // see https://docs.microsoft.com/en-us/ef/core/querying/related-data#ignored-includes
@@ -234,7 +236,7 @@ namespace GRA.Web
             }
 
             string cs = _config.GetConnectionString(csName)
-                ?? throw new Exception($"A {csName} connection string must be provided.");
+                ?? throw new GraFatalException($"A {csName} connection string must be provided.");
             switch (_config[ConfigurationKey.ConnectionStringName])
             {
                 case ConnectionStringNameSqlServer:
