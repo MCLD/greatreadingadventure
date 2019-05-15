@@ -9,6 +9,8 @@ namespace GRA.Controllers
     {
         private readonly ILogger<ErrorController> _logger;
 
+        public static string Name { get { return "Error"; } }
+
         public ErrorController(ILogger<ErrorController> logger,
             ServiceFacade.Controller context) : base(context)
         {
@@ -17,21 +19,47 @@ namespace GRA.Controllers
 
         public IActionResult Index(int id)
         {
-            string originalPath = "unknown";
+            string path = default;
+            string queryString = default;
+
             var statusFeature = HttpContext.Features.Get<IStatusCodeReExecuteFeature>();
             if (statusFeature != null)
             {
-                originalPath = statusFeature.OriginalPath;
+                path = statusFeature.OriginalPath ?? default;
+                queryString = statusFeature.OriginalQueryString ?? default;
             }
             string currentUser = UserClaim(ClaimType.UserId);
 
-            if (id == 404)
+            Response.StatusCode = id;
+
+            if(!string.IsNullOrEmpty(currentUser))
             {
-                _logger.LogError($"HTTP Error {id}: path={originalPath},site={GetCurrentSiteId()},currentUser={currentUser}");
-                return View("404");
+                _logger.LogError(
+                    "HTTP Error {Id}: {Protocol} {Method} {Path}{QueryString} currentUser={CurrentUser}",
+                    id,
+                    Request.Protocol,
+                    Request.Method,
+                    path,
+                    queryString,
+                    currentUser);
             }
-            _logger.LogCritical($"HTTP Error {id}: path={originalPath},site={GetCurrentSiteId()},currentUser={currentUser}");
-            return View("Error");
+            else
+            {
+                _logger.LogError("HTTP Error {Id}: {Protocol} {Method} {Path}{QueryString}",
+                    id,
+                    Request.Protocol,
+                    Request.Method,
+                    path,
+                    queryString);
+            }
+
+            switch (id)
+            {
+                case 404:
+                    return View("404");
+                default:
+                    return View("Error");
+            }
         }
     }
 }
