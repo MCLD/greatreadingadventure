@@ -453,7 +453,11 @@ namespace GRA.Web
             }
             else
             {
-                app.UseStatusCodePagesWithReExecute("/Error/Index/{0}");
+                app.UseStatusCodePagesWithReExecute(string.Join("/",
+                    "",
+                    Controllers.ErrorController.Name,
+                    nameof(Controllers.ErrorController.Index),
+                    "{0}"));
             }
 
             var requestLocalizationOptions = new RequestLocalizationOptions
