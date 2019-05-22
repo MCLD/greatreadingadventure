@@ -6,6 +6,7 @@ This document describes the layout of the project as viewed in the solution file
 - `GRA.Controllers` - controllers for the MVC application - they are kept out of the `GRA.Web` project to keep all program logic removed from the UI and to make them easily testable
 - Domain
   - `GRA.Domain.Model` - domain models which are passed between the UI and data repositories
+  - `GRA.Domain.Report` - reporting implementations following our report API
   - `GRA.Domain.Repository` - interfaces describing the data repositories
   - `GRA.Domain.Service` - services for performing logic and calling data repositories
 - Infrastructure
