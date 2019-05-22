@@ -50,18 +50,18 @@
 
             <div class="row row-spacing">
                 <div class="col-xs-12">
-                    <label for="selectedFile">Select CSV file:</label>
+                    <label for="selectedFile">Select Excel file:</label>
                     <div class="input-group">
                         <label class="input-group-btn">
                             <span class="btn btn-default btn-file">
                                 <span class="fa fa-file-image-o"></span>
-                                Select an CSV file<input type="file" asp-for="UserCsvFile" accept=".csv" />
+                                Select an Excel file<input type="file" asp-for="UserExcelFile" accept=".xls,.xlsx" />
                             </span>
                         </label>
                         <input type="text" class="form-control" readonly id="selectedFile">
                     </div>
                     <div>
-                        <span asp-validation-for="UserCsvFile" class="text-danger"></span>
+                        <span asp-validation-for="UserExcelFile" class="text-danger"></span>
                     </div>
                 </div>
             </div>

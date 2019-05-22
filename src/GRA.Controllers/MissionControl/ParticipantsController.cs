@@ -1551,19 +1551,30 @@ namespace GRA.Controllers.MissionControl
                 }
             }
 
-            if (model.UserCsvFile != null && !ValidCsvExtensions
-                .Contains(Path.GetExtension(model.UserCsvFile.FileName).ToLowerInvariant()))
+            if (model.UserExcelFile != null && !ValidExcelExtensions
+                .Contains(Path.GetExtension(model.UserExcelFile.FileName).ToLowerInvariant()))
             {
-                ModelState.AddModelError("UserCsvFile", "File must be a .csv file.");
+                ModelState.AddModelError("UserExcelFile", $"File must be one of the following types: {string.Join(", ", ValidUploadExtensions)}");
             }
 
             if (ModelState.IsValid)
             {
                 UserImportResult userImportResult = null;
-                using (var streamReader = new StreamReader(model.UserCsvFile.OpenReadStream()))
+
+                var tempFile = Path.GetTempFileName();
+                using (var fileStream = new FileStream(tempFile, FileMode.Create))
                 {
-                    userImportResult = await _userImportService.GetFromCsvAsync(streamReader,
+                    await model.UserExcelFile.CopyToAsync(fileStream);
+                }
+
+                try
+                {
+                    userImportResult = await _userImportService.GetFromExcelAsync(tempFile,
                         model.ProgramId.Value);
+                }
+                finally
+                {
+                    System.IO.File.Delete(tempFile);
                 }
 
                 if (userImportResult.Errors?.Count > 0)

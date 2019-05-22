@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using ExcelDataReader;
 using GRA.Domain.Model;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Logging;
@@ -95,6 +97,163 @@ namespace GRA.Domain.Service
                 }
             }
 
+            var result = new UserImportResult();
+
+            if (errors.Count > 0)
+            {
+                result.Errors = errors;
+            }
+            else
+            {
+                result.Users = users;
+            }
+
+            return result;
+        }
+
+        public async Task<UserImportResult> GetFromExcelAsync(string filepath, int programId)
+        {
+            var users = new List<UserImportExport>();
+            var errors = new List<string>();
+
+            var program = await _siteService.GetProgramByIdAsync(programId);
+
+            using (var stream = new FileStream(filepath, FileMode.Open))
+            {
+                using (var excelReader = ExcelReaderFactory.CreateReader(stream))
+                {
+                    int currentSheet = 1;
+                    while (currentSheet < excelReader.ResultsCount)
+                    {
+                        excelReader.NextResult();
+                        currentSheet++;
+                    }
+
+                    const string FirstNameRowHeading = "FirstName";
+                    const string LastNameRowHeading = "LastName";
+                    const string AgeRowHeading = "Age";
+
+                    int firstNameColumnId = 0;
+                    int lastNameColumnId = 0;
+                    int ageColumnId = 0;
+                    int row = 0;
+                    while (excelReader.Read())
+                    {
+                        row++;
+                        if (row == 1)
+                        {
+                            for (int i = 0; i < excelReader.FieldCount; i++)
+                            {
+                                var columnName = excelReader.GetString(i).Trim() ?? $"Column{i}";
+                                switch (columnName)
+                                {
+                                    case FirstNameRowHeading:
+                                        firstNameColumnId = i;
+                                        break;
+                                    case LastNameRowHeading:
+                                        lastNameColumnId = i;
+                                        break;
+                                    case AgeRowHeading:
+                                        ageColumnId = i;
+                                        break;
+                                    default:
+                                        _logger.LogInformation($"Unrecognized column {columnName} in household import.");
+                                        break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (excelReader.GetValue(firstNameColumnId) != null
+                                    || excelReader.GetValue(lastNameColumnId) != null
+                                    || excelReader.GetValue(ageColumnId) != null)
+                            {
+                                string firstName = default(string);
+                                string lastName = default(string);
+                                int? age = default(int?);
+
+                                try
+                                {
+                                    firstName = excelReader.GetString(firstNameColumnId);
+
+                                    if (string.IsNullOrEmpty(firstName))
+                                    {
+                                        throw new GraException("First name is empty.");
+                                    }
+                                    else if (firstName.Length > MaxLength)
+                                    {
+                                        throw new GraException("First name is longer than {MaxLength} characters.");
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    _logger.LogError($"Invalid value for first name, row {row}: {ex.Message}");
+                                    errors.Add($"Invalid value for first name on line {row}: {ex.Message}");
+                                }
+
+                                try
+                                {
+                                    lastName = excelReader.GetString(lastNameColumnId);
+
+                                    if (string.IsNullOrEmpty(lastName))
+                                    {
+                                        throw new GraException("Last name is empty.");
+                                    }
+                                    else if (lastName.Length > MaxLength)
+                                    {
+                                        throw new GraException("Last name is longer than {MaxLength} characters.");
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    _logger.LogError($"Invalid value for last name, row {row}: {ex.Message}");
+                                    errors.Add($"Invalid value for last name on line {row}: {ex.Message}");
+                                }
+
+                                if (program.AskAge)
+                                {
+                                    try
+                                    {
+                                        var ageString = excelReader.GetString(ageColumnId);
+
+                                        if (string.IsNullOrWhiteSpace(ageString))
+                                        {
+                                            throw new GraException("Age is empty.");
+                                        }
+
+                                        var ageValueString = new string(ageString.Trim()
+                                            .SkipWhile(_ => !char.IsDigit(_))
+                                            .TakeWhile(char.IsDigit)
+                                            .ToArray());
+
+                                        if (string.IsNullOrWhiteSpace(ageValueString))
+                                        {
+                                            throw new GraException("Unable to get a number value from age.");
+                                        }
+
+                                        age = int.Parse(ageValueString);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        _logger.LogError($"Invalid value for age, row {row}: {ex.Message}");
+                                        errors.Add($"Invalid value for age on line {row}: {ex.Message}");
+                                    }
+                                }
+
+                                if (errors.Count == 0)
+                                {
+                                    users.Add(new UserImportExport
+                                    {
+                                        FirstName = firstName,
+                                        LastName = lastName,
+                                        Age = program.AskAge ? age : null
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             var result = new UserImportResult();
 
             if (errors.Count > 0)

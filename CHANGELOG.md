@@ -24,7 +24,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Report for tracking prize redemptions
 - Ability for participants to remove household members
 - Household bulk prize redemption
-- Group import from csv
+- Group import from Excel spreadsheets
 - Group lookup
 - Avatar update google analytics event
 - Language selection drop-down
