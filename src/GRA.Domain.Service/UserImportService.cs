@@ -144,7 +144,8 @@ namespace GRA.Domain.Service
                         {
                             for (int i = 0; i < excelReader.FieldCount; i++)
                             {
-                                switch (excelReader.GetString(i).Trim() ?? $"Column{i}")
+                                var columnName = excelReader.GetString(i).Trim() ?? $"Column{i}";
+                                switch (columnName)
                                 {
                                     case FirstNameRowHeading:
                                         firstNameColumnId = i;
@@ -154,6 +155,9 @@ namespace GRA.Domain.Service
                                         break;
                                     case AgeRowHeading:
                                         ageColumnId = i;
+                                        break;
+                                    default:
+                                        _logger.LogInformation($"Unrecognized column {columnName} in household import.");
                                         break;
                                 }
                             }
