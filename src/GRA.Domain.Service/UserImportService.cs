@@ -13,9 +13,6 @@ namespace GRA.Domain.Service
     public class UserImportService : BaseUserService<UserImportService>
     {
         private const int MaxLength = 255;
-        private const string FirstNameRowHeading = "FirstName";
-        private const string LastNameRowHeading = "LastName";
-        private const string AgeRowHeading = "Age";
 
         private readonly SiteService _siteService;
 
@@ -132,6 +129,10 @@ namespace GRA.Domain.Service
                         currentSheet++;
                     }
 
+                    const string FirstNameRowHeading = "FirstName";
+                    const string LastNameRowHeading = "LastName";
+                    const string AgeRowHeading = "Age";
+
                     int firstNameColumnId = 0;
                     int lastNameColumnId = 0;
                     int ageColumnId = 0;
@@ -154,8 +155,6 @@ namespace GRA.Domain.Service
                                     case AgeRowHeading:
                                         ageColumnId = i;
                                         break;
-                                    default:
-                                        break;
                                 }
                             }
                         }
@@ -175,11 +174,11 @@ namespace GRA.Domain.Service
 
                                     if (string.IsNullOrEmpty(firstName))
                                     {
-                                        throw new Exception("First name is empty.");
+                                        throw new GraException("First name is empty.");
                                     }
                                     else if (firstName.Length > MaxLength)
                                     {
-                                        throw new Exception("First name is longer than {MaxLength} characters.");
+                                        throw new GraException("First name is longer than {MaxLength} characters.");
                                     }
                                 }
                                 catch (Exception ex)
@@ -194,11 +193,11 @@ namespace GRA.Domain.Service
 
                                     if (string.IsNullOrEmpty(lastName))
                                     {
-                                        throw new Exception("Last name is empty.");
+                                        throw new GraException("Last name is empty.");
                                     }
                                     else if (lastName.Length > MaxLength)
                                     {
-                                        throw new Exception("Last name is longer than {MaxLength} characters.");
+                                        throw new GraException("Last name is longer than {MaxLength} characters.");
                                     }
                                 }
                                 catch (Exception ex)
@@ -215,7 +214,7 @@ namespace GRA.Domain.Service
 
                                         if (string.IsNullOrWhiteSpace(ageString))
                                         {
-                                            throw new Exception("Age is empty.");
+                                            throw new GraException("Age is empty.");
                                         }
 
                                         var ageValueString = new string(ageString.Trim()
@@ -225,7 +224,7 @@ namespace GRA.Domain.Service
 
                                         if (string.IsNullOrWhiteSpace(ageValueString))
                                         {
-                                            throw new Exception("Unable to get a number value from age.");
+                                            throw new GraException("Unable to get a number value from age.");
                                         }
 
                                         age = int.Parse(ageValueString);
