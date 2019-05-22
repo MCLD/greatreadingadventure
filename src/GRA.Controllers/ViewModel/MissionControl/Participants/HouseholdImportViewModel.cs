@@ -26,9 +26,9 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         [Required(ErrorMessage = "Please let us know if this is their first time participating in the program.")]
         public string IsFirstTime { get; set; }
 
-        [DisplayName("CSV File")]
+        [DisplayName("Excel File")]
         [Required]
-        public IFormFile UserCsvFile { get; set; }
+        public IFormFile UserExcelFile { get; set; }
 
         public bool ShowSchool { get; set; }
         public string ProgramJson { get; set; }

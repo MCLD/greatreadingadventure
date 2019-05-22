@@ -11,6 +11,8 @@ namespace GRA.Controllers.Base
 
         protected static readonly string[] ValidCsvExtensions = { ".csv" };
 
+        protected static readonly string[] ValidExcelExtensions = { ".xls", ".xlsx" };
+
         protected MCController(ServiceFacade.Controller context) : base(context)
         {
         }
