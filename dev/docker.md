@@ -1,6 +1,6 @@
 # GRA Developer Documentation - Docker
 
-The GRA is designed to function in Docker utilizing [Microsoft-provided base images](https://hub.docker.com/r/microsoft/). If built using a `Dockerfile` in the project, the [aspnetcore-build](https://hub.docker.com/r/microsoft/aspnetcore-build/) image will be used for the build and the [aspnetcore](https://hub.docker.com/r/microsoft/aspnetcore/) image will be used for running the compiled application.
+The GRA is designed to function in Docker utilizing [Microsoft-provided base images](https://azure.microsoft.com/en-us/product-categories/containers/). If built using a `Dockerfile` in the project, [Microsoft's docker images](https://github.com/dotnet/dotnet-docker) will be used for the basis of build and publish.
 
 ## Sample build command
 
@@ -16,7 +16,6 @@ docker run -d -p 80:80 \
   --name gra
   --restart unless-stopped \
   -v /mnt/sharedstorage:/app/shared \
-  -v /mnt/avatarassets:/app/assets \
   gra:latest
 ```
 
@@ -26,7 +25,6 @@ docker run -d -p 80:80 \
   --name gra \
   --restart unless-stopped \
   -v /mnt/sharedstorage:/app/shared \
-  -v /mnt/avatarassets:/app/assets \
   mcld/gra:latest
 ```
 
@@ -43,6 +41,5 @@ docker run -d -p 80:80 \
   -e GraInstanceName=gra-instance1 \
   -e "GraDeployDate=`date +'%x %H:%M:%S'`" \
   -v /mnt/sharedstorage:/app/shared \
-  -v /mnt/avatarassets:/app/assets \
   mcld/gra:latest
 ```

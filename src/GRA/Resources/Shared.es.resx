@@ -758,8 +758,592 @@ Hogwarts, Narnia, Oz, y el centro de la tierra!</value>
     <value>¡Debes introducir un código!</value>
     <comment>Validation prompt if the user clicked the secret code submission button without entering a secret code.</comment>
   </data>
-  <data name="Family" xml:space="preserve">
-    <value>Familia</value>
-    <comment>Famiy [remove]</comment>
+  <data name="All Programs" xml:space="preserve">
+    <value>Todos los programas</value>
+    <comment>Select all programs in a program selection drop-down list</comment>
+  </data>
+  <data name="Distance" xml:space="preserve">
+    <value>Distancia</value>
+    <comment>Column title showing events: approximate distance from the search location</comment>
+  </data>
+  <data name="Enter an address or ZIP code" xml:space="preserve">
+    <value>Ingrese una dirección o código postal</value>
+    <comment>Prompt to enter an address or ZIP code to search for events</comment>
+  </data>
+  <data name="Enter text to search for an event here" xml:space="preserve">
+    <value>Ingrese texto para buscar un evento aquí</value>
+    <comment>Prompt to enter text to search for events</comment>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>Ubicación</value>
+    <comment>Prompt to select the name of a location</comment>
+  </data>
+  <data name="No Events" xml:space="preserve">
+    <value>No hay eventos</value>
+    <comment>Explain that no matching events were found when a search was performed</comment>
+  </data>
+  <data name="Search Title &amp; Description" xml:space="preserve">
+    <value>Búsqueda por título &amp; Descripción</value>
+    <comment>Prompt to search by title and description</comment>
+  </data>
+  <data name="{0} at {1}" xml:space="preserve">
+    <value>{0} a {1}</value>
+    <comment>When an event is at a specific time on a date it will displayed using this template; {0} is the date, {1} is the time</comment>
+  </data>
+  <data name="{0} mile(s)" xml:space="preserve">
+    <value>{0} milla(s)</value>
+    <comment>Express a distance; {0} replaced with the number of mile(s)</comment>
+  </data>
+  <data name="Use my ZIP code" xml:space="preserve">
+    <value>Usar mi código postal</value>
+    <comment>Button text when searching to use the current participant's ZIP code</comment>
+  </data>
+  <data name="Avatar" xml:space="preserve">
+    <value>Avatar</value>
+    <comment>A representation of the participant that they can customize (e.g. with different outfits or accessories)</comment>
+  </data>
+  <data name="Avatar saved." xml:space="preserve">
+    <value>Guardar avatar.</value>
+    <comment>Tell the participant that their avatar changes have been saved.</comment>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Back</value>
+    <comment>Navegar de nuevo a la página anterior</comment>
+  </data>
+  <data name="Back to Challenges" xml:space="preserve">
+    <value>Volver a los desafíos</value>
+    <comment>Button text to return to the list of challenges</comment>
+  </data>
+  <data name="Challenge Group: {0}" xml:space="preserve">
+    <value>Grupo de desafío: {0}</value>
+    <comment>Display which challenge group was selected; {0} is replaced with the name of the challenge group</comment>
+  </data>
+  <data name="Challenge: {0}" xml:space="preserve">
+    <value>Desafío: {0}</value>
+    <comment>Page title for viewing the details of a specific challenge; {0} will be replaced with the name of the challenge</comment>
+  </data>
+  <data name="Completed on: {0}" xml:space="preserve">
+    <value>Completado en: {0}</value>
+    <comment>Challenge task completion date, {0} is replaced with the date the task was completed</comment>
+  </data>
+  <data name="Completed!" xml:space="preserve">
+    <value>¡Terminado!</value>
+    <comment>Status to show when a challenge or challenge task is marked complete.</comment>
+  </data>
+  <data name="Could not save avatar: {0}" xml:space="preserve">
+    <value>No se pudo guardar el avatar: {0}</value>
+    <comment>Tell the participant that we could not save their avatar changes, {0} will be replaced with a reason why</comment>
+  </data>
+  <data name="Couldn't save your avatar, sorry!" xml:space="preserve">
+    <value>No pude guardar tu avatar. ¡Lo siento!</value>
+    <comment>Apologize to the user for a technical problem while saving their customized avatar.</comment>
+  </data>
+  <data name="Download to Share" xml:space="preserve">
+    <value>Descargar para compartir</value>
+    <comment>Download an image in order to share it on social media platforms</comment>
+  </data>
+  <data name="Enter text to search for a challenge here" xml:space="preserve">
+    <value>Ingrese texto para buscar un desafío aquí</value>
+    <comment>Prompt to enter text to search for challenges</comment>
+  </data>
+  <data name="My Favorites" xml:space="preserve">
+    <value>Mis favoritos</value>
+    <comment>Button which will display to a participant items that they flagged as their favorites</comment>
+  </data>
+  <data name="No Challenges" xml:space="preserve">
+    <value>No hay desafíos</value>
+    <comment>Explain that no matching challenges were found when a search was performed</comment>
+  </data>
+  <data name="Please customize your avatar and save it, then you can share it!" xml:space="preserve">
+    <value>Por favor, personaliza tu avatar y guárdalo, ¡entonces puedes compartirlo!</value>
+    <comment>Participant has tried to share their avatar before saving it, inform them they must customize and save it first and then they can try sharing it.</comment>
+  </data>
+  <data name="Progress" xml:space="preserve">
+    <value>Progreso</value>
+    <comment>Column heading showing far a participant is towards completing an item (i.e. their progress)</comment>
+  </data>
+  <data name="Read &lt;strong&gt;&lt;em&gt;&lt;a href=\&quot;{0}\&quot; target=\&quot;_blank\&quot;&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt;" xml:space="preserve">
+    <value>Leer &lt;strong&gt;&lt;em&gt;&lt;a href=\"{0}\" target=\"_blank\"&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt;</value>
+    <comment>Challenge task of book with a link (replacing {0}) and a book title (replacing {1})</comment>
+  </data>
+  <data name="Read &lt;strong&gt;&lt;em&gt;&lt;a href=\&quot;{0}\&quot; target=\&quot;_blank\&quot;&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{2}&lt;/strong&gt;" xml:space="preserve">
+    <value>Leer &lt;strong&gt;&lt;em&gt;&lt;a href=\"{0}\" target=\"_blank\"&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt; por &lt;strong&gt;{2}&lt;/strong&gt;</value>
+    <comment>Challenge task of book with a link (replacing {0}), a book title (replacing {1}) and the author of the book (replacing {2})</comment>
+  </data>
+  <data name="Read &lt;strong&gt;&lt;em&gt;{0}&lt;/em&gt;&lt;/strong&gt;" xml:space="preserve">
+    <value>Leer &lt;strong&gt;&lt;em&gt;{0}&lt;/em&gt;&lt;/strong&gt;</value>
+    <comment>Challenge tasks of book with the book title replacing {0}</comment>
+  </data>
+  <data name="Read &lt;strong&gt;&lt;em&gt;{0}&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{1}&lt;/strong&gt;" xml:space="preserve">
+    <value>Leer &lt;strong&gt;&lt;em&gt;{0}&lt;/em&gt;&lt;/strong&gt; por &lt;strong&gt;{1}&lt;/strong&gt;</value>
+    <comment> Challenge task of a book with the book title replacing {0} and the author replacing {1}</comment>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Guardar</value>
+    <comment>Button text for saving changes</comment>
+  </data>
+  <data name="Save My Favorites" xml:space="preserve">
+    <value>Guardar mis favoritos</value>
+    <comment>Button allowing a participant to save their selected favorites</comment>
+  </data>
+  <data name="Share" xml:space="preserve">
+    <value>Compartir</value>
+    <comment>Button text for sharing avatar images</comment>
+  </data>
+  <data name="Share Your Avatar" xml:space="preserve">
+    <value>Comparte su Avatar</value>
+    <comment>Title for the avatar sharing page</comment>
+  </data>
+  <data name="View Attachment" xml:space="preserve">
+    <value>Vea el archivo adjunto</value>
+    <comment>Button text to view an attached file to a challenge task</comment>
+  </data>
+  <data name="When you complete &lt;strong&gt;{0}&lt;strong&gt;, you will earn &lt;strong&gt;{1}&lt;/strong&gt; and a badge." xml:space="preserve">
+    <value>Cuando completes &lt;strong&gt;{0}&lt;/strong&gt;, ganarás &lt;strong&gt;{1}&lt;/strong&gt; y credenciales.</value>
+    <comment>Describe what completing a challenge will achieve. {0} replaced with singular or plural task information (e.g. "1 task"or "2 tasks") and {1} is replaced with singular or plural point information (e.g. "1 point" or "2 points")</comment>
+  </data>
+  <data name="When you complete &lt;strong&gt;{0}&lt;strong&gt;, you will earn &lt;strong&gt;{1}&lt;/strong&gt;." xml:space="preserve">
+    <value>Cuando completes &lt;strong&gt;{0}&lt;/strong&gt;, ganarás &lt;strong&gt;{1}&lt;/strong&gt;.</value>
+    <comment>Describe what completing a challenge will achieve. {0} replaced with singular or plural task information (e.g. "1 task"or "2 tasks") and {1} is replaced with singular or plural point information (e.g. "1 point" or "2 points")</comment>
+  </data>
+  <data name="Your status has been saved!" xml:space="preserve">
+    <value>¡Tu estado ha sido guardado!</value>
+    <comment>Participant's status on completing tasks has been saved.</comment>
+  </data>
+  <data name="Your status has been saved. You have completed {0}% of the required tasks for the challenge: {1}!" xml:space="preserve">
+    <value>Tu estado ha sido guardado. Ha completado {0}% de las tareas requeridas para el desafío: {1}!</value>
+    <comment>Participant's status on completing tasks has been saved, {0} replaced with the percentage of the required tasks which have been completed and {1} is replaced with the name of the challenge.</comment>
+  </data>
+  <data name="{0} point" xml:space="preserve">
+    <value>{0} punto</value>
+    <comment>Indicating a single point, {0} will be replaced with 1</comment>
+  </data>
+  <data name="{0} points" xml:space="preserve">
+    <value>{0} puntos</value>
+    <comment>Indicating a number of points other than 1, {0} will be replaced with 0 or a number more than 1</comment>
+  </data>
+  <data name="{0} task" xml:space="preserve">
+    <value>{0} tarea</value>
+    <comment>Indicating a single challenge task, {0} will be replaced with 1</comment>
+  </data>
+  <data name="{0} tasks" xml:space="preserve">
+    <value>{0} tareas</value>
+    <comment>Indicating a number of challenge tasks other than 1, {0} will be replaced with 0 or a number more than 1</comment>
+  </data>
+  <data name="Back to Events &amp; Community Experiences" xml:space="preserve">
+    <value>Volver a Eventos &amp; Experiencia en la Comunidad</value>
+    <comment>Button text for returning to the list of events or community experiences</comment>
+  </data>
+  <data name="More information" xml:space="preserve">
+    <value>Más información</value>
+    <comment>Text shown before a link to an external site where the user can find more information about an event</comment>
+  </data>
+  <data name="Related Challenge" xml:space="preserve">
+    <value>Reto relacionado</value>
+    <comment>Text shown before a link to challenge related to a shown event</comment>
+  </data>
+  <data name="Related Challenges" xml:space="preserve">
+    <value>Desafíos relacionados</value>
+    <comment>Text shown before a link to multiple challenges related to a shown event</comment>
+  </data>
+  <data name="This event is limited to the program: {0}" xml:space="preserve">
+    <value>Este evento está limitado al programa: {0}</value>
+    <comment>Shown to a user when an event is limited to a specific program.</comment>
+  </data>
+  <data name="You are now unsubscribed and will not receive any more emails from {0}." xml:space="preserve">
+    <value>Ya no está suscrito y no recibirá más correos electrónicos de {0}.</value>
+    <comment>Message to the user that they've unsubscribed and won't receive any more emails. {0} is replaced with the name of the site.</comment>
+  </data>
+  <data name="{0} - registration opens {1}" xml:space="preserve">
+    <value>{0} - se abre el registro {1}</value>
+    <comment>Page title prior to registration, {0} is replaced with the name of the site, {1} with the date registration opens</comment>
+  </data>
+  <data name="Old Password" xml:space="preserve">
+    <value>Contraseña anterior</value>
+    <comment>Prompt a participant for their old password when they want to change their password</comment>
+  </data>
+  <data name="Activity" xml:space="preserve">
+    <value>Actividad</value>
+    <comment>Title for the participant's activity</comment>
+  </data>
+  <data name="Add an existing participant into your {0}, if that participant is the head of a {0} their {0} members will be moved into your {0} as well." xml:space="preserve">
+    <value>Agregue un participante existente en su {0}, si ese participante esta a cargo de {0} sus {0} los miembros se moverán a tu {0} también.</value>
+    <comment>Explanation of how adding an existing participant into the current participant's Group or Family works. {0} is replaced with either "Family" or "Group"as translated in this file.</comment>
+  </data>
+  <data name="Add Existing Participant" xml:space="preserve">
+    <value>Añadir participante existente</value>
+    <comment>Title for area to add an existing program participant to the current participant's Family or Group</comment>
+  </data>
+  <data name="Add Participant" xml:space="preserve">
+    <value>Añada participante</value>
+    <comment>Button text to add a participant to a Group or Family</comment>
+  </data>
+  <data name="Are you sure you want to delete this book from your book list:" xml:space="preserve">
+    <value>¿Está seguro de que desea eliminar este libro de su lista de libros?</value>
+    <comment>Prompt for the user when they request to delete a book from the list; the book name is specified directly after this message is printed.</comment>
+  </data>
+  <data name="Book List" xml:space="preserve">
+    <value>Lista de libros</value>
+    <comment>Button to view the participant's book list.</comment>
+  </data>
+  <data name="Bundle Items" xml:space="preserve">
+    <value>Agrupar Artículos</value>
+    <comment>Title for a pop-up showing a collection of avatar items awarded as a bundle</comment>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancelar</value>
+    <comment>Button text to exit a dialog without saving changes.</comment>
+  </data>
+  <data name="Change Password" xml:space="preserve">
+    <value>Cambia la contraseña</value>
+    <comment>Button to change the user's password.</comment>
+  </data>
+  <data name="Congratulations, you've earned a free book!" xml:space="preserve">
+    <value>¡Felicidades, te has ganado un libro gratis!</value>
+    <comment>Message to the participant that they've earned a free book.</comment>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Fecha</value>
+    <comment>Heading or title to display a date</comment>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Borrar</value>
+    <comment>Button text to delete an item.</comment>
+  </data>
+  <data name="Delete Book" xml:space="preserve">
+    <value>Borrar libro</value>
+    <comment>Title to delete a book from the participant's book list</comment>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>Detalles</value>
+    <comment>Button to view more details about the currently shown record.</comment>
+  </data>
+  <data name="Donate your book" xml:space="preserve">
+    <value>Dona tu libro</value>
+    <comment>Button text for the participant to donate their book to charity rather than redeem it for personal use.</comment>
+  </data>
+  <data name="Edit Book" xml:space="preserve">
+    <value>Editar Libro</value>
+    <comment>Title to edit a book in the participant's book list</comment>
+  </data>
+  <data name="Free book code" xml:space="preserve">
+    <value>Código de libro gratis</value>
+    <comment>Description of the code a customer will use for obtaining their free book that they've earned.</comment>
+  </data>
+  <data name="Group" xml:space="preserve">
+    <value>Grupo</value>
+    <comment>Title shown when viewing a Group of participants. Will also be used in a sentence.</comment>
+  </data>
+  <data name="Group name" xml:space="preserve">
+    <value>Nombre del grupo</value>
+    <comment>The name for a group of participants, for example a summer camp name.</comment>
+  </data>
+  <data name="Group type" xml:space="preserve">
+    <value>Tipo de grupo</value>
+    <comment>The type for a group of participants, for example: summer camp or daycare</comment>
+  </data>
+  <data name="History" xml:space="preserve">
+    <value>Historia</value>
+    <comment>Button to view the participant's history.</comment>
+  </data>
+  <data name="It appears that you have more than {0} members in your family. We'd like you to convert your family to a group in order to add more members." xml:space="preserve">
+    <value>Parece que tienes más de {0} miembros en tu familia. Queremos que conviertas a tu familia en un grupo para agregar más miembros.</value>
+    <comment>The participant is attempting to add an additional user to their family which pushes them over the family/group threshold to turn them into a group.</comment>
+  </data>
+  <data name="No books logged." xml:space="preserve">
+    <value>No hay libros registrados.</value>
+    <comment>Message shown when the book list is viewed with no books in the log.</comment>
+  </data>
+  <data name="No history to display." xml:space="preserve">
+    <value>No hay historia para mostrar.</value>
+    <comment>Message shown when the history is viewed with no entries in the log.</comment>
+  </data>
+  <data name="Points" xml:space="preserve">
+    <value>Puntos</value>
+    <comment>Title for showing points earned by the participant</comment>
+  </data>
+  <data name="Redeem your code" xml:space="preserve">
+    <value>Redimir su código</value>
+    <comment>Button text for the participant to obtain their code for a free book.</comment>
+  </data>
+  <data name="Total Points" xml:space="preserve">
+    <value>Puntos totales</value>
+    <comment>Heading shown before the total number of participant's points</comment>
+  </data>
+  <data name="Update Group details" xml:space="preserve">
+    <value>Actualizar los detalles del grupo</value>
+    <comment>Title for updating group details</comment>
+  </data>
+  <data name="Upgrade from Family to Group" xml:space="preserve">
+    <value>Actualizar de familia a grupo</value>
+    <comment>Title for interface to upgrade a Family to a Group</comment>
+  </data>
+  <data name="Upgrade to Group" xml:space="preserve">
+    <value>Actualizar a Grupo</value>
+    <comment>Button text for upgrading a family to a group</comment>
+  </data>
+  <data name="If you can't find something, please &lt;a href=\&quot;{0}\&quot;&gt;send us a mail&lt;/a&gt; and let us know what you were looking for, we'll do our best to help." xml:space="preserve">
+    <value>Si no puede encontrar algo, por favor &lt;a href=\"{0}\"&gt;envíenos un correo&lt;/a&gt; y háganos saber lo que estaba buscando, haremos todo lo posible para ayudarlo.</value>
+    <comment>Ask participant to use the in-software mail facility to contact site owners if they require assistance; {0} will be replaced automatically with the URL to the mail facility.</comment>
+  </data>
+  <data name="Page not found" xml:space="preserve">
+    <value>Página no encontrada</value>
+    <comment>Page title and header for 404 not found error.</comment>
+  </data>
+  <data name="We couldn't find what you were looking for. Sorry about that!" xml:space="preserve">
+    <value>No pudimos encontrar lo que estabas buscando. ¡Lo siento!</value>
+    <comment>Explain to user a 404 not found error.</comment>
+  </data>
+  <data name="Are you sure you wish to delete this mail: {0}" xml:space="preserve">
+    <value>¿Estás seguro de que deseas eliminar este correo? {0}</value>
+    <comment>Confirm message deletion, {0} is replaced with the mail subject.</comment>
+  </data>
+  <data name="Back to Mailbox" xml:space="preserve">
+    <value>Volver al buzón</value>
+    <comment>Button to return to the participant's mailbox</comment>
+  </data>
+  <data name="Delete Mail" xml:space="preserve">
+    <value>Eliminar correo</value>
+    <comment>Header for delete mail page/dialog</comment>
+  </data>
+  <data name="Mail message" xml:space="preserve">
+    <value>Mensaje de correo</value>
+    <comment>Display prompt for mail content</comment>
+  </data>
+  <data name="Mail sent: {0}" xml:space="preserve">
+    <value>Correo enviado: {0}</value>
+    <comment>Inform a participant that their mail was sent, {0} is replaced with the subject of the mail.</comment>
+  </data>
+  <data name="Re: {0}" xml:space="preserve">
+    <value>Re: {0}</value>
+    <comment>The subject of a message is changed to this when it is replied to with {0} replaced with the original subject.</comment>
+  </data>
+  <data name="Read" xml:space="preserve">
+    <value>Leer</value>
+    <comment>Button to read a mail.</comment>
+  </data>
+  <data name="Reply" xml:space="preserve">
+    <value>Respuesta</value>
+    <comment>Button to reply to a mail</comment>
+  </data>
+  <data name="Reply to:" xml:space="preserve">
+    <value>Responder a:</value>
+    <comment>Inform a participant what they are replying to, the subject is output after this message. Should end with an indicator that text follows such as a colon (:)</comment>
+  </data>
+  <data name="Send Mail" xml:space="preserve">
+    <value>Enviar Correo</value>
+    <comment>Button to send a mail, also used as a page/dialog header</comment>
+  </data>
+  <data name="Send Reply" xml:space="preserve">
+    <value>Enviar Respuesta</value>
+    <comment>Button to send a reply to a mail</comment>
+  </data>
+  <data name="Sent to you on {0}" xml:space="preserve">
+    <value>Enviado a usted en {0}</value>
+    <comment>Inform a participant when a mail was sent to them.</comment>
+  </data>
+  <data name="Subject" xml:space="preserve">
+    <value>Tema</value>
+    <comment>Header/display prompt for a mail subject</comment>
+  </data>
+  <data name="Subject: {0}" xml:space="preserve">
+    <value>Tema: {0}</value>
+    <comment>Show the subject of a mail; {0} is replaced with the mail subject</comment>
+  </data>
+  <data name="There was an issue deleting that mail item." xml:space="preserve">
+    <value>Hubo un problema al eliminar ese elemento de correo.</value>
+    <comment>Unable to delete a mail due to a software error.</comment>
+  </data>
+  <data name="Unable to read mail: {0}" xml:space="preserve">
+    <value>No se puede leer el correo: {0}</value>
+    <comment>Unable to display a mail due to a software error, {0} is replaced with the text of the error.</comment>
+  </data>
+  <data name="Unable to reply to mail: {0}" xml:space="preserve">
+    <value>No se puede responder al correo: {0}</value>
+    <comment>Unable to reply to a mail due to a software error, {0} is replaced with the text of the error.</comment>
+  </data>
+  <data name="You currently have no mail." xml:space="preserve">
+    <value>Actualmente no tienes correo.</value>
+    <comment>Inform a participant that their mailbox is empty.</comment>
+  </data>
+  <data name="You must select a branch." xml:space="preserve">
+    <value>Debes seleccionar una sucursal.</value>
+    <comment>Inform the user they must select a library branch.</comment>
+  </data>
+  <data name="You must select a program." xml:space="preserve">
+    <value>Debes seleccionar un programa.</value>
+    <comment>Inform the user they must select a program.</comment>
+  </data>
+  <data name="You must select a system." xml:space="preserve">
+    <value>Debes seleccionar un sistema.</value>
+    <comment>Inform the user they must select a library system.</comment>
+  </data>
+  <data name="Activity cannot be logged for this participant until they log in and answer a questionnaire." xml:space="preserve">
+    <value>La actividad no se puede registrar para este participante hasta que inicie sesión y responda un cuestionario.</value>
+    <comment>The designated participant must log in to complete a questionnaire before activity can be entered for them.</comment>
+  </data>
+  <data name="Add username" xml:space="preserve">
+    <value>Añadir nombre de usuario</value>
+    <comment>Add a username for a participant who doesn't have one so that they can log in on their own</comment>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Aplicar</value>
+    <comment>Button text shown after a secret code entry field to apply the code</comment>
+  </data>
+  <data name="Book Code" xml:space="preserve">
+    <value>Código del libro</value>
+    <comment>Column heading for free book codes/vendor codes, a participant redeems this to obtain their free book</comment>
+  </data>
+  <data name="Donate book" xml:space="preserve">
+    <value>Donar libro</value>
+    <comment>Donate a free book for the currently-selected participant</comment>
+  </data>
+  <data name="New Mail!" xml:space="preserve">
+    <value>¡Nuevo correo!</value>
+    <comment>Tool tip to show when a user has new mail</comment>
+  </data>
+  <data name="Participant" xml:space="preserve">
+    <value>Partícipe</value>
+    <comment>Column header to describe a person that is participating in the program</comment>
+  </data>
+  <data name="Redeem code" xml:space="preserve">
+    <value>Canjear código</value>
+    <comment>Redeem a free book/vendor code for the currently-selected participant</comment>
+  </data>
+  <data name="Return to Top" xml:space="preserve">
+    <value>Volver Arriba</value>
+    <comment>Link or button on the bottom of a page to return to the top of the page or list</comment>
+  </data>
+  <data name="Switch To" xml:space="preserve">
+    <value>Cambiar a</value>
+    <comment>Switched the logged in user to another participant</comment>
+  </data>
+  <data name="Your session has expired. Please sign in again." xml:space="preserve">
+    <value>Su sesión ha caducado. Por favor, vuelva a iniciar sesión.</value>
+    <comment>The participant's session has expired, they must sign in again to access the application.</comment>
+  </data>
+  <data name="A {0} cannot be created at this time." xml:space="preserve">
+    <value>No se puede crear un {0} en este momento.</value>
+    <comment>Shown when an error occurs creating a family or group; {0} is replaced with the translation of Group or Family</comment>
+  </data>
+  <data name="Add existing participant to your {0}" xml:space="preserve">
+    <value>Agregue un participante existente a su {0}</value>
+    <comment>Add an existing participant to a group/family, {0} is replaced with the translation of Group or Family</comment>
+  </data>
+  <data name="Click below to create a {0}" xml:space="preserve">
+    <value>Haga clic abajo para crear {0}</value>
+    <comment>Instruction to click a link below in order to create a group or family, {0} is replaced with the translation of Group or Family</comment>
+  </data>
+  <data name="Register new {0} Member" xml:space="preserve">
+    <value>Registrar nuevo {0} Miembro</value>
+    <comment>Register a new member, {0} is replaced with the translation of Group or Family</comment>
+  </data>
+  <data name="You are in the group: &lt;strong&gt;{0}&lt;/strong&gt;" xml:space="preserve">
+    <value>Estas en el grupo: &lt;strong&gt;{0}&lt;/strong&gt;</value>
+    <comment>Text indicating that the participant is a member of a group; {0} is replaced with the name of the group.</comment>
+  </data>
+  <data name="You are leader of the group: &lt;a href=\&quot;{0}\&quot;&gt;&lt;strong&gt;{1}&lt;/strong&gt;&lt;/a&gt;" xml:space="preserve">
+    <value>Eres el líder del grupo: &lt;a href=\"{0}\"&gt;&lt;strong&gt;{1}&lt;/strong&gt;&lt;/a&gt;</value>
+    <comment>Text with a link indicating that the participant is the leader of a group; {0} is replaced with the URL to group management and {1} will be replaced with the name of the group.</comment>
+  </data>
+  <data name="Back to {0}" xml:space="preserve">
+    <value>Volver to {0}</value>
+    <comment>Return to the prior page; {0} will be replaced with the name of the page</comment>
+  </data>
+  <data name="minutes" xml:space="preserve">
+    <value>minutos</value>
+    <comment>Minutes, plural</comment>
+  </data>
+  <data name="Activity applied!" xml:space="preserve">
+    <value>Actividad aplicada!</value>
+    <comment>Resposne message after activity has been applied to a family or group.</comment>
+  </data>
+  <data name="Added {0} to your {1}!" xml:space="preserve">
+    <value>¡Agregó {0} a su {1}!</value>
+    <comment>Inform that a participant was added to a family or group; {0} is the participant's full name, {1} is the translation of Group or Family</comment>
+  </data>
+  <data name="All selected participants already have that Secret Code." xml:space="preserve">
+    <value>Todos los participantes seleccionados ya tienen ese Código Secreto.</value>
+    <comment>Participant tried to applly a secret code to a family/group but they've all already entered that secret code.</comment>
+  </data>
+  <data name="Could not create {0}: {1}" xml:space="preserve">
+    <value>No se pudo crear {0}: {1}</value>
+    <comment>An item could not be created, {0} indicates what was attempted to be created at {1} indicates why it could not be.</comment>
+  </data>
+  <data name="Could not remove {0}: {1}" xml:space="preserve">
+    <value>No se pudo eliminar {0}: {1}</value>
+    <comment>An item could not be removed, {0} indicates what was attempted to be removed and {1} indicates why it could not be.</comment>
+  </data>
+  <data name="Could not update {0}: {1}." xml:space="preserve">
+    <value>No se pudo actualizar {0}: {1}.</value>
+    <comment>An item could not be updated, {0} indicates what was attempted to be updated and {1} inticates why it could not be.</comment>
+  </data>
+  <data name="Group name is required." xml:space="preserve">
+    <value>El nombre del grupo es necesario.</value>
+    <comment>When promoting a family to a group it is necessary for the participant to supply a name for the group which they have neglected to do.</comment>
+  </data>
+  <data name="Please select some participants first." xml:space="preserve">
+    <value>Por favor, seleccione algunos participantes primero.</value>
+    <comment>A participant is trying to apply actions to their family/group but has not selected any family/group members.</comment>
+  </data>
+  <data name="Removed: {0}" xml:space="preserve">
+    <value>Retirado: {0}</value>
+    <comment>An item was removed, {0} indicates what that item is (typically by name)</comment>
+  </data>
+  <data name="Required fields are blank." xml:space="preserve">
+    <value>Los campos requeridos están en blanco.</value>
+    <comment>Information was submitted but some required fields were not provided.</comment>
+  </data>
+  <data name="Secret code applied!" xml:space="preserve">
+    <value>¡Código secreto aplicado!</value>
+    <comment>Response message after a secret code has been applied to a family or group.</comment>
+  </data>
+  <data name="See the items you unlocked." xml:space="preserve">
+    <value>Ver los elementos que desbloqueaste.</value>
+    <comment>Hyperlinked text to navigate a participant to avatar parts that were unlocked as part of a bundle.</comment>
+  </data>
+  <data name="Something went wrong, please send us a mail with details of what you were attempting to do." xml:space="preserve">
+    <value>Algo salió mal, por favor envíenos un correo electrónico con los detalles de lo que estaba intentando hacer.</value>
+    <comment>An application error occurred; message suggests to the user that they should use the mail system in the application to let the administrators know what went wrong.</comment>
+  </data>
+  <data name="Unable to add: {0}" xml:space="preserve">
+    <value>No se puede añadir: {0}</value>
+    <comment>An attempt to add something failed, {0} describes what could not be added.</comment>
+  </data>
+  <data name="Unable to change your password: {0}" xml:space="preserve">
+    <value>No se puede cambiar la contraseña: {0}</value>
+    <comment>Changing passwords failed; {0} is replaced with why the process failed.</comment>
+  </data>
+  <data name="Updated: {0}" xml:space="preserve">
+    <value>Actualizado: {0}</value>
+    <comment>An item was updated, {0} indicated what that item was (typically by name)</comment>
+  </data>
+  <data name="You are now signed in as {0}." xml:space="preserve">
+    <value>Has iniciado sesión como {0}.</value>
+    <comment>Message displayed when someone in a group/family logs in as a member of their group/family.</comment>
+  </data>
+  <data name="You must enter an amount." xml:space="preserve">
+    <value>Debe introducir una cantidad.</value>
+    <comment>Inform a participant that they must enter an amount in order to apply an activity to multiple members of their family/group.</comment>
+  </data>
+  <data name="Your password has been changed." xml:space="preserve">
+    <value>Tu contraseña ha sido cambiada.</value>
+    <comment>Inform a participant that their password was successfully changed.</comment>
+  </data>
+  <data name="and other activities" xml:space="preserve">
+    <value>...y otras actividades.</value>
+    <comment>Displayed when there are more than a few notifications; links to the participant's profile so they can view their other accomplishments.</comment>
+  </data>
+  <data name="You've successfully joined &lt;strong&gt;{0}&lt;/strong&gt;!" xml:space="preserve">
+    <value>Te has unido exitosamente &lt;strong&gt;{0}&lt;/strong&gt;!</value>
+    <comment>Message shown when a participant signs up, {0} is replaced with the name of the site.</comment>
+  </data>
+  <data name="and their {0}" xml:space="preserve">
+    <value>y sus {0}</value>
+    <comment>When one family/group is absorbed into another, this is displayed; {0} is replaced with the translated term for Group or Family</comment>
+  </data>
+  <data name="Profile updated." xml:space="preserve">
+    <value>Perfil actualizado.</value>
+    <comment>Message shown once a profile update is saved.</comment>
   </data>
 </root>

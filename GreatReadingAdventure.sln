@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2008
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0324DE44-14C1-4203-A624-5BE8BD75153E}"
 EndProject
@@ -45,6 +45,15 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GRA.CommandLine", "src\GRA.CommandLine\GRA.CommandLine.csproj", "{1014D7A4-CAB9-4F28-9F83-F0083DC7A90A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GRA.Domain.Report", "src\GRA.Domain.Report\GRA.Domain.Report.csproj", "{05C5D3BB-DFFC-44EB-8A8B-C5B9D5A6448B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dev", "dev", "{2F931D25-1A22-4710-896D-1327AE97C435}"
+	ProjectSection(SolutionItems) = preProject
+		dev\adding-an-entity.md = dev\adding-an-entity.md
+		dev\docker.md = dev\docker.md
+		dev\initial-developer-setup.md = dev\initial-developer-setup.md
+		dev\project-organization.md = dev\project-organization.md
+		dev\README.md = dev\README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

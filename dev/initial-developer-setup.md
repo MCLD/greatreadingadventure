@@ -2,15 +2,13 @@
 
 ## Development environment
 
-- Windows: [Visual Studio 2017](https://www.visualstudio.com/vs/)
+- Windows, macOS: [Visual Studio 2019](https://www.visualstudio.com/vs/)
 - Linux, macOS, Windows: [Visual Studio Code](https://code.visualstudio.com/)
   - Ensure you [install the C# extension](https://code.visualstudio.com/docs/runtimes/dotnet)
 
 ## Initial developer setup
 
-#### *Due to changes in the data model during development, the project only ships with database migrations in place for releases. You will need to run the command below if there have been any database changes in the `develop` branch since the last release.*
-
-The project ships with the Microsoft SQL Server data provider configured. If you are running in a Windows environment this will automatically use a [LocalDB](https://msdn.microsoft.com/en-us/library/hh510202.aspx) instance under `(localdb)\mssqllocaldb`. **In a Linux/macOS environment you should switch to the SQLite provider (in `appsettings.json` change the `GraConnectionStringName` to "SQLite").**
+The project ships with the Microsoft SQL Server data provider configured. If you are running in a Windows environment this will automatically use a [LocalDB](https://msdn.microsoft.com/en-us/library/hh510202.aspx) instance under `(localdb)\mssqllocaldb`. **In a Linux/macOS environment you should switch to the SQLite provider (in `appsettings.json` change the `GraConnectionStringName` to "SQLite"). You may need to eliminate all migrations and create one master migration, the SQLite provider does not support all of the operations necessary to support our incremental migrations.**
 
 ### Database migration
 
