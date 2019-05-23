@@ -9,7 +9,7 @@ COPY . ./
 RUN dotnet publish -c Release -o "/app/publish/"
 
 # Get runtime image
-FROM mcr.microsoft.com/dotnet/core/runtime:2.2 AS publish-stage
+FROM mcr.microsoft.com/dotnet/core/aspnet:2.2 AS publish-stage
 WORKDIR /app
 
 # Bring in metadata via --build-arg
