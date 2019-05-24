@@ -1346,4 +1346,8 @@ Hogwarts, Narnia, Oz, y el centro de la tierra!</value>
     <value>Perfil actualizado.</value>
     <comment>Message shown once a profile update is saved.</comment>
   </data>
+  <data name="Family" xml:space="preserve">
+    <value>Familia</value>
+    <comment>Title shown when viewing a Family of participants. Will also be used in a sentence.</comment>
+  </data>
 </root>
