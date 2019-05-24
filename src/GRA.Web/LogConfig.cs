@@ -41,23 +41,23 @@ namespace GRA.Web
             if (!string.IsNullOrEmpty(rollingLogLocation))
             {
                 string rollingLogFile = !string.IsNullOrEmpty(instance)
-                    ? Path.Combine(rollingLogLocation, $"log-{instance}-.txt")
-                    : Path.Combine(rollingLogLocation, "log-.txt");
+                    ? Path.Combine(rollingLogLocation, $"log-{instance}-{{Date}}.txt")
+                    : Path.Combine(rollingLogLocation, "log-{Date}.txt");
 
                 loggerConfig.WriteTo.Logger(_ => _
                     .Filter.ByExcluding(Matching.FromSource(ErrorControllerName))
-                    .WriteTo.File(rollingLogFile, rollingInterval: RollingInterval.Day));
+                    .WriteTo.RollingFile(rollingLogFile));
 
                 string httpErrorFileTag = config[ConfigurationKey.RollingLogHttp];
                 if (!string.IsNullOrEmpty(httpErrorFileTag))
                 {
                     string httpLogFile = !string.IsNullOrEmpty(instance)
-                        ? Path.Combine(rollingLogLocation, $"{httpErrorFileTag}-{instance}-.txt")
-                        : Path.Combine(rollingLogLocation + $"{httpErrorFileTag}-.txt");
+                        ? Path.Combine(rollingLogLocation, $"{httpErrorFileTag}-{instance}-{{Date}}.txt")
+                        : Path.Combine(rollingLogLocation + $"{httpErrorFileTag}-{{Date}}.txt");
 
                     loggerConfig.WriteTo.Logger(_ => _
                         .Filter.ByIncludingOnly(Matching.FromSource(ErrorControllerName))
-                        .WriteTo.File(httpLogFile, rollingInterval: RollingInterval.Day));
+                        .WriteTo.RollingFile(httpLogFile));
                 }
             }
 
