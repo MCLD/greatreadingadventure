@@ -75,8 +75,8 @@ namespace GRA.Domain.Model
             get
             {
                 return string.IsNullOrEmpty(LastName)
-                    ? FirstName + " " + LastName
-                    : FirstName;
+                    ? FirstName
+                    : FirstName + " " + LastName;
             }
         }
 
