@@ -214,7 +214,9 @@ namespace GRA.Domain.Service
                                 {
                                     try
                                     {
-                                        var ageString = excelReader.GetString(ageColumnId);
+                                        var ageString = excelReader
+                                            .GetValue(ageColumnId)?
+                                            .ToString();
 
                                         if (string.IsNullOrWhiteSpace(ageString))
                                         {
