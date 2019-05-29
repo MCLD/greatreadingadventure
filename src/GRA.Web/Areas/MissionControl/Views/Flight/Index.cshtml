@@ -32,4 +32,15 @@
             <button type="submit" class="btn btn-danger btn-block">Log error message</button>
         </form>
     </div>
+
+    <div class="col-xs-12 col-sm-8 col-md-8 row-spacing">
+        <form asp-action="Job" asp-controller="Home" method="post" role="form" class="form-inline">
+            <div class="form-group">
+                <label for="id">Run job:</label>
+                <input name="id" class="form-control" placeholder="<guid>" />
+            </div>
+            <button type="submit" class="btn btn-info"><span class="fa fa-play"></span></button>
+        </form>
+    </div>
+
 </div>

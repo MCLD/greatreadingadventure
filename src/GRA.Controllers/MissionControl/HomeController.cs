@@ -256,7 +256,7 @@ namespace GRA.Controllers.MissionControl
             {
                 await LogoutUserAsync();
             }
-            return RedirectToRoute(new { area = string.Empty, action = "Index" });
+            return RedirectToRoute(new { area = string.Empty, action = nameof(HomeController.Index) });
         }
 
         [Authorize(Policy = Policy.ReadAllMail)]
@@ -264,6 +264,24 @@ namespace GRA.Controllers.MissionControl
         {
             var unreadCount = await _mailService.GetAdminUnreadCountAsync();
             return Json(unreadCount);
+        }
+
+        [HttpPost]
+        public IActionResult Job(string id)
+        {
+            if (!AuthUser.Identity.IsAuthenticated)
+            {
+                return RedirectToSignIn();
+            }
+
+            if (!UserHasPermission(Permission.AccessMissionControl))
+            {
+                // not authorized for Mission Control, redirect to authorization code
+
+                return RedirectToAction(nameof(AuthorizationCode));
+            }
+
+            return View("Job", id);
         }
     }
 }

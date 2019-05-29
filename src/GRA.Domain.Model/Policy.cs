@@ -46,6 +46,7 @@ namespace GRA.Domain.Model
         public const string RemoveChallenges = "RemoveChallenges";
         public const string SchedulePerformers = "SchedulePerformers";
         public const string SendBroadcastMail = "SendBroadcastMail";
+        public const string SendBulkEmails = "SendBulkEmails";
         public const string UnDonateVendorCode = "UnDonateVendorCode";
         public const string ViewAllChallenges = "ViewAllChallenges";
         public const string ViewAllReporting = "ViewAllReporting";

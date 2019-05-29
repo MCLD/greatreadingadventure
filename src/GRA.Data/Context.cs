@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,8 +31,8 @@ namespace GRA.Data
                 .HasKey(_ => new { _.ChallengeGroupId, _.ChallengeId });
             modelBuilder.Entity<Model.DrawingCriterionProgram>()
                 .HasKey(_ => new { _.DrawingCriterionId, _.ProgramId });
-            modelBuilder.Entity<Model.RolePermission>()
-                .HasKey(_ => new { _.RoleId, _.PermissionId });
+            modelBuilder.Entity<Model.EmailUserLog>()
+                .HasKey(_ => new { _.UserId, _.EmailTemplateId });
             modelBuilder.Entity<Model.PsBackToBack>()
                 .HasKey(_ => new { _.PsAgeGroupId, _.BranchId });
             modelBuilder.Entity<Model.PsKitAgeGroup>()
@@ -40,6 +41,8 @@ namespace GRA.Data
                 .HasKey(_ => new { _.PsPerformerId, _.BranchId });
             modelBuilder.Entity<Model.PsProgramAgeGroup>()
                 .HasKey(_ => new { _.ProgramId, _.AgeGroupId });
+            modelBuilder.Entity<Model.RolePermission>()
+                .HasKey(_ => new { _.RoleId, _.PermissionId });
             modelBuilder.Entity<Model.TriggerBadge>()
                 .HasKey(_ => new { _.TriggerId, _.BadgeId });
             modelBuilder.Entity<Model.TriggerChallenge>()
@@ -69,6 +72,12 @@ namespace GRA.Data
             // https://docs.microsoft.com/en-us/ef/core/modeling/indexes
             modelBuilder.Entity<Model.EmailReminder>()
                 .HasIndex(_ => new { _.Email, _.SignUpSource })
+                .IsUnique();
+            modelBuilder.Entity<Model.EmailUserLog>()
+                .HasIndex(_ => new { _.EmailTemplateId, _.EmailAddress })
+                .IsUnique();
+            modelBuilder.Entity<Model.Job>()
+                .HasIndex(_ => new { _.JobToken })
                 .IsUnique();
             modelBuilder.Entity<Model.Mail>()
                 .HasIndex(_ => new { _.ToUserId, _.IsDeleted, _.IsNew });
@@ -156,9 +165,12 @@ namespace GRA.Data
         public DbSet<Model.DrawingCriterionProgram> DrawingCriterionPrograms { get; set; }
         public DbSet<Model.EmailReminder> EmailReminders { get; set; }
         public DbSet<Model.EmailSubscriptionAuditLog> EmailSubscriptionAuditLogs { get; set; }
+        public DbSet<Model.EmailTemplate> EmailTemplates { get; set; }
+        public DbSet<Model.EmailUserLog> EmailUserLogs { get; set; }
         public DbSet<Model.Event> Events { get; set; }
         public DbSet<Model.GroupInfo> GroupInfos { get; set; }
         public DbSet<Model.GroupType> GroupTypes { get; set; }
+        public DbSet<Model.Job> Jobs { get; set; }
         public DbSet<Model.Language> Languages { get; set; }
         public DbSet<Model.Location> Locations { get; set; }
         public DbSet<Model.Mail> Mails { get; set; }

@@ -141,22 +141,6 @@ namespace GRA.Data.Repository
 
             switch (filter.SortBy)
             {
-                case SortUsersBy.FirstName:
-                    if (filter.OrderDescending)
-                    {
-                        userList = userList
-                            .OrderByDescending(_ => _.FirstName)
-                            .ThenByDescending(_ => _.LastName)
-                            .ThenByDescending(_ => _.Username);
-                    }
-                    else
-                    {
-                        userList = userList
-                            .OrderBy(_ => _.FirstName)
-                            .ThenBy(_ => _.LastName)
-                            .ThenBy(_ => _.Username);
-                    }
-                    break;
                 // default is by last name
                 default:
                     if (filter.OrderDescending)
@@ -171,6 +155,22 @@ namespace GRA.Data.Repository
                         userList = userList
                             .OrderBy(_ => _.LastName)
                             .ThenBy(_ => _.FirstName)
+                            .ThenBy(_ => _.Username);
+                    }
+                    break;
+                case SortUsersBy.FirstName:
+                    if (filter.OrderDescending)
+                    {
+                        userList = userList
+                            .OrderByDescending(_ => _.FirstName)
+                            .ThenByDescending(_ => _.LastName)
+                            .ThenByDescending(_ => _.Username);
+                    }
+                    else
+                    {
+                        userList = userList
+                            .OrderBy(_ => _.FirstName)
+                            .ThenBy(_ => _.LastName)
                             .ThenBy(_ => _.Username);
                     }
                     break;
@@ -262,6 +262,11 @@ namespace GRA.Data.Repository
                     .Where(_ => !filter.UserIds.Contains(_.Id)
                         && !householdHeadList.Contains(_.Id)
                         && !_.HouseholdHeadUserId.HasValue);
+            }
+
+            if (filter.IsSubscribed != null)
+            {
+                userList = userList.Where(_ => _.IsEmailSubscribed == filter.IsSubscribed);
             }
 
             return userList;
@@ -562,6 +567,26 @@ namespace GRA.Data.Repository
                 .Where(_ => !_.IsSystemUser && string.IsNullOrWhiteSpace(_.UnsubscribeToken))
                 .ProjectTo<User>(_mapper.ConfigurationProvider)
                 .ToListAsync();
+        }
+
+        public async Task<bool> HasReceivedBulkEmailAsync(int emailTemplateId, string emailAddress)
+        {
+            return await _context.EmailUserLogs
+                .AsNoTracking()
+                .AnyAsync(_ => _.EmailTemplateId == emailTemplateId
+                    && _.EmailAddress == emailAddress);
+        }
+
+        public async Task AddBulkEmailLogAsync(int userId, int emailTemplateId, string emailAddress)
+        {
+            await _context.EmailUserLogs.AddAsync(new Model.EmailUserLog
+            {
+                EmailAddress = emailAddress,
+                EmailTemplateId = emailTemplateId,
+                UserId = userId,
+                SentAt = _dateTimeProvider.Now
+            });
+            await _context.SaveChangesAsync();
         }
     }
 }

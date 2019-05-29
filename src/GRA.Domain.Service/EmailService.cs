@@ -1,32 +1,36 @@
-﻿using GRA.Domain.Service.Abstract;
+﻿using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using MimeKit;
+using GRA.Domain.Model;
 using GRA.Domain.Repository;
+using GRA.Domain.Service.Abstract;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Configuration;
-using GRA.Domain.Model;
-using System;
+using Microsoft.Extensions.Logging;
+using MimeKit;
 
 namespace GRA.Domain.Service
 {
     public class EmailService : BaseService<EmailService>
     {
         private readonly IConfiguration _config;
-        private readonly IProgramRepository _programRepository;
+        private readonly IEmailTemplateRepository _emailTemplateRepository;
         private readonly ISiteRepository _siteRepository;
         private readonly IUserRepository _userRepository;
+
         public EmailService(ILogger<EmailService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IConfiguration config,
-            IProgramRepository programRepository,
+            IEmailTemplateRepository emailTemplateRepository,
             ISiteRepository siteRepository,
             IUserRepository userRepository) : base(logger, dateTimeProvider)
         {
             _config = Require.IsNotNull(config, nameof(config));
-            _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));
-            _siteRepository = Require.IsNotNull(siteRepository, nameof(siteRepository));
-            _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
+            _emailTemplateRepository = emailTemplateRepository
+                ?? throw new ArgumentNullException(nameof(emailTemplateRepository));
+            _siteRepository = siteRepository
+                ?? throw new ArgumentNullException(nameof(siteRepository));
+            _userRepository = userRepository
+                ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
         private bool CanSendMailTo(Site site)
@@ -60,9 +64,46 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError("Unable to send email to user {userId} with subject {subject}: no email address configured.",
+                _logger.LogError("Unable to send email to user {UserId} with subject {Subject}: no email address configured.",
                     userId,
                     subject);
+            }
+        }
+
+        public async Task SendBulkAsync(User user, int emailTemplateId)
+        {
+            var site = await _siteRepository.GetByIdAsync(user.SiteId);
+            var template = await _emailTemplateRepository.GetByIdAsync(emailTemplateId);
+
+            if (user.SiteId != template.SiteId)
+            {
+                _logger.LogError("Site ID mismatch: user {UserId} is in site {UserSiteId} and template {TemplateId} is in site {TemplateSiteId}",
+                    user.Id,
+                    user.SiteId,
+                    emailTemplateId,
+                    template.SiteId);
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(user.Email))
+            {
+                await SendEmailAsync(site,
+                    user.Email,
+                    template.Subject,
+                    template.BodyText,
+                    template.BodyHtml,
+                    emailName: user.FullName,
+                    providedFromName: template.FromName,
+                    providedFromEmail: template.FromAddress);
+
+                template.EmailsSent++;
+                await _emailTemplateRepository.UpdateSaveNoAuditAsync(template);
+            }
+            else
+            {
+                _logger.LogError("Unable to send email to user {UserId} for template id {TemplateId}: no email address configured.",
+                    user.Id,
+                    emailTemplateId);
             }
         }
 
@@ -83,7 +124,9 @@ namespace GRA.Domain.Service
             string subject,
             string body,
             string htmlBody = null,
-            string emailName = null)
+            string emailName = null,
+            string providedFromName = null,
+            string providedFromEmail = null)
         {
             if (!CanSendMailTo(site))
             {
@@ -91,7 +134,11 @@ namespace GRA.Domain.Service
             }
 
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress(site.FromEmailName, site.FromEmailAddress));
+
+            string fromName = providedFromName ?? site.FromEmailName;
+            string fromEmail = providedFromEmail ?? site.FromEmailAddress;
+
+            message.From.Add(new MailboxAddress(fromName, fromEmail));
 
             if (!string.IsNullOrWhiteSpace(_config[ConfigurationKey.EmailOverride]))
             {
@@ -110,18 +157,22 @@ namespace GRA.Domain.Service
             }
             message.Subject = subject;
 
-            var builder = new BodyBuilder();
-            builder.TextBody = body;
+            var builder = new BodyBuilder
+            {
+                TextBody = body
+            };
+
             if (!string.IsNullOrWhiteSpace(htmlBody))
             {
                 builder.HtmlBody = htmlBody;
             }
+
             message.Body = builder.ToMessageBody();
 
             using (var client = new SmtpClient())
             {
                 // accept any STARTTLS certificate
-                client.ServerCertificateValidationCallback = (s, c, h, e) => true;
+                client.ServerCertificateValidationCallback = (_, __, ___, ____) => true;
 
                 await client.ConnectAsync(site.OutgoingMailHost,
                     site.OutgoingMailPort ?? 25,
@@ -140,7 +191,7 @@ namespace GRA.Domain.Service
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, 
+                    _logger.LogError(ex,
                         "Unable to send email to {emailAddress} with subject {subject}: {Message}",
                         emailAddress,
                         subject,

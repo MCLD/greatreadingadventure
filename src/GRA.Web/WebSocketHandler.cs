@@ -20,30 +20,27 @@ namespace GRA.Web
         private const double MinimumSecondsElapsedBetweenUpdates = 0.1;
 
         private readonly ILogger<WebSocketHandler> _logger;
+
         public WebSocketHandler(ILogger<WebSocketHandler> logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
+
         public async Task Handle(HttpContext context)
         {
             if (context.Request.Path.HasValue && context.User != null)
             {
                 // validate user is logged in and exists
-                if (context.User != null
-                    && context.User.Claims != null
-                    && context.User.Claims.Count() > 0)
+                if (context.User?.Claims?.Any() == true)
                 {
                     var siteClaim = context.User.Claims.Where(_ => _.Type == ClaimType.SiteId);
-                    if (siteClaim != null
-                        && siteClaim.Count() > 0)
+                    if (siteClaim?.Any() == true
+                        && int.TryParse(siteClaim.First().Value, out int siteId))
                     {
-                        if (int.TryParse(siteClaim.First().Value, out int siteId))
-                        {
-                            // we need these context items to be populated but it doesn't matter 
-                            // what the site stage is in order to do reporting or imports
-                            context.Items[ItemKey.SiteId] = siteId;
-                            context.Items[ItemKey.SiteStage] = SiteStage.Unknown;
-                        }
+                        // we need these context items to be populated but it doesn't matter 
+                        // what the site stage is in order to do reporting or imports
+                        context.Items[ItemKey.SiteId] = siteId;
+                        context.Items[ItemKey.SiteStage] = SiteStage.Unknown;
                     }
                 }
 
@@ -65,6 +62,11 @@ namespace GRA.Web
                         .RequestServices
                         .GetRequiredService<VendorCodeService>();
                     await RunWsTaskAsync(context, vendorCodeService.UpdateStatusFromExcel);
+                }
+                else if (context.Request.Path.Value.Contains("runjob"))
+                {
+                    var jobService = context.RequestServices.GetRequiredService<JobService>();
+                    await RunWsTaskAsync(context, jobService.RunJob);
                 }
                 else
                 {
@@ -109,25 +111,23 @@ namespace GRA.Web
                     var progress = new Progress<OperationStatus>(_ =>
                     {
                         double passed = sw.Elapsed.TotalSeconds - lastUpdateSent;
-                        if (passed > MinimumSecondsElapsedBetweenUpdates)
+                        if (passed > MinimumSecondsElapsedBetweenUpdates
+                            && webSocket.State == WebSocketState.Open)
                         {
-                            if (webSocket.State == WebSocketState.Open)
+                            lastUpdateSent = sw.Elapsed.TotalSeconds;
+                            try
                             {
-                                lastUpdateSent = sw.Elapsed.TotalSeconds;
-                                try
-                                {
-                                    var status = Encoding
-                                        .UTF8
-                                        .GetBytes(JsonConvert.SerializeObject(_));
-                                    webSocket.SendAsync(new ArraySegment<byte>(status),
-                                        WebSocketMessageType.Text,
-                                        true,
-                                        wsToken).Wait();
-                                }
-                                catch (Exception ex)
-                                {
-                                    _logger.LogError($"Could not send WebSocket update: {ex.Message}");
-                                }
+                                var status = Encoding
+                                    .UTF8
+                                    .GetBytes(JsonConvert.SerializeObject(_));
+                                webSocket.SendAsync(new ArraySegment<byte>(status),
+                                    WebSocketMessageType.Text,
+                                    true,
+                                    wsToken).Wait();
+                            }
+                            catch (Exception ex)
+                            {
+                                _logger.LogError($"Could not send WebSocket update: {ex.Message}");
                             }
                         }
                     });
@@ -139,7 +139,7 @@ namespace GRA.Web
                     var buffer = new ArraySegment<byte>(new byte[1024]);
                     while (webSocket.State == WebSocketState.Open && !runTask.IsCompleted)
                     {
-                        var response = await webSocket.ReceiveAsync(buffer, wsToken);
+                        await webSocket.ReceiveAsync(buffer, wsToken);
                     }
 
                     // out of this loop means that the WebSocket is not open or the task is done
@@ -197,7 +197,7 @@ namespace GRA.Web
                 finally
                 {
                     // if the socket is still open, close it gracefully
-                    if (webSocket != null && webSocket.State == WebSocketState.Open)
+                    if (webSocket?.State == WebSocketState.Open)
                     {
                         await webSocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure,
                             "Task complete.",

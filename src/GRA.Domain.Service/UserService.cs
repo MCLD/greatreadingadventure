@@ -163,7 +163,7 @@ namespace GRA.Domain.Service
             if (user.IsEmailSubscribed)
             {
                 user.IsEmailSubscribed = false;
-                var (askEmailSubscription, askEmailSubscriptionText) = await _siteLookupService
+                var (askEmailSubscription, _) = await _siteLookupService
                     .GetSiteSettingStringAsync(siteId, SiteSettingKey.Users.AskEmailSubPermission);
                 if (askEmailSubscription)
                 {
@@ -171,7 +171,7 @@ namespace GRA.Domain.Service
                 }
             }
 
-            User registeredUser = null;
+            User registeredUser;
             if (MCRegistration)
             {
                 registeredUser = await _userRepository.AddSaveAsync(
@@ -343,7 +343,7 @@ namespace GRA.Domain.Service
 
                 if (userToUpdate.IsEmailSubscribed != currentEntity.IsEmailSubscribed)
                 {
-                    var (askEmailSubscription, askEmailSubscriptionText) = await _siteLookupService
+                    var (askEmailSubscription, _) = await _siteLookupService
                         .GetSiteSettingStringAsync(GetCurrentSiteId(),
                             SiteSettingKey.Users.AskEmailSubPermission);
                     if (askEmailSubscription)
@@ -440,7 +440,7 @@ namespace GRA.Domain.Service
 
                 if (userToUpdate.IsEmailSubscribed != currentEntity.IsEmailSubscribed)
                 {
-                    var (askEmailSubscription, askEmailSubscriptionText) = await _siteLookupService
+                    var (askEmailSubscription, _) = await _siteLookupService
                         .GetSiteSettingStringAsync(GetCurrentSiteId(),
                             SiteSettingKey.Users.AskEmailSubPermission);
                     if (askEmailSubscription)
@@ -628,7 +628,7 @@ namespace GRA.Domain.Service
                 if (memberToAdd.IsEmailSubscribed)
                 {
                     memberToAdd.IsEmailSubscribed = false;
-                    var (askEmailSubscription, askEmailSubscriptionText) = await _siteLookupService
+                    var (askEmailSubscription, _) = await _siteLookupService
                         .GetSiteSettingStringAsync(siteId,
                             SiteSettingKey.Users.AskEmailSubPermission);
                     if (askEmailSubscription)
@@ -1423,6 +1423,16 @@ namespace GRA.Domain.Service
 
                 _logger.LogInformation($"Unsubsribe token added to {users.Count} users.");
             }
+        }
+
+        public async Task<bool> HasReceivedBulkEmailAsync(int emailTemplateId, string emailAddress)
+        {
+            return await _userRepository.HasReceivedBulkEmailAsync(emailTemplateId, emailAddress);
+        }
+
+        public async Task SentBulkEmailAsync(int userId, int emailTemplateId, string emailAddress)
+        {
+            await _userRepository.AddBulkEmailLogAsync(userId, emailTemplateId, emailAddress);
         }
     }
 }
