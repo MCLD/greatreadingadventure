@@ -45,10 +45,14 @@ namespace GRA.Domain.Repository
         Task<IEnumerable<int>> GetNewsSubscribedUserIdsAsync(int siteId);
         Task<int> GetSystemUserId();
         Task ChangeDeletedUsersProgramAsync(int oldProgram, int newProgram);
+
         Task<ICollection<User>> GetHouseholdUsersWithAvailablePrizeAsync(
             int headId, int? drawingId, int? triggerId);
+
         Task<bool> UnsubscribeTokenExists(int siteId, string token);
         Task<User> GetByUnsubscribeToken(int siteId, string token);
         Task<ICollection<User>> GetAllUsersWithoutUnsubscribeToken();
+        Task<bool> HasReceivedBulkEmailAsync(int emailTemplateId, string emailAddress);
+        Task AddBulkEmailLogAsync(int userId, int emailTemplateId, string emailAddress);
     }
 }

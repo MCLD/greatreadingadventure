@@ -7,6 +7,8 @@ namespace GRA.Domain.Model.Filters
         public bool OrderDescending { get; set; }
         public bool CanAddToHousehold { get; set; }
 
+        public bool? IsSubscribed { get; set; }
+
         public UserFilter(int? page = null) : base(page)
         {
             SortBy = SortUsersBy.LastName;

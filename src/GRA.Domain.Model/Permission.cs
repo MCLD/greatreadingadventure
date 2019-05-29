@@ -45,6 +45,7 @@ namespace GRA.Domain.Model
         RemoveChallenges,
         SchedulePerformers,
         SendBroadcastMail,
+        SendBulkEmails,
         UnDonateVendorCode,
         ViewAllChallenges,
         ViewAllReporting,

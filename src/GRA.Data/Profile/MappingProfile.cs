@@ -51,11 +51,13 @@ namespace GRA.Data.Profile
             CreateMap<Model.EmailSubscriptionAuditLog, Domain.Model.EmailSubscriptionAuditLog>()
                 .ForMember(dest => dest.CreatedByName, opt => opt
                     .MapFrom(src => $"{src.CreatedByUser.FirstName} {src.CreatedByUser.LastName}"));
+            CreateMap<Model.EmailTemplate, Domain.Model.EmailTemplate>();
             CreateMap<Model.Event, Domain.Model.Event>()
                 .ForMember(dest => dest.Challenge, opt => opt.Ignore())
                 .ForMember(dest => dest.ChallengeGroup, opt => opt.Ignore());
             CreateMap<Model.GroupInfo, Domain.Model.GroupInfo>();
             CreateMap<Model.GroupType, Domain.Model.GroupType>();
+            CreateMap<Model.Job, Domain.Model.Job>();
             CreateMap<Model.Language, Domain.Model.Language>();
             CreateMap<Model.Location, Domain.Model.Location>();
             CreateMap<Model.Mail, Domain.Model.Mail>();
@@ -64,7 +66,7 @@ namespace GRA.Data.Profile
             CreateMap<Model.NewsPost, Domain.Model.NewsPost>();
             CreateMap<Model.Notification, Domain.Model.Notification>();
             CreateMap<Model.PageHeader, Domain.Model.PageHeader>()
-                .ForMember(dest => dest.PageLanguages, 
+                .ForMember(dest => dest.PageLanguages,
                     opt => opt.MapFrom(src => src.Pages.Select(_ => _.Language.Name)));
             CreateMap<Model.Page, Domain.Model.Page>();
             CreateMap<Model.PointTranslation, Domain.Model.PointTranslation>();
@@ -147,9 +149,11 @@ namespace GRA.Data.Profile
             CreateMap<Domain.Model.DrawingCriterion, Model.DrawingCriterion>();
             CreateMap<Domain.Model.EmailReminder, Model.EmailReminder>();
             CreateMap<Domain.Model.EmailSubscriptionAuditLog, Model.EmailSubscriptionAuditLog>();
+            CreateMap<Domain.Model.EmailTemplate, Model.EmailTemplate>();
             CreateMap<Domain.Model.Event, Model.Event>();
             CreateMap<Domain.Model.GroupInfo, Model.GroupInfo>();
             CreateMap<Domain.Model.GroupType, Model.GroupType>();
+            CreateMap<Domain.Model.Job, Model.Job>();
             CreateMap<Domain.Model.Language, Model.Language>();
             CreateMap<Domain.Model.Location, Model.Location>();
             CreateMap<Domain.Model.Mail, Model.Mail>();

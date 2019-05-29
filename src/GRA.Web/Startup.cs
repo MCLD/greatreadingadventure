@@ -305,12 +305,14 @@ namespace GRA.Web
             services.AddScoped<DashboardContentService>();
             services.AddScoped<Domain.Report.ServiceFacade.Report>();
             services.AddScoped<DrawingService>();
+            services.AddScoped<EmailBulkService>();
             services.AddScoped<EmailManagementService>();
             services.AddScoped<EmailReminderService>();
             services.AddScoped<EmailService>();
             services.AddScoped<EventImportService>();
             services.AddScoped<EventService>();
             services.AddScoped<GroupTypeService>();
+            services.AddScoped<JobService>();
             services.AddScoped<LanguageService>();
             services.AddScoped<MailService>();
             services.AddScoped<NewsService>();
@@ -396,9 +398,11 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IDrawingRepository, Data.Repository.DrawingRepository>();
             services.AddScoped<Domain.Repository.IEmailReminderRepository, Data.Repository.EmailReminderRepository>();
             services.AddScoped<Domain.Repository.IEmailSubscriptionAuditLogRepository, Data.Repository.EmailSubscriptionAuditLogRepository>();
+            services.AddScoped<Domain.Repository.IEmailTemplateRepository, Data.Repository.EmailTemplateRepository>();
             services.AddScoped<Domain.Repository.IEventRepository, Data.Repository.EventRepository>();
             services.AddScoped<Domain.Repository.IGroupInfoRepository, Data.Repository.GroupInfoRepository>();
             services.AddScoped<Domain.Repository.IGroupTypeRepository, Data.Repository.GroupTypeRepository>();
+            services.AddScoped<Domain.Repository.IJobRepository, Data.Repository.JobRepository>();
             services.AddScoped<Domain.Repository.ILanguageRepository, Data.Repository.LanguageRepository>();
             services.AddScoped<Domain.Repository.ILocationRepository, Data.Repository.LocationRepository>();
             services.AddScoped<Domain.Repository.IMailRepository, Data.Repository.MailRepository>();
