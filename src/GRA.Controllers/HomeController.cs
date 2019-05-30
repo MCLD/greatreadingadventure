@@ -419,8 +419,8 @@ namespace GRA.Controllers
                 try
                 {
                     await _emailManagementService.TokenUnsubscribe(id);
-                    ShowAlertSuccess(_sharedLocalizer[Annotations.Interface.Unsubscribed],
-                        HttpContext.Items[ItemKey.SiteName]?.ToString());
+                    ShowAlertSuccess(_sharedLocalizer[Annotations.Interface.Unsubscribed,
+                        HttpContext.Items[ItemKey.SiteName]?.ToString()]);
                 }
                 catch (GraException gex)
                 {

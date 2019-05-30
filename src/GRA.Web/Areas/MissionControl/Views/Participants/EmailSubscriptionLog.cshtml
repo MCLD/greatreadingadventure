@@ -28,7 +28,14 @@
                                 <td>
                                     @if (auditLog.TokenUsed)
                                     {
-                                        @:Token
+                                        @if (auditLog.CreatedBy != auditLog.UserId)
+                                        {
+                                            <a asp-action="Detail" asp-route-id="@auditLog.CreatedBy" target="_blank">Token with same email</a>
+                                        }
+                                        else
+                                        {
+                                            @:Token
+                                        }
                                     }
                                     else
                                     {
