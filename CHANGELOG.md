@@ -49,6 +49,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Household member list to be sorted alphabetically
 - Household page layout
 - Upgrade Automapper from 6.0.2 to 8.0.0
+- Add assemblies to AutoMapper service injection
 
 ### Fixed
 - Instance name enrichment for logging
