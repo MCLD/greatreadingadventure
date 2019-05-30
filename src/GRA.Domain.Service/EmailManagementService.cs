@@ -65,21 +65,37 @@ namespace GRA.Domain.Service
 
         public async Task TokenUnsubscribe(string token)
         {
-            var user = await _userRepository.GetByUnsubscribeToken(GetCurrentSiteId(),
+            var tokenUser = await _userRepository.GetByUnsubscribeToken(GetCurrentSiteId(),
                 token?.Trim());
 
-            if (user == null)
+            if (tokenUser == null)
             {
                 throw new GraException("The unsubscribe token could not be found, please log in to change your preferences.");
             }
-            else if (!user.IsEmailSubscribed)
+            else if (!tokenUser.IsEmailSubscribed)
             {
                 throw new GraException("You are already unsubscribed from emails.");
             }
 
-            user.IsEmailSubscribed = false;
-            await _userRepository.UpdateAsync(user.Id, user);
-            await _emailSubscriptionAuditLogRepository.AddEntryAsync(user.Id, user.Id, false, true);
+            tokenUser.IsEmailSubscribed = false;
+            await _userRepository.UpdateAsync(tokenUser.Id, tokenUser);
+            await _emailSubscriptionAuditLogRepository.AddEntryAsync(tokenUser.Id, tokenUser.Id,
+                false, true);
+
+            var usersWithEmail = await _userRepository
+                .GetUsersByEmailAddressAsync(tokenUser.Email?.Trim());
+
+            foreach (var user in usersWithEmail)
+            {
+                if (user.Id != tokenUser.Id && user.IsEmailSubscribed)
+                {
+                    user.IsEmailSubscribed = false;
+                    await _userRepository.UpdateAsync(tokenUser.Id, user);
+                    await _emailSubscriptionAuditLogRepository.AddEntryAsync(tokenUser.Id,
+                        user.Id, false, true);
+                }
+            }
+
             await _userRepository.SaveAsync();
         }
     }
