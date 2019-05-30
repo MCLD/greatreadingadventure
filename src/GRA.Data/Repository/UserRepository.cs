@@ -556,7 +556,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.SiteId == siteId && _.UnsubscribeToken == token)
-                .ProjectTo<User>()
+                .ProjectTo<User>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
         }
 
@@ -587,6 +587,14 @@ namespace GRA.Data.Repository
                 SentAt = _dateTimeProvider.Now
             });
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<ICollection<User>> GetUsersByEmailAddressAsync(string email)
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.Email == email)
+                .ProjectTo<User>(_mapper.ConfigurationProvider)
+                .ToListAsync();
         }
     }
 }

@@ -54,5 +54,6 @@ namespace GRA.Domain.Repository
         Task<ICollection<User>> GetAllUsersWithoutUnsubscribeToken();
         Task<bool> HasReceivedBulkEmailAsync(int emailTemplateId, string emailAddress);
         Task AddBulkEmailLogAsync(int userId, int emailTemplateId, string emailAddress);
+        Task<ICollection<User>> GetUsersByEmailAddressAsync(string email);
     }
 }
