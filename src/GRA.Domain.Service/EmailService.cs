@@ -85,13 +85,22 @@ namespace GRA.Domain.Service
                 return;
             }
 
+            var bodyText = template.BodyText
+                .Replace("{{UnsubToken}}", user.UnsubscribeToken)
+                .Replace("{{Email}}", user.Email)
+                .Replace("{{Name}}", user.FullName);
+            var bodyHtml = template.BodyHtml
+                .Replace("{{UnsubToken}}", user.UnsubscribeToken)
+                .Replace("{{Email}}", user.Email)
+                .Replace("{{Name}}", user.FullName);
+
             if (!string.IsNullOrEmpty(user.Email))
             {
                 await SendEmailAsync(site,
                     user.Email,
                     template.Subject,
-                    template.BodyText,
-                    template.BodyHtml,
+                    bodyText,
+                    bodyHtml,
                     emailName: user.FullName,
                     providedFromName: template.FromName,
                     providedFromEmail: template.FromAddress);
@@ -107,8 +116,11 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task SendEmailToAddressAsync(int siteId, string emailAddress, string subject,
-            string body, string htmlBody = null)
+        public async Task SendEmailToAddressAsync(int siteId,
+            string emailAddress,
+            string subject,
+            string body,
+            string htmlBody = null)
         {
             var site = await _siteRepository.GetByIdAsync(siteId);
 
