@@ -882,7 +882,7 @@
     <comment>Button allowing a participant to save their selected favorites</comment>
   </data>
   <data name="Share" xml:space="preserve">
-    <value>share</value>
+    <value>Share</value>
     <comment>Button text for sharing avatar images</comment>
   </data>
   <data name="Share Your Avatar" xml:space="preserve">
