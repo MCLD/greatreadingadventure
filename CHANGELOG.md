@@ -36,7 +36,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Landing page preview ability (/Home/Preview/StageName)
 - Created by text to Mission Control Challenge details
 - Disable and spinner to Challenge Task delete button
-- Disable and spinner to Sign in submit buttons
+- Disable and spinner to sign in submit buttons
 
 ### Changed
 - Script docker-build.bash to not build release images unless the branch starts with 'release/'
