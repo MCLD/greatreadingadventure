@@ -19,8 +19,9 @@
                         <a asp-action="Index" class="btn btn-default btn-lg">@SharedLocalizer[GRA.Domain.Model.DisplayNames.ReturnToSignIn]</a>
                     </div>
                     <div class="pull-right">
-                        <button class="btn btn-primary btn-lg">
+                        <button class="btn btn-primary btn-lg btn-spinner">
                             @SharedLocalizer[GRA.Domain.Model.DisplayNames.SendRecoveryEmail]
+                            <span class="fas fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                         </button>
                     </div>
                 </div>
