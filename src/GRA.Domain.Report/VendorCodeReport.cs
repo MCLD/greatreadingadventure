@@ -37,14 +37,9 @@ namespace GRA.Domain.Report
 
         public override async Task ExecuteAsync(ReportRequest request,
             CancellationToken token,
-            IProgress<OperationStatus> progress = null)
+            IProgress<JobStatus> progress = null)
         {
             #region Reporting initialization
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
-
             request = await StartRequestAsync(request);
 
             var criterion
@@ -53,7 +48,7 @@ namespace GRA.Domain.Report
 
             if (criterion.SiteId == null)
             {
-                throw new ArgumentNullException(nameof(criterion.SiteId));
+                throw new ArgumentException(nameof(criterion.SiteId));
             }
 
             string title = "";
@@ -137,13 +132,13 @@ namespace GRA.Domain.Report
                         branch.Name,
                     };
 
-                    if(askIfFirstTime)
+                    if (askIfFirstTime)
                     {
                         criterion.IsFirstTimeParticipant = true;
-                        var firstVendorCodes = 
+                        var firstVendorCodes =
                             await _vendorCodeRepository.GetEarnedCodesAsync(criterion);
                         int firstEarnedCodes = firstVendorCodes.Count;
-                        int firstUsedCodes = firstVendorCodes.Where(_ => _.IsUsed).Count();
+                        int firstUsedCodes = firstVendorCodes.Count(_ => _.IsUsed);
 
                         criterion.IsFirstTimeParticipant = false;
 
@@ -156,7 +151,7 @@ namespace GRA.Domain.Report
 
                     var vendorCodes = await _vendorCodeRepository.GetEarnedCodesAsync(criterion);
                     int earnedCodes = vendorCodes.Count;
-                    int usedCodes = vendorCodes.Where(_ => _.IsUsed).Count();
+                    int usedCodes = vendorCodes.Count(_ => _.IsUsed);
 
                     totalEarned += earnedCodes;
                     totalOrdered += usedCodes;
@@ -182,7 +177,7 @@ namespace GRA.Domain.Report
                 string.Empty
             };
 
-            if(askIfFirstTime)
+            if (askIfFirstTime)
             {
                 footerRow.Add(totalFirstEarned);
                 footerRow.Add(totalFirstOrdered);

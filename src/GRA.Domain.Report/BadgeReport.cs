@@ -20,13 +20,14 @@ namespace GRA.Domain.Report
         private readonly IBadgeRepository _badgeRepository;
         private readonly IChallengeRepository _challengeRepository;
         private readonly IUserLogRepository _userLogRepository;
+
         public BadgeReport(ILogger<CurrentStatusReport> logger,
             ServiceFacade.Report serviceFacade,
             IBadgeRepository badgeRepository,
             IChallengeRepository challengeRepository,
             IUserLogRepository userLogRepository) : base(logger, serviceFacade)
         {
-            _badgeRepository = badgeRepository 
+            _badgeRepository = badgeRepository
                 ?? throw new ArgumentNullException(nameof(badgeRepository));
             _challengeRepository = challengeRepository
                 ?? throw new ArgumentNullException(nameof(challengeRepository));
@@ -36,14 +37,9 @@ namespace GRA.Domain.Report
 
         public override async Task ExecuteAsync(ReportRequest request,
             CancellationToken token,
-            IProgress<OperationStatus> progress = null)
+            IProgress<JobStatus> progress = null)
         {
             #region Reporting initialization
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
-
             request = await StartRequestAsync(request);
 
             var criterion
@@ -86,8 +82,8 @@ namespace GRA.Domain.Report
                 }
             }
 
-            int totalCount = challengeIds == null ? 0 : challengeIds.Count();
-            totalCount += badgeIds == null ? 0 : badgeIds.Count();
+            int totalCount = challengeIds?.Count() ?? 0;
+            totalCount += badgeIds?.Count() ?? 0;
             #endregion Adjust report criteria as needed
 
             #region Collect data
@@ -118,7 +114,6 @@ namespace GRA.Domain.Report
                         ++count * 100 / totalCount,
                         $"Processing badge: {badgeName}...",
                         request.Name);
-
 
                     reportData.Add(new object[]
                     {
@@ -157,7 +152,7 @@ namespace GRA.Domain.Report
                 }
             }
 
-            report.Data = reportData.OrderByDescending(_ => _.ElementAt(1));
+            report.Data = reportData.OrderByDescending(_ => _[1]);
 
             report.FooterRow = new object[]
             {

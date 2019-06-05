@@ -167,9 +167,9 @@ namespace GRA.Domain.Service
         private const string OrderDateRowHeading = "Order Date";
         private const string ShipDateRowHeading = "Ship Date";
 
-        public async Task<OperationStatus> UpdateStatusFromExcel(string filename,
+        public async Task<JobStatus> UpdateStatusFromExcel(string filename,
             CancellationToken token,
-            IProgress<OperationStatus> progress = null)
+            IProgress<JobStatus> progress = null)
         {
             var requestingUser = GetClaimId(ClaimType.UserId);
 
@@ -192,7 +192,7 @@ namespace GRA.Domain.Service
                 if (!File.Exists(fullPath))
                 {
                     _logger.LogError($"Could not find {fullPath}");
-                    return new OperationStatus
+                    return new JobStatus
                     {
                         PercentComplete = 0,
                         Status = "Could not find the import file.",
@@ -228,7 +228,7 @@ namespace GRA.Domain.Service
                                 row++;
                                 if (row % 10 == 0)
                                 {
-                                    progress.Report(new OperationStatus
+                                    progress.Report(new JobStatus
                                     {
                                         PercentComplete = row * 100 / totalRows,
                                         Status = $"Processing row {row}/{totalRows}...",
@@ -237,7 +237,7 @@ namespace GRA.Domain.Service
                                 }
                                 if (row == 1)
                                 {
-                                    progress.Report(new OperationStatus
+                                    progress.Report(new JobStatus
                                     {
                                         PercentComplete = 1,
                                         Status = $"Processing row {row}/{totalRows}...",
@@ -339,7 +339,7 @@ namespace GRA.Domain.Service
 
                         if (token.IsCancellationRequested)
                         {
-                            return new OperationStatus
+                            return new JobStatus
                             {
                                 PercentComplete = 100,
                                 Status = $"Operation cancelled at row {row}."
@@ -374,7 +374,7 @@ namespace GRA.Domain.Service
                                 sb.Append("<li>").Append(issue).Append("</li>");
                             }
                             sb.Append("</ul>");
-                            return new OperationStatus
+                            return new JobStatus
                             {
                                 PercentComplete = 100,
                                 Status = sb.ToString(),
@@ -384,7 +384,7 @@ namespace GRA.Domain.Service
                         else
                         {
                             _logger.LogInformation(sb.ToString());
-                            return new OperationStatus
+                            return new JobStatus
                             {
                                 PercentComplete = 100,
                                 Status = sb.ToString(),
@@ -400,7 +400,7 @@ namespace GRA.Domain.Service
             else
             {
                 _logger.LogError($"User {requestingUser} doesn't have permission to view all reporting.");
-                return new OperationStatus
+                return new JobStatus
                 {
                     PercentComplete = 0,
                     Status = "Permission denied.",

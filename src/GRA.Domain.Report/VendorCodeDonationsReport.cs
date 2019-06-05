@@ -21,15 +21,13 @@ namespace GRA.Domain.Report
         private readonly IProgramRepository _programRepository;
         private readonly ISystemRepository _systemRepository;
         private readonly IUserRepository _userRepository;
-        private readonly IVendorCodeRepository _vendorCodeRepository;
 
         public VendorCodeDonationsReport(ILogger<VendorCodeDonationsReport> logger,
             Domain.Report.ServiceFacade.Report serviceFacade,
             IBranchRepository branchRepository,
             IProgramRepository programRepository,
             ISystemRepository systemRepository,
-            IUserRepository userRepository,
-            IVendorCodeRepository vendorCodeRepository) : base(logger, serviceFacade)
+            IUserRepository userRepository) : base(logger, serviceFacade)
         {
             _branchRepository = branchRepository
                 ?? throw new ArgumentException(nameof(branchRepository));
@@ -39,20 +37,13 @@ namespace GRA.Domain.Report
                 ?? throw new ArgumentException(nameof(systemRepository));
             _userRepository = userRepository
                 ?? throw new ArgumentNullException(nameof(userRepository));
-            _vendorCodeRepository = vendorCodeRepository
-                ?? throw new ArgumentException(nameof(vendorCodeRepository));
         }
 
         public override async Task ExecuteAsync(ReportRequest request,
             CancellationToken token,
-            IProgress<OperationStatus> progress = null)
+            IProgress<JobStatus> progress = null)
         {
             #region Reporting initialization
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
-
             request = await StartRequestAsync(request);
 
             var criterion
@@ -61,7 +52,7 @@ namespace GRA.Domain.Report
 
             if (criterion.SiteId == null)
             {
-                throw new ArgumentNullException(nameof(criterion.SiteId));
+                throw new ArgumentException(nameof(criterion.SiteId));
             }
 
             string title = "";

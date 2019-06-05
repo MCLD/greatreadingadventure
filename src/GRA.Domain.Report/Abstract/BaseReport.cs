@@ -1,13 +1,13 @@
 ﻿using System;
-using GRA.Domain.Model;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using System.Diagnostics;
-using System.Collections.Generic;
+using GRA.Domain.Model;
 using GRA.Domain.Report.Attribute;
-using System.Reflection;
-using System.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Report.Abstract
 {
@@ -24,24 +24,21 @@ namespace GRA.Domain.Report.Abstract
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _serviceFacade = serviceFacade
                 ?? throw new ArgumentNullException(nameof(serviceFacade));
-            ReportSet = new StoredReportSet();
-            ReportSet.Reports = new List<StoredReport>();
+            ReportSet = new StoredReportSet
+            {
+                Reports = new List<StoredReport>()
+            };
         }
 
         protected async Task<ReportRequest> StartRequestAsync(ReportRequest request)
         {
-            if (_timer == null)
-            {
-                _timer = new Stopwatch();
-            }
-            _timer.Start();
+            (_timer ?? (_timer = new Stopwatch())).Start();
 
             request.Started = _serviceFacade.DateTimeProvider.Now;
             request.Finished = null;
             request.Success = null;
             request.ResultJson = null;
             request.InstanceName = _serviceFacade.Config[ConfigurationKey.InstanceName];
-            request.Name = request.Name;
             return await _serviceFacade.ReportRequestRepository.UpdateSaveNoAuditAsync(request);
         }
 
@@ -55,28 +52,28 @@ namespace GRA.Domain.Report.Abstract
 
         public abstract Task ExecuteAsync(ReportRequest request,
             CancellationToken token,
-            IProgress<OperationStatus> progress = null);
+            IProgress<JobStatus> progress = null);
 
-        protected void UpdateProgress(IProgress<OperationStatus> progress, int percentComplete)
+        protected void UpdateProgress(IProgress<JobStatus> progress, int percentComplete)
         {
             UpdateProgress(progress, percentComplete, null);
         }
 
-        protected void UpdateProgress(IProgress<OperationStatus> progress,
+        protected void UpdateProgress(IProgress<JobStatus> progress,
             string message,
             string title = null)
         {
             UpdateProgress(progress, null, message, title);
         }
 
-        protected void UpdateProgress(IProgress<OperationStatus> progress,
+        protected void UpdateProgress(IProgress<JobStatus> progress,
             int? percentComplete = null,
             string message = null,
             string title = null)
         {
             if (progress != null)
             {
-                var status = new OperationStatus();
+                var status = new JobStatus();
 
                 if (percentComplete != null)
                 {
@@ -100,7 +97,6 @@ namespace GRA.Domain.Report.Abstract
             get
             {
                 return GetType().GetTypeInfo().GetCustomAttribute<ReportInformationAttribute>();
-
             }
         }
 
@@ -118,13 +114,14 @@ namespace GRA.Domain.Report.Abstract
 
         protected async Task<ReportCriterion> GetCriterionAsync(ReportRequest request)
         {
-            var criterion
-                = await _serviceFacade.ReportCriterionRepository.GetByIdAsync(request.ReportCriteriaId)
+            var criterion = await _serviceFacade
+                .ReportCriterionRepository
+                .GetByIdAsync(request.ReportCriteriaId)
                 ?? throw new GraException($"Report criteria {request.ReportCriteriaId} for report request id {request.Id} could not be found.");
 
             if (criterion.SiteId == null)
             {
-                throw new ArgumentNullException(nameof(criterion.SiteId));
+                throw new ArgumentException($"Must provide {nameof(criterion.SiteId)} in report criteria.");
             }
 
             return criterion;
@@ -138,14 +135,14 @@ namespace GRA.Domain.Report.Abstract
             request.Success = success;
             request.Finished = _serviceFacade.DateTimeProvider.Now;
 
-            if (success == true)
+            if (success)
             {
                 request.ResultJson = Newtonsoft.Json.JsonConvert.SerializeObject(ReportSet);
             }
             await _serviceFacade.ReportRequestRepository.UpdateSaveNoAuditAsync(request);
         }
 
-        protected async Task<bool> GetSiteSettingBoolAsync(ReportCriterion criterion, string key)
+        protected Task<bool> GetSiteSettingBoolAsync(ReportCriterion criterion, string key)
         {
             if (criterion == null)
             {
@@ -154,11 +151,18 @@ namespace GRA.Domain.Report.Abstract
 
             if (criterion.SiteId == null)
             {
-                throw new ArgumentException("Must provide SiteId to execute a report.");
+                throw new ArgumentException($"Must provide {nameof(criterion.SiteId)} to execute a report.");
             }
 
+            return GetSiteSettingBoolInternalAsync(criterion, key);
+        }
+
+        protected async Task<bool> GetSiteSettingBoolInternalAsync(ReportCriterion criterion, string key)
+        {
             var settings
-                = await _serviceFacade.SiteSettingRepository.GetBySiteIdAsync((int)criterion.SiteId);
+                = await _serviceFacade
+                    .SiteSettingRepository
+                    .GetBySiteIdAsync((int)criterion.SiteId);
 
             var setting = settings.Where(_ => _.Key == key);
 

@@ -20,6 +20,7 @@ namespace GRA.Domain.Report
         private readonly IBranchRepository _branchRepository;
         private readonly IProgramRepository _programRepository;
         private readonly IUserRepository _userRepository;
+
         public CurrentStatusByProgramReport(ILogger<CurrentStatusReport> logger,
             Domain.Report.ServiceFacade.Report serviceFacade,
             IBranchRepository branchRepository,
@@ -36,14 +37,9 @@ namespace GRA.Domain.Report
 
         public override async Task ExecuteAsync(ReportRequest request,
             CancellationToken token,
-            IProgress<OperationStatus> progress = null)
+            IProgress<JobStatus> progress = null)
         {
             #region Reporting initialization
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
-
             request = await StartRequestAsync(request);
 
             var criterion
@@ -52,7 +48,7 @@ namespace GRA.Domain.Report
 
             if (criterion.SiteId == null)
             {
-                throw new ArgumentNullException(nameof(criterion.SiteId));
+                throw new ArgumentException(nameof(criterion.SiteId));
             }
 
             int count = 0;
@@ -229,27 +225,27 @@ namespace GRA.Domain.Report
 
             foreach (var program in programs)
             {
-                var programData = programTotals[program.Id];
+                var (users, firstTime, achievers) = programTotals[program.Id];
 
                 var summaryRow = new List<object>()
                 {
                     program.Name,
-                    programData.users
+                    users
                 };
 
                 if (askIfFirstTime)
                 {
-                    summaryRow.Add(programData.firstTime);
+                    summaryRow.Add(firstTime);
                 }
 
-                summaryRow.Add(programData.achievers);
+                summaryRow.Add(achievers);
                 summaryRow.Add(program.AchieverPointAmount);
 
                 summaryReportData.Add(summaryRow.ToArray());
 
-                signupTotal += programData.users;
-                firstTimeTotal += programData.firstTime;
-                achieverTotal += programData.achievers;
+                signupTotal += users;
+                firstTimeTotal += firstTime;
+                achieverTotal += achievers;
             }
 
             summaryReport.Data = summaryReportData.ToArray();

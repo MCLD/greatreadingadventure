@@ -17,18 +17,14 @@ namespace GRA.Domain.Report
     "Program")]
     public class RegistrationsAchieversBySchoolReport : BaseReport
     {
-        private readonly ISchoolDistrictRepository _schoolDistrictRepository;
         private readonly ISchoolRepository _schoolRepository;
         private readonly IUserRepository _userRepository;
 
         public RegistrationsAchieversBySchoolReport(ILogger<RegistrationsAchieversReport> logger,
             ServiceFacade.Report serviceFacade,
-            ISchoolDistrictRepository schoolDistrictRepository,
             ISchoolRepository schoolRepository,
             IUserRepository userRepository) : base(logger, serviceFacade)
         {
-            _schoolDistrictRepository = schoolDistrictRepository
-                ?? throw new ArgumentNullException(nameof(schoolDistrictRepository));
             _schoolRepository = schoolRepository
                 ?? throw new ArgumentNullException(nameof(schoolRepository));
             _userRepository = userRepository
@@ -37,14 +33,9 @@ namespace GRA.Domain.Report
 
         public override async Task ExecuteAsync(ReportRequest request,
             CancellationToken token,
-            IProgress<OperationStatus> progress = null)
+            IProgress<JobStatus> progress = null)
         {
             #region Reporting initialization
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
-
             request = await StartRequestAsync(request);
 
             var criterion
@@ -53,7 +44,7 @@ namespace GRA.Domain.Report
 
             if (criterion.SiteId == null)
             {
-                throw new ArgumentNullException(nameof(criterion.SiteId));
+                throw new ArgumentException(nameof(criterion.SiteId));
             }
 
             var report = new StoredReport
@@ -110,7 +101,7 @@ namespace GRA.Domain.Report
 
             if (schools == null)
             {
-                throw new Exception("Could not find any school(s) to report on.");
+                throw new GraFatalException("Could not find any school(s) to report on.");
             }
 
             foreach (var school in schools)
@@ -121,7 +112,7 @@ namespace GRA.Domain.Report
                 }
 
                 UpdateProgress(progress,
-                    ++count * 100 / schools.Count(),
+                    ++count * 100 / schools.Count,
                     $"Processing: {school.Name}",
                     request.Name);
 
