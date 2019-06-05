@@ -5,14 +5,14 @@ WORKDIR /app
 # Copy source
 COPY . ./
 
-# Run restore and build
-RUN dotnet build -c Release
+# Build project
+RUN dotnet build
 
 # Run tests
-RUN find test/ -path "*/bin/*Test.dll" |xargs dotnet vstest --parallel
+RUN find test -path "*/bin/*Test.dll" -type f -print0 |xargs -0 dotnet vstest --parallel
 
-# Publish
-RUN dotnet publish -c Release -o "/app/publish/" --no-build
+# Publish build code
+RUN dotnet publish -c Release -o "/app/publish/" "src/GRA.Web" --no-build
 
 # Get runtime image
 FROM mcr.microsoft.com/dotnet/core/aspnet:2.2 AS publish-stage
