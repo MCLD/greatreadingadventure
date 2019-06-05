@@ -58,7 +58,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dev", "dev", "{2F931D25-1A2
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{44008A86-CC39-4EBF-A806-C391F4D8CB55}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GRA.Test", "GRA.Test\GRA.Test.csproj", "{4DF3AA9C-29B7-4BE6-9CE4-28B3785321F7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GRA.Test", "test\GRA.Test\GRA.Test.csproj", "{4DF3AA9C-29B7-4BE6-9CE4-28B3785321F7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
