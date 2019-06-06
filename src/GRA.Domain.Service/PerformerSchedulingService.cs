@@ -626,8 +626,7 @@ namespace GRA.Domain.Service
             }
 
             if (!HasPermission(Permission.ManagePerformers)
-                && (currentPerformer.UserId != authId
-                    || !HasPermission(Permission.AccessPerformerRegistration)))
+                && (!HasPermission(Permission.AccessPerformerRegistration)))
             {
                 _logger.LogError($"User {authId} doesn't have permission to edit performer {currentPerformer.Id}.");
                 throw new GraException("Permission denied.");
@@ -636,6 +635,7 @@ namespace GRA.Domain.Service
             currentPerformer.BillingAddress = performer.BillingAddress.Trim();
             currentPerformer.HasFingerprintCard = performer.HasFingerprintCard;
             currentPerformer.Name = performer.Name.Trim();
+            currentPerformer.Email = performer.Email.Trim();
             currentPerformer.Phone = performer.Phone.Trim();
             currentPerformer.PhonePreferred = performer.PhonePreferred;
             currentPerformer.VendorId = performer.VendorId.Trim();
