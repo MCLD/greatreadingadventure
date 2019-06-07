@@ -28,15 +28,16 @@ namespace GRA.Data.Repository
             var job = await DbSet.FindAsync(jobId);
             if (job != null)
             {
+                var now = _dateTimeProvider.Now;
                 if (isCancelled)
                 {
-                    job.StatusAsOf = _dateTimeProvider.Now;
-                    job.Cancelled = _dateTimeProvider.Now;
+                    job.StatusAsOf = now;
+                    job.Cancelled = now;
                 }
                 else
                 {
-                    job.StatusAsOf = _dateTimeProvider.Now;
-                    job.Completed = _dateTimeProvider.Now;
+                    job.StatusAsOf = now;
+                    job.Completed = now;
                 }
                 DbSet.Update(job);
                 await SaveAsync();
@@ -48,8 +49,10 @@ namespace GRA.Data.Repository
             var job = await DbSet.FindAsync(jobId);
             if (job != null)
             {
+                var now = _dateTimeProvider.Now;
                 job.Status = "Starting...";
-                job.StatusAsOf = job.Started = _dateTimeProvider.Now;
+                job.StatusAsOf = now;
+                job.Started = now;
                 DbSet.Update(job);
                 await SaveAsync();
             }

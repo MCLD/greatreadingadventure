@@ -116,8 +116,12 @@ namespace GRA.Domain.Report.Abstract
         {
             var criterion = await _serviceFacade
                 .ReportCriterionRepository
-                .GetByIdAsync(request.ReportCriteriaId)
-                ?? throw new GraException($"Report criteria {request.ReportCriteriaId} for report request id {request.Id} could not be found.");
+                .GetByIdAsync(request.ReportCriteriaId);
+
+            if (criterion == null)
+            {
+                throw new GraException($"Report criteria {request.ReportCriteriaId} for report request id {request.Id} could not be found.");
+            }
 
             if (criterion.SiteId == null)
             {
