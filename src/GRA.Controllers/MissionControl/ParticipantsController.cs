@@ -532,7 +532,13 @@ namespace GRA.Controllers.MissionControl
                         SiteSettingKey.Users.AskEmailSubPermission)
                 };
 
+                var sw = new System.Diagnostics.Stopwatch();
+                sw.Start();
                 await _activityService.AwardUserTriggersAsync(viewModel.User.Id, false);
+                sw.Stop();
+                _logger.LogDebug("MC access of user id {UserId} took {Elapsed} to award triggers.",
+                    viewModel.User.Id,
+                    sw.Elapsed.ToString("c"));
 
                 if (UserHasPermission(Permission.ViewUserPrizes))
                 {
@@ -875,7 +881,13 @@ namespace GRA.Controllers.MissionControl
                 {
                     head.HasUnclaimedPrize = (await _prizeWinnerService
                         .GetUserWinCount(head.Id, false)) > 0;
+                    var sw = new System.Diagnostics.Stopwatch();
+                    sw.Start();
                     await _activityService.AwardUserTriggersAsync(head.Id, true);
+                    sw.Stop();
+                    _logger.LogDebug("MC access of family/group for user id {UserId} took {Elapsed} to award triggers.",
+                        head.Id,
+                        sw.Elapsed.ToString("c"));
                 }
 
                 var household = await _userService.GetHouseholdAsync(head.Id, true, showVendorCodes,
