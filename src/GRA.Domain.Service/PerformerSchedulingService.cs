@@ -626,7 +626,7 @@ namespace GRA.Domain.Service
             }
 
             if (!HasPermission(Permission.ManagePerformers)
-                && (!HasPermission(Permission.AccessPerformerRegistration)))
+                && (currentPerformer.UserId != authId || !HasPermission(Permission.AccessPerformerRegistration)))
             {
                 _logger.LogError($"User {authId} doesn't have permission to edit performer {currentPerformer.Id}.");
                 throw new GraException("Permission denied.");
