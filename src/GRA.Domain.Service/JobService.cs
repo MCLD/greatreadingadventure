@@ -126,11 +126,7 @@ namespace GRA.Domain.Service
 
         public async Task<Guid> CreateJobAsync(Job job)
         {
-            if (job.SiteId != GetCurrentSiteId())
-            {
-                job.SiteId = GetCurrentSiteId();
-            }
-
+            job.SiteId = GetCurrentSiteId();
             job.CreatedAt = _dateTimeProvider.Now;
             job.CreatedBy = GetActiveUserId();
             job.JobToken = Guid.NewGuid();

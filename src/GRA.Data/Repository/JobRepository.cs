@@ -30,11 +30,13 @@ namespace GRA.Data.Repository
             {
                 if (isCancelled)
                 {
-                    job.StatusAsOf = job.Cancelled = _dateTimeProvider.Now;
+                    job.StatusAsOf = _dateTimeProvider.Now;
+                    job.Cancelled = _dateTimeProvider.Now;
                 }
                 else
                 {
-                    job.StatusAsOf = job.Completed = _dateTimeProvider.Now;
+                    job.StatusAsOf = _dateTimeProvider.Now;
+                    job.Completed = _dateTimeProvider.Now;
                 }
                 DbSet.Update(job);
                 await SaveAsync();

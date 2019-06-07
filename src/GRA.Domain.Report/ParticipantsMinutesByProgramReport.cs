@@ -92,8 +92,10 @@ namespace GRA.Domain.Report
                     translationTotals.Add(description, 0);
                     if (description.Length > 2)
                     {
-                        headerRow.Add(description[0].ToString().ToUpper()
-                            + description.Substring(1));
+                        headerRow.Add(description[0]
+                            .ToString()
+                            .ToUpper(System.Globalization.CultureInfo.InvariantCulture)
+                                + description.Substring(1));
                     }
                     else
                     {
