@@ -532,6 +532,8 @@ namespace GRA.Controllers.MissionControl
                         SiteSettingKey.Users.AskEmailSubPermission)
                 };
 
+                await _activityService.AwardUserTriggersAsync(viewModel.User.Id, false);
+
                 if (UserHasPermission(Permission.ViewUserPrizes))
                 {
                     viewModel.PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false);
@@ -658,6 +660,7 @@ namespace GRA.Controllers.MissionControl
                     }
 
                     await _userService.MCUpdate(model.User);
+                    
                     AlertSuccess = "Participant infomation updated";
                     return RedirectToAction("Detail", new { id = model.User.Id });
                 }
@@ -685,7 +688,7 @@ namespace GRA.Controllers.MissionControl
             model.RequirePostalCode = site.RequirePostalCode;
             model.ShowAge = program.AskAge;
             model.ShowSchool = program.AskSchool;
-
+              
             if (askEmailSubscription)
             {
                 model.AskEmailSubscription = true;
@@ -872,6 +875,7 @@ namespace GRA.Controllers.MissionControl
                 {
                     head.HasUnclaimedPrize = (await _prizeWinnerService
                         .GetUserWinCount(head.Id, false)) > 0;
+                    await _activityService.AwardUserTriggersAsync(head.Id, true);
                 }
 
                 var household = await _userService.GetHouseholdAsync(head.Id, true, showVendorCodes,
