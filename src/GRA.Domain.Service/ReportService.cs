@@ -16,33 +16,31 @@ namespace GRA.Domain.Service
 {
     public class ReportService : Abstract.BaseUserService<ReportService>
     {
-        private readonly IBranchRepository _branchRepository;
         private readonly IDistributedCache _cache;
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IJobRepository _jobRepository;
         private readonly IReportCriterionRepository _reportCriterionRepository;
         private readonly IReportRequestRepository _reportRequestRepository;
-        private readonly IUserRepository _userRepository;
+        private readonly IServiceProvider _serviceProvider;
         private readonly IUserLogRepository _userLogRepository;
-        private readonly ISystemRepository _systemRepository;
+        private readonly IUserRepository _userRepository;
 
         public ReportService(ILogger<ReportService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
-            IServiceProvider serviceProvider,
             IDistributedCache cache,
-            IBranchRepository branchRepository,
+            IJobRepository jobRepository,
             IReportCriterionRepository reportCriterionRepository,
             IReportRequestRepository reportRequestRepository,
-            IUserRepository userRepository,
+            IServiceProvider serviceProvider,
             IUserLogRepository userLogRepository,
-            ISystemRepository systemRepository)
+            IUserRepository userRepository)
             : base(logger, dateTimeProvider, userContextProvider)
         {
             _serviceProvider = serviceProvider
                 ?? throw new ArgumentNullException(nameof(serviceProvider));
             _cache = cache ?? throw new ArgumentNullException(nameof(cache));
-            _branchRepository = branchRepository
-                ?? throw new ArgumentNullException(nameof(branchRepository));
+            _jobRepository = jobRepository
+                ?? throw new ArgumentNullException(nameof(jobRepository));
             _reportCriterionRepository = reportCriterionRepository
                 ?? throw new ArgumentNullException(nameof(reportCriterionRepository));
             _reportRequestRepository = reportRequestRepository
@@ -51,8 +49,6 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(userRepository));
             _userLogRepository = userLogRepository
                 ?? throw new ArgumentNullException(nameof(userLogRepository));
-            _systemRepository = systemRepository
-                ?? throw new ArgumentNullException(nameof(systemRepository));
         }
 
         public async Task<StatusSummary> GetCurrentStatsAsync(ReportCriterion request)
@@ -141,26 +137,34 @@ namespace GRA.Domain.Service
             return new Catalog().Get().Where(_ => _.Id >= 0);
         }
 
-        public async Task<OperationStatus> RunReport(string reportRequestIdString,
-        CancellationToken token,
-        IProgress<OperationStatus> progress = null)
+        public async Task<JobStatus> RunReportJobAsync(int jobId,
+            CancellationToken token,
+            IProgress<JobStatus> progress = null)
+        {
+            var job = await _jobRepository.GetByIdAsync(jobId);
+            var jobDetails
+                = JsonConvert
+                    .DeserializeObject<JobDetailsRunReport>(job.SerializedParameters);
+
+            progress.Report(new JobStatus
+            {
+                SuccessUrl = jobDetails.SuccessUrl,
+                SuccessRedirect = true,
+                CancelUrl = jobDetails.CancelUrl
+            });
+
+            return await RunReportAsync(jobDetails.ReportRequestId, jobId, token, progress);
+        }
+
+        private async Task<JobStatus> RunReportAsync(int reportRequestId,
+            int jobId,
+            CancellationToken token,
+            IProgress<JobStatus> progress = null)
         {
             if (HasPermission(Permission.ViewAllReporting))
             {
                 BaseReport report = null;
                 ReportRequest _request = null;
-
-                if (!int.TryParse(reportRequestIdString, out int reportRequestId))
-                {
-                    _logger.LogError($"Couldn't covert report request id {reportRequestIdString} to a number.");
-                    return new OperationStatus
-                    {
-                        PercentComplete = 100,
-                        Status = $"Could not find report request {reportRequestIdString}.",
-                        Error = true,
-                        Complete = false
-                    };
-                }
 
                 token.Register(() =>
                 {
@@ -187,11 +191,11 @@ namespace GRA.Domain.Service
                 catch (Exception ex)
                 {
                     _logger.LogError($"Could not find report request {reportRequestId}: {ex.Message}");
-                    return new OperationStatus
+                    return new JobStatus
                     {
-                        PercentComplete = 0,
                         Status = "Could not find the report request.",
-                        Error = true
+                        Error = true,
+                        Complete = true
                     };
                 }
 
@@ -201,11 +205,11 @@ namespace GRA.Domain.Service
                 if (reportDetails == null)
                 {
                     _logger.LogError($"Cannot find report id {_request.ReportId} requested by request {reportRequestId}");
-                    return new OperationStatus
+                    return new JobStatus
                     {
-                        PercentComplete = 0,
                         Status = "Could not find the requested report.",
-                        Error = true
+                        Error = true,
+                        Complete = true
                     };
                 }
 
@@ -216,11 +220,11 @@ namespace GRA.Domain.Service
                 catch (Exception ex)
                 {
                     _logger.LogCritical($"Couldn't instantiate report: {ex.Message}");
-                    return new OperationStatus
+                    return new JobStatus
                     {
-                        PercentComplete = 100,
                         Status = "Unable to run report.",
-                        Error = true
+                        Error = true,
+                        Complete = true
                     };
                 }
 
@@ -230,27 +234,37 @@ namespace GRA.Domain.Service
                 }
                 catch (Exception ex)
                 {
-                    return new OperationStatus
+                    await _jobRepository.UpdateStatusAsync(jobId, $"An error occurred: {ex.Message}");
+                    return new JobStatus
                     {
-                        PercentComplete = 100,
                         Status = $"A software error occurred: {ex.Message}.",
+                        Complete = true,
                         Error = true
                     };
                 }
 
-                if (!token.IsCancellationRequested)
+                if (token.IsCancellationRequested)
                 {
-                    return new OperationStatus
+                    await _jobRepository.UpdateStatusAsync(jobId,
+                        $"Report request id {reportRequestId} cancelled.");
+
+                    return new JobStatus
                     {
-                        PercentComplete = 100,
-                        Status = "Report processing complete.",
+                        Status = "Report processing cancelled.",
+                        Complete = true,
+                        Error = true
                     };
                 }
                 else
                 {
-                    return new OperationStatus
+                    await _jobRepository.UpdateStatusAsync(jobId,
+                        $"Report request id {reportRequestId} completed.");
+
+                    return new JobStatus
                     {
                         PercentComplete = 100,
+                        Complete = true,
+                        Status = "Report processing complete.",
                     };
                 }
             }
@@ -258,10 +272,10 @@ namespace GRA.Domain.Service
             {
                 var requestingUser = GetClaimId(ClaimType.UserId);
                 _logger.LogError($"User {requestingUser} doesn't have permission to view all reporting.");
-                return new OperationStatus
+                return new JobStatus
                 {
-                    PercentComplete = 0,
                     Status = "Permission denied.",
+                    Complete = true,
                     Error = true
                 };
             }

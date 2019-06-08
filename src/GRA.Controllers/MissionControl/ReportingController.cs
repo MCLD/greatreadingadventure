@@ -27,6 +27,7 @@ namespace GRA.Controllers.MissionControl
         private const int ExcelPaddingCharacters = 1;
 
         private readonly ILogger<ReportingController> _logger;
+        private readonly JobService _jobService;
         private readonly ReportService _reportService;
         private readonly SchoolService _schoolService;
         private readonly SiteService _siteService;
@@ -36,6 +37,7 @@ namespace GRA.Controllers.MissionControl
 
         public ReportingController(ILogger<ReportingController> logger,
             ServiceFacade.Controller context,
+            JobService jobService,
             ReportService reportService,
             SchoolService schoolService,
             SiteService siteService,
@@ -43,13 +45,16 @@ namespace GRA.Controllers.MissionControl
             UserService userService,
             VendorCodeService vendorCodeService) : base(context)
         {
-            _logger = Require.IsNotNull(logger, nameof(logger));
-            _reportService = Require.IsNotNull(reportService, nameof(reportService));
-            _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
-            _siteService = Require.IsNotNull(siteService, nameof(siteService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _jobService = jobService ?? throw new ArgumentNullException(nameof(jobService));
+            _reportService = reportService
+                ?? throw new ArgumentNullException(nameof(reportService));
+            _schoolService = schoolService
+                ?? throw new ArgumentNullException(nameof(schoolService));
+            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             _triggerService = triggerService
                 ?? throw new ArgumentNullException(nameof(triggerService));
-            _userService = Require.IsNotNull(userService, nameof(userService));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _vendorCodeService = vendorCodeService
                 ?? throw new ArgumentNullException(nameof(vendorCodeService));
             PageTitle = "Reporting";
@@ -154,16 +159,21 @@ namespace GRA.Controllers.MissionControl
                 criterion.TriggerList = string.Join(",", viewModel.TriggerList);
             }
 
-            var reportRequestId = await _reportService
+            int reportRequestId = await _reportService
                 .RequestReport(criterion, viewModel.ReportId);
 
-            var wsUrl = await _siteService.GetWsUrl(Request.Scheme, Request.Host.Value);
-
-            return View("Run", new RunReportViewModel
+            var jobToken = await _jobService.CreateJobAsync(new Job
             {
-                Id = reportRequestId,
-                RunReportUrl = $"{wsUrl}/MissionControl/runreport/{reportRequestId}"
+                JobType = JobType.RunReport,
+                SerializedParameters = JsonConvert.SerializeObject(new JobDetailsRunReport
+                {
+                    ReportRequestId = reportRequestId,
+                    SuccessUrl = Url.Action("View", new { id = reportRequestId }),
+                    CancelUrl = Url.Action("Index")
+                })
             });
+
+            return View("Job", jobToken.ToString());
         }
 
         [HttpGet]
@@ -231,7 +241,6 @@ namespace GRA.Controllers.MissionControl
                 foreach (var report in viewModel.ReportSet.Reports)
                 {
                     int count = 0;
-                    int totalRows = report.Data.Count();
                     var displayRows = new List<List<string>>();
 
                     if (report.HeaderRow != null)
@@ -342,7 +351,7 @@ namespace GRA.Controllers.MissionControl
             using (var workbook = SpreadsheetDocument.Create(ms,
                 DocumentFormat.OpenXml.SpreadsheetDocumentType.Workbook))
             {
-                var workbookPart = workbook.AddWorkbookPart();
+                workbook.AddWorkbookPart();
                 workbook.WorkbookPart.Workbook = new Workbook
                 {
                     Sheets = new Sheets()
@@ -365,7 +374,7 @@ namespace GRA.Controllers.MissionControl
                     if (sheets.Elements<Sheet>().Any())
                     {
                         sheetId = sheets.Elements<Sheet>()
-                            .Select(_ => _.SheetId.Value).Max() + 1;
+                            .Max(_ => _.SheetId.Value) + 1;
                     }
 
                     string sheetName = report.Title ?? PageTitle ?? "Report Results";
@@ -517,7 +526,7 @@ namespace GRA.Controllers.MissionControl
                 if (criteriaSheets.Elements<Sheet>().Any())
                 {
                     criteriaSheetId = criteriaSheets.Elements<Sheet>()
-                        .Select(_ => _.SheetId.Value).Max() + 1;
+                        .Max(_ => _.SheetId.Value) + 1;
                 }
 
                 const string criteriaSheetName = "Report Criteria";
@@ -640,11 +649,11 @@ namespace GRA.Controllers.MissionControl
 
             switch (dataItem)
             {
-                case int i:
-                case long l:
+                case int _:
+                case long _:
                     addCell.DataType = CellValues.Number;
                     break;
-                case DateTime d:
+                case DateTime _:
                     addCell.DataType = CellValues.Date;
                     break;
                 default:
