@@ -28,29 +28,35 @@ namespace GRA.Controllers
                 path = statusFeature.OriginalPath ?? default;
                 queryString = statusFeature.OriginalQueryString ?? default;
             }
+
             string currentUser = UserClaim(ClaimType.UserId);
+
+            string remoteAddress = HttpContext.Connection?.RemoteIpAddress.ToString();
 
             Response.StatusCode = id;
 
-            if(!string.IsNullOrEmpty(currentUser))
+            if (!string.IsNullOrEmpty(currentUser))
             {
                 _logger.LogError(
-                    "HTTP Error {Id}: {Protocol} {Method} {Path}{QueryString} currentUser={CurrentUser}",
+                    "HTTP Error {Id}: {Protocol} {Method} {Path}{QueryString} remoteAddress={RemoteAddress} currentUser={CurrentUser}",
                     id,
                     Request.Protocol,
                     Request.Method,
                     path,
                     queryString,
+                    remoteAddress,
                     currentUser);
             }
             else
             {
-                _logger.LogError("HTTP Error {Id}: {Protocol} {Method} {Path}{QueryString}",
+                _logger.LogError(
+                    "HTTP Error {Id}: {Protocol} {Method} {Path}{QueryString} remoteAddress={RemoteAddress}",
                     id,
                     Request.Protocol,
                     Request.Method,
                     path,
-                    queryString);
+                    queryString,
+                    remoteAddress);
             }
 
             switch (id)
