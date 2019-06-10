@@ -210,20 +210,28 @@
         });
 
         $(document).on("click", ".addRequirementButton", function () {
+            if (challengeIds) {
+                challengeIds.pop();
+            }
+            if (badgeIds) {
+                badgeIds.pop();
+            }
+            $(".fa-minus-circle").parent().parent().parent().remove();
             if (!$(this).hasClass("disabled")) {
                 var badgeId = $(this).data("badgeid");
                 var challengeId = $(this).data("challengeid");
 
                 if (challengeId != "") {
                     challengeIds.push(challengeId);
-                    $("#ChallengeRequiredList").val(challengeIds.join(','));
+                    $("#ChallengeRequiredList").val(challengeId);
+                    $("#BadgeRequiredList").val("");
                 }
                 else if (badgeId != "") {
                     badgeIds.push(badgeId);
-                    $("#BadgeRequiredList").val(badgeIds.join(','));
+                    $("#BadgeRequiredList").val(badgeId);
+                    $("#ChallengeRequiredList").val("");
                 }
                 $("#noRequirements").addClass("hide");
-
                 var row = $(this).parent().parent().clone();
                 var addedItem = row.find(".addRequirementButton");
                 addedItem.removeClass("addRequirementButton")
@@ -235,8 +243,11 @@
                 $(".addRequirementButton").addClass("disabled");
 
                 UpdateRequirementsList();
-
+                $("#addButton").html('Change Badge');
+                $("#listModal").modal("hide");
             }
+            console.log(challengeIds)
+            console.log(badgeIds)
         });
 
         $(document).on("click", "#removeRequirementButton", function () {
@@ -245,16 +256,19 @@
 
             if (challengeId != "") {
                 challengeIds.splice(challengeIds.indexOf(challengeId), 1);
-                $("#ChallengeRequiredList").val(challengeIds.join(','));
+                $("#ChallengeRequiredList").val("");
             }
             else if (badgeId != "") {
                 badgeIds.splice(badgeIds.indexOf(badgeId), 1);
-                $("#BadgeRequiredList").val(badgeIds.join(','));
+                $("#BadgeRequiredList").val("");
             }
             $(this).parent().parent().remove();
             if (badgeIds == "" && challengeIds == "") {
                 $("#noRequirements").removeClass("hide");
             }
+            $("#addButton").html('Add Badge');
+            console.log(challengeIds)
+            console.log(badgeIds)
         });
 
         $(".requirementScope").on("click", function(e) {

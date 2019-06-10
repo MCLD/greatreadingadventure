@@ -57,19 +57,19 @@ namespace GRA.Domain.Report
             #endregion Reporting initialization
 
             #region Adjust report criteria as needed
-            IEnumerable<int> badgeIds = null;
-            IEnumerable<int> challengeIds = null;
+            int? badgeId = null;
+            int? challengeId = null;
 
             if (!string.IsNullOrEmpty(criterion.BadgeRequiredList))
             {
                 try
                 {
-                    badgeIds = criterion.BadgeRequiredList.Split(',').Select(int.Parse);
+                    badgeId = Convert.ToInt32(criterion.BadgeRequiredList);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"Unable to convert badge id list to numbers: {ex.Message}");
-                    _logger.LogError($"Badge id list: {criterion.BadgeRequiredList}");
+                    _logger.LogError($"Unable to convert badge id to number: {ex.Message}");
+                    _logger.LogError($"Badge id: {criterion.BadgeRequiredList}");
                 }
             }
 
@@ -77,12 +77,12 @@ namespace GRA.Domain.Report
             {
                 try
                 {
-                    challengeIds = criterion.ChallengeRequiredList.Split(',').Select(int.Parse);
+                    challengeId = Convert.ToInt32(criterion.ChallengeRequiredList);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"Unable to convert challenge id list to numbers: {ex.Message}");
-                    _logger.LogError($"Challenge id list: {criterion.BadgeRequiredList}");
+                    _logger.LogError($"Unable to convert challenge id to number: {ex.Message}");
+                    _logger.LogError($"Challenge id: {criterion.BadgeRequiredList}");
                 }
             }
 
@@ -113,36 +113,21 @@ namespace GRA.Domain.Report
 
             ICollection<int> usersWhoEarned = null;
 
-            if (badgeIds != null && !token.IsCancellationRequested)
+            if (badgeId != null && !token.IsCancellationRequested)
             {
-                UpdateProgress(progress, 1, "Looking up users who earned badges...", request.Name);
+                UpdateProgress(progress, 1, "Looking up users who earned the badge...", request.Name);
 
-                foreach (var badgeId in badgeIds)
-                {
-                    if (token.IsCancellationRequested)
-                    {
-                        break;
-                    }
-
-                    var earned = await _userLogRepository.UserIdsEarnedBadgeAsync(badgeId, criterion);
+                    var earned = await _userLogRepository.UserIdsEarnedBadgeAsync(badgeId.Value, criterion);
 
                     usersWhoEarned = earned;
-                }
             }
 
-            if (challengeIds != null && !token.IsCancellationRequested)
+            if (challengeId != null && !token.IsCancellationRequested)
             {
-                UpdateProgress(progress, 1, "Looking up users who completed challenges...", request.Name);
-
-                foreach (var challengeId in challengeIds)
-                {
-                    if (token.IsCancellationRequested)
-                    {
-                        break;
-                    }
+                UpdateProgress(progress, 1, "Looking up users who completed the challenge...", request.Name);
 
                     var earned
-                        = await _userLogRepository.UserIdsCompletedChallengesAsync(challengeId, criterion);
+                        = await _userLogRepository.UserIdsCompletedChallengesAsync(challengeId.Value, criterion);
 
                     if (usersWhoEarned == null || usersWhoEarned.Count == 0)
                     {
@@ -152,7 +137,6 @@ namespace GRA.Domain.Report
                     {
                         usersWhoEarned = usersWhoEarned.Union(earned).ToList();
                     }
-                }
             }
 
             int count = 0;
