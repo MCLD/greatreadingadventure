@@ -19,10 +19,10 @@ namespace GRA.Domain.Report
     {
         private readonly IBranchRepository _branchRepository;
         private readonly IUserRepository _userRepository;
+
         public RegistrationsAchieversReport(ILogger<RegistrationsAchieversReport> logger,
             ServiceFacade.Report serviceFacade,
             IBranchRepository branchRepository,
-            ISystemRepository systemRepository,
             IUserRepository userRepository) : base(logger, serviceFacade)
         {
             _branchRepository = branchRepository
@@ -33,14 +33,9 @@ namespace GRA.Domain.Report
 
         public override async Task ExecuteAsync(ReportRequest request,
             CancellationToken token,
-            IProgress<OperationStatus> progress = null)
+            IProgress<JobStatus> progress = null)
         {
             #region Reporting initialization
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
-
             request = await StartRequestAsync(request);
 
             var criterion
@@ -49,7 +44,7 @@ namespace GRA.Domain.Report
 
             if (criterion.SiteId == null)
             {
-                throw new ArgumentNullException(nameof(criterion.SiteId));
+                throw new ArgumentException(nameof(criterion.SiteId));
             }
 
             var report = new StoredReport

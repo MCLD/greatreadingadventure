@@ -15,5 +15,13 @@ namespace GRA.Domain.Model
 
         [Required]
         public Guid JobToken { get; set; }
+
+        public DateTime? Started { get; set; }
+        public DateTime? Completed { get; set; }
+        public DateTime? Cancelled { get; set; }
+        public DateTime? StatusAsOf { get; set; }
+
+        [MaxLength(255)]
+        public string Status { get; set; }
     }
 }

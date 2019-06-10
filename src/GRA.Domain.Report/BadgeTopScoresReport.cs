@@ -18,21 +18,14 @@ namespace GRA.Domain.Report
         "Participants")]
     public class BadgeTopScoresReport : BaseReport
     {
-        private readonly IBadgeRepository _badgeRepository;
-        private readonly IChallengeRepository _challengeRepository;
         private readonly IUserLogRepository _userLogRepository;
         private readonly IUserRepository _userRepository;
+
         public BadgeTopScoresReport(ILogger<CurrentStatusReport> logger,
             ServiceFacade.Report serviceFacade,
-            IBadgeRepository badgeRepository,
-            IChallengeRepository challengeRepository,
             IUserLogRepository userLogRepository,
             IUserRepository userRepository) : base(logger, serviceFacade)
         {
-            _badgeRepository = badgeRepository
-                ?? throw new ArgumentNullException(nameof(badgeRepository));
-            _challengeRepository = challengeRepository
-                ?? throw new ArgumentNullException(nameof(challengeRepository));
             _userLogRepository = userLogRepository
                 ?? throw new ArgumentNullException(nameof(userLogRepository));
             _userRepository = userRepository
@@ -41,14 +34,9 @@ namespace GRA.Domain.Report
 
         public override async Task ExecuteAsync(ReportRequest request,
             CancellationToken token,
-            IProgress<OperationStatus> progress = null)
+            IProgress<JobStatus> progress = null)
         {
             #region Reporting initialization
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
-
             request = await StartRequestAsync(request);
 
             var criterion
@@ -57,7 +45,7 @@ namespace GRA.Domain.Report
 
             if (criterion.SiteId == null)
             {
-                throw new ArgumentNullException(nameof(criterion.SiteId));
+                throw new ArgumentException(nameof(criterion.SiteId));
             }
 
             var report = new StoredReport
@@ -167,7 +155,6 @@ namespace GRA.Domain.Report
                 }
             }
 
-            int totalCount = usersWhoEarned.Count;
             int count = 0;
             long totalPoints = 0;
 
@@ -179,8 +166,8 @@ namespace GRA.Domain.Report
                 }
 
                 UpdateProgress(progress,
-                    ++count * 100 / usersWhoEarned.Count(),
-                    $"Processing user: {count}/{usersWhoEarned.Count()}",
+                    ++count * 100 / usersWhoEarned.Count,
+                    $"Processing user: {count}/{usersWhoEarned.Count}",
                     request.Name);
 
                 long pointsEarned = await _userLogRepository.GetEarningsOverPeriodAsync(userId, criterion);
@@ -190,11 +177,11 @@ namespace GRA.Domain.Report
                 var name = new StringBuilder(user.FirstName);
                 if (!string.IsNullOrEmpty(user.LastName))
                 {
-                    name.Append($" {user.LastName}");
+                    name.Append(' ').Append(user.LastName);
                 }
                 if (!string.IsNullOrEmpty(user.Username))
                 {
-                    name.Append($" ({user.Username})");
+                    name.Append(" (").Append(user.Username).Append(')');
                 }
 
                 reportData.Add(new object[]
@@ -212,14 +199,14 @@ namespace GRA.Domain.Report
 
             int rank = 1;
             report.Data = reportData
-                .OrderByDescending(_ => _.ElementAt(5))
+                .OrderByDescending(_ => _[5])
                 .Select(_ => new object[] {
                    rank++,
-                   _.ElementAt(1),
-                   _.ElementAt(2),
-                   _.ElementAt(3),
-                   _.ElementAt(4),
-                   _.ElementAt(5),
+                   _[1],
+                   _[2],
+                   _[3],
+                   _[4],
+                   _[5],
                 });
 
             report.FooterRow = new object[]

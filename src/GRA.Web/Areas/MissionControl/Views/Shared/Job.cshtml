@@ -3,7 +3,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="wsTitle">Loading job...</h4>
+                <h4 class="modal-title" id="wsTitle">Loading...</h4>
             </div>
             <div class="modal-body">
                 <div class="progress">
@@ -18,12 +18,16 @@
             </div>
             <div class="modal-footer">
                 <div class="form-control-static pull-left" style="width: 2rem;">
-                    <span class="fa fa-circle" id="sendWs" style="color: steelblue;"></span>
+                    <span class="fas fa-arrow-circle-up" 
+                          id="sendWs" 
+                          style="color: steelblue;"></span>
                 </div>
                 <div class="form-control-static pull-left" style="width: 2rem;">
-                    <span class="fa fa-circle" id="recvWs" style="color: lightcoral;"></span>
+                    <span class="fas fa-arrow-circle-down" 
+                          id="recvWs" 
+                          style="color: lightcoral;"></span>
                 </div>
-                <button type="button" class="btn" id="cancelWs">Cancel job</button>
+                <button type="button" class="btn" id="cancelWs">Cancel</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -34,6 +38,7 @@
     var wsStarted = false;
     var wsFinished = false;
     var wsCancel = false;
+    var wsError = false;
     var wsTryingToConnect = false;
     var wsPageTitle = document.title;
     var webSocket;
@@ -44,7 +49,7 @@
     var wsUrl = wsScheme + "://" + document.location.hostname + wsPort + "/runjob/@Model";
     var wsSuccessUrl = '/MissionControl/';
     var wsSuccessRedirect = '';
-    var wsSuccessButton = 'Success!';
+    var wsCompleteButton = 'Back to Mission Control';
     var wsCancelUrl = '/MissionControl/';
 
     function updateState(e) {
@@ -55,19 +60,16 @@
                 case WebSocket.CLOSED:
                     clearPing();
                     if (wsStarted && wsFinished) {
-                        if (e && e.data) {
-                            statusUpdate(e);
-                        }
-                        if (wsSuccessRedirect.length > 0) {
+                        if (wsSuccessRedirect.length > 0 && !wsError) {
                             window.location.href = wsSuccessRedirect;
                         }
                         else
                         {
-                            $('#cancelWs').text(wsSuccessButton);
+                            $('#cancelWs').text(wsCompleteButton);
                             $('#cancelWs').removeClass('btn-danger');
-                            $('#cancelWs').addClass('btn-success');
+                            $('#cancelWs').addClass('btn-default');
                             $('#cancelWs').on('click', function () {
-                                window.location.href = wsSuccessUrl;
+                                window.location.href = wsError ? wsCancelUrl : wsSuccessUrl;
                                 return false;
                             });
                         }
@@ -100,12 +102,26 @@
                     wsTryingToConnect = false;
                     if (e && e.data) {
                         var incoming = JSON.parse(e.data);
-                        $('#recvWs').fadeIn(200, function () {
-                            $('#recvWs').fadeOut(1);
+                        $('#recvWs').fadeIn(500, function () {
+                            $('#recvWs').fadeOut(500);
                         });
                         if (incoming.Title) {
                             $('#wsTitle').html(incoming.Title);
                             wsPageTitle = incoming.Title;
+                        }
+                        if (incoming.SuccessUrl) {
+                            if (incoming.SuccessRedirect) {
+                                wsSuccessUrl = '';
+                                wsSuccessRedirect = incoming.SuccessUrl;
+                            }   
+                            else
+                            {
+                                wsSuccessUrl = incoming.SuccessUrl;
+                                wsSuccessRedirect = '';
+                            }
+                        }
+                        if (incoming.CancelUrl) {
+                            wsCancelUrl = incoming.CancelUrl;
                         }
                         if (incoming.Status) {
                             $('#wsStatus').html(incoming.Status);
@@ -121,9 +137,12 @@
                                 $('#wsProgress').text('');
                             }
                         }
+                        if (incoming.Error) {
+                            wsError = true;
+                        }
                         if (incoming.Complete) {
                             wsFinished = true;
-                            if (incoming.Error) {
+                            if (wsError) {
                                 $('#cancelWs').text('Close window');
                                 $('#wsProgress').removeClass('active');
                                 $('#wsProgress').addClass('progress-bar-danger');
@@ -151,8 +170,8 @@
     function doPing() {
         if (webSocket && webSocket.readyState == WebSocket.OPEN && !wsFinished) {
             webSocket.send(String.fromCharCode(6));
-            $('#sendWs').fadeIn(200, function () {
-                $('#sendWs').fadeOut(1);
+            $('#sendWs').fadeIn(500, function () {
+                $('#sendWs').fadeOut(500);
             });
         }
     }
@@ -165,6 +184,8 @@
 
     $().ready(function () {
         wsCancel = false;
+        $('#recvWs').fadeOut(1);
+        $('#sendWs').fadeOut(1)
         $('#wsProgress').removeClass('active');
         $('#wsProgress').removeClass('progress-bar-danger');
         $('#wsProgress').removeClass('progress-bar-success');
@@ -183,7 +204,7 @@
         }
         webSocket.onclose = updateState;
         webSocket.onmessage = updateState;
-        wsPing = setInterval(doPing, 1000);
+        wsPing = setInterval(doPing, 15000);
         return false;
         });
 

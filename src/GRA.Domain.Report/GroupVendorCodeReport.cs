@@ -37,14 +37,9 @@ namespace GRA.Domain.Report
 
         public override async Task ExecuteAsync(ReportRequest request,
             CancellationToken token,
-            IProgress<OperationStatus> progress = null)
+            IProgress<JobStatus> progress = null)
         {
             #region Reporting initialization
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
-
             request = await StartRequestAsync(request);
 
             var criterion
@@ -53,7 +48,7 @@ namespace GRA.Domain.Report
 
             if (criterion.SiteId == null)
             {
-                throw new ArgumentNullException(nameof(criterion.SiteId));
+                throw new ArgumentException(nameof(criterion.SiteId));
             }
 
             var groupInfo = await _groupInfoRepository.GetByIdAsync(criterion.GroupInfoId.Value);

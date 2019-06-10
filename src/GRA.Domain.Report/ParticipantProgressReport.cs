@@ -41,16 +41,11 @@ namespace GRA.Domain.Report
 
         public override async Task ExecuteAsync(ReportRequest request,
             CancellationToken token,
-            IProgress<OperationStatus> progress = null)
+            IProgress<JobStatus> progress = null)
         {
             var pointValues = new long[] { 250, 500, 750, 1000 };
 
             #region Reporting initialization
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
-
             request = await StartRequestAsync(request);
 
             var criterion
@@ -59,7 +54,7 @@ namespace GRA.Domain.Report
 
             if (criterion.SiteId == null)
             {
-                throw new ArgumentNullException(nameof(criterion.SiteId));
+                throw new ArgumentException(nameof(criterion.SiteId));
             }
 
             var report = new StoredReport
@@ -126,8 +121,8 @@ namespace GRA.Domain.Report
                 reportUserCount += await _userRepository.GetCountAsync(userCriterion);
             }
 
-            UpdateProgress(progress, 
-                $"Beginning processing of {reportUserCount} users...", 
+            UpdateProgress(progress,
+                $"Beginning processing of {reportUserCount} users...",
                 request.Name);
 
             foreach (var systemId in systemIds)
@@ -182,7 +177,7 @@ namespace GRA.Domain.Report
                                 if (pointsUntilPeriod < pointValue
                                     && pointValue <= pointsUntilPeriodEnd)
                                 {
-                                    programCheck[pointValue] += 1;
+                                    programCheck[pointValue]++;
                                 }
                             }
                         }

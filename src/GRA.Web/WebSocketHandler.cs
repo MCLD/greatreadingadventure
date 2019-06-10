@@ -51,12 +51,7 @@ namespace GRA.Web
                     return;
                 }
 
-                if (context.Request.Path.Value.Contains("runreport"))
-                {
-                    var reportService = context.RequestServices.GetRequiredService<ReportService>();
-                    await RunWsTaskAsync(context, reportService.RunReport);
-                }
-                else if (context.Request.Path.Value.Contains("processvendor"))
+                if (context.Request.Path.Value.Contains("processvendor"))
                 {
                     var vendorCodeService = context
                         .RequestServices
@@ -82,7 +77,7 @@ namespace GRA.Web
         }
 
         private async Task RunWsTaskAsync(HttpContext context,
-            Func<string, CancellationToken, Progress<OperationStatus>, Task<OperationStatus>> task)
+            Func<string, CancellationToken, Progress<JobStatus>, Task<JobStatus>> task)
         {
             var sw = new Stopwatch();
             sw.Start();
@@ -108,7 +103,7 @@ namespace GRA.Web
                 {
                     // configure the last update sent timer - don't flood updates
                     double lastUpdateSent = 0;
-                    var progress = new Progress<OperationStatus>(_ =>
+                    var progress = new Progress<JobStatus>(_ =>
                     {
                         double passed = sw.Elapsed.TotalSeconds - lastUpdateSent;
                         if (passed > MinimumSecondsElapsedBetweenUpdates

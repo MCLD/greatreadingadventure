@@ -37,14 +37,9 @@ namespace GRA.Domain.Report
 
         public override async Task ExecuteAsync(ReportRequest request,
             CancellationToken token,
-            IProgress<OperationStatus> progress = null)
+            IProgress<JobStatus> progress = null)
         {
             #region Reporting initialization
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
-
             request = await StartRequestAsync(request);
 
             var criterion
@@ -53,7 +48,7 @@ namespace GRA.Domain.Report
 
             if (criterion.SiteId == null)
             {
-                throw new ArgumentNullException(nameof(criterion.SiteId));
+                throw new ArgumentException(nameof(criterion.SiteId));
             }
 
             string title = "";
@@ -92,15 +87,15 @@ namespace GRA.Domain.Report
 
             var prizeGroups = prizes.GroupBy(_ => new
             {
-                PrizeName = _.PrizeName,
-                DrawingId = _.DrawingId,
-                TriggerId = _.TriggerId
+                _.PrizeName,
+                _.DrawingId,
+                _.TriggerId
             })
             .Select(_ => new
             {
                 Prize = _.Key,
                 AwardedCount = _.Count(),
-                RedeemedCount = _.Where(p => p.RedeemedAt.HasValue).Count()
+                RedeemedCount = _.Count(p => p.RedeemedAt.HasValue)
             })
             .OrderBy(_ => _.Prize.PrizeName);
 
