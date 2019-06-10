@@ -70,6 +70,18 @@ namespace GRA.Domain.Service
             }
         }
 
+        public async Task<EmailTemplate> GetEmailTemplate(int emailTemplateId)
+        {
+            return await _emailTemplateRepository.GetByIdAsync(emailTemplateId);
+        }
+
+        public async Task UpdateSentCount(int emailTemplateId, int additionalMailsSent)
+        {
+            var template = await _emailTemplateRepository.GetByIdAsync(emailTemplateId);
+            template.EmailsSent += additionalMailsSent;
+            await _emailTemplateRepository.UpdateSaveNoAuditAsync(template);
+        }
+
         public async Task SendBulkAsync(User user, int emailTemplateId)
         {
             var site = await _siteRepository.GetByIdAsync(user.SiteId);

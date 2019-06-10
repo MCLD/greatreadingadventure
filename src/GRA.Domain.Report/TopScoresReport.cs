@@ -31,14 +31,9 @@ namespace GRA.Domain.Report
 
         public override async Task ExecuteAsync(ReportRequest request,
             CancellationToken token,
-            IProgress<OperationStatus> progress = null)
+            IProgress<JobStatus> progress = null)
         {
             #region Reporting initialization
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
-
             request = await StartRequestAsync(request);
 
             var criterion
@@ -47,7 +42,7 @@ namespace GRA.Domain.Report
 
             if (criterion.SiteId == null)
             {
-                throw new ArgumentNullException(nameof(criterion.SiteId));
+                throw new ArgumentException(nameof(criterion.SiteId));
             }
 
             var report = new StoredReport
@@ -72,11 +67,10 @@ namespace GRA.Domain.Report
             };
 
             int count = 0;
-            int total = TopToShow;
+            const int total = TopToShow;
 
             IEnumerable<User> users = await _userRepository.GetTopScoresAsync(criterion, total);
 
-            // TODO establish why this isn't sorting properly in production
             foreach (var user in users.OrderByDescending(_ => _.PointsEarned))
             {
                 UpdateProgress(progress,
@@ -92,11 +86,11 @@ namespace GRA.Domain.Report
                 var name = new StringBuilder(user.FirstName);
                 if(!string.IsNullOrEmpty(user.LastName))
                 {
-                    name.Append($" {user.LastName}");
+                    name.Append(' ').Append(user.LastName);
                 }
                 if(!string.IsNullOrEmpty(user.Username))
                 {
-                    name.Append($" ({user.Username})");
+                    name.Append(" (").Append(user.Username).Append(')');
                 }
 
                 reportData.Add(new object[] {
