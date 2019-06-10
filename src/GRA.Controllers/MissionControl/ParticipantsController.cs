@@ -532,6 +532,14 @@ namespace GRA.Controllers.MissionControl
                         SiteSettingKey.Users.AskEmailSubPermission)
                 };
 
+                var sw = new System.Diagnostics.Stopwatch();
+                sw.Start();
+                await _activityService.AwardUserTriggersAsync(viewModel.User.Id, false);
+                sw.Stop();
+                _logger.LogDebug("MC access of user id {UserId} took {Elapsed} to award triggers.",
+                    viewModel.User.Id,
+                    sw.Elapsed.ToString("c"));
+
                 if (UserHasPermission(Permission.ViewUserPrizes))
                 {
                     viewModel.PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false);
@@ -658,6 +666,7 @@ namespace GRA.Controllers.MissionControl
                     }
 
                     await _userService.MCUpdate(model.User);
+                    
                     AlertSuccess = "Participant infomation updated";
                     return RedirectToAction("Detail", new { id = model.User.Id });
                 }
@@ -685,7 +694,7 @@ namespace GRA.Controllers.MissionControl
             model.RequirePostalCode = site.RequirePostalCode;
             model.ShowAge = program.AskAge;
             model.ShowSchool = program.AskSchool;
-
+              
             if (askEmailSubscription)
             {
                 model.AskEmailSubscription = true;
@@ -870,6 +879,13 @@ namespace GRA.Controllers.MissionControl
                 }
                 if (ViewUserPrizes)
                 {
+                    var sw = new System.Diagnostics.Stopwatch();
+                    sw.Start();
+                    await _activityService.AwardUserTriggersAsync(head.Id, true);
+                    sw.Stop();
+                    _logger.LogDebug("MC access of family/group for user id {UserId} took {Elapsed} to award triggers.",
+                        head.Id,
+                        sw.Elapsed.ToString("c"));
                     head.HasUnclaimedPrize = (await _prizeWinnerService
                         .GetUserWinCount(head.Id, false)) > 0;
                 }
