@@ -57,8 +57,8 @@ namespace GRA.Domain.Report
             #endregion Reporting initialization
 
             #region Adjust report criteria as needed
-            int badgeId = 0;
-            int challengeId = 0;
+            int? badgeId = null;
+            int? challengeId = null;
 
             if (!string.IsNullOrEmpty(criterion.BadgeRequiredList))
             {
@@ -81,7 +81,7 @@ namespace GRA.Domain.Report
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"Unable to convert challenge id list to number: {ex.Message}");
+                    _logger.LogError($"Unable to convert challenge id to number: {ex.Message}");
                     _logger.LogError($"Challenge id: {criterion.BadgeRequiredList}");
                 }
             }
@@ -113,21 +113,21 @@ namespace GRA.Domain.Report
 
             ICollection<int> usersWhoEarned = null;
 
-            if (badgeId != 0 && !token.IsCancellationRequested)
+            if (badgeId != null && !token.IsCancellationRequested)
             {
                 UpdateProgress(progress, 1, "Looking up users who earned the badge...", request.Name);
 
-                    var earned = await _userLogRepository.UserIdsEarnedBadgeAsync(badgeId, criterion);
+                    var earned = await _userLogRepository.UserIdsEarnedBadgeAsync(badgeId.Value, criterion);
 
                     usersWhoEarned = earned;
             }
 
-            if (challengeId != 0 && !token.IsCancellationRequested)
+            if (challengeId != null && !token.IsCancellationRequested)
             {
                 UpdateProgress(progress, 1, "Looking up users who completed the challenge...", request.Name);
 
                     var earned
-                        = await _userLogRepository.UserIdsCompletedChallengesAsync(challengeId, criterion);
+                        = await _userLogRepository.UserIdsCompletedChallengesAsync(challengeId.Value, criterion);
 
                     if (usersWhoEarned == null || usersWhoEarned.Count == 0)
                     {
