@@ -879,8 +879,6 @@ namespace GRA.Controllers.MissionControl
                 }
                 if (ViewUserPrizes)
                 {
-                    head.HasUnclaimedPrize = (await _prizeWinnerService
-                        .GetUserWinCount(head.Id, false)) > 0;
                     var sw = new System.Diagnostics.Stopwatch();
                     sw.Start();
                     await _activityService.AwardUserTriggersAsync(head.Id, true);
@@ -888,6 +886,8 @@ namespace GRA.Controllers.MissionControl
                     _logger.LogDebug("MC access of family/group for user id {UserId} took {Elapsed} to award triggers.",
                         head.Id,
                         sw.Elapsed.ToString("c"));
+                    head.HasUnclaimedPrize = (await _prizeWinnerService
+                        .GetUserWinCount(head.Id, false)) > 0;
                 }
 
                 var household = await _userService.GetHouseholdAsync(head.Id, true, showVendorCodes,
