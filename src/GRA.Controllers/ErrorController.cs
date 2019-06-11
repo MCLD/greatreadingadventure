@@ -25,8 +25,8 @@ namespace GRA.Controllers
             var statusFeature = HttpContext.Features.Get<IStatusCodeReExecuteFeature>();
             if (statusFeature != null)
             {
-                path = statusFeature.OriginalPath ?? default;
-                queryString = statusFeature.OriginalQueryString ?? default;
+                path = statusFeature.OriginalPath ?? "";
+                queryString = statusFeature.OriginalQueryString ?? "";
             }
 
             string currentUser = UserClaim(ClaimType.UserId);
