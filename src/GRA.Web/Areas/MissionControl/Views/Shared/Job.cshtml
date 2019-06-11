@@ -113,15 +113,18 @@
                             if (incoming.SuccessRedirect) {
                                 wsSuccessUrl = '';
                                 wsSuccessRedirect = incoming.SuccessUrl;
+                                console.log("On success, redirect to: " + wsSuccessRedirect);
                             }   
                             else
                             {
                                 wsSuccessUrl = incoming.SuccessUrl;
                                 wsSuccessRedirect = '';
+                                console.log("On success, link to: " + wsSuccessUrl);
                             }
                         }
                         if (incoming.CancelUrl) {
                             wsCancelUrl = incoming.CancelUrl;
+                            console.log("On cancel, link to: " + wsCancelUrl);
                         }
                         if (incoming.Status) {
                             $('#wsStatus').html(incoming.Status);
@@ -143,12 +146,14 @@
                         if (incoming.Complete) {
                             wsFinished = true;
                             if (wsError) {
+                                console.log("Complete with error");
                                 $('#cancelWs').text('Close window');
                                 $('#wsProgress').removeClass('active');
                                 $('#wsProgress').addClass('progress-bar-danger');
                             }
                             else
                             {
+                                console.log("Complete");
                                 $('#cancelWs').text('Close window');
                                 $('#cancelWs').removeClass('btn-danger');
                                 $('#cancelWs').addClass('btn-default');

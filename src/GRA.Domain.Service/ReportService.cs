@@ -153,14 +153,8 @@ namespace GRA.Domain.Service
                 CancelUrl = jobDetails.CancelUrl
             });
 
-            return await RunReportAsync(jobDetails.ReportRequestId, jobId, token, progress);
-        }
+            int reportRequestId = jobDetails.ReportRequestId;
 
-        private async Task<JobStatus> RunReportAsync(int reportRequestId,
-            int jobId,
-            CancellationToken token,
-            IProgress<JobStatus> progress = null)
-        {
             if (HasPermission(Permission.ViewAllReporting))
             {
                 BaseReport report = null;
