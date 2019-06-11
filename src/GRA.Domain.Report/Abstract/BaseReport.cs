@@ -17,6 +17,9 @@ namespace GRA.Domain.Report.Abstract
         protected readonly ServiceFacade.Report _serviceFacade;
         private Stopwatch _timer;
 
+        private string SuccessUrl;
+        private string CancelUrl;
+
         protected StoredReportSet ReportSet { get; set; }
 
         protected BaseReport(ILogger logger, ServiceFacade.Report serviceFacade)
@@ -33,6 +36,9 @@ namespace GRA.Domain.Report.Abstract
         protected async Task<ReportRequest> StartRequestAsync(ReportRequest request)
         {
             (_timer ?? (_timer = new Stopwatch())).Start();
+
+            SuccessUrl = request.SuccessUrl;
+            CancelUrl = request.CancelUrl;
 
             request.Started = _serviceFacade.DateTimeProvider.Now;
             request.Finished = null;
@@ -79,14 +85,11 @@ namespace GRA.Domain.Report.Abstract
                 {
                     status.PercentComplete = (int)percentComplete;
                 }
-                if (!string.IsNullOrEmpty(message))
-                {
-                    status.Status = message;
-                }
-                if (!string.IsNullOrEmpty(title))
-                {
-                    status.Title = title;
-                }
+                status.Status = message;
+                status.Title = title;
+                status.SuccessUrl = SuccessUrl;
+                status.SuccessRedirect = true;
+                status.CancelUrl = CancelUrl;
 
                 progress.Report(status);
             }

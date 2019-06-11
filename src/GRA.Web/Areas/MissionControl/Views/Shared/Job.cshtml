@@ -107,26 +107,34 @@
                             $('#recvWs').fadeOut(500);
                         });
                         if (incoming.Title) {
-                            $('#wsTitle').html(incoming.Title);
-                            wsPageTitle = incoming.Title;
-                            console.log("Job title: " + wsPageTitle);
+                            if (wsPageTitle != incoming.Title) {
+                                wsPageTitle = incoming.Title;
+                                $('#wsTitle').html(wsPageTitle);
+                                console.log("Job title: " + wsPageTitle);
+                            }
                         }
                         if (incoming.SuccessUrl) {
                             if (incoming.SuccessRedirect) {
-                                wsSuccessUrl = '';
-                                wsSuccessRedirect = incoming.SuccessUrl;
-                                console.log("On success, redirect to: " + wsSuccessRedirect);
+                                if (incoming.SuccessUrl != wsSuccessRedirect) {
+                                    wsSuccessUrl = '';
+                                    wsSuccessRedirect = incoming.SuccessUrl;
+                                    console.log("On success, redirect to: " + wsSuccessRedirect);
+                                }
                             }   
                             else
                             {
-                                wsSuccessUrl = incoming.SuccessUrl;
-                                wsSuccessRedirect = '';
-                                console.log("On success, link to: " + wsSuccessUrl);
+                                if (incoming.SuccessUrl != wsSuccessUrl) {
+                                    wsSuccessUrl = incoming.SuccessUrl;
+                                    wsSuccessRedirect = '';
+                                    console.log("On success, link to: " + wsSuccessUrl);
+                                }
                             }
                         }
                         if (incoming.CancelUrl) {
-                            wsCancelUrl = incoming.CancelUrl;
-                            console.log("On cancel, link to: " + wsCancelUrl);
+                            if (incoming.CancelUrl != wsCancelUrl) {
+                                wsCancelUrl = incoming.CancelUrl;
+                                console.log("On cancel, link to: " + wsCancelUrl);
+                            }
                         }
                         if (incoming.Status) {
                             $('#wsStatus').html(incoming.Status);
