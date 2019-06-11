@@ -146,13 +146,6 @@ namespace GRA.Domain.Service
                 = JsonConvert
                     .DeserializeObject<JobDetailsRunReport>(job.SerializedParameters);
 
-            progress.Report(new JobStatus
-            {
-                SuccessUrl = jobDetails.SuccessUrl,
-                SuccessRedirect = true,
-                CancelUrl = jobDetails.CancelUrl
-            });
-
             int reportRequestId = jobDetails.ReportRequestId;
 
             if (HasPermission(Permission.ViewAllReporting))
@@ -199,6 +192,7 @@ namespace GRA.Domain.Service
                 if (reportDetails == null)
                 {
                     _logger.LogError($"Cannot find report id {_request.ReportId} requested by request {reportRequestId}");
+
                     return new JobStatus
                     {
                         Status = "Could not find the requested report.",
@@ -224,6 +218,17 @@ namespace GRA.Domain.Service
 
                 try
                 {
+                    _logger.LogDebug("Sending success redirect URL of {SuccessRedirect} and cancel URL of {CancelUrl}",
+                        jobDetails.SuccessUrl,
+                        jobDetails.CancelUrl);
+                    progress.Report(new JobStatus
+                    {
+                        SuccessUrl = jobDetails.SuccessUrl,
+                        SuccessRedirect = true,
+                        CancelUrl = jobDetails.CancelUrl,
+                        Status = "Loading report: " + _request.Name
+                    });
+
                     await report.ExecuteAsync(_request, token, progress);
                 }
                 catch (Exception ex)
