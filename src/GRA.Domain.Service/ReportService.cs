@@ -221,13 +221,9 @@ namespace GRA.Domain.Service
                     _logger.LogDebug("Sending success redirect URL of {SuccessRedirect} and cancel URL of {CancelUrl}",
                         jobDetails.SuccessUrl,
                         jobDetails.CancelUrl);
-                    progress.Report(new JobStatus
-                    {
-                        SuccessUrl = jobDetails.SuccessUrl,
-                        SuccessRedirect = true,
-                        CancelUrl = jobDetails.CancelUrl,
-                        Status = "Loading report: " + _request.Name
-                    });
+
+                    _request.SuccessUrl = jobDetails.SuccessUrl;
+                    _request.CancelUrl = jobDetails.CancelUrl;
 
                     await report.ExecuteAsync(_request, token, progress);
                 }
