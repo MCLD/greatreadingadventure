@@ -170,7 +170,7 @@ namespace GRA.CommandLine
             /**************************************************************************************/
             #endregion Dependency Injection brought from GRA.Web
 
-            services.AddAutoMapper();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddSingleton(_ => app);
 
