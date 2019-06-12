@@ -202,7 +202,17 @@ namespace GRA.Domain.Service
                 .SetUserPasswordAsync(registeredUser.Id, registeredUser.Id, password);
 
             await JoinedProgramNotificationBadge(registeredUser);
+
+            var sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
             await _activityService.AwardUserTriggersAsync(registeredUser.Id, false);
+            sw.Stop();
+            if (sw.Elapsed.TotalSeconds > 5)
+            {
+                _logger.LogInformation("Registration for user id {UserId} took {Elapsed} to award triggers.",
+                    registeredUser.Id,
+                    sw.Elapsed.ToString("c"));
+            }
 
             return registeredUser;
         }
@@ -649,7 +659,18 @@ namespace GRA.Domain.Service
                 }
 
                 await JoinedProgramNotificationBadge(registeredUser);
+
+                var sw = new System.Diagnostics.Stopwatch();
+                sw.Start();
                 await _activityService.AwardUserTriggersAsync(registeredUser.Id, false);
+                sw.Stop();
+                if (sw.Elapsed.TotalSeconds > 5)
+                {
+                    _logger.LogInformation("Registration for household member {UserId} took {Elapsed} to award triggers.",
+                        registeredUser.Id,
+                        sw.Elapsed.ToString("c"));
+                }
+
                 return registeredUser;
             }
             else

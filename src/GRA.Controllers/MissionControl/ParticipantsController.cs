@@ -536,9 +536,12 @@ namespace GRA.Controllers.MissionControl
                 sw.Start();
                 await _activityService.AwardUserTriggersAsync(viewModel.User.Id, false);
                 sw.Stop();
-                _logger.LogDebug("MC access of user id {UserId} took {Elapsed} to award triggers.",
-                    viewModel.User.Id,
-                    sw.Elapsed.ToString("c"));
+                if(sw.Elapsed.TotalSeconds > 5)
+                {
+                    _logger.LogInformation("MC access of user id {UserId} took {Elapsed} to award triggers.",
+                        viewModel.User.Id,
+                        sw.Elapsed.ToString("c"));
+                }
 
                 if (UserHasPermission(Permission.ViewUserPrizes))
                 {
@@ -883,9 +886,12 @@ namespace GRA.Controllers.MissionControl
                     sw.Start();
                     await _activityService.AwardUserTriggersAsync(head.Id, true);
                     sw.Stop();
-                    _logger.LogDebug("MC access of family/group for user id {UserId} took {Elapsed} to award triggers.",
-                        head.Id,
-                        sw.Elapsed.ToString("c"));
+                    if (sw.Elapsed.TotalSeconds > 5)
+                    {
+                        _logger.LogInformation("MC access of family/group for user id {UserId} took {Elapsed} to award triggers.",
+                            head.Id,
+                            sw.Elapsed.ToString("c"));
+                    }
                     head.HasUnclaimedPrize = (await _prizeWinnerService
                         .GetUserWinCount(head.Id, false)) > 0;
                 }
