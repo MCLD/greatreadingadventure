@@ -64,6 +64,22 @@
                     }
                 </div>
             </div>
+            <div id="avatarBundles" class="row">
+                <ul class="nav" style="display: inline-table;">
+                    <li>
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                            Select a Bundle <span class="caret"></span>
+                        </a>
+                        @*<ul class="dropdown-menu">
+                            <li><a asp-route-Search="@Model.Search" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId">Show All</a></li>
+                        @foreach (var program in Model.AvatarBundle)
+                        {
+                            <li><a asp-route-Search="@Model.Search" asp-route-ProgramId="@program.Id" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId">@program.Name</a></li>
+                        }
+                        </ul>*@
+                    </li>
+                </ul>
+            </div>
             <div id="avatarColors" class="row hide">
                 <div class="col-xs-12">
                     <div class="avatar-selector-well well well-sm">
@@ -144,15 +160,19 @@
                 }
             }
         }
-
+        // layerId == data-layer
         function SetLayer(layerId) {
             if (currentLayer == undefined || layerId != currentLayer.Id) {
                 currentLayerImage = $(".image" + layerId);
+                //image id
                 currentLayerSelector = $("#selector" + layerId);
+                //removes the current selected
                 $(".selected").removeClass("selected");
+                // selects new layer
                 currentLayerSelector.addClass("selected");
                 currentLayer = GetLayerById(layerId);
 
+                //path to new current layer
                 layerPath = baseImagePath + "layer" + layerId + "/item"
 
                 selectedItem = currentLayerSelector.data("item");
@@ -163,17 +183,18 @@
                     var yOffset = currentLayerSelector.data("zoomyoffset");
                     $(".xsLayer").css({ "transform": "scale(" + scale + ")", "top": "" + yOffset + "px" });
                 }
-
+                // If the layer has removable content
                 if (currentLayerSelector.data("removable") == "True") {
                     $("#layerName").text(currentLayerSelector.data("name"))
                     $("#removeButton").removeClass("hide");
                     currentLayerRemovable = true;
                 }
+                // DN have removable content
                 else {
                     $("#removeButton").addClass("hide");
                     currentLayerRemovable = false;
                 }
-
+                //If looking at items 
                 if (currentLayerSelector.data("showitemselector") == "True") {
                     showItemSelector = true;
                     $("#avatarItems").removeClass("hide");
@@ -184,7 +205,7 @@
                     $("#avatarItems").addClass("hide");
                     colorRows = 5;
                 }
-
+                //If looking at colors
                 if (currentLayerSelector.data("showcolorselector") == "True") {
                     showColorSelector = true;
                     $("#avatarColors").removeClass("hide");
@@ -201,33 +222,44 @@
             }
         }
         function SetItemSelectors() {
+            // Handles hair case and removes the items
             if ($("#avatarItemSelectors").hasClass("slick-initialized")) {
                 $("#avatarItemSelectors").slick("unslick");
             }
+            // Remove item contents
             $("#avatarItemSelectors").empty();
+            //If we are showing items & we have them
             if (showItemSelector && currentLayer.Items.length > 0) {
+                // ?
                 var lazyLoading = false;
                 if (currentLayer.Items.length > 30) {
                     lazyLoading = true;
                 }
+                //For each othe the layer's current items
                 $.each(currentLayer.Items, function (i, item) {
                     var itemPath = layerPath + item + "/thumbnail.jpg";
                     var itemContainer = $("<div>");
                     var itemImage = $("<img>", { "class": "avatar-item-selector item" + item, "data-item": item });
+                    //if we have a lot of items
                     if (lazyLoading) {
                         itemImage.attr("data-lazy", itemPath);
                     }
+                    // sets the image path
                     else {
                         itemImage.attr("src", itemPath);
                     }
+                    // Sets the image as the selected element
                     if (selectedItem == item) {
                         itemImage.addClass("selected");
                     }
-
+                    // Adds to the avatar
                     itemContainer.append(itemImage);
                     $("#avatarItemSelectors").append(itemContainer);
                 });
+                // gets the index of the selected item. otherwise starts at the first carousel 
                 var itemIndex = Math.max(currentLayer.Items.indexOf(selectedItem), 0);
+
+                // Creates the carousel
                 $("#avatarItemSelectors").slick({
                     arrows: false,
                     initialSlide: Math.floor(itemIndex / itemRows),
@@ -286,11 +318,15 @@
         }
 
         function SetColorSelectors() {
+            // If body or hair remove the slick
             if ($("#avatarColorSelectors").hasClass("slick-initialized")) {
                 $("#avatarColorSelectors").slick("unslick");
             }
+            //Remove the colors
             $("#avatarColorSelectors").empty();
+            //If we are showing colors and we have them
             if (showColorSelector && currentLayer.Colors.length > 0) {
+                //loops and adds the colors
                 $.each(currentLayer.Colors, function (i, color) {
                     var colorContainer = $("<div>");
                     var colorDiv = $("<div>", { "class": "avatar-color-selector color" + color.Id, "style": "background-color:#" + color.Value, "data-color": color.Id });
@@ -300,8 +336,9 @@
                     colorContainer.append(colorDiv);
                     $("#avatarColorSelectors").append(colorContainer);
                 });
-
-                var colorIndex = currentLayer.Colors.map(function(x) { return x.Id;}).indexOf(selectedColor);
+                // Gets the index of selected color if one is chosen
+                var colorIndex = currentLayer.Colors.map(function (x) { return x.Id; }).indexOf(selectedColor);
+                // Creates the color carousel
                 $("#avatarColorSelectors").slick({
                     arrows: false,
                     initialSlide: Math.floor(colorIndex / colorRows),
@@ -451,10 +488,12 @@
             });
         }
 
+        // Updates the tab
         $(".avatar-layer-selector").on("click", function () {
             SetLayer($(this).data("layer"));
         })
 
+        // updates the article of clothing
         $(document).on("click", ".avatar-item-selector", function () {
             var item = $(this).data("item");
             if (item != selectedItem) {
@@ -462,6 +501,7 @@
             }
         });
 
+        // Updates the color selected
         $(document).on("click", ".avatar-color-selector", function () {
             var color = $(this).data("color");
             if (color != selectedColor) {
@@ -469,18 +509,22 @@
             }
         });
 
+        // Removes the layer's article
         $("#removeButton").on("click", function () {
             if (currentLayerRemovable && selectedItem != "") {
                 RemoveLayerImage();
             }
         });
 
-        $(".avatar-zoom-button").on("click", function() {
+        //Mobile zoom
+        $(".avatar-zoom-button").on("click", function () {
+            // zoom in
             if (xsZoom) {
                 $(this).children().removeClass("fa-search-minus").addClass("fa-search-plus");
                 $(".xsLayer").css({ "transform": "", "top": "" });
                 xsZoom = false;
             }
+            //zoom out
             else {
                 var scale = currentLayerSelector.data("zoomscale");
                 var yOffset = currentLayerSelector.data("zoomyoffset");
@@ -489,14 +533,14 @@
                 xsZoom = true;
             }
         });
-
+        // Save
         $("#saveAvatar").on("click", function () {
             $(".avatar-save-message").hide();
             $(this).attr("disabled", "disabled");
             $("#saveSpinner").removeClass("hidden");
             SaveAvatar();
         });
-
+        // submit
         $("#shareForm").on("submit", function (e) {
             if (unsavedChanges) {
                 @if (Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null)

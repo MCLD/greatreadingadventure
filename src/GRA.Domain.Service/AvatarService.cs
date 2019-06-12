@@ -358,6 +358,7 @@ namespace GRA.Domain.Service
             }
 
             bundle.SiteId = GetCurrentSiteId();
+            bundle.HasBeenViewed = false;
             var newBundle = await _avatarBundleRepository.AddSaveAsync(
                 GetClaimId(ClaimType.UserId), bundle);
 
