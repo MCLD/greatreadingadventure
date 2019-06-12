@@ -70,13 +70,13 @@
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                             Select a Bundle <span class="caret"></span>
                         </a>
-                        @*<ul class="dropdown-menu">
-                            <li><a asp-route-Search="@Model.Search" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId">Show All</a></li>
+                        <ul class="dropdown-menu">
+                            @*<li><a asp-route-Search="@Model.Search" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId">Show All</a></li>
                         @foreach (var program in Model.AvatarBundle)
                         {
                             <li><a asp-route-Search="@Model.Search" asp-route-ProgramId="@program.Id" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId">@program.Name</a></li>
-                        }
-                        </ul>*@
+                        }*@
+                        </ul>
                     </li>
                 </ul>
             </div>

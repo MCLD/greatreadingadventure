@@ -109,6 +109,16 @@ namespace GRA.Controllers.MissionControl
                 Path.Combine(backgroundPath, "background.png"));
             totalFilesCopied++;
 
+            var bundleRoot = Path.Combine($"site{siteId}", "avatarbundles");
+            var bundlePath = _pathResolver.ResolveContentFilePath(bundleRoot);
+            if (!Directory.Exists(bundlePath))
+            {
+                Directory.CreateDirectory(bundlePath);
+            }
+            System.IO.File.Copy(Path.Combine(assetPath, "bundleicon.png"),
+                Path.Combine(bundlePath, "bundleicon.png"));
+            totalFilesCopied++;
+
             foreach (var layer in avatarList)
             {
                 int layerFilesCopied = 0;
