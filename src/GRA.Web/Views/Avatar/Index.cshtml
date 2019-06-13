@@ -1,7 +1,4 @@
-﻿@model GRA.Controllers.ViewModel
-    @*.Avatar.AvatarViewModel*@
-@*MissionControl.Avatar.BundlesListViewModel;*@
-
+﻿@model GRA.Controllers.ViewModel.Avatar.AvatarViewModel
 
 @section styles {
     <link rel="stylesheet" href="~/css/slick.min.css" asp-append-version="true" />
@@ -12,7 +9,7 @@
         <div class="col-xs-12 col-sm-5 pull-right">
             <div class="visible-xs">
                 <div class="avatar-container center-block">
-                    @foreach (var layer in Model.Avatar.AvatarViewModel.LayerGroupings.SelectMany(_ => _))
+                    @foreach (var layer in Model.LayerGroupings.SelectMany(_ => _))
                     {
                         <img src="~/@layer.FilePath"
                              class="@($"image{layer.Id}") xsLayer avatar-layer@(string.IsNullOrWhiteSpace(layer.FilePath) ? " hide" : "")"
@@ -26,7 +23,7 @@
             </div>
             <div class="hidden-xs">
                 <div class="avatar-container center-block">
-                    @foreach (var layer in Model.Avatar.AvatarViewModel.LayerGroupings.SelectMany(_ => _))
+                    @foreach (var layer in Model.LayerGroupings.SelectMany(_ => _))
                     {
                         <img src="~/@layer.FilePath"
                              class="@($"image{layer.Id}") avatar-layer@(string.IsNullOrWhiteSpace(layer.FilePath) ? " hide" : "")"
@@ -42,16 +39,16 @@
         <div class="col-xs-12 col-sm-7">
             <div class="row">
                 <div class="col-xs-12 text-center">
-                    @if (Model.Avatar.AvatarViewModel.LayerGroupings.Count > 0)
+                    @if (Model.LayerGroupings.Count > 0)
                     {
-                        foreach (var layerGroup in Model.Avatar.AvatarViewModel.LayerGroupings)
+                        foreach (var layerGroup in Model.LayerGroupings)
                         {
-                            <div style="display: inline-block;" class="@(Model.Avatar.AvatarViewModel.LayerGroupings.Count == 1 ? "hide" : "")">
+                            <div style="display: inline-block;" class="@(Model.LayerGroupings.Count == 1 ? "hide" : "")">
                                 @foreach (var layer in layerGroup)
                                 {
                                     <img src="~/@layer.Icon"
                                          id="@($"selector{layer.Id}")"
-                                         class="avatar-layer-selector@(Model.Avatar.AvatarViewModel.DefaultLayer == layer.Id ? " selected" : "")"
+                                         class="avatar-layer-selector@(Model.DefaultLayer == layer.Id ? " selected" : "")"
                                          data-layer="@layer.Id"
                                          data-name="@layer.Name"
                                          data-removable="@layer.CanBeEmpty"
@@ -73,24 +70,42 @@
             <div id="avatarBundles" class="row">
                 <ul class="nav" style="display: inline-table;">
                     <li>
-                        @if (Model.MissionControl.Avatar.BundlesListViewModel.Unlockable.Count() == 0)
+                        @if (Model.Bundles == null)
                         {
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                                Select a Bundle <span class="caret"></span>
+                                No Unlocked Bundles <span class="caret"></span>
                             </a>
-                            <ul class="dropdown-menu">
-                                @foreach (var bundle in Model.MissionControl.Avatar.BundlesListViewModel)
-                                {
-                                    <li bundle-id="@bundle.Bundles.Id"> @bundle.Bundles.Name</li>
-                                }
-                            </ul>
+                            <ul class="dropdown-menu"></ul>
                         }
                         else
                         {
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                            No Unlocked Bundles <span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu"></ul>
+                            var counter = 0;
+                            @foreach (var bundle in Model.Bundles)
+                            {
+                                @if (bundle.CanBeUnlocked)
+                                {
+                                    counter++;
+                                }
+                            }
+                            @if (counter == 0)
+                            {
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                    Select a Bundle <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    @foreach (var bundle in Model.Bundles)
+                                    {
+                                        <li bundle-id="@bundle.Id"> @bundle.Name</li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                    No Unlocked Bundles <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu"></ul>
+                            }
                         }
                     </li>
                 </ul>
@@ -122,7 +137,7 @@
                             <span class="fa fa-ban"></span>
                             No <span id="layerName"></span>
                         </button>
-                        <button id="saveAvatar" class="btn btn-lg @(Model.Avatar.AvatarViewModel.NewAvatar ? "btn-success" : "btn-default")" style="margin:5px;">
+                        <button id="saveAvatar" class="btn btn-lg @(Model.NewAvatar ? "btn-success" : "btn-default")" style="margin:5px;">
                             <span class="fa fa-floppy-o"></span>
                             @SharedLocalizer[GRA.Annotations.Interface.Save]
                             <span id="saveSpinner" class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
@@ -145,8 +160,8 @@
 @section scripts {
     <script src="~/js/slick-avatar.min.js" asp-append-version="true"></script>
     <script>
-        var baseImagePath = "@Url.Content($"~/{Model.Avatar.AvatarViewModel.ImagePath}")";
-        var layers = $.parseJSON('@Html.Raw(Model.Avatar.AvatarViewModel.AvatarPiecesJson)').Layers;
+        var baseImagePath = "@Url.Content($"~/{Model.ImagePath}")";
+        var layers = $.parseJSON('@Html.Raw(Model.AvatarPiecesJson)').Layers;
         var currentLayerImage;
         var currentLayerRemovable;
         var currentLayerSelector;
@@ -156,13 +171,13 @@
         var selectedColor;
         var showItemSelector;
         var showColorSelector;
-        var unsavedChanges = @Model.Avatar.AvatarViewModel.NewAvatar.ToString().ToLower();
+        var unsavedChanges = @Model.NewAvatar.ToString().ToLower();
         var xsZoom = false;
 
         var colorRows;
         var itemRows;
 
-        SetLayer(@Model.Avatar.AvatarViewModel.DefaultLayer);
+        SetLayer(@Model.DefaultLayer);
 
         $.ajaxSetup({
             timeout: 30000
