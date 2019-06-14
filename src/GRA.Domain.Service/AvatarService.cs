@@ -433,7 +433,6 @@ namespace GRA.Domain.Service
             foreach (int item in unlockedItems)
             {
                 int bundleid = _avatarBundleRepository.GetBundleId(item);
-                Console.WriteLine(bundleid);
                 if (!bundleidlist.Contains(bundleid) && await _avatarBundleRepository.IsItemInBundle(item, true))
                 {
                     bundleidlist.Add(bundleid);

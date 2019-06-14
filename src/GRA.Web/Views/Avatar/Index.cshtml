@@ -70,24 +70,18 @@
             <div id="avatarBundles" class="row">
                 <ul class="nav" style="display: inline-table;">
                     <li>
-                        @if (Model.Bundles.Select(_ => _) == null)
-                        {
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                                No Unlocked Bundles <span class="caret"></span>
-                            </a>
-                            <ul class="dropdown-menu"></ul>
-                        }
-                        else
+
+                        @if (Model.Bundles[0] != null)
                         {
                             var counter = 0;
                             @foreach (var bundle in Model.Bundles)
                             {
                                 @if (bundle.CanBeUnlocked)
                                 {
-                                    counter++;
+                                    counter += 1;
                                 }
                             }
-                            @if (counter == 0)
+                            @if (counter != 0)
                             {
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                                     Select a Bundle <span class="caret"></span>
@@ -106,6 +100,13 @@
                                 </a>
                                 <ul class="dropdown-menu"></ul>
                             }
+                        }
+                        else
+                        {
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                No Unlocked Bundles <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu"></ul>
                         }
                     </li>
                 </ul>
