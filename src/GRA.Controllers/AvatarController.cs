@@ -59,9 +59,11 @@ namespace GRA.Controllers
                 .GroupBy(_ => _.GroupId)
                 .Select(_ => _.ToList())
                 .ToList();
+            var userbundles = _avatarService.GetUserUnlockBundles().Result;
             var viewModel = new AvatarViewModel
             {
                 LayerGroupings = layerGroupings,
+                Bundles = userbundles,
                 DefaultLayer = userWardrobe.First(_ => _.DefaultLayer).Id,
                 ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/"),
                 AvatarPiecesJson = Newtonsoft.Json.JsonConvert.SerializeObject(model)

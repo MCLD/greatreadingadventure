@@ -136,6 +136,19 @@ namespace GRA.Data.Repository
             return await inBundle.AnyAsync();
         }
 
+        public int GetBundleId(int itemId)
+        {
+            return _context.AvatarBundleItems
+                .AsNoTracking()
+                .Where(_ => _.AvatarItemId == itemId && !_.AvatarBundle.IsDeleted)
+                .Select(_ => _.AvatarBundleId).FirstOrDefault();
+        }
+
+        public AvatarBundle GetItemsBundles(int bundleId)
+        {
+            return GetByIdAsync(bundleId).Result;
+        }
+
         public void RemoveItemFromBundles(int id)
         {
             var bundleItems = _context.AvatarBundleItems.Where(_ => _.AvatarItemId == id);

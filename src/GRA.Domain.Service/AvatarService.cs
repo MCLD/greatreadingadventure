@@ -423,6 +423,26 @@ namespace GRA.Domain.Service
             return await _avatarElementRepository.GetUserAvatarAsync(GetActiveUserId());
         }
 
+        public async Task<List<AvatarBundle>> GetUserUnlockBundles()
+        {
+            int activeUserId = GetActiveUserId();
+            var unlockedItems = await _avatarItemRepository.GetUserUnlockedItemsAsync(activeUserId);
+            int siteId = GetCurrentSiteId();
+            List<int> bundleidlist = new List<int>();
+            List<AvatarBundle> usersbundles = new List<AvatarBundle>();
+            foreach (int item in unlockedItems)
+            {
+                int bundleid = _avatarBundleRepository.GetBundleId(item);
+                Console.WriteLine(bundleid);
+                if (!bundleidlist.Contains(bundleid) && await _avatarBundleRepository.IsItemInBundle(item, true))
+                {
+                    bundleidlist.Add(bundleid);
+                    usersbundles.Add(_avatarBundleRepository.GetItemsBundles(bundleid));
+                }
+            }
+            return usersbundles;
+        }
+
         public async Task UpdateUserAvatarAsync(ICollection<AvatarLayer> selectionLayers)
         {
             var activeUserId = GetActiveUserId();

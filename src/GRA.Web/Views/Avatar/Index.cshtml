@@ -70,7 +70,7 @@
             <div id="avatarBundles" class="row">
                 <ul class="nav" style="display: inline-table;">
                     <li>
-                        @if (Model.Bundles == null)
+                        @if (Model.Bundles.Select(_ => _) == null)
                         {
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                                 No Unlocked Bundles <span class="caret"></span>
@@ -194,7 +194,8 @@
         function SetLayer(layerId) {
             if (currentLayer == undefined || layerId != currentLayer.Id) {
                 if (layerId == "13") {
-                    console.log("Yay")
+                    console.log("Yay");
+                    console.log("@Model.Bundles.Select(_ => _).ToString()");
                 }
                 else {
                     currentLayerImage = $(".image" + layerId);
