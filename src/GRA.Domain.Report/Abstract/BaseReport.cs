@@ -37,9 +37,6 @@ namespace GRA.Domain.Report.Abstract
         {
             (_timer ?? (_timer = new Stopwatch())).Start();
 
-            SuccessUrl = request.SuccessUrl;
-            CancelUrl = request.CancelUrl;
-
             request.Started = _serviceFacade.DateTimeProvider.Now;
             request.Finished = null;
             request.Success = null;
@@ -48,10 +45,10 @@ namespace GRA.Domain.Report.Abstract
             return await _serviceFacade.ReportRequestRepository.UpdateSaveNoAuditAsync(request);
         }
 
-        protected double StopTimer()
+        protected string StopTimer()
         {
             _timer.Stop();
-            double elapsed = _timer.Elapsed.TotalSeconds;
+            string elapsed = _timer.Elapsed.ToString("c");
             _timer = null;
             return elapsed;
         }

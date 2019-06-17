@@ -1,4 +1,4 @@
-﻿@model string
+﻿@model GRA.Controllers.ViewModel.MissionControl.Shared.JobViewModel
 <div class="modal fade" tabindex="-1" role="dialog" id="wsModal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -18,13 +18,13 @@
             </div>
             <div class="modal-footer">
                 <div class="form-control-static pull-left" style="width: 2rem;">
-                    <span class="fas fa-arrow-circle-up" 
-                          id="sendWs" 
+                    <span class="fas fa-arrow-circle-up"
+                          id="sendWs"
                           style="color: steelblue;"></span>
                 </div>
                 <div class="form-control-static pull-left" style="width: 2rem;">
-                    <span class="fas fa-arrow-circle-down" 
-                          id="recvWs" 
+                    <span class="fas fa-arrow-circle-down"
+                          id="recvWs"
                           style="color: lightcoral;"></span>
                 </div>
                 <button type="button" class="btn" id="cancelWs">Cancel</button>
@@ -40,17 +40,17 @@
     var wsCancel = false;
     var wsError = false;
     var wsTryingToConnect = false;
-    var wsPageTitle = document.title;
+    var wsPageTitle = '@Model.Title';
     var webSocket;
     var wsPing;
     var wsFunction = 'job';
     var wsScheme = document.location.protocol == "https:" ? "wss" : "ws";
     var wsPort = document.location.port ? (":" + document.location.port) : "";
-    var wsUrl = wsScheme + "://" + document.location.hostname + wsPort + "/runjob/@Model";
-    var wsSuccessUrl = '/MissionControl/';
-    var wsSuccessRedirect = '';
-    var wsCompleteButton = 'Back to Mission Control';
-    var wsCancelUrl = '/MissionControl/';
+    var wsUrl = wsScheme + "://" + document.location.hostname + wsPort + "/runjob/@Model.JobToken";
+    var wsSuccessUrl = '@Model.SuccessUrl';
+    var wsSuccessRedirect = '@Model.SuccessRedirectUrl';
+    var wsCompleteButton = '@Model.CompleteButton';
+    var wsCancelUrl = '@Model.CancelUrl';
 
     function updateState(e) {
         if (!webSocket) {
@@ -120,7 +120,7 @@
                                     wsSuccessRedirect = incoming.SuccessUrl;
                                     console.log("On success, redirect to: " + wsSuccessRedirect);
                                 }
-                            }   
+                            }
                             else
                             {
                                 if (incoming.SuccessUrl != wsSuccessUrl) {
@@ -219,7 +219,8 @@
         }
         webSocket.onclose = updateState;
         webSocket.onmessage = updateState;
-        wsPing = setInterval(doPing, 15000);
+        wsPing = setInterval(doPing, @(Model.PingSeconds * 1000));
+        console.log("Client set to ping server every @Model.PingSeconds seconds");
         return false;
         });
 

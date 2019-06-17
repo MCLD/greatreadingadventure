@@ -143,7 +143,7 @@ namespace GRA.Web
                     // ideal state is socket still open, task complete
                     if (webSocket.State == WebSocketState.Open && runTask.IsCompleted)
                     {
-                        _logger.LogInformation($"Task {runTask.Status}, socket {webSocket.State}, sending final update after {sw.Elapsed.TotalSeconds}s.");
+                        _logger.LogInformation($"WebSocket {runTask.Status}, socket {webSocket.State}, sending final update after {sw.Elapsed:c}.");
 
                         var result = runTask.Result;
                         result.Complete = true;

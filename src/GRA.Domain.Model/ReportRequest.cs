@@ -20,8 +20,5 @@ namespace GRA.Domain.Model
 
         [MaxLength(255)]
         public string Name { get; set; }
-
-        public string SuccessUrl { get; set; }
-        public string CancelUrl { get; set; }
     }
 }

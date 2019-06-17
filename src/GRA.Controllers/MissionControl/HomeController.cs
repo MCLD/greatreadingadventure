@@ -281,7 +281,10 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(AuthorizationCode));
             }
 
-            return View("Job", id);
+            return View("Job", new ViewModel.MissionControl.Shared.JobViewModel
+            {
+                JobToken = id
+            });
         }
     }
 }
