@@ -78,7 +78,7 @@ namespace GRA.Domain.Report
                 {
                     UpdateProgress(progress,
                         ++onRow * 100 / Math.Max(communityExperiencesWithCount.Count, 1),
-                        $"tabulating {communityExperienceWithCount.Data.Name}...");
+                        $"Tabulating {communityExperienceWithCount.Data.Name}...");
                 }
 
                 var row = new List<object>()
