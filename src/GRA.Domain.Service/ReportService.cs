@@ -218,13 +218,6 @@ namespace GRA.Domain.Service
 
                 try
                 {
-                    _logger.LogDebug("Sending success redirect URL of {SuccessRedirect} and cancel URL of {CancelUrl}",
-                        jobDetails.SuccessUrl,
-                        jobDetails.CancelUrl);
-
-                    _request.SuccessUrl = jobDetails.SuccessUrl;
-                    _request.CancelUrl = jobDetails.CancelUrl;
-
                     await report.ExecuteAsync(_request, token, progress);
                 }
                 catch (Exception ex)

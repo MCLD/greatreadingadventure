@@ -167,13 +167,18 @@ namespace GRA.Controllers.MissionControl
                 JobType = JobType.RunReport,
                 SerializedParameters = JsonConvert.SerializeObject(new JobDetailsRunReport
                 {
-                    ReportRequestId = reportRequestId,
-                    SuccessUrl = Url.Action("View", new { id = reportRequestId }),
-                    CancelUrl = Url.Action("Index")
+                    ReportRequestId = reportRequestId
                 })
             });
 
-            return View("Job", jobToken.ToString());
+            return View("Job", new ViewModel.MissionControl.Shared.JobViewModel
+            {
+                JobToken = jobToken.ToString(),
+                SuccessUrl = "",
+                SuccessRedirectUrl = Url.Action(nameof(View), new { id = reportRequestId }),
+                CancelUrl = Url.Action(nameof(Index)),
+                Title = "Loading report..."
+            });
         }
 
         [HttpGet]
