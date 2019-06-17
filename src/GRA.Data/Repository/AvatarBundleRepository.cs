@@ -20,6 +20,30 @@ namespace GRA.Data.Repository
             ILogger<AvatarBundleRepository> logger) : base(repositoryFacade, logger)
         {
         }
+        public async Task<List<UserLog>> UserHistoryAsync(int userId)
+        {
+            var userLogs = await _context.UserLogs
+               .AsNoTracking()
+               .Where(_ => _.UserId == userId
+                      && !_.IsDeleted)
+               .OrderBy(_ => _.CreatedAt)
+               .ProjectTo<UserLog>(_mapper.ConfigurationProvider)
+               .ToListAsync();
+
+            foreach (var userLog in userLogs)
+            {
+                if (userLog.BadgeId != null)
+                {
+                    userLog.BadgeFilename = _context.Badges
+                        .AsNoTracking()
+                        .Where(_ => _.Id == userLog.BadgeId)
+                        .SingleOrDefault()
+                        .Filename;
+                }
+            }
+
+            return userLogs;
+        }
 
         public async Task<AvatarBundle> GetByIdAsync(int id, bool includeDeleted)
         {
@@ -136,12 +160,12 @@ namespace GRA.Data.Repository
             return await inBundle.AnyAsync();
         }
 
-        public int GetBundleId(int itemId)
+        public List<int> GetBundleId(int itemId)
         {
             return _context.AvatarBundleItems
                 .AsNoTracking()
                 .Where(_ => _.AvatarItemId == itemId && !_.AvatarBundle.IsDeleted)
-                .Select(_ => _.AvatarBundleId).FirstOrDefault();
+                .Select(_ => _.AvatarBundleId).ToList();
         }
 
         public AvatarBundle GetItemsBundles(int bundleId)

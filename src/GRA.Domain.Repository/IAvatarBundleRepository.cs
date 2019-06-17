@@ -17,6 +17,7 @@ namespace GRA.Domain.Repository
         Task<bool> IsItemInBundle(int itemId, bool? unlockable = null);
         void RemoveItemFromBundles(int id);
         AvatarBundle GetItemsBundles(int bundleIds);
-        int GetBundleId(int itemId);
+        List<int> GetBundleId(int itemId);
+        Task<List<UserLog>> UserHistoryAsync(int userId);
     }
 }

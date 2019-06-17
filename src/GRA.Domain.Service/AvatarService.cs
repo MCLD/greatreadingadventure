@@ -21,6 +21,7 @@ namespace GRA.Domain.Service
         private readonly IAvatarLayerRepository _avatarLayerRepository;
         private readonly ITriggerRepository _triggerRepository;
         private readonly IPathResolver _pathResolver;
+        private readonly IUserLogRepository _userLogRepository;
 
         public AvatarService(ILogger<AvatarService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
@@ -426,17 +427,19 @@ namespace GRA.Domain.Service
         public async Task<List<AvatarBundle>> GetUserUnlockBundles()
         {
             int activeUserId = GetActiveUserId();
-            var unlockedItems = await _avatarItemRepository.GetUserUnlockedItemsAsync(activeUserId);
-            int siteId = GetCurrentSiteId();
-            List<int> bundleidlist = new List<int>();
-            List<AvatarBundle> usersbundles = new List<AvatarBundle>();
-            foreach (int item in unlockedItems)
+            var history = await _avatarBundleRepository.UserHistoryAsync(activeUserId);
+            var bundleidlist = new List<int>();
+            var usersbundles = new List<AvatarBundle>();
+            foreach (var item in history)
             {
-                int bundleid = _avatarBundleRepository.GetBundleId(item);
-                if (!bundleidlist.Contains(bundleid) && await _avatarBundleRepository.IsItemInBundle(item, true))
+                if (item.AvatarBundleId.HasValue)
                 {
-                    bundleidlist.Add(bundleid);
-                    usersbundles.Add(_avatarBundleRepository.GetItemsBundles(bundleid));
+                    var bundle = await GetBundleByIdAsync(item.AvatarBundleId.Value, true);
+                    if (bundle.AvatarItems.Count > 0)
+                    {
+                        bundleidlist.Add(item.AvatarBundleId.Value);
+                        usersbundles.Add(_avatarBundleRepository.GetItemsBundles(item.AvatarBundleId.Value));
+                    }
                 }
             }
             return usersbundles;
