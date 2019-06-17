@@ -173,10 +173,11 @@ namespace GRA.Controllers.MissionControl
 
             return View("Job", new ViewModel.MissionControl.Shared.JobViewModel
             {
-                JobToken = jobToken.ToString(),
-                SuccessUrl = "",
-                SuccessRedirectUrl = Url.Action(nameof(View), new { id = reportRequestId }),
                 CancelUrl = Url.Action(nameof(Index)),
+                JobToken = jobToken.ToString(),
+                PingSeconds = 2,
+                SuccessRedirectUrl = Url.Action(nameof(View), new { id = reportRequestId }),
+                SuccessUrl = "",
                 Title = "Loading report..."
             });
         }
