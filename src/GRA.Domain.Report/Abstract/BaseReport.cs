@@ -17,9 +17,6 @@ namespace GRA.Domain.Report.Abstract
         protected readonly ServiceFacade.Report _serviceFacade;
         private Stopwatch _timer;
 
-        private string SuccessUrl;
-        private string CancelUrl;
-
         protected StoredReportSet ReportSet { get; set; }
 
         protected BaseReport(ILogger logger, ServiceFacade.Report serviceFacade)
@@ -84,9 +81,7 @@ namespace GRA.Domain.Report.Abstract
                 }
                 status.Status = message;
                 status.Title = title;
-                status.SuccessUrl = SuccessUrl;
                 status.SuccessRedirect = true;
-                status.CancelUrl = CancelUrl;
 
                 progress.Report(status);
             }
