@@ -72,12 +72,12 @@ namespace GRA.Controllers
                         _logger.LogTrace("Password valid for {Username}, logging in",
                             model.Username);
                         await LoginUserAsync(loginAttempt);
+
                         _logger.LogTrace("Awarding triggers for {Username}", model.Username);
-                        await _userService.AwardMissingJoinBadgeAsync(loginAttempt.User.Id);
 
                         var sw = new System.Diagnostics.Stopwatch();
                         sw.Start();
-                        await _activityService.AwardUserTriggersAsync(loginAttempt.User.Id, true);
+                        await _userService.AwardUserBadgesAsync(loginAttempt.User.Id, true, true);
                         sw.Stop();
                         if (sw.Elapsed.TotalSeconds > 5)
                         {

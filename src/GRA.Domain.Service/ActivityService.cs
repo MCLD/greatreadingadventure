@@ -614,6 +614,7 @@ namespace GRA.Domain.Service
         {
             var userContext = GetUserContext();
             var logPoints = userContext.SiteStage == SiteStage.ProgramOpen;
+
             await AwardTriggersAsync(userId, logPoints, userContext.SiteId,
                 !userContext.User.Identity.IsAuthenticated);
 
