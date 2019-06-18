@@ -61,7 +61,19 @@
                         }
                     </a>
                 </li>
-
+            }
+            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewUserPrizes.ToString()))
+            {
+                <li class="pull-right">
+                    <form asp-action="@nameof(ParticipantsController.UpdatePrizes)" method="post" role="form">
+                        <input name="Id" value="@Model.Id" type="hidden" />
+                        <input name="ReturnUrl" value="@Context.Request.Path.ToString()" type="hidden" />
+                        <button class="btn btn-default btn-spinner-no-validate" style="min-height: 40px;">
+                            Update Prizes
+                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                        </button>
+                    </form>
+                </li>
             }
         </ul>
     </div>
