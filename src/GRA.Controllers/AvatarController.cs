@@ -60,13 +60,23 @@ namespace GRA.Controllers
                 .Select(_ => _.ToList())
                 .ToList();
             var userbundles = _avatarService.GetUserUnlockBundles().Result;
+            var bundles = new AvatarBundleJsonModel
+            {
+                Bundles = _mapper
+                .Map<List<AvatarBundleJsonModel.AvatarBundle>>(userbundles)
+            };
+            //foreach (var bund in userbundles)
+            //{
+            //    _logger.LogError(bund.AvatarItems.Count.ToString());
+            //}
             var viewModel = new AvatarViewModel
             {
                 LayerGroupings = layerGroupings,
                 Bundles = userbundles,
                 DefaultLayer = userWardrobe.First(_ => _.DefaultLayer).Id,
                 ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/"),
-                AvatarPiecesJson = Newtonsoft.Json.JsonConvert.SerializeObject(model)
+                AvatarPiecesJson = Newtonsoft.Json.JsonConvert.SerializeObject(model),
+                AvatarBundlesJson = Newtonsoft.Json.JsonConvert.SerializeObject(bundles)
             };
 
             var userAvatar = await _avatarService.GetUserAvatarAsync();

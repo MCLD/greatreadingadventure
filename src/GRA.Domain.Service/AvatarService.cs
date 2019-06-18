@@ -428,18 +428,13 @@ namespace GRA.Domain.Service
         {
             int activeUserId = GetActiveUserId();
             var history = await _avatarBundleRepository.UserHistoryAsync(activeUserId);
-            var bundleidlist = new List<int>();
             var usersbundles = new List<AvatarBundle>();
             foreach (var item in history)
             {
-                if (item.AvatarBundleId.HasValue)
+                if (item.AvatarBundleId.HasValue && !item.IsDeleted)
                 {
-                    var bundle = await GetBundleByIdAsync(item.AvatarBundleId.Value, true);
-                    if (bundle.AvatarItems.Count > 0)
-                    {
-                        bundleidlist.Add(item.AvatarBundleId.Value);
-                        usersbundles.Add(_avatarBundleRepository.GetItemsBundles(item.AvatarBundleId.Value));
-                    }
+                    var bundle = await GetBundleByIdAsync(item.AvatarBundleId.Value, false);
+                    usersbundles.Add(bundle);
                 }
             }
             return usersbundles;

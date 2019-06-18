@@ -10,6 +10,7 @@ namespace GRA.Controllers.ViewModel.Avatar
         public int DefaultLayer { get; set; }
         public string ImagePath { get; set; }
         public string AvatarPiecesJson { get; set; }
+        public string AvatarBundlesJson { get; set; }
         public bool NewAvatar { get; set; }
     }
 }

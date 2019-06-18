@@ -29,6 +29,9 @@ namespace GRA.Controllers
                     Value = _.Color
                 })))
                 .ReverseMap();
+            CreateMap<AvatarBundle, AvatarBundleJsonModel.AvatarBundle>()
+                .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.AvatarItems.Select(_ => _.Id)))
+                .ReverseMap();
             CreateMap<SiteDetailViewModel, Site>().ReverseMap();
             CreateMap<SiteConfigurationViewModel, Site>().ReverseMap();
             CreateMap<SiteScheduleViewModel, Site>().ReverseMap();

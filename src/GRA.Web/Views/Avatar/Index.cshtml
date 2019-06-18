@@ -89,7 +89,7 @@
                                 <ul class="dropdown-menu" id="bundle-drop">
                                     @foreach (var bundle in Model.Bundles)
                                     {
-                                        <li class="bundle-selectors" bundle-id="@bundle.Id"> @bundle.Name</li>
+                                        <li class="bundle-selectors" data-bundleid="@bundle.Id"> @bundle.Name</li>
                                     }
                                 </ul>
                             }
@@ -163,6 +163,8 @@
     <script>
         var baseImagePath = "@Url.Content($"~/{Model.ImagePath}")";
         var layers = $.parseJSON('@Html.Raw(Model.AvatarPiecesJson)').Layers;
+        var bundles = $.parseJSON('@Html.Raw(Model.AvatarBundlesJson)').Bundles;
+        console.log(bundles)
         var currentLayerImage;
         var currentLayerRemovable;
         var currentLayerSelector;
@@ -170,7 +172,8 @@
         var layerPath;
         var selectedItem;
         var selectedColor;
-        var selectedBundle = null;
+        var bundleids = [];
+        var selectedBundleId = null;
         var showItemSelector;
         var showColorSelector;
         var unsavedChanges = @Model.NewAvatar.ToString().ToLower();
@@ -192,7 +195,23 @@
                 }
             }
         }
-        // layerId == data-layer
+        function GetBundleById(bundleId) {
+            for (var i = 0; i < bundles.length; i++) {
+                if (bundles[i].Id == bundleId) {
+                    return (bundles[i]);
+                }
+            }
+        }
+        function GetItemsLayer(itemId, index) {
+            for (var i = 0; i < layers.length;i++) {
+                for (var j = 0; j < layers[i].Items.length;j++) {
+                    if (itemId == layers[i].Items[j]) {
+                        return i+1;
+                    }
+                }
+            }
+        }
+         //layerId == data-layer
         function SetLayer(layerId) {
             if (currentLayer == undefined || layerId != currentLayer.Id) {
 
@@ -268,62 +287,21 @@
 
         }
         function SetItemSelectors() {
-            console.log(selectedBundle);
             // Handles hair case and removes the items
             if ($("#avatarItemSelectors").hasClass("slick-initialized")) {
                 $("#avatarItemSelectors").slick("unslick");
             }
             // Remove item contents
             $("#avatarItemSelectors").empty();
-            //If we are showing items & we have them
-            if (showItemSelector && currentLayer.Items.length > 0) {
-                // ?
-                var lazyLoading = false;
-                if (currentLayer.Items.length > 30) {
-                    lazyLoading = true;
-                }
-                if (currentLayer.Id == "13")
-                {
-                    if (selectedBundle == null)
-                    {
-
+            if (currentLayer != 13) {
+                //If we are showing items & we have them
+                if (showItemSelector && currentLayer.Items.length > 0) {
+                    // ?
+                    var lazyLoading = false;
+                    if (currentLayer.Items.length > 30) {
+                        lazyLoading = true;
                     }
-                    else
-                    {
-                        @*@foreach (var bundle in Model.Bundles)
-                         {
-                            if (@bundle.Id == $("#bundle-drop"))
-                            {
-                                @foreach(var item in bundle.AvatarItems)
-                                {
-                                    var itemPath = layerPath + item. + item + "/thumbnail.jpg";
-                                    var itemContainer = $("<div>");
-                                    var itemImage = $("<img>", { "class": "avatar-item-selector item" + item, "data-item": item });
-                                    //if we have a lot of items
-                                    if (lazyLoading)
-                                    {
-                                        itemImage.attr("data-lazy", itemPath);
-                                    }
-                                    // sets the image path
-                                    else
-                                    {
-                                        itemImage.attr("src", itemPath);
-                                    }
-                                    // Sets the image as the selected element
-                                    if (selectedItem == item)
-                                    {
-                                        itemImage.addClass("selected");
-                                    }
-                                    // Adds to the avatar
-                                    itemContainer.append(itemImage);
-                                    $("#avatarItemSelectors").append(itemContainer);
-                                }
-                            }
-                        }*@
-                    }
-                }
-                //For each othe the layer's current items
-                else {
+                    //For each othe the layer's current items
                     $.each(currentLayer.Items, function (i, item) {
                         var itemPath = layerPath + item + "/thumbnail.jpg";
                         var itemContainer = $("<div>");
@@ -344,9 +322,47 @@
                         itemContainer.append(itemImage);
                         $("#avatarItemSelectors").append(itemContainer);
                     });
+                    // gets the index of the selected item. otherwise starts at the first carousel
+                    var itemIndex = Math.max(currentLayer.Items.indexOf(selectedItem), 0);
+                }
+            }
+            else
+            {
+                if (selectedBundleId != null)
+                {
+                    $("#avatarItemSelectors").empty();
+                    for (var i = 0; i < bundles.length;i++)
+                    {
+                        if (bundles[i].Id == selectedBundleId)
+                        {
+                            var lazyLoading = false;
+                            if (bundles[i].Items.length > 30) {
+                                lazyLoading = true;
+                            }
+                            for (var item = 0; item < bundles[i].Items.length; item++) {
+                                var layerId = GetItemsLayer(bundles[i].Items[item], 8);
+                                layerPath = baseImagePath + "layer" + layerId + "/item";
+                                var itemPath = layerPath + bundles[i].Items[item] + "/thumbnail.jpg";
+                                var itemContainer = $("<div>");
+                                var itemImage = $("<img>", { "class": "avatar-item-selector avatar-bundle-item-selector item" + bundles[i].Items[item], "data-item": bundles[i].Items[item], "data-layer": layerId });
+                                if (lazyLoading) {
+                                    itemImage.attr("data-lazy", itemPath);
+                                }
+                                else {
+                                    itemImage.attr("src", itemPath);
+                                }
+                                if (selectedItem == bundles[i].Items[item]) {
+                                    itemImage.addClass("selected");
+                                }
+                                itemContainer.append(itemImage);
+                                $("#avatarItemSelectors").append(itemContainer);
+                            }
+                        }
+                    }
                 }
                 // gets the index of the selected item. otherwise starts at the first carousel
-                var itemIndex = Math.max(currentLayer.Items.indexOf(selectedItem), 0);
+                var itemIndex = 0;
+            }
 
                 // Creates the carousel
                 $("#avatarItemSelectors").slick({
@@ -404,7 +420,6 @@
                     ],
                 });
             }
-        }
 
         function SetColorSelectors() {
             // If body or hair remove the slick
@@ -520,6 +535,15 @@
             currentLayerImage.attr("src", imagePath).removeClass("hide");
             SetUnsavedChanges(true);
         }
+        function SetBundleLayerImage() {
+            var imagePath = layerPath + selectedItem + "/item";
+            if (selectedColor != "") {
+                imagePath += "_" + selectedColor;
+            }
+            imagePath += ".png";
+            currentLayerImage.attr("src", imagePath).removeClass("hide");
+            SetUnsavedChanges(true);
+        }
 
         function RemoveLayerImage() {
             currentLayerSelector.data("item", "")
@@ -529,7 +553,6 @@
             $(".avatar-item-selector.selected").removeClass("selected");
             $(".avatar-item-remover").addClass("selected");
         }
-
         function GetAvatarSelection() {
             var data_array = new Array();
             $(".avatar-layer-selector").each(function () {
@@ -579,6 +602,9 @@
 
         // Updates the tab
         $(".avatar-layer-selector").on("click", function () {
+            if ($(this).data("layer") == 13) {
+                currentLayer = 13;
+            }
             SetLayer($(this).data("layer"));
         })
 
@@ -600,14 +626,14 @@
 
         // Updates the selected bundle
         $(document).on("click", ".bundle-selectors", function () {
-            console.log("trigger");
-            selectedBundle = $(this).data("bundle-id");
-            $(this).addClass("selected-bundle");
-            console.log($(this).text());
+            $("li#bundle-selected").removeAttr("id");
+            $("li").find("#selected-bundle").removeAttr("id");
+            $(this).attr("id", "selected-bundle");
+            selectedBundleId = $("li").find("#selected-bundle").data("bundleid");
             $("#bundle-selected").text($(this).text());
             $("#bundle-selected").append("<span class='caret'></span>");
-            console.log($(this).data("bundle-id"));
-            $("#bundle-selected").data("bundle-id", $(this).data("bundle-id"));
+            GetBundleById(selectedBundleId);
+            SetLayer(13);
         });
 
         // Removes the layer's article
@@ -636,6 +662,13 @@
         });
         // Save
         $("#saveAvatar").on("click", function () {
+            $(".avatar-save-message").hide();
+            $(this).attr("disabled", "disabled");
+            $("#saveSpinner").removeClass("hidden");
+            SaveAvatar();
+        });
+
+        $("avatar-bundle-item-selector").on("click", function () {
             $(".avatar-save-message").hide();
             $(this).attr("disabled", "disabled");
             $("#saveSpinner").removeClass("hidden");
