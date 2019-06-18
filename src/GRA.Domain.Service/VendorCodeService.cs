@@ -17,6 +17,7 @@ namespace GRA.Domain.Service
 {
     public class VendorCodeService : BaseUserService<VendorCodeService>
     {
+        private readonly IPathResolver _pathResolver;
         private readonly ICodeGenerator _codeGenerator;
         private readonly IUserRepository _userRepository;
         private readonly IVendorCodeRepository _vendorCodeRepository;
@@ -24,7 +25,8 @@ namespace GRA.Domain.Service
         private readonly MailService _mailService;
 
         public VendorCodeService(ILogger<VendorCodeService> logger,
-            GRA.Abstract.IDateTimeProvider dateTimeProvider,
+            IDateTimeProvider dateTimeProvider,
+            IPathResolver pathResolver,
             IUserContextProvider userContextProvider,
             IUserRepository userRepository,
             ICodeGenerator codeGenerator,
@@ -34,10 +36,15 @@ namespace GRA.Domain.Service
             : base(logger, dateTimeProvider, userContextProvider)
         {
             SetManagementPermission(Permission.ManageVendorCodes);
-            _codeGenerator = Require.IsNotNull(codeGenerator, nameof(codeGenerator));
-            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
-            _vendorCodeRepository = Require.IsNotNull(vendorCodeRepository, nameof(vendorCodeRepository));
-            _vendorCodeTypeRepository = Require.IsNotNull(vendorCodeTypeRepository, nameof(vendorCodeTypeRepository));
+            _pathResolver = pathResolver ?? throw new ArgumentNullException(nameof(pathResolver));
+            _codeGenerator = codeGenerator
+                ?? throw new ArgumentNullException(nameof(codeGenerator));
+            _userRepository = userRepository
+                ?? throw new ArgumentNullException(nameof(userRepository));
+            _vendorCodeRepository = vendorCodeRepository
+                ?? throw new ArgumentNullException(nameof(vendorCodeRepository));
+            _vendorCodeTypeRepository = vendorCodeTypeRepository
+                ?? throw new ArgumentNullException(nameof(vendorCodeTypeRepository));
             _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
         }
 
@@ -182,12 +189,12 @@ namespace GRA.Domain.Service
                     string duration = "";
                     if (sw?.Elapsed != null)
                     {
-                        duration = $" after {((TimeSpan)sw.Elapsed).TotalSeconds.ToString("N2")} seconds";
+                        duration = $" after {sw.Elapsed.ToString("c")}";
                     }
                     _logger.LogWarning($"Import of {filename} for user {requestingUser} was cancelled{duration}.");
                 });
 
-                string fullPath = Path.Combine(Path.GetTempPath(), filename);
+                string fullPath = _pathResolver.ResolvePrivateTempFilePath(filename);
 
                 if (!File.Exists(fullPath))
                 {
@@ -203,6 +210,11 @@ namespace GRA.Domain.Service
 
                 try
                 {
+                    progress.Report(new JobStatus
+                    {
+                        PercentComplete = 1,
+                        Status = "Loading file..."
+                    });
                     using (var stream = new FileStream(fullPath, FileMode.Open))
                     {
                         int couponColumnId = 0;

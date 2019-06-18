@@ -5,12 +5,14 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using GRA.Abstract;
 using GRA.Controllers.ServiceFacade;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -18,13 +20,17 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.ManageVendorCodes)]
     public class VendorCodesController : Base.MCController
     {
+        private readonly ILogger _logger;
         private readonly SiteService _siteService;
         private readonly VendorCodeService _vendorCodeService;
+
         public VendorCodesController(ServiceFacade.Controller context,
+            ILogger<VendorCodesController> logger,
             SiteService siteService,
             VendorCodeService vendorCodeService)
             : base(context)
         {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             _vendorCodeService = vendorCodeService
                 ?? throw new ArgumentNullException(nameof(vendorCodeService));
@@ -58,11 +64,16 @@ namespace GRA.Controllers.MissionControl
 
             if (ModelState.ErrorCount == 0)
             {
-                var tempFile = Path.GetTempFileName();
+                var tempFile = _pathResolver.ResolvePrivateTempFilePath();
+                _logger.LogInformation("Accepted vendor import file {UploadFile} as {TempFile}",
+                    excelFile.FileName,
+                    tempFile);
+
                 using (var fileStream = new FileStream(tempFile, FileMode.Create))
                 {
                     await excelFile.CopyToAsync(fileStream);
                 }
+
                 string file = WebUtility.UrlEncode(Path.GetFileName(tempFile));
                 return RedirectToAction("ImportFile", new { id = file });
             }

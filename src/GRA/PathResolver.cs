@@ -1,10 +1,7 @@
-﻿using GRA.Abstract;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+﻿using System;
 using System.IO;
+using GRA.Abstract;
+using Microsoft.Extensions.Configuration;
 
 namespace GRA
 {
@@ -16,7 +13,7 @@ namespace GRA
             _config = config;
         }
 
-        public string ResolveContentPath(string filePath = default(string))
+        public string ResolveContentPath(string filePath = default)
         {
             string path = _config[ConfigurationKey.ContentPath];
             if (string.IsNullOrEmpty(path))
@@ -34,7 +31,7 @@ namespace GRA
             return path;
         }
 
-        public string ResolveContentFilePath(string filePath = default(string))
+        public string ResolveContentFilePath(string filePath = default)
         {
             string path = null;
             if (!string.IsNullOrEmpty(_config[ConfigurationKey.ContentDirectory]))
@@ -55,7 +52,7 @@ namespace GRA
             }
         }
 
-        public string ResolvePrivatePath(string filePath = default(string))
+        public string ResolvePrivatePath(string filePath = default)
         {
             string path = _config[ConfigurationKey.ContentPath];
             if (string.IsNullOrEmpty(path))
@@ -73,7 +70,7 @@ namespace GRA
             return path;
         }
 
-        public string ResolvePrivateFilePath(string filePath = default(string))
+        public string ResolvePrivateFilePath(string filePath = default)
         {
             string path = Path.Combine(Directory.GetCurrentDirectory(), "shared", "private");
 
@@ -84,6 +81,25 @@ namespace GRA
             else
             {
                 return path;
+            }
+        }
+
+        public string ResolvePrivateTempFilePath(string filePath = default)
+        {
+            var tempPath = ResolvePrivateFilePath("temp");
+
+            if(!Directory.Exists(tempPath))
+            {
+                Directory.CreateDirectory(tempPath);
+            }
+
+            if (string.IsNullOrEmpty(filePath))
+            {
+                return Path.Combine(tempPath, Path.GetRandomFileName());
+            }
+            else
+            {
+                return Path.Combine(tempPath, filePath);
             }
         }
     }
