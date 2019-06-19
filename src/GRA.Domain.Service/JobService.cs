@@ -14,13 +14,15 @@ namespace GRA.Domain.Service
         private readonly IJobRepository _jobRepository;
         private readonly EmailBulkService _emailBulkService;
         private readonly ReportService _reportService;
+        private readonly VendorCodeService _vendorCodeService;
 
         public JobService(ILogger<JobService> logger,
             IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             IJobRepository jobRepository,
             EmailBulkService emailBulkService,
-            ReportService reportService)
+            ReportService reportService,
+            VendorCodeService vendorCodeService)
             : base(logger, dateTimeProvider, userContextProvider)
         {
             _jobRepository = jobRepository
@@ -29,6 +31,8 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(emailBulkService));
             _reportService = reportService
                 ?? throw new ArgumentNullException(nameof(reportService));
+            _vendorCodeService = vendorCodeService 
+                ?? throw new ArgumentNullException(nameof(vendorCodeService));
         }
 
         public async Task<JobStatus> RunJob(string jobTokenString,
@@ -59,6 +63,12 @@ namespace GRA.Domain.Service
                             {
                                 case JobType.RunReport:
                                     status = await _reportService.RunReportJobAsync(jobInfo.Id,
+                                        token,
+                                        progress);
+                                    break;
+                                case JobType.UpdateVendorStatus:
+                                    status = await _vendorCodeService.UpdateStatusFromExcelAsync(
+                                        jobInfo.Id,
                                         token,
                                         progress);
                                     break;

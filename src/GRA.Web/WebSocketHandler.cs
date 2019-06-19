@@ -51,14 +51,7 @@ namespace GRA.Web
                     return;
                 }
 
-                if (context.Request.Path.Value.Contains("processvendor"))
-                {
-                    var vendorCodeService = context
-                        .RequestServices
-                        .GetRequiredService<VendorCodeService>();
-                    await RunWsTaskAsync(context, vendorCodeService.UpdateStatusFromExcel);
-                }
-                else if (context.Request.Path.Value.Contains("runjob"))
+                if (context.Request.Path.Value.Contains("runjob"))
                 {
                     var jobService = context.RequestServices.GetRequiredService<JobService>();
                     await RunWsTaskAsync(context, jobService.RunJob);

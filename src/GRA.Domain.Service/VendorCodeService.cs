@@ -12,6 +12,7 @@ using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace GRA.Domain.Service
 {
@@ -19,6 +20,7 @@ namespace GRA.Domain.Service
     {
         private readonly IPathResolver _pathResolver;
         private readonly ICodeGenerator _codeGenerator;
+        private readonly IJobRepository _jobRepository;
         private readonly IUserRepository _userRepository;
         private readonly IVendorCodeRepository _vendorCodeRepository;
         private readonly IVendorCodeTypeRepository _vendorCodeTypeRepository;
@@ -26,10 +28,11 @@ namespace GRA.Domain.Service
 
         public VendorCodeService(ILogger<VendorCodeService> logger,
             IDateTimeProvider dateTimeProvider,
-            IPathResolver pathResolver,
             IUserContextProvider userContextProvider,
-            IUserRepository userRepository,
+            IPathResolver pathResolver,
             ICodeGenerator codeGenerator,
+            IJobRepository jobRepository,
+            IUserRepository userRepository,
             IVendorCodeRepository vendorCodeRepository,
             IVendorCodeTypeRepository vendorCodeTypeRepository,
             MailService mailService)
@@ -39,6 +42,8 @@ namespace GRA.Domain.Service
             _pathResolver = pathResolver ?? throw new ArgumentNullException(nameof(pathResolver));
             _codeGenerator = codeGenerator
                 ?? throw new ArgumentNullException(nameof(codeGenerator));
+            _jobRepository = jobRepository
+                ?? throw new ArgumentNullException(nameof(jobRepository));
             _userRepository = userRepository
                 ?? throw new ArgumentNullException(nameof(userRepository));
             _vendorCodeRepository = vendorCodeRepository
@@ -174,7 +179,7 @@ namespace GRA.Domain.Service
         private const string OrderDateRowHeading = "Order Date";
         private const string ShipDateRowHeading = "Ship Date";
 
-        public async Task<JobStatus> UpdateStatusFromExcel(string filename,
+        public async Task<JobStatus> UpdateStatusFromExcelAsync(int jobId,
             CancellationToken token,
             IProgress<JobStatus> progress = null)
         {
@@ -184,6 +189,14 @@ namespace GRA.Domain.Service
             {
                 var sw = new Stopwatch();
                 sw.Start();
+
+                var job = await _jobRepository.GetByIdAsync(jobId);
+                var jobDetails
+                    = JsonConvert
+                        .DeserializeObject<JobDetailsVendorCodeStatus>(job.SerializedParameters);
+
+                string filename = jobDetails.Filename;
+
                 token.Register(() =>
                 {
                     string duration = "";
@@ -210,11 +223,6 @@ namespace GRA.Domain.Service
 
                 try
                 {
-                    progress.Report(new JobStatus
-                    {
-                        PercentComplete = 1,
-                        Status = "Loading file..."
-                    });
                     using (var stream = new FileStream(fullPath, FileMode.Open))
                     {
                         int couponColumnId = 0;
