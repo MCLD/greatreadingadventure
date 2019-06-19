@@ -42,7 +42,7 @@ namespace GRA.Controllers.MissionControl
                 ?? throw new ArgumentNullException(nameof(avatarService));
             _badgeService = badgeService ?? throw new ArgumentNullException(nameof(badgeService));
             _eventService = eventService ?? throw new ArgumentNullException(nameof(eventService));
-            _siteService = siteService ?? throw new ArgumentNullException(nameof(SiteService));
+            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             _triggerService = triggerService
                 ?? throw new ArgumentNullException(nameof(triggerService));
             _vendorCodeService = vendorCodeService

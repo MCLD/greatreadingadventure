@@ -1562,7 +1562,8 @@ namespace GRA.Controllers.MissionControl
             {
                 UserImportResult userImportResult = null;
 
-                var tempFile = Path.GetTempFileName();
+                var tempFile = _pathResolver.ResolvePrivateTempFilePath();
+
                 using (var fileStream = new FileStream(tempFile, FileMode.Create))
                 {
                     await model.UserExcelFile.CopyToAsync(fileStream);
