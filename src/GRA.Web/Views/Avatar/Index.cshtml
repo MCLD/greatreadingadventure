@@ -301,7 +301,7 @@
                     if (currentLayer.Items.length > 30) {
                         lazyLoading = true;
                     }
-                    if (selectedbundles != []) {
+                    if (selectedbundles.length != 0) {
                         for (var i = 0; i > selectedbundles.length;i++) {
                             if (GetItemsLayer(selectedbundles[i], 8) == currentLayer.Id) {
                                 selectedItem = selectedbundles[i];
@@ -358,7 +358,14 @@
                                 else {
                                     itemImage.attr("src", itemPath);
                                 }
-                                if (selectedItem == bundles[i].Items[item]) {
+                                if (selectedbundles.length != 0) {
+                                    for (var idx = 0; idx < selectedbundles.length; idx++) {
+                                        if (selectedbundles[i]==bundles[i].Items[item]) {
+                                            itemImage.addClass("selected");
+                                        }
+                                    }
+                                }
+                                else if (selectedItem == bundles[i].Items[item]) {
                                     itemImage.addClass("selected");
                                 }
                                 itemContainer.append(itemImage);
@@ -371,62 +378,62 @@
                 var itemIndex = 0;
             }
 
-                // Creates the carousel
-                $("#avatarItemSelectors").slick({
-                    arrows: false,
-                    initialSlide: Math.floor(itemIndex / itemRows),
-                    lazyLoad: 'anticipated',
-                    mobileFirst: true,
-                    rows: itemRows,
-                    slidesPerRow: 1,
-                    slidesToShow: (lazyLoading ? 10 : 1),
-                    swipeToSlide: true,
-                    touchThreshold: 100,
-                    variableWidth: true,
-                    waitForAnimate: false,
-                    responsive: [
-                        {
-                            breakpoint: 768,
-                            settings: {
-                                arrows: true,
-                                initialSlide: Math.floor(itemIndex / (itemRows * 3)) * 3,
-                                slidesToShow: 3,
-                                slidesToScroll: 3,
-                                swipeToSlide: false,
-                                touchThreshold: 10,
-                                variableWidth: false,
-                                waitForAnimate: true
-                            }
-                        },
-                        {
-                            breakpoint: 992,
-                            settings: {
-                                arrows: true,
-                                initialSlide: Math.floor(itemIndex / (itemRows * 4)) * 4,
-                                slidesToShow: 4,
-                                slidesToScroll: 4,
-                                swipeToSlide: false,
-                                touchThreshold: 10,
-                                variableWidth: false,
-                                waitForAnimate: true
-                            }
-                        },
-                        {
-                            breakpoint: 1200,
-                            settings: {
-                                arrows: true,
-                                initialSlide: Math.floor(itemIndex / (itemRows * 6)) * 6,
-                                slidesToShow: 6,
-                                slidesToScroll: 6,
-                                swipeToSlide: false,
-                                touchThreshold: 10,
-                                variableWidth: false,
-                                waitForAnimate: true
-                            }
+            // Creates the carousel
+            $("#avatarItemSelectors").slick({
+                arrows: false,
+                initialSlide: Math.floor(itemIndex / itemRows),
+                lazyLoad: 'anticipated',
+                mobileFirst: true,
+                rows: itemRows,
+                slidesPerRow: 1,
+                slidesToShow: (lazyLoading ? 10 : 1),
+                swipeToSlide: true,
+                touchThreshold: 100,
+                variableWidth: true,
+                waitForAnimate: false,
+                responsive: [
+                    {
+                        breakpoint: 768,
+                        settings: {
+                            arrows: true,
+                            initialSlide: Math.floor(itemIndex / (itemRows * 3)) * 3,
+                            slidesToShow: 3,
+                            slidesToScroll: 3,
+                            swipeToSlide: false,
+                            touchThreshold: 10,
+                            variableWidth: false,
+                            waitForAnimate: true
                         }
-                    ],
-                });
-            }
+                    },
+                    {
+                        breakpoint: 992,
+                        settings: {
+                            arrows: true,
+                            initialSlide: Math.floor(itemIndex / (itemRows * 4)) * 4,
+                            slidesToShow: 4,
+                            slidesToScroll: 4,
+                            swipeToSlide: false,
+                            touchThreshold: 10,
+                            variableWidth: false,
+                            waitForAnimate: true
+                        }
+                    },
+                    {
+                        breakpoint: 1200,
+                        settings: {
+                            arrows: true,
+                            initialSlide: Math.floor(itemIndex / (itemRows * 6)) * 6,
+                            slidesToShow: 6,
+                            slidesToScroll: 6,
+                            swipeToSlide: false,
+                            touchThreshold: 10,
+                            variableWidth: false,
+                            waitForAnimate: true
+                        }
+                    }
+                ],
+            });
+        }
 
         function SetColorSelectors() {
             // If body or hair remove the slick
@@ -556,6 +563,10 @@
                 if (obj1.data("layer") == itemslayer) {
                     obj1.attr("src", imagePath);
                     obj2.attr("src", imagePath);
+                    if (itemslayer >= 5) {
+                    obj1.removeClass("hide");
+                    obj2.removeClass("hide");
+                    }
                 }
             }
             currentLayerImage.attr("src", imagePath).removeClass("hide");
