@@ -172,7 +172,7 @@
         var layerPath;
         var selectedItem;
         var selectedColor;
-        var bundleids = [];
+        var selectedbundles = [];
         var selectedBundleId = null;
         var showItemSelector;
         var showColorSelector;
@@ -300,6 +300,13 @@
                     var lazyLoading = false;
                     if (currentLayer.Items.length > 30) {
                         lazyLoading = true;
+                    }
+                    if (selectedbundles != []) {
+                        for (var i = 0; i > selectedbundles.length;i++) {
+                            if (GetItemsLayer(selectedbundles[i], 8) == currentLayer.Id) {
+                                selectedItem = selectedbundles[i];
+                            }
+                        }
                     }
                     //For each othe the layer's current items
                     $.each(currentLayer.Items, function (i, item) {
@@ -509,11 +516,59 @@
         }
 
         function SetSelectedItem(item) {
+            if (selectedbundles != []) {
+                for (var i = 0; i < selectedbundles.length; i++) {
+                    if (GetItemsLayer(selectedbundles[i]) == currentLayer.Id) {
+                        selectedbundles = RemoveItemFromList(selectedbundles[i], selectedbundles);
+                    }
+                }
+            }
             selectedItem = item;
             currentLayerSelector.data("item", item);
             $(".avatar-item-selector.selected").removeClass("selected");
             $(".item" + item).addClass("selected");
                 SetLayerImage();
+        }
+
+        function SetSelectedBundleItem(item) {
+            var layerId = GetItemsLayer(item, 8);
+            var bundlelayerPath = baseImagePath + "layer" + layerId + "/item" + item;
+            for (var i = 0; i < selectedbundles.length; i++) {
+                if (GetItemsLayer(selectedbundles[i], 8) == layerId) {
+                    $(".avatar-item-selector.item"+selectedbundles[i]).removeClass("selected");
+                    selectedbundles = RemoveItemFromList(selectedbundles[i],selectedbundles);
+                }
+            }
+            $(".item" + item).addClass("selected");
+            selectedbundles.push(item);
+            console.log(selectedbundles);
+            SetBundleLayerImage(bundlelayerPath, item);
+        }
+        function SetBundleLayerImage(bundlelayerPath, item) {
+            var imagePath = bundlelayerPath + "/item";
+            var itemslayer = GetItemsLayer(item, 8)
+            imagePath += ".png";
+            var container1 = Array.from($(".avatar-container")[0].children);
+            var container2 = Array.from($(".avatar-container")[1].children);
+            for (var i = 0; i < container1.length; i++){
+                var obj1 = $(container1[i]);
+                var obj2 = $(container2[i]);
+                if (obj1.data("layer") == itemslayer) {
+                    obj1.attr("src", imagePath);
+                    obj2.attr("src", imagePath);
+                }
+            }
+            currentLayerImage.attr("src", imagePath).removeClass("hide");
+            SetUnsavedChanges(true);
+        }
+        function RemoveItemFromList(item, arr) {
+            var newarray = [];
+            for (var i = 0; i < arr.length; i++) {
+                if (arr[i] != item) {
+                    newarray.push(arr[i]);
+                }
+            }
+            return newarray;
         }
 
         function SetSelectedColor(color) {
@@ -527,15 +582,6 @@
         }
 
         function SetLayerImage() {
-            var imagePath = layerPath + selectedItem + "/item";
-            if (selectedColor != "") {
-                imagePath += "_" + selectedColor;
-            }
-            imagePath += ".png";
-            currentLayerImage.attr("src", imagePath).removeClass("hide");
-            SetUnsavedChanges(true);
-        }
-        function SetBundleLayerImage() {
             var imagePath = layerPath + selectedItem + "/item";
             if (selectedColor != "") {
                 imagePath += "_" + selectedColor;
@@ -611,7 +657,10 @@
         // updates the article of clothing
         $(document).on("click", ".avatar-item-selector", function () {
             var item = $(this).data("item");
-            if (item != selectedItem) {
+            if (currentLayer == 13) {
+                SetSelectedBundleItem(item);
+            }
+            else if(item != selectedItem) {
                 SetSelectedItem(item);
             }
         });
