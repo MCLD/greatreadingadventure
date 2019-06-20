@@ -95,7 +95,7 @@
                             }
                             else
                             {
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                <a class="dropdown-toggle disabled" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                                     No Unlocked Bundles <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu"></ul>
@@ -103,7 +103,7 @@
                         }
                         else
                         {
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                            <a class="dropdown-toggle disabled" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                                 No Unlocked Bundles <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu"></ul>
@@ -182,19 +182,33 @@
         var itemRows;
 
         SetLayer(@Model.DefaultLayer);
-        //InitHasBeenViewed();
+        InitHasBeenViewed();
+        console.log(hasBeenViewed);
 
         $.ajaxSetup({
             timeout: 30000
         });
 
-        @*function InitHasBeenViewed() {
-            @foreach(var bundle in @Model.Bundles) 
+        function InitHasBeenViewed() {
+            @foreach(var bundle in @Model.ViewedBundles)
             {
-                
-                @:hasBeenViewed.push(@bundle.HasBeenViewed);
+                if (bundle is "False")
+                {
+                    @:hasBeenViewed.push(0);
+                }
+                else
+                {
+                    @:hasBeenViewed.push(1);
+                }
             }
-        }*@
+            for(var bund = 0; bund < hasBeenViewed.length; bund++) {
+                console.log("hey");
+                if (hasBeenViewed[bund] == 0) {
+                    console.log("hey2");
+                    $($("#bundle-drop").find("li")[bund]).css("background-color","red");
+                }
+            }
+        }
 
         function GetLayerById(layerId) {
             for (var i = 0; i < layers.length; i++) {
