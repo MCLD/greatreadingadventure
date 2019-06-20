@@ -423,20 +423,22 @@ namespace GRA.Domain.Service
             return await _avatarElementRepository.GetUserAvatarAsync(GetActiveUserId());
         }
 
-        public async Task<List<AvatarBundle>> GetUserUnlockBundles()
+        public async Task<Tuple<List<AvatarBundle>,List<bool>>> GetUserUnlockBundles()
         {
             int activeUserId = GetActiveUserId();
             var history = await _avatarBundleRepository.UserHistoryAsync(activeUserId);
             var usersbundles = new List<AvatarBundle>();
+            var hasbeenviewed = new List<bool>();
             foreach (var item in history)
             {
                 if (item.AvatarBundleId.HasValue && !item.IsDeleted)
                 {
+                    hasbeenviewed.Add(item.HasBeenViewed);
                     var bundle = await GetBundleByIdAsync(item.AvatarBundleId.Value, false);
                     usersbundles.Add(bundle);
                 }
             }
-            return usersbundles;
+            return Tuple.Create(usersbundles,hasbeenviewed);
         }
 
         public async Task UpdateUserAvatarAsync(ICollection<AvatarLayer> selectionLayers)

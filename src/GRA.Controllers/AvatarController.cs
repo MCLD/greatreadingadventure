@@ -59,7 +59,9 @@ namespace GRA.Controllers
                 .GroupBy(_ => _.GroupId)
                 .Select(_ => _.ToList())
                 .ToList();
-            var userbundles = _avatarService.GetUserUnlockBundles().Result;
+            var usersresult = _avatarService.GetUserUnlockBundles().Result;
+            var userbundles = usersresult.Item1;
+            var hasbeenviewed = usersresult.Item2;
             var bundles = new AvatarBundleJsonModel
             {
                 Bundles = _mapper
@@ -69,6 +71,7 @@ namespace GRA.Controllers
             {
                 LayerGroupings = layerGroupings,
                 Bundles = userbundles,
+                ViewedBundles = hasbeenviewed,
                 DefaultLayer = userWardrobe.First(_ => _.DefaultLayer).Id,
                 ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/"),
                 AvatarPiecesJson = Newtonsoft.Json.JsonConvert.SerializeObject(model),
@@ -195,13 +198,17 @@ namespace GRA.Controllers
             return RedirectToAction(nameof(Share));
         }
 
-        private async Task UpdateAvatar(string selectionJson)
-        {
+       private async Task UpdateAvatar(string selectionJson)
+        { 
             var selection = Newtonsoft.Json.JsonConvert
                         .DeserializeObject<ICollection<AvatarLayer>>(selectionJson);
             selection = selection.Where(_ => _.SelectedItem.HasValue).ToList();
             await _avatarService.UpdateUserAvatarAsync(selection);
         }
+
+        //private async Task UpdateUsersBundles(string bundles)
+        //{
+        //}
 
         public IActionResult InstagramImage(string id)
         {
