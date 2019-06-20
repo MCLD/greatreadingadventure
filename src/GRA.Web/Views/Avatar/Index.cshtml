@@ -182,19 +182,19 @@
         var itemRows;
 
         SetLayer(@Model.DefaultLayer);
-        InitHasBeenViewed();
+        //InitHasBeenViewed();
 
         $.ajaxSetup({
             timeout: 30000
         });
 
-        function InitHasBeenViewed() {
+        @*function InitHasBeenViewed() {
             @foreach(var bundle in @Model.Bundles) 
             {
                 
                 @:hasBeenViewed.push(@bundle.HasBeenViewed);
             }
-        }
+        }*@
 
         function GetLayerById(layerId) {
             for (var i = 0; i < layers.length; i++) {
