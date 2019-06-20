@@ -164,7 +164,7 @@
         var baseImagePath = "@Url.Content($"~/{Model.ImagePath}")";
         var layers = $.parseJSON('@Html.Raw(Model.AvatarPiecesJson)').Layers;
         var bundles = $.parseJSON('@Html.Raw(Model.AvatarBundlesJson)').Bundles;
-        console.log(bundles)
+        var hasBeenViewed = [];
         var currentLayerImage;
         var currentLayerRemovable;
         var currentLayerSelector;
@@ -178,15 +178,23 @@
         var showColorSelector;
         var unsavedChanges = @Model.NewAvatar.ToString().ToLower();
         var xsZoom = false;
-
         var colorRows;
         var itemRows;
 
         SetLayer(@Model.DefaultLayer);
+        InitHasBeenViewed();
 
         $.ajaxSetup({
             timeout: 30000
         });
+
+        function InitHasBeenViewed() {
+            @foreach(var bundle in @Model.Bundles) 
+            {
+                
+                @:hasBeenViewed.push(@bundle.HasBeenViewed);
+            }
+        }
 
         function GetLayerById(layerId) {
             for (var i = 0; i < layers.length; i++) {
@@ -302,7 +310,7 @@
                         lazyLoading = true;
                     }
                     if (selectedbundles.length != 0) {
-                        for (var i = 0; i > selectedbundles.length;i++) {
+                        for (var i = 0; i < selectedbundles.length; i++) {
                             if (GetItemsLayer(selectedbundles[i], 8) == currentLayer.Id) {
                                 selectedItem = selectedbundles[i];
                             }
@@ -333,15 +341,18 @@
                     var itemIndex = Math.max(currentLayer.Items.indexOf(selectedItem), 0);
                 }
             }
-            else
-            {
-                if (selectedBundleId != null)
-                {
-                    $("#avatarItemSelectors").empty();
-                    for (var i = 0; i < bundles.length;i++)
-                    {
-                        if (bundles[i].Id == selectedBundleId)
+            else{
+                if (selectedBundleId != null){
+                    @*@foreach(var bundle in @Model.Bundles){
+                        @:if (@bundle.Id == selectedBundleId)
                         {
+                            @bundle.HasBeenViewed.Post = 1;
+                        }
+                    }*@
+                    if (selectedBundleId)
+                    $("#avatarItemSelectors").empty();
+                    for (var i = 0; i < bundles.length;i++){
+                        if (bundles[i].Id == selectedBundleId){
                             var lazyLoading = false;
                             if (bundles[i].Items.length > 30) {
                                 lazyLoading = true;
@@ -360,7 +371,7 @@
                                 }
                                 if (selectedbundles.length != 0) {
                                     for (var idx = 0; idx < selectedbundles.length; idx++) {
-                                        if (selectedbundles[i]==bundles[i].Items[item]) {
+                                        if (selectedbundles[idx]==bundles[i].Items[item]) {
                                             itemImage.addClass("selected");
                                         }
                                     }
@@ -380,7 +391,7 @@
 
             // Creates the carousel
             $("#avatarItemSelectors").slick({
-                arrows: false,
+                   arrows: false,
                 initialSlide: Math.floor(itemIndex / itemRows),
                 lazyLoad: 'anticipated',
                 mobileFirst: true,
@@ -393,9 +404,9 @@
                 waitForAnimate: false,
                 responsive: [
                     {
-                        breakpoint: 768,
+                       breakpoint: 768,
                         settings: {
-                            arrows: true,
+                           arrows: true,
                             initialSlide: Math.floor(itemIndex / (itemRows * 3)) * 3,
                             slidesToShow: 3,
                             slidesToScroll: 3,
@@ -404,11 +415,11 @@
                             variableWidth: false,
                             waitForAnimate: true
                         }
-                    },
+                       },
                     {
-                        breakpoint: 992,
+                       breakpoint: 992,
                         settings: {
-                            arrows: true,
+                           arrows: true,
                             initialSlide: Math.floor(itemIndex / (itemRows * 4)) * 4,
                             slidesToShow: 4,
                             slidesToScroll: 4,
@@ -417,11 +428,11 @@
                             variableWidth: false,
                             waitForAnimate: true
                         }
-                    },
+                       },
                     {
-                        breakpoint: 1200,
+                       breakpoint: 1200,
                         settings: {
-                            arrows: true,
+                           arrows: true,
                             initialSlide: Math.floor(itemIndex / (itemRows * 6)) * 6,
                             slidesToShow: 6,
                             slidesToScroll: 6,
@@ -430,32 +441,32 @@
                             variableWidth: false,
                             waitForAnimate: true
                         }
-                    }
+                       }
                 ],
             });
         }
 
         function SetColorSelectors() {
-            // If body or hair remove the slick
-            if ($("#avatarColorSelectors").hasClass("slick-initialized")) {
+                       // If body or hair remove the slick
+                       if ($("#avatarColorSelectors").hasClass("slick-initialized")) {
                 $("#avatarColorSelectors").slick("unslick");
-            }
+                       }
             //Remove the colors
             $("#avatarColorSelectors").empty();
-            //If we are showing colors and we have them
-            if (showColorSelector && currentLayer.Colors.length > 0) {
+                       //If we are showing colors and we have them
+                       if (showColorSelector && currentLayer.Colors.length > 0) {
                 //loops and adds the colors
                 $.each(currentLayer.Colors, function (i, color) {
-                    var colorContainer = $("<div>");
-                    var colorDiv = $("<div>", { "class": "avatar-color-selector color" + color.Id, "style": "background-color:#" + color.Value, "data-color": color.Id });
-                    if (selectedColor == color.Id) {
-                        colorDiv.addClass("selected");
-                    }
-                    colorContainer.append(colorDiv);
+                               var colorContainer = $("<div>");
+                               var colorDiv = $("<div>", { "class": "avatar-color-selector color" + color.Id, "style": "background-color:#" + color.Value, "data-color": color.Id });
+                               if (selectedColor == color.Id) {
+                                   colorDiv.addClass("selected");
+                               }
+                               colorContainer.append(colorDiv);
                     $("#avatarColorSelectors").append(colorContainer);
-                });
-                // Gets the index of selected color if one is chosen
-                var colorIndex = currentLayer.Colors.map(function (x) { return x.Id; }).indexOf(selectedColor);
+                           });
+                           // Gets the index of selected color if one is chosen
+                           var colorIndex = currentLayer.Colors.map(function (x) { return x.Id; }).indexOf(selectedColor);
                 // Creates the color carousel
                 $("#avatarColorSelectors").slick({
                     arrows: false,
@@ -479,9 +490,9 @@
                                 touchThreshold: 10,
                                 variableWidth: false
                             }
-                        },
+                               },
                         {
-                            breakpoint: 992,
+                               breakpoint: 992,
                             settings: {
                                 arrows: true,
                                 initialSlide: Math.floor(colorIndex / (colorRows * 10)) * 10,
@@ -491,7 +502,7 @@
                                 touchThreshold: 10,
                                 variableWidth: false
                             }
-                        },
+                               },
                         {
                             breakpoint: 1200,
                             settings: {
@@ -503,20 +514,20 @@
                                 touchThreshold: 10,
                                 variableWidth: false
                             }
-                        }
+                               }
                     ]
                 });
-            }
-        }
+                       }
+                   }
 
         function SetUnsavedChanges(bool) {
             if (unsavedChanges != bool) {
                 if (bool == true) {
-                    $("#saveAvatar").removeClass("btn-default").addClass("btn-success");
+        $("#saveAvatar").removeClass("btn-default").addClass("btn-success");
                     unsavedChanges = true;
                 }
                 else {
-                    $("#saveAvatar").removeClass("btn-success").addClass("btn-default");
+        $("#saveAvatar").removeClass("btn-success").addClass("btn-default");
                     unsavedChanges = false;
                 }
             }
@@ -534,7 +545,7 @@
             currentLayerSelector.data("item", item);
             $(".avatar-item-selector.selected").removeClass("selected");
             $(".item" + item).addClass("selected");
-                SetLayerImage();
+            SetLayerImage();
         }
 
         function SetSelectedBundleItem(item) {
@@ -564,8 +575,8 @@
                     obj1.attr("src", imagePath);
                     obj2.attr("src", imagePath);
                     if (itemslayer >= 5) {
-                    obj1.removeClass("hide");
-                    obj2.removeClass("hide");
+                        obj1.removeClass("hide");
+                        obj2.removeClass("hide");
                     }
                 }
             }
@@ -623,29 +634,27 @@
         }
 
         function SaveAvatar() {
-            $.post("@Url.Action("SaveAvatar")", { selectionJson: GetAvatarSelection() }, function (response) {
-                if (response.success == true) {
-                    $(".avatar-save-message").removeClass("text-danger").addClass("text-success");
-                    $(".avatar-save-message").text("@SharedLocalizer[GRA.Annotations.Interface.AvatarSaved]");
-                    $(".avatar-save-message").show().delay(2000).fadeOut("slow");
+        $.post("@Url.Action("SaveAvatar")", { selectionJson: GetAvatarSelection() }, function (response) {
+            if (response.success == true) {
+                $(".avatar-save-message").removeClass("text-danger").addClass("text-success");
+                $(".avatar-save-message").text("@SharedLocalizer[GRA.Annotations.Interface.AvatarSaved]");
+                $(".avatar-save-message").show().delay(2000).fadeOut("slow");
 
-                    @if (Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null)
-                    {
-                        <text>
-                        if (unsavedChanges)
-                        {
+                @if (Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null){
+                    <text>
+                    if (unsavedChanges){
                             gtag('event', 'avatar_update');
-                        }
-                        </text>
+                    }
+                    </text>
                     }
 
                     SetUnsavedChanges(false);
-                }
-                else {
-                    $(".avatar-save-message").removeClass("text-success").addClass("text-danger");
-                    $(".avatar-save-message").text(response.message);
-                    $(".avatar-save-message").show();
-                }
+            }
+            else {
+                $(".avatar-save-message").removeClass("text-success").addClass("text-danger");
+                $(".avatar-save-message").text(response.message);
+                $(".avatar-save-message").show();
+            }
             }).fail(function () {
                 $(".avatar-save-message").removeClass("text-success").addClass("text-danger");
                 $(".avatar-save-message").text("@SharedLocalizer[GRA.Annotations.Validate.CouldNotSaveAvatar]");
@@ -689,6 +698,7 @@
             $("li#bundle-selected").removeAttr("id");
             $("li").find("#selected-bundle").removeAttr("id");
             $(this).attr("id", "selected-bundle");
+            $(this).addClass("active");
             selectedBundleId = $("li").find("#selected-bundle").data("bundleid");
             $("#bundle-selected").text($(this).text());
             $("#bundle-selected").append("<span class='caret'></span>");
@@ -725,28 +735,27 @@
             $(".avatar-save-message").hide();
             $(this).attr("disabled", "disabled");
             $("#saveSpinner").removeClass("hidden");
-            SaveAvatar();
-        });
+                       SaveAvatar();
+                   });
 
         $("avatar-bundle-item-selector").on("click", function () {
             $(".avatar-save-message").hide();
             $(this).attr("disabled", "disabled");
             $("#saveSpinner").removeClass("hidden");
-            SaveAvatar();
-        });
+                       SaveAvatar();
+                   });
         // submit
         $("#shareForm").on("submit", function (e) {
             if (unsavedChanges) {
-                @if (Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null)
-                {
+                @if (Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null){
                     @:gtag('event', 'avatar_update');
-                }
+            }
 
-                $("<input />")
-                    .attr("type", "hidden")
-                    .attr("name", "selectionJson")
-                    .attr("value", GetAvatarSelection())
-                    .appendTo($(this));
+            $("<input />")
+            .attr("type", "hidden")
+            .attr("name", "selectionJson")
+            .attr("value", GetAvatarSelection())
+            .appendTo($(this));
             }
         });
     </script>

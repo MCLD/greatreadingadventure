@@ -65,10 +65,6 @@ namespace GRA.Controllers
                 Bundles = _mapper
                 .Map<List<AvatarBundleJsonModel.AvatarBundle>>(userbundles)
             };
-            //foreach (var bund in userbundles)
-            //{
-            //    _logger.LogError(bund.AvatarItems.Count.ToString());
-            //}
             var viewModel = new AvatarViewModel
             {
                 LayerGroupings = layerGroupings,
