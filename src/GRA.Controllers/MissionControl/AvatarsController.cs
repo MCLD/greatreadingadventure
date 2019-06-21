@@ -23,6 +23,7 @@ namespace GRA.Controllers.MissionControl
     {
         private readonly ILogger<AvatarsController> _logger;
         private readonly AvatarService _avatarService;
+        private readonly JobService _jobService;
         private readonly IHostingEnvironment _hostingEnvironment;
 
         public AvatarsController(ILogger<AvatarsController> logger,
@@ -57,9 +58,6 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> SetupDefaultAvatars()
         {
-            var sw = new Stopwatch();
-            sw.Start();
-
             var layers = await _avatarService.GetLayersAsync();
             if (layers.Any())
             {
@@ -84,6 +82,21 @@ namespace GRA.Controllers.MissionControl
                 AlertDanger = $"Asset directory not found at: {assetPath}";
                 return RedirectToAction(nameof(Index));
             }
+
+            var jobToken = await _jobService.CreateJobAsync(new Job
+            {
+                JobType = JobType.AvatarImport
+            });
+
+            return View("Job", new ViewModel.MissionControl.Shared.JobViewModel
+            {
+                CancelUrl = Url.Action(nameof(Index)),
+                JobToken = jobToken.ToString(),
+                PingSeconds = 5,
+                SuccessRedirectUrl = "",
+                SuccessUrl = Url.Action(nameof(Index)),
+                Title = "Importing avatars..."
+            });
 
             IEnumerable<AvatarLayer> avatarList;
             var jsonPath = Path.Combine(assetPath, "default avatars.json");
@@ -232,8 +245,7 @@ namespace GRA.Controllers.MissionControl
                 }
             }
 
-            sw.Stop();
-            string loaded = $"Default avatars added in {sw.Elapsed.TotalSeconds} seconds.";
+            string loaded = $"Default avatars added in {5} seconds.";
             _logger.LogInformation(loaded);
             ShowAlertSuccess(loaded);
             return RedirectToAction(nameof(Index));

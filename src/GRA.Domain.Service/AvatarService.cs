@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using GRA.Abstract;
 using GRA.Domain.Model;
@@ -9,6 +11,7 @@ using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace GRA.Domain.Service
 {
@@ -19,6 +22,7 @@ namespace GRA.Domain.Service
         private readonly IAvatarElementRepository _avatarElementRepository;
         private readonly IAvatarItemRepository _avatarItemRepository;
         private readonly IAvatarLayerRepository _avatarLayerRepository;
+        private readonly IJobRepository _jobRepository;
         private readonly ITriggerRepository _triggerRepository;
         private readonly IPathResolver _pathResolver;
 
@@ -30,22 +34,27 @@ namespace GRA.Domain.Service
             IAvatarElementRepository avatarElementRepository,
             IAvatarItemRepository avatarItemRepository,
             IAvatarLayerRepository avatarLayerRepository,
+            IJobRepository jobRepository,
             ITriggerRepository triggerRepository,
             IPathResolver pathResolver)
             : base(logger, dateTimeProvider, userContextProvider)
         {
-            _avatarBundleRepository = Require.IsNotNull(avatarBundleRepository,
-                nameof(avatarBundleRepository));
-            _avatarColorRepository = Require.IsNotNull(avatarColorRepository,
-                nameof(avatarColorRepository));
-            _avatarElementRepository = Require.IsNotNull(avatarElementRepository,
-                nameof(avatarElementRepository));
-            _avatarItemRepository = Require.IsNotNull(avatarItemRepository,
-                nameof(avatarItemRepository));
-            _avatarLayerRepository = Require.IsNotNull(avatarLayerRepository,
-                nameof(avatarLayerRepository));
-            _triggerRepository = Require.IsNotNull(triggerRepository, nameof(triggerRepository));
-            _pathResolver = Require.IsNotNull(pathResolver, nameof(pathResolver));
+            _avatarBundleRepository = avatarBundleRepository
+                ?? throw new ArgumentNullException(nameof(avatarBundleRepository));
+            _avatarColorRepository = avatarColorRepository
+                ?? throw new ArgumentNullException(nameof(avatarColorRepository));
+            _avatarElementRepository = avatarElementRepository
+                ?? throw new ArgumentNullException(nameof(avatarElementRepository));
+            _avatarItemRepository = avatarItemRepository
+                ?? throw new ArgumentNullException(nameof(avatarItemRepository));
+            _avatarLayerRepository = avatarLayerRepository
+                ?? throw new ArgumentNullException(nameof(avatarLayerRepository));
+            _jobRepository = jobRepository
+                ?? throw new ArgumentNullException(nameof(jobRepository));
+            _triggerRepository = triggerRepository
+                ?? throw new ArgumentNullException(nameof(triggerRepository));
+            _pathResolver = pathResolver
+                ?? throw new ArgumentNullException(nameof(pathResolver));
 
             SetManagementPermission(Permission.ManageAvatars);
         }
@@ -508,6 +517,63 @@ namespace GRA.Domain.Service
         {
             VerifyManagementPermission();
             return await _triggerRepository.GetTriggersAwardingBundleAsync(id);
+        }
+
+        public async Task<JobStatus> ImportAvatarsAsync(int jobId,
+            CancellationToken token,
+            IProgress<JobStatus> progress = null)
+        {
+            return null;
+            var requestingUser = GetClaimId(ClaimType.UserId);
+
+            if (HasPermission(Permission.ManageAvatars))
+            {
+                var sw = new Stopwatch();
+                sw.Start();
+
+                var job = await _jobRepository.GetByIdAsync(jobId);
+                var jobDetails
+                    = JsonConvert
+                        .DeserializeObject<JobDetailsVendorCodeStatus>(job.SerializedParameters);
+
+                string filename = jobDetails.Filename;
+
+                token.Register(() =>
+                {
+                    string duration = "";
+                    if (sw?.Elapsed != null)
+                    {
+                        duration = $" after {sw.Elapsed.ToString("c")}";
+                    }
+                    _logger.LogWarning($"Import avatars for user {requestingUser} was cancelled{duration}.");
+                });
+
+                string fullPath = _pathResolver.ResolvePrivateTempFilePath(filename);
+
+                if (!File.Exists(fullPath))
+                {
+                    _logger.LogError($"Could not find {fullPath}");
+                    return new JobStatus
+                    {
+                        PercentComplete = 0,
+                        Status = "Could not find the import file.",
+                        Error = true,
+                        Complete = true
+                    };
+                }
+
+            }
+            else
+            {
+                _logger.LogError($"User {requestingUser} doesn't have permission to view all reporting.");
+                return new JobStatus
+                {
+                    PercentComplete = 0,
+                    Status = "Permission denied.",
+                    Error = true,
+                    Complete = true
+                };
+            }
         }
     }
 }
