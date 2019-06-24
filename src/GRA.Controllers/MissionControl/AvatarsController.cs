@@ -116,10 +116,10 @@ namespace GRA.Controllers.MissionControl
                 Directory.CreateDirectory(bundlePath);
             }
             System.IO.File.Copy(Path.Combine(assetPath, "bundleicon.png"),
-                Path.Combine(bundlePath, "bundleicon.png"));
+                Path.Combine(bundlePath, "icon.png"));
             totalFilesCopied++;
             System.IO.File.Copy(Path.Combine(assetPath, "bundlenotif.png"),
-                Path.Combine(bundlePath, "bundlenotif.png"));
+                Path.Combine(bundlePath, "notif.png"));
             totalFilesCopied++;
 
             foreach (var layer in avatarList)

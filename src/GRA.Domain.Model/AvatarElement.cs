@@ -6,6 +6,7 @@ namespace GRA.Domain.Model
     {
         [Required]
         public int AvatarItemId { get; set; }
+
         public AvatarItem AvatarItem { get; set; }
 
         public int? AvatarColorId { get; set; }

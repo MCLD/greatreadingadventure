@@ -62,15 +62,12 @@
                             </div>
                         }
                     }
-                    <div style="display: inline-flex; position: absolute; clear: both;" class="col-xs-24">
-                        <div style="">
-                            <img src="/content/site1\avatarbundles\bundleicon.png" style="position: absolute;" id="selector13" class="avatar-layer-selector" data-layer="13" data-name="Bundle" data-showitemselector="True" data-showcolorselector="False" bundle-item="" data-zoomscale="1.30" data-zoomyoffset="-5">
-                            <img src="/content/site1\avatarbundles\bundlenotif.png" style="position: absolute;" id="notif13" class="avatar-layer-selector hide" data-layer="13" data-name="Bundle" data-showitemselector="True" data-showcolorselector="False" bundle-item="" data-zoomscale="1.30" data-zoomyoffset="-5">
-                        </div>
+                    <div style="display: inline-block;" class="col-xs-24">
+                        <img src="/content/site1\avatarbundles\icon.png" id="selector13" class="avatar-layer-selector" data-layer="13" data-name="Bundle" data-showitemselector="True" data-showcolorselector="False" bundle-item="" data-zoomscale="1.30" data-zoomyoffset="-5">
                     </div>
                 </div>
             </div>
-            <div id="avatarBundles" class="row">
+            <div id="avatarBundles" class="row col-xs-12" style="text-align:center;">
                 <ul class="nav" style="display: inline-table;">
                     <li>
 
@@ -92,7 +89,9 @@
                                 <ul class="dropdown-menu" id="bundle-drop">
                                     @foreach (var bundle in Model.Bundles)
                                     {
-                                        <li class="bundle-selectors" data-bundleid="@bundle.Id"> @bundle.Name</li>
+                                        <li class="bundle-selectors" data-bundleid="@bundle.Id" style="text-align:center;"> @bundle.Name 
+                                    <span style="font-size:10px; color:red; line-height:14px; vertical-align:top; " class="hide">  NEW!</span>
+                                    </li>
                                     }
                                 </ul>
                             }
@@ -204,11 +203,12 @@
                 }
             }
 
-            if( NewBundlesCheck()) {
-                $("#notif13").removeClass("hide");
+            if (NewBundlesCheck()) {
+                console.log("test");
+                $("#selector13").attr("src","/content/site1/avatarbundles/notif.png");
                 for(var bund = 0; bund < hasBeenViewed.length; bund++) {
                     if (hasBeenViewed[bund] == 0) {
-                        $($("#bundle-drop").find("li")[bund]).css("background-color", "red");
+                        $($("#bundle-drop").find("li")[bund]).find("span").removeClass("hide");
                     }
                 }
             }
@@ -728,6 +728,7 @@
         }
         function NewBundlesCheck() {
             for (var indicator in hasBeenViewed) {
+                console.log(hasBeenViewed[indicator]);
                 if (hasBeenViewed[indicator] == 0) {
                     return true;
                 }
@@ -765,7 +766,7 @@
             $(this).attr("id", "selected-bundle");
             $(this).addClass("active");
             selectedBundleId = $("li").find("#selected-bundle").data("bundleid");
-            $("#bundle-selected").text($(this).text());
+            $("#bundle-selected").text($(this).contents().not($(this).children()).text());
             $("#bundle-selected").append("<span class='caret'></span>");
 
             @foreach(var bundle in @Model.Bundles)
@@ -796,7 +797,7 @@
                 }
             }
             if(!NewBundlesCheck()) {
-                $("#notif13").addClass("hide");
+                $("#selector13").attr("src","/content/site1/avatarbundles/icon.png");
             }
             GetBundleById(selectedBundleId);
             SetLayer(13);
