@@ -118,7 +118,7 @@ namespace GRA.Controllers.MissionControl
             System.IO.File.Copy(Path.Combine(assetPath, "bundleicon.png"),
                 Path.Combine(bundlePath, "bundleicon.png"));
             totalFilesCopied++;
-            System.IO.File.Copy(Path.Combine(assetPath, "bundleicon.png"),
+            System.IO.File.Copy(Path.Combine(assetPath, "bundlenotif.png"),
                 Path.Combine(bundlePath, "bundlenotif.png"));
             totalFilesCopied++;
 

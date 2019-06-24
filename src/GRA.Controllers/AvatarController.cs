@@ -105,7 +105,9 @@ namespace GRA.Controllers
         {
             try
             {
-                await UpdateUsersBundles(selectionJson);
+                var selection = Newtonsoft.Json.JsonConvert
+                .DeserializeObject<List<UserLog>>(selectionJson);
+                await _avatarService.UpdateUserLogsAsync(selection);
                 return Json(new { success = true });
             }
             catch (GraException gex)
@@ -218,14 +220,6 @@ namespace GRA.Controllers
                         .DeserializeObject<ICollection<AvatarLayer>>(selectionJson);
             selection = selection.Where(_ => _.SelectedItem.HasValue).ToList();
             await _avatarService.UpdateUserAvatarAsync(selection);
-        }
-
-        [HttpPost]
-        private async Task UpdateUsersBundles(string bundles)
-        {
-            var selection = Newtonsoft.Json.JsonConvert
-            .DeserializeObject<List<UserLog>>(bundles);
-            await _avatarService.UpdateUserLogsAsync(selection);
         }
 
         public IActionResult InstagramImage(string id)

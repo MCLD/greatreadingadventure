@@ -62,8 +62,8 @@
                             </div>
                         }
                     }
-                    <div style="display: inline-block; position: absolute;" class="">
-                        <div style="position: relative;">
+                    <div style="display: inline-flex; position: absolute; clear: both;" class="col-xs-24">
+                        <div style="">
                             <img src="/content/site1\avatarbundles\bundleicon.png" style="position: absolute;" id="selector13" class="avatar-layer-selector" data-layer="13" data-name="Bundle" data-showitemselector="True" data-showcolorselector="False" bundle-item="" data-zoomscale="1.30" data-zoomyoffset="-5">
                             <img src="/content/site1\avatarbundles\bundlenotif.png" style="position: absolute;" id="notif13" class="avatar-layer-selector hide" data-layer="13" data-name="Bundle" data-showitemselector="True" data-showcolorselector="False" bundle-item="" data-zoomscale="1.30" data-zoomyoffset="-5">
                         </div>
@@ -203,7 +203,7 @@
                     @:hasBeenViewed.push(1);
                 }
             }
-            
+
             if( NewBundlesCheck()) {
                 $("#notif13").removeClass("hide");
                 for(var bund = 0; bund < hasBeenViewed.length; bund++) {
@@ -311,7 +311,7 @@
 
         }
         function SetItemSelectors() {
-
+            var totalitems = 0;
             if ($("#avatarItemSelectors").hasClass("slick-initialized")) {
                 $("#avatarItemSelectors").slick("unslick");
             }
@@ -334,6 +334,7 @@
                     }
 
                     $.each(currentLayer.Items, function (i, item) {
+                        totalitems++;
                         var itemPath = layerPath + item + "/thumbnail.jpg";
                         var itemContainer = $("<div>");
                         var itemImage = $("<img>", { "class": "avatar-item-selector item" + item, "data-item": item });
@@ -369,6 +370,7 @@
                                 lazyLoading = true;
                             }
                             for (var item = 0; item < bundles[i].Items.length; item++) {
+                                totalitems++;
                                 var layerId = GetItemsLayer(bundles[i].Items[item], 8);
                                 layerPath = baseImagePath + "layer" + layerId + "/item";
                                 var itemPath = layerPath + bundles[i].Items[item] + "/thumbnail.jpg";
@@ -404,6 +406,12 @@
                 }
                 var itemIndex = 0;
             }
+            var drag = true;
+            var infin = true;
+            if (currentLayer == 13 && totalitems / 12 <= 1) {
+                drag = false;
+                infin = false
+            }
 
             $("#avatarItemSelectors").slick({
                    arrows: false,
@@ -417,7 +425,22 @@
                 touchThreshold: 100,
                 variableWidth: true,
                 waitForAnimate: false,
+                infinite: infin,
                 responsive: [
+                    {
+                    breakpoint: 500,
+                    settings: {
+                        arrows: false,
+                        initialSlide: Math.floor(itemIndex / (itemRows * 3)) * 3,
+                        slidesToShow: 3,
+                        slidesToScroll: 3,
+                        swipeToSlide: false,
+                        touchThreshold: 10,
+                        variableWidth: false,
+                        waitForAnimate: true,
+                        draggable: drag
+                    }
+                    },
                     {
                        breakpoint: 768,
                         settings: {
@@ -695,29 +718,12 @@
         }
         function UpdateHasBeenViewed(bundle) {
             $.post("@Url.Action("UpdateUserLogs")", { selectionJson: bundle }, function (response) {
-                if (response.success == true) {
-                    console.log("Whoo");
-                }
-                else {
-                    console.log("boo");
-                }
             });
-            console.log(bundle);
             $.ajax({
                 type: "POST",
                 content: "application/json; charset=utf-8",
                 dataType: "json",
                 data: bundle,
-                success: function(d) {
-                    if (d.success == true)
-                        console.log("whoo");
-                    else {}
-                },
-                error: function (xhr, textStatus, errorThrown) {
-                    console.log(xhr);
-                    console.log(textStatus);
-                    console.log(errorThrown);
-                }
             });
         }
         function NewBundlesCheck() {
@@ -761,25 +767,27 @@
             selectedBundleId = $("li").find("#selected-bundle").data("bundleid");
             $("#bundle-selected").text($(this).text());
             $("#bundle-selected").append("<span class='caret'></span>");
-            $(this).css("background-color", "cyan");
 
             @foreach(var bundle in @Model.Bundles)
             {
                 @:var counter = 0;
                 @:if (@bundle.Id == selectedBundleId) {
                     @:for (var idx = 0; idx < hasBeenViewed.length; idx++) {
-                        @:if (idx == counter && hasBeenViewed[idx] == 0) {
-                            @:var bunds = {};
-                            @:var returnarr = new Array();
-                            @:bunds["AvatarBundleId"] = selectedBundleId;
-                            @:bunds["HasBeenViewed"] = 1;
-                            @:hasBeenViewed[counter] = 1;
-                            @:returnarr.push(bunds);
-                            @:UpdateHasBeenViewed(JSON.stringify(returnarr));
-                        @:}
+                        <text>
+                        if (idx == counter && hasBeenViewed[idx] == 0) {
+                            var bunds = {};
+                            var returnarr = new Array();
+                            bunds["AvatarBundleId"] = selectedBundleId;
+                            bunds["HasBeenViewed"] = 1;
+                            hasBeenViewed[counter] = 1;
+                            returnarr.push(bunds);
+                            UpdateHasBeenViewed(JSON.stringify(returnarr));
+                        }
+                        counter++;
+                        </text>
                     @:}
+
                 @:}
-                @:counter++;
             }
 
             for (var idx = 0; idx < hasBeenViewed.length; idx++) {
