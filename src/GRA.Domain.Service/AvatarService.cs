@@ -522,8 +522,7 @@ namespace GRA.Domain.Service
         public async Task<JobStatus> ImportAvatarsAsync(int jobId,
             CancellationToken token,
             IProgress<JobStatus> progress = null)
-        {
-            return null;
+        { 
             var requestingUser = GetClaimId(ClaimType.UserId);
 
             if (HasPermission(Permission.ManageAvatars))
@@ -534,11 +533,11 @@ namespace GRA.Domain.Service
                 var job = await _jobRepository.GetByIdAsync(jobId);
                 var jobDetails
                     = JsonConvert
-                        .DeserializeObject<JobDetailsVendorCodeStatus>(job.SerializedParameters);
+                        .DeserializeObject<JobDetailsAvatarImport>(job.SerializedParameters);
 
-                string filename = jobDetails.Filename;
+                string assetPath = jobDetails.AssetPath;
 
-                token.Register(() =>
+                token.Register((Action)(() =>
                 {
                     string duration = "";
                     if (sw?.Elapsed != null)
@@ -546,26 +545,205 @@ namespace GRA.Domain.Service
                         duration = $" after {sw.Elapsed.ToString("c")}";
                     }
                     _logger.LogWarning($"Import avatars for user {requestingUser} was cancelled{duration}.");
+                }));
+
+                IEnumerable<AvatarLayer> avatarList;
+                var jsonPath = Path.Combine(assetPath, "default avatars.json");
+                using (StreamReader file = System.IO.File.OpenText(jsonPath))
+                {
+                    var jsonString = await file.ReadToEndAsync();
+                    avatarList = JsonConvert.DeserializeObject<IEnumerable<AvatarLayer>>(jsonString);
+                }
+
+                var layerCount = avatarList.Count();
+                _logger.LogInformation($"Found {layerCount} AvatarLayer objects in avatar file");
+
+                // Layers + background
+                var processingCount = layerCount + 1;
+                var processedCount = 0;
+
+                var bundleJsonPath = Path.Combine(assetPath, "default bundles.json");
+                var bundleJsonExists = System.IO.File.Exists(bundleJsonPath);
+                if (bundleJsonExists)
+                {
+                    processingCount++;
+                }
+
+                var time = _dateTimeProvider.Now;
+                int totalFilesCopied = 0;
+                var siteId = GetCurrentSiteId();
+
+                progress.Report(new JobStatus
+                {
+                    PercentComplete = processedCount * 100 / processingCount,
+                    Status = $"Adding avatar background...",
+                    Error = false
                 });
 
-                string fullPath = _pathResolver.ResolvePrivateTempFilePath(filename);
-
-                if (!File.Exists(fullPath))
+                var backgroundRoot = Path.Combine($"site{siteId}", "avatarbackgrounds");
+                var backgroundPath = _pathResolver.ResolveContentFilePath(backgroundRoot);
+                if (!Directory.Exists(backgroundPath))
                 {
-                    _logger.LogError($"Could not find {fullPath}");
-                    return new JobStatus
-                    {
-                        PercentComplete = 0,
-                        Status = "Could not find the import file.",
-                        Error = true,
-                        Complete = true
-                    };
+                    Directory.CreateDirectory(backgroundPath);
                 }
+                System.IO.File.Copy(Path.Combine(assetPath, "background.png"),
+                    Path.Combine(backgroundPath, "background.png"));
+                totalFilesCopied++;
+                processedCount++;
+
+                foreach (var layer in avatarList)
+                {
+                    progress.Report(new JobStatus
+                    {
+                        PercentComplete = processedCount * 100 / processingCount,
+                        Status = $"Adding avatar layer: {layer.Name}...",
+                        Error = false
+                    });
+
+                    int layerFilesCopied = 0;
+
+                    var colors = layer.AvatarColors;
+                    var items = layer.AvatarItems;
+                    layer.AvatarColors = null;
+                    layer.AvatarItems = null;
+
+                    var addedLayer = await AddLayerAsync(layer);
+
+                    var layerAssetPath = Path.Combine(assetPath, addedLayer.Name);
+                    var destinationRoot = Path.Combine($"site{siteId}", "avatars", $"layer{addedLayer.Id}");
+                    var destinationPath = _pathResolver.ResolveContentFilePath(destinationRoot);
+                    if (!Directory.Exists(destinationPath))
+                    {
+                        Directory.CreateDirectory(destinationPath);
+                    }
+
+                    addedLayer.Icon = Path.Combine(destinationRoot, "icon.png");
+                    System.IO.File.Copy(Path.Combine(layerAssetPath, "icon.png"),
+                        Path.Combine(destinationPath, "icon.png"));
+
+                    await UpdateLayerAsync(addedLayer);
+
+                    if (colors != null)
+                    {
+                        foreach (var color in colors)
+                        {
+                            color.AvatarLayerId = addedLayer.Id;
+                            color.CreatedAt = time;
+                            color.CreatedBy = requestingUser;
+                        }
+                        await AddColorListAsync(colors);
+                        colors = await GetColorsByLayerAsync(addedLayer.Id);
+                    }
+                    foreach (var item in items)
+                    {
+                        item.AvatarLayerId = addedLayer.Id;
+                        item.CreatedAt = time;
+                        item.CreatedBy = requestingUser;
+                    }
+                    await AddItemListAsync(items);
+                    items = await GetItemsByLayerAsync(addedLayer.Id);
+
+                    var elementList = new List<AvatarElement>();
+                    _logger.LogInformation($"Processing {items.Count} items in {addedLayer.Name}...");
+
+                    foreach (var item in items)
+                    {
+                        var itemAssetPath = Path.Combine(layerAssetPath, item.Name);
+                        var itemRoot = Path.Combine(destinationRoot, $"item{item.Id}");
+                        var itemPath = Path.Combine(destinationPath, $"item{item.Id}");
+                        if (!Directory.Exists(itemPath))
+                        {
+                            Directory.CreateDirectory(itemPath);
+                        }
+                        item.Thumbnail = Path.Combine(itemRoot, "thumbnail.jpg");
+                        System.IO.File.Copy(Path.Combine(itemAssetPath, "thumbnail.jpg"),
+                            Path.Combine(itemPath, "thumbnail.jpg"));
+                        if (colors != null)
+                        {
+                            foreach (var color in colors)
+                            {
+                                var element = new AvatarElement()
+                                {
+                                    AvatarItemId = item.Id,
+                                    AvatarColorId = color.Id,
+                                    Filename = Path.Combine(itemRoot, $"item_{color.Id}.png")
+                                };
+                                elementList.Add(element);
+                                System.IO.File.Copy(
+                                    Path.Combine(itemAssetPath, $"{color.Color}.png"),
+                                    Path.Combine(itemPath, $"item_{color.Id}.png"));
+                                layerFilesCopied++;
+                            }
+                        }
+                        else
+                        {
+                            var element = new AvatarElement()
+                            {
+                                AvatarItemId = item.Id,
+                                Filename = Path.Combine(itemRoot, "item.png")
+                            };
+                            elementList.Add(element);
+                            System.IO.File.Copy(Path.Combine(itemAssetPath, "item.png"),
+                                Path.Combine(itemPath, "item.png"));
+                            layerFilesCopied++;
+                        }
+                    }
+
+                    await UpdateItemListAsync(items);
+                    await AddElementListAsync(elementList);
+                    totalFilesCopied += layerFilesCopied;
+                    _logger.LogInformation($"Copied {layerFilesCopied} items for {layer.Name}");
+
+                    processedCount++;
+                }
+                _logger.LogInformation($"Copied {totalFilesCopied} items for all layers.");
+
+                if (bundleJsonExists)
+                {
+                    progress.Report(new JobStatus
+                    {
+                        PercentComplete = processedCount * 100 / processingCount,
+                        Status = $"Adding avatar default bundles...",
+                        Error = false
+                    });
+
+                    IEnumerable<AvatarBundle> bundleList;
+                    using (StreamReader file = System.IO.File.OpenText(bundleJsonPath))
+                    {
+                        var jsonString = await file.ReadToEndAsync();
+                        bundleList = JsonConvert.DeserializeObject<IEnumerable<AvatarBundle>>(jsonString);
+                    }
+
+                    foreach (var bundle in bundleList)
+                    {
+                        _logger.LogInformation($"Processing bundle {bundle.Name}...");
+                        var items = new List<int>();
+                        foreach (var bundleItem in bundle.AvatarItems)
+                        {
+                            var item = await GetItemByLayerPositionSortOrderAsync(
+                                bundleItem.AvatarLayerPosition, bundleItem.SortOrder);
+                            items.Add(item.Id);
+                        }
+                        bundle.AvatarItems = null;
+                        await AddBundleAsync(bundle, items);
+                    }
+                }
+
+                sw.Stop();
+                _logger.LogInformation($"Default avatars added in {sw.Elapsed.TotalSeconds} seconds.");
+
+                return new JobStatus
+                {
+                    PercentComplete = 100,
+                    Complete = true,
+                    Status = "<strong>Import Complete</strong>"
+                };
+
 
             }
             else
             {
-                _logger.LogError($"User {requestingUser} doesn't have permission to view all reporting.");
+                _logger.LogError($"User {requestingUser} doesn't have permission to import avatars.");
                 return new JobStatus
                 {
                     PercentComplete = 0,
