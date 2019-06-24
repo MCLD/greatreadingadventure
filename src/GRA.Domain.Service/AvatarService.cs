@@ -558,7 +558,7 @@ namespace GRA.Domain.Service
                 var layerCount = avatarList.Count();
                 _logger.LogInformation($"Found {layerCount} AvatarLayer objects in avatar file");
 
-                // Layers + background
+                // Layers + background/bundles
                 var processingCount = layerCount + 1;
                 var processedCount = 0;
 
@@ -572,24 +572,6 @@ namespace GRA.Domain.Service
                 var time = _dateTimeProvider.Now;
                 int totalFilesCopied = 0;
                 var siteId = GetCurrentSiteId();
-
-                progress.Report(new JobStatus
-                {
-                    PercentComplete = processedCount * 100 / processingCount,
-                    Status = $"Adding avatar background...",
-                    Error = false
-                });
-
-                var backgroundRoot = Path.Combine($"site{siteId}", "avatarbackgrounds");
-                var backgroundPath = _pathResolver.ResolveContentFilePath(backgroundRoot);
-                if (!Directory.Exists(backgroundPath))
-                {
-                    Directory.CreateDirectory(backgroundPath);
-                }
-                System.IO.File.Copy(Path.Combine(assetPath, "background.png"),
-                    Path.Combine(backgroundPath, "background.png"));
-                totalFilesCopied++;
-                processedCount++;
 
                 foreach (var layer in avatarList)
                 {
@@ -696,17 +678,28 @@ namespace GRA.Domain.Service
 
                     processedCount++;
                 }
+
+                progress.Report(new JobStatus
+                {
+                    PercentComplete = processedCount * 100 / processingCount,
+                    Status = $"Finishing avatar import...",
+                    Error = false
+                });
+
+                var backgroundRoot = Path.Combine($"site{siteId}", "avatarbackgrounds");
+                var backgroundPath = _pathResolver.ResolveContentFilePath(backgroundRoot);
+                if (!Directory.Exists(backgroundPath))
+                {
+                    Directory.CreateDirectory(backgroundPath);
+                }
+                System.IO.File.Copy(Path.Combine(assetPath, "background.png"),
+                    Path.Combine(backgroundPath, "background.png"));
+                totalFilesCopied++;
+
                 _logger.LogInformation($"Copied {totalFilesCopied} items for all layers.");
 
                 if (bundleJsonExists)
                 {
-                    progress.Report(new JobStatus
-                    {
-                        PercentComplete = processedCount * 100 / processingCount,
-                        Status = $"Adding avatar default bundles...",
-                        Error = false
-                    });
-
                     IEnumerable<AvatarBundle> bundleList;
                     using (StreamReader file = System.IO.File.OpenText(bundleJsonPath))
                     {
