@@ -1242,7 +1242,8 @@ namespace GRA.Domain.Service
                     PointsEarned = 0,
                     IsDeleted = false,
                     AvatarBundleId = bundleId,
-                    Description = $"You unlocked the <strong>{bundle.Name}</strong> avatar bundle!"
+                    Description = $"You unlocked the <strong>{bundle.Name}</strong> avatar bundle! You can now see your new bundle on the Avatar's page!",
+                    HasBeenViewed = false
                 });
 
                 if (!bundle.HasBeenAwarded)

@@ -19,5 +19,6 @@ namespace GRA.Domain.Repository
         AvatarBundle GetItemsBundles(int bundleIds);
         List<int> GetBundleId(int itemId);
         Task<List<UserLog>> UserHistoryAsync(int userId);
+        Task UpdateHasBeenViewed(int userId, int bundleId);
     }
 }

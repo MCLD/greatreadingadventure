@@ -21,7 +21,6 @@ namespace GRA.Domain.Service
         private readonly IAvatarLayerRepository _avatarLayerRepository;
         private readonly ITriggerRepository _triggerRepository;
         private readonly IPathResolver _pathResolver;
-        private readonly IUserLogRepository _userLogRepository;
 
         public AvatarService(ILogger<AvatarService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
@@ -439,6 +438,14 @@ namespace GRA.Domain.Service
                 }
             }
             return Tuple.Create(usersbundles,hasbeenviewed);
+        }
+
+        public async Task UpdateUserLogsAsync(List<UserLog> userLog)
+        {
+            foreach(var bundle in userLog)
+            {
+                await _avatarBundleRepository.UpdateHasBeenViewed(GetActiveUserId(), bundle.AvatarBundleId.Value);
+            }
         }
 
         public async Task UpdateUserAvatarAsync(ICollection<AvatarLayer> selectionLayers)

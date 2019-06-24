@@ -62,8 +62,11 @@
                             </div>
                         }
                     }
-                    <div style="display: inline-block;" class="">
-                        <img src="/content/site1\avatarbundles\bundleicon.png" id="selector13" class="avatar-layer-selector" data-layer="13" data-name="Bundle" data-showitemselector="True" data-showcolorselector="False" bundle-item="" data-zoomscale="1.30" data-zoomyoffset="-5">
+                    <div style="display: inline-block; position: absolute;" class="">
+                        <div style="position: relative;">
+                            <img src="/content/site1\avatarbundles\bundleicon.png" style="position: absolute;" id="selector13" class="avatar-layer-selector" data-layer="13" data-name="Bundle" data-showitemselector="True" data-showcolorselector="False" bundle-item="" data-zoomscale="1.30" data-zoomyoffset="-5">
+                            <img src="/content/site1\avatarbundles\bundlenotif.png" style="position: absolute;" id="notif13" class="avatar-layer-selector hide" data-layer="13" data-name="Bundle" data-showitemselector="True" data-showcolorselector="False" bundle-item="" data-zoomscale="1.30" data-zoomyoffset="-5">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -164,7 +167,7 @@
         var baseImagePath = "@Url.Content($"~/{Model.ImagePath}")";
         var layers = $.parseJSON('@Html.Raw(Model.AvatarPiecesJson)').Layers;
         var bundles = $.parseJSON('@Html.Raw(Model.AvatarBundlesJson)').Bundles;
-        var hasBeenViewed = [];
+        var hasBeenViewed = new Array();
         var currentLayerImage;
         var currentLayerRemovable;
         var currentLayerSelector;
@@ -183,7 +186,6 @@
 
         SetLayer(@Model.DefaultLayer);
         InitHasBeenViewed();
-        console.log(hasBeenViewed);
 
         $.ajaxSetup({
             timeout: 30000
@@ -201,11 +203,13 @@
                     @:hasBeenViewed.push(1);
                 }
             }
-            for(var bund = 0; bund < hasBeenViewed.length; bund++) {
-                console.log("hey");
-                if (hasBeenViewed[bund] == 0) {
-                    console.log("hey2");
-                    $($("#bundle-drop").find("li")[bund]).css("background-color","red");
+            
+            if( NewBundlesCheck()) {
+                $("#notif13").removeClass("hide");
+                for(var bund = 0; bund < hasBeenViewed.length; bund++) {
+                    if (hasBeenViewed[bund] == 0) {
+                        $($("#bundle-drop").find("li")[bund]).css("background-color", "red");
+                    }
                 }
             }
         }
@@ -353,15 +357,10 @@
                     var itemIndex = Math.max(currentLayer.Items.indexOf(selectedItem), 0);
                 }
             }
-            else{
-                if (selectedBundleId != null){
-                    @*@foreach(var bundle in @Model.Bundles){
-                        @:if (@bundle.Id == selectedBundleId)
-                        {
-                            @bundle.HasBeenViewed.Post = 1;
-                        }
-                    }*@
-                    if (selectedBundleId)
+            else
+            {
+                if (selectedBundleId != null)
+                {
                     $("#avatarItemSelectors").empty();
                     for (var i = 0; i < bundles.length;i++){
                         if (bundles[i].Id == selectedBundleId){
@@ -403,7 +402,6 @@
                         }
                     }
                 }
-
                 var itemIndex = 0;
             }
 
@@ -585,7 +583,6 @@
                 $(".item" + item).addClass("selected");
             }
             selectedbundles.push(item);
-            console.log(selectedbundles);
             SetBundleLayerImage(bundlelayerPath, item);
         }
         function SetBundleLayerImage(bundlelayerPath, item) {
@@ -660,7 +657,7 @@
                 layer['SelectedItem'] = $(this).data("item");
                 layer['SelectedColor'] = $(this).data("color");
                 data_array.push(layer);
-            })
+            });
             return JSON.stringify(data_array);
         }
 
@@ -696,6 +693,41 @@
                 $("#saveAvatar").removeAttr("disabled");
             });
         }
+        function UpdateHasBeenViewed(bundle) {
+            $.post("@Url.Action("UpdateUserLogs")", { selectionJson: bundle }, function (response) {
+                if (response.success == true) {
+                    console.log("Whoo");
+                }
+                else {
+                    console.log("boo");
+                }
+            });
+            console.log(bundle);
+            $.ajax({
+                type: "POST",
+                content: "application/json; charset=utf-8",
+                dataType: "json",
+                data: bundle,
+                success: function(d) {
+                    if (d.success == true)
+                        console.log("whoo");
+                    else {}
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.log(xhr);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                }
+            });
+        }
+        function NewBundlesCheck() {
+            for (var indicator in hasBeenViewed) {
+                if (hasBeenViewed[indicator] == 0) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         $(".avatar-layer-selector").on("click", function () {
             if ($(this).data("layer") == 13) {
@@ -729,6 +761,35 @@
             selectedBundleId = $("li").find("#selected-bundle").data("bundleid");
             $("#bundle-selected").text($(this).text());
             $("#bundle-selected").append("<span class='caret'></span>");
+            $(this).css("background-color", "cyan");
+
+            @foreach(var bundle in @Model.Bundles)
+            {
+                @:var counter = 0;
+                @:if (@bundle.Id == selectedBundleId) {
+                    @:for (var idx = 0; idx < hasBeenViewed.length; idx++) {
+                        @:if (idx == counter && hasBeenViewed[idx] == 0) {
+                            @:var bunds = {};
+                            @:var returnarr = new Array();
+                            @:bunds["AvatarBundleId"] = selectedBundleId;
+                            @:bunds["HasBeenViewed"] = 1;
+                            @:hasBeenViewed[counter] = 1;
+                            @:returnarr.push(bunds);
+                            @:UpdateHasBeenViewed(JSON.stringify(returnarr));
+                        @:}
+                    @:}
+                @:}
+                @:counter++;
+            }
+
+            for (var idx = 0; idx < hasBeenViewed.length; idx++) {
+                if (bundles[idx].Id == selectedBundleId) {
+                    hasBeenViewed[idx] = 1;
+                }
+            }
+            if(!NewBundlesCheck()) {
+                $("#notif13").addClass("hide");
+            }
             GetBundleById(selectedBundleId);
             SetLayer(13);
         });
@@ -774,7 +835,7 @@
             if (unsavedChanges) {
                 @if (Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null){
                     @:gtag('event', 'avatar_update');
-            }
+                 }
 
             $("<input />")
             .attr("type", "hidden")

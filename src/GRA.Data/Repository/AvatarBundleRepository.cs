@@ -20,6 +20,7 @@ namespace GRA.Data.Repository
             ILogger<AvatarBundleRepository> logger) : base(repositoryFacade, logger)
         {
         }
+
         public async Task<List<UserLog>> UserHistoryAsync(int userId)
         {
             var userLogs = await _context.UserLogs
@@ -43,6 +44,20 @@ namespace GRA.Data.Repository
             }
 
             return userLogs;
+        }
+
+        public async Task UpdateHasBeenViewed(int userId, int bundleId)
+        {
+            var userLog = await _context.UserLogs
+            .Where(_ => _.UserId == userId && !_.IsDeleted && _.AvatarBundleId == bundleId)
+            .SingleAsync();
+
+            if (userLog != null)
+            {
+                userLog.HasBeenViewed = true;
+                _context.UserLogs.Update(userLog);
+            }
+            await SaveAsync();
         }
 
         public async Task<AvatarBundle> GetByIdAsync(int id, bool includeDeleted)
@@ -168,9 +183,9 @@ namespace GRA.Data.Repository
                 .Select(_ => _.AvatarBundleId).ToList();
         }
 
-        public AvatarBundle GetItemsBundles(int bundleId)
+        public AvatarBundle GetItemsBundles(int bundleIds)
         {
-            return GetByIdAsync(bundleId).Result;
+            return GetByIdAsync(bundleIds).Result;
         }
 
         public void RemoveItemFromBundles(int id)

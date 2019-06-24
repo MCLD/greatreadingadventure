@@ -100,6 +100,20 @@ namespace GRA.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<JsonResult> UpdateUserLogs(string selectionJson)
+        {
+            try
+            {
+                await UpdateUsersBundles(selectionJson);
+                return Json(new { success = true });
+            }
+            catch (GraException gex)
+            {
+                return Json(new { success = false, message = gex.Message });
+            }
+        }
+
         public async Task<IActionResult> Share()
         {
             PageTitle = _sharedLocalizer[Annotations.Title.ShareYourAvatar];
@@ -199,16 +213,20 @@ namespace GRA.Controllers
         }
 
        private async Task UpdateAvatar(string selectionJson)
-        { 
+        {
             var selection = Newtonsoft.Json.JsonConvert
                         .DeserializeObject<ICollection<AvatarLayer>>(selectionJson);
             selection = selection.Where(_ => _.SelectedItem.HasValue).ToList();
             await _avatarService.UpdateUserAvatarAsync(selection);
         }
 
-        //private async Task UpdateUsersBundles(string bundles)
-        //{
-        //}
+        [HttpPost]
+        private async Task UpdateUsersBundles(string bundles)
+        {
+            var selection = Newtonsoft.Json.JsonConvert
+            .DeserializeObject<List<UserLog>>(bundles);
+            await _avatarService.UpdateUserLogsAsync(selection);
+        }
 
         public IActionResult InstagramImage(string id)
         {
