@@ -204,7 +204,6 @@
             }
 
             if (NewBundlesCheck()) {
-                console.log("test");
                 $("#selector13").attr("src","/content/site1/avatarbundles/notif.png");
                 for(var bund = 0; bund < hasBeenViewed.length; bund++) {
                     if (hasBeenViewed[bund] == 0) {
@@ -728,7 +727,6 @@
         }
         function NewBundlesCheck() {
             for (var indicator in hasBeenViewed) {
-                console.log(hasBeenViewed[indicator]);
                 if (hasBeenViewed[indicator] == 0) {
                     return true;
                 }
