@@ -51,14 +51,7 @@ namespace GRA.Web
                     return;
                 }
 
-                if (context.Request.Path.Value.Contains("processvendor"))
-                {
-                    var vendorCodeService = context
-                        .RequestServices
-                        .GetRequiredService<VendorCodeService>();
-                    await RunWsTaskAsync(context, vendorCodeService.UpdateStatusFromExcel);
-                }
-                else if (context.Request.Path.Value.Contains("runjob"))
+                if (context.Request.Path.Value.Contains("runjob"))
                 {
                     var jobService = context.RequestServices.GetRequiredService<JobService>();
                     await RunWsTaskAsync(context, jobService.RunJob);
@@ -143,7 +136,7 @@ namespace GRA.Web
                     // ideal state is socket still open, task complete
                     if (webSocket.State == WebSocketState.Open && runTask.IsCompleted)
                     {
-                        _logger.LogInformation($"Task {runTask.Status}, socket {webSocket.State}, sending final update after {sw.Elapsed.TotalSeconds}s.");
+                        _logger.LogInformation($"WebSocket {runTask.Status}, socket {webSocket.State}, sending final update after {sw.Elapsed:c}.");
 
                         var result = runTask.Result;
                         result.Complete = true;

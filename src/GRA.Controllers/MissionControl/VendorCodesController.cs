@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
-using GRA.Controllers.ServiceFacade;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -18,14 +17,18 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.ManageVendorCodes)]
     public class VendorCodesController : Base.MCController
     {
-        private readonly SiteService _siteService;
+        private readonly ILogger _logger;
+        private readonly JobService _jobService;
         private readonly VendorCodeService _vendorCodeService;
+
         public VendorCodesController(ServiceFacade.Controller context,
-            SiteService siteService,
+            ILogger<VendorCodesController> logger,
+            JobService jobService,
             VendorCodeService vendorCodeService)
             : base(context)
         {
-            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _jobService = jobService ?? throw new ArgumentNullException(nameof(jobService));
             _vendorCodeService = vendorCodeService
                 ?? throw new ArgumentNullException(nameof(vendorCodeService));
             PageTitle = "Vendor code management";
@@ -39,7 +42,6 @@ namespace GRA.Controllers.MissionControl
             {
                 Value = _.Id.ToString(),
                 Text = _.Description
-
             });
             return View(codeTypeSelectList);
         }
@@ -49,7 +51,8 @@ namespace GRA.Controllers.MissionControl
             Microsoft.AspNetCore.Http.IFormFile excelFile)
         {
             if (excelFile == null
-                || Path.GetExtension(excelFile.FileName).ToLower() != ".xls")
+                || !string.Equals(Path.GetExtension(excelFile.FileName), ".xls",
+                    StringComparison.OrdinalIgnoreCase))
             {
                 AlertDanger = "You must select an .xls file.";
                 ModelState.AddModelError("excelFile", "You must select an .xls file.");
@@ -58,28 +61,43 @@ namespace GRA.Controllers.MissionControl
 
             if (ModelState.ErrorCount == 0)
             {
-                var tempFile = Path.GetTempFileName();
+                var tempFile = _pathResolver.ResolvePrivateTempFilePath();
+                _logger.LogInformation("Accepted vendor id {vendorCodeId} import file {UploadFile} as {TempFile}",
+                    vendorCodeId,
+                    excelFile.FileName,
+                    tempFile);
+
                 using (var fileStream = new FileStream(tempFile, FileMode.Create))
                 {
                     await excelFile.CopyToAsync(fileStream);
                 }
+
                 string file = WebUtility.UrlEncode(Path.GetFileName(tempFile));
-                return RedirectToAction("ImportFile", new { id = file });
+
+                var jobToken = await _jobService.CreateJobAsync(new Job
+                {
+                    JobType = JobType.UpdateVendorStatus,
+                    SerializedParameters = JsonConvert
+                        .SerializeObject(new JobDetailsVendorCodeStatus
+                        {
+                            Filename = file
+                        })
+                });
+
+                return View("Job", new ViewModel.MissionControl.Shared.JobViewModel
+                {
+                    CancelUrl = Url.Action(nameof(ImportStatus)),
+                    JobToken = jobToken.ToString(),
+                    PingSeconds = 5,
+                    SuccessRedirectUrl = "",
+                    SuccessUrl = Url.Action(nameof(ImportStatus)),
+                    Title = "Loading import..."
+                });
             }
             else
             {
                 return RedirectToAction("ImportStatus");
             }
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> ImportFile(string id)
-        {
-            PageTitle = "Import Vendor Status";
-
-            var wsUrl = await _siteService.GetWsUrl(Request.Scheme, Request.Host.Value);
-
-            return View("ImportFile", $"{wsUrl}/MissionControl/processvendor/{id}");
         }
     }
 }

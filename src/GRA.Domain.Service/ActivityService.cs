@@ -470,7 +470,7 @@ namespace GRA.Domain.Service
                     || challengeTaskDetails.ChallengeTaskType == ChallengeTaskType.Book)
                 {
                     // did something change?
-                    _logger.LogDebug($"Challenge task {updateStatus.ChallengeTask.Id} counts as an activity");
+                    _logger.LogTrace($"Challenge task {updateStatus.ChallengeTask.Id} counts as an activity");
                     if (updateStatus.WasComplete != updateStatus.IsComplete)
                     {
                         _logger.LogDebug($"Status of {updateStatus.ChallengeTask.Id}: was {updateStatus.WasComplete}, is {updateStatus.IsComplete}");
@@ -614,6 +614,7 @@ namespace GRA.Domain.Service
         {
             var userContext = GetUserContext();
             var logPoints = userContext.SiteStage == SiteStage.ProgramOpen;
+
             await AwardTriggersAsync(userId, logPoints, userContext.SiteId,
                 !userContext.User.Identity.IsAuthenticated);
 

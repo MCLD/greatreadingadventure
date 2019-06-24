@@ -202,7 +202,17 @@ namespace GRA.Domain.Service
                 .SetUserPasswordAsync(registeredUser.Id, registeredUser.Id, password);
 
             await JoinedProgramNotificationBadge(registeredUser);
-            await _activityService.AwardUserTriggersAsync(registeredUser.Id, false);
+
+            var sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
+            await AwardUserBadgesAsync(registeredUser.Id, false, false);
+            sw.Stop();
+            if (sw.Elapsed.TotalSeconds > 5)
+            {
+                _logger.LogInformation("Registration for user id {UserId} took {Elapsed} to award triggers.",
+                    registeredUser.Id,
+                    sw.Elapsed.ToString("c"));
+            }
 
             return registeredUser;
         }
@@ -649,7 +659,18 @@ namespace GRA.Domain.Service
                 }
 
                 await JoinedProgramNotificationBadge(registeredUser);
-                await _activityService.AwardUserTriggersAsync(registeredUser.Id, false);
+
+                var sw = new System.Diagnostics.Stopwatch();
+                sw.Start();
+                await AwardUserBadgesAsync(registeredUser.Id, false, false);
+                sw.Stop();
+                if (sw.Elapsed.TotalSeconds > 5)
+                {
+                    _logger.LogInformation("Registration for household member {UserId} took {Elapsed} to award triggers.",
+                        registeredUser.Id,
+                        sw.Elapsed.ToString("c"));
+                }
+
                 return registeredUser;
             }
             else
@@ -1059,7 +1080,18 @@ namespace GRA.Domain.Service
             await _notificationRepository.AddSaveAsync(registeredUser.Id, notification);
         }
 
-        public async Task AwardMissingJoinBadgeAsync(int userId)
+        public async Task AwardUserBadgesAsync(int userId, bool awardJoinBadge,
+            bool awardHousehold)
+        {
+            if (awardJoinBadge)
+            {
+                await AwardMissingJoinBadgeAsync(userId, awardHousehold);
+            }
+
+            await _activityService.AwardUserTriggersAsync(userId, awardHousehold);
+        }
+
+        private async Task AwardMissingJoinBadgeAsync(int userId, bool awardHousehold)
         {
             var site = await _siteLookupService.GetByIdAsync(GetCurrentSiteId());
 
@@ -1073,6 +1105,8 @@ namespace GRA.Domain.Service
             {
                 var badge = await _badgeRepository.GetByIdAsync(program.JoinBadgeId.Value);
                 await _badgeRepository.AddUserBadge(user.Id, badge.Id);
+
+                badgeList.Add(badge);
 
                 await _userLogRepository.AddAsync(user.Id, new UserLog
                 {
@@ -1097,56 +1131,59 @@ namespace GRA.Domain.Service
                 await _notificationRepository.AddSaveAsync(user.Id, notification);
             }
 
-            var householdMemebers = await _userRepository.GetHouseholdAsync(userId);
-            if (householdMemebers.Any())
+            if (awardHousehold)
             {
-                var programList = new List<Program> { program };
-                foreach (var member in householdMemebers)
+                var householdMemebers = await _userRepository.GetHouseholdAsync(userId);
+                if (householdMemebers.Any())
                 {
-                    var memberProgram = programList
-                        .SingleOrDefault(_ => _.Id == member.ProgramId);
-                    if (memberProgram == null)
+                    var programList = new List<Program> { program };
+                    foreach (var member in householdMemebers)
                     {
-                        memberProgram = await _programRepository.GetByIdAsync(member.ProgramId);
-                        programList.Add(memberProgram);
-                    }
-
-                    if (memberProgram.JoinBadgeId.HasValue
-                         && !await _badgeRepository.UserHasJoinBadgeAsync(member.Id))
-                    {
-                        var badge = badgeList
-                            .SingleOrDefault(_ => _.Id == memberProgram.JoinBadgeId.Value);
-                        if (badge == null)
+                        var memberProgram = programList
+                            .SingleOrDefault(_ => _.Id == member.ProgramId);
+                        if (memberProgram == null)
                         {
-                            badge = await _badgeRepository.GetByIdAsync(
-                                memberProgram.JoinBadgeId.Value);
-                            badgeList.Add(badge);
+                            memberProgram = await _programRepository.GetByIdAsync(member.ProgramId);
+                            programList.Add(memberProgram);
                         }
 
-                        await _badgeRepository.AddUserBadge(member.Id,
-                            memberProgram.JoinBadgeId.Value);
-
-                        await _userLogRepository.AddAsync(user.Id, new UserLog
+                        if (memberProgram.JoinBadgeId.HasValue
+                             && !await _badgeRepository.UserHasJoinBadgeAsync(member.Id))
                         {
-                            UserId = member.Id,
-                            PointsEarned = 0,
-                            IsDeleted = false,
-                            BadgeId = badge.Id,
-                            Description = _sharedLocalizer[Annotations.Interface.Joined, site.Name]
-                        });
+                            var badge = badgeList
+                                .SingleOrDefault(_ => _.Id == memberProgram.JoinBadgeId.Value);
+                            if (badge == null)
+                            {
+                                badge = await _badgeRepository.GetByIdAsync(
+                                    memberProgram.JoinBadgeId.Value);
+                                badgeList.Add(badge);
+                            }
 
-                        // note this text is localized and displayed properly in SessionTimeoutFilterAttribute
-                        var notification = new Notification
-                        {
-                            BadgeFilename = badge.Filename,
-                            BadgeId = badge.Id,
-                            PointsEarned = 0,
-                            Text = $"<span class=\"fa fa-thumbs-o-up\"></span> You've successfully joined <strong>{site.Name}</strong>!",
-                            UserId = member.Id,
-                            IsJoiner = true
-                        };
+                            await _badgeRepository.AddUserBadge(member.Id,
+                                memberProgram.JoinBadgeId.Value);
 
-                        await _notificationRepository.AddSaveAsync(member.Id, notification);
+                            await _userLogRepository.AddAsync(user.Id, new UserLog
+                            {
+                                UserId = member.Id,
+                                PointsEarned = 0,
+                                IsDeleted = false,
+                                BadgeId = badge.Id,
+                                Description = _sharedLocalizer[Annotations.Interface.Joined, site.Name]
+                            });
+
+                            // note this text is localized and displayed properly in SessionTimeoutFilterAttribute
+                            var notification = new Notification
+                            {
+                                BadgeFilename = badge.Filename,
+                                BadgeId = badge.Id,
+                                PointsEarned = 0,
+                                Text = $"<span class=\"fa fa-thumbs-o-up\"></span> You've successfully joined <strong>{site.Name}</strong>!",
+                                UserId = member.Id,
+                                IsJoiner = true
+                            };
+
+                            await _notificationRepository.AddSaveAsync(member.Id, notification);
+                        }
                     }
                 }
             }

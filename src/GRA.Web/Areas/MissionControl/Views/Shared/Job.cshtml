@@ -1,4 +1,4 @@
-﻿@model string
+﻿@model GRA.Controllers.ViewModel.MissionControl.Shared.JobViewModel
 <div class="modal fade" tabindex="-1" role="dialog" id="wsModal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -18,13 +18,13 @@
             </div>
             <div class="modal-footer">
                 <div class="form-control-static pull-left" style="width: 2rem;">
-                    <span class="fas fa-arrow-circle-up" 
-                          id="sendWs" 
+                    <span class="fas fa-arrow-circle-up"
+                          id="sendWs"
                           style="color: steelblue;"></span>
                 </div>
                 <div class="form-control-static pull-left" style="width: 2rem;">
-                    <span class="fas fa-arrow-circle-down" 
-                          id="recvWs" 
+                    <span class="fas fa-arrow-circle-down"
+                          id="recvWs"
                           style="color: lightcoral;"></span>
                 </div>
                 <button type="button" class="btn" id="cancelWs">Cancel</button>
@@ -40,17 +40,17 @@
     var wsCancel = false;
     var wsError = false;
     var wsTryingToConnect = false;
-    var wsPageTitle = document.title;
+    var wsPageTitle = '@Model.Title';
     var webSocket;
     var wsPing;
     var wsFunction = 'job';
     var wsScheme = document.location.protocol == "https:" ? "wss" : "ws";
     var wsPort = document.location.port ? (":" + document.location.port) : "";
-    var wsUrl = wsScheme + "://" + document.location.hostname + wsPort + "/runjob/@Model";
-    var wsSuccessUrl = '/MissionControl/';
-    var wsSuccessRedirect = '';
-    var wsCompleteButton = 'Back to Mission Control';
-    var wsCancelUrl = '/MissionControl/';
+    var wsUrl = wsScheme + "://" + document.location.hostname + wsPort + "/runjob/@Model.JobToken";
+    var wsSuccessUrl = '@Model.SuccessUrl';
+    var wsSuccessRedirect = '@Model.SuccessRedirectUrl';
+    var wsCompleteButton = '@Model.CompleteButton';
+    var wsCancelUrl = '@Model.CancelUrl';
 
     function updateState(e) {
         if (!webSocket) {
@@ -60,6 +60,7 @@
                 case WebSocket.CLOSED:
                     clearPing();
                     if (wsStarted && wsFinished) {
+                        console.log("Socket closed, error status: " + wsError);
                         if (wsSuccessRedirect.length > 0 && !wsError) {
                             window.location.href = wsSuccessRedirect;
                         }
@@ -106,22 +107,34 @@
                             $('#recvWs').fadeOut(500);
                         });
                         if (incoming.Title) {
-                            $('#wsTitle').html(incoming.Title);
-                            wsPageTitle = incoming.Title;
+                            if (wsPageTitle != incoming.Title) {
+                                wsPageTitle = incoming.Title;
+                                $('#wsTitle').html(wsPageTitle);
+                                console.log("Job title: " + wsPageTitle);
+                            }
                         }
                         if (incoming.SuccessUrl) {
                             if (incoming.SuccessRedirect) {
-                                wsSuccessUrl = '';
-                                wsSuccessRedirect = incoming.SuccessUrl;
-                            }   
+                                if (incoming.SuccessUrl != wsSuccessRedirect) {
+                                    wsSuccessUrl = '';
+                                    wsSuccessRedirect = incoming.SuccessUrl;
+                                    console.log("On success, redirect to: " + wsSuccessRedirect);
+                                }
+                            }
                             else
                             {
-                                wsSuccessUrl = incoming.SuccessUrl;
-                                wsSuccessRedirect = '';
+                                if (incoming.SuccessUrl != wsSuccessUrl) {
+                                    wsSuccessUrl = incoming.SuccessUrl;
+                                    wsSuccessRedirect = '';
+                                    console.log("On success, link to: " + wsSuccessUrl);
+                                }
                             }
                         }
                         if (incoming.CancelUrl) {
-                            wsCancelUrl = incoming.CancelUrl;
+                            if (incoming.CancelUrl != wsCancelUrl) {
+                                wsCancelUrl = incoming.CancelUrl;
+                                console.log("On cancel, link to: " + wsCancelUrl);
+                            }
                         }
                         if (incoming.Status) {
                             $('#wsStatus').html(incoming.Status);
@@ -143,12 +156,14 @@
                         if (incoming.Complete) {
                             wsFinished = true;
                             if (wsError) {
+                                console.log("Complete with error");
                                 $('#cancelWs').text('Close window');
                                 $('#wsProgress').removeClass('active');
                                 $('#wsProgress').addClass('progress-bar-danger');
                             }
                             else
                             {
+                                console.log("Complete");
                                 $('#cancelWs').text('Close window');
                                 $('#cancelWs').removeClass('btn-danger');
                                 $('#cancelWs').addClass('btn-default');
@@ -204,7 +219,8 @@
         }
         webSocket.onclose = updateState;
         webSocket.onmessage = updateState;
-        wsPing = setInterval(doPing, 15000);
+        wsPing = setInterval(doPing, @(Model.PingSeconds * 1000));
+        console.log("Client set to ping server every @Model.PingSeconds seconds");
         return false;
         });
 

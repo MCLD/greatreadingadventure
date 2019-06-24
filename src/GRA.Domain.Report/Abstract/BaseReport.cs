@@ -42,10 +42,10 @@ namespace GRA.Domain.Report.Abstract
             return await _serviceFacade.ReportRequestRepository.UpdateSaveNoAuditAsync(request);
         }
 
-        protected double StopTimer()
+        protected string StopTimer()
         {
             _timer.Stop();
-            double elapsed = _timer.Elapsed.TotalSeconds;
+            string elapsed = _timer.Elapsed.ToString("c");
             _timer = null;
             return elapsed;
         }
@@ -79,14 +79,9 @@ namespace GRA.Domain.Report.Abstract
                 {
                     status.PercentComplete = (int)percentComplete;
                 }
-                if (!string.IsNullOrEmpty(message))
-                {
-                    status.Status = message;
-                }
-                if (!string.IsNullOrEmpty(title))
-                {
-                    status.Title = title;
-                }
+                status.Status = message;
+                status.Title = title;
+                status.SuccessRedirect = true;
 
                 progress.Report(status);
             }
