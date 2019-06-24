@@ -12,32 +12,44 @@ using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace GRA.Domain.Service
 {
     public class VendorCodeService : BaseUserService<VendorCodeService>
     {
+        private readonly IPathResolver _pathResolver;
         private readonly ICodeGenerator _codeGenerator;
+        private readonly IJobRepository _jobRepository;
         private readonly IUserRepository _userRepository;
         private readonly IVendorCodeRepository _vendorCodeRepository;
         private readonly IVendorCodeTypeRepository _vendorCodeTypeRepository;
         private readonly MailService _mailService;
 
         public VendorCodeService(ILogger<VendorCodeService> logger,
-            GRA.Abstract.IDateTimeProvider dateTimeProvider,
+            IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
-            IUserRepository userRepository,
+            IPathResolver pathResolver,
             ICodeGenerator codeGenerator,
+            IJobRepository jobRepository,
+            IUserRepository userRepository,
             IVendorCodeRepository vendorCodeRepository,
             IVendorCodeTypeRepository vendorCodeTypeRepository,
             MailService mailService)
             : base(logger, dateTimeProvider, userContextProvider)
         {
             SetManagementPermission(Permission.ManageVendorCodes);
-            _codeGenerator = Require.IsNotNull(codeGenerator, nameof(codeGenerator));
-            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
-            _vendorCodeRepository = Require.IsNotNull(vendorCodeRepository, nameof(vendorCodeRepository));
-            _vendorCodeTypeRepository = Require.IsNotNull(vendorCodeTypeRepository, nameof(vendorCodeTypeRepository));
+            _pathResolver = pathResolver ?? throw new ArgumentNullException(nameof(pathResolver));
+            _codeGenerator = codeGenerator
+                ?? throw new ArgumentNullException(nameof(codeGenerator));
+            _jobRepository = jobRepository
+                ?? throw new ArgumentNullException(nameof(jobRepository));
+            _userRepository = userRepository
+                ?? throw new ArgumentNullException(nameof(userRepository));
+            _vendorCodeRepository = vendorCodeRepository
+                ?? throw new ArgumentNullException(nameof(vendorCodeRepository));
+            _vendorCodeTypeRepository = vendorCodeTypeRepository
+                ?? throw new ArgumentNullException(nameof(vendorCodeTypeRepository));
             _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
         }
 
@@ -167,7 +179,7 @@ namespace GRA.Domain.Service
         private const string OrderDateRowHeading = "Order Date";
         private const string ShipDateRowHeading = "Ship Date";
 
-        public async Task<JobStatus> UpdateStatusFromExcel(string filename,
+        public async Task<JobStatus> UpdateStatusFromExcelAsync(int jobId,
             CancellationToken token,
             IProgress<JobStatus> progress = null)
         {
@@ -177,17 +189,25 @@ namespace GRA.Domain.Service
             {
                 var sw = new Stopwatch();
                 sw.Start();
+
+                var job = await _jobRepository.GetByIdAsync(jobId);
+                var jobDetails
+                    = JsonConvert
+                        .DeserializeObject<JobDetailsVendorCodeStatus>(job.SerializedParameters);
+
+                string filename = jobDetails.Filename;
+
                 token.Register(() =>
                 {
                     string duration = "";
                     if (sw?.Elapsed != null)
                     {
-                        duration = $" after {((TimeSpan)sw.Elapsed).TotalSeconds.ToString("N2")} seconds";
+                        duration = $" after {sw.Elapsed.ToString("c")}";
                     }
                     _logger.LogWarning($"Import of {filename} for user {requestingUser} was cancelled{duration}.");
                 });
 
-                string fullPath = Path.Combine(Path.GetTempPath(), filename);
+                string fullPath = _pathResolver.ResolvePrivateTempFilePath(filename);
 
                 if (!File.Exists(fullPath))
                 {

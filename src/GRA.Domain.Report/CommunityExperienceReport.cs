@@ -65,11 +65,22 @@ namespace GRA.Domain.Report
             // running totals
             long totalParticipants = 0;
 
+            UpdateProgress(progress, 1, "Looking up community experiences...");
+
             var communityExperiencesWithCount = await _eventRepository
                 .GetCommunityExperienceAttendanceAsync(criterion);
 
+            int onRow = 0;
+
             foreach (var communityExperienceWithCount in communityExperiencesWithCount)
             {
+                if (onRow % 10 == 0)
+                {
+                    UpdateProgress(progress,
+                        ++onRow * 100 / Math.Max(communityExperiencesWithCount.Count, 1),
+                        $"Tabulating {communityExperienceWithCount.Data.Name}...");
+                }
+
                 var row = new List<object>()
                 {
                     communityExperienceWithCount.Data.Name,

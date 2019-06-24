@@ -532,14 +532,6 @@ namespace GRA.Controllers.MissionControl
                         SiteSettingKey.Users.AskEmailSubPermission)
                 };
 
-                var sw = new System.Diagnostics.Stopwatch();
-                sw.Start();
-                await _activityService.AwardUserTriggersAsync(viewModel.User.Id, false);
-                sw.Stop();
-                _logger.LogDebug("MC access of user id {UserId} took {Elapsed} to award triggers.",
-                    viewModel.User.Id,
-                    sw.Elapsed.ToString("c"));
-
                 if (UserHasPermission(Permission.ViewUserPrizes))
                 {
                     viewModel.PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false);
@@ -666,7 +658,7 @@ namespace GRA.Controllers.MissionControl
                     }
 
                     await _userService.MCUpdate(model.User);
-                    
+
                     AlertSuccess = "Participant infomation updated";
                     return RedirectToAction("Detail", new { id = model.User.Id });
                 }
@@ -694,7 +686,7 @@ namespace GRA.Controllers.MissionControl
             model.RequirePostalCode = site.RequirePostalCode;
             model.ShowAge = program.AskAge;
             model.ShowSchool = program.AskSchool;
-              
+
             if (askEmailSubscription)
             {
                 model.AskEmailSubscription = true;
@@ -879,13 +871,6 @@ namespace GRA.Controllers.MissionControl
                 }
                 if (ViewUserPrizes)
                 {
-                    var sw = new System.Diagnostics.Stopwatch();
-                    sw.Start();
-                    await _activityService.AwardUserTriggersAsync(head.Id, true);
-                    sw.Stop();
-                    _logger.LogDebug("MC access of family/group for user id {UserId} took {Elapsed} to award triggers.",
-                        head.Id,
-                        sw.Elapsed.ToString("c"));
                     head.HasUnclaimedPrize = (await _prizeWinnerService
                         .GetUserWinCount(head.Id, false)) > 0;
                 }
@@ -1577,7 +1562,8 @@ namespace GRA.Controllers.MissionControl
             {
                 UserImportResult userImportResult = null;
 
-                var tempFile = Path.GetTempFileName();
+                var tempFile = _pathResolver.ResolvePrivateTempFilePath();
+
                 using (var fileStream = new FileStream(tempFile, FileMode.Create))
                 {
                     await model.UserExcelFile.CopyToAsync(fileStream);
@@ -2849,6 +2835,28 @@ namespace GRA.Controllers.MissionControl
             };
 
             return View(viewModel);
+        }
+
+        [HttpPost]
+        [Authorize(Policy = Policy.ViewUserPrizes)]
+        public async Task<IActionResult> UpdatePrizes(int id, string returnUrl)
+        {
+            var user = await _userService.GetDetails(id);
+
+            var headId = user.HouseholdHeadUserId ?? user.Id;
+
+            var sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
+            await _userService.AwardUserBadgesAsync(headId, true, true);
+            sw.Stop();
+            if (sw.Elapsed.TotalSeconds > 5)
+            {
+                _logger.LogInformation("Prize checking for family/group for user id {UserId} took {Elapsed} to award triggers.",
+                    headId,
+                    sw.Elapsed.ToString("c"));
+            }
+
+            return View("UpdatePrizes", returnUrl);
         }
     }
 }

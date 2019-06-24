@@ -146,21 +146,8 @@ namespace GRA.Domain.Service
                 = JsonConvert
                     .DeserializeObject<JobDetailsRunReport>(job.SerializedParameters);
 
-            progress.Report(new JobStatus
-            {
-                SuccessUrl = jobDetails.SuccessUrl,
-                SuccessRedirect = true,
-                CancelUrl = jobDetails.CancelUrl
-            });
+            int reportRequestId = jobDetails.ReportRequestId;
 
-            return await RunReportAsync(jobDetails.ReportRequestId, jobId, token, progress);
-        }
-
-        private async Task<JobStatus> RunReportAsync(int reportRequestId,
-            int jobId,
-            CancellationToken token,
-            IProgress<JobStatus> progress = null)
-        {
             if (HasPermission(Permission.ViewAllReporting))
             {
                 BaseReport report = null;
@@ -205,6 +192,7 @@ namespace GRA.Domain.Service
                 if (reportDetails == null)
                 {
                     _logger.LogError($"Cannot find report id {_request.ReportId} requested by request {reportRequestId}");
+
                     return new JobStatus
                     {
                         Status = "Could not find the requested report.",
