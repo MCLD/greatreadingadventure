@@ -376,9 +376,6 @@
                                 layerPath = baseImagePath + "layer" + layerId + "/item";
                                 var itemPath = layerPath + bundles[i].Items[item] + "/thumbnail.jpg";
                                 var itemContainer = $("<div>");
-                                if (GetItemsLayer(bundles[i].Items[item],8) == 2) {
-                                    showColorSelector = true;
-                                }
                                 var itemImage = $("<img>", { "class": "avatar-item-selector avatar-bundle-item-selector item" + bundles[i].Items[item], "data-item": bundles[i].Items[item], "data-layer": layerId });
                                 if (lazyLoading) {
                                     itemImage.attr("data-lazy", itemPath);
@@ -867,6 +864,7 @@
                             hasBeenViewed[counter] = 1;
                             returnarr.push(bunds);
                             UpdateHasBeenViewed(JSON.stringify(returnarr));
+                            break;
                         }
                         counter++;
                         </text>
