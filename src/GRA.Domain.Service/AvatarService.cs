@@ -726,7 +726,7 @@ namespace GRA.Domain.Service
                         {
                             foreach (var color in colors)
                             {
-                                var element = new AvatarElement()
+                                var element = new AvatarElement
                                 {
                                     AvatarItemId = item.Id,
                                     AvatarColorId = color.Id,
@@ -741,7 +741,7 @@ namespace GRA.Domain.Service
                         }
                         else
                         {
-                            var element = new AvatarElement()
+                            var element = new AvatarElement
                             {
                                 AvatarItemId = item.Id,
                                 Filename = Path.Combine(itemRoot, "item.png")

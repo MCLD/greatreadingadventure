@@ -286,7 +286,7 @@ namespace GRA.Controllers.MissionControl
 
             var bundleList = await _avatarService.GetPaginatedBundleListAsync(filter);
 
-            var paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel
             {
                 ItemCount = bundleList.Count,
                 CurrentPage = page,
@@ -301,7 +301,7 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
-            var viewModel = new BundlesListViewModel()
+            var viewModel = new BundlesListViewModel
             {
                 Bundles = bundleList.Data,
                 PaginateModel = paginateModel,
@@ -314,7 +314,7 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> BundleCreate()
         {
-            var viewModel = new BundlesDetailViewModel()
+            var viewModel = new BundlesDetailViewModel
             {
                 Action = "Create",
                 Layers = new SelectList(await _avatarService.GetLayersAsync(), "Id", "Name")
