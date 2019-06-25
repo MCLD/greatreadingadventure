@@ -582,8 +582,6 @@ namespace GRA.Domain.Service
                         Error = false
                     });
 
-                    int layerFilesCopied = 0;
-
                     var colors = layer.AvatarColors;
                     var items = layer.AvatarItems;
                     layer.AvatarColors = null;
@@ -621,7 +619,7 @@ namespace GRA.Domain.Service
                         foreach (var color in colors)
                         {
                             var secondsFromLastUpdate = (int)sw.Elapsed.TotalSeconds - lastUpdateSent;
-                            if (secondsFromLastUpdate >= 15)
+                            if (secondsFromLastUpdate >= 5)
                             {
                                 progress.Report(new JobStatus
                                 {
@@ -657,7 +655,7 @@ namespace GRA.Domain.Service
                     foreach (var item in items)
                     {
                         var secondsFromLastUpdate = (int)sw.Elapsed.TotalSeconds - lastUpdateSent;
-                        if (secondsFromLastUpdate >= 15)
+                        if (secondsFromLastUpdate >= 5)
                         {
                             progress.Report(new JobStatus
                             {
@@ -678,11 +676,41 @@ namespace GRA.Domain.Service
                     await _avatarItemRepository.SaveAsync();
                     items = await GetItemsByLayerAsync(addedLayer.Id);
 
-                    var elementList = new List<AvatarElement>();
                     _logger.LogInformation($"Processing {items.Count} items in {addedLayer.Name}...");
 
+                    progress.Report(new JobStatus
+                    {
+                        PercentComplete = processedCount * 100 / processingCount,
+                        Status = $"Processing layer {layer.Name}: Copying files...",
+                        Error = false
+                    });
+                    lastUpdateSent = (int)sw.Elapsed.TotalSeconds;
+
+                    var elementCount = items.Count;
+                    if (colors?.Count > 0)
+                    {
+                        elementCount *= colors.Count;
+                    }
+                    var currentElement = 1;
                     foreach (var item in items)
                     {
+                        var secondsFromLastUpdate = (int)sw.Elapsed.TotalSeconds - lastUpdateSent;
+                        if (secondsFromLastUpdate >= 5)
+                        {
+                            progress.Report(new JobStatus
+                            {
+                                PercentComplete = processedCount * 100 / processingCount,
+                                Status = $"Processing layer {layer.Name}: Copying files ({currentElement}/{elementCount})...",
+                                Error = false
+                            });
+                            lastUpdateSent = (int)sw.Elapsed.TotalSeconds;
+                        }
+
+                        if (currentElement % 500 == 0)
+                        {
+                            await _avatarElementRepository.SaveAsync();
+                        }
+
                         var itemAssetPath = Path.Combine(layerAssetPath, item.Name);
                         var itemRoot = Path.Combine(destinationRoot, $"item{item.Id}");
                         var itemPath = Path.Combine(destinationPath, $"item{item.Id}");
@@ -693,6 +721,7 @@ namespace GRA.Domain.Service
                         item.Thumbnail = Path.Combine(itemRoot, "thumbnail.jpg");
                         System.IO.File.Copy(Path.Combine(itemAssetPath, "thumbnail.jpg"),
                             Path.Combine(itemPath, "thumbnail.jpg"));
+                        await _avatarItemRepository.UpdateAsync(requestingUser, item);
                         if (colors != null)
                         {
                             foreach (var color in colors)
@@ -703,11 +732,11 @@ namespace GRA.Domain.Service
                                     AvatarColorId = color.Id,
                                     Filename = Path.Combine(itemRoot, $"item_{color.Id}.png")
                                 };
-                                elementList.Add(element);
+                                await _avatarElementRepository.AddAsync(requestingUser, element);
                                 System.IO.File.Copy(
                                     Path.Combine(itemAssetPath, $"{color.Color}.png"),
                                     Path.Combine(itemPath, $"item_{color.Id}.png"));
-                                layerFilesCopied++;
+                                currentElement++;
                             }
                         }
                         else
@@ -717,17 +746,16 @@ namespace GRA.Domain.Service
                                 AvatarItemId = item.Id,
                                 Filename = Path.Combine(itemRoot, "item.png")
                             };
-                            elementList.Add(element);
+                            await _avatarElementRepository.AddAsync(requestingUser, element);
                             System.IO.File.Copy(Path.Combine(itemAssetPath, "item.png"),
                                 Path.Combine(itemPath, "item.png"));
-                            layerFilesCopied++;
+                            currentElement++;
                         }
                     }
 
-                    await UpdateItemListAsync(items);
-                    await AddElementListAsync(elementList);
-                    totalFilesCopied += layerFilesCopied;
-                    _logger.LogInformation($"Copied {layerFilesCopied} items for {layer.Name}");
+                    await _avatarElementRepository.SaveAsync();
+                    totalFilesCopied += elementCount;
+                    _logger.LogInformation($"Copied {elementCount} items for {layer.Name}");
 
                     processedCount++;
                 }
