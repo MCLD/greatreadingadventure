@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using GRA.Abstract;
 using GRA.Domain.Model;
@@ -9,6 +11,7 @@ using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace GRA.Domain.Service
 {
@@ -19,6 +22,7 @@ namespace GRA.Domain.Service
         private readonly IAvatarElementRepository _avatarElementRepository;
         private readonly IAvatarItemRepository _avatarItemRepository;
         private readonly IAvatarLayerRepository _avatarLayerRepository;
+        private readonly IJobRepository _jobRepository;
         private readonly ITriggerRepository _triggerRepository;
         private readonly IPathResolver _pathResolver;
 
@@ -30,22 +34,27 @@ namespace GRA.Domain.Service
             IAvatarElementRepository avatarElementRepository,
             IAvatarItemRepository avatarItemRepository,
             IAvatarLayerRepository avatarLayerRepository,
+            IJobRepository jobRepository,
             ITriggerRepository triggerRepository,
             IPathResolver pathResolver)
             : base(logger, dateTimeProvider, userContextProvider)
         {
-            _avatarBundleRepository = Require.IsNotNull(avatarBundleRepository,
-                nameof(avatarBundleRepository));
-            _avatarColorRepository = Require.IsNotNull(avatarColorRepository,
-                nameof(avatarColorRepository));
-            _avatarElementRepository = Require.IsNotNull(avatarElementRepository,
-                nameof(avatarElementRepository));
-            _avatarItemRepository = Require.IsNotNull(avatarItemRepository,
-                nameof(avatarItemRepository));
-            _avatarLayerRepository = Require.IsNotNull(avatarLayerRepository,
-                nameof(avatarLayerRepository));
-            _triggerRepository = Require.IsNotNull(triggerRepository, nameof(triggerRepository));
-            _pathResolver = Require.IsNotNull(pathResolver, nameof(pathResolver));
+            _avatarBundleRepository = avatarBundleRepository
+                ?? throw new ArgumentNullException(nameof(avatarBundleRepository));
+            _avatarColorRepository = avatarColorRepository
+                ?? throw new ArgumentNullException(nameof(avatarColorRepository));
+            _avatarElementRepository = avatarElementRepository
+                ?? throw new ArgumentNullException(nameof(avatarElementRepository));
+            _avatarItemRepository = avatarItemRepository
+                ?? throw new ArgumentNullException(nameof(avatarItemRepository));
+            _avatarLayerRepository = avatarLayerRepository
+                ?? throw new ArgumentNullException(nameof(avatarLayerRepository));
+            _jobRepository = jobRepository
+                ?? throw new ArgumentNullException(nameof(jobRepository));
+            _triggerRepository = triggerRepository
+                ?? throw new ArgumentNullException(nameof(triggerRepository));
+            _pathResolver = pathResolver
+                ?? throw new ArgumentNullException(nameof(pathResolver));
 
             SetManagementPermission(Permission.ManageAvatars);
         }
@@ -508,6 +517,315 @@ namespace GRA.Domain.Service
         {
             VerifyManagementPermission();
             return await _triggerRepository.GetTriggersAwardingBundleAsync(id);
+        }
+
+        public async Task<JobStatus> ImportAvatarsAsync(int jobId,
+            CancellationToken token,
+            IProgress<JobStatus> progress = null)
+        { 
+            var requestingUser = GetClaimId(ClaimType.UserId);
+
+            if (HasPermission(Permission.ManageAvatars))
+            {
+                var sw = new Stopwatch();
+                sw.Start();
+
+                var job = await _jobRepository.GetByIdAsync(jobId);
+                var jobDetails
+                    = JsonConvert
+                        .DeserializeObject<JobDetailsAvatarImport>(job.SerializedParameters);
+
+                string assetPath = jobDetails.AssetPath;
+
+                token.Register((Action)(() =>
+                {
+                    string duration = "";
+                    if (sw?.Elapsed != null)
+                    {
+                        duration = $" after {sw.Elapsed.ToString("c")}";
+                    }
+                    _logger.LogWarning($"Import avatars for user {requestingUser} was cancelled{duration}.");
+                }));
+
+                IEnumerable<AvatarLayer> avatarList;
+                var jsonPath = Path.Combine(assetPath, "default avatars.json");
+                using (StreamReader file = System.IO.File.OpenText(jsonPath))
+                {
+                    var jsonString = await file.ReadToEndAsync();
+                    avatarList = JsonConvert.DeserializeObject<IEnumerable<AvatarLayer>>(jsonString);
+                }
+
+                var layerCount = avatarList.Count();
+                _logger.LogInformation($"Found {layerCount} AvatarLayer objects in avatar file");
+
+                // Layers + background/bundles
+                var processingCount = layerCount + 1;
+                var processedCount = 0;
+
+                var bundleJsonPath = Path.Combine(assetPath, "default bundles.json");
+                var bundleJsonExists = System.IO.File.Exists(bundleJsonPath);
+                if (bundleJsonExists)
+                {
+                    processingCount++;
+                }
+
+                var time = _dateTimeProvider.Now;
+                int totalFilesCopied = 0;
+                var siteId = GetCurrentSiteId();
+
+                foreach (var layer in avatarList)
+                {
+                    progress.Report(new JobStatus
+                    {
+                        PercentComplete = processedCount * 100 / processingCount,
+                        Status = $"Processing layer {layer.Name}",
+                        Error = false
+                    });
+
+                    var colors = layer.AvatarColors;
+                    var items = layer.AvatarItems;
+                    layer.AvatarColors = null;
+                    layer.AvatarItems = null;
+
+                    var addedLayer = await AddLayerAsync(layer);
+
+                    var layerAssetPath = Path.Combine(assetPath, addedLayer.Name);
+                    var destinationRoot = Path.Combine($"site{siteId}", "avatars", $"layer{addedLayer.Id}");
+                    var destinationPath = _pathResolver.ResolveContentFilePath(destinationRoot);
+                    if (!Directory.Exists(destinationPath))
+                    {
+                        Directory.CreateDirectory(destinationPath);
+                    }
+
+                    addedLayer.Icon = Path.Combine(destinationRoot, "icon.png");
+                    System.IO.File.Copy(Path.Combine(layerAssetPath, "icon.png"),
+                        Path.Combine(destinationPath, "icon.png"));
+
+                    await UpdateLayerAsync(addedLayer);
+
+                    int lastUpdateSent;
+                    if (colors != null)
+                    {
+                        progress.Report(new JobStatus
+                        {
+                            PercentComplete = processedCount * 100 / processingCount,
+                            Status = $"Processing layer {layer.Name}: Adding colors...",
+                            Error = false
+                        });
+                        lastUpdateSent = (int)sw.Elapsed.TotalSeconds;
+
+                        var colorCount = colors.Count;
+                        var currentColor = 1;
+                        foreach (var color in colors)
+                        {
+                            var secondsFromLastUpdate = (int)sw.Elapsed.TotalSeconds - lastUpdateSent;
+                            if (secondsFromLastUpdate >= 5)
+                            {
+                                progress.Report(new JobStatus
+                                {
+                                    PercentComplete = processedCount * 100 / processingCount,
+                                    Status = $"Processing layer {layer.Name}: Adding colors ({currentColor}/{colorCount})...",
+                                    Error = false
+                                });
+                                lastUpdateSent = (int)sw.Elapsed.TotalSeconds;
+                            }
+
+                            color.AvatarLayerId = addedLayer.Id;
+                            color.CreatedAt = time;
+                            color.CreatedBy = requestingUser;
+
+                            await _avatarColorRepository.AddAsync(requestingUser, color);
+                            currentColor++;
+                        }
+                        
+                        await _avatarColorRepository.SaveAsync();
+                        colors = await GetColorsByLayerAsync(addedLayer.Id);
+                    }
+
+                    progress.Report(new JobStatus
+                    {
+                        PercentComplete = processedCount * 100 / processingCount,
+                        Status = $"Processing layer {layer.Name}: Adding items...",
+                        Error = false
+                    });
+                    lastUpdateSent = (int)sw.Elapsed.TotalSeconds;
+
+                    var itemCount = items.Count;
+                    var currentItem = 1;
+                    foreach (var item in items)
+                    {
+                        var secondsFromLastUpdate = (int)sw.Elapsed.TotalSeconds - lastUpdateSent;
+                        if (secondsFromLastUpdate >= 5)
+                        {
+                            progress.Report(new JobStatus
+                            {
+                                PercentComplete = processedCount * 100 / processingCount,
+                                Status = $"Processing layer {layer.Name}: Adding items ({currentItem}/{itemCount})...",
+                                Error = false
+                            });
+                            lastUpdateSent = (int)sw.Elapsed.TotalSeconds;
+                        }
+
+                        item.AvatarLayerId = addedLayer.Id;
+                        item.CreatedAt = time;
+                        item.CreatedBy = requestingUser;
+
+                        await _avatarItemRepository.AddAsync(requestingUser, item);
+                        currentItem++;
+                    }
+                    await _avatarItemRepository.SaveAsync();
+                    items = await GetItemsByLayerAsync(addedLayer.Id);
+
+                    _logger.LogInformation($"Processing {items.Count} items in {addedLayer.Name}...");
+
+                    progress.Report(new JobStatus
+                    {
+                        PercentComplete = processedCount * 100 / processingCount,
+                        Status = $"Processing layer {layer.Name}: Copying files...",
+                        Error = false
+                    });
+                    lastUpdateSent = (int)sw.Elapsed.TotalSeconds;
+
+                    var elementCount = items.Count;
+                    if (colors?.Count > 0)
+                    {
+                        elementCount *= colors.Count;
+                    }
+                    var currentElement = 1;
+                    foreach (var item in items)
+                    {
+                        var secondsFromLastUpdate = (int)sw.Elapsed.TotalSeconds - lastUpdateSent;
+                        if (secondsFromLastUpdate >= 5)
+                        {
+                            progress.Report(new JobStatus
+                            {
+                                PercentComplete = processedCount * 100 / processingCount,
+                                Status = $"Processing layer {layer.Name}: Copying files ({currentElement}/{elementCount})...",
+                                Error = false
+                            });
+                            lastUpdateSent = (int)sw.Elapsed.TotalSeconds;
+                        }
+
+                        if (currentElement % 500 == 0)
+                        {
+                            await _avatarElementRepository.SaveAsync();
+                        }
+
+                        var itemAssetPath = Path.Combine(layerAssetPath, item.Name);
+                        var itemRoot = Path.Combine(destinationRoot, $"item{item.Id}");
+                        var itemPath = Path.Combine(destinationPath, $"item{item.Id}");
+                        if (!Directory.Exists(itemPath))
+                        {
+                            Directory.CreateDirectory(itemPath);
+                        }
+                        item.Thumbnail = Path.Combine(itemRoot, "thumbnail.jpg");
+                        System.IO.File.Copy(Path.Combine(itemAssetPath, "thumbnail.jpg"),
+                            Path.Combine(itemPath, "thumbnail.jpg"));
+                        await _avatarItemRepository.UpdateAsync(requestingUser, item);
+                        if (colors != null)
+                        {
+                            foreach (var color in colors)
+                            {
+                                var element = new AvatarElement
+                                {
+                                    AvatarItemId = item.Id,
+                                    AvatarColorId = color.Id,
+                                    Filename = Path.Combine(itemRoot, $"item_{color.Id}.png")
+                                };
+                                await _avatarElementRepository.AddAsync(requestingUser, element);
+                                System.IO.File.Copy(
+                                    Path.Combine(itemAssetPath, $"{color.Color}.png"),
+                                    Path.Combine(itemPath, $"item_{color.Id}.png"));
+                                currentElement++;
+                            }
+                        }
+                        else
+                        {
+                            var element = new AvatarElement
+                            {
+                                AvatarItemId = item.Id,
+                                Filename = Path.Combine(itemRoot, "item.png")
+                            };
+                            await _avatarElementRepository.AddAsync(requestingUser, element);
+                            System.IO.File.Copy(Path.Combine(itemAssetPath, "item.png"),
+                                Path.Combine(itemPath, "item.png"));
+                            currentElement++;
+                        }
+                    }
+
+                    await _avatarElementRepository.SaveAsync();
+                    totalFilesCopied += elementCount;
+                    _logger.LogInformation($"Copied {elementCount} items for {layer.Name}");
+
+                    processedCount++;
+                }
+
+                progress.Report(new JobStatus
+                {
+                    PercentComplete = processedCount * 100 / processingCount,
+                    Status = $"Finishing avatar import...",
+                    Error = false
+                });
+
+                var backgroundRoot = Path.Combine($"site{siteId}", "avatarbackgrounds");
+                var backgroundPath = _pathResolver.ResolveContentFilePath(backgroundRoot);
+                if (!Directory.Exists(backgroundPath))
+                {
+                    Directory.CreateDirectory(backgroundPath);
+                }
+                System.IO.File.Copy(Path.Combine(assetPath, "background.png"),
+                    Path.Combine(backgroundPath, "background.png"));
+                totalFilesCopied++;
+
+                _logger.LogInformation($"Copied {totalFilesCopied} items for all layers.");
+
+                if (bundleJsonExists)
+                {
+                    IEnumerable<AvatarBundle> bundleList;
+                    using (StreamReader file = System.IO.File.OpenText(bundleJsonPath))
+                    {
+                        var jsonString = await file.ReadToEndAsync();
+                        bundleList = JsonConvert.DeserializeObject<IEnumerable<AvatarBundle>>(jsonString);
+                    }
+
+                    foreach (var bundle in bundleList)
+                    {
+                        _logger.LogInformation($"Processing bundle {bundle.Name}...");
+                        var items = new List<int>();
+                        foreach (var bundleItem in bundle.AvatarItems)
+                        {
+                            var item = await GetItemByLayerPositionSortOrderAsync(
+                                bundleItem.AvatarLayerPosition, bundleItem.SortOrder);
+                            items.Add(item.Id);
+                        }
+                        bundle.AvatarItems = null;
+                        await AddBundleAsync(bundle, items);
+                    }
+                }
+
+                sw.Stop();
+                _logger.LogInformation($"Default avatars added in {sw.Elapsed.TotalSeconds} seconds.");
+
+                return new JobStatus
+                {
+                    PercentComplete = 100,
+                    Complete = true,
+                    Status = "<strong>Import Complete</strong>"
+                };
+
+
+            }
+            else
+            {
+                _logger.LogError($"User {requestingUser} doesn't have permission to import avatars.");
+                return new JobStatus
+                {
+                    PercentComplete = 0,
+                    Status = "Permission denied.",
+                    Error = true,
+                    Complete = true
+                };
+            }
         }
     }
 }
