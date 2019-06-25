@@ -167,6 +167,7 @@
         var layers = $.parseJSON('@Html.Raw(Model.AvatarPiecesJson)').Layers;
         var bundles = $.parseJSON('@Html.Raw(Model.AvatarBundlesJson)').Bundles;
         var hasBeenViewed = new Array();
+        var bundleColor = null;
         var currentLayerImage;
         var currentLayerRemovable;
         var currentLayerSelector;
@@ -262,9 +263,9 @@
                 else {
                     currentLayer = GetLayerById(layerId);
                     layerPath = baseImagePath + "layer" + layerId + "/item";
+                    selectedItem = currentLayerSelector.data("item");
+                    selectedColor = currentLayerSelector.data("color");
                 }
-                selectedItem = currentLayerSelector.data("item");
-                selectedColor = currentLayerSelector.data("color");
                 if (xsZoom) {
                     var scale = currentLayerSelector.data("zoomscale");
                     var yOffset = currentLayerSelector.data("zoomyoffset");
@@ -359,6 +360,7 @@
             }
             else
             {
+                showColorSelector = false;
                 if (selectedBundleId != null)
                 {
                     $("#avatarItemSelectors").empty();
@@ -374,6 +376,9 @@
                                 layerPath = baseImagePath + "layer" + layerId + "/item";
                                 var itemPath = layerPath + bundles[i].Items[item] + "/thumbnail.jpg";
                                 var itemContainer = $("<div>");
+                                if (GetItemsLayer(bundles[i].Items[item],8) == 2) {
+                                    showColorSelector = true;
+                                }
                                 var itemImage = $("<img>", { "class": "avatar-item-selector avatar-bundle-item-selector item" + bundles[i].Items[item], "data-item": bundles[i].Items[item], "data-layer": layerId });
                                 if (lazyLoading) {
                                     itemImage.attr("data-lazy", itemPath);
@@ -404,12 +409,15 @@
                     }
                 }
                 var itemIndex = 0;
+            } if (showColorSelector) {
+                $("#avatarColors").removeClass("hide");
             }
             var drag = true;
             var infin = true;
+
             if (currentLayer == 13 && totalitems / 12 <= 1) {
                 drag = false;
-                infin = false
+                infin = false;
             }
 
             $("#avatarItemSelectors").slick({
@@ -484,20 +492,34 @@
         }
 
         function SetColorSelectors() {
-
+            var flag = false;
+            if (currentLayer == 13 && showColorSelector) {
+                flag = true;
+                currentLayer = GetLayerById(2);
+                $("#selector13").data("color", $("#selector2").data("color"));
+            }
+            if ($("#selector13").data("color")) {
+                selectedColor = $("#selector13").data("color");
+            }
             if ($("#avatarColorSelectors").hasClass("slick-initialized")) {
             $("#avatarColorSelectors").slick("unslick");
             }
-
             $("#avatarColorSelectors").empty();
-
-            if (showColorSelector && currentLayer.Colors.length > 0) {
+            if (showColorSelector && (currentLayer.Colors.length > 0)) {
 
             $.each(currentLayer.Colors, function (i, color) {
                 var colorContainer = $("<div>");
                 var colorDiv = $("<div>", { "class": "avatar-color-selector color" + color.Id, "style": "background-color:#" + color.Value, "data-color": color.Id });
-                if (selectedColor == color.Id) {
+                if (flag) {
+                    if ($("#selector2").data("color") == color.Id) {
+                        colorDiv.addClass("selected");
+                        $('#selector13').data("color", $("#selector2").data("color"));
+                    }
+                }
+                else {
+                    if (selectedColor == color.Id) {
                     colorDiv.addClass("selected");
+                }
                 }
                 colorContainer.append(colorDiv);
                 $("#avatarColorSelectors").append(colorContainer);
@@ -555,6 +577,9 @@
                 ]
             });
             }
+            if (flag) {
+                currentLayer = 13;
+            }
         }
 
         function SetUnsavedChanges(bool) {
@@ -573,7 +598,7 @@
         function SetSelectedItem(item) {
             if (selectedbundles.length != 0) {
                 for (var i = 0; i < selectedbundles.length; i++) {
-                    if (GetItemsLayer(selectedbundles[i]) == currentLayer.Id) {
+                    if (GetItemsLayer(selectedbundles[i],8) == currentLayer.Id) {
                         selectedbundles = RemoveItemFromList(selectedbundles[i], selectedbundles);
                     }
                 }
@@ -604,12 +629,22 @@
             else {
                 $(".item" + item).addClass("selected");
             }
+            $("#selector"+ GetItemsLayer(item, 8)).data("item", item);
             selectedbundles.push(item);
             SetBundleLayerImage(bundlelayerPath, item);
         }
         function SetBundleLayerImage(bundlelayerPath, item) {
             var imagePath = bundlelayerPath + "/item";
-            var itemslayer = GetItemsLayer(item, 8)
+            var itemslayer = GetItemsLayer(item, 8);
+            if (itemslayer == 2) {
+                if (bundleColor != null && bundleColor != "") {
+                    imagePath += "_" + bundleColor;
+                }
+                else {
+                    $("#selector13").data("color", $("#selector2").data("color"));
+                    imagePath += "_" + $("#selector13").data("color");
+                }
+            }
             imagePath += ".png";
             var container1 = Array.from($(".avatar-container")[0].children);
             var container2 = Array.from($(".avatar-container")[1].children);
@@ -640,22 +675,68 @@
 
         function SetSelectedColor(color) {
             selectedColor = color;
+            bundleColor = color;
+            $("#selector2").data("color", color);
+            $("#selector13").data("color", color);
             currentLayerSelector.data("color", color);
             $(".avatar-color-selector.selected").removeClass("selected");
             $(".color" + color).addClass("selected");
-            if (selectedItem != "") {
-                SetLayerImage();
+            if (currentLayer == 13) {
+                var selectitem = null;
+                for (var item in selectedbundles) {
+                    if (GetItemsLayer(item,8) == 2) {
+                        selectitem = item;
+                    }
+                }
+                if (selectitem != null) {
+                    SetLayerImage();
+                }
+                else {
+                    imagepath = $($(".avatar-layer.image2")[1]).attr("src");
+                    imagepath = imagepath.split("_")[0] + "_" + color + ".png";
+                    $($(".avatar-layer.image2")[0]).attr("src", imagepath);
+                    $($(".avatar-layer.image2")[1]).attr("src", imagepath);
+                }
+            }
+            else {
+                if (selectedItem != "") {
+                    SetLayerImage();
+                }
             }
         }
 
         function SetLayerImage() {
-            var imagePath = layerPath + selectedItem + "/item";
-            if (selectedColor != "") {
-                imagePath += "_" + selectedColor;
+            if (currentLayer == 13) {
+                var selectitem = null;
+                for (var item in selectedbundles) {
+                    if (GetItemsLayer(selectedbundles[item],8) == 2) {
+                        selectitem = selectedbundles[item];
+                    }
+                }
+                console.log(selectitem);
+                if (selectitem != null) {
+                    var imagePath = "/content/site1/avatars/layer2/item" + selectitem + "/item";
+                    console.log(imagePath);
+                    if ($("#selector13").data("color")) {
+
+                        imagePath += "_" + bundleColor;
+                    }
+                    imagePath += ".png";
+                    $(".image2").attr("src", imagePath).removeClass("hide");
+                    bundleColor = "";
+                    SetUnsavedChanges(true);
+                }
             }
-            imagePath += ".png";
-            currentLayerImage.attr("src", imagePath).removeClass("hide");
-            SetUnsavedChanges(true);
+            else {
+                var imagePath = layerPath + selectedItem + "/item";
+                if (selectedColor != "") {
+
+                    imagePath += "_" + selectedColor;
+                }
+                imagePath += ".png";
+                currentLayerImage.attr("src", imagePath).removeClass("hide");
+                SetUnsavedChanges(true);
+            }
         }
 
         function RemoveLayerImage() {
@@ -726,7 +807,7 @@
             });
         }
         function NewBundlesCheck() {
-            for (var indicator in hasBeenViewed) {
+            for (var indicator = 0; indicator < hasBeenViewed.length; indicator++) {
                 if (hasBeenViewed[indicator] == 0) {
                     return true;
                 }
@@ -753,6 +834,10 @@
 
         $(document).on("click", ".avatar-color-selector", function () {
             var color = $(this).data("color");
+            if (currentLayer == 13 && color!=selectedColor) {
+                SetSelectedColor(color);
+
+            }
             if (color != selectedColor) {
                 SetSelectedColor(color);
             }
@@ -763,6 +848,9 @@
             $("li").find("#selected-bundle").removeAttr("id");
             $(this).attr("id", "selected-bundle");
             $(this).addClass("active");
+            if (!$($(this).children()[0]).hasClass("hide")) {
+                $($(this).children()[0]).addClass("hide");
+            }
             selectedBundleId = $("li").find("#selected-bundle").data("bundleid");
             $("#bundle-selected").text($(this).contents().not($(this).children()).text());
             $("#bundle-selected").append("<span class='caret'></span>");
@@ -788,13 +876,12 @@
 
                 @:}
             }
-
             for (var idx = 0; idx < hasBeenViewed.length; idx++) {
                 if (bundles[idx].Id == selectedBundleId) {
                     hasBeenViewed[idx] = 1;
                 }
             }
-            if(!NewBundlesCheck()) {
+            if (NewBundlesCheck()) {
                 $("#selector13").attr("src","/content/site1/avatarbundles/icon.png");
             }
             GetBundleById(selectedBundleId);
@@ -825,13 +912,6 @@
         });
 
         $("#saveAvatar").on("click", function () {
-            $(".avatar-save-message").hide();
-            $(this).attr("disabled", "disabled");
-            $("#saveSpinner").removeClass("hidden");
-                       SaveAvatar();
-                   });
-
-        $("avatar-bundle-item-selector").on("click", function () {
             $(".avatar-save-message").hide();
             $(this).attr("disabled", "disabled");
             $("#saveSpinner").removeClass("hidden");

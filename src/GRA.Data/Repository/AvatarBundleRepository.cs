@@ -50,12 +50,14 @@ namespace GRA.Data.Repository
         {
             var userLog = await _context.UserLogs
             .Where(_ => _.UserId == userId && !_.IsDeleted && _.AvatarBundleId == bundleId)
-            .SingleAsync();
+            .ToListAsync();
 
-            if (userLog != null)
-            {
-                userLog.HasBeenViewed = true;
-                _context.UserLogs.Update(userLog);
+            foreach (var bund in userLog) {
+                if (bund != null)
+                {
+                    bund.HasBeenViewed = true;
+                    _context.UserLogs.Update(bund);
+                }
             }
             await SaveAsync();
         }
