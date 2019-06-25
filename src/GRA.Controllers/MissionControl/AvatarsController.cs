@@ -201,7 +201,7 @@ namespace GRA.Controllers.MissionControl
                     }
                     else
                     {
-                        var element = new AvatarElement()
+                        var element = new AvatarElement
                         {
                             AvatarItemId = item.Id,
                             Filename = Path.Combine(itemRoot, "item.png")
@@ -433,7 +433,7 @@ namespace GRA.Controllers.MissionControl
 
             var bundleList = await _avatarService.GetPaginatedBundleListAsync(filter);
 
-            var paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel
             {
                 ItemCount = bundleList.Count,
                 CurrentPage = page,
@@ -448,7 +448,7 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
-            var viewModel = new BundlesListViewModel()
+            var viewModel = new BundlesListViewModel
             {
                 Bundles = bundleList.Data,
                 PaginateModel = paginateModel,
