@@ -578,7 +578,7 @@ namespace GRA.Domain.Service
                     progress.Report(new JobStatus
                     {
                         PercentComplete = processedCount * 100 / processingCount,
-                        Status = $"Adding avatar layer: {layer.Name}...",
+                        Status = $"Processing layer {layer.Name}",
                         Error = false
                     });
 
@@ -605,24 +605,77 @@ namespace GRA.Domain.Service
 
                     await UpdateLayerAsync(addedLayer);
 
+                    int lastUpdateSent;
                     if (colors != null)
                     {
+                        progress.Report(new JobStatus
+                        {
+                            PercentComplete = processedCount * 100 / processingCount,
+                            Status = $"Processing layer {layer.Name}: Adding colors...",
+                            Error = false
+                        });
+                        lastUpdateSent = (int)sw.Elapsed.TotalSeconds;
+
+                        var colorCount = colors.Count;
+                        var currentColor = 1;
                         foreach (var color in colors)
                         {
+                            var secondsFromLastUpdate = (int)sw.Elapsed.TotalSeconds - lastUpdateSent;
+                            if (secondsFromLastUpdate >= 15)
+                            {
+                                progress.Report(new JobStatus
+                                {
+                                    PercentComplete = processedCount * 100 / processingCount,
+                                    Status = $"Processing layer {layer.Name}: Adding colors ({currentColor}/{colorCount})...",
+                                    Error = false
+                                });
+                                lastUpdateSent = (int)sw.Elapsed.TotalSeconds;
+                            }
+
                             color.AvatarLayerId = addedLayer.Id;
                             color.CreatedAt = time;
                             color.CreatedBy = requestingUser;
+
+                            await _avatarColorRepository.AddAsync(requestingUser, color);
+                            currentColor++;
                         }
-                        await AddColorListAsync(colors);
+                        
+                        await _avatarColorRepository.SaveAsync();
                         colors = await GetColorsByLayerAsync(addedLayer.Id);
                     }
+
+                    progress.Report(new JobStatus
+                    {
+                        PercentComplete = processedCount * 100 / processingCount,
+                        Status = $"Processing layer {layer.Name}: Adding items...",
+                        Error = false
+                    });
+                    lastUpdateSent = (int)sw.Elapsed.TotalSeconds;
+
+                    var itemCount = items.Count;
+                    var currentItem = 1;
                     foreach (var item in items)
                     {
+                        var secondsFromLastUpdate = (int)sw.Elapsed.TotalSeconds - lastUpdateSent;
+                        if (secondsFromLastUpdate >= 15)
+                        {
+                            progress.Report(new JobStatus
+                            {
+                                PercentComplete = processedCount * 100 / processingCount,
+                                Status = $"Processing layer {layer.Name}: Adding items ({currentItem}/{itemCount})...",
+                                Error = false
+                            });
+                            lastUpdateSent = (int)sw.Elapsed.TotalSeconds;
+                        }
+
                         item.AvatarLayerId = addedLayer.Id;
                         item.CreatedAt = time;
                         item.CreatedBy = requestingUser;
+
+                        await _avatarItemRepository.AddAsync(requestingUser, item);
+                        currentItem++;
                     }
-                    await AddItemListAsync(items);
+                    await _avatarItemRepository.SaveAsync();
                     items = await GetItemsByLayerAsync(addedLayer.Id);
 
                     var elementList = new List<AvatarElement>();
