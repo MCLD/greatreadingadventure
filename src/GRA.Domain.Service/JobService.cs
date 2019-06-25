@@ -12,7 +12,6 @@ namespace GRA.Domain.Service
     public class JobService : Abstract.BaseUserService<JobService>
     {
         private readonly IJobRepository _jobRepository;
-        private readonly AvatarService _avatarService;
         private readonly EmailBulkService _emailBulkService;
         private readonly ReportService _reportService;
         private readonly VendorCodeService _vendorCodeService;
@@ -21,7 +20,6 @@ namespace GRA.Domain.Service
             IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             IJobRepository jobRepository,
-            AvatarService avatarService,
             EmailBulkService emailBulkService,
             ReportService reportService,
             VendorCodeService vendorCodeService)
@@ -29,13 +27,11 @@ namespace GRA.Domain.Service
         {
             _jobRepository = jobRepository
                 ?? throw new ArgumentNullException(nameof(jobRepository));
-            _avatarService = avatarService
-                ?? throw new ArgumentNullException(nameof(avatarService));
             _emailBulkService = emailBulkService
                 ?? throw new ArgumentNullException(nameof(emailBulkService));
             _reportService = reportService
                 ?? throw new ArgumentNullException(nameof(reportService));
-            _vendorCodeService = vendorCodeService
+            _vendorCodeService = vendorCodeService 
                 ?? throw new ArgumentNullException(nameof(vendorCodeService));
         }
 
@@ -65,11 +61,6 @@ namespace GRA.Domain.Service
                         {
                             switch (jobInfo.JobType)
                             {
-                                case JobType.AvatarImport:
-                                    status = await _avatarService.ImportAvatarsAsync(jobInfo.Id,
-                                        token,
-                                        progress);
-                                    break;
                                 case JobType.RunReport:
                                     status = await _reportService.RunReportJobAsync(jobInfo.Id,
                                         token,

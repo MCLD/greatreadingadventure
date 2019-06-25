@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -24,20 +23,17 @@ namespace GRA.Controllers.MissionControl
     {
         private readonly ILogger<AvatarsController> _logger;
         private readonly AvatarService _avatarService;
-        private readonly JobService _jobService;
         private readonly IHostingEnvironment _hostingEnvironment;
 
         public AvatarsController(ILogger<AvatarsController> logger,
             ServiceFacade.Controller context,
             AvatarService avatarService,
-            JobService jobService,
             IHostingEnvironment hostingEnvironment)
             : base(context)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _avatarService = avatarService ?? throw new ArgumentNullException(nameof(avatarService));
-            _jobService = jobService ?? throw new ArgumentNullException(nameof(jobService));
-            _hostingEnvironment = hostingEnvironment ?? throw new ArgumentNullException(nameof(hostingEnvironment));
+            _logger = Require.IsNotNull(logger, nameof(logger));
+            _avatarService = Require.IsNotNull(avatarService, nameof(avatarService));
+            _hostingEnvironment = Require.IsNotNull(hostingEnvironment, nameof(hostingEnvironment));
             PageTitle = "Avatars";
         }
 
@@ -61,12 +57,17 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> SetupDefaultAvatars()
         {
+            var sw = new Stopwatch();
+            sw.Start();
+
             var layers = await _avatarService.GetLayersAsync();
             if (layers.Any())
             {
                 AlertDanger = $"Avatars have already been set up";
                 return RedirectToAction(nameof(Index));
             }
+
+            int siteId = GetCurrentSiteId();
 
             string assetPath = Path.Combine(
                 Directory.GetParent(_hostingEnvironment.WebRootPath).FullName, "assets");
@@ -84,7 +85,9 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(Index));
             }
 
-            var jobToken = await _jobService.CreateJobAsync(new Job
+            IEnumerable<AvatarLayer> avatarList;
+            var jsonPath = Path.Combine(assetPath, "default avatars.json");
+            using (StreamReader file = System.IO.File.OpenText(jsonPath))
             {
                 var jsonString = await file.ReadToEndAsync();
                 avatarList = JsonConvert.DeserializeObject<IEnumerable<AvatarLayer>>(jsonString);
@@ -148,19 +151,105 @@ namespace GRA.Controllers.MissionControl
                 {
                     foreach (var color in colors)
                     {
-                        AssetPath = assetPath
-                    })
-            });
+                        color.AvatarLayerId = addedLayer.Id;
+                        color.CreatedAt = time;
+                        color.CreatedBy = userId;
+                    }
+                    await _avatarService.AddColorListAsync(colors);
+                    colors = await _avatarService.GetColorsByLayerAsync(addedLayer.Id);
+                }
+                foreach (var item in items)
+                {
+                    item.AvatarLayerId = addedLayer.Id;
+                    item.CreatedAt = time;
+                    item.CreatedBy = userId;
+                }
+                await _avatarService.AddItemListAsync(items);
+                items = await _avatarService.GetItemsByLayerAsync(addedLayer.Id);
 
-            return View("Job", new ViewModel.MissionControl.Shared.JobViewModel
+                var elementList = new List<AvatarElement>();
+                _logger.LogInformation($"Processing {items.Count} items in {addedLayer.Name}...");
+
+                foreach (var item in items)
+                {
+                    var itemAssetPath = Path.Combine(layerAssetPath, item.Name);
+                    var itemRoot = Path.Combine(destinationRoot, $"item{item.Id}");
+                    var itemPath = Path.Combine(destinationPath, $"item{item.Id}");
+                    if (!Directory.Exists(itemPath))
+                    {
+                        Directory.CreateDirectory(itemPath);
+                    }
+                    item.Thumbnail = Path.Combine(itemRoot, "thumbnail.jpg");
+                    System.IO.File.Copy(Path.Combine(itemAssetPath, "thumbnail.jpg"),
+                        Path.Combine(itemPath, "thumbnail.jpg"));
+                    if (colors != null)
+                    {
+                        foreach (var color in colors)
+                        {
+                            var element = new AvatarElement()
+                            {
+                                AvatarItemId = item.Id,
+                                AvatarColorId = color.Id,
+                                Filename = Path.Combine(itemRoot, $"item_{color.Id}.png")
+                            };
+                            elementList.Add(element);
+                            System.IO.File.Copy(
+                                Path.Combine(itemAssetPath, $"{color.Color}.png"),
+                                Path.Combine(itemPath, $"item_{color.Id}.png"));
+                            layerFilesCopied++;
+                        }
+                    }
+                    else
+                    {
+                        var element = new AvatarElement()
+                        {
+                            AvatarItemId = item.Id,
+                            Filename = Path.Combine(itemRoot, "item.png")
+                        };
+                        elementList.Add(element);
+                        System.IO.File.Copy(Path.Combine(itemAssetPath, "item.png"),
+                            Path.Combine(itemPath, "item.png"));
+                        layerFilesCopied++;
+                    }
+                }
+
+                await _avatarService.UpdateItemListAsync(items);
+                await _avatarService.AddElementListAsync(elementList);
+                totalFilesCopied += layerFilesCopied;
+                _logger.LogInformation($"Copied {layerFilesCopied} items for {layer.Name}");
+            }
+            _logger.LogInformation($"Copied {totalFilesCopied} items for all layers.");
+
+            var bundleJsonPath = Path.Combine(assetPath, "default bundles.json");
+            if (System.IO.File.Exists(bundleJsonPath))
             {
-                CancelUrl = Url.Action(nameof(Index)),
-                JobToken = jobToken.ToString(),
-                PingSeconds = 5,
-                SuccessRedirectUrl = "",
-                SuccessUrl = Url.Action(nameof(Index)),
-                Title = "Importing avatars..."
-            });
+                IEnumerable<AvatarBundle> bundleList;
+                using (StreamReader file = System.IO.File.OpenText(bundleJsonPath))
+                {
+                    var jsonString = await file.ReadToEndAsync();
+                    bundleList = JsonConvert.DeserializeObject<IEnumerable<AvatarBundle>>(jsonString);
+                }
+
+                foreach (var bundle in bundleList)
+                {
+                    _logger.LogInformation($"Processing bundle {bundle.Name}...");
+                    var items = new List<int>();
+                    foreach (var bundleItem in bundle.AvatarItems)
+                    {
+                        var item = await _avatarService.GetItemByLayerPositionSortOrderAsync(
+                            bundleItem.AvatarLayerPosition, bundleItem.SortOrder);
+                        items.Add(item.Id);
+                    }
+                    bundle.AvatarItems = null;
+                    await _avatarService.AddBundleAsync(bundle, items);
+                }
+            }
+
+            sw.Stop();
+            string loaded = $"Default avatars added in {sw.Elapsed.TotalSeconds} seconds.";
+            _logger.LogInformation(loaded);
+            ShowAlertSuccess(loaded);
+            return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Layer(int id,
@@ -344,7 +433,7 @@ namespace GRA.Controllers.MissionControl
 
             var bundleList = await _avatarService.GetPaginatedBundleListAsync(filter);
 
-            var paginateModel = new PaginateViewModel
+            var paginateModel = new PaginateViewModel()
             {
                 ItemCount = bundleList.Count,
                 CurrentPage = page,
@@ -359,7 +448,7 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
-            var viewModel = new BundlesListViewModel
+            var viewModel = new BundlesListViewModel()
             {
                 Bundles = bundleList.Data,
                 PaginateModel = paginateModel,
@@ -372,7 +461,7 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> BundleCreate()
         {
-            var viewModel = new BundlesDetailViewModel
+            var viewModel = new BundlesDetailViewModel()
             {
                 Action = "Create",
                 Layers = new SelectList(await _avatarService.GetLayersAsync(), "Id", "Name")
