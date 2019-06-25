@@ -646,8 +646,8 @@
                 }
             }
             imagePath += ".png";
-            var container1 = Array.from($(".avatar-container")[0].children);
-            var container2 = Array.from($(".avatar-container")[1].children);
+            var container1 = $.makeArray($(".avatar-container")[0].children);
+            var container2 = $.makeArray($(".avatar-container")[1].children);
             for (var i = 0; i < container1.length; i++){
                 var obj1 = $(container1[i]);
                 var obj2 = $(container2[i]);
