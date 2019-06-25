@@ -432,9 +432,20 @@ namespace GRA.Domain.Service
             {
                 if (item.AvatarBundleId.HasValue && !item.IsDeleted)
                 {
-                    hasbeenviewed.Add(item.HasBeenViewed.ToString());
-                    var bundle = await GetBundleByIdAsync(item.AvatarBundleId.Value, false);
-                    usersbundles.Add(bundle);
+                    var flag = true;
+                    foreach(var bund in usersbundles)
+                    {
+                        if(bund.Id == item.AvatarBundleId)
+                        {
+                            flag = false;
+                        }
+                    }
+                    if (flag)
+                    {
+                        hasbeenviewed.Add(item.HasBeenViewed.ToString());
+                        var bundle = await GetBundleByIdAsync(item.AvatarBundleId.Value, false);
+                        usersbundles.Add(bundle);
+                    }
                 }
             }
             return Tuple.Create(usersbundles,hasbeenviewed);
