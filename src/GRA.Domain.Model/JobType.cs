@@ -4,6 +4,7 @@
     {
         SendBulkEmails = 1,
         RunReport,
-        UpdateVendorStatus
+        UpdateVendorStatus,
+        AvatarImport
     }
 }
