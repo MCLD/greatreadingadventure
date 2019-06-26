@@ -265,13 +265,15 @@ else
 @section scripts {
     <script>
         var newsSubscribeUrl = "@(Url.Action(nameof(HomeController.NewsSubscribe)))";
-
+        var daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
         var mcAagUpdateCount = 0;
         var mcAagInterval;
         var mcAagStarted;
         var mcAagUpdateEvery = 60 * 1000;
         var mcAagSlowDownAfter = 3 * 60 * 60 * 1000;
         var mcAagSlowDownRate = 30 * 60 * 1000;
+
+        updatePosts()
 
         function updateAagReport(updateInterval) {
             mcAagInterval = setInterval(function () {
@@ -315,50 +317,108 @@ else
             }, updateInterval);
         }
 
-        $().ready(function() {
-            mcAagStarted = Math.floor(new Date().getTime());
-            console.log("Updating At a Glance status every " + mcAagUpdateEvery / 1000 + "s and slowing down after " + mcAagSlowDownAfter / 1000 + "s");
-            updateAagReport(mcAagUpdateEvery);
-            $(".mc-refresh-link").click(function () {
-                $(".mc-refresh-spinner").addClass("fa-spin");
-            });
-        });
-
-        $("#subscribeButton").on("click", function () {
-            var button = $(this);
-            if (button.hasClass("disabled") == false) {
-                var checkIcon = $('#subscribeCheck');
-                checkIcon.addClass("disabled").removeClass("far fa-square fa-check-square").addClass("fas fa-spinner fa-pulse");
-                var subscribe = button.data("subscribed") == "False";
-
-                $.post(newsSubscribeUrl, { subscribe: subscribe }, function (response) {
-                    if (response.success) {
-                        if (subscribe) {
-                            checkIcon.addClass("fa-check-square");
-                            button.data("subscribed", "True");
-                        }
-                        else {
-                            checkIcon.addClass("fa-square");
-                            button.data("subscribed", "False");
+        function WithinAWeek(datestr) {
+            var d = new Date();
+            var day = d.getDate();
+            var month = d.getMonth() + 1;
+            date = datestr.toString().split("/");
+            if (day / 7.00 <= 1) {
+                var thismonth = daysInMonth[month];
+                var lastmonth;
+                if (month == 1) {
+                    lastmonth = daysInMonth[11];
+                }
+                else {
+                    lastmonth = daysInMonth[month - 1];
+                }
+                for (var counter = 7; counter >= 0; counter++) {
+                    if (date[1] == day) {
+                        return true;
+                    }
+                    if (day - 1 == 0) {
+                        day = lastmonth;
+                        if (date[1] == day) {
+                            return true;
                         }
                     }
                     else {
-                        alert(response.message);
-                        if (subscribe) {
-                            checkIcon.addClass("fa-square");
-                        }
-                        else {
-                            checkIcon.addClass("fa-check-square");
-                        }
+                        day -= 1;
                     }
-                })
-                .fail(function () {
-                    alert("Error updating news subscription");
-                })
-                .always(function () {
-                    checkIcon.removeClass("fas fa-spinner fa-pulse disabled").addClass("far");
-                });
+                }
             }
-        });
+            else {
+                for (var counter = 7; counter >= 0; counter++) {
+                    if (date[1] == day) {
+                        return true;
+                    }
+                    day -= 1;
+                }
+            }
+            return false;
+        }
+
+        function updatePosts() {
+            @foreach (var category in Model.NewsCategories)
+            {
+                foreach (var post in Model.NewsPosts)
+                {
+                    if (post.CategoryId == category.Id)
+                    {
+                        @:if (WithinAWeek(@post.PublishedAt.Value.ToShortDateString())) {
+                            @:console.log("yisss");
+                        @:}
+                        @:else{
+                            @:console.log("booo");
+                        @:}
+                    }
+                }
+            }
+        }
+
+        $().ready(function() {
+                                        mcAagStarted = Math.floor(new Date().getTime());
+                                        console.log("Updating At a Glance status every " + mcAagUpdateEvery / 1000 + "s and slowing down after " + mcAagSlowDownAfter / 1000 + "s");
+                                        updateAagReport(mcAagUpdateEvery);
+            $(".mc-refresh-link").click(function () {
+                $(".mc-refresh-spinner").addClass("fa-spin");
+                                        });
+                                    });
+
+        $("#subscribeButton").on("click", function () {
+                                        var button = $(this);
+                                        if (button.hasClass("disabled") == false) {
+                                            var checkIcon = $('#subscribeCheck');
+                                            checkIcon.addClass("disabled").removeClass("far fa-square fa-check-square").addClass("fas fa-spinner fa-pulse");
+                                            var subscribe = button.data("subscribed") == "False";
+
+                $.post(newsSubscribeUrl, { subscribe: subscribe }, function (response) {
+                                                if (response.success) {
+                                                    if (subscribe) {
+                                                        checkIcon.addClass("fa-check-square");
+                                                        button.data("subscribed", "True");
+                                                    }
+                                                    else {
+                                                        checkIcon.addClass("fa-square");
+                                                        button.data("subscribed", "False");
+                                                    }
+                                                }
+                                                else {
+                                                    alert(response.message);
+                                                    if (subscribe) {
+                                                        checkIcon.addClass("fa-square");
+                                                    }
+                                                    else {
+                                                        checkIcon.addClass("fa-check-square");
+                                                    }
+                                                }
+                                            })
+                .fail(function () {
+                                                alert("Error updating news subscription");
+                                            })
+                .always(function () {
+                                                checkIcon.removeClass("fas fa-spinner fa-pulse disabled").addClass("far");
+                                            });
+                                        }
+                                    });
     </script>
 }
