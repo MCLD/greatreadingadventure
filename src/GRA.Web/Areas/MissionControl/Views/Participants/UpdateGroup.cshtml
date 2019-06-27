@@ -23,7 +23,7 @@
                 </div>
                 <div class="panel-footer clearfix">
                     <div class="pull-right">
-                        <a class="btn btn-danger" href="@Url.Action("Household")">Cancel</a>
+                        <a class="btn btn-danger" asp-action="Household" asp-route-id="@Model.HouseholdHeadUserId">Cancel</a>
                         <button type="submit" class="btn btn-success">Update</button>
                     </div>
                 </div>

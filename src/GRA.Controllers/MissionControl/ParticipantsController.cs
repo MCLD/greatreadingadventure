@@ -45,7 +45,6 @@ namespace GRA.Controllers.MissionControl
         private readonly SchoolService _schoolService;
         private readonly SiteService _siteService;
         private readonly TriggerService _triggerService;
-        private readonly UserImportService _userImportService;
         private readonly UserService _userService;
         private readonly VendorCodeService _vendorCodeService;
 
@@ -65,7 +64,6 @@ namespace GRA.Controllers.MissionControl
             SchoolService schoolService,
             SiteService siteService,
             TriggerService triggerService,
-            UserImportService userImportService,
             UserService userService,
             VendorCodeService vendorCodeService)
             : base(context)
@@ -97,8 +95,6 @@ namespace GRA.Controllers.MissionControl
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             _triggerService = triggerService
                 ?? throw new ArgumentNullException(nameof(triggerService));
-            _userImportService = userImportService
-                ?? throw new ArgumentNullException(nameof(userImportService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _vendorCodeService = vendorCodeService
                 ?? throw new ArgumentNullException(nameof(vendorCodeService));

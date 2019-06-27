@@ -46,6 +46,7 @@ namespace GRA.Domain.Service
         private readonly ActivityService _activityService;
         private readonly EmailManagementService _emailManagementService;
         private readonly SiteLookupService _siteLookupService;
+        private readonly UserImportService _userImportService;
         private readonly VendorCodeService _vendorCodeService;
         private readonly IStringLocalizer<Resources.Shared> _sharedLocalizer;
 
@@ -76,6 +77,7 @@ namespace GRA.Domain.Service
             ActivityService activityService,
             EmailManagementService emailManagementService,
             SiteLookupService siteLookupService,
+            UserImportService userImportService,
             VendorCodeService vendorCodeService,
             IStringLocalizer<Resources.Shared> sharedLocalizer)
             : base(logger, dateTimeProvider, userContextProvider)
@@ -128,6 +130,8 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(emailManagementService));
             _siteLookupService = siteLookupService
                 ?? throw new ArgumentNullException(nameof(siteLookupService));
+            _userImportService = userImportService
+                ?? throw new ArgumentNullException(nameof(userImportService));
             _vendorCodeService = vendorCodeService
                 ?? throw new ArgumentNullException(nameof(vendorCodeService));
             _sharedLocalizer = sharedLocalizer
@@ -609,10 +613,14 @@ namespace GRA.Domain.Service
             return authCode.RoleName;
         }
 
-        public async Task<User> AddHouseholdMemberAsync(int householdHeadUserId, User memberToAdd)
+        public async Task<User> AddHouseholdMemberAsync(int householdHeadUserId, User memberToAdd, 
+            bool skipHouseholdActionVerification = false)
         {
-            //VerifyCanHouseholdAction();
-
+            if (!skipHouseholdActionVerification)
+            {
+                VerifyCanHouseholdAction();
+            }
+            
             var siteId = GetCurrentSiteId();
             int authUserId = GetClaimId(ClaimType.UserId);
             var householdHead = await _userRepository.GetByIdAsync(householdHeadUserId);
@@ -1529,175 +1537,33 @@ namespace GRA.Domain.Service
                     };
                 }
 
-                var householdHead = await _userRepository
-                        .GetByIdAsync(jobDetails.HeadOfHouseholdId);
-
-                var users = new List<User>();
-                var issues = new List<string>();
+                UserImportResult userImportResult = null;
                 try
                 {
-                    var program = await _programRepository.GetByIdAsync(jobDetails.ProgmamId);
-                    
-                    using (var stream = new FileStream(fullPath, FileMode.Open))
-                    {
-                        using (var excelReader = ExcelReaderFactory.CreateReader(stream))
-                        {
-                            int currentSheet = 1;
-                            while (currentSheet < excelReader.ResultsCount)
-                            {
-                                excelReader.NextResult();
-                                currentSheet++;
-                            }
-
-                            const string FirstNameRowHeading = "FirstName";
-                            const string LastNameRowHeading = "LastName";
-                            const string AgeRowHeading = "Age";
-                            const int MaxLength = 255;
-
-                            int firstNameColumnId = 0;
-                            int lastNameColumnId = 0;
-                            int ageColumnId = 0;
-                            int row = 0;
-                            while (excelReader.Read())
-                            {
-                                row++;
-                                if (row == 1)
-                                {
-                                    for (int i = 0; i < excelReader.FieldCount; i++)
-                                    {
-                                        var columnName = excelReader.GetString(i).Trim() ?? $"Column{i}";
-                                        switch (columnName)
-                                        {
-                                            case FirstNameRowHeading:
-                                                firstNameColumnId = i;
-                                                break;
-                                            case LastNameRowHeading:
-                                                lastNameColumnId = i;
-                                                break;
-                                            case AgeRowHeading:
-                                                ageColumnId = i;
-                                                break;
-                                            default:
-                                                _logger.LogInformation($"Unrecognized column {columnName} in household import.");
-                                                break;
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    if (excelReader.GetValue(firstNameColumnId) != null
-                                            || excelReader.GetValue(lastNameColumnId) != null
-                                            || excelReader.GetValue(ageColumnId) != null)
-                                    {
-                                        string firstName = default(string);
-                                        string lastName = default(string);
-                                        int? age = default(int?);
-
-                                        try
-                                        {
-                                            firstName = excelReader.GetString(firstNameColumnId);
-
-                                            if (string.IsNullOrEmpty(firstName))
-                                            {
-                                                throw new GraException("First name is empty.");
-                                            }
-                                            else if (firstName.Length > MaxLength)
-                                            {
-                                                throw new GraException("First name is longer than {MaxLength} characters.");
-                                            }
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            _logger.LogError($"Invalid value for first name, row {row}: {ex.Message}");
-                                            issues.Add($"Invalid value for first name on line {row}: {ex.Message}");
-                                        }
-
-                                        try
-                                        {
-                                            lastName = excelReader.GetString(lastNameColumnId);
-
-                                            if (string.IsNullOrEmpty(lastName))
-                                            {
-                                                throw new GraException("Last name is empty.");
-                                            }
-                                            else if (lastName.Length > MaxLength)
-                                            {
-                                                throw new GraException("Last name is longer than {MaxLength} characters.");
-                                            }
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            _logger.LogError($"Invalid value for last name, row {row}: {ex.Message}");
-                                            issues.Add($"Invalid value for last name on line {row}: {ex.Message}");
-                                        }
-
-                                        if (program.AskAge)
-                                        {
-                                            try
-                                            {
-                                                var ageString = excelReader
-                                                    .GetValue(ageColumnId)?
-                                                    .ToString();
-
-                                                if (string.IsNullOrWhiteSpace(ageString))
-                                                {
-                                                    throw new GraException("Age is empty.");
-                                                }
-
-                                                var ageValueString = new string(ageString.Trim()
-                                                    .SkipWhile(_ => !char.IsDigit(_))
-                                                    .TakeWhile(char.IsDigit)
-                                                    .ToArray());
-
-                                                if (string.IsNullOrWhiteSpace(ageValueString))
-                                                {
-                                                    throw new GraException("Unable to get a number value from age.");
-                                                }
-
-                                                age = int.Parse(ageValueString);
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                _logger.LogError($"Invalid value for age, row {row}: {ex.Message}");
-                                                issues.Add($"Invalid value for age on line {row}: {ex.Message}");
-                                            }
-                                        }
-
-                                        if (issues.Count == 0)
-                                        {
-                                            users.Add(new User
-                                            {
-                                                Age = program.AskAge ? age : null,
-                                                BranchId = householdHead.BranchId,
-                                                FirstName = firstName?.Trim(),
-                                                IsFirstTime = jobDetails.FirstTimeParticipating,
-                                                IsHomeschooled = jobDetails.IsHomeSchooled,
-                                                LastName = lastName?.Trim(),
-                                                PostalCode = householdHead.PostalCode,
-                                                ProgramId = program.Id,
-                                                SchoolId = jobDetails.SchoolId,
-                                                SchoolNotListed = jobDetails.SchoolNotListed,
-                                                SystemId = householdHead.SystemId
-                                            });
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    userImportResult = await _userImportService.GetFromExcelAsync(fullPath,
+                            jobDetails.ProgmamId);
                 }
                 finally
                 {
                     File.Delete(fullPath);
                 }
 
-                if (issues.Count > 0)
+                if (token.IsCancellationRequested)
+                {
+                    return new JobStatus
+                    {
+                        PercentComplete = 100,
+                        Status = $"Operation cancelled."
+                    };
+                }
+
+                if (userImportResult.Errors?.Count > 0)
                 {
                     var sb = new StringBuilder("<strong>Import failed</strong>");
                     sb.Append(" Issues detected:<ul>");
-                    foreach (string issue in issues)
+                    foreach (string error in userImportResult.Errors)
                     {
-                        sb.Append("<li>").Append(issue).Append("</li>");
+                        sb.Append("<li>").Append(error).Append("</li>");
                     }
                     sb.Append("</ul>");
 
@@ -1709,7 +1575,7 @@ namespace GRA.Domain.Service
                         Error = true
                     };
                 }
-                else if (users.Count == 0)
+                else if (userImportResult == null || userImportResult.Users.Count == 0)
                 {
                     var sb = new StringBuilder("<strong>Import failed</strong>");
                     sb.Append(" No users to add.");
@@ -1723,11 +1589,14 @@ namespace GRA.Domain.Service
                     };
                 }
 
+                var householdHead = await _userRepository
+                    .GetByIdAsync(jobDetails.HeadOfHouseholdId);
+
                 var groupInfo = await GetGroupFromHouseholdHeadAsync(householdHead.Id);
                 if (groupInfo == null)
                 {
                     var householdLimitExceeded = await UsersToAddExceedsHouseholdLimitAsync(
-                        householdHead.Id, users.Count);
+                        householdHead.Id, userImportResult.Users.Count);
 
                     if (householdLimitExceeded)
                     {
@@ -1750,17 +1619,64 @@ namespace GRA.Domain.Service
                     }
                 }
 
-                var currentUser = 0;
+                var currentUser = 1;
+                var userCount = userImportResult.Users.Count();
 
-                foreach (var user in users)
+                string callIt = groupInfo == null ? "Household" : "Group";
+
+                progress.Report(new JobStatus
                 {
-                    var sw2 = new Stopwatch();
-                    sw2.Start();
-                    currentUser++;
-                    await AddHouseholdMemberAsync(householdHead.Id, user);
-                    sw2.Stop();
+                    PercentComplete = currentUser * 100 / userCount,
+                    Status = $"Adding {callIt} members ({currentUser}/{userCount})...",
+                    Error = false
+                });
+                var lastUpdateSent = (int)sw.Elapsed.TotalSeconds;
 
-                    _logger.LogInformation($"Adding user {currentUser} took {sw2.Elapsed.TotalSeconds} seconds.");
+                foreach (var importUser in userImportResult.Users)
+                {
+                    if (token.IsCancellationRequested)
+                    {
+                        break;
+                    }
+
+                    var secondsFromLastUpdate = (int)sw.Elapsed.TotalSeconds - lastUpdateSent;
+                    if (secondsFromLastUpdate >= 5)
+                    {
+                        progress.Report(new JobStatus
+                        {
+                            PercentComplete = currentUser * 100 / userCount,
+                            Status = $"Adding {callIt} members ({currentUser}/{userCount})...",
+                            Error = false
+                        });
+                        lastUpdateSent = (int)sw.Elapsed.TotalSeconds;
+                    }
+                    var user = new User
+                    {
+                        Age = importUser.Age,
+                        BranchId = householdHead.BranchId,
+                        FirstName = importUser.FirstName?.Trim(),
+                        IsFirstTime = jobDetails.FirstTimeParticipating,
+                        IsHomeschooled = jobDetails.IsHomeSchooled,
+                        LastName = importUser.LastName?.Trim(),
+                        PostalCode = householdHead.PostalCode,
+                        ProgramId = jobDetails.ProgmamId,
+                        SchoolId = jobDetails.SchoolId,
+                        SchoolNotListed = jobDetails.SchoolNotListed,
+                        SystemId = householdHead.SystemId
+                    };
+
+                    await AddHouseholdMemberAsync(householdHead.Id, user, true);
+
+                    currentUser++;
+                }
+
+                if (token.IsCancellationRequested && userCount >= currentUser)
+                {
+                    return new JobStatus
+                    {
+                        PercentComplete = 100,
+                        Status = $"Operation cancelled at user {currentUser}."
+                    };
                 }
 
                 return new JobStatus
