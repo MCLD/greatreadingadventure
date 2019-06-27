@@ -64,7 +64,6 @@ namespace GRA.Domain.Report
             // header row
             var headerRow = new List<object>() {
                 "School Name",
-                "School Type",
                 "Registered Users"
             };
 

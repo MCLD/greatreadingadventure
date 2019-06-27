@@ -5,6 +5,7 @@
         SendBulkEmails = 1,
         RunReport,
         UpdateVendorStatus,
-        AvatarImport
+        AvatarImport,
+        HouseholdImport
     }
 }
