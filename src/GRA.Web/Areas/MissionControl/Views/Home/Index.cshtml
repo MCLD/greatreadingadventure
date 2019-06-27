@@ -121,78 +121,26 @@ else
                 </div>
                 <div class="panel-body">
                     <ul class="nav nav-pills nav-stacked">
-                        @foreach (var category in Model.NewsCategories)
+                        @for (var category = 0; category < Model.NewsCategories.Count(); category++)
                         {
-                            <li ActiveBy routeKey="Category" value="@(category.IsDefault ? $",{category.Id}" : $"{category.Id}")">
-                                <a style="padding: 5px 10px;" asp-route-category="@(category.IsDefault ? "" : $"{category.Id}")">@category.Name</a>
-                            </li>
+                            if (Model.WithinAWeek[category] == true)
+                            {
+                                <li ActiveBy routeKey="Category" value="@(Model.NewsCategories.ElementAt(category).IsDefault ? $",{Model.NewsCategories.ElementAt(category).Id}" : $"{Model.NewsCategories.ElementAt(category).Id}")">
+                                    <a style="padding: 5px 10px; text-align: left;" asp-route-category="@(Model.NewsCategories.ElementAt(category).IsDefault ? "" : $"{Model.NewsCategories.ElementAt(category).Id}")">
+                                    @Model.NewsCategories.ElementAt(category).Name 
+                                    <span class="fas fa-asterisk" style="color:#FF8C00; float: right; line-height: 20px;"></span></a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li ActiveBy routeKey="Category" value="@(Model.NewsCategories.ElementAt(category).IsDefault ? $",{Model.NewsCategories.ElementAt(category).Id}" : $"{Model.NewsCategories.ElementAt(category).Id}")">
+                                    <a style="padding: 5px 10px;  text-align: left;" asp-route-category="@(Model.NewsCategories.ElementAt(category).IsDefault ? "" : $"{Model.NewsCategories.ElementAt(category).Id}")">@Model.NewsCategories.ElementAt(category).Name</a>
+                                </li>
+                            }
                         }
                     </ul>
                 </div>
             </div>
-            <script>
-                updatePosts();
-
-                var daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
-                function WithinAWeek(datestr) {
-                    var d = new Date();
-                    var day = d.getDate();
-                    var month = d.getMonth() + 1;
-                    date = datestr.toString().split("/");
-                    if (day / 7.00 <= 1) {
-                        var thismonth = daysInMonth[month];
-                        var lastmonth;
-                        if (month == 1) {
-                            lastmonth = daysInMonth[11];
-                        }
-                        else {
-                            lastmonth = daysInMonth[month - 1];
-                        }
-                        for (var counter = 7; counter >= 0; counter++) {
-                            if (date[1] == day) {
-                                return true;
-                            }
-                            if (day - 1 == 0) {
-                                day = lastmonth;
-                                if (date[1] == day) {
-                                    return true;
-                                }
-                            }
-                            else {
-                                day -= 1;
-                            }
-                        }
-                    }
-                    else {
-                        for (var counter = 7; counter >= 0; counter++) {
-                            if (date[1] == day) {
-                                return true;
-                            }
-                            day -= 1;
-                        }
-                    }
-                    return false;
-                }
-
-                function updatePosts() {
-                    @foreach (var category in Model.NewsCategories)
-                    {
-                        if (category.Id == category.Id)
-                        {
-                            <text>
-                            if (WithinAWeek(@category.LastPostDate.Value.ToShortDateString())) {
-                                console.log("yisss");
-                            }
-                            else{
-                                console.log("booo");
-                            }
-                            </text>
-                        }
-                    }
-                    console.log("hello");
-                }
-            </script>
             <div class="panel panel-default">
                 <div class="panel-body">
                     Subscribe via email
