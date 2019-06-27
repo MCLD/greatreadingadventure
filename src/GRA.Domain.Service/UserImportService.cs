@@ -66,8 +66,8 @@ namespace GRA.Domain.Service
                             {
                                 users.Add(new UserImportExport
                                 {
-                                    FirstName = record.FirstName,
-                                    LastName = record.LastName,
+                                    FirstName = record.FirstName?.Trim(),
+                                    LastName = record.LastName?.Trim(),
                                     Age = program.AskAge ? record.Age : null
                                 });
                             }
@@ -182,7 +182,7 @@ namespace GRA.Domain.Service
                                     }
                                     else if (firstName.Length > MaxLength)
                                     {
-                                        throw new GraException("First name is longer than {MaxLength} characters.");
+                                        throw new GraException($"First name is longer than {MaxLength} characters.");
                                     }
                                 }
                                 catch (Exception ex)
@@ -201,7 +201,7 @@ namespace GRA.Domain.Service
                                     }
                                     else if (lastName.Length > MaxLength)
                                     {
-                                        throw new GraException("Last name is longer than {MaxLength} characters.");
+                                        throw new GraException($"Last name is longer than {MaxLength} characters.");
                                     }
                                 }
                                 catch (Exception ex)
@@ -246,8 +246,8 @@ namespace GRA.Domain.Service
                                 {
                                     users.Add(new UserImportExport
                                     {
-                                        FirstName = firstName,
-                                        LastName = lastName,
+                                        FirstName = firstName?.Trim(),
+                                        LastName = lastName?.Trim(),
                                         Age = program.AskAge ? age : null
                                     });
                                 }

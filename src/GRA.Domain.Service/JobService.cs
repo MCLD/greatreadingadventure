@@ -15,6 +15,7 @@ namespace GRA.Domain.Service
         private readonly AvatarService _avatarService;
         private readonly EmailBulkService _emailBulkService;
         private readonly ReportService _reportService;
+        private readonly UserService _userService;
         private readonly VendorCodeService _vendorCodeService;
 
         public JobService(ILogger<JobService> logger,
@@ -24,6 +25,7 @@ namespace GRA.Domain.Service
             AvatarService avatarService,
             EmailBulkService emailBulkService,
             ReportService reportService,
+            UserService userService,
             VendorCodeService vendorCodeService)
             : base(logger, dateTimeProvider, userContextProvider)
         {
@@ -35,6 +37,8 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(emailBulkService));
             _reportService = reportService
                 ?? throw new ArgumentNullException(nameof(reportService));
+            _userService = userService
+                ?? throw new ArgumentNullException(nameof(userService));
             _vendorCodeService = vendorCodeService
                 ?? throw new ArgumentNullException(nameof(vendorCodeService));
         }
@@ -67,6 +71,11 @@ namespace GRA.Domain.Service
                             {
                                 case JobType.AvatarImport:
                                     status = await _avatarService.ImportAvatarsAsync(jobInfo.Id,
+                                        token,
+                                        progress);
+                                    break;
+                                case JobType.HouseholdImport:
+                                    status = await _userService.ImportHouseholdMembersAsync(jobInfo.Id,
                                         token,
                                         progress);
                                     break;
