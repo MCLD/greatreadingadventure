@@ -61,9 +61,10 @@
                             <input asp-for="PaginateModel.CurrentPage" type="hidden" />
                             <input asp-for="Book.Id" type="hidden" />
                             <input asp-for="Book.Title" type="hidden" />
-                            <button type="submit" class="btn btn-danger pull-right" aria-label="Confirm">
+                            <button type="submit" class="btn btn-danger btn-spinner pull-right" aria-label="Confirm">
                                 <span class="fa fa-remove" aria-hidden="true"></span>
                                 @SharedLocalizer[GRA.Annotations.Interface.Delete]
+                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
                         </form>
                     </div>
