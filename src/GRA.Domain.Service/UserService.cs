@@ -684,7 +684,7 @@ namespace GRA.Domain.Service
 
                 var sw = new System.Diagnostics.Stopwatch();
                 sw.Start();
-                //await AwardUserBadgesAsync(registeredUser.Id, false, false);
+                await AwardUserBadgesAsync(registeredUser.Id, false, false);
                 sw.Stop();
                 if (sw.Elapsed.TotalSeconds > 5)
                 {
