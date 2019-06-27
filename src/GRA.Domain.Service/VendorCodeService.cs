@@ -397,6 +397,7 @@ namespace GRA.Domain.Service
                             return new JobStatus
                             {
                                 PercentComplete = 100,
+                                Complete = true,
                                 Status = sb.ToString(),
                                 Error = true
                             };
@@ -407,6 +408,7 @@ namespace GRA.Domain.Service
                             return new JobStatus
                             {
                                 PercentComplete = 100,
+                                Complete = true,
                                 Status = sb.ToString(),
                             };
                         }
@@ -419,7 +421,7 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {requestingUser} doesn't have permission to view all reporting.");
+                _logger.LogError($"User {requestingUser} doesn't have permission to import vendor code statuses.");
                 return new JobStatus
                 {
                     PercentComplete = 0,
