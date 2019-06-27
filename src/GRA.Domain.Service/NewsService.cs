@@ -99,6 +99,7 @@ namespace GRA.Domain.Service
             if (publish)
             {
                 post.PublishedAt = _dateTimeProvider.Now;
+                await _newsCategoryRepository.SetLastPostDate(post.CategoryId, _dateTimeProvider.Now);
             }
 
             var addedPost = await _newsPostRepository
