@@ -877,7 +877,7 @@
                     hasBeenViewed[idx] = 1;
                 }
             }
-            if (NewBundlesCheck()) {
+            if (!NewBundlesCheck()) {
                 $("#selector13").attr("src","/content/site1/avatarbundles/icon.png");
             }
             GetBundleById(selectedBundleId);
