@@ -52,6 +52,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Household page layout
 - Upgrade Automapper from 6.0.2 to 8.0.0
 - Add assemblies to AutoMapper service injection
+- Household import to use the job system
 
 ### Fixed
 - Instance name enrichment for logging

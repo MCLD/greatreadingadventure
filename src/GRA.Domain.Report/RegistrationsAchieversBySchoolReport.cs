@@ -64,7 +64,6 @@ namespace GRA.Domain.Report
             // header row
             var headerRow = new List<object>() {
                 "School Name",
-                "School Type",
                 "Registered Users"
             };
 
@@ -149,7 +148,6 @@ namespace GRA.Domain.Report
             var footerRow = new List<object>()
             {
                 "Total",
-                string.Empty,
                 totalRegistered
             };
 
