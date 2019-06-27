@@ -148,7 +148,6 @@ namespace GRA.Domain.Report
             var footerRow = new List<object>()
             {
                 "Total",
-                string.Empty,
                 totalRegistered
             };
 
