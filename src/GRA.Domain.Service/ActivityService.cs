@@ -1225,14 +1225,14 @@ namespace GRA.Domain.Service
                 var notification = new Notification
                 {
                     PointsEarned = 0,
-                    Text = $"<span class=\"fa fa-shopping-bag\"></span> You've unlocked the <strong>{bundle.Name}</strong> avatar bundle!",
+                    Text = $"<span class=\"fa fa-shopping-bag\"></span> You've unlocked the <strong>{bundle.Name}</strong> avatar bundle! You can now see your new bundle on the Avatar's page: <a asp-controller = \"Avatar\" asp-action=\"Index\">Here! </a>",
                     UserId = userId,
                     BadgeFilename = bundle.AvatarItems.FirstOrDefault()?.Thumbnail
                 };
 
                 if (bundle.AvatarItems.Count > 1)
                 {
-                    notification.Text += " You can view the full list of pieces unlocked in your Profile History.";
+                    notification.Text += " To view the full list of unlocked pieces, go to your Profile History.";
                 }
 
                 await _notificationRepository.AddSaveAsync(loggingUser, notification);

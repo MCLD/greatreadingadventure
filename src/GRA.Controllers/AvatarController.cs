@@ -86,6 +86,53 @@ namespace GRA.Controllers
             return View(viewModel);
         }
 
+        public async Task<IActionResult> BundleIndex()
+        {
+            var userWardrobe = await _avatarService.GetUserWardrobeAsync();
+            if (userWardrobe.Count == 0)
+            {
+                ShowAlertDanger("Avatars have not been configured.");
+                _logger.LogError("User {id} tried to customize their avatar but avatars have not been configured!",
+                    GetActiveUserId());
+                return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
+            }
+
+            var model = new AvatarJsonModel
+            {
+                Layers = _mapper
+                .Map<ICollection<AvatarJsonModel.AvatarLayer>>(userWardrobe)
+            };
+            var layerGroupings = userWardrobe
+                .GroupBy(_ => _.GroupId)
+                .Select(_ => _.ToList())
+                .ToList();
+            var usersresult = _avatarService.GetUserUnlockBundles().Result;
+            var userbundles = usersresult.Item1;
+            var hasbeenviewed = usersresult.Item2;
+            var bundles = new AvatarBundleJsonModel
+            {
+                Bundles = _mapper
+                .Map<List<AvatarBundleJsonModel.AvatarBundle>>(userbundles)
+            };
+            var viewModel = new AvatarViewModel
+            {
+                LayerGroupings = layerGroupings,
+                Bundles = userbundles,
+                ViewedBundles = hasbeenviewed,
+                DefaultLayer = 13,
+                ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/"),
+                AvatarPiecesJson = Newtonsoft.Json.JsonConvert.SerializeObject(model),
+                AvatarBundlesJson = Newtonsoft.Json.JsonConvert.SerializeObject(bundles)
+            };
+
+            var userAvatar = await _avatarService.GetUserAvatarAsync();
+            if (userAvatar.Count == 0)
+            {
+                viewModel.NewAvatar = true;
+            }
+            return View(viewModel);
+        }
+
         [HttpPost]
         public async Task<JsonResult> SaveAvatar(string selectionJson)
         {
