@@ -272,7 +272,7 @@ namespace GRA.Domain.Service
 
             return lastId;
         }
-        public async Task<bool> WithinTimeFrame(DateTime date, int daysAllotted)
+        public bool WithinTimeFrame(DateTime date, int daysAllotted)
         {
             return _dateTimeProvider.Now.Date.Subtract(date) <= TimeSpan.FromDays(daysAllotted);
         }
