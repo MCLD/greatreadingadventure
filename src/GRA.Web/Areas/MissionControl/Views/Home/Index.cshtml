@@ -127,7 +127,7 @@ else
                             {
                             <li ActiveBy routeKey="Category" value="@(category.IsDefault ? $",{category.Id}" : $"{category.Id}")">
                                 <a style="padding: 5px 10px;  text-align: left;" asp-route-category="@(category.IsDefault ? "" : $"{category.Id}")">@category.Name 
-                                <span class="fas fa-asterisk" style="color:#FF8C00; float: right; line-height: 20px;"></span></a>
+                                <span class="fas fa-asterisk fa-sm" style="color:#FF8C00; float: right; line-height: 20px;"></span></a>
                             </li>
                             }
                             else
