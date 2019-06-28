@@ -272,43 +272,18 @@ namespace GRA.Domain.Service
 
             return lastId;
         }
-        public async Task<List<bool>> GetWithinAWeek()
+        public async Task<bool> WithinTimeFrame(DateTime date, int daysallotted)
         {
-            var withaweek = new List<bool>();
-            var categories = await GetAllCategoriesAsync();
-            foreach (var category in categories)
+            if (date.Date == _dateTimeProvider.Now.Date)
             {
-                withaweek.Add(await WithinTimeFrame(category.LastPostDate, 7));
+                return true;
             }
-            return withaweek;
-        }
-        public async Task<bool> WithinTimeFrame(DateTime? date, int daysallotted)
-        {
-            var today = _dateTimeProvider.Now;
-            if(date == null)
+            else if (daysallotted == 0)
             {
                 return false;
             }
-            else if(daysallotted == 0)
-            {
-                if (date.Value.Date == today.Date)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
             else {
-                if (date.Value.Date == today.Date)
-                {
-                    return true;
-                }
-                else
-                {
-                    return await WithinTimeFrame(date.Value.AddDays(1), daysallotted - 1);
-                }
+                return await WithinTimeFrame(date.AddDays(1), daysallotted - 1);
             }
         }
     }

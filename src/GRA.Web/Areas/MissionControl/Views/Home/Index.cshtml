@@ -121,20 +121,19 @@ else
                 </div>
                 <div class="panel-body">
                     <ul class="nav nav-pills nav-stacked">
-                        @for (var category = 0; category < Model.NewsCategories.Count(); category++)
+                        @foreach (var category in Model.NewsCategories)
                         {
-                            if (Model.WithinAWeek[category] == true)
+                            if (category.IsNew)
                             {
-                                <li ActiveBy routeKey="Category" value="@(Model.NewsCategories.ElementAt(category).IsDefault ? $",{Model.NewsCategories.ElementAt(category).Id}" : $"{Model.NewsCategories.ElementAt(category).Id}")">
-                                    <a style="padding: 5px 10px; text-align: left;" asp-route-category="@(Model.NewsCategories.ElementAt(category).IsDefault ? "" : $"{Model.NewsCategories.ElementAt(category).Id}")">
-                                    @Model.NewsCategories.ElementAt(category).Name 
-                                    <span class="fas fa-asterisk" style="color:#FF8C00; float: right; line-height: 20px;"></span></a>
-                                </li>
+                            <li ActiveBy routeKey="Category" value="@(category.IsDefault ? $",{category.Id}" : $"{category.Id}")">
+                                <a style="padding: 5px 10px;  text-align: left;" asp-route-category="@(category.IsDefault ? "" : $"{category.Id}")">@category.Name 
+                                <span class="fas fa-asterisk" style="color:#FF8C00; float: right; line-height: 20px;"></span></a>
+                            </li>
                             }
                             else
                             {
-                                <li ActiveBy routeKey="Category" value="@(Model.NewsCategories.ElementAt(category).IsDefault ? $",{Model.NewsCategories.ElementAt(category).Id}" : $"{Model.NewsCategories.ElementAt(category).Id}")">
-                                    <a style="padding: 5px 10px;  text-align: left;" asp-route-category="@(Model.NewsCategories.ElementAt(category).IsDefault ? "" : $"{Model.NewsCategories.ElementAt(category).Id}")">@Model.NewsCategories.ElementAt(category).Name</a>
+                                <li ActiveBy routeKey="Category" value="@(category.IsDefault ? $",{category.Id}" : $"{category.Id}")">
+                                    <a style="padding: 5px 10px;  text-align: left;" asp-route-category="@(category.IsDefault ? "" : $"{category.Id}")">@category.Name</a>
                                 </li>
                             }
                         }

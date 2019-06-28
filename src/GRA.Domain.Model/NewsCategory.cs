@@ -16,6 +16,8 @@ namespace GRA.Domain.Model
 
         public int PostCount { get; set; }
 
-        public DateTime? LastPostDate { get; set; }
+        public DateTime LastPostDate { get; set; }
+        public bool IsNew { get; set; }
+
     }
 }
