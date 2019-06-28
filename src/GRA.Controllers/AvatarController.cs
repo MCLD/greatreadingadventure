@@ -25,6 +25,8 @@ namespace GRA.Controllers
         private readonly AvatarService _avatarService;
         private readonly SiteService _siteService;
 
+        public static string Name { get { return "Avatar"; } }
+
         public AvatarController(ILogger<AvatarController> logger,
             ServiceFacade.Controller context,
             AvatarService avatarService,
@@ -59,7 +61,7 @@ namespace GRA.Controllers
                 .GroupBy(_ => _.GroupId)
                 .Select(_ => _.ToList())
                 .ToList();
-            var usersresult = _avatarService.GetUserUnlockBundles().Result;
+            var usersresult = _avatarService.GetUserUnlockBundlesAsync().Result;
             var userbundles = usersresult.Item1;
             var hasbeenviewed = usersresult.Item2;
             var bundles = new AvatarBundleJsonModel
@@ -106,23 +108,20 @@ namespace GRA.Controllers
                 .GroupBy(_ => _.GroupId)
                 .Select(_ => _.ToList())
                 .ToList();
-            var usersresult = _avatarService.GetUserUnlockBundles().Result;
-            var userbundles = usersresult.Item1;
-            var hasbeenviewed = usersresult.Item2;
+            var usersBundles = await _avatarService.GetUserUnlockBundlesAsync();
             var bundles = new AvatarBundleJsonModel
             {
                 Bundles = _mapper
-                .Map<List<AvatarBundleJsonModel.AvatarBundle>>(userbundles)
+                .Map<List<AvatarBundleJsonModel.AvatarBundle>>(usersBundles.Keys.ToList())
             };
             var viewModel = new AvatarViewModel
             {
                 LayerGroupings = layerGroupings,
-                Bundles = userbundles,
-                ViewedBundles = hasbeenviewed,
+                Bundles = bundles,
                 DefaultLayer = 13,
                 ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/"),
                 AvatarPiecesJson = Newtonsoft.Json.JsonConvert.SerializeObject(model),
-                AvatarBundlesJson = Newtonsoft.Json.JsonConvert.SerializeObject(bundles)
+                AvatarBundlesJson = Newtonsoft.Json.JsonConvert.SerializeObject(usersBundles.)
             };
 
             var userAvatar = await _avatarService.GetUserAvatarAsync();
