@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
@@ -10,5 +11,6 @@ namespace GRA.Domain.Repository
         Task<NewsCategory> GetDefaultCategoryAsync(int siteId);
         Task<ICollection<NewsCategory>> GetAllAsync(int siteId);
         Task<DataWithCount<IEnumerable<NewsCategory>>> PageAsync(BaseFilter filter);
+        Task SetLastPostDate(int categoryId, DateTime? date);
     }
 }
