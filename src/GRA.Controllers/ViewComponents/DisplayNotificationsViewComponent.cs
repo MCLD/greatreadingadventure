@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using GRA.Abstract;
 using GRA.Controllers.ViewModel.Shared;
 using Microsoft.AspNetCore.Mvc;
@@ -75,6 +76,28 @@ namespace GRA.Controllers.ViewComponents
                 notifications.Remove(notification);
             }
 
+            foreach (var notification in notifications.Where(m => m.IsAvatarBundle).ToList())
+            {
+                totalPointsEarned += notification.PointsEarned;
+                if (notificationDisplayList.Count < MaxNotifications)
+                {
+                    if (!string.IsNullOrWhiteSpace(notification.BadgeFilename))
+                    {
+                        notification.BadgeFilename
+                            = _pathResolver.ResolveContentPath(notification.BadgeFilename);
+                        earnedBadge = true;
+                    }
+                    notification.DisplayIcon = "far fa-thumbs-up";
+                    notification.Text = new StringBuilder(notification.Text)
+                        .AppendFormat(" <a href=\"{0}\">Check out your new avatar options!</a>",
+                            Url.Action(nameof(AvatarController.Index), AvatarController.Name))
+                        .ToString();
+
+                    notificationDisplayList.Add(notification);
+                }
+                notifications.Remove(notification);
+            }
+
             foreach (var notification in notifications
                 .Where(m => !string.IsNullOrWhiteSpace(m.BadgeFilename))
                 .OrderByDescending(m => m.PointsEarned)
@@ -105,9 +128,9 @@ namespace GRA.Controllers.ViewComponents
             string summaryText = "";
             if (notificationDisplayList.Count > 1 && totalNotifications > MaxNotifications)
             {
-                summaryText = $"<a href='{Url.Action("History", "Profile")}'>" +
-                    _sharedLocalizer[Annotations.Interface.AndOtherActivities] +
-                    "</a>";
+                summaryText = string.Format("<a href=\"{0}\">{1}</a>",
+                    Url.Action(nameof(ProfileController.History), ProfileController.Name),
+                    _sharedLocalizer[Annotations.Interface.AndOtherActivities]);
             }
 
             var viewModel = new DisplayNotificationsViewModel

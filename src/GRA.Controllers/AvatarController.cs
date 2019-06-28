@@ -25,6 +25,8 @@ namespace GRA.Controllers
         private readonly AvatarService _avatarService;
         private readonly SiteService _siteService;
 
+        public static string Name { get { return "Avatar"; } }
+
         public AvatarController(ILogger<AvatarController> logger,
             ServiceFacade.Controller context,
             AvatarService avatarService,

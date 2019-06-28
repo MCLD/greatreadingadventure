@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GRA.Data.SqlServer.Migrations
 {
     [DbContext(typeof(SqlServerContext))]
-    [Migration("20190620191750_add-has-been-viewed")]
-    partial class addhasbeenviewed
+    [Migration("20190628211318_add-view-avatar-bundles")]
+    partial class addviewavatarbundles
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -1243,6 +1243,8 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<int>("CreatedBy");
 
                     b.Property<bool>("IsAchiever");
+
+                    b.Property<bool>("IsAvatarBundle");
 
                     b.Property<bool>("IsJoiner");
 
@@ -2732,6 +2734,8 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<int?>("DeletedBy");
 
                     b.Property<string>("Description");
+
+                    b.Property<bool?>("HasBeenViewed");
 
                     b.Property<bool>("IsDeleted");
 
