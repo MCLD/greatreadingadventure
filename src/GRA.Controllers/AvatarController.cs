@@ -62,18 +62,16 @@ namespace GRA.Controllers
                 .Select(_ => _.ToList())
                 .ToList();
             var usersresult = _avatarService.GetUserUnlockBundlesAsync().Result;
-            var userbundles = usersresult.Keys.ToList();
-            var hasbeenviewed = usersresult.Values.ToList();
             var bundles = new AvatarBundleJsonModel
             {
                 Bundles = _mapper
-                .Map<List<AvatarBundleJsonModel.AvatarBundle>>(userbundles)
+                .Map<List<AvatarBundleJsonModel.AvatarBundle>>(usersresult.Keys.ToList())
             };
             var viewModel = new AvatarViewModel
             {
                 LayerGroupings = layerGroupings,
-                Bundles = userbundles,
-                ViewedBundles = hasbeenviewed,
+                Bundles = usersresult.Keys.ToList(),
+                ViewedBundles = usersresult.Values.ToList(),
                 DefaultLayer = userWardrobe.First(_ => _.DefaultLayer).Id,
                 ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/"),
                 AvatarPiecesJson = Newtonsoft.Json.JsonConvert.SerializeObject(model),

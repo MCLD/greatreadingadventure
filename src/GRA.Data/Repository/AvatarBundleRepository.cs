@@ -31,16 +31,13 @@ namespace GRA.Data.Repository
                .ProjectTo<UserLog>(_mapper.ConfigurationProvider)
                .ToListAsync();
 
-            foreach (var userLog in userLogs)
+            foreach (var userLog in userLogs.Where(_ => _.BadgeId != null))
             {
-                if (userLog.BadgeId != null)
-                {
-                    userLog.BadgeFilename = _context.Badges
-                        .AsNoTracking()
-                        .Where(_ => _.Id == userLog.BadgeId)
-                        .SingleOrDefault()
-                        .Filename;
-                }
+                userLog.BadgeFilename = _context.Badges
+                    .AsNoTracking()
+                    .Where(_ => _.Id == userLog.BadgeId)
+                    .SingleOrDefault()
+                    .Filename;
             }
 
             return userLogs;

@@ -437,24 +437,18 @@ namespace GRA.Domain.Service
             var history = await _avatarBundleRepository.UserHistoryAsync(activeUserId);
             var usersbundles = new List<AvatarBundle>();
             var bundles = new Dictionary<AvatarBundle, bool>();
-            foreach (var item in history)
+            foreach (var item in history.Where(_ => _.AvatarBundleId.HasValue && !_.IsDeleted))
             {
-                if (item.AvatarBundleId.HasValue && !item.IsDeleted)
+                var flag = true;
+                foreach(var bund in usersbundles.Where(_ => _.Id == item.AvatarBundleId))
                 {
-                    var flag = true;
-                    foreach(var bund in usersbundles)
-                    {
-                        if(bund.Id == item.AvatarBundleId)
-                        {
-                            flag = false;
-                        }
-                    }
-                    if (flag)
-                    {
-                        var bundle = await GetBundleByIdAsync(item.AvatarBundleId.Value, false);
-                        bundles.Add(bundle, item.HasBeenViewed.Value);
-                        usersbundles.Add(bundle);
-                    }
+                    flag = false;
+                }
+                if (flag)
+                {
+                    var bundle = await GetBundleByIdAsync(item.AvatarBundleId.Value, false);
+                    bundles.Add(bundle, item.HasBeenViewed.Value);
+                    usersbundles.Add(bundle);
                 }
             }
             return bundles;
