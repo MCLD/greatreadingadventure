@@ -724,13 +724,16 @@
             }
             else {
                 var imagePath = layerPath + selectedItem + "/item";
-                if (selectedColor != "") {
+                if (selectedColor != "" && (currentLayer.Id == 2 || currentLayer.Id == 1)) {
 
                     imagePath += "_" + selectedColor;
                 }
                 imagePath += ".png";
                 currentLayerImage.attr("src", imagePath).removeClass("hide");
                 SetUnsavedChanges(true);
+                if (currentLayer.Id == 1) {
+                    selectedColor = "";
+                }
             }
         }
 
