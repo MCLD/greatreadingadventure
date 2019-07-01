@@ -9,6 +9,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Home
         public IEnumerable<NewsPost> NewsPosts { get; set; }
         public PaginateViewModel PaginateModel { get; set; }
         public IEnumerable<NewsCategory> NewsCategories { get; set; }
+        public List<bool> WithinAWeek { get; set; }
         public AtAGlanceReport AtAGlanceReport { get; set; }
         public bool ShowPosts { get; set; }
         public bool IsNewsSubscribed { get; set; }

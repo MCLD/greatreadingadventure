@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace GRA.Data.Model
@@ -14,5 +15,8 @@ namespace GRA.Data.Model
         public bool IsDefault { get; set; }
 
         public ICollection<NewsPost> Posts { get; set; }
+
+        public DateTime? LastPostDate { get; set; }
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace GRA.Domain.Model
@@ -14,5 +15,9 @@ namespace GRA.Domain.Model
         public bool IsDefault { get; set; }
 
         public int PostCount { get; set; }
+
+        public DateTime LastPostDate { get; set; }
+        public bool IsNew { get; set; }
+
     }
 }
