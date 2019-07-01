@@ -18,5 +18,6 @@ namespace GRA.Domain.Model
         public bool IsJoiner { get; set; }
         public string DisplayIcon { get; set; }
         public object LocalizedText { get; set; }
+        public bool IsAvatarBundle { get; set; }
     }
 }

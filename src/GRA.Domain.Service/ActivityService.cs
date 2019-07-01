@@ -1224,10 +1224,11 @@ namespace GRA.Domain.Service
                 var notification = new Notification
                 {
                     PointsEarned = 0,
-                   
+
                     Text = $"<span class=\"fa fa-shopping-bag\"></span> You've unlocked the <strong>{bundle.Name}</strong> avatar bundle! You can now see your new bundle on the Avatar's page.",
                     UserId = userId,
-                    BadgeFilename = bundle.AvatarItems.FirstOrDefault()?.Thumbnail
+                    BadgeFilename = bundle.AvatarItems.FirstOrDefault()?.Thumbnail,
+                    IsAvatarBundle = true
                 };
 
                 if (bundle.AvatarItems.Count > 1)
@@ -1243,8 +1244,8 @@ namespace GRA.Domain.Service
                     PointsEarned = 0,
                     IsDeleted = false,
                     AvatarBundleId = bundleId,
-                    Description = $"You unlocked the <strong>{bundle.Name}</strong> avatar bundle! You can now see your new bundle on the Avatar's page!",
-                    HasBeenViewed = false
+                    Description = $"You unlocked the <strong>{bundle.Name}</strong> avatar bundle!",
+                    HasBeenViewed = false,
                 });
 
                 if (!bundle.HasBeenAwarded)
