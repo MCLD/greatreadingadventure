@@ -7,7 +7,7 @@ namespace GRA.Controllers.ViewModel.Avatar
     {
         public List<List<AvatarLayer>> LayerGroupings { get; set; }
         public List<AvatarBundle> Bundles { get; set; }
-        public List<string> ViewedBundles { get; set; }
+        public List<bool> ViewedBundles { get; set; }
         public int DefaultLayer { get; set; }
         public string ImagePath { get; set; }
         public string AvatarPiecesJson { get; set; }

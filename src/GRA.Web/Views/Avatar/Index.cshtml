@@ -194,7 +194,7 @@
         function InitHasBeenViewed() {
             @foreach(var bundle in @Model.ViewedBundles)
             {
-                if (bundle is "False")
+                if (bundle is false)
                 {
                     @:hasBeenViewed.push(0);
                 }
