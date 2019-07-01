@@ -120,6 +120,10 @@ namespace GRA.Controllers.MissionControl
                 viewModel.IsNewsSubscribed = user.IsNewsSubscribed;
                 viewModel.NewsPosts = postList.Data;
                 viewModel.NewsCategories = await _newsService.GetAllCategoriesAsync();
+                foreach (var item in viewModel.NewsCategories)
+                {
+                   item.IsNew = _newsService.WithinTimeFrame(item.LastPostDate,7);
+                }
                 viewModel.PaginateModel = paginateModel;
                 viewModel.SiteAdministratorEmail = site.FromEmailAddress;
             }

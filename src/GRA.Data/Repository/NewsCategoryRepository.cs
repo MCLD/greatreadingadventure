@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
@@ -44,6 +45,14 @@ namespace GRA.Data.Repository
                 .ThenBy(_ => _.Name)
                 .ProjectTo<NewsCategory>(_mapper.ConfigurationProvider)
                 .ToListAsync();
+        }
+        public async Task SetLastPostDate(int categoryId, DateTime? date)
+        {
+            var category =  await DbSet
+                .Where(_ => _.Id == categoryId)
+                .SingleOrDefaultAsync();
+                category.LastPostDate = date;
+                DbSet.Update(category);
         }
 
         public async Task<DataWithCount<IEnumerable<NewsCategory>>> PageAsync(BaseFilter filter)
