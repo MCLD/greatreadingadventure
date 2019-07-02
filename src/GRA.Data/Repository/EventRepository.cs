@@ -343,21 +343,21 @@ namespace GRA.Data.Repository
                     .Where(_ => _.RelatedSystemId == criterion.SystemId);
             }
 
-            var experienceWithCount = communityExperiences
-                .ProjectTo<Event>(_mapper.ConfigurationProvider)
+            var experienceWithUserTriggers = await communityExperiences
                 .GroupJoin(_context.UserTriggers,
-                    c => c.RelatedTriggerId.Value,
-                    ut => ut.TriggerId,
-                    (c, e) => new { c, e })
-                .Select(_ => new DataWithCount<Event>()
-                {
-                    Data = _.c,
-                    Count = _.e.Count()
-                });
-
-            return await experienceWithCount
-                .OrderBy(_ => _.Data.Name)
+                    experience => experience.RelatedTriggerId.Value,
+                    userTriggers => userTriggers.TriggerId,
+                    (experience, userTriggers) => new { experience, userTriggers })
                 .ToListAsync();
+
+            return experienceWithUserTriggers
+                .Select(_ => new DataWithCount<Event>
+                {
+                    Data = _mapper.Map<Event>(_.experience),
+                    Count = _.userTriggers.Count()
+                })
+                .OrderBy(_ => _.Data.Name)
+                .ToList();
         }
     }
 }
