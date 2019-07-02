@@ -61,7 +61,7 @@ namespace GRA.Controllers
                 .GroupBy(_ => _.GroupId)
                 .Select(_ => _.ToList())
                 .ToList();
-            var usersresult = _avatarService.GetUserUnlockBundlesAsync().Result;
+            var usersresult = await _avatarService.GetUserUnlockBundlesAsync();
             var bundles = new AvatarBundleJsonModel
             {
                 Bundles = _mapper
@@ -79,10 +79,7 @@ namespace GRA.Controllers
             };
 
             var userAvatar = await _avatarService.GetUserAvatarAsync();
-            if (userAvatar.Count == 0)
-            {
-                viewModel.NewAvatar = true;
-            }
+            viewModel.NewAvatar = userAvatar.Count == 0;
             return View(viewModel);
         }
 

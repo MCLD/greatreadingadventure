@@ -439,16 +439,10 @@ namespace GRA.Domain.Service
             var bundles = new Dictionary<AvatarBundle, bool>();
             foreach (var item in history.Where(_ => _.AvatarBundleId.HasValue && !_.IsDeleted))
             {
-                var flag = true;
-                foreach(var bund in usersbundles.Where(_ => _.Id == item.AvatarBundleId))
+                if (!usersbundles.Any(bundle => bundle.Id == item.AvatarBundleId))
                 {
-                    flag = false;
-                }
-                if (flag)
-                {
-                    var bundle = await GetBundleByIdAsync(item.AvatarBundleId.Value, false);
-                    bundles.Add(bundle, item.HasBeenViewed.Value);
-                    usersbundles.Add(bundle);
+                    bundles.Add(await GetBundleByIdAsync(item.AvatarBundleId.Value, false), item.HasBeenViewed.Value);
+                    usersbundles.Add(await GetBundleByIdAsync(item.AvatarBundleId.Value, false));
                 }
             }
             return bundles;

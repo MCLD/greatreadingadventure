@@ -1225,7 +1225,7 @@ namespace GRA.Domain.Service
                 {
                     PointsEarned = 0,
 
-                    Text = $"<span class=\"fa fa-shopping-bag\"></span> You've unlocked the <strong>{bundle.Name}</strong> avatar bundle! You can now see your new bundle on the Avatar's page.",
+                    Text = $"<span class=\"fa fa-shopping-bag\"></span> You've unlocked the <strong>{bundle.Name}</strong> avatar bundle!",
                     UserId = userId,
                     BadgeFilename = bundle.AvatarItems.FirstOrDefault()?.Thumbnail,
                     IsAvatarBundle = true
