@@ -77,10 +77,6 @@ namespace GRA.Controllers
                 AvatarPiecesJson = Newtonsoft.Json.JsonConvert.SerializeObject(model),
                 AvatarBundlesJson = Newtonsoft.Json.JsonConvert.SerializeObject(bundles)
             };
-            _logger.LogError("wrong");
-            _logger.LogError(Newtonsoft.Json.JsonConvert.SerializeObject(usersresult.Keys.ToList()));
-            _logger.LogError("right");
-            _logger.LogError(Newtonsoft.Json.JsonConvert.SerializeObject(bundles));
             var userAvatar = await _avatarService.GetUserAvatarAsync();
             viewModel.NewAvatar = userAvatar.Count == 0;
             return View(viewModel);
