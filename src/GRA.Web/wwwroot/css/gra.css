@@ -812,10 +812,6 @@ p.password-note {
     top: .6rem;
     vertical-align: top;
 }
-.bundle-selectors:hover {
-    background-color: #f5f5f5 !important;
-    cursor: pointer ;
-}
 
 .wide-tooltip + .tooltip .tooltip-inner {
     max-width: 25rem;

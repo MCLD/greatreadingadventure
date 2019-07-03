@@ -63,7 +63,7 @@
                         }
                     }
                     <div style="display: inline-block;" class="col-xs-24">
-                        <img src="/content/site1\avatarbundles\icon.png" id="selector999" class="avatar-layer-selector" data-layer="999" data-name="Bundle" data-showitemselector="True" data-showcolorselector="False" bundle-item="" data-zoomscale="1.30" data-zoomyoffset="-5">
+                        <img src="/content/site1/avatarbundles/icon.png" id="selector999" class="avatar-layer-selector" data-layer="999" data-name="Bundle" data-showitemselector="True" data-showcolorselector="False" bundle-item="" data-zoomscale="1.30" data-zoomyoffset="-5">
                     </div>
                 </div>
             </div>
@@ -83,17 +83,27 @@
                             }
                             @if (counter != 0)
                             {
-                                <a class="dropdown-toggle" id="bundle-selected" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                                    Select a Bundle <span class="caret"></span>
-                                </a>
-                                <ul class="dropdown-menu" id="bundle-drop">
-                                    @foreach (var bundle in Model.Bundles)
-                                    {
-                                        <li class="bundle-selectors" data-bundleid="@bundle.Id" style="text-align:center;"> @bundle.Name 
-                                    <span style="font-size:10px; color:red; line-height:14px; vertical-align:top; " class="hide">  NEW!</span>
-                                    </li>
-                                    }
-                                </ul>
+                                <div class="dropdown" style="margin-top: 1rem;" id="bundleDropdown">
+                                    <a class="dropdown-toggle btn btn-info" id="bundle-selected" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                        @SharedLocalizer[GRA.Domain.Model.DisplayNames.SelectABundle] <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu" id="bundle-drop">
+                                        @foreach (var bundle in Model.Bundles)
+                                        {
+                                            <li class="dropdown-item">
+                                                <a href="#" class="bundle-selectors" data-bundleid="@bundle.Id">
+                                                    @bundle.Name
+                                                    <span class="hide">
+                                                        <span class="fa-stack">
+                                                            <span class="fas fa-certificate fa-stack-2x text-success"></span>
+                                                            <span class="fa-stack-1x" style="color: white; font-size: x-small;">New</span>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
                             }
                             else
                             {
@@ -310,6 +320,7 @@
             }
 
         }
+
         function SetItemSelectors() {
             var totalitems = 0;
             if ($("#avatarItemSelectors").hasClass("slick-initialized")) {
@@ -318,13 +329,12 @@
 
             $("#avatarItemSelectors").empty();
             if (currentLayer != 999) {
-
                 if (showItemSelector && currentLayer.Items.length > 0) {
-
                     var lazyLoading = false;
                     if (currentLayer.Items.length > 30) {
                         lazyLoading = true;
                     }
+
                     if (selectedbundles.length != 0) {
                         for (var i = 0; i < selectedbundles.length; i++) {
                             if (GetItemsLayer(selectedbundles[i], 8) == currentLayer.Id) {
@@ -380,7 +390,8 @@
                                 if (lazyLoading) {
                                     itemImage.attr("data-lazy", itemPath);
                                 }
-                                else {
+                                else
+                                {
                                     itemImage.attr("src", itemPath);
                                 }
                                 if (selectedbundles.length != 0) {
@@ -630,6 +641,7 @@
             selectedbundles.push(item);
             SetBundleLayerImage(bundlelayerPath, item);
         }
+
         function SetBundleLayerImage(bundlelayerPath, item) {
             var imagePath = bundlelayerPath + "/item";
             var itemslayer = GetItemsLayer(item, 8);
@@ -660,6 +672,7 @@
             currentLayerImage.attr("src", imagePath).removeClass("hide");
             SetUnsavedChanges(true);
         }
+
         function RemoveItemFromList(item, arr) {
             var newarray = [];
             for (var i = 0; i < arr.length; i++) {
@@ -750,6 +763,7 @@
             }
             $(".avatar-item-selector.selected").removeClass("selected");
         }
+
         function GetAvatarSelection() {
             var data_array = new Array();
             $(".avatar-layer-selector").each(function () {
@@ -763,37 +777,38 @@
         }
 
         function SaveAvatar() {
-        $.post("@Url.Action("SaveAvatar")", { selectionJson: GetAvatarSelection() }, function (response) {
-            if (response.success == true) {
-                $(".avatar-save-message").removeClass("text-danger").addClass("text-success");
-                $(".avatar-save-message").text("@SharedLocalizer[GRA.Annotations.Interface.AvatarSaved]");
-                $(".avatar-save-message").show().delay(2000).fadeOut("slow");
+            $.post("@Url.Action("SaveAvatar")", { selectionJson: GetAvatarSelection() }, function (response) {
+                if (response.success == true) {
+                    $(".avatar-save-message").removeClass("text-danger").addClass("text-success");
+                    $(".avatar-save-message").text("@SharedLocalizer[GRA.Annotations.Interface.AvatarSaved]");
+                    $(".avatar-save-message").show().delay(2000).fadeOut("slow");
 
-                @if (Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null){
-                    <text>
-                    if (unsavedChanges){
-                            gtag('event', 'avatar_update');
-                    }
-                    </text>
-                    }
+                    @if (Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null){
+                        <text>
+                        if (unsavedChanges){
+                                gtag('event', 'avatar_update');
+                        }
+                        </text>
+                        }
 
-                    SetUnsavedChanges(false);
-            }
-            else {
-                $(".avatar-save-message").removeClass("text-success").addClass("text-danger");
-                $(".avatar-save-message").text(response.message);
-                $(".avatar-save-message").show();
-            }
-            }).fail(function () {
-                $(".avatar-save-message").removeClass("text-success").addClass("text-danger");
-                $(".avatar-save-message").text("@SharedLocalizer[GRA.Annotations.Validate.CouldNotSaveAvatar]");
-                $(".avatar-save-message").show();
-            })
-            .always(function() {
-                $("#saveSpinner").addClass("hidden");
-                $("#saveAvatar").removeAttr("disabled");
-            });
+                        SetUnsavedChanges(false);
+                }
+                else {
+                    $(".avatar-save-message").removeClass("text-success").addClass("text-danger");
+                    $(".avatar-save-message").text(response.message);
+                    $(".avatar-save-message").show();
+                }
+                }).fail(function () {
+                    $(".avatar-save-message").removeClass("text-success").addClass("text-danger");
+                    $(".avatar-save-message").text("@SharedLocalizer[GRA.Annotations.Validate.CouldNotSaveAvatar]");
+                    $(".avatar-save-message").show();
+                })
+                .always(function() {
+                    $("#saveSpinner").addClass("hidden");
+                    $("#saveAvatar").removeAttr("disabled");
+                });
         }
+
         function UpdateHasBeenViewed(bundle) {
             $.post("@Url.Action("UpdateUserLogs")", { selectionJson: bundle }, function (response) {
             });
@@ -804,6 +819,7 @@
                 data: bundle,
             });
         }
+
         function NewBundlesCheck() {
             for (var indicator = 0; indicator < hasBeenViewed.length; indicator++) {
                 if (hasBeenViewed[indicator] == 0) {
@@ -825,7 +841,8 @@
             if (currentLayer == 999) {
                 SetSelectedBundleItem(item);
             }
-            else{
+            else
+            {
                 SetSelectedItem(item);
             }
         });
@@ -834,7 +851,6 @@
             var color = $(this).data("color");
             if (currentLayer == 999 && color!=selectedColor) {
                 SetSelectedColor(color);
-
             }
             if (color != selectedColor) {
                 SetSelectedColor(color);
@@ -894,7 +910,6 @@
         });
 
         $(".avatar-zoom-button").on("click", function () {
-
             if (xsZoom) {
                 $(this).children().removeClass("fa-search-minus").addClass("fa-search-plus");
                 $(".xsLayer").css({ "transform": "", "top": "" });
@@ -928,6 +943,17 @@
             .attr("name", "selectionJson")
             .attr("value", GetAvatarSelection())
             .appendTo($(this));
+            }
+        });
+
+        $(function () {
+            var bundleValue = (new URL(location.href)).searchParams.get('bundle');
+            if (bundleValue && $("#bundleDropdown")) {
+                $('#selector999').trigger("click");
+                var bundleItem = $('*[data-bundleid="' + bundleValue + '"]');
+                if (bundleItem) {
+                    bundleItem.trigger("click");
+                }
             }
         });
     </script>

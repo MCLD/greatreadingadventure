@@ -1228,7 +1228,7 @@ namespace GRA.Domain.Service
                     Text = $"<span class=\"fa fa-shopping-bag\"></span> You've unlocked the <strong>{bundle.Name}</strong> avatar bundle!",
                     UserId = userId,
                     BadgeFilename = bundle.AvatarItems.FirstOrDefault()?.Thumbnail,
-                    IsAvatarBundle = true
+                    AvatarBundleId = bundleId
                 };
 
                 if (bundle.AvatarItems.Count > 1)

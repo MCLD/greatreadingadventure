@@ -1175,9 +1175,12 @@ namespace GRA.Controllers
                             bundle.AvatarItems.First().Thumbnail);
                         if (bundle.AvatarItems.Count > 1)
                         {
+                            var bundleLink = Url.Action(nameof(AvatarController.Index), 
+                                AvatarController.Name, 
+                                new { bundle = item.AvatarBundleId.Value });
                             description.AppendFormat(
-                                " <strong><a class=\"bundle-link\" data-id=\"{0}\">{1}</a></strong>.",
-                                item.AvatarBundleId.Value,
+                                " <strong><a href=\"{0}\">{1}</a></strong>",
+                                bundleLink,
                                 _sharedLocalizer[Annotations.Interface.SeeItemsUnlocked]);
                         }
                     }

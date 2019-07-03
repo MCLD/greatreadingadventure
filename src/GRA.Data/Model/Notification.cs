@@ -16,6 +16,6 @@ namespace GRA.Data.Model
         public int? PointsEarned { get; set; }
         public bool IsAchiever { get; set; }
         public bool IsJoiner { get; set; }
-        public bool IsAvatarBundle { get; set; }
+        public int? AvatarBundleId { get; set; }
     }
 }

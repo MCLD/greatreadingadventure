@@ -1242,8 +1242,6 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<bool>("IsAchiever");
 
-                    b.Property<bool>("IsAvatarBundle");
-
                     b.Property<bool>("IsJoiner");
 
                     b.Property<int?>("PointsEarned");
@@ -2732,8 +2730,6 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<int?>("DeletedBy");
 
                     b.Property<string>("Description");
-
-                    b.Property<bool?>("HasBeenViewed");
 
                     b.Property<bool>("IsDeleted");
 

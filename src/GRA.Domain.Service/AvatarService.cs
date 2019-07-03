@@ -441,8 +441,9 @@ namespace GRA.Domain.Service
             {
                 if (!usersbundles.Any(bundle => bundle.Id == item.AvatarBundleId))
                 {
-                    bundles.Add(await GetBundleByIdAsync(item.AvatarBundleId.Value, false), item.HasBeenViewed.Value);
-                    usersbundles.Add(await GetBundleByIdAsync(item.AvatarBundleId.Value, false));
+                    bundles.Add(await GetBundleByIdAsync(item.AvatarBundleId.Value), 
+                        item.HasBeenViewed ?? false);
+                    usersbundles.Add(await GetBundleByIdAsync(item.AvatarBundleId.Value));
                 }
             }
             return bundles;

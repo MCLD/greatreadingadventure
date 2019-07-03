@@ -76,7 +76,7 @@ namespace GRA.Controllers.ViewComponents
                 notifications.Remove(notification);
             }
 
-            foreach (var notification in notifications.Where(m => m.IsAvatarBundle).ToList())
+            foreach (var notification in notifications.Where(m => m.AvatarBundleId != null).ToList())
             {
                 totalPointsEarned += notification.PointsEarned;
                 if (notificationDisplayList.Count < MaxNotifications)
@@ -90,7 +90,9 @@ namespace GRA.Controllers.ViewComponents
                     notification.DisplayIcon = "far fa-thumbs-up";
                     notification.Text = new StringBuilder(notification.Text)
                         .AppendFormat(" <a href=\"{0}\">Check out your new avatar options!</a>",
-                            Url.Action(nameof(AvatarController.Index), AvatarController.Name))
+                            Url.Action(nameof(AvatarController.Index),
+                                AvatarController.Name,
+                                new { bundle = notification.AvatarBundleId}))
                         .ToString();
 
                     notificationDisplayList.Add(notification);
