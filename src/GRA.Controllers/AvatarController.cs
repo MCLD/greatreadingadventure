@@ -87,7 +87,7 @@ namespace GRA.Controllers
         {
             try
             {
-                await UpdateAvatar(selectionJson);
+                await UpdateAvatarAsync(selectionJson);
                 return Json(new { success = true });
             }
             catch (GraException gex)
@@ -102,7 +102,7 @@ namespace GRA.Controllers
             try
             {
                 var selection = Newtonsoft.Json.JsonConvert
-                .DeserializeObject<List<UserLog>>(selectionJson);
+                    .DeserializeObject<List<UserLog>>(selectionJson);
                 await _avatarService.UpdateUserLogsAsync(selection);
                 return Json(new { success = true });
             }
@@ -195,7 +195,7 @@ namespace GRA.Controllers
             {
                 try
                 {
-                    await UpdateAvatar(selectionJson);
+                    await UpdateAvatarAsync(selectionJson);
                     ShowAlertSuccess(_sharedLocalizer[Annotations.Interface.AvatarSaved]);
                 }
                 catch (GraException gex)
@@ -210,7 +210,7 @@ namespace GRA.Controllers
             return RedirectToAction(nameof(Share));
         }
 
-       private async Task UpdateAvatar(string selectionJson)
+        private async Task UpdateAvatarAsync(string selectionJson)
         {
             var selection = Newtonsoft.Json.JsonConvert
                         .DeserializeObject<ICollection<AvatarLayer>>(selectionJson);

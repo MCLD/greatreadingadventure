@@ -1,14 +1,14 @@
-﻿using AutoMapper.QueryableExtensions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GRA.Data.Repository
 {
@@ -43,19 +43,18 @@ namespace GRA.Data.Repository
             return userLogs;
         }
 
-        public async Task UpdateHasBeenViewed(int userId, int bundleId)
+        public async Task UpdateHasBeenViewedAsync(int userId, int bundleId)
         {
-            var userLog = await _context.UserLogs
-            .Where(_ => _.UserId == userId && !_.IsDeleted && _.AvatarBundleId == bundleId)
-            .ToListAsync();
+            var userLogBundles = await _context.UserLogs
+                .Where(_ => _.UserId == userId && !_.IsDeleted && _.AvatarBundleId == bundleId)
+                .ToListAsync();
 
-            foreach (var bund in userLog) {
-                if (bund != null)
-                {
-                    bund.HasBeenViewed = true;
-                    _context.UserLogs.Update(bund);
-                }
+            foreach (var bundle in userLogBundles)
+            {
+                bundle.HasBeenViewed = true;
+                _context.UserLogs.Update(bundle);
             }
+
             await SaveAsync();
         }
 
@@ -160,7 +159,7 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task<bool> IsItemInBundle(int itemId, bool? unlockable = null)
+        public async Task<bool> IsItemInBundleAsync(int itemId, bool? unlockable = null)
         {
             var inBundle = _context.AvatarBundleItems
                 .AsNoTracking()
@@ -172,19 +171,6 @@ namespace GRA.Data.Repository
             }
 
             return await inBundle.AnyAsync();
-        }
-
-        public List<int> GetBundleId(int itemId)
-        {
-            return _context.AvatarBundleItems
-                .AsNoTracking()
-                .Where(_ => _.AvatarItemId == itemId && !_.AvatarBundle.IsDeleted)
-                .Select(_ => _.AvatarBundleId).ToList();
-        }
-
-        public AvatarBundle GetItemsBundles(int bundleIds)
-        {
-            return GetByIdAsync(bundleIds).Result;
         }
 
         public void RemoveItemFromBundles(int id)

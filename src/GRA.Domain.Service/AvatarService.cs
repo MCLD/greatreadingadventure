@@ -244,7 +244,7 @@ namespace GRA.Domain.Service
             {
                 throw new GraException("Required layer needs an available item.");
             }
-            if (await _avatarBundleRepository.IsItemInBundle(id, false))
+            if (await _avatarBundleRepository.IsItemInBundleAsync(id, false))
             {
                 throw new GraException("Item is part of a default bundle.");
             }
@@ -261,7 +261,7 @@ namespace GRA.Domain.Service
         public async Task SetItemAvailableAsync(int id)
         {
             VerifyManagementPermission();
-            if (await _avatarBundleRepository.IsItemInBundle(id, true))
+            if (await _avatarBundleRepository.IsItemInBundleAsync(id, true))
             {
                 throw new GraException("Item is part of an unlockable bundle.");
             }
@@ -431,19 +431,16 @@ namespace GRA.Domain.Service
             return await _avatarElementRepository.GetUserAvatarAsync(GetActiveUserId());
         }
 
-        public async Task<Dictionary<AvatarBundle,bool>> GetUserUnlockBundlesAsync()
+        public async Task<Dictionary<AvatarBundle, bool>> GetUserUnlockBundlesAsync()
         {
-            int activeUserId = GetActiveUserId();
-            var history = await _avatarBundleRepository.UserHistoryAsync(activeUserId);
-            var usersbundles = new List<AvatarBundle>();
+            var userHistory = await _avatarBundleRepository.UserHistoryAsync(GetActiveUserId());
             var bundles = new Dictionary<AvatarBundle, bool>();
-            foreach (var item in history.Where(_ => _.AvatarBundleId.HasValue && !_.IsDeleted))
+            foreach (var historyItem in userHistory.Where(_ => _.AvatarBundleId.HasValue))
             {
-                if (!usersbundles.Any(bundle => bundle.Id == item.AvatarBundleId))
+                if (!bundles.Keys.Any(bundle => bundle.Id == historyItem.AvatarBundleId))
                 {
-                    bundles.Add(await GetBundleByIdAsync(item.AvatarBundleId.Value), 
-                        item.HasBeenViewed ?? false);
-                    usersbundles.Add(await GetBundleByIdAsync(item.AvatarBundleId.Value));
+                    bundles.Add(await GetBundleByIdAsync(historyItem.AvatarBundleId.Value),
+                        historyItem.HasBeenViewed ?? false);
                 }
             }
             return bundles;
@@ -451,9 +448,10 @@ namespace GRA.Domain.Service
 
         public async Task UpdateUserLogsAsync(List<UserLog> userLog)
         {
-            foreach(var bundle in userLog)
+            foreach (var bundle in userLog)
             {
-                await _avatarBundleRepository.UpdateHasBeenViewed(GetActiveUserId(), bundle.AvatarBundleId.Value);
+                await _avatarBundleRepository.UpdateHasBeenViewedAsync(GetActiveUserId(), 
+                    bundle.AvatarBundleId.Value);
             }
         }
 
