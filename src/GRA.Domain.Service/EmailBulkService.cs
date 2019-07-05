@@ -58,6 +58,7 @@ namespace GRA.Domain.Service
                 {
                     IsSubscribed = true,
                     SortBy = SortUsersBy.RegistrationDate,
+                    Take = 30
                 };
 
                 var subscribedUsers = await _userService.GetPaginatedUserListAsync(filter);
@@ -99,7 +100,7 @@ namespace GRA.Domain.Service
 
                     while (subscribedUsers.Data.Any())
                     {
-                        Thread.Sleep(5000);
+                        Thread.Sleep(1000);
                         foreach (var user in subscribedUsers.Data)
                         {
                             // check email has not be sent to user
@@ -133,10 +134,12 @@ namespace GRA.Domain.Service
                                 {
                                     await _emailService
                                         .SendBulkAsync(user, jobDetails.EmailTemplateId);
-                                    addSentCounter++;
                                     await _userService.SentBulkEmailAsync(user.Id,
                                         jobDetails.EmailTemplateId,
                                         user.Email);
+
+                                    addSentCounter++;
+                                    emailsSent++;
                                 }
                                 catch (Exception ex)
                                 {
@@ -146,9 +149,11 @@ namespace GRA.Domain.Service
                                         user.Email,
                                         ex.Message);
 
-                                    problemUsers.Add(user.Id);
+                                    if (!problemUsers.Contains(user.Id))
+                                    {
+                                        problemUsers.Add(user.Id);
+                                    }
                                 }
-                                emailsSent++;
                             }
 
                             userCounter++;
@@ -158,7 +163,7 @@ namespace GRA.Domain.Service
                                 break;
                             }
 
-                            if (sw.Elapsed.TotalSeconds - elapsedStatus.TotalSeconds > 15
+                            if (sw.Elapsed.TotalSeconds - elapsedStatus.TotalSeconds > 5
                                 || userCounter == 1)
                             {
                                 elapsedStatus = sw.Elapsed;
@@ -170,22 +175,22 @@ namespace GRA.Domain.Service
 
                                 var status = new JobStatus
                                 {
-                                    PercentComplete = (emailsSent + emailsSkipped) * 100 / subscribedUsers.Count,
-                                    Status = $"Sent {emailsSent}, skipped {emailsSkipped} of {subscribedUsers.Count}; {elapsedStatus.ToString(SpanFormat)} elapsed, est. {remaining} remaining",
+                                    PercentComplete = userCounter * 100 / subscribedUsers.Count,
+                                    Status = $"Sent {emailsSent}, skipped {emailsSkipped} of {subscribedUsers.Count}; {elapsedStatus.ToString(SpanFormat)}, remaining: {remaining}, problems: {problemUsers.Count}",
                                     Error = false
                                 };
 
                                 progress.Report(status);
 
-                                if (addSentCounter > 0)
-                                {
-                                    await _emailService.UpdateSentCount(template.Id, addSentCounter);
-                                    addSentCounter = 0;
-                                }
-
                                 if (sw.Elapsed.TotalSeconds - elapsedUpdateDbStatus.TotalSeconds > 60
                                     || userCounter == 1)
                                 {
+                                    if (addSentCounter > 0)
+                                    {
+                                        await _emailService.UpdateSentCount(template.Id, addSentCounter);
+                                        addSentCounter = 0;
+                                    }
+
                                     var dbStatusText = string.Format("{0}%: {1}",
                                         status.PercentComplete,
                                         status.Status);
@@ -214,7 +219,7 @@ namespace GRA.Domain.Service
 
                     var finalStatus = new JobStatus
                     {
-                        PercentComplete = (emailsSent + emailsSkipped) * 100 / subscribedUsers.Count,
+                        PercentComplete = userCounter * 100 / subscribedUsers.Count,
                         Status = $"{taskStatus} {emailsSent} sent, {emailsSkipped} skipped of {subscribedUsers.Count} in {elapsedStatus.ToString(SpanFormat)}."
                     };
 
