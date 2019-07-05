@@ -15,7 +15,7 @@ namespace GRA.Domain.Repository
         Task<long> GetEarningsOverPeriodAsync(int userId, ReportCriterion criterion);
         Task<long> GetEarningsUpToDateAsync(int userId, DateTime endDate);
         Task<long> EarnedBadgeCountAsync(ReportCriterion request, int? badgeId = null);
-        Task<long> TranslationEarningsAsync(ReportCriterion request, 
+        Task<long> TranslationEarningsAsync(ReportCriterion request,
             ICollection<int?> translationIds);
         Task<ICollection<int>> UserIdsEarnedBadgeAsync(int badgeId, ReportCriterion criterion);
         Task<ICollection<int>> UserIdsCompletedChallengesAsync(int challengeId, ReportCriterion criterion);

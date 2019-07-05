@@ -244,7 +244,7 @@ namespace GRA.Domain.Service
             {
                 throw new GraException("Required layer needs an available item.");
             }
-            if (await _avatarBundleRepository.IsItemInBundle(id, false))
+            if (await _avatarBundleRepository.IsItemInBundleAsync(id, false))
             {
                 throw new GraException("Item is part of a default bundle.");
             }
@@ -261,7 +261,7 @@ namespace GRA.Domain.Service
         public async Task SetItemAvailableAsync(int id)
         {
             VerifyManagementPermission();
-            if (await _avatarBundleRepository.IsItemInBundle(id, true))
+            if (await _avatarBundleRepository.IsItemInBundleAsync(id, true))
             {
                 throw new GraException("Item is part of an unlockable bundle.");
             }
@@ -431,6 +431,30 @@ namespace GRA.Domain.Service
             return await _avatarElementRepository.GetUserAvatarAsync(GetActiveUserId());
         }
 
+        public async Task<Dictionary<AvatarBundle, bool>> GetUserUnlockBundlesAsync()
+        {
+            var userHistory = await _avatarBundleRepository.UserHistoryAsync(GetActiveUserId());
+            var bundles = new Dictionary<AvatarBundle, bool>();
+            foreach (var historyItem in userHistory.Where(_ => _.AvatarBundleId.HasValue))
+            {
+                if (!bundles.Keys.Any(bundle => bundle.Id == historyItem.AvatarBundleId))
+                {
+                    bundles.Add(await GetBundleByIdAsync(historyItem.AvatarBundleId.Value),
+                        historyItem.HasBeenViewed ?? false);
+                }
+            }
+            return bundles;
+        }
+
+        public async Task UpdateUserLogsAsync(List<UserLog> userLog)
+        {
+            foreach (var bundle in userLog)
+            {
+                await _avatarBundleRepository.UpdateHasBeenViewedAsync(GetActiveUserId(), 
+                    bundle.AvatarBundleId.Value);
+            }
+        }
+
         public async Task UpdateUserAvatarAsync(ICollection<AvatarLayer> selectionLayers)
         {
             var activeUserId = GetActiveUserId();
@@ -522,7 +546,7 @@ namespace GRA.Domain.Service
         public async Task<JobStatus> ImportAvatarsAsync(int jobId,
             CancellationToken token,
             IProgress<JobStatus> progress = null)
-        { 
+        {
             var requestingUser = GetClaimId(ClaimType.UserId);
 
             if (HasPermission(Permission.ManageAvatars))
@@ -637,7 +661,7 @@ namespace GRA.Domain.Service
                             await _avatarColorRepository.AddAsync(requestingUser, color);
                             currentColor++;
                         }
-                        
+
                         await _avatarColorRepository.SaveAsync();
                         colors = await GetColorsByLayerAsync(addedLayer.Id);
                     }
@@ -775,6 +799,19 @@ namespace GRA.Domain.Service
                 }
                 System.IO.File.Copy(Path.Combine(assetPath, "background.png"),
                     Path.Combine(backgroundPath, "background.png"));
+                totalFilesCopied++;
+
+                var bundleRoot = Path.Combine($"site{siteId}", "avatarbundles");
+                var bundlePath = _pathResolver.ResolveContentFilePath(bundleRoot);
+                if (!Directory.Exists(bundlePath))
+                {
+                    Directory.CreateDirectory(bundlePath);
+                }
+                System.IO.File.Copy(Path.Combine(assetPath, "bundleicon.png"),
+                    Path.Combine(bundlePath, "icon.png"));
+                totalFilesCopied++;
+                System.IO.File.Copy(Path.Combine(assetPath, "bundlenotif.png"),
+                    Path.Combine(bundlePath, "notif.png"));
                 totalFilesCopied++;
 
                 _logger.LogInformation($"Copied {totalFilesCopied} items for all layers.");

@@ -1345,4 +1345,8 @@
     <value>Profile updated.</value>
     <comment>Message shown once a profile update is saved.</comment>
   </data>
+  <data name="Select a Bundle" xml:space="preserve">
+    <value>Select a Bundle</value>
+    <comment>A bundle is a collection of avatar parts that are unlocked during participation. This text goes in a drop-down allowing the user to select a particular bundle to explore the parts it contains.</comment>
+  </data>
 </root>

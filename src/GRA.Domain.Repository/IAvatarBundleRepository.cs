@@ -1,7 +1,7 @@
-﻿using GRA.Domain.Model;
-using GRA.Domain.Model.Filters;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 
 namespace GRA.Domain.Repository
 {
@@ -14,7 +14,9 @@ namespace GRA.Domain.Repository
         Task<ICollection<AvatarItem>> GetRandomDefaultBundleAsync(int siteId);
         Task<ICollection<AvatarBundle>> GetAllAsync(int siteId, bool? unlockable = null);
         Task<AvatarBundle> GetByIdAsync(int id, bool includeDeleted);
-        Task<bool> IsItemInBundle(int itemId, bool? unlockable = null);
+        Task<bool> IsItemInBundleAsync(int itemId, bool? unlockable = null);
         void RemoveItemFromBundles(int id);
+        Task<List<UserLog>> UserHistoryAsync(int userId);
+        Task UpdateHasBeenViewedAsync(int userId, int bundleId);
     }
 }

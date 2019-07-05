@@ -14,7 +14,8 @@
                         <img src="~/@layer.FilePath"
                              class="@($"image{layer.Id}") xsLayer avatar-layer@(string.IsNullOrWhiteSpace(layer.FilePath) ? " hide" : "")"
                              style="z-index: @(layer.Position + 1);"
-                             data-layer="@layer.Id" />
+                             data-layer="@layer.Id" 
+                             data-item="@layer.SelectedItem"/>
                     }
                 </div>
                 <button type="button" class="btn btn-default avatar-zoom-button">
@@ -28,7 +29,8 @@
                         <img src="~/@layer.FilePath"
                              class="@($"image{layer.Id}") avatar-layer@(string.IsNullOrWhiteSpace(layer.FilePath) ? " hide" : "")"
                              style="z-index: @(layer.Position + 1);"
-                             data-layer="@layer.Id" />
+                             data-layer="@layer.Id"
+                             data-item="@layer.SelectedItem"/>
                     }
                 </div>
             </div>
@@ -62,7 +64,66 @@
                             </div>
                         }
                     }
+                    <div style="display: inline-block;" class="col-xs-24">
+                        <img src="/content/site1/avatarbundles/icon.png" id="selector999" class="avatar-layer-selector" data-layer="999" data-name="Bundle" data-showitemselector="True" data-showcolorselector="False" bundle-item="" data-zoomscale="1.30" data-zoomyoffset="-5">
+                    </div>
                 </div>
+            </div>
+            <div id="avatarBundles" class="row col-xs-12" style="text-align:center;">
+                <ul class="nav" style="display: inline-table;">
+                    <li>
+
+                        @if (Model.Bundles.Count != 0)
+                        {
+                            var counter = 0;
+                            @foreach (var bundle in Model.Bundles)
+                            {
+                                @if (bundle.CanBeUnlocked)
+                                {
+                                    counter += 1;
+                                }
+                            }
+                            @if (counter != 0)
+                            {
+                                <div class="dropdown" style="margin-top: 1rem;" id="bundleDropdown">
+                                    <a class="dropdown-toggle btn btn-info" id="bundle-selected" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                        @SharedLocalizer[GRA.Domain.Model.DisplayNames.SelectABundle] <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu" id="bundle-drop">
+                                        @foreach (var bundle in Model.Bundles)
+                                        {
+                                            <li class="dropdown-item">
+                                                <a href="#" class="bundle-selectors" data-bundleid="@bundle.Id">
+                                                    @bundle.Name
+                                                    <span class="hide">
+                                                        <span class="fa-stack">
+                                                            <span class="fas fa-certificate fa-stack-2x text-success"></span>
+                                                            <span class="fa-stack-1x" style="color: white; font-size: x-small;">New</span>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            }
+                            else
+                            {
+                                <a class="dropdown-toggle disabled" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                    No Unlocked Bundles <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu"></ul>
+                            }
+                        }
+                        else
+                        {
+                            <a class="dropdown-toggle disabled" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                No Unlocked Bundles <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu"></ul>
+                        }
+                    </li>
+                </ul>
             </div>
             <div id="avatarColors" class="row hide">
                 <div class="col-xs-12">
@@ -116,6 +177,9 @@
     <script>
         var baseImagePath = "@Url.Content($"~/{Model.ImagePath}")";
         var layers = $.parseJSON('@Html.Raw(Model.AvatarPiecesJson)').Layers;
+        var bundles = $.parseJSON('@Html.Raw(Model.AvatarBundlesJson)').Bundles;
+        var hasBeenViewed = new Array();
+        var bundleColor = null;
         var currentLayerImage;
         var currentLayerRemovable;
         var currentLayerSelector;
@@ -123,20 +187,59 @@
         var layerPath;
         var selectedItem;
         var selectedColor;
+        var selectedbundles = [];
+        var selectedBundleId = null;
         var showItemSelector;
         var showColorSelector;
         var unsavedChanges = @Model.NewAvatar.ToString().ToLower();
         var xsZoom = false;
-
         var colorRows;
         var itemRows;
 
         SetLayer(@Model.DefaultLayer);
+        InitHasBeenViewed();
 
         $.ajaxSetup({
             timeout: 30000
         });
 
+        // Initializes the user's bundle viewed status 
+        function InitHasBeenViewed() {
+            @foreach(var bundle in @Model.ViewedBundles)
+            {
+                if (bundle is false)
+                {
+                    @:hasBeenViewed.push(0);
+                }
+                else
+                {
+                    @:hasBeenViewed.push(1);
+                }
+            }
+            //If the user has new bundles then make bundle icon red
+            if (NewBundlesCheck()) {
+                $("#selector999").attr("src", "/content/site1/avatarbundles/notif.png");
+                //Shows the new badge by the unviewed bundle
+                for(var bund = 0; bund < hasBeenViewed.length; bund++) {
+                    if (hasBeenViewed[bund] == 0) {
+                        $($("#bundle-drop").find("li")[bund]).find("span").removeClass("hide");
+                    }
+                }
+            }
+            InitAvatarSelection();
+        }
+
+        //Ensures we have ALL the selected items in our selectedbundles array
+        function InitAvatarSelection(){
+            var container = $.makeArray($(".avatar-container")[0].children);
+            for (var item = 0; item < container.length; item++) {
+                if (!container[item].classList.contains("hide")) {
+                    selectedbundles.push(container[item].getAttribute("data-item"));
+                }
+            }
+        }
+
+        //Given a layer ID, returns the layer object
         function GetLayerById(layerId) {
             for (var i = 0; i < layers.length; i++) {
                 if (layers[i].Id == layerId) {
@@ -144,213 +247,378 @@
                 }
             }
         }
+        //Given a Bundle ID, returns the bundle object
+        function GetBundleById(bundleId) {
+            for (var i = 0; i < bundles.length; i++) {
+                if (bundles[i].Id == bundleId) {
+                    return (bundles[i]);
+                }
+            }
+        }
+        //Given an item ID, returns the layer ID
+        function GetItemsLayer(itemId, index) {
+            for (var i = 0; i < layers.length;i++) {
+                for (var j = 0; j < layers[i].Items.length;j++) {
+                    if (itemId == layers[i].Items[j]) {
+                        return i+1;
+                    }
+                }
+            }
+        }
 
         function SetLayer(layerId) {
+            // If the page just loaded or we switched layers
             if (currentLayer == undefined || layerId != currentLayer.Id) {
+
                 currentLayerImage = $(".image" + layerId);
+
                 currentLayerSelector = $("#selector" + layerId);
+
                 $(".selected").removeClass("selected");
+
                 currentLayerSelector.addClass("selected");
-                currentLayer = GetLayerById(layerId);
-
-                layerPath = baseImagePath + "layer" + layerId + "/item"
-
-                selectedItem = currentLayerSelector.data("item");
-                selectedColor = currentLayerSelector.data("color");
-
+                $("#avatarBundles").addClass("hide");
+                //If dealing with bundles
+                if (layerId == "999") {
+                    currentLayer.Id = "999";
+                    $("#avatarBundles").removeClass("hide");
+                    showItemSelector = true;
+                    $("#avatarItems").removeClass("hide");
+                    colorRows = 2;
+                    showColorSelector = false;
+                    $("#avatarColors").addClass("hide");
+                    itemRows = 3;
+                    layerpath = baseImagePath;
+                }
+                // If dealing with item Layers
+                else {
+                    currentLayer = GetLayerById(layerId);
+                    layerPath = baseImagePath + "layer" + layerId + "/item";
+                    selectedItem = currentLayerSelector.data("item");
+                    selectedColor = currentLayerSelector.data("color");
+                }
+                //Zoom option for mobile
                 if (xsZoom) {
                     var scale = currentLayerSelector.data("zoomscale");
                     var yOffset = currentLayerSelector.data("zoomyoffset");
                     $(".xsLayer").css({ "transform": "scale(" + scale + ")", "top": "" + yOffset + "px" });
                 }
-
+                //Shows the Remove button
                 if (currentLayerSelector.data("removable") == "True") {
                     $("#layerName").text(currentLayerSelector.data("name"))
                     $("#removeButton").removeClass("hide");
                     currentLayerRemovable = true;
                 }
+                //Hides remove button
                 else {
                     $("#removeButton").addClass("hide");
                     currentLayerRemovable = false;
                 }
-
+                // If we're showing items
                 if (currentLayerSelector.data("showitemselector") == "True") {
                     showItemSelector = true;
                     $("#avatarItems").removeClass("hide");
                     colorRows = 2;
                 }
+                //If we hide the items
                 else {
                     showItemSelector = false;
                     $("#avatarItems").addClass("hide");
                     colorRows = 5;
                 }
-
+                //If we show colors
                 if (currentLayerSelector.data("showcolorselector") == "True") {
                     showColorSelector = true;
                     $("#avatarColors").removeClass("hide");
                     itemRows = 2;
                 }
+                // If we hide the colors
                 else {
                     showColorSelector = false;
                     $("#avatarColors").addClass("hide");
                     itemRows = 3;
                 }
-
+                
                 SetItemSelectors();
                 SetColorSelectors();
             }
+
         }
+        // Initializes the item slick
         function SetItemSelectors() {
+            var totalitems = 0;
             if ($("#avatarItemSelectors").hasClass("slick-initialized")) {
                 $("#avatarItemSelectors").slick("unslick");
             }
+            // If we're dealing with layers
             $("#avatarItemSelectors").empty();
-            if (showItemSelector && currentLayer.Items.length > 0) {
-                var lazyLoading = false;
-                if (currentLayer.Items.length > 30) {
-                    lazyLoading = true;
-                }
-                $.each(currentLayer.Items, function (i, item) {
-                    var itemPath = layerPath + item + "/thumbnail.jpg";
-                    var itemContainer = $("<div>");
-                    var itemImage = $("<img>", { "class": "avatar-item-selector item" + item, "data-item": item });
-                    if (lazyLoading) {
-                        itemImage.attr("data-lazy", itemPath);
+            if (currentLayer != 999) {
+                if (showItemSelector && currentLayer.Items.length > 0) {
+                    var lazyLoading = false;
+                    if (currentLayer.Items.length > 30) {
+                        lazyLoading = true;
                     }
-                    else {
-                        itemImage.attr("src", itemPath);
-                    }
-                    if (selectedItem == item) {
-                        itemImage.addClass("selected");
-                    }
-
-                    itemContainer.append(itemImage);
-                    $("#avatarItemSelectors").append(itemContainer);
-                });
-                var itemIndex = Math.max(currentLayer.Items.indexOf(selectedItem), 0);
-                $("#avatarItemSelectors").slick({
-                    arrows: false,
-                    initialSlide: Math.floor(itemIndex / itemRows),
-                    lazyLoad: 'anticipated',
-                    mobileFirst: true,
-                    rows: itemRows,
-                    slidesPerRow: 1,
-                    slidesToShow: (lazyLoading ? 10 : 1),
-                    swipeToSlide: true,
-                    touchThreshold: 100,
-                    variableWidth: true,
-                    waitForAnimate: false,
-                    responsive: [
-                        {
-                            breakpoint: 768,
-                            settings: {
-                                arrows: true,
-                                initialSlide: Math.floor(itemIndex / (itemRows * 3)) * 3,
-                                slidesToShow: 3,
-                                slidesToScroll: 3,
-                                swipeToSlide: false,
-                                touchThreshold: 10,
-                                variableWidth: false,
-                                waitForAnimate: true
-                            }
-                        },
-                        {
-                            breakpoint: 992,
-                            settings: {
-                                arrows: true,
-                                initialSlide: Math.floor(itemIndex / (itemRows * 4)) * 4,
-                                slidesToShow: 4,
-                                slidesToScroll: 4,
-                                swipeToSlide: false,
-                                touchThreshold: 10,
-                                variableWidth: false,
-                                waitForAnimate: true
-                            }
-                        },
-                        {
-                            breakpoint: 1200,
-                            settings: {
-                                arrows: true,
-                                initialSlide: Math.floor(itemIndex / (itemRows * 6)) * 6,
-                                slidesToShow: 6,
-                                slidesToScroll: 6,
-                                swipeToSlide: false,
-                                touchThreshold: 10,
-                                variableWidth: false,
-                                waitForAnimate: true
+                    // If we have selected items
+                    if (selectedbundles.length != 0) {
+                        for (var i = 0; i < selectedbundles.length; i++) {
+                            if (GetItemsLayer(selectedbundles[i], 8) == currentLayer.Id) {
+                                selectedItem = selectedbundles[i];
                             }
                         }
-                    ],
-                });
+                    }
+                    // Creates layers item's icons
+                    $.each(currentLayer.Items, function (i, item) {
+                        totalitems++;
+                        var itemPath = layerPath + item + "/thumbnail.jpg";
+                        var itemContainer = $("<div>");
+                        var itemImage = $("<img>", { "class": "avatar-item-selector item" + item, "data-item": item });
+
+                        if (lazyLoading) {
+                            itemImage.attr("data-lazy", itemPath);
+                        }
+
+                        else {
+                            itemImage.attr("src", itemPath);
+                        }
+
+                        if (selectedItem == item) {
+                            itemImage.addClass("selected");
+                        }
+
+                        itemContainer.append(itemImage);
+                        $("#avatarItemSelectors").append(itemContainer);
+                    });
+
+                    var itemIndex = Math.max(currentLayer.Items.indexOf(selectedItem), 0);
+                }
             }
+            // If we're dealing with bundles
+            else
+            {
+                showColorSelector = false;
+                if (selectedBundleId != null)
+                {
+                    $("#avatarItemSelectors").empty();
+                    for (var i = 0; i < bundles.length;i++){
+                        if (bundles[i].Id == selectedBundleId){
+                            var lazyLoading = false;
+                            if (bundles[i].Items.length > 30) {
+                                lazyLoading = true;
+                            }
+                            //Creates the item's icons
+                            for (var item = 0; item < bundles[i].Items.length; item++) {
+                                totalitems++;
+                                var layerId = GetItemsLayer(bundles[i].Items[item], 8);
+                                layerPath = baseImagePath + "layer" + layerId + "/item";
+                                var itemPath = layerPath + bundles[i].Items[item] + "/thumbnail.jpg";
+                                var itemContainer = $("<div>");
+                                var itemImage = $("<img>", { "class": "avatar-item-selector avatar-bundle-item-selector item" + bundles[i].Items[item], "data-item": bundles[i].Items[item], "data-layer": layerId });
+                                if (lazyLoading) {
+                                    itemImage.attr("data-lazy", itemPath);
+                                }
+                                else
+                                {
+                                    itemImage.attr("src", itemPath);
+                                }
+                                // Checks to see if any bundle items have been selected already
+                                if (selectedbundles.length != 0) {
+                                    for (var idx = 0; idx < selectedbundles.length; idx++) {
+                                        if (selectedbundles[idx] == bundles[i].Items[item]) {
+                                            itemImage.addClass("selected");
+                                        }
+                                    }
+                                }
+                                //Checks if its the selected item and adds to the selected bundles array
+                                else if (selectedItem == bundles[i].Items[item]) {
+                                    itemImage.addClass("selected");
+                                    selectedbundles.push(selectedItem);
+                                }
+                                // if we dont have anything to mark as selected
+                                else if (selectedbundles.length == 0) {
+                                    if (itemImage.hasClass("selected")) {
+                                        itemImage.removeClass("selected");
+                                    }
+                                }
+                                itemContainer.append(itemImage);
+                                $("#avatarItemSelectors").append(itemContainer);
+                            }
+                        }
+                    }
+                }
+                var itemIndex = 0;
+            } if (showColorSelector) {
+                $("#avatarColors").removeClass("hide");
+            }
+            //Prevents the repeating of the slick items on mobile
+            var drag = true;
+            var infin = true;
+
+            if (currentLayer == 999 && totalitems / 12 <= 1) {
+                drag = false;
+                infin = false;
+            }
+
+            $("#avatarItemSelectors").slick({
+                   arrows: false,
+                initialSlide: Math.floor(itemIndex / itemRows),
+                lazyLoad: 'anticipated',
+                mobileFirst: true,
+                rows: itemRows,
+                slidesPerRow: 1,
+                slidesToShow: (lazyLoading ? 10 : 1),
+                swipeToSlide: true,
+                touchThreshold: 100,
+                variableWidth: true,
+                waitForAnimate: false,
+                infinite: infin,
+                responsive: [
+                    {
+                    breakpoint: 500,
+                    settings: {
+                        arrows: false,
+                        initialSlide: Math.floor(itemIndex / (itemRows * 3)) * 3,
+                        slidesToShow: 3,
+                        slidesToScroll: 3,
+                        swipeToSlide: false,
+                        touchThreshold: 10,
+                        variableWidth: false,
+                        waitForAnimate: true,
+                        draggable: drag
+                    }
+                    },
+                    {
+                       breakpoint: 768,
+                        settings: {
+                           arrows: true,
+                            initialSlide: Math.floor(itemIndex / (itemRows * 3)) * 3,
+                            slidesToShow: 3,
+                            slidesToScroll: 3,
+                            swipeToSlide: false,
+                            touchThreshold: 10,
+                            variableWidth: false,
+                            waitForAnimate: true
+                        }
+                       },
+                    {
+                       breakpoint: 992,
+                        settings: {
+                           arrows: true,
+                            initialSlide: Math.floor(itemIndex / (itemRows * 4)) * 4,
+                            slidesToShow: 4,
+                            slidesToScroll: 4,
+                            swipeToSlide: false,
+                            touchThreshold: 10,
+                            variableWidth: false,
+                            waitForAnimate: true
+                        }
+                       },
+                    {
+                       breakpoint: 1200,
+                        settings: {
+                           arrows: true,
+                            initialSlide: Math.floor(itemIndex / (itemRows * 6)) * 6,
+                            slidesToShow: 6,
+                            slidesToScroll: 6,
+                            swipeToSlide: false,
+                            touchThreshold: 10,
+                            variableWidth: false,
+                            waitForAnimate: true
+                        }
+                       }
+                ],
+            });
         }
 
         function SetColorSelectors() {
+            var flag = false;
+            // handles if we want to show colors in the bundles area
+            if (currentLayer == 999 && showColorSelector) {
+                flag = true;
+                currentLayer = GetLayerById(2);
+                $("#selector999").data("color", $("#selector2").data("color"));
+            }
+            if ($("#selector999").data("color")) {
+                selectedColor = $("#selector999").data("color");
+            }
+            //If we're showing colors
             if ($("#avatarColorSelectors").hasClass("slick-initialized")) {
-                $("#avatarColorSelectors").slick("unslick");
+            $("#avatarColorSelectors").slick("unslick");
             }
             $("#avatarColorSelectors").empty();
-            if (showColorSelector && currentLayer.Colors.length > 0) {
-                $.each(currentLayer.Colors, function (i, color) {
-                    var colorContainer = $("<div>");
-                    var colorDiv = $("<div>", { "class": "avatar-color-selector color" + color.Id, "style": "background-color:#" + color.Value, "data-color": color.Id });
-                    if (selectedColor == color.Id) {
+            if (showColorSelector && (currentLayer.Colors.length > 0)) {
+
+            $.each(currentLayer.Colors, function (i, color) {
+                var colorContainer = $("<div>");
+                var colorDiv = $("<div>", { "class": "avatar-color-selector color" + color.Id, "style": "background-color:#" + color.Value, "data-color": color.Id });
+                if (flag) {
+                    if ($("#selector2").data("color") == color.Id) {
                         colorDiv.addClass("selected");
+                        $('#selector999').data("color", $("#selector2").data("color"));
                     }
-                    colorContainer.append(colorDiv);
-                    $("#avatarColorSelectors").append(colorContainer);
+                }
+                else {
+                    if (selectedColor == color.Id) {
+                    colorDiv.addClass("selected");
+                }
+                }
+                colorContainer.append(colorDiv);
+                $("#avatarColorSelectors").append(colorContainer);
                 });
 
-                var colorIndex = currentLayer.Colors.map(function(x) { return x.Id;}).indexOf(selectedColor);
-                $("#avatarColorSelectors").slick({
-                    arrows: false,
-                    initialSlide: Math.floor(colorIndex / colorRows),
-                    mobileFirst: true,
-                    rows: colorRows,
-                    slidesPerRow: 1,
-                    swipeToSlide: true,
-                    touchThreshold: 100,
-                    variableWidth: true,
-                    waitForAnimate: false,
-                    responsive: [
-                        {
-                            breakpoint: 768,
-                            settings: {
-                                arrows: true,
-                                initialSlide: Math.floor(colorIndex / (colorRows * 8)) * 8,
-                                slidesToShow: 8,
-                                slidesToScroll: 8,
-                                swipeToSlide: false,
-                                touchThreshold: 10,
-                                variableWidth: false
-                            }
-                        },
-                        {
-                            breakpoint: 992,
-                            settings: {
-                                arrows: true,
-                                initialSlide: Math.floor(colorIndex / (colorRows * 10)) * 10,
-                                slidesToShow: 10,
-                                slidesToScroll: 10,
-                                swipeToSlide: false,
-                                touchThreshold: 10,
-                                variableWidth: false
-                            }
-                        },
-                        {
-                            breakpoint: 1200,
-                            settings: {
-                                arrows: true,
-                                initialSlide: Math.floor(colorIndex / (colorRows * 12)) * 12,
-                                slidesToShow: 12,
-                                slidesToScroll: 12,
-                                swipeToSlide: false,
-                                touchThreshold: 10,
-                                variableWidth: false
-                            }
+            var colorIndex = currentLayer.Colors.map(function (x) { return x.Id; }).indexOf(selectedColor);
+
+            $("#avatarColorSelectors").slick({
+                arrows: false,
+                initialSlide: Math.floor(colorIndex / colorRows),
+                mobileFirst: true,
+                rows: colorRows,
+                slidesPerRow: 1,
+                swipeToSlide: true,
+                touchThreshold: 100,
+                variableWidth: true,
+                waitForAnimate: false,
+                responsive: [
+                    {
+                        breakpoint: 768,
+                        settings: {
+                            arrows: true,
+                            initialSlide: Math.floor(colorIndex / (colorRows * 8)) * 8,
+                            slidesToShow: 8,
+                            slidesToScroll: 8,
+                            swipeToSlide: false,
+                            touchThreshold: 10,
+                            variableWidth: false
                         }
-                    ]
-                });
+                    },
+                    {
+                            breakpoint: 992,
+                        settings: {
+                            arrows: true,
+                            initialSlide: Math.floor(colorIndex / (colorRows * 10)) * 10,
+                            slidesToShow: 10,
+                            slidesToScroll: 10,
+                            swipeToSlide: false,
+                            touchThreshold: 10,
+                            variableWidth: false
+                        }
+                    },
+                    {
+                        breakpoint: 1200,
+                        settings: {
+                            arrows: true,
+                            initialSlide: Math.floor(colorIndex / (colorRows * 12)) * 12,
+                            slidesToShow: 12,
+                            slidesToScroll: 12,
+                            swipeToSlide: false,
+                            touchThreshold: 10,
+                            variableWidth: false
+                        }
+                    }
+                ]
+            });
+            }
+            if (flag) {
+                currentLayer = 999;
             }
         }
 
@@ -366,44 +634,182 @@
                 }
             }
         }
-
+        // Sets the items for a layer
         function SetSelectedItem(item) {
+            //removes from selected bundles if in it
+            if (selectedbundles.length != 0) {
+                for (var i = 0; i < selectedbundles.length; i++) {
+                    if (GetItemsLayer(selectedbundles[i],8) == currentLayer.Id) {
+                        selectedbundles = RemoveItemFromList(selectedbundles[i], selectedbundles);
+                    }
+                }
+            }
+            //Sets the new item to be selected
             selectedItem = item;
+            selectedbundles.push(selectedItem);
             currentLayerSelector.data("item", item);
             $(".avatar-item-selector.selected").removeClass("selected");
             $(".item" + item).addClass("selected");
-                SetLayerImage();
+            SetLayerImage();
         }
 
+        function SetSelectedBundleItem(item) {
+            // removes the current selected item from that layer and, adds the new item to be selected
+            var layerId = GetItemsLayer(item, 8);
+            var bundlelayerPath = baseImagePath + "layer" + layerId + "/item" + item;
+            if (selectedbundles.length != 0) {
+                for (var i = 0; i < selectedbundles.length; i++) {
+                    if (GetItemsLayer(selectedbundles[i], 8) == layerId) {
+                        $(".avatar-item-selector.item" + selectedbundles[i]).removeClass("selected");
+                        selectedbundles = RemoveItemFromList(selectedbundles[i], selectedbundles);
+                        $(".item" + item).addClass("selected");
+                    }
+                    else {
+                        $(".item" + item).addClass("selected");
+                    }
+                }
+            }
+            else {
+                $(".item" + item).addClass("selected");
+            }
+            $("#selector"+ GetItemsLayer(item, 8)).data("item", item);
+            selectedbundles.push(item);
+            SetBundleLayerImage(bundlelayerPath, item);
+        }
+
+        function SetBundleLayerImage(bundlelayerPath, item) {
+            var imagePath = bundlelayerPath + "/item";
+            var itemslayer = GetItemsLayer(item, 8);
+            //Handles the hair layer
+            if (itemslayer == 2) {
+                if (bundleColor != null && bundleColor != "") {
+                    imagePath += "_" + bundleColor;
+                }
+                else {
+                    $("#selector999").data("color", $("#selector2").data("color"));
+                    imagePath += "_" + $("#selector999").data("color");
+                }
+            }
+            // Updates the avatars images
+            imagePath += ".png";
+            var container1 = $.makeArray($(".avatar-container")[0].children);
+            var container2 = $.makeArray($(".avatar-container")[1].children);
+            for (var i = 0; i < container1.length; i++){
+                var obj1 = $(container1[i]);
+                var obj2 = $(container2[i]);
+                if (obj1.data("layer") == itemslayer) {
+                    obj1.attr("src", imagePath);
+                    obj2.attr("src", imagePath);
+                    if (itemslayer >= 5) {
+                        obj1.removeClass("hide");
+                        obj2.removeClass("hide");
+                    }
+                }
+            }
+            currentLayerImage.attr("src", imagePath).removeClass("hide");
+            SetUnsavedChanges(true);
+        }
+        //Removes item from the given array and returns the new array
+        function RemoveItemFromList(item, arr) {
+            var newarray = [];
+            for (var i = 0; i < arr.length; i++) {
+                if (arr[i] != item) {
+                    newarray.push(arr[i]);
+                }
+            }
+            return newarray;
+        }
+
+        // Sets the color to be selected
         function SetSelectedColor(color) {
             selectedColor = color;
+            bundleColor = color;
+            $("#selector2").data("color", color);
+            $("#selector999").data("color", color);
             currentLayerSelector.data("color", color);
             $(".avatar-color-selector.selected").removeClass("selected");
             $(".color" + color).addClass("selected");
-            if (selectedItem != "") {
-                SetLayerImage();
+            // Handles if we want to display color in the bundles
+            if (currentLayer == 999) {
+                var selectitem = null;
+                for (var item in selectedbundles) {
+                    if (GetItemsLayer(item,8) == 2) {
+                        selectitem = item;
+                    }
+                }
+                if (selectitem != null) {
+                    SetLayerImage();
+                }
+                else {
+                    imagepath = $($(".avatar-layer.image2")[1]).attr("src");
+                    imagepath = imagepath.split("_")[0] + "_" + color + ".png";
+                    $($(".avatar-layer.image2")[0]).attr("src", imagepath);
+                    $($(".avatar-layer.image2")[1]).attr("src", imagepath);
+                }
+            }
+            //Handles the layers
+            else {
+                if (selectedItem != "") {
+                    SetLayerImage();
+                }
             }
         }
 
         function SetLayerImage() {
-            var imagePath = layerPath + selectedItem + "/item";
-            if (selectedColor != "") {
-                imagePath += "_" + selectedColor;
-            }
-            imagePath += ".png";
-            currentLayerImage.attr("src", imagePath).removeClass("hide");
-            SetUnsavedChanges(true);
-        }
+            //If we're on the bundles
+            if (currentLayer == 999) {
+                var selectitem = null;
+                // Sets the selected item
+                for (var item in selectedbundles) {
+                    if (GetItemsLayer(selectedbundles[item],8) == 2) {
+                        selectitem = selectedbundles[item];
+                    }
+                }
+                // Updates the item with the correct path
+                if (selectitem != null) {
+                    var imagePath = "/content/site1/avatars/layer2/item" + selectitem + "/item";
+                    // If we need a color with it
+                    if ($("#selector999").data("color")) {
 
+                        imagePath += "_" + bundleColor;
+                    }
+                    imagePath += ".png";
+                    $(".image2").attr("src", imagePath).removeClass("hide");
+                    bundleColor = "";
+                    SetUnsavedChanges(true);
+                }
+            }
+            // If we're on the layers, just do a normal item path
+            else {
+                var imagePath = layerPath + selectedItem + "/item";
+                if (selectedColor != "" && (currentLayer.Id == 2 || currentLayer.Id == 1)) {
+
+                    imagePath += "_" + selectedColor;
+                }
+                imagePath += ".png";
+                currentLayerImage.attr("src", imagePath).removeClass("hide");
+                SetUnsavedChanges(true);
+                if (currentLayer.Id == 1) {
+                    selectedColor = "";
+                }
+            }
+        }
+        // Removes the current layers item (doesnt apply to bundles)
         function RemoveLayerImage() {
             currentLayerSelector.data("item", "")
             currentLayerImage.addClass("hide").removeAttr("src");
             selectedItem = "";
             SetUnsavedChanges(true);
+            var item = $(".avatar-item-selector.selected").data("item");
+            for (var idx = 0; idx < selectedbundles.length; idx++) {
+                if (selectedbundles[idx] == item) {
+                    selectedbundles = RemoveItemFromList(selectedbundles[idx], selectedbundles);
+                }
+            }
             $(".avatar-item-selector.selected").removeClass("selected");
-            $(".avatar-item-remover").addClass("selected");
         }
 
+        // Get the chosen avatar items and converts to JSON
         function GetAvatarSelection() {
             var data_array = new Array();
             $(".avatar-layer-selector").each(function () {
@@ -412,10 +818,10 @@
                 layer['SelectedItem'] = $(this).data("item");
                 layer['SelectedColor'] = $(this).data("color");
                 data_array.push(layer);
-            })
+            });
             return JSON.stringify(data_array);
         }
-
+        // Saves the Avatars items
         function SaveAvatar() {
             $.post("@Url.Action("SaveAvatar")", { selectionJson: GetAvatarSelection() }, function (response) {
                 if (response.success == true) {
@@ -423,64 +829,139 @@
                     $(".avatar-save-message").text("@SharedLocalizer[GRA.Annotations.Interface.AvatarSaved]");
                     $(".avatar-save-message").show().delay(2000).fadeOut("slow");
 
-                    @if (Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null)
-                    {
+                    @if (Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null){
                         <text>
-                        if (unsavedChanges)
-                        {
-                            gtag('event', 'avatar_update');
+                        if (unsavedChanges){
+                                gtag('event', 'avatar_update');
                         }
                         </text>
-                    }
-                    
-                    SetUnsavedChanges(false);
+                        }
+
+                        SetUnsavedChanges(false);
                 }
                 else {
                     $(".avatar-save-message").removeClass("text-success").addClass("text-danger");
                     $(".avatar-save-message").text(response.message);
                     $(".avatar-save-message").show();
                 }
-            }).fail(function () {
-                $(".avatar-save-message").removeClass("text-success").addClass("text-danger");
-                $(".avatar-save-message").text("@SharedLocalizer[GRA.Annotations.Validate.CouldNotSaveAvatar]");
-                $(".avatar-save-message").show();
-            })
-            .always(function() {
-                $("#saveSpinner").addClass("hidden");
-                $("#saveAvatar").removeAttr("disabled");
+                }).fail(function () {
+                    $(".avatar-save-message").removeClass("text-success").addClass("text-danger");
+                    $(".avatar-save-message").text("@SharedLocalizer[GRA.Annotations.Validate.CouldNotSaveAvatar]");
+                    $(".avatar-save-message").show();
+                })
+                .always(function() {
+                    $("#saveSpinner").addClass("hidden");
+                    $("#saveAvatar").removeAttr("disabled");
+                });
+        }
+        //Updates to database that the user viewed the bundle
+        function UpdateHasBeenViewed(bundle) {
+            $.post("@Url.Action("UpdateUserLogs")", { selectionJson: bundle }, function (response) {
+            });
+            $.ajax({
+                type: "POST",
+                content: "application/json; charset=utf-8",
+                dataType: "json",
+                data: bundle,
             });
         }
-
+        //Checks if there are any bundles that have not been viewed
+        function NewBundlesCheck() {
+            for (var indicator = 0; indicator < hasBeenViewed.length; indicator++) {
+                if (hasBeenViewed[indicator] == 0) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        // updates the selected layer
         $(".avatar-layer-selector").on("click", function () {
+            if ($(this).data("layer") == 999) {
+                currentLayer = 999;
+            }
             SetLayer($(this).data("layer"));
         })
-
+        // When a user clicks on an item
         $(document).on("click", ".avatar-item-selector", function () {
             var item = $(this).data("item");
-            if (item != selectedItem) {
+            if (currentLayer == 999) {
+                SetSelectedBundleItem(item);
+            }
+            else
+            {
                 SetSelectedItem(item);
             }
         });
-
+        // When a user clicks on a color
         $(document).on("click", ".avatar-color-selector", function () {
             var color = $(this).data("color");
+            if (currentLayer == 999 && color!=selectedColor) {
+                SetSelectedColor(color);
+            }
             if (color != selectedColor) {
                 SetSelectedColor(color);
             }
         });
+        // When a user selects a bundle from the drop down
+        $(document).on("click", ".bundle-selectors", function () {
+            $("li#bundle-selected").removeAttr("id");
+            $("li").find("#selected-bundle").removeAttr("id");
+            $(this).attr("id", "selected-bundle");
+            $(this).addClass("active");
+            if (!$($(this).children()[0]).hasClass("hide")) {
+                $($(this).children()[0]).addClass("hide");
+            }
+            selectedBundleId = $("li").find("#selected-bundle").data("bundleid");
+            $("#bundle-selected").text($(this).contents().not($(this).children()).text());
+            $("#bundle-selected").append("<span class='caret'></span>");
 
+            @foreach(var bundle in @Model.Bundles)
+            {
+                @:var counter = 0;
+                @:if (@bundle.Id == selectedBundleId) {
+                    @:for (var idx = 0; idx < hasBeenViewed.length; idx++) {
+                        <text>
+                        if (idx == counter && hasBeenViewed[idx] == 0) {
+                            var bunds = {};
+                            var returnarr = new Array();
+                            bunds["AvatarBundleId"] = selectedBundleId;
+                            bunds["HasBeenViewed"] = 1;
+                            hasBeenViewed[counter] = 1;
+                            returnarr.push(bunds);
+                            UpdateHasBeenViewed(JSON.stringify(returnarr));
+                            break;
+                        }
+                        counter++;
+                        </text>
+                    @:}
+
+                @:}
+            }
+            for (var idx = 0; idx < hasBeenViewed.length; idx++) {
+                if (bundles[idx].Id == selectedBundleId) {
+                    hasBeenViewed[idx] = 1;
+                }
+            }
+            if (!NewBundlesCheck()) {
+                $("#selector999").attr("src","/content/site1/avatarbundles/icon.png");
+            }
+            GetBundleById(selectedBundleId);
+            SetLayer(999);
+        });
+        // When a user removes the layer's item
         $("#removeButton").on("click", function () {
             if (currentLayerRemovable && selectedItem != "") {
                 RemoveLayerImage();
             }
         });
-
-        $(".avatar-zoom-button").on("click", function() {
+        // MOBILE if user zooms in
+        $(".avatar-zoom-button").on("click", function () {
             if (xsZoom) {
                 $(this).children().removeClass("fa-search-minus").addClass("fa-search-plus");
                 $(".xsLayer").css({ "transform": "", "top": "" });
                 xsZoom = false;
             }
+
             else {
                 var scale = currentLayerSelector.data("zoomscale");
                 var yOffset = currentLayerSelector.data("zoomyoffset");
@@ -489,26 +970,36 @@
                 xsZoom = true;
             }
         });
-
+        // When a user saves
         $("#saveAvatar").on("click", function () {
             $(".avatar-save-message").hide();
             $(this).attr("disabled", "disabled");
             $("#saveSpinner").removeClass("hidden");
-            SaveAvatar();
-        });
+                       SaveAvatar();
+                   });
 
         $("#shareForm").on("submit", function (e) {
             if (unsavedChanges) {
-                @if (Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null)
-                {
+                @if (Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null){
                     @:gtag('event', 'avatar_update');
-                }
+                 }
 
-                $("<input />")
-                    .attr("type", "hidden")
-                    .attr("name", "selectionJson")
-                    .attr("value", GetAvatarSelection())
-                    .appendTo($(this));
+            $("<input />")
+            .attr("type", "hidden")
+            .attr("name", "selectionJson")
+            .attr("value", GetAvatarSelection())
+            .appendTo($(this));
+            }
+        });
+        // Selects the bundle if the user comes from the notification link
+        $(function () {
+            var bundleValue = (new URL(location.href)).searchParams.get('bundle');
+            if (bundleValue && $("#bundleDropdown")) {
+                $('#selector999').trigger("click");
+                var bundleItem = $('*[data-bundleid="' + bundleValue + '"]');
+                if (bundleItem) {
+                    bundleItem.trigger("click");
+                }
             }
         });
     </script>
