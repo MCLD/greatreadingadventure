@@ -14,7 +14,8 @@
                         <img src="~/@layer.FilePath"
                              class="@($"image{layer.Id}") xsLayer avatar-layer@(string.IsNullOrWhiteSpace(layer.FilePath) ? " hide" : "")"
                              style="z-index: @(layer.Position + 1);"
-                             data-layer="@layer.Id" />
+                             data-layer="@layer.Id" 
+                             data-item="@layer.SelectedItem"/>
                     }
                 </div>
                 <button type="button" class="btn btn-default avatar-zoom-button">
@@ -28,7 +29,8 @@
                         <img src="~/@layer.FilePath"
                              class="@($"image{layer.Id}") avatar-layer@(string.IsNullOrWhiteSpace(layer.FilePath) ? " hide" : "")"
                              style="z-index: @(layer.Position + 1);"
-                             data-layer="@layer.Id" />
+                             data-layer="@layer.Id"
+                             data-item="@layer.SelectedItem"/>
                     }
                 </div>
             </div>
@@ -220,6 +222,16 @@
                     if (hasBeenViewed[bund] == 0) {
                         $($("#bundle-drop").find("li")[bund]).find("span").removeClass("hide");
                     }
+                }
+            }
+            InitAvatarSelection();
+        }
+
+        function InitAvatarSelection(){
+            var container = $.makeArray($(".avatar-container")[0].children);
+            for (var item = 0; item < container.length; item++) {
+                if (!container[item].classList.contains("hide")) {
+                    selectedbundles.push(container[item].getAttribute("data-item"));
                 }
             }
         }
