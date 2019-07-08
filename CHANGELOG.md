@@ -70,6 +70,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Password recovery validation error handling
 - Challenge task type not being set correctly
 - Badge requirements list using client-side evaluation
+- Community experience report using client-side evaluation
 
 ### Removed
 - Recovery error logging at the controller level - it's logged in the service
