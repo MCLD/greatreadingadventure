@@ -43,6 +43,7 @@ namespace GRA.Domain.Model
         public const string ManageVendorCodes = "ManageVendorCodes";
         public const string PerformDrawing = "PerformDrawing";
         public const string ReadAllMail = "ReadAllMail";
+        public const string RedeemBulkVendorCodes = "RedeemBulkVendorCodes";
         public const string RemoveChallenges = "RemoveChallenges";
         public const string SchedulePerformers = "SchedulePerformers";
         public const string SendBroadcastMail = "SendBroadcastMail";

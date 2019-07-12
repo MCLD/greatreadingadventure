@@ -115,5 +115,21 @@ namespace GRA.Data.Repository
                           .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
                           .ToListAsync();
         }
+
+        public async Task<ICollection<VendorCode>> GetPendingHouseholdCodes(int headOfHouseholdId)
+        {
+            var householdUsers = _context.Users
+                .AsNoTracking()
+                .Where(_ => _.Id == headOfHouseholdId || _.HouseholdHeadUserId == headOfHouseholdId);
+
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.UserId.HasValue && _.IsDonated == null)
+                .Join(householdUsers,
+                    vendorCode => vendorCode.UserId,
+                    user => user.Id,
+                    (vendorCode, _) => vendorCode)
+                .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
     }
 }

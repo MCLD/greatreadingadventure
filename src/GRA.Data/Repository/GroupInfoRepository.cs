@@ -29,6 +29,7 @@ namespace GRA.Data.Repository
                     (group, user) => new { group, user })
                 .Where(_ => _.user.SiteId == siteId)
                 .Select(_ => _.group)
+                .OrderBy(_ => _.Name)
                 .ProjectTo<GroupInfo>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
