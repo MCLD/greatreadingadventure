@@ -46,6 +46,8 @@ namespace GRA.Controllers.MissionControl
         private readonly UserService _userService;
         private readonly VendorCodeService _vendorCodeService;
 
+        public static string Name { get { return "Participants"; } }
+
         public ParticipantsController(ILogger<ParticipantsController> logger,
             ServiceFacade.Controller context,
             ActivityService activityService,
@@ -2622,14 +2624,14 @@ namespace GRA.Controllers.MissionControl
 
             if (redeemed > 0)
             {
-                ShowAlertSuccess($"{redeemed} codes redeemed!");
+                ShowAlertSuccess($"Redeemed {redeemed} codes!");
             }
             else
             {
                 ShowAlertInfo("All codes have already been redeemed or donated.");
             }
 
-            return RedirectToAction("Household", "Participants", new { id });
+            return RedirectToAction(nameof(Household), ParticipantsController.Name, new { id });
         }
         #endregion Handle code/dontation selection
 

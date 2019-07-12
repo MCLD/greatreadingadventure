@@ -118,13 +118,13 @@ namespace GRA.Data.Repository
 
         public async Task<ICollection<VendorCode>> GetPendingHouseholdCodes(int headOfHouseholdId)
         {
-            var householdusers = _context.Users
+            var householdUsers = _context.Users
                 .AsNoTracking()
                 .Where(_ => _.Id == headOfHouseholdId || _.HouseholdHeadUserId == headOfHouseholdId);
 
             return await DbSet.AsNoTracking()
                 .Where(_ => _.UserId.HasValue && _.IsDonated == null)
-                .Join(householdusers,
+                .Join(householdUsers,
                     vendorCode => vendorCode.UserId,
                     user => user.Id,
                     (vendorCode, _) => vendorCode)
