@@ -428,7 +428,7 @@ namespace GRA.Controllers.MissionControl
                         int columnNumber = 0;
                         foreach (var resultItem in resultRow)
                         {
-                            (var cell, var length) = CreateCell(resultItem);
+                            (var cell, var length) = CreateCell(resultItem ?? string.Empty);
                             row.AppendChild(cell);
                             if (maximumColumnWidth.ContainsKey(columnNumber))
                             {
