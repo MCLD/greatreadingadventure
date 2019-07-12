@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl.Participants;
 using GRA.Controllers.ViewModel.Shared;
@@ -893,6 +891,7 @@ namespace GRA.Controllers.MissionControl
                     HouseholdCount = household.Count(),
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
                     HasAccount = !string.IsNullOrWhiteSpace(user.Username),
+                    CanRedeemBulkVendorCodes = UserHasPermission(Permission.RedeemBulkVendorCodes),
                     CanEditDetails = UserHasPermission(Permission.EditParticipants),
                     CanImportNewMembers = UserHasPermission(Permission.ImportHouseholdMembers),
                     CanLogActivity = UserHasPermission(Permission.LogActivityForAny),
@@ -1605,7 +1604,7 @@ namespace GRA.Controllers.MissionControl
                     JobToken = jobToken.ToString(),
                     PingSeconds = 5,
                     SuccessRedirectUrl = "",
-                    SuccessUrl = Url.Action(nameof(HouseholdImportComplete), 
+                    SuccessUrl = Url.Action(nameof(HouseholdImportComplete),
                         new { id = headOfHousehold.Id }),
                     Title = "Loading import..."
                 });
@@ -2609,6 +2608,28 @@ namespace GRA.Controllers.MissionControl
                 await _vendorCodeService.ResolveDonationStatusAsync(userId, donationStatus);
             }
             return RedirectToAction("Household", "Participants", new { id = viewModel.Id });
+        }
+
+        [HttpPost]
+        [Authorize(Policy = Policy.RedeemBulkVendorCodes)]
+        public async Task<IActionResult> HouseholdBulkRedeemCode(int id)
+        {
+            var user = await _userService.GetDetails(id);
+
+            var headOfHouseholdId = user.HouseholdHeadUserId ?? user.Id;
+
+            var redeemed = await _vendorCodeService.RedeemHouseholdCodes(headOfHouseholdId);
+
+            if (redeemed > 0)
+            {
+                ShowAlertSuccess($"{redeemed} codes redeemed!");
+            }
+            else
+            {
+                ShowAlertInfo("All codes have already been redeemed or donated.");
+            }
+
+            return RedirectToAction("Household", "Participants", new { id });
         }
         #endregion Handle code/dontation selection
 

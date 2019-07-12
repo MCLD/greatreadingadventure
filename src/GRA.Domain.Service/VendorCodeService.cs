@@ -489,6 +489,23 @@ namespace GRA.Domain.Service
             }
         }
 
+        public async Task<int> RedeemHouseholdCodes(int headOfHouseholdId)
+        {
+            VerifyPermission(Permission.RedeemBulkVendorCodes);
+            var authId = GetClaimId(ClaimType.UserId);
+
+            var householdPendingCodes = await _vendorCodeRepository
+                .GetPendingHouseholdCodes(headOfHouseholdId);
+
+            foreach (var code in householdPendingCodes)
+            {
+                code.IsDonated = false;
+                await _vendorCodeRepository.UpdateSaveAsync(authId, code);
+            }
+
+            return householdPendingCodes.Count;
+        }
+
         public async Task PopulateVendorCodeStatusAsync(User user)
         {
             var vendorCode = await GetUserVendorCodeAsync(user.Id);

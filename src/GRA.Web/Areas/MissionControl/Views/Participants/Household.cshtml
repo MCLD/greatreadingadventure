@@ -195,6 +195,37 @@
     </div>
 }
 
+@if (Model.CanRedeemBulkVendorCodes)
+{
+    <div class="row">
+        <div class="modal fade" id="bulkRedeemModal" tabindex="-1" role="dialog" aria-labelledby="bulkRedeemLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form asp-controller="Participants" asp-action="@nameof(ParticipantsController.HouseholdBulkRedeemCode)" method="post" role="form" style="display:inline">
+                        <input id="bulkRedeemId" asp-for="Id" type="hidden" />
+
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="deleteModalLabel">Redeem @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group") codes</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>This will redeem codes for every member of this @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group"). Once codes are redeemed, they cannot be donated.</p>
+                            <p><strong>Mail will not be sent</strong> to members of this @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group") with redemption instructions.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Do not redeem</button>
+                            <button type="submit" class="btn btn-info btn-spinner pull-right" aria-label="Confirm">
+                                Redeem all
+                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 @if (!string.IsNullOrEmpty(Model.GroupName))
 {
     <div class="row" style="padding: 10px 0; font-size: larger;">
@@ -246,7 +277,7 @@
                 }
                 @if (Model.CanViewPrizes && Model.HouseholdPrizeList.Count > 0 && Model.Users.Any())
                 {
-                            <button type="button" class="btn btn-success pull-right" data-toggle="modal" data-target="#prizeModal"><span class="fa fa-gift"></span> Prizes available</button>
+                    <button type="button" class="btn btn-success pull-right" data-toggle="modal" data-target="#prizeModal"><span class="fa fa-gift"></span> Prizes available</button>
                 }
             </div>
         }
@@ -352,7 +383,16 @@
                                 <th>Points Earned</th>
                                 @if (Model.ShowVendorCodes)
                                 {
-                                    <th>Book Code</th>
+                                    <th>
+                                        Book Code
+                                        @if (Model.CanRedeemBulkVendorCodes)
+                                        {
+                                            <button type="button" class="btn btn-info btn-xs pull-right" data-toggle="modal"
+                                                        data-target="#bulkRedeemModal" >
+                                                <span class="buttonText">Redeem all</span>
+                                            </button>
+                                        }
+                                    </th>
                                 }
                                 <th>Branch</th>
                                 <th>Program</th>

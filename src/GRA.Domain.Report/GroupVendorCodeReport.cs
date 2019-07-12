@@ -69,6 +69,7 @@ namespace GRA.Domain.Report
             // header row
             report.HeaderRow = new object[] {
                 "Name",
+                "Age",
                 "Vendor Code",
             };
 
@@ -87,6 +88,7 @@ namespace GRA.Domain.Report
 
                 var row = new List<object> {
                         user.FullName,
+                        user.Age,
                         vendorCode?.IsDonated == false ? vendorCode.Code : ""
                 };
 

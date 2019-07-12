@@ -8,6 +8,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
     {
         public IEnumerable<GRA.Domain.Model.User> Users { get; set; }
         public int? HeadOfHouseholdId { get; set; }
+        public bool CanRedeemBulkVendorCodes { get; set; }
         public bool CanEditDetails { get; set; }
         public bool CanImportNewMembers { get; set; }
         public bool CanLogActivity { get; set; }
