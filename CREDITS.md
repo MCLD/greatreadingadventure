@@ -14,6 +14,7 @@ The Great Reading Adventure is open source software developed with the help of [
 ### <a name="people-developers"></a>Developers
 - [Harald Nagel](https://haraldnagel.com/) :shipit:
 - [Dan Wilcox](https://github.com/iafb/) :koala:
+- [Madison Boman](https://github.com/madison-boman) :cactus:
 - [Ian Griffin](https://github.com/iangriffin/)
 - [Justin Meiners](https://justinmeiners.github.io/)
 
