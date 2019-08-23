@@ -22,5 +22,52 @@ namespace GRA.Data.Repository
                 .Select(_ => new Domain.Model.Job { Id = _.Id, JobType = _.JobType })
                 .SingleOrDefaultAsync();
         }
+
+        public async Task UpdateFinishAsync(int jobId, bool isCancelled)
+        {
+            var job = await DbSet.FindAsync(jobId);
+            if (job != null)
+            {
+                var now = _dateTimeProvider.Now;
+                if (isCancelled)
+                {
+                    job.StatusAsOf = now;
+                    job.Cancelled = now;
+                }
+                else
+                {
+                    job.StatusAsOf = now;
+                    job.Completed = now;
+                }
+                DbSet.Update(job);
+                await SaveAsync();
+            }
+        }
+
+        public async Task UpdateStartAsync(int jobId)
+        {
+            var job = await DbSet.FindAsync(jobId);
+            if (job != null)
+            {
+                var now = _dateTimeProvider.Now;
+                job.Status = "Starting...";
+                job.StatusAsOf = now;
+                job.Started = now;
+                DbSet.Update(job);
+                await SaveAsync();
+            }
+        }
+
+        public async Task UpdateStatusAsync(int jobId, string status)
+        {
+            var job = await DbSet.FindAsync(jobId);
+            if (job != null)
+            {
+                job.Status = status;
+                job.StatusAsOf = _dateTimeProvider.Now;
+                DbSet.Update(job);
+                await SaveAsync();
+            }
+        }
     }
 }

@@ -470,7 +470,7 @@ namespace GRA.Domain.Service
                     || challengeTaskDetails.ChallengeTaskType == ChallengeTaskType.Book)
                 {
                     // did something change?
-                    _logger.LogDebug($"Challenge task {updateStatus.ChallengeTask.Id} counts as an activity");
+                    _logger.LogTrace($"Challenge task {updateStatus.ChallengeTask.Id} counts as an activity");
                     if (updateStatus.WasComplete != updateStatus.IsComplete)
                     {
                         _logger.LogDebug($"Status of {updateStatus.ChallengeTask.Id}: was {updateStatus.WasComplete}, is {updateStatus.IsComplete}");
@@ -614,6 +614,7 @@ namespace GRA.Domain.Service
         {
             var userContext = GetUserContext();
             var logPoints = userContext.SiteStage == SiteStage.ProgramOpen;
+
             await AwardTriggersAsync(userId, logPoints, userContext.SiteId,
                 !userContext.User.Identity.IsAuthenticated);
 
@@ -1220,18 +1221,19 @@ namespace GRA.Domain.Service
                 {
                     await _avatarItemRepository.AddUserItemsAsync(userId, newItems);
                 }
-
                 var notification = new Notification
                 {
                     PointsEarned = 0,
+
                     Text = $"<span class=\"fa fa-shopping-bag\"></span> You've unlocked the <strong>{bundle.Name}</strong> avatar bundle!",
                     UserId = userId,
-                    BadgeFilename = bundle.AvatarItems.FirstOrDefault()?.Thumbnail
+                    BadgeFilename = bundle.AvatarItems.FirstOrDefault()?.Thumbnail,
+                    AvatarBundleId = bundleId
                 };
 
                 if (bundle.AvatarItems.Count > 1)
                 {
-                    notification.Text += " You can view the full list of pieces unlocked in your Profile History.";
+                    notification.Text += " See the full list of unlocked pieces in your Profile History.";
                 }
 
                 await _notificationRepository.AddSaveAsync(loggingUser, notification);
@@ -1242,7 +1244,8 @@ namespace GRA.Domain.Service
                     PointsEarned = 0,
                     IsDeleted = false,
                     AvatarBundleId = bundleId,
-                    Description = $"You unlocked the <strong>{bundle.Name}</strong> avatar bundle!"
+                    Description = $"You unlocked the <strong>{bundle.Name}</strong> avatar bundle!",
+                    HasBeenViewed = false,
                 });
 
                 if (!bundle.HasBeenAwarded)

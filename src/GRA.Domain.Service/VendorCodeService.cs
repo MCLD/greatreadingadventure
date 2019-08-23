@@ -12,32 +12,44 @@ using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace GRA.Domain.Service
 {
     public class VendorCodeService : BaseUserService<VendorCodeService>
     {
+        private readonly IPathResolver _pathResolver;
         private readonly ICodeGenerator _codeGenerator;
+        private readonly IJobRepository _jobRepository;
         private readonly IUserRepository _userRepository;
         private readonly IVendorCodeRepository _vendorCodeRepository;
         private readonly IVendorCodeTypeRepository _vendorCodeTypeRepository;
         private readonly MailService _mailService;
 
         public VendorCodeService(ILogger<VendorCodeService> logger,
-            GRA.Abstract.IDateTimeProvider dateTimeProvider,
+            IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
-            IUserRepository userRepository,
+            IPathResolver pathResolver,
             ICodeGenerator codeGenerator,
+            IJobRepository jobRepository,
+            IUserRepository userRepository,
             IVendorCodeRepository vendorCodeRepository,
             IVendorCodeTypeRepository vendorCodeTypeRepository,
             MailService mailService)
             : base(logger, dateTimeProvider, userContextProvider)
         {
             SetManagementPermission(Permission.ManageVendorCodes);
-            _codeGenerator = Require.IsNotNull(codeGenerator, nameof(codeGenerator));
-            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
-            _vendorCodeRepository = Require.IsNotNull(vendorCodeRepository, nameof(vendorCodeRepository));
-            _vendorCodeTypeRepository = Require.IsNotNull(vendorCodeTypeRepository, nameof(vendorCodeTypeRepository));
+            _pathResolver = pathResolver ?? throw new ArgumentNullException(nameof(pathResolver));
+            _codeGenerator = codeGenerator
+                ?? throw new ArgumentNullException(nameof(codeGenerator));
+            _jobRepository = jobRepository
+                ?? throw new ArgumentNullException(nameof(jobRepository));
+            _userRepository = userRepository
+                ?? throw new ArgumentNullException(nameof(userRepository));
+            _vendorCodeRepository = vendorCodeRepository
+                ?? throw new ArgumentNullException(nameof(vendorCodeRepository));
+            _vendorCodeTypeRepository = vendorCodeTypeRepository
+                ?? throw new ArgumentNullException(nameof(vendorCodeTypeRepository));
             _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
         }
 
@@ -167,9 +179,9 @@ namespace GRA.Domain.Service
         private const string OrderDateRowHeading = "Order Date";
         private const string ShipDateRowHeading = "Ship Date";
 
-        public async Task<OperationStatus> UpdateStatusFromExcel(string filename,
+        public async Task<JobStatus> UpdateStatusFromExcelAsync(int jobId,
             CancellationToken token,
-            IProgress<OperationStatus> progress = null)
+            IProgress<JobStatus> progress = null)
         {
             var requestingUser = GetClaimId(ClaimType.UserId);
 
@@ -177,22 +189,30 @@ namespace GRA.Domain.Service
             {
                 var sw = new Stopwatch();
                 sw.Start();
+
+                var job = await _jobRepository.GetByIdAsync(jobId);
+                var jobDetails
+                    = JsonConvert
+                        .DeserializeObject<JobDetailsVendorCodeStatus>(job.SerializedParameters);
+
+                string filename = jobDetails.Filename;
+
                 token.Register(() =>
                 {
                     string duration = "";
                     if (sw?.Elapsed != null)
                     {
-                        duration = $" after {((TimeSpan)sw.Elapsed).TotalSeconds.ToString("N2")} seconds";
+                        duration = $" after {sw.Elapsed.ToString("c")}";
                     }
                     _logger.LogWarning($"Import of {filename} for user {requestingUser} was cancelled{duration}.");
                 });
 
-                string fullPath = Path.Combine(Path.GetTempPath(), filename);
+                string fullPath = _pathResolver.ResolvePrivateTempFilePath(filename);
 
                 if (!File.Exists(fullPath))
                 {
                     _logger.LogError($"Could not find {fullPath}");
-                    return new OperationStatus
+                    return new JobStatus
                     {
                         PercentComplete = 0,
                         Status = "Could not find the import file.",
@@ -228,7 +248,7 @@ namespace GRA.Domain.Service
                                 row++;
                                 if (row % 10 == 0)
                                 {
-                                    progress.Report(new OperationStatus
+                                    progress.Report(new JobStatus
                                     {
                                         PercentComplete = row * 100 / totalRows,
                                         Status = $"Processing row {row}/{totalRows}...",
@@ -237,7 +257,7 @@ namespace GRA.Domain.Service
                                 }
                                 if (row == 1)
                                 {
-                                    progress.Report(new OperationStatus
+                                    progress.Report(new JobStatus
                                     {
                                         PercentComplete = 1,
                                         Status = $"Processing row {row}/{totalRows}...",
@@ -339,7 +359,7 @@ namespace GRA.Domain.Service
 
                         if (token.IsCancellationRequested)
                         {
-                            return new OperationStatus
+                            return new JobStatus
                             {
                                 PercentComplete = 100,
                                 Status = $"Operation cancelled at row {row}."
@@ -374,9 +394,10 @@ namespace GRA.Domain.Service
                                 sb.Append("<li>").Append(issue).Append("</li>");
                             }
                             sb.Append("</ul>");
-                            return new OperationStatus
+                            return new JobStatus
                             {
                                 PercentComplete = 100,
+                                Complete = true,
                                 Status = sb.ToString(),
                                 Error = true
                             };
@@ -384,9 +405,10 @@ namespace GRA.Domain.Service
                         else
                         {
                             _logger.LogInformation(sb.ToString());
-                            return new OperationStatus
+                            return new JobStatus
                             {
                                 PercentComplete = 100,
+                                Complete = true,
                                 Status = sb.ToString(),
                             };
                         }
@@ -399,8 +421,8 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {requestingUser} doesn't have permission to view all reporting.");
-                return new OperationStatus
+                _logger.LogError($"User {requestingUser} doesn't have permission to import vendor code statuses.");
+                return new JobStatus
                 {
                     PercentComplete = 0,
                     Status = "Permission denied.",
@@ -465,6 +487,23 @@ namespace GRA.Domain.Service
                 _logger.LogError($"User {authId} doesn't have permission to update code donation status for {userId}.");
                 throw new GraException("Permission denied.");
             }
+        }
+
+        public async Task<int> RedeemHouseholdCodes(int headOfHouseholdId)
+        {
+            VerifyPermission(Permission.RedeemBulkVendorCodes);
+            var authId = GetClaimId(ClaimType.UserId);
+
+            var householdPendingCodes = await _vendorCodeRepository
+                .GetPendingHouseholdCodes(headOfHouseholdId);
+
+            foreach (var code in householdPendingCodes)
+            {
+                code.IsDonated = false;
+                await _vendorCodeRepository.UpdateSaveAsync(authId, code);
+            }
+
+            return householdPendingCodes.Count;
         }
 
         public async Task PopulateVendorCodeStatusAsync(User user)

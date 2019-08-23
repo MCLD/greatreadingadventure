@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using ExcelDataReader;
 using GRA.Abstract;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
@@ -9,6 +14,7 @@ using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace GRA.Domain.Service
 {
@@ -16,6 +22,7 @@ namespace GRA.Domain.Service
     {
         private const int UnsubscribeTokenLength = 16;
 
+        private readonly IPathResolver _pathResolver;
         private readonly ICodeGenerator _codeGenerator;
         private readonly IPasswordValidator _passwordValidator;
         private readonly IAuthorizationCodeRepository _authorizationCodeRepository;
@@ -24,6 +31,7 @@ namespace GRA.Domain.Service
         private readonly IBranchRepository _branchRepository;
         private readonly IGroupInfoRepository _groupInfoRepository;
         private readonly IGroupTypeRepository _groupTypeRepository;
+        private readonly IJobRepository _jobRepository;
         private readonly IMailRepository _mailRepository;
         private readonly INotificationRepository _notificationRepository;
         private readonly IPrizeWinnerRepository _prizeWinnerRepository;
@@ -38,12 +46,14 @@ namespace GRA.Domain.Service
         private readonly ActivityService _activityService;
         private readonly EmailManagementService _emailManagementService;
         private readonly SiteLookupService _siteLookupService;
+        private readonly UserImportService _userImportService;
         private readonly VendorCodeService _vendorCodeService;
         private readonly IStringLocalizer<Resources.Shared> _sharedLocalizer;
 
         public UserService(ILogger<UserService> logger,
             IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
+            IPathResolver pathResolver,
             ICodeGenerator codeGenerator,
             IPasswordValidator passwordValidator,
             IAuthorizationCodeRepository authorizationCodeRepository,
@@ -52,6 +62,7 @@ namespace GRA.Domain.Service
             IBranchRepository branchRepository,
             IGroupInfoRepository groupInfoRepository,
             IGroupTypeRepository groupTypeRepository,
+            IJobRepository jobRepository,
             IMailRepository mailRepository,
             INotificationRepository notificationRepository,
             IPrizeWinnerRepository prizeWinnerRepository,
@@ -66,10 +77,13 @@ namespace GRA.Domain.Service
             ActivityService activityService,
             EmailManagementService emailManagementService,
             SiteLookupService siteLookupService,
+            UserImportService userImportService,
             VendorCodeService vendorCodeService,
             IStringLocalizer<Resources.Shared> sharedLocalizer)
             : base(logger, dateTimeProvider, userContextProvider)
         {
+            _pathResolver = pathResolver
+                ?? throw new ArgumentNullException(nameof(pathResolver));
             _codeGenerator = codeGenerator
                 ?? throw new ArgumentNullException(nameof(codeGenerator));
             _passwordValidator = passwordValidator
@@ -86,6 +100,8 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(groupInfoRepository));
             _groupTypeRepository = groupTypeRepository
                 ?? throw new ArgumentNullException(nameof(groupTypeRepository));
+            _jobRepository = jobRepository
+                ?? throw new ArgumentNullException(nameof(jobRepository));
             _mailRepository = mailRepository
                 ?? throw new ArgumentNullException(nameof(mailRepository));
             _notificationRepository = notificationRepository
@@ -114,6 +130,8 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(emailManagementService));
             _siteLookupService = siteLookupService
                 ?? throw new ArgumentNullException(nameof(siteLookupService));
+            _userImportService = userImportService
+                ?? throw new ArgumentNullException(nameof(userImportService));
             _vendorCodeService = vendorCodeService
                 ?? throw new ArgumentNullException(nameof(vendorCodeService));
             _sharedLocalizer = sharedLocalizer
@@ -202,7 +220,17 @@ namespace GRA.Domain.Service
                 .SetUserPasswordAsync(registeredUser.Id, registeredUser.Id, password);
 
             await JoinedProgramNotificationBadge(registeredUser);
-            await _activityService.AwardUserTriggersAsync(registeredUser.Id, false);
+
+            var sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
+            await AwardUserBadgesAsync(registeredUser.Id, false, false);
+            sw.Stop();
+            if (sw.Elapsed.TotalSeconds > 5)
+            {
+                _logger.LogInformation("Registration for user id {UserId} took {Elapsed} to award triggers.",
+                    registeredUser.Id,
+                    sw.Elapsed.ToString("c"));
+            }
 
             return registeredUser;
         }
@@ -585,10 +613,14 @@ namespace GRA.Domain.Service
             return authCode.RoleName;
         }
 
-        public async Task<User> AddHouseholdMemberAsync(int householdHeadUserId, User memberToAdd)
+        public async Task<User> AddHouseholdMemberAsync(int householdHeadUserId, User memberToAdd, 
+            bool skipHouseholdActionVerification = false)
         {
-            VerifyCanHouseholdAction();
-
+            if (!skipHouseholdActionVerification)
+            {
+                VerifyCanHouseholdAction();
+            }
+            
             var siteId = GetCurrentSiteId();
             int authUserId = GetClaimId(ClaimType.UserId);
             var householdHead = await _userRepository.GetByIdAsync(householdHeadUserId);
@@ -649,7 +681,18 @@ namespace GRA.Domain.Service
                 }
 
                 await JoinedProgramNotificationBadge(registeredUser);
-                await _activityService.AwardUserTriggersAsync(registeredUser.Id, false);
+
+                var sw = new System.Diagnostics.Stopwatch();
+                sw.Start();
+                await AwardUserBadgesAsync(registeredUser.Id, false, false);
+                sw.Stop();
+                if (sw.Elapsed.TotalSeconds > 5)
+                {
+                    _logger.LogInformation("Registration for household member {UserId} took {Elapsed} to award triggers.",
+                        registeredUser.Id,
+                        sw.Elapsed.ToString("c"));
+                }
+
                 return registeredUser;
             }
             else
@@ -1059,7 +1102,18 @@ namespace GRA.Domain.Service
             await _notificationRepository.AddSaveAsync(registeredUser.Id, notification);
         }
 
-        public async Task AwardMissingJoinBadgeAsync(int userId)
+        public async Task AwardUserBadgesAsync(int userId, bool awardJoinBadge,
+            bool awardHousehold)
+        {
+            if (awardJoinBadge)
+            {
+                await AwardMissingJoinBadgeAsync(userId, awardHousehold);
+            }
+
+            await _activityService.AwardUserTriggersAsync(userId, awardHousehold);
+        }
+
+        private async Task AwardMissingJoinBadgeAsync(int userId, bool awardHousehold)
         {
             var site = await _siteLookupService.GetByIdAsync(GetCurrentSiteId());
 
@@ -1073,6 +1127,8 @@ namespace GRA.Domain.Service
             {
                 var badge = await _badgeRepository.GetByIdAsync(program.JoinBadgeId.Value);
                 await _badgeRepository.AddUserBadge(user.Id, badge.Id);
+
+                badgeList.Add(badge);
 
                 await _userLogRepository.AddAsync(user.Id, new UserLog
                 {
@@ -1097,56 +1153,59 @@ namespace GRA.Domain.Service
                 await _notificationRepository.AddSaveAsync(user.Id, notification);
             }
 
-            var householdMemebers = await _userRepository.GetHouseholdAsync(userId);
-            if (householdMemebers.Any())
+            if (awardHousehold)
             {
-                var programList = new List<Program> { program };
-                foreach (var member in householdMemebers)
+                var householdMemebers = await _userRepository.GetHouseholdAsync(userId);
+                if (householdMemebers.Any())
                 {
-                    var memberProgram = programList
-                        .SingleOrDefault(_ => _.Id == member.ProgramId);
-                    if (memberProgram == null)
+                    var programList = new List<Program> { program };
+                    foreach (var member in householdMemebers)
                     {
-                        memberProgram = await _programRepository.GetByIdAsync(member.ProgramId);
-                        programList.Add(memberProgram);
-                    }
-
-                    if (memberProgram.JoinBadgeId.HasValue
-                         && !await _badgeRepository.UserHasJoinBadgeAsync(member.Id))
-                    {
-                        var badge = badgeList
-                            .SingleOrDefault(_ => _.Id == memberProgram.JoinBadgeId.Value);
-                        if (badge == null)
+                        var memberProgram = programList
+                            .SingleOrDefault(_ => _.Id == member.ProgramId);
+                        if (memberProgram == null)
                         {
-                            badge = await _badgeRepository.GetByIdAsync(
-                                memberProgram.JoinBadgeId.Value);
-                            badgeList.Add(badge);
+                            memberProgram = await _programRepository.GetByIdAsync(member.ProgramId);
+                            programList.Add(memberProgram);
                         }
 
-                        await _badgeRepository.AddUserBadge(member.Id,
-                            memberProgram.JoinBadgeId.Value);
-
-                        await _userLogRepository.AddAsync(user.Id, new UserLog
+                        if (memberProgram.JoinBadgeId.HasValue
+                             && !await _badgeRepository.UserHasJoinBadgeAsync(member.Id))
                         {
-                            UserId = member.Id,
-                            PointsEarned = 0,
-                            IsDeleted = false,
-                            BadgeId = badge.Id,
-                            Description = _sharedLocalizer[Annotations.Interface.Joined, site.Name]
-                        });
+                            var badge = badgeList
+                                .SingleOrDefault(_ => _.Id == memberProgram.JoinBadgeId.Value);
+                            if (badge == null)
+                            {
+                                badge = await _badgeRepository.GetByIdAsync(
+                                    memberProgram.JoinBadgeId.Value);
+                                badgeList.Add(badge);
+                            }
 
-                        // note this text is localized and displayed properly in SessionTimeoutFilterAttribute
-                        var notification = new Notification
-                        {
-                            BadgeFilename = badge.Filename,
-                            BadgeId = badge.Id,
-                            PointsEarned = 0,
-                            Text = $"<span class=\"fa fa-thumbs-o-up\"></span> You've successfully joined <strong>{site.Name}</strong>!",
-                            UserId = member.Id,
-                            IsJoiner = true
-                        };
+                            await _badgeRepository.AddUserBadge(member.Id,
+                                memberProgram.JoinBadgeId.Value);
 
-                        await _notificationRepository.AddSaveAsync(member.Id, notification);
+                            await _userLogRepository.AddAsync(user.Id, new UserLog
+                            {
+                                UserId = member.Id,
+                                PointsEarned = 0,
+                                IsDeleted = false,
+                                BadgeId = badge.Id,
+                                Description = _sharedLocalizer[Annotations.Interface.Joined, site.Name]
+                            });
+
+                            // note this text is localized and displayed properly in SessionTimeoutFilterAttribute
+                            var notification = new Notification
+                            {
+                                BadgeFilename = badge.Filename,
+                                BadgeId = badge.Id,
+                                PointsEarned = 0,
+                                Text = $"<span class=\"fa fa-thumbs-o-up\"></span> You've successfully joined <strong>{site.Name}</strong>!",
+                                UserId = member.Id,
+                                IsJoiner = true
+                            };
+
+                            await _notificationRepository.AddSaveAsync(member.Id, notification);
+                        }
                     }
                 }
             }
@@ -1433,6 +1492,212 @@ namespace GRA.Domain.Service
         public async Task SentBulkEmailAsync(int userId, int emailTemplateId, string emailAddress)
         {
             await _userRepository.AddBulkEmailLogAsync(userId, emailTemplateId, emailAddress);
+        }
+
+        public async Task<JobStatus> ImportHouseholdMembersAsync(int jobId,
+            CancellationToken token,
+            IProgress<JobStatus> progress = null)
+        {
+            var requestingUser = GetClaimId(ClaimType.UserId);
+
+            if (HasPermission(Permission.ImportHouseholdMembers))
+            {
+                var sw = new Stopwatch();
+                sw.Start();
+
+
+                var job = await _jobRepository.GetByIdAsync(jobId);
+                var jobDetails
+                    = JsonConvert
+                        .DeserializeObject<JobDetailsHouseholdImport>(job.SerializedParameters);
+
+                string filename = jobDetails.Filename;
+
+                token.Register(() =>
+                {
+                    string duration = "";
+                    if (sw?.Elapsed != null)
+                    {
+                        duration = $" after {sw.Elapsed.ToString("c")}";
+                    }
+                    _logger.LogWarning($"Import of {filename} for user {requestingUser} was cancelled{duration}.");
+                });
+
+                string fullPath = _pathResolver.ResolvePrivateTempFilePath(filename);
+
+                if (!File.Exists(fullPath))
+                {
+                    _logger.LogError($"Could not find {fullPath}");
+                    return new JobStatus
+                    {
+                        PercentComplete = 0,
+                        Status = "Could not find the import file.",
+                        Error = true,
+                        Complete = true
+                    };
+                }
+
+                UserImportResult userImportResult = null;
+                try
+                {
+                    userImportResult = await _userImportService.GetFromExcelAsync(fullPath,
+                            jobDetails.ProgmamId);
+                }
+                finally
+                {
+                    File.Delete(fullPath);
+                }
+
+                if (token.IsCancellationRequested)
+                {
+                    return new JobStatus
+                    {
+                        PercentComplete = 100,
+                        Status = $"Operation cancelled."
+                    };
+                }
+
+                if (userImportResult.Errors?.Count > 0)
+                {
+                    var sb = new StringBuilder("<strong>Import failed</strong>");
+                    sb.Append(" Issues detected:<ul>");
+                    foreach (string error in userImportResult.Errors)
+                    {
+                        sb.Append("<li>").Append(error).Append("</li>");
+                    }
+                    sb.Append("</ul>");
+
+                    return new JobStatus
+                    {
+                        PercentComplete = 100,
+                        Complete = true,
+                        Status = sb.ToString(),
+                        Error = true
+                    };
+                }
+                else if (userImportResult == null || userImportResult.Users.Count == 0)
+                {
+                    var sb = new StringBuilder("<strong>Import failed</strong>");
+                    sb.Append(" No users to add.");
+
+                    return new JobStatus
+                    {
+                        PercentComplete = 100,
+                        Complete = true,
+                        Status = sb.ToString(),
+                        Error = true
+                    };
+                }
+
+                var householdHead = await _userRepository
+                    .GetByIdAsync(jobDetails.HeadOfHouseholdId);
+
+                var groupInfo = await GetGroupFromHouseholdHeadAsync(householdHead.Id);
+                if (groupInfo == null)
+                {
+                    var householdLimitExceeded = await UsersToAddExceedsHouseholdLimitAsync(
+                        householdHead.Id, userImportResult.Users.Count);
+
+                    if (householdLimitExceeded)
+                    {
+                        var defaultGroupType = await GetDefaultGroupTypeAsync();
+                        if (defaultGroupType == null)
+                        {
+                            _logger.LogError($"Household import for {householdHead.Id} should be forced to make a group but no group types are configured");
+                        }
+                        else
+                        {
+                            var group = new GroupInfo
+                            {
+                                GroupTypeId = defaultGroupType.Id,
+                                Name = $"{householdHead.FullName}'s Group",
+                                UserId = householdHead.Id
+                            };
+
+                            await CreateGroup(requestingUser, group);
+                        }
+                    }
+                }
+
+                var currentUser = 1;
+                var userCount = userImportResult.Users.Count();
+
+                string callIt = groupInfo == null ? "Household" : "Group";
+
+                progress.Report(new JobStatus
+                {
+                    PercentComplete = currentUser * 100 / userCount,
+                    Status = $"Adding {callIt} members ({currentUser}/{userCount})...",
+                    Error = false
+                });
+                var lastUpdateSent = (int)sw.Elapsed.TotalSeconds;
+
+                foreach (var importUser in userImportResult.Users)
+                {
+                    if (token.IsCancellationRequested)
+                    {
+                        break;
+                    }
+
+                    var secondsFromLastUpdate = (int)sw.Elapsed.TotalSeconds - lastUpdateSent;
+                    if (secondsFromLastUpdate >= 5)
+                    {
+                        progress.Report(new JobStatus
+                        {
+                            PercentComplete = currentUser * 100 / userCount,
+                            Status = $"Adding {callIt} members ({currentUser}/{userCount})...",
+                            Error = false
+                        });
+                        lastUpdateSent = (int)sw.Elapsed.TotalSeconds;
+                    }
+                    var user = new User
+                    {
+                        Age = importUser.Age,
+                        BranchId = householdHead.BranchId,
+                        FirstName = importUser.FirstName?.Trim(),
+                        IsFirstTime = jobDetails.FirstTimeParticipating,
+                        IsHomeschooled = jobDetails.IsHomeSchooled,
+                        LastName = importUser.LastName?.Trim(),
+                        PostalCode = householdHead.PostalCode,
+                        ProgramId = jobDetails.ProgmamId,
+                        SchoolId = jobDetails.SchoolId,
+                        SchoolNotListed = jobDetails.SchoolNotListed,
+                        SystemId = householdHead.SystemId
+                    };
+
+                    await AddHouseholdMemberAsync(householdHead.Id, user, true);
+
+                    currentUser++;
+                }
+
+                if (token.IsCancellationRequested && userCount >= currentUser)
+                {
+                    return new JobStatus
+                    {
+                        PercentComplete = 100,
+                        Status = $"Operation cancelled at user {currentUser}."
+                    };
+                }
+
+                return new JobStatus
+                {
+                    PercentComplete = 100,
+                    Complete = true,
+                    Status = "<strong>Import Complete</strong>"
+                };
+            }
+
+            else
+            {
+                _logger.LogError($"User {requestingUser} doesn't have permission to import household members.");
+                return new JobStatus
+                {
+                    PercentComplete = 0,
+                    Status = "Permission denied.",
+                    Error = true,
+                    Complete = true
+                };
+            }
         }
     }
 }

@@ -123,9 +123,19 @@ else
                     <ul class="nav nav-pills nav-stacked">
                         @foreach (var category in Model.NewsCategories)
                         {
+                            if (category.IsNew)
+                            {
                             <li ActiveBy routeKey="Category" value="@(category.IsDefault ? $",{category.Id}" : $"{category.Id}")">
-                                <a style="padding: 5px 10px;" asp-route-category="@(category.IsDefault ? "" : $"{category.Id}")">@category.Name</a>
+                                <a style="padding: 5px 10px;  text-align: left;" asp-route-category="@(category.IsDefault ? "" : $"{category.Id}")">@category.Name 
+                                <span class="fas fa-asterisk fa-sm" style="color:#FF8C00; float: right; line-height: 20px;"></span></a>
                             </li>
+                            }
+                            else
+                            {
+                                <li ActiveBy routeKey="Category" value="@(category.IsDefault ? $",{category.Id}" : $"{category.Id}")">
+                                    <a style="padding: 5px 10px;  text-align: left;" asp-route-category="@(category.IsDefault ? "" : $"{category.Id}")">@category.Name</a>
+                                </li>
+                            }
                         }
                     </ul>
                 </div>
@@ -265,7 +275,6 @@ else
 @section scripts {
     <script>
         var newsSubscribeUrl = "@(Url.Action(nameof(HomeController.NewsSubscribe)))";
-
         var mcAagUpdateCount = 0;
         var mcAagInterval;
         var mcAagStarted;
@@ -320,7 +329,7 @@ else
             console.log("Updating At a Glance status every " + mcAagUpdateEvery / 1000 + "s and slowing down after " + mcAagSlowDownAfter / 1000 + "s");
             updateAagReport(mcAagUpdateEvery);
             $(".mc-refresh-link").click(function () {
-                $(".mc-refresh-spinner").addClass("fa-spin");
+            $(".mc-refresh-spinner").addClass("fa-spin");
             });
         });
 
@@ -360,5 +369,5 @@ else
                 });
             }
         });
-    </script>
-}
+                </script>
+        }

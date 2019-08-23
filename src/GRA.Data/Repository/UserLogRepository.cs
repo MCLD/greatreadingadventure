@@ -115,50 +115,39 @@ namespace GRA.Data.Repository
             await base.SaveAsync();
         }
 
-        private async Task<ICollection<int>> GetEligibleUserIds(ReportCriterion request)
+        private IQueryable<Model.User> GetEligibleUsers(ReportCriterion request)
         {
-            if (request.ProgramId != null
-               || request.SystemId != null
-               || request.BranchId != null)
-            {
-                var eligibleUsers = _context.Users
+            var eligibleUsers = _context.Users
                     .AsNoTracking()
                     .Where(_ => _.SiteId == request.SiteId && !_.IsDeleted);
-                if (request.ProgramId != null)
-                {
-                    eligibleUsers = eligibleUsers.Where(_ => _.ProgramId == request.ProgramId);
-                }
-                if (request.SystemId != null)
-                {
-                    eligibleUsers = eligibleUsers.Where(_ => _.SystemId == request.SystemId);
-                }
-                if (request.BranchId != null)
-                {
-                    eligibleUsers = eligibleUsers.Where(_ => _.BranchId == request.BranchId);
-                }
-                return await eligibleUsers.Select(_ => _.Id).ToListAsync();
-            }
-            else
+
+            if (request.ProgramId != null)
             {
-                return null;
+                eligibleUsers = eligibleUsers.Where(_ => _.ProgramId == request.ProgramId);
             }
+            if (request.SystemId != null)
+            {
+                eligibleUsers = eligibleUsers.Where(_ => _.SystemId == request.SystemId);
+            }
+            if (request.BranchId != null)
+            {
+                eligibleUsers = eligibleUsers.Where(_ => _.BranchId == request.BranchId);
+            }
+
+            return eligibleUsers;
         }
 
         public async Task<long> CompletedChallengeCountAsync(ReportCriterion request,
             int? challengeId = null)
         {
-            var eligibleUserIds = await GetEligibleUserIds(request);
+            var eligibleUsers = GetEligibleUsers(request);
 
             var challengeCount = DbSet
                 .AsNoTracking()
                 .Where(_ => _.ChallengeId != null
                     && !_.IsDeleted
-                    && !_.User.IsDeleted);
+                    && eligibleUsers.Contains(_.User));
 
-            if (eligibleUserIds != null)
-            {
-                challengeCount = challengeCount.Where(_ => eligibleUserIds.Contains(_.UserId));
-            }
 
             if (request.StartDate != null)
             {
@@ -183,16 +172,11 @@ namespace GRA.Data.Repository
 
         public async Task<long> PointsEarnedTotalAsync(ReportCriterion request)
         {
-            var eligibleUserIds = await GetEligibleUserIds(request);
+            var eligibleUsers = GetEligibleUsers(request);
 
             var pointCount = DbSet
-                .Where(_ => !_.IsDeleted && !_.User.IsDeleted)
-                .AsNoTracking();
-
-            if (eligibleUserIds != null)
-            {
-                pointCount = pointCount.Where(_ => eligibleUserIds.Contains(_.UserId));
-            }
+                .AsNoTracking()
+                .Where(_ => !_.IsDeleted && eligibleUsers.Contains(_.User));
 
             if (request.StartDate != null)
             {
@@ -211,8 +195,7 @@ namespace GRA.Data.Repository
 
         public async Task<Dictionary<string, long>> ActivityEarningsTotalAsync(ReportCriterion request)
         {
-            // look up user id restrictions
-            var eligibleUserIds = await GetEligibleUserIds(request);
+            var eligibleUsers = GetEligibleUsers(request);
 
             // build lookup of point translations
             var translationLookup = await _context.PointTranslations
@@ -224,13 +207,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.PointTranslationId != null
                     && !_.IsDeleted
-                    && !_.User.IsDeleted);
-
-            // filter by users if necessary
-            if (eligibleUserIds != null)
-            {
-                earnedFilter = earnedFilter.Where(_ => eligibleUserIds.Contains(_.UserId));
-            }
+                    && eligibleUsers.Contains(_.User));
 
             if (request.StartDate != null)
             {
@@ -318,18 +295,13 @@ namespace GRA.Data.Repository
         public async Task<long> EarnedBadgeCountAsync(ReportCriterion request,
             int? badgeId = null)
         {
-            var eligibleUserIds = await GetEligibleUserIds(request);
+            var eligibleUsers = GetEligibleUsers(request);
 
             var badgeCount = DbSet
                 .AsNoTracking()
                 .Where(_ => _.BadgeId != null
                     && !_.IsDeleted
-                    && !_.User.IsDeleted);
-
-            if (eligibleUserIds != null)
-            {
-                badgeCount = badgeCount.Where(_ => eligibleUserIds.Contains(_.UserId));
-            }
+                    && eligibleUsers.Contains(_.User));
 
             if (request.StartDate != null)
             {
@@ -355,32 +327,25 @@ namespace GRA.Data.Repository
         public async Task<long> TranslationEarningsAsync(ReportCriterion request,
             ICollection<int?> translationIds)
         {
-            // look up user id restrictions
-            var eligibleUserIds = await GetEligibleUserIds(request);
+            var eligibleUsers = GetEligibleUsers(request);
 
             var earnedFilter = DbSet
                 .AsNoTracking()
                 .Where(_ => !_.IsDeleted
                     && _.ActivityEarned != null
-                    && !_.User.IsDeleted
+                    && eligibleUsers.Contains(_.User)
                     && _.PointTranslationId != null
                     && translationIds.Contains(_.PointTranslationId));
 
-            // filter by users if necessary
-            if (eligibleUserIds != null)
+            if (MaximumAllowableActivity > 0)
             {
-                earnedFilter = earnedFilter.Where(_ => eligibleUserIds.Contains(_.UserId));
-
-                if (MaximumAllowableActivity > 0)
-                {
-                    return await _context.Users
-                        .Where(_ => eligibleUserIds.Contains(_.Id))
-                        .GroupJoin(earnedFilter, u => u.Id, ul => ul.UserId, (u, ul) => new { User = u, Sum = (long)ul.Sum(_ => _.ActivityEarned) })
-                        .Where(_ => _.Sum > 0)
-                        .Select(_ => (_.Sum > MaximumAllowableActivity ? _.User.Program.AchieverPointAmount : _.Sum))
-                        .SumAsync(_ => _);
-                }
+                return await eligibleUsers
+                    .GroupJoin(earnedFilter, u => u.Id, ul => ul.UserId, (u, ul) => new { User = u, Sum = (long)ul.Sum(_ => _.ActivityEarned) })
+                    .Where(_ => _.Sum > 0)
+                    .Select(_ => (_.Sum > MaximumAllowableActivity ? _.User.Program.AchieverPointAmount : _.Sum))
+                    .SumAsync(_ => _);
             }
+
 
             // TODO Fix for reporting over a time period
             /*
@@ -402,38 +367,26 @@ namespace GRA.Data.Repository
 
         private IQueryable<Model.UserLog> GetEligibleUserLogs(ReportCriterion request)
         {
-            if (request.ProgramId != null
-               || request.SystemId != null
-               || request.BranchId != null)
-            {
-                var eligibleUserLogs = DbSet
+            var eligibleUserLogs = DbSet
                     .AsNoTracking()
                     .Where(_ => _.User.SiteId == request.SiteId
                         && !_.IsDeleted
                         && !_.User.IsDeleted);
 
-                if (request.ProgramId != null)
-                {
-                    eligibleUserLogs = eligibleUserLogs.Where(_ => _.User.ProgramId == request.ProgramId);
-                }
-                if (request.SystemId != null)
-                {
-                    eligibleUserLogs = eligibleUserLogs.Where(_ => _.User.SystemId == request.SystemId);
-                }
-                if (request.BranchId != null)
-                {
-                    eligibleUserLogs = eligibleUserLogs.Where(_ => _.User.BranchId == request.BranchId);
-                }
-                return eligibleUserLogs;
-            }
-            else
+            if (request.ProgramId != null)
             {
-                return DbSet
-                    .AsNoTracking()
-                    .Where(_ => _.User.SiteId == request.SiteId
-                        && !_.IsDeleted
-                        && !_.User.IsDeleted);
+                eligibleUserLogs = eligibleUserLogs.Where(_ => _.User.ProgramId == request.ProgramId);
             }
+            if (request.SystemId != null)
+            {
+                eligibleUserLogs = eligibleUserLogs.Where(_ => _.User.SystemId == request.SystemId);
+            }
+            if (request.BranchId != null)
+            {
+                eligibleUserLogs = eligibleUserLogs.Where(_ => _.User.BranchId == request.BranchId);
+            }
+
+            return eligibleUserLogs;
         }
 
         public async Task<ICollection<int>> UserIdsEarnedBadgeAsync(int badgeId, ReportCriterion criterion)

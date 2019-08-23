@@ -29,14 +29,9 @@ namespace GRA.Domain.Report
 
         public override async Task ExecuteAsync(ReportRequest request,
             CancellationToken token,
-            IProgress<OperationStatus> progress = null)
+            IProgress<JobStatus> progress = null)
         {
             #region Reporting initialization
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
-
             request = await StartRequestAsync(request);
 
             var criterion
@@ -45,7 +40,7 @@ namespace GRA.Domain.Report
 
             if (criterion.SiteId == null)
             {
-                throw new ArgumentNullException(nameof(criterion.SiteId));
+                throw new ArgumentException(nameof(criterion.SiteId));
             }
 
             var report = new StoredReport
@@ -70,11 +65,22 @@ namespace GRA.Domain.Report
             // running totals
             long totalParticipants = 0;
 
+            UpdateProgress(progress, 1, "Looking up community experiences...");
+
             var communityExperiencesWithCount = await _eventRepository
                 .GetCommunityExperienceAttendanceAsync(criterion);
 
+            int onRow = 0;
+
             foreach (var communityExperienceWithCount in communityExperiencesWithCount)
             {
+                if (onRow % 10 == 0)
+                {
+                    UpdateProgress(progress,
+                        ++onRow * 100 / Math.Max(communityExperiencesWithCount.Count, 1),
+                        $"Tabulating {communityExperienceWithCount.Data.Name}...");
+                }
+
                 var row = new List<object>()
                 {
                     communityExperienceWithCount.Data.Name,

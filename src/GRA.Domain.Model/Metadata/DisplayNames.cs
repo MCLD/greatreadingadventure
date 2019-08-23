@@ -46,6 +46,7 @@
         public const string SchoolNotListed = "School not listed";
         public const string SearchTitleAndDescription = "Search Title & Description";
         public const string SecretCode = "Secret Code";
+        public const string SelectABundle = "Select a Bundle";
         public const string SendRecoveryEmail = "Send Recovery Email";
         public const string SignIn = "Sign in";
         public const string SignOut = "Sign out";

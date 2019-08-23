@@ -1034,6 +1034,10 @@ namespace GRA.Data.SqlServer.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<DateTime?>("Cancelled");
+
+                    b.Property<DateTime?>("Completed");
+
                     b.Property<DateTime>("CreatedAt");
 
                     b.Property<int>("CreatedBy");
@@ -1045,6 +1049,13 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<string>("SerializedParameters");
 
                     b.Property<int>("SiteId");
+
+                    b.Property<DateTime?>("Started");
+
+                    b.Property<string>("Status")
+                        .HasMaxLength(255);
+
+                    b.Property<DateTime?>("StatusAsOf");
 
                     b.HasKey("Id");
 
@@ -1174,6 +1185,8 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<bool>("IsDefault");
 
+                    b.Property<DateTime?>("LastPostDate");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255);
@@ -1218,6 +1231,8 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("AvatarBundleId");
 
                     b.Property<string>("BadgeFilename");
 
@@ -2719,6 +2734,8 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<int?>("DeletedBy");
 
                     b.Property<string>("Description");
+
+                    b.Property<bool?>("HasBeenViewed");
 
                     b.Property<bool>("IsDeleted");
 

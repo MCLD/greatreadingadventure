@@ -36,7 +36,7 @@ namespace GRA.Domain.Report
             _programRepository = programRepository
                 ?? throw new ArgumentNullException(nameof(programRepository));
             _systemRepository = systemRepository
-                ?? throw new ArgumentNullException(nameof(ISystemRepository));
+                ?? throw new ArgumentNullException(nameof(systemRepository));
             _userRepository = userRepository
                 ?? throw new ArgumentNullException(nameof(userRepository));
             _userLogRepository = userLogRepository
@@ -45,14 +45,9 @@ namespace GRA.Domain.Report
 
         public async override Task ExecuteAsync(ReportRequest request,
             CancellationToken token,
-            IProgress<OperationStatus> progress = null)
+            IProgress<JobStatus> progress = null)
         {
             #region Reporting initialization
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
-
             request = await StartRequestAsync(request);
             var criterion = await GetCriterionAsync(request);
 
@@ -97,8 +92,10 @@ namespace GRA.Domain.Report
                     translationTotals.Add(description, 0);
                     if (description.Length > 2)
                     {
-                        headerRow.Add(description.First().ToString().ToUpper()
-                            + description.Substring(1));
+                        headerRow.Add(description[0]
+                            .ToString()
+                            .ToUpper(System.Globalization.CultureInfo.InvariantCulture)
+                                + description.Substring(1));
                     }
                     else
                     {
@@ -118,7 +115,7 @@ namespace GRA.Domain.Report
             long totalRegistered = 0;
             long totalAchievers = 0;
 
-            int totalItems = programDictionary.Count();
+            int totalItems = programDictionary.Count;
 
             foreach (var programId in programDictionary.Keys)
             {

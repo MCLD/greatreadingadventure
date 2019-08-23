@@ -42,6 +42,7 @@ namespace GRA.Domain.Model
         ManageVendorCodes,
         PerformDrawing,
         ReadAllMail,
+        RedeemBulkVendorCodes,
         RemoveChallenges,
         SchedulePerformers,
         SendBroadcastMail,

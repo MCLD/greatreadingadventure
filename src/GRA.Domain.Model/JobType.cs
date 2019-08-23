@@ -2,6 +2,10 @@
 {
     public enum JobType
     {
-        SendBulkEmails = 1
+        SendBulkEmails = 1,
+        RunReport,
+        UpdateVendorStatus,
+        AvatarImport,
+        HouseholdImport
     }
 }

@@ -51,19 +51,7 @@ namespace GRA.Web
                     return;
                 }
 
-                if (context.Request.Path.Value.Contains("runreport"))
-                {
-                    var reportService = context.RequestServices.GetRequiredService<ReportService>();
-                    await RunWsTaskAsync(context, reportService.RunReport);
-                }
-                else if (context.Request.Path.Value.Contains("processvendor"))
-                {
-                    var vendorCodeService = context
-                        .RequestServices
-                        .GetRequiredService<VendorCodeService>();
-                    await RunWsTaskAsync(context, vendorCodeService.UpdateStatusFromExcel);
-                }
-                else if (context.Request.Path.Value.Contains("runjob"))
+                if (context.Request.Path.Value.Contains("runjob"))
                 {
                     var jobService = context.RequestServices.GetRequiredService<JobService>();
                     await RunWsTaskAsync(context, jobService.RunJob);
@@ -82,7 +70,7 @@ namespace GRA.Web
         }
 
         private async Task RunWsTaskAsync(HttpContext context,
-            Func<string, CancellationToken, Progress<OperationStatus>, Task<OperationStatus>> task)
+            Func<string, CancellationToken, Progress<JobStatus>, Task<JobStatus>> task)
         {
             var sw = new Stopwatch();
             sw.Start();
@@ -108,7 +96,7 @@ namespace GRA.Web
                 {
                     // configure the last update sent timer - don't flood updates
                     double lastUpdateSent = 0;
-                    var progress = new Progress<OperationStatus>(_ =>
+                    var progress = new Progress<JobStatus>(_ =>
                     {
                         double passed = sw.Elapsed.TotalSeconds - lastUpdateSent;
                         if (passed > MinimumSecondsElapsedBetweenUpdates
@@ -148,7 +136,7 @@ namespace GRA.Web
                     // ideal state is socket still open, task complete
                     if (webSocket.State == WebSocketState.Open && runTask.IsCompleted)
                     {
-                        _logger.LogInformation($"Task {runTask.Status}, socket {webSocket.State}, sending final update after {sw.Elapsed.TotalSeconds}s.");
+                        _logger.LogInformation($"WebSocket {runTask.Status}, socket {webSocket.State}, sending final update after {sw.Elapsed:c}.");
 
                         var result = runTask.Result;
                         result.Complete = true;

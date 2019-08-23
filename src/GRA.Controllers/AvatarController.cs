@@ -25,6 +25,8 @@ namespace GRA.Controllers
         private readonly AvatarService _avatarService;
         private readonly SiteService _siteService;
 
+        public static string Name { get { return "Avatar"; } }
+
         public AvatarController(ILogger<AvatarController> logger,
             ServiceFacade.Controller context,
             AvatarService avatarService,
@@ -59,19 +61,24 @@ namespace GRA.Controllers
                 .GroupBy(_ => _.GroupId)
                 .Select(_ => _.ToList())
                 .ToList();
+            var usersresult = await _avatarService.GetUserUnlockBundlesAsync();
+            var bundles = new AvatarBundleJsonModel
+            {
+                Bundles = _mapper
+                .Map<List<AvatarBundleJsonModel.AvatarBundle>>(usersresult.Keys.ToList())
+            };
             var viewModel = new AvatarViewModel
             {
                 LayerGroupings = layerGroupings,
+                Bundles = usersresult.Keys.ToList(),
+                ViewedBundles = usersresult.Values.ToList(),
                 DefaultLayer = userWardrobe.First(_ => _.DefaultLayer).Id,
                 ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/"),
-                AvatarPiecesJson = Newtonsoft.Json.JsonConvert.SerializeObject(model)
+                AvatarPiecesJson = Newtonsoft.Json.JsonConvert.SerializeObject(model),
+                AvatarBundlesJson = Newtonsoft.Json.JsonConvert.SerializeObject(bundles)
             };
-
             var userAvatar = await _avatarService.GetUserAvatarAsync();
-            if (userAvatar.Count == 0)
-            {
-                viewModel.NewAvatar = true;
-            }
+            viewModel.NewAvatar = userAvatar.Count == 0;
             return View(viewModel);
         }
 
@@ -80,7 +87,23 @@ namespace GRA.Controllers
         {
             try
             {
-                await UpdateAvatar(selectionJson);
+                await UpdateAvatarAsync(selectionJson);
+                return Json(new { success = true });
+            }
+            catch (GraException gex)
+            {
+                return Json(new { success = false, message = gex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> UpdateUserLogs(string selectionJson)
+        {
+            try
+            {
+                var selection = Newtonsoft.Json.JsonConvert
+                    .DeserializeObject<List<UserLog>>(selectionJson);
+                await _avatarService.UpdateUserLogsAsync(selection);
                 return Json(new { success = true });
             }
             catch (GraException gex)
@@ -172,7 +195,7 @@ namespace GRA.Controllers
             {
                 try
                 {
-                    await UpdateAvatar(selectionJson);
+                    await UpdateAvatarAsync(selectionJson);
                     ShowAlertSuccess(_sharedLocalizer[Annotations.Interface.AvatarSaved]);
                 }
                 catch (GraException gex)
@@ -187,7 +210,7 @@ namespace GRA.Controllers
             return RedirectToAction(nameof(Share));
         }
 
-        private async Task UpdateAvatar(string selectionJson)
+        private async Task UpdateAvatarAsync(string selectionJson)
         {
             var selection = Newtonsoft.Json.JsonConvert
                         .DeserializeObject<ICollection<AvatarLayer>>(selectionJson);

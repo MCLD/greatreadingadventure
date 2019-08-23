@@ -23,6 +23,7 @@ namespace GRA.Domain.Report
         private readonly IProgramRepository _programRepository;
         private readonly IUserRepository _userRepository;
         private readonly IUserLogRepository _userLogRepository;
+
         public CurrentStatusReport(ILogger<CurrentStatusReport> logger,
             Domain.Report.ServiceFacade.Report serviceFacade,
             IBranchRepository branchRepository,
@@ -45,14 +46,9 @@ namespace GRA.Domain.Report
 
         public override async Task ExecuteAsync(ReportRequest request,
             CancellationToken token,
-            IProgress<OperationStatus> progress = null)
+            IProgress<JobStatus> progress = null)
         {
             #region Reporting initialization
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
-
             request = await StartRequestAsync(request);
 
             var criterion
@@ -61,7 +57,7 @@ namespace GRA.Domain.Report
 
             if (criterion.SiteId == null)
             {
-                throw new ArgumentNullException(nameof(criterion.SiteId));
+                throw new ArgumentException(nameof(criterion.SiteId));
             }
 
             var report = new StoredReport
@@ -110,8 +106,10 @@ namespace GRA.Domain.Report
                     translationTotals.Add(description, 0);
                     if (description.Length > 2)
                     {
-                        headerRow.Add(description.First().ToString().ToUpper()
-                            + description.Substring(1));
+                        headerRow.Add(description[0]
+                            .ToString()
+                            .ToUpper(CultureInfo.InvariantCulture)
+                                + description.Substring(1));
                     }
                     else
                     {

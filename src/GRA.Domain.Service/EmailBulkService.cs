@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,8 +13,10 @@ using Newtonsoft.Json;
 
 namespace GRA.Domain.Service
 {
-    public class EmailBulkService : Abstract.BaseUserService<EmailBulkService>
+    public class EmailBulkService : BaseUserService<EmailBulkService>
     {
+        private const string SpanFormat = @"hh\:mm\:ss";
+
         private readonly IJobRepository _jobRepository;
         private readonly EmailService _emailService;
         private readonly UserService _userService;
@@ -33,10 +36,10 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(userService));
         }
 
-        public async Task<OperationStatus> RunJobAsync(int userId,
+        public async Task<JobStatus> RunJobAsync(int userId,
             int jobId,
             CancellationToken token,
-            IProgress<OperationStatus> progress = null)
+            IProgress<JobStatus> progress = null)
         {
             if (HasPermission(Permission.SendBulkEmails))
             {
@@ -47,10 +50,15 @@ namespace GRA.Domain.Service
                 int emailsSkipped = 0;
                 int userCounter = 0;
 
+                int addSentCounter = 0;
+
+                var problemUsers = new List<int>();
+
                 var filter = new UserFilter
                 {
                     IsSubscribed = true,
                     SortBy = SortUsersBy.RegistrationDate,
+                    Take = 30
                 };
 
                 var subscribedUsers = await _userService.GetPaginatedUserListAsync(filter);
@@ -66,26 +74,33 @@ namespace GRA.Domain.Service
                         emailsSent,
                         emailsSkipped,
                         subscribedUsers?.Count,
-                        sw.Elapsed.ToString(@"mm\:ss"));
+                        sw.Elapsed.ToString(SpanFormat));
                 });
 
                 if (subscribedUsers.Count > 0)
                 {
-                    var elapsed = sw.Elapsed;
+                    var elapsedStatus = sw.Elapsed;
+                    var elapsedUpdateDbStatus = sw.Elapsed;
 
                     var job = await _jobRepository.GetByIdAsync(jobId);
                     var jobDetails
-                        = JsonConvert.DeserializeObject<JobDetailsSendBulkEmails>(job.SerializedParameters);
+                        = JsonConvert
+                            .DeserializeObject<JobDetailsSendBulkEmails>(job.SerializedParameters);
 
-                    progress.Report(new OperationStatus
+                    var template
+                        = await _emailService.GetEmailTemplate(jobDetails.EmailTemplateId);
+
+                    progress.Report(new JobStatus
                     {
                         PercentComplete = 0,
+                        Title = $"Sending email: {template.Description}",
                         Status = $"Preparing to email {subscribedUsers.Count} participants...",
                         Error = false
                     });
 
                     while (subscribedUsers.Data.Any())
                     {
+                        Thread.Sleep(1000);
                         foreach (var user in subscribedUsers.Data)
                         {
                             // check email has not be sent to user
@@ -115,13 +130,30 @@ namespace GRA.Domain.Service
                                     jobDetails.EmailTemplateId);
 
                                 // send email to user
-                                await _emailService.SendBulkAsync(user, jobDetails.EmailTemplateId);
+                                try
+                                {
+                                    await _emailService
+                                        .SendBulkAsync(user, jobDetails.EmailTemplateId);
+                                    await _userService.SentBulkEmailAsync(user.Id,
+                                        jobDetails.EmailTemplateId,
+                                        user.Email);
 
-                                await _userService.SentBulkEmailAsync(user.Id,
-                                    jobDetails.EmailTemplateId,
-                                    user.Email);
+                                    addSentCounter++;
+                                    emailsSent++;
+                                }
+                                catch (Exception ex)
+                                {
+                                    _logger.LogError(ex,
+                                        "Bulk email send failed to {UserId} at {Email}: {Message}",
+                                        user.Id,
+                                        user.Email,
+                                        ex.Message);
 
-                                emailsSent++;
+                                    if (!problemUsers.Contains(user.Id))
+                                    {
+                                        problemUsers.Add(user.Id);
+                                    }
+                                }
                             }
 
                             userCounter++;
@@ -131,26 +163,41 @@ namespace GRA.Domain.Service
                                 break;
                             }
 
-                            if (sw.Elapsed.TotalSeconds - elapsed.TotalSeconds > 15
+                            if (sw.Elapsed.TotalSeconds - elapsedStatus.TotalSeconds > 5
                                 || userCounter == 1)
                             {
-                                elapsed = sw.Elapsed;
+                                elapsedStatus = sw.Elapsed;
 
                                 var remaining = TimeSpan
-                                    .FromMilliseconds(elapsed.TotalMilliseconds / userCounter
+                                    .FromMilliseconds(elapsedStatus.TotalMilliseconds / userCounter
                                         * (subscribedUsers.Count - userCounter))
-                                    .ToString(@"mm\:ss");
+                                    .ToString(SpanFormat);
 
-                                _logger.LogTrace("Elapsed: {Elapsed} / Est. remaining: {Remaining}",
-                                    elapsed.ToString(@"mm\:ss"),
-                                    remaining);
-
-                                progress.Report(new OperationStatus
+                                var status = new JobStatus
                                 {
-                                    PercentComplete = emailsSent * 100 / subscribedUsers.Count,
-                                    Status = $"Sent {emailsSent}, skipped {emailsSkipped} of {subscribedUsers.Count}; {elapsed.ToString(@"mm\:ss")} elapsed, est. {remaining} remaining",
+                                    PercentComplete = userCounter * 100 / subscribedUsers.Count,
+                                    Status = $"Sent {emailsSent}, skipped {emailsSkipped} of {subscribedUsers.Count}; {elapsedStatus.ToString(SpanFormat)}, remaining: {remaining}, problems: {problemUsers.Count}",
                                     Error = false
-                                });
+                                };
+
+                                progress.Report(status);
+
+                                if (sw.Elapsed.TotalSeconds - elapsedUpdateDbStatus.TotalSeconds > 60
+                                    || userCounter == 1)
+                                {
+                                    if (addSentCounter > 0)
+                                    {
+                                        await _emailService.UpdateSentCount(template.Id, addSentCounter);
+                                        addSentCounter = 0;
+                                    }
+
+                                    var dbStatusText = string.Format("{0}%: {1}",
+                                        status.PercentComplete,
+                                        status.Status);
+
+                                    await _jobRepository.UpdateStatusAsync(jobId,
+                                        dbStatusText.Substring(0, Math.Min(dbStatusText.Length, 255)));
+                                }
                             }
                         }
 
@@ -161,24 +208,40 @@ namespace GRA.Domain.Service
 
                         filter.Skip = userCounter;
                         subscribedUsers = await _userService.GetPaginatedUserListAsync(filter);
+
+                        subscribedUsers.Data = subscribedUsers.Data
+                            .Where(_ => !problemUsers.Contains(_.Id));
                     }
 
                     string taskStatus = token.IsCancellationRequested
                         ? "Cancelled after"
                         : "Task completed with";
 
-                    return new OperationStatus
+                    var finalStatus = new JobStatus
                     {
-                        PercentComplete = emailsSent * 100 / subscribedUsers.Count,
-                        Status = $"{taskStatus} {emailsSent} sent, {emailsSkipped} skipped of {subscribedUsers.Count} in {elapsed.ToString(@"mm\:ss")}."
+                        PercentComplete = userCounter * 100 / subscribedUsers.Count,
+                        Status = $"{taskStatus} {emailsSent} sent, {emailsSkipped} skipped of {subscribedUsers.Count} in {elapsedStatus.ToString(SpanFormat)}."
                     };
+
+                    var statusText = string.Format("{0}%: {1}",
+                        finalStatus.PercentComplete,
+                        finalStatus.Status);
+
+                    await _jobRepository.UpdateStatusAsync(jobId,
+                        statusText.Substring(0, Math.Min(statusText.Length, 255)));
+
+                    return finalStatus;
                 }
                 else
                 {
                     _logger.LogWarning("User {RequestingUser} attempted to send bulk emails in job {JobId} with no subscribed participants.",
                         userId,
                         jobId);
-                    return new OperationStatus
+
+                    await _jobRepository.UpdateStatusAsync(jobId,
+                        "No participants were subscribed.");
+
+                    return new JobStatus
                     {
                         PercentComplete = 0,
                         Status = "No participants are subscribed.",
@@ -191,7 +254,11 @@ namespace GRA.Domain.Service
                 _logger.LogError("User {RequestingUser} attempted to send bulk emails in job {JobId} without permission.",
                     userId,
                     jobId);
-                return new OperationStatus
+
+                await _jobRepository.UpdateStatusAsync(jobId,
+                    "Insufficient permission to run job.");
+
+                return new JobStatus
                 {
                     PercentComplete = 0,
                     Status = "Permission denied.",

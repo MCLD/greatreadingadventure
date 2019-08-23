@@ -6,6 +6,7 @@
 }
 else
 {
+    string cacheBuster = DateTime.Now.ToString("yyMMddHHmmss");
     <div>
         <table class="table table-condensed table-bordered table-striped">
             <thead>
@@ -29,9 +30,10 @@ else
                         <td>
                             @if (!string.IsNullOrWhiteSpace(requirement.BadgePath))
                             {
-                                <img class="img-thumbnail" style="height: auto; width: 64px;"
-                                     src="~/@requirement.BadgePath?@DateTime.Now.ToString("yyMMddHHmmss")"
-                                     asp-append-version="true" />
+                                <div style="min-height: 64px;">
+                                    <img class="img-thumbnail" style="height: auto; width: 64px;"
+                                         src="~/@requirement.BadgePath?@cacheBuster" />
+                                </div>
                             }
                             else
                             {

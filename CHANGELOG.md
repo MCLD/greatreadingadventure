@@ -37,6 +37,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Created by text to Mission Control Challenge details
 - Disable and spinner to Challenge Task delete button
 - Disable and spinner to sign in submit buttons
+- Mission control button to update user triggers
+- Redeem all button for household vendor codes
+- Participant age to Group Vendor Code Report
 
 ### Changed
 - Script docker-build.bash to not build release images unless the branch starts with 'release/'
@@ -51,6 +54,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Household page layout
 - Upgrade Automapper from 6.0.2 to 8.0.0
 - Add assemblies to AutoMapper service injection
+- Household import to use the job system
+- Reporting SQL IN clause error
 
 ### Fixed
 - Instance name enrichment for logging
@@ -67,6 +72,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Viewing daily images on the household page
 - Password recovery validation error handling
 - Challenge task type not being set correctly
+- Badge requirements list using client-side evaluation
+- Community experience report using client-side evaluation
 
 ### Removed
 - Recovery error logging at the controller level - it's logged in the service

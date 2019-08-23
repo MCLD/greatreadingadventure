@@ -335,22 +335,65 @@ namespace GRA.Data.Repository
 
         public async Task<int> CountRequirementsAsync(BaseFilter filter)
         {
-            return await ApplyRequirementsFilters(filter)
-                .CountAsync();
+            var challengeCount = await _context.Challenges.AsNoTracking()
+                                    .Where(_ => _.SiteId == filter.SiteId
+                                        && !_.IsDeleted
+                                        && _.IsActive
+                                        && _.Name.Contains(filter.Search ?? string.Empty)
+                                        && (filter.SystemIds == null
+                                            || filter.SystemIds.Contains(_.RelatedSystemId))
+                                        && (filter.BranchIds == null
+                                            || filter.BranchIds.Contains(_.RelatedBranchId))
+                                        && (filter.UserIds == null
+                                            || filter.UserIds.Contains(_.CreatedBy))
+                                        && (filter.ChallengeIds == null
+                                            || !filter.ChallengeIds.Contains(_.Id)))
+                                    .CountAsync();
+
+            var triggerCount = await _context.Triggers.AsNoTracking()
+                                    .Where(_ => _.SiteId == filter.SiteId
+                                        && !_.IsDeleted
+                                        && _.Name.Contains(filter.Search ?? string.Empty)
+                                        && (filter.SystemIds == null
+                                            || filter.SystemIds.Contains(_.RelatedSystemId))
+                                        && (filter.BranchIds == null
+                                            || filter.BranchIds.Contains(_.RelatedBranchId))
+                                        && (filter.UserIds == null
+                                            || filter.UserIds.Contains(_.CreatedBy))
+                                        && (filter.BadgeIds == null
+                                            || !filter.BadgeIds.Contains(_.AwardBadgeId)))
+                                    .CountAsync();
+
+            var requirementsCount = challengeCount + triggerCount;
+
+            // Program Join/Achiever and Questionnaire badges
+            if (filter.SystemIds == null && filter.BranchIds == null && filter.UserIds == null)
+            {
+                var programRequirements = await _context.Programs.AsNoTracking()
+                                    .Where(_ => _.SiteId == filter.SiteId
+                                        && _.JoinBadgeId.HasValue
+                                        && _.JoinBadgeName.Contains(filter.Search ?? string.Empty)
+                                        && (filter.BadgeIds == null
+                                            || !filter.BadgeIds.Contains(_.JoinBadgeId.Value)))
+                                    .CountAsync();
+
+                var questionnaireRequirements = await _context.Questionnaires.AsNoTracking()
+                                    .Where(_ => _.SiteId == filter.SiteId
+                                        && _.BadgeId.HasValue
+                                        && _.Name.Contains(filter.Search ?? string.Empty)
+                                        && (filter.BadgeIds == null
+                                            || !filter.BadgeIds.Contains(_.BadgeId.Value)))
+                                    .CountAsync();
+
+                requirementsCount += programRequirements + questionnaireRequirements;
+            }
+
+            return requirementsCount;
         }
 
         public async Task<ICollection<TriggerRequirement>> PageRequirementsAsync(BaseFilter filter)
         {
-            return await ApplyRequirementsFilters(filter)
-                .OrderBy(_ => _.Name)
-                .ApplyPagination(filter)
-                .ToListAsync();
-        }
-
-        private IQueryable<TriggerRequirement> ApplyRequirementsFilters(BaseFilter filter)
-        {
-            // Badge and Trigger lists
-            var requirements = (from challenges in _context.Challenges
+            var challengeRequirements = await (from challenges in _context.Challenges.AsNoTracking()
                                     .Where(_ => _.SiteId == filter.SiteId
                                         && _.IsDeleted == false
                                         && _.IsActive
@@ -363,20 +406,23 @@ namespace GRA.Data.Repository
                                             || filter.UserIds.Contains(_.CreatedBy))
                                         && (filter.ChallengeIds == null
                                             || !filter.ChallengeIds.Contains(_.Id)))
-                                from badges in _context.Badges
-                                    .Where(_ => _.Id == challenges.BadgeId)
-                                    .DefaultIfEmpty()
-                                select new TriggerRequirement
-                                {
-                                    ChallengeId = challenges.Id,
-                                    Name = challenges.Name,
-                                    Icon = ChallengeIcon,
-                                    IconDescription = ChallengeDescription,
-                                    BadgePath = badges.Filename
-                                }
-                                )
-                                .Concat(
-                                    from triggers in _context.Triggers
+                                               from badges in _context.Badges
+                                                   .Where(_ => _.Id == challenges.BadgeId)
+                                                   .DefaultIfEmpty()
+                                               select new TriggerRequirement
+                                               {
+                                                   ChallengeId = challenges.Id,
+                                                   Name = challenges.Name,
+                                                   Icon = ChallengeIcon,
+                                                   IconDescription = ChallengeDescription,
+                                                   BadgePath = badges.Filename
+                                               }
+                                    )
+                                    .OrderBy(_ => _.Name)
+                                    .Take(filter.Skip.Value + filter.Take.Value)
+                                    .ToListAsync();
+
+            var triggerRequirements = await (from triggers in _context.Triggers.AsNoTracking()
                                     .Where(_ => _.SiteId == filter.SiteId
                                         && _.IsDeleted == false
                                         && _.Name.Contains(filter.Search ?? string.Empty)
@@ -388,62 +434,79 @@ namespace GRA.Data.Repository
                                             || filter.UserIds.Contains(_.CreatedBy))
                                         && (filter.BadgeIds == null
                                             || !filter.BadgeIds.Contains(_.AwardBadgeId)))
-                                    join badges in _context.Badges
-                                    on triggers.AwardBadgeId equals badges.Id
-                                    select new TriggerRequirement
-                                    {
-                                        BadgeId = badges.Id,
-                                        Name = triggers.Name,
-                                        Icon = TriggerIcon,
-                                        IconDescription = TriggerDescription,
-                                        BadgePath = badges.Filename
-                                    }
-                                );
+                                             join badges in _context.Badges
+                                             on triggers.AwardBadgeId equals badges.Id
+                                             select new TriggerRequirement
+                                             {
+                                                 BadgeId = badges.Id,
+                                                 Name = triggers.Name,
+                                                 Icon = TriggerIcon,
+                                                 IconDescription = TriggerDescription,
+                                                 BadgePath = badges.Filename
+                                             }
+                                    )
+                                    .OrderBy(_ => _.Name)
+                                    .Take(filter.Skip.Value + filter.Take.Value)
+                                    .ToListAsync();
+
+            var requirements = challengeRequirements.Concat(triggerRequirements);
+
 
             // Program Join/Achiever and Questionnaire badges
             if (filter.SystemIds == null && filter.BranchIds == null && filter.UserIds == null)
             {
-                requirements = requirements.Concat(
-                                    from programs in _context.Programs
+                var programRequirements = await (from programs in _context.Programs.AsNoTracking()
                                     .Where(_ => _.SiteId == filter.SiteId
                                         && _.JoinBadgeId.HasValue
                                         && _.JoinBadgeName.Contains(filter.Search ?? string.Empty)
                                         && (filter.BadgeIds == null
                                             || !filter.BadgeIds.Contains(_.JoinBadgeId.Value)))
-                                    .GroupBy(_ => _.JoinBadgeId).Select(_ => _.First())
-                                    join badges in _context.Badges
-                                    on programs.JoinBadgeId equals badges.Id
-                                    select new TriggerRequirement
-                                    {
-                                        BadgeId = badges.Id,
-                                        Name = programs.JoinBadgeName,
-                                        Icon = ProgramIcon,
-                                        IconDescription = JoinDescription,
-                                        BadgePath = badges.Filename
-                                    }
-                                )
-                                .Concat(
-                                    from questionnaires in _context.Questionnaires
+                                                 join badges in _context.Badges
+                                                 on programs.JoinBadgeId equals badges.Id
+                                                 select new TriggerRequirement
+                                                 {
+                                                     BadgeId = badges.Id,
+                                                     Name = programs.JoinBadgeName,
+                                                     Icon = ProgramIcon,
+                                                     IconDescription = JoinDescription,
+                                                     BadgePath = badges.Filename
+                                                 }
+                                    )
+                                    .OrderBy(_ => _.Name)
+                                    .Take(filter.Skip.Value + filter.Take.Value)
+                                    .ToListAsync();
+
+                var questionnaireRequirements = await (from questionnaires in _context.Questionnaires.AsNoTracking()
                                     .Where(_ => _.SiteId == filter.SiteId
                                         && _.BadgeId.HasValue
                                         && _.Name.Contains(filter.Search ?? string.Empty)
                                         && (filter.BadgeIds == null
                                             || !filter.BadgeIds.Contains(_.BadgeId.Value)))
-                                    .GroupBy(_ => _.BadgeId).Select(_ => _.First())
-                                    join badges in _context.Badges
-                                    on questionnaires.BadgeId equals badges.Id
-                                    select new TriggerRequirement
-                                    {
-                                        BadgeId = badges.Id,
-                                        Name = questionnaires.BadgeName,
-                                        Icon = ProgramIcon,
-                                        IconDescription = QuestionnaireDescription,
-                                        BadgePath = badges.Filename
-                                    }
-                                );
+                                                       join badges in _context.Badges
+                                                       on questionnaires.BadgeId equals badges.Id
+                                                       select new TriggerRequirement
+                                                       {
+                                                           BadgeId = badges.Id,
+                                                           Name = questionnaires.BadgeName,
+                                                           Icon = ProgramIcon,
+                                                           IconDescription = QuestionnaireDescription,
+                                                           BadgePath = badges.Filename
+                                                       }
+                                    )
+                                    .OrderBy(_ => _.Name)
+                                    .Take(filter.Skip.Value + filter.Take.Value)
+                                    .ToListAsync();
+
+                requirements = requirements
+                    .Concat(programRequirements)
+                    .Concat(questionnaireRequirements);
             }
 
-            return requirements;
+            return requirements
+                .OrderBy(_ => _.Name)
+                .Skip(filter.Skip.Value)
+                .Take(filter.Take.Value)
+                .ToList();
         }
 
         public async Task<bool> CodeExistsAsync(int siteId, string secretCode, int? triggerId = null)

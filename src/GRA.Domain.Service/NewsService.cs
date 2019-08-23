@@ -99,6 +99,7 @@ namespace GRA.Domain.Service
             if (publish)
             {
                 post.PublishedAt = _dateTimeProvider.Now;
+                await _newsCategoryRepository.SetLastPostDate(post.CategoryId, _dateTimeProvider.Now);
             }
 
             var addedPost = await _newsPostRepository
@@ -270,6 +271,10 @@ namespace GRA.Domain.Service
             }
 
             return lastId;
+        }
+        public bool WithinTimeFrame(DateTime date, int daysAllotted)
+        {
+            return _dateTimeProvider.Now.Date.Subtract(date) <= TimeSpan.FromDays(daysAllotted);
         }
     }
 }

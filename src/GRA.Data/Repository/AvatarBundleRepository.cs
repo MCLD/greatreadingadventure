@@ -1,14 +1,14 @@
-﻿using AutoMapper.QueryableExtensions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GRA.Data.Repository
 {
@@ -19,6 +19,43 @@ namespace GRA.Data.Repository
         public AvatarBundleRepository(ServiceFacade.Repository repositoryFacade,
             ILogger<AvatarBundleRepository> logger) : base(repositoryFacade, logger)
         {
+        }
+
+        public async Task<List<UserLog>> UserHistoryAsync(int userId)
+        {
+            var userLogs = await _context.UserLogs
+               .AsNoTracking()
+               .Where(_ => _.UserId == userId
+                      && !_.IsDeleted)
+               .OrderBy(_ => _.CreatedAt)
+               .ProjectTo<UserLog>(_mapper.ConfigurationProvider)
+               .ToListAsync();
+
+            foreach (var userLog in userLogs.Where(_ => _.BadgeId != null))
+            {
+                userLog.BadgeFilename = _context.Badges
+                    .AsNoTracking()
+                    .Where(_ => _.Id == userLog.BadgeId)
+                    .SingleOrDefault()
+                    .Filename;
+            }
+
+            return userLogs;
+        }
+
+        public async Task UpdateHasBeenViewedAsync(int userId, int bundleId)
+        {
+            var userLogBundles = await _context.UserLogs
+                .Where(_ => _.UserId == userId && !_.IsDeleted && _.AvatarBundleId == bundleId)
+                .ToListAsync();
+
+            foreach (var bundle in userLogBundles)
+            {
+                bundle.HasBeenViewed = true;
+                _context.UserLogs.Update(bundle);
+            }
+
+            await SaveAsync();
         }
 
         public async Task<AvatarBundle> GetByIdAsync(int id, bool includeDeleted)
@@ -122,7 +159,7 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task<bool> IsItemInBundle(int itemId, bool? unlockable = null)
+        public async Task<bool> IsItemInBundleAsync(int itemId, bool? unlockable = null)
         {
             var inBundle = _context.AvatarBundleItems
                 .AsNoTracking()

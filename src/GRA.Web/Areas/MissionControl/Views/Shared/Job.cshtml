@@ -1,43 +1,56 @@
-﻿@model GRA.Controllers.ViewModel.MissionControl.Reporting.RunReportViewModel
+﻿@model GRA.Controllers.ViewModel.MissionControl.Shared.JobViewModel
 <div class="modal fade" tabindex="-1" role="dialog" id="wsModal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="wsTitle">Loading report...</h4>
+                <h4 class="modal-title" id="wsTitle">Loading...</h4>
             </div>
             <div class="modal-body">
                 <div class="progress">
-                    <div class="progress-bar progress-bar-striped" role="progressbar" id="wsProgress" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;"></div>
+                    <div class="progress-bar progress-bar-striped"
+                         role="progressbar"
+                         id="wsProgress"
+                         aria-valuenow="100"
+                         aria-valuemin="0"
+                         aria-valuemax="100" style="width: 100%;"></div>
                 </div>
                 <p id="wsStatus"></p>
             </div>
             <div class="modal-footer">
                 <div class="form-control-static pull-left" style="width: 2rem;">
-                    <span class="fa fa-circle" id="sendWs" style="color: steelblue;"></span>
+                    <span class="fas fa-arrow-circle-up"
+                          id="sendWs"
+                          style="color: steelblue;"></span>
                 </div>
                 <div class="form-control-static pull-left" style="width: 2rem;">
-                    <span class="fa fa-circle" id="recvWs" style="color: lightcoral;"></span>
+                    <span class="fas fa-arrow-circle-down"
+                          id="recvWs"
+                          style="color: lightcoral;"></span>
                 </div>
-                <button type="button" class="btn" id="cancelWs">Cancel report</button>
+                <button type="button" class="btn" id="cancelWs">Cancel</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
 @section scripts {
     <script>
     var wsStarted = false;
     var wsFinished = false;
     var wsCancel = false;
+    var wsError = false;
     var wsTryingToConnect = false;
-    var wsPageTitle = document.title;
+    var wsPageTitle = '@Model.Title';
     var webSocket;
     var wsPing;
-    var wsFunction = 'report';
-    var wsUrl = '@Model.RunReportUrl';
-    var wsSuccessUrl = '';
-    var wsSuccessRedirect = '@Url.Action("View", new { id = Model.Id })';
-    var wsSuccessButton = 'View ' + wsFunction;
-    var wsCancelUrl = '@Url.Action("Index")';
+    var wsFunction = 'job';
+    var wsScheme = document.location.protocol == "https:" ? "wss" : "ws";
+    var wsPort = document.location.port ? (":" + document.location.port) : "";
+    var wsUrl = wsScheme + "://" + document.location.hostname + wsPort + "/runjob/@Model.JobToken";
+    var wsSuccessUrl = '@Model.SuccessUrl';
+    var wsSuccessRedirect = '@Model.SuccessRedirectUrl';
+    var wsCompleteButton = '@Model.CompleteButton';
+    var wsCancelUrl = '@Model.CancelUrl';
 
     function updateState(e) {
         if (!webSocket) {
@@ -47,19 +60,17 @@
                 case WebSocket.CLOSED:
                     clearPing();
                     if (wsStarted && wsFinished) {
-                        if (e && e.data) {
-                            statusUpdate(e);
-                        }
-                        if (wsSuccessRedirect.length > 0) {
+                        console.log("Socket closed, error status: " + wsError);
+                        if (wsSuccessRedirect.length > 0 && !wsError) {
                             window.location.href = wsSuccessRedirect;
                         }
                         else
                         {
-                            $('#cancelWs').text(wsSuccessButton);
+                            $('#cancelWs').text(wsCompleteButton);
                             $('#cancelWs').removeClass('btn-danger');
-                            $('#cancelWs').addClass('btn-success');
+                            $('#cancelWs').addClass('btn-default');
                             $('#cancelWs').on('click', function () {
-                                window.location.href = wsSuccessUrl;
+                                window.location.href = wsError ? wsCancelUrl : wsSuccessUrl;
                                 return false;
                             });
                         }
@@ -92,12 +103,38 @@
                     wsTryingToConnect = false;
                     if (e && e.data) {
                         var incoming = JSON.parse(e.data);
-                        $('#recvWs').fadeIn(200, function () {
-                            $('#recvWs').fadeOut(1);
+                        $('#recvWs').fadeIn(500, function () {
+                            $('#recvWs').fadeOut(500);
                         });
                         if (incoming.Title) {
-                            $('#wsTitle').html(incoming.Title);
-                            wsPageTitle = incoming.Title;
+                            if (wsPageTitle != incoming.Title) {
+                                wsPageTitle = incoming.Title;
+                                $('#wsTitle').html(wsPageTitle);
+                                console.log("Job title: " + wsPageTitle);
+                            }
+                        }
+                        if (incoming.SuccessUrl) {
+                            if (incoming.SuccessRedirect) {
+                                if (incoming.SuccessUrl != wsSuccessRedirect) {
+                                    wsSuccessUrl = '';
+                                    wsSuccessRedirect = incoming.SuccessUrl;
+                                    console.log("On success, redirect to: " + wsSuccessRedirect);
+                                }
+                            }
+                            else
+                            {
+                                if (incoming.SuccessUrl != wsSuccessUrl) {
+                                    wsSuccessUrl = incoming.SuccessUrl;
+                                    wsSuccessRedirect = '';
+                                    console.log("On success, link to: " + wsSuccessUrl);
+                                }
+                            }
+                        }
+                        if (incoming.CancelUrl) {
+                            if (incoming.CancelUrl != wsCancelUrl) {
+                                wsCancelUrl = incoming.CancelUrl;
+                                console.log("On cancel, link to: " + wsCancelUrl);
+                            }
                         }
                         if (incoming.Status) {
                             $('#wsStatus').html(incoming.Status);
@@ -113,15 +150,20 @@
                                 $('#wsProgress').text('');
                             }
                         }
+                        if (incoming.Error) {
+                            wsError = true;
+                        }
                         if (incoming.Complete) {
                             wsFinished = true;
-                            if (incoming.Error) {
+                            if (wsError) {
+                                console.log("Complete with error");
                                 $('#cancelWs').text('Close window');
                                 $('#wsProgress').removeClass('active');
                                 $('#wsProgress').addClass('progress-bar-danger');
                             }
                             else
                             {
+                                console.log("Complete");
                                 $('#cancelWs').text('Close window');
                                 $('#cancelWs').removeClass('btn-danger');
                                 $('#cancelWs').addClass('btn-default');
@@ -143,8 +185,8 @@
     function doPing() {
         if (webSocket && webSocket.readyState == WebSocket.OPEN && !wsFinished) {
             webSocket.send(String.fromCharCode(6));
-            $('#sendWs').fadeIn(200, function () {
-                $('#sendWs').fadeOut(1);
+            $('#sendWs').fadeIn(500, function () {
+                $('#sendWs').fadeOut(500);
             });
         }
     }
@@ -157,6 +199,8 @@
 
     $().ready(function () {
         wsCancel = false;
+        $('#recvWs').fadeOut(1);
+        $('#sendWs').fadeOut(1)
         $('#wsProgress').removeClass('active');
         $('#wsProgress').removeClass('progress-bar-danger');
         $('#wsProgress').removeClass('progress-bar-success');
@@ -175,7 +219,8 @@
         }
         webSocket.onclose = updateState;
         webSocket.onmessage = updateState;
-        wsPing = setInterval(doPing, 1000);
+        wsPing = setInterval(doPing, @(Model.PingSeconds * 1000));
+        console.log("Client set to ping server every @Model.PingSeconds seconds");
         return false;
         });
 

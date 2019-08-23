@@ -45,14 +45,9 @@ namespace GRA.Domain.Report
 
         public async override Task ExecuteAsync(ReportRequest request,
             CancellationToken token,
-            IProgress<OperationStatus> progress = null)
+            IProgress<JobStatus> progress = null)
         {
             #region Reporting initialization
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
-
             request = await StartRequestAsync(request);
             var criterion = await GetCriterionAsync(request);
 
@@ -63,7 +58,6 @@ namespace GRA.Domain.Report
             };
 
             var reportData = new List<object[]>();
-
 
             var askIfFirstTime
                 = await GetSiteSettingBoolAsync(criterion, SiteSettingKey.Users.AskIfFirstTime);
@@ -104,8 +98,10 @@ namespace GRA.Domain.Report
                     translationTotals.Add(description, 0);
                     if (description.Length > 2)
                     {
-                        headerRow.Add(description.First().ToString().ToUpper()
-                            + description.Substring(1));
+                        headerRow.Add(description[0]
+                            .ToString()
+                            .ToUpper(System.Globalization.CultureInfo.InvariantCulture)
+                                + description.Substring(1));
                     }
                     else
                     {
@@ -134,7 +130,7 @@ namespace GRA.Domain.Report
                 .GroupBy(_ => _.SystemId)
                 .Select(_ => _.First().SystemId);
 
-            int totalItems = branches.Count() * programDictionary.Count();
+            int totalItems = branches.Count() * programDictionary.Count;
 
             foreach (var systemId in systemIds)
             {
