@@ -13,8 +13,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\GRA.CommandLine\GRA.CommandLine.csproj" />
     <ProjectReference Include="..\..\src\GRA.Controllers\GRA.Controllers.csproj" />
+    <ProjectReference Include="..\..\src\GRA.Data.SQLite\GRA.Data.SQLite.csproj" />
+    <ProjectReference Include="..\..\src\GRA.Data.SqlServer\GRA.Data.SqlServer.csproj" />
+    <ProjectReference Include="..\..\src\GRA.Data\GRA.Data.csproj" />
     <ProjectReference Include="..\..\src\GRA.Domain.Model\GRA.Domain.Model.csproj" />
+    <ProjectReference Include="..\..\src\GRA.Domain.Report\GRA.Domain.Report.csproj" />
     <ProjectReference Include="..\..\src\GRA.Domain.Repository\GRA.Domain.Repository.csproj" />
     <ProjectReference Include="..\..\src\GRA.Domain.Service\GRA.Domain.Service.csproj" />
     <ProjectReference Include="..\..\src\GRA\GRA.csproj" />
