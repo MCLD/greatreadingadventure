@@ -1,39 +1,90 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Resources;
-using System.Globalization;
-using Microsoft.Extensions.Logging;
+using GRA.Utility;
 using Microsoft.Extensions.Localization;
 using Xunit;
 using System.Linq;
+using System.IO;
 
 namespace GRA.Test
 {
     public class ReflectionTest
     {
-        private readonly IStringLocalizer<ReflectionTest> _localizer;
-
         public ReflectionTest()
         {
             Console.WriteLine("Starting Tests");
         }
 
         [Fact]
-        public void Test1()
+        public void TestEnglishResx()
         {
-            ResourceManager rm = new ResourceManager("Shared.en.resx", typeof(GRA.Resources.Shared).Assembly);
-            System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
-            var assembly = Assembly.GetExecutingAssembly();
-            foreach (var resourceName in assembly.GetManifestResourceNames())
-                System.Console.WriteLine("YOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO" + resourceName);
-           // var resourceNames = _localizer.GetAllStrings().Select(x => x.Name);
-            //var resourceSet = _localizer.WithCulture(new CultureInfo("en")).GetAllStrings().Select(x => x.Name);
-            String strWebsite = rm.GetString("All Programs", CultureInfo.CurrentCulture);
-            String strName = rm.GetString("Name");
+            string startupPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\..\\"));
+            var dictionary = XmlParser.ParseSharedXml("Shared.en.resx", startupPath + "src\\GRA\\Resources");
+            List<string> annotations = new List<string>();
+            List<string> errList = new List<string>();
+            Type[] typeArray = typeof(Annotations).GetNestedTypes(BindingFlags.Public);
+            foreach (var classType in typeArray)
+            {
+                var constStrings = classType.GetFields(BindingFlags.Public | BindingFlags.Static |
+                    BindingFlags.FlattenHierarchy)
+                    .Where(fi => fi.IsLiteral && !fi.IsInitOnly).ToList();
+                foreach (var constval in constStrings)
+                {
+                    annotations.Add((string)constval.GetValue(null));
+                }
+            }
+            foreach(var str in annotations)
+            {
+                if (!dictionary.ContainsKey(str))
+                {
+                    errList.Add(str);
+                }
+            }
+            if (errList.Count()>0)
+            {
+                throw new GraException($"Found {errList.Count()} not apart of english Resx: ['{String.Join("' , '", errList.ToArray())}']");
+            }
+            else
+            {
+                Assert.True(true);
+            }
+        }
 
-            Assert.True(true);
+        [Fact]
+        public void TestSpanishResx()
+        {
+            string startupPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\..\\"));
+            var dictionary = XmlParser.ParseSharedXml("Shared.en.resx", startupPath + "src\\GRA\\Resources");
+            var annotations = new List<string>();
+            var errList = new List<string>();
+            Type[] typeArray = typeof(Annotations).GetNestedTypes(BindingFlags.Public);
+            foreach (var classType in typeArray)
+            {
+                var constStrings = classType.GetFields(BindingFlags.Public | BindingFlags.Static |
+                    BindingFlags.FlattenHierarchy)
+                    .Where(fi => fi.IsLiteral && !fi.IsInitOnly).ToList();
+                foreach (var constval in constStrings)
+                {
+                    annotations.Add((string)constval.GetValue(null));
+                }
+            }
+            foreach (var str in annotations)
+            {
+                if (!dictionary.ContainsKey(str))
+                {
+                    errList.Add(str);
+                }
+            }
+            if (errList.Count() > 0)
+            {
+                var excluded = "";
+                throw new GraException($"Found {errList.Count()} not apart of spanish Resx: ['{String.Join("' , '", errList.ToArray())}']");
+            }
+            else
+            {
+                Assert.True(true);
+            }
         }
     }
 }
