@@ -493,6 +493,42 @@
     <value>Your password must be at least 6 characters long and include a number.</value>
     <comment>Password requirements shown to participants.</comment>
   </data>
+  <data name="Joined {0}!" xml:space="preserve">
+    <value>Joined {0}!</value>
+    <comment>Informing the user has been registered in the GRA</comment>
+  </data>
+  <data name="If you can't find something, please &lt;a href=&quot;{0}&quot;&gt;send us a mail&lt;/a&gt; and let us know what you were looking for, we'll do our best to help." xml:space="preserve">
+    <value>If you can't find something, please &lt;a href=&quot;{0}&quot;&gt;send us a mail&lt;/a&gt; and let us know what you were looking for, we'll do our best to help.</value>
+    <comment>Info's mail for help</comment>
+  </data>
+  <data name="You are leader of the group: &lt;a href=&quot;{0}&quot;&gt;&lt;strong&gt;{1}&lt;/strong&gt;&lt;/a&gt;" xml:space="preserve">
+    <value>You are leader of the group: &lt;a href=&quot;{0}&quot;&gt;&lt;strong&gt;{1}&lt;/strong&gt;&lt;/a&gt;</value>
+    <comment>Letting the user know they are the leader of the group</comment>
+  </data>
+  <data name="When you complete &lt;strong&gt;{0}&lt;/strong&gt;, you will earn &lt;strong&gt;{1}&lt;/strong&gt; and a badge." xml:space="preserve">
+    <value>When you complete &lt;strong&gt;{0}&lt;/strong&gt;, you will earn &lt;strong&gt;{1}&lt;/strong&gt; and a badge.</value>
+    <comment>Informing the user that when the challenge is completed they will earn the book and a badge.</comment>
+  </data>
+  <data name="When you complete &lt;strong&gt;{0}&lt;/strong&gt;, you will earn &lt;strong&gt;{1}&lt;/strong&gt;." xml:space="preserve">
+    <value>When you complete &lt;strong&gt;{0}&lt;/strong&gt;, you will earn &lt;strong&gt;{1}&lt;/strong&gt;.</value>
+    <comment>Informing the user that when the challenge is completed they will earn the book.</comment>
+  </data>
+  <data name="Read &lt;strong&gt;&lt;em&gt;&lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{2}&lt;/strong&gt;" xml:space="preserve">
+    <value>Read &lt;strong&gt;&lt;em&gt;&lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{2}&lt;/strong&gt;</value>
+    <comment>Telling the user to read the the book and providing a link to the book.</comment>
+  </data>
+  <data name="Read &lt;strong&gt;&lt;em&gt;&lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt;" xml:space="preserve">
+    <value>Read &lt;strong&gt;&lt;em&gt;&lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt;</value>
+    <comment>Telling the user to read the the book and providing a link to the book and the author.</comment>
+  </data>
+  <data name="Thanks for participating in {0}!" xml:space="preserve">
+    <value>Thanks for participating in {0}!</value>
+    <comment>Salutaion for the GRA</comment>
+  </data>
+  <data name="You can still sign in to review your history and achievements." xml:space="preserve">
+    <value>You can still sign in to review your history and achievements.</value>
+    <comment>Letting the user know they can review their info by loggin in.</comment>
+  </data>
   <data name="ZIP Code" xml:space="preserve">
     <value>ZIP Code</value>
     <comment>Prompt for a participant's ZIP code or postal code</comment>

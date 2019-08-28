@@ -17,12 +17,13 @@ namespace GRA.Test
         }
 
         [Fact]
-        public void TestEnglishResx()
+        public void TestEnglishResxHasAllAnnotations()
         {
-            string startupPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\..\\"));
-            var dictionary = XmlParser.ParseSharedXml("Shared.en.resx", startupPath + "src\\GRA\\Resources");
-            List<string> annotations = new List<string>();
-            List<string> errList = new List<string>();
+            var separator = Path.DirectorySeparatorChar;
+            string startupPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, $"..{separator}..{separator}..{separator}..{separator}..{separator}"));
+            var dictionary = XmlParser.ParseSharedXml("Shared.en.resx", startupPath + $"src{separator}GRA{separator}Resources");
+            var annotations = new List<string>();
+            var errList = new List<string>();
             Type[] typeArray = typeof(Annotations).GetNestedTypes(BindingFlags.Public);
             foreach (var classType in typeArray)
             {
@@ -43,7 +44,7 @@ namespace GRA.Test
             }
             if (errList.Count()>0)
             {
-                throw new GraException($"Found {errList.Count()} not apart of english Resx: ['{String.Join("' , '", errList.ToArray())}']");
+                throw new GraException($"Found {errList.Count()} not apart of english Resx:\n['{String.Join("' ,\n'", errList.ToArray())}']");
             }
             else
             {
@@ -52,10 +53,11 @@ namespace GRA.Test
         }
 
         [Fact]
-        public void TestSpanishResx()
+        public void TestSpanishResxHasAllAnnotations()
         {
-            string startupPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\..\\"));
-            var dictionary = XmlParser.ParseSharedXml("Shared.en.resx", startupPath + "src\\GRA\\Resources");
+            var separator = Path.DirectorySeparatorChar;
+            string startupPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, $"..{separator}..{separator}..{separator}..{separator}..{separator}"));
+            var dictionary = XmlParser.ParseSharedXml("Shared.es.resx", startupPath + $"src{separator}GRA{separator}Resources");
             var annotations = new List<string>();
             var errList = new List<string>();
             Type[] typeArray = typeof(Annotations).GetNestedTypes(BindingFlags.Public);
@@ -78,8 +80,7 @@ namespace GRA.Test
             }
             if (errList.Count() > 0)
             {
-                var excluded = "";
-                throw new GraException($"Found {errList.Count()} not apart of spanish Resx: ['{String.Join("' , '", errList.ToArray())}']");
+                throw new GraException($"Found {errList.Count()} not apart of spanish Resx:\n['{String.Join("' ,\n'", errList.ToArray())}']");
             }
             else
             {
