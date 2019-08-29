@@ -1040,10 +1040,11 @@ namespace GRA.Controllers
             }
 
             User user = await _userService.GetDetails(GetActiveUserId());
-
+            var book = new Domain.Model.Book();
             var viewModel = new BookListViewModel
             {
                 Books = books.Data,
+                Book = book,
                 PaginateModel = paginateModel,
                 Sort = sort,
                 IsDescending = isDescending,
@@ -1055,6 +1056,40 @@ namespace GRA.Controllers
             };
 
             return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddBook(BookListViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    User user = await _userService.GetDetails(GetActiveUserId());
+                    await _activityService.AddBookAsync(user.Id,model.Book);
+                    ShowAlertSuccess(_sharedLocalizer[Annotations.Interface.AddedItem,
+                        model.Book.Title]);
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger(_sharedLocalizer[Annotations.Interface.CouldNotCreate,
+                        model.Book.Title,
+                        gex.Message]);
+                }
+            }
+            else
+            {
+                ShowAlertDanger(_sharedLocalizer[Annotations.Interface.CouldNotCreate,
+                    model.Book.Title,
+                    _sharedLocalizer[Annotations.Required.Missing]]);
+            }
+
+            int? page = null;
+            if (model.PaginateModel.CurrentPage != 1)
+            {
+                page = model.PaginateModel.CurrentPage;
+            }
+            return RedirectToAction(nameof(Books), new { page });
         }
 
         [HttpPost]
