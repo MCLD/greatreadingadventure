@@ -48,8 +48,6 @@
                 <form asp-controller="Profile" asp-action="AddBook" method="post" role="form" style="display:inline">
                     <input asp-for="CanEditBooks" type="hidden" />
                     <input asp-for="PaginateModel.CurrentPage" type="hidden" />
-                    <input value="@Model.Book.Id" asp-for="Book.Id" type="hidden" />
-                    <input id="Book_Id" name="Book.Id" type="hidden" />
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -180,7 +178,7 @@
                                 <paginate paginateModel="@Model.PaginateModel"></paginate>
                             }
                         }
-                        <a id="addBook" class="btn btn-default" href="#" data-toggle="modal" data-target="#addModal">Add a Book</a>
+                    <a id="addBook" class="btn btn-primary" href="#" data-toggle="modal" data-target="#addModal">@SharedLocalizer[GRA.Annotations.Title.AddBook]</a>
                     </div>
                 </div>
             </div>

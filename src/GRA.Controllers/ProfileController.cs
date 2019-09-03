@@ -1040,11 +1040,9 @@ namespace GRA.Controllers
             }
 
             User user = await _userService.GetDetails(GetActiveUserId());
-            var book = new Domain.Model.Book();
             var viewModel = new BookListViewModel
             {
                 Books = books.Data,
-                Book = book,
                 PaginateModel = paginateModel,
                 Sort = sort,
                 IsDescending = isDescending,
@@ -1065,8 +1063,7 @@ namespace GRA.Controllers
             {
                 try
                 {
-                    User user = await _userService.GetDetails(GetActiveUserId());
-                    await _activityService.AddBookAsync(user.Id,model.Book);
+                    await _activityService.AddBookAsync(GetActiveUserId(), model.Book);
                     ShowAlertSuccess(_sharedLocalizer[Annotations.Interface.AddedItem,
                         model.Book.Title]);
                 }
@@ -1210,8 +1207,8 @@ namespace GRA.Controllers
                             bundle.AvatarItems.First().Thumbnail);
                         if (bundle.AvatarItems.Count > 1)
                         {
-                            var bundleLink = Url.Action(nameof(AvatarController.Index), 
-                                AvatarController.Name, 
+                            var bundleLink = Url.Action(nameof(AvatarController.Index),
+                                AvatarController.Name,
                                 new { bundle = item.AvatarBundleId.Value });
                             description.AppendFormat(
                                 " <strong><a href=\"{0}\">{1}</a></strong>",
