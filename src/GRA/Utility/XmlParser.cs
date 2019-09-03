@@ -1,25 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml.Linq;
 
 namespace GRA.Utility
 {
-    public class XmlParser
+    public static class XmlParser
     {
-
-        public static Dictionary<string,string> ParseSharedXml(string fileName, string directory)
+        public static Dictionary<string, string> ExtractDataNames(string filename, string path)
         {
             var finalDictionary = new Dictionary<string, string>();
-            var xmlFilepath = Path.Combine(directory, fileName);
-            XElement xmlData = XElement.Load($"{xmlFilepath}");
-            IEnumerable<XElement> partNos = from item in xmlData.Descendants("data") select item;
-            foreach (var element in partNos)
+            var xmlFilepath = Path.Combine(path, filename);
+            foreach (var element in XElement.Load(xmlFilepath).Descendants("data"))
             {
-                finalDictionary[element.Attribute("name").Value] = element.Descendants("value")
-                                                                        .FirstOrDefault()?.Value;
+                finalDictionary[element.Attribute("name").Value] = element
+                    .Descendants("value")
+                    .FirstOrDefault()?
+                    .Value;
             }
             return finalDictionary;
         }
