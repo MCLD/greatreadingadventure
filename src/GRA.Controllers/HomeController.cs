@@ -273,6 +273,59 @@ namespace GRA.Controllers
             }
         }
 
+        public async Task<IActionResult> Exit()
+        {
+            var siteStage = GetSiteStage();
+            string siteName = HttpContext.Items[ItemKey.SiteName]?.ToString();
+            PageTitle = siteName;
+            var site = await GetCurrentSiteAsync();
+            switch (siteStage)
+            {
+                case SiteStage.BeforeRegistration:
+                    var viewModel = new BeforeRegistrationViewModel
+                    {
+                        SignUpSource = nameof(SiteStage.BeforeRegistration),
+                        SiteName = siteName
+                    };
+                    if (site != null)
+                    {
+                        viewModel.CollectEmail = await _siteLookupService
+                            .GetSiteSettingBoolAsync(site.Id,
+                                SiteSettingKey.Users.CollectPreregistrationEmails);
+                        if (site.RegistrationOpens != null)
+                        {
+                            viewModel.RegistrationOpens
+                                = ((DateTime)site.RegistrationOpens).ToString("D");
+                            PageTitle = _sharedLocalizer[Annotations.Title.RegistrationOpens,
+                                siteName,
+                                viewModel.RegistrationOpens];
+                        }
+                    }
+                    return View(ViewTemplates.ExitBeforeRegistration, viewModel);
+                case SiteStage.RegistrationOpen:
+                    PageTitle = _sharedLocalizer[Annotations.Title.JoinNow, siteName];
+                    return View(ViewTemplates.ExitRegistrationOpen, siteName);
+                case SiteStage.ProgramEnded:
+                    return View(ViewTemplates.ExitProgramEnded, siteName);
+                case SiteStage.AccessClosed:
+                    var acViewModel = new AccessClosedViewModel
+                    {
+                        SignUpSource = nameof(SiteStage.AccessClosed),
+                    };
+                    if (site != null)
+                    {
+                        acViewModel.SiteName = site.Name;
+                        acViewModel.CollectEmail = await _siteLookupService
+                            .GetSiteSettingBoolAsync(site.Id,
+                                SiteSettingKey.Users.CollectAccessClosedEmails);
+                    }
+                    return View(ViewTemplates.ExitAccessClosed, acViewModel);
+                default:
+                    PageTitle = _sharedLocalizer[Annotations.Title.JoinNow, siteName];
+                    return View(ViewTemplates.ExitProgramOpen, siteName);
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddReminder(BeforeRegistrationViewModel viewModel)
         {
@@ -302,7 +355,7 @@ namespace GRA.Controllers
             {
                 await LogoutUserAsync();
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Exit));
         }
 
         public IActionResult LogActivity()

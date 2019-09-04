@@ -8,10 +8,15 @@ namespace GRA
     {
         public static readonly string Dashboard = "Dashboard";
         public static readonly string AccessClosed = "IndexAccessClosed";
+        public static readonly string ExitAccessClosed = "ExitAccessClosed";
         public static readonly string BeforeRegistration = "IndexBeforeRegistration";
+        public static readonly string ExitBeforeRegistration = "ExitBeforeRegistration";
         public static readonly string ProgramEnded = "IndexProgramEnded";
+        public static readonly string ExitProgramEnded = "ExitProgramEnded";
         public static readonly string ProgramOpen = "IndexProgramOpen";
+        public static readonly string ExitProgramOpen = "ExitProgramOpen";
         public static readonly string RegistrationOpen = "IndexRegistrationOpen";
+        public static readonly string ExitRegistrationOpen = "ExitRegistrationOpen";
 
         public static IEnumerable<string> CopyToShared()
         {
