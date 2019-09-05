@@ -17,5 +17,15 @@ namespace GRA.Controllers.ViewModel.MissionControl.PerformerManagement
         public int ProgramCount { get; set; }
         public int KitCount { get; set; }
         public string SchedulingStage { get; set; }
+
+        public string CollapsePanel
+        {
+            get
+            {
+                return Systems.Count != 1
+                    ? "collapse"
+                    : "";
+            }
+        }
     }
 }
