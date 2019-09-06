@@ -4,9 +4,13 @@
     {
         public static class Home
         {
+            public const string AccessClosedSalutation = "The Great Reading Adventure is now Closed. Come back next Summer for more reading!";
+            public const string BeforeRegistrationSalutation = "The registration is not open yet. Comeback soon to register!";
             public const string CalendarReminder = "Add a calendar reminder";
             public const string ForMoreInformation = "For more information about this reading program, visit your local library!";
             public const string GoOnAJourney = "While you're there, go on a journey of discovery! Visit fabulous destinations such as Hogwarts, Narnia, Oz, and Middle Earth!";
+            public const string ProgramEndedSalutation = "The Great Reading Adventure has now ended. Don't forget to redeem your prizes and, check back next year for more reading fun!";
+            public const string ProgramOpenSalutation = "Thanks for participating in the Great Reading Adventure. For more information you can go visit your local branch at <a href=\"{0}\" target=\"_blank\">{1}</a>.";
             public const string ProgramStartsOn = "You can join our program starting on {0}!";
             public const string Read20 = "Reading for 20 minutes a day helps build a strong lifelong reading habit.";
             public const string ReadingIsFundamental = "Reading is fundamental for developing literacy skills!";

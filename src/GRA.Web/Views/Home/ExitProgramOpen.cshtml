@@ -1,9 +1,13 @@
-﻿@section metadata {
+﻿@model GRA.Controllers.ViewModel.Home.ProgramOpenViewModel
+@section metadata {
     <grasite property="metadescription"></grasite>
     <grasite property="dcmetadata"></grasite>
     <grasite property="twittermetadata"></grasite>
     <grasite property="facebookmetadata"></grasite>
 }
 <div>
-    <h1>The Program is Open</h1>
+    @if (Model.UsersBranch != null)
+    {
+        @Html.Raw(SharedLocalizer[GRA.Annotations.Home.ProgramOpenSalutation, Model.UsersBranch.Url, Model.UsersBranch.Name])
+    }
 </div>

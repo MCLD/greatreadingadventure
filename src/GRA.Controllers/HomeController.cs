@@ -273,7 +273,30 @@ namespace GRA.Controllers
             }
         }
 
-        public async Task<IActionResult> Exit()
+        [HttpPost]
+        public async Task<IActionResult> AddReminder(BeforeRegistrationViewModel viewModel)
+        {
+            if (!string.IsNullOrEmpty(viewModel.Email))
+            {
+                await _emailReminderService
+                    .AddEmailReminderAsync(viewModel.Email, viewModel.SignUpSource);
+                ShowAlertInfo(_sharedLocalizer[Annotations.Info.LetYouKnowWhen], "envelope");
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetIcs()
+        {
+            var site = await GetCurrentSiteAsync();
+            var filename = new string(site.Name.Where(_ => char.IsLetterOrDigit(_)).ToArray());
+            var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
+            var calendarBytes = await _siteService.GetIcsFile(siteUrl);
+            return File(calendarBytes, "text/calendar", $"{filename}.ics");
+        }
+
+        [PreventQuestionnaireRedirect]
+        public async Task<IActionResult> Signout()
         {
             var siteStage = GetSiteStage();
             string siteName = HttpContext.Items[ItemKey.SiteName]?.ToString();
@@ -321,41 +344,15 @@ namespace GRA.Controllers
                     }
                     return View(ViewTemplates.ExitAccessClosed, acViewModel);
                 default:
+                    var poViewModel = new ProgramOpenViewModel();
+                    if (AuthUser.Identity.IsAuthenticated)
+                    {
+                        poViewModel.UsersBranch = await _userService.GetUsersBranch(GetActiveUserId());
+                        await LogoutUserAsync();
+                    }
                     PageTitle = _sharedLocalizer[Annotations.Title.JoinNow, siteName];
-                    return View(ViewTemplates.ExitProgramOpen, siteName);
+                    return View(ViewTemplates.ExitProgramOpen, poViewModel);
             }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AddReminder(BeforeRegistrationViewModel viewModel)
-        {
-            if (!string.IsNullOrEmpty(viewModel.Email))
-            {
-                await _emailReminderService
-                    .AddEmailReminderAsync(viewModel.Email, viewModel.SignUpSource);
-                ShowAlertInfo(_sharedLocalizer[Annotations.Info.LetYouKnowWhen], "envelope");
-            }
-            return RedirectToAction(nameof(Index));
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> GetIcs()
-        {
-            var site = await GetCurrentSiteAsync();
-            var filename = new string(site.Name.Where(_ => char.IsLetterOrDigit(_)).ToArray());
-            var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
-            var calendarBytes = await _siteService.GetIcsFile(siteUrl);
-            return File(calendarBytes, "text/calendar", $"{filename}.ics");
-        }
-
-        [PreventQuestionnaireRedirect]
-        public async Task<IActionResult> Signout()
-        {
-            if (AuthUser.Identity.IsAuthenticated)
-            {
-                await LogoutUserAsync();
-            }
-            return RedirectToAction(nameof(Exit));
         }
 
         public IActionResult LogActivity()
