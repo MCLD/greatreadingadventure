@@ -21,7 +21,6 @@ namespace GRA.Data.Repository
 
         public async Task<int> AddSaveForUserAsync(int requestedByUserId, int userId, Book book)
         {
-            
             book.CreatedBy = requestedByUserId;
             book.CreatedAt = _dateTimeProvider.Now;
             book = await AddSaveAsync(requestedByUserId, _mapper.Map<Model.Book>(book));
@@ -152,5 +151,14 @@ namespace GRA.Data.Repository
                 .Where(_ => _.BookId == bookId)
                 .CountAsync();
         }
+
+        public Book CheckIfBookExists(Book book)
+        {
+            return _context.Books.AsNoTracking()
+                .Where(_ => _.Title == book.Title && _.Author == book.Author)
+                .ProjectTo<Book>(_mapper.ConfigurationProvider)
+                .FirstOrDefault();
+        }
     }
 }
+

@@ -356,8 +356,12 @@ namespace GRA.Domain.Service
                 _logger.LogError(error);
                 throw new GraException("Books cannot be added while there is a pending questionnaire to be taken.");
             }
-
-            var addedBook = await _bookRepository.AddSaveForUserAsync(activeUserId, userId, book);
+            var addedBook = IsDuplicateBook(book);
+            if (await _bookRepository.UserHasBookAsync(userId, addedBook.Id))
+            {
+                throw new GraException($"The book is already on the booklist.");
+            }
+            await _bookRepository.AddSaveForUserAsync(activeUserId, userId, addedBook);
 
             if (addNotification)
             {
@@ -370,7 +374,13 @@ namespace GRA.Domain.Service
                 await _notificationRepository.AddSaveAsync(authUserId, notification);
             }
 
-            return addedBook;
+            return addedBook.Id;
+        }
+
+        public Book IsDuplicateBook(Book book)
+        {
+            var addedBook =  _bookRepository.CheckIfBookExists(book);
+            return addedBook ?? book;
         }
 
         public async Task UpdateBookAsync(Book book, int? userId = null)
