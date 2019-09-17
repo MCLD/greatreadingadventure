@@ -497,14 +497,6 @@
     <value>Joined {0}!</value>
     <comment>Informing the user has been registered in the GRA</comment>
   </data>
-  <data name="If you can't find something, please &lt;a href=&quot;{0}&quot;&gt;send us a mail&lt;/a&gt; and let us know what you were looking for, we'll do our best to help." xml:space="preserve">
-    <value>If you can't find something, please &lt;a href=&quot;{0}&quot;&gt;send us a mail&lt;/a&gt; and let us know what you were looking for, we'll do our best to help.</value>
-    <comment>Info's mail for help</comment>
-  </data>
-  <data name="You are leader of the group: &lt;a href=&quot;{0}&quot;&gt;&lt;strong&gt;{1}&lt;/strong&gt;&lt;/a&gt;" xml:space="preserve">
-    <value>You are leader of the group: &lt;a href=&quot;{0}&quot;&gt;&lt;strong&gt;{1}&lt;/strong&gt;&lt;/a&gt;</value>
-    <comment>Letting the user know they are the leader of the group</comment>
-  </data>
   <data name="When you complete &lt;strong&gt;{0}&lt;/strong&gt;, you will earn &lt;strong&gt;{1}&lt;/strong&gt; and a badge." xml:space="preserve">
     <value>When you complete &lt;strong&gt;{0}&lt;/strong&gt;, you will earn &lt;strong&gt;{1}&lt;/strong&gt; and a badge.</value>
     <comment>Informing the user that when the challenge is completed they will earn the book and a badge.</comment>
@@ -512,14 +504,6 @@
   <data name="When you complete &lt;strong&gt;{0}&lt;/strong&gt;, you will earn &lt;strong&gt;{1}&lt;/strong&gt;." xml:space="preserve">
     <value>When you complete &lt;strong&gt;{0}&lt;/strong&gt;, you will earn &lt;strong&gt;{1}&lt;/strong&gt;.</value>
     <comment>Informing the user that when the challenge is completed they will earn the book.</comment>
-  </data>
-  <data name="Read &lt;strong&gt;&lt;em&gt;&lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{2}&lt;/strong&gt;" xml:space="preserve">
-    <value>Read &lt;strong&gt;&lt;em&gt;&lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{2}&lt;/strong&gt;</value>
-    <comment>Telling the user to read the the book and providing a link to the book.</comment>
-  </data>
-  <data name="Read &lt;strong&gt;&lt;em&gt;&lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt;" xml:space="preserve">
-    <value>Read &lt;strong&gt;&lt;em&gt;&lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt;</value>
-    <comment>Telling the user to read the the book and providing a link to the book and the author.</comment>
   </data>
   <data name="Thanks for participating in {0}!" xml:space="preserve">
     <value>Thanks for participating in {0}!</value>
@@ -893,11 +877,11 @@
     <value>Progress</value>
     <comment>Column heading showing far a participant is towards completing an item (i.e. their progress)</comment>
   </data>
-  <data name="Read &lt;strong&gt;&lt;em&gt;&lt;a href=\&quot;{0}\&quot; target=\&quot;_blank\&quot;&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt;" xml:space="preserve">
+  <data name="Read &lt;strong&gt;&lt;em&gt;&lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt;" xml:space="preserve">
     <value>Read &lt;strong&gt;&lt;em&gt;&lt;a href=\"{0}\" target=\"_blank\"&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt;</value>
     <comment>Challenge task of book with a link (replacing {0}) and a book title (replacing {1})</comment>
   </data>
-  <data name="Read &lt;strong&gt;&lt;em&gt;&lt;a href=\&quot;{0}\&quot; target=\&quot;_blank\&quot;&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{2}&lt;/strong&gt;" xml:space="preserve">
+  <data name="Read &lt;strong&gt;&lt;em&gt;&lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{2}&lt;/strong&gt;" xml:space="preserve">
     <value>Read &lt;strong&gt;&lt;em&gt;&lt;a href=\"{0}\" target=\"_blank\"&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{2}&lt;/strong&gt;</value>
     <comment>Challenge task of book with a link (replacing {0}), a book title (replacing {1}) and the author of the book (replacing {2})</comment>
   </data>
@@ -1117,8 +1101,8 @@
     <value>Upgrade to Group</value>
     <comment>Button text for upgrading a family to a group</comment>
   </data>
-  <data name="If you can't find something, please &lt;a href=\&quot;{0}\&quot;&gt;send us a mail&lt;/a&gt; and let us know what you were looking for, we'll do our best to help." xml:space="preserve">
-    <value>If you can't find something, please &lt;a href=\"{0}\"&gt;send us a mail&lt;/a&gt; and let us know what you were looking for, we'll do our best to help.</value>
+  <data name="If you can't find something, please &lt;a href=&quot;{0}&quot;&gt;send us a mail&lt;/a&gt; and let us know what you were looking for, we'll do our best to help." xml:space="preserve">
+    <value>If you can't find something, please &lt;a href="{0}"&gt;send us a mail&lt;/a&gt; and let us know what you were looking for, we'll do our best to help.</value>
     <comment>Ask participant to use the in-software mail facility to contact site owners if they require assistance; {0} will be replaced automatically with the URL to the mail facility.</comment>
   </data>
   <data name="Page not found" xml:space="preserve">
@@ -1277,8 +1261,8 @@
     <value>You are in the group: &lt;strong&gt;{0}&lt;/strong&gt;</value>
     <comment>Text indicating that the participant is a member of a group; {0} is replaced with the name of the group.</comment>
   </data>
-  <data name="You are leader of the group: &lt;a href=\&quot;{0}\&quot;&gt;&lt;strong&gt;{1}&lt;/strong&gt;&lt;/a&gt;" xml:space="preserve">
-    <value>You are leader of the group: &lt;a href=\"{0}\"&gt;&lt;strong&gt;{1}&lt;/strong&gt;&lt;/a&gt;</value>
+  <data name="You are leader of the group: &lt;a href=&quot;{0}&quot;&gt;&lt;strong&gt;{1}&lt;/strong&gt;&lt;/a&gt;" xml:space="preserve">
+    <value>You are leader of the group: &lt;a href="{0}"&gt;&lt;strong&gt;{1}&lt;/strong&gt;&lt;/a&gt;</value>
     <comment>Text with a link indicating that the participant is the leader of a group; {0} is replaced with the URL to group management and {1} will be replaced with the name of the group.</comment>
   </data>
   <data name="Back to {0}" xml:space="preserve">
