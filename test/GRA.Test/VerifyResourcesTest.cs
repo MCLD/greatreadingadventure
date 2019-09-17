@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using GRA.Domain.Model;
 using GRA.Utility;
 using Xunit;
 
@@ -45,7 +46,33 @@ namespace GRA.Test
                 }
             }
 
-            var missingItems = annotationValues.Except(resourceFileKeys);
+            var displayNameValues = new List<string>();
+            var displayNameConstStrings = typeof(DisplayNames).GetFields(BindingFlags.Public
+                    | BindingFlags.Static
+                    | BindingFlags.FlattenHierarchy)
+                    .Where(fi => fi.IsLiteral && !fi.IsInitOnly)
+                    .ToList();
+            foreach (var constval in displayNameConstStrings)
+            {
+                displayNameValues.Add((string)constval.GetValue(null));
+            }
+
+            var errorMessageValues = new List<string>();
+            var errorMessageConstStrings = typeof(ErrorMessages).GetFields(BindingFlags.Public
+                    | BindingFlags.Static
+                    | BindingFlags.FlattenHierarchy)
+                    .Where(fi => fi.IsLiteral && !fi.IsInitOnly)
+                    .ToList();
+            foreach (var constval in errorMessageConstStrings)
+            {
+                errorMessageValues.Add((string)constval.GetValue(null));
+            }
+
+            var localizationValues = annotationValues
+                .Concat(displayNameValues)
+                .Concat(errorMessageValues);
+
+            var missingItems = localizationValues.Except(resourceFileKeys);
 
             Assert.Empty(missingItems);
         }
