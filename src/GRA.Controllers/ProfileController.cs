@@ -9,6 +9,7 @@ using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
+using GRA.Domain.Service.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -1063,9 +1064,17 @@ namespace GRA.Controllers
             {
                 try
                 {
-                    await _activityService.AddBookAsync(GetActiveUserId(), model.Book);
-                    ShowAlertSuccess(_sharedLocalizer[Annotations.Interface.AddedItem,
-                        model.Book.Title]);
+                   var result =  await _activityService.AddBookAsync(GetActiveUserId(), model.Book);
+                    if (result.Status == ServiceResultStatus.Warning
+                            && !string.IsNullOrWhiteSpace(result.Message))
+                    {
+                        ShowAlertWarning(result.Message);
+                    }
+                    else if (result.Status == ServiceResultStatus.Success)
+                    {
+                        ShowAlertSuccess(_sharedLocalizer[Annotations.Interface.AddedItem,
+                            model.Book.Title]);
+                    }
                 }
                 catch (GraException gex)
                 {

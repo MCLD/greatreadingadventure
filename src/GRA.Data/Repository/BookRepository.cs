@@ -21,10 +21,12 @@ namespace GRA.Data.Repository
 
         public async Task<int> AddSaveForUserAsync(int requestedByUserId, int userId, Book book)
         {
-            book.CreatedBy = requestedByUserId;
-            book.CreatedAt = _dateTimeProvider.Now;
-            book = await AddSaveAsync(requestedByUserId, _mapper.Map<Model.Book>(book));
-
+            if (book?.CreatedBy == 0 || book.CreatedAt == default)
+            {
+                book.CreatedBy = requestedByUserId;
+                book.CreatedAt = _dateTimeProvider.Now;
+                book = await AddSaveAsync(requestedByUserId, _mapper.Map<Model.Book>(book));
+            }
             _context.UserBooks.Add(new Model.UserBook
             {
                 BookId = book.Id,
@@ -32,9 +34,7 @@ namespace GRA.Data.Repository
                 CreatedBy = requestedByUserId,
                 UserId = userId,
             });
-
             await SaveAsync();
-
             return book.Id;
         }
 

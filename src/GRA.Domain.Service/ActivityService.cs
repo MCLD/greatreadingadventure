@@ -220,7 +220,7 @@ namespace GRA.Domain.Service
                 // add the book if one was supplied
                 if (book != null && !string.IsNullOrWhiteSpace(book.Title))
                 {
-                    activityLogResult.BookId = await AddBookAsync(GetActiveUserId(), book);
+                    activityLogResult.BookId = (await AddBookAsync(GetActiveUserId(), book)).Data;
                     notification.Text += $" The book <strong><em>{book.Title}</em></strong> by <strong>{book.Author}</strong> was added to your book list.";
                 }
 
@@ -254,7 +254,7 @@ namespace GRA.Domain.Service
             }
             else if (book != null && !string.IsNullOrWhiteSpace(book.Title))
             {
-                activityLogResult.BookId = await AddBookAsync(GetActiveUserId(), book, true);
+                activityLogResult.BookId = (await AddBookAsync(GetActiveUserId(), book, true)).Data;
             }
 
             return activityLogResult;
@@ -332,12 +332,13 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<int> AddBookAsync(int userId, Book book, bool addNotification = false)
+        public async Task<ServiceResult<int>> AddBookAsync(int userId, Book book, bool addNotification = false)
         {
             VerifyCanLog();
             int activeUserId = GetActiveUserId();
             var activeUser = await _userRepository.GetByIdAsync(activeUserId);
             int authUserId = GetClaimId(ClaimType.UserId);
+            ServiceResult<int> serviceResult = new ServiceResult<int>();
 
             if (userId != activeUserId
                 && activeUser.HouseholdHeadUserId != authUserId
@@ -356,31 +357,31 @@ namespace GRA.Domain.Service
                 _logger.LogError(error);
                 throw new GraException("Books cannot be added while there is a pending questionnaire to be taken.");
             }
-            var addedBook = IsDuplicateBook(book);
+            var addedBook = _bookRepository.CheckIfBookExists(book) ?? book;
             if (await _bookRepository.UserHasBookAsync(userId, addedBook.Id))
             {
-                throw new GraException($"The book is already on the booklist.");
-            }
-            await _bookRepository.AddSaveForUserAsync(activeUserId, userId, addedBook);
+                serviceResult.Status = ServiceResultStatus.Warning;
+                serviceResult.Message = $"The book <strong><em>{addedBook.Title}</em></strong> by <strong>{addedBook.Author}</strong> is already on the booklist.";
 
-            if (addNotification)
+            }
+            else
             {
-                var notification = new Notification
+                await _bookRepository.AddSaveForUserAsync(activeUserId, userId, addedBook);
+
+                if (addNotification)
                 {
-                    UserId = userId,
-                    Text = $"The book <strong><em>{book.Title}</em></strong> by <strong>{book.Author}</strong> was added to your book list."
-                };
+                    var notification = new Notification
+                    {
+                        UserId = userId,
+                        Text = $"The book <strong><em>{book.Title}</em></strong> by <strong>{book.Author}</strong> was added to your book list."
+                    };
 
-                await _notificationRepository.AddSaveAsync(authUserId, notification);
+                    await _notificationRepository.AddSaveAsync(authUserId, notification);
+                    serviceResult.Status = ServiceResultStatus.Success;
+                    serviceResult.Data = addedBook.Id;
+                }
             }
-
-            return addedBook.Id;
-        }
-
-        public Book IsDuplicateBook(Book book)
-        {
-            var addedBook =  _bookRepository.CheckIfBookExists(book);
-            return addedBook ?? book;
+            return serviceResult;
         }
 
         public async Task UpdateBookAsync(Book book, int? userId = null)
@@ -520,7 +521,7 @@ namespace GRA.Domain.Service
                                 await _challengeRepository.UpdateUserChallengeTaskAsync(activeUserId,
                                     updateStatus.ChallengeTask.Id,
                                     null,
-                                    bookId);
+                                    bookId.Data);
                             }
                         }
                         if (updateStatus.WasComplete)
