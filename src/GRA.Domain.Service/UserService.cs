@@ -608,19 +608,33 @@ namespace GRA.Domain.Service
             }
 
             user.IsAdmin = true;
+
+            if (!HasPermission(Permission.NewsAutoSubscribe))
+            {
+                var rolePermissions = (await _roleRepository
+                    .GetPermissionNamesForRoleAsync(authCode.RoleId)).ToList();
+
+                if (rolePermissions.Contains(Permission.NewsAutoSubscribe.ToString())
+                    && (rolePermissions.Contains(Permission.AccessMissionControl.ToString())
+                        || HasPermission(Permission.AccessMissionControl)))
+                {
+                    user.IsNewsSubscribed = true;
+                }
+            }
+
             await _userRepository.UpdateSaveAsync(userId, user);
 
             return authCode.RoleName;
         }
 
-        public async Task<User> AddHouseholdMemberAsync(int householdHeadUserId, User memberToAdd, 
+        public async Task<User> AddHouseholdMemberAsync(int householdHeadUserId, User memberToAdd,
             bool skipHouseholdActionVerification = false)
         {
             if (!skipHouseholdActionVerification)
             {
                 VerifyCanHouseholdAction();
             }
-            
+
             var siteId = GetCurrentSiteId();
             int authUserId = GetClaimId(ClaimType.UserId);
             var householdHead = await _userRepository.GetByIdAsync(householdHeadUserId);
