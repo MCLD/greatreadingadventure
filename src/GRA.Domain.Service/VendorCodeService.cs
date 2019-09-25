@@ -265,7 +265,7 @@ namespace GRA.Domain.Service
                                     });
                                     for (int i = 0; i < excelReader.FieldCount; i++)
                                     {
-                                        switch (excelReader.GetString(i).Trim() ?? $"Column{i}")
+                                        switch (excelReader.GetString(i)?.Trim() ?? $"Column{i}")
                                         {
                                             case CouponRowHeading:
                                                 couponColumnId = i;
