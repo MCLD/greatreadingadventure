@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
@@ -155,7 +156,8 @@ namespace GRA.Data.Repository
         public Book CheckIfBookExists(Book book)
         {
             return _context.Books.AsNoTracking()
-                .Where(_ => _.Title == book.Title && _.Author == book.Author)
+                .Where(_ => string.Equals(_.Title, book.Title, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(_.Author, book.Author, StringComparison.OrdinalIgnoreCase))
                 .ProjectTo<Book>(_mapper.ConfigurationProvider)
                 .FirstOrDefault();
         }

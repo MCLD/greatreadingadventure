@@ -1064,7 +1064,9 @@ namespace GRA.Controllers
             {
                 try
                 {
-                   var result =  await _activityService.AddBookAsync(GetActiveUserId(), model.Book);
+                    model.Book.Author = model.Book.Author.Trim();
+                    model.Book.Title = model.Book.Title.Trim();
+                    var result =  await _activityService.AddBookAsync(GetActiveUserId(), model.Book);
                     if (result.Status == ServiceResultStatus.Warning
                             && !string.IsNullOrWhiteSpace(result.Message))
                     {
