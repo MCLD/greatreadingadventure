@@ -41,6 +41,7 @@ namespace GRA.Domain.Model
         public const string ManageTriggerMail = "ManageTriggerMail";
         public const string ManageTriggers = "ManageTriggers";
         public const string ManageVendorCodes = "ManageVendorCodes";
+        public const string NewsAutoSubscribe = "NewsAutoSubscribe";
         public const string PerformDrawing = "PerformDrawing";
         public const string ReadAllMail = "ReadAllMail";
         public const string RedeemBulkVendorCodes = "RedeemBulkVendorCodes";
