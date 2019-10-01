@@ -11,6 +11,15 @@ namespace GRA.Data.Model
         [MaxLength(255)]
         public string ContactEmail { get; set; }
 
+        [MaxLength(255)]
+        public string StaffContact { get; set; }
+
+        [MaxLength(255)]
+        public string FundingSource { get; set; }
+
+        [MaxLength(255)]
+        public string LibraryBranch { get; set; }
+
         public int? SelectionsPerBranch { get; set; }
 
         public DateTime? RegistrationOpen { get; set; }

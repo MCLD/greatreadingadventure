@@ -158,6 +158,9 @@ namespace GRA.Domain.Service
             {
                 currentSettings.BranchAvailabilitySuplimentalText = settings
                     .BranchAvailabilitySuplimentalText?.Trim();
+                currentSettings.FundingSource = settings.FundingSource?.Trim();
+                currentSettings.LibraryBranch = settings.LibraryBranch?.Trim();
+                currentSettings.StaffContact = settings.StaffContact?.Trim();
                 currentSettings.ContactEmail = settings.ContactEmail?.Trim();
                 currentSettings.SelectionsPerBranch = settings.SelectionsPerBranch;
                 currentSettings.RegistrationOpen = settings.RegistrationOpen;
@@ -524,6 +527,16 @@ namespace GRA.Domain.Service
             return await _psProgramRepository.GetCountByPerformerAsync(performerId);
         }
 
+        public async Task<ICollection<PsProgram>> GetPerformerProgramsAsync(int performerId)
+        {
+            if (!HasPermission(Permission.ManagePerformers)
+                && !HasPermission(Permission.ViewPerformerDetails))
+            {
+                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer program's.");
+                throw new GraException("Permission denied.");
+            }
+            return await _psProgramRepository.GetByPerformerIdAsync(performerId);
+        }
         public async Task<bool> GetPerformerSystemAvailabilityAsync(int performerId, int systemId)
         {
             if (!HasPermission(Permission.ManagePerformers)
@@ -565,6 +578,12 @@ namespace GRA.Domain.Service
         {
             VerifyManagementPermission();
             return await _psBranchSelectionRepository.GetCountByPerformerIdAsync(performerId);
+        }
+
+        public async Task<ICollection<PsBranchSelection>> GetPerformerSelectionAsync(int performerId)
+        {
+            VerifyManagementPermission();
+            return await _psBranchSelectionRepository.GetByPerformerIdAsync(performerId);
         }
 
         public async Task<ICollection<PsBranchSelection>> GetPerformerBranchSelectionsAsync(

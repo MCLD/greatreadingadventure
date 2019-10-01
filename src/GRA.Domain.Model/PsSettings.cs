@@ -12,6 +12,18 @@ namespace GRA.Domain.Model
         [MaxLength(255)]
         public string ContactEmail { get; set; }
 
+        [DisplayName("Staff Contact")]
+        [MaxLength(255)]
+        public string StaffContact { get; set; }
+
+        [DisplayName("Library Branch")]
+        [MaxLength(255)]
+        public string LibraryBranch { get; set; }
+
+        [DisplayName("Funding Source")]
+        [MaxLength(255)]
+        public string FundingSource { get; set; }
+
         [DisplayName("Selections Per Branch")]
         [Range(1, int.MaxValue)]
         public int? SelectionsPerBranch { get; set; }

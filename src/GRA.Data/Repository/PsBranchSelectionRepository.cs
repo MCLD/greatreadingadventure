@@ -52,6 +52,14 @@ namespace GRA.Data.Repository
                 .Where(_ => _.ProgramId.HasValue && _.Program.PerformerId == performerId)
                 .CountAsync();
         }
+        public async Task<ICollection<PsBranchSelection>> GetByPerformerIdAsync(int performerId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.ProgramId.HasValue && _.Program.PerformerId == performerId)
+                .ProjectTo<PsBranchSelection>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
 
         public async Task<ICollection<PsBranchSelection>> GetByPerformerIdAsync(
             int performerId, DateTime? date = null)

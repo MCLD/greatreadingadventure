@@ -2,14 +2,19 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using DocumentFormat.OpenXml.Office2010.Word;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
 using GRA.Controllers.ViewModel.MissionControl.PerformerManagement;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
@@ -33,18 +38,25 @@ namespace GRA.Controllers.MissionControl
         private readonly ILogger<PerformerManagementController> _logger;
         private readonly PerformerSchedulingService _performerSchedulingService;
         private readonly SiteService _siteService;
+        private readonly Domain.Repository.IBranchRepository _branchRepository;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
         public PerformerManagementController(ILogger<PerformerManagementController> logger,
             ServiceFacade.Controller context,
             PerformerSchedulingService performerSchedulingService,
-            SiteService siteService)
+            SiteService siteService,
+            Domain.Repository.IBranchRepository branchRepository,
+            IHostingEnvironment hostingEnvironment)
             : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _performerSchedulingService = performerSchedulingService
                 ?? throw new ArgumentNullException(nameof(performerSchedulingService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
+            _hostingEnvironment = hostingEnvironment ?? throw new ArgumentNullException(nameof(hostingEnvironment));
             PageTitle = "Performer Management";
+            _branchRepository = branchRepository
+               ?? throw new ArgumentNullException(nameof(branchRepository));
         }
 
         public async Task<IActionResult> Index()
@@ -462,6 +474,137 @@ namespace GRA.Controllers.MissionControl
             model.Systems = systems;
 
             return View(model);
+        }
+
+        [HttpGet]
+        public async Task<FileStreamResult> GetPerformerCoverSheetAsync(int performerId)
+        {
+            var siteId = GetCurrentSiteId();
+            string template = "perf_coversheet_template.docx";
+            var filePath = Path.Combine(
+                Directory.GetParent(_hostingEnvironment.WebRootPath).FullName, "shared");
+            if (!Directory.Exists(filePath))
+            {
+                ShowAlertDanger($"Asset directory not found at: { filePath}");
+            }
+            filePath = Path.Combine(filePath, "content");
+            if (!Directory.Exists(filePath))
+            {
+                ShowAlertDanger($"Asset directory not found at: { filePath}");
+            }
+            filePath = Path.Combine(filePath, $"site{siteId}");
+            if (!Directory.Exists(filePath))
+            {
+                ShowAlertDanger($"Asset directory not found at: { filePath}");
+            }
+            filePath = Path.Combine(filePath, "documents");
+            if (!Directory.Exists(filePath))
+            {
+                ShowAlertDanger($"Asset directory not found at: { filePath}");
+            }
+            filePath = Path.Combine(filePath, "performer coversheets");
+            if (!Directory.Exists(filePath))
+            {
+                ShowAlertDanger($"Asset directory not found at: { filePath}");
+            }
+            var templatePath = Path.Combine(filePath, template);
+            if (!System.IO.File.Exists(templatePath))
+            {
+                ShowAlertDanger("Cover sheet template could not be found");
+            }
+            var todaysDate = DateTime.Now.ToString("dddd, MMMM dd, yyyy");
+            var performer = await _performerSchedulingService.GetPerformerByIdAsync(performerId);
+            var perfPrograms = await _performerSchedulingService.GetPerformerProgramsAsync(performerId);
+            var perfSchedules = await _performerSchedulingService.GetPerformerSelectionAsync(performerId);
+            var perfSettings = await _performerSchedulingService.GetSettingsAsync();
+            var branches = await _branchRepository.GetAllAsync(siteId);
+            var descr = new StringBuilder();
+            decimal totalCost = 0;
+            foreach (var schedule in perfSchedules.Where(_ => _.ScheduleStartTime.Month == 6))
+            {
+                foreach (var branch in branches.Where(_ => _.Id == schedule.BranchId))
+                {
+                    descr.Append("(");
+                    descr.Append(branch.Name);
+                    descr.Append(")");
+                    descr.AppendFormat("<w:br/>");
+                }
+                foreach (var program in perfPrograms.Where(_ => _.Id == schedule.ProgramId))
+                {
+                    descr.Append(program.Title);
+                    descr.Append(" - ");
+                    descr.Append(schedule.ScheduleStartTime.ToString("dddd, MMMM dd, yyyy"));
+                    descr.Append(" - $");
+                    descr.Append(Math.Round(program.Cost,2).ToString());
+                    totalCost += program.Cost;
+                }
+                descr.AppendFormat("<w:br/>");
+            }
+            var fileName = $"{DateTime.Now.ToString("MMMM")}-{performer.VendorId}.docx";
+            filePath = Path.Combine(filePath,fileName);
+            if (System.IO.File.Exists(filePath))
+            {
+                System.IO.File.Delete(filePath);
+            }
+            System.IO.File.Copy(templatePath, filePath,true);
+            string docText = null;
+            string headerText = null;
+            string footerText = null;
+            using (var doc = WordprocessingDocument.Open(filePath, true))
+            {
+                using (var sr = new StreamReader(doc.MainDocumentPart.GetStream()))
+                {
+                    docText = sr.ReadToEnd();
+                }
+                using (var sr = new StreamReader(doc.MainDocumentPart.HeaderParts.First().GetStream()))
+                {
+                    headerText = sr.ReadToEnd();
+                }
+                using (var sr = new StreamReader(doc.MainDocumentPart.FooterParts.Skip(1).Take(1).First().GetStream()))
+                {
+                    footerText = sr.ReadToEnd();
+                }
+                var today = new Regex("Today");
+                var description = new Regex("PerformerDescription");
+                var cost = new Regex("TotalCost");
+                var month = new Regex("MonthNow");
+                var vendorid = new Regex("VendorsId");
+                var name = new Regex("PerformerName");
+                var billing = new Regex("PerformerBilling");
+                var libBranch = new Regex("LibraryBranch");
+                var staffContact = new Regex("StaffContact");
+                var funding = new Regex("FundingSource");
+                var contactEmail = new Regex("ContactEmail");
+                headerText = today.Replace(headerText, todaysDate);
+                footerText = contactEmail.Replace(footerText, perfSettings.ContactEmail);
+                docText = description.Replace(docText, descr.ToString());
+                docText = cost.Replace(docText, Math.Round(totalCost,2).ToString());
+                docText = month.Replace(docText, DateTime.Now.ToString("MMMM"));
+                docText = vendorid.Replace(docText, performer.VendorId);
+                docText = name.Replace(docText, performer.Name);
+                docText = libBranch.Replace(docText, perfSettings.LibraryBranch);
+                docText = staffContact.Replace(docText, perfSettings.StaffContact);
+                docText = funding.Replace(docText, perfSettings.FundingSource);
+                docText = billing.Replace(docText, performer.BillingAddress);
+                using (var sw = new StreamWriter(doc.MainDocumentPart.HeaderParts.First().GetStream()))
+                {
+                    sw.Write(headerText);
+                }
+                using (var sw = new StreamWriter(doc.MainDocumentPart.FooterParts.Skip(1).Take(1).First().GetStream()))
+                {
+                    sw.Write(footerText);
+                }
+                using (var sw = new StreamWriter(doc.MainDocumentPart.GetStream()))
+                {
+                    sw.Write(docText);
+                }
+                doc.Save();
+            }
+            var fs = new FileStream(filePath,FileMode.Open);
+            return new FileStreamResult(fs, "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+            {
+                FileDownloadName = fileName
+            };
         }
 
         public async Task<IActionResult> PerformerImages(int id)
