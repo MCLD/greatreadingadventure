@@ -40,6 +40,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Mission control button to update user triggers
 - Redeem all button for household vendor codes
 - Participant age to Group Vendor Code Report
+- Add news auto subscribe permission
 
 ### Changed
 - Script docker-build.bash to not build release images unless the branch starts with 'release/'

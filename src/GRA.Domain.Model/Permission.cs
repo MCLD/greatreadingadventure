@@ -40,6 +40,7 @@ namespace GRA.Domain.Model
         ManageTriggers,
         ManageTriggerMail,
         ManageVendorCodes,
+        NewsAutoSubscribe,
         PerformDrawing,
         ReadAllMail,
         RedeemBulkVendorCodes,
