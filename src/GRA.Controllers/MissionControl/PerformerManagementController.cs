@@ -520,7 +520,7 @@ namespace GRA.Controllers.MissionControl
             var branches = await _branchRepository.GetAllAsync(siteId);
             var descr = new StringBuilder();
             decimal totalCost = 0;
-            foreach (var schedule in perfSchedules.Where(_ => _.ScheduleStartTime.Month == 6))
+            foreach (var schedule in perfSchedules.Where(_ => _.ScheduleStartTime.Month == DateTime.Now.Month))
             {
                 foreach (var branch in branches.Where(_ => _.Id == schedule.BranchId))
                 {
