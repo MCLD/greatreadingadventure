@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
+using System.Xml.Linq;
 using DocumentFormat.OpenXml.Office2010.Word;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
@@ -275,7 +277,8 @@ namespace GRA.Controllers.MissionControl
                 ShowAlertDanger("Unable to view performer: ", gex);
                 return RedirectToAction(nameof(Performers));
             }
-
+            performer.SelectionsCount = await _performerSchedulingService
+                        .GetPerformerSelectionCountAsync(performer.Id);
             var viewModel = new PerformerViewModel
             {
                 Approve = !performer.IsApproved,
@@ -516,30 +519,9 @@ namespace GRA.Controllers.MissionControl
             var performer = await _performerSchedulingService.GetPerformerByIdAsync(performerId);
             var perfPrograms = await _performerSchedulingService.GetPerformerProgramsAsync(performerId);
             var perfSchedules = await _performerSchedulingService.GetPerformerSelectionAsync(performerId);
+            var monthsched = perfSchedules.Select(_ => _.ScheduleStartTime.Month).Distinct();
             var perfSettings = await _performerSchedulingService.GetSettingsAsync();
             var branches = await _branchRepository.GetAllAsync(siteId);
-            var descr = new StringBuilder();
-            decimal totalCost = 0;
-            foreach (var schedule in perfSchedules.Where(_ => _.ScheduleStartTime.Month == DateTime.Now.Month))
-            {
-                foreach (var branch in branches.Where(_ => _.Id == schedule.BranchId))
-                {
-                    descr.Append("(");
-                    descr.Append(branch.Name);
-                    descr.Append(")");
-                    descr.AppendFormat("<w:br/>");
-                }
-                foreach (var program in perfPrograms.Where(_ => _.Id == schedule.ProgramId))
-                {
-                    descr.Append(program.Title);
-                    descr.Append(" - ");
-                    descr.Append(schedule.ScheduleStartTime.ToString("dddd, MMMM dd, yyyy"));
-                    descr.Append(" - $");
-                    descr.Append(Math.Round(program.Cost,2).ToString());
-                    totalCost += program.Cost;
-                }
-                descr.AppendFormat("<w:br/>");
-            }
             var fileName = $"{DateTime.Now.ToString("MMMM")}-{performer.VendorId}.docx";
             filePath = Path.Combine(filePath,fileName);
             if (System.IO.File.Exists(filePath))
@@ -552,10 +534,6 @@ namespace GRA.Controllers.MissionControl
             string footerText = null;
             using (var doc = WordprocessingDocument.Open(filePath, true))
             {
-                using (var sr = new StreamReader(doc.MainDocumentPart.GetStream()))
-                {
-                    docText = sr.ReadToEnd();
-                }
                 using (var sr = new StreamReader(doc.MainDocumentPart.HeaderParts.First().GetStream()))
                 {
                     headerText = sr.ReadToEnd();
@@ -564,28 +542,68 @@ namespace GRA.Controllers.MissionControl
                 {
                     footerText = sr.ReadToEnd();
                 }
+                using (var sr = new StreamReader(doc.MainDocumentPart.GetStream()))
+                {
+                    docText = sr.ReadToEnd();
+                }
                 var today = new Regex("Today");
-                var description = new Regex("PerformerDescription");
-                var cost = new Regex("TotalCost");
-                var month = new Regex("MonthNow");
-                var vendorid = new Regex("VendorsId");
-                var name = new Regex("PerformerName");
-                var billing = new Regex("PerformerBilling");
-                var libBranch = new Regex("LibraryBranch");
-                var staffContact = new Regex("StaffContact");
-                var funding = new Regex("FundingSource");
                 var contactEmail = new Regex("ContactEmail");
                 headerText = today.Replace(headerText, todaysDate);
                 footerText = contactEmail.Replace(footerText, perfSettings.ContactEmail);
-                docText = description.Replace(docText, descr.ToString());
-                docText = cost.Replace(docText, Math.Round(totalCost,2).ToString());
-                docText = month.Replace(docText, DateTime.Now.ToString("MMMM"));
-                docText = vendorid.Replace(docText, performer.VendorId);
-                docText = name.Replace(docText, performer.Name);
-                docText = libBranch.Replace(docText, perfSettings.LibraryBranch);
-                docText = staffContact.Replace(docText, perfSettings.StaffContact);
-                docText = funding.Replace(docText, perfSettings.FundingSource);
-                docText = billing.Replace(docText, performer.BillingAddress);
+                var xmlTree = XElement.Parse(docText);
+                var neighbor = xmlTree.Descendants().First().Descendants().First();
+                var tblNodes = neighbor.NextNode;
+
+                string tblElement = string.Concat(tblNodes);
+                foreach (var monthNum in monthsched)
+                {
+                    string tableText = tblElement;
+                    var descr = new StringBuilder();
+                    decimal totalCost = 0;
+                    foreach (var schedule in perfSchedules.Where(_ => _.ScheduleStartTime.Month == monthNum))
+                    {
+                        foreach (var branch in branches.Where(_ => _.Id == schedule.BranchId))
+                        {
+                            descr.Append("(");
+                            descr.Append(branch.Name);
+                            descr.Append(")");
+                            descr.Append("<w:br/>");
+                        }
+                        foreach (var program in perfPrograms.Where(_ => _.Id == schedule.ProgramId))
+                        {
+                            descr.Append(program.Title);
+                            descr.Append(" - ");
+                            descr.Append(schedule.ScheduleStartTime.ToString("dddd, MMMM dd, yyyy"));
+                            descr.Append(" - $");
+                            descr.Append(Math.Round(program.Cost, 2).ToString());
+                            totalCost += program.Cost;
+                        }
+                        descr.Append("<w:br/>");
+                    }
+                    
+                    var description = new Regex("PerformerDescription");
+                    var cost = new Regex("TotalCost");
+                    var month = new Regex("MonthNow");
+                    var vendorid = new Regex("VendorsId");
+                    var name = new Regex("PerformerName");
+                    var billing = new Regex("PerformerBilling");
+                    var libBranch = new Regex("LibraryBranch");
+                    var staffContact = new Regex("StaffContact");
+                    var funding = new Regex("FundingSource");
+                    tableText = description.Replace(tableText, descr.ToString());
+                    tableText = cost.Replace(tableText, Math.Round(totalCost, 2).ToString());
+                    tableText = month.Replace(tableText, new DateTime(2010, monthNum, 1).ToString("MMMM"));
+                    tableText = vendorid.Replace(tableText, performer.VendorId);
+                    tableText = name.Replace(tableText, HttpUtility.HtmlEncode(performer.Name));
+                    tableText = libBranch.Replace(tableText, perfSettings.LibraryBranch);
+                    tableText = staffContact.Replace(tableText, perfSettings.StaffContact);
+                    tableText = funding.Replace(tableText, perfSettings.FundingSource);
+                    tableText = billing.Replace(tableText, performer.BillingAddress);
+                    var xmlBody = XElement.Parse(tableText);
+                    neighbor.NextNode.ReplaceWith(xmlBody);
+                    neighbor = (XElement)neighbor.NextNode;
+                }
+                string finalDocBody = string.Concat(xmlTree);
                 using (var sw = new StreamWriter(doc.MainDocumentPart.HeaderParts.First().GetStream()))
                 {
                     sw.Write(headerText);
@@ -596,7 +614,7 @@ namespace GRA.Controllers.MissionControl
                 }
                 using (var sw = new StreamWriter(doc.MainDocumentPart.GetStream()))
                 {
-                    sw.Write(docText);
+                    sw.Write(finalDocBody);
                 }
                 doc.Save();
             }
