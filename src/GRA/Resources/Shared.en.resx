@@ -689,6 +689,10 @@
     <value>Thanks for participating in {0}. You can still sign in to review your history and achievements.</value>
     <comment>Landing page text thanking visitors for participating after the program has ended when they can still log in to see their history and achievements.</comment>
   </data>
+  <data name="Thanks for participating in {0}!" xml:space="preserve">
+    <value>Thanks for participating in {0}!</value>
+    <comment>Thanking the users for participating in the program. {0} is replaced with the name of the program.</comment>
+  </data>
   <data name="Welcome to {0}." xml:space="preserve">
     <value>Welcome to {0}.</value>
     <comment>Landing page welcome text; {0} is replaced with the name of the site.</comment>
