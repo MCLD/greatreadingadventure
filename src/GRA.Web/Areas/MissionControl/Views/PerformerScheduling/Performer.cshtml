@@ -82,6 +82,11 @@
         }
         <div class="row" style="padding-bottom:15px;">
             <div class="col-xs-12" style="text-align:center;">
+                <a href="~/@Model.ReferencesPath" target="_blank" class="btn btn-primary">View References</a>
+            </div>
+        </div>
+        <div class="row" style="padding-bottom:15px;">
+            <div class="col-xs-12" style="text-align:center;">
                 <a asp-action="Performers" asp-route-page="@Model.ReturnPage" class="btn btn-default">Return to List</a>
             </div>
         </div>
@@ -118,6 +123,16 @@
                     }
                 </div>
             }
+        </div>
+        <div class="form-group">
+            <label>Vendor ID</label>
+            <div>@Model.Performer.VendorId</div>
+        </div>
+        <div class="form-group">
+            <label>Has Clearance?</label>
+            <div>
+                @(Model.Performer.IsApproved ? "Yes" : "No")
+            </div>
         </div>
         <div class="form-group">
             <label>Programs available for the age groups</label>

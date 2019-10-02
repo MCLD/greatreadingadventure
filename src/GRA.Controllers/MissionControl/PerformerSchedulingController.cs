@@ -196,7 +196,8 @@ namespace GRA.Controllers.MissionControl
                 BlackoutDates = await _performerSchedulingService.GetBlackoutDatesAsync(),
                 Performer = performer,
                 Settings = settings,
-                System = system
+                System = system,
+                ReferencesPath = _pathResolver.ResolveContentPath(performer.ReferencesFilename),
             };
 
             if (!performer.AllBranches)

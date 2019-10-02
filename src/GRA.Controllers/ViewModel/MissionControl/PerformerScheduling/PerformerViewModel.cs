@@ -16,6 +16,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.PerformerScheduling
         public int? NextPerformer { get; set; }
         public int? PrevPerformer { get; set; }
         public int ReturnPage { get; set; }
+        public string ReferencesPath { get; set; }
 
         public ICollection<int> BranchAvailability { get; set; }
         public ICollection<PsBlackoutDate> BlackoutDates { get; set; }
