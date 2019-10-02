@@ -580,7 +580,7 @@ namespace GRA.Controllers.MissionControl
                         }
                         descr.Append("<w:br/>");
                     }
-                    
+                    var costStr = Math.Round(totalCost, 2).ToString();
                     var description = new Regex("PerformerDescription");
                     var cost = new Regex("TotalCost");
                     var month = new Regex("MonthNow");
@@ -591,7 +591,7 @@ namespace GRA.Controllers.MissionControl
                     var staffContact = new Regex("StaffContact");
                     var funding = new Regex("FundingSource");
                     tableText = description.Replace(tableText, descr.ToString());
-                    tableText = cost.Replace(tableText, Math.Round(totalCost, 2).ToString());
+                    tableText = cost.Replace(tableText,costStr);
                     tableText = month.Replace(tableText, new DateTime(2010, monthNum, 1).ToString("MMMM"));
                     tableText = vendorid.Replace(tableText, performer.VendorId);
                     tableText = name.Replace(tableText, HttpUtility.HtmlEncode(performer.Name));
