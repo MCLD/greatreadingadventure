@@ -109,7 +109,7 @@
                 <button asp-action="PerformerApprove" class="btn btn-lg @(Model.Approve ? "btn-success" : "btn-danger") pull-right">@(Model.Approve ? "Approve" : "Unapprove")</button>
             </form>
         }
-        @if(Model.Performer.SelectionsCount > 0)
+        @if(Model.CanDownloadCoversheet)
         {
             <div class="col-3"style="padding-top:15px;">
                     <a asp-action="GetPerformerCoverSheetAsync" 

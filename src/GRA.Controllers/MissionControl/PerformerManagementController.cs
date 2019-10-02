@@ -5,11 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Web;
 using System.Xml.Linq;
-using DocumentFormat.OpenXml.Office2010.Word;
 using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Wordprocessing;
 using GRA.Controllers.ViewModel.MissionControl.PerformerManagement;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
@@ -288,10 +285,18 @@ namespace GRA.Controllers.MissionControl
                 ReferencesPath = _pathResolver.ResolveContentPath(performer.ReferencesFilename),
                 SchedulingStage = schedulingStage,
                 Settings = settings,
+                CanDownloadCoversheet = true,
                 Systems = await _performerSchedulingService
                     .GetSystemListWithoutExcludedBranchesAsync()
             };
-
+            if (string.IsNullOrEmpty(settings.LibraryBranch)
+                || string.IsNullOrEmpty(settings.FundingSource)
+                || string.IsNullOrEmpty(settings.StaffContact)
+                || schedulingStage == PsSchedulingStage.SchedulingClosed
+                || performer.SelectionsCount <= 0)
+            {
+                viewModel.CanDownloadCoversheet = false;
+            }
             if (performer.Images.Count > 0)
             {
                 viewModel.ImagePath = _pathResolver.ResolveContentPath(
@@ -480,49 +485,62 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpGet]
-        public async Task<FileStreamResult> GetPerformerCoverSheetAsync(int performerId)
+        public async Task<IActionResult> GetPerformerCoverSheetAsync(int performerId)
         {
+            var perfSettings = await _performerSchedulingService.GetSettingsAsync();
+            if (string.IsNullOrEmpty(perfSettings.LibraryBranch)
+                || string.IsNullOrEmpty(perfSettings.FundingSource)
+                || string.IsNullOrEmpty(perfSettings.StaffContact))
+            {
+                ShowAlertDanger("One or more coversheet fields are not configured in PerformerManagment's Settings");
+                return RedirectToAction(nameof(Performer), new { id = performerId });
+            }
             var siteId = GetCurrentSiteId();
             string template = "perf_coversheet_template.docx";
             var filePath = Path.Combine(
                 Directory.GetParent(_hostingEnvironment.WebRootPath).FullName, "shared");
             if (!Directory.Exists(filePath))
             {
-                ShowAlertDanger($"Asset directory not found at: { filePath}");
+                ShowAlertDanger($"'shared' directory not found at: { filePath}");
+                return RedirectToAction(nameof(Performer), new { id = performerId });
             }
             filePath = Path.Combine(filePath, "content");
             if (!Directory.Exists(filePath))
             {
-                ShowAlertDanger($"Asset directory not found at: { filePath}");
+                ShowAlertDanger($"'content' directory not found at: { filePath}");
+                return RedirectToAction(nameof(Performer), new { id = performerId });
             }
             filePath = Path.Combine(filePath, $"site{siteId}");
             if (!Directory.Exists(filePath))
             {
-                ShowAlertDanger($"Asset directory not found at: { filePath}");
+                ShowAlertDanger($"'site{siteId}' directory not found at: { filePath}");
+                return RedirectToAction(nameof(Performer), new { id = performerId });
             }
-            filePath = Path.Combine(filePath, "documents");
-            if (!Directory.Exists(filePath))
+            var templatePath = Path.Combine(filePath, "documents");
+            if (!Directory.Exists(templatePath))
             {
-                ShowAlertDanger($"Asset directory not found at: { filePath}");
+                ShowAlertDanger($"'documents' directory not found at: { filePath}");
+                return RedirectToAction(nameof(Performer), new { id = performerId });
             }
-            filePath = Path.Combine(filePath, "performer coversheets");
-            if (!Directory.Exists(filePath))
-            {
-                ShowAlertDanger($"Asset directory not found at: { filePath}");
-            }
-            var templatePath = Path.Combine(filePath, template);
+            templatePath = Path.Combine(templatePath, template);
             if (!System.IO.File.Exists(templatePath))
             {
-                ShowAlertDanger("Cover sheet template could not be found");
+                ShowAlertDanger($"'{template}' could not be found");
+                return RedirectToAction(nameof(Performer), new { id = performerId });
+            }
+            filePath = Path.Combine(filePath, "performercoversheets");
+            if (!Directory.Exists(filePath))
+            {
+                ShowAlertDanger($"'performercoversheets' directory not found at: { filePath}");
+                return RedirectToAction(nameof(Performer), new { id = performerId });
             }
             var todaysDate = DateTime.Now.ToString("dddd, MMMM dd, yyyy");
             var performer = await _performerSchedulingService.GetPerformerByIdAsync(performerId);
             var perfPrograms = await _performerSchedulingService.GetPerformerProgramsAsync(performerId);
             var perfSchedules = await _performerSchedulingService.GetPerformerSelectionAsync(performerId);
             var monthsched = perfSchedules.Select(_ => _.ScheduleStartTime.Month).Distinct();
-            var perfSettings = await _performerSchedulingService.GetSettingsAsync();
             var branches = await _branchRepository.GetAllAsync(siteId);
-            var fileName = $"{DateTime.Now.ToString("MMMM")}-{performer.VendorId}.docx";
+            var fileName = $"{DateTime.Now.ToString("MMMM")}-{performer.VendorId}-{performer.Id}.docx";
             filePath = Path.Combine(filePath,fileName);
             if (System.IO.File.Exists(filePath))
             {
@@ -571,7 +589,7 @@ namespace GRA.Controllers.MissionControl
                         }
                         foreach (var program in perfPrograms.Where(_ => _.Id == schedule.ProgramId))
                         {
-                            descr.Append(program.Title);
+                            descr.Append(Microsoft.Security.Application.Encoder.XmlEncode(program.Title));
                             descr.Append(" - ");
                             descr.Append(schedule.ScheduleStartTime.ToString("dddd, MMMM dd, yyyy"));
                             descr.Append(" - $");
@@ -590,11 +608,12 @@ namespace GRA.Controllers.MissionControl
                     var libBranch = new Regex("LibraryBranch");
                     var staffContact = new Regex("StaffContact");
                     var funding = new Regex("FundingSource");
+                    var perfName = Microsoft.Security.Application.Encoder.XmlEncode(performer.Name);
                     tableText = description.Replace(tableText, descr.ToString());
                     tableText = cost.Replace(tableText,costStr);
                     tableText = month.Replace(tableText, new DateTime(2010, monthNum, 1).ToString("MMMM"));
                     tableText = vendorid.Replace(tableText, performer.VendorId);
-                    tableText = name.Replace(tableText, HttpUtility.HtmlEncode(performer.Name));
+                    tableText = name.Replace(tableText, perfName);
                     tableText = libBranch.Replace(tableText, perfSettings.LibraryBranch);
                     tableText = staffContact.Replace(tableText, perfSettings.StaffContact);
                     tableText = funding.Replace(tableText, perfSettings.FundingSource);
