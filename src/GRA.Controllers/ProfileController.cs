@@ -1218,8 +1218,8 @@ namespace GRA.Controllers
                             bundle.AvatarItems.First().Thumbnail);
                         if (bundle.AvatarItems.Count > 1)
                         {
-                            var bundleLink = Url.Action(nameof(AvatarController.Index),
-                                AvatarController.Name,
+                            var bundleLink = Url.Action(nameof(AvatarController.Index), 
+                                AvatarController.Name, 
                                 new { bundle = item.AvatarBundleId.Value });
                             description.AppendFormat(
                                 " <strong><a href=\"{0}\">{1}</a></strong>",

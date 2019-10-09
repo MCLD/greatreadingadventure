@@ -220,7 +220,8 @@ namespace GRA.Domain.Service
                 // add the book if one was supplied
                 if (book != null && !string.IsNullOrWhiteSpace(book.Title))
                 {
-                    activityLogResult.BookId = (await AddBookAsync(GetActiveUserId(), book)).Data;
+                    var bookData = await AddBookAsync(GetActiveUserId(), book);
+                    activityLogResult.BookId = bookData.Data;
                     notification.Text += $" The book <strong><em>{book.Title}</em></strong> by <strong>{book.Author}</strong> was added to your book list.";
                 }
 
@@ -338,7 +339,7 @@ namespace GRA.Domain.Service
             int activeUserId = GetActiveUserId();
             var activeUser = await _userRepository.GetByIdAsync(activeUserId);
             int authUserId = GetClaimId(ClaimType.UserId);
-            ServiceResult<int> serviceResult = new ServiceResult<int>();
+            var serviceResult = new ServiceResult<int>();
 
             if (userId != activeUserId
                 && activeUser.HouseholdHeadUserId != authUserId
