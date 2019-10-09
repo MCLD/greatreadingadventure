@@ -134,9 +134,9 @@
                 <div>@Model.Performer.VendorId</div>
             </div>
             <div class="form-group">
-                <label>Has Clearance?</label>
+                <label>Has Fingerprint Clearance Card?</label>
                 <div>
-                    @(Model.Performer.IsApproved ? "Yes" : "No")
+                    @(Model.Performer.HasFingerprintCard ? "Yes" : "No")
                 </div>
             </div>
         }
