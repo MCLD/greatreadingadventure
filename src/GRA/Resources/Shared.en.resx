@@ -495,23 +495,23 @@
   </data>
   <data name="Joined {0}!" xml:space="preserve">
     <value>Joined {0}!</value>
-    <comment>Informing the user has been registered in the GRA</comment>
+    <comment>Confirmation to the participant that they have joined the program. {0} is replaced with the name of the program.</comment>
   </data>
   <data name="When you complete &lt;strong&gt;{0}&lt;/strong&gt;, you will earn &lt;strong&gt;{1}&lt;/strong&gt; and a badge." xml:space="preserve">
     <value>When you complete &lt;strong&gt;{0}&lt;/strong&gt;, you will earn &lt;strong&gt;{1}&lt;/strong&gt; and a badge.</value>
-    <comment>Informing the user that when the challenge is completed they will earn the book and a badge.</comment>
+    <comment>Inform the participant that when they complete a task, they receive a reward and a badge. {0} is the task, {1} is the reward.</comment>
   </data>
   <data name="When you complete &lt;strong&gt;{0}&lt;/strong&gt;, you will earn &lt;strong&gt;{1}&lt;/strong&gt;." xml:space="preserve">
     <value>When you complete &lt;strong&gt;{0}&lt;/strong&gt;, you will earn &lt;strong&gt;{1}&lt;/strong&gt;.</value>
-    <comment>Informing the user that when the challenge is completed they will earn the book.</comment>
+    <comment>Inform the participant that when they complete a task, they receive a reward. {0} is the task, {1} is the reward.</comment>
   </data>
   <data name="Thanks for participating in {0}!" xml:space="preserve">
     <value>Thanks for participating in {0}!</value>
-    <comment>Salutaion for the GRA</comment>
+    <comment>Thank visitors for participating in the program. {0} is replaced with the name of the program.</comment>
   </data>
   <data name="You can still sign in to review your history and achievements." xml:space="preserve">
     <value>You can still sign in to review your history and achievements.</value>
-    <comment>Letting the user know they can review their info by loggin in.</comment>
+    <comment>Inform the participant that they can review the records of their participation and their accomplishments by signing in.</comment>
   </data>
   <data name="ZIP Code" xml:space="preserve">
     <value>ZIP Code</value>
@@ -687,11 +687,7 @@
   </data>
   <data name="Thanks for participating in {0}. You can still sign in to review your history and achievements." xml:space="preserve">
     <value>Thanks for participating in {0}. You can still sign in to review your history and achievements.</value>
-    <comment>Landing page text thanking visitors for participating after the program has ended when they can still log in to see their history and achievements.</comment>
-  </data>
-  <data name="Thanks for participating in {0}!" xml:space="preserve">
-    <value>Thanks for participating in {0}!</value>
-    <comment>Thanking the users for participating in the program. {0} is replaced with the name of the program.</comment>
+    <comment>Landing page text thanking visitors for participating after the program has ended when they can still log in to see their history and achievements. {0} is replaced with the name of the program.</comment>
   </data>
   <data name="Welcome to {0}." xml:space="preserve">
     <value>Welcome to {0}.</value>
@@ -916,14 +912,6 @@
   <data name="View Attachment" xml:space="preserve">
     <value>View Attachment</value>
     <comment>Button text to view an attached file to a challenge task</comment>
-  </data>
-  <data name="When you complete &lt;strong&gt;{0}&lt;strong&gt;, you will earn &lt;strong&gt;{1}&lt;/strong&gt; and a badge." xml:space="preserve">
-    <value>When you complete &lt;strong&gt;{0}&lt;/strong&gt;, you will earn &lt;strong&gt;{1}&lt;/strong&gt; and a badge.</value>
-    <comment>Describe what completing a challenge will achieve. {0} replaced with singular or plural task information (e.g. "1 task"or "2 tasks") and {1} is replaced with singular or plural point information (e.g. "1 point" or "2 points")</comment>
-  </data>
-  <data name="When you complete &lt;strong&gt;{0}&lt;strong&gt;, you will earn &lt;strong&gt;{1}&lt;/strong&gt;." xml:space="preserve">
-    <value>When you complete &lt;strong&gt;{0}&lt;/strong&gt;, you will earn &lt;strong&gt;{1}&lt;/strong&gt;.</value>
-    <comment>Describe what completing a challenge will achieve. {0} replaced with singular or plural task information (e.g. "1 task"or "2 tasks") and {1} is replaced with singular or plural point information (e.g. "1 point" or "2 points")</comment>
   </data>
   <data name="Your status has been saved!" xml:space="preserve">
     <value>Your status has been saved!</value>
