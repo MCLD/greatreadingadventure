@@ -5,7 +5,11 @@ WORKDIR /app
 # Copy source
 COPY . ./
 
-# Publish
+# Build project and run tests
+RUN dotnet build && \
+    find test -path "*/bin/*Test.dll" -type f -print0 |xargs -0 dotnet vstest --parallel
+
+# Publish release project
 RUN dotnet publish -c Release -o "/app/publish/"
 
 # Get runtime image
