@@ -502,7 +502,7 @@
     <comment>Page title/call to action for joining; {0} is the name of the program</comment>
   </data>
   <data name="{0} a day" xml:space="preserve">
-    <value>{0} cada díay</value>
+    <value>{0} cada día</value>
     <comment>Daily personal goal, completion of sentence, {0} is a plural activity description such as "minutes". See 'I will {0}' for the first half of this sentence - when combined they will say something similar to "I will read _ minutes a day"</comment>
   </data>
   <data name="{0} has ended, please join us next time!" xml:space="preserve">
@@ -682,7 +682,7 @@
     <comment>Column title showing events: where the event occurs</comment>
   </data>
   <data name="Badge" xml:space="preserve">
-    <value>Credencial</value>
+    <value>Medalla</value>
     <comment>Column heading showing which badge will be unlocked when a task is completed</comment>
   </data>
   <data name="Category" xml:space="preserve">
@@ -712,10 +712,6 @@
   <data name="Remind Me!" xml:space="preserve">
     <value>¡Recuérdame!</value>
     <comment>Submission button text for the participant's email address to be reminded prior to the program starting.</comment>
-  </data>
-  <data name="String1" xml:space="preserve">
-    <value>¡La lectura es fundamental para desarrollar las habilidades de alfabetización!</value>
-    <comment>Landing page message informing that reading is fundamental for developing literacy skills.</comment>
   </data>
   <data name="While you're there, go on a journey of discovery! Visit fabulous destinations such as Hogwarts, Narnia, Oz, and Middle Earth!" xml:space="preserve">
     <value>Mientras este ahí, ¡vaya en un viaje de descubrimiento! ¡Visite a fabulosos destinos tal como
@@ -862,12 +858,12 @@ Hogwarts, Narnia, Oz, y el centro de la tierra!</value>
     <value>Progreso</value>
     <comment>Column heading showing far a participant is towards completing an item (i.e. their progress)</comment>
   </data>
-  <data name="Read &lt;strong&gt;&lt;em&gt;&lt;a href=\&quot;{0}\&quot; target=\&quot;_blank\&quot;&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt;" xml:space="preserve">
-    <value>Leer &lt;strong&gt;&lt;em&gt;&lt;a href=\"{0}\" target=\"_blank\"&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt;</value>
+  <data name="Read &lt;strong&gt;&lt;em&gt;&lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt;" xml:space="preserve">
+    <value>Leer &lt;strong&gt;&lt;em&gt;&lt;a href="{0}" target=\"_blank\"&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt;</value>
     <comment>Challenge task of book with a link (replacing {0}) and a book title (replacing {1})</comment>
   </data>
-  <data name="Read &lt;strong&gt;&lt;em&gt;&lt;a href=\&quot;{0}\&quot; target=\&quot;_blank\&quot;&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{2}&lt;/strong&gt;" xml:space="preserve">
-    <value>Leer &lt;strong&gt;&lt;em&gt;&lt;a href=\"{0}\" target=\"_blank\"&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt; por &lt;strong&gt;{2}&lt;/strong&gt;</value>
+  <data name="Read &lt;strong&gt;&lt;em&gt;&lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{2}&lt;/strong&gt;" xml:space="preserve">
+    <value>Leer &lt;strong&gt;&lt;em&gt;&lt;a href="{0}" target="_blank"&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt; por &lt;strong&gt;{2}&lt;/strong&gt;</value>
     <comment>Challenge task of book with a link (replacing {0}), a book title (replacing {1}) and the author of the book (replacing {2})</comment>
   </data>
   <data name="Read &lt;strong&gt;&lt;em&gt;{0}&lt;/em&gt;&lt;/strong&gt;" xml:space="preserve">
@@ -898,12 +894,12 @@ Hogwarts, Narnia, Oz, y el centro de la tierra!</value>
     <value>Vea el archivo adjunto</value>
     <comment>Button text to view an attached file to a challenge task</comment>
   </data>
-  <data name="When you complete &lt;strong&gt;{0}&lt;strong&gt;, you will earn &lt;strong&gt;{1}&lt;/strong&gt; and a badge." xml:space="preserve">
-    <value>Cuando completes &lt;strong&gt;{0}&lt;/strong&gt;, ganarás &lt;strong&gt;{1}&lt;/strong&gt; y credenciales.</value>
+  <data name="When you complete &lt;strong&gt;{0}&lt;/strong&gt;, you will earn &lt;strong&gt;{1}&lt;/strong&gt; and a badge." xml:space="preserve">
+    <value>Al completar &lt;strong&gt;{0}&lt;/strong&gt;, recibira &lt;strong&gt;{1}&lt;/strong&gt;  y una medalla.</value>
     <comment>Describe what completing a challenge will achieve. {0} replaced with singular or plural task information (e.g. "1 task"or "2 tasks") and {1} is replaced with singular or plural point information (e.g. "1 point" or "2 points")</comment>
   </data>
-  <data name="When you complete &lt;strong&gt;{0}&lt;strong&gt;, you will earn &lt;strong&gt;{1}&lt;/strong&gt;." xml:space="preserve">
-    <value>Cuando completes &lt;strong&gt;{0}&lt;/strong&gt;, ganarás &lt;strong&gt;{1}&lt;/strong&gt;.</value>
+  <data name="When you complete &lt;strong&gt;{0}&lt;/strong&gt;, you will earn &lt;strong&gt;{1}&lt;/strong&gt;." xml:space="preserve">
+    <value>Al completar &lt;strong&gt;{0}&lt;/strong&gt;, recibira &lt;strong&gt;{1}&lt;/strong&gt;  y una medalla.</value>
     <comment>Describe what completing a challenge will achieve. {0} replaced with singular or plural task information (e.g. "1 task"or "2 tasks") and {1} is replaced with singular or plural point information (e.g. "1 point" or "2 points")</comment>
   </data>
   <data name="Your status has been saved!" xml:space="preserve">
@@ -1082,8 +1078,8 @@ Hogwarts, Narnia, Oz, y el centro de la tierra!</value>
     <value>Actualizar a Grupo</value>
     <comment>Button text for upgrading a family to a group</comment>
   </data>
-  <data name="If you can't find something, please &lt;a href=\&quot;{0}\&quot;&gt;send us a mail&lt;/a&gt; and let us know what you were looking for, we'll do our best to help." xml:space="preserve">
-    <value>Si no puede encontrar algo, por favor &lt;a href=\"{0}\"&gt;envíenos un correo&lt;/a&gt; y háganos saber lo que estaba buscando, haremos todo lo posible para ayudarlo.</value>
+  <data name="If you can't find something, please &lt;a href=&quot;{0}&quot;&gt;send us a mail&lt;/a&gt; and let us know what you were looking for, we'll do our best to help." xml:space="preserve">
+    <value>Si no puede encontrar algo, por favor &lt;a href="{0}"&gt;envíenos un correo&lt;/a&gt; y háganos saber lo que estaba buscando, haremos todo lo posible para ayudarlo.</value>
     <comment>Ask participant to use the in-software mail facility to contact site owners if they require assistance; {0} will be replaced automatically with the URL to the mail facility.</comment>
   </data>
   <data name="Page not found" xml:space="preserve">
@@ -1242,8 +1238,8 @@ Hogwarts, Narnia, Oz, y el centro de la tierra!</value>
     <value>Estas en el grupo: &lt;strong&gt;{0}&lt;/strong&gt;</value>
     <comment>Text indicating that the participant is a member of a group; {0} is replaced with the name of the group.</comment>
   </data>
-  <data name="You are leader of the group: &lt;a href=\&quot;{0}\&quot;&gt;&lt;strong&gt;{1}&lt;/strong&gt;&lt;/a&gt;" xml:space="preserve">
-    <value>Eres el líder del grupo: &lt;a href=\"{0}\"&gt;&lt;strong&gt;{1}&lt;/strong&gt;&lt;/a&gt;</value>
+  <data name="You are leader of the group: &lt;a href=&quot;{0}&quot;&gt;&lt;strong&gt;{1}&lt;/strong&gt;&lt;/a&gt;" xml:space="preserve">
+    <value>Eres el líder del grupo: &lt;a href="{0}"&gt;&lt;strong&gt;{1}&lt;/strong&gt;&lt;/a&gt;</value>
     <comment>Text with a link indicating that the participant is the leader of a group; {0} is replaced with the URL to group management and {1} will be replaced with the name of the group.</comment>
   </data>
   <data name="Back to {0}" xml:space="preserve">
@@ -1349,5 +1345,20 @@ Hogwarts, Narnia, Oz, y el centro de la tierra!</value>
   <data name="Family" xml:space="preserve">
     <value>Familia</value>
     <comment>Title shown when viewing a Family of participants. Will also be used in a sentence.</comment>
+  </data>
+  <data name="Joined {0}!" xml:space="preserve">
+    <value>¡Participacion Confirmada {0}!</value>
+    <comment>Confirmation to the participant that they have joined the program. {0} is replaced with the name of the program.</comment>
+  </data>
+  <data name="Thanks for participating in {0}!" xml:space="preserve">
+    <value>¡Gracias por participar {0}!</value>
+    <comment>Thank visitors for participating in the program. {0} is replaced with the name of the program.</comment>
+  </data>
+  <data name="You can still sign in to review your history and achievements." xml:space="preserve">
+    <value>Ingrese a su sesión para revisar su historial y logros</value>
+  </data>
+  <data name="Select a Bundle" xml:space="preserve">
+    <value>Seleccione Su Paquete</value>
+    <comment>A bundle is a collection of avatar parts that are unlocked during participation. This text goes in a drop-down allowing the user to select a particular bundle to explore the parts it contains.</comment>
   </data>
 </root>
