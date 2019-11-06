@@ -1074,8 +1074,8 @@ namespace GRA.Controllers
                     }
                     else if (result.Status == ServiceResultStatus.Success)
                     {
-                        ShowAlertSuccess(_sharedLocalizer[Annotations.Interface.AddedItem,
-                            model.Book.Title]);
+                        ShowAlertSuccess(_sharedLocalizer[Annotations.Interface.UpdatedItem,
+                            Annotations.Interface.BookList]);
                     }
                 }
                 catch (GraException gex)
