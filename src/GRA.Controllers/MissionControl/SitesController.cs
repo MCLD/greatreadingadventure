@@ -21,6 +21,7 @@ namespace GRA.Controllers.MissionControl
         private readonly EmailService _emailSerivce;
         private readonly SiteService _siteService;
         private readonly UserService _userService;
+
         public SitesController(ILogger<SitesController> logger,
             ServiceFacade.Controller context,
             EmailService emailService,
@@ -32,7 +33,7 @@ namespace GRA.Controllers.MissionControl
             _mapper = context.Mapper ?? throw new ArgumentNullException(nameof(context.Mapper));
             _emailSerivce = emailService ?? throw new ArgumentNullException(nameof(emailService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
-            _userService = userService ?? throw new ArgumentNullException(nameof(UserService));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             PageTitle = "Site management";
         }
 
@@ -41,6 +42,11 @@ namespace GRA.Controllers.MissionControl
             var filter = new BaseFilter(page);
 
             var siteList = await _siteService.GetPaginatedListAsync(filter);
+
+            if (siteList.Count == 1)
+            {
+                return RedirectToAction("Detail", new { id = siteList.Data.First().Id });
+            }
 
             var paginateModel = new PaginateViewModel()
             {
@@ -116,13 +122,11 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Configuration(SiteConfigurationViewModel model)
         {
-            string siteName = null;
+            var site = await _siteLookupService.GetByIdAsync(model.Id);
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var site = await _siteLookupService.GetByIdAsync(model.Id);
-                    siteName = site.Name;
                     _mapper.Map<SiteConfigurationViewModel, Site>(model, site);
 
                     await _siteService.UpdateAsync(site);
@@ -134,12 +138,7 @@ namespace GRA.Controllers.MissionControl
                     ShowAlertDanger("Unable to update site: ", gex);
                 }
             }
-            if (string.IsNullOrWhiteSpace(siteName))
-            {
-                var site = await _siteLookupService.GetByIdAsync(model.Id);
-                siteName = site.Name;
-            }
-            PageTitle = $"Site management - {siteName}";
+            PageTitle = $"Site management - {site.Name}";
             return View(model);
         }
 
@@ -155,13 +154,11 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Schedule(SiteScheduleViewModel model)
         {
-            string siteName = null;
+            var site = await _siteLookupService.GetByIdAsync(model.Id);
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var site = await _siteLookupService.GetByIdAsync(model.Id);
-                    siteName = site.Name;
                     _mapper.Map<SiteScheduleViewModel, Site>(model, site);
 
                     await _siteService.UpdateAsync(site);
@@ -173,12 +170,7 @@ namespace GRA.Controllers.MissionControl
                     ShowAlertDanger("Unable to update site: ", gex);
                 }
             }
-            if (string.IsNullOrWhiteSpace(siteName))
-            {
-                var site = await _siteLookupService.GetByIdAsync(model.Id);
-                siteName = site.Name;
-            }
-            PageTitle = $"Site management - {siteName}";
+            PageTitle = $"Site management - {site.Name}";
             return View(model);
         }
 
@@ -194,13 +186,11 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> SocialMedia(SiteSocialMediaViewModel model)
         {
-            string siteName = null;
+            var site = await _siteLookupService.GetByIdAsync(model.Id);
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var site = await _siteLookupService.GetByIdAsync(model.Id);
-                    siteName = site.Name;
                     _mapper.Map<SiteSocialMediaViewModel, Site>(model, site);
 
                     await _siteService.UpdateAsync(site);
@@ -212,12 +202,7 @@ namespace GRA.Controllers.MissionControl
                     ShowAlertDanger("Unable to update site: ", gex);
                 }
             }
-            if (string.IsNullOrWhiteSpace(siteName))
-            {
-                var site = await _siteLookupService.GetByIdAsync(model.Id);
-                siteName = site.Name;
-            }
-            PageTitle = $"Site management - {siteName}";
+            PageTitle = $"Site management - {site.Name}";
             return View(model);
         }
 
@@ -226,7 +211,6 @@ namespace GRA.Controllers.MissionControl
             var site = await _siteLookupService.GetByIdAsync(id);
             PageTitle = $"Site management - {site.Name}";
 
-
             var settingGroups = SiteSettingDefinitions.DefinitionDictionary
                 .GroupBy(_ => _.Value.Category)
                 .Select(_ => new SiteSettingGroup()
@@ -234,7 +218,7 @@ namespace GRA.Controllers.MissionControl
                     Name = _.Key,
                     SettingInformations = _.Select(i => new SiteSettingInformation()
                     {
-                        SiteSetting = site.Settings.Where(s => s.Key == i.Key).SingleOrDefault()
+                        SiteSetting = site.Settings.SingleOrDefault(s => s.Key == i.Key)
                             ?? new SiteSetting(),
                         Definition = i.Value,
                         Key = i.Key
@@ -264,7 +248,7 @@ namespace GRA.Controllers.MissionControl
 
             var settingKeys = SiteSettingDefinitions.DefinitionDictionary.Keys.ToList();
             var invalidKeys = siteSettings
-                .Where(_ => settingKeys.Contains(_.Key) == false)
+                .Where(_ => !settingKeys.Contains(_.Key))
                 .Select(_ => _.Key);
             if (invalidKeys.Any())
             {
@@ -285,12 +269,10 @@ namespace GRA.Controllers.MissionControl
                     {
                         siteSetting.Value = "True";
                     }
-                    else if (definition.Format == SiteSettingFormat.Integer)
+                    else if (definition.Format == SiteSettingFormat.Integer
+                        && !int.TryParse(siteSetting.Value, out int value))
                     {
-                        if (int.TryParse(siteSetting.Value, out int value) == false)
-                        {
-                            ModelState.AddModelError("", $"Please enter a whole number for {definition.Name}.");
-                        }
+                        ModelState.AddModelError("", $"Please enter a whole number for {definition.Name}.");
                     }
                 }
             }
@@ -309,7 +291,7 @@ namespace GRA.Controllers.MissionControl
                     Name = _.Key,
                     SettingInformations = _.Select(i => new SiteSettingInformation()
                     {
-                        SiteSetting = siteSettings.Where(s => s.Key == i.Key).SingleOrDefault()
+                        SiteSetting = siteSettings.SingleOrDefault(s => s.Key == i.Key)
                             ?? new SiteSetting(),
                         Definition = i.Value,
                         Key = i.Key
@@ -335,7 +317,7 @@ namespace GRA.Controllers.MissionControl
                 var site = await GetCurrentSiteAsync();
                 var subject = $"{site.Name} test email";
                 var body = $"This is a test email sent by {site.Name} at {_dateTimeProvider.Now}";
-                await _emailSerivce.SendEmailToAddressAsync(GetCurrentSiteId(), emailAddress, 
+                await _emailSerivce.SendEmailToAddressAsync(GetCurrentSiteId(), emailAddress,
                     subject, body);
                 _logger.LogInformation("Test email sent to {emailAddress}", emailAddress);
                 return Json(new { success = true });

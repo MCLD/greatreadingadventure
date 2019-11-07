@@ -863,21 +863,14 @@ namespace GRA.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> AuthorizationCode()
+        public IActionResult AuthorizationCode()
         {
             if (TempData.ContainsKey(AuthCodeAttempts) && (int)TempData.Peek(AuthCodeAttempts) >= 5)
             {
                 ShowAlertDanger("Too many failed authorization attempts.");
                 return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
             }
-            var site = await GetCurrentSiteAsync();
-            string siteLogoUrl = site.SiteLogoUrl
-                ?? Url.Content(Defaults.SiteLogoPath);
-
-            return View(new AuthorizationCodeViewModel
-            {
-                SiteLogoUrl = siteLogoUrl
-            });
+            return View();
         }
 
         [HttpPost]
@@ -919,13 +912,7 @@ namespace GRA.Controllers
             }
             ShowAlertDanger("Invalid authorization code.");
 
-            var siteLogoUrl = site.SiteLogoUrl
-                ?? Url.Content(Defaults.SiteLogoPath);
-
-            return View(new AuthorizationCodeViewModel
-            {
-                SiteLogoUrl = siteLogoUrl
-            });
+            return View();
         }
     }
 }

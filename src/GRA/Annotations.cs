@@ -4,13 +4,12 @@
     {
         public static class Home
         {
-            public const string AccessClosedSalutation = "The Great Reading Adventure is now Closed. Come back next Summer for more reading!";
-            public const string BeforeRegistrationSalutation = "The registration is not open yet. Comeback soon to register!";
+            public const string AdventureNotOver = "Your adventure is not over yet!";
+            public const string BannerAltTag = "Illustration of a forest.";
             public const string CalendarReminder = "Add a calendar reminder";
+            public const string ContinueYourAdventure = "Continue your adventure with a visit to your local library in person or online! Books, movies, audiobooks, graphic novels all await!";
             public const string ForMoreInformation = "For more information about this reading program, visit your local library!";
             public const string GoOnAJourney = "While you're there, go on a journey of discovery! Visit fabulous destinations such as Hogwarts, Narnia, Oz, and Middle Earth!";
-            public const string ProgramEndedSalutation = "The Great Reading Adventure has now ended. Don't forget to redeem your prizes and, check back next year for more reading fun!";
-            public const string ProgramOpenSalutation = "Thanks for participating in the Great Reading Adventure. For more information you can go visit your local branch at <a href=\"{0}\" target=\"_blank\">{1}</a>.";
             public const string ProgramStartsOn = "You can join our program starting on {0}!";
             public const string Read20 = "Reading for 20 minutes a day helps build a strong lifelong reading habit.";
             public const string ReadingIsFundamental = "Reading is fundamental for developing literacy skills!";
@@ -179,6 +178,7 @@
             public const string Participant = "Participant";
             public const string Points = "Points";
             public const string RegistrationOpens = "{0} - registration opens {1}";
+            public const string SeeYouSoon = "{0} - See you soon!";
             public const string SendMail = "Send Mail";
             public const string ShareYourAvatar = "Share Your Avatar";
             public const string SignIn = "Sign in";

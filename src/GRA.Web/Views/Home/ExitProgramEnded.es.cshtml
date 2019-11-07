@@ -1,9 +1,44 @@
-﻿@section metadata {
+﻿@model GRA.Controllers.ViewModel.Home.ExitPageViewModel
+@section metadata {
     <grasite property="metadescription"></grasite>
     <grasite property="dcmetadata"></grasite>
     <grasite property="twittermetadata"></grasite>
     <grasite property="facebookmetadata"></grasite>
 }
-<div>
-    @SharedLocalizer[GRA.Annotations.Home.ProgramEndedSalutation]
+<div class="row gra-landing-banner">
+    <div class="col-xs-12">
+        <img src="~/images/forest.jpg"
+             alt="@SharedLocalizer[GRA.Annotations.Home.BannerAltTag]"
+             class="img-responsive img-rounded"
+             style="width: 100%;"
+             srcset="@Url.Content("~/images/forest.jpg") 1x, @Url.Content("~/images/forest@2x.jpg") 2x" />
+    </div>
+</div>
+<div class="row gra-landing-content">
+    <div class="col-sm-7">
+        <h2>@SharedLocalizer[GRA.Annotations.Home.AdventureNotOver]</h2>
+        <p>@SharedLocalizer[GRA.Annotations.Home.ContinueYourAdventure]</p>
+    </div>
+    <div class="col-sm-5">
+        @if (!string.IsNullOrEmpty(Model?.Branch?.Url))
+        {
+            <p class="gra-branch-name"><a href="@Model.Branch.Url">@Model.Branch.Name</a></p>
+
+        }
+        else
+        {
+            <p class="gra-branch-name">@Model.Branch.Name</p>
+
+        }
+        <p>
+            @if (!string.IsNullOrEmpty(Model?.Branch?.Telephone))
+            {
+                <a href="tel:@Model.Branch.Telephone">@Model.Branch.Telephone</a><br />
+            }
+            @if (!string.IsNullOrEmpty(Model?.Branch?.Address))
+            {
+                @Model.Branch.Address
+            }
+        </p>
+    </div>
 </div>
