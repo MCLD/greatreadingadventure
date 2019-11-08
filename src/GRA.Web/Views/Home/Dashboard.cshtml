@@ -412,6 +412,7 @@
     {
         <script>
             $(".gra-carousel-link").on("click", function (event) {
+                event.preventDefault();
                 event.stopPropagation();
                 event.stopImmediatePropagation();
                 $("#graCarouselModalContent").html("<div class=\"gra-carousel-spinner\"><span class=\"fas fa-spinner fa-3x fa-spin\"></span></div>");
