@@ -513,20 +513,15 @@ namespace GRA.Controllers
             }
         }
 
-        private SiteStage ParseStage(string id)
+        private static SiteStage ParseStage(string siteStageText)
         {
-            switch (id)
+            if (Enum.TryParse(siteStageText, out SiteStage siteStage))
             {
-                case nameof(SiteStage.BeforeRegistration):
-                    return SiteStage.BeforeRegistration;
-                case nameof(SiteStage.RegistrationOpen):
-                    return SiteStage.RegistrationOpen;
-                case nameof(SiteStage.ProgramEnded):
-                    return SiteStage.ProgramEnded;
-                case nameof(SiteStage.AccessClosed):
-                    return SiteStage.AccessClosed;
-                default:
-                    return SiteStage.ProgramOpen;
+                return siteStage;
+            }
+            else
+            {
+                return SiteStage.ProgramOpen;
             }
         }
 

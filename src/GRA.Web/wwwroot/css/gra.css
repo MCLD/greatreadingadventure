@@ -819,12 +819,12 @@ p.password-note {
 }
 
 .gra-landing-content {
-    margin-top: 2rem;
-    margin-bottom: 2rem;
     font-size: larger;
+    margin-bottom: 2rem;
+    margin-top: 2rem;
 }
 
-    .gra-landing-content h2 {
+    .gra-landing-content .gra-exit-header {
         margin-top: 0;
     }
 
