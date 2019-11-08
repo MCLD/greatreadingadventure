@@ -358,7 +358,11 @@ namespace GRA.Domain.Service
                 _logger.LogError(error);
                 throw new GraException("Books cannot be added while there is a pending questionnaire to be taken.");
             }
-            var addedBook = _bookRepository.CheckIfBookExists(book) ?? book;
+
+            book.Title = book.Title?.Trim();
+            book.Author = book.Author?.Trim();
+
+            var addedBook = await _bookRepository.GetBookAsync(book) ?? book;
             if (await _bookRepository.UserHasBookAsync(userId, addedBook.Id))
             {
                 serviceResult.Status = ServiceResultStatus.Warning;

@@ -153,13 +153,13 @@ namespace GRA.Data.Repository
                 .CountAsync();
         }
 
-        public Book CheckIfBookExists(Book book)
+        public async Task<Book> GetBookAsync(Book book)
         {
-            return _context.Books.AsNoTracking()
+            return await _context.Books.AsNoTracking()
                 .Where(_ => string.Equals(_.Title, book.Title, StringComparison.OrdinalIgnoreCase)
-                && string.Equals(_.Author, book.Author, StringComparison.OrdinalIgnoreCase))
+                    && string.Equals(_.Author, book.Author, StringComparison.OrdinalIgnoreCase))
                 .ProjectTo<Book>(_mapper.ConfigurationProvider)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
         }
     }
 }
