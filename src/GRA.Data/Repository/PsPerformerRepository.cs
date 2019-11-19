@@ -69,6 +69,14 @@ namespace GRA.Data.Repository
             };
         }
 
+        public async Task<List<PsPerformer>> GetAllPerformersAsync()
+        {
+            return await DbSet.AsNoTracking()
+                .OrderBy(_ => _.Name)
+                .ProjectTo<PsPerformer>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
         public async Task<List<int>> GetIndexListAsync(bool onlyApproved = false)
         {
             var performers = DbSet

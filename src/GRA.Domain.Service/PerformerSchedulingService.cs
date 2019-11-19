@@ -295,6 +295,17 @@ namespace GRA.Domain.Service
             return await _psPerformerRepository.PageAsync(filter);
         }
 
+        public async Task<List<PsPerformer>> GetAllPerformersListAsync()
+        {
+            if (!HasPermission(Permission.ManagePerformers)
+                && !HasPermission(Permission.ViewPerformerDetails))
+            {
+                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view performer list.");
+                throw new GraException("Permission denied.");
+            }
+            return await _psPerformerRepository.GetAllPerformersAsync();
+        }
+
         public async Task<List<int>> GetPerformerIndexListAsync(bool onlyApproved = false)
         {
             if (!HasPermission(Permission.ManagePerformers)

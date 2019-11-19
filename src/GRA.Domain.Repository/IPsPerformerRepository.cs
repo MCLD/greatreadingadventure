@@ -19,5 +19,6 @@ namespace GRA.Domain.Repository
         Task RemovePerformerBranchListAsync(int performerId, List<int> branchIds);
         Task RemovePerformerBranchesAsync(int performerId);
         Task<int> GetPerformerCountAsync();
+        Task<List<PsPerformer>> GetAllPerformersAsync();
     }
 }

@@ -20,7 +20,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.PerformerManagement
         public int? NextPerformer { get; set; }
         public int? PrevPerformer { get; set; }
         public int ReturnPage { get; set; }
-        public bool CanDownloadCoversheet { get; set; }
 
         public List<int> BranchAvailability { get; set; }
         public ICollection<PsBlackoutDate> BlackoutDates { get; set; }
