@@ -1377,4 +1377,20 @@
     <value>Illustration of a meadow.</value>
     <comment>The alt tag on the front page banner image for those who cannot see the image; the image is an illustration of a meadow</comment>
   </data>
+  <data name="{0} - See you soon!" xml:space="preserve">
+    <value>{0} - See you soon!</value>
+    <comment>Title of the exit Web page once the user logs out, {0} is replaced with the name of the site.</comment>
+  </data>
+  <data name="Continue your adventure with a visit to your local library in person or online! Books, movies, audiobooks, graphic novels all await!" xml:space="preserve">
+    <value>Continue your adventure with a visit to your local library in person or online! Books, movies, audiobooks, graphic novels all await!</value>
+    <comment>Call to action on the exit page after a participant logs out; shown next to information about their library (URL, telephone number, address).</comment>
+  </data>
+  <data name="Your adventure is not over yet!" xml:space="preserve">
+    <value>Your adventure is not over yet!</value>
+    <comment>Title on the exit page after a participant logs out.</comment>
+  </data>
+  <data name="Illustration of a forest." xml:space="preserve">
+    <value>Illustration of a forest.</value>
+    <comment>The alt tag on the front page banner image for those who cannot see the image; the image is an illustration of a forest.</comment>
+  </data>
 </root>
