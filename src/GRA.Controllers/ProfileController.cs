@@ -9,6 +9,7 @@ using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
+using GRA.Domain.Service.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -1040,7 +1041,6 @@ namespace GRA.Controllers
             }
 
             User user = await _userService.GetDetails(GetActiveUserId());
-
             var viewModel = new BookListViewModel
             {
                 Books = books.Data,
@@ -1055,6 +1055,49 @@ namespace GRA.Controllers
             };
 
             return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddBook(BookListViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    model.Book.Author = model.Book.Author.Trim();
+                    model.Book.Title = model.Book.Title.Trim();
+                    var result =  await _activityService.AddBookAsync(GetActiveUserId(), model.Book);
+                    if (result.Status == ServiceResultStatus.Warning
+                            && !string.IsNullOrWhiteSpace(result.Message))
+                    {
+                        ShowAlertWarning(result.Message);
+                    }
+                    else if (result.Status == ServiceResultStatus.Success)
+                    {
+                        ShowAlertSuccess(_sharedLocalizer[Annotations.Interface.UpdatedItem,
+                            Annotations.Interface.BookList]);
+                    }
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger(_sharedLocalizer[Annotations.Interface.CouldNotCreate,
+                        model.Book.Title,
+                        gex.Message]);
+                }
+            }
+            else
+            {
+                ShowAlertDanger(_sharedLocalizer[Annotations.Interface.CouldNotCreate,
+                    model.Book.Title,
+                    _sharedLocalizer[Annotations.Required.Missing]]);
+            }
+
+            int? page = null;
+            if (model.PaginateModel.CurrentPage != 1)
+            {
+                page = model.PaginateModel.CurrentPage;
+            }
+            return RedirectToAction(nameof(Books), new { page });
         }
 
         [HttpPost]

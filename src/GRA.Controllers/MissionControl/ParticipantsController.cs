@@ -9,6 +9,7 @@ using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
+using GRA.Domain.Service.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -1908,8 +1909,17 @@ namespace GRA.Controllers.MissionControl
             {
                 try
                 {
-                    await _activityService.AddBookAsync(model.Id, model.Book, true);
-                    ShowAlertSuccess($"Added book '{model.Book.Title}'");
+                    var result = await _activityService.AddBookAsync(model.Id, model.Book, true);
+                    if (result.Status == ServiceResultStatus.Warning
+                            && !string.IsNullOrWhiteSpace(result.Message))
+                    {
+                        ShowAlertWarning(result.Message);
+                    }
+                    else if (result.Status == ServiceResultStatus.Success)
+                    {
+                        ShowAlertSuccess($"Added book '{model.Book.Title}'");
+                    }
+                    
                 }
                 catch (GraException gex)
                 {
