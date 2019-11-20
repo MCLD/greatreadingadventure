@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Versioning;
-using System.Text;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl;
 using GRA.Domain.Service;
@@ -45,8 +44,8 @@ namespace GRA.Controllers.MissionControl
                 });
             }
 
-            string thisAssemblyName = "Unknown";
-            string thisAssemblyVersion = "Unknown";
+            string thisAssemblyName = null;
+            string thisAssemblyVersion = null;
             try
             {
                 thisAssemblyName = Assembly.GetEntryAssembly().GetName().Name;
@@ -59,7 +58,7 @@ namespace GRA.Controllers.MissionControl
 
             var settings = new Dictionary<string, string>
             {
-                {"Version", thisAssemblyVersion}
+                {"Version", thisAssemblyVersion ?? "Unknown"}
             };
 
             try
@@ -88,7 +87,7 @@ namespace GRA.Controllers.MissionControl
                     _config[ConfigurationKey.ApplicationDiscriminator]);
             }
 
-            if(_l10nOptions.Value?.SupportedCultures.Count > 0)
+            if (_l10nOptions.Value?.SupportedCultures.Count > 0)
             {
                 settings.Add("Supported Cultures", string.Join(",", _l10nOptions
                     .Value
@@ -122,9 +121,6 @@ namespace GRA.Controllers.MissionControl
                 versions.Add(assemblyName.Name, version);
             }
 
-            string siteLogoUrl = site.SiteLogoUrl
-                ?? Url.Content(Defaults.SiteLogoPath);
-
             var runtimeSettings = new Dictionary<string, string>
             {
                 { "GC latency mode", System.Runtime.GCSettings.LatencyMode.ToString() },
@@ -152,7 +148,7 @@ namespace GRA.Controllers.MissionControl
                 runtimeSettings.Add(".NET Environment version", dotnetVersion);
             }
 
-            if(!string.IsNullOrEmpty(_config["ASPNETCORE_VERSION"]))
+            if (!string.IsNullOrEmpty(_config["ASPNETCORE_VERSION"]))
             {
                 runtimeSettings.Add("ASP.NET Core version", _config["ASPNETCORE_VERSION"]);
             }
@@ -169,7 +165,7 @@ namespace GRA.Controllers.MissionControl
             }
 
             var imageCreated = _config["org.opencontainers.image.created"];
-            if(!string.IsNullOrEmpty(imageCreated))
+            if (!string.IsNullOrEmpty(imageCreated))
             {
                 runtimeSettings.Add("Container image created", imageCreated);
             }
@@ -182,10 +178,9 @@ namespace GRA.Controllers.MissionControl
 
             return View(new SystemInformationViewModel
             {
-                Assembly = thisAssemblyName,
+                Assembly = thisAssemblyName ?? "Unknown",
                 Version = thisAssemblyVersion,
                 Assemblies = versions,
-                SiteLogoUrl = siteLogoUrl,
                 Settings = settings,
                 RuntimeSettings = runtimeSettings
             });

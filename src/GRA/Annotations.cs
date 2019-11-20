@@ -4,7 +4,10 @@
     {
         public static class Home
         {
+            public const string AdventureNotOver = "Your adventure is not over yet!";
+            public const string BannerAltTag = "Illustration of a forest.";
             public const string CalendarReminder = "Add a calendar reminder";
+            public const string ContinueYourAdventure = "Continue your adventure with a visit to your local library in person or online! Books, movies, audiobooks, graphic novels all await!";
             public const string ForMoreInformation = "For more information about this reading program, visit your local library!";
             public const string GoOnAJourney = "While you're there, go on a journey of discovery! Visit fabulous destinations such as Hogwarts, Narnia, Oz, and Middle Earth!";
             public const string ProgramStartsOn = "You can join our program starting on {0}!";
@@ -176,6 +179,7 @@
             public const string Participant = "Participant";
             public const string Points = "Points";
             public const string RegistrationOpens = "{0} - registration opens {1}";
+            public const string SeeYouSoon = "{0} - See you soon!";
             public const string SendMail = "Send Mail";
             public const string ShareYourAvatar = "Share Your Avatar";
             public const string SignIn = "Sign in";

@@ -6,6 +6,5 @@ namespace GRA.Controllers.ViewModel.Join
     {
         [DisplayName("Authorization Code")]
         public string AuthorizationCode { get; set; }
-        public string SiteLogoUrl { get; set; }
     }
 }
