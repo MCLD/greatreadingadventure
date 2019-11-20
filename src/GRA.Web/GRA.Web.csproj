@@ -121,6 +121,9 @@
     <None Include="wwwroot\css\gra.css" />
     <None Include="wwwroot\css\missioncontrol.css" />
     <None Include="wwwroot\css\WMD.css" />
+    <None Include="wwwroot\images\great-reading-adventure-logo%401x.png" />
+    <None Include="wwwroot\images\forest%402x.jpg" />
+    <None Include="wwwroot\images\forest.jpg" />
     <None Include="wwwroot\js\gra.js" />
     <None Include="wwwroot\js\jquery-ui-1.12.1.custom\AUTHORS.txt" />
     <None Include="wwwroot\js\jquery-ui-1.12.1.custom\Components.txt" />
@@ -170,6 +173,10 @@
     <Content Include="assets\defaultfavicon\*.*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="assets\defaultimages\no_avatar.png" />
   </ItemGroup>
 
   <ItemGroup>

@@ -565,6 +565,12 @@ namespace GRA.Domain.Service
             }
         }
 
+        public async Task<Branch> GetUsersBranch(int userId)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            return await _branchRepository.GetByIdAsync(user.BranchId);
+        }
+
         public async Task<string>
             ActivateAuthorizationCode(string authorizationCode, int? joiningUserId = null)
         {
