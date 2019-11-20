@@ -104,6 +104,7 @@ namespace GRA.Domain.Service
             var currentCarousel = await _carouselRepository.GetByIdAsync(carousel.Id);
             currentCarousel.Name = carousel.Name.Trim();
             currentCarousel.Heading = carousel.Heading?.Trim();
+            currentCarousel.StartTime = carousel.StartTime;
 
             return await _carouselRepository
                 .UpdateSaveAsync(GetClaimId(ClaimType.UserId), currentCarousel);
