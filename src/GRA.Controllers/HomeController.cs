@@ -269,7 +269,7 @@ namespace GRA.Controllers
             }
             else
             {
-                return await ShowPageAsync(site, GetSiteStage());
+                return await ShowLandingPageAsync(site, GetSiteStage());
             }
         }
 
@@ -298,11 +298,7 @@ namespace GRA.Controllers
         [PreventQuestionnaireRedirect]
         public async Task<IActionResult> Signout()
         {
-            if (AuthUser.Identity.IsAuthenticated)
-            {
-                await LogoutUserAsync();
-            }
-            return RedirectToAction(nameof(Index));
+            return await ShowExitPageAsync(GetSiteStage());
         }
 
         public IActionResult LogActivity()
@@ -431,7 +427,42 @@ namespace GRA.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private async Task<IActionResult> ShowPageAsync(Site site, SiteStage siteStage)
+        private async Task<IActionResult> ShowExitPageAsync(SiteStage siteStage,
+            bool performLogout = true)
+        {
+            string siteName = HttpContext.Items[ItemKey.SiteName]?.ToString();
+            PageTitle = _sharedLocalizer[Annotations.Title.SeeYouSoon, siteName];
+            ViewResult viewResult;
+            var exitPageViewModel = new ExitPageViewModel
+            {
+                Branch = await _userService.GetUsersBranch(GetActiveUserId())
+            };
+            switch (siteStage)
+            {
+                case SiteStage.BeforeRegistration:
+                    viewResult = View(ViewTemplates.ExitBeforeRegistration, exitPageViewModel);
+                    break;
+                case SiteStage.RegistrationOpen:
+                    viewResult = View(ViewTemplates.ExitRegistrationOpen, exitPageViewModel);
+                    break;
+                case SiteStage.ProgramEnded:
+                    viewResult = View(ViewTemplates.ExitProgramEnded, exitPageViewModel);
+                    break;
+                case SiteStage.AccessClosed:
+                    viewResult = View(ViewTemplates.ExitAccessClosed, exitPageViewModel);
+                    break;
+                default:
+                    viewResult = View(ViewTemplates.ExitProgramOpen, exitPageViewModel);
+                    break;
+            }
+            if (performLogout)
+            {
+                await LogoutUserAsync();
+            }
+            return viewResult;
+        }
+
+        private async Task<IActionResult> ShowLandingPageAsync(Site site, SiteStage siteStage)
         {
             string siteName = HttpContext.Items[ItemKey.SiteName]?.ToString();
             PageTitle = siteName;
@@ -482,30 +513,37 @@ namespace GRA.Controllers
             }
         }
 
-        public async Task<IActionResult> Preview(string id)
+        private static SiteStage ParseStage(string siteStageText)
+        {
+            if (Enum.TryParse(siteStageText, out SiteStage siteStage))
+            {
+                return siteStage;
+            }
+            else
+            {
+                return SiteStage.ProgramOpen;
+            }
+        }
+
+        public async Task<IActionResult> PreviewLanding(string id)
         {
             if (UserHasPermission(Permission.AccessMissionControl))
             {
-                SiteStage stage;
-                switch (id)
-                {
-                    case nameof(SiteStage.BeforeRegistration):
-                        stage = SiteStage.BeforeRegistration;
-                        break;
-                    case nameof(SiteStage.RegistrationOpen):
-                        stage = SiteStage.RegistrationOpen;
-                        break;
-                    case nameof(SiteStage.ProgramEnded):
-                        stage = SiteStage.ProgramEnded;
-                        break;
-                    case nameof(SiteStage.AccessClosed):
-                        stage = SiteStage.AccessClosed;
-                        break;
-                    default:
-                        stage = SiteStage.ProgramOpen;
-                        break;
-                }
-                return await ShowPageAsync(await GetCurrentSiteAsync(), stage);
+                SiteStage stage = ParseStage(id);
+                return await ShowLandingPageAsync(await GetCurrentSiteAsync(), stage);
+            }
+            else
+            {
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+        public async Task<IActionResult> PreviewExit(string id)
+        {
+            if (UserHasPermission(Permission.AccessMissionControl))
+            {
+                SiteStage stage = ParseStage(id);
+                return await ShowExitPageAsync(stage, false);
             }
             else
             {

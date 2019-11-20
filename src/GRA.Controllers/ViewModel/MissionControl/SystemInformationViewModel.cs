@@ -7,7 +7,6 @@ namespace GRA.Controllers.ViewModel.MissionControl
         public string Assembly { get; set; }
         public string Version { get; set; }
         public Dictionary<string, string> Assemblies { get; set; }
-        public string SiteLogoUrl { get; set; }
         public Dictionary<string, string> Settings { get; set; }
         public Dictionary<string, string> RuntimeSettings { get; set; }
     }
