@@ -138,7 +138,7 @@
                 $(this).children("a.rowlink").height($(this).height() + 11);
             });
         });
-        @if (Model.SchedulingStage < GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
+        @if (Model.SchedulingStage < GRA.Domain.Model.PsSchedulingStage.SchedulingOpen && Model.Performers.Count() > 0)
         {
             <text>
             $("#deleteModal").on("show.bs.modal", function(event) {

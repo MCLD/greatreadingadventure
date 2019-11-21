@@ -158,9 +158,6 @@ namespace GRA.Domain.Service
             {
                 currentSettings.BranchAvailabilitySuplimentalText = settings
                     .BranchAvailabilitySuplimentalText?.Trim();
-                currentSettings.FundingSource = settings.FundingSource?.Trim();
-                currentSettings.LibraryBranch = settings.LibraryBranch?.Trim();
-                currentSettings.StaffContact = settings.StaffContact?.Trim();
                 currentSettings.ContactEmail = settings.ContactEmail?.Trim();
                 currentSettings.SelectionsPerBranch = settings.SelectionsPerBranch;
                 currentSettings.RegistrationOpen = settings.RegistrationOpen;
@@ -589,12 +586,6 @@ namespace GRA.Domain.Service
         {
             VerifyManagementPermission();
             return await _psBranchSelectionRepository.GetCountByPerformerIdAsync(performerId);
-        }
-
-        public async Task<ICollection<PsBranchSelection>> GetPerformerSelectionAsync(int performerId)
-        {
-            VerifyManagementPermission();
-            return await _psBranchSelectionRepository.GetByPerformerIdAsync(performerId);
         }
 
         public async Task<ICollection<PsBranchSelection>> GetPerformerBranchSelectionsAsync(

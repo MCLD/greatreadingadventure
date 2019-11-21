@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Xml.Linq;
+﻿using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
 using GRA.Controllers.ViewModel.MissionControl.PerformerManagement;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
@@ -18,9 +12,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Spreadsheet;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -56,8 +54,6 @@ namespace GRA.Controllers.MissionControl
         private readonly ILogger<PerformerManagementController> _logger;
         private readonly PerformerSchedulingService _performerSchedulingService;
         private readonly SiteService _siteService;
-        private readonly Domain.Repository.IBranchRepository _branchRepository;
-        private readonly IHostingEnvironment _hostingEnvironment;
 
         public PerformerManagementController(ILogger<PerformerManagementController> logger,
             ServiceFacade.Controller context,
@@ -71,10 +67,7 @@ namespace GRA.Controllers.MissionControl
             _performerSchedulingService = performerSchedulingService
                 ?? throw new ArgumentNullException(nameof(performerSchedulingService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
-            _hostingEnvironment = hostingEnvironment ?? throw new ArgumentNullException(nameof(hostingEnvironment));
             PageTitle = "Performer Management";
-            _branchRepository = branchRepository
-               ?? throw new ArgumentNullException(nameof(branchRepository));
         }
 
         public async Task<IActionResult> Index()
@@ -236,10 +229,7 @@ namespace GRA.Controllers.MissionControl
                 SchedulingStage = schedulingStage,
                 CanDownloadCoversheet = true
             };
-            if (string.IsNullOrEmpty(settings.LibraryBranch)
-                || string.IsNullOrEmpty(settings.FundingSource)
-                || string.IsNullOrEmpty(settings.StaffContact)
-                || schedulingStage == PsSchedulingStage.SchedulingClosed)
+            if (schedulingStage == PsSchedulingStage.SchedulingClosed)
             {
                 viewModel.CanDownloadCoversheet = false;
             }
@@ -301,8 +291,6 @@ namespace GRA.Controllers.MissionControl
                 ShowAlertDanger("Unable to view performer: ", gex);
                 return RedirectToAction(nameof(Performers));
             }
-            performer.SelectionsCount = await _performerSchedulingService
-                        .GetPerformerSelectionCountAsync(performer.Id);
             var viewModel = new PerformerViewModel
             {
                 Approve = !performer.IsApproved,
@@ -507,13 +495,6 @@ namespace GRA.Controllers.MissionControl
         {
             var perfSettings = await _performerSchedulingService.GetSettingsAsync();
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(perfSettings);
-            if (string.IsNullOrEmpty(perfSettings.LibraryBranch)
-                || string.IsNullOrEmpty(perfSettings.FundingSource)
-                || string.IsNullOrEmpty(perfSettings.StaffContact))
-            {
-                ShowAlertDanger("One or more coversheet fields are not configured in PerformerManagment's Settings");
-                return RedirectToAction(nameof(Performers));
-            }
             var siteId = GetCurrentSiteId();
             var todaysDate = DateTime.Now.ToString("dddd, MMMM dd, yyyy");
             var ms = new System.IO.MemoryStream();
@@ -565,7 +546,7 @@ namespace GRA.Controllers.MissionControl
 
                 sheetData.Append(headRow);
 
-                var branches = await _branchRepository.GetAllAsync(siteId);
+                var branches = await _siteService.GetAllBranches();
 
                 foreach (var performer in await _performerSchedulingService.GetAllPerformersListAsync())
                 {
@@ -574,7 +555,7 @@ namespace GRA.Controllers.MissionControl
                     if (performer.SelectionsCount > 0)
                     {
                         var perfPrograms = await _performerSchedulingService.GetPerformerProgramsAsync(performer.Id);
-                        var perfSchedules = await _performerSchedulingService.GetPerformerSelectionAsync(performer.Id);
+                        var perfSchedules = await _performerSchedulingService.GetPerformerBranchSelectionsAsync(performer.Id);
                         var monthsched = perfSchedules.Select(_ => _.ScheduleStartTime.Month).Distinct();
 
                         foreach (var monthNum in monthsched)
@@ -602,7 +583,7 @@ namespace GRA.Controllers.MissionControl
                             }
                             var dateCell = CreateCell(todaysDate);
                             row.AppendChild(dateCell);
-                            var perfNameCell = CreateCell(Microsoft.Security.Application.Encoder.XmlEncode(performer.Name));
+                            var perfNameCell = CreateCell(performer.Name);
                             row.AppendChild(perfNameCell);
                             var billingMonthCell = CreateCell(new DateTime(2010, monthNum, 1).ToString("MMMM"));
                             row.AppendChild(billingMonthCell);

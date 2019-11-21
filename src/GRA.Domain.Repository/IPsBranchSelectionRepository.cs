@@ -19,6 +19,5 @@ namespace GRA.Domain.Repository
 
         Task<bool> BranchAgeGroupAlreadySelectedAsync(int ageGroupId, int branchId,
             int? currentSelectionId = null);
-        Task<ICollection<PsBranchSelection>> GetByPerformerIdAsync(int performerId);
     }
 }
