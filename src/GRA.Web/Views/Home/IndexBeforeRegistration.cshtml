@@ -5,23 +5,22 @@
     <grasite property="twittermetadata"></grasite>
     <grasite property="facebookmetadata"></grasite>
 }
-<div class="row" style="margin-bottom: 1em;">
+<div class="row gra-landing-banner">
     <div class="col-xs-12">
-        <img src="~/images/meadow.jpg"
-             alt="Illustration of a meadow."
+        <img src="~/images/forest.jpg"
+             alt="@SharedLocalizer[GRA.Annotations.Home.BannerAltTag]"
              class="img-responsive img-rounded"
              style="width: 100%;"
-             srcset="@Url.Content("~/images/meadow.jpg") 1x, @Url.Content("~/images/meadow@2x.jpg") 2x"
-             asp-append-version="true" />
+             srcset="@Url.Content("~/images/forest.jpg") 1x, @Url.Content("~/images/forest@2x.jpg") 2x" />
     </div>
 </div>
-<div class="row" style="margin-top: 2em; margin-bottom: 2em; font-size: larger;">
+<div class="row gra-landing-content">
     <div class="col-sm-3">
         <p>@SharedLocalizer[GRA.Annotations.Home.ForMoreInformation]</p>
         <p>@SharedLocalizer[GRA.Annotations.Home.GoOnAJourney]</p>
     </div>
     <div class="col-sm-6">
-        @SharedLocalizer[GRA.Annotations.Home.WelcomeTo, Model.SiteName]
+        <p>@SharedLocalizer[GRA.Annotations.Home.WelcomeTo, Model.SiteName]</p>
         @if (Model == null || string.IsNullOrEmpty(Model.RegistrationOpens))
         {
             <p>@SharedLocalizer[GRA.Annotations.Home.WhenProgramStarts]</p>
@@ -31,13 +30,14 @@
             <p>@SharedLocalizer[GRA.Annotations.Home.ProgramStartsOn, Model.RegistrationOpens]</p>
 
             <p>@SharedLocalizer[GRA.Annotations.Home.SubmitEmailBelow]</p>
+
             <form asp-controller="Home"
                   asp-action="AddReminder"
                   method="post"
                   role="form"
                   class="form-horizontal">
                 <input asp-for="SignUpSource" type="hidden" />
-                <div class="form-group" style="padding: 0.5em 1em;">
+                <div class="form-group" style="padding: 0.5em 1em; margin-top: 1rem;">
                     <label asp-for="Email" class="control-label sr-only">@SharedLocalizer[GRA.Domain.Model.DisplayNames.EmailAddress]</label>
                     <div class="input-group">
                         <input asp-for="Email" class="form-control" type="email" autofocus />
@@ -56,15 +56,17 @@
         {
             <p>@SharedLocalizer[GRA.Annotations.Home.ProgramStartsOn, Model.RegistrationOpens]</p>
         }
-        <form asp-controller="Home"
-              asp-action="GetIcs"
-              method="post"
-              role="form">
-            <button type="submit" class="btn btn-primary center-block">
-                <span class="fa fa-calendar"></span>
-                @SharedLocalizer[GRA.Annotations.Home.CalendarReminder]
-            </button>
-        </form>
+        <div class="gra-landing-calendar-button">
+            <form asp-controller="Home"
+                  asp-action="GetIcs"
+                  method="post"
+                  role="form">
+                <button type="submit" class="btn btn-primary center-block">
+                    <span class="fa fa-calendar"></span>
+                    @SharedLocalizer[GRA.Annotations.Home.CalendarReminder]
+                </button>
+            </form>
+        </div>
     </div>
     <div class="col-sm-3">
         <p>@SharedLocalizer[GRA.Annotations.Home.Read20]</p>

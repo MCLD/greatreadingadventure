@@ -7,7 +7,39 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
+            <label class="control-label">Prior to Registration Opening</label>
+            <em class="gra-preview-landings">
+                Preview
+                <a asp-area=""
+                   asp-controller="Home"
+                   asp-action="PreviewLanding"
+                   asp-route-id="@nameof(GRA.Domain.Model.SiteStage.BeforeRegistration)"
+                   target="_blank">Landing</a> /
+                <a asp-area=""
+                   asp-controller="Home"
+                   asp-action="PreviewExit"
+                   asp-route-id="@nameof(GRA.Domain.Model.SiteStage.BeforeRegistration)"
+                   target="_blank">Exit</a>
+            </em>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
             <label asp-for="RegistrationOpens" class="control-label"></label>
+            <em class="gra-preview-landings">
+                Preview
+                <a asp-area=""
+                   asp-controller="Home"
+                   asp-action="PreviewLanding"
+                   asp-route-id="@nameof(GRA.Domain.Model.SiteStage.RegistrationOpen)"
+                   target="_blank">Landing</a> /
+                <a asp-area=""
+                   asp-controller="Home"
+                   asp-action="PreviewExit"
+                   asp-route-id="@nameof(GRA.Domain.Model.SiteStage.RegistrationOpen)"
+                   target="_blank">Exit</a>
+            </em>
             <div class="input-group date datetimepicker">
                 <span class="input-group-addon">
                     <span class="fa fa-calendar"></span>
@@ -21,6 +53,19 @@
     <div class="row row-spacing">
         <div class="col-xs-12">
             <label asp-for="ProgramStarts" class="control-label"></label>
+            <em class="gra-preview-landings">
+                Preview
+                <a asp-area=""
+                   asp-controller="Home"
+                   asp-action="PreviewLanding"
+                   asp-route-id="@nameof(GRA.Domain.Model.SiteStage.ProgramOpen)"
+                   target="_blank">Landing</a> /
+                <a asp-area=""
+                   asp-controller="Home"
+                   asp-action="PreviewExit"
+                   asp-route-id="@nameof(GRA.Domain.Model.SiteStage.ProgramOpen)"
+                   target="_blank">Exit</a>
+            </em>
             <div class="input-group date datetimepicker">
                 <span class="input-group-addon">
                     <span class="fa fa-calendar"></span>
@@ -34,6 +79,19 @@
     <div class="row row-spacing">
         <div class="col-xs-12">
             <label asp-for="ProgramEnds" class="control-label"></label>
+            <em class="gra-preview-landings">
+                Preview
+                <a asp-area=""
+                   asp-controller="Home"
+                   asp-action="PreviewLanding"
+                   asp-route-id="@nameof(GRA.Domain.Model.SiteStage.ProgramEnded)"
+                   target="_blank">Landing</a> /
+                <a asp-area=""
+                   asp-controller="Home"
+                   asp-action="PreviewExit"
+                   asp-route-id="@nameof(GRA.Domain.Model.SiteStage.ProgramEnded)"
+                   target="_blank">Exit</a>
+            </em>
             <div class="input-group date datetimepicker">
                 <span class="input-group-addon">
                     <span class="fa fa-calendar"></span>
@@ -47,6 +105,19 @@
     <div class="row row-spacing">
         <div class="col-xs-12">
             <label asp-for="AccessClosed" class="control-label"></label>
+            <em class="gra-preview-landings">
+                Preview
+                <a asp-area=""
+                   asp-controller="Home"
+                   asp-action="PreviewLanding"
+                   asp-route-id="@nameof(GRA.Domain.Model.SiteStage.AccessClosed)"
+                   target="_blank">Landing</a> /
+                <a asp-area=""
+                   asp-controller="Home"
+                   asp-action="PreviewExit"
+                   asp-route-id="@nameof(GRA.Domain.Model.SiteStage.AccessClosed)"
+                   target="_blank">Exit</a>
+            </em>
             <div class="input-group date datetimepicker">
                 <span class="input-group-addon">
                     <span class="fa fa-calendar"></span>
@@ -82,4 +153,11 @@
             }
         });
     </script>
+
+    <style>
+        .gra-preview-landings {
+            display: inline-block;
+            margin-left: 1rem;
+        }
+    </style>
 }

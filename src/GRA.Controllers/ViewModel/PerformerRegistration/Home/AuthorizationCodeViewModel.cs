@@ -8,6 +8,5 @@ namespace GRA.Controllers.ViewModel.PerformerRegistration.Home
         [Required]
         [DisplayName("Authorization Code")]
         public string AuthorizationCode { get; set; }
-        public string SiteLogoUrl { get; set; }
     }
 }

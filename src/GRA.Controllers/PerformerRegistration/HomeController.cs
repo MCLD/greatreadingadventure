@@ -92,21 +92,14 @@ namespace GRA.Controllers.PerformerRegistration
         }
 
         [AllowAnonymous]
-        public async Task<IActionResult> AuthorizationCode()
+        public IActionResult AuthorizationCode()
         {
             if (!AuthUser.Identity.IsAuthenticated)
             {
                 return RedirectToSignIn();
             }
 
-            var site = await GetCurrentSiteAsync();
-            string siteLogoUrl = site.SiteLogoUrl
-                ?? Url.Content(Defaults.SiteLogoPath);
-
-            return View(new AuthorizationCodeViewModel
-            {
-                SiteLogoUrl = siteLogoUrl
-            });
+            return View();
         }
 
         [AllowAnonymous]
@@ -147,14 +140,7 @@ namespace GRA.Controllers.PerformerRegistration
                     ShowAlertDanger("Unable to activate code: ", gex);
                 }
             }
-            var site = await GetCurrentSiteAsync();
-            string siteLogoUrl = site.SiteLogoUrl
-                ?? Url.Content(Defaults.SiteLogoPath);
-
-            return View(new AuthorizationCodeViewModel
-            {
-                SiteLogoUrl = siteLogoUrl
-            });
+            return View();
         }
 
         public async Task<IActionResult> Information()
