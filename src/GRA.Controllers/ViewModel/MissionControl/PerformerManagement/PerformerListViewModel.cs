@@ -11,5 +11,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.PerformerManagement
         public PsPerformer PerformerToDelete { get; set; }
         public bool RegistrationClosed { get; set; }
         public PsSchedulingStage SchedulingStage { get; set; }
+        public string VendorIdPrompt { get; set; }
     }
 }

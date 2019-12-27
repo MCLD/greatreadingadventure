@@ -120,15 +120,21 @@
     </div>
 
     <div class="form-group">
+        <label asp-for="Settings.VendorIdPrompt" class="control-label"></label>
+        <input asp-for="Settings.VendorIdPrompt" class="form-control" />
+        <span asp-validation-for="Settings.VendorIdPrompt" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
         <label asp-for="Settings.VendorCodeFormat" class="control-label"></label>
         <input asp-for="Settings.VendorCodeFormat" class="form-control" />
         <span asp-validation-for="Settings.VendorCodeFormat" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Settings.BranchAvailabilitySuplimentalText" class="control-label"></label>
-        <input asp-for="Settings.BranchAvailabilitySuplimentalText" class="form-control" />
-        <span asp-validation-for="Settings.BranchAvailabilitySuplimentalText" class="text-danger"></span>
+        <label asp-for="Settings.BranchAvailabilitySupplementalText" class="control-label"></label>
+        <input asp-for="Settings.BranchAvailabilitySupplementalText" class="form-control" />
+        <span asp-validation-for="Settings.BranchAvailabilitySupplementalText" class="text-danger"></span>
     </div>
 
     <div class="form-group">
