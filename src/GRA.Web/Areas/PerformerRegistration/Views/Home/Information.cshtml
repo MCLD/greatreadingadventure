@@ -14,9 +14,9 @@
                 </div>
                 <div class="modal-body" style="max-height: calc(100vh - 200px); overflow-y:auto;">
                     <p>
-                        @if (!string.IsNullOrWhiteSpace(Model.Settings.BranchAvailabilitySuplimentalText))
+                        @if (!string.IsNullOrWhiteSpace(Model.Settings.BranchAvailabilitySupplementalText))
                         {
-                            <strong>@Model.Settings.BranchAvailabilitySuplimentalText</strong>
+                            <strong>@Model.Settings.BranchAvailabilitySupplementalText</strong>
                         }
                         Please select the locations where you are willing
                         to perform for the contracted rate. If you are unsure where the library is
@@ -230,7 +230,7 @@ else
 
     <div class="form-group">
         <label asp-for="Performer.VendorId" class="col-sm-3 control-label required-field">
-            Vender ID number
+            @Model.Settings.VendorIdPrompt
             @if (!string.IsNullOrWhiteSpace(Model.Settings.VendorCodeFormat))
             {
                 <span class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" title="Example number: @Model.Settings.VendorCodeFormat"></span>

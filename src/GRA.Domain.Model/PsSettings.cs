@@ -40,12 +40,16 @@ namespace GRA.Domain.Model
         [DisplayName("Schedule End Date")]
         public DateTime? ScheduleEndDate { get; set; }
 
+        [DisplayName("Vendor ID Prompt")]
+        [MaxLength(255)]
+        public string VendorIdPrompt { get; set; }
+
         [DisplayName("Vendor Code Format")]
         [MaxLength(255)]
         public string VendorCodeFormat { get; set; }
 
-        [DisplayName("Branch Availability Suplimental Text")]
+        [DisplayName("Branch Availability Supplemental Text")]
         [MaxLength(255)]
-        public string BranchAvailabilitySuplimentalText { get; set; }
+        public string BranchAvailabilitySupplementalText { get; set; }
     }
 }
