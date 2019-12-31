@@ -206,7 +206,7 @@ namespace GRA.Domain.Service
 
             if (settingDefinition == null)
             {
-                throw new Exception($"Invalid key: {key}");
+                throw new GraException($"Invalid key: {key}");
             }
 
             var site = (await GetSitesFromCacheAsync())
@@ -229,12 +229,12 @@ namespace GRA.Domain.Service
 
             if (settingDefinition == null)
             {
-                throw new Exception($"Invalid key: {key}");
+                throw new GraException($"Invalid key: {key}");
             }
             else if (settingDefinition.Format == SiteSettingFormat.Integer
                 || settingDefinition.Format == SiteSettingFormat.String)
             {
-                throw new Exception($"Invalid format for key: {key}");
+                throw new GraException($"Invalid format for key: {key}");
             }
 
             var site = (await GetSitesFromCacheAsync())
@@ -258,12 +258,12 @@ namespace GRA.Domain.Service
 
             if (settingDefinition == null)
             {
-                throw new Exception($"Invalid key: {key}");
+                throw new GraException($"Invalid key: {key}");
             }
             else if (settingDefinition.Format == SiteSettingFormat.Boolean
                 || settingDefinition.Format == SiteSettingFormat.String)
             {
-                throw new Exception($"Invalid format for key: {key}");
+                throw new GraException($"Invalid format for key: {key}");
             }
 
             var site = (await GetSitesFromCacheAsync())
@@ -296,12 +296,12 @@ namespace GRA.Domain.Service
 
             if (settingDefinition == null)
             {
-                throw new Exception($"Invalid key: {key}");
+                throw new GraException($"Invalid key: {key}");
             }
             else if (settingDefinition.Format == SiteSettingFormat.Boolean
                 || settingDefinition.Format == SiteSettingFormat.Integer)
             {
-                throw new Exception($"Invalid format for key: {key}");
+                throw new GraException($"Invalid format for key: {key}");
             }
 
             var site = (await GetSitesFromCacheAsync())

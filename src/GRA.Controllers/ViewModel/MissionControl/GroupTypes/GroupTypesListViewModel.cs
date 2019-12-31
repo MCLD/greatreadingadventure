@@ -1,8 +1,6 @@
-﻿using GRA.Controllers.ViewModel.Shared;
+﻿using System.Collections.Generic;
+using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace GRA.Controllers.ViewModel.MissionControl.GroupTypes
 {

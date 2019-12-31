@@ -70,7 +70,7 @@ namespace GRA.Data.Repository
             var entity = DbSet.Find(id);
             if (entity == null)
             {
-                throw new Exception($"ChallengeTask id {id} could not be found.");
+                throw new GraException($"ChallengeTask id {id} could not be found.");
             }
             var challengeId = entity.ChallengeId;
             DbSet.Remove(entity);
@@ -85,11 +85,11 @@ namespace GRA.Data.Repository
             var task = DbSet.Find(taskId);
             if (task == null)
             {
-                throw new Exception($"Task {taskId} could not be found");
+                throw new GraException($"Task {taskId} could not be found");
             }
             if (task.Position == 1)
             {
-                throw new Exception($"Task {taskId} is already in the first position for this challenge.");
+                throw new GraException($"Task {taskId} is already in the first position for this challenge.");
             }
             var previousTask = await DbSet
                 .Where(_ => _.ChallengeId == task.ChallengeId && _.Position == task.Position - 1)
@@ -104,14 +104,14 @@ namespace GRA.Data.Repository
             var task = DbSet.Find(taskId);
             if (task == null)
             {
-                throw new Exception($"Task {taskId} could not be found");
+                throw new GraException($"Task {taskId} could not be found");
             }
             var nextTask = await DbSet
                 .Where(_ => _.ChallengeId == task.ChallengeId && _.Position == task.Position + 1)
                 .SingleOrDefaultAsync();
             if (nextTask == null)
             {
-                throw new Exception($"Task {taskId} is already in the last position for this challenge.");
+                throw new GraException($"Task {taskId} is already in the last position for this challenge.");
             }
             nextTask.Position--;
             task.Position++;

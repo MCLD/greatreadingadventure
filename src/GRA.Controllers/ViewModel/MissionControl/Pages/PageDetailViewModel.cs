@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations.Schema;
 using GRA.Domain.Model;
 using Microsoft.AspNetCore.Mvc.Rendering;
 

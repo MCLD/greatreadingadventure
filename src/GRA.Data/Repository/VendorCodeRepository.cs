@@ -41,7 +41,7 @@ namespace GRA.Data.Repository
                 if (unusedCode == null)
                 {
                     _logger.LogCritical($"No available vendor codes of type {vendorCodeTypeId} to assign to {userId}.");
-                    throw new Exception("No available vendor code to assign.");
+                    throw new GraException("No available vendor code to assign.");
                 }
 
                 unusedCode.UserId = userId;
@@ -63,7 +63,7 @@ namespace GRA.Data.Repository
             if (!success)
             {
                 _logger.LogCritical($"Ultimately unsuccessful assigning vendor code type {vendorCodeTypeId} to {user.Id}");
-                throw new Exception($"Unable to assign vendor code type {vendorCodeTypeId} to user {user.Id}");
+                throw new GraException($"Unable to assign vendor code type {vendorCodeTypeId} to user {user.Id}");
             }
 
             return await GetByIdAsync(unusedCode.Id);

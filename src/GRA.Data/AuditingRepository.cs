@@ -1,18 +1,17 @@
-﻿using AutoMapper.QueryableExtensions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper.QueryableExtensions;
 using GRA.Abstract;
 using GRA.Data.Abstract;
 using GRA.Data.Model;
-using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GRA.Data
 {
@@ -131,7 +130,7 @@ namespace GRA.Data
                 .SingleOrDefaultAsync();
             if (entity == null)
             {
-                throw new Exception($"{nameof(DomainEntity)} id {id} could not be found.");
+                throw new GraException($"{nameof(DomainEntity)} id {id} could not be found.");
             }
             return _mapper.Map<DbEntity, DomainEntity>(entity);
         }
@@ -243,7 +242,7 @@ namespace GRA.Data
             var entity = await DbSet.FindAsync(id);
             if (entity == null)
             {
-                throw new Exception($"{nameof(DomainEntity)} id {id} could not be found.");
+                throw new GraException($"{nameof(DomainEntity)} id {id} could not be found.");
             }
             DbSet.Remove(entity);
             if (AuditSet != null)

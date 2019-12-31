@@ -90,7 +90,7 @@ namespace GRA.Data.Repository
                 .SingleOrDefaultAsync();
             if (program == null)
             {
-                throw new Exception($"Program {programId} could not be found.");
+                throw new GraException($"Program {programId} could not be found.");
             }
 
             var previousProgram = await DbSet
@@ -98,7 +98,7 @@ namespace GRA.Data.Repository
                 .SingleOrDefaultAsync();
             if (previousProgram == null)
             {
-                throw new Exception($"Program {programId} is already in the first position.");
+                throw new GraException($"Program {programId} is already in the first position.");
             }
             previousProgram.Position++;
             program.Position--;
@@ -112,7 +112,7 @@ namespace GRA.Data.Repository
                 .SingleOrDefaultAsync();
             if (program == null)
             {
-                throw new Exception($"Program {programId} could not be found.");
+                throw new GraException($"Program {programId} could not be found.");
             }
 
             var nextProgram = await DbSet
@@ -120,7 +120,7 @@ namespace GRA.Data.Repository
                 .SingleOrDefaultAsync();
             if (nextProgram == null)
             {
-                throw new Exception($"Program {programId} is already in the last position.");
+                throw new GraException($"Program {programId} is already in the last position.");
             }
             nextProgram.Position--;
             program.Position++;

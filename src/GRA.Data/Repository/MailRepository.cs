@@ -71,7 +71,7 @@ namespace GRA.Data.Repository
             var mail = await GetByIdAsync(mailId);
             if (mail == null)
             {
-                throw new Exception($"Mail id {mailId} not found.");
+                throw new GraException($"Mail id {mailId} not found.");
             }
             mail.IsRepliedTo = true;
             await UpdateSaveNoAuditAsync(mail);
@@ -138,7 +138,7 @@ namespace GRA.Data.Repository
             if (mail == null)
             {
                 _logger.LogError($"Could not find mail id {mailId}");
-                throw new Exception($"Could not find mail id {mailId}");
+                throw new GraException($"Could not find mail id {mailId}");
             }
             mail.IsNew = false;
             await SaveAsync();

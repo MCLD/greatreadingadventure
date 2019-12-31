@@ -9,7 +9,7 @@ using Serilog.Sinks.MSSqlServer;
 
 namespace GRA.Web
 {
-    public class LogConfig
+    public static class LogConfig
     {
         private const string ErrorControllerName = "GRA.Controllers.ErrorController";
 
@@ -19,8 +19,13 @@ namespace GRA.Web
         public static readonly string InstanceEnrichment = "Instance";
         public static readonly string RemoteAddressEnrichment = "RemoteAddress";
 
-        public LoggerConfiguration Build(IConfiguration config)
+        public static LoggerConfiguration Build(IConfiguration config)
         {
+            if (config == null)
+            {
+                throw new System.ArgumentNullException(nameof(config));
+            }
+
             LoggerConfiguration loggerConfig = new LoggerConfiguration()
                 .ReadFrom.Configuration(config)
                 .Enrich.WithProperty(ApplicationEnrichment,
@@ -73,15 +78,33 @@ namespace GRA.Web
                         restrictedToMinimumLevel: LogEventLevel.Information,
                         columnOptions: new ColumnOptions
                         {
-                            AdditionalDataColumns = new DataColumn[]
+                            AdditionalColumns = new []
                             {
-                                new DataColumn(ApplicationEnrichment, typeof(string)) { MaxLength = 255 },
-                                new DataColumn(VersionEnrichment, typeof(string)) { MaxLength = 255 },
-                                new DataColumn(IdentifierEnrichment, typeof(string)) { MaxLength = 255 },
-                                new DataColumn(InstanceEnrichment, typeof(string)) { MaxLength = 255 },
-                                new DataColumn(RemoteAddressEnrichment, typeof(string)) { MaxLength = 255 }
+                                new SqlColumn(ApplicationEnrichment,
+                                    SqlDbType.NVarChar,
+                                    dataLength: 255),
+                                new SqlColumn(VersionEnrichment,
+                                    SqlDbType.NVarChar,
+                                    dataLength: 255),
+                                new SqlColumn(IdentifierEnrichment,
+                                    SqlDbType.NVarChar,
+                                    dataLength: 255),
+                                new SqlColumn(InstanceEnrichment,
+                                    SqlDbType.NVarChar,
+                                    dataLength: 255),
+                                new SqlColumn(RemoteAddressEnrichment,
+                                    SqlDbType.NVarChar,
+                                    dataLength: 255)
                             }
                         }));
+            }
+
+            string seqLog = config[ConfigurationKey.SeqEndpoint];
+            if (!string.IsNullOrEmpty(seqLog))
+            {
+                loggerConfig.WriteTo.Logger(_ => _
+                    .Filter.ByExcluding(Matching.FromSource(ErrorControllerName))
+                    .WriteTo.Seq(seqLog));
             }
 
             return loggerConfig;

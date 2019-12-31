@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using GRA.Domain.Repository;
+using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Service
 {

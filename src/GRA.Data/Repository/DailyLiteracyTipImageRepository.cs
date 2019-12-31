@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
@@ -48,7 +46,7 @@ namespace GRA.Data.Repository
         {
             if (newDay > image.Day)
             {
-                await DbSet.Where(_ => _.DailyLiteracyTipId == image.DailyLiteracyTipId 
+                await DbSet.Where(_ => _.DailyLiteracyTipId == image.DailyLiteracyTipId
                     && _.Day > image.Day && _.Day <= newDay)
                     .ForEachAsync(_ => _.Day--);
             }

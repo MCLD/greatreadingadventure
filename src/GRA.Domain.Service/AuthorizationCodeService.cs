@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
@@ -24,7 +23,7 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(authorizationCodeRepository));
         }
 
-        public async Task<DataWithCount<IEnumerable<AuthorizationCode>>> 
+        public async Task<DataWithCount<IEnumerable<AuthorizationCode>>>
             GetPaginatedListAsync(BaseFilter filter)
         {
             VerifyManagementPermission();
@@ -42,7 +41,7 @@ namespace GRA.Domain.Service
         {
             VerifyManagementPermission();
             var siteId = GetCurrentSiteId();
-            
+
             var inUse = await _authorizationCodeRepository.GetByCodeAsync(siteId, authorizationCode.Code);
             if (inUse != null)
             {

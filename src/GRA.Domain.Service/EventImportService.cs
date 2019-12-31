@@ -48,7 +48,7 @@ namespace GRA.Domain.Service
                         {
                             if (!File.Exists(record.BadgeFilePath))
                             {
-                                throw new Exception($"Unable to find badge file at {record.BadgeFilePath}");
+                                throw new GraException($"Unable to find badge file at {record.BadgeFilePath}");
                             }
                             var system = systems
                                 .Where(_ => _.Name.Trim().Equals(record.SystemName.Trim(),
@@ -56,7 +56,7 @@ namespace GRA.Domain.Service
                                 .SingleOrDefault();
                             if (system == null)
                             {
-                                throw new Exception($"Unable to find system named {record.SystemName} in system list.");
+                                throw new GraException($"Unable to find system named {record.SystemName} in system list.");
                             }
 
                             var branch = branches
@@ -66,7 +66,7 @@ namespace GRA.Domain.Service
                                 .SingleOrDefault();
                             if (branch == null)
                             {
-                                throw new Exception($"Unable to find branch named {record.BranchName} for system {record.SystemName} in branch list.");
+                                throw new GraException($"Unable to find branch named {record.BranchName} for system {record.SystemName} in branch list.");
                             }
 
                             var badge = new Badge

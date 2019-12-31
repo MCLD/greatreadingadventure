@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace GRA.Controllers.ViewModel.Share
+﻿namespace GRA.Controllers.ViewModel.Share
 {
     public class ShareAvatarViewModel
     {

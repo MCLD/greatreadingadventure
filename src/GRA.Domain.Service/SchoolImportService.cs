@@ -45,11 +45,11 @@ namespace GRA.Domain.Service
                         {
                             if (string.IsNullOrEmpty(record.District))
                             {
-                                throw new Exception($"School district is blank on record {recordCount + 2}");
+                                throw new GraException($"School district is blank on record {recordCount + 2}");
                             }
                             if (string.IsNullOrEmpty(record.Name))
                             {
-                                throw new Exception($"School name is blank on record {recordCount + 2}");
+                                throw new GraException($"School name is blank on record {recordCount + 2}");
                             }
 
                             if (record.District.Length > 255)

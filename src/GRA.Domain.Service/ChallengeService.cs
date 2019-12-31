@@ -110,13 +110,13 @@ namespace GRA.Domain.Service
                         && !HasPermission(Permission.ActivateAllChallenges))
                     {
                         _logger.LogError($"User {authUserId} doesn't have permission to view pending challenges.");
-                        throw new Exception("Permission denied.");
+                        throw new GraException("Permission denied.");
                     }
                     else if (!HasPermission(Permission.ActivateAllChallenges)
                         && filter.SystemIds?.FirstOrDefault() != GetClaimId(ClaimType.SystemId))
                     {
                         _logger.LogError($"User {authUserId} doesn't have permission to view pending challenges for system.");
-                        throw new Exception("Permission denied.");
+                        throw new GraException("Permission denied.");
                     }
                 }
 
@@ -130,7 +130,7 @@ namespace GRA.Domain.Service
                 };
             }
             _logger.LogError($"User {authUserId} doesn't have permission to view all challenges.");
-            throw new Exception("Permission denied.");
+            throw new GraException("Permission denied.");
         }
 
         public async Task<Challenge> GetChallengeDetailsAsync(int challengeId)
@@ -165,7 +165,7 @@ namespace GRA.Domain.Service
                 return challenge;
             }
             _logger.LogError($"User {authUserId} doesn't have permission to view all challenge {challengeId}.");
-            throw new Exception("Permission denied.");
+            throw new GraException("Permission denied.");
         }
 
         public async Task<ServiceResult<Challenge>> AddChallengeAsync(Challenge challenge)
@@ -214,7 +214,7 @@ namespace GRA.Domain.Service
                 return serviceResult;
             }
             _logger.LogError($"User {authUserId} doesn't have permission to add a challenge.");
-            throw new Exception("Permission denied.");
+            throw new GraException("Permission denied.");
         }
 
         public async Task<ServiceResult<Challenge>> EditChallengeAsync(Challenge challenge)
@@ -322,7 +322,7 @@ namespace GRA.Domain.Service
             else
             {
                 _logger.LogError($"User {userId} doesn't have permission to remove challenge {challengeId}.");
-                throw new Exception("Permission denied.");
+                throw new GraException("Permission denied.");
             }
         }
 
@@ -348,7 +348,7 @@ namespace GRA.Domain.Service
                 return newTask;
             }
             _logger.LogError($"User {authUserId} doesn't have permission to add a task to challenge {task.ChallengeId}.");
-            throw new Exception("Permission denied.");
+            throw new GraException("Permission denied.");
         }
 
         public async Task<ChallengeTask> EditTaskAsync(ChallengeTask task, byte[] fileBytes = null)
@@ -382,7 +382,7 @@ namespace GRA.Domain.Service
             }
             int userId = GetClaimId(ClaimType.UserId);
             _logger.LogError($"User {userId} doesn't have permission to edit a task for challenge {task.ChallengeId}.");
-            throw new Exception("Permission denied.");
+            throw new GraException("Permission denied.");
         }
 
         public async Task<ChallengeTask> GetTaskAsync(int id)
@@ -417,7 +417,7 @@ namespace GRA.Domain.Service
             else
             {
                 _logger.LogError($"User {authUserId} doesn't have permission to remove a challenge task");
-                throw new Exception("Permission denied.");
+                throw new GraException("Permission denied.");
             }
         }
 
@@ -431,7 +431,7 @@ namespace GRA.Domain.Service
             {
                 int userId = GetClaimId(ClaimType.UserId);
                 _logger.LogError($"User {userId} doesn't have permission to modify a challenge task");
-                throw new Exception("Permission denied.");
+                throw new GraException("Permission denied.");
             }
         }
 
@@ -445,7 +445,7 @@ namespace GRA.Domain.Service
             {
                 int userId = GetClaimId(ClaimType.UserId);
                 _logger.LogError($"User {userId} doesn't have permission to modify a challenge task");
-                throw new Exception("Permission denied.");
+                throw new GraException("Permission denied.");
             }
         }
 

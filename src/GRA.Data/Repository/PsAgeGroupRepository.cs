@@ -35,6 +35,7 @@ namespace GRA.Data.Repository
             var count = await ageGroups.CountAsync();
 
             var ageGroupList = await ageGroups
+                .OrderBy(_ => _.Name)
                 .ApplyPagination(filter)
                 .ProjectTo<PsAgeGroup>(_mapper.ConfigurationProvider)
                 .ToListAsync();
