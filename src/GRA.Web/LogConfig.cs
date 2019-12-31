@@ -78,7 +78,7 @@ namespace GRA.Web
                         restrictedToMinimumLevel: LogEventLevel.Information,
                         columnOptions: new ColumnOptions
                         {
-                            AdditionalColumns = new SqlColumn[]
+                            AdditionalColumns = new []
                             {
                                 new SqlColumn(ApplicationEnrichment,
                                     SqlDbType.NVarChar,
