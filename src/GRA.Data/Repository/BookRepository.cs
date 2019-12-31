@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
@@ -156,11 +155,9 @@ namespace GRA.Data.Repository
         public async Task<Book> GetBookAsync(Book book)
         {
             return await _context.Books.AsNoTracking()
-                .Where(_ => string.Equals(_.Title, book.Title, StringComparison.OrdinalIgnoreCase)
-                    && string.Equals(_.Author, book.Author, StringComparison.OrdinalIgnoreCase))
+                .Where(_ => _.Title == book.Title && _.Author == book.Author)
                 .ProjectTo<Book>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync();
         }
     }
 }
-
