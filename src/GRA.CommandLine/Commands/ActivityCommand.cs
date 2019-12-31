@@ -52,7 +52,7 @@ namespace GRA.CommandLine.Commands
                     "Specify what percentage of non-challenge activities should be secret codes. Defaults to 30.",
                     CommandOptionType.SingleValue);
 
-                _.OnExecute(async () =>
+                _.OnExecuteAsync(async cancellationToken =>
                 {
                     bool quiet = displayStatusOption.HasValue()
                         && displayStatusOption.Value().Equals("on", StringComparison.CurrentCultureIgnoreCase);

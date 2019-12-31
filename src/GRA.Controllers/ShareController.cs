@@ -41,9 +41,7 @@ namespace GRA.Controllers
             }
             else
             {
-                _logger.LogWarning($"No avatar found for id: {id}");
-                TempData[TempDataKey.AlertDanger] = "Avatar not found.";
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                return NotFound();
             }
         }
     }

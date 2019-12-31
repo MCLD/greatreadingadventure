@@ -55,14 +55,14 @@ namespace GRA.CommandLine.Commands
                     _c.Description = "Get a total number of users in a site.";
                     _c.HelpOption("-?|-h|--help");
 
-                    _c.OnExecute(async () =>
+                    _c.OnExecuteAsync(async cancellationToken =>
                     {
                         await EnsureUserAndSiteLoaded();
                         return await DisplayUserCount();
                     });
                 });
 
-                _.OnExecute(async () =>
+                _.OnExecuteAsync(async cancellationToken =>
                 {
                     bool quiet = displayStatusOption.HasValue()
                         && displayStatusOption.Value().Equals("on", StringComparison.CurrentCultureIgnoreCase);

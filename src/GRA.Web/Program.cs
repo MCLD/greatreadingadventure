@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
@@ -26,7 +24,7 @@ namespace GRA.Web
                 {
                     var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
 
-                    Log.Logger = new LogConfig().Build(config).CreateLogger();
+                    Log.Logger = LogConfig.Build(config).CreateLogger();
                     if (!string.IsNullOrEmpty(config[ConfigurationKey.InstanceName]))
                     {
                         instance = " instance " + config[ConfigurationKey.InstanceName];
@@ -37,7 +35,7 @@ namespace GRA.Web
             // now that we have logging present in our config, we must create the webhost
             IWebHost webhost = CreateWebHostBuilder(args).Build();
 
-            foreach(string issue in issues)
+            foreach (string issue in issues)
             {
                 Log.Error(issue);
             }
@@ -51,23 +49,30 @@ namespace GRA.Web
                     .GetRequiredService<IHostingEnvironment>().WebRootPath;
             }
 
-            string appDetails = string.Format("GRA {0}{1}", new Version().GetVersion(), instance);
+            string appDetails = $"{new Version().GetVersion()}{instance}";
 
             // output the version and revision
             try
             {
-                Log.Warning(appDetails + " starting up in {webRootPath}", webRootPath);
+                Log.Warning("GRA {AppDetails} starting up in {webRootPath}",
+                    appDetails,
+                    webRootPath);
                 webhost.Run();
                 return 0;
             }
+#pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception ex)
             {
-                Log.Warning(appDetails + " exited unexpectedly: {Message}", ex.Message);
+                Log.Warning("GRA {AppDetails} exited unexpectedly: {Message}",
+                    appDetails,
+                    ex.Message);
                 return 1;
             }
+#pragma warning restore CA1031 // Do not catch general exception types
             finally
             {
-                Log.Warning(appDetails + " shutting down.");
+                Log.Warning("GRA {AppDetails} shutting down.",
+                    appDetails);
                 Log.CloseAndFlush();
             }
         }
