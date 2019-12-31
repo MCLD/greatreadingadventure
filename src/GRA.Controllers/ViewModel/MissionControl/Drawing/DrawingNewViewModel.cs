@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace GRA.Controllers.ViewModel.MissionControl.Drawing
+﻿namespace GRA.Controllers.ViewModel.MissionControl.Drawing
 {
     public class DrawingNewViewModel
     {

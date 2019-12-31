@@ -30,7 +30,7 @@ namespace GRA.CommandLine.FakeWeb
             }
             else
             {
-                throw new Exception("Configuration value GRACL.UserId must be set.");
+                throw new GraException("Configuration value GRACL.UserId must be set.");
             }
 
             int siteId;
@@ -43,7 +43,7 @@ namespace GRA.CommandLine.FakeWeb
             }
             else
             {
-                throw new Exception("Configuration value GRACL.SiteId must be set.");
+                throw new GraException("Configuration value GRACL.SiteId must be set.");
             }
 
             var ctxt = _facade.HttpContextAccessor.HttpContext;

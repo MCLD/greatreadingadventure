@@ -1,6 +1,5 @@
-﻿using GRA.Controllers.ViewModel.Shared;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using GRA.Controllers.ViewModel.Shared;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Schools
 {

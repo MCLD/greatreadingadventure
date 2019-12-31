@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using GRA.Domain.Model;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Sites
 {

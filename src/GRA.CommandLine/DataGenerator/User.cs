@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 using Bogus;
 using GRA.Domain.Service;
-using System.Threading.Tasks;
-using GRA.Domain.Model;
 
 namespace GRA.CommandLine.DataGenerator
 {

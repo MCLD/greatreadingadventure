@@ -1,6 +1,5 @@
-﻿using GRA.Domain.Model;
+﻿using System.Linq;
 using GRA.Domain.Model.Filters;
-using System.Linq;
 
 namespace GRA.Domain.Repository.Extensions
 {

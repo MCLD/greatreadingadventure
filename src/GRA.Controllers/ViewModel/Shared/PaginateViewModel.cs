@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace GRA.Controllers.ViewModel.Shared
+﻿namespace GRA.Controllers.ViewModel.Shared
 {
     public class PaginateViewModel
     {

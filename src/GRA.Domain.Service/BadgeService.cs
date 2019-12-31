@@ -1,11 +1,10 @@
-﻿using GRA.Abstract;
+﻿using System.Threading.Tasks;
+using GRA.Abstract;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GRA.Domain.Service
 {

@@ -1,6 +1,5 @@
 ﻿using GRA.Abstract;
 using Microsoft.Extensions.Configuration;
-using System;
 
 namespace GRA.Data.ServiceFacade
 {

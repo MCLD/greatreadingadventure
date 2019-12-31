@@ -662,7 +662,7 @@ namespace GRA.Domain.Service
             var earnedUser = await _userRepository.GetByIdAsync(whoEarnedUserId);
             if (earnedUser == null)
             {
-                throw new Exception($"Could not find a user with id {whoEarnedUserId}");
+                throw new GraException($"Could not find a user with id {whoEarnedUserId}");
             }
 
             // cap points at setting or int.MaxValue
@@ -737,7 +737,7 @@ namespace GRA.Domain.Service
 
             if (removeUser == null)
             {
-                throw new Exception($"Could not find single user with id {removePointsFromUserId}");
+                throw new GraException($"Could not find single user with id {removePointsFromUserId}");
             }
 
             removeUser.PointsEarned -= pointsToRemove;
