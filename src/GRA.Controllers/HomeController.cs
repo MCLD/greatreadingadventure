@@ -442,22 +442,21 @@ namespace GRA.Controllers
             string siteName = HttpContext.Items[ItemKey.SiteName]?.ToString();
             PageTitle = _sharedLocalizer[Annotations.Title.SeeYouSoon, siteName];
 
-            ExitPageViewModel exitPageViewModel;
+            ExitPageViewModel exitPageViewModel = null;
             try
             {
                 exitPageViewModel = new ExitPageViewModel
                 {
                     Branch = branchId == null
-                        ? await _userService.GetUsersBranch(GetActiveUserId())
-                        : await _siteService.GetBranchByIdAsync((int)branchId)
+                    ? await _userService.GetUsersBranch(GetActiveUserId())
+                    : await _siteService.GetBranchByIdAsync((int)branchId)
                 };
             }
-            catch (Exception ex)
+            catch (GraException ex)
             {
                 _logger.LogInformation(ex, "Attempt to show exit page failed for branch id {BranchId}: {Message}",
                     branchId,
                     ex.Message);
-                return NotFound();
             }
 
             switch (siteStage)
