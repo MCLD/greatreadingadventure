@@ -51,7 +51,7 @@ namespace GRA.Domain.Service
             if (!authResult.FoundUser)
             {
                 authResult.Message = Annotations.Validate.Username;
-                authResult.Arguments = new [] { trimmedUsername };
+                authResult.Arguments = new[] { trimmedUsername };
             }
             else if (!authResult.PasswordIsValid)
             {
@@ -64,7 +64,9 @@ namespace GRA.Domain.Service
 
                 if (authResult.PermissionNames.Contains(nameof(Permission.ManageSites)))
                 {
-                    _logger.LogInformation("Site manager {username} authenticated", username);
+                    _logger.LogInformation("Site manager {Username} ({UserId}) authenticated",
+                        authResult.User.Username,
+                        authResult.User.Id);
                 }
 
                 if (!authResult.PermissionNames.Contains(nameof(Permission.AccessMissionControl))
@@ -105,7 +107,9 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {authUserId} doesn't have permission to reset password for {userIdToReset}.");
+                _logger.LogError("User {UserId} doesn't have permission to reset password for {ResetPasswordUserId}.",
+                    authUserId,
+                    userIdToReset);
                 throw new GraException(Annotations.Validate.Permission);
             }
         }
@@ -156,7 +160,7 @@ namespace GRA.Domain.Service
                 {
                     Status = Models.ServiceResultStatus.Error,
                     Message = Annotations.Validate.TokenExpired,
-                    Arguments = new [] { token }
+                    Arguments = new[] { token }
                 };
             }
 
@@ -170,7 +174,8 @@ namespace GRA.Domain.Service
 
             if (user == null)
             {
-                _logger.LogInformation($"Username '{trimmedUsername}' doesn't exist so can't create a recovery token.");
+                _logger.LogInformation("Username {Username} doesn't exist so can't create a recovery token.",
+                    trimmedUsername);
                 return new Models.ServiceResult
                 {
                     Status = Models.ServiceResultStatus.Error,
@@ -181,18 +186,19 @@ namespace GRA.Domain.Service
 
             if (string.IsNullOrEmpty(user.Email))
             {
-                _logger.LogInformation($"User {user.Id} doesn't have an email address configured so cannot send a recovery token.");
+                _logger.LogInformation("User {Username} ({UserId}) doesn't have an email address configured so cannot send a recovery token.",
+                    user?.Username,
+                    user?.Id);
                 return new Models.ServiceResult
                 {
                     Status = Models.ServiceResultStatus.Error,
                     Message = Annotations.Validate.EmailConfigured,
-                    Arguments = new [] { trimmedUsername }
+                    Arguments = new[] { trimmedUsername }
                 };
             }
 
             // clear any existing tokens
             var existingRequests = await _recoveryTokenRepository.GetByUserIdAsync(user.Id);
-            _logger.LogInformation($"Found {existingRequests.Count()} existing recovery tokens for user {user.Id}.");
             foreach (var request in existingRequests)
             {
                 await _recoveryTokenRepository.RemoveSaveAsync(-1, request.Id);
@@ -206,7 +212,11 @@ namespace GRA.Domain.Service
                 Token = tokenString.ToLower(),
                 UserId = user.Id
             });
-            _logger.LogInformation($"Inserted token for user {user.Id}.");
+
+            _logger.LogInformation("Cleared {Existing} existing recovery tokens and inserted a new one for {Username} ({UserId})",
+                existingRequests.Count(),
+                user?.Username,
+                user.Id);
 
             var site = await _siteRepository.GetByIdAsync(GetCurrentSiteId());
 
@@ -249,7 +259,7 @@ namespace GRA.Domain.Service
                 {
                     Status = Models.ServiceResultStatus.Error,
                     Message = "There are no usernames associated with the email address: {0}.",
-                    Arguments = new [] { lookupEmail }
+                    Arguments = new[] { lookupEmail }
                 };
             }
 

@@ -504,9 +504,9 @@ namespace GRA.Web
             // insert remote address and trace identifier into the log context for each request
             app.Use(async (context, next) =>
             {
-                using (LogContext.PushProperty(LogConfig.IdentifierEnrichment,
+                using (LogContext.PushProperty(LoggingEnrichment.IdentifierEnrichment,
                     context.TraceIdentifier))
-                using (LogContext.PushProperty(LogConfig.RemoteAddressEnrichment,
+                using (LogContext.PushProperty(LoggingEnrichment.RemoteAddressEnrichment,
                     context.Connection.RemoteIpAddress))
                 {
                     await next.Invoke();
@@ -578,6 +578,15 @@ namespace GRA.Web
 
             app.UseAuthentication();
 
+            app.Use(async (context, next) =>
+            {
+                using (LogContext.PushProperty(LoggingEnrichment.UserIdEnrichment,
+                    context.User.Claims.FirstOrDefault(_ => _.Type == ClaimType.UserId)?.Value))
+                {
+                    await next();
+                }
+            });
+
             // sitePath is also referenced in GRA.Controllers.Filter.SiteFilterAttribute
             app.UseMvc(routes =>
             {
@@ -619,6 +628,7 @@ namespace GRA.Web
                 {
                     await next();
                 }
+
             });
         }
     }

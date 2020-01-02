@@ -13,12 +13,6 @@ namespace GRA.Web
     {
         private const string ErrorControllerName = "GRA.Controllers.ErrorController";
 
-        public static readonly string ApplicationEnrichment = "Application";
-        public static readonly string VersionEnrichment = "Version";
-        public static readonly string IdentifierEnrichment = "Identifier";
-        public static readonly string InstanceEnrichment = "Instance";
-        public static readonly string RemoteAddressEnrichment = "RemoteAddress";
-
         public static LoggerConfiguration Build(IConfiguration config)
         {
             if (config == null)
@@ -28,9 +22,12 @@ namespace GRA.Web
 
             LoggerConfiguration loggerConfig = new LoggerConfiguration()
                 .ReadFrom.Configuration(config)
-                .Enrich.WithProperty(ApplicationEnrichment,
+                .Enrich.WithProperty(LoggingEnrichment.ApplicationEnrichment,
                     Assembly.GetExecutingAssembly().GetName().Name)
-                .Enrich.WithProperty(VersionEnrichment, new Version().GetShortVersion())
+                .Enrich.WithProperty(LoggingEnrichment.VersionEnrichment,
+                    new Version().GetShortVersion())
+                .Enrich.WithProperty(LoggingEnrichment.SiteIdentifierEnrichment,
+                    config[ConfigurationKey.SiteIdentifier])
                 .Enrich.FromLogContext()
                 .WriteTo.Console();
 
@@ -38,7 +35,7 @@ namespace GRA.Web
 
             if (!string.IsNullOrEmpty(instance))
             {
-                loggerConfig.Enrich.WithProperty(InstanceEnrichment, instance);
+                loggerConfig.Enrich.WithProperty(LoggingEnrichment.InstanceEnrichment, instance);
             }
 
             string rollingLogLocation
@@ -78,21 +75,21 @@ namespace GRA.Web
                         restrictedToMinimumLevel: LogEventLevel.Information,
                         columnOptions: new ColumnOptions
                         {
-                            AdditionalColumns = new []
+                            AdditionalColumns = new[]
                             {
-                                new SqlColumn(ApplicationEnrichment,
+                                new SqlColumn(LoggingEnrichment.ApplicationEnrichment,
                                     SqlDbType.NVarChar,
                                     dataLength: 255),
-                                new SqlColumn(VersionEnrichment,
+                                new SqlColumn(LoggingEnrichment.VersionEnrichment,
                                     SqlDbType.NVarChar,
                                     dataLength: 255),
-                                new SqlColumn(IdentifierEnrichment,
+                                new SqlColumn(LoggingEnrichment.IdentifierEnrichment,
                                     SqlDbType.NVarChar,
                                     dataLength: 255),
-                                new SqlColumn(InstanceEnrichment,
+                                new SqlColumn(LoggingEnrichment.InstanceEnrichment,
                                     SqlDbType.NVarChar,
                                     dataLength: 255),
-                                new SqlColumn(RemoteAddressEnrichment,
+                                new SqlColumn(LoggingEnrichment.RemoteAddressEnrichment,
                                     SqlDbType.NVarChar,
                                     dataLength: 255)
                             }
