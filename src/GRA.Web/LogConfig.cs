@@ -22,21 +22,22 @@ namespace GRA.Web
 
             LoggerConfiguration loggerConfig = new LoggerConfiguration()
                 .ReadFrom.Configuration(config)
-                .Enrich.WithProperty(LoggingEnrichment.ApplicationEnrichment,
+                .Enrich.WithProperty(LoggingEnrichment.Application,
                     Assembly.GetExecutingAssembly().GetName().Name)
-                .Enrich.WithProperty(LoggingEnrichment.VersionEnrichment,
+                .Enrich.WithProperty(LoggingEnrichment.Version,
                     new Version().GetShortVersion())
-                .Enrich.WithProperty(LoggingEnrichment.SiteIdentifierEnrichment,
-                    config[ConfigurationKey.SiteIdentifier])
-                .Enrich.FromLogContext()
-                .WriteTo.Console();
+                .Enrich.WithProperty(LoggingEnrichment.SiteIdentifier,
+                    config[ConfigurationKey.SiteIdentifier]);
 
             string instance = config[ConfigurationKey.InstanceName];
 
             if (!string.IsNullOrEmpty(instance))
             {
-                loggerConfig.Enrich.WithProperty(LoggingEnrichment.InstanceEnrichment, instance);
+                loggerConfig.Enrich.WithProperty(LoggingEnrichment.Instance, instance);
             }
+
+            loggerConfig.Enrich.FromLogContext()
+                .WriteTo.Console();
 
             string rollingLogLocation
                 = Path.Combine("shared", config[ConfigurationKey.RollingLogPath]);
@@ -77,19 +78,19 @@ namespace GRA.Web
                         {
                             AdditionalColumns = new[]
                             {
-                                new SqlColumn(LoggingEnrichment.ApplicationEnrichment,
+                                new SqlColumn(LoggingEnrichment.Application,
                                     SqlDbType.NVarChar,
                                     dataLength: 255),
-                                new SqlColumn(LoggingEnrichment.VersionEnrichment,
+                                new SqlColumn(LoggingEnrichment.Version,
                                     SqlDbType.NVarChar,
                                     dataLength: 255),
-                                new SqlColumn(LoggingEnrichment.IdentifierEnrichment,
+                                new SqlColumn(LoggingEnrichment.Identifier,
                                     SqlDbType.NVarChar,
                                     dataLength: 255),
-                                new SqlColumn(LoggingEnrichment.InstanceEnrichment,
+                                new SqlColumn(LoggingEnrichment.Instance,
                                     SqlDbType.NVarChar,
                                     dataLength: 255),
-                                new SqlColumn(LoggingEnrichment.RemoteAddressEnrichment,
+                                new SqlColumn(LoggingEnrichment.RemoteAddress,
                                     SqlDbType.NVarChar,
                                     dataLength: 255)
                             }

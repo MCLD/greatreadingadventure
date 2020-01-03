@@ -45,8 +45,7 @@ namespace GRA.Web
         private readonly bool _isDevelopment;
 
         public Startup(IConfiguration config,
-            IHostingEnvironment env,
-            ILogger<Startup> logger)
+            IHostingEnvironment env)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
 
@@ -73,33 +72,30 @@ namespace GRA.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
-            // build a temporary logger for this method call
-            using (var logger = LogConfig.Build(_config).CreateLogger())
+            services.AddLocalization();
+
+            services.Configure<RequestLocalizationOptions>(_ =>
             {
-                services.AddLocalization();
+                _.DefaultRequestCulture = new RequestCulture(Culture.DefaultCulture);
+                _.SupportedCultures = Culture.SupportedCultures;
+                _.SupportedUICultures = Culture.SupportedCultures;
+                _.RequestCultureProviders.Insert(0,
+                    new RouteDataRequestCultureProvider { Options = _ });
+                _.RequestCultureProviders
+                    .Remove(_.RequestCultureProviders
+                        .Single(p => p.GetType() == typeof(QueryStringRequestCultureProvider)));
+            });
 
-                services.Configure<RequestLocalizationOptions>(_ =>
-                {
-                    _.DefaultRequestCulture = new RequestCulture(Culture.DefaultCulture);
-                    _.SupportedCultures = Culture.SupportedCultures;
-                    _.SupportedUICultures = Culture.SupportedCultures;
-                    _.RequestCultureProviders.Insert(0,
-                        new RouteDataRequestCultureProvider { Options = _ });
-                    _.RequestCultureProviders
-                        .Remove(_.RequestCultureProviders
-                            .Single(p => p.GetType() == typeof(QueryStringRequestCultureProvider)));
-                });
+            // Add framework services.
+            services.AddSession(_ => _.IdleTimeout = TimeSpan.FromMinutes(30));
 
-                // Add framework services.
-                services.AddSession(_ => _.IdleTimeout = TimeSpan.FromMinutes(30));
+            services.TryAddSingleton(_ => _config);
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-                services.TryAddSingleton(_ => _config);
-                services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
-                services.AddResponseCompression(_ =>
-                {
-                    _.Providers.Add<GzipCompressionProvider>();
-                    _.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] {
+            services.AddResponseCompression(_ =>
+            {
+                _.Providers.Add<GzipCompressionProvider>();
+                _.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] {
                         "application/vnd.ms-fontobject",
                         "application/x-font-opentype",
                         "application/x-font-truetype",
@@ -111,343 +107,340 @@ namespace GRA.Web
                         "image/svg+xml",
                         "image/vnd.microsoft.icon",
                         "text/javascript"
-                    });
                 });
+            });
 
-                string discriminator = _config[ConfigurationKey.ApplicationDiscriminator]
-                        ?? "gra";
+            string discriminator = _config[ConfigurationKey.ApplicationDiscriminator]
+                    ?? "gra";
 
-                switch (_config[ConfigurationKey.DistributedCache]?.ToLower(Culture.DefaultCulture))
-                {
-                    case "redis":
-                        string redisConfig = _config[ConfigurationKey.RedisConfiguration]
-                            ?? throw new GraFatalException($"{ConfigurationKey.DistributedCache} has Redis selected but {ConfigurationKey.RedisConfiguration} is not set.");
-                        string redisInstance = "gra." + discriminator;
-                        if (!redisInstance.EndsWith(".", StringComparison.OrdinalIgnoreCase))
-                        {
-                            redisInstance += ".";
-                        }
-                        services.AddDistributedRedisCache(_ =>
-                        {
-                            _.Configuration = redisConfig;
-                            _.InstanceName = redisInstance;
-                        });
-                        logger.Information("Using Redis distributed cache {0} discriminator {1}",
-                            redisConfig,
-                            redisInstance);
-                        break;
-                    case "sqlserver":
-                        string sessionCs = _config.GetConnectionString("SqlServerSessions")
-                            ?? throw new GraFatalException($"{ConfigurationKey.DistributedCache} has SQL Server selected but SqlServerSessions connection string is not set.");
-                        string sessionTable = _config[ConfigurationKey.SqlSessionTable] ?? "Sessions";
-                        logger.Information("Using SQL Server distributed cache in table {sessionTable}",
-                                sessionTable);
-                        services.AddDistributedSqlServerCache(_ =>
-                        {
-                            _.ConnectionString = sessionCs;
-                            _.SchemaName = _config[ConfigurationKey.SqlSessionSchemaName] ?? "dbo";
-                            _.TableName = sessionTable;
-                        });
-                        break;
-                    default:
-                        logger.Information("Using memory-based distributed cache");
-                        services.AddDistributedMemoryCache();
-                        break;
-                }
-
-                services.Configure<RouteOptions>(_ =>
-                    _.ConstraintMap.Add("cultureConstraint", typeof(CultureRouteConstraint)));
-
-                // add MVC
-                services.AddMvc()
-                    .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_2)
-                    .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
-                    .AddDataAnnotationsLocalization(_ =>
+            switch (_config[ConfigurationKey.DistributedCache]?.ToLower(Culture.DefaultCulture))
+            {
+                case "redis":
+                    string redisConfig = _config[ConfigurationKey.RedisConfiguration]
+                        ?? throw new GraFatalException($"{ConfigurationKey.DistributedCache} has Redis selected but {ConfigurationKey.RedisConfiguration} is not set.");
+                    string redisInstance = "gra." + discriminator;
+                    if (!redisInstance.EndsWith(".", StringComparison.OrdinalIgnoreCase))
                     {
-                        _.DataAnnotationLocalizerProvider = (__, factory)
-                            => factory.Create(typeof(Resources.Shared));
-                    });
-
-                // Add custom view directory
-                services.Configure<RazorViewEngineOptions>(options =>
-                    options.ViewLocationFormats.Insert(0, "/shared/views/{1}/{0}.cshtml")
-                );
-
-                // set cookie authentication options
-                services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                    .AddCookie(_ =>
-                    {
-                        _.LoginPath = "/SignIn";
-                        _.LogoutPath = "/Home/Signout";
-                        _.AccessDeniedPath = "/";
-                    });
-
-                services.AddAuthorization(options =>
-                {
-                    foreach (object permisisonName in Enum.GetValues(typeof(Domain.Model.Permission)))
-                    {
-                        options.AddPolicy(permisisonName.ToString(),
-                            _ => _.RequireClaim(ClaimType.Permission, permisisonName.ToString()));
+                        redisInstance += ".";
                     }
+                    services.AddDistributedRedisCache(_ =>
+                    {
+                        _.Configuration = redisConfig;
+                        _.InstanceName = redisInstance;
+                    });
+                    _config[ConfigurationKey.RuntimeCacheConfiguration] = $"Using Redis distributed cache {redisConfig} discriminator {redisInstance}";
+                    break;
+                case "sqlserver":
+                    string sessionCs = _config.GetConnectionString("SqlServerSessions")
+                        ?? throw new GraFatalException($"{ConfigurationKey.DistributedCache} has SQL Server selected but SqlServerSessions connection string is not set.");
+                    string sessionTable = _config[ConfigurationKey.SqlSessionTable] ?? "Sessions";
+                    _config[ConfigurationKey.RuntimeCacheConfiguration] = $"Using SQL Server distributed cache in table {sessionTable}";
+                    services.AddDistributedSqlServerCache(_ =>
+                    {
+                        _.ConnectionString = sessionCs;
+                        _.SchemaName = _config[ConfigurationKey.SqlSessionSchemaName] ?? "dbo";
+                        _.TableName = sessionTable;
+                    });
+                    break;
+                default:
+                    _config[ConfigurationKey.RuntimeCacheConfiguration] = "Using memory-based distributed cache";
+                    services.AddDistributedMemoryCache();
+                    break;
+            }
 
-                    options.AddPolicy(Policy.ActivateChallenges,
-                        _ => _.RequireClaim(ClaimType.Permission,
-                            nameof(Permission.ActivateAllChallenges),
-                            nameof(Permission.ActivateSystemChallenges)));
+            services.Configure<RouteOptions>(_ =>
+                _.ConstraintMap.Add("cultureConstraint", typeof(CultureRouteConstraint)));
+
+            // add MVC
+            services.AddMvc()
+                .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_2)
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+                .AddDataAnnotationsLocalization(_ =>
+                {
+                    _.DataAnnotationLocalizerProvider = (__, factory)
+                        => factory.Create(typeof(Resources.Shared));
                 });
 
-                // service facades
-                services.AddScoped<Controllers.ServiceFacade.Controller,
-                    Controllers.ServiceFacade.Controller>();
-                services.AddScoped<Data.ServiceFacade.Repository, Data.ServiceFacade.Repository>();
+            // Add custom view directory
+            services.Configure<RazorViewEngineOptions>(options =>
+                options.ViewLocationFormats.Insert(0, "/shared/views/{1}/{0}.cshtml")
+            );
 
-                // database
-                if (string.IsNullOrEmpty(_config[ConfigurationKey.ConnectionStringName]))
+            // set cookie authentication options
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(_ =>
                 {
-                    throw new GraFatalException("GraConnectionStringName is not configured in appsettings.json - cannot continue");
+                    _.LoginPath = "/SignIn";
+                    _.LogoutPath = "/Home/Signout";
+                    _.AccessDeniedPath = "/";
+                });
+
+            services.AddAuthorization(options =>
+            {
+                foreach (object permisisonName in Enum.GetValues(typeof(Domain.Model.Permission)))
+                {
+                    options.AddPolicy(permisisonName.ToString(),
+                        _ => _.RequireClaim(ClaimType.Permission, permisisonName.ToString()));
                 }
 
-                string csName = _config[ConfigurationKey.ConnectionStringName]
-                    ?? throw new GraFatalException($"{ConfigurationKey.ConnectionStringName} must be provided.");
+                options.AddPolicy(Policy.ActivateChallenges,
+                    _ => _.RequireClaim(ClaimType.Permission,
+                        nameof(Permission.ActivateAllChallenges),
+                        nameof(Permission.ActivateSystemChallenges)));
+            });
 
-                // configure ef errors to throw, log, or ignore as appropriate for the environment
-                // see https://docs.microsoft.com/en-us/ef/core/querying/related-data#ignored-includes
-                var throwEvents = new List<EventId>();
-                var logEvents = new List<EventId>();
-                var ignoreEvents = new List<EventId>();
+            // service facades
+            services.AddScoped<Controllers.ServiceFacade.Controller,
+                Controllers.ServiceFacade.Controller>();
+            services.AddScoped<Data.ServiceFacade.Repository, Data.ServiceFacade.Repository>();
 
-                if (_isDevelopment)
+            // database
+            if (string.IsNullOrEmpty(_config[ConfigurationKey.ConnectionStringName]))
+            {
+                throw new GraFatalException("GraConnectionStringName is not configured in appsettings.json - cannot continue");
+            }
+
+            string csName = _config[ConfigurationKey.ConnectionStringName]
+                ?? throw new GraFatalException($"{ConfigurationKey.ConnectionStringName} must be provided.");
+
+            // configure ef errors to throw, log, or ignore as appropriate for the environment
+            // see https://docs.microsoft.com/en-us/ef/core/querying/related-data#ignored-includes
+            var throwEvents = new List<EventId>();
+            var logEvents = new List<EventId>();
+            var ignoreEvents = new List<EventId>();
+
+            if (_isDevelopment)
+            {
+                logEvents.Add(RelationalEventId.QueryClientEvaluationWarning);
+                throwEvents.Add(CoreEventId.IncludeIgnoredWarning);
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(_config[ConfigurationKey.DatabaseWarningLogging]))
                 {
-                    logEvents.Add(RelationalEventId.QueryClientEvaluationWarning);
-                    throwEvents.Add(CoreEventId.IncludeIgnoredWarning);
+                    ignoreEvents.Add(RelationalEventId.QueryClientEvaluationWarning);
+                    ignoreEvents.Add(CoreEventId.IncludeIgnoredWarning);
                 }
                 else
                 {
-                    if (string.IsNullOrEmpty(_config[ConfigurationKey.DatabaseWarningLogging]))
+                    logEvents.Add(RelationalEventId.QueryClientEvaluationWarning);
+                    logEvents.Add(CoreEventId.IncludeIgnoredWarning);
+                }
+            }
+
+            string cs = _config.GetConnectionString(csName)
+                ?? throw new GraFatalException($"A {csName} connection string must be provided.");
+            switch (_config[ConfigurationKey.ConnectionStringName])
+            {
+                case ConnectionStringNameSqlServer:
+                    if (!string.IsNullOrEmpty(_config[ConfigurationKey.SqlServer2008]))
                     {
-                        ignoreEvents.Add(RelationalEventId.QueryClientEvaluationWarning);
-                        ignoreEvents.Add(CoreEventId.IncludeIgnoredWarning);
+                        services.AddDbContextPool<Data.Context, Data.SqlServer.SqlServerContext>(
+                            _ => _.UseSqlServer(cs, b => b.UseRowNumberForPaging())
+                            .ConfigureWarnings(w => w
+                                .Throw(throwEvents.ToArray())
+                                .Log(logEvents.ToArray())
+                                .Ignore(ignoreEvents.ToArray())));
                     }
                     else
                     {
-                        logEvents.Add(RelationalEventId.QueryClientEvaluationWarning);
-                        logEvents.Add(CoreEventId.IncludeIgnoredWarning);
+                        services.AddDbContextPool<Data.Context, Data.SqlServer.SqlServerContext>(
+                            _ => _.UseSqlServer(cs)
+                            .ConfigureWarnings(w => w
+                                .Throw(throwEvents.ToArray())
+                                .Log(logEvents.ToArray())
+                                .Ignore(ignoreEvents.ToArray())));
                     }
-                }
-
-                string cs = _config.GetConnectionString(csName)
-                    ?? throw new GraFatalException($"A {csName} connection string must be provided.");
-                switch (_config[ConfigurationKey.ConnectionStringName])
-                {
-                    case ConnectionStringNameSqlServer:
-                        if (!string.IsNullOrEmpty(_config[ConfigurationKey.SqlServer2008]))
-                        {
-                            services.AddDbContextPool<Data.Context, Data.SqlServer.SqlServerContext>(
-                                _ => _.UseSqlServer(cs, b => b.UseRowNumberForPaging())
-                                .ConfigureWarnings(w => w
-                                    .Throw(throwEvents.ToArray())
-                                    .Log(logEvents.ToArray())
-                                    .Ignore(ignoreEvents.ToArray())));
-                        }
-                        else
-                        {
-                            services.AddDbContextPool<Data.Context, Data.SqlServer.SqlServerContext>(
-                                _ => _.UseSqlServer(cs)
-                                .ConfigureWarnings(w => w
-                                    .Throw(throwEvents.ToArray())
-                                    .Log(logEvents.ToArray())
-                                    .Ignore(ignoreEvents.ToArray())));
-                        }
-                        break;
-                    case ConnectionStringNameSQLite:
-                        services.AddDbContextPool<Data.Context, Data.SQLite.SQLiteContext>(
-                            _ => _.UseSqlite(cs)
-                                .ConfigureWarnings(w => w
-                                    .Throw(throwEvents.ToArray())
-                                    .Log(logEvents.ToArray())
-                                    .Ignore(ignoreEvents.ToArray())));
-                        break;
-                    default:
-                        throw new GraFatalException($"Unknown GraConnectionStringName: {csName}");
-                }
-
-                // store the data protection key in the database
-                services.AddDataProtection().PersistKeysToDbContext<Data.Context>();
-
-                // utilities
-                services.AddScoped<ICodeGenerator, CodeGenerator>();
-                services.AddScoped<ICodeSanitizer, CodeSanitizer>();
-                services.AddScoped<IDateTimeProvider, CurrentDateTimeProvider>();
-                services.AddScoped<IEntitySerializer, EntitySerializer>();
-                services.AddScoped<IPasswordValidator, PasswordValidator>();
-                services.AddScoped<IPathResolver, PathResolver>();
-                services.AddScoped<ITokenGenerator, TokenGenerator>();
-                services.AddScoped<IUserContextProvider, Controllers.UserContextProvider>();
-                services.AddScoped<Security.Abstract.IPasswordHasher, Security.PasswordHasher>();
-                services.AddScoped<WebSocketHandler>();
-
-                // filters
-                services.AddScoped<Controllers.Filter.MissionControlFilter>();
-                services.AddScoped<Controllers.Filter.NotificationFilter>();
-                services.AddScoped<Controllers.Filter.SessionTimeoutFilterAttribute>();
-                services.AddScoped<Controllers.Filter.SiteFilterAttribute>();
-                services.AddScoped<Controllers.Filter.UserFilter>();
-
-                // services
-                services.AddScoped<ActivityService>();
-                services.AddScoped<AuthenticationService>();
-                services.AddScoped<AuthorizationCodeService>();
-                services.AddScoped<AvatarService>();
-                services.AddScoped<BadgeService>();
-                services.AddScoped<CarouselService>();
-                services.AddScoped<CategoryService>();
-                services.AddScoped<ChallengeService>();
-                services.AddScoped<DailyLiteracyTipService>();
-                services.AddScoped<DashboardContentService>();
-                services.AddScoped<Domain.Report.ServiceFacade.Report>();
-                services.AddScoped<DrawingService>();
-                services.AddScoped<EmailBulkService>();
-                services.AddScoped<EmailManagementService>();
-                services.AddScoped<EmailReminderService>();
-                services.AddScoped<EmailService>();
-                services.AddScoped<EventImportService>();
-                services.AddScoped<EventService>();
-                services.AddScoped<GroupTypeService>();
-                services.AddScoped<JobService>();
-                services.AddScoped<LanguageService>();
-                services.AddScoped<MailService>();
-                services.AddScoped<NewsService>();
-                services.AddScoped<PageService>();
-                services.AddScoped<PerformerSchedulingService>();
-                services.AddScoped<PointTranslationService>();
-                services.AddScoped<PrizeWinnerService>();
-                services.AddScoped<QuestionnaireService>();
-                services.AddScoped<ReportService>();
-                services.AddScoped<RoleService>();
-                services.AddScoped<SampleDataService>();
-                services.AddScoped<SchoolImportService>();
-                services.AddScoped<SchoolService>();
-                services.AddScoped<SiteLookupService>();
-                services.AddScoped<SiteService>();
-                services.AddScoped<SpatialService>();
-                services.AddScoped<SystemInformationService>();
-                services.AddScoped<TriggerService>();
-                services.AddScoped<UserService>();
-                services.AddScoped<UserImportService>();
-                services.AddScoped<VendorCodeService>();
-
-                services.AddScoped<Domain.Report.ActivityByProgramReport>();
-                services.AddScoped<Domain.Report.BadgeReport>();
-                services.AddScoped<Domain.Report.BadgeTopScoresReport>();
-                services.AddScoped<Domain.Report.CommunityExperiencesReport>();
-                services.AddScoped<Domain.Report.CurrentStatusByProgramReport>();
-                services.AddScoped<Domain.Report.CurrentStatusReport>();
-                services.AddScoped<Domain.Report.GroupVendorCodeReport>();
-                services.AddScoped<Domain.Report.ParticipantCountMinutesByProgram>();
-                services.AddScoped<Domain.Report.ParticipantPrizeReport>();
-                services.AddScoped<Domain.Report.ParticipantProgressReport>();
-                services.AddScoped<Domain.Report.PrizeRedemptionReport>();
-                services.AddScoped<Domain.Report.PrizeRedemptionCountReport>();
-                services.AddScoped<Domain.Report.RegistrationsAchieversBySchoolReport>();
-                services.AddScoped<Domain.Report.RegistrationsAchieversReport>();
-                services.AddScoped<Domain.Report.TopScoresReport>();
-                services.AddScoped<Domain.Report.VendorCodeDonationsReport>();
-                services.AddScoped<Domain.Report.VendorCodeReport>();
-
-                // service resolution
-                string initialProgramSetup = DefaultInitialProgramSetup;
-
-                if (!string.IsNullOrEmpty(_config[ConfigurationKey.InitialProgramSetup]))
-                {
-                    initialProgramSetup = _config[ConfigurationKey.InitialProgramSetup];
-                }
-
-                switch (initialProgramSetup)
-                {
-                    case ConfigurationMultipleProgramValue:
-                        services.AddScoped<IInitialSetupService, SetupMultipleProgramService>();
-                        break;
-                    case ConfigurationSingleProgramValue:
-                        services.AddScoped<IInitialSetupService, SetupSingleProgramService>();
-                        break;
-                    default:
-                        throw new GraFatalException($"Unable to perform initial setup - unrecognized GraDefaultProgramSetup: {initialProgramSetup}");
-                }
-
-                // repositories
-                services.AddScoped<Domain.Repository.IAnswerRepository, Data.Repository.AnswerRepository>();
-                services.AddScoped<Domain.Repository.IAuthorizationCodeRepository, Data.Repository.AuthorizationCodeRepository>();
-                services.AddScoped<Domain.Repository.IAvatarBundleRepository, Data.Repository.AvatarBundleRepository>();
-                services.AddScoped<Domain.Repository.IAvatarColorRepository, Data.Repository.AvatarColorRepository>();
-                services.AddScoped<Domain.Repository.IAvatarElementRepository, Data.Repository.AvatarElementRepository>();
-                services.AddScoped<Domain.Repository.IAvatarItemRepository, Data.Repository.AvatarItemRepository>();
-                services.AddScoped<Domain.Repository.IAvatarLayerRepository, Data.Repository.AvatarLayerRepository>();
-                services.AddScoped<Domain.Repository.IBadgeRepository, Data.Repository.BadgeRepository>();
-                services.AddScoped<Domain.Repository.IBookRepository, Data.Repository.BookRepository>();
-                services.AddScoped<Domain.Repository.IBranchRepository, Data.Repository.BranchRepository>();
-                services.AddScoped<Domain.Repository.IBroadcastRepository, Data.Repository.BroadcastRepository>();
-                services.AddScoped<Domain.Repository.ICarouselItemRepository, Data.Repository.CarouselItemRepository>();
-                services.AddScoped<Domain.Repository.ICarouselRepository, Data.Repository.CarouselRepository>();
-                services.AddScoped<Domain.Repository.ICategoryRepository, Data.Repository.CategoryRepository>();
-                services.AddScoped<Domain.Repository.IChallengeGroupRepository, Data.Repository.ChallengeGroupRepository>();
-                services.AddScoped<Domain.Repository.IChallengeRepository, Data.Repository.ChallengeRepository>();
-                services.AddScoped<Domain.Repository.IChallengeTaskRepository, Data.Repository.ChallengeTaskRepository>();
-                services.AddScoped<Domain.Repository.IDailyLiteracyTipImageRepository, Data.Repository.DailyLiteracyTipImageRepository>();
-                services.AddScoped<Domain.Repository.IDailyLiteracyTipRepository, Data.Repository.DailyLiteracyTipRepository>();
-                services.AddScoped<Domain.Repository.IDashboardContentRepository, Data.Repository.DashboardContentRepository>();
-                services.AddScoped<Domain.Repository.IDrawingCriterionRepository, Data.Repository.DrawingCriterionRepository>();
-                services.AddScoped<Domain.Repository.IDrawingRepository, Data.Repository.DrawingRepository>();
-                services.AddScoped<Domain.Repository.IEmailReminderRepository, Data.Repository.EmailReminderRepository>();
-                services.AddScoped<Domain.Repository.IEmailSubscriptionAuditLogRepository, Data.Repository.EmailSubscriptionAuditLogRepository>();
-                services.AddScoped<Domain.Repository.IEmailTemplateRepository, Data.Repository.EmailTemplateRepository>();
-                services.AddScoped<Domain.Repository.IEventRepository, Data.Repository.EventRepository>();
-                services.AddScoped<Domain.Repository.IGroupInfoRepository, Data.Repository.GroupInfoRepository>();
-                services.AddScoped<Domain.Repository.IGroupTypeRepository, Data.Repository.GroupTypeRepository>();
-                services.AddScoped<Domain.Repository.IJobRepository, Data.Repository.JobRepository>();
-                services.AddScoped<Domain.Repository.ILanguageRepository, Data.Repository.LanguageRepository>();
-                services.AddScoped<Domain.Repository.ILocationRepository, Data.Repository.LocationRepository>();
-                services.AddScoped<Domain.Repository.IMailRepository, Data.Repository.MailRepository>();
-                services.AddScoped<Domain.Repository.INewsCategoryRepository, Data.Repository.NewsCategoryRepository>();
-                services.AddScoped<Domain.Repository.INewsPostRepository, Data.Repository.NewsPostRepository>();
-                services.AddScoped<Domain.Repository.INotificationRepository, Data.Repository.NotificationRepository>();
-                services.AddScoped<Domain.Repository.IPageHeaderRepository, Data.Repository.PageHeaderRepository>();
-                services.AddScoped<Domain.Repository.IPageRepository, Data.Repository.PageRepository>();
-                services.AddScoped<Domain.Repository.IPsAgeGroupRepository, Data.Repository.PsAgeGroupRepository>();
-                services.AddScoped<Domain.Repository.IPsBlackoutDateRepository, Data.Repository.PsBlackoutDateRepository>();
-                services.AddScoped<Domain.Repository.IPsBranchSelectionRepository, Data.Repository.PsBranchSelectionRepository>();
-                services.AddScoped<Domain.Repository.IPsSettingsRepository, Data.Repository.PsSettingsRepository>();
-                services.AddScoped<Domain.Repository.IPsKitImageRepository, Data.Repository.PsKitImageRepository>();
-                services.AddScoped<Domain.Repository.IPsKitRepository, Data.Repository.PsKitRepository>();
-                services.AddScoped<Domain.Repository.IPsPerformerImageRepository, Data.Repository.PsPerformerImageRepository>();
-                services.AddScoped<Domain.Repository.IPsPerformerRepository, Data.Repository.PsPerformerRepository>();
-                services.AddScoped<Domain.Repository.IPsPerformerScheduleRepository, Data.Repository.PsPerformerScheduleRepository>();
-                services.AddScoped<Domain.Repository.IPsProgramImageRepository, Data.Repository.PsProgramImageRepository>();
-                services.AddScoped<Domain.Repository.IPsProgramRepository, Data.Repository.PsProgramRepository>();
-                services.AddScoped<Domain.Repository.IPointTranslationRepository, Data.Repository.PointTranslationRepository>();
-                services.AddScoped<Domain.Repository.IPrizeWinnerRepository, Data.Repository.PrizeWinnerRepository>();
-                services.AddScoped<Domain.Repository.IProgramRepository, Data.Repository.ProgramRepository>();
-                services.AddScoped<Domain.Repository.IQuestionnaireRepository, Data.Repository.QuestionnaireRepository>();
-                services.AddScoped<Domain.Repository.IQuestionRepository, Data.Repository.QuestionRepository>();
-                services.AddScoped<Domain.Repository.IRecoveryTokenRepository, Data.Repository.RecoveryTokenRepository>();
-                services.AddScoped<Domain.Repository.IReportCriterionRepository, Data.Repository.ReportCriterionRepository>();
-                services.AddScoped<Domain.Repository.IReportRequestRepository, Data.Repository.ReportRequestRepository>();
-                services.AddScoped<Domain.Repository.IRequiredQuestionnaireRepository, Data.Repository.RequiredQuestionnaireRepository>();
-                services.AddScoped<Domain.Repository.IRoleRepository, Data.Repository.RoleRepository>();
-                services.AddScoped<Domain.Repository.ISchoolDistrictRepository, Data.Repository.SchoolDistrictRepository>();
-                services.AddScoped<Domain.Repository.ISchoolRepository, Data.Repository.SchoolRepository>();
-                services.AddScoped<Domain.Repository.ISiteRepository, Data.Repository.SiteRepository>();
-                services.AddScoped<Domain.Repository.ISiteSettingRepository, Data.Repository.SiteSettingRepository>();
-                services.AddScoped<Domain.Repository.ISpatialDistanceRepository, Data.Repository.SpatialDistanceRepository>();
-                services.AddScoped<Domain.Repository.ISystemInformationRepository, Data.Repository.SystemInformationRepository>();
-                services.AddScoped<Domain.Repository.ISystemRepository, Data.Repository.SystemRepository>();
-                services.AddScoped<Domain.Repository.ITriggerRepository, Data.Repository.TriggerRepository>();
-                services.AddScoped<Domain.Repository.IUserLogRepository, Data.Repository.UserLogRepository>();
-                services.AddScoped<Domain.Repository.IUserRepository, Data.Repository.UserRepository>();
-                services.AddScoped<Domain.Repository.IVendorCodeRepository, Data.Repository.VendorCodeRepository>();
-                services.AddScoped<Domain.Repository.IVendorCodeTypeRepository, Data.Repository.VendorCodeTypeRepository>();
-
-                services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+                    break;
+                case ConnectionStringNameSQLite:
+                    services.AddDbContextPool<Data.Context, Data.SQLite.SQLiteContext>(
+                        _ => _.UseSqlite(cs)
+                            .ConfigureWarnings(w => w
+                                .Throw(throwEvents.ToArray())
+                                .Log(logEvents.ToArray())
+                                .Ignore(ignoreEvents.ToArray())));
+                    break;
+                default:
+                    throw new GraFatalException($"Unknown GraConnectionStringName: {csName}");
             }
+
+            // store the data protection key in the database
+            services.AddDataProtection().PersistKeysToDbContext<Data.Context>();
+
+            // utilities
+            services.AddScoped<ICodeGenerator, CodeGenerator>();
+            services.AddScoped<ICodeSanitizer, CodeSanitizer>();
+            services.AddScoped<IDateTimeProvider, CurrentDateTimeProvider>();
+            services.AddScoped<IEntitySerializer, EntitySerializer>();
+            services.AddScoped<IPasswordValidator, PasswordValidator>();
+            services.AddScoped<IPathResolver, PathResolver>();
+            services.AddScoped<ITokenGenerator, TokenGenerator>();
+            services.AddScoped<IUserContextProvider, Controllers.UserContextProvider>();
+            services.AddScoped<Security.Abstract.IPasswordHasher, Security.PasswordHasher>();
+            services.AddScoped<WebSocketHandler>();
+
+            // filters
+            services.AddScoped<Controllers.Filter.MissionControlFilter>();
+            services.AddScoped<Controllers.Filter.NotificationFilter>();
+            services.AddScoped<Controllers.Filter.SessionTimeoutFilterAttribute>();
+            services.AddScoped<Controllers.Filter.SiteFilterAttribute>();
+            services.AddScoped<Controllers.Filter.UserFilter>();
+
+            // services
+            services.AddScoped<ActivityService>();
+            services.AddScoped<AuthenticationService>();
+            services.AddScoped<AuthorizationCodeService>();
+            services.AddScoped<AvatarService>();
+            services.AddScoped<BadgeService>();
+            services.AddScoped<CarouselService>();
+            services.AddScoped<CategoryService>();
+            services.AddScoped<ChallengeService>();
+            services.AddScoped<DailyLiteracyTipService>();
+            services.AddScoped<DashboardContentService>();
+            services.AddScoped<Domain.Report.ServiceFacade.Report>();
+            services.AddScoped<DrawingService>();
+            services.AddScoped<EmailBulkService>();
+            services.AddScoped<EmailManagementService>();
+            services.AddScoped<EmailReminderService>();
+            services.AddScoped<EmailService>();
+            services.AddScoped<EventImportService>();
+            services.AddScoped<EventService>();
+            services.AddScoped<GroupTypeService>();
+            services.AddScoped<JobService>();
+            services.AddScoped<LanguageService>();
+            services.AddScoped<MailService>();
+            services.AddScoped<NewsService>();
+            services.AddScoped<PageService>();
+            services.AddScoped<PerformerSchedulingService>();
+            services.AddScoped<PointTranslationService>();
+            services.AddScoped<PrizeWinnerService>();
+            services.AddScoped<QuestionnaireService>();
+            services.AddScoped<ReportService>();
+            services.AddScoped<RoleService>();
+            services.AddScoped<SampleDataService>();
+            services.AddScoped<SchoolImportService>();
+            services.AddScoped<SchoolService>();
+            services.AddScoped<SiteLookupService>();
+            services.AddScoped<SiteService>();
+            services.AddScoped<SpatialService>();
+            services.AddScoped<SystemInformationService>();
+            services.AddScoped<TriggerService>();
+            services.AddScoped<UserService>();
+            services.AddScoped<UserImportService>();
+            services.AddScoped<VendorCodeService>();
+
+            services.AddScoped<Domain.Report.ActivityByProgramReport>();
+            services.AddScoped<Domain.Report.BadgeReport>();
+            services.AddScoped<Domain.Report.BadgeTopScoresReport>();
+            services.AddScoped<Domain.Report.CommunityExperiencesReport>();
+            services.AddScoped<Domain.Report.CurrentStatusByProgramReport>();
+            services.AddScoped<Domain.Report.CurrentStatusReport>();
+            services.AddScoped<Domain.Report.GroupVendorCodeReport>();
+            services.AddScoped<Domain.Report.ParticipantCountMinutesByProgram>();
+            services.AddScoped<Domain.Report.ParticipantPrizeReport>();
+            services.AddScoped<Domain.Report.ParticipantProgressReport>();
+            services.AddScoped<Domain.Report.PrizeRedemptionReport>();
+            services.AddScoped<Domain.Report.PrizeRedemptionCountReport>();
+            services.AddScoped<Domain.Report.RegistrationsAchieversBySchoolReport>();
+            services.AddScoped<Domain.Report.RegistrationsAchieversReport>();
+            services.AddScoped<Domain.Report.TopScoresReport>();
+            services.AddScoped<Domain.Report.VendorCodeDonationsReport>();
+            services.AddScoped<Domain.Report.VendorCodeReport>();
+
+            // service resolution
+            string initialProgramSetup = DefaultInitialProgramSetup;
+
+            if (!string.IsNullOrEmpty(_config[ConfigurationKey.InitialProgramSetup]))
+            {
+                initialProgramSetup = _config[ConfigurationKey.InitialProgramSetup];
+            }
+
+            switch (initialProgramSetup)
+            {
+                case ConfigurationMultipleProgramValue:
+                    services.AddScoped<IInitialSetupService, SetupMultipleProgramService>();
+                    break;
+                case ConfigurationSingleProgramValue:
+                    services.AddScoped<IInitialSetupService, SetupSingleProgramService>();
+                    break;
+                default:
+                    throw new GraFatalException($"Unable to perform initial setup - unrecognized GraDefaultProgramSetup: {initialProgramSetup}");
+            }
+
+            // repositories
+            services.AddScoped<Domain.Repository.IAnswerRepository, Data.Repository.AnswerRepository>();
+            services.AddScoped<Domain.Repository.IAuthorizationCodeRepository, Data.Repository.AuthorizationCodeRepository>();
+            services.AddScoped<Domain.Repository.IAvatarBundleRepository, Data.Repository.AvatarBundleRepository>();
+            services.AddScoped<Domain.Repository.IAvatarColorRepository, Data.Repository.AvatarColorRepository>();
+            services.AddScoped<Domain.Repository.IAvatarElementRepository, Data.Repository.AvatarElementRepository>();
+            services.AddScoped<Domain.Repository.IAvatarItemRepository, Data.Repository.AvatarItemRepository>();
+            services.AddScoped<Domain.Repository.IAvatarLayerRepository, Data.Repository.AvatarLayerRepository>();
+            services.AddScoped<Domain.Repository.IBadgeRepository, Data.Repository.BadgeRepository>();
+            services.AddScoped<Domain.Repository.IBookRepository, Data.Repository.BookRepository>();
+            services.AddScoped<Domain.Repository.IBranchRepository, Data.Repository.BranchRepository>();
+            services.AddScoped<Domain.Repository.IBroadcastRepository, Data.Repository.BroadcastRepository>();
+            services.AddScoped<Domain.Repository.ICarouselItemRepository, Data.Repository.CarouselItemRepository>();
+            services.AddScoped<Domain.Repository.ICarouselRepository, Data.Repository.CarouselRepository>();
+            services.AddScoped<Domain.Repository.ICategoryRepository, Data.Repository.CategoryRepository>();
+            services.AddScoped<Domain.Repository.IChallengeGroupRepository, Data.Repository.ChallengeGroupRepository>();
+            services.AddScoped<Domain.Repository.IChallengeRepository, Data.Repository.ChallengeRepository>();
+            services.AddScoped<Domain.Repository.IChallengeTaskRepository, Data.Repository.ChallengeTaskRepository>();
+            services.AddScoped<Domain.Repository.IDailyLiteracyTipImageRepository, Data.Repository.DailyLiteracyTipImageRepository>();
+            services.AddScoped<Domain.Repository.IDailyLiteracyTipRepository, Data.Repository.DailyLiteracyTipRepository>();
+            services.AddScoped<Domain.Repository.IDashboardContentRepository, Data.Repository.DashboardContentRepository>();
+            services.AddScoped<Domain.Repository.IDrawingCriterionRepository, Data.Repository.DrawingCriterionRepository>();
+            services.AddScoped<Domain.Repository.IDrawingRepository, Data.Repository.DrawingRepository>();
+            services.AddScoped<Domain.Repository.IEmailReminderRepository, Data.Repository.EmailReminderRepository>();
+            services.AddScoped<Domain.Repository.IEmailSubscriptionAuditLogRepository, Data.Repository.EmailSubscriptionAuditLogRepository>();
+            services.AddScoped<Domain.Repository.IEmailTemplateRepository, Data.Repository.EmailTemplateRepository>();
+            services.AddScoped<Domain.Repository.IEventRepository, Data.Repository.EventRepository>();
+            services.AddScoped<Domain.Repository.IGroupInfoRepository, Data.Repository.GroupInfoRepository>();
+            services.AddScoped<Domain.Repository.IGroupTypeRepository, Data.Repository.GroupTypeRepository>();
+            services.AddScoped<Domain.Repository.IJobRepository, Data.Repository.JobRepository>();
+            services.AddScoped<Domain.Repository.ILanguageRepository, Data.Repository.LanguageRepository>();
+            services.AddScoped<Domain.Repository.ILocationRepository, Data.Repository.LocationRepository>();
+            services.AddScoped<Domain.Repository.IMailRepository, Data.Repository.MailRepository>();
+            services.AddScoped<Domain.Repository.INewsCategoryRepository, Data.Repository.NewsCategoryRepository>();
+            services.AddScoped<Domain.Repository.INewsPostRepository, Data.Repository.NewsPostRepository>();
+            services.AddScoped<Domain.Repository.INotificationRepository, Data.Repository.NotificationRepository>();
+            services.AddScoped<Domain.Repository.IPageHeaderRepository, Data.Repository.PageHeaderRepository>();
+            services.AddScoped<Domain.Repository.IPageRepository, Data.Repository.PageRepository>();
+            services.AddScoped<Domain.Repository.IPsAgeGroupRepository, Data.Repository.PsAgeGroupRepository>();
+            services.AddScoped<Domain.Repository.IPsBlackoutDateRepository, Data.Repository.PsBlackoutDateRepository>();
+            services.AddScoped<Domain.Repository.IPsBranchSelectionRepository, Data.Repository.PsBranchSelectionRepository>();
+            services.AddScoped<Domain.Repository.IPsSettingsRepository, Data.Repository.PsSettingsRepository>();
+            services.AddScoped<Domain.Repository.IPsKitImageRepository, Data.Repository.PsKitImageRepository>();
+            services.AddScoped<Domain.Repository.IPsKitRepository, Data.Repository.PsKitRepository>();
+            services.AddScoped<Domain.Repository.IPsPerformerImageRepository, Data.Repository.PsPerformerImageRepository>();
+            services.AddScoped<Domain.Repository.IPsPerformerRepository, Data.Repository.PsPerformerRepository>();
+            services.AddScoped<Domain.Repository.IPsPerformerScheduleRepository, Data.Repository.PsPerformerScheduleRepository>();
+            services.AddScoped<Domain.Repository.IPsProgramImageRepository, Data.Repository.PsProgramImageRepository>();
+            services.AddScoped<Domain.Repository.IPsProgramRepository, Data.Repository.PsProgramRepository>();
+            services.AddScoped<Domain.Repository.IPointTranslationRepository, Data.Repository.PointTranslationRepository>();
+            services.AddScoped<Domain.Repository.IPrizeWinnerRepository, Data.Repository.PrizeWinnerRepository>();
+            services.AddScoped<Domain.Repository.IProgramRepository, Data.Repository.ProgramRepository>();
+            services.AddScoped<Domain.Repository.IQuestionnaireRepository, Data.Repository.QuestionnaireRepository>();
+            services.AddScoped<Domain.Repository.IQuestionRepository, Data.Repository.QuestionRepository>();
+            services.AddScoped<Domain.Repository.IRecoveryTokenRepository, Data.Repository.RecoveryTokenRepository>();
+            services.AddScoped<Domain.Repository.IReportCriterionRepository, Data.Repository.ReportCriterionRepository>();
+            services.AddScoped<Domain.Repository.IReportRequestRepository, Data.Repository.ReportRequestRepository>();
+            services.AddScoped<Domain.Repository.IRequiredQuestionnaireRepository, Data.Repository.RequiredQuestionnaireRepository>();
+            services.AddScoped<Domain.Repository.IRoleRepository, Data.Repository.RoleRepository>();
+            services.AddScoped<Domain.Repository.ISchoolDistrictRepository, Data.Repository.SchoolDistrictRepository>();
+            services.AddScoped<Domain.Repository.ISchoolRepository, Data.Repository.SchoolRepository>();
+            services.AddScoped<Domain.Repository.ISiteRepository, Data.Repository.SiteRepository>();
+            services.AddScoped<Domain.Repository.ISiteSettingRepository, Data.Repository.SiteSettingRepository>();
+            services.AddScoped<Domain.Repository.ISpatialDistanceRepository, Data.Repository.SpatialDistanceRepository>();
+            services.AddScoped<Domain.Repository.ISystemInformationRepository, Data.Repository.SystemInformationRepository>();
+            services.AddScoped<Domain.Repository.ISystemRepository, Data.Repository.SystemRepository>();
+            services.AddScoped<Domain.Repository.ITriggerRepository, Data.Repository.TriggerRepository>();
+            services.AddScoped<Domain.Repository.IUserLogRepository, Data.Repository.UserLogRepository>();
+            services.AddScoped<Domain.Repository.IUserRepository, Data.Repository.UserRepository>();
+            services.AddScoped<Domain.Repository.IVendorCodeRepository, Data.Repository.VendorCodeRepository>();
+            services.AddScoped<Domain.Repository.IVendorCodeTypeRepository, Data.Repository.VendorCodeTypeRepository>();
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -504,9 +497,9 @@ namespace GRA.Web
             // insert remote address and trace identifier into the log context for each request
             app.Use(async (context, next) =>
             {
-                using (LogContext.PushProperty(LoggingEnrichment.IdentifierEnrichment,
+                using (LogContext.PushProperty(LoggingEnrichment.Identifier,
                     context.TraceIdentifier))
-                using (LogContext.PushProperty(LoggingEnrichment.RemoteAddressEnrichment,
+                using (LogContext.PushProperty(LoggingEnrichment.RemoteAddress,
                     context.Connection.RemoteIpAddress))
                 {
                     await next.Invoke();
@@ -580,7 +573,7 @@ namespace GRA.Web
 
             app.Use(async (context, next) =>
             {
-                using (LogContext.PushProperty(LoggingEnrichment.UserIdEnrichment,
+                using (LogContext.PushProperty(LoggingEnrichment.UserId,
                     context.User.Claims.FirstOrDefault(_ => _.Type == ClaimType.UserId)?.Value))
                 {
                     await next();

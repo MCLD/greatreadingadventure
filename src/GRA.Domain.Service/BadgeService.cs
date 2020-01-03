@@ -50,7 +50,7 @@ namespace GRA.Domain.Service
             string extension = System.IO.Path.GetExtension(badge.Filename).ToLower();
             string filename = $"badge{badge.Id}{extension}";
             string fullFilePath = GetFilePath(filename);
-            _logger.LogInformation($"Writing out badge file {fullFilePath}...");
+            _logger.LogDebug("Writing out badge file {BadgeFile}", fullFilePath);
             System.IO.File.WriteAllBytes(fullFilePath, imageFile);
             return GetUrlPath(filename);
         }

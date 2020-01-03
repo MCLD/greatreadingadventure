@@ -19,7 +19,7 @@ namespace GRA
                 var revision = fileVersion.Substring(fileVersion.LastIndexOf('.') + 1);
                 if (!string.IsNullOrEmpty(revision) && revision != "0")
                 {
-                    thisAssemblyVersion += " revision " + revision;
+                    thisAssemblyVersion += "-" + revision;
                 }
             }
             return thisAssemblyVersion;
