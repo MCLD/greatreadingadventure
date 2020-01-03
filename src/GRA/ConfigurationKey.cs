@@ -31,6 +31,7 @@ namespace GRA
         public static readonly string RollingLogHttp = "GraRollingLogHttp";
         public static readonly string RollingLogPath = "GraRollingLogPath";
         public static readonly string SeqEndpoint = "GraSeqEndpoint";
+        public static readonly string SiteIdentifier = "GraSiteIdentifier";
         public static readonly string SqlServer2008 = "GraSqlServer2008";
         public static readonly string SqlSessionSchemaName = "GraSqlSessionSchemaName";
         public static readonly string SqlSessionTable = "GraSqlSessionTable";

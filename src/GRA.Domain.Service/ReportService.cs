@@ -127,7 +127,8 @@ namespace GRA.Domain.Service
             else
             {
                 var requestingUser = GetClaimId(ClaimType.UserId);
-                _logger.LogError($"User {requestingUser} doesn't have permission to view all reporting.");
+                _logger.LogError("User {UserId} doesn't have permission to view all reporting.",
+                    requestingUser);
                 throw new GraException("Permission denied.");
             }
         }
@@ -155,18 +156,23 @@ namespace GRA.Domain.Service
 
                 token.Register(() =>
                 {
-                    string duration = "";
+                    string duration = "immediately";
                     if (report?.Elapsed != null)
                     {
-                        duration = $" after {((TimeSpan)report.Elapsed).TotalSeconds.ToString("N2")} seconds";
+                        duration = $"after {((TimeSpan)report.Elapsed).TotalSeconds.ToString("N2")} seconds";
                     }
                     if (_request != null)
                     {
-                        _logger.LogWarning($"Report {reportRequestId} for user {_request.CreatedBy} was cancelled{duration}.");
+                        _logger.LogWarning("Report {ReportRequestId} for user {UserId} was cancelled {Duration}.",
+                            reportRequestId,
+                            _request.CreatedBy,
+                            duration);
                     }
                     else
                     {
-                        _logger.LogWarning($"Report {reportRequestId} was cancelled{duration}.");
+                        _logger.LogWarning("Report {ReportRequestId} was cancelled {Duration}.",
+                            reportRequestId,
+                            duration);
                     }
                 });
 
@@ -177,7 +183,10 @@ namespace GRA.Domain.Service
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"Could not find report request {reportRequestId}: {ex.Message}");
+                    _logger.LogError(ex,
+                        "Could not find report request {ReportRequestId}: {Message}",
+                        reportRequestId,
+                        ex.Message);
                     return new JobStatus
                     {
                         Status = "Could not find the report request.",
@@ -189,77 +198,86 @@ namespace GRA.Domain.Service
                 var reportDetails = new Catalog().Get()
                     .SingleOrDefault(_ => _.Id == _request.ReportId);
 
-                if (reportDetails == null)
+                using (Serilog.Context.LogContext.PushProperty(LoggingEnrichment.ReportName,
+                            reportDetails.Name))
                 {
-                    _logger.LogError($"Cannot find report id {_request.ReportId} requested by request {reportRequestId}");
-
-                    return new JobStatus
+                    if (reportDetails == null)
                     {
-                        Status = "Could not find the requested report.",
-                        Error = true,
-                        Complete = true
-                    };
-                }
+                        _logger.LogError("Cannot find report id {ReportId} requested by request {ReportRequestId}",
+                            _request.ReportId,
+                            reportRequestId);
 
-                try
-                {
-                    report = _serviceProvider.GetService(reportDetails.ReportType) as BaseReport;
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogCritical($"Couldn't instantiate report: {ex.Message}");
-                    return new JobStatus
+                        return new JobStatus
+                        {
+                            Status = "Could not find the requested report.",
+                            Error = true,
+                            Complete = true
+                        };
+                    }
+
+                    try
                     {
-                        Status = "Unable to run report.",
-                        Error = true,
-                        Complete = true
-                    };
-                }
-
-                try
-                {
-                    await report.ExecuteAsync(_request, token, progress);
-                }
-                catch (Exception ex)
-                {
-                    await _jobRepository.UpdateStatusAsync(jobId, $"An error occurred: {ex.Message}");
-                    return new JobStatus
+                        report = _serviceProvider.GetService(reportDetails.ReportType) as BaseReport;
+                    }
+                    catch (Exception ex)
                     {
-                        Status = $"A software error occurred: {ex.Message}.",
-                        Complete = true,
-                        Error = true
-                    };
-                }
+                        _logger.LogCritical(ex,
+                            "Couldn't instantiate report: {Message}",
+                            ex.Message);
+                        return new JobStatus
+                        {
+                            Status = "Unable to run report.",
+                            Error = true,
+                            Complete = true
+                        };
+                    }
 
-                if (token.IsCancellationRequested)
-                {
-                    await _jobRepository.UpdateStatusAsync(jobId,
-                        $"Report request id {reportRequestId} cancelled.");
-
-                    return new JobStatus
+                    try
                     {
-                        Status = "Report processing cancelled.",
-                        Complete = true,
-                        Error = true
-                    };
-                }
-                else
-                {
-                    await _jobRepository.UpdateStatusAsync(jobId,
-                        $"Report request id {reportRequestId} completed.");
-
-                    return new JobStatus
+                        await report.ExecuteAsync(_request, token, progress);
+                    }
+                    catch (Exception ex)
                     {
-                        PercentComplete = 100,
-                        Complete = true,
-                        Status = "Report processing complete.",
-                    };
+                        await _jobRepository.UpdateStatusAsync(jobId, $"An error occurred: {ex.Message}");
+                        return new JobStatus
+                        {
+                            Status = $"A software error occurred: {ex.Message}.",
+                            Complete = true,
+                            Error = true
+                        };
+                    }
+
+                    if (token.IsCancellationRequested)
+                    {
+                        await _jobRepository.UpdateStatusAsync(jobId,
+                            $"Report request id {reportRequestId} cancelled.");
+
+                        return new JobStatus
+                        {
+                            Status = "Report processing cancelled.",
+                            Complete = true,
+                            Error = true
+                        };
+                    }
+                    else
+                    {
+                        await _jobRepository.UpdateStatusAsync(jobId,
+                            $"Report request id {reportRequestId} completed.");
+
+                        return new JobStatus
+                        {
+                            PercentComplete = 100,
+                            Complete = true,
+                            Status = "Report processing complete.",
+                        };
+                    }
                 }
             }
             else
             {
                 var requestingUser = GetClaimId(ClaimType.UserId);
-                _logger.LogError($"User {requestingUser} doesn't have permission to view all reporting.");
+                _logger.LogError("User {UserId} doesn't have permission to view all reporting.",
+                    requestingUser);
                 return new JobStatus
                 {
                     Status = "Permission denied.",
@@ -276,8 +294,9 @@ namespace GRA.Domain.Service
                 var reportRequest = await _reportRequestRepository.GetByIdAsync(reportRequestId);
                 if (reportRequest == null)
                 {
-                    var requestingUser = GetClaimId(ClaimType.UserId);
-                    _logger.LogError($"User {requestingUser} requested non-existant report results id: {reportRequestId}.");
+                    _logger.LogError("User {UserId} requested non-existant report results id: {ReportRequestId}.",
+                        GetClaimId(ClaimType.UserId),
+                        reportRequestId);
                     throw new GraException("Report results not found.");
                 }
                 var reportCriteria = await _reportCriterionRepository
@@ -287,8 +306,8 @@ namespace GRA.Domain.Service
             }
             else
             {
-                var requestingUser = GetClaimId(ClaimType.UserId);
-                _logger.LogError($"User {requestingUser} doesn't have permission to view all reporting.");
+                _logger.LogError("User {UserId} doesn't have permission to view all reporting.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
         }

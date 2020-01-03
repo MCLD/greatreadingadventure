@@ -56,6 +56,7 @@ When operating in a load-balanced environment these settings are used to configu
 - `GraDistributedCache` - *optional* - select a system to use for distributed cache: "Redis" or "SqlServer", anything else uses an in-memory distributed cache
 - `GraInstanceName` - the name of this deployed instance
 - `GraRedisConfiguration` - *optional* - address of a Redis server for distributed cache, only used if `GraDistributedCache` is set to "Redis"
+- `GraSiteIdentifier` - *optional* - defaults to "gra", a name to indicate this deployment of the application in logs, with the concept that this 'site' might have multiple instances
 - `GraSqlSessionSchemaName` - *optional* - the schema to use for the SQL Server distributed cache table, defaults to "dbo"
 - `GraSqlSessionTable` - *optional* - the table to use for the SQL Server distributed cache, defaults to "Sessions"
 

@@ -57,69 +57,78 @@ namespace GRA.Domain.Service
 
                     if (jobInfo != null)
                     {
-                        progress.Report(new JobStatus
+                        using (Serilog.Context.LogContext.PushProperty(LoggingEnrichment.JobType,
+                            jobInfo.JobType))
+                        using (Serilog.Context.LogContext.PushProperty(LoggingEnrichment.JobToken,
+                            jobTokenString))
                         {
-                            Status = "Loading job..."
-                        });
-
-                        await _jobRepository.UpdateStartAsync(jobInfo.Id);
-
-                        JobStatus status;
-                        try
-                        {
-                            switch (jobInfo.JobType)
+                            progress.Report(new JobStatus
                             {
-                                case JobType.AvatarImport:
-                                    status = await _avatarService.ImportAvatarsAsync(jobInfo.Id,
-                                        token,
-                                        progress);
-                                    break;
-                                case JobType.HouseholdImport:
-                                    status = await _userService.ImportHouseholdMembersAsync(jobInfo.Id,
-                                        token,
-                                        progress);
-                                    break;
-                                case JobType.RunReport:
-                                    status = await _reportService.RunReportJobAsync(jobInfo.Id,
-                                        token,
-                                        progress);
-                                    break;
-                                case JobType.UpdateVendorStatus:
-                                    status = await _vendorCodeService.UpdateStatusFromExcelAsync(
-                                        jobInfo.Id,
-                                        token,
-                                        progress);
-                                    break;
-                                default: // case JobType.SendBulkEmails:
-                                    status = await _emailBulkService.RunJobAsync(userId,
-                                        jobInfo.Id,
-                                        token,
-                                        progress);
-                                    break;
+                                Status = "Loading job..."
+                            });
+
+                            await _jobRepository.UpdateStartAsync(jobInfo.Id);
+
+                            JobStatus status;
+                            try
+                            {
+                                switch (jobInfo.JobType)
+                                {
+                                    case JobType.AvatarImport:
+                                        status = await _avatarService.ImportAvatarsAsync(jobInfo.Id,
+                                            token,
+                                            progress);
+                                        break;
+                                    case JobType.HouseholdImport:
+                                        status = await _userService.ImportHouseholdMembersAsync(jobInfo.Id,
+                                            token,
+                                            progress);
+                                        break;
+                                    case JobType.RunReport:
+                                        status = await _reportService.RunReportJobAsync(jobInfo.Id,
+                                            token,
+                                            progress);
+                                        break;
+                                    case JobType.UpdateVendorStatus:
+                                        status = await _vendorCodeService.UpdateStatusFromExcelAsync(
+                                            jobInfo.Id,
+                                            token,
+                                            progress);
+                                        break;
+                                    default: // case JobType.SendBulkEmails:
+                                        status = await _emailBulkService.RunJobAsync(userId,
+                                            jobInfo.Id,
+                                            token,
+                                            progress);
+                                        break;
+                                }
+
+                                await _jobRepository.UpdateFinishAsync(jobInfo.Id,
+                                    token.IsCancellationRequested);
+
                             }
-
-                            await _jobRepository.UpdateFinishAsync(jobInfo.Id,
-                                token.IsCancellationRequested);
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.LogError(ex,
-                                "Error executing job: {Message}",
-                                ex.Message);
-                            status = new JobStatus
+                            catch (Exception ex)
                             {
-                                Status = $"A software error occurred running the job: {ex.Message}",
-                                Complete = true,
-                                Error = true,
-                                SuccessRedirect = false
-                            };
-                            progress.Report(status);
+                                _logger.LogError(ex,
+                                    "Error executing job id {JobId} ({JobToken}): {Message}",
+                                    jobInfo.Id,
+                                    jobInfo.JobToken,
+                                    ex.Message);
+                                status = new JobStatus
+                                {
+                                    Status = $"A software error occurred running the job: {ex.Message}",
+                                    Complete = true,
+                                    Error = true,
+                                    SuccessRedirect = false
+                                };
+                                progress.Report(status);
+                            }
+                            return status;
                         }
-                        return status;
                     }
                     else
                     {
-                        _logger.LogError("User {RequestingUser} specified a job token with no associated job id: {JobToken}.",
+                        _logger.LogError("User {UserId} specified a job token with no associated job id: {JobToken}.",
                             userId,
                             jobTokenString);
                         return ErrorStatus("Job not found.");
@@ -127,7 +136,7 @@ namespace GRA.Domain.Service
                 }
                 else
                 {
-                    _logger.LogError("User {RequestingUser} specified an invalid job token: {JobToken}.",
+                    _logger.LogError("User {UserId} specified an invalid job token: {JobToken}.",
                         userId,
                         jobTokenString);
                     return ErrorStatus("Invalid job.");
@@ -135,7 +144,7 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError("User {RequestingUser} doesn't have permission to run jobs.",
+                _logger.LogError("User {UserId} doesn't have permission to run jobs.",
                     userId);
                 return ErrorStatus("Permission denied");
             }
