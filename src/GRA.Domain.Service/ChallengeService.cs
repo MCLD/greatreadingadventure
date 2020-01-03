@@ -508,7 +508,7 @@ namespace GRA.Domain.Service
             string extension = System.IO.Path.GetExtension(task.Filename).ToLower();
             string filename = $"task{task.Id}{extension}";
             string fullFilePath = GetTaskFilePath(filename);
-            _logger.LogInformation($"Writing out task file {fullFilePath}...");
+            _logger.LogDebug("Writing out task file {TaskFile}", fullFilePath);
             System.IO.File.WriteAllBytes(fullFilePath, taskFile);
             return GetTaskUrlPath(filename);
         }

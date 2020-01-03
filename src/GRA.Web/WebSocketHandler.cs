@@ -147,10 +147,10 @@ namespace GRA.Web
                     // ideal state is socket still open, task complete
                     if (webSocket.State == WebSocketState.Open && runTask.IsCompleted)
                     {
-                        _logger.LogTrace("WebSocket {Status}, socket {State}, sending final update after {Elapsed:c}.",
+                        _logger.LogTrace("WebSocket {Status}, socket {State}, sending final update after {Elapsed} ms",
                             runTask.Status,
                             webSocket.State,
-                            sw.Elapsed);
+                            sw.ElapsedMilliseconds);
 
                         var result = runTask.Result;
                         result.Complete = true;
@@ -189,10 +189,10 @@ namespace GRA.Web
                     else
                     {
                         // socket is not open or task is not complete. cancel everything!
-                        _logger.LogDebug("Task {Status}, socket {State}, sending cancel after {TotalSeconds}s.",
+                        _logger.LogDebug("Task {Status}, socket {State}, sending cancel after {Elapsed} ms",
                             runTask.Status,
                             webSocket.State,
-                            sw.Elapsed.TotalSeconds);
+                            sw.ElapsedMilliseconds);
                         if (!runTask.IsCompleted)
                         {
                             cancellationTokenSource.Cancel();

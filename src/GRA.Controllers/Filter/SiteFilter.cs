@@ -285,13 +285,18 @@ namespace GRA.Controllers.Filter
                 httpContext.Items[ItemKey.L10n] = cultureList.OrderBy(_ => _.Text);
             }
 
-            using (LogContext.PushProperty("GRAActiveUserId", activeUserId))
-            using (LogContext.PushProperty("GRALanguageId", currentCulture?.TwoLetterISOLanguageName))
-            using (LogContext.PushProperty("GRARouteAction", context.RouteData?.Values["action"]))
-            using (LogContext.PushProperty("GRARouteArea", context.RouteData?.Values["area"]))
-            using (LogContext.PushProperty("GRARouteController", context.RouteData?.Values["controller"]))
-            using (LogContext.PushProperty("GRARouteId", context.RouteData?.Values["id"]))
-            using (LogContext.PushProperty("GRASiteStage", siteStage))
+            using (LogContext.PushProperty(LoggingEnrichment.ActiveUserId, activeUserId))
+            using (LogContext.PushProperty(LoggingEnrichment.LanguageId,
+                currentCulture?.TwoLetterISOLanguageName))
+            using (LogContext.PushProperty(LoggingEnrichment.RouteAction,
+                context.RouteData?.Values["action"]))
+            using (LogContext.PushProperty(LoggingEnrichment.RouteArea,
+                context.RouteData?.Values["area"]))
+            using (LogContext.PushProperty(LoggingEnrichment.RouteController,
+                context.RouteData?.Values["controller"]))
+            using (LogContext.PushProperty(LoggingEnrichment.RouteId,
+                context.RouteData?.Values["id"]))
+            using (LogContext.PushProperty(LoggingEnrichment.SiteStage, siteStage))
             {
                 await next();
             }

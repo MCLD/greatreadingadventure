@@ -42,10 +42,10 @@ namespace GRA.Domain.Report.Abstract
             return await _serviceFacade.ReportRequestRepository.UpdateSaveNoAuditAsync(request);
         }
 
-        protected string StopTimer()
+        protected string StopTimerOutputMs()
         {
             _timer.Stop();
-            string elapsed = _timer.Elapsed.ToString("c");
+            string elapsed = _timer.ElapsedMilliseconds.ToString();
             _timer = null;
             return elapsed;
         }
@@ -129,7 +129,11 @@ namespace GRA.Domain.Report.Abstract
         protected async Task FinishRequestAsync(ReportRequest request, bool success)
         {
             string result = success ? "ran" : "cancelled";
-            _logger.LogInformation($"Report {request.Name} with criterion {request.ReportCriteriaId} {result} in {StopTimer()}");
+            _logger.LogInformation("Report {ReportName} with criterion {ReportCriteriaId} {Result} in {Elapsed} ms",
+                request.Name,
+                request.ReportCriteriaId,
+                result,
+                StopTimerOutputMs());
 
             request.Success = success;
             request.Finished = _serviceFacade.DateTimeProvider.Now;
