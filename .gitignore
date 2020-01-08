@@ -243,6 +243,7 @@ ModelManifest.xml
 
 
 ##### Project-specific #####
+release.env
 src/GRA.Web/shared/
 
 src/GRA.Web/Properties/PublishProfiles/

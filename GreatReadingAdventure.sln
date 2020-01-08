@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
+		.travis.yml = .travis.yml
 		CHANGELOG.md = CHANGELOG.md
 		CREDITS.md = CREDITS.md
 		docker-build.bash = docker-build.bash
@@ -16,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		global.json = global.json
 		GRARuleSet.ruleset = GRARuleSet.ruleset
 		README.md = README.md
+		release-prep.bash = release-prep.bash
+		release-publish.bash = release-publish.bash
 		TestSettings.testsettings = TestSettings.testsettings
 	EndProjectSection
 EndProject
