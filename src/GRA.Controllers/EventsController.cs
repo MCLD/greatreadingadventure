@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.Events;
@@ -12,7 +11,6 @@ using GRA.Domain.Service;
 using GRA.Domain.Service.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Logging;
 
 namespace GRA.Controllers
 {
@@ -56,7 +54,17 @@ namespace GRA.Controllers
             }
 
             PageTitle = _sharedLocalizer[Annotations.Title.CommunityExperiences];
-            return await Index(page, sort, search, near, system, branch, location, program, StartDate, EndDate, true);
+            return await Index(page,
+                sort,
+                search,
+                near,
+                system,
+                branch,
+                location,
+                program,
+                StartDate,
+                EndDate,
+                true);
         }
 
         public async Task<IActionResult> Index(int page = 1,
@@ -69,7 +77,8 @@ namespace GRA.Controllers
             int? program = null,
             string StartDate = null,
             string EndDate = null,
-            bool CommunityExperiences = false)
+            bool CommunityExperiences = false,
+            HttpStatusCode httpStatus = HttpStatusCode.OK)
         {
             var site = await GetCurrentSiteAsync();
             if (!string.IsNullOrEmpty(site.ExternalEventListUrl))
@@ -241,6 +250,11 @@ namespace GRA.Controllers
                 viewModel.CommunityExperienceDescription = communityExperienceDescription;
             }
 
+            if (httpStatus != HttpStatusCode.OK)
+            {
+                Response.StatusCode = (int)httpStatus;
+            }
+
             return View(nameof(Index), viewModel);
         }
 
@@ -282,7 +296,19 @@ namespace GRA.Controllers
                 isCommunityExperience = true;
             }
 
-            return RedirectToAction(nameof(Index), new { model.Sort, model.Search, model.Near, System = model.SystemId, Branch = model.BranchId, Location = model.LocationId, Program = model.ProgramId, StartDate = startDate, EndDate = endDate, CommunityExperiences = isCommunityExperience });
+            return RedirectToAction(nameof(Index), new
+            {
+                model.Sort,
+                model.Search,
+                model.Near,
+                System = model.SystemId,
+                Branch = model.BranchId,
+                Location = model.LocationId,
+                Program = model.ProgramId,
+                StartDate = startDate,
+                EndDate = endDate,
+                CommunityExperiences = isCommunityExperience
+            });
         }
 
         public async Task<IActionResult> Detail(int id)
@@ -300,7 +326,10 @@ namespace GRA.Controllers
                     Event = await _eventService.GetDetails(id)
                 };
 
-                PageTitle = _sharedLocalizer[Annotations.Interface.DateAtTime, viewModel.Event.Name, viewModel.Event.EventLocationName];
+                PageTitle = _sharedLocalizer[Annotations.Interface.DateAtTime,
+                    viewModel.Event.Name,
+                    viewModel.Event.EventLocationName];
+
                 if (!string.IsNullOrEmpty(viewModel.Event.EventLocationName)
                     && !string.IsNullOrEmpty(viewModel.Event.EventLocationAddress))
                 {
@@ -325,15 +354,17 @@ namespace GRA.Controllers
 
                 if (viewModel.Event.ProgramId.HasValue)
                 {
-                    var program = await _siteService.GetProgramByIdAsync(viewModel.Event.ProgramId.Value);
-                    viewModel.ProgramString = _sharedLocalizer[Annotations.Info.EventLimitedToProgram, program.Name];
+                    var program
+                        = await _siteService.GetProgramByIdAsync(viewModel.Event.ProgramId.Value);
+                    viewModel.ProgramString
+                        = _sharedLocalizer[Annotations.Info.EventLimitedToProgram, program.Name];
                 }
                 return View(viewModel);
             }
             catch (GraException gex)
             {
-                ShowAlertWarning("Unable to view event: ", gex);
-                return RedirectToAction(nameof(Index));
+                ShowAlertWarning(gex.Message);
+                return await Index(httpStatus: HttpStatusCode.NotFound);
             }
         }
 
@@ -348,8 +379,10 @@ namespace GRA.Controllers
 
                 if (viewModel.Event.ProgramId.HasValue)
                 {
-                    var program = await _siteService.GetProgramByIdAsync(viewModel.Event.ProgramId.Value);
-                    viewModel.ProgramString = _sharedLocalizer[Annotations.Info.EventLimitedToProgram, program.Name];
+                    var program
+                        = await _siteService.GetProgramByIdAsync(viewModel.Event.ProgramId.Value);
+                    viewModel.ProgramString
+                        = _sharedLocalizer[Annotations.Info.EventLimitedToProgram, program.Name];
                 }
 
                 return PartialView("_DetailPartial", viewModel);
@@ -357,7 +390,7 @@ namespace GRA.Controllers
             catch (GraException gex)
             {
                 Response.StatusCode = (int)HttpStatusCode.NotFound;
-                return Content($"Unable to view event: {gex.Message}");
+                return Content(gex.Message);
             }
         }
     }
