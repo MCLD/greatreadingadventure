@@ -143,7 +143,7 @@ namespace GRA.Domain.Service
             var challenge = await _challengeRepository.GetActiveByIdAsync(challengeId, userId);
             if (challenge == null)
             {
-                throw new GraException("The requested challenge could not be accessed or does not exist.");
+                throw new GraException("Challenge not found.");
             }
             await AddBadgeFilename(challenge);
 
@@ -158,7 +158,7 @@ namespace GRA.Domain.Service
                 var challenge = await _challengeRepository.GetByIdAsync(challengeId);
                 if (challenge == null)
                 {
-                    throw new GraException("The requested challenge could not be accessed or does not exist.");
+                    throw new GraException("Challenge not found.");
                 }
                 await AddBadgeFilename(challenge);
 

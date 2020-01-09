@@ -2,6 +2,7 @@
 
 @section metadata {
     <meta name="description" content="@Model.Event.Description" />
+    <link rel="canonical" href="@Url.Action("Detail", "Events", new { id = Model.Event.Id })" />
 }
 
 <div class="row">
@@ -111,7 +112,11 @@
         }
         "offers": {
         "@@type": "Offer",
-        "price": "0"
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "LimitedAvailability",
+        "validFrom": "@Model.EventStart",
+        "url": "@Url.Action("Detail", "Events", new { id = Model.Event.Id })"
         },
         "location": {
         "@@type": "Place",

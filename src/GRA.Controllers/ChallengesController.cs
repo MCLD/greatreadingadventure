@@ -49,7 +49,8 @@ namespace GRA.Controllers
             string Categories = null,
             string Group = null,
             bool Favorites = false,
-            int page = 1)
+            int page = 1,
+            System.Net.HttpStatusCode httpStatus = System.Net.HttpStatusCode.OK)
         {
             var filter = new ChallengeFilter(page);
             if (!string.IsNullOrWhiteSpace(Search))
@@ -152,6 +153,10 @@ namespace GRA.Controllers
             }
             HttpContext.Session.SetInt32(SessionKey.ChallengePage, page);
 
+            if(httpStatus != System.Net.HttpStatusCode.OK)
+            {
+                Response.StatusCode = (int)httpStatus;
+            }
             return View(nameof(Index), viewModel);
         }
 
@@ -237,8 +242,8 @@ namespace GRA.Controllers
             }
             catch (GraException gex)
             {
-                ShowAlertWarning("Unable to view challenge: ", gex);
-                return RedirectToAction(nameof(Index));
+                ShowAlertWarning(gex.Message);
+                return await Index(httpStatus: System.Net.HttpStatusCode.NotFound);
             }
             var siteStage = GetSiteStage();
 
