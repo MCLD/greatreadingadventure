@@ -12,6 +12,9 @@ RUN dotnet build && \
 # Publish release project
 RUN dotnet publish -c Release -o "/app/publish/"
 
+# Copy release-publish.bash script
+RUN cp /app/release-publish.bash "/app/publish/"
+
 # Get runtime image
 FROM mcr.microsoft.com/dotnet/core/aspnet:2.2 AS publish-stage
 WORKDIR /app
