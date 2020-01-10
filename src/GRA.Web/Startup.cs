@@ -516,7 +516,7 @@ namespace GRA.Web
                 OnPrepareResponse = _ =>
                 {
                     var headers = _.Context.Response.GetTypedHeaders();
-                    headers.CacheControl = new CacheControlHeaderValue()
+                    headers.CacheControl = new CacheControlHeaderValue
                     {
                         MaxAge = TimeSpan.FromDays(7)
                     };

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
@@ -111,7 +112,7 @@ namespace GRA.Domain.Service
         {
             string trimmedUsername = username.Trim();
             _passwordValidator.Validate(password);
-            var fixedToken = token.Trim().ToLower();
+            var fixedToken = token.Trim().ToLowerInvariant();
 
             var user = await _userRepository.GetByUsernameAsync(trimmedUsername);
             if (user == null)
@@ -120,7 +121,7 @@ namespace GRA.Domain.Service
                 {
                     Status = Models.ServiceResultStatus.Error,
                     Message = Annotations.Validate.Username,
-                    Arguments = new string[] { trimmedUsername }
+                    Arguments = new[] { trimmedUsername }
                 };
             }
 
@@ -136,7 +137,7 @@ namespace GRA.Domain.Service
                     {
                         Status = Models.ServiceResultStatus.Error,
                         Message = Annotations.Validate.TokenExpired,
-                        Arguments = new string[] { token }
+                        Arguments = new[] { token }
                     };
                 }
 
@@ -173,7 +174,7 @@ namespace GRA.Domain.Service
                 {
                     Status = Models.ServiceResultStatus.Error,
                     Message = Annotations.Validate.Username,
-                    Arguments = new string[] { trimmedUsername }
+                    Arguments = new[] { trimmedUsername }
                 };
             }
 
@@ -197,12 +198,12 @@ namespace GRA.Domain.Service
                 await _recoveryTokenRepository.RemoveSaveAsync(-1, request.Id);
             }
 
-            string tokenString = _tokenGenerator.Generate().ToUpper().Trim();
+            string tokenString = _tokenGenerator.Generate().ToUpperInvariant().Trim();
 
             // insert new token
             await _recoveryTokenRepository.AddSaveAsync(-1, new RecoveryToken
             {
-                Token = tokenString.ToLower(),
+                Token = tokenString.ToLowerInvariant(),
                 UserId = user.Id
             });
 
