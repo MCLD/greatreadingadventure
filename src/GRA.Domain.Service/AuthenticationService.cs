@@ -62,13 +62,6 @@ namespace GRA.Domain.Service
                 authResult.PermissionNames
                     = await _roleRepository.GetPermisisonNamesForUserAsync(authResult.User.Id);
 
-                if (authResult.PermissionNames.Contains(nameof(Permission.ManageSites)))
-                {
-                    _logger.LogInformation("Site manager {Username} ({UserId}) authenticated",
-                        authResult.User.Username,
-                        authResult.User.Id);
-                }
-
                 if (!authResult.PermissionNames.Contains(nameof(Permission.AccessMissionControl))
                     && !authResult.PermissionNames.Contains(nameof(Permission.AccessPerformerRegistration))
                     && !allowDuringCloseProgram)
@@ -207,7 +200,7 @@ namespace GRA.Domain.Service
             string tokenString = _tokenGenerator.Generate().ToUpper().Trim();
 
             // insert new token
-            var token = await _recoveryTokenRepository.AddSaveAsync(-1, new RecoveryToken
+            await _recoveryTokenRepository.AddSaveAsync(-1, new RecoveryToken
             {
                 Token = tokenString.ToLower(),
                 UserId = user.Id
