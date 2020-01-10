@@ -25,9 +25,7 @@ namespace GRA.Web
                 .Enrich.WithProperty(LoggingEnrichment.Application,
                     Assembly.GetExecutingAssembly().GetName().Name)
                 .Enrich.WithProperty(LoggingEnrichment.Version,
-                    new Version().GetShortVersion())
-                .Enrich.WithProperty(LoggingEnrichment.SiteIdentifier,
-                    config[ConfigurationKey.SiteIdentifier]);
+                    new Version().GetShortVersion());
 
             string instance = config[ConfigurationKey.InstanceName];
 
@@ -97,12 +95,12 @@ namespace GRA.Web
                         }));
             }
 
-            string seqLog = config[ConfigurationKey.SeqEndpoint];
-            if (!string.IsNullOrEmpty(seqLog))
+            if (!string.IsNullOrEmpty(config[ConfigurationKey.SeqEndpoint]))
             {
                 loggerConfig.WriteTo.Logger(_ => _
                     .Filter.ByExcluding(Matching.FromSource(ErrorControllerName))
-                    .WriteTo.Seq(seqLog));
+                    .WriteTo.Seq(config[ConfigurationKey.SeqEndpoint],
+                        apiKey: config[ConfigurationKey.SeqApiKey]));
             }
 
             return loggerConfig;

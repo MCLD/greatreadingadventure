@@ -29,16 +29,14 @@ namespace GRA.Web
 
                     runtimeCacheConfig = config[ConfigurationKey.RuntimeCacheConfiguration];
                     instance = config[ConfigurationKey.InstanceName] ?? "n/a";
-                    site = config[ConfigurationKey.SiteIdentifier] ?? "n/a";
 
                     webRootPath = scope.ServiceProvider
                         .GetRequiredService<IHostingEnvironment>().WebRootPath;
 
                     Log.Logger = LogConfig.Build(config).CreateLogger();
-                    Log.Warning("GRA v{Version} instance {Instance} site {Site} starting up in {WebRootPath}",
+                    Log.Warning("GRA v{Version} instance {Instance} starting up in {WebRootPath}",
                         new Version().GetVersion(),
                         instance,
-                        site,
                         webRootPath);
 
                     foreach (string issue in issues)
