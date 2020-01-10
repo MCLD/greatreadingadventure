@@ -15,7 +15,6 @@
         public static readonly string RouteArea = "RouteArea";
         public static readonly string RouteController = "RouteController";
         public static readonly string RouteId = "RouteId";
-        public static readonly string SiteIdentifier = "SiteIdentifier";
         public static readonly string SiteStage = "SiteStage";
         public static readonly string UserId = "UserId";
         public static readonly string Version = "Version";
