@@ -26,6 +26,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
 using Serilog;
 using Serilog.Context;
 
@@ -128,13 +129,14 @@ namespace GRA.Web
                         _.Configuration = redisConfig;
                         _.InstanceName = redisInstance;
                     });
-                    _config[ConfigurationKey.RuntimeCacheConfiguration] = $"Using Redis distributed cache {redisConfig} discriminator {redisInstance}";
+                    _config[ConfigurationKey.RuntimeCacheRedisConfiguration] = redisConfig;
+                    _config[ConfigurationKey.RuntimeCacheRedisInstance] = redisInstance;
                     break;
                 case "sqlserver":
                     string sessionCs = _config.GetConnectionString("SqlServerSessions")
                         ?? throw new GraFatalException($"{ConfigurationKey.DistributedCache} has SQL Server selected but SqlServerSessions connection string is not set.");
                     string sessionTable = _config[ConfigurationKey.SqlSessionTable] ?? "Sessions";
-                    _config[ConfigurationKey.RuntimeCacheConfiguration] = $"Using SQL Server distributed cache in table {sessionTable}";
+                    _config[ConfigurationKey.RuntimeCacheSqlConfiguration] = sessionTable;
                     services.AddDistributedSqlServerCache(_ =>
                     {
                         _.ConnectionString = sessionCs;
@@ -143,7 +145,6 @@ namespace GRA.Web
                     });
                     break;
                 default:
-                    _config[ConfigurationKey.RuntimeCacheConfiguration] = "Using memory-based distributed cache";
                     services.AddDistributedMemoryCache();
                     break;
             }
@@ -440,7 +441,6 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IVendorCodeTypeRepository, Data.Repository.VendorCodeTypeRepository>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -463,6 +463,20 @@ namespace GRA.Web
                     nameof(Controllers.ErrorController.Index),
                     "{0}"));
             }
+
+            // insert remote address, referer, and user agent into the logging enrichment
+            app.Use(async (context, next) =>
+            {
+                using (LogContext.PushProperty(LoggingEnrichment.RemoteAddress,
+                    context.Connection.RemoteIpAddress))
+                using (LogContext.PushProperty(HeaderNames.Referer,
+                    context.Request.GetTypedHeaders().Referer))
+                using (LogContext.PushProperty(HeaderNames.UserAgent,
+                context.Request.Headers[HeaderNames.UserAgent].ToString()))
+                {
+                    await next.Invoke();
+                }
+            });
 
             var requestLocalizationOptions = new RequestLocalizationOptions
             {
@@ -494,18 +508,6 @@ namespace GRA.Web
                 });
             }
 
-            // insert remote address and trace identifier into the log context for each request
-            app.Use(async (context, next) =>
-            {
-                using (LogContext.PushProperty(LoggingEnrichment.Identifier,
-                    context.TraceIdentifier))
-                using (LogContext.PushProperty(LoggingEnrichment.RemoteAddress,
-                    context.Connection.RemoteIpAddress))
-                {
-                    await next.Invoke();
-                }
-            });
-
             app.UseResponseCompression();
 
             // configure static files with 7 day cache
@@ -514,7 +516,7 @@ namespace GRA.Web
                 OnPrepareResponse = _ =>
                 {
                     var headers = _.Context.Response.GetTypedHeaders();
-                    headers.CacheControl = new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
+                    headers.CacheControl = new CacheControlHeaderValue()
                     {
                         MaxAge = TimeSpan.FromDays(7)
                     };
@@ -621,7 +623,6 @@ namespace GRA.Web
                 {
                     await next();
                 }
-
             });
         }
     }

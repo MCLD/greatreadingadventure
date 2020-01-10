@@ -18,30 +18,51 @@ namespace GRA.Web
             using (IWebHost webhost = CreateWebHostBuilder(args).Build())
             {
                 string instance = null;
-                string site = null;
                 string webRootPath = null;
-                string runtimeCacheConfig = null;
 
                 // perform initialization
                 using (IServiceScope scope = webhost.Services.CreateScope())
                 {
                     var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
 
-                    runtimeCacheConfig = config[ConfigurationKey.RuntimeCacheConfiguration];
                     instance = config[ConfigurationKey.InstanceName] ?? "n/a";
 
                     webRootPath = scope.ServiceProvider
                         .GetRequiredService<IHostingEnvironment>().WebRootPath;
 
                     Log.Logger = LogConfig.Build(config).CreateLogger();
-                    Log.Warning("GRA v{Version} instance {Instance} starting up in {WebRootPath}",
+                    Log.Information("GRA v{Version} instance {Instance} starting up in {WebRootPath}",
                         new Version().GetVersion(),
                         instance,
                         webRootPath);
 
+                    if (!string.IsNullOrEmpty(config["DOTNET_RUNNING_IN_CONTAINER"]))
+                    {
+                        Log.Information("Containerized: commit {ContainerCommit} created on {ContainerDate} image {ContainerImageVersion}",
+                            config["org.opencontainers.image.revision"] ?? "unknown",
+                            config["org.opencontainers.image.created"] ?? "unknown",
+                            config["org.opencontainers.image.version"] ?? "unknown");
+                    }
+
                     foreach (string issue in issues)
                     {
                         Log.Error(issue);
+                    }
+
+                    switch (config[ConfigurationKey.DistributedCache]?.ToLower(Culture.DefaultCulture))
+                    {
+                        case "redis":
+                            Log.Information("Cache: Redis config {RedisConfig} discriminator {RedisDiscriminator}",
+                                config[ConfigurationKey.RuntimeCacheRedisConfiguration],
+                                config[ConfigurationKey.RuntimeCacheRedisInstance]);
+                            break;
+                        case "sqlserver":
+                            Log.Information("Cache: SQL Server in table {SQLCacheTable}",
+                                config[ConfigurationKey.RuntimeCacheSqlConfiguration]);
+                            break;
+                        default:
+                            Log.Information("Cache: in-memory");
+                            break;
                     }
 
                     Task.Run(() => new Web(scope).InitalizeAsync()).Wait();
@@ -50,27 +71,24 @@ namespace GRA.Web
                 // output the version and revision
                 try
                 {
-                    Log.Information(runtimeCacheConfig);
                     webhost.Run();
                     return 0;
                 }
 #pragma warning disable CA1031 // Do not catch general exception types
                 catch (Exception ex)
                 {
-                    Log.Warning("GRA v{Version} {Instance} {Site} exited unexpectedly: {Message}",
+                    Log.Warning("GRA v{Version} {Instance} exited unexpectedly: {Message}",
                         new Version().GetVersion(),
                         instance,
-                        site,
                         ex.Message);
                     return 1;
                 }
 #pragma warning restore CA1031 // Do not catch general exception types
                 finally
                 {
-                    Log.Warning("GRA v{Version} {Instance} {Site} shutting down.",
+                    Log.Warning("GRA v{Version} {Instance} shutting down.",
                         new Version().GetVersion(),
-                        instance,
-                        site);
+                        instance);
                     Log.CloseAndFlush();
                 }
             }
