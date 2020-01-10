@@ -291,7 +291,7 @@
     @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.ReadAllMail)))
     {
         <script>
-            var mcMailUpdateEvery = 60 * 1000;
+            var mcMailUpdateEvery = 300 * 1000;
             function updateUnreadMailCount(updateInterval) {
                 var mcMailInterval = setInterval(function () {
                     $.ajax("@Url.Action("GetUnreadMailCount", "Home", new { area = "MissionControl" })")

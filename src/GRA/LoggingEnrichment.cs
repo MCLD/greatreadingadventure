@@ -4,7 +4,6 @@
     {
         public static readonly string ActiveUserId = "ActiveUserId";
         public static readonly string Application = "Application";
-        public static readonly string Identifier = "Identifier";
         public static readonly string Instance = "Instance";
         public static readonly string JobToken = "JobToken";
         public static readonly string JobType = "JobType";

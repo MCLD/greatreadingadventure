@@ -15,7 +15,6 @@ namespace GRA.Controllers
     public class SignInController : Base.UserController
     {
         private readonly ILogger<SignInController> _logger;
-        private readonly ActivityService _activityService;
         private readonly AuthenticationService _authenticationService;
         private readonly QuestionnaireService _questionnaireService;
         private readonly UserService _userService;
@@ -24,15 +23,12 @@ namespace GRA.Controllers
 
         public SignInController(ILogger<SignInController> logger,
             ServiceFacade.Controller context,
-            ActivityService activityService,
             AuthenticationService authenticationService,
             QuestionnaireService questionnaireService,
             UserService userService)
                 : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _activityService = activityService
-                ?? throw new ArgumentNullException(nameof(activityService));
             _authenticationService = authenticationService
                 ?? throw new ArgumentNullException(nameof(authenticationService));
             _questionnaireService = questionnaireService
@@ -109,7 +105,7 @@ namespace GRA.Controllers
                         _logger.LogTrace("Looking up group for {Username} ({UserId})",
                             loginAttempt.User.Username,
                             loginAttempt.User.Id);
-                        
+
                         var group
                             = await _userService.GetGroupFromHouseholdHeadAsync(householdHeadId);
                         if (group != null)
@@ -133,8 +129,28 @@ namespace GRA.Controllers
                             TempData.Add(TempDataKey.UserSignedIn, true);
                         }
 
+                        string role = "Participant";
+
+                        if (loginAttempt.PermissionNames.Contains(nameof(Permission.ManageSites)))
+                        {
+                            role = "Site manager";
+                        }
+                        else if (loginAttempt
+                            .PermissionNames
+                            .Contains(nameof(Permission.AccessMissionControl)))
+                        {
+                            role = "Staff member";
+                        }
+                        else if (loginAttempt
+                            .PermissionNames
+                            .Contains(nameof(Permission.AccessPerformerRegistration)))
+                        {
+                            role = "Performer";
+                        }
+
                         loginTimer.Stop();
-                        _logger.LogInformation("Login for user {Username} ({UserId}) took {Elapsed} ms.",
+                        _logger.LogInformation("{Role} sign in {Username} ({UserId}) took {Elapsed} ms.",
+                            role,
                             loginAttempt.User.Username,
                             loginAttempt.User.Id,
                             triggerTimer.ElapsedMilliseconds);
