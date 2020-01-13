@@ -88,7 +88,13 @@ namespace GRA.Web
             });
 
             // Add framework services.
-            services.AddSession(_ => _.IdleTimeout = TimeSpan.FromMinutes(30));
+            services.AddSession(_ =>
+            {
+                _.IdleTimeout = TimeSpan.FromMinutes(30);
+                _.Cookie.IsEssential = true;
+                _.Cookie.HttpOnly = true;
+                _.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict;
+            });
 
             services.TryAddSingleton(_ => _config);
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -448,7 +454,7 @@ namespace GRA.Web
         {
             if (pathResolver == null)
             {
-                throw new System.ArgumentNullException(nameof(pathResolver));
+                throw new ArgumentNullException(nameof(pathResolver));
             }
 
             if (_isDevelopment)
@@ -462,6 +468,20 @@ namespace GRA.Web
                     Controllers.ErrorController.Name,
                     nameof(Controllers.ErrorController.Index),
                     "{0}"));
+            }
+
+            // override proxy IP address if one is present
+            if (!string.IsNullOrEmpty(_config[ConfigurationKey.ReverseProxyAddress]))
+            {
+                app.UseForwardedHeaders(new ForwardedHeadersOptions
+                {
+                    ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.All,
+                    RequireHeaderSymmetry = false,
+                    ForwardLimit = null,
+                    KnownProxies = {
+                        System.Net.IPAddress.Parse(_config[ConfigurationKey.ReverseProxyAddress])
+                    }
+                });
             }
 
             // insert remote address, referer, and user agent into the logging enrichment
@@ -495,19 +515,6 @@ namespace GRA.Web
 
             app.UseRequestLocalization(requestLocalizationOptions);
 
-            if (!string.IsNullOrEmpty(_config[ConfigurationKey.ReverseProxyAddress]))
-            {
-                app.UseForwardedHeaders(new ForwardedHeadersOptions
-                {
-                    ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.All,
-                    RequireHeaderSymmetry = false,
-                    ForwardLimit = null,
-                    KnownProxies = {
-                        System.Net.IPAddress.Parse(_config[ConfigurationKey.ReverseProxyAddress])
-                    }
-                });
-            }
-
             app.UseResponseCompression();
 
             // configure static files with 7 day cache
@@ -531,10 +538,9 @@ namespace GRA.Web
                 {
                     Directory.CreateDirectory(contentPath);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    Console.WriteLine($"Unable to create directory '{contentPath}' in {Directory.GetCurrentDirectory()}");
-                    throw;
+                    throw new GraException($"Unable to create directory '{contentPath}' in {Directory.GetCurrentDirectory()}", ex);
                 }
             }
 
@@ -556,7 +562,7 @@ namespace GRA.Web
                 OnPrepareResponse = _ =>
                 {
                     var headers = _.Context.Response.GetTypedHeaders();
-                    headers.CacheControl = new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
+                    headers.CacheControl = new CacheControlHeaderValue
                     {
                         MaxAge = TimeSpan.FromDays(7)
                     };
