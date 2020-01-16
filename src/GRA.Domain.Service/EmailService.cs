@@ -33,19 +33,11 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
-        private bool CanSendMailTo(Site site)
+        private static bool SiteCanSendMail(Site site)
         {
             return !string.IsNullOrEmpty(site.FromEmailAddress)
                 && !string.IsNullOrEmpty(site.FromEmailName)
                 && !string.IsNullOrEmpty(site.OutgoingMailHost);
-        }
-
-        public async Task<bool> CanSendMailTo(int userId)
-        {
-            var user = await _userRepository.GetByIdAsync(userId);
-            var site = await _siteRepository.GetByIdAsync(user.SiteId);
-
-            return CanSendMailTo(site);
         }
 
         public async Task Send(int userId, string subject, string body, string htmlBody = null)
@@ -152,7 +144,7 @@ namespace GRA.Domain.Service
             string providedFromName = null,
             string providedFromEmail = null)
         {
-            if (!CanSendMailTo(site))
+            if (!SiteCanSendMail(site))
             {
                 throw new GraException("Sending email is not configured.");
             }
@@ -216,7 +208,7 @@ namespace GRA.Domain.Service
                 catch (Exception ex)
                 {
                     _logger.LogError(ex,
-                        "Unable to send email to {emailAddress} with subject {subject}: {Message}",
+                        "Unable to send email to {EmailAddress} with subject {Subject}: {ErrorMessage}",
                         emailAddress,
                         subject,
                         ex.Message);
