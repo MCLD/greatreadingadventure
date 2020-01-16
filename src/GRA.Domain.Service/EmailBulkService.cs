@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -62,25 +63,27 @@ namespace GRA.Domain.Service
                 };
 
                 var subscribedUsers = await _userService.GetPaginatedUserListAsync(filter);
-                _logger.LogInformation("Found {Count} subscribed users, processing first batch of {BatchCount}",
+                _logger.LogInformation("Email job {JobId}: found {Count} subscribed users, processing first batch of {BatchCount}",
+                    jobId,
                     subscribedUsers.Count,
                     subscribedUsers.Data.Count());
 
                 token.Register(() =>
                 {
-                    _logger.LogWarning("Bulk email job {JobId} for user {UserId} was cancelled after {EmailsSent} sent, {EmailsSkipped} skipped of {SubscribedUsersCount} in {Elapsed}.",
+                    _logger.LogWarning("Email job {JobId} for user {UserId} was cancelled after {EmailsSent} sent, {EmailsSkipped} skipped of {SubscribedUsersCount} in {TimeElapsed}.",
                         jobId,
                         userId,
                         emailsSent,
                         emailsSkipped,
                         subscribedUsers?.Count,
-                        sw.Elapsed.ToString(SpanFormat));
+                        sw.Elapsed.ToString(SpanFormat, CultureInfo.InvariantCulture));
                 });
 
                 if (subscribedUsers.Count > 0)
                 {
                     var elapsedStatus = sw.Elapsed;
                     var elapsedUpdateDbStatus = sw.Elapsed;
+                    var elapsedLogInfoStatus = sw.Elapsed;
 
                     var job = await _jobRepository.GetByIdAsync(jobId);
                     var jobDetails
@@ -110,7 +113,8 @@ namespace GRA.Domain.Service
                             if (alreadyGotIt)
                             {
                                 // send email
-                                _logger.LogTrace("Skipping email {Count}/{Total} to user {User} at {Email} with template {EmailTemplate}",
+                                _logger.LogTrace("Email job {JobId}: skipping email {Count}/{Total} to user {User} at {Email} with template {EmailTemplate}",
+                                    jobId,
                                     userCounter + 1,
                                     subscribedUsers.Count,
                                     user.Id,
@@ -122,7 +126,8 @@ namespace GRA.Domain.Service
                             else
                             {
                                 // send email
-                                _logger.LogTrace("Sending email {Count}/{Total} to user {User} at {Email} with template {EmailTemplate}",
+                                _logger.LogTrace("Email job {JobId}: sending email {Count}/{Total} to user {User} at {Email} with template {EmailTemplate}",
+                                    jobId,
                                     userCounter + 1,
                                     subscribedUsers.Count,
                                     user.Id,
@@ -144,7 +149,8 @@ namespace GRA.Domain.Service
                                 catch (Exception ex)
                                 {
                                     _logger.LogError(ex,
-                                        "Bulk email send failed to {UserId} at {Email}: {Message}",
+                                        "Email job {JobId}: Send failed to {UserId} at {Email}: {ErrorMessage}",
+                                        jobId,
                                         user.Id,
                                         user.Email,
                                         ex.Message);
@@ -171,12 +177,12 @@ namespace GRA.Domain.Service
                                 var remaining = TimeSpan
                                     .FromMilliseconds(elapsedStatus.TotalMilliseconds / userCounter
                                         * (subscribedUsers.Count - userCounter))
-                                    .ToString(SpanFormat);
+                                    .ToString(SpanFormat, System.Globalization.CultureInfo.InvariantCulture);
 
                                 var status = new JobStatus
                                 {
                                     PercentComplete = userCounter * 100 / subscribedUsers.Count,
-                                    Status = $"Sent {emailsSent}, skipped {emailsSkipped} of {subscribedUsers.Count}; {elapsedStatus.ToString(SpanFormat)}, remaining: {remaining}, problems: {problemUsers.Count}",
+                                    Status = $"Sent {emailsSent}, skipped {emailsSkipped} of {subscribedUsers.Count}; {elapsedStatus.ToString(SpanFormat, CultureInfo.InvariantCulture)}, remaining: {remaining}, problems: {problemUsers.Count}",
                                     Error = false
                                 };
 
@@ -185,18 +191,36 @@ namespace GRA.Domain.Service
                                 if (sw.Elapsed.TotalSeconds - elapsedUpdateDbStatus.TotalSeconds > 60
                                     || userCounter == 1)
                                 {
+                                    elapsedUpdateDbStatus = sw.Elapsed;
+
                                     if (addSentCounter > 0)
                                     {
                                         await _emailService.UpdateSentCount(template.Id, addSentCounter);
                                         addSentCounter = 0;
                                     }
 
-                                    var dbStatusText = string.Format("{0}%: {1}",
+                                    var dbStatusText = string.Format(CultureInfo.InvariantCulture,
+                                        "{0}%: {1}",
                                         status.PercentComplete,
                                         status.Status);
 
                                     await _jobRepository.UpdateStatusAsync(jobId,
                                         dbStatusText.Substring(0, Math.Min(dbStatusText.Length, 255)));
+                                }
+
+                                if (sw.Elapsed.TotalSeconds - elapsedLogInfoStatus.TotalSeconds > 500
+                                    || userCounter == 1)
+                                {
+                                    elapsedLogInfoStatus = sw.Elapsed;
+
+                                    _logger.LogInformation("Email job {JobId}: {EmailsSent} sent, {EmailsSkipped} skipped of {SubscribedCount} total in {ElapsedTime}, remaining: {EmailsRemaining}, problems: {EmailProblems}",
+                                        jobId,
+                                        emailsSent,
+                                        emailsSkipped,
+                                        subscribedUsers.Count,
+                                        elapsedStatus.ToString(SpanFormat, CultureInfo.InvariantCulture),
+                                        remaining,
+                                        problemUsers.Count);
                                 }
                             }
                         }
@@ -220,21 +244,29 @@ namespace GRA.Domain.Service
                     var finalStatus = new JobStatus
                     {
                         PercentComplete = userCounter * 100 / subscribedUsers.Count,
-                        Status = $"{taskStatus} {emailsSent} sent, {emailsSkipped} skipped of {subscribedUsers.Count} in {elapsedStatus.ToString(SpanFormat)}."
+                        Status = $"{taskStatus} {emailsSent} sent, {emailsSkipped} skipped of {subscribedUsers.Count} in {elapsedStatus.ToString(SpanFormat, CultureInfo.InvariantCulture)}."
                     };
 
-                    var statusText = string.Format("{0}%: {1}",
+                    var statusText = string.Format(CultureInfo.InvariantCulture,
+                        "{0}%: {1}",
                         finalStatus.PercentComplete,
                         finalStatus.Status);
 
                     await _jobRepository.UpdateStatusAsync(jobId,
                         statusText.Substring(0, Math.Min(statusText.Length, 255)));
 
+                    _logger.LogInformation("Email job {JobId}: " + taskStatus + " {EmailsSent} sent, {EmailsSkipped} skipped of {SubscribedCount} total in {ElapsedTime}",
+                        jobId,
+                        emailsSent,
+                        emailsSkipped,
+                        subscribedUsers.Count,
+                        elapsedStatus.ToString(SpanFormat, CultureInfo.InvariantCulture));
+
                     return finalStatus;
                 }
                 else
                 {
-                    _logger.LogWarning("User {RequestingUser} attempted to send bulk emails in job {JobId} with no subscribed participants.",
+                    _logger.LogWarning("User {UserId} attempted to send bulk emails in job {JobId} with no subscribed participants.",
                         userId,
                         jobId);
 
@@ -251,7 +283,7 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError("User {RequestingUser} attempted to send bulk emails in job {JobId} without permission.",
+                _logger.LogError("User {UserId} attempted to send bulk emails in job {JobId} without permission.",
                     userId,
                     jobId);
 

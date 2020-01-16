@@ -1381,4 +1381,12 @@
     <value>Illustration of a forest.</value>
     <comment>The alt tag on the front page banner image for those who cannot see the image; the image is an illustration of a forest.</comment>
   </data>
+  <data name="The unsubscribe token could not be found, please log in to change your preferences." xml:space="preserve">
+    <value>The unsubscribe token could not be found, please log in to change your preferences.</value>
+    <comment>Message shown to a participant if they've clicked an unsubscribe link but there has been an issue looking their record up.</comment>
+  </data>
+  <data name="You are already unsubscribed from emails." xml:space="preserve">
+    <value>You are already unsubscribed from emails.</value>
+    <comment>Message shown if the participant has clicked an unsubscribe link when they are unsubscribed.</comment>
+  </data>
 </root>
