@@ -28,7 +28,8 @@ namespace GRA.Domain.Service
         {
             _emailSubscriptionAuditLogRepository = emailSubscriptionAuditLogRepository
                 ?? throw new ArgumentNullException(nameof(emailSubscriptionAuditLogRepository));
-            _emailTemplateRepository = emailTemplateRepository ?? throw new ArgumentNullException(nameof(emailTemplateRepository));
+            _emailTemplateRepository = emailTemplateRepository
+                ?? throw new ArgumentNullException(nameof(emailTemplateRepository));
             _userRepository = userRepository
                 ?? throw new ArgumentNullException(nameof(userRepository));
             _sharedLocalizer = sharedLocalizer
@@ -118,7 +119,7 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view the email template list.");
+                _logger.LogError("User {UserId} doesn't have permission to view the email template list.", GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
         }
@@ -142,7 +143,7 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to create an email template.");
+                _logger.LogError("User {UserId} doesn't have permission to create an email template.", GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
         }

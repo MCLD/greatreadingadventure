@@ -26,7 +26,7 @@ namespace GRA.Data.Repository
 
             var count = await templates.CountAsync();
 
-            var performerList = await templates
+            var templateList = await templates
                 .OrderBy(_ => _.Description)
                 .ApplyPagination(filter)
                 .Select(_=> new { _.Id, _.Description, _.EmailsSent})
@@ -35,7 +35,7 @@ namespace GRA.Data.Repository
 
             return new DataWithCount<ICollection<EmailTemplate>>
             {
-                Data = performerList,
+                Data = templateList,
                 Count = count
             };
         }
