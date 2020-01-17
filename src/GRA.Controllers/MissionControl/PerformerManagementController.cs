@@ -7,7 +7,6 @@ using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
@@ -35,7 +34,6 @@ namespace GRA.Controllers.MissionControl
         private const string ExcelMimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
         private const string ExcelFileExtension = "xlsx";
         private const int ExcelStyleIndexBold = 1;
-        private const int ExcelPaddingCharacters = 1;
 
         private readonly IEnumerable<object> headerRow = new object[]
         {
@@ -58,9 +56,7 @@ namespace GRA.Controllers.MissionControl
         public PerformerManagementController(ILogger<PerformerManagementController> logger,
             ServiceFacade.Controller context,
             PerformerSchedulingService performerSchedulingService,
-            SiteService siteService,
-            Domain.Repository.IBranchRepository branchRepository,
-            IHostingEnvironment hostingEnvironment)
+            SiteService siteService)
             : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -292,7 +288,6 @@ namespace GRA.Controllers.MissionControl
                 ShowAlertDanger("Unable to view performer: ", gex);
                 return RedirectToAction(nameof(Performers));
             }
-            
             if(string.IsNullOrEmpty(settings.VendorIdPrompt))
             {
                 settings.VendorIdPrompt = "Vendor ID";
@@ -502,9 +497,6 @@ namespace GRA.Controllers.MissionControl
         [HttpGet]
         public async Task<IActionResult> GetAllPerformerCoverSheetsAsync()
         {
-            var perfSettings = await _performerSchedulingService.GetSettingsAsync();
-            var schedulingStage = _performerSchedulingService.GetSchedulingStage(perfSettings);
-            var siteId = GetCurrentSiteId();
             var todaysDate = DateTime.Now.ToString("dddd, MMMM dd, yyyy");
             var ms = new System.IO.MemoryStream();
 
@@ -515,7 +507,7 @@ namespace GRA.Controllers.MissionControl
                 {
                     Sheets = new Sheets()
                 };
-                
+
                 var stylesPart = workbook.WorkbookPart.AddNewPart<WorkbookStylesPart>();
                 stylesPart.Stylesheet = GetStylesheet();
                 stylesPart.Stylesheet.Save();
@@ -544,7 +536,6 @@ namespace GRA.Controllers.MissionControl
                 };
                 sheets.Append(sheet);
 
-                var maximumColumnWidth = new Dictionary<int, int>();
                 var headRow = new Row();
                 foreach (var dataItem in headerRow)
                 {
@@ -574,7 +565,7 @@ namespace GRA.Controllers.MissionControl
                             var row = new Row();
                             foreach (var schedule in perfSchedules.Where(_ => _.ScheduleStartTime.Month == monthNum))
                             {
-                                var branch = branches.Where(_ => _.Id == schedule.BranchId).FirstOrDefault();
+                                var branch = branches.FirstOrDefault(_ => _.Id == schedule.BranchId);
                                 descr.Append("(");
                                 descr.Append(branch.Name);
                                 descr.Append(")");
@@ -625,7 +616,7 @@ namespace GRA.Controllers.MissionControl
             {
                 CellValue = new CellValue(dataItem.ToString())
             };
-            
+
             switch (dataItem)
             {
                 case int _:
@@ -672,8 +663,8 @@ namespace GRA.Controllers.MissionControl
             {
                 FontId = 1
             };
-            var alignment = new Alignment() 
-            { 
+            var alignment = new Alignment()
+            {
                 WrapText = true
             };
             var cellFormats = new CellFormats();
