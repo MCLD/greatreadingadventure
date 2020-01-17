@@ -126,7 +126,7 @@ namespace GRA.Domain.Service
 
         public async Task<EmailTemplate> CreateEmailTemplate(EmailTemplate emailTemplate)
         {
-            if (HasPermission(Permission.AddChallenges))
+            if (HasPermission(Permission.ManageBulkEmails))
             {
                 var userId = GetActiveUserId();
                 emailTemplate.BodyHtml = emailTemplate.BodyHtml.Trim();
@@ -144,6 +144,27 @@ namespace GRA.Domain.Service
             else
             {
                 _logger.LogError("User {UserId} doesn't have permission to create an email template.", GetClaimId(ClaimType.UserId));
+                throw new GraException("Permission denied.");
+            }
+        }
+
+        public async Task<EmailTemplate> EditEmailTemplate(EmailTemplate emailTemplate)
+        {
+            if (HasPermission(Permission.ManageBulkEmails))
+            {
+                var userId = GetActiveUserId();
+                var currentTemplate = await _emailTemplateRepository.GetByIdAsync(emailTemplate.Id);
+                currentTemplate.BodyHtml = emailTemplate.BodyHtml.Trim();
+                currentTemplate.BodyText = emailTemplate.BodyText.Trim();
+                currentTemplate.Description = emailTemplate.Description.Trim();
+                currentTemplate.FromAddress = emailTemplate.FromAddress.Trim();
+                currentTemplate.FromName = emailTemplate.FromName.Trim();
+                currentTemplate.Subject = emailTemplate.Subject.Trim();
+                return await _emailTemplateRepository.UpdateSaveAsync(userId, currentTemplate);
+            }
+            else
+            {
+                _logger.LogError("User {UserId} doesn't have permission to edit an email template.", GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
         }

@@ -7,7 +7,6 @@ using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -15,20 +14,14 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.ManageBulkEmails)]
     public class EmailManagementController : Base.MCController
     {
-        private readonly ILogger<EmailManagementController> _logger;
-        private readonly SiteService _siteService;
         private readonly EmailManagementService _emailManagementService;
         private readonly EmailService _emailService;
 
-        public EmailManagementController(ILogger<EmailManagementController> logger,
-            ServiceFacade.Controller context,
+        public EmailManagementController(ServiceFacade.Controller context,
             EmailManagementService emailManagementService,
-            EmailService emailService,
-            SiteService siteService)
+            EmailService emailService)
             : base(context)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             _emailManagementService = emailManagementService ?? throw new ArgumentNullException(nameof(emailManagementService));
             _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
             PageTitle = "Email Management";
@@ -107,21 +100,23 @@ namespace GRA.Controllers.MissionControl
         {
             if (ModelState.IsValid)
             {
-
+                await _emailManagementService.EditEmailTemplate(viewModel.EmailTemplate);
+                return RedirectToAction(nameof(EmailManagementController.Edit),viewModel.EmailTemplate.Id);
             }
+            ShowAlertDanger("Could not update email template");
             PageTitle = "Edit Email";
             return View("Detail", viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> SendEmailTest(EmailIndexViewModel viewModel)
+        public IActionResult SendEmailTest()
         {
             ShowAlertDanger("Sending test emails has not been configured yet.");
             return RedirectToAction(nameof(EmailManagementController.Index));
         }
 
         [HttpPost]
-        public async Task<IActionResult> SendEmail(EmailIndexViewModel viewModel)
+        public IActionResult SendEmail()
         {
             ShowAlertDanger("Sending emails has not been configured yet.");
             return RedirectToAction(nameof(EmailManagementController.Index));
