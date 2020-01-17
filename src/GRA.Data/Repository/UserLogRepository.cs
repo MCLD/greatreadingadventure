@@ -12,21 +12,9 @@ namespace GRA.Data.Repository
 {
     public class UserLogRepository : AuditingRepository<Model.UserLog, UserLog>, IUserLogRepository
     {
-        public readonly int MaximumAllowableActivity;
-
         public UserLogRepository(ServiceFacade.Repository repositoryFacade,
             ILogger<UserLogRepository> logger) : base(repositoryFacade, logger)
         {
-            var configuredMaxActivity
-                = repositoryFacade.config[ConfigurationKey.MaximumAllowableActivity];
-            if (!string.IsNullOrEmpty(configuredMaxActivity))
-            {
-                if (!int.TryParse(configuredMaxActivity, out MaximumAllowableActivity))
-                {
-                    _logger.LogError("Could not configure maximum allowable activity: {0} in configuration is not a number",
-                        ConfigurationKey.MaximumAllowableActivity);
-                }
-            }
         }
 
         public async Task<IEnumerable<UserLog>> PageHistoryAsync(int userId, int skip, int take)
@@ -222,6 +210,7 @@ namespace GRA.Data.Repository
             }
 
             // group them by point translation id
+            // converting a nullable int to an int64 results in a client-side evaluation error
             var earnedTotals = await earnedFilter
                 .GroupBy(_ => _.PointTranslationId)
                 .Select(_ => new
@@ -337,15 +326,21 @@ namespace GRA.Data.Repository
                     && _.PointTranslationId != null
                     && translationIds.Contains(_.PointTranslationId));
 
-            if (MaximumAllowableActivity > 0)
+            if (request.MaximumAllowableActivity > 0)
             {
-                return await eligibleUsers
-                    .GroupJoin(earnedFilter, u => u.Id, ul => ul.UserId, (u, ul) => new { User = u, Sum = (long)ul.Sum(_ => _.ActivityEarned) })
-                    .Where(_ => _.Sum > 0)
-                    .Select(_ => (_.Sum > MaximumAllowableActivity ? _.User.Program.AchieverPointAmount : _.Sum))
-                    .SumAsync(_ => _);
-            }
+                var pointGroupings = await eligibleUsers
+                    .GroupJoin(earnedFilter,
+                        u => u.Id,
+                        ul => ul.UserId,
+                        (u, ul) => ul.Select(_ => _.ActivityEarned.Value))
+                    .ToListAsync();
 
+                return pointGroupings
+                    .Select(_ => _.Sum(Convert.ToInt64))
+                    .Where(_ => _ > 0)
+                    .Select(_ => _ > request.MaximumAllowableActivity.Value ? request.MaximumAllowableActivity.Value : _)
+                    .Sum();
+            }
 
             // TODO Fix for reporting over a time period
             /*
@@ -362,7 +357,7 @@ namespace GRA.Data.Repository
             }
             */
 
-            return await earnedFilter.SumAsync(_ => Convert.ToInt64(_.ActivityEarned));
+            return await earnedFilter.SumAsync(_ => Convert.ToInt64(_.ActivityEarned.Value));
         }
 
         private IQueryable<Model.UserLog> GetEligibleUserLogs(ReportCriterion request)

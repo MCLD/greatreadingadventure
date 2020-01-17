@@ -18,6 +18,8 @@ namespace GRA.Data.Model
 
         public bool Favorite { get; set; }
 
+        public int? MaximumAllowableActivity { get; set; }
+
         [MaxLength(255)]
         public string Name { get; set; }
 
