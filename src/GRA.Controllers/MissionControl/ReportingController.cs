@@ -73,20 +73,6 @@ namespace GRA.Controllers.MissionControl
                 Reports = _reportService.GetReportList()
             };
 
-            var configuredMaxActivity = _config[ConfigurationKey.MaximumAllowableActivity];
-            if (!string.IsNullOrEmpty(configuredMaxActivity))
-            {
-                if (!int.TryParse(configuredMaxActivity, out int MaximumAllowableActivity))
-                {
-                    _logger.LogError("Could not configure maximum allowable activity: {0} in configuration is not a number",
-                        ConfigurationKey.MaximumAllowableActivity);
-                }
-                else
-                {
-                    viewModel.ReportingNote = $"Participants who logged more than {MaximumAllowableActivity:N0} minutes have had their activity amount reduced to the program achiever amount for reporting purposes.";
-                }
-            }
-
             return View(viewModel);
         }
 
