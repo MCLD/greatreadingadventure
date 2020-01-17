@@ -5,6 +5,7 @@ using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Service
@@ -14,18 +15,24 @@ namespace GRA.Domain.Service
         private readonly IEmailSubscriptionAuditLogRepository _emailSubscriptionAuditLogRepository;
         private readonly IUserRepository _userRepository;
         private readonly IEmailTemplateRepository _emailTemplateRepository;
+        private readonly IStringLocalizer<Resources.Shared> _sharedLocalizer;
+
         public EmailManagementService(ILogger<EmailManagementService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             IEmailSubscriptionAuditLogRepository emailSubscriptionAuditLogRepository,
             IEmailTemplateRepository emailTemplateRepository,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            IStringLocalizer<Resources.Shared> sharedLocalizer)
             : base(logger, dateTimeProvider, userContextProvider)
         {
             _emailSubscriptionAuditLogRepository = emailSubscriptionAuditLogRepository
                 ?? throw new ArgumentNullException(nameof(emailSubscriptionAuditLogRepository));
             _emailTemplateRepository = emailTemplateRepository ?? throw new ArgumentNullException(nameof(emailTemplateRepository));
-            _userRepository = userRepository ?? throw new ArgumentException(nameof(userRepository));
+            _userRepository = userRepository
+                ?? throw new ArgumentNullException(nameof(userRepository));
+            _sharedLocalizer = sharedLocalizer
+                ?? throw new ArgumentNullException(nameof(sharedLocalizer));
         }
 
         public async Task<ICollection<EmailSubscriptionAuditLog>> GetUserAuditLogAsync(int userId)
@@ -52,7 +59,7 @@ namespace GRA.Domain.Service
                     && (headOfHouseholdId.HasValue && authId != headOfHouseholdId.Value)
                     && !HasPermission(Permission.EditParticipants))
                 {
-                    throw new GraException("Permission denied.");
+                    throw new GraException(_sharedLocalizer["Permission denied."]);
                 }
                 auditId = authId;
             }
@@ -73,11 +80,11 @@ namespace GRA.Domain.Service
 
             if (tokenUser == null)
             {
-                throw new GraException("The unsubscribe token could not be found, please log in to change your preferences.");
+                throw new GraException(_sharedLocalizer["The unsubscribe token could not be found, please log in to change your preferences."]);
             }
             else if (!tokenUser.IsEmailSubscribed)
             {
-                throw new GraException("You are already unsubscribed from emails.");
+                throw new GraException(_sharedLocalizer["You are already unsubscribed from emails."]);
             }
 
             tokenUser.IsEmailSubscribed = false;
