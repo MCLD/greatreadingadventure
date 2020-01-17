@@ -10,7 +10,18 @@ namespace GRA.Controllers.ViewModel.MissionControl.EmailManagement
         public ICollection<EmailTemplate> EmailTemplates { get; set; }
         public PaginateViewModel PaginateModel { get; set; }
 
-        [DisplayName("Test Recipients")]
+        [DisplayName("Email addresses for test email, comma separated")]
         public string SendTestRecipients { get; set; }
+
+        public int SubscribedParticipants { get; set; }
+
+        [DisplayName("Please enter YES in the field below to confirm")]
+        public string SendValidation { get; set; }
+
+        public int SendEmailTemplateId { get; set; }
+
+        public int SendTestTemplateId { get; set; }
+
+        public string DefaultTestEmail { get; set; }
     }
 }

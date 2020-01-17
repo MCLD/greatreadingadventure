@@ -7,6 +7,7 @@ using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -14,29 +15,38 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.ManageBulkEmails)]
     public class EmailManagementController : Base.MCController
     {
+        private readonly ILogger _logger;
         private readonly EmailManagementService _emailManagementService;
         private readonly EmailService _emailService;
+        private readonly UserService _userService;
 
         public EmailManagementController(ServiceFacade.Controller context,
+            ILogger<EmailManagementController> logger,
             EmailManagementService emailManagementService,
-            EmailService emailService)
+            EmailService emailService,
+            UserService userService)
             : base(context)
         {
-            _emailManagementService = emailManagementService ?? throw new ArgumentNullException(nameof(emailManagementService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _emailManagementService = emailManagementService
+                ?? throw new ArgumentNullException(nameof(emailManagementService));
             _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             PageTitle = "Email Management";
         }
 
         public async Task<IActionResult> Index(int page = 1)
         {
             var filter = new BaseFilter();
-            var templateList = await _emailManagementService.GetPaginatedEmailTemplateListAsync(filter);
+            var templateList
+                = await _emailManagementService.GetPaginatedEmailTemplateListAsync(filter);
             var paginateModel = new PaginateViewModel
             {
                 ItemCount = templateList.Count,
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
+
             if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
@@ -45,12 +55,16 @@ namespace GRA.Controllers.MissionControl
                         page = paginateModel.LastPage ?? 1
                     });
             }
-            var viewModel = new EmailIndexViewModel
+
+            var currentUser = await _userService.GetDetails(GetActiveUserId());
+
+            return View(new EmailIndexViewModel
             {
                 PaginateModel = paginateModel,
-                EmailTemplates = templateList.Data
-            };
-            return View(viewModel);
+                EmailTemplates = templateList.Data,
+                SubscribedParticipants = await _emailManagementService.GetSubscriberCount(),
+                DefaultTestEmail = currentUser?.Email
+            });
         }
 
         public async Task<IActionResult> Create()
@@ -72,8 +86,10 @@ namespace GRA.Controllers.MissionControl
         {
             if (ModelState.IsValid)
             {
-                var newTemplate = await _emailManagementService.CreateEmailTemplate(viewModel.EmailTemplate);
-                return RedirectToAction(nameof(EmailManagementController.Edit), new { id = newTemplate.Id });
+                var newTemplate
+                    = await _emailManagementService.CreateEmailTemplate(viewModel.EmailTemplate);
+                return RedirectToAction(nameof(EmailManagementController.Edit),
+                    new { id = newTemplate.Id });
             }
             PageTitle = "Create Email";
             return View("Detail", viewModel);
@@ -87,7 +103,7 @@ namespace GRA.Controllers.MissionControl
                 Action = nameof(Edit),
                 EmailTemplate = await _emailService.GetEmailTemplate(id)
             };
-            if(viewModel.EmailTemplate == null)
+            if (viewModel.EmailTemplate == null)
             {
                 ShowAlertDanger($"Could not find email template {id}");
                 RedirectToAction(nameof(EmailManagementController.Index));
@@ -101,7 +117,7 @@ namespace GRA.Controllers.MissionControl
             if (ModelState.IsValid)
             {
                 await _emailManagementService.EditEmailTemplate(viewModel.EmailTemplate);
-                return RedirectToAction(nameof(EmailManagementController.Edit),viewModel.EmailTemplate.Id);
+                return RedirectToAction(nameof(EmailManagementController.Edit), viewModel.EmailTemplate.Id);
             }
             ShowAlertDanger("Could not update email template");
             PageTitle = "Edit Email";
@@ -109,17 +125,45 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public IActionResult SendEmailTest()
+        public IActionResult SendEmailTest(EmailIndexViewModel viewModel)
         {
-            ShowAlertDanger("Sending test emails has not been configured yet.");
-            return RedirectToAction(nameof(EmailManagementController.Index));
+            if (string.IsNullOrEmpty(viewModel.SendTestRecipients))
+            {
+                ShowAlertDanger("You must supply one or more email addresses in order to send a test.");
+                return RedirectToAction(nameof(EmailManagementController.Index));
+            }
+            else
+            {
+                _logger.LogInformation("Email test requested by {UserId} for email {EmailId} to {Addresses}",
+                     GetActiveUserId(),
+                     viewModel.SendTestTemplateId,
+                     viewModel.SendTestRecipients);
+
+                ShowAlertDanger("Sending test emails has not been configured yet.");
+                return RedirectToAction(nameof(EmailManagementController.Index));
+            }
         }
 
         [HttpPost]
-        public IActionResult SendEmail()
+        public IActionResult SendEmail(EmailIndexViewModel viewModel)
         {
-            ShowAlertDanger("Sending emails has not been configured yet.");
-            return RedirectToAction(nameof(EmailManagementController.Index));
+            if (!string.Equals(viewModel.SendValidation,
+                    "YES",
+                    StringComparison.InvariantCultureIgnoreCase))
+            {
+                ShowAlertDanger("Emails not sent: you must enter YES in the confirmation field.");
+                return RedirectToAction(nameof(EmailManagementController.Index));
+            }
+            else
+            {
+                _logger.LogInformation("Email send requested by {UserId} for email {EmailId} with {SendValidation}",
+                    GetActiveUserId(),
+                    viewModel.SendEmailTemplateId,
+                    viewModel.SendValidation);
+
+                ShowAlertDanger("Sending emails has not been configured yet.");
+                return RedirectToAction(nameof(EmailManagementController.Index));
+            }
         }
     }
 }

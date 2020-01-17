@@ -84,6 +84,7 @@ namespace GRA.Domain.Service
                     var elapsedStatus = sw.Elapsed;
                     var elapsedUpdateDbStatus = sw.Elapsed;
                     var elapsedLogInfoStatus = sw.Elapsed;
+                    var elapsedLogInfoPercent = 0;
 
                     var job = await _jobRepository.GetByIdAsync(jobId);
                     var jobDetails
@@ -209,9 +210,11 @@ namespace GRA.Domain.Service
                                 }
 
                                 if (sw.Elapsed.TotalSeconds - elapsedLogInfoStatus.TotalSeconds > 500
-                                    || userCounter == 1)
+                                    || userCounter == 1
+                                    || status.PercentComplete - elapsedLogInfoPercent >= 20)
                                 {
                                     elapsedLogInfoStatus = sw.Elapsed;
+                                    elapsedLogInfoPercent = status.PercentComplete ?? 0;
 
                                     _logger.LogInformation("Email job {JobId}: {EmailsSent} sent, {EmailsSkipped} skipped of {SubscribedCount} total in {ElapsedTime}, remaining: {EmailsRemaining}, problems: {EmailProblems}",
                                         jobId,

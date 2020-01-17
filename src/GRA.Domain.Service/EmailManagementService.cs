@@ -126,6 +126,11 @@ namespace GRA.Domain.Service
 
         public async Task<EmailTemplate> CreateEmailTemplate(EmailTemplate emailTemplate)
         {
+            if (emailTemplate == null)
+            {
+                throw new ArgumentNullException(nameof(emailTemplate));
+            }
+
             if (HasPermission(Permission.ManageBulkEmails))
             {
                 var userId = GetActiveUserId();
@@ -143,17 +148,24 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError("User {UserId} doesn't have permission to create an email template.", GetClaimId(ClaimType.UserId));
+                _logger.LogError("User {UserId} doesn't have permission to create an email template.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
         }
 
         public async Task<EmailTemplate> EditEmailTemplate(EmailTemplate emailTemplate)
         {
+            if (emailTemplate == null)
+            {
+                throw new ArgumentNullException(nameof(emailTemplate));
+            }
+
             if (HasPermission(Permission.ManageBulkEmails))
             {
                 var userId = GetActiveUserId();
-                var currentTemplate = await _emailTemplateRepository.GetByIdAsync(emailTemplate.Id);
+                var currentTemplate
+                    = await _emailTemplateRepository.GetByIdAsync(emailTemplate.Id);
                 currentTemplate.BodyHtml = emailTemplate.BodyHtml.Trim();
                 currentTemplate.BodyText = emailTemplate.BodyText.Trim();
                 currentTemplate.Description = emailTemplate.Description.Trim();
@@ -164,9 +176,20 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError("User {UserId} doesn't have permission to edit an email template.", GetClaimId(ClaimType.UserId));
+                _logger.LogError("User {UserId} doesn't have permission to edit an email template.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
+        }
+
+        public async Task<int> GetSubscriberCount()
+        {
+            var subscribed = await _userRepository.GetCountAsync(new UserFilter
+            {
+                SiteId = GetCurrentSiteId(),
+                IsSubscribed = true
+            });
+            return subscribed;
         }
     }
 }

@@ -14,6 +14,7 @@ namespace GRA.Domain.Model
 
         [MaxLength(255)]
         [Required]
+        [DisplayName("Email subject")]
         public string Subject { get; set; }
 
         [MaxLength(255)]
@@ -26,8 +27,12 @@ namespace GRA.Domain.Model
         [DisplayName("From Address")]
         public string FromAddress { get; set; }
 
+        [DisplayName("Email body in text format")]
         public string BodyText { get; set; }
+
+        [DisplayName("Email body in HTML format")]
         public string BodyHtml { get; set; }
+
         public int EmailsSent { get; set; }
     }
 }

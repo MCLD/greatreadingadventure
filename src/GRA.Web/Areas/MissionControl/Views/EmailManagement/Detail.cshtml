@@ -15,28 +15,32 @@
                 <span asp-validation-for="EmailTemplate.Description" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="EmailTemplate.FromName" class="control-label"></label>
+                <input asp-for="EmailTemplate.FromName" value="@Model.EmailTemplate.FromName" class="form-control" hidden />
+                <span asp-validation-for="EmailTemplate.FromName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EmailTemplate.FromAddress" class="control-label"></label>
+                <input asp-for="EmailTemplate.FromAddress" value="@Model.EmailTemplate.FromAddress" class="form-control" hidden />
+                <span asp-validation-for="EmailTemplate.FromAddress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="EmailTemplate.Subject" class="control-label"></label>
                 <input asp-for="EmailTemplate.Subject" class="form-control" />
                 <span asp-validation-for="EmailTemplate.Subject" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="EmailTemplate.FromName" class="control-label"></label>
-                <input asp-for="EmailTemplate.FromName" value="@Model.EmailTemplate.FromName" class="form-control" hidden/>
-                <span asp-validation-for="EmailTemplate.FromName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EmailTemplate.FromAddress" class="control-label"></label>
-                <input asp-for="EmailTemplate.FromAddress" value="@Model.EmailTemplate.FromAddress" class="form-control" hidden/>
-                <span asp-validation-for="EmailTemplate.FromAddress" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="EmailTemplate.BodyText" class="control-label"></label>
-                <textarea asp-for="EmailTemplate.BodyText" class="form-control"></textarea>
+                <textarea asp-for="EmailTemplate.BodyText" 
+                          rows="8"
+                          class="form-control"></textarea>
                 <span asp-validation-for="EmailTemplate.BodyText" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="EmailTemplate.BodyHtml" class="control-label"></label>
-                <textarea asp-for="EmailTemplate.BodyHtml" class="form-control"></textarea>
+                <textarea asp-for="EmailTemplate.BodyHtml" 
+                          rows="8"
+                          class="form-control"></textarea>
                 <span asp-validation-for="EmailTemplate.BodyHtml" class="text-danger"></span>
             </div>
 
