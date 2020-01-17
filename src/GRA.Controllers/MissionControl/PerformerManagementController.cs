@@ -227,7 +227,7 @@ namespace GRA.Controllers.MissionControl
                 PerformerSchedulingEnabled = true,
                 RegistrationClosed = schedulingStage >= PsSchedulingStage.RegistrationClosed,
                 SchedulingStage = schedulingStage,
-                CanDownloadCoversheet = true
+                CanDownloadCoversheet = true,
                 VendorIdPrompt = settings.VendorIdPrompt ?? "Vendor ID"
             };
             if (schedulingStage == PsSchedulingStage.SchedulingClosed)
