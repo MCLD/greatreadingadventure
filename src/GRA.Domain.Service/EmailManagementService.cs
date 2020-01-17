@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Logging;
@@ -12,15 +13,18 @@ namespace GRA.Domain.Service
     {
         private readonly IEmailSubscriptionAuditLogRepository _emailSubscriptionAuditLogRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IEmailTemplateRepository _emailTemplateRepository;
         public EmailManagementService(ILogger<EmailManagementService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             IEmailSubscriptionAuditLogRepository emailSubscriptionAuditLogRepository,
+            IEmailTemplateRepository emailTemplateRepository,
             IUserRepository userRepository)
             : base(logger, dateTimeProvider, userContextProvider)
         {
             _emailSubscriptionAuditLogRepository = emailSubscriptionAuditLogRepository
                 ?? throw new ArgumentNullException(nameof(emailSubscriptionAuditLogRepository));
+            _emailTemplateRepository = emailTemplateRepository ?? throw new ArgumentNullException(nameof(emailTemplateRepository));
             _userRepository = userRepository ?? throw new ArgumentException(nameof(userRepository));
         }
 
@@ -96,6 +100,44 @@ namespace GRA.Domain.Service
             }
 
             await _userRepository.SaveAsync();
+        }
+
+        public async Task<DataWithCount<ICollection<EmailTemplate>>>
+            GetPaginatedEmailTemplateListAsync(BaseFilter filter)
+        {
+            if (HasPermission(Permission.ManageBulkEmails))
+            {
+                return await _emailTemplateRepository.PageAsync(filter);
+            }
+            else
+            {
+                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view the email template list.");
+                throw new GraException("Permission denied.");
+            }
+        }
+
+        public async Task<EmailTemplate> CreateEmailTemplate(EmailTemplate emailTemplate)
+        {
+            if (HasPermission(Permission.AddChallenges))
+            {
+                var userId = GetActiveUserId();
+                emailTemplate.BodyHtml = emailTemplate.BodyHtml.Trim();
+                emailTemplate.BodyText = emailTemplate.BodyText.Trim();
+                emailTemplate.CreatedAt = _dateTimeProvider.Now;
+                emailTemplate.CreatedBy = GetActiveUserId();
+                emailTemplate.Description = emailTemplate.Description.Trim();
+                emailTemplate.EmailsSent = 0;
+                emailTemplate.FromAddress = emailTemplate.FromAddress.Trim();
+                emailTemplate.FromName = emailTemplate.FromName.Trim();
+                emailTemplate.SiteId = userId;
+                emailTemplate.Subject = emailTemplate.Subject.Trim();
+                return await _emailTemplateRepository.AddSaveAsync(userId, emailTemplate);
+            }
+            else
+            {
+                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to create an email template.");
+                throw new GraException("Permission denied.");
+            }
         }
     }
 }

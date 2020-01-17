@@ -1,4 +1,12 @@
-﻿using GRA.Domain.Repository;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper.QueryableExtensions;
+using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
+using GRA.Domain.Repository;
+using GRA.Domain.Repository.Extensions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace GRA.Data.Repository
@@ -10,6 +18,26 @@ namespace GRA.Data.Repository
         public EmailTemplateRepository(ServiceFacade.Repository repositoryFacade,
             ILogger<EmailTemplateRepository> logger) : base(repositoryFacade, logger)
         {
+        }
+
+        public async Task<DataWithCount<ICollection<EmailTemplate>>> PageAsync(BaseFilter filter)
+        {
+            var templates = DbSet.AsNoTracking();
+
+            var count = await templates.CountAsync();
+
+            var performerList = await templates
+                .OrderBy(_ => _.Description)
+                .ApplyPagination(filter)
+                .Select(_=> new { _.Id, _.Description, _.EmailsSent})
+                .ProjectTo<EmailTemplate>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+
+            return new DataWithCount<ICollection<EmailTemplate>>
+            {
+                Data = performerList,
+                Count = count
+            };
         }
     }
 }

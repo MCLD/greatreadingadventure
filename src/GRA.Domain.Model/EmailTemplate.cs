@@ -8,15 +8,19 @@ namespace GRA.Domain.Model
         public int SiteId { get; set; }
 
         [MaxLength(255)]
+        [Required]
         public string Description { get; set; }
 
         [MaxLength(255)]
+        [Required]
         public string Subject { get; set; }
 
         [MaxLength(255)]
+        [Required]
         public string FromName { get; set; }
 
         [MaxLength(255)]
+        [Required]
         public string FromAddress { get; set; }
 
         public string BodyText { get; set; }
