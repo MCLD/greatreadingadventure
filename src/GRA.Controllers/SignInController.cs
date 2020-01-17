@@ -15,7 +15,6 @@ namespace GRA.Controllers
     public class SignInController : Base.UserController
     {
         private readonly ILogger<SignInController> _logger;
-        private readonly ActivityService _activityService;
         private readonly AuthenticationService _authenticationService;
         private readonly QuestionnaireService _questionnaireService;
         private readonly UserService _userService;
@@ -24,15 +23,12 @@ namespace GRA.Controllers
 
         public SignInController(ILogger<SignInController> logger,
             ServiceFacade.Controller context,
-            ActivityService activityService,
             AuthenticationService authenticationService,
             QuestionnaireService questionnaireService,
             UserService userService)
                 : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _activityService = activityService
-                ?? throw new ArgumentNullException(nameof(activityService));
             _authenticationService = authenticationService
                 ?? throw new ArgumentNullException(nameof(authenticationService));
             _questionnaireService = questionnaireService
@@ -61,33 +57,40 @@ namespace GRA.Controllers
         {
             if (ModelState.IsValid)
             {
+                var loginTimer = new System.Diagnostics.Stopwatch();
                 try
                 {
+                    loginTimer.Start();
                     _logger.LogTrace("Authenticating user {Username}", model.Username);
                     var loginAttempt = await _authenticationService
                         .AuthenticateUserAsync(model.Username, model.Password);
 
                     if (loginAttempt.PasswordIsValid)
                     {
-                        _logger.LogTrace("Password valid for {Username}, logging in",
-                            model.Username);
+                        _logger.LogTrace("Password valid for {Username} ({UserId}), logging in",
+                            loginAttempt.User.Username,
+                            loginAttempt.User.Id);
                         await LoginUserAsync(loginAttempt);
 
-                        _logger.LogTrace("Awarding triggers for {Username}", model.Username);
+                        _logger.LogTrace("Awarding triggers for {Username} ({UserId})",
+                            loginAttempt.User.Id,
+                            loginAttempt.User.Username);
 
-                        var sw = new System.Diagnostics.Stopwatch();
-                        sw.Start();
+                        var triggerTimer = new System.Diagnostics.Stopwatch();
+                        triggerTimer.Start();
                         await _userService.AwardUserBadgesAsync(loginAttempt.User.Id, true, true);
-                        sw.Stop();
-                        if (sw.Elapsed.TotalSeconds > 5)
+                        triggerTimer.Stop();
+                        if (triggerTimer.Elapsed.TotalSeconds > 5)
                         {
-                            _logger.LogInformation("Login for user id {UserId} took {Elapsed} to award triggers.",
+                            _logger.LogWarning("Login for user {Username} ({UserId}) took {Elapsed} ms to award triggers.",
+                                loginAttempt.User.Username,
                                 loginAttempt.User.Id,
-                                sw.Elapsed.ToString("c"));
+                                triggerTimer.ElapsedMilliseconds);
                         }
 
-                        _logger.LogTrace("Checking household count for {Username}",
-                            model.Username);
+                        _logger.LogTrace("Checking household count for {Username} ({UserId})",
+                            loginAttempt.User.Username,
+                            loginAttempt.User.Id);
 
                         var householdCount = await _userService.FamilyMemberCountAsync(
                             loginAttempt.User.Id, true);
@@ -99,7 +102,10 @@ namespace GRA.Controllers
                         int householdHeadId = loginAttempt.User.HouseholdHeadUserId
                             ?? loginAttempt.User.Id;
 
-                        _logger.LogTrace("Looking up group for {Username}", model.Username);
+                        _logger.LogTrace("Looking up group for {Username} ({UserId})",
+                            loginAttempt.User.Username,
+                            loginAttempt.User.Id);
+
                         var group
                             = await _userService.GetGroupFromHouseholdHeadAsync(householdHeadId);
                         if (group != null)
@@ -107,8 +113,9 @@ namespace GRA.Controllers
                             HttpContext.Session.SetString(SessionKey.CallItGroup, "True");
                         }
 
-                        _logger.LogTrace("Performing questionnaire lookup for {Username}",
-                            model.Username);
+                        _logger.LogTrace("Performing questionnaire lookup for {Username} ({UserId})",
+                            loginAttempt.User.Username,
+                            loginAttempt.User.Id);
                         var questionnaireId = await _questionnaireService
                             .GetRequiredQuestionnaire(loginAttempt.User.Id, loginAttempt.User.Age);
                         if (questionnaireId.HasValue)
@@ -121,6 +128,32 @@ namespace GRA.Controllers
                         {
                             TempData.Add(TempDataKey.UserSignedIn, true);
                         }
+
+                        string role = "Participant";
+
+                        if (loginAttempt.PermissionNames.Contains(nameof(Permission.ManageSites)))
+                        {
+                            role = "Site manager";
+                        }
+                        else if (loginAttempt
+                            .PermissionNames
+                            .Contains(nameof(Permission.AccessMissionControl)))
+                        {
+                            role = "Staff member";
+                        }
+                        else if (loginAttempt
+                            .PermissionNames
+                            .Contains(nameof(Permission.AccessPerformerRegistration)))
+                        {
+                            role = "Performer";
+                        }
+
+                        loginTimer.Stop();
+                        _logger.LogInformation("{Role} sign in {Username} ({UserId}) took {Elapsed} ms.",
+                            role,
+                            loginAttempt.User.Username,
+                            loginAttempt.User.Id,
+                            triggerTimer.ElapsedMilliseconds);
 
                         if (!string.IsNullOrEmpty(model.ReturnUrl))
                         {
@@ -154,6 +187,13 @@ namespace GRA.Controllers
                         gex.Message);
                     AlertInfo = gex.Message;
                     return RedirectToAction(nameof(Index), HomeController.Name);
+                }
+                finally
+                {
+                    if (loginTimer.IsRunning)
+                    {
+                        loginTimer.Stop();
+                    }
                 }
                 model.ErrorMessage
                     = _sharedLocalizer[Annotations.Validate.UsernamePasswordMismatch];

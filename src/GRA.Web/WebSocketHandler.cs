@@ -28,6 +28,11 @@ namespace GRA.Web
 
         public async Task Handle(HttpContext context)
         {
+            if(context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
             if (context.Request.Path.HasValue && context.User != null)
             {
                 // validate user is logged in and exists
@@ -51,20 +56,24 @@ namespace GRA.Web
                     return;
                 }
 
-                if (context.Request.Path.Value.Contains("runjob"))
+                if (context.Request.Path.Value.Contains("runjob", 
+                    StringComparison.OrdinalIgnoreCase))
                 {
                     var jobService = context.RequestServices.GetRequiredService<JobService>();
                     await RunWsTaskAsync(context, jobService.RunJob);
                 }
                 else
                 {
-                    _logger.LogError($"Could not map to Web Socket handler: '{context.Request.Path.HasValue}'");
+                    _logger.LogError("Could not map to Web Socket handler: {Path}",
+                        context.Request.Path);
                     context.Response.StatusCode = 400;
                 }
             }
             else
             {
-                _logger.LogError($"Web Socket '{context.Request.Path}' not initiated for '{context.User}'");
+                _logger.LogError("Web Socket {Path} not initiated for {User}",
+                    context.Request.Path,
+                    context.User);
                 context.Response.StatusCode = 400;
             }
         }
@@ -77,7 +86,7 @@ namespace GRA.Web
 
             // extract parameter
             string processedPath = context.Request.Path.Value;
-            if (processedPath.Contains('/')
+            if (processedPath.Contains('/', StringComparison.OrdinalIgnoreCase)
                 && processedPath.LastIndexOf('/') + 1 == processedPath.Length)
             {
                 processedPath = processedPath.TrimEnd('/');
@@ -115,7 +124,9 @@ namespace GRA.Web
                             }
                             catch (Exception ex)
                             {
-                                _logger.LogError($"Could not send WebSocket update: {ex.Message}");
+                                _logger.LogError(ex,
+                                    "Could not send WebSocket update: {Message}",
+                                    ex.Message);
                             }
                         }
                     });
@@ -136,7 +147,10 @@ namespace GRA.Web
                     // ideal state is socket still open, task complete
                     if (webSocket.State == WebSocketState.Open && runTask.IsCompleted)
                     {
-                        _logger.LogInformation($"WebSocket {runTask.Status}, socket {webSocket.State}, sending final update after {sw.Elapsed:c}.");
+                        _logger.LogTrace("WebSocket {Status}, socket {State}, sending final update after {Elapsed} ms",
+                            runTask.Status,
+                            webSocket.State,
+                            sw.ElapsedMilliseconds);
 
                         var result = runTask.Result;
                         result.Complete = true;
@@ -167,19 +181,25 @@ namespace GRA.Web
                         }
                         catch (Exception ex)
                         {
-                            _logger.LogError($"Unable to send final WebSocket update: {ex.Message}");
+                            _logger.LogError(ex,
+                                "Unable to send final WebSocket update: {Message}",
+                                ex.Message);
                         }
                     }
                     else
                     {
                         // socket is not open or task is not complete. cancel everything!
-                        _logger.LogDebug($"Task {runTask.Status}, socket {webSocket.State}, sending cancel after {sw.Elapsed.TotalSeconds}s.");
+                        _logger.LogDebug("Task {Status}, socket {State}, sending cancel after {Elapsed} ms",
+                            runTask.Status,
+                            webSocket.State,
+                            sw.ElapsedMilliseconds);
                         if (!runTask.IsCompleted)
                         {
                             cancellationTokenSource.Cancel();
                             runTask.Wait();
                         }
-                        _logger.LogDebug($"Task {runTask.Status}, cancellation processed.");
+                        _logger.LogDebug("Task {Status}, cancellation processed.",
+                            runTask.Status);
                     }
                 }
                 finally

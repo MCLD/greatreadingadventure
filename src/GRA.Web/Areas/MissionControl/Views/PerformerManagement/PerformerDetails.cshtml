@@ -145,7 +145,7 @@
     </div>
 
     <div class="form-group">
-        <label asp-for="Performer.VendorId" class="col-sm-3 control-label required-field">Vender ID number<span class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" title="Example number: VC1234567891"></span></label>
+        <label asp-for="Performer.VendorId" class="col-sm-3 control-label required-field">@Model.VendorIdPrompt<span class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" title="Example number: @Model.VendorCodeFormat"></span></label>
         <div class="col-sm-9">
             <input asp-for="Performer.VendorId" class="form-control" placeholder="" />
             <span asp-validation-for="Performer.VendorId" class="text-danger"></span>

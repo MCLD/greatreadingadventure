@@ -38,23 +38,30 @@ namespace GRA
                 errors.AppendLine(
                     _sharedLocalizer[Annotations.Validate.PasswordLength, _minimumLength]);
             }
-            if (_requireDigit && !password.Any(IsDigit))
+            if (!string.IsNullOrEmpty(password))
             {
-                errors.AppendLine(_sharedLocalizer[Annotations.Validate.PasswordRequiresDigit]);
-            }
-            if (_requireLower && !password.Any(IsLower))
-            {
-                errors
-                    .AppendLine(_sharedLocalizer[Annotations.Validate.PasswordRequiresLowercase]);
-            }
-            if (_requireUpper && !password.Any(IsUpper))
-            {
-                errors
-                    .AppendLine(_sharedLocalizer[Annotations.Validate.PasswordRequiresUppercase]);
-            }
-            if (_requireSymbol && password.All(IsLetterOrDigit))
-            {
-                errors.AppendLine(_sharedLocalizer[Annotations.Validate.PasswordRequiresSymbol]);
+                if (_requireDigit && !password.Any(IsDigit))
+                {
+                    errors
+                        .AppendLine(_sharedLocalizer[Annotations.Validate.PasswordRequiresDigit]);
+                }
+                if (_requireLower && !password.Any(IsLower))
+                {
+                    errors.AppendLine(_sharedLocalizer[Annotations
+                        .Validate
+                        .PasswordRequiresLowercase]);
+                }
+                if (_requireUpper && !password.Any(IsUpper))
+                {
+                    errors.AppendLine(_sharedLocalizer[Annotations
+                        .Validate
+                        .PasswordRequiresUppercase]);
+                }
+                if (_requireSymbol && password.All(IsLetterOrDigit))
+                {
+                    errors
+                        .AppendLine(_sharedLocalizer[Annotations.Validate.PasswordRequiresSymbol]);
+                }
             }
             if (errors.Length > 0)
             {

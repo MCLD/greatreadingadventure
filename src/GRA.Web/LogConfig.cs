@@ -9,32 +9,33 @@ using Serilog.Sinks.MSSqlServer;
 
 namespace GRA.Web
 {
-    public class LogConfig
+    public static class LogConfig
     {
         private const string ErrorControllerName = "GRA.Controllers.ErrorController";
 
-        public static readonly string ApplicationEnrichment = "Application";
-        public static readonly string VersionEnrichment = "Version";
-        public static readonly string IdentifierEnrichment = "Identifier";
-        public static readonly string InstanceEnrichment = "Instance";
-        public static readonly string RemoteAddressEnrichment = "RemoteAddress";
-
-        public LoggerConfiguration Build(IConfiguration config)
+        public static LoggerConfiguration Build(IConfiguration config)
         {
+            if (config == null)
+            {
+                throw new System.ArgumentNullException(nameof(config));
+            }
+
             LoggerConfiguration loggerConfig = new LoggerConfiguration()
                 .ReadFrom.Configuration(config)
-                .Enrich.WithProperty(ApplicationEnrichment,
+                .Enrich.WithProperty(LoggingEnrichment.Application,
                     Assembly.GetExecutingAssembly().GetName().Name)
-                .Enrich.WithProperty(VersionEnrichment, new Version().GetShortVersion())
-                .Enrich.FromLogContext()
-                .WriteTo.Console();
+                .Enrich.WithProperty(LoggingEnrichment.Version,
+                    new Version().GetShortVersion());
 
             string instance = config[ConfigurationKey.InstanceName];
 
             if (!string.IsNullOrEmpty(instance))
             {
-                loggerConfig.Enrich.WithProperty(InstanceEnrichment, instance);
+                loggerConfig.Enrich.WithProperty(LoggingEnrichment.Instance, instance);
             }
+
+            loggerConfig.Enrich.FromLogContext()
+                .WriteTo.Console();
 
             string rollingLogLocation
                 = Path.Combine("shared", config[ConfigurationKey.RollingLogPath]);
@@ -73,15 +74,30 @@ namespace GRA.Web
                         restrictedToMinimumLevel: LogEventLevel.Information,
                         columnOptions: new ColumnOptions
                         {
-                            AdditionalDataColumns = new DataColumn[]
+                            AdditionalColumns = new[]
                             {
-                                new DataColumn(ApplicationEnrichment, typeof(string)) { MaxLength = 255 },
-                                new DataColumn(VersionEnrichment, typeof(string)) { MaxLength = 255 },
-                                new DataColumn(IdentifierEnrichment, typeof(string)) { MaxLength = 255 },
-                                new DataColumn(InstanceEnrichment, typeof(string)) { MaxLength = 255 },
-                                new DataColumn(RemoteAddressEnrichment, typeof(string)) { MaxLength = 255 }
+                                new SqlColumn(LoggingEnrichment.Application,
+                                    SqlDbType.NVarChar,
+                                    dataLength: 255),
+                                new SqlColumn(LoggingEnrichment.Version,
+                                    SqlDbType.NVarChar,
+                                    dataLength: 255),
+                                new SqlColumn(LoggingEnrichment.Instance,
+                                    SqlDbType.NVarChar,
+                                    dataLength: 255),
+                                new SqlColumn(LoggingEnrichment.RemoteAddress,
+                                    SqlDbType.NVarChar,
+                                    dataLength: 255)
                             }
                         }));
+            }
+
+            if (!string.IsNullOrEmpty(config[ConfigurationKey.SeqEndpoint]))
+            {
+                loggerConfig.WriteTo.Logger(_ => _
+                    .Filter.ByExcluding(Matching.FromSource(ErrorControllerName))
+                    .WriteTo.Seq(config[ConfigurationKey.SeqEndpoint],
+                        apiKey: config[ConfigurationKey.SeqApiKey]));
             }
 
             return loggerConfig;

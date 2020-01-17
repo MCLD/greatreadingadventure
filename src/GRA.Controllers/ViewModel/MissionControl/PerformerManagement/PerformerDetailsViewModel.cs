@@ -15,5 +15,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.PerformerManagement
         public IFormFile References { get; set; }
 
         public int BranchCount { get; set; }
+        public string VendorIdPrompt { get; set; }
+        public string VendorCodeFormat { get; set; }
     }
 }

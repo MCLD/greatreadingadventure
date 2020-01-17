@@ -1,5 +1,4 @@
-﻿using GRA.Controllers.ViewModel.Shared;
-using GRA.Domain.Model;
+﻿using GRA.Domain.Model;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Participants

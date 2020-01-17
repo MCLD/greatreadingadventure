@@ -42,6 +42,26 @@
     {
         <link rel="stylesheet" href="@Url.Content(Context.Items[GRA.Controllers.ItemKey.SiteCss].ToString())" />
     }
+    @if (Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null)
+    {
+        <script async src="https://www.googletagmanager.com/gtag/js?id=@Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics].ToString()"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', '@Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics].ToString()', {
+                'custom_map': {
+                    'dimension1': 'First Time Participant',
+                    'dimension2': 'Program Name'
+                }
+            });
+
+            @if(Context.Items[GRA.Controllers.ItemKey.SignedIn] != null) {
+                @:gtag('event', 'login');
+            }
+        </script>
+    }
 </head>
 <body>
     @{SiteStage siteStage = (SiteStage)(Context.Items[GRA.Controllers.ItemKey.SiteStage] ?? SiteStage.ProgramOpen); }
@@ -209,26 +229,6 @@
         </footer>
     </div>
     <script src="~/js/main.min.js" asp-append-version="true"></script>
-    @if (Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null)
-    {
-        <script async src="https://www.googletagmanager.com/gtag/js?id=@Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics].ToString()"></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-
-            gtag('config', '@Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics].ToString()', {
-                'custom_map': {
-                    'dimension1': 'First Time Participant',
-                    'dimension2': 'Program Name'
-                }
-            });
-
-            @if(Context.Items[GRA.Controllers.ItemKey.SignedIn] != null) {
-                @:gtag('event', 'login');
-            }
-        </script>
-    }
     @RenderSection("scripts", required: false)
     <script>
         $(function () {

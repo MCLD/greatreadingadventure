@@ -228,6 +228,7 @@ namespace GRA.Controllers.MissionControl
                 RegistrationClosed = schedulingStage >= PsSchedulingStage.RegistrationClosed,
                 SchedulingStage = schedulingStage,
                 CanDownloadCoversheet = true
+                VendorIdPrompt = settings.VendorIdPrompt ?? "Vendor ID"
             };
             if (schedulingStage == PsSchedulingStage.SchedulingClosed)
             {
@@ -291,6 +292,12 @@ namespace GRA.Controllers.MissionControl
                 ShowAlertDanger("Unable to view performer: ", gex);
                 return RedirectToAction(nameof(Performers));
             }
+            
+            if(string.IsNullOrEmpty(settings.VendorIdPrompt))
+            {
+                settings.VendorIdPrompt = "Vendor ID";
+            }
+
             var viewModel = new PerformerViewModel
             {
                 Approve = !performer.IsApproved,
@@ -409,7 +416,9 @@ namespace GRA.Controllers.MissionControl
             {
                 Performer = performer,
                 Systems = systems,
-                BranchCount = systems.Sum(_ => _.Branches.Count)
+                BranchCount = systems.Sum(_ => _.Branches.Count),
+                VendorCodeFormat = settings.VendorCodeFormat ?? "Unspecified",
+                VendorIdPrompt = settings.VendorIdPrompt ?? "Vendor ID"
             };
 
             if (performer.AllBranches)

@@ -1864,7 +1864,7 @@ namespace GRA.Data.SqlServer.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("BranchAvailabilitySuplimentalText")
+                    b.Property<string>("BranchAvailabilitySupplementalText")
                         .HasMaxLength(255);
 
                     b.Property<string>("ContactEmail")
@@ -1895,6 +1895,9 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<int>("SiteId");
 
                     b.Property<string>("VendorCodeFormat")
+                        .HasMaxLength(255);
+
+                    b.Property<string>("VendorIdPrompt")
                         .HasMaxLength(255);
 
                     b.HasKey("Id");

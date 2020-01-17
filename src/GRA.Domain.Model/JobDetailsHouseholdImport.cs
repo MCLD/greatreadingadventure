@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace GRA.Domain.Model
+﻿namespace GRA.Domain.Model
 {
     public class JobDetailsHouseholdImport
     {

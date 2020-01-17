@@ -106,7 +106,7 @@ namespace GRA.Data.Repository
 
             if (drawing == null)
             {
-                throw new Exception($"Drawing id {id} could not be found.");
+                throw new GraException($"Drawing id {id} could not be found.");
             }
 
             drawing.Winners = await _context.PrizeWinners

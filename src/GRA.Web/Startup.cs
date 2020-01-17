@@ -26,6 +26,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
+using Serilog;
 using Serilog.Context;
 
 namespace GRA.Web
@@ -42,14 +44,11 @@ namespace GRA.Web
 
         private readonly IConfiguration _config;
         private readonly bool _isDevelopment;
-        private readonly ILogger _logger;
 
         public Startup(IConfiguration config,
-            IHostingEnvironment env,
-            ILogger<Startup> logger)
+            IHostingEnvironment env)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             var defaults = new Dictionary<string, string>
             {
@@ -89,7 +88,13 @@ namespace GRA.Web
             });
 
             // Add framework services.
-            services.AddSession(_ => _.IdleTimeout = TimeSpan.FromMinutes(30));
+            services.AddSession(_ =>
+            {
+                _.IdleTimeout = TimeSpan.FromMinutes(30);
+                _.Cookie.IsEssential = true;
+                _.Cookie.HttpOnly = true;
+                _.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict;
+            });
 
             services.TryAddSingleton(_ => _config);
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -115,13 +120,13 @@ namespace GRA.Web
             string discriminator = _config[ConfigurationKey.ApplicationDiscriminator]
                     ?? "gra";
 
-            switch (_config[ConfigurationKey.DistributedCache]?.ToLower())
+            switch (_config[ConfigurationKey.DistributedCache]?.ToLower(Culture.DefaultCulture))
             {
                 case "redis":
                     string redisConfig = _config[ConfigurationKey.RedisConfiguration]
                         ?? throw new GraFatalException($"{ConfigurationKey.DistributedCache} has Redis selected but {ConfigurationKey.RedisConfiguration} is not set.");
                     string redisInstance = "gra." + discriminator;
-                    if (!redisInstance.EndsWith("."))
+                    if (!redisInstance.EndsWith(".", StringComparison.OrdinalIgnoreCase))
                     {
                         redisInstance += ".";
                     }
@@ -130,17 +135,14 @@ namespace GRA.Web
                         _.Configuration = redisConfig;
                         _.InstanceName = redisInstance;
                     });
-                    _logger.LogInformation("Using Redis distributed cache {0} discriminator {1}",
-                        redisConfig,
-                        redisInstance);
+                    _config[ConfigurationKey.RuntimeCacheRedisConfiguration] = redisConfig;
+                    _config[ConfigurationKey.RuntimeCacheRedisInstance] = redisInstance;
                     break;
                 case "sqlserver":
                     string sessionCs = _config.GetConnectionString("SqlServerSessions")
                         ?? throw new GraFatalException($"{ConfigurationKey.DistributedCache} has SQL Server selected but SqlServerSessions connection string is not set.");
                     string sessionTable = _config[ConfigurationKey.SqlSessionTable] ?? "Sessions";
-                    _logger
-                        .LogInformation("Using SQL Server distributed cache in table {sessionTable}",
-                            sessionTable);
+                    _config[ConfigurationKey.RuntimeCacheSqlConfiguration] = sessionTable;
                     services.AddDistributedSqlServerCache(_ =>
                     {
                         _.ConnectionString = sessionCs;
@@ -149,7 +151,6 @@ namespace GRA.Web
                     });
                     break;
                 default:
-                    _logger.LogInformation("Using memory-based distributed cache");
                     services.AddDistributedMemoryCache();
                     break;
             }
@@ -451,6 +452,11 @@ namespace GRA.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IPathResolver pathResolver)
         {
+            if (pathResolver == null)
+            {
+                throw new ArgumentNullException(nameof(pathResolver));
+            }
+
             if (_isDevelopment)
             {
                 app.UseDeveloperExceptionPage();
@@ -463,6 +469,34 @@ namespace GRA.Web
                     nameof(Controllers.ErrorController.Index),
                     "{0}"));
             }
+
+            // override proxy IP address if one is present
+            if (!string.IsNullOrEmpty(_config[ConfigurationKey.ReverseProxyAddress]))
+            {
+                app.UseForwardedHeaders(new ForwardedHeadersOptions
+                {
+                    ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.All,
+                    RequireHeaderSymmetry = false,
+                    ForwardLimit = null,
+                    KnownProxies = {
+                        System.Net.IPAddress.Parse(_config[ConfigurationKey.ReverseProxyAddress])
+                    }
+                });
+            }
+
+            // insert remote address, referer, and user agent into the logging enrichment
+            app.Use(async (context, next) =>
+            {
+                using (LogContext.PushProperty(LoggingEnrichment.RemoteAddress,
+                    context.Connection.RemoteIpAddress))
+                using (LogContext.PushProperty(HeaderNames.Referer,
+                    context.Request.GetTypedHeaders().Referer))
+                using (LogContext.PushProperty(HeaderNames.UserAgent,
+                context.Request.Headers[HeaderNames.UserAgent].ToString()))
+                {
+                    await next.Invoke();
+                }
+            });
 
             var requestLocalizationOptions = new RequestLocalizationOptions
             {
@@ -481,31 +515,6 @@ namespace GRA.Web
 
             app.UseRequestLocalization(requestLocalizationOptions);
 
-            if (!string.IsNullOrEmpty(_config[ConfigurationKey.ReverseProxyAddress]))
-            {
-                app.UseForwardedHeaders(new ForwardedHeadersOptions
-                {
-                    ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.All,
-                    RequireHeaderSymmetry = false,
-                    ForwardLimit = null,
-                    KnownProxies = {
-                        System.Net.IPAddress.Parse(_config[ConfigurationKey.ReverseProxyAddress])
-                    }
-                });
-            }
-
-            // insert remote address and trace identifier into the log context for each request
-            app.Use(async (context, next) =>
-            {
-                using (LogContext.PushProperty(LogConfig.IdentifierEnrichment,
-                    context.TraceIdentifier))
-                using (LogContext.PushProperty(LogConfig.RemoteAddressEnrichment,
-                    context.Connection.RemoteIpAddress))
-                {
-                    await next.Invoke();
-                }
-            });
-
             app.UseResponseCompression();
 
             // configure static files with 7 day cache
@@ -514,7 +523,7 @@ namespace GRA.Web
                 OnPrepareResponse = _ =>
                 {
                     var headers = _.Context.Response.GetTypedHeaders();
-                    headers.CacheControl = new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
+                    headers.CacheControl = new CacheControlHeaderValue
                     {
                         MaxAge = TimeSpan.FromDays(7)
                     };
@@ -529,15 +538,14 @@ namespace GRA.Web
                 {
                     Directory.CreateDirectory(contentPath);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    Console.WriteLine($"Unable to create directory '{contentPath}' in {Directory.GetCurrentDirectory()}");
-                    throw;
+                    throw new GraException($"Unable to create directory '{contentPath}' in {Directory.GetCurrentDirectory()}", ex);
                 }
             }
 
             string pathString = pathResolver.ResolveContentPath();
-            if (!pathString.StartsWith("/"))
+            if (!pathString.StartsWith("/", StringComparison.OrdinalIgnoreCase))
             {
                 pathString = "/" + pathString;
             }
@@ -554,7 +562,7 @@ namespace GRA.Web
                 OnPrepareResponse = _ =>
                 {
                     var headers = _.Context.Response.GetTypedHeaders();
-                    headers.CacheControl = new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
+                    headers.CacheControl = new CacheControlHeaderValue
                     {
                         MaxAge = TimeSpan.FromDays(7)
                     };
@@ -562,9 +570,23 @@ namespace GRA.Web
                 ContentTypeProvider = extensionContentTypeProvider
             });
 
+            if (!string.IsNullOrEmpty(_config[ConfigurationKey.EnableRequestLogging]))
+            {
+                app.UseSerilogRequestLogging();
+            }
+
             app.UseSession();
 
             app.UseAuthentication();
+
+            app.Use(async (context, next) =>
+            {
+                using (LogContext.PushProperty(LoggingEnrichment.UserId,
+                    context.User.Claims.FirstOrDefault(_ => _.Type == ClaimType.UserId)?.Value))
+                {
+                    await next();
+                }
+            });
 
             // sitePath is also referenced in GRA.Controllers.Filter.SiteFilterAttribute
             app.UseMvc(routes =>

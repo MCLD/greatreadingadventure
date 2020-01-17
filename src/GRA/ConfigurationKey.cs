@@ -1,5 +1,4 @@
-﻿
-namespace GRA
+﻿namespace GRA
 {
     public static class ConfigurationKey
     {
@@ -21,6 +20,7 @@ namespace GRA
         public static readonly string DeployDate = "GraDeployDate";
         public static readonly string DistributedCache = "GraDistributedCache";
         public static readonly string EmailOverride = "GraEmailOverride";
+        public static readonly string EnableRequestLogging = "GraEnableRequestLogging";
         public static readonly string InitialAuthorizationCode = "GraInitialAuthCode";
         public static readonly string InitialProgramSetup = "GraInitialProgramSetup";
         public static readonly string InstanceName = "GraInstanceName";
@@ -29,6 +29,11 @@ namespace GRA
         public static readonly string ReverseProxyAddress = "GraReverseProxyAddress";
         public static readonly string RollingLogHttp = "GraRollingLogHttp";
         public static readonly string RollingLogPath = "GraRollingLogPath";
+        public static readonly string RuntimeCacheRedisConfiguration = "GraRuntimeCacheRedisConfiguration";
+        public static readonly string RuntimeCacheRedisInstance = "GraRuntimeCacheRedisInstance";
+        public static readonly string RuntimeCacheSqlConfiguration = "RuntimeCacheSqlConfiguration";
+        public static readonly string SeqApiKey = "GraSeqAPIKey";
+        public static readonly string SeqEndpoint = "GraSeqEndpoint";
         public static readonly string SqlServer2008 = "GraSqlServer2008";
         public static readonly string SqlSessionSchemaName = "GraSqlSessionSchemaName";
         public static readonly string SqlSessionTable = "GraSqlSessionTable";

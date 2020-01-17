@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace GRA.Data.Model
+﻿namespace GRA.Data.Model
 {
     public class DrawingCriterionProgram
     {

@@ -78,7 +78,7 @@ namespace GRA.Domain.Service
             var graEvent = await _eventRepository.GetByIdAsync(eventId);
             if (graEvent == null)
             {
-                throw new GraException("The requested event could not be accessed or does not exist.");
+                throw new GraException("Event not found.");
             }
 
             if (graEvent.AtBranchId != null)

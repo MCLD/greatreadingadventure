@@ -121,16 +121,18 @@ namespace GRA.Domain.Service
                 && authUserId != userToLog.HouseholdHeadUserId
                 && !loggingAsAdminUser)
             {
-                string error = $"User id {activeUserId} cannot log activity for user id {userIdToLog}";
-                _logger.LogError(error);
+                _logger.LogError("User id {UserId} cannot log activity for user id {UserIdToLog}",
+                    activeUserId,
+                    userIdToLog);
                 throw new GraException("Permission denied.");
             }
 
             if ((await _requiredQuestionnaireRepository.GetForUser(GetCurrentSiteId(), userToLog.Id,
                 userToLog.Age)).Count > 0)
             {
-                string error = $"User id {activeUserId} cannot log activity for user id {userIdToLog} who has a pending questionnaire.";
-                _logger.LogError(error);
+                _logger.LogError("User id {UserId} cannot log activity for user id {UserIdToLog} who has a pending questionnaire.",
+                    activeUserId,
+                    userIdToLog);
                 throw new GraException("Activity cannot be logged while there is a pending questionnaire to be taken.");
             }
 
@@ -327,9 +329,10 @@ namespace GRA.Domain.Service
             }
             else
             {
-                string error = $"User id {authUserId} cannot remove activity for user id {userIdToLog}";
-                _logger.LogError(error);
-                throw new GraException(error);
+                _logger.LogError("User id {UserId} cannot remove activity for user id {UserIdToLog}",
+                    authUserId,
+                    userIdToLog);
+                throw new GraException($"User id {authUserId} cannot remove activity for user id {userIdToLog}");
             }
         }
 
@@ -345,7 +348,9 @@ namespace GRA.Domain.Service
                 && activeUser.HouseholdHeadUserId != authUserId
                 && !HasPermission(Permission.LogActivityForAny))
             {
-                _logger.LogError($"User {activeUserId} doesn't have permission to add a book for {userId}.");
+                _logger.LogError("User {UserId} doesn't have permission to add a book for {UserIdToLog}.",
+                    activeUserId,
+                    userId);
                 throw new GraException("Permission denied.");
             }
 
@@ -354,8 +359,9 @@ namespace GRA.Domain.Service
             if ((await _requiredQuestionnaireRepository.GetForUser(GetCurrentSiteId(), user.Id,
                 user.Age)).Count > 0)
             {
-                string error = $"User id {activeUserId} cannot add a book for user {userId} who has a pending questionnaire.";
-                _logger.LogError(error);
+                _logger.LogError("User id {UserId} cannot add a book for user {UserIdToLog} who has a pending questionnaire.",
+                    activeUserId,
+                    userId);
                 throw new GraException("Books cannot be added while there is a pending questionnaire to be taken.");
             }
 
@@ -417,7 +423,10 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {authUserId} doesn't have permission to edit book {book.Id} for user {forUserId}.");
+                _logger.LogError("User {UserId} doesn't have permission to edit book {BookId} for user {UserIdToLog}.",
+                    authUserId,
+                    book.Id,
+                    forUserId);
                 throw new GraException("Permission denied.");
             }
         }
@@ -439,7 +448,10 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {authUserId} doesn't have permission to remove book {bookId} for user {forUserId}.");
+                _logger.LogError("User {UserId} doesn't have permission to remove book {BookId} for user {UserIdToLog}.",
+                    authUserId,
+                    bookId,
+                    forUserId);
                 throw new GraException("Permission denied.");
             }
         }
@@ -456,8 +468,8 @@ namespace GRA.Domain.Service
             if ((await _requiredQuestionnaireRepository.GetForUser(GetCurrentSiteId(), activeUser.Id,
                 activeUser.Age)).Count > 0)
             {
-                string error = $"User id {activeUserId} cannot complete challenges tasks while having a pending questionnaire.";
-                _logger.LogError(error);
+                _logger.LogError("User id {UserId} cannot complete challenges tasks while having a pending questionnaire.",
+                    activeUserId);
                 throw new GraException("Challenge tasks cannot be completed while there is a pending questionnaire to be taken.");
             }
 
@@ -465,7 +477,9 @@ namespace GRA.Domain.Service
 
             if (challenge.IsCompleted == true)
             {
-                _logger.LogError($"User {authUserId} cannot make changes to a completed challenge {challengeId}.");
+                _logger.LogError("User {UserId} cannot make changes to completed challenge id {ChallengeId}.",
+                    authUserId,
+                    challengeId);
                 throw new GraException("Challenge is already completed.");
             }
 
@@ -486,17 +500,20 @@ namespace GRA.Domain.Service
                     || challengeTaskDetails.ChallengeTaskType == ChallengeTaskType.Book)
                 {
                     // did something change?
-                    _logger.LogTrace($"Challenge task {updateStatus.ChallengeTask.Id} counts as an activity");
+                    _logger.LogTrace("Challenge task {ChallengeTaskId} counts as an activity",
+                        updateStatus.ChallengeTask.Id);
                     if (updateStatus.WasComplete != updateStatus.IsComplete)
                     {
-                        _logger.LogDebug($"Status of {updateStatus.ChallengeTask.Id}: was {updateStatus.WasComplete}, is {updateStatus.IsComplete}");
+                        _logger.LogTrace("Status of {ChallengeTaskId}: was {WasComplete}, is {IsComplete}",
+                            updateStatus.ChallengeTask.Id,
+                            updateStatus.WasComplete,
+                            updateStatus.IsComplete);
                         if (updateStatus.IsComplete)
                         {
                             // person completed the task
                             Book book = null;
                             if (challengeTaskDetails.ChallengeTaskType == ChallengeTaskType.Book)
                             {
-                                _logger.LogDebug($"Challenge task {updateStatus.ChallengeTask.Id} is a book");
                                 book = new Book
                                 {
                                     Title = updateStatus.ChallengeTask.Title,
@@ -508,13 +525,17 @@ namespace GRA.Domain.Service
                             if (challengeTaskDetails.ActivityCount > 0
                                 && challengeTaskDetails.PointTranslationId != null)
                             {
-                                _logger.LogDebug($"Logging activity for {activeUserId} based on challenge task {updateStatus.ChallengeTask.Id}");
+                                _logger.LogDebug("Logging activity for {UserId} based on challenge task {ChallengeTaskId}",
+                                    activeUserId,
+                                    updateStatus.ChallengeTask.Id);
                                 var userLogResult = await LogActivityAsync(activeUserId,
                                     (int)challengeTaskDetails.ActivityCount,
                                     book);
 
                                 // update record with user log result
-                                _logger.LogDebug($"Update success, recording UserLogId {userLogResult.UserLogId} and BookId {userLogResult.BookId}");
+                                _logger.LogDebug("Update success, recording UserLogId {UserLogId} and BookId {BookId}",
+                                    userLogResult.UserLogId,
+                                    userLogResult.BookId);
                                 await _challengeRepository.UpdateUserChallengeTaskAsync(activeUserId,
                                     updateStatus.ChallengeTask.Id,
                                     userLogResult.UserLogId,
@@ -538,11 +559,15 @@ namespace GRA.Domain.Service
                                     updateStatus.ChallengeTask.Id);
                             if (challengeTaskInfo == null)
                             {
-                                _logger.LogError($"Unable to unwind points for {activeUserId} on {updateStatus.ChallengeTask.Id} - no UserLogId recorded");
+                                _logger.LogError("Unable to unwind points for {UserId} on {ChallengeTaskId} - no UserLogId recorded",
+                                    activeUserId,
+                                    updateStatus.ChallengeTask.Id);
                             }
                             else
                             {
-                                _logger.LogDebug($"Unwinding points for {activeUserId} earned in UserLogId {challengeTaskInfo.UserLogId}");
+                                _logger.LogDebug("Unwinding points for {UserId} earned in UserLogId {UserLogId}",
+                                    activeUserId,
+                                    challengeTaskInfo.UserLogId);
                                 if (challengeTaskInfo.UserLogId.HasValue)
                                 {
                                     await RemoveActivityAsync(activeUserId, challengeTaskInfo.UserLogId.Value);
@@ -552,7 +577,9 @@ namespace GRA.Domain.Service
                                 if (challengeTaskDetails.ChallengeTaskType == ChallengeTaskType.Book
                                     && challengeTaskInfo.BookId != null)
                                 {
-                                    _logger.LogDebug($"Removing for {activeUserId} book registration {challengeTaskInfo.BookId}");
+                                    _logger.LogDebug("Removing from {UserId} book registration {BookId}",
+                                        activeUserId,
+                                        challengeTaskInfo.BookId);
                                     await RemoveBookAsync(challengeTaskInfo.BookId.Value, activeUserId);
                                 }
                             }
@@ -662,7 +689,7 @@ namespace GRA.Domain.Service
             var earnedUser = await _userRepository.GetByIdAsync(whoEarnedUserId);
             if (earnedUser == null)
             {
-                throw new Exception($"Could not find a user with id {whoEarnedUserId}");
+                throw new GraException($"Could not find a user with id {whoEarnedUserId}");
             }
 
             // cap points at setting or int.MaxValue
@@ -737,7 +764,7 @@ namespace GRA.Domain.Service
 
             if (removeUser == null)
             {
-                throw new Exception($"Could not find single user with id {removePointsFromUserId}");
+                throw new GraException($"Could not find single user with id {removePointsFromUserId}");
             }
 
             removeUser.PointsEarned -= pointsToRemove;
@@ -902,7 +929,9 @@ namespace GRA.Domain.Service
                     }, siteId);
 
                     // TODO let admin know that vendor code assignment didn't work?
-                    _logger.LogError($"Vendor code assignment failed, probably out of codes: {ex.Message}");
+                    _logger.LogError(ex,
+                        "Vendor code assignment failed, probably out of codes: {Message}",
+                        ex.Message);
                 }
             }
         }
@@ -930,16 +959,18 @@ namespace GRA.Domain.Service
                 && authUserId != userToLog.HouseholdHeadUserId
                 && !loggingAsAdminUser)
             {
-                string error = $"User id {activeUserId} cannot log a code for user id {userIdToLog}";
-                _logger.LogError(error);
+                _logger.LogError("User id {UserId} cannot log a code for user id {UserIdToLog}",
+                    activeUserId,
+                    userIdToLog);
                 throw new GraException("You do not have permission to apply that code.");
             }
 
             if ((await _requiredQuestionnaireRepository.GetForUser(GetCurrentSiteId(), userToLog.Id,
                 userToLog.Age)).Count > 0)
             {
-                string error = $"User id {activeUserId} cannot log secret code for user {userToLog.Id} who has a pending questionnaire.";
-                _logger.LogError(error);
+                _logger.LogError("User id {UserId} cannot log a code for user id {UserIdToLog} who has a pending questionnaire",
+                    activeUserId,
+                    userToLog.Id);
                 throw new GraException("Secret codes cannot be entered while there is a pending questionnaire to be taken.");
             }
 
@@ -1056,8 +1087,8 @@ namespace GRA.Domain.Service
                 var authUser = await _userRepository.GetByIdAsync(authUserId);
                 if (authUser.HouseholdHeadUserId.HasValue)
                 {
-                    string error = $"User id {authUserId} cannot log activity for a household";
-                    _logger.LogError(error);
+                    _logger.LogError("User id {UserId} cannot log activity for a household",
+                        authUserId);
                     throw new GraException("Permission denied.");
                 }
 
@@ -1066,8 +1097,9 @@ namespace GRA.Domain.Service
                 householdList.Add(authUserId);
                 if (userIds.Except(householdList).Any())
                 {
-                    string error = $"User id {authUserId} cannot log activity for {userIds.Except(householdList).First()}";
-                    _logger.LogError(error);
+                    _logger.LogError("User id {UserId} cannot log activity for {UserIdList}",
+                        authUserId,
+                        userIds.Except(householdList).First());
                     throw new GraException("Permission denied.");
                 }
             }
@@ -1096,8 +1128,7 @@ namespace GRA.Domain.Service
                 var authUser = await _userRepository.GetByIdAsync(authUserId);
                 if (authUser.HouseholdHeadUserId.HasValue)
                 {
-                    string error = $"User id {authUserId} cannot log codes for a family/group";
-                    _logger.LogError(error);
+                    _logger.LogError("User id {UserId} cannot log codes for a family/group", authUserId);
                     throw new GraException("Permission denied.");
                 }
 
@@ -1106,8 +1137,9 @@ namespace GRA.Domain.Service
                 householdList.Add(authUserId);
                 if (userIds.Except(householdList).Any())
                 {
-                    string error = $"User id {authUserId} cannot log codes for {userIds.Except(householdList).First()}";
-                    _logger.LogError(error);
+                    _logger.LogError("User id {UserId} cannot log codes for {UserIdList}",
+                        authUserId,
+                        userIds.Except(householdList).First());
                     throw new GraException("Permission denied.");
                 }
             }
@@ -1138,7 +1170,7 @@ namespace GRA.Domain.Service
 
             if (!HasPermission(Permission.ManageVendorCodes))
             {
-                _logger.LogError($"User {authUserId} cannot award vendor codes.");
+                _logger.LogError("User {UserId} cannot award vendor codes.", authUserId);
                 throw new GraException("Permission denied.");
             }
 

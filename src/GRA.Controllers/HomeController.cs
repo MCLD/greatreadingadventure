@@ -298,7 +298,11 @@ namespace GRA.Controllers
         [PreventQuestionnaireRedirect]
         public async Task<IActionResult> Signout()
         {
-            return await ShowExitPageAsync(GetSiteStage());
+            var id = UserClaim(ClaimType.BranchId);
+
+            await LogoutUserAsync();
+
+            return RedirectToAction(nameof(Goodbye), new { id });
         }
 
         public IActionResult LogActivity()
@@ -427,39 +431,47 @@ namespace GRA.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> Goodbye(int id)
+        {
+            return await ShowExitPageAsync(GetSiteStage(), id);
+        }
+
         private async Task<IActionResult> ShowExitPageAsync(SiteStage siteStage,
-            bool performLogout = true)
+            int? branchId = null)
         {
             string siteName = HttpContext.Items[ItemKey.SiteName]?.ToString();
             PageTitle = _sharedLocalizer[Annotations.Title.SeeYouSoon, siteName];
-            ViewResult viewResult;
-            var exitPageViewModel = new ExitPageViewModel
+
+            ExitPageViewModel exitPageViewModel = null;
+            try
             {
-                Branch = await _userService.GetUsersBranch(GetActiveUserId())
-            };
+                exitPageViewModel = new ExitPageViewModel
+                {
+                    Branch = branchId == null
+                    ? await _userService.GetUsersBranch(GetActiveUserId())
+                    : await _siteService.GetBranchByIdAsync((int)branchId)
+                };
+            }
+            catch (GraException ex)
+            {
+                _logger.LogInformation(ex, "Attempt to show exit page failed for branch id {BranchId}: {Message}",
+                    branchId,
+                    ex.Message);
+            }
+
             switch (siteStage)
             {
                 case SiteStage.BeforeRegistration:
-                    viewResult = View(ViewTemplates.ExitBeforeRegistration, exitPageViewModel);
-                    break;
+                    return View(ViewTemplates.ExitBeforeRegistration, exitPageViewModel);
                 case SiteStage.RegistrationOpen:
-                    viewResult = View(ViewTemplates.ExitRegistrationOpen, exitPageViewModel);
-                    break;
+                    return View(ViewTemplates.ExitRegistrationOpen, exitPageViewModel);
                 case SiteStage.ProgramEnded:
-                    viewResult = View(ViewTemplates.ExitProgramEnded, exitPageViewModel);
-                    break;
+                    return View(ViewTemplates.ExitProgramEnded, exitPageViewModel);
                 case SiteStage.AccessClosed:
-                    viewResult = View(ViewTemplates.ExitAccessClosed, exitPageViewModel);
-                    break;
+                    return View(ViewTemplates.ExitAccessClosed, exitPageViewModel);
                 default:
-                    viewResult = View(ViewTemplates.ExitProgramOpen, exitPageViewModel);
-                    break;
+                    return View(ViewTemplates.ExitProgramOpen, exitPageViewModel);
             }
-            if (performLogout)
-            {
-                await LogoutUserAsync();
-            }
-            return viewResult;
         }
 
         private async Task<IActionResult> ShowLandingPageAsync(Site site, SiteStage siteStage)
@@ -543,7 +555,7 @@ namespace GRA.Controllers
             if (UserHasPermission(Permission.AccessMissionControl))
             {
                 SiteStage stage = ParseStage(id);
-                return await ShowExitPageAsync(stage, false);
+                return await ShowExitPageAsync(stage);
             }
             else
             {

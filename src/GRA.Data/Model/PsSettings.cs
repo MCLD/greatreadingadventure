@@ -23,9 +23,12 @@ namespace GRA.Data.Model
         public DateTime? ScheduleEndDate { get; set; }
 
         [MaxLength(255)]
+        public string VendorIdPrompt { get; set; }
+
+        [MaxLength(255)]
         public string VendorCodeFormat { get; set; }
 
         [MaxLength(255)]
-        public string BranchAvailabilitySuplimentalText { get; set; }
+        public string BranchAvailabilitySupplementalText { get; set; }
     }
 }

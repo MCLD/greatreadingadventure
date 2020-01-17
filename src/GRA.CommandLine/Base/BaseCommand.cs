@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Security.Principal;
 using System.Threading.Tasks;
 using GRA.CommandLine.FakeWeb;
-using GRA.Controllers;
 using GRA.Domain.Model;
 using McMaster.Extensions.CommandLineUtils;
-using Microsoft.AspNetCore.Http;
 
 namespace GRA.CommandLine.Base
 {
@@ -55,7 +50,7 @@ namespace GRA.CommandLine.Base
         public BaseCommand(ServiceFacade serviceFacade, ConfigureUserSite configureUserSite)
         {
             _facade = serviceFacade ?? throw new ArgumentNullException(nameof(serviceFacade));
-            _configureUserSite = configureUserSite 
+            _configureUserSite = configureUserSite
                 ?? throw new ArgumentNullException(nameof(configureUserSite));
         }
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
@@ -162,17 +161,11 @@ namespace GRA.Domain.Report
             #endregion Collect data
 
             #region Finish up reporting
-            _logger.LogInformation($"Report {GetType().Name} with criterion {criterion.Id} ran in {StopTimer()}");
-
-            request.Success = !token.IsCancellationRequested;
-
-            if (request.Success == true)
+            if (!token.IsCancellationRequested)
             {
                 ReportSet.Reports.Add(report);
-                request.Finished = _serviceFacade.DateTimeProvider.Now;
-                request.ResultJson = Newtonsoft.Json.JsonConvert.SerializeObject(ReportSet);
             }
-            await _serviceFacade.ReportRequestRepository.UpdateSaveNoAuditAsync(request);
+            await FinishRequestAsync(request, !token.IsCancellationRequested);
             #endregion Finish up reporting
         }
     }

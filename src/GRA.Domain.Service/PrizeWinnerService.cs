@@ -41,7 +41,7 @@ namespace GRA.Domain.Service
         {
             if (prizeWinner.DrawingId == null && prizeWinner.TriggerId == null)
             {
-                throw new Exception("Prizes must be awarded through a drawing or a trigger.");
+                throw new GraException("Prizes must be awarded through a drawing or a trigger.");
             }
             prizeWinner.SiteId = GetCurrentSiteId();
             prizeWinner.CreatedAt = _dateTimeProvider.Now;

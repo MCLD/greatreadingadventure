@@ -137,9 +137,6 @@ else
             <div class="col-xs-12 col-md-6" style="margin-bottom:15px;text-align:center;">
                 <table style="margin:0 auto;">
                     <tr>
-                        <td style="padding-right:10px">
-                            <button type="button" id="timeButton" class="btn btn-warning" disabled>Set Time</button>
-                        </td>
                         <td>
                             <div class="input-group date" id="pickerStart" style="width:150px;">
                                 <span class="input-group-addon">
@@ -158,6 +155,13 @@ else
                                 </span>
                                 <input id="endTime" class="form-control timeInput" />
                             </div>
+                        </td>
+                        <td style="padding-left:10px">
+                            <button type="button" 
+                                    id="timeButton" 
+                                    class="btn btn-warning" 
+                                    title="Choose start and end times and then click here."
+                                    disabled>Set Times</button>
                         </td>
                     </tr>
                 </table>
@@ -183,7 +187,7 @@ else
                 </li>
                 <li>
                     Yellow means that you are only available for some hours on that day.
-                    Once you have selected day(s), choose start and end times and click "Set Time."
+                    Once you have selected day(s), choose start and end times and click "Set Times."
                 </li>
                 <li>
                     Red means you are not available that day. Once you have selected day(s), click
@@ -383,9 +387,11 @@ else
             var endTime = $("#endTime").val();
             if ($(".selected.dateSelection").length > 0 && startTime != "" && endTime != "" && moment(startTime, "hh:mm A") < moment(endTime, "hh:mm A")) {
                 $("#timeButton").removeAttr("disabled");
+                $("#timeButton").removeAttr("title");
             }
             else {
                 $("#timeButton").attr("disabled", "disabled");
+                $("#timeButton").attr("title", "Choose start and end times and then click here.");
             }
         })
 

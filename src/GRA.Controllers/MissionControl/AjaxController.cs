@@ -57,7 +57,7 @@ namespace GRA.Controllers.MissionControl
 
                         var filePath = Path.Combine(contentDir, filename);
 
-                        _logger.LogInformation($"Writing out task file {filePath}...");
+                        _logger.LogDebug("Writing out task file {TaskFile}", filePath);
                         using (var fileStream = file.OpenReadStream())
                         {
                             using (var ms = new MemoryStream())

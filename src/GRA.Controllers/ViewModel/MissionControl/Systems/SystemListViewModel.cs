@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using GRA.Controllers.ViewModel.Shared;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Systems
 {
-     public class SystemListViewModel
+    public class SystemListViewModel
     {
         public List<GRA.Domain.Model.System> Systems { get; set; }
         public PaginateViewModel PaginateModel { get; set; }

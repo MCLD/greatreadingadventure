@@ -85,7 +85,7 @@ namespace GRA.Controllers
                     var distinct = claim.Select(_ => _.Value).Distinct();
                     if (distinct.Count() > 1)
                     {
-                        throw new Exception(string.Format("User {0} has multiple {1} claims: {2}",
+                        throw new GraException(string.Format("User {0} has multiple {1} claims: {2}",
                             userId,
                             claimType,
                             string.Join(",", claim.Select(_ => _.Value))));
@@ -104,7 +104,7 @@ namespace GRA.Controllers
             string result = UserClaim(user, claimType);
             if (string.IsNullOrEmpty(result))
             {
-                throw new Exception($"Could not find user claim '{claimType}'");
+                throw new GraException($"Could not find user claim '{claimType}'");
             }
             if (int.TryParse(result, out int id))
             {
@@ -112,7 +112,7 @@ namespace GRA.Controllers
             }
             else
             {
-                throw new Exception($"Could not convert '{claimType}' to a number.");
+                throw new GraException($"Could not convert '{claimType}' to a number.");
             }
         }
 

@@ -878,11 +878,11 @@
     <comment>Column heading showing far a participant is towards completing an item (i.e. their progress)</comment>
   </data>
   <data name="Read &lt;strong&gt;&lt;em&gt;&lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt;" xml:space="preserve">
-    <value>Read &lt;strong&gt;&lt;em&gt;&lt;a href=\"{0}\" target=\"_blank\"&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt;</value>
+    <value>Read &lt;strong&gt;&lt;em&gt;&lt;a href="{0}" target="_blank"&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt;</value>
     <comment>Challenge task of book with a link (replacing {0}) and a book title (replacing {1})</comment>
   </data>
   <data name="Read &lt;strong&gt;&lt;em&gt;&lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{2}&lt;/strong&gt;" xml:space="preserve">
-    <value>Read &lt;strong&gt;&lt;em&gt;&lt;a href=\"{0}\" target=\"_blank\"&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{2}&lt;/strong&gt;</value>
+    <value>Read &lt;strong&gt;&lt;em&gt;&lt;a href="{0}" target="_blank"&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{2}&lt;/strong&gt;</value>
     <comment>Challenge task of book with a link (replacing {0}), a book title (replacing {1}) and the author of the book (replacing {2})</comment>
   </data>
   <data name="Read &lt;strong&gt;&lt;em&gt;{0}&lt;/em&gt;&lt;/strong&gt;" xml:space="preserve">
@@ -1380,5 +1380,13 @@
   <data name="Illustration of a forest." xml:space="preserve">
     <value>Illustration of a forest.</value>
     <comment>The alt tag on the front page banner image for those who cannot see the image; the image is an illustration of a forest.</comment>
+  </data>
+  <data name="The unsubscribe token could not be found, please log in to change your preferences." xml:space="preserve">
+    <value>The unsubscribe token could not be found, please log in to change your preferences.</value>
+    <comment>Message shown to a participant if they've clicked an unsubscribe link but there has been an issue looking their record up.</comment>
+  </data>
+  <data name="You are already unsubscribed from emails." xml:space="preserve">
+    <value>You are already unsubscribed from emails.</value>
+    <comment>Message shown if the participant has clicked an unsubscribe link when they are unsubscribed.</comment>
   </data>
 </root>

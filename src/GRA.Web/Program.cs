@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
@@ -14,61 +12,85 @@ namespace GRA.Web
     {
         public static int Main(string[] args)
         {
-            string instance = null;
-            string webRootPath = null;
-
             var issues = ViewTemplates.CopyToShared();
 
-            // create a webhost to read configuration values for logging setup
-            using (IWebHost configWebhost = CreateWebHostBuilder(args).Build())
+            // now that we have logging present in our config, we must create the webhost
+            using (IWebHost webhost = CreateWebHostBuilder(args).Build())
             {
-                using (IServiceScope scope = configWebhost.Services.CreateScope())
+                string instance = null;
+                string webRootPath = null;
+
+                // perform initialization
+                using (IServiceScope scope = webhost.Services.CreateScope())
                 {
                     var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
 
-                    Log.Logger = new LogConfig().Build(config).CreateLogger();
-                    if (!string.IsNullOrEmpty(config[ConfigurationKey.InstanceName]))
+                    instance = config[ConfigurationKey.InstanceName] ?? "n/a";
+
+                    webRootPath = scope.ServiceProvider
+                        .GetRequiredService<IHostingEnvironment>().WebRootPath;
+
+                    Log.Logger = LogConfig.Build(config).CreateLogger();
+                    Log.Information("GRA v{Version} instance {Instance} starting up in {WebRootPath}",
+                        new Version().GetVersion(),
+                        instance,
+                        webRootPath);
+
+                    if (!string.IsNullOrEmpty(config["DOTNET_RUNNING_IN_CONTAINER"]))
                     {
-                        instance = " instance " + config[ConfigurationKey.InstanceName];
+                        Log.Information("Containerized: commit {ContainerCommit} created on {ContainerDate} image {ContainerImageVersion}",
+                            config["org.opencontainers.image.revision"] ?? "unknown",
+                            config["org.opencontainers.image.created"] ?? "unknown",
+                            config["org.opencontainers.image.version"] ?? "unknown");
                     }
+
+                    foreach (string issue in issues)
+                    {
+                        Log.Error(issue);
+                    }
+
+                    switch (config[ConfigurationKey.DistributedCache]?.ToLower(Culture.DefaultCulture))
+                    {
+                        case "redis":
+                            Log.Information("Cache: Redis config {RedisConfig} discriminator {RedisDiscriminator}",
+                                config[ConfigurationKey.RuntimeCacheRedisConfiguration],
+                                config[ConfigurationKey.RuntimeCacheRedisInstance]);
+                            break;
+                        case "sqlserver":
+                            Log.Information("Cache: SQL Server in table {SQLCacheTable}",
+                                config[ConfigurationKey.RuntimeCacheSqlConfiguration]);
+                            break;
+                        default:
+                            Log.Information("Cache: in-memory");
+                            break;
+                    }
+
+                    Task.Run(() => new Web(scope).InitalizeAsync()).Wait();
                 }
-            }
 
-            // now that we have logging present in our config, we must create the webhost
-            IWebHost webhost = CreateWebHostBuilder(args).Build();
-
-            foreach(string issue in issues)
-            {
-                Log.Error(issue);
-            }
-
-            // perform initialization
-            using (IServiceScope scope = webhost.Services.CreateScope())
-            {
-                var web = new Web(scope);
-                Task.Run(() => web.InitalizeAsync()).Wait();
-                webRootPath = scope.ServiceProvider
-                    .GetRequiredService<IHostingEnvironment>().WebRootPath;
-            }
-
-            string appDetails = string.Format("GRA {0}{1}", new Version().GetVersion(), instance);
-
-            // output the version and revision
-            try
-            {
-                Log.Warning(appDetails + " starting up in {webRootPath}", webRootPath);
-                webhost.Run();
-                return 0;
-            }
-            catch (Exception ex)
-            {
-                Log.Warning(appDetails + " exited unexpectedly: {Message}", ex.Message);
-                return 1;
-            }
-            finally
-            {
-                Log.Warning(appDetails + " shutting down.");
-                Log.CloseAndFlush();
+                // output the version and revision
+                try
+                {
+                    webhost.Run();
+                    return 0;
+                }
+#pragma warning disable CA1031 // Do not catch general exception types
+                catch (Exception ex)
+                {
+                    Log.Warning("GRA v{Version} {Instance} exited unexpectedly: {Message}",
+                        new Version().GetVersion(),
+                        instance,
+                        ex.Message);
+                    return 1;
+                }
+#pragma warning restore CA1031 // Do not catch general exception types
+                finally
+                {
+                    Log.Warning("GRA v{Version} {Instance} shutting down.",
+                        new Version().GetVersion(),
+                        instance);
+                    Log.CloseAndFlush();
+                }
             }
         }
 

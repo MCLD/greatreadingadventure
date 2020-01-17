@@ -1,11 +1,10 @@
-﻿using GRA.Abstract;
+﻿using System.Threading.Tasks;
+using GRA.Abstract;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GRA.Domain.Service
 {
@@ -51,7 +50,7 @@ namespace GRA.Domain.Service
             string extension = System.IO.Path.GetExtension(badge.Filename).ToLower();
             string filename = $"badge{badge.Id}{extension}";
             string fullFilePath = GetFilePath(filename);
-            _logger.LogInformation($"Writing out badge file {fullFilePath}...");
+            _logger.LogDebug("Writing out badge file {BadgeFile}", fullFilePath);
             System.IO.File.WriteAllBytes(fullFilePath, imageFile);
             return GetUrlPath(filename);
         }

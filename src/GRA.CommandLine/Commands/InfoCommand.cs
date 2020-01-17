@@ -19,7 +19,7 @@ namespace GRA.CommandLine.Commands
                     "Which site id to look up",
                     CommandOptionType.SingleValue);
 
-                _.OnExecute(async () =>
+                _.OnExecuteAsync(async cancellationToken =>
                 {
                     int supplementalSiteId = 0;
                     if(!string.IsNullOrEmpty(siteIdOption.Value()))

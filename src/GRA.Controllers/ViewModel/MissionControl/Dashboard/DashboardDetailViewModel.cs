@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace GRA.Controllers.ViewModel.MissionControl.Dashboard
+﻿namespace GRA.Controllers.ViewModel.MissionControl.Dashboard
 {
     public class DashboardDetailViewModel
     {

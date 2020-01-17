@@ -209,7 +209,7 @@
                             </ul>
                         </li>
                     }
-                    <li><a asp-controller="Home" asp-action="Signout">Sign out</a></li>
+                    <li><a asp-controller="Home" asp-action="Signout" asp-area="">Sign out</a></li>
                 </ul>
             </div>
         </div>
@@ -291,7 +291,7 @@
     @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.ReadAllMail)))
     {
         <script>
-            var mcMailUpdateEvery = 60 * 1000;
+            var mcMailUpdateEvery = 300 * 1000;
             function updateUnreadMailCount(updateInterval) {
                 var mcMailInterval = setInterval(function () {
                     $.ajax("@Url.Action("GetUnreadMailCount", "Home", new { area = "MissionControl" })")
