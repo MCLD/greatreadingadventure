@@ -51,7 +51,7 @@ namespace GRA.Domain.Service
 
                 return string.IsNullOrEmpty(jobDetails.To)
                     ? await SendBulkAsync(userId, jobId, token, progress, jobDetails)
-                    : await SendTestAsync(userId, jobId, token, progress, jobDetails);
+                    : await SendTestAsync(jobId, token, progress, jobDetails);
             }
             else
             {
@@ -71,8 +71,7 @@ namespace GRA.Domain.Service
             }
         }
 
-        private async Task<JobStatus> SendTestAsync(int userId,
-            int jobId,
+        private async Task<JobStatus> SendTestAsync(int jobId,
             CancellationToken token,
             IProgress<JobStatus> progress,
             JobDetailsSendBulkEmails jobDetails)
@@ -92,6 +91,7 @@ namespace GRA.Domain.Service
                 });
 
                 int sent = 0;
+                bool cancelled = false;
 
                 foreach (string toAddress in toArray)
                 {
@@ -99,6 +99,13 @@ namespace GRA.Domain.Service
                     {
                         Thread.Sleep(1000);
                     }
+
+                    if (token.IsCancellationRequested)
+                    {
+                        cancelled = true;
+                        break;
+                    }
+
                     await _emailService
                         .SendBulkTestAsync(toAddress, jobDetails.EmailTemplateId);
                     sent++;
@@ -115,21 +122,25 @@ namespace GRA.Domain.Service
 
                 sw.Stop();
 
-                _logger.LogInformation("Email job {JobId}: completed, {EmailsSent} test emails sent in {Elapsed} ms",
+                string outcome = cancelled ? "cancelled" : "completed";
+
+                _logger.LogInformation("Email job {JobId}: " + outcome + ", {EmailsSent} test emails sent in {Elapsed} ms",
                     jobId,
                     toArray.Length,
                     sw.Elapsed.TotalMilliseconds);
 
-                string status = $"Sent {toArray.Length} test emails in {sw.Elapsed.TotalSeconds} s.";
+                string status = cancelled
+                    ? $"Sent {toArray.Length} test emails in {sw.Elapsed.ToString(SpanFormat, CultureInfo.InvariantCulture)} s."
+                    : $"Cancelled after sending {toArray.Length} test emails in {sw.Elapsed.ToString(SpanFormat, CultureInfo.InvariantCulture)} s.";
 
                 await _jobRepository.UpdateStatusAsync(jobId,
                     status.Substring(0, Math.Min(status.Length, 255)));
 
                 return new JobStatus
                 {
-                    PercentComplete = 100,
+                    PercentComplete = sent * 100 / toArray.Length,
                     Status = status,
-                    Complete = true
+                    Complete = !cancelled
                 };
             }
 #pragma warning disable CA1031 // Do not catch general exception types
