@@ -30,6 +30,7 @@ namespace GRA.Controllers.MissionControl
         private readonly JobService _jobService;
         private readonly ReportService _reportService;
         private readonly SchoolService _schoolService;
+        private readonly SiteLookupService _siteLookupService;
         private readonly SiteService _siteService;
         private readonly TriggerService _triggerService;
         private readonly UserService _userService;
@@ -40,6 +41,7 @@ namespace GRA.Controllers.MissionControl
             JobService jobService,
             ReportService reportService,
             SchoolService schoolService,
+            SiteLookupService siteLookupService,
             SiteService siteService,
             TriggerService triggerService,
             UserService userService,
@@ -51,6 +53,8 @@ namespace GRA.Controllers.MissionControl
                 ?? throw new ArgumentNullException(nameof(reportService));
             _schoolService = schoolService
                 ?? throw new ArgumentNullException(nameof(schoolService));
+            _siteLookupService = siteLookupService 
+                ?? throw new ArgumentNullException(nameof(siteLookupService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             _triggerService = triggerService
                 ?? throw new ArgumentNullException(nameof(triggerService));
@@ -68,20 +72,6 @@ namespace GRA.Controllers.MissionControl
             {
                 Reports = _reportService.GetReportList()
             };
-
-            var configuredMaxActivity = _config[ConfigurationKey.MaximumAllowableActivity];
-            if (!string.IsNullOrEmpty(configuredMaxActivity))
-            {
-                if (!int.TryParse(configuredMaxActivity, out int MaximumAllowableActivity))
-                {
-                    _logger.LogError("Could not configure maximum allowable activity: {0} in configuration is not a number",
-                        ConfigurationKey.MaximumAllowableActivity);
-                }
-                else
-                {
-                    viewModel.ReportingNote = $"Participants who logged more than {MaximumAllowableActivity:N0} minutes have had their activity amount reduced to the program achiever amount for reporting purposes.";
-                }
-            }
 
             return View(viewModel);
         }
@@ -138,9 +128,11 @@ namespace GRA.Controllers.MissionControl
         {
             PageTitle = "Run the report";
 
+            var siteId = GetCurrentSiteId();
+
             var criterion = new ReportCriterion
             {
-                SiteId = GetCurrentSiteId(),
+                SiteId = siteId,
                 EndDate = viewModel.EndDate,
                 StartDate = viewModel.StartDate,
                 SystemId = viewModel.SystemId,
@@ -157,6 +149,14 @@ namespace GRA.Controllers.MissionControl
             if (viewModel.TriggerList?.Count > 0)
             {
                 criterion.TriggerList = string.Join(",", viewModel.TriggerList);
+            }
+
+            var (IsSet, SetValue) = await _siteLookupService.GetSiteSettingIntAsync(siteId,
+                SiteSettingKey.Users.MaximumActivityPermitted);
+
+            if (IsSet)
+            {
+                criterion.MaximumAllowableActivity = SetValue;
             }
 
             int reportRequestId = await _reportService
