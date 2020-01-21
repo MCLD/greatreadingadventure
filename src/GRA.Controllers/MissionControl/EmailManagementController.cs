@@ -8,6 +8,7 @@ using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -18,12 +19,14 @@ namespace GRA.Controllers.MissionControl
         private readonly ILogger _logger;
         private readonly EmailManagementService _emailManagementService;
         private readonly EmailService _emailService;
+        private readonly JobService _jobService;
         private readonly UserService _userService;
 
         public EmailManagementController(ServiceFacade.Controller context,
             ILogger<EmailManagementController> logger,
             EmailManagementService emailManagementService,
             EmailService emailService,
+            JobService jobService,
             UserService userService)
             : base(context)
         {
@@ -31,6 +34,7 @@ namespace GRA.Controllers.MissionControl
             _emailManagementService = emailManagementService
                 ?? throw new ArgumentNullException(nameof(emailManagementService));
             _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
+            _jobService = jobService ?? throw new ArgumentNullException(nameof(jobService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             PageTitle = "Email Management";
         }
@@ -117,7 +121,8 @@ namespace GRA.Controllers.MissionControl
             if (ModelState.IsValid)
             {
                 await _emailManagementService.EditEmailTemplate(viewModel.EmailTemplate);
-                return RedirectToAction(nameof(EmailManagementController.Edit), viewModel.EmailTemplate.Id);
+                return RedirectToAction(nameof(EmailManagementController.Edit), 
+                    viewModel.EmailTemplate.Id);
             }
             ShowAlertDanger("Could not update email template");
             PageTitle = "Edit Email";
@@ -125,7 +130,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public IActionResult SendEmailTest(EmailIndexViewModel viewModel)
+        public async Task<IActionResult> SendEmailTest(EmailIndexViewModel viewModel)
         {
             if (string.IsNullOrEmpty(viewModel.SendTestRecipients))
             {
@@ -135,21 +140,40 @@ namespace GRA.Controllers.MissionControl
             else
             {
                 _logger.LogInformation("Email test requested by {UserId} for email {EmailId} to {Addresses}",
-                     GetActiveUserId(),
-                     viewModel.SendTestTemplateId,
-                     viewModel.SendTestRecipients);
+                    GetActiveUserId(),
+                    viewModel.SendTestTemplateId,
+                    viewModel.SendTestRecipients);
 
-                ShowAlertDanger("Sending test emails has not been configured yet.");
-                return RedirectToAction(nameof(EmailManagementController.Index));
+                var jobToken = await _jobService.CreateJobAsync(new Job
+                {
+                    JobType = JobType.SendBulkEmails,
+                    SerializedParameters = JsonConvert
+                        .SerializeObject(new JobDetailsSendBulkEmails
+                        {
+                            EmailTemplateId = viewModel.SendTestTemplateId,
+                            To = viewModel.SendTestRecipients
+                        })
+                });
+
+                return View("Job", new ViewModel.MissionControl.Shared.JobViewModel
+                {
+                    CancelUrl = Url.Action(nameof(Index)),
+                    JobToken = jobToken.ToString(),
+                    PingSeconds = 5,
+                    SuccessRedirectUrl = "",
+                    SuccessUrl = Url.Action(nameof(Index)),
+                    Title = "Sending test emails..."
+                });
             }
         }
 
         [HttpPost]
-        public IActionResult SendEmail(EmailIndexViewModel viewModel)
+        [Authorize(Policy = Policy.SendBulkEmails)]
+        public async Task<IActionResult> SendEmail(EmailIndexViewModel viewModel)
         {
             if (!string.Equals(viewModel.SendValidation,
                     "YES",
-                    StringComparison.InvariantCultureIgnoreCase))
+                    StringComparison.Ordinal))
             {
                 ShowAlertDanger("Emails not sent: you must enter YES in the confirmation field.");
                 return RedirectToAction(nameof(EmailManagementController.Index));
@@ -161,8 +185,25 @@ namespace GRA.Controllers.MissionControl
                     viewModel.SendEmailTemplateId,
                     viewModel.SendValidation);
 
-                ShowAlertDanger("Sending emails has not been configured yet.");
-                return RedirectToAction(nameof(EmailManagementController.Index));
+                var jobToken = await _jobService.CreateJobAsync(new Job
+                {
+                    JobType = JobType.SendBulkEmails,
+                    SerializedParameters = JsonConvert
+                        .SerializeObject(new JobDetailsSendBulkEmails
+                        {
+                            EmailTemplateId = viewModel.SendEmailTemplateId
+                        })
+                });
+
+                return View("Job", new ViewModel.MissionControl.Shared.JobViewModel
+                {
+                    CancelUrl = Url.Action(nameof(Index)),
+                    JobToken = jobToken.ToString(),
+                    PingSeconds = 5,
+                    SuccessRedirectUrl = "",
+                    SuccessUrl = Url.Action(nameof(Index)),
+                    Title = "Sending emails..."
+                });
             }
         }
     }
