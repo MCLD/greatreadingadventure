@@ -226,9 +226,9 @@ namespace GRA.Domain.Service
             sw.Stop();
             if (sw.Elapsed.TotalSeconds > 5)
             {
-                _logger.LogInformation("Registration for user id {UserId} took {Elapsed} to award triggers.",
+                _logger.LogInformation("Registration for user id {UserId} took {Elapsed} ms to award triggers",
                     registeredUser.Id,
-                    sw.Elapsed.ToString("c"));
+                    sw?.Elapsed.TotalMilliseconds);
             }
 
             return registeredUser;
@@ -248,8 +248,8 @@ namespace GRA.Domain.Service
             }
             else
             {
-                int userId = GetClaimId(ClaimType.UserId);
-                _logger.LogError($"User {userId} doesn't have permission to view all participants.");
+                _logger.LogError("User {UserId} doesn't have permission to view all participants.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
         }
@@ -275,7 +275,8 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {authUserId} doesn't have permission to view family/group participants.");
+                _logger.LogError("User {UserId} doesn't have permission to view family/group participants",
+                    authUserId);
                 throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
         }
@@ -299,7 +300,8 @@ namespace GRA.Domain.Service
                 }
                 else
                 {
-                    _logger.LogError($"User {authUserId} doesn't have permission to get a count of family/group participants.");
+                    _logger.LogError("User {UserId} doesn't have permission to get a count of family/group participants",
+                        authUserId);
                     throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
                 }
             }
@@ -323,7 +325,8 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {authUserId} doesn't have permission to view participant details.");
+                _logger.LogError("User {UserId} doesn't have permission to view participant details",
+                    authUserId);
                 throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
         }
@@ -390,7 +393,9 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {requestingUserId} doesn't have permission to update user {userToUpdate.Id}.");
+                _logger.LogError("User {UserId} doesn't have permission to update user {EditingUserId}",
+                    requestingUserId,
+                    userToUpdate.Id);
                 throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
         }
@@ -520,7 +525,9 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {requestedByUserId} doesn't have permission to remove user {userIdToRemove}.");
+                _logger.LogError("User {UserId} doesn't have permission to remove user {EditingUserId}",
+                    requestedByUserId,
+                    userIdToRemove);
                 throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
         }
@@ -542,7 +549,9 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {requestedByUserId} doesn't have permission to view details for {userId}.");
+                _logger.LogError("User {UserId} doesn't have permission to view details for {EditingUserId}",
+                    requestedByUserId,
+                    userId);
                 throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
         }
@@ -559,7 +568,9 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {requestedByUserId} doesn't have permission to view details for {userId}.");
+                _logger.LogError("User {UserId} doesn't have permission to view details for {EditingUserId}",
+                    requestedByUserId,
+                    userId);
                 throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
         }
@@ -646,7 +657,9 @@ namespace GRA.Domain.Service
 
             if (householdHead.HouseholdHeadUserId != null)
             {
-                _logger.LogError($"User {authUserId} cannot add a household member for {householdHeadUserId} who isn't a head of family/group.");
+                _logger.LogError("User {UserId} cannot add a household member for {EditingUserId} who isn't a head of family/group",
+                    authUserId,
+                    householdHeadUserId);
                 throw new GraException("Cannot add a household member to someone who isn't a head of family/group.");
             }
 
@@ -707,16 +720,18 @@ namespace GRA.Domain.Service
                 sw.Stop();
                 if (sw.Elapsed.TotalSeconds > 5)
                 {
-                    _logger.LogInformation("Registration for household member {UserId} took {Elapsed} to award triggers.",
+                    _logger.LogInformation("Registration for household member {UserId} took {Elapsed} ms to award triggers",
                         registeredUser.Id,
-                        sw.Elapsed.ToString("c"));
+                        sw?.Elapsed.TotalMilliseconds);
                 }
 
                 return registeredUser;
             }
             else
             {
-                _logger.LogError($"User {authUserId} doesn't have permission to add a family/group member to {householdHeadUserId}.");
+                _logger.LogError("User {UserId} doesn't have permission to add a family/group member to {EditingUserId}",
+                    authUserId,
+                    householdHeadUserId);
                 throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
         }
@@ -732,7 +747,9 @@ namespace GRA.Domain.Service
                 var user = await _userRepository.GetByIdAsync(memberToRegister.Id);
                 if (!string.IsNullOrWhiteSpace(user.Username))
                 {
-                    _logger.LogError($"User {authUserId} cannot register family/group member {memberToRegister.Id} who is already registered.");
+                    _logger.LogError("User {UserId} cannot register family/group member {EditingUserId} who is already registered.",
+                        authUserId,
+                        memberToRegister.Id);
                     throw new GraException("Household member is already registered");
                 }
 
@@ -751,7 +768,9 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {authUserId} doesn't have permission to register family/group member {memberToRegister.Id}.");
+                _logger.LogError("User {UserId} doesn't have permission to register family/group member {EditingUserId}",
+                    authUserId,
+                    memberToRegister.Id);
                 throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
         }
@@ -772,7 +791,9 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {activeUserId} doesn't have permission to view details for {userId}.");
+                _logger.LogError("User {UserId} doesn't have permission to view details for {EditingUserId}",
+                    activeUserId,
+                    userId);
                 throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
         }
@@ -866,7 +887,12 @@ namespace GRA.Domain.Service
                     = await _groupInfoRepository.GetByUserIdAsync(user.Id);
                 if (infoGroup != null)
                 {
-                    _logger.LogInformation($"Existing {callIt} manager {user.Id} is is added to new head {authUser.Id}, group {infoGroup.Id}/{infoGroup.Name} is being removed.");
+                    _logger.LogInformation("Existing {GroupType} manager {UserId} is is added to new head {HeadUserId}, group {GroupId}/{GroupName} is being removed",
+                        callIt,
+                        user.Id,
+                        authUser.Id,
+                        infoGroup.Id,
+                        infoGroup.Name);
                     await _groupInfoRepository.RemoveSaveAsync(authUser.Id, infoGroup.Id);
                 }
             }
@@ -923,7 +949,9 @@ namespace GRA.Domain.Service
                 var authUser = await _userRepository.GetByIdAsync(authId);
                 if (authUser.HouseholdHeadUserId != householdHeadUserId)
                 {
-                    _logger.LogError($"User {authId} doesn't have permission to view details for {householdHeadUserId}.");
+                    _logger.LogError("User {UserId} doesn't have permission to view details for {HouseholdHeadUserId}.",
+                        authId,
+                        householdHeadUserId);
                     throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
                 }
             }
@@ -935,13 +963,17 @@ namespace GRA.Domain.Service
                 if (includeMail && householdHeadUserId != authId
                     && !HasPermission(Permission.ReadAllMail))
                 {
-                    _logger.LogError($"User {authId} doesn't have permission to view mail for {householdHeadUserId}.");
+                    _logger.LogError("User {UserId} doesn't have permission to view mail for {HouseholdHeadUserId}.",
+                        authId,
+                        householdHeadUserId);
                     throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
                 }
 
                 if (includePrize && !HasPermission(Permission.ViewUserPrizes))
                 {
-                    _logger.LogError($"User {authId} doesn't have permission to view prizes for {householdHeadUserId}.");
+                    _logger.LogError("User {UserId} doesn't have permission to view prizes for {HouseholdHeadUserId}.",
+                        authId,
+                        householdHeadUserId);
                     throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
                 }
                 var siteId = GetCurrentSiteId();
@@ -977,19 +1009,22 @@ namespace GRA.Domain.Service
             var authId = GetClaimId(ClaimType.UserId);
             if (!HasPermission(Permission.EditParticipants))
             {
-                _logger.LogError($"User {authId} doesn't have permission to promote family/group members to manager.");
+                _logger.LogError("User {UserId} doesn't have permission to promote family/group members to manager.",
+                    authId);
                 throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
 
             var user = await _userRepository.GetByIdAsync(userId);
             if (string.IsNullOrWhiteSpace(user.Username))
             {
-                _logger.LogError($"User {userId} cannot be promoted to family/group manager without a username.");
+                _logger.LogError("User {UserId} cannot be promoted to family/group manager without a username.",
+                    userId);
                 throw new GraException("User does not have a username.");
             }
             if (!user.HouseholdHeadUserId.HasValue)
             {
-                _logger.LogError($"User {userId} cannot be promoted to family/group manager.");
+                _logger.LogError("User {UserId} cannot be promoted to family/group manager.",
+                    userId);
                 throw new GraException("User does not have a family/group or is already the manager.");
             }
             var headUser = await _userRepository.GetByIdAsync(user.HouseholdHeadUserId.Value);
@@ -1036,7 +1071,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.EditParticipants)
                 && user.HouseholdHeadUserId != authId)
             {
-                _logger.LogError($"User {authId} doesn't have permission to remove family/group members.");
+                _logger.LogError("User {UserId} doesn't have permission to remove family/group members.",
+                    authId);
                 throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
 
@@ -1061,14 +1097,17 @@ namespace GRA.Domain.Service
             var authId = GetClaimId(ClaimType.UserId);
             if (!HasPermission(Permission.EditParticipants))
             {
-                _logger.LogError($"User {authId} doesn't add existing participants to family/group.");
+                _logger.LogError("User {UserId} doesn't add existing participants to family/group.",
+                    authId);
                 throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
             var userToAdd = await _userRepository.GetByIdAsync(userToAddId);
             if (userToAdd.HouseholdHeadUserId.HasValue
                 || (await _userRepository.GetHouseholdCountAsync(userToAddId)) > 0)
             {
-                _logger.LogError($"User {authId} cannot add {userToAddId} to a different family/group.");
+                _logger.LogError("User {UserId} cannot add {AddUserId} to a different family/group.",
+                    authId,
+                    userToAddId);
                 throw new GraException("Participant already belongs to a family/group.");
             }
             var user = await _userRepository.GetByIdAsync(householdId);
@@ -1256,7 +1295,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.ViewParticipantDetails)
                 && !HasPermission(Permission.ViewAllReporting))
             {
-                _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view group info.");
+                _logger.LogError("User {UserId} doesn't have permission to view group info.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
             return await _groupInfoRepository.GetByIdAsync(id);
@@ -1279,7 +1319,8 @@ namespace GRA.Domain.Service
                 && !HasPermission(Permission.EditParticipants))
             {
                 int userId = GetClaimId(ClaimType.UserId);
-                _logger.LogError($"User {userId} doesn't have permission to create a group.");
+                _logger.LogError("User {UserId} doesn't have permission to create a group.",
+                    userId);
                 throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
 
@@ -1304,7 +1345,8 @@ namespace GRA.Domain.Service
             if (currentUserId != groupInfo.UserId && !HasPermission(Permission.EditParticipants))
             {
                 int userId = GetClaimId(ClaimType.UserId);
-                _logger.LogError($"User {userId} doesn't have permission to update a group name.");
+                _logger.LogError("User {UserId} doesn't have permission to update a group name.",
+                    userId);
                 throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
 
@@ -1320,7 +1362,8 @@ namespace GRA.Domain.Service
             if (!HasPermission(Permission.EditParticipants))
             {
                 int userId = GetClaimId(ClaimType.UserId);
-                _logger.LogError($"User {userId} doesn't have permission to update a group.");
+                _logger.LogError("User {UserId} doesn't have permission to update a group.",
+                    userId);
                 throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
 
@@ -1482,7 +1525,8 @@ namespace GRA.Domain.Service
             var users = await _userRepository.GetAllUsersWithoutUnsubscribeToken();
             if (users.Count > 0)
             {
-                _logger.LogInformation($"{users.Count} users without an unsubscribe token found.");
+                _logger.LogInformation("Users without an unsubscribe token: {UserCount}",
+                    users.Count);
 
                 var systemUserId = await _userRepository.GetSystemUserId();
                 foreach (var user in users)
@@ -1499,7 +1543,7 @@ namespace GRA.Domain.Service
                 }
                 await _userRepository.SaveAsync();
 
-                _logger.LogInformation($"Unsubsribe token added to {users.Count} users.");
+                _logger.LogInformation("Unsubsribe token added to {UserCount} users", users.Count);
             }
         }
 
@@ -1534,19 +1578,17 @@ namespace GRA.Domain.Service
 
                 token.Register(() =>
                 {
-                    string duration = "";
-                    if (sw?.Elapsed != null)
-                    {
-                        duration = $" after {sw.Elapsed.ToString("c")}";
-                    }
-                    _logger.LogWarning($"Import of {filename} for user {requestingUser} was cancelled{duration}.");
+                    _logger.LogWarning("Import of {FilePath} for user {UserId} was cancelled after {Elapsed} ms.",
+                        filename,
+                        requestingUser,
+                        sw?.Elapsed.TotalMilliseconds);
                 });
 
                 string fullPath = _pathResolver.ResolvePrivateTempFilePath(filename);
 
                 if (!File.Exists(fullPath))
                 {
-                    _logger.LogError($"Could not find {fullPath}");
+                    _logger.LogError("Could not find {FilePath}", fullPath);
                     return new JobStatus
                     {
                         PercentComplete = 0,
@@ -1622,7 +1664,8 @@ namespace GRA.Domain.Service
                         var defaultGroupType = await GetDefaultGroupTypeAsync();
                         if (defaultGroupType == null)
                         {
-                            _logger.LogError($"Household import for {householdHead.Id} should be forced to make a group but no group types are configured");
+                            _logger.LogError("Household import for {UserId} should be forced to make a group but no group types are configured",
+                                householdHead.Id);
                         }
                         else
                         {
@@ -1639,7 +1682,7 @@ namespace GRA.Domain.Service
                 }
 
                 var currentUser = 1;
-                var userCount = userImportResult.Users.Count();
+                var userCount = userImportResult.Users.Count;
 
                 string callIt = groupInfo == null ? "Household" : "Group";
 
@@ -1708,7 +1751,8 @@ namespace GRA.Domain.Service
 
             else
             {
-                _logger.LogError($"User {requestingUser} doesn't have permission to import household members.");
+                _logger.LogError("User {UserId} doesn't have permission to import household members.",
+                    requestingUser);
                 return new JobStatus
                 {
                     PercentComplete = 0,
