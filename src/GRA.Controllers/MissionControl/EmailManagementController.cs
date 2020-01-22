@@ -130,6 +130,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
+        [Authorize(Policy = Policy.SendBulkEmails)]
         public async Task<IActionResult> SendEmailTest(EmailIndexViewModel viewModel)
         {
             if (string.IsNullOrEmpty(viewModel.SendTestRecipients))

@@ -95,20 +95,23 @@
                                         <span class="fa fa-pencil" aria-hidden="true"></span>
                                         Edit
                                     </a>
-                                    <button class="btn btn-sm btn-default testEmail"
-                                            data-toggle="modal"
-                                            data-target="#sendTestModal"
-                                            data-id="@template.Id"
-                                            data-descr="@template.Description">
-                                        Send Test
-                                    </button>
-                                    <button class="btn btn-sm btn-warning sendEmail"
-                                            data-toggle="modal"
-                                            data-target="#sendModal"
-                                            data-id="@template.Id"
-                                            data-descr="@template.Description">
-                                        Send Email
-                                    </button>
+                                    @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.SendBulkEmails.ToString()))
+                                    {
+                                        <button class="btn btn-sm btn-default testEmail"
+                                                data-toggle="modal"
+                                                data-target="#sendTestModal"
+                                                data-id="@template.Id"
+                                                data-descr="@template.Description">
+                                            Send Test
+                                        </button>
+                                        <button class="btn btn-sm btn-warning sendEmail"
+                                                data-toggle="modal"
+                                                data-target="#sendModal"
+                                                data-id="@template.Id"
+                                                data-descr="@template.Description">
+                                            Send Email
+                                        </button>
+                                    }
                                 </td>
                             </tr>
                         }
