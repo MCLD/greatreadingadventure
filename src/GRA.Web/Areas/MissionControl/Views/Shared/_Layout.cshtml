@@ -156,6 +156,10 @@
                                 {
                                     <li><a asp-controller="Dashboard" asp-action="Index">Dashboard Content management</a></li>
                                 }
+                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageBulkEmails.ToString()))
+                                {
+                                    <li><a asp-controller="EmailManagement" asp-action="Index">Email management</a></li>
+                                }
                                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageGroupTypes.ToString()))
                                 {
                                     <li><a asp-controller="GroupTypes" asp-action="Index">Group Type management</a></li>

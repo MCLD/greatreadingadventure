@@ -23,6 +23,7 @@ namespace GRA.Domain.Model
         public const string ManageAvatars = "ManageAvatars";
         public const string ManageCarousels = "ManageCarousels";
         public const string ManageCategories = "ManageCategories";
+        public const string ManageBulkEmails = "ManageBulkEmails";
         public const string ManageDailyLiteracyTips = "ManageDailyLiteracyTips";
         public const string ManageDashboardContent = "ManageDashboardContent";
         public const string ManageEvents = "ManageEvents";

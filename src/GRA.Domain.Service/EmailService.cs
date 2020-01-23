@@ -120,6 +120,31 @@ namespace GRA.Domain.Service
             }
         }
 
+        public async Task SendBulkTestAsync(string emailTo, int emailTemplateId)
+        {
+            if (string.IsNullOrEmpty(emailTo))
+            {
+                throw new ArgumentNullException(nameof(emailTo));
+            }
+
+            var template = await _emailTemplateRepository.GetByIdAsync(emailTemplateId);
+
+            var bodyText = template.BodyText
+                .Replace("{{Email}}", emailTo);
+            var bodyHtml = template.BodyHtml
+                .Replace("{{Email}}", emailTo);
+
+            var site = await _siteRepository.GetByIdAsync(template.SiteId);
+
+            await SendEmailAsync(site,
+                emailTo,
+                template.Subject,
+                bodyText,
+                bodyHtml,
+                providedFromName: template.FromName,
+                providedFromEmail: template.FromAddress);
+        }
+
         public async Task SendEmailToAddressAsync(int siteId,
             string emailAddress,
             string subject,
