@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
@@ -14,6 +16,7 @@ namespace GRA.Domain.Service
     {
         private readonly IEmailSubscriptionAuditLogRepository _emailSubscriptionAuditLogRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IEmailReminderRepository _emailReminderRepository;
         private readonly IEmailTemplateRepository _emailTemplateRepository;
         private readonly IStringLocalizer<Resources.Shared> _sharedLocalizer;
 
@@ -22,10 +25,13 @@ namespace GRA.Domain.Service
             IUserContextProvider userContextProvider,
             IEmailSubscriptionAuditLogRepository emailSubscriptionAuditLogRepository,
             IEmailTemplateRepository emailTemplateRepository,
+            IEmailReminderRepository emailReminderRepository,
             IUserRepository userRepository,
             IStringLocalizer<Resources.Shared> sharedLocalizer)
             : base(logger, dateTimeProvider, userContextProvider)
         {
+            _emailReminderRepository = emailReminderRepository
+                ?? throw new ArgumentNullException(nameof(emailReminderRepository));
             _emailSubscriptionAuditLogRepository = emailSubscriptionAuditLogRepository
                 ?? throw new ArgumentNullException(nameof(emailSubscriptionAuditLogRepository));
             _emailTemplateRepository = emailTemplateRepository
@@ -190,6 +196,16 @@ namespace GRA.Domain.Service
                 IsSubscribed = true
             });
             return subscribed;
+        }
+
+        public IEnumerable GetSignUpSourcesWithCount()
+        {
+            return _emailReminderRepository.GetDistinctSignUpSourceWithCount();
+        }
+
+        public ICollection<EmailReminder> GetEmailRemindersBySignUpSource(string signUpSource)
+        {
+            return _emailReminderRepository.GetEmailsBySignUpSource(signUpSource);
         }
     }
 }

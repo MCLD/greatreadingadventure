@@ -23,5 +23,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.EmailManagement
         public int SendTestTemplateId { get; set; }
 
         public string DefaultTestEmail { get; set; }
+
+        public bool IsAdmin { get; set; }
     }
 }

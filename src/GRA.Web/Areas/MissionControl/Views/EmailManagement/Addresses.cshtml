@@ -1,0 +1,54 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.EmailManagement.EmailAddressesViewModel
+
+@{
+    var invalid = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid;
+}
+
+<h3>Export</h3>
+<form asp-action="@nameof(EmailManagementController.ExportAddresses)" method="get">
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="SignUpSource" class="control-label">SignUp Source</label>
+            <select asp-for="SignUpSource" asp-items="@Model.SignUpSources" class="form-control" formgroup>
+                <option value="">@(Model.SignUpSources.Count() == 0 ? "No Email Reminders" : "Select A Signup Source")</option>
+            </select>
+            <span asp-validation-for="SignUpSource" class="text-danger"></span>
+        </div>
+    </div>
+    @if (Model.SignUpSources.Count() == 0)
+    {
+        <button class="btn btn-primary" disabled type="submit">
+            Download
+        </button>
+    }
+    else
+    {
+        <button class="btn btn-primary" type="submit">
+            Download
+        </button>
+    }
+</form>
+
+<h3>Import</h3>
+<form asp-action="@nameof(EmailManagementController.ImportAddresses)" method="post" enctype="multipart/form-data">
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label for="selectedFile">Select a .txt file:</label>
+            <div class="input-group">
+                <label class="input-group-btn">
+                    <span class="btn btn-default btn-file">
+                        <span class="fa fa-file-image-o"></span>
+                        Select a .txt file
+                        <input type="file" asp-for="UploadedFile" class="form-control" accept=".txt" formgroup />
+                    </span>
+                </label>
+                <input type="text" class="form-control"
+                       readonly id="selectedFile" @(ViewData.ModelState.GetValidationState("UploadedFile") == invalid ? "input-validation-error" : "")>
+            </div>
+            <span asp-validation-for="UploadedFile" class="text-danger"></span>
+        </div>
+    </div>
+    <button class="btn btn-primary" type="submit">
+        Upload
+    </button>
+</form>

@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl.EmailManagement;
 using GRA.Controllers.ViewModel.Shared;
@@ -7,6 +10,7 @@ using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -19,6 +23,7 @@ namespace GRA.Controllers.MissionControl
         private readonly ILogger _logger;
         private readonly EmailManagementService _emailManagementService;
         private readonly EmailService _emailService;
+        private readonly EmailReminderService _emailReminderService;
         private readonly JobService _jobService;
         private readonly UserService _userService;
 
@@ -26,6 +31,7 @@ namespace GRA.Controllers.MissionControl
             ILogger<EmailManagementController> logger,
             EmailManagementService emailManagementService,
             EmailService emailService,
+            EmailReminderService emailReminderService,
             JobService jobService,
             UserService userService)
             : base(context)
@@ -34,6 +40,7 @@ namespace GRA.Controllers.MissionControl
             _emailManagementService = emailManagementService
                 ?? throw new ArgumentNullException(nameof(emailManagementService));
             _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
+            _emailReminderService = emailReminderService ?? throw new ArgumentNullException(nameof(emailReminderService));
             _jobService = jobService ?? throw new ArgumentNullException(nameof(jobService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             PageTitle = "Email Management";
@@ -67,7 +74,8 @@ namespace GRA.Controllers.MissionControl
                 PaginateModel = paginateModel,
                 EmailTemplates = templateList.Data,
                 SubscribedParticipants = await _emailManagementService.GetSubscriberCount(),
-                DefaultTestEmail = currentUser?.Email
+                DefaultTestEmail = currentUser?.Email,
+                IsAdmin = currentUser.IsAdmin
             });
         }
 
@@ -206,6 +214,98 @@ namespace GRA.Controllers.MissionControl
                     Title = "Sending emails..."
                 });
             }
+        }
+
+        public async Task<IActionResult> Addresses()
+        {
+            var user = await _userService.GetDetails(GetActiveUserId());
+            if (user.IsAdmin)
+            {
+                var signupData = _emailManagementService.GetSignUpSourcesWithCount();
+                var viewModel = new EmailAddressesViewModel
+                {
+                    IsAdmin = user.IsAdmin,
+                    SignUpSources = new SelectList(signupData, "Value", "DisplayText")
+                };
+                return View(viewModel);
+            }
+            ShowAlertDanger("Page not found.");
+            return RedirectToAction(nameof(EmailManagementController.Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ExportAddresses(EmailAddressesViewModel viewModel)
+        {
+            var user = await _userService.GetDetails(GetActiveUserId());
+            if (user.IsAdmin)
+            {
+                if (string.IsNullOrEmpty(viewModel.SignUpSource))
+                {
+                    ShowAlertDanger("Could not export Email Reminders");
+                    ModelState.AddModelError(nameof(viewModel.SignUpSource), "The signup source is required.");
+                    var signupData = _emailManagementService.GetSignUpSourcesWithCount();
+                    viewModel.IsAdmin = user.IsAdmin;
+                    viewModel.SignUpSources = new SelectList(signupData, "Value", "DisplayText");
+                    return View("Addresses",viewModel);
+                }
+                var ms = new MemoryStream();
+                var writer = new StreamWriter(ms);
+                var data = _emailManagementService.GetEmailRemindersBySignUpSource(viewModel.SignUpSource);
+                var json = JsonConvert.SerializeObject(data.Select(_ => new { _.CreatedAt, _.Email, _.SignUpSource }));
+                writer.WriteLine(json);
+                writer.Flush();
+                ms.Seek(0, SeekOrigin.Begin);
+                var fileOutput = new FileStreamResult(ms, "text/plain")
+                {
+                    FileDownloadName = $"Email_Reminders_{DateTime.Now.ToString()}.txt"
+                };
+                return fileOutput;
+            }
+            ShowAlertDanger("Page not found.");
+            return RedirectToAction(nameof(EmailManagementController.Index));
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> ImportAddresses(EmailAddressesViewModel viewModel)
+        {
+            var user = await _userService.GetDetails(GetActiveUserId());
+            if (user.IsAdmin)
+            {
+                if (viewModel.UploadedFile == null)
+                {
+                    ShowAlertDanger("Could not import Email Reminders");
+                    ModelState.AddModelError(nameof(viewModel.UploadedFile), "A .txt file is required.");
+                    var signupData = _emailManagementService.GetSignUpSourcesWithCount();
+                    viewModel.IsAdmin = user.IsAdmin;
+                    viewModel.SignUpSources = new SelectList(signupData, "Value", "DisplayText");
+                    return View("Addresses", viewModel);
+                }
+                using (var reader = new StreamReader(viewModel.UploadedFile.OpenReadStream()))
+                {
+                    var jsonString = await reader.ReadToEndAsync();
+                    var addressList = JsonConvert.DeserializeObject<ICollection<EmailReminder>>(jsonString);
+                    var success = 0;
+                    foreach (var emailReminder in addressList)
+                    {
+                        var imported = await _emailReminderService.AddImportEmailReminderAsync(emailReminder);
+                        if (imported)
+                        {
+                            success++;
+                        }
+                    }
+                    if (success >0)
+                    {
+                        ShowAlertSuccess($"Successfully imported ({success}) email reminders");
+                    }
+                    else
+                    {
+                        ShowAlertDanger($"Failed to import unique email reminders");
+                    }
+                    return RedirectToAction(nameof(EmailManagementController.Addresses));
+                }
+            }
+            ShowAlertDanger("Page not found.");
+            return RedirectToAction(nameof(EmailManagementController.Index));
         }
     }
 }
