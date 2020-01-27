@@ -22,6 +22,7 @@ namespace GRA.Domain.Model
         ManageAvatars,
         ManageCarousels,
         ManageCategories,
+        ManageBulkEmails,
         ManageDailyLiteracyTips,
         ManageDashboardContent,
         ManageEvents,
