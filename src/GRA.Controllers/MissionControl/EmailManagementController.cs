@@ -68,14 +68,26 @@ namespace GRA.Controllers.MissionControl
             }
 
             var currentUser = await _userService.GetDetails(GetActiveUserId());
+            int subscribedParticipants = await _emailManagementService.GetSubscriberCount();
+            var addressTypes = new List<object>();
+            foreach (var type in _emailManagementService.GetSignUpSourcesWithCount())
+            {
+                addressTypes.Add(type);
+            }
+            addressTypes.Add(new {
+                DisplayText = "Subscribed Participants (" + subscribedParticipants.ToString() + ")",
+                Value = "Subscribed"
+            });
+            var addressSelectList = new SelectList(addressTypes, "Value", "DisplayText");
 
             return View(new EmailIndexViewModel
             {
                 PaginateModel = paginateModel,
                 EmailTemplates = templateList.Data,
-                SubscribedParticipants = await _emailManagementService.GetSubscriberCount(),
+                SubscribedParticipants =subscribedParticipants,
                 DefaultTestEmail = currentUser?.Email,
-                IsAdmin = currentUser.IsAdmin
+                IsAdmin = currentUser.IsAdmin,
+                AddressTypes = addressSelectList
             });
         }
 

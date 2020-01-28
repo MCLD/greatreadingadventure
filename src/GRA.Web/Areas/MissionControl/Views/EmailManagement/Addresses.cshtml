@@ -48,7 +48,12 @@
             <span asp-validation-for="UploadedFile" class="text-danger"></span>
         </div>
     </div>
-    <button class="btn btn-primary" type="submit">
-        Upload
-    </button>
+    <div class="row-spacing">
+        <button class="btn btn-primary" type="submit">
+            Upload
+        </button>
+    </div>
 </form>
+<div class="row">
+    <a asp-action="Index" class="btn btn-default">Return to List</a>
+</div>

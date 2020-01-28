@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GRA.Controllers.ViewModel.MissionControl.EmailManagement
 {
@@ -25,5 +26,9 @@ namespace GRA.Controllers.ViewModel.MissionControl.EmailManagement
         public string DefaultTestEmail { get; set; }
 
         public bool IsAdmin { get; set; }
+
+        public SelectList AddressTypes { get; set; }
+
+        public string BulkEmailType { get; set; }
     }
 }
