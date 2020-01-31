@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
 
@@ -28,29 +29,21 @@ namespace GRA.Data.Repository
             return lookup != null;
         }
 
-        public IEnumerable GetDistinctSignUpSourceWithCount()
+        public async Task<ICollection<EmailReminder>> GetAllEmailRemindersAsync()
         {
-            return DbSet
-                .GroupBy(_ => _.SignUpSource)
-                .Select(_ => new
-                {
-                    DisplayText = _.Key + " (" + _.Distinct().Count().ToString() + ")",
-                    Value = _.Key
-                });
+            return await DbSet
+                .AsNoTracking()
+                .ProjectTo<EmailReminder>(_mapper.ConfigurationProvider)
+                .ToListAsync();
         }
 
-        public ICollection<EmailReminder> GetEmailsBySignUpSource(string signUpSource)
+        public async Task<ICollection<EmailReminder>> GetEmailRemindersBySignUpSource(string signUpSource)
         {
-            return DbSet
+            return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.SignUpSource == signUpSource)
-                .Select(_ => new EmailReminder
-                {
-                    SignUpSource = _.SignUpSource,
-                    Email = _.Email,
-                    CreatedAt = _.CreatedAt
-                })
-                .ToList();
+                .ProjectTo<EmailReminder>(_mapper.ConfigurationProvider)
+                .ToListAsync();
         }
     }
 }

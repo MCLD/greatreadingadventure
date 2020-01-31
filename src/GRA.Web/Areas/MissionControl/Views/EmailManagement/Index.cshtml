@@ -71,14 +71,11 @@
     </div>
 </div>
 
-@if (Model.IsAdmin)
-{
-    <div class="row" style="padding: 1rem 0;">
-        <div class="col-xs-12">
-            <a asp-action="@nameof(EmailManagementController.Addresses)" class="btn btn-default">Manage Email Reminders</a>
-        </div>
+<div class="row" style="padding: 1rem 0;">
+    <div class="col-xs-12">
+        <a asp-action="@nameof(EmailManagementController.Addresses)" class="btn btn-default">Manage Email Reminders</a>
     </div>
-}
+</div>
 
 <div class="row" style="padding: 1rem 0;">
     <div class="col-xs-12">

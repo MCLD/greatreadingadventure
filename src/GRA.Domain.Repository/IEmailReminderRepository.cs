@@ -8,7 +8,7 @@ namespace GRA.Domain.Repository
     public interface IEmailReminderRepository : IRepository<EmailReminder>
     {
         Task<bool> ExistsEmailSourceAsync(string emailAddress, string signUpSource);
-        IEnumerable GetDistinctSignUpSourceWithCount();
-        ICollection<EmailReminder> GetEmailsBySignUpSource(string signUpSource);
+        Task<ICollection<EmailReminder>> GetAllEmailRemindersAsync();
+        Task<ICollection<EmailReminder>> GetEmailRemindersBySignUpSource(string signUpSource);
     }
 }

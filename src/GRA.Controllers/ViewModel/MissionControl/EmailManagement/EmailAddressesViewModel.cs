@@ -10,8 +10,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.EmailManagement
     {
         public IFormFile UploadedFile { get; set; }
 
-        public bool IsAdmin { get; set; }
-
         public SelectList SignUpSources { get; set; }
 
         public string SignUpSource { get; set; }

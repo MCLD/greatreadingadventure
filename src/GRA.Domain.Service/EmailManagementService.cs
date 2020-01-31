@@ -198,14 +198,20 @@ namespace GRA.Domain.Service
             return subscribed;
         }
 
-        public IEnumerable GetSignUpSourcesWithCount()
+        public async Task<IEnumerable<EmailReminder>> GetAllEmailRemindersAsync()
         {
-            return _emailReminderRepository.GetDistinctSignUpSourceWithCount();
+            return await _emailReminderRepository.GetAllEmailRemindersAsync();
         }
 
-        public ICollection<EmailReminder> GetEmailRemindersBySignUpSource(string signUpSource)
+        public async Task<IEnumerable> GetEmailRemindersBySignUpSourceAsync(string signUpSource)
         {
-            return _emailReminderRepository.GetEmailsBySignUpSource(signUpSource);
+            return (await _emailReminderRepository.GetEmailRemindersBySignUpSource(signUpSource))
+                .Select(_ => new
+                {
+                    _.SignUpSource,
+                    _.Email,
+                    _.CreatedAt
+                });
         }
     }
 }
