@@ -22,8 +22,10 @@ namespace GRA.Controllers.MissionControl
         private const int PerformersPerPage = 15;
         private const int ProgramsPerPage = 15;
 
-        private static readonly DateTime DefaultPerformerScheduleStartTime = DateTime.Parse("8:00 AM");
-        private static readonly DateTime DefaultPerformerScheduleEndTime = DateTime.Parse("8:00 PM");
+        private static readonly DateTime DefaultPerformerScheduleStartTime
+            = DateTime.Parse("8:00 AM");
+        private static readonly DateTime DefaultPerformerScheduleEndTime
+            = DateTime.Parse("8:00 PM");
 
         private readonly ILogger<PerformerSchedulingController> _logger;
         private readonly PerformerSchedulingService _performerSchedulingService;
@@ -127,7 +129,8 @@ namespace GRA.Controllers.MissionControl
                 IsApproved = true
             };
 
-            var performerList = await _performerSchedulingService.GetPaginatedPerformerListAsync(filter);
+            var performerList
+                = await _performerSchedulingService.GetPaginatedPerformerListAsync(filter);
 
             var paginateModel = new PaginateViewModel
             {
@@ -244,7 +247,7 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(Index));
             }
 
-            var performer = new PsPerformer();
+            PsPerformer performer;
             try
             {
                 performer = await _performerSchedulingService.GetPerformerByIdAsync(id,
@@ -278,7 +281,8 @@ namespace GRA.Controllers.MissionControl
                 IsApproved = true
             };
 
-            var programList = await _performerSchedulingService.GetPaginatedProgramListAsync(filter);
+            var programList
+                = await _performerSchedulingService.GetPaginatedProgramListAsync(filter);
 
             var paginateModel = new PaginateViewModel
             {
@@ -322,7 +326,7 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(Index));
             }
 
-            var program = new PsProgram();
+            PsProgram program;
             try
             {
                 program = await _performerSchedulingService.GetProgramByIdAsync(id,
@@ -433,7 +437,7 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(Index));
             }
 
-            var program = new PsProgram();
+            PsProgram program;
             try
             {
                 program = await _performerSchedulingService.GetProgramByIdAsync(id,
@@ -474,7 +478,7 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(Index));
             }
 
-            var program = new PsProgram();
+            PsProgram program;
             try
             {
                 program = await _performerSchedulingService.GetProgramByIdAsync(
@@ -550,7 +554,12 @@ namespace GRA.Controllers.MissionControl
 
             try
             {
-                await _performerSchedulingService.AddBranchProgramSelectionAsync(branchSelection);
+                var addedBranchSelection = await _performerSchedulingService
+                    .AddBranchProgramSelectionAsync(branchSelection);
+
+                _logger.LogInformation("Program selection: {BranchSelectionId} added by user {UserId}",
+                    addedBranchSelection.Id,
+                    GetId(ClaimType.UserId));
             }
             catch (GraException gex)
             {
@@ -560,8 +569,6 @@ namespace GRA.Controllers.MissionControl
                     message = gex.Message
                 });
             }
-
-            _logger.LogInformation($"Selection {branchSelection.Id} added by user {GetId(ClaimType.UserId)}");
 
             ShowAlertSuccess("Program selection added!");
             return Json(new
@@ -573,7 +580,7 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.SchedulePerformers)]
         public async Task<JsonResult> GetProgramAvailableAgeGroupsAsync(int branchId, int programId)
         {
-            var program = new PsProgram();
+            PsProgram program;
             try
             {
                 program = await _performerSchedulingService.GetProgramByIdAsync(programId,
@@ -743,7 +750,7 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(Index));
             }
 
-            var kit = new PsKit();
+            PsKit kit;
             try
             {
                 kit = await _performerSchedulingService.GetKitByIdAsync(id, includeAgeGroups: true,
@@ -833,7 +840,7 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(Index));
             }
 
-            var kit = new PsKit();
+            PsKit kit;
             try
             {
                 kit = await _performerSchedulingService.GetKitByIdAsync(id, includeImages: true);
@@ -867,7 +874,11 @@ namespace GRA.Controllers.MissionControl
             {
                 addedBranchSelection = await _performerSchedulingService
                     .AddBranchKitSelectionAsync(branchSelection);
-                _logger.LogInformation($"Selection {addedBranchSelection.Id} added by user {GetId(ClaimType.UserId)}");
+
+                _logger.LogInformation("Kit selection: {BranchSelectionId} added by user {UserId}",
+                    addedBranchSelection.Id,
+                    GetId(ClaimType.UserId));
+
                 ShowAlertSuccess("Kit selection added!");
             }
             catch (GraException gex)
@@ -888,7 +899,7 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.SchedulePerformers)]
         public async Task<JsonResult> GetKitAvailableAgeGroupsAsync(int branchId, int kitId)
         {
-            var kit = new PsKit();
+            PsKit kit;
             try
             {
                 kit = await _performerSchedulingService.GetKitByIdAsync(kitId,
