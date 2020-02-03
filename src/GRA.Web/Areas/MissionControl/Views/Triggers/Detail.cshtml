@@ -187,402 +187,418 @@
         </div>
     }
 
-    <div class="col-xs-12 form-group-lg" style="margin-top: 2rem; margin-bottom: 2rem;">
-        <label asp-for="Trigger.Name" class="control-label col-sm-3"></label>
-        <div class="col-sm-9">
-            <input asp-for="Trigger.Name" class="form-control trigger-name-field" />
-            <span asp-validation-for="Trigger.Name" class="text-danger"></span>
-        </div>
-    </div>
+    @if (Model.Action == "Edit")
+    {
+<div style="font-size:large;">
+    Created By:
+    @if (Model.CanViewParticipants)
+    {
+        <a asp-controller="Participants" asp-action="@nameof(ParticipantsController.Detail)" asp-route-id="@Model.Trigger.CreatedBy" target="_blank">@Model.CreatedByName</a>
+    }
+    else
+    {
+        @Model.CreatedByName
+    }
+</div>
+    }
 
-    <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class=@(Model.IsSecretCode ? "active" : "")>
-            <a id="codeTab" href="#secretCode" aria-controls="secretCode" role="tab" data-toggle="tab">Secret Code</a>
-        </li>
-        <li role="presentation" class=@(Model.IsSecretCode ? "" : "active")>
-            <a id="requirementsTab" href="#requirements" aria-controls="requirements" role="tab" data-toggle="tab">Requirements</a>
-        </li>
-    </ul>
 
-    <div class="tab-content">
-        <div role="tabpanel" class="tab-pane @(Model.IsSecretCode ? "active" : "")" id="secretCode">
-            <div class="col-xs-12" style="margin-top: 1rem;">
-                <p>
-                    <strong>
-                        Choose a secret code to trigger this award. Don't choose something that is easy
-                        to guess!
-                    </strong>
-                </p>
-                <p>
-                    Secret codes must be less than 50 characters and can only contain letters and numbers.
-                    Upper-case and lower-case don't matter.
-                </p>
+        <div class="col-xs-12 form-group-lg" style="margin-top: 2rem; margin-bottom: 2rem;">
+            <label asp-for="Trigger.Name" class="control-label col-sm-3"></label>
+            <div class="col-sm-9">
+                <input asp-for="Trigger.Name" class="form-control trigger-name-field" />
+                <span asp-validation-for="Trigger.Name" class="text-danger"></span>
             </div>
-            <div class="col-xs-12 form-group-lg">
-                <label asp-for="Trigger.SecretCode" class="control-label col-sm-3"></label>
-                <div class="col-sm-9">
-                    <span id="SecretCode-Icon" style="float:left;margin-top:15px;" class="fa colored-icon hide"></span>
-                    <div style="margin-left:20px;">
-                        <input asp-for="Trigger.SecretCode" class="form-control" />
-                        <span id="SecretCode-Validation" asp-validation-for="Trigger.SecretCode" class="text-success"></span>
+        </div>
+
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class=@(Model.IsSecretCode ? "active" : "")>
+                <a id="codeTab" href="#secretCode" aria-controls="secretCode" role="tab" data-toggle="tab">Secret Code</a>
+            </li>
+            <li role="presentation" class=@(Model.IsSecretCode ? "" : "active")>
+                <a id="requirementsTab" href="#requirements" aria-controls="requirements" role="tab" data-toggle="tab">Requirements</a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane @(Model.IsSecretCode ? "active" : "")" id="secretCode">
+                <div class="col-xs-12" style="margin-top: 1rem;">
+                    <p>
+                        <strong>
+                            Choose a secret code to trigger this award. Don't choose something that is easy
+                            to guess!
+                        </strong>
+                    </p>
+                    <p>
+                        Secret codes must be less than 50 characters and can only contain letters and numbers.
+                        Upper-case and lower-case don't matter.
+                    </p>
+                </div>
+                <div class="col-xs-12 form-group-lg">
+                    <label asp-for="Trigger.SecretCode" class="control-label col-sm-3"></label>
+                    <div class="col-sm-9">
+                        <span id="SecretCode-Icon" style="float:left;margin-top:15px;" class="fa colored-icon hide"></span>
+                        <div style="margin-left:20px;">
+                            <input asp-for="Trigger.SecretCode" class="form-control" />
+                            <span id="SecretCode-Validation" asp-validation-for="Trigger.SecretCode" class="text-success"></span>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <br style="clear: both;" />
-        </div>
-
-        <div role="tabpanel" class="tab-pane @(Model.IsSecretCode ? "" : "active")" id="requirements">
-            <div class="col-xs-12" style="margin-top: 1rem;">
-                <p>
-                    <strong>
-                        You can trigger this award through a combination of requirements selected below.
-                    </strong>
-                </p>
-                <p>
-                    Participants will have to have all of the achievements you select in order to
-                    receive the award.
-                </p>
-                <span asp-validation-for="TriggerRequirements" style="font-weight:bold;"></span>
+                <br style="clear: both;" />
             </div>
 
-            <div class="col-xs-12 form-group">
-                <label asp-for="Trigger.Points" class="control-label col-sm-4"></label>
-                <div class="col-sm-8">
-                    <input asp-for="Trigger.Points" class="form-control" />
-                    <span asp-validation-for="Trigger.Points" class="text-danger"></span>
+            <div role="tabpanel" class="tab-pane @(Model.IsSecretCode ? "" : "active")" id="requirements">
+                <div class="col-xs-12" style="margin-top: 1rem;">
+                    <p>
+                        <strong>
+                            You can trigger this award through a combination of requirements selected below.
+                        </strong>
+                    </p>
+                    <p>
+                        Participants will have to have all of the achievements you select in order to
+                        receive the award.
+                    </p>
+                    <span asp-validation-for="TriggerRequirements" style="font-weight:bold;"></span>
                 </div>
-            </div>
 
-            <div class="col-xs-12 col-sm-10 col-sm-offset-1" style="margin-top: 2rem;">
-                <div class="panel panel-warning">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Require Challenges and Triggers</h3>
-                    </div>
-                    <div class="panel-body">
-
-                        <div class="form-inline" style="margin-bottom: 1em;">
-                            <p class="form-control-static"><strong>Participant must have earned</strong></p>
-                            <input asp-for="Trigger.ItemsRequired" class="form-control" min="0" />
-                            <p class="form-control-static"><strong>of the following:</strong></p>
-                            <span asp-validation-for="Trigger.ItemsRequired" class="text-danger" />
-                        </div>
-                        <div>
-
-                        </div>
-                        <div>
-                            <table class="table table-condensed table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th width="44px">Type</th>
-                                        <th width="75px">Badge</th>
-                                        <th width="44px">&nbsp;</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="requirementList">
-                                    <tr id="noRequirements" class="@(Model.TriggerRequirements?.Count > 0 ? "hide" : "")">
-                                        <td colspan="4"><em>No challenges or triggers required.</em></td>
-                                    </tr>
-                                    @if (Model.TriggerRequirements != null)
-                                    {
-                                        foreach (var requirement in Model.TriggerRequirements)
-                                        {
-                                            <tr>
-                                                <td>
-                                                    @requirement.Name
-                                                </td>
-                                                <td style="text-align:center;">
-                                                    <span class="fa fa-2x @requirement.Icon" title="@requirement.IconDescription"></span>
-                                                </td>
-                                                <td>
-                                                    @if (!string.IsNullOrWhiteSpace(requirement.BadgePath))
-                                                    {
-                                                        <img class="img-thumbnail" style="height: auto; width: 64px;"
-                                                             src="~/@requirement.BadgePath?@DateTime.Now.ToString("yyMMddHHmmss")"
-                                                             asp-append-version="true" />
-                                                    }
-                                                    else
-                                                    {
-                                                        <text>&nbsp;</text>
-                                                    }
-                                                </td>
-                                                <td>
-                                                    <button type="button"
-                                                            id="removeRequirementButton"
-                                                            class="btn btn-link btn-xs"
-                                                            data-badgeid="@requirement.BadgeId"
-                                                            data-challengeid="@requirement.ChallengeId">
-                                                        <span class="fa fa-2x fa-minus-circle text-danger" aria-hidden="true"></span>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        }
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                        <button type="button" id="addButton" class="btn btn-warning">Add Challenges or Triggers</button>
+                <div class="col-xs-12 form-group">
+                    <label asp-for="Trigger.Points" class="control-label col-sm-4"></label>
+                    <div class="col-sm-8">
+                        <input asp-for="Trigger.Points" class="form-control" />
+                        <span asp-validation-for="Trigger.Points" class="text-danger"></span>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-xs-12 form-group">
-                <label asp-for="Trigger.LimitToSystemId" class="control-label col-sm-4"></label>
-                <div class="col-sm-8">
-                    <select asp-for="Trigger.LimitToSystemId" asp-items="Model.SystemList" class="form-control">
-                        <option value="">No</option>
-                    </select>
-                    <span asp-validation-for="Trigger.LimitToSystemId" class="text-danger"></span>
-                </div>
-            </div>
-
-            <div class="col-xs-12 form-group">
-                <label asp-for="Trigger.LimitToBranchId" class="control-label col-sm-4"></label>
-                <div class="col-sm-8">
-                    <select asp-for="Trigger.LimitToBranchId" asp-items="Model.BranchList" class="form-control">
-                        <option value="">No</option>
-                    </select>
-                    <span asp-validation-for="Trigger.LimitToBranchId" class="text-danger"></span>
-                </div>
-            </div>
-
-            <div class="col-xs-12 form-group">
-                <label asp-for="Trigger.LimitToProgramId" class="control-label col-sm-4"></label>
-                <div class="col-sm-8">
-                    <select asp-for="Trigger.LimitToProgramId" asp-items="Model.ProgramList" class="form-control">
-                        <option value="">No</option>
-                    </select>
-                    <span asp-validation-for="Trigger.LimitToProgramId" class="text-danger"></span>
-                </div>
-            </div>
-            <br style="clear: both;" />
-        </div>
-    </div>
-
-    <div class="row row-spacing">
-        <div class="col-xs-12">
-            <label asp-for="Trigger.ActivationDate" class="control-label"></label>
-            <div class="input-group date" id="activationDatePicker">
-                <span class="input-group-addon">
-                    <span class="fa fa-calendar"></span>
-                </span>
-                <input asp-for="Trigger.ActivationDate" type="text" class="form-control" />
-            </div>
-            <span asp-validation-for="Trigger.ActivationDate" class="text-danger"></span>
-        </div>
-    </div>
-
-    <div class="panel panel-primary" style="margin-top: 2rem;">
-        <div class="panel-heading">
-            <h3 class="panel-title">Awards</h3>
-        </div>
-        <div class="panel-body">
-            <div class="col-xs-12 form-group">
-                <label asp-for="Trigger.AwardMessage" class="control-label col-sm-3"></label>
-                <div class="col-sm-9">
-                    <textarea asp-for="Trigger.AwardMessage" class="form-control"></textarea>
-                    <span asp-validation-for="Trigger.AwardMessage" class="text-danger"></span>
-                </div>
-            </div>
-
-            <div class="col-xs-12 form-group">
-                <label asp-for="Trigger.AwardPoints" class="control-label col-sm-3"></label>
-                <div class="col-sm-9">
-                    <input asp-for="Trigger.AwardPoints" value="@(Model.Trigger?.AwardPoints ?? 0)" min="0" class="form-control" />
-                    <span asp-validation-for="Trigger.AwardPoints" class="text-danger"></span>
-                </div>
-            </div>
-
-
-            <div class="row row-spacing">
-                <div class="col-xs-12">
-                    @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
-                    {
-                        <label class="control-label">Edit Badge</label>
-                    }
-                    else
-                    {
-                        <label class="control-label">Award Badge</label>
-                    }
-                </div>
-
-                <div class="col-xs-12 col-sm-4 col-md-3">
-                    @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
-                    {
-                        <input asp-for="BadgePath" type="hidden" />
-                        <img id="badgeImage" class="img-thumbnail badge-lg"
-                             src="~/@Model.BadgePath?@DateTime.Now.ToString("yyMMddHHmmss")"
-                             asp-append-version="true" />
-                    }
-                    else
-                    {
-                        <img id="badgeImage" class="img-thumbnail badge-lg" src="@Model.BadgeMakerImage" style="height:210px;" />
-                    }
-                    <span asp-validation-for="BadgePath" class="text-danger" style="display:block;"></span>
-                </div>
-
-                <div class="col-xs-12 col-sm-8 col-md-9">
-                    <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" class=@(Model.UseBadgeMaker ? "active" : "")>
-                            <a id="badgeTab" href="#badge" aria-controls="badge" role="tab" data-toggle="tab">Badge Maker</a>
-                        </li>
-                        <li role="presentation" class=@(Model.UseBadgeMaker ? "" : "active")>
-                            <a id="uploadTab" href="#upload" aria-controls="upload" role="tab" data-toggle="tab">Upload an Image</a>
-                        </li>
-                    </ul>
-
-                    <div class="tab-content">
-                        <div role="tabpanel" class="tab-pane @(Model.UseBadgeMaker ? "active" : "")" id="badge">
-                            <button id="openMaker" type="button" class="btn btn-default">
-                                <span class="fa fa-certificate"></span> Create a Badge
-                            </button>
+                <div class="col-xs-12 col-sm-10 col-sm-offset-1" style="margin-top: 2rem;">
+                    <div class="panel panel-warning">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Require Challenges and Triggers</h3>
                         </div>
-                        <div role="tabpanel" class="tab-pane @(Model.UseBadgeMaker ? "" : "active")" id="upload">
-                            <div class="input-group">
-                                <label class="input-group-btn">
-                                    <span class="btn btn-default btn-file">
-                                        <span class="fa fa-file-image-o"></span> Select an image<input type="file" asp-for="BadgeUploadImage" accept=".png,.jpg,.jpeg" style="display: none;" />
-                                    </span>
-                                </label>
-                                <input type="text" class="form-control" readonly id="selectedFile">
+                        <div class="panel-body">
+
+                            <div class="form-inline" style="margin-bottom: 1em;">
+                                <p class="form-control-static"><strong>Participant must have earned</strong></p>
+                                <input asp-for="Trigger.ItemsRequired" class="form-control" min="0" />
+                                <p class="form-control-static"><strong>of the following:</strong></p>
+                                <span asp-validation-for="Trigger.ItemsRequired" class="text-danger" />
                             </div>
                             <div>
-                                <span asp-validation-for="BadgeUploadImage" class="text-danger"></span>
+
                             </div>
+                            <div>
+                                <table class="table table-condensed table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th width="44px">Type</th>
+                                            <th width="75px">Badge</th>
+                                            <th width="44px">&nbsp;</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="requirementList">
+                                        <tr id="noRequirements" class="@(Model.TriggerRequirements?.Count > 0 ? "hide" : "")">
+                                            <td colspan="4"><em>No challenges or triggers required.</em></td>
+                                        </tr>
+                                        @if (Model.TriggerRequirements != null)
+                                        {
+                                            foreach (var requirement in Model.TriggerRequirements)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @requirement.Name
+                                                    </td>
+                                                    <td style="text-align:center;">
+                                                        <span class="fa fa-2x @requirement.Icon" title="@requirement.IconDescription"></span>
+                                                    </td>
+                                                    <td>
+                                                        @if (!string.IsNullOrWhiteSpace(requirement.BadgePath))
+                                                        {
+                                                            <img class="img-thumbnail" style="height: auto; width: 64px;"
+                                                                 src="~/@requirement.BadgePath?@DateTime.Now.ToString("yyMMddHHmmss")"
+                                                                 asp-append-version="true" />
+                                                        }
+                                                        else
+                                                        {
+                                                            <text>&nbsp;</text>
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        <button type="button"
+                                                                id="removeRequirementButton"
+                                                                class="btn btn-link btn-xs"
+                                                                data-badgeid="@requirement.BadgeId"
+                                                                data-challengeid="@requirement.ChallengeId">
+                                                            <span class="fa fa-2x fa-minus-circle text-danger" aria-hidden="true"></span>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <button type="button" id="addButton" class="btn btn-warning">Add Challenges or Triggers</button>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
 
-    @if (Model.EditVendorCode || Model.Trigger?.AwardVendorCodeTypeId != null)
-    {
-        if (!string.IsNullOrWhiteSpace(Model.VendorCodeType) || Model.VendorCodeTypeList.Count() > 0)
-        {
-            <div class="row row-spacing">
-                <div class="col-xs-12">
-                    <label asp-for="Trigger.AwardVendorCodeTypeId" class="control-label"></label>
-                    @if (Model.EditVendorCode)
-                    {
-                        <select asp-for="Trigger.AwardVendorCodeTypeId" asp-items="Model.VendorCodeTypeList" class="form-control">
+                <div class="col-xs-12 form-group">
+                    <label asp-for="Trigger.LimitToSystemId" class="control-label col-sm-4"></label>
+                    <div class="col-sm-8">
+                        <select asp-for="Trigger.LimitToSystemId" asp-items="Model.SystemList" class="form-control">
                             <option value="">No</option>
                         </select>
-                    }
-                    else
-                    {
-                        <input asp-for="VendorCodeType" class="form-control" readonly />
-                    }
-                    <span asp-validation-for="Trigger.AwardVendorCodeTypeId" class="text-danger"></span>
+                        <span asp-validation-for="Trigger.LimitToSystemId" class="text-danger"></span>
+                    </div>
                 </div>
-            </div>
-        }
-    }
 
-    @if (Model.EditAvatarBundle || Model.Trigger?.AwardAvatarBundleId != null)
-    {
-        if (!string.IsNullOrWhiteSpace(Model.UnlockableAvatarBundle) || Model.UnlockableAvatarBundleList.Count() > 0)
-        {
-            <div class="row row-spacing">
-                <div class="col-xs-12">
-                    <label asp-for="Trigger.AwardAvatarBundleId" class="control-label"></label>
-                    @if (Model.EditAvatarBundle)
-                    {
-                        <select asp-for="Trigger.AwardAvatarBundleId" asp-items="Model.UnlockableAvatarBundleList" class="form-control">
+                <div class="col-xs-12 form-group">
+                    <label asp-for="Trigger.LimitToBranchId" class="control-label col-sm-4"></label>
+                    <div class="col-sm-8">
+                        <select asp-for="Trigger.LimitToBranchId" asp-items="Model.BranchList" class="form-control">
                             <option value="">No</option>
                         </select>
-                    }
-                    else
-                    {
-                        <input asp-for="UnlockableAvatarBundle" class="form-control" readonly />
-                    }
-                    <span asp-validation-for="Trigger.AwardAvatarBundleId" class="text-danger"></span>
+                        <span asp-validation-for="Trigger.LimitToBranchId" class="text-danger"></span>
+                    </div>
                 </div>
-            </div>
-        }
-    }
 
-    <div class="panel-group" id="accordionPrize" role="tablist" aria-multiselectable="true">
-        <div class="panel panel-info">
-            <div class="panel-heading" role="tab" id="headingPrize">
-                <h4 class="panel-title">
-                    <a role="button" data-toggle="collapse" data-parent="#accordionPrize" href="#collapsePrize" aria-expanded="true" aria-controls="collapsePrize">
-                        <span id="prizeIcon" class="fa fa-lg @(Model.AwardsPrize ? "fa-caret-down" : "fa-caret-right")"></span>
-                        Award Prize
-                    </a>
-                </h4>
-            </div>
-            <div id="collapsePrize" class="panel-collapse collapse @(Model.AwardsPrize ? "in" : "")" role="tabpanel" aria-labelledby="headingPrize">
-                <div class="panel-body">
-                    <div class="row row-spacing">
-                        <div class="col-xs-12">
-                            <label asp-for="Trigger.AwardPrizeName" class="control-label"></label>
-                            <input asp-for="Trigger.AwardPrizeName" class="form-control" />
-                            <span asp-validation-for="Trigger.AwardPrizeName" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="row row-spacing">
-                        <div class="col-xs-12">
-                            <label asp-for="Trigger.AwardPrizeRedemptionInstructions" class="control-label"></label>
-                            <textarea asp-for="Trigger.AwardPrizeRedemptionInstructions" class="form-control"></textarea>
-                            <span asp-validation-for="Trigger.AwardPrizeRedemptionInstructions" class="text-danger"></span>
-                        </div>
+                <div class="col-xs-12 form-group">
+                    <label asp-for="Trigger.LimitToProgramId" class="control-label col-sm-4"></label>
+                    <div class="col-sm-8">
+                        <select asp-for="Trigger.LimitToProgramId" asp-items="Model.ProgramList" class="form-control">
+                            <option value="">No</option>
+                        </select>
+                        <span asp-validation-for="Trigger.LimitToProgramId" class="text-danger"></span>
                     </div>
                 </div>
+                <br style="clear: both;" />
             </div>
         </div>
-    </div>
 
-    @if (Model.EditMail || Model.AwardsMail)
-    {
-        <div class="panel-group" id="accordionMail" role="tablist" aria-multiselectable="true">
-            <div class="panel panel-info">
-                <div class="panel-heading" role="tab" id="headingMail">
-                    <h4 class="panel-title">
-                        @if (Model.EditMail)
+        <div class="row row-spacing">
+            <div class="col-xs-12">
+                <label asp-for="Trigger.ActivationDate" class="control-label"></label>
+                <div class="input-group date" id="activationDatePicker">
+                    <span class="input-group-addon">
+                        <span class="fa fa-calendar"></span>
+                    </span>
+                    <input asp-for="Trigger.ActivationDate" type="text" class="form-control" />
+                </div>
+                <span asp-validation-for="Trigger.ActivationDate" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="panel panel-primary" style="margin-top: 2rem;">
+            <div class="panel-heading">
+                <h3 class="panel-title">Awards</h3>
+            </div>
+            <div class="panel-body">
+                <div class="col-xs-12 form-group">
+                    <label asp-for="Trigger.AwardMessage" class="control-label col-sm-3"></label>
+                    <div class="col-sm-9">
+                        <textarea asp-for="Trigger.AwardMessage" class="form-control"></textarea>
+                        <span asp-validation-for="Trigger.AwardMessage" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 form-group">
+                    <label asp-for="Trigger.AwardPoints" class="control-label col-sm-3"></label>
+                    <div class="col-sm-9">
+                        <input asp-for="Trigger.AwardPoints" value="@(Model.Trigger?.AwardPoints ?? 0)" min="0" class="form-control" />
+                        <span asp-validation-for="Trigger.AwardPoints" class="text-danger"></span>
+                    </div>
+                </div>
+
+
+                <div class="row row-spacing">
+                    <div class="col-xs-12">
+                        @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
                         {
-                            <a role="button" data-toggle="collapse" data-parent="#accordionMail" href="#collapseMail" aria-expanded="true" aria-controls="collapseMail">
-                                <span id="mailIcon" class="fa fa-lg @(Model.AwardsMail ? "fa-caret-down" : "fa-caret-right")"></span>
-                                Award Mail
-                            </a>
+                            <label class="control-label">Edit Badge</label>
                         }
                         else
                         {
-                            @:Award Mail
+                            <label class="control-label">Award Badge</label>
                         }
-                    </h4>
-                </div>
-                <div id="collapseMail" class="panel-collapse collapse @(Model.AwardsMail ? "in" : "")" role="tabpanel" aria-labelledby="headingMail">
-                    <div class="panel-body">
-                        <div class="row row-spacing">
-                            <div class="col-xs-12">
-                                <label asp-for="Trigger.AwardMailSubject" class="control-label"></label>
-                                <input asp-for="Trigger.AwardMailSubject" class="form-control" asp-readonly="@(!Model.EditMail)" />
-                                <span asp-validation-for="Trigger.AwardMailSubject" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-4 col-md-3">
+                        @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
+                        {
+                            <input asp-for="BadgePath" type="hidden" />
+                            <img id="badgeImage" class="img-thumbnail badge-lg"
+                                 src="~/@Model.BadgePath?@DateTime.Now.ToString("yyMMddHHmmss")"
+                                 asp-append-version="true" />
+                        }
+                        else
+                        {
+                            <img id="badgeImage" class="img-thumbnail badge-lg" src="@Model.BadgeMakerImage" style="height:210px;" />
+                        }
+                        <span asp-validation-for="BadgePath" class="text-danger" style="display:block;"></span>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-8 col-md-9">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class=@(Model.UseBadgeMaker ? "active" : "")>
+                                <a id="badgeTab" href="#badge" aria-controls="badge" role="tab" data-toggle="tab">Badge Maker</a>
+                            </li>
+                            <li role="presentation" class=@(Model.UseBadgeMaker ? "" : "active")>
+                                <a id="uploadTab" href="#upload" aria-controls="upload" role="tab" data-toggle="tab">Upload an Image</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane @(Model.UseBadgeMaker ? "active" : "")" id="badge">
+                                <button id="openMaker" type="button" class="btn btn-default">
+                                    <span class="fa fa-certificate"></span> Create a Badge
+                                </button>
                             </div>
-                        </div>
-                        <div class="row row-spacing">
-                            <div class="col-xs-12">
-                                <label asp-for="Trigger.AwardMail" class="control-label"></label>
-                                <textarea asp-for="Trigger.AwardMail" class="form-control" asp-readonly="@(!Model.EditMail)"></textarea>
-                                <span asp-validation-for="Trigger.AwardMail" class="text-danger"></span>
+                            <div role="tabpanel" class="tab-pane @(Model.UseBadgeMaker ? "" : "active")" id="upload">
+                                <div class="input-group">
+                                    <label class="input-group-btn">
+                                        <span class="btn btn-default btn-file">
+                                            <span class="fa fa-file-image-o"></span> Select an image<input type="file" asp-for="BadgeUploadImage" accept=".png,.jpg,.jpeg" style="display: none;" />
+                                        </span>
+                                    </label>
+                                    <input type="text" class="form-control" readonly id="selectedFile">
+                                </div>
+                                <div>
+                                    <span asp-validation-for="BadgeUploadImage" class="text-danger"></span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    }
+
+        @if (Model.EditVendorCode || Model.Trigger?.AwardVendorCodeTypeId != null)
+        {
+            if (!string.IsNullOrWhiteSpace(Model.VendorCodeType) || Model.VendorCodeTypeList.Count() > 0)
+            {
+                <div class="row row-spacing">
+                    <div class="col-xs-12">
+                        <label asp-for="Trigger.AwardVendorCodeTypeId" class="control-label"></label>
+                        @if (Model.EditVendorCode)
+                        {
+                            <select asp-for="Trigger.AwardVendorCodeTypeId" asp-items="Model.VendorCodeTypeList" class="form-control">
+                                <option value="">No</option>
+                            </select>
+                        }
+                        else
+                        {
+                            <input asp-for="VendorCodeType" class="form-control" readonly />
+                        }
+                        <span asp-validation-for="Trigger.AwardVendorCodeTypeId" class="text-danger"></span>
+                    </div>
+                </div>
+            }
+        }
+
+        @if (Model.EditAvatarBundle || Model.Trigger?.AwardAvatarBundleId != null)
+        {
+            if (!string.IsNullOrWhiteSpace(Model.UnlockableAvatarBundle) || Model.UnlockableAvatarBundleList.Count() > 0)
+            {
+                <div class="row row-spacing">
+                    <div class="col-xs-12">
+                        <label asp-for="Trigger.AwardAvatarBundleId" class="control-label"></label>
+                        @if (Model.EditAvatarBundle)
+                        {
+                            <select asp-for="Trigger.AwardAvatarBundleId" asp-items="Model.UnlockableAvatarBundleList" class="form-control">
+                                <option value="">No</option>
+                            </select>
+                        }
+                        else
+                        {
+                            <input asp-for="UnlockableAvatarBundle" class="form-control" readonly />
+                        }
+                        <span asp-validation-for="Trigger.AwardAvatarBundleId" class="text-danger"></span>
+                    </div>
+                </div>
+            }
+        }
+
+        <div class="panel-group" id="accordionPrize" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-info">
+                <div class="panel-heading" role="tab" id="headingPrize">
+                    <h4 class="panel-title">
+                        <a role="button" data-toggle="collapse" data-parent="#accordionPrize" href="#collapsePrize" aria-expanded="true" aria-controls="collapsePrize">
+                            <span id="prizeIcon" class="fa fa-lg @(Model.AwardsPrize ? "fa-caret-down" : "fa-caret-right")"></span>
+                            Award Prize
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapsePrize" class="panel-collapse collapse @(Model.AwardsPrize ? "in" : "")" role="tabpanel" aria-labelledby="headingPrize">
+                    <div class="panel-body">
+                        <div class="row row-spacing">
+                            <div class="col-xs-12">
+                                <label asp-for="Trigger.AwardPrizeName" class="control-label"></label>
+                                <input asp-for="Trigger.AwardPrizeName" class="form-control" />
+                                <span asp-validation-for="Trigger.AwardPrizeName" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="row row-spacing">
+                            <div class="col-xs-12">
+                                <label asp-for="Trigger.AwardPrizeRedemptionInstructions" class="control-label"></label>
+                                <textarea asp-for="Trigger.AwardPrizeRedemptionInstructions" class="form-control"></textarea>
+                                <span asp-validation-for="Trigger.AwardPrizeRedemptionInstructions" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (Model.EditMail || Model.AwardsMail)
+        {
+            <div class="panel-group" id="accordionMail" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-info">
+                    <div class="panel-heading" role="tab" id="headingMail">
+                        <h4 class="panel-title">
+                            @if (Model.EditMail)
+                            {
+                                <a role="button" data-toggle="collapse" data-parent="#accordionMail" href="#collapseMail" aria-expanded="true" aria-controls="collapseMail">
+                                    <span id="mailIcon" class="fa fa-lg @(Model.AwardsMail ? "fa-caret-down" : "fa-caret-right")"></span>
+                                    Award Mail
+                                </a>
+                            }
+                            else
+                            {
+                                @:Award Mail
+                            }
+                        </h4>
+                    </div>
+                    <div id="collapseMail" class="panel-collapse collapse @(Model.AwardsMail ? "in" : "")" role="tabpanel" aria-labelledby="headingMail">
+                        <div class="panel-body">
+                            <div class="row row-spacing">
+                                <div class="col-xs-12">
+                                    <label asp-for="Trigger.AwardMailSubject" class="control-label"></label>
+                                    <input asp-for="Trigger.AwardMailSubject" class="form-control" asp-readonly="@(!Model.EditMail)" />
+                                    <span asp-validation-for="Trigger.AwardMailSubject" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row row-spacing">
+                                <div class="col-xs-12">
+                                    <label asp-for="Trigger.AwardMail" class="control-label"></label>
+                                    <textarea asp-for="Trigger.AwardMail" class="form-control" asp-readonly="@(!Model.EditMail)"></textarea>
+                                    <span asp-validation-for="Trigger.AwardMail" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
 
 
-    <div class="form-group">
-        <a asp-action="Index" class="btn btn-default">Return to List</a>
-        <button type="submit" class="btn btn-primary">
-            <span class="buttonText">@(Model.Action == "Edit" ? "Save" : Model.Action) Trigger</span>
-            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-        </button>
-    </div>
-</form>
+        <div class="form-group">
+            <a asp-action="Index" class="btn btn-default">Return to List</a>
+            <button type="submit" class="btn btn-primary">
+                <span class="buttonText">@(Model.Action == "Edit" ? "Save" : Model.Action) Trigger</span>
+                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+            </button>
+        </div>
+    </form>
 
 @section scripts
     {

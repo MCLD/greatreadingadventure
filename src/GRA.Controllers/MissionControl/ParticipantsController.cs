@@ -2170,7 +2170,17 @@ namespace GRA.Controllers.MissionControl
                             page = paginateModel.LastPage ?? 1
                         });
                 }
-
+                foreach (var prize in prizeList.Data.ToList())
+                {
+                    if (prize.RedeemedByBranch.HasValue)
+                    {
+                        prize.RedeemedBranch = await _siteService.GetBranchByIdAsync(prize.RedeemedByBranch.Value);
+                    }
+                    if (prize.RedeemedBySystem.HasValue)
+                    {
+                        prize.RedeemedSystem = await _siteService.GetSystemByIdAsync(prize.RedeemedBySystem.Value);
+                    }
+                }
                 var user = await _userService.GetDetails(id);
                 SetPageTitle(user);
 

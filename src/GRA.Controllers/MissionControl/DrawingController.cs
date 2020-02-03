@@ -22,16 +22,19 @@ namespace GRA.Controllers.MissionControl
         private readonly DrawingService _drawingService;
         private readonly PrizeWinnerService _prizeWinnerService;
         private readonly SiteService _siteService;
+        private readonly UserService _userService;
         public DrawingController(ILogger<DrawingController> logger,
             ServiceFacade.Controller context,
             DrawingService drawingService,
             PrizeWinnerService prizeWinnerService,
-            SiteService siteService) : base(context)
+            SiteService siteService,
+            UserService userService) : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
             _drawingService = Require.IsNotNull(drawingService, nameof(drawingService));
             _prizeWinnerService = Require.IsNotNull(prizeWinnerService, nameof(prizeWinnerService));
             _siteService = Require.IsNotNull(siteService, nameof(siteService));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             PageTitle = "Drawing";
         }
 
@@ -190,6 +193,8 @@ namespace GRA.Controllers.MissionControl
                 DrawingDetailViewModel viewModel = new DrawingDetailViewModel()
                 {
                     Drawing = drawing.Data,
+                    CreatedByName = await _userService.GetUsersNameByIdAsync(drawing.Data.CreatedBy),
+                    CanViewParticipants = UserHasPermission(Permission.ViewParticipantDetails),
                     PaginateModel = paginateModel
                 };
 
@@ -507,6 +512,8 @@ namespace GRA.Controllers.MissionControl
                 CriterionDetailViewModel viewModel = new CriterionDetailViewModel()
                 {
                     Criterion = criterion,
+                    CreatedByName = await _userService.GetUsersNameByIdAsync(criterion.CreatedBy),
+                    CanViewParticipants = UserHasPermission(Permission.ViewParticipantDetails),
                     SystemList = new SelectList((await _siteService.GetSystemList()), "Id", "Name"),
                     ProgramList = new SelectList(programs, "Id", "Name"),
                     EligibleCount = await _drawingService.GetEligibleCountAsync(id),

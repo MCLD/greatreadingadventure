@@ -17,6 +17,8 @@
                             <th>Redeemed?</th>
                             <th>Prize</th>
                             <th>Redemption Instructions</th>
+                            <th>System</th>
+                            <th>Branch</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -54,6 +56,14 @@
                                 </td>
                                 <td>@prizeWinner.PrizeName</td>
                                 <td>@prizeWinner.PrizeRedemptionInstructions</td>
+                                <td>
+                                    @if (prizeWinner.RedeemedBySystem.HasValue)
+                                    {@prizeWinner.RedeemedSystem.Name}
+                                </td>
+                                <td>
+                                    @if (prizeWinner.RedeemedByBranch.HasValue)
+                                    {@prizeWinner.RedeemedBranch.Name}
+                                </td>
                             </tr>
                         }
                     </tbody>
