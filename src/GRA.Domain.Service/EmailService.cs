@@ -108,9 +108,6 @@ namespace GRA.Domain.Service
                     emailName: user.FullName,
                     providedFromName: template.FromName,
                     providedFromEmail: template.FromAddress);
-
-                template.EmailsSent++;
-                await _emailTemplateRepository.UpdateSaveNoAuditAsync(template);
             }
             else
             {
