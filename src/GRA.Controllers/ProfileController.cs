@@ -30,6 +30,7 @@ namespace GRA.Controllers
         private readonly ActivityService _activityService;
         private readonly AuthenticationService _authenticationService;
         private readonly AvatarService _avatarService;
+        private readonly BadgeService _badgeService;
         private readonly DailyLiteracyTipService _dailyLiteracyTipService;
         private readonly MailService _mailService;
         private readonly PointTranslationService _pointTranslationService;
@@ -48,6 +49,7 @@ namespace GRA.Controllers
             ActivityService activityService,
             AuthenticationService authenticationService,
             AvatarService avatarService,
+            BadgeService badgeService,
             DailyLiteracyTipService dailyLiteracyTipService,
             MailService mailService,
             PointTranslationService pointTranslationService,
@@ -65,6 +67,8 @@ namespace GRA.Controllers
                 ?? throw new ArgumentNullException(nameof(authenticationService));
             _avatarService = avatarService
                 ?? throw new ArgumentNullException(nameof(avatarService));
+            _badgeService = badgeService
+                ?? throw new ArgumentNullException(nameof(badgeService));
             _dailyLiteracyTipService = dailyLiteracyTipService
                 ?? throw new ArgumentNullException(nameof(dailyLiteracyTipService));
             _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
@@ -1489,6 +1493,46 @@ namespace GRA.Controllers
             model.MemberUsername = memberUsername;
             model.HouseholdTitle = HouseholdTitle;
             return View("HouseholdRemove", model);
+        }
+
+        public async Task<IActionResult> Badges(string sort, int page = 1)
+        {
+            const int take = 18;
+            int skip = take * (page - 1);
+            User user = await _userService.GetDetails(GetActiveUserId());
+            var badges = await _userService.GetPaginatedBadges(user.Id, skip, take);
+            var paginateModel = new PaginateViewModel
+            {
+                ItemCount = badges.Count,
+                CurrentPage = page,
+                ItemsPerPage = take
+            };
+            if (paginateModel.PastMaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
+            }
+            var history = await _userService
+                .GetPaginatedUserHistoryAsync(user.Id, null, null);
+            var userLogs = history.Data.Where(_=>_.BadgeId != null && !_.IsDeleted).ToList();
+            foreach (var log in history.Data)
+            {
+                log.BadgeFilename = _pathResolver.ResolveContentPath(log.BadgeFilename);
+            }
+            var viewModel = new BadgeListViewModel
+            {
+                UserLogs = userLogs,
+                Badges = badges.Data,
+                PaginateModel = paginateModel,
+                HouseholdCount = await _userService
+                    .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? user.Id),
+                HasAccount = !string.IsNullOrWhiteSpace(user.Username)
+            };
+
+            return View(viewModel);
         }
     }
 }

@@ -17,17 +17,19 @@ namespace GRA.Data.Repository
         {
         }
 
-        public async Task<IEnumerable<UserLog>> PageHistoryAsync(int userId, int skip, int take)
+        public async Task<IEnumerable<UserLog>> PageHistoryAsync(int userId, int? skip, int? take)
         {
             var userLogs = await DbSet
                .AsNoTracking()
                .Where(_ => _.UserId == userId
                       && !_.IsDeleted)
                .OrderBy(_ => _.CreatedAt)
-               .Skip(skip)
-               .Take(take)
                .ProjectTo<UserLog>(_mapper.ConfigurationProvider)
                .ToListAsync();
+            if (skip.HasValue && take.HasValue)
+            {
+                userLogs = userLogs.Skip(skip.Value).Take(take.Value).ToList();
+            }
 
             foreach (var userLog in userLogs)
             {

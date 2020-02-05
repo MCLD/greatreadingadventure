@@ -44,6 +44,9 @@ namespace GRA.Controllers
             PageTitle = _sharedLocalizer[Annotations.Title.Challenges];
         }
 
+        public static string Name { get { return "Challenges"; } }
+
+
         public async Task<IActionResult> Index(string Search = null,
             int? Program = null,
             string Categories = null,

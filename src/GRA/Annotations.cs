@@ -83,6 +83,7 @@
             public const string BackToEventsCommunityExperiences = "Back to Events & Community Experiences";
             public const string BackToMailbox = "Back to Mailbox";
             public const string Badge = "Badge";
+            public const string Badges = "Badges";
             public const string BookList = "Book List";
             public const string Cancel = "Cancel";
             public const string ChangePassword = "Change Password";

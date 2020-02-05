@@ -7,7 +7,7 @@ namespace GRA.Domain.Repository
 {
     public interface IUserLogRepository : IRepository<Model.UserLog>
     {
-        Task<IEnumerable<Model.UserLog>> PageHistoryAsync(int userId, int skip, int take);
+        Task<IEnumerable<Model.UserLog>> PageHistoryAsync(int userId, int? skip, int? take);
         Task<int> GetHistoryItemCountAsync(int userId);
         Task<long> CompletedChallengeCountAsync(ReportCriterion request, int? challengeId = null);
         Task<long> PointsEarnedTotalAsync(ReportCriterion request);

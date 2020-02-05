@@ -534,8 +534,8 @@ namespace GRA.Domain.Service
 
         public async Task<DataWithCount<IEnumerable<UserLog>>>
             GetPaginatedUserHistoryAsync(int userId,
-            int skip,
-            int take)
+            int? skip,
+            int? take)
         {
             int requestedByUserId = GetActiveUserId();
             if (requestedByUserId == userId
