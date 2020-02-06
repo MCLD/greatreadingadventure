@@ -51,8 +51,11 @@ namespace GRA.Domain.Service
             int count;
 
             filter.SiteId = GetCurrentSiteId();
-
-            if (isMissionControl)
+            if (GetAuthUser().Identity.IsAuthenticated)
+            {
+                filter.FavoritesUserId = GetActiveUserId();
+            }
+                if (isMissionControl)
             {
                 VerifyPermission(Permission.ManageEvents);
                 data = await _eventRepository.PageAsync(filter);
@@ -65,7 +68,6 @@ namespace GRA.Domain.Service
                 data = await _eventRepository.PageAsync(filter);
                 count = await _eventRepository.CountAsync(filter);
             }
-
             return new DataWithCount<IEnumerable<Event>>
             {
                 Data = data,

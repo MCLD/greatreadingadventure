@@ -60,6 +60,8 @@ namespace GRA.Data
                 .HasKey(_ => new { _.UserId, _.ChallengeTaskId });
             modelBuilder.Entity<Model.UserFavoriteChallenge>()
                 .HasKey(_ => new { _.UserId, _.ChallengeId });
+            modelBuilder.Entity<Model.UserFavoriteEvent>()
+                .HasKey(_ => new { _.UserId, _.EventId });
             modelBuilder.Entity<Model.UserQuestionnaire>()
                 .HasKey(_ => new { _.UserId, _.QuestionnaireId });
             modelBuilder.Entity<Model.UserRole>()
@@ -224,6 +226,7 @@ namespace GRA.Data
         public DbSet<Model.UserBook> UserBooks { get; set; }
         public DbSet<Model.UserChallengeTask> UserChallengeTasks { get; set; }
         public DbSet<Model.UserFavoriteChallenge> UserFavoriteChallenges { get; set; }
+        public DbSet<Model.UserFavoriteEvent> UserFavoriteEvents { get; set; }
         public DbSet<Model.UserLog> UserLogs { get; set; }
         public DbSet<Model.UserQuestionnaire> UserQuestionnaires { get; set; }
         public DbSet<Model.UserRole> UserRoles { get; set; }

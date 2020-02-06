@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.Events;
@@ -9,25 +10,34 @@ using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
 using GRA.Domain.Service.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
 
 namespace GRA.Controllers
 {
     public class EventsController : Base.UserController
     {
+        private readonly ILogger<EventsController> _logger;
+        private readonly ActivityService _activityService;
         private readonly EventService _eventService;
         private readonly SiteService _siteService;
         private readonly SpatialService _spatialService;
         private readonly UserService _userService;
 
-        public EventsController(ServiceFacade.Controller context,
+        public EventsController(ILogger<EventsController> logger,
+            ServiceFacade.Controller context,
+            ActivityService activityService,
             EventService eventService,
             SiteService siteService,
             SpatialService spatialService,
             UserService userService)
             : base(context)
         {
+            _logger = Require.IsNotNull(logger, nameof(logger));
+            _activityService = activityService
+                ?? throw new ArgumentNullException(nameof(activityService));
             _eventService = Require.IsNotNull(eventService, nameof(eventService));
             _siteService = Require.IsNotNull(siteService, nameof(SiteService));
             _spatialService = spatialService
@@ -45,7 +55,8 @@ namespace GRA.Controllers
             int? location = null,
             int? program = null,
             string StartDate = null,
-            string EndDate = null)
+            string EndDate = null,
+            bool Favorites = false)
         {
             var site = await GetCurrentSiteAsync();
             if (!string.IsNullOrEmpty(site.ExternalEventListUrl))
@@ -64,7 +75,8 @@ namespace GRA.Controllers
                 program,
                 StartDate,
                 EndDate,
-                true);
+                true,
+                Favorites);
         }
 
         public async Task<IActionResult> Index(int page = 1,
@@ -78,6 +90,7 @@ namespace GRA.Controllers
             string StartDate = null,
             string EndDate = null,
             bool CommunityExperiences = false,
+            bool Favorites = false,
             HttpStatusCode httpStatus = HttpStatusCode.OK)
         {
             var site = await GetCurrentSiteAsync();
@@ -106,6 +119,10 @@ namespace GRA.Controllers
                 {
                     filter.SortBy = SortEventsBy.Distance;
                 }
+            }
+            if (Favorites && AuthUser.Identity.IsAuthenticated)
+            {
+                filter.Favorites = true;
             }
 
             if (nearSearchEnabled)
@@ -161,7 +178,6 @@ namespace GRA.Controllers
             {
                 filter.EndDate = endDate.Date;
             }
-
             var eventList = await _eventService.GetPaginatedListAsync(filter);
 
             var paginateModel = new PaginateViewModel
@@ -182,12 +198,14 @@ namespace GRA.Controllers
 
             var viewModel = new EventsListViewModel
             {
-                Events = eventList.Data,
+                Events = eventList.Data.ToList(),
                 PaginateModel = paginateModel,
                 Sort = filter.SortBy.ToString(),
                 Search = search,
                 StartDate = filter.StartDate,
                 EndDate = filter.EndDate,
+                Favorites = Favorites,
+                IsLoggedIn = AuthUser.Identity.IsAuthenticated,
                 ProgramId = program,
                 ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
                 CommunityExperiences = CommunityExperiences,
@@ -307,6 +325,7 @@ namespace GRA.Controllers
                 Program = model.ProgramId,
                 StartDate = startDate,
                 EndDate = endDate,
+                model.Favorites,
                 CommunityExperiences = isCommunityExperience
             });
         }
@@ -392,6 +411,51 @@ namespace GRA.Controllers
                 Response.StatusCode = (int)HttpStatusCode.NotFound;
                 return Content(gex.Message);
             }
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> UpdateSingleFavorite(int eventId, bool favorite)
+        {
+            var serviceResult = new ServiceResult();
+            try
+            {
+                var eventList = new List<Event>
+                {
+                    new Event
+                    {
+                        Id = eventId,
+                        IsFavorited = favorite
+                    }
+                };
+                serviceResult = await _activityService.UpdateFavoriteEvents(eventList);
+            }
+            catch (Exception ex)
+            {
+                var currEvent = await _eventService.GetDetails(eventId, true);
+                if (currEvent.IsCommunityExperience)
+                {
+                    _logger.LogError(ex,
+                        "Error updaing user favorite community experience: {Message}",
+                        ex.Message);
+                    serviceResult.Status = ServiceResultStatus.Error;
+                    serviceResult.Message = "An error occured while trying to update the community experience.";
+                }
+                else
+                {
+                    _logger.LogError(ex,
+                        "Error updaing user favorite events: {Message}",
+                        ex.Message);
+                    serviceResult.Status = ServiceResultStatus.Error;
+                    serviceResult.Message = "An error occured while trying to update the event.";
+                }
+            }
+            return Json(new
+            {
+                success = serviceResult.Status == ServiceResultStatus.Success,
+                message = serviceResult.Message,
+                favorite
+            });
         }
     }
 }

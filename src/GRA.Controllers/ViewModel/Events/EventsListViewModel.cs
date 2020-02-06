@@ -9,7 +9,7 @@ namespace GRA.Controllers.ViewModel.Events
 {
     public class EventsListViewModel
     {
-        public IEnumerable<GRA.Domain.Model.Event> Events { get; set; }
+        public IList<GRA.Domain.Model.Event> Events { get; set; }
         public PaginateViewModel PaginateModel { get; set; }
         public string Sort { get; set; }
         public bool? UseLocation { get; set; }
@@ -46,5 +46,7 @@ namespace GRA.Controllers.ViewModel.Events
         public SelectList BranchList { get; set; }
         public SelectList LocationList { get; set; }
         public SelectList ProgramList { get; set; }
+        public bool? Favorites { get; set; }
+        public bool IsLoggedIn { get; set; }
     }
 }

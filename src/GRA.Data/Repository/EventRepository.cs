@@ -83,9 +83,25 @@ namespace GRA.Data.Repository
                         .ThenBy(_ => _.Name);
             }
 
-            return await eventQuery.ApplyPagination(filter)
+            var evts = await eventQuery.ApplyPagination(filter)
                 .ProjectTo<Event>(_mapper.ConfigurationProvider)
                 .ToListAsync();
+            if (filter.FavoritesUserId != null)
+            {
+                foreach (var evt in evts)
+                {
+                    evt.IsFavorited = await _context.UserFavoriteEvents
+                        .AsNoTracking()
+                        .Where(_ => _.EventId == evt.Id && _.UserId == filter.FavoritesUserId)
+                        .AnyAsync();
+                }
+            }
+
+            if (filter.Favorites == true)
+            {
+                evts = evts.Where(_ => _.IsFavorited).ToList();
+            }
+            return evts;
         }
 
         public override async Task<Event> GetByIdAsync(int id)
@@ -358,6 +374,63 @@ namespace GRA.Data.Repository
                 })
                 .OrderBy(_ => _.Data.Name)
                 .ToList();
+        }
+
+        public async Task<IEnumerable<int>> GetUserFavoriteEvents(int userId,
+            IEnumerable<int> eventIds = null)
+        {
+            var favoriteEvents = _context.UserFavoriteEvents
+                .AsNoTracking()
+                .Where(_ => _.UserId == userId);
+
+            if (eventIds?.Count() > 0)
+            {
+                favoriteEvents = favoriteEvents
+                    .Where(_ => eventIds.Contains(_.EventId));
+            }
+
+            return await favoriteEvents
+                .Select(_ => _.EventId)
+                .ToListAsync();
+        }
+
+        public async Task UpdateUserFavoritesAsync(int authUserId, int userId,
+            IEnumerable<int> favoritesToAdd, IEnumerable<int> favoritesToRemove)
+        {
+            if (favoritesToAdd.Any())
+            {
+                var time = _dateTimeProvider.Now;
+                var userFavoriteList = new List<Model.UserFavoriteEvent>();
+                foreach (var eventId in favoritesToAdd)
+                {
+                    userFavoriteList.Add(new Model.UserFavoriteEvent()
+                    {
+                        UserId = userId,
+                        EventId = eventId,
+                        CreatedAt = time,
+                        CreatedBy = authUserId
+                    });
+                }
+                await _context.UserFavoriteEvents.AddRangeAsync(userFavoriteList);
+            }
+            if (favoritesToRemove.Any())
+            {
+                var removeList = _context.UserFavoriteEvents
+                    .Where(_ => _.UserId == userId && favoritesToRemove
+                    .Contains(_.EventId));
+                _context.UserFavoriteEvents.RemoveRange(removeList);
+            }
+            await SaveAsync();
+        }
+
+        public async Task<IEnumerable<int>> ValidateEventIdsAsync(int siteId,
+            IEnumerable<int> eventIds)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId && eventIds.Contains(_.Id))
+                .Select(_ => _.Id)
+                .ToListAsync();
         }
     }
 }

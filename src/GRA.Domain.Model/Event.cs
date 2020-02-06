@@ -58,6 +58,7 @@ namespace GRA.Domain.Model
         public Challenge Challenge { get; set; }
         public int? ChallengeGroupId { get; set; }
         public ChallengeGroup ChallengeGroup { get; set; }
+        public bool IsFavorited { get; set; }
 
         public string EventLocationName { get; set; }
         public string EventLocationAddress { get; set; }
