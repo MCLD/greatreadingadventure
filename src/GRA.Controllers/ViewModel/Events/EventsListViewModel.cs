@@ -36,6 +36,9 @@ namespace GRA.Controllers.ViewModel.Events
         [DisplayName(DisplayNames.Program)]
         public int? ProgramId { get; set; }
 
+        [DisplayName(DisplayNames.FilterFavorites)]
+        public int? Favorite { get; set; }
+
         [DisplayName(DisplayNames.StartDate)]
         public DateTime? StartDate { get; set; }
 
@@ -46,7 +49,15 @@ namespace GRA.Controllers.ViewModel.Events
         public SelectList BranchList { get; set; }
         public SelectList LocationList { get; set; }
         public SelectList ProgramList { get; set; }
-        public bool? Favorites { get; set; }
+        public SelectList FavoriteList { get; set; }
         public bool IsLoggedIn { get; set; }
+        public int? FavoriteSelection { get; set; }
+        public bool HideFavorites { get; set; }
+    }
+
+    public enum FilterFavorites
+    {
+        OnlyFavorites,
+        HideFavorites
     }
 }

@@ -72,6 +72,9 @@
             public const string AddBook = "Add Book";
             public const string AddExistingExplanation = "Add an existing participant into your {0}, if that participant is the head of a {0} their {0} members will be moved into your {0} as well.";
             public const string AddUsername = "Add username";
+            public const string AllChallenges = "All Challenges";
+            public const string AllEvents = "All Events";
+            public const string AllCommunityExperiences = "All Community Experiences";
             public const string AllPrograms = "All Programs";
             public const string AndOtherActivities = "and other activities";
             public const string AndTheir = "and their {0}";
@@ -110,6 +113,7 @@
             public const string FreeBookCode = "Free book code";
             public const string FreeBookCongratulations = "Congratulations, you've earned a free book!";
             public const string Group = "Group";
+            public const string HideFavorites = "Hide favorites";
             public const string History = "History";
             public const string Joined = "Joined {0}!";
             public const string MailReplyPrefix = "Re: {0}";
@@ -121,6 +125,7 @@
             public const string NoChallenges = "No Challenges";
             public const string NoEvents = "No Events";
             public const string NoMail = "You currently have no mail.";
+            public const string OnlyFavorites = "Only favorites";
             public const string PasswordChanged = "Your password has been changed.";
             public const string PointsYoullEarn = "Points you'll earn";
             public const string ProfileUpdated = "Profile updated.";

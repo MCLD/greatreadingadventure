@@ -56,7 +56,7 @@ namespace GRA.Controllers
             int? program = null,
             string StartDate = null,
             string EndDate = null,
-            bool Favorites = false)
+            int? FavoriteSelection = null)
         {
             var site = await GetCurrentSiteAsync();
             if (!string.IsNullOrEmpty(site.ExternalEventListUrl))
@@ -76,7 +76,7 @@ namespace GRA.Controllers
                 StartDate,
                 EndDate,
                 true,
-                Favorites);
+                FavoriteSelection);
         }
 
         public async Task<IActionResult> Index(int page = 1,
@@ -90,7 +90,8 @@ namespace GRA.Controllers
             string StartDate = null,
             string EndDate = null,
             bool CommunityExperiences = false,
-            bool Favorites = false,
+            int? FavoriteSelection = null,
+            bool HideFavorites = false,
             HttpStatusCode httpStatus = HttpStatusCode.OK)
         {
             var site = await GetCurrentSiteAsync();
@@ -120,11 +121,18 @@ namespace GRA.Controllers
                     filter.SortBy = SortEventsBy.Distance;
                 }
             }
-            if (Favorites && AuthUser.Identity.IsAuthenticated)
+            if (AuthUser.Identity.IsAuthenticated)
             {
-                filter.Favorites = true;
+                filter.OnlyFavorites = (FavoriteSelection.HasValue &&
+                    ((FilterFavorites)FavoriteSelection.Value == FilterFavorites.OnlyFavorites));
+                filter.HideFavorites = (FavoriteSelection.HasValue &&
+                    ((FilterFavorites)FavoriteSelection.Value == FilterFavorites.HideFavorites));
             }
-
+            else
+            {
+                filter.HideFavorites = false;
+                filter.OnlyFavorites = false;
+            }
             if (nearSearchEnabled)
             {
                 if (!string.IsNullOrWhiteSpace(near))
@@ -195,7 +203,17 @@ namespace GRA.Controllers
                         page = paginateModel.LastPage ?? 1
                     });
             }
-
+            var favoriteEnum = from FilterFavorites _ in Enum.GetValues(typeof(FilterFavorites))
+                select new
+                {
+                    Id = (int)_,
+                    Name = _sharedLocalizer[
+                        typeof(Annotations.Interface)
+                        .GetField(_.ToString())
+                        .GetValue(null)
+                        .ToString()
+                    ]
+                };
             var viewModel = new EventsListViewModel
             {
                 Events = eventList.Data.ToList(),
@@ -204,10 +222,12 @@ namespace GRA.Controllers
                 Search = search,
                 StartDate = filter.StartDate,
                 EndDate = filter.EndDate,
-                Favorites = Favorites,
+                FavoriteSelection = FavoriteSelection,
+                HideFavorites = HideFavorites,
                 IsLoggedIn = AuthUser.Identity.IsAuthenticated,
                 ProgramId = program,
                 ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
+                FavoriteList = new SelectList(favoriteEnum,"Id","Name"),
                 CommunityExperiences = CommunityExperiences,
                 ShowNearSearch = nearSearchEnabled
             };
@@ -325,7 +345,7 @@ namespace GRA.Controllers
                 Program = model.ProgramId,
                 StartDate = startDate,
                 EndDate = endDate,
-                model.Favorites,
+                model.FavoriteSelection,
                 CommunityExperiences = isCommunityExperience
             });
         }

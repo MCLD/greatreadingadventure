@@ -79,8 +79,18 @@ namespace GRA.Domain.Service
                         challengeStatus.PercentComplete = Math.Min((int)(completed * 100 / challengeStatus.TasksToComplete), 100);
                         challengeStatus.CompletedTasks = completed;
                     }
-
-                    userLookupChallenges.Add(challengeStatus);
+                    if (filter.OnlyFavorites && challengeStatus.IsFavorited)
+                    {
+                        userLookupChallenges.Add(challengeStatus);
+                    }
+                    else if (filter.HideFavorites && !challengeStatus.IsFavorited)
+                    {
+                        userLookupChallenges.Add(challengeStatus);
+                    }
+                    else if(!filter.HideFavorites && !filter.OnlyFavorites)
+                    {
+                        userLookupChallenges.Add(challengeStatus);
+                    }
                 }
                 challenges = userLookupChallenges;
                 challengeCount = challengeIds.Count;

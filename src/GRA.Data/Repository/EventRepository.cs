@@ -21,8 +21,29 @@ namespace GRA.Data.Repository
 
         public async Task<int> CountAsync(EventFilter filter)
         {
-            return await ApplyFilters(filter)
-                .CountAsync();
+            var evts = await ApplyFilters(filter)
+                .ProjectTo<Event>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+
+            if (filter.FavoritesUserId != null)
+            {
+                foreach (var evt in evts)
+                {
+                    evt.IsFavorited = await _context.UserFavoriteEvents
+                        .AsNoTracking()
+                        .Where(_ => _.EventId == evt.Id && _.UserId == filter.FavoritesUserId)
+                        .AnyAsync();
+                }
+                if (filter.OnlyFavorites == true)
+                {
+                    return evts.Count(_ => _.IsFavorited);
+                }
+                if (filter.HideFavorites == true)
+                {
+                    return evts.Count(_ => !_.IsFavorited);
+                }
+            }
+            return evts.Count();
         }
 
         public async Task<ICollection<Event>> PageAsync(EventFilter filter)
@@ -86,6 +107,7 @@ namespace GRA.Data.Repository
             var evts = await eventQuery.ApplyPagination(filter)
                 .ProjectTo<Event>(_mapper.ConfigurationProvider)
                 .ToListAsync();
+
             if (filter.FavoritesUserId != null)
             {
                 foreach (var evt in evts)
@@ -95,11 +117,14 @@ namespace GRA.Data.Repository
                         .Where(_ => _.EventId == evt.Id && _.UserId == filter.FavoritesUserId)
                         .AnyAsync();
                 }
-            }
-
-            if (filter.Favorites == true)
-            {
-                evts = evts.Where(_ => _.IsFavorited).ToList();
+                if (filter.OnlyFavorites == true)
+                {
+                    return evts.Where(_ => _.IsFavorited).ToList();
+                }
+                if (filter.HideFavorites == true)
+                {
+                    return evts.Where(_ => !_.IsFavorited).ToList();
+                }
             }
             return evts;
         }
