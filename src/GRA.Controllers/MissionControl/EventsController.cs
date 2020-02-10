@@ -27,6 +27,7 @@ namespace GRA.Controllers.MissionControl
         private readonly SiteService _siteService;
         private readonly SpatialService _spatialService;
         private readonly TriggerService _triggerService;
+        private readonly UserService _userService;
 
         public EventsController(ILogger<EventsController> logger,
             ServiceFacade.Controller context,
@@ -35,7 +36,8 @@ namespace GRA.Controllers.MissionControl
             EventService eventService,
             SiteService siteService,
             TriggerService triggerService,
-            SpatialService spatialService)
+            SpatialService spatialService,
+            UserService userService)
             : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
@@ -46,6 +48,8 @@ namespace GRA.Controllers.MissionControl
             _spatialService = spatialService
                 ?? throw new ArgumentNullException(nameof(spatialService));
             _triggerService = Require.IsNotNull(triggerService, nameof(TriggerService));
+            _userService = userService
+                ?? throw new ArgumentNullException(nameof(userService));
             PageTitle = "Events";
         }
 
@@ -515,6 +519,8 @@ namespace GRA.Controllers.MissionControl
                 var viewModel = new EventsDetailViewModel
                 {
                     Event = graEvent,
+                    CreatedByName = await _userService.GetUsersNameByIdAsync(graEvent.CreatedBy),
+                    CanViewParticipants = UserHasPermission(Permission.ViewParticipantDetails),
                     UseLocation = graEvent.AtLocationId.HasValue,
                     CanAddSecretCode = UserHasPermission(Permission.ManageTriggers),
                     CanEditGroups = UserHasPermission(Permission.EditChallengeGroups),

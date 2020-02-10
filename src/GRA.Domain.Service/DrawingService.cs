@@ -107,6 +107,12 @@ namespace GRA.Domain.Service
             }
         }
 
+        public async Task<Drawing> GetByIdAsync(int id)
+        {
+            VerifyPermission(Permission.ViewUserPrizes);
+            return await _drawingRepository.GetByIdAsync(id);
+        }
+
         public async Task<DrawingCriterion> GetCriterionDetailsAsync(int id)
         {
             int authUserId = GetClaimId(ClaimType.UserId);
