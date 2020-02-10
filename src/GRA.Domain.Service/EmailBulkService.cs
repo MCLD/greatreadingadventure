@@ -18,6 +18,7 @@ namespace GRA.Domain.Service
     {
         private const string SpanFormat = @"hh\:mm\:ss";
 
+        private readonly IEmailTemplateRepository _emailTemplateRepository;
         private readonly IJobRepository _jobRepository;
         private readonly EmailService _emailService;
         private readonly UserService _userService;
@@ -25,11 +26,14 @@ namespace GRA.Domain.Service
         public EmailBulkService(ILogger<EmailBulkService> logger,
             IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
+            IEmailTemplateRepository emailTemplateRepository,
             IJobRepository jobRepository,
             EmailService emailService,
             UserService userService)
             : base(logger, dateTimeProvider, userContextProvider)
         {
+            _emailTemplateRepository = emailTemplateRepository
+                ?? throw new ArgumentNullException(nameof(emailTemplateRepository));
             _jobRepository = jobRepository
                 ?? throw new ArgumentNullException(nameof(jobRepository));
             _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
@@ -362,6 +366,9 @@ namespace GRA.Domain.Service
                     subscribedUsers.Data = subscribedUsers.Data
                         .Where(_ => !problemUsers.Contains(_.Id));
                 }
+
+                template.EmailsSent = emailsSent;
+                await _emailTemplateRepository.UpdateSaveNoAuditAsync(template);
 
                 string taskStatus = token.IsCancellationRequested
                     ? "Cancelled after"
