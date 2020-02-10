@@ -148,7 +148,7 @@ namespace GRA.Domain.Service
                 emailTemplate.EmailsSent = 0;
                 emailTemplate.FromAddress = emailTemplate.FromAddress.Trim();
                 emailTemplate.FromName = emailTemplate.FromName.Trim();
-                emailTemplate.SiteId = userId;
+                emailTemplate.SiteId = GetCurrentSiteId();
                 emailTemplate.Subject = emailTemplate.Subject.Trim();
                 return await _emailTemplateRepository.AddSaveAsync(userId, emailTemplate);
             }
