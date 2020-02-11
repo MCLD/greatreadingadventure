@@ -1451,6 +1451,7 @@ namespace GRA.Domain.Service
                 branchSelection.BackToBackProgram);
 
             branchSelection.KitId = null;
+            branchSelection.IsDeleted = false;
             branchSelection.SelectedAt = _dateTimeProvider.Now;
             branchSelection.UserId = authId;
             branchSelection.ScheduleStartTime = branchSelection.RequestedStartTime
@@ -1493,6 +1494,7 @@ namespace GRA.Domain.Service
             currentBranchSelection.RequestedStartTime = branchSelection.RequestedStartTime;
             currentBranchSelection.ScheduleStartTime = branchSelection.RequestedStartTime
                 .AddMinutes(-program.SetupTimeMinutes);
+            currentBranchSelection.IsDeleted = branchSelection.IsDeleted;
 
             await _psBranchSelectionRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
                 currentBranchSelection);
@@ -1773,6 +1775,11 @@ namespace GRA.Domain.Service
         public async Task<int> GetKitCountAsync()
         {
             return await _psKitRepository.GetKitCountAsync();
+        }
+
+        public async Task<PsBranchSelection> GetBranchProgramSelectionByIdAsync(int id)
+        {
+            return await _psBranchSelectionRepository.GetByIdAsync(id);
         }
     }
 }

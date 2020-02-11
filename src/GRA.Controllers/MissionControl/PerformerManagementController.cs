@@ -241,6 +241,44 @@ namespace GRA.Controllers.MissionControl
                 new { page = model.PaginateModel.CurrentPage });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> PerformerSelectionDelete(int performerId, int branchSelectionId)
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
+            if (schedulingStage < PsSchedulingStage.SchedulingOpen)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Program selection has not yet started."
+                });
+            }
+
+            try
+            {
+                var branchSelection = await _performerSchedulingService.GetBranchProgramSelectionByIdAsync(branchSelectionId);
+                var branch = await _siteService.GetBranchByIdAsync(branchSelection.BranchId);
+                var program = await _performerSchedulingService.GetProgramByIdAsync(branchSelection.ProgramId.Value);
+                branchSelection.IsDeleted = true;
+                await _performerSchedulingService.UpdateBranchProgramSelectionAsync(branchSelection);
+                ShowAlertSuccess($"{branch.Name}'s selection of \"{program.Title}\" is deleted!.");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to delete selection: ", gex);
+                return Json(new
+                {
+                    success = false,
+                    message = gex.Message
+                });
+            }
+            return Json(new
+            {
+                success = true
+            });
+        }
+
         public async Task<IActionResult> Performer(int id)
         {
             var settings = await _performerSchedulingService.GetSettingsAsync();

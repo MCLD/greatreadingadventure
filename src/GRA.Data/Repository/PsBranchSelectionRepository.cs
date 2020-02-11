@@ -22,7 +22,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.Branch.Id == branchId)
+                .Where(_ => _.Branch.Id == branchId && !_.IsDeleted)
                 .OrderBy(_ => _.SelectedAt)
                 .ProjectTo<PsBranchSelection>(_mapper.ConfigurationProvider)
                 .ToListAsync();
@@ -32,7 +32,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.KitId.HasValue && _.KitId == kitId)
+                .Where(_ => _.KitId.HasValue && _.KitId == kitId && !_.IsDeleted)
                 .CountAsync();
         }
 
@@ -40,7 +40,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.KitId.HasValue && _.KitId == kitId)
+                .Where(_ => _.KitId.HasValue && _.KitId == kitId && !_.IsDeleted)
                 .ProjectTo<PsBranchSelection>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
@@ -49,7 +49,9 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.ProgramId.HasValue && _.Program.PerformerId == performerId)
+                .Where(_ => _.ProgramId.HasValue
+                    && _.Program.PerformerId == performerId
+                    && !_.IsDeleted)
                 .CountAsync();
         }
 
@@ -58,7 +60,9 @@ namespace GRA.Data.Repository
         {
             var query = DbSet
                 .AsNoTracking()
-                .Where(_ => _.ProgramId.HasValue && _.Program.PerformerId == performerId);
+                .Where(_ => _.ProgramId.HasValue
+                    && _.Program.PerformerId == performerId
+                    && !_.IsDeleted);
 
             if (date.HasValue)
             {
@@ -75,7 +79,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.SecretCode == secretCode)
+                .Where(_ => _.SecretCode == secretCode && !_.IsDeleted)
                 .ProjectTo<PsBranchSelection>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync();
         }
@@ -85,7 +89,8 @@ namespace GRA.Data.Repository
         {
             var selection = DbSet
                 .AsNoTracking()
-                .Where(_ => _.AgeGroupId == ageGroupId && _.BranchId == branchId);
+                .Where(_ => _.AgeGroupId == ageGroupId && _.BranchId == branchId
+                    && !_.IsDeleted);
 
             if (currentSelectionId.HasValue)
             {
