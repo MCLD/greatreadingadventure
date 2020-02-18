@@ -2170,31 +2170,7 @@ namespace GRA.Controllers.MissionControl
                             page = paginateModel.LastPage ?? 1
                         });
                 }
-                foreach (var prize in prizeList.Data.ToList())
-                {
-                    if (prize.TriggerId.HasValue)
-                    {
-                        var trigger = await _triggerService.GetByIdAsync(prize.TriggerId.Value);
-                        prize.RedeemedSystem = trigger.LimitToSystemId.HasValue ?
-                            await _siteService.GetSystemByIdAsync(trigger.LimitToSystemId.Value)
-                            : null;
-                        prize.RedeemedBranch = trigger.LimitToBranchId.HasValue ?
-                            await _siteService.GetBranchByIdAsync(trigger.LimitToBranchId.Value)
-                            : null;
 
-                    }
-                    else
-                    {
-                        var drawing = await _drawingService.GetByIdAsync(prize.DrawingId.Value);
-                        var criterion = await _drawingService.GetCriterionDetailsAsync(drawing.DrawingCriterionId);
-                        prize.RedeemedSystem = criterion.SystemId.HasValue ?
-                            await _siteService.GetSystemByIdAsync(criterion.SystemId.Value)
-                            : null;
-                        prize.RedeemedBranch = criterion.BranchId.HasValue ?
-                            await _siteService.GetBranchByIdAsync(criterion.BranchId.Value)
-                            : null;
-                    }
-                }
                 var user = await _userService.GetDetails(id);
                 SetPageTitle(user);
 

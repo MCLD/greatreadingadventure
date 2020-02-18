@@ -17,8 +17,7 @@
                             <th>Redeemed?</th>
                             <th>Prize</th>
                             <th>Redemption Instructions</th>
-                            <th>Limited to System</th>
-                            <th>Limited to Branch</th>
+                            <th>Available at</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -57,12 +56,18 @@
                                 <td>@prizeWinner.PrizeName</td>
                                 <td>@prizeWinner.PrizeRedemptionInstructions</td>
                                 <td>
-                                    @if (prizeWinner.RedeemedSystem != null)
-                                    {@prizeWinner.RedeemedSystem.Name}
-                                </td>
-                                <td>
-                                    @if (prizeWinner.RedeemedBranch != null)
-                                    {@prizeWinner.RedeemedBranch.Name}
+                                    @if (!string.IsNullOrWhiteSpace(prizeWinner.AvailableAtSystem))
+                                    {
+                                        @prizeWinner.AvailableAtSystem
+                                        @if (!string.IsNullOrWhiteSpace(prizeWinner.AvailableAtBranch))
+                                        {
+                                            @:- @prizeWinner.AvailableAtBranch
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @: All Libraries
+                                    }
                                 </td>
                             </tr>
                         }

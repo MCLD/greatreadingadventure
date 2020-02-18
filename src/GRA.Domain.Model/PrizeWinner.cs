@@ -11,9 +11,9 @@ namespace GRA.Domain.Model
         public DateTime? RedeemedAt { get; set; }
         public int? RedeemedBy { get; set; }
         public int? RedeemedByBranch { get; set; }
-        public Branch RedeemedBranch { get; set; }
         public int? RedeemedBySystem { get; set; }
-        public System RedeemedSystem { get; set; }
+        public string AvailableAtBranch { get; set; }
+        public string AvailableAtSystem { get; set; }
         public int? MailId { get; set; }
 
         public string UserFirstName { get; set; }

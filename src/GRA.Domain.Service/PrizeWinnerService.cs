@@ -11,6 +11,7 @@ namespace GRA.Domain.Service
 {
     public class PrizeWinnerService : Abstract.BaseUserService<PrizeWinnerService>
     {
+        private readonly IDrawingCriterionRepository _drawingCriterionRepository;
         private readonly IDrawingRepository _drawingRepository;
         private readonly IPrizeWinnerRepository _prizeWinnerRepository;
         private readonly ITriggerRepository _triggerRepository;
@@ -19,12 +20,15 @@ namespace GRA.Domain.Service
         public PrizeWinnerService(ILogger<PrizeWinnerService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
+            IDrawingCriterionRepository drawingCriterionRepository,
             IDrawingRepository drawingRepository,
             IPrizeWinnerRepository prizeWinnerRepository,
             ITriggerRepository triggerRepository,
             IUserRepository userRepository)
             : base(logger, dateTimeProvider, userContextProvider)
         {
+            _drawingCriterionRepository = drawingCriterionRepository
+                ?? throw new ArgumentNullException(nameof(drawingCriterionRepository));
             _drawingRepository = drawingRepository
                 ?? throw new ArgumentNullException(nameof(drawingRepository));
             _prizeWinnerRepository = prizeWinnerRepository
@@ -153,10 +157,17 @@ namespace GRA.Domain.Service
                     var drawing = await _drawingRepository.GetByIdAsync((int)prize.DrawingId);
                     prize.PrizeName = drawing.Name;
                     prize.PrizeRedemptionInstructions = drawing.RedemptionInstructions;
+
+                    var drawingCritera = await _drawingCriterionRepository
+                        .GetByIdAsync(drawing.DrawingCriterionId);
+                    prize.AvailableAtBranch = drawingCritera.BranchName;
+                    prize.AvailableAtSystem = drawingCritera.SystemName;
                 }
                 else if (prize.TriggerId != null)
                 {
                     var trigger = await _triggerRepository.GetByIdAsync((int)prize.TriggerId);
+                    prize.AvailableAtBranch = trigger.LimitToBranchName;
+                    prize.AvailableAtSystem = trigger.LimitToSystemName;
                     prize.PrizeName = trigger.AwardPrizeName;
                     prize.PrizeRedemptionInstructions = trigger.AwardPrizeRedemptionInstructions;
                 }
