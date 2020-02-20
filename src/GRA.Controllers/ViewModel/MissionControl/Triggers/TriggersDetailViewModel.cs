@@ -9,6 +9,8 @@ namespace GRA.Controllers.ViewModel.MissionControl.Triggers
     public class TriggersDetailViewModel
     {
         public GRA.Domain.Model.Trigger Trigger { get; set; }
+        public string CreatedByName { get; set; }
+        public bool CanViewParticipants { get; set; }
         public string Action { get; set; }
         public bool IsSecretCode { get; set; }
 
