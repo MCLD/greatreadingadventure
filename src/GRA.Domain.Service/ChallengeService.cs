@@ -24,7 +24,6 @@ namespace GRA.Domain.Service
         private readonly IEventRepository _eventRepository;
         private readonly IPathResolver _pathResolver;
         private readonly ITriggerRepository _triggerRepository;
-        private readonly IUserRepository _userRepository;
 
         public ChallengeService(ILogger<ChallengeService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
@@ -37,8 +36,8 @@ namespace GRA.Domain.Service
             IChallengeTaskRepository challengeTaskRepository,
             IEventRepository eventRepository,
             IPathResolver pathResolver,
-            ITriggerRepository triggerRepository,
-            IUserRepository userRepository) : base(logger, dateTimeProvider, userContextProvider)
+            ITriggerRepository triggerRepository) 
+            : base(logger, dateTimeProvider, userContextProvider)
         {
             _badgeRepository = Require.IsNotNull(badgeRepository, nameof(badgeRepository));
             _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
@@ -52,7 +51,6 @@ namespace GRA.Domain.Service
             _eventRepository = Require.IsNotNull(eventRepository, nameof(eventRepository));
             _pathResolver = Require.IsNotNull(pathResolver, nameof(pathResolver));
             _triggerRepository = Require.IsNotNull(triggerRepository, nameof(triggerRepository));
-            _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
         }
 
         public async Task<DataWithCount<IEnumerable<Challenge>>>
@@ -79,18 +77,8 @@ namespace GRA.Domain.Service
                         challengeStatus.PercentComplete = Math.Min((int)(completed * 100 / challengeStatus.TasksToComplete), 100);
                         challengeStatus.CompletedTasks = completed;
                     }
-                    if (filter.OnlyFavorites && challengeStatus.IsFavorited)
-                    {
-                        userLookupChallenges.Add(challengeStatus);
-                    }
-                    else if (filter.HideFavorites && !challengeStatus.IsFavorited)
-                    {
-                        userLookupChallenges.Add(challengeStatus);
-                    }
-                    else if(!filter.HideFavorites && !filter.OnlyFavorites)
-                    {
-                        userLookupChallenges.Add(challengeStatus);
-                    }
+
+                    userLookupChallenges.Add(challengeStatus);
                 }
                 challenges = userLookupChallenges;
                 challengeCount = challengeIds.Count;

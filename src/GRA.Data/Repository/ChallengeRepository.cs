@@ -80,7 +80,7 @@ namespace GRA.Data.Repository
                         .Any(c => filter.CategoryIds.Contains(c)));
             }
 
-            if (filter.OnlyFavorites == true && filter.FavoritesUserId.HasValue)
+            if (filter.Favorites == true && filter.FavoritesUserId.HasValue)
             {
                 var userFavoriteChallenges = _context.UserFavoriteChallenges
                     .AsNoTracking()

@@ -51,11 +51,8 @@ namespace GRA.Domain.Service
             int count;
 
             filter.SiteId = GetCurrentSiteId();
-            if (GetAuthUser().Identity.IsAuthenticated)
-            {
-                filter.FavoritesUserId = GetActiveUserId();
-            }
-                if (isMissionControl)
+
+            if (isMissionControl)
             {
                 VerifyPermission(Permission.ManageEvents);
                 data = await _eventRepository.PageAsync(filter);
@@ -65,8 +62,31 @@ namespace GRA.Domain.Service
             {
                 // paginate for public
                 filter.IsActive = true;
+
+                int userId = GetActiveUserId();
+                if (GetAuthUser().Identity.IsAuthenticated)
+                {
+                    filter.FavoritesUserId = userId;
+                }
+
                 data = await _eventRepository.PageAsync(filter);
                 count = await _eventRepository.CountAsync(filter);
+
+                if (GetAuthUser().Identity.IsAuthenticated)
+                {
+                    foreach (var graEvent in data)
+                    {
+                        if (filter.Favorites == true)
+                        {
+                            graEvent.IsFavorited = true;
+                        }
+                        else
+                        {
+                            graEvent.IsFavorited = await _eventRepository
+                                .IsUserFavoritedAsync(userId, graEvent.Id);
+                        }
+                    }
+                }
             }
             return new DataWithCount<IEnumerable<Event>>
             {

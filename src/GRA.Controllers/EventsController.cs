@@ -56,7 +56,7 @@ namespace GRA.Controllers
             int? program = null,
             string StartDate = null,
             string EndDate = null,
-            int? FavoriteSelection = null)
+            bool Favorites = false)
         {
             var site = await GetCurrentSiteAsync();
             if (!string.IsNullOrEmpty(site.ExternalEventListUrl))
@@ -76,7 +76,7 @@ namespace GRA.Controllers
                 StartDate,
                 EndDate,
                 true,
-                FavoriteSelection);
+                Favorites);
         }
 
         public async Task<IActionResult> Index(int page = 1,
@@ -90,8 +90,7 @@ namespace GRA.Controllers
             string StartDate = null,
             string EndDate = null,
             bool CommunityExperiences = false,
-            int? FavoriteSelection = null,
-            bool HideFavorites = false,
+            bool Favorites = false,
             HttpStatusCode httpStatus = HttpStatusCode.OK)
         {
             var site = await GetCurrentSiteAsync();
@@ -123,15 +122,7 @@ namespace GRA.Controllers
             }
             if (AuthUser.Identity.IsAuthenticated)
             {
-                filter.OnlyFavorites = (FavoriteSelection.HasValue &&
-                    ((FilterFavorites)FavoriteSelection.Value == FilterFavorites.OnlyFavorites));
-                filter.HideFavorites = (FavoriteSelection.HasValue &&
-                    ((FilterFavorites)FavoriteSelection.Value == FilterFavorites.HideFavorites));
-            }
-            else
-            {
-                filter.HideFavorites = false;
-                filter.OnlyFavorites = false;
+                filter.Favorites = Favorites;
             }
             if (nearSearchEnabled)
             {
@@ -203,17 +194,7 @@ namespace GRA.Controllers
                         page = paginateModel.LastPage ?? 1
                     });
             }
-            var favoriteEnum = from FilterFavorites _ in Enum.GetValues(typeof(FilterFavorites))
-                select new
-                {
-                    Id = (int)_,
-                    Name = _sharedLocalizer[
-                        typeof(Annotations.Interface)
-                        .GetField(_.ToString())
-                        .GetValue(null)
-                        .ToString()
-                    ]
-                };
+
             var viewModel = new EventsListViewModel
             {
                 Events = eventList.Data.ToList(),
@@ -222,12 +203,10 @@ namespace GRA.Controllers
                 Search = search,
                 StartDate = filter.StartDate,
                 EndDate = filter.EndDate,
-                FavoriteSelection = FavoriteSelection,
-                HideFavorites = HideFavorites,
+                Favorites = Favorites,
                 IsLoggedIn = AuthUser.Identity.IsAuthenticated,
                 ProgramId = program,
                 ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
-                FavoriteList = new SelectList(favoriteEnum,"Id","Name"),
                 CommunityExperiences = CommunityExperiences,
                 ShowNearSearch = nearSearchEnabled
             };
@@ -297,7 +276,7 @@ namespace GRA.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(EventsListViewModel model)
+        public IActionResult Index(EventsListViewModel model, bool keepPage = false)
         {
             string startDate = "False";
             string endDate = null;
@@ -334,8 +313,15 @@ namespace GRA.Controllers
                 isCommunityExperience = true;
             }
 
+            int? page = null;
+            if (keepPage && model.PaginateModel?.CurrentPage > 1)
+            {
+                page = model.PaginateModel.CurrentPage;
+            }
+
             return RedirectToAction(nameof(Index), new
             {
+                page,
                 model.Sort,
                 model.Search,
                 model.Near,
@@ -345,9 +331,68 @@ namespace GRA.Controllers
                 Program = model.ProgramId,
                 StartDate = startDate,
                 EndDate = endDate,
-                model.FavoriteSelection,
+                model.Favorites,
                 CommunityExperiences = isCommunityExperience
             });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> UpdateSingleFavorite(int eventId, bool favorite)
+        {
+            var serviceResult = new ServiceResult();
+            try
+            {
+                var eventList = new List<Event>
+                {
+                    new Event
+                    {
+                        Id = eventId,
+                        IsFavorited = favorite
+                    }
+                };
+                serviceResult = await _activityService.UpdateFavoriteEvents(eventList);
+            }
+            catch (Exception ex)
+            {
+                var currEvent = await _eventService.GetDetails(eventId, true);
+                if (currEvent.IsCommunityExperience)
+                {
+                    _logger.LogError(ex,
+                        "Error updaing user favorite community experience: {Message}",
+                        ex.Message);
+                    serviceResult.Status = ServiceResultStatus.Error;
+                    serviceResult.Message = "An error occured while trying to update the community experience.";
+                }
+                else
+                {
+                    _logger.LogError(ex,
+                        "Error updaing user favorite events: {Message}",
+                        ex.Message);
+                    serviceResult.Status = ServiceResultStatus.Error;
+                    serviceResult.Message = "An error occured while trying to update the event.";
+                }
+            }
+            return Json(new
+            {
+                success = serviceResult.Status == ServiceResultStatus.Success,
+                message = serviceResult.Message,
+                favorite
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> UpdateFavorites(EventsListViewModel model)
+        {
+            var serviceResult = await _activityService.UpdateFavoriteEvents(model.Events);
+            if (serviceResult.Status == ServiceResultStatus.Warning
+                        && !string.IsNullOrWhiteSpace(serviceResult.Message))
+            {
+                ShowAlertWarning(serviceResult.Message);
+            }
+
+            return Index(model, true);
         }
 
         public async Task<IActionResult> Detail(int id)
@@ -431,51 +476,6 @@ namespace GRA.Controllers
                 Response.StatusCode = (int)HttpStatusCode.NotFound;
                 return Content(gex.Message);
             }
-        }
-
-        [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> UpdateSingleFavorite(int eventId, bool favorite)
-        {
-            var serviceResult = new ServiceResult();
-            try
-            {
-                var eventList = new List<Event>
-                {
-                    new Event
-                    {
-                        Id = eventId,
-                        IsFavorited = favorite
-                    }
-                };
-                serviceResult = await _activityService.UpdateFavoriteEvents(eventList);
-            }
-            catch (Exception ex)
-            {
-                var currEvent = await _eventService.GetDetails(eventId, true);
-                if (currEvent.IsCommunityExperience)
-                {
-                    _logger.LogError(ex,
-                        "Error updaing user favorite community experience: {Message}",
-                        ex.Message);
-                    serviceResult.Status = ServiceResultStatus.Error;
-                    serviceResult.Message = "An error occured while trying to update the community experience.";
-                }
-                else
-                {
-                    _logger.LogError(ex,
-                        "Error updaing user favorite events: {Message}",
-                        ex.Message);
-                    serviceResult.Status = ServiceResultStatus.Error;
-                    serviceResult.Message = "An error occured while trying to update the event.";
-                }
-            }
-            return Json(new
-            {
-                success = serviceResult.Status == ServiceResultStatus.Success,
-                message = serviceResult.Message,
-                favorite
-            });
         }
     }
 }

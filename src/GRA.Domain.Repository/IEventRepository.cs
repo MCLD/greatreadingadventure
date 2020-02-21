@@ -18,6 +18,7 @@ namespace GRA.Domain.Repository
         Task DetachRelatedChallengeGroup(int userId, int challengeGroupId);
         Task<ICollection<DataWithCount<Event>>> GetCommunityExperienceAttendanceAsync(
             ReportCriterion criterion);
+        Task<bool> IsUserFavoritedAsync(int userId, int eventId);
         Task<IEnumerable<int>> GetUserFavoriteEvents(int userId,
             IEnumerable<int> eventIds = null);
         Task UpdateUserFavoritesAsync(int authUserId, int userId,

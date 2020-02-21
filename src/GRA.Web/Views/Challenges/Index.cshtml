@@ -36,6 +36,11 @@
                 else
                 {
                     <form id="searchForm" asp-controller="Challenges" asp-action="Index" method="get" role="form">
+                        @if (Model.Favorites == true)
+                        {
+                            <input asp-for="Favorites" type="hidden" />
+                        }
+
                         <div class="row row-spacing">
                             <div class="col-xs-12 col-sm-2" style="margin-bottom:5px;">
                                 <span style="font-size:large;">Search:</span>
@@ -81,38 +86,45 @@
                                 </div>
                             </div>
                         }
-                    <div class="row row-spacing">
-                        @if (Model.IsLoggedIn && Model.FavoriteList.Count() > 0)
-                        {
-                            <div id="Category" class="row-spacing">
-                                <div class="col-xs-12 col-sm-2" style="margin-bottom:5px;">
-                                    <span style="font-size:large;">@SharedLocalizer[GRA.Domain.Model.DisplayNames.FilterFavorites]:</span>
+                        <div class="row">
+                            @if (Model.IsLoggedIn)
+                            {
+                                <div class="col-xs-12 col-sm-4 col-md-3 row-spacing">
+                                    <a asp-action="Index" asp-route-Search="@Model.Search" asp-route-Program="@Model.Program" asp-route-Categories="@Model.Categories" asp-route-Favorites="@(Model.Favorites == true ? null : "True")" class="btn btn-block @(Model.Favorites == true ? "btn-success" : "btn-default")">
+                                        <span class="fa @(Model.Favorites == true ? "fa-star" : "fa-star-o")"></span>
+                                        @SharedLocalizer[GRA.Annotations.Interface.MyFavorites]
+                                    </a>
                                 </div>
-                                <div class="col-xs-12 col-sm-10 row-spacing">
-                                    <select asp-for="FavoriteSelection"
-                                            asp-items="Model.FavoriteList"
-                                            class="form-control">
-                                        <option value="">@SharedLocalizer[GRA.Annotations.Interface.AllChallenges]</option>
-                                    </select>
+                                <div class="col-xs-6 col-sm-2 col-sm-offset-4 col-md-offset-5 row-spacing">
+                                    <a asp-action="Index" class="btn btn-default btn-block">
+                                        <span class="hidden-sm fa fa-minus-circle"></span>
+                                        @SharedLocalizer[GRA.Annotations.Interface.Clear]
+                                    </a>
                                 </div>
-                            </div>
-                        }
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-6 col-sm-2 col-sm-offset-8 col-md-offset-8 row-spacing">
-                            <a asp-action="Index" class="btn btn-default btn-block">
-                                <span class="hidden-sm fa fa-minus-circle"></span>
-                                @SharedLocalizer[GRA.Annotations.Interface.Clear]
-                            </a>
-                        </div>
-                        <div class="col-xs-6 col-sm-2 row-spacing">
-                            <button type="submit" class="btn btn-primary btn-block">
-                                <span class="hidden-sm fa fa-search"></span>
-                                @SharedLocalizer[GRA.Annotations.Interface.Find]
-                            </button>
-                        </div>
+                                <div class="col-xs-6 col-sm-2 row-spacing">
+                                    <button type="submit" class="btn btn-primary btn-block">
+                                        <span class="hidden-sm fa fa-search"></span>
+                                        @SharedLocalizer[GRA.Annotations.Interface.Find]
+                                    </button>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-xs-6 col-sm-2 col-sm-offset-8 col-md-offset-8 row-spacing">
+                                    <a asp-action="Index" class="btn btn-default btn-block">
+                                        <span class="hidden-sm fa fa-minus-circle"></span>
+                                        @SharedLocalizer[GRA.Annotations.Interface.Clear]
+                                    </a>
+                                </div>
+                                <div class="col-xs-6 col-sm-2 row-spacing">
+                                    <button type="submit" class="btn btn-primary btn-block">
+                                        <span class="hidden-sm fa fa-search"></span>
+                                        @SharedLocalizer[GRA.Annotations.Interface.Find]
+                                    </button>
+                                </div>
+                            }
 
-                    </div>
+                        </div>
                     </form>
                 }
                 <div class="row">
@@ -127,6 +139,7 @@
                                 <noscript>
                                     <input asp-for="Categories" type="hidden" />
                                     <input asp-for="ChallengeGroup.Stub" type="hidden" />
+                                    <input asp-for="Favorites" type="hidden" />
                                     <input asp-for="Program" type="hidden" />
                                     <input asp-for="Search" type="hidden" />
                                     <input asp-for="PaginateModel.CurrentPage" type="hidden" />
@@ -224,7 +237,7 @@
 @section scripts {
     <script>
         var favoriteUrl = "@(Url.Action("UpdateSingleFavorite"))";
-        var showFavorites = "@Model." == "True";
+        var showFavorites = "@Model.Favorites" == "True";
 
         $("#CategoryIds").removeAttr("disabled");
         $("#CategoryPlaceholder").remove();

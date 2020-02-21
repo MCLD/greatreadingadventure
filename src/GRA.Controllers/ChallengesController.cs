@@ -46,12 +46,11 @@ namespace GRA.Controllers
 
         public static string Name { get { return "Challenges"; } }
 
-
         public async Task<IActionResult> Index(string Search = null,
             int? Program = null,
             string Categories = null,
             string Group = null,
-            int? FavoriteSelection = null,
+            bool Favorites = false,
             int page = 1,
             System.Net.HttpStatusCode httpStatus = System.Net.HttpStatusCode.OK)
         {
@@ -78,15 +77,7 @@ namespace GRA.Controllers
             }
             if (AuthUser.Identity.IsAuthenticated)
             {
-                filter.OnlyFavorites = (FavoriteSelection.HasValue &&
-                    ((FilterFavorites)FavoriteSelection.Value == FilterFavorites.OnlyFavorites));
-                filter.HideFavorites = (FavoriteSelection.HasValue &&
-                    ((FilterFavorites)FavoriteSelection.Value == FilterFavorites.HideFavorites));
-            }
-            else
-            {
-                filter.HideFavorites = false;
-                filter.OnlyFavorites = false;
+                filter.Favorites = Favorites;
             }
 
             ChallengeGroup challengeGroup = null;
@@ -137,17 +128,7 @@ namespace GRA.Controllers
                 || siteStage == SiteStage.ProgramEnded;
 
             var categoryList = await _categoryService.GetListAsync(true);
-            var favoriteEnum = from FilterFavorites _ in Enum.GetValues(typeof(FilterFavorites))
-                select new
-                {
-                    Id = (int)_,
-                    Name = _sharedLocalizer[
-                        typeof(Annotations.Interface)
-                        .GetField(_.ToString())
-                        .GetValue(null)
-                        .ToString()
-                    ]
-                };
+
             var viewModel = new ChallengesListViewModel
             {
                 Challenges = challengeList.Data.ToList(),
@@ -156,17 +137,13 @@ namespace GRA.Controllers
                 Search = Search,
                 Program = Program,
                 Categories = Categories,
+                Favorites = Favorites,
                 IsActive = isActive,
                 IsLoggedIn = AuthUser.Identity.IsAuthenticated,
                 CategoryIds = filter.CategoryIds,
                 CategoryList = new SelectList(categoryList, "Id", "Name"),
-                ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
-                FavoriteList = new SelectList(favoriteEnum, "Id","Name")
+                ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name")
             };
-            if (FavoriteSelection!=null)
-            {
-                viewModel.FavoriteSelection = FavoriteSelection;
-            }
             if (!string.IsNullOrWhiteSpace(Search))
             {
                 HttpContext.Session.SetString(SessionKey.ChallengeSearch, Search);
@@ -177,7 +154,7 @@ namespace GRA.Controllers
             }
             HttpContext.Session.SetInt32(SessionKey.ChallengePage, page);
 
-            if(httpStatus != System.Net.HttpStatusCode.OK)
+            if (httpStatus != System.Net.HttpStatusCode.OK)
             {
                 Response.StatusCode = (int)httpStatus;
             }
@@ -252,7 +229,7 @@ namespace GRA.Controllers
                 model.Search,
                 model.Program,
                 model.Categories,
-                model.FavoriteSelection,
+                model.Favorites,
                 Group = model.ChallengeGroup?.Stub
             });
         }
@@ -309,7 +286,7 @@ namespace GRA.Controllers
                     Title = task.Title,
                     Author = task.Author
                 };
-                if(taskModel.TaskType != "Book")
+                if (taskModel.TaskType != "Book")
                 {
                     taskModel.Description = CommonMark.CommonMarkConverter.Convert(task.Title);
                 }

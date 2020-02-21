@@ -14,20 +14,12 @@ namespace GRA.Controllers.ViewModel.Challenges
         public string Search { get; set; }
         public int? Program { get; set; }
         public string Categories { get; set; }
+        public bool? Favorites { get; set; }
         public bool IsActive { get; set; }
-        public bool IsLoggedIn { get; set; }
-
-        [DisplayName(DisplayNames.FilterFavorites)]
-        public int? FavoriteSelection { get; set; }
+        public bool IsLoggedIn { get; set; }     
 
         public SelectList ProgramList { get; set; }
         public SelectList CategoryList { get; set; }
-        public SelectList FavoriteList { get; set; }
         public IEnumerable<int> CategoryIds { get; set; }
-    }
-    public enum FilterFavorites
-    {
-        OnlyFavorites,
-        HideFavorites
     }
 }
