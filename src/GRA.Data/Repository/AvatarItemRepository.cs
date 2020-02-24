@@ -172,6 +172,16 @@ namespace GRA.Data.Repository
                 .CountAsync();
         }
 
+        public async Task<List<AvatarItem>> GetBundleItemsAsync(int bundleId)
+        {
+            return await _context.AvatarBundleItems
+                .AsNoTracking()
+                .Where(_ => _.AvatarBundleId == bundleId)
+                .Select(_ => _.AvatarItem)
+                .ProjectTo<AvatarItem>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
         public async Task<ICollection<AvatarItem>> GetByIdsAsync(List<int> ids)
         {
             return await DbSet.AsNoTracking()

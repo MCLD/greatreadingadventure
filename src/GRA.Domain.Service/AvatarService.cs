@@ -178,7 +178,8 @@ namespace GRA.Domain.Service
 
         public async Task<ICollection<AvatarItem>> GetItemsByLayerAsync(int layerId)
         {
-            return await _avatarItemRepository.GetByLayerAsync(layerId);
+            var userId = GetClaimId(ClaimType.UserId);
+            return await _avatarItemRepository.GetUserItemsByLayerAsync(userId,layerId);
         }
 
         public async Task<AvatarItem> GetItemByLayerPositionSortOrderAsync(int layerPosition,
@@ -431,28 +432,26 @@ namespace GRA.Domain.Service
             return await _avatarElementRepository.GetUserAvatarAsync(GetActiveUserId());
         }
 
-        public async Task<Dictionary<AvatarBundle, bool>> GetUserUnlockBundlesAsync()
+        public async Task<List<AvatarBundle>> GetUserUnlockBundlesAsync()
         {
             var userHistory = await _avatarBundleRepository.UserHistoryAsync(GetActiveUserId());
-            var bundles = new Dictionary<AvatarBundle, bool>();
+            var bundles = new List<AvatarBundle>();
             foreach (var historyItem in userHistory.Where(_ => _.AvatarBundleId.HasValue))
             {
-                if (!bundles.Keys.Any(bundle => bundle.Id == historyItem.AvatarBundleId))
+                if (!bundles.Any(bundle => bundle.Id == historyItem.AvatarBundleId))
                 {
-                    bundles.Add(await GetBundleByIdAsync(historyItem.AvatarBundleId.Value),
-                        historyItem.HasBeenViewed ?? false);
+                    var bundle = await GetBundleByIdAsync(historyItem.AvatarBundleId.Value);
+                    bundle.HasBeenViewed = historyItem.HasBeenViewed ?? false;
+                    bundles.Add(bundle);
                 }
             }
             return bundles;
         }
 
-        public async Task UpdateUserLogsAsync(List<UserLog> userLog)
+        public async Task UpdateBundleHasBeenViewedAsync(int bundleId)
         {
-            foreach (var bundle in userLog)
-            {
-                await _avatarBundleRepository.UpdateHasBeenViewedAsync(GetActiveUserId(), 
-                    bundle.AvatarBundleId.Value);
-            }
+            await _avatarBundleRepository.UpdateHasBeenViewedAsync(GetActiveUserId(),
+                bundleId);
         }
 
         public async Task UpdateUserAvatarAsync(ICollection<AvatarLayer> selectionLayers)
@@ -500,6 +499,7 @@ namespace GRA.Domain.Service
         public async Task<AvatarBundle> GetBundleByIdAsync(int id, bool includeDeleted = false)
         {
             var bundle = await _avatarBundleRepository.GetByIdAsync(id, includeDeleted);
+            bundle.AvatarItems = await _avatarItemRepository.GetBundleItemsAsync(id);
             if (bundle == null)
             {
                 throw new GraException("The requested bundle could not be accessed or does not exist.");
@@ -849,8 +849,6 @@ namespace GRA.Domain.Service
                     Complete = true,
                     Status = "<strong>Import Complete</strong>"
                 };
-
-
             }
             else
             {

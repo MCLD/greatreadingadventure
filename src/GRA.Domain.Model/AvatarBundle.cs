@@ -10,9 +10,11 @@ namespace GRA.Domain.Model
         [Required]
         [MaxLength(255)]
         public string Name { get; set; }
+
         public bool CanBeUnlocked { get; set; }
         public bool IsDeleted { get; set; }
         public bool HasBeenAwarded { get; set; }
+        public bool? HasBeenViewed { get; set; }
 
         public ICollection<AvatarItem> AvatarItems { get; set; }
     }

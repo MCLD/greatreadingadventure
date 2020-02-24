@@ -52,30 +52,17 @@ namespace GRA.Controllers
                 return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
             }
 
-            var model = new AvatarJsonModel
-            {
-                Layers = _mapper
-                .Map<ICollection<AvatarJsonModel.AvatarLayer>>(userWardrobe)
-            };
             var layerGroupings = userWardrobe
                 .GroupBy(_ => _.GroupId)
                 .Select(_ => _.ToList())
                 .ToList();
             var usersresult = await _avatarService.GetUserUnlockBundlesAsync();
-            var bundles = new AvatarBundleJsonModel
-            {
-                Bundles = _mapper
-                .Map<List<AvatarBundleJsonModel.AvatarBundle>>(usersresult.Keys.ToList())
-            };
             var viewModel = new AvatarViewModel
             {
                 LayerGroupings = layerGroupings,
-                Bundles = usersresult.Keys.ToList(),
-                ViewedBundles = usersresult.Values.ToList(),
+                Bundles = usersresult,
                 DefaultLayer = userWardrobe.First(_ => _.DefaultLayer).Id,
-                ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/"),
-                AvatarPiecesJson = Newtonsoft.Json.JsonConvert.SerializeObject(model),
-                AvatarBundlesJson = Newtonsoft.Json.JsonConvert.SerializeObject(bundles)
+                ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/")
             };
             var userAvatar = await _avatarService.GetUserAvatarAsync();
             viewModel.NewAvatar = userAvatar.Count == 0;
@@ -97,13 +84,11 @@ namespace GRA.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> UpdateUserLogs(string selectionJson)
+        public async Task<JsonResult> UpdateBundleHasBeenViewed(int bundleId)
         {
             try
             {
-                var selection = Newtonsoft.Json.JsonConvert
-                    .DeserializeObject<List<UserLog>>(selectionJson);
-                await _avatarService.UpdateUserLogsAsync(selection);
+                await _avatarService.UpdateBundleHasBeenViewedAsync(bundleId);
                 return Json(new { success = true });
             }
             catch (GraException gex)
@@ -208,6 +193,52 @@ namespace GRA.Controllers
                 }
             }
             return RedirectToAction(nameof(Share));
+        }
+
+        public async Task<IActionResult> GetLayersItems(
+            string type, int layerId, int selectedItemId, int bundleId, int[] selectedItemIds)
+        {
+            try
+            {
+                var layeritems = await _avatarService.GetItemsByLayerAsync(layerId);
+                if (type == "Item")
+                {
+                    var model = new AvatarViewModel
+                    {
+                        LayerItems = layeritems,
+                        SelectedItemId = selectedItemId,
+                        ItemPath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/"),
+                        LayerId = layerId
+                    };
+                    return PartialView("_SlickPartial", model);
+                }
+                else if(type == "Color")
+                {
+                    var model = new AvatarViewModel
+                    {
+                        LayerColors = await _avatarService.GetColorsByLayerAsync(layerId),
+                        SelectedItemId = selectedItemId,
+                        ItemPath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/"),
+                        LayerId = layerId
+                    };
+                    return PartialView("_SlickPartial", model);
+                }
+                else
+                {
+                    var bundle = await _avatarService.GetBundleByIdAsync(bundleId);
+                    var model = new AvatarViewModel
+                    {
+                        Bundle = bundle,
+                        SelectedItemIds = selectedItemIds,
+                        ItemPath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/"),
+                    };
+                    return PartialView("_SlickPartial", model);
+                }
+            }
+            catch
+            {
+                return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
+            }
         }
 
         private async Task UpdateAvatarAsync(string selectionJson)

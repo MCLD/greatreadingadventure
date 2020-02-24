@@ -46,7 +46,9 @@ namespace GRA.Data.Repository
         public async Task UpdateHasBeenViewedAsync(int userId, int bundleId)
         {
             var userLogBundles = await _context.UserLogs
-                .Where(_ => _.UserId == userId && !_.IsDeleted && _.AvatarBundleId == bundleId)
+                .Where(_ => _.UserId == userId
+                && !_.IsDeleted
+                && _.AvatarBundleId == bundleId)
                 .ToListAsync();
 
             foreach (var bundle in userLogBundles)
