@@ -26,6 +26,7 @@ namespace GRA.Controllers.MissionControl
         private readonly SiteService _siteService;
         private readonly TriggerService _triggerService;
         private readonly VendorCodeService _vendorCodeService;
+        private readonly UserService _userService;
 
         public TriggersController(ILogger<TriggersController> logger,
             ServiceFacade.Controller context,
@@ -34,7 +35,8 @@ namespace GRA.Controllers.MissionControl
             EventService eventService,
             SiteService siteService,
             TriggerService triggerService,
-            VendorCodeService vendorCodeService)
+            VendorCodeService vendorCodeService,
+            UserService userService)
             : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -47,6 +49,7 @@ namespace GRA.Controllers.MissionControl
                 ?? throw new ArgumentNullException(nameof(triggerService));
             _vendorCodeService = vendorCodeService
                 ?? throw new ArgumentNullException(nameof(vendorCodeService));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             PageTitle = "Triggers";
         }
 
@@ -412,6 +415,8 @@ namespace GRA.Controllers.MissionControl
             var viewModel = new TriggersDetailViewModel
             {
                 Trigger = trigger,
+                CreatedByName = await _userService.GetUsersNameByIdAsync(trigger.CreatedBy),
+                CanViewParticipants = UserHasPermission(Permission.ViewParticipantDetails),
                 Action = "Edit",
                 IsSecretCode = !string.IsNullOrWhiteSpace(trigger.SecretCode),
                 BadgeMakerUrl = GetBadgeMakerUrl(siteUrl, site.FromEmailAddress),
