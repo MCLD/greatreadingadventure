@@ -18,6 +18,10 @@ namespace GRA.Controllers
 {
     public class ChallengesController : Base.UserController
     {
+        public const string StatusAll = "All";
+        public const string StatusCompleted = "Completed";
+        public const string StatusUncompleted = "Uncompleted";
+
         private readonly ILogger<ChallengesController> _logger;
         private readonly AutoMapper.IMapper _mapper;
         private readonly ActivityService _activityService;
@@ -51,6 +55,7 @@ namespace GRA.Controllers
             string Categories = null,
             string Group = null,
             bool Favorites = false,
+            string Status = null,
             int page = 1,
             System.Net.HttpStatusCode httpStatus = System.Net.HttpStatusCode.OK)
         {
@@ -78,6 +83,16 @@ namespace GRA.Controllers
             if (AuthUser.Identity.IsAuthenticated)
             {
                 filter.Favorites = Favorites;
+                if (string.IsNullOrWhiteSpace(Status) 
+                    || string.Equals(Status, StatusUncompleted, StringComparison.OrdinalIgnoreCase))
+                {
+                    filter.IsCompleted = false;
+                }
+                else if (string.Equals(Status, StatusCompleted,
+                    StringComparison.OrdinalIgnoreCase)) 
+                {
+                    filter.IsCompleted = true;
+                }
             }
 
             ChallengeGroup challengeGroup = null;
@@ -138,6 +153,7 @@ namespace GRA.Controllers
                 Program = Program,
                 Categories = Categories,
                 Favorites = Favorites,
+                Status = Status,
                 IsActive = isActive,
                 IsLoggedIn = AuthUser.Identity.IsAuthenticated,
                 CategoryIds = filter.CategoryIds,
@@ -230,6 +246,7 @@ namespace GRA.Controllers
                 model.Program,
                 model.Categories,
                 model.Favorites,
+                model.Status,
                 Group = model.ChallengeGroup?.Stub
             });
         }

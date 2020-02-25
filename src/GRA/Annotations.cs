@@ -122,6 +122,7 @@
             public const string MyFavorites = "My Favorites";
             public const string Name = "Name";
             public const string NewMail = "New Mail!";
+            public const string No = "No";
             public const string NoChallenges = "No Challenges";
             public const string NoEvents = "No Events";
             public const string NoMail = "You currently have no mail.";
@@ -148,6 +149,7 @@
             public const string SentOn = "Sent to you on {0}";
             public const string Share = "Share";
             public const string SignedInAs = "You are now signed in as {0}.";
+            public const string Status = "Status";
             public const string Subject = "Subject: {0}";
             public const string SwitchTo = "Switch To";
             public const string TotalPoints = "Total Points";
@@ -155,10 +157,14 @@
             public const string UpdatedItem = "Updated: {0}";
             public const string UpgradeToGroup = "Upgrade to Group";
             public const string UseMyZipCode = "Use my ZIP code";
+            public const string ViewAll = "View All";
             public const string ViewAttachment = "View Attachment";
+            public const string ViewCompleted = "View Completed";
+            public const string ViewUncompleted = "View Uncompleted";
             public const string What = "What";
             public const string When = "When";
             public const string Where = "Where";
+            public const string Yes = "Yes";
         }
 
         public static class Title

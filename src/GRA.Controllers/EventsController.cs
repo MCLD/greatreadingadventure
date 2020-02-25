@@ -19,6 +19,10 @@ namespace GRA.Controllers
 {
     public class EventsController : Base.UserController
     {
+        public const string VisitedAll = "All";
+        public const string VisitedNo = "No";
+        public const string VisitedYes = "Yes";
+
         private readonly ILogger<EventsController> _logger;
         private readonly ActivityService _activityService;
         private readonly EventService _eventService;
@@ -56,7 +60,8 @@ namespace GRA.Controllers
             int? program = null,
             string StartDate = null,
             string EndDate = null,
-            bool Favorites = false)
+            bool Favorites = false,
+            string Status = null)
         {
             var site = await GetCurrentSiteAsync();
             if (!string.IsNullOrEmpty(site.ExternalEventListUrl))
@@ -76,7 +81,8 @@ namespace GRA.Controllers
                 StartDate,
                 EndDate,
                 true,
-                Favorites);
+                Favorites,
+                Status);
         }
 
         public async Task<IActionResult> Index(int page = 1,
@@ -91,6 +97,7 @@ namespace GRA.Controllers
             string EndDate = null,
             bool CommunityExperiences = false,
             bool Favorites = false,
+            string Visited = null,
             HttpStatusCode httpStatus = HttpStatusCode.OK)
         {
             var site = await GetCurrentSiteAsync();
@@ -123,6 +130,15 @@ namespace GRA.Controllers
             if (AuthUser.Identity.IsAuthenticated)
             {
                 filter.Favorites = Favorites;
+                if (string.IsNullOrWhiteSpace(Visited)
+                    || string.Equals(Visited, VisitedNo, StringComparison.OrdinalIgnoreCase))
+                {
+                    filter.IsAttended = false;
+                }
+                else if (string.Equals(Visited, VisitedYes, StringComparison.OrdinalIgnoreCase))
+                {
+                    filter.IsAttended = true;
+                }
             }
             if (nearSearchEnabled)
             {
@@ -208,6 +224,7 @@ namespace GRA.Controllers
                 ProgramId = program,
                 ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
                 CommunityExperiences = CommunityExperiences,
+                Visited = Visited,
                 ShowNearSearch = nearSearchEnabled
             };
 
@@ -332,6 +349,7 @@ namespace GRA.Controllers
                 StartDate = startDate,
                 EndDate = endDate,
                 model.Favorites,
+                model.Visited,
                 CommunityExperiences = isCommunityExperience
             });
         }

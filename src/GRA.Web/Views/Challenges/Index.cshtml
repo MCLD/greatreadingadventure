@@ -86,11 +86,32 @@
                                 </div>
                             </div>
                         }
+                        @if (Model.IsLoggedIn)
+                        {
+                            <div class="row row-spacing">
+                                <div class="col-xs-12 col-sm-2" style="margin-bottom:5px;">
+                                    <span style="font-size:large;">@SharedLocalizer[GRA.Annotations.Interface.Status]:</span>
+                                </div>
+                                <div class="col-xs-12 col-sm-10">
+                                    <select asp-for="Status" class="form-control">
+                                        <option value="@ChallengesController.StatusUncompleted">@SharedLocalizer[GRA.Annotations.Interface.ViewUncompleted]</option>
+                                        <option value="@ChallengesController.StatusCompleted">@SharedLocalizer[GRA.Annotations.Interface.ViewCompleted]</option>
+                                        <option value="@ChallengesController.StatusAll">@SharedLocalizer[GRA.Annotations.Interface.ViewAll]</option>
+                                    </select>
+                                </div>
+                            </div>
+                        }
                         <div class="row">
                             @if (Model.IsLoggedIn)
                             {
                                 <div class="col-xs-12 col-sm-4 col-md-3 row-spacing">
-                                    <a asp-action="Index" asp-route-Search="@Model.Search" asp-route-Program="@Model.Program" asp-route-Categories="@Model.Categories" asp-route-Favorites="@(Model.Favorites == true ? null : "True")" class="btn btn-block @(Model.Favorites == true ? "btn-success" : "btn-default")">
+                                    <a asp-action="Index" 
+                                       asp-route-Search="@Model.Search" 
+                                       asp-route-Program="@Model.Program" 
+                                       asp-route-Categories="@Model.Categories"
+                                       asp-route-Status="@Model.Status" 
+                                       asp-route-Favorites="@(Model.Favorites == true ? null : "True")" 
+                                       class="btn btn-block @(Model.Favorites == true ? "btn-success" : "btn-default")">
                                         <span class="fa @(Model.Favorites == true ? "fa-star" : "fa-star-o")"></span>
                                         @SharedLocalizer[GRA.Annotations.Interface.MyFavorites]
                                     </a>
@@ -142,6 +163,7 @@
                                     <input asp-for="Favorites" type="hidden" />
                                     <input asp-for="Program" type="hidden" />
                                     <input asp-for="Search" type="hidden" />
+                                    <input asp-for="Status" type="hidden" />
                                     <input asp-for="PaginateModel.CurrentPage" type="hidden" />
                                 </noscript>
                                 <div>

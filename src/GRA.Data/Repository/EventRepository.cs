@@ -184,16 +184,30 @@ namespace GRA.Data.Repository
             }
 
             // filter for favorites
-            if (filter.Favorites == true && filter.FavoritesUserId.HasValue)
+            if (filter.Favorites == true && filter.CurrentUserId.HasValue)
             {
                 var userFavoriteEvents = _context.UserFavoriteEvents
                     .AsNoTracking()
-                    .Where(_ => _.UserId == filter.FavoritesUserId);
+                    .Where(_ => _.UserId == filter.CurrentUserId);
 
                 events = from eventList in events
-                             join userFavorites in userFavoriteEvents
-                             on eventList.Id equals userFavorites.EventId
-                             select eventList;
+                         join userFavorites in userFavoriteEvents
+                         on eventList.Id equals userFavorites.EventId
+                         select eventList;
+            }
+
+            // filter for attended
+            if (filter.IsAttended.HasValue && filter.CurrentUserId.HasValue)
+            {
+                var userAttendedEvents = _context.UserLogs
+                    .AsNoTracking()
+                    .Where(_ => _.UserId == filter.CurrentUserId
+                        && _.EventId.HasValue
+                        && !_.IsDeleted)
+                    .Select(_ => _.EventId);
+
+                events = events
+                    .Where(_ => userAttendedEvents.Contains(_.Id) == filter.IsAttended.Value);
             }
 
             // apply search

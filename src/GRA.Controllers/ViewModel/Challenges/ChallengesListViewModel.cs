@@ -15,8 +15,9 @@ namespace GRA.Controllers.ViewModel.Challenges
         public int? Program { get; set; }
         public string Categories { get; set; }
         public bool? Favorites { get; set; }
+        public string Status { get; set; }
         public bool IsActive { get; set; }
-        public bool IsLoggedIn { get; set; }     
+        public bool IsLoggedIn { get; set; }
 
         public SelectList ProgramList { get; set; }
         public SelectList CategoryList { get; set; }

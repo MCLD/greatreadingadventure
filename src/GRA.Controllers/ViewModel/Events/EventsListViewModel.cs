@@ -44,6 +44,9 @@ namespace GRA.Controllers.ViewModel.Events
 
         public bool? Favorites { get; set; }
 
+        [DisplayName(DisplayNames.Visited)]
+        public string Visited { get; set; }
+
         public SelectList SystemList { get; set; }
         public SelectList BranchList { get; set; }
         public SelectList LocationList { get; set; }

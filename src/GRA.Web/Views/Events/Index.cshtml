@@ -47,6 +47,7 @@
                 </div>
                 <form asp-controller="Events" asp-action="Index" method="post" role="form">
                     <button type="submit" class="hide"></button>
+                    <input asp-for="Favorites" type="hidden" />
                     <input asp-for="UseLocation" type="hidden" />
                     <input asp-for="CommunityExperiences"
                            type="hidden"
@@ -135,6 +136,19 @@
                             </div>
                         </div>
                     }
+                    @if (Model.IsLoggedIn)
+                    {
+                        <div class="row row-spacing">
+                            <div class="col-xs-12">
+                                <label asp-for="Visited" class="control-label"></label>
+                                <select asp-for="Visited" class="form-control">
+                                    <option value="@EventsController.VisitedNo">@SharedLocalizer[GRA.Annotations.Interface.No]</option>
+                                    <option value="@EventsController.VisitedYes">@SharedLocalizer[GRA.Annotations.Interface.Yes]</option>
+                                    <option value="@EventsController.VisitedAll">@SharedLocalizer[GRA.Annotations.Interface.ViewAll]</option>
+                                </select>
+                            </div>
+                        </div>
+                    }
 
                     <div class="row row-spacing">
                         <div class="col-xs-12">
@@ -160,6 +174,7 @@
                                            asp-route-Program="@Model.ProgramId"
                                            asp-route-StartDate="@Model.StartDate"
                                            asp-route-EndDate="@Model.EndDate"
+                                           asp-route-Visited="@Model.Visited"
                                            asp-route-Favorites="@(Model.Favorites == true ? null : "True")"
                                            class="btn btn-block @(Model.Favorites == true ? "btn-success" : "btn-default")">
                                             <span class="fa @(Model.Favorites == true ? "fa-star" : "fa-star-o")"></span>
@@ -221,6 +236,7 @@
                                     <input asp-for="ProgramId" type="hidden" />
                                     <input asp-for="StartDate" type="hidden" />
                                     <input asp-for="EndDate" type="hidden" />
+                                    <input asp-for="Visited" type="hidden" />
                                     <input asp-for="CommunityExperiences" type="hidden" />
                                     <input asp-for="UseLocation" type="hidden" />
                                     <input asp-for="PaginateModel.CurrentPage" type="hidden" />
@@ -247,6 +263,7 @@
                                                            asp-route-EndDate="@Model.EndDate?.ToShortDateString()"
                                                            asp-route-Program="@Model.ProgramId"
                                                            asp-route-Favorite="@Model.Favorites"
+                                                           asp-route-Visited="@Model.Visited"
                                                            asp-route-Sort="@nameof(GRA.Domain.Model.SortEventsBy.StartDate)">@SharedLocalizer[GRA.Annotations.Interface.When]</a>
                                                     </th>
                                                 }
@@ -268,6 +285,7 @@
                                                            asp-route-EndDate="@Model.EndDate?.ToShortDateString()"
                                                            asp-route-Program="@Model.ProgramId"
                                                            asp-route-Favorite="@Model.Favorites"
+                                                           asp-route-Visited="@Model.Visited"
                                                            asp-route-Sort="@nameof(GRA.Domain.Model.SortEventsBy.Distance)">@SharedLocalizer[GRA.Annotations.Interface.Distance]</a>
                                                     </th>
 

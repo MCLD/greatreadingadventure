@@ -862,6 +862,11 @@ namespace GRA.Domain.Service
                     BadgeFilename = badge.Filename
                 });
 
+                // find if the trigger is related to an event
+                var relatedEvents = await _eventRepository.GetRelatedEventsForTriggerAsync(
+                    trigger.Id);
+                var relatedEventId = relatedEvents.FirstOrDefault()?.Id;
+
                 // add the award to the user's history
                 await _userLogRepository.AddSaveAsync(userId, new UserLog
                 {
@@ -869,6 +874,8 @@ namespace GRA.Domain.Service
                     PointsEarned = pointsAwarded,
                     IsDeleted = false,
                     BadgeId = trigger.AwardBadgeId,
+                    EventId = relatedEventId,
+                    TriggerId = trigger.Id,
                     Description = trigger.AwardMessage
                 });
 
@@ -1027,6 +1034,11 @@ namespace GRA.Domain.Service
                 BadgeId = trigger.AwardBadgeId,
                 BadgeFilename = badge.Filename
             });
+            
+            // find if the trigger is related to an event
+            var relatedEvents = await _eventRepository.GetRelatedEventsForTriggerAsync(
+                    trigger.Id);
+            var relatedEventId = relatedEvents.FirstOrDefault()?.Id;
 
             // add the award to the user's history
             var userLog = new UserLog
@@ -1035,6 +1047,8 @@ namespace GRA.Domain.Service
                 PointsEarned = pointsAwarded,
                 IsDeleted = false,
                 BadgeId = trigger.AwardBadgeId,
+                EventId = relatedEventId,
+                TriggerId = trigger.Id,
                 Description = trigger.AwardMessage
             };
 

@@ -63,10 +63,9 @@ namespace GRA.Domain.Service
                 // paginate for public
                 filter.IsActive = true;
 
-                int userId = GetActiveUserId();
                 if (GetAuthUser().Identity.IsAuthenticated)
                 {
-                    filter.FavoritesUserId = userId;
+                    filter.CurrentUserId = GetActiveUserId();
                 }
 
                 data = await _eventRepository.PageAsync(filter);
@@ -83,7 +82,7 @@ namespace GRA.Domain.Service
                         else
                         {
                             graEvent.IsFavorited = await _eventRepository
-                                .IsUserFavoritedAsync(userId, graEvent.Id);
+                                .IsUserFavoritedAsync(filter.CurrentUserId.Value, graEvent.Id);
                         }
                     }
                 }
