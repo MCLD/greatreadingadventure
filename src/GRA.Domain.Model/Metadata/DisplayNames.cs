@@ -14,7 +14,6 @@
         public const string EmailAddress = "Email Address";
         public const string EndDate = "End Date";
         public const string Events = "Events";
-        public const string FilterFavorites = "Filter Favorites";
         public const string FinalStep = "Final Step";
         public const string FirstName = "First Name";
         public const string ForgotPassword = "Forgot your password?";
