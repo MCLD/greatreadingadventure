@@ -1,0 +1,24 @@
+﻿@model GRA.Controllers.ViewModel.Profile.BadgeInfoViewModel
+
+<div class="row row-spacing">
+    <div class="col-xs-4 col-sm-3" style="min-width: 110px;">
+        <img class="img-thumbnail badge-sm pull-left"
+             src="~/@Model.UserLog.BadgeFilename"
+             asp-append-version="true" />
+    </div>
+    <div class="col-xs-8 col-sm-9">
+        @if (!string.IsNullOrWhiteSpace(Model.HtmlMessage))
+        {
+            <p>@Html.Raw(Model.HtmlMessage)</p>
+        }
+        else
+        {
+            <p>@Model.Message</p>
+        }
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <p><em>@SharedLocalizer[GRA.Annotations.Info.EarnedOn, Model.UserLog.CreatedAt.ToShortDateString()]</em></p>
+    </div>
+</div>

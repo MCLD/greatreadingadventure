@@ -1,12 +1,8 @@
 ﻿@model GRA.Controllers.ViewModel.Profile.BadgeListViewModel
 
-<div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel">
+<div class="modal fade" id="earnedModal" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="modalDateLabel"></h4>
-            </div>
             <div class="modal-body" id="modal-body">
             </div>
             <div class="modal-footer">
@@ -15,6 +11,7 @@
         </div>
     </div>
 </div>
+
 <div class="row">
     <div class="col-xs-12 col-sm-10 col-sm-offset-1">
         <div class="panel panel-default">
@@ -26,46 +23,22 @@
                 @await Html.PartialAsync("_ProfilePartial")
 
                 <div class="row" style="padding: 10px 0;">
-                    <div class="col-xs-12">
-                        <div class="col-xs-12">
-                            <div class="row">
-                                @foreach (var badge in Model.Badges)
-                                {
-                                    var log = Model.UserLogs.FirstOrDefault(_ => _.BadgeId.Value == badge.Id);
-                                    @if(log != null)
-                                    {
-                                        <div class="col-xs-4 col-sm-3 col-md-2" style="padding-top:10px; padding-bottom:20px; text-align:center;">
-                                            @if (log.ChallengeId.HasValue)
-                                            {
-                                                <a asp-action="@nameof(ChallengesController.Detail)"
-                                                   asp-controller="@ChallengesController.Name"
-                                                   asp-route-id="@log.ChallengeId.Value.ToString()">
-                                                    <img src="~/@log.BadgeFilename" class="img-responsive img-thumbnail">
-                                                    <div style="height: 40px;"></div>
-                                                </a>
-                                            }
-                                            else
-                                            {
-                                                <a class="badge-item"
-                                                   data-badgeid="@log.BadgeId"
-                                                   href="#"
-                                                   data-toggle="modal"
-                                                   data-target="@(!log.ChallengeId.HasValue ? "#viewModal" : "")">
-                                                    <img src="~/@log.BadgeFilename" class="img-responsive img-thumbnail">
-                                                    <div style="height: 40px;"></div>
-                                                </a>
-                                            }
-                                        </div>
-                                    }
-                                }
-                            </div>
-                            @if (Model.PaginateModel.MaxPage > 1)
-                            {
-                                <paginate paginateModel="@Model.PaginateModel"></paginate>
-                            }
+                    @foreach (var userLog in Model.UserLogs)
+                    {
+                        <div class="col-xs-4 col-sm-3 col-md-2" style="padding-top:10px; padding-bottom:20px; text-align:center;">
+                            <a href="#"
+                                data-toggle="modal"
+                                data-target="#earnedModal"
+                                data-id="@userLog.Id">
+                                <img src="~/@userLog.BadgeFilename" class="img-responsive img-thumbnail">
+                            </a>
                         </div>
-                    </div>
+                    }
                 </div>
+                @if (Model.PaginateModel.MaxPage > 1)
+                {
+                    <paginate paginateModel="@Model.PaginateModel"></paginate>
+                }
             </div>
         </div>
     </div>
@@ -73,19 +46,19 @@
 @section scripts
 {
     <script>
-        $(".badge-item").on("click", function () {
-            @foreach(var log in Model.UserLogs)
-            {
-                <text>
-                if ($(this).data("badgeid") == @log.BadgeId) {
-                    $("#modalDateLabel").text("Earned on: @log.CreatedAt");
-                        @if (log.ChallengeId ==null)
-                        {
-                            @:$("#modal-body").html('@Html.Raw(log.Description).ToString()');
-                        }
-                }
-                </text>
-            }
+        $("#earnedModal").on("show.bs.modal", function (event) {
+            var button = $(event.relatedTarget);
+            var id = button.data("id");
+            var modal = $(this);
+
+            var modalBody = modal.find(".modal-body");
+            modalBody.html("<span class=\"fa fa-spinner fa-2x fa-pulse\"></span>");
+
+            $.get("@Url.Action(nameof(ProfileController.GetUserBadgeInfo), ProfileController.Name)",
+                { id },
+                function (response) {
+                    modalBody.html(response);
+                });
         });
     </script>
 }

@@ -532,20 +532,34 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<DataWithCount<IEnumerable<UserLog>>>
-            GetPaginatedUserHistoryAsync(int userId,
-            int? skip,
-            int? take)
+        public async Task<UserLog> GetUserLogByIdAsync(int id)
+        {
+            int requestedByUserId = GetActiveUserId();
+
+            var userLog = await _userLogRepository.GetByIdAsync(id);
+
+            if (requestedByUserId == userLog.UserId)
+            {
+                return userLog;
+            }
+            else
+            {
+                _logger.LogError("User {UserId} doesn't have permission to view user log {UserLogId}",
+                   requestedByUserId,
+                   id);
+                throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
+            }
+        }
+
+        public async Task<DataWithCount<ICollection<UserLog>>>
+            GetPaginatedUserHistoryAsync(int userId, UserLogFilter filter)
         {
             int requestedByUserId = GetActiveUserId();
             if (requestedByUserId == userId
                || HasPermission(Permission.ViewParticipantDetails))
             {
-                return new DataWithCount<IEnumerable<UserLog>>
-                {
-                    Data = await _userLogRepository.PageHistoryAsync(userId, skip, take),
-                    Count = await _userLogRepository.GetHistoryItemCountAsync(userId)
-                };
+                filter.UserIds = new List<int> { userId };
+                return await _userLogRepository.GetPaginatedHistoryAsync(filter);
             }
             else
             {

@@ -27,6 +27,7 @@
         public static class Info
         {
             public const string BetterSuitedOption = "This program may be better-suited to your age:";
+            public const string ChallengeBadgeEarned = "You earned this badge for completing the challenge: <a href=\"{0}\" target=\"_blank\">{1}</a>";
             public const string ChallengeBookLinkTitle = "Read <strong><em><a href=\"{0}\" target=\"_blank\">{1}</a></em></strong>";
             public const string ChallengeBookLinkTitleAuthor = "Read <strong><em><a href=\"{0}\" target=\"_blank\">{1}</a></em></strong> by <strong>{2}</strong>";
             public const string ChallengeBookTitle = "Read <strong><em>{0}</em></strong>";
@@ -36,6 +37,8 @@
             public const string CompleteTasksEarnPointsBadge = "When you complete <strong>{0}</strong>, you will earn <strong>{1}</strong> and a badge.";
             public const string ConfirmBookDelete = "Are you sure you want to delete this book from your book list:";
             public const string CouldNotFind = "We couldn't find what you were looking for. Sorry about that!";
+            public const string EarnedOn = "Earned on {0}";
+            public const string EventBadgeEarned = "You earned this badge for attending the event: <a href=\"{0}\" target=\"_blank\">{1}</a>";
             public const string EventLimitedToProgram = "This event is limited to the program: {0}";
             public const string Goal = "The goal of this program is {0} points.";
             public const string GroupAdd = "Add existing participant to your {0}";

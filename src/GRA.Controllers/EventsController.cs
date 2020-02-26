@@ -50,6 +50,8 @@ namespace GRA.Controllers
             PageTitle = _sharedLocalizer[Annotations.Title.Events];
         }
 
+        public static string Name { get { return "Events"; } }
+
         public async Task<IActionResult> CommunityExperiences(int page = 1,
             string sort = null,
             string search = null,

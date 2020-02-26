@@ -13,11 +13,11 @@
             </li>
             <li ActiveBy routeKey="Action" value="Books"><a asp-action="Books">@SharedLocalizer[GRA.Annotations.Interface.BookList]</a></li>
             <li ActiveBy routeKey="Action" value="History"><a asp-action="History">@SharedLocalizer[GRA.Annotations.Interface.History]</a></li>
+            <li ActiveBy routeKey="Action" value="Badges"><a asp-action="Badges">@SharedLocalizer[GRA.Annotations.Interface.Badges]</a></li>
             @if (Model.HasAccount)
             {
                 <li ActiveBy routeKey="Action" value="ChangePassword"><a asp-action="ChangePassword">@SharedLocalizer[GRA.Annotations.Interface.ChangePassword]</a></li>
             }
-            <li ActiveBy routeKey="Action" value="Badges"><a asp-action="Badges">@SharedLocalizer[GRA.Annotations.Interface.Badges]</a></li>
         </ul>
     </div>
 </div>
