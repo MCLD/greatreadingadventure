@@ -1389,4 +1389,40 @@
     <value>You are already unsubscribed from emails.</value>
     <comment>Message shown if the participant has clicked an unsubscribe link when they are unsubscribed.</comment>
   </data>
+  <data name="Badges" xml:space="preserve">
+    <value>Badges</value>
+    <comment>Button to view the participant's badges.</comment>
+  </data>
+  <data name="Earned on {0}" xml:space="preserve">
+    <value>Earned on {0}</value>
+    <comment>Text indicating when an item (such as a badge) was earned, {0} is replaced with the date it was earned</comment>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+    <comment>Prompt to select which challenges to view based on completion status</comment>
+  </data>
+  <data name="View All" xml:space="preserve">
+    <value>View All</value>
+    <comment>Selection for viewing all of an item (such as challenges)</comment>
+  </data>
+  <data name="View Completed" xml:space="preserve">
+    <value>View Completed</value>
+    <comment>Selection for viewing challenges that have been completed</comment>
+  </data>
+  <data name="View Uncompleted" xml:space="preserve">
+    <value>View Uncompleted</value>
+    <comment>Selection for viewing challenges that have not been completed</comment>
+  </data>
+  <data name="Visited" xml:space="preserve">
+    <value>Visited</value>
+    <comment>Prompt to select which events to view based on if they've been visited</comment>
+  </data>
+  <data name="You earned this badge for attending the event: &lt;a href=\{0}\ target=\_blank\&gt;{1}&lt;/a&gt;" xml:space="preserve">
+    <value>You earned this badge for attending the event: &lt;a href=\{0}\ target=\_blank\&gt;{1}&lt;/a&gt;</value>
+    <comment>Message explaining how the participant earned the badge, {0} is a link to the eventand {1} is the name of the event</comment>
+  </data>
+  <data name="You earned this badge for completing the challenge: &lt;a href=\{0}\ target=\_blank\&gt;{1}&lt;/a&gt;" xml:space="preserve">
+    <value>You earned this badge for completing the challenge: &lt;a href=\{0}\ target=\_blank\&gt;{1}&lt;/a&gt;</value>
+    <comment>Message explaining how the participant earned the badge, {0} is a link to the challenge and {1} is the name of the challenge</comment>
+  </data>
 </root>
