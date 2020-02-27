@@ -223,6 +223,7 @@
         var baseImagePath = "@Url.Content($"~/{Model.ImagePath}")";
         var xsZoom = false;
         var unsavedChanges = @Model.NewAvatar.ToString().ToLower();
+        var prevLayerSelected = [];
 
 
         $.ajaxSetup({
@@ -246,9 +247,32 @@
         function GetLayerById(layerId) {
             return $("#layer-container").find("#selector" + layerId);
         }
-        //Gets the Layer's selected item
-        function CurrentLayersSelectedItem() {
+        //Gets the selected Layer object
+        function CurrentSelectedLayer() {
             return $("#layer-container").find(".selected");
+        }
+        function GetFirstActiveSelectedItem() {
+            var visibleItems = $("#avatarItemSelectors").find(".slick-active");
+            for (var idx = 0; idx < visibleItems.length; idx++) {
+                for (var col = 0; col < $(visibleItems[idx]).length; col++) {
+                    var items = $(visibleItems[idx]).find(".selected");
+                    if (items.first().length > 0) {
+                        return items.first();
+                    }
+                }
+            }
+        }
+        function UpdateRemoveButtonForBundle(item) {
+            var layerId = item == undefined ? prevLayerSelected[0] : item.data("layer");
+            if (layerId != undefined) {
+                $("#removeButton").removeClass("hide");
+                var layer = GetLayerById(layerId);
+                $("#layerName").text(layer.data("name"));
+                $("#removeButton").data("layer", layerId);
+            }
+            else {
+                $("#removeButton").addClass("hide");
+            }
         }
         //returns the ItemId or ColorId for the first active object & marks it selected
         function SelectGetFirstActiveObjectId(type, layer) {
@@ -269,13 +293,18 @@
             return items;
         }
         //Updates the the layer's image
-        function UpdateAvatarContainer(type,itemId, srcStr, layerId) {
+        function UpdateAvatarContainer(type,id, srcStr, layerId, hide) {
             for (var idx = 0; idx < $(".avatar-container").length; idx++)
             {
                 var image = $($(".avatar-container")[idx]).find(".image" + layerId);
-                image.data(type,itemId);
+                image.data(type, id);
                 image.attr("src", srcStr);
-                image.removeClass("hide");
+                if (hide) {
+                    image.addClass("hide");
+                }
+                else {
+                    image.removeClass("hide");
+                }
             }
         }
 
@@ -321,7 +350,7 @@
         // When a layer tab is selected
         $(".avatar-layer-selector").on("click", function () {
             var layer = $(this);
-            var currentLayer = CurrentLayersSelectedItem();
+            var currentLayer = CurrentSelectedLayer();
             if (currentLayer == undefined || layer.data("layer") != currentLayer.data("layer"))
             {
                 currentLayer.removeClass("selected");
@@ -377,7 +406,7 @@
                 $(divId).slick("unslick");
             }
             $(divId).empty();
-            var layerObj = CurrentLayersSelectedItem();
+            var layerObj = CurrentSelectedLayer();
             var layerId = $(layerObj).data("layer");
             // if we're dealing with bundles
             if(layerId == 999) {
@@ -407,7 +436,7 @@
                     $($(divId).parent()).html(data);
                 }
                 })
-                .then(function () {
+            .then(function () {
                 var itemIndex = $(divId).data("index");
                 totalitems = $(divId).data("count");
                 lazyLoading = (totalitems > 15) ? true : false;
@@ -415,7 +444,7 @@
                 if (layerId == 999 && totalitems / 12 <= 1) {
                     drag = false;
                     infin = false;
-                }
+                    }
                 if (selectType =="Color") {
                     slickSettings.push(SlickSettings(768,(Math.floor(itemIndex/(rowCount*8))*8), 8,false, true));
                     slickSettings.push(SlickSettings(992,(Math.floor(itemIndex/(rowCount*10))*10), 10,false, true));
@@ -442,9 +471,16 @@
                     infinite: infin,
                     responsive: slickSettings,
                 });
+                if (layerId == 999) {
+                    var item = GetFirstActiveSelectedItem();
+                    UpdateRemoveButtonForBundle(item);
+                }
+                else {
+                    prevLayerSelected = [];
+                }
             });
         }
-
+        
         //Creates the slick data
         function SlickSettings(breakpnt,initslide, toshow,drag,arrows) {
             return {
@@ -486,20 +522,39 @@
         // When a user removes the layer's item
         $("#removeButton").on("click", function () {
             unsavedChanges = true;
-            if (!$("#removeButton").hasClass("hide") && $(".avatarItems").find(".selected") != undefined)
-            {
-                var layer = CurrentLayersSelectedItem();
-                $(".avatar-item-selector.selected").removeClass("selected");
-                $(".avatar-color-selector.selected").removeClass("selected");
-                for (var idx = 0; idx < $(".avatar-container").length; idx++)
-                {
-                    var image = $($(".avatar-container")[idx]).find(".image" + layer.data("layer"));
-                    image.data("item","");
-                    image.data("color","");
-                    image.addClass("hide").attr("src","/");
+            var button = $(this);
+            var layer = CurrentSelectedLayer();
+            if (layer.data("layer") != 999) {
+                if (!$("#removeButton").hasClass("hide") && $(".avatarItems").find(".selected") != undefined) {
+                    $(".avatar-item-selector.selected").removeClass("selected");
+                    $(".avatar-color-selector.selected").removeClass("selected");
+                    layer.data("item", "");
+                    layer.data("color", "");
+                    UpdateAvatarContainer("item", "", "/", layer.data("layer"),true);
                 }
-                layer.data("item","");
-                layer.data("color","");
+            }
+            else {
+                var itemsLayer = GetLayerById(button.data("layer"));
+                var itemId = GetLayersSelectedItemId(button.data("layer"));
+                itemsLayer.data("item", "");
+                var item = $("#avatarItemSelectors").find("img.avatar-item-selector[data-item='" + itemId + "']");
+                item.removeClass("selected");
+                var nextSelected = undefined;
+                UpdateAvatarContainer("item", "", "/", button.data("layer"),true);
+                prevLayerSelected.splice(0, 1); 
+                if (prevLayerSelected[0] != undefined) {
+                    nextSelected = $("#avatarItemSelectors").find("img.avatar-item-selector.selected[data-layer='" + prevLayerSelected[0] + "']");
+                    UpdateRemoveButtonForBundle(nextSelected);
+                }
+                else {
+                    nextSelected = GetFirstActiveSelectedItem();
+                    if (nextSelected == undefined) {
+                        $("#removeButton").addClass("hide");
+                    }
+                    else {
+                        UpdateRemoveButtonForBundle(nextSelected);
+                    }
+                }
             }
         });
 
@@ -511,7 +566,7 @@
                 xsZoom = false;
             }
             else {
-                var layer = CurrentLayersSelectedItem();
+                var layer = CurrentSelectedLayer();
                 var scale = layer.data("zoomscale");
                 var yOffset = layer.data("zoomyoffset");
                 $(this).children().removeClass("fa-search-plus").addClass("fa-search-minus");
@@ -551,9 +606,9 @@
         // Selecting an Item
         function SelectItem(item) {
             unsavedChanges = true;
-            var dataItem = $(item);
-            var layer = GetLayerById(dataItem.data("layer"));
-            var layerTab = CurrentLayersSelectedItem();
+            var newDataItem = $(item);
+            var itemsLayer = GetLayerById(newDataItem.data("layer"));
+            var layerTab = CurrentSelectedLayer();
             // If we're not on bundles remove selected item
             if (layerTab.data("layer") != 999) {
                 var oldItem = $("#avatarItemSelectors").find(".selected");
@@ -561,32 +616,38 @@
             }
             else {
                 // If a bundle, remove selected layer element
-                $("#avatarItemSelectors").find(".selected").each(function () {
-                    var currentItemId = GetLayersSelectedItemId(dataItem.data("layer"));
-                    console.log(currentItemId);
-                    if (currentItemId != dataItem.data("layer")) {
-                        var currentItem = $("#avatarItems").find("[data-item='" + currentItemId + "']");
-                        console.log(currentItem);
-                        currentItem.removeClass("selected");
+                var currentItemId = GetLayersSelectedItemId(newDataItem.data("layer"));
+                var currentItem = $("#avatarItems").find("[data-item='" + currentItemId + "']");
+                if (currentItemId != newDataItem.data("item")) {
+                    currentItem.removeClass("selected");
+                }
+                if (itemsLayer.data("layer") != prevLayerSelected[0]) {
+                    for (var idx = 0; idx < prevLayerSelected.length; idx++) {
+                        if (prevLayerSelected[idx] === itemsLayer.data("layer")) {
+                            prevLayerSelected.splice(idx, 1);
+                        }
                     }
-                });
+                    prevLayerSelected.unshift(itemsLayer.data("layer"));
+                    $("#removeButton").removeClass("hide");
+                    UpdateRemoveButtonForBundle(newDataItem);
+                }
             }
-            var itemId = dataItem.data("item");
-            dataItem.addClass("selected");
-            layer.data("item", itemId);
-            var colorId = layer.data("color");
-            var srcStr = baseImagePath + "layer" + layer.data("layer") + "/item" + itemId;
+            var itemId = newDataItem.data("item");
+            newDataItem.addClass("selected");
+            itemsLayer.data("item", itemId);
+            var colorId = itemsLayer.data("color");
+            var srcStr = baseImagePath + "layer" + itemsLayer.data("layer") + "/item" + itemId;
             // Handles the image path with the correct color
-            if (layer.data("showcolorselector") == "True") {
+            if (itemsLayer.data("showcolorselector") == "True") {
                 if ((colorId == undefined || colorId == "")) {
-                    colorId = SelectGetFirstActiveObjectId("Color",layer);
+                    colorId = SelectGetFirstActiveObjectId("Color",itemsLayer);
                 }
                 srcStr = srcStr + "/item_" + colorId + ".png";
             }
             else {
                 srcStr = srcStr + "/item.png";
             }
-            UpdateAvatarContainer("item",itemId,srcStr,layer.data("layer"));
+            UpdateAvatarContainer("item",itemId,srcStr,itemsLayer.data("layer"), false);
         };
 
         // Updates the color selected and removes the old
@@ -604,7 +665,7 @@
             }
             var srcStr = baseImagePath + "layer" + layer.data("layer") + "/item" + itemId + "/item_" + colorId + ".png";
             //updates both containers with the appropriate images
-            UpdateAvatarContainer("color",colorId,srcStr,layer.data("layer"));
+            UpdateAvatarContainer("color",colorId,srcStr,layer.data("layer"),false);
         };
 
         // Saves the Avatars items
