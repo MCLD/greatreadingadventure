@@ -187,6 +187,22 @@
         </div>
     }
 
+    @if (Model.Action == "Edit")
+    {
+        <div style="font-size:large;">
+            Created By:
+            @if (Model.CanViewParticipants)
+            {
+                <a asp-controller="Participants" asp-action="@nameof(ParticipantsController.Detail)" asp-route-id="@Model.Trigger.CreatedBy" target="_blank">@Model.CreatedByName</a>
+            }
+            else
+            {
+                @Model.CreatedByName
+            }
+        </div>
+    }
+
+
     <div class="col-xs-12 form-group-lg" style="margin-top: 2rem; margin-bottom: 2rem;">
         <label asp-for="Trigger.Name" class="control-label col-sm-3"></label>
         <div class="col-sm-9">

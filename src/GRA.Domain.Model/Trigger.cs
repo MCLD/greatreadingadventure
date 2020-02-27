@@ -38,9 +38,11 @@ namespace GRA.Domain.Model
 
         [DisplayName("Limit to System?")]
         public int? LimitToSystemId { get; set; }
+        public string LimitToSystemName { get; set; }
 
         [DisplayName("Limit to Branch?")]
         public int? LimitToBranchId { get; set; }
+        public string LimitToBranchName { get; set; }
 
         [DisplayName("Limit to Program?")]
         public int? LimitToProgramId { get; set; }
