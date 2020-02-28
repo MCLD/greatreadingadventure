@@ -53,6 +53,7 @@
                                          class="avatar-layer-selector@(Model.DefaultLayer == layer.Id ? " selected" : "")"
                                          data-layer="@layer.Id"
                                          data-name="@layer.Name"
+                                         data-removelabel="@SharedLocalizer[layer.RemoveLabel]"
                                          data-removable="@layer.CanBeEmpty"
                                          data-showitemselector="@layer.ShowItemSelector"
                                          data-showcolorselector="@layer.ShowColorSelector"
@@ -60,7 +61,7 @@
                                          data-color="@layer.SelectedColor"
                                          data-zoomscale="@layer.ZoomScale"
                                          data-zoomyoffset="@layer.ZoomYOffset"
-                                         data-colorrows="@(layer.ShowColorSelector ? (!layer.ShowItemSelector ? 5 : 2) : 0)"/>
+                                         data-colorrows="@(layer.ShowColorSelector ? (!layer.ShowItemSelector ? 5 : 2) : 0)" />
                                 }
                             </div>
                         }
@@ -71,7 +72,8 @@
                             : "/content/site1/avatarbundles/icon.png")"
                              id="selector999"
                              class="avatar-layer-selector"
-                             data-layer="999" data-name="Bundle"
+                             data-layer="999"
+                             data-name="@SharedLocalizer[GRA.Annotations.Interface.Bundle]"
                              data-showitemselector="True"
                              data-showcolorselector="False"
                              bundle-item=""
@@ -139,7 +141,7 @@
                                    role="button"
                                    aria-haspopup="true"
                                    aria-expanded="false">
-                                    No Unlocked Bundles <span class="caret"></span>
+                                    @SharedLocalizer[GRA.Annotations.Info.NoUnlockedBundles]<span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu"></ul>
                             }
@@ -152,7 +154,7 @@
                                role="button"
                                aria-haspopup="true"
                                aria-expanded="false">
-                                No Unlocked Bundles <span class="caret"></span>
+                                @SharedLocalizer[GRA.Annotations.Info.NoUnlockedBundles]<span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu"></ul>
                         }
@@ -189,7 +191,7 @@
                                 class="btn btn-lg btn-default hide"
                                 style="margin:5px;">
                             <span class="fa fa-ban"></span>
-                            No <span id="layerName"></span>
+                            <span id="layerName"></span>
                         </button>
                         <button id="saveAvatar"
                                 class="btn btn-lg @(Model.NewAvatar ? "btn-success" : "btn-default")"
@@ -267,7 +269,7 @@
             if (layerId != undefined) {
                 $("#removeButton").removeClass("hide");
                 var layer = GetLayerById(layerId);
-                $("#layerName").text(layer.data("name"));
+                $("#layerName").text(layer.data("removelabel"));
                 $("#removeButton").data("layer", layerId);
             }
             else {
@@ -281,7 +283,7 @@
             item.addClass("selected");
             return layer.data(type.toLowerCase());
         }
-        //Get all of the selected items 
+        //Get all of the selected items
         function GetAllSelectedItems() {
             var layers = $("#layer-container").find(".avatar-layer-selector");
             var items = new Array();
@@ -363,7 +365,7 @@
             layer.addClass("selected");
             if (layer.data("layer") == 999) {
                 $("#avatarBundles").removeClass("hide");
-                $("#bundle-selected").text("Select a Bundle ");
+                $("#bundle-selected").text("@SharedLocalizer[GRA.Annotations.Interface.SelectABundle] ");
                 $("#bundle-selected").append("<span class='caret'></span>");
                 $("#bundle-selected").data("bundleid", "");
                 $("#avatarItems").addClass("hide");
@@ -375,7 +377,7 @@
                 $("#avatarBundles").addClass("hide");
                 $("#avatarItems").removeClass("hide");
                 $("#removeButton").data("layer", layer.data("layer"));
-                $("#layerName").text(layer.data("name"));
+                $("#layerName").text(layer.data("removelabel"));
                 layer.data("removable") == "True" ?
                     $("#removeButton").removeClass("hide") :
                     $("#removeButton").addClass("hide");
@@ -480,7 +482,7 @@
                 }
             });
         }
-        
+
         //Creates the slick data
         function SlickSettings(breakpnt,initslide, toshow,drag,arrows) {
             return {
@@ -541,7 +543,7 @@
                 item.removeClass("selected");
                 var nextSelected = undefined;
                 UpdateAvatarContainer("item", "", "/", button.data("layer"),true);
-                prevLayerSelected.splice(0, 1); 
+                prevLayerSelected.splice(0, 1);
                 if (prevLayerSelected[0] != undefined) {
                     nextSelected = $("#avatarItemSelectors").find("img.avatar-item-selector.selected[data-layer='" + prevLayerSelected[0] + "']");
                     UpdateRemoveButtonForBundle(nextSelected);

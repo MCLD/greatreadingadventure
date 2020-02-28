@@ -56,6 +56,15 @@ namespace GRA.Controllers
                 .GroupBy(_ => _.GroupId)
                 .Select(_ => _.ToList())
                 .ToList();
+            foreach (var group in layerGroupings)
+            {
+                foreach (var layer in group)
+                {
+                    var removeLabel = "No " + layer.Name.ToLower();
+                    layer.Name = _sharedLocalizer[layer.Name];
+                    layer.RemoveLabel = _sharedLocalizer[removeLabel];
+                }
+            }
             var usersresult = await _avatarService.GetUserUnlockBundlesAsync();
             var viewModel = new AvatarViewModel
             {

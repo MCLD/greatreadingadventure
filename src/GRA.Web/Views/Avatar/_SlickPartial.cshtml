@@ -14,7 +14,7 @@
             <div>
                 <img data-item="@item.Id"
                      data-layer="@Model.LayerId"
-                     src="@(Model.ItemPath + "layer" + @Model.LayerId.ToString() + "/item" + item.Id + "/thumbnail.jpg")"
+                     src="/@(Model.ItemPath + "layer" + @Model.LayerId.ToString() + "/item" + item.Id + "/thumbnail.jpg")"
                      class="avatar-item-selector item@(item.Id) @(Model.SelectedItemId == item.Id ? "selected" : "")"
                      onclick="SelectItem(this)"/>
             </div>
@@ -35,7 +35,7 @@
             <div>
                 <div data-color="@item.Id"
                      data-layer="@Model.LayerId"
-                     src="@(Model.ItemPath + "layer" + @Model.LayerId.ToString() + "/item" + item.Id + "/thumbnail.jpg")"
+                     src="/@(Model.ItemPath + "layer" + @Model.LayerId.ToString() + "/item" + item.Id + "/thumbnail.jpg")"
                      class="avatar-color-selector color@(item.Id) @(Model.SelectedItemId == item.Id ? "selected" : "")"
                      style="background-color:#@item.Color"
                      onclick="SelectColor(this)"></div>
@@ -74,7 +74,7 @@
             <div>
                 <img data-item="@item.Id"
                      data-layer="@item.AvatarLayerId"
-                     src="@(Model.ItemPath + "layer" + item.AvatarLayerId + "/item" + item.Id + "/thumbnail.jpg")"
+                     src="/@(Model.ItemPath + "layer" + item.AvatarLayerId + "/item" + item.Id + "/thumbnail.jpg")"
                      class="avatar-item-selector item@(item.Id) @(Model.SelectedItemIds.Contains(item.Id) ? "selected" : "")"
                      onclick="SelectItem(this)"/>
             </div>
