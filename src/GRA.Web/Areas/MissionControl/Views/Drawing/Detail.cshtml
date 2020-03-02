@@ -29,6 +29,17 @@
     </div>
 </div>
 
+<div style="font-size:large; padding-top:10px;">
+    Created By:
+    @if (Model.CanViewParticipants)
+    {
+        <a asp-controller="Participants" asp-action="@nameof(ParticipantsController.Detail)" asp-route-id="@Model.Drawing.CreatedBy" target="_blank">@Model.CreatedByName</a>
+    }
+    else
+    {
+        @Model.CreatedByName
+    }
+</div>
 
 <div class="row" style="padding: 10px 0;">
     <div class="col-xs-12">
