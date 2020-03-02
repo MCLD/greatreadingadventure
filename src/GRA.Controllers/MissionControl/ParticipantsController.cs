@@ -133,6 +133,11 @@ namespace GRA.Controllers.MissionControl
             }
 
             var participantsList = await _userService.GetPaginatedUserListAsync(filter);
+            foreach (var user in participantsList.Data.ToList())
+            {
+                var roles = await _userService.GetUserRolesAsync(user.Id);
+                user.HasElevatedAccess = roles.Count > 0;
+            }
 
             var paginateModel = new PaginateViewModel
             {

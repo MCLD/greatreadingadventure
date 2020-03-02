@@ -34,6 +34,32 @@
         </div>
     </div>
 }
+@if (Model.CanViewDetails)
+{
+    <div class="row">
+        <div class="modal fade" id="warningModal" tabindex="-1" role="dialog" aria-labelledby="warningModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="deleteModalLabel">Participant with elevate roles</h4>
+                    </div>
+                    <div class="modal-body">
+                        <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                        <span id="modal-text">You're about to edit a user with elevated role(s). Do you wish to continue?</span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                        <input id="Id" name="Id" type="hidden" />
+                        <a id="elevatedAccessUrl" class="btn btn-primary pull-right" aria-label="Confirm">
+                            Edit Participant
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 @if (Model.ShowGroupsButton)
 {
@@ -179,9 +205,23 @@
                                 <td class="td-class">
                                     @if (Model.CanViewDetails)
                                     {
-                                        <a asp-action="Detail" asp-route-id="@user.Id" class="rowlink">
-                                            @user.CreatedAt.ToString("d")
-                                        </a>
+                                        if (user.HasElevatedAccess)
+                                        {
+                                            <a role="button"
+                                               data-link="@Url.Action(nameof(ParticipantsController.Detail),ParticipantsController.Name, new { id = user.Id})"
+                                               data-id="@user.Id"
+                                               data-toggle="modal"
+                                               data-target="#warningModal"
+                                               class="rowlink elevated-access-link">
+                                                @user.CreatedAt.ToString("d")
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a asp-action="Detail" asp-route-id="@user.Id" class="rowlink">
+                                                @user.CreatedAt.ToString("d")
+                                            </a>
+                                        }
                                     }
                                     else
                                     {
@@ -235,6 +275,10 @@
             $('.td-class').each(function() {
                 $(this).children('a.rowlink').height($(this).height() + 11);
             });
+        });
+        $(".elevated-access-link").on("click", function () {
+            var link = $(this)
+            $("#elevatedAccessUrl").attr("href",link.data("link"));
         });
         </text>
         }
