@@ -23,11 +23,19 @@
                     <span id="modal-text"></span>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                    <button id="buttonDelete" class="btn btn-danger pull-right" aria-label="Confirm">
-                        <span class="fa fa-remove" aria-hidden="true"></span>
-                        Delete
-                    </button>
+                    <form asp-controller="@PerformerManagementController.Name"
+                          asp-action="@nameof(PerformerManagementController.PerformerSelectionDelete)"
+                          method="post"
+                          role="form"
+                          id="deletePerformerForm">
+                        <input class="hidden" asp-for="Performer.Id" aria-hidden="true" />
+                        <input class="hidden" asp-for="BranchSelectionId" aria-hidden="true" />
+                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                        <button type="submit" id="buttonDelete" class="btn btn-danger pull-right" aria-label="Confirm">
+                            <span class="fa fa-remove" aria-hidden="true"></span>
+                            Delete
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -191,7 +199,7 @@
                             </td>
                             <td class="hidden-print" style="text-align:center;">
                                 <button type="button"
-                                        class="btn btn-xs btn-danger"
+                                        class="btn btn-xs btn-danger delete-selection"
                                         data-toggle="modal"
                                         data-target="#deleteModal"
                                         data-selectionid="@branchSelection.Id"
@@ -215,7 +223,6 @@
 
     <script>
         var performerCalendarUrl = "@Url.Action(nameof(PerformerManagementController.GetPerformerCalendar))";
-        var performerDeleteUrl = "@Url.Action(nameof(PerformerManagementController.PerformerSelectionDelete))";
         var secretCodeUrl = "@Url.Action(nameof(PerformerManagementController.SetSecretCode))";
 
         $("#editModal").on("show.bs.modal", function (event) {
@@ -230,24 +237,17 @@
             var button = $(event.relatedTarget);
             var branchName = button.data("branchname");
             var programName = button.data("programtitle");
-            alert(programName);
-            var selectionId = button.data("selectionid");
-            $("#buttonDelete").attr('data-selectionid', selectionId);
-            var modalhtml = "Are you sure you want to delete <strong>";
             $("#deleteModal").find("#modal-text").html("Are you sure you want to delete <strong>" +
                 branchName + "'s </strong> selection of <strong>" + programName + "</strong>?");
         });
 
-        $("#buttonDelete").on("click", function () {
-            var selectionId = $(this).data("selectionid");
-            $.post(performerDeleteUrl, {
-                performerId: "@Model.Performer.Id",
-                branchSelectionId: selectionId
-            }, function ()
-                {
-                    window.location.href = "@Url.Action(nameof(PerformerManagementController.PerformerSelections), new { id = Model.Performer.Id})";
-                });
-            });
+        $(".delete-selection").on("click", function () {
+            var selectionId = $(this);
+            var perfId = $("#deletePerformerForm").find("#Performer_Id");
+            var branchSelection = $("#deletePerformerForm").find("#BranchSelectionId");
+            perfId.val("@Model.Performer.Id");
+            branchSelection.val(selectionId.data("selectionid"));
+        });
 
         $(".secretCode").on("blur", function () {
             var input = $(this);

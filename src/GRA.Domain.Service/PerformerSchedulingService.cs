@@ -1745,6 +1745,7 @@ namespace GRA.Domain.Service
 
             currentBranchSelection.AgeGroupId = branchSelection.AgeGroupId;
             currentBranchSelection.KitId = branchSelection.KitId;
+            currentBranchSelection.IsDeleted = branchSelection.IsDeleted;
 
             await _psBranchSelectionRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
                 currentBranchSelection);
