@@ -372,11 +372,13 @@ namespace GRA.Data.Repository
                 if (savedChallengeTask == null)
                 {
                     status.WasComplete = false;
+                    var time = _dateTimeProvider.Now;
                     _context.UserChallengeTasks.Add(new Model.UserChallengeTask
                     {
                         ChallengeTaskId = updatedChallengeTask.Id,
                         UserId = userId,
-                        IsCompleted = updatedChallengeTask.IsCompleted ?? false
+                        IsCompleted = updatedChallengeTask.IsCompleted ?? false,
+                        CreatedAt = time
                     });
                 }
                 else
