@@ -1494,7 +1494,6 @@ namespace GRA.Domain.Service
             currentBranchSelection.RequestedStartTime = branchSelection.RequestedStartTime;
             currentBranchSelection.ScheduleStartTime = branchSelection.RequestedStartTime
                 .AddMinutes(-program.SetupTimeMinutes);
-            currentBranchSelection.IsDeleted = branchSelection.IsDeleted;
 
             await _psBranchSelectionRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
                 currentBranchSelection);
@@ -1745,13 +1744,20 @@ namespace GRA.Domain.Service
 
             currentBranchSelection.AgeGroupId = branchSelection.AgeGroupId;
             currentBranchSelection.KitId = branchSelection.KitId;
-            currentBranchSelection.IsDeleted = branchSelection.IsDeleted;
 
             await _psBranchSelectionRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
                 currentBranchSelection);
         }
+        public async Task DeleteBranchSelectionAsync(PsBranchSelection branchSelection)
+        {
+            var currentBranchSelection = await _psBranchSelectionRepository.GetByIdAsync(
+                branchSelection.Id);
+            currentBranchSelection.IsDeleted = true;
+            await _psBranchSelectionRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
+                currentBranchSelection);
+        }
 
-        public async Task<ICollection<PsBranchSelection>> GetSelectionsByBranchIdAsync(int branchId)
+            public async Task<ICollection<PsBranchSelection>> GetSelectionsByBranchIdAsync(int branchId)
         {
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))

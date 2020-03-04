@@ -259,7 +259,7 @@ namespace GRA.Controllers.MissionControl
                 var branch = await _siteService.GetBranchByIdAsync(branchSelection.BranchId);
                 var program = await _performerSchedulingService.GetProgramByIdAsync(branchSelection.ProgramId.Value);
                 branchSelection.IsDeleted = true;
-                await _performerSchedulingService.UpdateBranchProgramSelectionAsync(branchSelection);
+                await _performerSchedulingService.DeleteBranchSelectionAsync(branchSelection);
                 ShowAlertSuccess($"{branch.Name}'s selection of \"{program.Title}\" is deleted!.");
             }
             catch (GraException gex)
@@ -1568,7 +1568,7 @@ namespace GRA.Controllers.MissionControl
                 var branch = await _siteService.GetBranchByIdAsync(branchSelection.BranchId);
                 var kit = await _performerSchedulingService.GetKitByIdAsync(model.Kit.Id);
                 branchSelection.IsDeleted = true;
-                await _performerSchedulingService.UpdateBranchKitSelectionAsync(branchSelection);
+                await _performerSchedulingService.DeleteBranchSelectionAsync(branchSelection);
                 ShowAlertSuccess($"{branch.Name}'s selection of \"{kit.Name}\" is deleted!");
             }
             catch (GraException gex)
