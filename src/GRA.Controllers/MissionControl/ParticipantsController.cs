@@ -606,7 +606,7 @@ namespace GRA.Controllers.MissionControl
             {
                 ModelState.AddModelError("User.Username", "The Username field is required.");
             }
-
+            var roles = await _userService.GetUserRolesAsync(model.User.Id);
             var (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
                 SiteSettingKey.Users.AskEmailSubPermission);
             if (askEmailSubscription && model.User.IsEmailSubscribed

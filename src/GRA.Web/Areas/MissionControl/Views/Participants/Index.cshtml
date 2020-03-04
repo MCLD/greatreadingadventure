@@ -16,9 +16,19 @@
                         <div class="modal-title h4" id="deleteModalLabel">Delete participant</div>
                     </div>
                     <div class="modal-body">
-                        <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
-                        <span id="modal-text"></span>
-                    </div>
+                        @if (Model.CanRemoveParticipant)
+                        {
+                            <div class="row" id="elevatedWarning">
+                                <div class="col-xs-12">
+                                    <div class="alert alert-warning">
+                                        This user has an elevated role.
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                            <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                            <span id="modal-text"></span>
+                        </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
                         <form asp-controller="Participants" asp-action="Delete" method="post" role="form" style="display:inline">
@@ -28,32 +38,6 @@
                                 Delete
                             </button>
                         </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-}
-@if (Model.CanViewDetails)
-{
-    <div class="row">
-        <div class="modal fade" id="warningModal" tabindex="-1" role="dialog" aria-labelledby="warningModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="deleteModalLabel">Participant with elevate roles</h4>
-                    </div>
-                    <div class="modal-body">
-                        <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
-                        <span id="modal-text">You're about to edit a user with an elevated role. Do you wish to continue?</span>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <input id="Id" name="Id" type="hidden" />
-                        <a id="elevatedAccessUrl" class="btn btn-primary pull-right" aria-label="Confirm">
-                            Participant Details
-                        </a>
                     </div>
                 </div>
             </div>
@@ -205,23 +189,9 @@
                                 <td class="td-class">
                                     @if (Model.CanViewDetails)
                                     {
-                                        if (user.HasElevatedAccess)
-                                        {
-                                            <a role="button"
-                                               data-link="@Url.Action(nameof(ParticipantsController.Detail),ParticipantsController.Name, new { id = user.Id})"
-                                               data-id="@user.Id"
-                                               data-toggle="modal"
-                                               data-target="#warningModal"
-                                               class="rowlink elevated-access-link">
-                                                @user.CreatedAt.ToString("d")
-                                            </a>
-                                        }
-                                        else
-                                        {
-                                            <a asp-action="Detail" asp-route-id="@user.Id" class="rowlink">
-                                                @user.CreatedAt.ToString("d")
-                                            </a>
-                                        }
+                                        <a asp-action="Detail" asp-route-id="@user.Id" class="rowlink">
+                                            @user.CreatedAt.ToString("d")
+                                        </a>
                                     }
                                     else
                                     {
@@ -243,7 +213,8 @@
                                                 data-toggle="modal"
                                                 data-target="#deleteModal"
                                                 data-id="@user.Id"
-                                                data-name="@(user.Username ?? user.FullName)">
+                                                data-name="@(user.Username ?? user.FullName)"
+                                                data-iselevated="@user.HasElevatedAccess">
                                             <span class="fa fa-remove" aria-hidden="true"></span>
                                         </button>
                                     </td>
@@ -276,10 +247,6 @@
                 $(this).children('a.rowlink').height($(this).height() + 11);
             });
         });
-        $(".elevated-access-link").on("click", function () {
-            var link = $(this)
-            $("#elevatedAccessUrl").attr("href",link.data("link"));
-        });
         </text>
         }
 
@@ -289,6 +256,13 @@
             var button = $(event.relatedTarget);
             var id = button.data('id');
             var name = button.data('name');
+            var isElevated = button.data("iselevated");
+            if (isElevated == "True") {
+                $("#elevatedWarning").removeClass("hide");
+            }
+            else {
+                $("#elevatedWarning").addClass("hide");
+            }
             var modal = $(this);
             modal.find('#modal-text').text('Are you sure you wish to delete the participant "' + name + '" ?');
             modal.find('#Id').val(id);
