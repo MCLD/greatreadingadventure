@@ -190,6 +190,15 @@ namespace GRA.Controllers.MissionControl
         {
             if (!AuthUser.Identity.IsAuthenticated)
             {
+                var siteStage = GetSiteStage();
+                if (siteStage == SiteStage.ProgramOpen)
+                {
+                    ShowAlertWarning(_sharedLocalizer[Annotations.Validate.AuthorizationCodeWarning, $"<a href=\"{Url.Action(nameof(JoinController.AuthorizationCode), JoinController.Name)}\">{Annotations.Title.Join}</a>"]);
+                }
+                else if(siteStage == SiteStage.ProgramEnded)
+                {
+                    return RedirectToAction(nameof(JoinController.AuthorizationCode),JoinController.Name);
+                }
                 return RedirectToSignIn();
             }
 
