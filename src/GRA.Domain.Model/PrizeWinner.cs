@@ -21,5 +21,6 @@ namespace GRA.Domain.Model
         public string UserUsername { get; set; }
         public string PrizeName { get; set; }
         public string PrizeRedemptionInstructions { get; set; }
+        public int? VendorCodeId { get; set; }
     }
 }

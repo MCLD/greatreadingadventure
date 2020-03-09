@@ -36,6 +36,14 @@
             .gra-js-required {
                 display: none;
             }
+
+            .dropdown a:focus + .dropdown-menu {
+                display: block;
+            }
+
+            .dropdown-menu:hover {
+                display: block;
+            }
         </style>
     </noscript>
     @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.SiteCss))

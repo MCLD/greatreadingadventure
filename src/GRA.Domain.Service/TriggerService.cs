@@ -115,9 +115,15 @@ namespace GRA.Domain.Service
         public async Task RemoveAsync(int triggerId)
         {
             VerifyManagementPermission();
-            if (await _triggerRepository.HasDependentsAsync(triggerId))
+            var dependentTriggers = await _triggerRepository.DependentTriggers(triggerId);
+            if (dependentTriggers?.Count > 0)
             {
-                throw new GraException("Trigger has dependents");
+                var ex = new GraException("Trigger has dependencies");
+                foreach (var dependentTrigger in dependentTriggers)
+                {
+                    ex.Data.Add(dependentTrigger.Key, dependentTrigger.Value);
+                }
+                throw ex;
             }
             var trigger = await _triggerRepository.GetByIdAsync(triggerId);
             trigger.IsDeleted = true;

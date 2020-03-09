@@ -1747,8 +1747,16 @@ namespace GRA.Domain.Service
             await _psBranchSelectionRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
                 currentBranchSelection);
         }
+        public async Task DeleteBranchSelectionAsync(PsBranchSelection branchSelection)
+        {
+            var currentBranchSelection = await _psBranchSelectionRepository.GetByIdAsync(
+                branchSelection.Id);
+            currentBranchSelection.IsDeleted = true;
+            await _psBranchSelectionRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
+                currentBranchSelection);
+        }
 
-        public async Task<ICollection<PsBranchSelection>> GetSelectionsByBranchIdAsync(int branchId)
+            public async Task<ICollection<PsBranchSelection>> GetSelectionsByBranchIdAsync(int branchId)
         {
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))
@@ -1773,6 +1781,11 @@ namespace GRA.Domain.Service
         public async Task<int> GetKitCountAsync()
         {
             return await _psKitRepository.GetKitCountAsync();
+        }
+
+        public async Task<PsBranchSelection> GetBranchProgramSelectionByIdAsync(int id)
+        {
+            return await _psBranchSelectionRepository.GetByIdAsync(id);
         }
     }
 }

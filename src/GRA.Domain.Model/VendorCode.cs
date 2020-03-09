@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace GRA.Domain.Model
 {
@@ -16,7 +17,21 @@ namespace GRA.Domain.Model
 
         public string VendorCodeTypeDescription { get; set; }
         public bool? IsDonated { get; set; }
+        public bool? IsEmailAward { get; set; }
+
+        [MaxLength(255)]
+        public string EmailAwardAddress { get; set; }
+
+        public DateTime? EmailAwardReported { get; set; }
+        public DateTime? EmailAwardSent { get; set; }
+
         public bool CanBeDonated { get; set; }
+        public bool CanBeEmailAward { get; set; }
+        [MaxLength(255)]
         public string Url { get; set; }
+        [MaxLength(255)]
+        public string Details { get; set; }
+        public string ParticipantName { get; set; }
+        public int? BranchId { get; set; }
     }
 }

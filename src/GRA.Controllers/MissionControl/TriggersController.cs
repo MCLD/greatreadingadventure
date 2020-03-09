@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl.Triggers;
 using GRA.Controllers.ViewModel.Shared;
@@ -27,6 +29,8 @@ namespace GRA.Controllers.MissionControl
         private readonly TriggerService _triggerService;
         private readonly VendorCodeService _vendorCodeService;
         private readonly UserService _userService;
+
+        public static string Name { get { return "Triggers"; } }
 
         public TriggersController(ILogger<TriggersController> logger,
             ServiceFacade.Controller context,
@@ -713,7 +717,24 @@ namespace GRA.Controllers.MissionControl
             }
             catch (GraException gex)
             {
-                ShowAlertWarning("Unable to delete trigger: ", gex.Message);
+                if (gex.Data?.Count > 0)
+                {
+                    var sb = new StringBuilder();
+                    foreach (DictionaryEntry trigger in gex.Data)
+                    {
+                        sb.AppendFormat(System.Globalization.CultureInfo.InvariantCulture,
+                            "<a href=\"{0}\" target=\"_blank\">{1}</a>, ",
+                            Url.Action(nameof(TriggersController.Edit),
+                                new { controller = TriggersController.Name, id = trigger.Key }),
+                            trigger.Value);
+                    }
+                    ShowAlertWarning("Unable to delete event due to these trigger(s): ",
+                        sb.ToString().Trim(' ').Trim(','));
+                }
+                else
+                {
+                    ShowAlertWarning("Unable to delete trigger: ", gex.Message);
+                }
             }
             return RedirectToAction("Index");
         }
