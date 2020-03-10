@@ -239,23 +239,18 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Addresses()
         {
             var user = await _userService.GetDetails(GetActiveUserId());
-            if (user.IsAdmin)
-            {
-                var signupData = (await _emailManagementService.GetAllEmailRemindersAsync())
-                    .GroupBy(_ => _.SignUpSource)
-                    .Select(_ => new
-                    {
-                        DisplayText = _.Key + " (" + _.Distinct().Count().ToString() + ")",
-                        Value = _.Key
-                    });
-                var viewModel = new EmailAddressesViewModel
+            var signupData = (await _emailManagementService.GetAllEmailRemindersAsync())
+                .GroupBy(_ => _.SignUpSource)
+                .Select(_ => new
                 {
-                    SignUpSources = new SelectList(signupData, "Value", "DisplayText")
-                };
-                return View(viewModel);
-            }
-            ShowAlertDanger("Page not found.");
-            return RedirectToAction(nameof(EmailManagementController.Index));
+                    DisplayText = _.Key + " (" + _.Distinct().Count().ToString() + ")",
+                    Value = _.Key
+                });
+            var viewModel = new EmailAddressesViewModel
+            {
+                SignUpSources = new SelectList(signupData, "Value", "DisplayText")
+            };
+            return View(viewModel);
         }
 
         [HttpGet]
