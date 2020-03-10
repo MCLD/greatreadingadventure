@@ -122,7 +122,7 @@ namespace GRA.Controllers.MissionControl
                 viewModel.NewsCategories = await _newsService.GetAllCategoriesAsync();
                 foreach (var item in viewModel.NewsCategories)
                 {
-                   item.IsNew = _newsService.WithinTimeFrame(item.LastPostDate,7);
+                    item.IsNew = _newsService.WithinTimeFrame(item.LastPostDate, 7);
                 }
                 viewModel.PaginateModel = paginateModel;
                 viewModel.SiteAdministratorEmail = site.FromEmailAddress;
@@ -191,15 +191,14 @@ namespace GRA.Controllers.MissionControl
             if (!AuthUser.Identity.IsAuthenticated)
             {
                 var siteStage = GetSiteStage();
-                if (siteStage == SiteStage.ProgramOpen)
+                if (siteStage == SiteStage.ProgramOpen || siteStage == SiteStage.RegistrationOpen)
                 {
                     ShowAlertWarning(_sharedLocalizer[Annotations.Validate.AuthorizationCodeWarning, $"<a href=\"{Url.Action(nameof(JoinController.AuthorizationCode), JoinController.Name)}\">{Annotations.Title.Join}</a>"]);
                 }
-                else if(siteStage == SiteStage.ProgramEnded)
+                else
                 {
-                    return RedirectToAction(nameof(JoinController.AuthorizationCode),JoinController.Name);
+                    return RedirectToAction(nameof(JoinController.AuthorizationCode), JoinController.Name);
                 }
-                return RedirectToSignIn();
             }
 
             return View();
