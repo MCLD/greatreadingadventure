@@ -9,7 +9,7 @@
     <div class="row row-spacing">
         <div class="col-xs-12">
             <label asp-for="SignUpSource" class="control-label">SignUp Source</label>
-            <select asp-for="SignUpSource" asp-items="@Model.SignUpSources" class="form-control" formgroup>
+            <select asp-for="SignUpSource" asp-items="@Model.SignUpSources" class="form-control">
                 <option value="">@(Model.SignUpSources.Count() == 0 ? "No Email Reminders" : "Select A Signup Source")</option>
             </select>
             <span asp-validation-for="SignUpSource" class="text-danger"></span>

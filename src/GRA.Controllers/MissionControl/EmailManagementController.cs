@@ -257,31 +257,31 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.ManageBulkEmails)]
         public async Task<IActionResult> ExportAddresses(EmailAddressesViewModel viewModel)
         {
-            var user = await _userService.GetDetails(GetActiveUserId());
-            if (user.IsAdmin)
+            if (string.IsNullOrEmpty(viewModel.SignUpSource))
             {
-                var signupData = await _emailManagementService.GetAllEmailRemindersAsync();
-                if (string.IsNullOrEmpty(viewModel.SignUpSource))
-                {
-                    ShowAlertDanger("Could not export Email Reminders");
-                    ModelState.AddModelError(nameof(viewModel.SignUpSource), "The signup source is required.");
-                    viewModel.SignUpSources = new SelectList(signupData, "Value", "DisplayText");
-                    return View("Addresses", viewModel);
-                }
-                var emailReminders = await _emailManagementService.GetEmailRemindersBySignUpSourceAsync(viewModel.SignUpSource);
-                var json = JsonConvert.SerializeObject(emailReminders);
-                using(var ms = new MemoryStream()) {
-                    using (var writer = new StreamWriter(ms))
+                var signupData = (await _emailManagementService.GetAllEmailRemindersAsync())
+                    .GroupBy(_ => _.SignUpSource)
+                    .Select(_ => new
                     {
-                        writer.WriteLine(json);
-                        writer.Flush();
-                        writer.Close();
-                        return File(ms.ToArray(), "text/plain", $"Email_Reminders_{viewModel.SignUpSource}.txt");
-                    }
+                        DisplayText = _.Key + " (" + _.Distinct().Count().ToString() + ")",
+                        Value = _.Key
+                    });
+                ShowAlertDanger("Could not export Email Reminders");
+                ModelState.AddModelError(nameof(viewModel.SignUpSource), "The signup source is required.");
+                viewModel.SignUpSources = new SelectList(signupData, "Value", "DisplayText");
+                return View("Addresses", viewModel);
+            }
+            var emailReminders = await _emailManagementService.GetEmailRemindersBySignUpSourceAsync(viewModel.SignUpSource);
+            var json = JsonConvert.SerializeObject(emailReminders);
+            using(var ms = new MemoryStream()) {
+                using (var writer = new StreamWriter(ms))
+                {
+                    writer.WriteLine(json);
+                    writer.Flush();
+                    writer.Close();
+                    return File(ms.ToArray(), "text/plain", $"Email_Reminders_{viewModel.SignUpSource}.txt");
                 }
             }
-            ShowAlertDanger("Page not found.");
-            return RedirectToAction(nameof(EmailManagementController.Index));
         }
         
         [HttpPost]
