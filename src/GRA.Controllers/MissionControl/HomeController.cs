@@ -193,7 +193,9 @@ namespace GRA.Controllers.MissionControl
                 var siteStage = GetSiteStage();
                 if (siteStage == SiteStage.ProgramOpen || siteStage == SiteStage.RegistrationOpen)
                 {
-                    ShowAlertWarning(_sharedLocalizer[Annotations.Validate.AuthorizationCodeWarning, $"<a href=\"{Url.Action(nameof(JoinController.AuthorizationCode), JoinController.Name)}\">{Annotations.Title.Join}</a>"]);
+                    ShowAlertWarning(_sharedLocalizer[Annotations.Validate.AuthorizationCodeWarning,
+                        Url.Action(nameof(JoinController.AuthorizationCode), JoinController.Name)]);
+                    return RedirectToSignIn();
                 }
                 else
                 {
