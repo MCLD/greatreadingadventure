@@ -205,7 +205,7 @@
 
         public static class Validate
         {
-            public const string AuthorizationCodeWarning = "You must first sign in or, you need to {0} with an authorization code.";
+            public const string AuthorizationCodeWarning = "You must first sign in or, <a href=\"{0}\">join</a> with an authorization code.";
             public const string BookTitle = "When providing an author of a book, please also provide a title.";
             public const string Branch = "The branch you've selected is not valid, please select another branch.";
             public const string CodeAlready = "All selected participants already have that Secret Code.";
