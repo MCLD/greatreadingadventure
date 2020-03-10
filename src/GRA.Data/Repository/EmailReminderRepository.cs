@@ -29,12 +29,16 @@ namespace GRA.Data.Repository
             return lookup != null;
         }
 
-        public async Task<ICollection<EmailReminder>> GetAllEmailRemindersAsync()
+        public ICollection<DataWithCount<string>> GetAllEmailReminders()
         {
-            return await DbSet
-                .AsNoTracking()
-                .ProjectTo<EmailReminder>(_mapper.ConfigurationProvider)
-                .ToListAsync();
+            return DbSet
+                .GroupBy(_ => _.SignUpSource)
+                .Select(_ => new DataWithCount<string>
+                {
+                    Data = _.Key,
+                    Count = _.Distinct().Count()
+                })
+                .ToList();
         }
 
         public async Task<ICollection<EmailReminder>> GetEmailRemindersBySignUpSource(string signUpSource)

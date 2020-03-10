@@ -198,9 +198,9 @@ namespace GRA.Domain.Service
             return subscribed;
         }
 
-        public async Task<IEnumerable<EmailReminder>> GetAllEmailRemindersAsync()
+        public ICollection<DataWithCount<string>> GetAllEmailReminders()
         {
-            return await _emailReminderRepository.GetAllEmailRemindersAsync();
+            return _emailReminderRepository.GetAllEmailReminders();
         }
 
         public async Task<IEnumerable> GetEmailRemindersBySignUpSourceAsync(string signUpSource)

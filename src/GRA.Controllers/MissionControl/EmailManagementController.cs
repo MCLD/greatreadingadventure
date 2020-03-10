@@ -69,23 +69,22 @@ namespace GRA.Controllers.MissionControl
 
             var currentUser = await _userService.GetDetails(GetActiveUserId());
             int subscribedParticipants = await _emailManagementService.GetSubscriberCount();
-            var addressTypes = new List<object>();
-            var signupData = (await _emailManagementService.GetAllEmailRemindersAsync())
-                .GroupBy(_ => _.SignUpSource)
-                .Select(_ => new
-                {
-                    DisplayText = _.Key + " (" + _.Distinct().Count().ToString() + ")",
-                    Value = _.Key
-                });
-            foreach (var type in signupData)
+            var addressTypes = new List<SelectListItem>();
+            var allEmailReminders = _emailManagementService.GetAllEmailReminders();
+            foreach (var signupsource in allEmailReminders.ToList())
             {
-                addressTypes.Add(type);
+                var signupsourcedata = new SelectListItem
+                {
+                    Text = signupsource.Data + " (" + signupsource.Count.ToString() + ")",
+                    Value = signupsource.Data
+                };
+                addressTypes.Add(signupsourcedata);
             }
-            addressTypes.Add(new {
-                DisplayText = "Subscribed Participants (" + subscribedParticipants.ToString() + ")",
+            addressTypes.Add(new SelectListItem{
+                Text = "Subscribed Participants (" + subscribedParticipants.ToString() + ")",
                 Value = "Subscribed"
             });
-            var addressSelectList = new SelectList(addressTypes, "Value", "DisplayText");
+            var addressSelectList = new SelectList(addressTypes, "Value", "Text");
 
             return View(new EmailIndexViewModel
             {
@@ -238,17 +237,20 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.ManageBulkEmails)]
         public async Task<IActionResult> Addresses()
         {
-            var user = await _userService.GetDetails(GetActiveUserId());
-            var signupData = (await _emailManagementService.GetAllEmailRemindersAsync())
-                .GroupBy(_ => _.SignUpSource)
-                .Select(_ => new
+            var allEmailReminders = _emailManagementService.GetAllEmailReminders();
+            var signupSourceList = new List<SelectListItem>();
+            foreach (var signupsource in allEmailReminders.ToList())
+            {
+                var signupsourcedata = new SelectListItem
                 {
-                    DisplayText = _.Key + " (" + _.Distinct().Count().ToString() + ")",
-                    Value = _.Key
-                });
+                    Text = signupsource.Data + " (" + signupsource.Count.ToString() + ")",
+                    Value = signupsource.Data
+                };
+                signupSourceList.Add(signupsourcedata);
+            }
             var viewModel = new EmailAddressesViewModel
             {
-                SignUpSources = new SelectList(signupData, "Value", "DisplayText")
+                SignUpSources = new SelectList(signupSourceList, "Value", "Text")
             };
             return View(viewModel);
         }
@@ -259,16 +261,19 @@ namespace GRA.Controllers.MissionControl
         {
             if (string.IsNullOrEmpty(viewModel.SignUpSource))
             {
-                var signupData = (await _emailManagementService.GetAllEmailRemindersAsync())
-                    .GroupBy(_ => _.SignUpSource)
-                    .Select(_ => new
-                    {
-                        DisplayText = _.Key + " (" + _.Distinct().Count().ToString() + ")",
-                        Value = _.Key
-                    });
+                var allEmailReminders = _emailManagementService.GetAllEmailReminders();
+                var signupSourceList = new List<SelectListItem>();
+                foreach (var signupsource in allEmailReminders.ToList())
+                {
+                    var signupsourcedata =  new SelectListItem{
+                        Text = signupsource.Data + " (" + signupsource.Count.ToString() + ")",
+                        Value = signupsource.Data
+                    };
+                    signupSourceList.Add(signupsourcedata);
+                }
                 ShowAlertDanger("Could not export Email Reminders");
                 ModelState.AddModelError(nameof(viewModel.SignUpSource), "The signup source is required.");
-                viewModel.SignUpSources = new SelectList(signupData, "Value", "DisplayText");
+                viewModel.SignUpSources = new SelectList(signupSourceList, "Value", "Text");
                 return View("Addresses", viewModel);
             }
             var emailReminders = await _emailManagementService.GetEmailRemindersBySignUpSourceAsync(viewModel.SignUpSource);
