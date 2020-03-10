@@ -133,10 +133,12 @@ namespace GRA.Controllers.MissionControl
             }
 
             var participantsList = await _userService.GetPaginatedUserListAsync(filter);
-            foreach (var user in participantsList.Data.ToList())
+            if (UserHasPermission(Permission.DeleteParticipants))
             {
-                var roles = await _userService.GetUserRolesAsync(user.Id);
-                user.HasElevatedAccess = roles.Count > 0;
+                foreach (var user in participantsList.Data.ToList())
+                {
+                    user.HasElevatedAccess = await _userService.UserHasRolesAsync(user.Id);
+                }
             }
 
             var paginateModel = new PaginateViewModel
@@ -548,6 +550,10 @@ namespace GRA.Controllers.MissionControl
                 {
                     viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
                 }
+                if (UserHasPermission(Permission.EditParticipants))
+                {
+                    viewModel.HasEvelatedRole = await _userService.UserHasRolesAsync(user.Id);
+                }
 
                 if (UserHasPermission(Permission.EditParticipantUsernames)
                     && !string.IsNullOrWhiteSpace(user.Username))
@@ -606,7 +612,6 @@ namespace GRA.Controllers.MissionControl
             {
                 ModelState.AddModelError("User.Username", "The Username field is required.");
             }
-            var roles = await _userService.GetUserRolesAsync(model.User.Id);
             var (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
                 SiteSettingKey.Users.AskEmailSubPermission);
             if (askEmailSubscription && model.User.IsEmailSubscribed
@@ -747,6 +752,10 @@ namespace GRA.Controllers.MissionControl
             if (UserHasPermission(Permission.ManageRoles) && viewModel.HasAccount)
             {
                 viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
+            }
+            if (UserHasPermission(Permission.EditParticipants))
+            {
+                viewModel.HasEvelatedRole = await _userService.UserHasRolesAsync(user.Id);
             }
 
             if (UserHasPermission(Permission.ManageVendorCodes))
@@ -944,6 +953,10 @@ namespace GRA.Controllers.MissionControl
                 if (UserHasPermission(Permission.ManageRoles) && viewModel.HasAccount)
                 {
                     viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
+                }
+                if (UserHasPermission(Permission.EditParticipants))
+                {
+                    viewModel.HasEvelatedRole = await _userService.UserHasRolesAsync(id);
                 }
 
                 if (TempData.ContainsKey(ActivityMessage))
@@ -1896,6 +1909,10 @@ namespace GRA.Controllers.MissionControl
                 {
                     viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
                 }
+                if (UserHasPermission(Permission.EditParticipants))
+                {
+                    viewModel.HasEvelatedRole = await _userService.UserHasRolesAsync(user.Id);
+                }
 
                 return View(viewModel);
             }
@@ -2052,6 +2069,10 @@ namespace GRA.Controllers.MissionControl
                 {
                     viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
                 }
+                if (UserHasPermission(Permission.EditParticipants))
+                {
+                    viewModel.HasEvelatedRole = await _userService.UserHasRolesAsync(user.Id);
+                }
 
                 bool editChallenges = UserHasPermission(Permission.EditChallenges);
 
@@ -2200,6 +2221,10 @@ namespace GRA.Controllers.MissionControl
                 {
                     viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
                 }
+                if (UserHasPermission(Permission.EditParticipants))
+                {
+                    viewModel.HasEvelatedRole = await _userService.UserHasRolesAsync(id);
+                }
 
                 return View(viewModel);
             }
@@ -2274,7 +2299,10 @@ namespace GRA.Controllers.MissionControl
                 {
                     viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
                 }
-
+                if (UserHasPermission(Permission.EditParticipants))
+                {
+                    viewModel.HasEvelatedRole = await _userService.UserHasRolesAsync(user.Id);
+                }
                 return View(viewModel);
             }
             catch (GraException gex)
@@ -2341,6 +2369,10 @@ namespace GRA.Controllers.MissionControl
                 if (UserHasPermission(Permission.ManageRoles) && viewModel.HasAccount)
                 {
                     viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
+                }
+                if (UserHasPermission(Permission.EditParticipants))
+                {
+                    viewModel.HasEvelatedRole = await _userService.UserHasRolesAsync(user.Id);
                 }
 
                 return View(viewModel);
@@ -2470,6 +2502,10 @@ namespace GRA.Controllers.MissionControl
                 {
                     viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
                 }
+                if (UserHasPermission(Permission.EditParticipants))
+                {
+                    viewModel.HasEvelatedRole = await _userService.UserHasRolesAsync(user.Id);
+                }
 
                 return View(viewModel);
             }
@@ -2538,6 +2574,11 @@ namespace GRA.Controllers.MissionControl
                 viewModel.RoleCount = userRoles.Count;
                 viewModel.SelectedRoles = roles.Where(_ => userRoles.Contains(_.Id));
                 viewModel.UnselectedRoles = roles.Except(viewModel.SelectedRoles);
+
+                if (UserHasPermission(Permission.EditParticipants))
+                {
+                    viewModel.HasEvelatedRole = await _userService.UserHasRolesAsync(user.Id);
+                }
 
                 return View(viewModel);
             }

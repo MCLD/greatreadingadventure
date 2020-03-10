@@ -1418,6 +1418,13 @@ namespace GRA.Domain.Service
             return await _userRepository.GetUserRolesAsync(userId);
         }
 
+        public async Task<bool> UserHasRolesAsync(int userId)
+        {
+            VerifyPermission(Permission.AccessMissionControl);
+            var roles = await _userRepository.GetUserRolesAsync(userId);
+            return roles.Count > 0;
+        }
+
         public async Task UpdateUserRolesAsync(int userId, IEnumerable<int> roleIds)
         {
             VerifyPermission(Permission.ManageRoles);
