@@ -217,6 +217,7 @@
             public const string Branch = "The branch you've selected is not valid, please select another branch.";
             public const string CodeAlready = "All selected participants already have that Secret Code.";
             public const string CouldNotCreate = "Could not create your account: {0}";
+            public const string CouldNotFavorite = "One or more of the selected {0} could not be favorited.";
             public const string CouldNotLog = "Sorry, we couldn't log your activity: {0}";
             public const string CouldNotRecover = "Could not recover username(s): {0}";
             public const string CouldNotSaveAvatar = "Couldn't save your avatar, sorry!";

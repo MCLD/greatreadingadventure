@@ -1425,4 +1425,8 @@
     <value>You earned this badge for completing the challenge: &lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;</value>
     <comment>Message explaining how the participant earned the badge, {0} is a link to the challenge and {1} is the name of the challenge</comment>
   </data>
+  <data name="One or more of the selected {0} could not be favorited." xml:space="preserve">
+    <value>One or more of the selected {0} could not be favorited.</value>
+    <comment>Error message explaining that one or more {0} could not be favorited.</comment>
+  </data>
 </root>

@@ -1206,7 +1206,8 @@ namespace GRA.Domain.Service
             if (challengeIds.Count() != validChallengeIds.Count())
             {
                 serviceResult.Status = ServiceResultStatus.Warning;
-                serviceResult.Message = "One or more of the selected challenges could not be favorited.";
+                serviceResult.Message = string.Format(
+                    Annotations.Validate.CouldNotFavorite, Annotations.Title.Challenges);
             }
 
             var userFavorites = await _challengeRepository.GetUserFavoriteChallenges(activeUserId,
@@ -1241,7 +1242,8 @@ namespace GRA.Domain.Service
             if (eventIds.Count() != validEventIds.Count())
             {
                 serviceResult.Status = ServiceResultStatus.Warning;
-                serviceResult.Message = "One or more of the selected events could not be favorited.";
+                serviceResult.Message = string.Format(
+                    Annotations.Validate.CouldNotFavorite,Annotations.Interface.Events);
             }
 
             var userFavorites = await _eventRepository.GetUserFavoriteEvents(activeUserId,
