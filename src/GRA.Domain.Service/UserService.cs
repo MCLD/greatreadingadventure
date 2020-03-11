@@ -245,9 +245,9 @@ namespace GRA.Domain.Service
                     if (vendorCode?.UserId.HasValue == true)
                     {
                         filter.UserIds = new List<int>
-                    {
-                        vendorCode.UserId.Value
-                    };
+                        {
+                            vendorCode.UserId.Value
+                        };
                         filter.Search = null;
                     }
                 }
