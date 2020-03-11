@@ -6,7 +6,7 @@
             <div class="modal-body" id="modal-body">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">@SharedLocalizer[GRA.Annotations.Interface.Cancel]</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">@SharedLocalizer[GRA.Annotations.Interface.Cancel]</button>
             </div>
         </div>
     </div>
@@ -22,10 +22,10 @@
 
                 @await Html.PartialAsync("_ProfilePartial")
 
-                <div class="row" style="padding: 10px 0;">
+                <div class="row">
                     @foreach (var userLog in Model.UserLogs)
                     {
-                        <div class="col-xs-4 col-sm-3 col-md-2" style="padding-top:10px; padding-bottom:20px; text-align:center;">
+                        <div class="col-xs-4 col-sm-3 col-md-2 badge-thumbnail">
                             <a href="#"
                                 data-toggle="modal"
                                 data-target="#earnedModal"

@@ -835,3 +835,9 @@ p.password-note {
     .gra-landing-content .gra-landing-calendar-button {
         margin-top: 2rem;
     }
+
+.badge-thumbnail {
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+    text-align: center;
+}
