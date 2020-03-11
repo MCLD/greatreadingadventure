@@ -376,7 +376,8 @@ namespace GRA.Data.Repository
                     {
                         ChallengeTaskId = updatedChallengeTask.Id,
                         UserId = userId,
-                        IsCompleted = updatedChallengeTask.IsCompleted ?? false
+                        IsCompleted = updatedChallengeTask.IsCompleted ?? false,
+                        CreatedAt = _dateTimeProvider.Now
                     });
                 }
                 else
