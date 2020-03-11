@@ -243,17 +243,17 @@ namespace GRA.Data.Repository
 
         public override async Task<Event> GetByIdAsync(int id)
         {
-            var evt = await DbSet
+            var currentEvent = await DbSet
                 .AsNoTracking()
                 .Where(_ => _.Id == id)
                 .ProjectTo<Event>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
 
-            if (evt != null)
+            if (currentEvent != null)
             {
-                await AddLocationData(evt);
+                await AddLocationData(currentEvent);
             }
-            return evt;
+            return currentEvent;
         }
 
         public async Task<List<Event>> GetByChallengeIdAsync(int challengeId)
@@ -272,34 +272,32 @@ namespace GRA.Data.Repository
                    .ToListAsync();
         }
 
-        private async Task AddLocationData(Event evt)
+        private async Task AddLocationData(Event currentEvent)
         {
-            if (evt.AtLocationId != null)
+            if (currentEvent.AtLocationId != null)
             {
                 var location = await _context.Locations
                     .AsNoTracking()
-                    .Where(_ => _.Id == evt.AtLocationId)
-                    .SingleOrDefaultAsync();
+                    .SingleOrDefaultAsync(_ => _.Id == currentEvent.AtLocationId);
                 if (location != null)
                 {
-                    evt.EventLocationAddress = location.Address;
-                    evt.EventLocationLink = location.Url;
-                    evt.EventLocationName = location.Name;
-                    evt.EventLocationTelephone = location.Telephone;
+                    currentEvent.EventLocationAddress = location.Address;
+                    currentEvent.EventLocationLink = location.Url;
+                    currentEvent.EventLocationName = location.Name;
+                    currentEvent.EventLocationTelephone = location.Telephone;
                 }
             }
-            else if (evt.AtBranchId != null)
+            else if (currentEvent.AtBranchId != null)
             {
                 var branch = await _context.Branches
                     .AsNoTracking()
-                    .Where(_ => _.Id == evt.AtBranchId)
-                    .SingleOrDefaultAsync();
+                    .SingleOrDefaultAsync(_ => _.Id == currentEvent.AtBranchId);
                 if (branch != null)
                 {
-                    evt.EventLocationAddress = branch.Address;
-                    evt.EventLocationLink = branch.Url;
-                    evt.EventLocationName = branch.Name;
-                    evt.EventLocationTelephone = branch.Telephone;
+                    currentEvent.EventLocationAddress = branch.Address;
+                    currentEvent.EventLocationLink = branch.Url;
+                    currentEvent.EventLocationName = branch.Name;
+                    currentEvent.EventLocationTelephone = branch.Telephone;
                 }
             }
         }
@@ -431,7 +429,7 @@ namespace GRA.Data.Repository
                 var userFavoriteList = new List<Model.UserFavoriteEvent>();
                 foreach (var eventId in favoritesToAdd)
                 {
-                    userFavoriteList.Add(new Model.UserFavoriteEvent()
+                    userFavoriteList.Add(new Model.UserFavoriteEvent
                     {
                         UserId = userId,
                         EventId = eventId,
