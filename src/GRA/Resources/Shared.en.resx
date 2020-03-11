@@ -1417,12 +1417,12 @@
     <value>Visited</value>
     <comment>Prompt to select which events to view based on if they've been visited</comment>
   </data>
-  <data name="You earned this badge for attending the event: &lt;a href=\{0}\ target=\_blank\&gt;{1}&lt;/a&gt;" xml:space="preserve">
-    <value>You earned this badge for attending the event: &lt;a href=\{0}\ target=\_blank\&gt;{1}&lt;/a&gt;</value>
+  <data name="You earned this badge for attending the event: &lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;" xml:space="preserve">
+    <value>You earned this badge for attending the event: &lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;</value>
     <comment>Message explaining how the participant earned the badge, {0} is a link to the eventand {1} is the name of the event</comment>
   </data>
-  <data name="You earned this badge for completing the challenge: &lt;a href=\{0}\ target=\_blank\&gt;{1}&lt;/a&gt;" xml:space="preserve">
-    <value>You earned this badge for completing the challenge: &lt;a href=\{0}\ target=\_blank\&gt;{1}&lt;/a&gt;</value>
+  <data name="You earned this badge for completing the challenge: &lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;" xml:space="preserve">
+    <value>You earned this badge for completing the challenge: &lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;</value>
     <comment>Message explaining how the participant earned the badge, {0} is a link to the challenge and {1} is the name of the challenge</comment>
   </data>
 </root>
