@@ -41,6 +41,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Redeem all button for household vendor codes
 - Participant age to Group Vendor Code Report
 - Add news auto subscribe permission
+- Look up participants by vendor code
 
 ### Changed
 - Script docker-build.bash to not build release images unless the branch starts with 'release/'
