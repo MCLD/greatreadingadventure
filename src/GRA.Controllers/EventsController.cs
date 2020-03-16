@@ -361,6 +361,7 @@ namespace GRA.Controllers
         public async Task<IActionResult> UpdateSingleFavorite(int eventId, bool favorite)
         {
             var serviceResult = new ServiceResult();
+            var currEvent = await _eventService.GetDetails(eventId, true);
             try
             {
                 var eventList = new List<Event>
@@ -375,11 +376,10 @@ namespace GRA.Controllers
             }
             catch (Exception ex)
             {
-                var currEvent = await _eventService.GetDetails(eventId, true);
                 if (currEvent.IsCommunityExperience)
                 {
                     _logger.LogError(ex,
-                        "Error updaing user favorite community experience: {Message}",
+                        "Error updating user favorite community experience: {ErrorMessage}",
                         ex.Message);
                     serviceResult.Status = ServiceResultStatus.Error;
                     serviceResult.Message = "An error occured while trying to update the community experience.";
@@ -387,7 +387,7 @@ namespace GRA.Controllers
                 else
                 {
                     _logger.LogError(ex,
-                        "Error updaing user favorite events: {Message}",
+                        "Error updating user favorite events: {ErrorMessage}",
                         ex.Message);
                     serviceResult.Status = ServiceResultStatus.Error;
                     serviceResult.Message = "An error occured while trying to update the event.";

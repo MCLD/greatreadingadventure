@@ -211,7 +211,7 @@ namespace GRA.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex,
-                    "Error updaing user favorite challenges: {Message}",
+                    "Error updating user favorite challenges: {Message}",
                     ex.Message);
                 serviceResult.Status = ServiceResultStatus.Error;
                 serviceResult.Message = "An error occured while trying to update the challenge.";
