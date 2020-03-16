@@ -24,7 +24,6 @@ namespace GRA.Controllers
     {
         private const string ActivityMessage = "ActivityMessage";
         private const string SecretCodeMessage = "SecretCodeMessage";
-        private const int BadgeListTake = 18;
 
         private readonly ILogger<ProfileController> _logger;
         private readonly AutoMapper.IMapper _mapper;
@@ -1251,7 +1250,7 @@ namespace GRA.Controllers
         {
             User user = await _userService.GetDetails(GetActiveUserId());
 
-            var filter = new UserLogFilter(page, BadgeListTake)
+            var filter = new UserLogFilter(page)
             {
                 HasBadge = true
             };

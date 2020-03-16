@@ -837,7 +837,8 @@ p.password-note {
     }
 
 .badge-thumbnail {
-    padding-top: 1rem;
-    padding-bottom: 2rem;
+    display: inline-block;
+    margin: 1rem 1.2rem 2rem;
+    padding: 0;
     text-align: center;
 }
