@@ -58,6 +58,11 @@ namespace GRA.Domain.Service
             return await _vendorCodeTypeRepository.GetByIdAsync(id);
         }
 
+        public async Task<VendorCode> GetVendorCodeByCode(string code)
+        {
+            return await _vendorCodeRepository.GetByCode(code);
+        }
+
         public async Task<ICollection<VendorCodeType>> GetTypeAllAsync()
         {
             return await _vendorCodeTypeRepository.GetAllAsync(GetCurrentSiteId());
