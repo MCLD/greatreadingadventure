@@ -1451,7 +1451,6 @@ namespace GRA.Domain.Service
                 branchSelection.BackToBackProgram);
 
             branchSelection.KitId = null;
-            branchSelection.IsDeleted = false;
             branchSelection.SelectedAt = _dateTimeProvider.Now;
             branchSelection.UserId = authId;
             branchSelection.ScheduleStartTime = branchSelection.RequestedStartTime

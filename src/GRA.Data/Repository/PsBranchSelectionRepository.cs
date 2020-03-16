@@ -32,8 +32,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.KitId.HasValue && _.KitId == kitId && !_.IsDeleted)
-                .CountAsync();
+                .CountAsync(_ => _.KitId.HasValue && _.KitId == kitId && !_.IsDeleted);
         }
 
         public async Task<ICollection<PsBranchSelection>> GetByKitIdAsync(int kitId)
@@ -49,10 +48,9 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.ProgramId.HasValue
+                .CountAsync(_ => _.ProgramId.HasValue
                     && _.Program.PerformerId == performerId
-                    && !_.IsDeleted)
-                .CountAsync();
+                    && !_.IsDeleted);
         }
 
         public async Task<ICollection<PsBranchSelection>> GetByPerformerIdAsync(
@@ -89,7 +87,8 @@ namespace GRA.Data.Repository
         {
             var selection = DbSet
                 .AsNoTracking()
-                .Where(_ => _.AgeGroupId == ageGroupId && _.BranchId == branchId
+                .Where(_ => _.AgeGroupId == ageGroupId
+                    && _.BranchId == branchId
                     && !_.IsDeleted);
 
             if (currentSelectionId.HasValue)
