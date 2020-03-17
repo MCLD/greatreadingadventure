@@ -8,9 +8,9 @@ to outside vendors for redemption.
 ### Accepting participant codes
 
 Codes default to the format of three sets of five alphanumeric
-characters separated by hyphens (e.g. X123X-456YY-ZZ789). The party
+characters separated by hyphens (e.g. `X123X-456YY-ZZ789`). The party
 administering the GRA software generates a set of codes prior to the
-start of the program and then provides them to the vendor in a standard 
+start of the program and then provides them to the vendor in a standard
 format such as an Excel spreadsheet or CSV (comma-separated value)
 document.
 
@@ -19,18 +19,22 @@ an in-software mail message that includes a link. The GRA can include
 the code in the link provided to the customer. For example, a template
 URL of:
 
-   https://vendor/?Code={Code}
+```
+https://vendor/?Code={Code}
+```
 
 Would expand (using the sample code from above) to:
 
-   https://vendor/?Code=X123X-456YY-ZZ789
+```
+https://vendor/?Code=X123X-456YY-ZZ789
+```
 
-This is a great convenience for participants. Ideally the vendor Web
-site will capture any query string code when the customer arrives on the
-site and save it until the vendor gets to the shopping cart/check-out
-area so that it can be prepopulated. Note that it's ideal to allow
-the customer to enter a code as well in case the code does not come
-through the link properly.
+This is a convenience for participants. Ideally the vendor Web site will
+capture any query string code when the customer arrives on the site and
+save it until the vendor gets to the shopping cart/check-out area so
+that it can be prepopulated. Note that it's ideal to allow the customer
+to enter a code as well in case the code does not come through the link
+properly.
 
 ### Reporting status
 
@@ -45,7 +49,8 @@ following format:
 There can be as many columns as needed in the spreadsheet so long as the
 following three columns are present:
 
-- "Coupon" (this is referred to as "code" above, e.g. X123X-456YY-ZZ789)
+- "Coupon" (this is referred to as "code" above, e.g.
+`X123X-456YY-ZZ789`)
 - "Order Date"
 - "Ship Date"
 
