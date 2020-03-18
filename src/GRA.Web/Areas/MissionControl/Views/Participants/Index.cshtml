@@ -115,11 +115,19 @@
     }
     <div class="row row-spacing">
         <div class="col-xs-8">
-            <input asp-for="Search" class="form-control" />
+            <input asp-for="Search" 
+                   class="form-control"
+                   placeholder="Search by username, first or last name, full name, free book code" />
         </div>
         <div class="col-xs-4">
-            <input type="submit" value="Search" class="btn btn-default" style="margin-right: 8px;" />
-            <a asp-action="Index" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-ProgramId="@Model.ProgramId" class="btn btn-default">Clear</a>
+            <input type="submit" 
+                   value="Search" 
+                   class="btn btn-default" 
+                   style="margin-right: 8px;" />
+            <a asp-action="Index" 
+               asp-route-SystemId="@Model.SystemId" 
+               asp-route-BranchId="@Model.BranchId" 
+               asp-route-ProgramId="@Model.ProgramId" class="btn btn-default">Clear</a>
         </div>
     </div>
 </form>
