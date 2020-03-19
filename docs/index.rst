@@ -47,6 +47,7 @@ This manual is split into several main sections:
    installation/upgrading
 
 .. _setup-docs:
+
 .. toctree::
    :maxdepth: 1
    :caption: Setup
@@ -56,6 +57,7 @@ This manual is split into several main sections:
    setup/adding-avatars
    setup/customizing-the-look-and-feel
    setup/performer-registration
+   setup/vendor-codes
 
 .. _technical-docs:
 
