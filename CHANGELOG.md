@@ -16,7 +16,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Container labels following opencontainers.org annotation specification
 - More information in Mission Control system information
 - Mission Control menu item for entering an Authorization Code
-- Improve Event and Community Experience discoverability with spatial proximity searching (requires Google Maps API key)
+- Improve Event and Community Experience discoverability with spatial proximity searching
+(requires Google Maps API key)
 - Ability to configure a maximum activity amount in Site Settings
 - Dashboard alert for pending vendor code redemption
 - Default "System Account" for system-created items
@@ -34,19 +35,23 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Avatar unavailable items list
 - Daily image size setting
 - Landing page preview ability (/Home/Preview/StageName)
-- Created by text to Mission Control Challenge details
+- Show "created by" in MC on Challenges, Triggers, Events, Community Experiences, Drawings
 - Disable and spinner to Challenge Task delete button
 - Disable and spinner to sign in submit buttons
 - Mission control button to update user triggers
 - Redeem all button for household vendor codes
 - Participant age to Group Vendor Code Report
 - Add news auto subscribe permission
+- Look up participants by vendor code
+- Creation and sending of emails to subscribed participants from Mission Control
+- Show associated system and branch on prize redemption screen
+- Display participant system and branch in Mission Control mail view
 
 ### Changed
-- Script docker-build.bash to not build release images unless the branch starts with 'release/'
+- Script docker-build.bash to only build release images when branch starts with 'release/'
 - From Google analytics.js to tag manager for analytics
 - Location of favicons from wwwroot to shared/content so they can be easily customized
-- Logging level of password recovery misses and password reset errors are now information instead of warning
+- Password recovery misses and reset errors are now log level info rather than warn
 - Persist the data protection key to the database
 - Improve school selection
 - 'Limit to program' in Challenges is now 'associate with program'
@@ -75,19 +80,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Challenge task type not being set correctly
 - Badge requirements list using client-side evaluation
 - Community experience report using client-side evaluation
+- Return 404s for missing Mission Control files
 
 ### Removed
-- Recovery error logging at the controller level - it's logged in the service
+- Recovery error logging at the controller level - it's logged in the
+service
 
 ## [4.1.1] - 2018-12-13
 ### Added
 - Add site.js to shared folder for customizing site scripting
 
 ### Changed
-- New mail icon in navigation is red and solid if there are new messages, grey and wireframe otherwise
+- New mail icon in navigation is red and solid for new messages, else grey and wireframe
 - Upgrade ImageSharp from v1.0.0-beta0003 to v1.0.0-beta0005
 - Move site.css for customizing site styles to shared folder
-- Only redirect to the sign in page with the session expired message if the participant has authenticated within the last two hours
+- Only redirect to session expired if participant has authenticated in last 2 hours
 - Upgrade from ASP.NET Core v2.1 to v2.2
 
 ### Fixed
@@ -163,7 +170,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## [4.0.0-beta2] - 2018-05-18
 ### Added
 - Group Vendor Code Report: group members and their assigned vendor codes
-- Admins with Edit Participant permission can upgrade households to groups regardless of household size
+- Admins with Edit Participant permission can upgrade any households to groups
 - Point translation management in Mission Control
 - SQL Server create database script in db/ folder
 - Documentation in docs/ folder to update the manual for version 4
@@ -197,12 +204,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Handle admin users self-deleting properly (log out, redirect to front of site)
 - Issue with double initial page loads causing duplicate database insertions (#283)
 - Editing a trigger that doesn't exist now shows an error rather than logging an exception
-- Manage vendor code permission no longer required to get a list of vendor code types (for reporting)
+- Don't need manage vendor code permission to list vendor code types (for reporting)
 - User admin status is updated as their roles are updated
 - Bug preventing deletion of challenge groups
 
 ### Removed
-- Comments from appsettings.json, see the [manual](http://manual.greatreadingadventure.com/en/latest/technical/appsettings/) for more information
+- Comments from appsettings.json, see the
+[manual](http://manual.greatreadingadventure.com/en/latest/technical/appsettings/) for more
+information
 - Activity earned from at a glance report
 
 ## [4.0.0-beta1] - 2018-04-13
