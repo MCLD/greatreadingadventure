@@ -262,14 +262,14 @@ namespace GRA.Controllers.MissionControl
                 var branch = await _siteService.GetBranchByIdAsync(branchSelection.BranchId);
                 var program = await _performerSchedulingService
                     .GetProgramByIdAsync(branchSelection.ProgramId.Value);
-                branchSelection.IsDeleted = true;
                 ShowAlertSuccess($"{branch.Name}'s selection of \"{program.Title}\" is deleted!.");
             }
             catch (GraException gex)
             {
                 ShowAlertDanger("Unable to delete selection: ", gex);
-                _logger.LogError("Error deleting branch selection Id" +
-                    $"{model.BranchSelectionId} by user {GetId(ClaimType.UserId)}: {gex}", gex);
+                _logger.LogError(gex,
+                    "Error deleting branch selection Id {BranchSelectionId} by user {GetActiveUserId}: {ErrorMessage}",
+                    model.BranchSelectionId, GetActiveUserId(), gex.Message);
             }
             return RedirectToAction(nameof(PerformerManagementController.PerformerSelections),
                 new { id = model.Performer.Id });
@@ -1579,8 +1579,9 @@ namespace GRA.Controllers.MissionControl
             catch (GraException gex)
             {
                 ShowAlertDanger("Unable to delete selection: ", gex);
-                _logger.LogError("Error deleting branch selection Id" +
-                    $"{model.BranchSelectionId} by user {GetId(ClaimType.UserId)}: {gex}", gex);
+                _logger.LogError(gex,
+                    "Error deleting branch selection Id {BranchSelectionId} by user {GetActiveUserId}: {ErrorMessage}",
+                    model.BranchSelectionId, GetActiveUserId(),gex.Message);
             }
             return RedirectToAction(nameof(PerformerManagementController.KitSelections),
                 new { id = model.Kit.Id });
