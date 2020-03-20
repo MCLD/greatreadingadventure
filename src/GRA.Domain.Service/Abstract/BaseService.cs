@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using GRA.Abstract;
 using Microsoft.Extensions.Logging;
 
@@ -18,7 +17,7 @@ namespace GRA.Domain.Service.Abstract
                 ?? throw new ArgumentNullException(nameof(dateTimeProvider));
         }
 
-        protected int GetPercent(int count, int total)
+        protected static int GetPercent(int count, int total)
         {
             return count * 100 / total;
         }

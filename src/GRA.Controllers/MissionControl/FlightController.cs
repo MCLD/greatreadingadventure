@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -23,7 +22,6 @@ namespace GRA.Controllers.MissionControl
         private readonly QuestionnaireService _questionnaireService;
         private readonly SampleDataService _sampleDataService;
         private readonly VendorCodeService _vendorCodeService;
-        private readonly IHostingEnvironment _hostingEnvironment;
 
         public FlightController(ILogger<FlightController> logger,
             ServiceFacade.Controller context,
@@ -31,8 +29,7 @@ namespace GRA.Controllers.MissionControl
             JobService jobService,
             QuestionnaireService questionnaireService,
             SampleDataService sampleDataService,
-            VendorCodeService vendorCodeService,
-            IHostingEnvironment hostingEnvironment)
+            VendorCodeService vendorCodeService)
             : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -45,8 +42,6 @@ namespace GRA.Controllers.MissionControl
                 ?? throw new ArgumentNullException(nameof(sampleDataService));
             _vendorCodeService = vendorCodeService
                 ?? throw new ArgumentNullException(nameof(vendorCodeService));
-            _hostingEnvironment = hostingEnvironment
-                ?? throw new ArgumentNullException(nameof(hostingEnvironment));
             PageTitle = "Flight Director";
         }
 
@@ -188,9 +183,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> ReloadSiteCacheAsync()
         {
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-            var sites = await _siteLookupService.ReloadSiteCacheAsync();
+            var sw = Stopwatch.StartNew();
+            await _siteLookupService.ReloadSiteCacheAsync();
             sw.Stop();
             ShowAlertSuccess($"Sites flushed from cache, reloaded in {sw.ElapsedMilliseconds} ms.");
             return RedirectToAction("Index");
