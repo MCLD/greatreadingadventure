@@ -585,14 +585,13 @@ namespace GRA.Domain.Service
 
             if (HasPermission(Permission.ManageVendorCodes))
             {
-                var start = Stopwatch.GetTimestamp();
+                var stopwatch = Stopwatch.StartNew();
 
                 string timeElapsed;
                 string timeRemaining;
                 string status;
                 double msPerCode;
                 double remainingMs;
-                double elapsed;
 
                 double lastUpdate = 0;
                 int lastSave = 0;
@@ -607,7 +606,7 @@ namespace GRA.Domain.Service
                 {
                     _logger.LogWarning("Generating vendor codes for user {RequestingUser} was cancelled after {Elapsed} ms",
                         requestingUser,
-                        GetElapsed(start));
+                        stopwatch.ElapsedMilliseconds);
                 });
 
                 var codeType
@@ -665,22 +664,20 @@ namespace GRA.Domain.Service
                         lastSave = count;
                     }
 
-                    elapsed = GetElapsed(start);
-
-                    if (elapsed - lastUpdate > 5000
+                    if (stopwatch.ElapsedMilliseconds - lastUpdate > 5000
                         || count == 1)
                     {
-                        if (elapsed <= 1000 && count <= 1)
+                        if (stopwatch.ElapsedMilliseconds <= 1000 && count <= 1)
                         {
                             status = $"Generated {count}/{jobDetails.NumberOfCodes}";
                         }
                         else
                         {
                             timeElapsed = TimeSpan
-                                .FromMilliseconds(elapsed)
+                                .FromMilliseconds(stopwatch.ElapsedMilliseconds)
                                 .ToString(@"mm\:ss",
                                     System.Globalization.DateTimeFormatInfo.InvariantInfo);
-                            msPerCode = elapsed / count;
+                            msPerCode = (double)stopwatch.ElapsedMilliseconds / count;
                             remainingMs = msPerCode * (jobDetails.NumberOfCodes - count);
                             timeRemaining = TimeSpan
                                 .FromMilliseconds(remainingMs)
@@ -709,21 +706,19 @@ namespace GRA.Domain.Service
                             Error = false
                         });
 
-                        lastUpdate = elapsed;
+                        lastUpdate = stopwatch.ElapsedMilliseconds;
                     }
                 }
                 await _vendorCodeRepository.SaveAsync();
-
-                elapsed = GetElapsed(start);
 
                 count--;
 
                 _logger.LogInformation("Inserted {Count} vendor codes in {Elapsed} ms.",
                     count,
-                    elapsed);
+                    stopwatch.ElapsedMilliseconds);
 
                 timeElapsed = TimeSpan
-                    .FromMilliseconds(elapsed)
+                    .FromMilliseconds(stopwatch.ElapsedMilliseconds)
                     .ToString(@"mm\:ss",
                         System.Globalization.DateTimeFormatInfo.InvariantInfo);
 

@@ -18,11 +18,6 @@ namespace GRA.Domain.Service.Abstract
                 ?? throw new ArgumentNullException(nameof(dateTimeProvider));
         }
 
-        protected double GetElapsed(double start)
-        {
-            return (Stopwatch.GetTimestamp() - start) * 1000 / (double)Stopwatch.Frequency;
-        }
-
         protected int GetPercent(int count, int total)
         {
             return count * 100 / total;
