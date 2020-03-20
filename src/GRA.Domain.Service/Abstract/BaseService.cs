@@ -16,5 +16,10 @@ namespace GRA.Domain.Service.Abstract
             _dateTimeProvider = dateTimeProvider
                 ?? throw new ArgumentNullException(nameof(dateTimeProvider));
         }
+
+        protected static int GetPercent(int count, int total)
+        {
+            return count * 100 / total;
+        }
     }
 }
