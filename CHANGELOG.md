@@ -46,6 +46,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Creation and sending of emails to subscribed participants from Mission Control
 - Show associated system and branch on prize redemption screen
 - Display participant system and branch in Mission Control mail view
+- Vendor code generation through WebSocket job
 
 ### Changed
 - Script docker-build.bash to only build release images when branch starts with 'release/'

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -18,6 +19,7 @@ namespace GRA.Controllers.MissionControl
     {
         private readonly ILogger<FlightController> _logger;
         private readonly ActivityService _activityService;
+        private readonly JobService _jobService;
         private readonly QuestionnaireService _questionnaireService;
         private readonly SampleDataService _sampleDataService;
         private readonly VendorCodeService _vendorCodeService;
@@ -26,20 +28,25 @@ namespace GRA.Controllers.MissionControl
         public FlightController(ILogger<FlightController> logger,
             ServiceFacade.Controller context,
             ActivityService activityService,
+            JobService jobService,
             QuestionnaireService questionnaireService,
             SampleDataService sampleDataService,
             VendorCodeService vendorCodeService,
             IHostingEnvironment hostingEnvironment)
             : base(context)
         {
-            _logger = Require.IsNotNull(logger, nameof(logger));
-            _activityService = Require.IsNotNull(activityService, nameof(activityService));
-            _questionnaireService = Require.IsNotNull(questionnaireService,
-                nameof(questionnaireService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _activityService = activityService
+                ?? throw new ArgumentNullException(nameof(activityService));
+            _jobService = jobService ?? throw new ArgumentNullException(nameof(jobService));
+            _questionnaireService = questionnaireService
+                ?? throw new ArgumentNullException(nameof(questionnaireService));
             _sampleDataService = sampleDataService
                 ?? throw new ArgumentNullException(nameof(sampleDataService));
-            _vendorCodeService = Require.IsNotNull(vendorCodeService, nameof(vendorCodeService));
-            _hostingEnvironment = Require.IsNotNull(hostingEnvironment, nameof(hostingEnvironment));
+            _vendorCodeService = vendorCodeService
+                ?? throw new ArgumentNullException(nameof(vendorCodeService));
+            _hostingEnvironment = hostingEnvironment
+                ?? throw new ArgumentNullException(nameof(hostingEnvironment));
             PageTitle = "Flight Director";
         }
 
@@ -97,14 +104,28 @@ namespace GRA.Controllers.MissionControl
                     Url = "http://freebook/?Code={Code}"
                 });
             }
-            var sw = new Stopwatch();
-            sw.Start();
-            var generatedCount = await _vendorCodeService.GenerateVendorCodesAsync(code.Id, numberOfCodes);
-            sw.Stop();
 
-            AlertSuccess = $"Generated {generatedCount} codes in {sw.Elapsed.TotalSeconds} seconds of type: {code.Description}";
+            var jobToken = await _jobService.CreateJobAsync(new Job
+            {
+                JobType = JobType.GenerateVendorCodes,
+                SerializedParameters = JsonConvert.SerializeObject(
+                    new JobDetailsGenerateVendorCodes
+                    {
+                        NumberOfCodes = numberOfCodes,
+                        VendorCodeTypeId = code.Id,
+                        CodeLength = 15
+                    })
+            });
 
-            return View("Index");
+            return View("Job", new ViewModel.MissionControl.Shared.JobViewModel
+            {
+                CancelUrl = Url.Action(nameof(Index)),
+                JobToken = jobToken.ToString(),
+                PingSeconds = 5,
+                SuccessRedirectUrl = "",
+                SuccessUrl = Url.Action(nameof(Index)),
+                Title = "Generating vendor codes..."
+            });
         }
 
         public async Task<IActionResult> RedeemSecretCodeAsync()
