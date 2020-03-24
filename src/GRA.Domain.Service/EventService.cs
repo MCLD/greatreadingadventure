@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
@@ -73,16 +74,22 @@ namespace GRA.Domain.Service
 
                 if (GetAuthUser().Identity.IsAuthenticated)
                 {
-                    foreach (var graEvent in data)
+                    if (filter.Favorites == true)
                     {
-                        if (filter.Favorites == true)
+                        data = data.Select(_ => { _.IsFavorited = true; return _; }).ToList();
+                    }
+                    else
+                    {
+                        var eventIds = data.Select(_ => _.Id);
+                        var favoritedEventIds = await _eventRepository.GetUserFavoriteEvents(
+                            filter.CurrentUserId.Value, eventIds);
+
+                        foreach (var graEvent in data)
                         {
-                            graEvent.IsFavorited = true;
-                        }
-                        else
-                        {
-                            graEvent.IsFavorited = await _eventRepository
-                                .IsUserFavoritedAsync(filter.CurrentUserId.Value, graEvent.Id);
+                            if (favoritedEventIds.Contains(graEvent.Id))
+                            {
+                                graEvent.IsFavorited = true;
+                            }
                         }
                     }
                 }

@@ -384,14 +384,6 @@ namespace GRA.Data.Repository
                 .ToList();
         }
 
-        public async Task<bool> IsUserFavoritedAsync(int userId, int eventId)
-        {
-            return await _context.UserFavoriteEvents
-                .AsNoTracking()
-                .Where(_ => _.UserId == userId && _.EventId == eventId)
-                .AnyAsync();
-        }
-
         public async Task<IEnumerable<int>> GetUserFavoriteEvents(int userId,
             IEnumerable<int> eventIds = null)
         {
