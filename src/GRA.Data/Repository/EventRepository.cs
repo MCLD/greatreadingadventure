@@ -190,10 +190,10 @@ namespace GRA.Data.Repository
                     .AsNoTracking()
                     .Where(_ => _.UserId == filter.CurrentUserId);
 
-                events = from eventList in events
-                         join userFavorites in userFavoriteEvents
-                         on eventList.Id equals userFavorites.EventId
-                         select eventList;
+                events = events.Join(userFavoriteEvents,
+                    graEvent => graEvent.Id,
+                    favoritedEvent => favoritedEvent.EventId,
+                    (graEvent, favoritedEvent) => graEvent);
             }
 
             // filter for attended
