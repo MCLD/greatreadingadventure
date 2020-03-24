@@ -1429,4 +1429,8 @@
     <value>One or more of the selected {0} could not be favorited.</value>
     <comment>Error message explaining that one or more {0} could not be favorited.</comment>
   </data>
+  <data name="Error retrieving badge information." xml:space="preserve">
+    <value>Error retrieving badge information.</value>
+    <comment>Message letting the participant know there was an error retrieving the information associated with one of their badges.</comment>
+  </data>
 </root>

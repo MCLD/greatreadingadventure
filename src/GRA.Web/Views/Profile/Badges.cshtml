@@ -58,6 +58,9 @@
                 { id },
                 function (response) {
                     modalBody.html(response);
+                })
+                .fail(function () {
+                    modalBody.html("@SharedLocalizer[GRA.Annotations.Info.BadgeInfoError]");
                 });
         });
     </script>
