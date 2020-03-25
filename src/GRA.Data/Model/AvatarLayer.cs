@@ -12,6 +12,17 @@ namespace GRA.Data.Model
         [Required]
         [MaxLength(255)]
         public string Name { get; set; }
+
+        [Required]
+        [MaxLength(255)]
+        public string SpanishName { get; set; }
+
+        [MaxLength(255)]
+        public string RemoveLabel { get; set; }
+
+        [MaxLength(255)]
+        public string SpanishRemoveLabel { get; set; }
+
         [Required]
         public int Position { get; set; }
         public bool CanBeEmpty { get; set; }
