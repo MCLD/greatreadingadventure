@@ -524,6 +524,8 @@
         // When a user removes the layer's item
         $("#removeButton").on("click", function () {
             unsavedChanges = true;
+            $("#saveAvatar").removeClass("btn-default");
+            $("#saveAvatar").addClass("btn-success");
             var button = $(this);
             var layer = CurrentSelectedLayer();
             if (layer.data("layer") != 999) {
@@ -608,6 +610,8 @@
         // Selecting an Item
         function SelectItem(item) {
             unsavedChanges = true;
+            $("#saveAvatar").removeClass("btn-default");
+            $("#saveAvatar").addClass("btn-success");
             var newDataItem = $(item);
             var itemsLayer = GetLayerById(newDataItem.data("layer"));
             var layerTab = CurrentSelectedLayer();
@@ -655,6 +659,8 @@
         // Updates the color selected and removes the old
         function SelectColor(color) {
             unsavedChanges = true;
+            $("#saveAvatar").removeClass("btn-default");
+            $("#saveAvatar").addClass("btn-success");
             $("#avatarColorSelectors").find(".selected").removeClass("selected");
             var dataColor = $(color);
             dataColor.addClass("selected");
