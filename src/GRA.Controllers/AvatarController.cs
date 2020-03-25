@@ -56,15 +56,7 @@ namespace GRA.Controllers
                 .GroupBy(_ => _.GroupId)
                 .Select(_ => _.ToList())
                 .ToList();
-            foreach (var group in layerGroupings)
-            {
-                foreach (var layer in group)
-                {
-                    var removeLabel = "No " + layer.Name.ToLower();
-                    layer.Name = _sharedLocalizer[layer.Name];
-                    layer.RemoveLabel = _sharedLocalizer[removeLabel];
-                }
-            }
+
             var usersresult = await _avatarService.GetUserUnlockBundlesAsync();
             var viewModel = new AvatarViewModel
             {
@@ -73,6 +65,8 @@ namespace GRA.Controllers
                 DefaultLayer = userWardrobe.First(_ => _.DefaultLayer).Id,
                 ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/")
             };
+            var currentCulture = _userContextProvider.GetCurrentCulture();
+            viewModel.UseEnglish = currentCulture.Name == Culture.EnglishUS;
             var userAvatar = await _avatarService.GetUserAvatarAsync();
             viewModel.NewAvatar = userAvatar.Count == 0;
             return View(viewModel);
