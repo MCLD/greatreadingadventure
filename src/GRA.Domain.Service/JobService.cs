@@ -95,6 +95,12 @@ namespace GRA.Domain.Service
                                             token,
                                             progress);
                                         break;
+                                    case JobType.GenerateVendorCodes:
+                                        status = await _vendorCodeService.GenerateVendorCodesAsync(
+                                            jobInfo.Id,
+                                            token,
+                                            progress);
+                                        break;
                                     default: // case JobType.SendBulkEmails:
                                         status = await _emailBulkService.RunJobAsync(userId,
                                             jobInfo.Id,

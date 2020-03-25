@@ -23,13 +23,13 @@ namespace GRA.Controllers.MissionControl
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public FileResult Get(string filename)
+        public IActionResult Get(string filename)
         {
             var filePath = Path.Combine($"site{GetCurrentSiteId()}", UploadFilesPath, filename);
             var file = _pathResolver.ResolvePrivateFilePath(filePath);
             if (!System.IO.File.Exists(file))
             {
-                return null;
+                return NotFound();
             }
 
             var typeProvider = new FileExtensionContentTypeProvider();

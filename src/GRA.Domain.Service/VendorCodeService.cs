@@ -58,6 +58,11 @@ namespace GRA.Domain.Service
             return await _vendorCodeTypeRepository.GetByIdAsync(id);
         }
 
+        public async Task<VendorCode> GetVendorCodeByCode(string code)
+        {
+            return await _vendorCodeRepository.GetByCode(code);
+        }
+
         public async Task<ICollection<VendorCodeType>> GetTypeAllAsync()
         {
             return await _vendorCodeTypeRepository.GetAllAsync(GetCurrentSiteId());
@@ -95,40 +100,6 @@ namespace GRA.Domain.Service
             VerifyManagementPermission();
             await _vendorCodeTypeRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId),
                 vendorCodeTypeId);
-        }
-
-        public async Task<int> GenerateVendorCodesAsync(int vendorCodeTypeId, int numberOfCodes)
-        {
-            VerifyManagementPermission();
-            var codeType = await _vendorCodeTypeRepository.GetByIdAsync(vendorCodeTypeId);
-            if (codeType == null)
-            {
-                throw new GraException("Unable to find vendor code type.");
-            }
-            if (codeType.SiteId != GetCurrentSiteId())
-            {
-                throw new GraException("Code type provided does not match current site.");
-            }
-
-            int count = 1;
-            var vendorCode = new VendorCode
-            {
-                IsUsed = false,
-                SiteId = codeType.SiteId,
-                VendorCodeTypeId = codeType.Id,
-            };
-            for (; count <= System.Math.Min(numberOfCodes, 5000); count++)
-            {
-                vendorCode.Code = _codeGenerator.Generate(15);
-                await _vendorCodeRepository.AddAsync(GetClaimId(ClaimType.UserId), vendorCode);
-                if (count % 1000 == 0)
-                {
-                    await _vendorCodeRepository.SaveAsync();
-                }
-            }
-            await _vendorCodeRepository.SaveAsync();
-
-            return --count;
         }
 
         public async Task<VendorCode> GetUserVendorCodeAsync(int userId)
@@ -604,6 +575,172 @@ namespace GRA.Domain.Service
                 Subject = codeType.DonationSubject,
                 Body = codeType.DonationMail
             }, siteId);
+        }
+
+        public async Task<JobStatus> GenerateVendorCodesAsync(int jobId,
+            CancellationToken token,
+            IProgress<JobStatus> progress = null)
+        {
+            var requestingUser = GetClaimId(ClaimType.UserId);
+
+            if (HasPermission(Permission.ManageVendorCodes))
+            {
+                var stopwatch = Stopwatch.StartNew();
+
+                string timeElapsed;
+                string timeRemaining;
+                string status;
+                double msPerCode;
+                double remainingMs;
+
+                double lastUpdate = 0;
+                int lastSave = 0;
+                int lastLog = 0;
+                int count = 1;
+
+                var job = await _jobRepository.GetByIdAsync(jobId);
+                var jobDetails = JsonConvert
+                    .DeserializeObject<JobDetailsGenerateVendorCodes>(job.SerializedParameters);
+
+                token.Register(() =>
+                {
+                    _logger.LogWarning("Generating vendor codes for user {RequestingUser} was cancelled after {Elapsed} ms",
+                        requestingUser,
+                        stopwatch.ElapsedMilliseconds);
+                });
+
+                var codeType
+                    = await _vendorCodeTypeRepository.GetByIdAsync(jobDetails.VendorCodeTypeId);
+
+                if (codeType == null)
+                {
+                    return new JobStatus
+                    {
+                        PercentComplete = 0,
+                        Complete = true,
+                        Error = true,
+                        Status = $"Invalid vendor code type id: {jobDetails.VendorCodeTypeId}"
+                    };
+                }
+                else
+                {
+                    if (codeType.SiteId != GetCurrentSiteId())
+                    {
+                        return new JobStatus
+                        {
+                            PercentComplete = 0,
+                            Complete = true,
+                            Error = true,
+                            Status = $"Vendor code type id {jobDetails.VendorCodeTypeId} is not attached to site {GetCurrentSiteId()}"
+                        };
+                    }
+                }
+
+                _logger.LogInformation("User {RequestingUser} requested {NumberOfCodes} codes for Vendor Code Type Id {VendorCodeTypeId}",
+                    requestingUser,
+                    jobDetails.NumberOfCodes,
+                    jobDetails.VendorCodeTypeId);
+
+                var vendorCode = new VendorCode
+                {
+                    IsUsed = false,
+                    SiteId = codeType.SiteId,
+                    VendorCodeTypeId = codeType.Id
+                };
+
+                for (; count <= jobDetails.NumberOfCodes; count++)
+                {
+                    if (token.IsCancellationRequested)
+                    {
+                        break;
+                    }
+
+                    vendorCode.Code = _codeGenerator.Generate(jobDetails.CodeLength);
+                    await _vendorCodeRepository.AddAsync(requestingUser, vendorCode);
+
+                    if (count - lastSave > 1000)
+                    {
+                        await _vendorCodeRepository.SaveAsync();
+                        lastSave = count;
+                    }
+
+                    if (stopwatch.ElapsedMilliseconds - lastUpdate > 5000
+                        || count == 1)
+                    {
+                        if (stopwatch.ElapsedMilliseconds <= 1000 && count <= 1)
+                        {
+                            status = $"Generated {count}/{jobDetails.NumberOfCodes}";
+                        }
+                        else
+                        {
+                            timeElapsed = TimeSpan
+                                .FromMilliseconds(stopwatch.ElapsedMilliseconds)
+                                .ToString(@"mm\:ss",
+                                    System.Globalization.DateTimeFormatInfo.InvariantInfo);
+                            msPerCode = (double)stopwatch.ElapsedMilliseconds / count;
+                            remainingMs = msPerCode * (jobDetails.NumberOfCodes - count);
+                            timeRemaining = TimeSpan
+                                .FromMilliseconds(remainingMs)
+                                .ToString(@"mm\:ss",
+                                    System.Globalization.DateTimeFormatInfo.InvariantInfo);
+
+                            status = $"Generated {count}/{jobDetails.NumberOfCodes}, {timeElapsed} elasped, est. {timeRemaining} remaining";
+
+                            if (count - lastLog > jobDetails.NumberOfCodes / 10)
+                            {
+                                _logger.LogDebug("Vendor codes: {Percent}% {Count}/{Total} @ {Each} ea. {Elapsed} elasped, est. {Remaining} remaining",
+                                    GetPercent(count, jobDetails.NumberOfCodes),
+                                    count,
+                                    jobDetails.NumberOfCodes,
+                                    msPerCode,
+                                    timeElapsed,
+                                    timeRemaining);
+                                lastLog = count;
+                            }
+                        }
+
+                        progress?.Report(new JobStatus
+                        {
+                            PercentComplete = GetPercent(count, jobDetails.NumberOfCodes),
+                            Status = status,
+                            Error = false
+                        });
+
+                        lastUpdate = stopwatch.ElapsedMilliseconds;
+                    }
+                }
+                await _vendorCodeRepository.SaveAsync();
+
+                count--;
+
+                _logger.LogInformation("Inserted {Count} vendor codes in {Elapsed} ms.",
+                    count,
+                    stopwatch.ElapsedMilliseconds);
+
+                timeElapsed = TimeSpan
+                    .FromMilliseconds(stopwatch.ElapsedMilliseconds)
+                    .ToString(@"mm\:ss",
+                        System.Globalization.DateTimeFormatInfo.InvariantInfo);
+
+                return new JobStatus
+                {
+                    PercentComplete = token.IsCancellationRequested
+                        ? GetPercent(count, jobDetails.NumberOfCodes)
+                        : 100,
+                    Complete = true,
+                    Status = $"Inserted {count} vendor codes in {timeElapsed}."
+                };
+            }
+            else
+            {
+                return new JobStatus
+                {
+                    PercentComplete = 0,
+                    Complete = true,
+                    Error = true,
+                    Status = "You do not have permission to insert vendor codes."
+                };
+            }
         }
     }
 }
