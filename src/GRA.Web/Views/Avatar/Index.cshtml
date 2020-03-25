@@ -434,9 +434,17 @@
                 },
                 dataType: 'html',
                 url: "@Url.Action(nameof(AvatarController.GetLayersItems))",
-                success: function (data) {
-                    $($(divId).parent()).html(data);
-                }
+                    success: function (data) {
+                        if (data == undefined) {
+                            window.location.href = "@Url.Action(nameof(SignInController.Index),SignInController.Name)";
+                        }
+                        else {
+                            $($(divId).parent()).html(data);
+                        }
+                    },
+                    error: function () {
+                        window.location.href = "@Url.Action(nameof(SignInController.Index),SignInController.Name)";
+                    }
                 })
             .then(function () {
                 var itemIndex = $(divId).data("index");

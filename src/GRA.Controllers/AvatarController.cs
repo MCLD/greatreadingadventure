@@ -201,46 +201,48 @@ namespace GRA.Controllers
         public async Task<IActionResult> GetLayersItems(
             string type, int layerId, int selectedItemId, int bundleId, int[] selectedItemIds)
         {
+            bool user = !AuthUser.Identity.IsAuthenticated;
+            if (user)
+            {
+                ShowAlertDanger(_sharedLocalizer[Annotations.Validate.SessionExpired].ToString());
+                return NotFound();
+            }
             try
             {
                 var layeritems = await _avatarService.GetItemsByLayerAsync(layerId);
+                var model = new AvatarViewModel
+                {
+                    ItemPath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/")
+                };
                 if (type == "Item")
                 {
-                    var model = new AvatarViewModel
-                    {
-                        LayerItems = layeritems,
-                        SelectedItemId = selectedItemId,
-                        ItemPath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/"),
-                        LayerId = layerId
-                    };
-                    return PartialView("_SlickPartial", model);
+
+                    model.LayerItems = layeritems;
+                    model.SelectedItemId = selectedItemId;
+                    model.ItemPath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/");
+                    model.LayerId = layerId;
                 }
                 else if(type == "Color")
                 {
-                    var model = new AvatarViewModel
-                    {
-                        LayerColors = await _avatarService.GetColorsByLayerAsync(layerId),
-                        SelectedItemId = selectedItemId,
-                        ItemPath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/"),
-                        LayerId = layerId
-                    };
-                    return PartialView("_SlickPartial", model);
+                    model.LayerColors = await _avatarService.GetColorsByLayerAsync(layerId);
+                    model.SelectedItemId = selectedItemId;
+                    model.LayerId = layerId;
                 }
                 else
                 {
-                    var bundle = await _avatarService.GetBundleByIdAsync(bundleId);
-                    var model = new AvatarViewModel
-                    {
-                        Bundle = bundle,
-                        SelectedItemIds = selectedItemIds,
-                        ItemPath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/"),
-                    };
-                    return PartialView("_SlickPartial", model);
+                    model.Bundle = await _avatarService.GetBundleByIdAsync(bundleId);
+                    model.SelectedItemIds = selectedItemIds;
                 }
+                return PartialView("_SlickPartial", model);
             }
-            catch
+            catch(GraException gex)
             {
-                return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
+                _logger.LogError(gex,
+                    "Could not retrieve layer items for layer id {layerId}: {Message}",
+                    layerId,
+                    gex.Message);
+                ShowAlertDanger(_sharedLocalizer[Annotations.Validate.SomethingWentWrong].ToString());
+                return NotFound();
             }
         }
 
