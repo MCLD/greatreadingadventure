@@ -23,6 +23,7 @@ namespace GRA.Domain.Service
         private readonly IAvatarItemRepository _avatarItemRepository;
         private readonly IAvatarLayerRepository _avatarLayerRepository;
         private readonly IJobRepository _jobRepository;
+        private readonly LanguageService _languageService;
         private readonly ITriggerRepository _triggerRepository;
         private readonly IPathResolver _pathResolver;
 
@@ -35,6 +36,7 @@ namespace GRA.Domain.Service
             IAvatarItemRepository avatarItemRepository,
             IAvatarLayerRepository avatarLayerRepository,
             IJobRepository jobRepository,
+            LanguageService languageService,
             ITriggerRepository triggerRepository,
             IPathResolver pathResolver)
             : base(logger, dateTimeProvider, userContextProvider)
@@ -51,6 +53,8 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(avatarLayerRepository));
             _jobRepository = jobRepository
                 ?? throw new ArgumentNullException(nameof(jobRepository));
+            _languageService = languageService
+                ?? throw new ArgumentNullException(nameof(languageService));
             _triggerRepository = triggerRepository
                 ?? throw new ArgumentNullException(nameof(triggerRepository));
             _pathResolver = pathResolver
@@ -63,8 +67,12 @@ namespace GRA.Domain.Service
         {
             var activeUserId = GetActiveUserId();
             var siteId = GetCurrentSiteId();
+            var currentCultureName = _userContextProvider.GetCurrentCulture()?.Name;
+            var currentLanguageId = currentCultureName != null ?
+                await _languageService.GetLanguageIdAsync(currentCultureName) :
+                await _languageService.GetDefaultLanguageIdAsync();
             var layers = await _avatarLayerRepository.GetAllWithColorsAsync(
-                siteId, activeUserId);
+                siteId, currentLanguageId);
 
             if (layers.Count > 0)
             {
@@ -138,8 +146,12 @@ namespace GRA.Domain.Service
 
         public async Task<IEnumerable<AvatarLayer>> GetLayersAsync()
         {
+            var currentCultureName = _userContextProvider.GetCurrentCulture()?.Name;
+            var currentLanguageId = currentCultureName != null ?
+                await _languageService.GetLanguageIdAsync(currentCultureName) :
+                await _languageService.GetDefaultLanguageIdAsync();
             VerifyManagementPermission();
-            return await _avatarLayerRepository.GetAllAsync(GetCurrentSiteId());
+            return await _avatarLayerRepository.GetAllAsync(GetCurrentSiteId(), currentLanguageId);
         }
 
         public async Task<int> GetLayerAvailableItemCountAsync(int layerId)
@@ -457,7 +469,12 @@ namespace GRA.Domain.Service
         public async Task UpdateUserAvatarAsync(ICollection<AvatarLayer> selectionLayers)
         {
             var activeUserId = GetActiveUserId();
-            var layers = await _avatarLayerRepository.GetAllAsync(GetCurrentSiteId());
+            var currentCultureName = _userContextProvider.GetCurrentCulture()?.Name;
+            var currentLanguageId = currentCultureName != null ?
+                await _languageService.GetLanguageIdAsync(currentCultureName) :
+                await _languageService.GetDefaultLanguageIdAsync();
+            VerifyManagementPermission();
+            var layers = await _avatarLayerRepository.GetAllAsync(GetCurrentSiteId(),currentLanguageId);
             var elementList = new List<int>();
             foreach (var layer in layers)
             {

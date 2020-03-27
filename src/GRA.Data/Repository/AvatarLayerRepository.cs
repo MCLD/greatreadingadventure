@@ -18,24 +18,50 @@ namespace GRA.Data.Repository
         {
         }
 
-        public async Task<ICollection<AvatarLayer>> GetAllAsync(int siteId)
+        public async Task<ICollection<AvatarLayer>> GetAllAsync(int siteId, int languageId)
         {
-            return await DbSet.AsNoTracking()
+            var layers = await DbSet.AsNoTracking()
                .Where(_ => _.SiteId == siteId)
                .OrderBy(_ => _.GroupId)
                .ThenBy(_ => _.SortOrder)
                .ProjectTo<AvatarLayer>(_mapper.ConfigurationProvider)
                .ToListAsync();
+            if (layers.Count > 0)
+            {
+                foreach (var layer in layers.ToList())
+                {
+                    var layerText = _context.AvatarLayerText
+                    .AsNoTracking()
+                    .Where(_ => _.AvatarLayerId == layer.Id && _.LanguageId == languageId)
+                    .FirstOrDefault();
+                    layer.Name = layerText.Name;
+                    layer.RemoveLabel = layerText.RemoveLabel;
+                }
+            }
+            return layers;
         }
 
-        public async Task<ICollection<AvatarLayer>> GetAllWithColorsAsync(int siteId, int userId)
+        public async Task<ICollection<AvatarLayer>> GetAllWithColorsAsync(int siteId, int languageId)
         {
-            return await DbSet.AsNoTracking()
+            var layers = await DbSet.AsNoTracking()
                 .Where(_ => _.SiteId == siteId)
                 .OrderBy(_ => _.GroupId)
                 .ThenBy(_ => _.SortOrder)
                 .ProjectTo<AvatarLayer>(_mapper.ConfigurationProvider, _ => _.AvatarColors)
                 .ToListAsync();
+            if (layers.Count > 0)
+            {
+                foreach (var layer in layers.ToList())
+                {
+                    var layerText = _context.AvatarLayerText
+                    .AsNoTracking()
+                    .Where(_ => _.AvatarLayerId == layer.Id && _.LanguageId == languageId)
+                    .FirstOrDefault();
+                    layer.Name = layerText.Name;
+                    layer.RemoveLabel = layerText.RemoveLabel;
+                }
+            }
+            return layers;
         }
     }
 }
