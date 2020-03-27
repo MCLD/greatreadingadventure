@@ -251,9 +251,6 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<int>("Position");
 
-                    b.Property<string>("RemoveLabel")
-                        .HasMaxLength(255);
-
                     b.Property<bool>("ShowColorSelector");
 
                     b.Property<bool>("ShowItemSelector");
@@ -261,13 +258,6 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<int>("SiteId");
 
                     b.Property<int>("SortOrder");
-
-                    b.Property<string>("SpanishName")
-                        .IsRequired()
-                        .HasMaxLength(255);
-
-                    b.Property<string>("SpanishRemoveLabel")
-                        .HasMaxLength(255);
 
                     b.Property<decimal>("ZoomScale")
                         .HasColumnType("decimal(4,2)");
