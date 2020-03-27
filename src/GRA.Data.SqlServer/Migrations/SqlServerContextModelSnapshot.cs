@@ -251,9 +251,6 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<int>("Position");
 
-                    b.Property<string>("RemoveLabel")
-                        .HasMaxLength(255);
-
                     b.Property<bool>("ShowColorSelector");
 
                     b.Property<bool>("ShowItemSelector");
@@ -270,25 +267,6 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AvatarLayers");
-                });
-
-            modelBuilder.Entity("GRA.Data.Model.AvatarLayerText", b =>
-                {
-                    b.Property<int>("AvatarLayerId");
-
-                    b.Property<int>("LanguageId");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255);
-
-                    b.Property<string>("RemoveLabel");
-
-                    b.HasKey("AvatarLayerId", "LanguageId");
-
-                    b.HasIndex("LanguageId");
-
-                    b.ToTable("AvatarLayerText");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Badge", b =>
@@ -2988,19 +2966,6 @@ namespace GRA.Data.SqlServer.Migrations
                         .WithMany("AvatarItems")
                         .HasForeignKey("AvatarLayerId")
                         .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("GRA.Data.Model.AvatarLayerText", b =>
-                {
-                    b.HasOne("GRA.Data.Model.AvatarLayer", "AvatarLayer")
-                        .WithMany()
-                        .HasForeignKey("AvatarLayerId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("GRA.Data.Model.Language", "Language")
-                        .WithMany()
-                        .HasForeignKey("LanguageId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Branch", b =>
