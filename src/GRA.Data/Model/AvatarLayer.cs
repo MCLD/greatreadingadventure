@@ -10,13 +10,6 @@ namespace GRA.Data.Model
         public int SiteId { get; set; }
 
         [Required]
-        [MaxLength(255)]
-        public string Name { get; set; }
-
-        [MaxLength(255)]
-        public string RemoveLabel { get; set; }
-
-        [Required]
         public int Position { get; set; }
         public bool CanBeEmpty { get; set; }
         public int GroupId { get; set; }
