@@ -24,6 +24,8 @@ namespace GRA.Data
             // https://docs.microsoft.com/en-us/ef/core/modeling/keys
             modelBuilder.Entity<Model.AvatarBundleItem>()
                 .HasKey(_ => new { _.AvatarBundleId, _.AvatarItemId });
+            modelBuilder.Entity<Model.AvatarLayerText>()
+                .HasKey(_ => new { _.AvatarLayerId, _.LanguageId });
             modelBuilder.Entity<Model.ChallengeCategory>()
                 .HasKey(_ => new { _.ChallengeId, _.CategoryId });
             modelBuilder.Entity<Model.ChallengeGroupChallenge>()
