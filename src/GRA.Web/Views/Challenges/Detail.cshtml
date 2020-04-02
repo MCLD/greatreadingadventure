@@ -1,5 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.Challenges.ChallengeDetailViewModel
 
+@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
+
 <noscript>
     <style>
         #favoriteCell {
@@ -121,7 +123,11 @@
                                     }
                                     @if (!string.IsNullOrWhiteSpace(Model.Tasks[i].FilePath))
                                     {
-                                        <a href="@Model.Tasks[i].FilePath" target="_blank" class="btn btn-xs btn-default" style="margin-top:5px;">
+                                        <a aria-label="@SharedLocalizer[GRA.Annotations.Interface.ViewAttachment] @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                           href="@Model.Tasks[i].FilePath"
+                                           target="_blank"
+                                           class="btn btn-xs btn-default"
+                                           style="margin-top:5px;">
                                             <span class="fa fa-file-o"></span>
                                             @SharedLocalizer[GRA.Annotations.Interface.ViewAttachment]
                                         </a>

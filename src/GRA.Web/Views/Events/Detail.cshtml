@@ -1,5 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.Events.EventsDetailViewModel
 
+@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
+
 @section metadata {
     <meta name="description" content="@Model.Event.Description" />
     <link rel="canonical" href="@Url.Action("Detail", "Events", new { id = Model.Event.Id })" />
@@ -30,7 +32,18 @@
 
                 @if (!string.IsNullOrWhiteSpace(Model.Event.ExternalLink))
                 {
-                    <div class="row-spacing" style="font-size:medium;"><strong>@SharedLocalizer[GRA.Annotations.Interface.MoreInformation]: </strong><a target="_blank" href="@Model.Event.ExternalLink">@Model.Event.Name</a> <a target="_blank" href="@Model.Event.ExternalLink"><span class="fa fa-external-link"></span></a></div>
+                    <div class="row-spacing" style="font-size:medium;"><strong>@SharedLocalizer[GRA.Annotations.Interface.MoreInformation]: </strong>
+                        <a aria-label="@Model.Event.Name @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                           target="_blank"
+                           href="@Model.Event.ExternalLink">
+                            @Model.Event.Name
+                        </a>
+                        <a aria-label="@Model.Event.Name @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                           target="_blank"
+                           href="@Model.Event.ExternalLink">
+                            <span class="fa fa-external-link"></span>
+                        </a>
+                    </div>
                 }
                 <div class="row-spacing" style="font-size:medium;">
                     <table>
@@ -43,7 +56,9 @@
                                 }
                                 else
                                 {
-                                    <a target="_blank" href="@Model.Event.EventLocationLink">@Model.Event.EventLocationName</a>
+                                    <a aria-label="@Model.Event.EventLocationName @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                       target="_blank"
+                                       href="@Model.Event.EventLocationLink">@Model.Event.EventLocationName</a>
                                 }
                             </td>
                         </tr>
@@ -73,14 +88,22 @@
 
                     <div class="row-space" style="font-size:medium">
                         <strong>@SharedLocalizer[GRA.Annotations.Interface.RelatedChallenge]:&nbsp;</strong>
-                        <a asp-controller="Challenges" asp-action="Detail" asp-route-id="@Model.Event.Challenge.Id" target="_blank">@Model.Event.Challenge.Name</a>
+                        <a aria-label="@Model.Event.Challenge.Name @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                           asp-controller="Challenges"
+                           asp-action="Detail"
+                           asp-route-id="@Model.Event.Challenge.Id"
+                           target="_blank">@Model.Event.Challenge.Name</a>
                     </div>
                 }
                 else if (Model.Event.ChallengeGroup != null)
                 {
                     <div class="row-space" style="font-size:medium">
                         <strong>@SharedLocalizer[GRA.Annotations.Interface.RelatedChallenges]:&nbsp;</strong>
-                        <a asp-controller="Challenges" asp-action="List" asp-route-id="@Model.Event.ChallengeGroup.Stub" target="_blank">@Model.Event.ChallengeGroup.Name</a>
+                        <a aria-label="@Model.Event.ChallengeGroup.Name @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                           asp-controller="Challenges"
+                           asp-action="List"
+                           asp-route-id="@Model.Event.ChallengeGroup.Stub"
+                           target="_blank">@Model.Event.ChallengeGroup.Name</a>
                     </div>
 
                 }

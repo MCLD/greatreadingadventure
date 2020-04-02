@@ -48,6 +48,7 @@
             public const string MailForHelp = "If you can't find something, please <a href=\"{0}\">send us a mail</a> and let us know what you were looking for, we'll do our best to help.";
             public const string NoBooksLogged = "No books logged.";
             public const string NoHistory = "No history to display.";
+            public const string OpensNewWindow = "Opens new window.";
             public const string PasswordRecoverySent = "A password recovery email has been sent to the email for username '{0}'.";
             public const string PasswordResetFor = "Password reset for: {0}";
             public const string PointSingular = "{0} point";

@@ -1,5 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.Profile.HouseholdListViewModel
 
+@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
+
 @if (Model.AuthUserIsHead)
 {
     <div class="row">
@@ -311,7 +313,11 @@
                                                         {
                                                             if (!string.IsNullOrEmpty(Model.Head.VendorCodeUrl))
                                                             {
-                                                                <strong><a href="@Model.Head.VendorCodeUrl" target="_blank">@Model.Head.VendorCode</a></strong>
+                                                                <strong>
+                                                                    <a aria-label="@Model.Head.VendorCode @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                                                       href="@Model.Head.VendorCodeUrl"
+                                                                       target="_blank">@Model.Head.VendorCode</a>
+                                                                </strong>
                                                             }
                                                             else
                                                             {
@@ -450,7 +456,13 @@
                                                             {
                                                                 if (!string.IsNullOrEmpty(user.VendorCodeUrl))
                                                                 {
-                                                                    <strong><a href="@user.VendorCodeUrl" target="_blank">@user.VendorCode</a></strong>
+                                                                    <strong>
+                                                                        <a aria-label="@user.VendorCode @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                                                           href="@user.VendorCodeUrl"
+                                                                           target="_blank">
+                                                                            @user.VendorCode
+                                                                        </a>
+                                                                    </strong>
                                                                 }
                                                                 else
                                                                 {
@@ -466,7 +478,7 @@
                                                     @if (Model.AuthUserIsHead && Model.CanEditHousehold)
                                                     {
                                                         <td>
-                                                            <a asp-action="@nameof(ProfileController.RemoveHouseholdMember)" 
+                                                            <a asp-action="@nameof(ProfileController.RemoveHouseholdMember)"
                                                                asp-route-id="@user.Id" class="btn btn-xs btn-danger"
                                                                title="Remove @user.FullName from this @Model.LocalizedHouseholdTitle">
                                                                 <span class="fa fa-sign-out"></span>

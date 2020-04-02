@@ -3,6 +3,8 @@
 @using GRA.Domain.Model
 @await Html.PartialAsync("_ParticipantPartial")
 
+@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
+
 <form asp-controller="Participants" method="post" role="form">
     <input asp-for="Id" type="hidden" />
     <input asp-for="HouseholdCount" type="hidden" />
@@ -185,7 +187,11 @@
                                     {
                                         if (!string.IsNullOrEmpty(Model.User.VendorCodeUrl))
                                         {
-                                            <strong><a href="@Model.User.VendorCodeUrl" target="_blank">@Model.User.VendorCode</a></strong>
+                                            <strong>
+                                                <a aria-label="@Model.User.VendorCode @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                                   href="@Model.User.VendorCodeUrl"
+                                                   target="_blank">@Model.User.VendorCode</a>
+                                            </strong>
                                         }
                                         else
                                         {
@@ -241,7 +247,7 @@
 </form>
 
 @section scripts {
-<script>
+    <script>
         @if (!Model.CanEditDetails)
         {
         <text>
@@ -372,7 +378,7 @@
         });
         </text>
         }
-</script>
+    </script>
     @if (Model.CanEditDetails)
     {
         @await Html.PartialAsync("_SchoolSelectionScripts", Model);

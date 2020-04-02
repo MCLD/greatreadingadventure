@@ -1,5 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.HouseholdListViewModel
 
+@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
+
 @section styles {
     <style>
         .system-selector {
@@ -389,7 +391,7 @@
                                         @if (Model.CanRedeemBulkVendorCodes)
                                         {
                                             <button type="button" class="btn btn-info btn-xs pull-right" data-toggle="modal"
-                                                        data-target="#bulkRedeemModal" >
+                                                    data-target="#bulkRedeemModal">
                                                 <span class="buttonText">Redeem all</span>
                                             </button>
                                         }
@@ -487,7 +489,11 @@
                                         {
                                             if (!string.IsNullOrEmpty(Model.Head.VendorCodeUrl))
                                             {
-                                                <strong class="on-top-nobg"><a href="@Model.Head.VendorCodeUrl" target="_blank">@Model.Head.VendorCode</a></strong>
+                                                <strong class="on-top-nobg">
+                                                    <a aria-label="@Model.Head.VendorCode @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                                       href="@Model.Head.VendorCodeUrl"
+                                                       target="_blank">@Model.Head.VendorCode</a>
+                                                </strong>
                                             }
                                             else
                                             {
@@ -621,7 +627,11 @@
                                             {
                                                 if (!string.IsNullOrEmpty(user.VendorCodeUrl))
                                                 {
-                                                    <strong class="on-top-nobg"><a href="@user.VendorCodeUrl" target="_blank">@user.VendorCode</a></strong>
+                                                    <strong class="on-top-nobg">
+                                                        <a aria-label="@user.VendorCode @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                                           href="@user.VendorCodeUrl"
+                                                           target="_blank">@user.VendorCode</a>
+                                                    </strong>
                                                 }
                                                 else
                                                 {

@@ -1,5 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Pages.PageDetailViewModel
 
+@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
+
 @section styles {
     <link rel="stylesheet" href="~/css/markdown.min.css" asp-append-version="true" />
 }
@@ -62,7 +64,8 @@
                     {
                         <label class="control-label">Link to page</label>
                         <br />
-                        <a href="@Model.PageUrl"
+                        <a aria-label="@Model.PageUrl @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                           href="@Model.PageUrl"
                            target="_blank">
                             @Model.PageUrl
                         </a>
@@ -70,9 +73,9 @@
                 </div>
                 <div class="col-xs-6">
                     <a asp-action="@nameof(PagesController.Preview)"
-                            asp-route-headerId="@Model.HeaderId"
-                            asp-route-languageId="@Model.SelectedLanguageId"
-                            class="btn btn-default pull-right">
+                       asp-route-headerId="@Model.HeaderId"
+                       asp-route-languageId="@Model.SelectedLanguageId"
+                       class="btn btn-default pull-right">
                         Preview
                     </a>
                 </div>

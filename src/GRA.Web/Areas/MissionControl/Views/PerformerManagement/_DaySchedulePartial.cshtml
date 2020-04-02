@@ -1,5 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.DayScheduleViewModel
 
+@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
+
 <ul>
     @if (!string.IsNullOrWhiteSpace(Model.StartTime))
     {
@@ -11,7 +13,7 @@
         {
             @Html.Raw($"&ndash; {Model.BranchSelections[i].ScheduleStartTime.ToLongTimeString()}</li>")
         }
-        <li>Booked: @Model.BranchSelections[i].ScheduleStartTime.ToLongTimeString() &ndash; @Model.BranchSelections[i].ScheduleStartTime.AddMinutes(Model.BranchSelections[i].ScheduleDuration).ToLongTimeString() @@ @Model.BranchSelections[i].Branch.Name <a href="https://www.google.com/maps/search/@Model.BranchSelections[i].Branch.Address" target="_blank"><span class="fa fa-map-o"></span></a></li>
+        <li>Booked: @Model.BranchSelections[i].ScheduleStartTime.ToLongTimeString() &ndash; @Model.BranchSelections[i].ScheduleStartTime.AddMinutes(Model.BranchSelections[i].ScheduleDuration).ToLongTimeString() @@ @Model.BranchSelections[i].Branch.Name <a aria-label="Map @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]" href="https://www.google.com/maps/search/@Model.BranchSelections[i].Branch.Address" target="_blank"><span class="fa fa-map-o"></span></a></li>
         if (i != Model.BranchSelections.Count - 1 || !string.IsNullOrWhiteSpace(Model.EndTime))
         {
             @Html.Raw($"<li>Available: {Model.BranchSelections[i].ScheduleStartTime.AddMinutes(Model.BranchSelections[i].ScheduleDuration).ToLongTimeString()}")

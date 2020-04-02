@@ -1,5 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.PerformerSelectionsViewModel
 
+@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
+
 @section Styles {
     <link rel="stylesheet" href="~/css/performerregistration.min.css" asp-append-version="true" />
     <style>
@@ -137,7 +139,18 @@
                                 <td>@branchSelection.RequestedStartTime.ToShortTimeString()@(branchSelection.BackToBackProgram ? $", {branchSelection.RequestedStartTime.AddMinutes(branchSelection.Program.ProgramLengthMinutes + branchSelection.Program.BackToBackMinutes).ToShortTimeString()}" : "")</td>
                                 <td>@branchSelection.AgeGroup.Name</td>
                                 <td><a asp-action="Program" asp-route-id="@branchSelection.ProgramId" target="_blank">@branchSelection.Program.Title</a></td>
-                                <td>@branchSelection.Branch.SystemName: <span style="white-space:nowrap">@branchSelection.Branch.Name <a href="https://www.google.com/maps/search/@branchSelection.Branch.Address" target="_blank" class="hidden-print"><span class="fa fa-map-o"></span></a><span class="visible-print">(@branchSelection.Branch.Address)</span></span></td>
+                                <td>@branchSelection.Branch.SystemName:
+                                    <span style="white-space:nowrap">
+                                        @branchSelection.Branch.Name
+                                        <a aria-label="Map @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                           href="https://www.google.com/maps/search/@branchSelection.Branch.Address"
+                                           target="_blank"
+                                           class="hidden-print">
+                                            <span class="fa fa-map-o"></span>
+                                        </a>
+                                        <span class="visible-print">(@branchSelection.Branch.Address)</span>
+                                    </span>
+                                </td>
                                 <td>
                                     <table style="width:100%;">
                                         <tr>

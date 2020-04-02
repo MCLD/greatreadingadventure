@@ -1,5 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.Avatar.ShareViewModel
 
+@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
+
 <div class="row row-spacing">
     <div class="col-xs-12">
         <img src="@Model.AvatarImageUrl" class="img-responsive" />
@@ -13,12 +15,18 @@
             @SharedLocalizer[GRA.Annotations.Interface.Back]
         </a>
 
-        <a href="@Model.FacebookShareUrl" class="btn btn-default row-spacing" target="_blank">
+        <a aria-label="Facebook @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+           href="@Model.FacebookShareUrl"
+           class="btn btn-default row-spacing"
+           target="_blank">
             <span class="fa fa-facebook"></span>
             @SharedLocalizer[GRA.Annotations.Interface.Share]
         </a>
 
-        <a href="@Model.TwitterShareUrl" class="btn btn-default row-spacing" target="_blank">
+        <a aria-label="Twitter @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+           href="@Model.TwitterShareUrl"
+           class="btn btn-default row-spacing"
+           target="_blank">
             <span class="fa fa-twitter"></span>
             @SharedLocalizer[GRA.Annotations.Interface.Share]
         </a>

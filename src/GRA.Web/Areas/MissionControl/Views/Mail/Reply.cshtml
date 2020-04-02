@@ -1,5 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Mail.MailReplyViewModel
 
+@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
+
 <form asp-controller="Mail" asp-action="Reply" method="post" role="form">
     <input asp-for="InReplyToId" type="hidden" />
     <input asp-for="InReplyToSubject" type="hidden" />
@@ -12,7 +14,10 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <span class="lead">
-                        Replying to: <a target="_blank" href="@Model.ParticipantLink">@Model.ParticipantName</a>
+                        Replying to:
+                        <a aria-label="@Model.ParticipantName @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                           target="_blank"
+                           href="@Model.ParticipantLink">@Model.ParticipantName</a>
                     </span>
                 </div>
                 <div class="panel-body">

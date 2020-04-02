@@ -1,5 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.PerformerRegistration.Home.InformationViewModel
 
+@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
+
 @{
     var invalid = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid;
 }
@@ -34,7 +36,9 @@
                             <div>
                                 <input id="@($"branch{branch.Id}")" class="branchSelector" data-id="@branch.Id" type="checkbox" asp-checked="@(Model.BranchAvailability?.Contains(branch.Id) == true)" />
                                 <label for="@($"branch{branch.Id}")" data-toggle="tooltip" data-placement="top" title="@branch.Address">@branch.Name</label>
-                                <a href="https://www.google.com/maps/search/@branch.Address" target="_blank"><span class="fa fa-map-o"></span></a>
+                                <a aria-label="Map @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                   href="https://www.google.com/maps/search/@branch.Address"
+                                   target="_blank"><span class="fa fa-map-o"></span></a>
                             </div>
                         }
                         <br />

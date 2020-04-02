@@ -1,5 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Lookup.ChallengesListViewModel
 
+@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
+
 @if (Model.Challenges.Count() == 0)
 {
     <div class="alert alert-warning">No Challenges found.</div>
@@ -26,11 +28,20 @@ else
                         <td>
                             @if (Model.CanEditChallenges)
                             {
-                                <a asp-controller="Challenges" asp-action="Edit" asp-route-id="@challenge.Id" target="_blank">@challenge.Name</a>
+                                <a aria-label="@challenge.Name @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                   asp-controller="Challenges"
+                                   asp-action="Edit"
+                                   asp-route-id="@challenge.Id"
+                                   target="_blank">@challenge.Name</a>
                             }
                             else
                             {
-                                <a asp-area="" asp-controller="Challenges" asp-action="Details" asp-route-id="@challenge.Id"  target="_blank">@challenge.Name</a>
+                                <a aria-label="@challenge.Name @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                   asp-area=""
+                                   asp-controller="Challenges"
+                                   asp-action="Details"
+                                   asp-route-id="@challenge.Id"
+                                   target="_blank">@challenge.Name</a>
 
                             }
 

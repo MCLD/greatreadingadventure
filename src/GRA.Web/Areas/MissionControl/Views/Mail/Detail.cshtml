@@ -1,5 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Mail.MailDetailViewModel
 
+@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
+
 @if (Model.CanDelete)
 {
     <div class="row">
@@ -79,8 +81,16 @@
 <div class="row">
     <div class="col-md-8 col-md-offset-2">
         <div class="row">
-            <p style="font-size:large" class="col-md-7" >
-                Sent @Model.SentMessage <a target="_blank" asp-controller="Participants" asp-action="Detail" asp-route-id="@Model.User.Id">@Model.User.FirstName@(!string.IsNullOrWhiteSpace(Model.User.Username) ? $" ({Model.User.Username})" : "")</a> at @Model.Mail.CreatedAt
+            <p style="font-size:large" class="col-md-7">
+                Sent @Model.SentMessage
+                <a aria-label="@Model.User.FirstName@(!string.IsNullOrWhiteSpace(Model.User.Username) ? $" ({Model.User.Username})" : "")
+                   @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                   target="_blank"
+                   asp-controller="Participants"
+                   asp-action="Detail"
+                   asp-route-id="@Model.User.Id">
+                    @Model.User.FirstName@(!string.IsNullOrWhiteSpace(Model.User.Username) ? $" ({Model.User.Username})" : "")
+                </a>at @Model.Mail.CreatedAt
             </p>
             <div class="col-md-5">
                 <p>

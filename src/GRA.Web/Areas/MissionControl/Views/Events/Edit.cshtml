@@ -1,5 +1,8 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Events.EventsDetailViewModel
 
+
+@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
+
 @if (Model.CanRelateChallenge)
 {
     <div class="row">
@@ -171,7 +174,11 @@
         Created By:
         @if (Model.CanViewParticipants)
         {
-            <a asp-controller="Participants" asp-action="@nameof(ParticipantsController.Detail)" asp-route-id="@Model.Event.CreatedBy" target="_blank">@Model.CreatedByName</a>
+            <a aria-label="@Model.CreatedByName @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+               asp-controller="Participants"
+               asp-action="@nameof(ParticipantsController.Detail)"
+               asp-route-id="@Model.Event.CreatedBy"
+               target="_blank">@Model.CreatedByName</a>
         }
         else
         {
@@ -185,7 +192,12 @@
         {
             <div class="row" style="padding-top:10px;">
                 <div class="col-xs-12">
-                    <a asp-controller="Triggers" asp-action="Edit" asp-route-id="@Model.Event.RelatedTriggerId" target="_blank" class="btn btn-default">
+                    <a aria-label="View Related Trigger @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                       asp-controller="Triggers"
+                       asp-action="Edit"
+                       asp-route-id="@Model.Event.RelatedTriggerId"
+                       target="_blank"
+                       class="btn btn-default">
                         View Related Trigger
                     </a>
                 </div>
@@ -340,7 +352,10 @@
                         {
                             <tr>
                                 <td>
-                                    <a asp-action="Edit" asp-route-id="@Model.Event.Challenge.Id" target="_blank">@Model.Event.Challenge.Name</a>
+                                    <a aria-label="@Model.Event.Challenge.Name @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                       asp-action="Edit"
+                                       asp-route-id="@Model.Event.Challenge.Id"
+                                       target="_blank">@Model.Event.Challenge.Name</a>
                                 </td>
                                 <td>
                                     @if (!string.IsNullOrWhiteSpace(Model.Event.Challenge.BadgeFilename))
@@ -395,7 +410,11 @@
                                 <td>
                                     @if (Model.CanEditGroups)
                                     {
-                                        <a asp-controller="Challenges" asp-action="EditGroup" asp-route-id="@Model.Event.ChallengeGroup.Id" target="_blank">@Model.Event.ChallengeGroup.Name</a>
+                                        <a aria-label="@Model.Event.ChallengeGroup.Name @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                           asp-controller="Challenges"
+                                           asp-action="EditGroup"
+                                           asp-route-id="@Model.Event.ChallengeGroup.Id"
+                                           target="_blank">@Model.Event.ChallengeGroup.Name</a>
                                     }
                                     else
                                     {
@@ -406,7 +425,11 @@
                                     @Model.Event.ChallengeGroup.Description
                                 </td>
                                 <td>
-                                    <a asp-area="" asp-controller="Challenges" asp-action="List" asp-route-id="@Model.Event.ChallengeGroup.Stub" target="_blank">@Model.Event.ChallengeGroup.Stub</a>
+                                    <a aria-label="@Model.Event.ChallengeGroup.Stub @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                       asp-area=""asp-controller="Challenges"
+                                       asp-action="List"
+                                       asp-route-id="@Model.Event.ChallengeGroup.Stub"
+                                       target="_blank">@Model.Event.ChallengeGroup.Stub</a>
                                 </td>
                                 @if (Model.CanRelateChallenge)
                                 {

@@ -839,11 +839,11 @@
     <value>Progreso</value>
     <comment>Column heading showing far a participant is towards completing an item (i.e. their progress)</comment>
   </data>
-  <data name="Read &lt;strong&gt;&lt;em&gt;&lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt;" xml:space="preserve">
-    <value>Lea &lt;strong&gt;&lt;em&gt;&lt;a href="{0}" target="_blank"&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt;</value>
+  <data name="Read &lt;strong&gt;&lt;em&gt;&lt;a aria-label=&quot;{1} (Opens new window)&quot; href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt;" xml:space="preserve">
+    <value>Lea &lt;strong&gt;&lt;em&gt;&lt;a aria-label=&quot;{1} (Opens new window)&quot; href="{0}" target="_blank"&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt;</value>
   </data>
-  <data name="Read &lt;strong&gt;&lt;em&gt;&lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{2}&lt;/strong&gt;" xml:space="preserve">
-    <value>Lea &lt;strong&gt;&lt;em&gt;&lt;a href="{0}" target="_blank"&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt; por &lt;strong&gt;{2}&lt;/strong&gt;</value>
+  <data name="Read &lt;strong&gt;&lt;em&gt;&lt;a aria-label=&quot;{1} (Opens new window)&quot; href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{2}&lt;/strong&gt;" xml:space="preserve">
+    <value>Lea &lt;strong&gt;&lt;em&gt;&lt;a aria-label=&quot;{1} (Opens new window)&quot; href="{0}" target="_blank"&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt; por &lt;strong&gt;{2}&lt;/strong&gt;</value>
   </data>
   <data name="Read &lt;strong&gt;&lt;em&gt;{0}&lt;/em&gt;&lt;/strong&gt;" xml:space="preserve">
     <value>Lea &lt;strong&gt;&lt;em&gt;{0}&lt;/em&gt;&lt;/strong&gt;</value>
