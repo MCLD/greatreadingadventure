@@ -1361,6 +1361,10 @@
     <value>Select a Bundle</value>
     <comment>A bundle is a collection of avatar parts that are unlocked during participation. This text goes in a drop-down allowing the user to select a particular bundle to explore the parts it contains.</comment>
   </data>
+  <data name="Bundle" xml:space="preserve">
+    <value>Bundle</value>
+    <comment>A bundle is a collection of avatar parts that are unlocked during participation.</comment>
+  </data>
   <data name="No unlocked bundles" xml:space="preserve">
     <value>No unlocked bundles</value>
     <comment>The user has not unlocked any bundles.</comment>
