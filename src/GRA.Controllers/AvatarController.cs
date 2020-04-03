@@ -201,12 +201,6 @@ namespace GRA.Controllers
         public async Task<IActionResult> GetLayersItems(
             string type, int layerId, int selectedItemId, int bundleId, int[] selectedItemIds)
         {
-            bool user = !AuthUser.Identity.IsAuthenticated;
-            if (user)
-            {
-                ShowAlertDanger(_sharedLocalizer[Annotations.Validate.SessionExpired].ToString());
-                return NotFound();
-            }
             try
             {
                 var layeritems = await _avatarService.GetItemsByLayerAsync(layerId);
