@@ -591,6 +591,7 @@
         function GetBundleItems(bundle) {
             var beenViewed = $(bundle).data("beenviewed");
             var listItem = $(bundle);
+            var bundleId = $(bundle).data("bundleid");
             $("#avatarItems").removeClass("hide");
             $("#bundle-selected").text(listItem.contents().not(listItem.children()).text());
             $("#bundle-selected").append("<span class='caret'></span>");
@@ -599,7 +600,6 @@
             listItem.addClass("active");
             // Updates unviewed bundle
             if (beenViewed == "False") {
-                var bundleId = $(this).data("bundleid");
                 $.post("@Url.Action(nameof(AvatarController.UpdateBundleHasBeenViewed))",
                     { bundleId: bundleId },
                     function (response) {
