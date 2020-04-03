@@ -66,7 +66,6 @@ namespace GRA.Controllers
                 ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/")
             };
             var currentCulture = _userContextProvider.GetCurrentCulture();
-            viewModel.UseEnglish = currentCulture.Name == Culture.EnglishUS;
             var userAvatar = await _avatarService.GetUserAvatarAsync();
             viewModel.NewAvatar = userAvatar.Count == 0;
             return View(viewModel);
