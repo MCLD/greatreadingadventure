@@ -37,7 +37,7 @@ namespace GRA.Controllers
             PageTitle = _sharedLocalizer[Annotations.Title.SignIn];
         }
 
-        public async Task<IActionResult> Index(string ReturnUrl = null)
+        public async Task<IActionResult> Index(string ReturnUrl = null, int? statusCode = null)
         {
             var site = await GetCurrentSiteAsync();
             PageTitle = _sharedLocalizer[Annotations.Title.SignInTo, site.Name];
@@ -48,7 +48,10 @@ namespace GRA.Controllers
                 sendTo = TempData[TempDataKey.ReturnUrl].ToString();
                 TempData.Remove(TempDataKey.ReturnUrl);
             }
-            Response.StatusCode = 404;
+            if (statusCode != null)
+            {
+                Response.StatusCode = statusCode.Value;
+            }
             return View(new SignInViewModel { ReturnUrl = sendTo });
         }
 

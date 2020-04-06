@@ -50,15 +50,25 @@ namespace GRA.Controllers.Filter
                 }
 
                 await controller.LogoutUserAsync();
-
-                context.Result = controller.RedirectToRoute(new
+                if (redirectController == HomeController.Name)
                 {
-                    area = string.Empty,
-                    controller = redirectController,
-                    action = redirectController == HomeController.Name
-                        ? nameof(HomeController.Index)
-                        : nameof(SignInController.Index)
-                });
+                    context.Result = controller.RedirectToRoute(new
+                    {
+                        area = string.Empty,
+                        controller = redirectController,
+                        action = nameof(HomeController.Index)
+                    });
+                }
+                else
+                {
+                    context.Result = controller.RedirectToRoute(new
+                    {
+                        area = string.Empty,
+                        controller = redirectController,
+                        action = nameof(SignInController.Index),
+                        statusCode = StatusCodes.Status404NotFound
+                    });
+                }
             }
             else
             {
