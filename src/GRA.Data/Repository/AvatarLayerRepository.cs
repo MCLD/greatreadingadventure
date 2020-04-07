@@ -18,50 +18,37 @@ namespace GRA.Data.Repository
         {
         }
 
-        public async Task<ICollection<AvatarLayer>> GetAllAsync(int siteId, int languageId)
+        public async Task<ICollection<AvatarLayer>> GetAllAsync(int siteId)
         {
-            var layers = await DbSet.AsNoTracking()
+            return await DbSet.AsNoTracking()
                .Where(_ => _.SiteId == siteId)
                .OrderBy(_ => _.GroupId)
                .ThenBy(_ => _.SortOrder)
                .ProjectTo<AvatarLayer>(_mapper.ConfigurationProvider)
                .ToListAsync();
-            if (layers.Count > 0)
-            {
-                foreach (var layer in layers.ToList())
-                {
-                    var layerText = _context.AvatarLayerText
-                    .AsNoTracking()
-                    .Where(_ => _.AvatarLayerId == layer.Id && _.LanguageId == languageId)
-                    .FirstOrDefault();
-                    layer.Name = layerText.Name;
-                    layer.RemoveLabel = layerText.RemoveLabel;
-                }
-            }
-            return layers;
         }
 
-        public async Task<ICollection<AvatarLayer>> GetAllWithColorsAsync(int siteId, int languageId)
+        public async Task<ICollection<AvatarLayer>> GetAllWithColorsAsync(int siteId)
         {
-            var layers = await DbSet.AsNoTracking()
+            return await DbSet.AsNoTracking()
                 .Where(_ => _.SiteId == siteId)
                 .OrderBy(_ => _.GroupId)
                 .ThenBy(_ => _.SortOrder)
                 .ProjectTo<AvatarLayer>(_mapper.ConfigurationProvider, _ => _.AvatarColors)
                 .ToListAsync();
-            if (layers.Count > 0)
+        }
+
+        public Dictionary<string, string> GetNameAndLabelByLanguageId(int layerId, int languageId)
+        {
+            var layerText = _context.AvatarLayerText
+                   .AsNoTracking()
+                   .Where(_ => _.AvatarLayerId == layerId && _.LanguageId == languageId)
+                   .FirstOrDefault();
+            return new Dictionary<string, string>
             {
-                foreach (var layer in layers.ToList())
-                {
-                    var layerText = _context.AvatarLayerText
-                    .AsNoTracking()
-                    .Where(_ => _.AvatarLayerId == layer.Id && _.LanguageId == languageId)
-                    .FirstOrDefault();
-                    layer.Name = layerText.Name;
-                    layer.RemoveLabel = layerText.RemoveLabel;
-                }
-            }
-            return layers;
+                { "Name", layerText.Name },
+                { "RemoveLabel", layerText.RemoveLabel }
+            };
         }
     }
 }

@@ -71,8 +71,7 @@ namespace GRA.Domain.Service
             var currentLanguageId = currentCultureName != null ?
                 await _languageService.GetLanguageIdAsync(currentCultureName) :
                 await _languageService.GetDefaultLanguageIdAsync();
-            var layers = await _avatarLayerRepository.GetAllWithColorsAsync(
-                siteId, currentLanguageId);
+            var layers = await _avatarLayerRepository.GetAllWithColorsAsync(siteId);
 
             if (layers.Count > 0)
             {
@@ -85,6 +84,9 @@ namespace GRA.Domain.Service
                 var filePath = _pathResolver.ResolveContentPath($"site{siteId}/avatars/");
                 foreach (var layer in layers)
                 {
+                    var layerText = _avatarLayerRepository.GetNameAndLabelByLanguageId(layer.Id, currentLanguageId);
+                    layer.Name = layerText["Name"];
+                    layer.RemoveLabel = layerText["RemoveLabel"];
                     layer.AvatarItems = await _avatarItemRepository
                                .GetUserItemsByLayerAsync(activeUserId, layer.Id);
                     layer.Icon = _pathResolver.ResolveContentPath(layer.Icon);
@@ -151,7 +153,17 @@ namespace GRA.Domain.Service
                 await _languageService.GetLanguageIdAsync(currentCultureName) :
                 await _languageService.GetDefaultLanguageIdAsync();
             VerifyManagementPermission();
-            return await _avatarLayerRepository.GetAllAsync(GetCurrentSiteId(), currentLanguageId);
+            var layers =  await _avatarLayerRepository.GetAllAsync(GetCurrentSiteId());
+            if (layers.Count > 0)
+            {
+                foreach (var layer in layers.ToList())
+                {
+                    var layerText = _avatarLayerRepository.GetNameAndLabelByLanguageId(layer.Id, currentLanguageId);
+                    layer.Name = layerText["Name"];
+                    layer.RemoveLabel = layerText["RemoveLabel"];
+                }
+            }
+            return layers;
         }
 
         public async Task<int> GetLayerAvailableItemCountAsync(int layerId)
@@ -474,7 +486,16 @@ namespace GRA.Domain.Service
                 await _languageService.GetLanguageIdAsync(currentCultureName) :
                 await _languageService.GetDefaultLanguageIdAsync();
             VerifyManagementPermission();
-            var layers = await _avatarLayerRepository.GetAllAsync(GetCurrentSiteId(),currentLanguageId);
+            var layers = await _avatarLayerRepository.GetAllAsync(GetCurrentSiteId());
+            if (layers.Count > 0)
+            {
+                foreach (var layer in layers.ToList())
+                {
+                    var layerText = _avatarLayerRepository.GetNameAndLabelByLanguageId(layer.Id, currentLanguageId);
+                    layer.Name = layerText["Name"];
+                    layer.RemoveLabel = layerText["RemoveLabel"];
+                }
+            }
             var elementList = new List<int>();
             foreach (var layer in layers)
             {
