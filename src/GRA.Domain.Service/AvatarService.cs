@@ -202,8 +202,13 @@ namespace GRA.Domain.Service
 
         public async Task<ICollection<AvatarItem>> GetItemsByLayerAsync(int layerId)
         {
+            return await _avatarItemRepository.GetByLayerAsync(layerId);
+        }
+
+        public async Task<ICollection<AvatarItem>> GetUsersItemsByLayerAsync(int layerId)
+        {
             var userId = GetClaimId(ClaimType.UserId);
-            return await _avatarItemRepository.GetUserItemsByLayerAsync(userId,layerId);
+            return await _avatarItemRepository.GetUserItemsByLayerAsync(userId, layerId);
         }
 
         public async Task<AvatarItem> GetItemByLayerPositionSortOrderAsync(int layerPosition,

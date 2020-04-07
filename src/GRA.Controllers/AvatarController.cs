@@ -202,7 +202,7 @@ namespace GRA.Controllers
         {
             try
             {
-                var layeritems = await _avatarService.GetItemsByLayerAsync(layerId);
+                var layeritems = await _avatarService.GetUsersItemsByLayerAsync(layerId);
                 var model = new AvatarViewModel
                 {
                     ItemPath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/")
