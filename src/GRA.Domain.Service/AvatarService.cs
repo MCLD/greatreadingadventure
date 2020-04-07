@@ -536,7 +536,6 @@ namespace GRA.Domain.Service
         public async Task<AvatarBundle> GetBundleByIdAsync(int id, bool includeDeleted = false)
         {
             var bundle = await _avatarBundleRepository.GetByIdAsync(id, includeDeleted);
-            bundle.AvatarItems = await _avatarItemRepository.GetBundleItemsAsync(id);
             if (bundle == null)
             {
                 throw new GraException("The requested bundle could not be accessed or does not exist.");
