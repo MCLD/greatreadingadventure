@@ -3,7 +3,7 @@
 @section styles {
     <link rel="stylesheet" href="~/css/slick.min.css" asp-append-version="true" />
 }
-
+<div class="alert alert-danger" id="error-container"></div>
 <div class="panel panel-default">
     <div class="row">
         <div class="col-xs-12 col-sm-5 pull-right">
@@ -339,6 +339,7 @@
 
         // Selects the bundle if the user comes from the notification link
         $(function () {
+            $("#error-container").hide();
             var bundleValue = (new URL(location.href)).searchParams.get('bundle');
             if (bundleValue && $("#bundleDropdown")) {
                 $('#selector999').trigger("click");
@@ -435,15 +436,11 @@
                 dataType: 'html',
                 url: "@Url.Action(nameof(AvatarController.GetLayersItems))",
                     success: function (data) {
-                        if (data == undefined) {
-                            window.location.href = "@Url.Action(nameof(SignInController.Index),SignInController.Name)";
-                        }
-                        else {
-                            $($(divId).parent()).html(data);
-                        }
+                        $($(divId).parent()).html(data);
                     },
-                    error: function () {
-                        window.location.href = "@Url.Action(nameof(SignInController.Index),SignInController.Name)";
+                    error: function (data) {
+                        $("#error-container").text("@SharedLocalizer[GRA.Annotations.Validate.SomethingWentWrong]");
+                        $("#error-container").show().delay(20000).fadeOut("slow");;
                     }
                 })
             .then(function () {
