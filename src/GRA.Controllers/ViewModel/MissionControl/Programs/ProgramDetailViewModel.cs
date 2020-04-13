@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using GRA.Domain.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -15,6 +16,8 @@ namespace GRA.Controllers.ViewModel.MissionControl.Programs
         [Range(0, 2)]
         public int SchoolValues { get; set; }
 
+        [DisplayName("Badge Alt-Text")]
+        public string BadgeAltText { get; set; }
         public string BadgePath { get; set; }
         public IFormFile BadgeUploadImage { get; set; }
         public string BadgeMakerUrl { get; set; }
