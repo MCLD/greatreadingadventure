@@ -179,7 +179,12 @@
                                         }
                                         else
                                         {
-                                            <label class="control-label">Edit File &ndash; <a href="@Model.TaskFilePath" target="_blank">Link</a></label>
+                                            <label class="control-label">
+                                                Edit File &ndash;
+                                                <a aria-label="Link @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                                   href="@Model.TaskFilePath"
+                                                   target="_blank">Link</a>
+                                            </label>
                                         }
                                         <div class="input-group">
                                             <label class="input-group-btn">
@@ -377,7 +382,13 @@
                                 @if (Model.CanViewTriggers)
                                 {
                                     <li>
-                                        <a asp-controller="Triggers" asp-action="Edit" asp-route-id="@trigger.Id" target="_blank">@trigger.Name</a>
+                                        <a aria-label="@trigger.Name @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                           asp-controller="Triggers"
+                                           asp-action="Edit"
+                                           asp-route-id="@trigger.Id"
+                                           target="_blank">
+                                            @trigger.Name
+                                        </a>
                                     </li>
                                 }
                                 else
@@ -532,7 +543,14 @@
             </div>
         </div>
     </div>
-
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="BadgeAltText" class="control-label"></label>
+            <span class="fa fa-info-circle wide-tooltip" title="@SharedLocalizer[GRA.Annotations.Info.AltTextExplanation, SharedLocalizer[GRA.Annotations.Interface.Badge]]" data-toggle="tooltip" data-placement="top"></span>
+            <textarea asp-for="BadgeAltText" class="form-control"></textarea>
+            <span asp-validation-for="BadgeAltText" class="text-danger"></span>
+        </div>
+    </div>
     <hr />
 
     <div class="form-group">
