@@ -307,6 +307,10 @@ namespace GRA.Controllers.MissionControl
                 {
                     ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                 }
+                if (string.IsNullOrWhiteSpace(model.BadgeAltText))
+                {
+                    ModelState.AddModelError("BadgeAltText", "The Badge's Alt-Text is required.");
+                }
             }
             if (ModelState.IsValid)
             {
@@ -339,7 +343,8 @@ namespace GRA.Controllers.MissionControl
                         }
                         var newBadge = new Badge
                         {
-                            Filename = filename
+                            Filename = filename,
+                            AltText = model.BadgeAltText
                         };
                         var badge = await _badgeService.AddBadgeAsync(newBadge, badgeBytes);
                         challenge.BadgeId = badge.Id;
@@ -528,7 +533,8 @@ namespace GRA.Controllers.MissionControl
                     {
                         var newBadge = new Badge
                         {
-                            Filename = filename
+                            Filename = filename,
+                            AltText = model.BadgeAltText
                         };
                         var badge = await _badgeService.AddBadgeAsync(newBadge, badgeBytes);
                         challenge.BadgeId = badge.Id;
@@ -538,7 +544,9 @@ namespace GRA.Controllers.MissionControl
                         var existing = await _badgeService
                                     .GetByIdAsync((int)challenge.BadgeId);
                         existing.Filename = Path.GetFileName(model.BadgePath);
-                        await _badgeService.ReplaceBadgeFileAsync(existing, badgeBytes);
+                        var newBadge = await _badgeService.ReplaceBadgeFileAsync(existing, badgeBytes);
+                        newBadge.AltText = model.BadgeAltText;
+                        await _badgeService.UpdateBadgeAsync(newBadge);
                     }
                 }
                 try
