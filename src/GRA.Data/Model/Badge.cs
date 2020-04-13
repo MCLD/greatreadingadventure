@@ -1,4 +1,5 @@
-﻿using GRA.Data.Abstract;
+﻿using System.ComponentModel.DataAnnotations;
+using GRA.Data.Abstract;
 
 namespace GRA.Data.Model
 {
@@ -6,5 +7,9 @@ namespace GRA.Data.Model
     {
         public int SiteId { get; set; }
         public string Filename { get; set; }
+
+        [Required]
+        [MaxLength(255)]
+        public string AltText { get; set; }
     }
 }
