@@ -489,6 +489,10 @@
     <value>Your badges</value>
     <comment>Dashboard link to view participant's history, displayed above their badges on the dashboard</comment>
   </data>
+  <data name="How should this {0} be described to those who can’t see it?" xml:space="preserve">
+    <value>How should this {0} be described to those who can’t see it?</value>
+    <comment>Explanation for alt-text when receiving user input.</comment>
+  </data>
   <data name="Your password must be at least 6 characters long and include a number." xml:space="preserve">
     <value>Your password must be at least 6 characters long and include a number.</value>
     <comment>Password requirements shown to participants.</comment>
