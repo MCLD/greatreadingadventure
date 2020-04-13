@@ -20,6 +20,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Triggers
         [DisplayName("Challenges and triggers the participant must have earned")]
         public ICollection<TriggerRequirement> TriggerRequirements { get; set; }
         public string BadgeRequiredList { get; set; }
+        public string BadgeAltText { get; set; }
         public string ChallengeRequiredList { get; set; }
 
         public string BadgePath { get; set; }

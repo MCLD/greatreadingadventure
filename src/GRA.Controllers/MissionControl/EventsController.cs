@@ -352,6 +352,10 @@ namespace GRA.Controllers.MissionControl
                 {
                     ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                 }
+                if (string.IsNullOrWhiteSpace(model.BadgeAltText))
+                {
+                    ModelState.AddModelError("BadgeAltText", "The Badge's Alt-Text is required.");
+                }
             }
             else
             {
@@ -438,7 +442,8 @@ namespace GRA.Controllers.MissionControl
                         }
                         var newBadge = new Badge
                         {
-                            Filename = filename
+                            Filename = filename,
+                            AltText = model.BadgeAltText
                         };
                         var badge = await _badgeService.AddBadgeAsync(newBadge, badgeBytes);
                         var trigger = new Trigger

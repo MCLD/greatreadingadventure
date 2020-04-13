@@ -24,6 +24,8 @@ namespace GRA.Controllers.ViewModel.MissionControl.Challenges
         public string BadgeMakerUrl { get; set; }
         public bool UseBadgeMaker { get; set; }
         public string BadgeMakerImage { get; set; }
+        [DisplayName("Badge Alt-Text")]
+        public string BadgeAltText { get; set; }
         public ICollection<Trigger> DependentTriggers { get; set; }
         public List<ChallengeGroup> Groups { get; set; }
         public List<Event> RelatedEvents { get; set; }
