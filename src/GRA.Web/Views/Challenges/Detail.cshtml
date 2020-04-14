@@ -54,7 +54,7 @@
                         <div class="col-xs-4 col-sm-3" style="min-width: 110px;">
                             @if (!string.IsNullOrEmpty(Model.BadgePath))
                             {
-                                <img class="img-thumbnail badge-sm pull-right" src="~/@Model.BadgePath" asp-append-version="true" />
+                                <img class="img-thumbnail badge-sm pull-right" src="~/@Model.BadgePath" alt-text="@Model.BadgeAltText" asp-append-version="true" />
                             }
                         </div>
                     </div>
