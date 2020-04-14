@@ -38,7 +38,7 @@
                                                     @if (!string.IsNullOrEmpty(history.BadgeFilename))
                                                     {
                                                         <div style="text-align:center;">
-                                                            <img class="img-thumbnail badge-sm" src="~/@history.BadgeFilename" asp-append-version="true" />
+                                                            <img class="img-thumbnail badge-sm" src="~/@history.BadgeFilename" alt-text="@history.BadgeAltText" asp-append-version="true" />
                                                         </div>
                                                     }
                                                     else

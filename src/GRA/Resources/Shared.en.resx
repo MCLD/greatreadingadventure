@@ -881,12 +881,12 @@
     <value>Progress</value>
     <comment>Column heading showing far a participant is towards completing an item (i.e. their progress)</comment>
   </data>
-  <data name="Read &lt;strong&gt;&lt;em&gt;&lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt;" xml:space="preserve">
-    <value>Read &lt;strong&gt;&lt;em&gt;&lt;a href="{0}" target="_blank"&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt;</value>
+  <data name="Read &lt;strong&gt;&lt;em&gt;&lt;a aria-label=&quot;{1} (Opens new window)&quot; href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt;" xml:space="preserve">
+    <value>Read &lt;strong&gt;&lt;em&gt;&lt;a aria-label=&quot;{1} (Opens new window)&quot; href="{0}" target="_blank"&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt;</value>
     <comment>Challenge task of book with a link (replacing {0}) and a book title (replacing {1})</comment>
   </data>
-  <data name="Read &lt;strong&gt;&lt;em&gt;&lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{2}&lt;/strong&gt;" xml:space="preserve">
-    <value>Read &lt;strong&gt;&lt;em&gt;&lt;a href="{0}" target="_blank"&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{2}&lt;/strong&gt;</value>
+  <data name="Read &lt;strong&gt;&lt;em&gt;&lt;a aria-label=&quot;{1} (Opens new window)&quot; href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{2}&lt;/strong&gt;" xml:space="preserve">
+    <value>Read &lt;strong&gt;&lt;em&gt;&lt;a aria-label=&quot;{1} (Opens new window)&quot; href="{0}" target="_blank"&gt;{1}&lt;/a&gt;&lt;/em&gt;&lt;/strong&gt; by &lt;strong&gt;{2}&lt;/strong&gt;</value>
     <comment>Challenge task of book with a link (replacing {0}), a book title (replacing {1}) and the author of the book (replacing {2})</comment>
   </data>
   <data name="Read &lt;strong&gt;&lt;em&gt;{0}&lt;/em&gt;&lt;/strong&gt;" xml:space="preserve">
@@ -1392,5 +1392,13 @@
   <data name="You are already unsubscribed from emails." xml:space="preserve">
     <value>You are already unsubscribed from emails.</value>
     <comment>Message shown if the participant has clicked an unsubscribe link when they are unsubscribed.</comment>
+  </data>
+  <data name="Opens new window." xml:space="preserve">
+    <value>(Opens new window)</value>
+    <comment>Warning message for the screenreader to indicate the link will open a new window.</comment>
+  </data>
+  <data name="This badge is showing articles of {0} clothing to customize your avatar with" xml:space="preserve">
+    <value>This badge is showing articles of {0} clothing to customize your avatar with</value>
+    <comment>The alt-text description for unlocking an avatar bundle.</comment>
   </data>
 </root>

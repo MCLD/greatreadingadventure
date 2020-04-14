@@ -73,11 +73,12 @@ namespace GRA.Data.Repository
                 }
                 if (userLog.BadgeId != null)
                 {
-                    userLog.BadgeFilename = _context.Badges
+                    var badge = _context.Badges
                         .AsNoTracking()
                         .Where(_ => _.Id == userLog.BadgeId)
-                        .SingleOrDefault()
-                        .Filename;
+                        .SingleOrDefault();
+                    userLog.BadgeFilename = badge.Filename;
+                    userLog.BadgeAltText = badge.AltText;
                 }
             }
 
