@@ -145,7 +145,7 @@ namespace GRA.Domain.Service
             {
                 throw new GraException("Challenge not found.");
             }
-            await AddBadgeFilename(challenge);
+            await AddBadgeFileData(challenge);
 
             return challenge;
         }
@@ -160,7 +160,7 @@ namespace GRA.Domain.Service
                 {
                     throw new GraException("Challenge not found.");
                 }
-                await AddBadgeFilename(challenge);
+                await AddBadgeFileData(challenge);
 
                 return challenge;
             }
@@ -464,7 +464,7 @@ namespace GRA.Domain.Service
             return await _triggerRepository.GetChallengeDependentsAsync(challengeId);
         }
 
-        private async Task AddBadgeFilename(Challenge challenge)
+        private async Task AddBadgeFileData(Challenge challenge)
         {
             if (challenge.BadgeId != null)
             {
@@ -472,6 +472,7 @@ namespace GRA.Domain.Service
                 if (badge != null)
                 {
                     challenge.BadgeFilename = badge.Filename;
+                    challenge.BadgeAltText = badge.AltText;
                 }
             }
         }
@@ -480,7 +481,7 @@ namespace GRA.Domain.Service
         {
             foreach (var challenge in challenges)
             {
-                await AddBadgeFilename(challenge);
+                await AddBadgeFileData(challenge);
             }
         }
 

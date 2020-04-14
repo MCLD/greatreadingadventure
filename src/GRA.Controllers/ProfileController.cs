@@ -1207,6 +1207,7 @@ namespace GRA.Controllers
                 if (!string.IsNullOrWhiteSpace(item.BadgeFilename))
                 {
                     itemModel.BadgeFilename = _pathResolver.ResolveContentPath(item.BadgeFilename);
+                    itemModel.BadgeAltText = item.BadgeAltText;
                 }
                 else if (item.AvatarBundleId.HasValue)
                 {
@@ -1225,6 +1226,7 @@ namespace GRA.Controllers
                                 " <strong><a href=\"{0}\">{1}</a></strong>",
                                 bundleLink,
                                 _sharedLocalizer[Annotations.Interface.SeeItemsUnlocked]);
+                            itemModel.BadgeAltText = _sharedLocalizer[Annotations.Interface.AvatarBundleAltText, bundle.Name];
                         }
                     }
                 }
