@@ -491,6 +491,7 @@
                 <img id="badgeImage" class="img-thumbnail badge-lg"
                      src="~/@Model.BadgePath?@DateTime.Now.ToString(" yyMMddHHmmss")"
                      asp-append-version="true" />
+                <span asp-validation-for="BadgeMakerImage" class="text-danger"></span>
             }
             else
             {
