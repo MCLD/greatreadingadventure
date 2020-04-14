@@ -7,5 +7,6 @@ namespace GRA.Controllers.ViewModel.Profile
         public string Description { get; set; }
         public int PointsEarned { get; set; }
         public string BadgeFilename { get; set; }
+        public string BadgeAltText { get; set; }
     }
 }

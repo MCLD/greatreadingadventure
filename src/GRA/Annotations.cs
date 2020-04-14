@@ -78,6 +78,7 @@
             public const string AndOtherActivities = "and other activities";
             public const string AndTheir = "and their {0}";
             public const string Apply = "Apply";
+            public const string AvatarBundleAltText = "This badge is showing articles of {0} clothing to customize your avatar with";
             public const string AvatarSaved = "Avatar saved.";
             public const string Back = "Back";
             public const string BackTo = "Back to {0}";

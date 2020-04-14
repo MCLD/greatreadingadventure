@@ -25,6 +25,7 @@ namespace GRA.Domain.Model
         public int? ChallengeId { get; set; }
         public int? BadgeId { get; set; }
         public string BadgeFilename { get; set; }
+        public string BadgeAltText { get; set; }
         public string Description { get; set; }
 
         public int? AvatarBundleId { get; set; }

@@ -1397,4 +1397,8 @@
     <value>(Opens new window)</value>
     <comment>Warning message for the screenreader to indicate the link will open a new window.</comment>
   </data>
+  <data name="This badge is showing articles of {0} clothing to customize your avatar with" xml:space="preserve">
+    <value>This badge is showing articles of {0} clothing to customize your avatar with</value>
+    <comment>The alt-text description for unlocking an avatar bundle.</comment>
+  </data>
 </root>
