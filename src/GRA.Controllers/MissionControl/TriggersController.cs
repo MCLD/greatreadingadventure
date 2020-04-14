@@ -481,7 +481,11 @@ namespace GRA.Controllers.MissionControl
             {
                 viewModel.BadgePath = _pathResolver.ResolveContentPath(viewModel.Trigger.AwardBadgeFilename);
             }
-
+            if(viewModel.Trigger.AwardBadgeId != null)
+            {
+                var badge = await _badgeService.GetByIdAsync(viewModel.Trigger.AwardBadgeId);
+                viewModel.BadgeAltText = badge.AltText;
+            }
             if (UserHasPermission(Permission.ManageEvents))
             {
                 viewModel.RelatedEvents = await _eventService.GetRelatedEventsForTriggerAsync(id);
@@ -522,6 +526,12 @@ namespace GRA.Controllers.MissionControl
             if (string.IsNullOrWhiteSpace(model.BadgeAltText))
             {
                 ModelState.AddModelError("BadgeAltText", "The Badge's Alt-Text is required.");
+            }
+            if (!string.IsNullOrWhiteSpace(model.BadgeAltText) && model.BadgeUploadImage == null
+                && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || model.UseBadgeMaker))
+            {
+                ModelState.AddModelError("BadgeUploadImage", "A badge is required for the alt-text.");
+                ModelState.AddModelError("BadgeMakerImage", "A badge is required for the alt-text.");
             }
 
             if (!model.IsSecretCode)
@@ -626,8 +636,11 @@ namespace GRA.Controllers.MissionControl
                                     .GetByIdAsync(model.Trigger.AwardBadgeId);
                         existing.Filename = Path.GetFileName(model.BadgePath);
                         var newBadge = await _badgeService.ReplaceBadgeFileAsync(existing, badgeBytes);
-                        newBadge.AltText = model.BadgeAltText;
-                        await _badgeService.UpdateBadgeAsync(newBadge);
+                        if (newBadge?.AltText.Equals(model.BadgeAltText) == false)
+                        {
+                            existing.AltText = model.BadgeAltText;
+                            await _badgeService.UpdateBadgeAsync(existing);
+                        }
                     }
                     var savedtrigger = await _triggerService.UpdateAsync(model.Trigger);
                     ShowAlertSuccess($"Trigger '<strong>{savedtrigger.Name}</strong>' was successfully modified");

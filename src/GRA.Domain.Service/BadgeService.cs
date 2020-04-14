@@ -70,7 +70,7 @@ namespace GRA.Domain.Service
         {
             badge.SiteId = GetCurrentSiteId();
             badge.AltText = badge.AltText.Trim();
-            return await _badgeRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), badge);
+            return await _badgeRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), badge);
         }
 
         public async Task<Badge> ReplaceBadgeFileAsync(Badge badge, byte[] imageFile)

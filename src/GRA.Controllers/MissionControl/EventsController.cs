@@ -356,6 +356,12 @@ namespace GRA.Controllers.MissionControl
                 {
                     ModelState.AddModelError("BadgeAltText", "The Badge's Alt-Text is required.");
                 }
+                if (!string.IsNullOrWhiteSpace(model.BadgeAltText) && model.BadgeUploadImage == null
+                    && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || model.UseBadgeMaker))
+                {
+                    ModelState.AddModelError("BadgeUploadImage", "A badge is required for the alt-text.");
+                    ModelState.AddModelError("BadgeMakerImage", "A badge is required for the alt-text.");
+                }
             }
             else
             {
