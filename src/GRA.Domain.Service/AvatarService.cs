@@ -188,8 +188,24 @@ namespace GRA.Domain.Service
         {
             VerifyManagementPermission();
             layer.SiteId = GetCurrentSiteId();
-            return await _avatarLayerRepository.AddSaveAsync(
+            var currentlayer = await _avatarLayerRepository.AddSaveAsync(
                 GetClaimId(ClaimType.UserId), layer);
+            var languageId = await _languageService.GetDefaultLanguageIdAsync();
+            _avatarLayerRepository.AddAvatarLayerTextAsync(
+                layer,
+                languageId,
+                currentlayer.Id);
+            await _avatarItemRepository.SaveAsync();
+            var layerData = _avatarLayerRepository.GetNameAndLabelByLanguageId(currentlayer.Id,languageId);
+            currentlayer.Name = layerData["Name"];
+            return currentlayer;
+        }
+
+        public async Task AddLayerTextAsync(
+            AvatarLayer layer, int languageId, int layerId)
+        {
+            VerifyManagementPermission();
+            await _avatarLayerRepository.AddAvatarLayerTextAsync(layer, languageId, layerId);
         }
 
         public async Task<AvatarLayer> UpdateLayerAsync(AvatarLayer layer)
@@ -654,7 +670,7 @@ namespace GRA.Domain.Service
 
                     var addedLayer = await AddLayerAsync(layer);
 
-                    var layerAssetPath = Path.Combine(assetPath, addedLayer.Name);
+                    var layerAssetPath = Path.Combine(assetPath, layer.Name);
                     var destinationRoot = Path.Combine($"site{siteId}", "avatars", $"layer{addedLayer.Id}");
                     var destinationPath = _pathResolver.ResolveContentFilePath(destinationRoot);
                     if (!Directory.Exists(destinationPath))
@@ -741,7 +757,7 @@ namespace GRA.Domain.Service
                     await _avatarItemRepository.SaveAsync();
                     items = await GetItemsByLayerAsync(addedLayer.Id);
 
-                    _logger.LogInformation($"Processing {items.Count} items in {addedLayer.Name}...");
+                    _logger.LogInformation($"Processing {items.Count} items in {layer.Name}...");
 
                     progress.Report(new JobStatus
                     {

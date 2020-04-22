@@ -37,7 +37,22 @@ namespace GRA.Data.Repository
                 .ProjectTo<AvatarLayer>(_mapper.ConfigurationProvider, _ => _.AvatarColors)
                 .ToListAsync();
         }
-
+        public async Task AddAvatarLayerTextAsync(
+            AvatarLayer layer, int languageId, int layerId)
+        {
+            var layerText = new Model.AvatarLayerText
+            {
+                Name = layer.Name,
+                LanguageId = languageId,
+                AvatarLayerId = layerId
+            };
+            if (!string.IsNullOrEmpty(layer.RemoveLabel))
+            {
+                layerText.RemoveLabel = layer.RemoveLabel;
+            }
+            await _context.AvatarLayerText
+                .AddAsync(layerText);
+        }
         public Dictionary<string, string> GetNameAndLabelByLanguageId(int layerId, int languageId)
         {
             var layerText = _context.AvatarLayerText
