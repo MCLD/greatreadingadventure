@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using GRA.Domain.Model;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Avatar
