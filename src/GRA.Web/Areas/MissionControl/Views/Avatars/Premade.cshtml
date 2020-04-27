@@ -1,0 +1,717 @@
+﻿@model GRA.Controllers.ViewModel.Avatar.AvatarViewModel
+
+@section styles {
+    <link rel="stylesheet" href="~/css/slick.min.css" asp-append-version="true" />
+}
+<div class="alert alert-danger" id="error-container"></div>
+<div class="panel panel-default">
+    <div class="row">
+        <div class="col-xs-12 col-sm-5 pull-right">
+            <div class="visible-xs" id="mobile-container">
+                <div class="avatar-container center-block">
+                    @foreach (var layer in Model.LayerGroupings.SelectMany(_ => _))
+                    {
+                        <img src="~/@layer.FilePath"
+                             class="@($"image{layer.Id}") xsLayer avatar-layer@(string.IsNullOrWhiteSpace(layer.FilePath) ? " hide" : "")"
+                             style="z-index: @(layer.Position + 1);"
+                             data-layer="@layer.Id"
+                             data-item="@layer.SelectedItem" />
+                    }
+                </div>
+                <button type="button" class="btn btn-default avatar-zoom-button">
+                    <span class="fa fa-lg fa-search-plus"></span>
+                </button>
+            </div>
+            <div class="hidden-xs" id="desktop-container">
+                <div class="avatar-container center-block">
+                    @foreach (var layer in Model.LayerGroupings.SelectMany(_ => _))
+                    {
+                        <img src="~/@layer.FilePath"
+                             class="@($"image{layer.Id}") avatar-layer@(string.IsNullOrWhiteSpace(layer.FilePath) ? " hide" : "")"
+                             style="z-index: @(layer.Position + 1);"
+                             data-layer="@layer.Id"
+                             data-item="@layer.SelectedItem" />
+                    }
+                </div>
+            </div>
+            <div class="avatar-save-container">
+                <div class="avatar-save-message"></div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-7">
+            <div class="row">
+                <div class="col-xs-12 text-center" id="layer-container">
+                    @if (Model.LayerGroupings.Count > 0)
+                    {
+                        foreach (var layerGroup in Model.LayerGroupings)
+                        {
+                            <div style="display: inline-block;" class="@(Model.LayerGroupings.Count == 1 ? "hide" : "")">
+                                @foreach (var layer in layerGroup)
+                                {
+                                    <img src="~/@layer.Icon"
+                                         id="@($"selector{layer.Id}")"
+                                         class="avatar-layer-selector@(Model.DefaultLayer == layer.Id ? " selected" : "")"
+                                         data-layer="@layer.Id"
+                                         data-name="@layer.Name"
+                                         data-removelabel="@layer.RemoveLabel"
+                                         data-removable="@layer.CanBeEmpty"
+                                         data-showitemselector="@layer.ShowItemSelector"
+                                         data-showcolorselector="@layer.ShowColorSelector"
+                                         data-item="@layer.SelectedItem"
+                                         data-color="@layer.SelectedColor"
+                                         data-zoomscale="@layer.ZoomScale"
+                                         data-zoomyoffset="@layer.ZoomYOffset"
+                                         data-colorrows="@(layer.ShowColorSelector ? (!layer.ShowItemSelector ? 5 : 2) : 0)" />
+                                }
+                            </div>
+                        }
+                    }
+                    <div style="display: inline-block;" class="col-xs-24">
+                        <img src="@(Model.Bundles.Any(_=>!_.HasBeenViewed.Value && _.CanBeUnlocked)
+                            ? "/content/site1/avatarbundles/notif.png"
+                            : "/content/site1/avatarbundles/icon.png")"
+                             id="selector999"
+                             class="avatar-layer-selector"
+                             data-layer="999"
+                             data-name="@SharedLocalizer[GRA.Annotations.Interface.Bundle]"
+                             data-showitemselector="True"
+                             data-showcolorselector="False"
+                             bundle-item=""
+                             data-zoomscale="1.30"
+                             data-zoomyoffset="-5">
+                    </div>
+                </div>
+            </div>
+            <div id="avatarBundles" class="row col-xs-12" style="text-align:center;">
+                <ul class="nav" style="display: inline-table;">
+                    <li>
+
+                        @if (Model.Bundles.Count != 0)
+                        {
+                            var counter = 0;
+                            @foreach (var bundle in Model.Bundles)
+                            {
+                                @if (bundle.CanBeUnlocked)
+                                {
+                                    counter += 1;
+                                }
+                            }
+                            @if (counter != 0)
+                            {
+                                <div class="dropdown" style="margin-top: 1rem;" id="bundleDropdown">
+                                    <a class="dropdown-toggle btn btn-info"
+                                       id="bundle-selected"
+                                       data-toggle="dropdown"
+                                       href="#" role="button"
+                                       aria-haspopup="true"
+                                       aria-expanded="false">
+                                        @SharedLocalizer[GRA.Domain.Model.DisplayNames.SelectABundle]
+                                        <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu" id="bundle-drop">
+                                        @foreach (var bundle in Model.Bundles)
+                                        {
+                                            <li class="dropdown-item">
+                                                <a href="#"
+                                                   class="bundle-selectors"
+                                                   data-bundleid="@bundle.Id"
+                                                   data-beenviewed="@bundle.HasBeenViewed"
+                                                   onclick="GetBundleItems(this)">
+                                                    @bundle.Name
+                                                    @if (!bundle.HasBeenViewed.Value)
+                                                    {
+                                                        <span class="fa-stack newBundleSpan">
+                                                            <span class="fas fa-certificate fa-stack-2x text-success"></span>
+                                                            <span class="fa-stack-1x"
+                                                                  style="color: white;
+                                                                  font-size: x-small;">New</span>
+                                                        </span>
+                                                    }
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            }
+                            else
+                            {
+                                <a class="dropdown-toggle disabled"
+                                   data-toggle="dropdown"
+                                   href="#"
+                                   role="button"
+                                   aria-haspopup="true"
+                                   aria-expanded="false">
+                                    @SharedLocalizer[GRA.Annotations.Info.NoUnlockedBundles]<span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu"></ul>
+                            }
+                        }
+                        else
+                        {
+                            <a class="dropdown-toggle disabled"
+                               data-toggle="dropdown"
+                               href="#"
+                               role="button"
+                               aria-haspopup="true"
+                               aria-expanded="false">
+                                @SharedLocalizer[GRA.Annotations.Info.NoUnlockedBundles]<span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu"></ul>
+                        }
+                    </li>
+                </ul>
+            </div>
+            <div id="avatarColors" class="row hide">
+                <div class="col-xs-12">
+                    <div class="avatar-selector-well well well-sm">
+                        <div id="avatarColorSelectors" class="avatar-selector-container">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="avatarItems" class="row hide">
+                <div class="col-xs-12">
+                    <div class="avatar-selector-well well well-sm">
+                        <div id="avatarItemSelectors" class="avatar-selector-container">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div style="text-align:center;vertical-align:top;">
+                        <a asp-controller="Home"
+                           asp-action="Index"
+                           class="btn btn-lg btn-default"
+                           style="margin:5px;">
+                            <span class="fa fa-home"></span>
+                            @SharedLocalizer[GRA.Domain.Model.DisplayNames.Home]
+                        </a>
+                        <button id="removeButton"
+                                class="btn btn-lg btn-default hide"
+                                style="margin:5px;">
+                            <span class="fa fa-ban"></span>
+                            <span id="layerName"></span>
+                        </button>
+                        <button id="saveAvatar"
+                                class="btn btn-lg @(Model.NewAvatar ? "btn-success" : "btn-default")"
+                                style="margin:5px;">
+                            <span class="fa fa-floppy-o"></span>
+                            @SharedLocalizer[GRA.Annotations.Interface.Save]
+                            <span id="saveSpinner" class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                        </button>
+                        <form id="shareForm"
+                              asp-action="Share"
+                              method="post"
+                              role="form"
+                              style="display: inline-block">
+                            <input type="hidden" name="selectionJson" />
+                            <button class="btn btn-lg btn-default" style="margin:5px;">
+                                <span class="fa fa-share-alt"></span>
+                                @SharedLocalizer[GRA.Annotations.Interface.Share]
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/js/slick-avatar.min.js" asp-append-version="true"></script>
+    <script>
+        var baseImagePath = "@Url.Content($"~/{Model.ImagePath}")";
+        var xsZoom = false;
+        var unsavedChanges = @Model.NewAvatar.ToString().ToLower();
+        var prevLayerSelected = [];
+
+
+        $.ajaxSetup({
+            timeout: 30000
+        });
+        $( document ).ready(function() {
+            //Sets the default layer
+            SetLayer($("#layer-container").find("[data-layer='" + @Model.DefaultLayer +"']"));
+        });
+        //Returns the layer's selected item Id
+        function GetLayersSelectedItemId(layerId) {
+            var item = $("img.avatar-layer-selector[data-layer='" + layerId +"']").first();
+            return item.data("item");
+        }
+        //Returns the layer's selected color Id
+        function GetLayersSelectedColorId(layerId) {
+            var item = $("img.avatar-layer-selector[data-layer='" + layerId +"']").first();
+            return item.data("color");
+        }
+        //Given a layer ID, returns the layer object
+        function GetLayerById(layerId) {
+            return $("#layer-container").find("#selector" + layerId);
+        }
+        //Gets the selected Layer object
+        function CurrentSelectedLayer() {
+            return $("#layer-container").find(".selected");
+        }
+        function GetFirstActiveSelectedItem() {
+            var visibleItems = $("#avatarItemSelectors").find(".slick-active");
+            for (var idx = 0; idx < visibleItems.length; idx++) {
+                for (var col = 0; col < $(visibleItems[idx]).length; col++) {
+                    var items = $(visibleItems[idx]).find(".selected");
+                    if (items.first().length > 0) {
+                        return items.first();
+                    }
+                }
+            }
+        }
+        function UpdateRemoveButtonForBundle(item) {
+            var layerId = item == undefined ? prevLayerSelected[0] : item.data("layer");
+            if (layerId != undefined) {
+                $("#removeButton").removeClass("hide");
+                var layer = GetLayerById(layerId);
+                $("#layerName").text(layer.data("removelabel"));
+                $("#removeButton").data("layer", layerId);
+            }
+            else {
+                $("#removeButton").addClass("hide");
+            }
+        }
+        //returns the ItemId or ColorId for the first active object & marks it selected
+        function SelectGetFirstActiveObjectId(type, layer) {
+            var item = $("#avatar" + type +"s").find(".slick-active").find(".avatar-"+type.toLowerCase()+"-selector").first();
+            layer.data(type.toLowerCase(), item.data(type.toLowerCase()));
+            item.addClass("selected");
+            return layer.data(type.toLowerCase());
+        }
+        //Get all of the selected items
+        function GetAllSelectedItems() {
+            var layers = $("#layer-container").find(".avatar-layer-selector");
+            var items = new Array();
+            for (index = 0; index < layers.length; index++) {
+                if ($(layers[index]).data("item") != "" && $(layers[index]).data("item") != undefined) {
+                    items.push($(layers[index]).data("item"));
+                }
+            }
+            return items;
+        }
+        //Updates the the layer's image
+        function UpdateAvatarContainer(type,id, srcStr, layerId, hide) {
+            for (var idx = 0; idx < $(".avatar-container").length; idx++)
+            {
+                var image = $($(".avatar-container")[idx]).find(".image" + layerId);
+                image.data(type, id);
+                image.attr("src", srcStr);
+                if (hide) {
+                    image.addClass("hide");
+                }
+                else {
+                    image.removeClass("hide");
+                }
+            }
+        }
+
+        // Get the chosen avatar items and converts to JSON
+        function GetAvatarSelection() {
+            var data_array = new Array();
+            $(".avatar-layer-selector").each(function () {
+                var layer = {};
+                layer['Id'] = $(this).data("layer");
+                layer['SelectedItem'] = $(this).data("item");
+                layer['SelectedColor'] = $(this).data("color");
+                data_array.push(layer);
+            });
+            return JSON.stringify(data_array);
+        }
+
+        // Updates the container with the approprite color
+        function SetUnsavedChanges(bool) {
+            if (unsavedChanges != bool) {
+                if (bool == true) {
+                    $("#saveAvatar").removeClass("btn-default").addClass("btn-success");
+                    unsavedChanges = true;
+                }
+                else {
+                    $("#saveAvatar").removeClass("btn-success").addClass("btn-default");
+                    unsavedChanges = false;
+                }
+            }
+        }
+
+        // Selects the bundle if the user comes from the notification link
+        $(function () {
+            $("#error-container").hide();
+            var bundleValue = (new URL(location.href)).searchParams.get('bundle');
+            if (bundleValue && $("#bundleDropdown")) {
+                $('#selector999').trigger("click");
+                var bundleItem = $('*[data-bundleid="' + bundleValue + '"]');
+                if (bundleItem) {
+                    bundleItem.trigger("click");
+                }
+            }
+        });
+
+        // When a layer tab is selected
+        $(".avatar-layer-selector").on("click", function () {
+            var layer = $(this);
+            var currentLayer = CurrentSelectedLayer();
+            if (currentLayer == undefined || layer.data("layer") != currentLayer.data("layer"))
+            {
+                currentLayer.removeClass("selected");
+                SetLayer(layer);
+            }
+        });
+
+        //Sets the layer with the appropriate containers
+        function SetLayer(layer) {
+            layer.addClass("selected");
+            if (layer.data("layer") == 999) {
+                $("#avatarBundles").removeClass("hide");
+                $("#bundle-selected").text("@SharedLocalizer[GRA.Annotations.Interface.SelectABundle] ");
+                $("#bundle-selected").append("<span class='caret'></span>");
+                $("#bundle-selected").data("bundleid", "");
+                $("#avatarItems").addClass("hide");
+                $("#removeButton").addClass("hide");
+            }
+            else if (layer.data("showitemselector") == "True")
+            {
+                //If a regular item container is being displayed
+                $("#avatarBundles").addClass("hide");
+                $("#avatarItems").removeClass("hide");
+                $("#removeButton").data("layer", layer.data("layer"));
+                $("#layerName").text(layer.data("removelabel"));
+                layer.data("removable") == "True" ?
+                    $("#removeButton").removeClass("hide") :
+                    $("#removeButton").addClass("hide");
+                SetLayersSelectors("#avatarItemSelectors", 3);
+            }
+            else {
+                $("#avatarBundles").addClass("hide");
+                $("#avatarItems").addClass("hide");
+            }
+            // Handles the display of Colors and their row cases
+            if (layer.data("showcolorselector") == "True") {
+                $("#avatarColors").removeClass("hide");
+                SetLayersSelectors("#avatarColorSelectors", layer.data("colorrows"));
+            }
+            else {
+                $("#avatarColors").addClass("hide");
+            }
+        }
+
+        // Initializes the item/color slicks
+        function SetLayersSelectors(divId,rowCount) {
+            var drag, infin = true;
+            var selected, bundleId, totalitems = 0;
+            var selectedIds, slickSettings = [];
+            var lazyLoading = false;
+            var selectType = (divId == "#avatarColorSelectors") ? "Color" : "Item";
+            if ($(divId).hasClass("slick-initialized")) {
+                $(divId).slick("unslick");
+            }
+            $(divId).empty();
+            var layerObj = CurrentSelectedLayer();
+            var layerId = $(layerObj).data("layer");
+            // if we're dealing with bundles
+            if(layerId == 999) {
+                selectedIds = GetAllSelectedItems();
+                selectType = "Bundle";
+                bundleId = $("#bundle-selected").data("bundleid");
+            }
+            else{
+                selected = (selectType == "Color") ? GetLayersSelectedColorId(layerId) : GetLayersSelectedItemId(layerId);
+            }
+            $.ajax(
+            {
+                type: 'GET',
+                traditional: true,
+                contentType: 'application/json; charset=utf-8',
+                data:
+                {
+                    type: selectType,
+                    layerId: layerId,
+                    selectedItemId: $.makeArray(selected),
+                    bundleId: bundleId,
+                    selectedItemIds: selectedIds
+                },
+                dataType: 'html',
+                url: "@Url.Action(nameof(AvatarController.GetLayersItems))",
+                    success: function (data) {
+                        $($(divId).parent()).html(data);
+                    },
+                    error: function (data) {
+                        $("#error-container").text("@SharedLocalizer[GRA.Annotations.Validate.SomethingWentWrong]");
+                        $("#error-container").show().delay(20000).fadeOut("slow");;
+                    }
+                })
+            .then(function () {
+                var itemIndex = $(divId).data("index");
+                totalitems = $(divId).data("count");
+                lazyLoading = (totalitems > 15) ? true : false;
+                //Prevents the repeating of the slick items on mobile
+                if (layerId == 999 && totalitems / 12 <= 1) {
+                    drag = false;
+                    infin = false;
+                    }
+                if (selectType =="Color") {
+                    slickSettings.push(SlickSettings(768,(Math.floor(itemIndex/(rowCount*8))*8), 8,false, true));
+                    slickSettings.push(SlickSettings(992,(Math.floor(itemIndex/(rowCount*10))*10), 10,false, true));
+                    slickSettings.push(SlickSettings(1200,(Math.floor(itemIndex/(rowCount*12))*12),12,false,true));
+                }
+                else{
+                    slickSettings.push(SlickSettings(500,(Math.floor(itemIndex/(rowCount*3))*3), 3,drag, false));
+                    slickSettings.push(SlickSettings(768,(Math.floor(itemIndex/(rowCount*3))*3), 3, false, true));
+                    slickSettings.push(SlickSettings(992,(Math.floor(itemIndex/(rowCount*4))*4), 4, false, true));
+                    slickSettings.push(SlickSettings(1200,(Math.floor(itemIndex/(rowCount*6))*6),6,false,true));
+                }
+                $(divId).slick({
+                    arrows: false,
+                    initialSlide: Math.floor(itemIndex / rowCount),
+                    lazyLoad: 'anticipated',
+                    mobileFirst: true,
+                    rows: rowCount,
+                    slidesPerRow: 1,
+                    slidesToShow: (lazyLoading ? 10 : 1),
+                    swipeToSlide: true,
+                    touchThreshold: 100,
+                    variableWidth: true,
+                    waitForAnimate: false,
+                    infinite: infin,
+                    responsive: slickSettings,
+                });
+                if (layerId == 999) {
+                    var item = GetFirstActiveSelectedItem();
+                    UpdateRemoveButtonForBundle(item);
+                }
+                else {
+                    prevLayerSelected = [];
+                }
+            });
+        }
+
+        //Creates the slick data
+        function SlickSettings(breakpnt,initslide, toshow,drag,arrows) {
+            return {
+                breakpoint: breakpnt,
+                settings: {
+                    arrows: arrows,
+                    initialSlide: initslide,
+                    slidesToShow: toshow,
+                    slidesToScroll: toshow,
+                    swipeToSlide: false,
+                    touchThreshold: 10,
+                    variableWidth: false,
+                    waitForAnimate: true,
+                    draggable: drag
+                }
+            };
+        }
+
+        // When a user saves
+        $("#saveAvatar").on("click", function () {
+            $(".avatar-save-message").hide();
+            $(this).attr("disabled", "disabled");
+            $("#saveSpinner").removeClass("hidden");
+            SaveAvatar();
+        });
+
+        // Add's the avatars selection to the share form
+        $("#shareForm").on("submit", function (e) {
+            if (unsavedChanges) {
+                @if (Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null){
+                    @:gtag('event', 'avatar_update');
+                 }
+            $("#shareForm").find("input")
+            .attr("value", GetAvatarSelection())
+            .appendTo($(this));
+            }
+        });
+
+        // When a user removes the layer's item
+        $("#removeButton").on("click", function () {
+            unsavedChanges = true;
+            $("#saveAvatar").removeClass("btn-default");
+            $("#saveAvatar").addClass("btn-success");
+            var button = $(this);
+            var layer = CurrentSelectedLayer();
+            if (layer.data("layer") != 999) {
+                if (!$("#removeButton").hasClass("hide") && $(".avatarItems").find(".selected") != undefined) {
+                    $(".avatar-item-selector.selected").removeClass("selected");
+                    $(".avatar-color-selector.selected").removeClass("selected");
+                    layer.data("item", "");
+                    layer.data("color", "");
+                    UpdateAvatarContainer("item", "", "/", layer.data("layer"),true);
+                }
+            }
+            else {
+                var itemsLayer = GetLayerById(button.data("layer"));
+                var itemId = GetLayersSelectedItemId(button.data("layer"));
+                itemsLayer.data("item", "");
+                var item = $("#avatarItemSelectors").find("img.avatar-item-selector[data-item='" + itemId + "']");
+                item.removeClass("selected");
+                var nextSelected = undefined;
+                UpdateAvatarContainer("item", "", "/", button.data("layer"),true);
+                prevLayerSelected.splice(0, 1);
+                if (prevLayerSelected[0] != undefined) {
+                    nextSelected = $("#avatarItemSelectors").find("img.avatar-item-selector.selected[data-layer='" + prevLayerSelected[0] + "']");
+                    UpdateRemoveButtonForBundle(nextSelected);
+                }
+                else {
+                    nextSelected = GetFirstActiveSelectedItem();
+                    if (nextSelected == undefined) {
+                        $("#removeButton").addClass("hide");
+                    }
+                    else {
+                        UpdateRemoveButtonForBundle(nextSelected);
+                    }
+                }
+            }
+        });
+
+        // Mobile if user zooms in
+        $(".avatar-zoom-button").on("click", function () {
+            if (xsZoom) {
+                $(this).children().removeClass("fa-search-minus").addClass("fa-search-plus");
+                $(".xsLayer").css({ "transform": "", "top": "" });
+                xsZoom = false;
+            }
+            else {
+                var layer = CurrentSelectedLayer();
+                var scale = layer.data("zoomscale");
+                var yOffset = layer.data("zoomyoffset");
+                $(this).children().removeClass("fa-search-plus").addClass("fa-search-minus");
+                $(".xsLayer").css({ "transform": "scale(" + scale +")", "top": "" + yOffset + "px" });
+                xsZoom = true;
+            }
+        });
+
+        // When a user selects a bundle from the drop down
+        function GetBundleItems(bundle) {
+            var beenViewed = $(bundle).data("beenviewed");
+            var listItem = $(bundle);
+            var bundleId = $(bundle).data("bundleid");
+            $("#avatarItems").removeClass("hide");
+            $("#bundle-selected").text(listItem.contents().not(listItem.children()).text());
+            $("#bundle-selected").append("<span class='caret'></span>");
+            $($("#bundle-drop").find(".active")).removeClass("active");
+            $("#bundle-selected").data("bundleid", listItem.data("bundleid"));
+            listItem.addClass("active");
+            // Updates unviewed bundle
+            if (beenViewed == "False") {
+                $.post("@Url.Action(nameof(AvatarController.UpdateBundleHasBeenViewed))",
+                    { bundleId: bundleId },
+                    function (response) {
+                        if (response.success) {
+                            listItem.find('span.newBundleSpan').remove();
+                            listItem.data("beenviewed","True")
+                            if ($("span.newBundleSpan").length == 0) {
+                                $("#selector999").attr("src", "/content/site1/avatarbundles/icon.png");
+                            }
+                        }
+                });
+            }
+            SetLayersSelectors("#avatarItemSelectors", 3);
+        }
+
+        // Selecting an Item
+        function SelectItem(item) {
+            unsavedChanges = true;
+            $("#saveAvatar").removeClass("btn-default");
+            $("#saveAvatar").addClass("btn-success");
+            var newDataItem = $(item);
+            var itemsLayer = GetLayerById(newDataItem.data("layer"));
+            var layerTab = CurrentSelectedLayer();
+            // If we're not on bundles remove selected item
+            if (layerTab.data("layer") != 999) {
+                var oldItem = $("#avatarItemSelectors").find(".selected");
+                oldItem.removeClass("selected");
+            }
+            else {
+                // If a bundle, remove selected layer element
+                var currentItemId = GetLayersSelectedItemId(newDataItem.data("layer"));
+                var currentItem = $("#avatarItems").find("[data-item='" + currentItemId + "']");
+                if (currentItemId != newDataItem.data("item")) {
+                    currentItem.removeClass("selected");
+                }
+                if (itemsLayer.data("layer") != prevLayerSelected[0]) {
+                    for (var idx = 0; idx < prevLayerSelected.length; idx++) {
+                        if (prevLayerSelected[idx] === itemsLayer.data("layer")) {
+                            prevLayerSelected.splice(idx, 1);
+                        }
+                    }
+                    prevLayerSelected.unshift(itemsLayer.data("layer"));
+                    $("#removeButton").removeClass("hide");
+                    UpdateRemoveButtonForBundle(newDataItem);
+                }
+            }
+            var itemId = newDataItem.data("item");
+            newDataItem.addClass("selected");
+            itemsLayer.data("item", itemId);
+            var colorId = itemsLayer.data("color");
+            var srcStr = baseImagePath + "layer" + itemsLayer.data("layer") + "/item" + itemId;
+            // Handles the image path with the correct color
+            if (itemsLayer.data("showcolorselector") == "True") {
+                if ((colorId == undefined || colorId == "")) {
+                    colorId = SelectGetFirstActiveObjectId("Color",itemsLayer);
+                }
+                srcStr = srcStr + "/item_" + colorId + ".png";
+            }
+            else {
+                srcStr = srcStr + "/item.png";
+            }
+            UpdateAvatarContainer("item",itemId,srcStr,itemsLayer.data("layer"), false);
+        };
+
+        // Updates the color selected and removes the old
+        function SelectColor(color) {
+            unsavedChanges = true;
+            $("#saveAvatar").removeClass("btn-default");
+            $("#saveAvatar").addClass("btn-success");
+            $("#avatarColorSelectors").find(".selected").removeClass("selected");
+            var dataColor = $(color);
+            dataColor.addClass("selected");
+            var layer = GetLayerById(dataColor.data("layer"));
+            var colorId = dataColor.data("color");
+            var itemId = layer.data("item");
+            layer.data("color", colorId);
+            if (itemId == "" || itemId == undefined) {
+                itemId = SelectGetFirstActiveObjectId("Item",layer);
+            }
+            var srcStr = baseImagePath + "layer" + layer.data("layer") + "/item" + itemId + "/item_" + colorId + ".png";
+            //updates both containers with the appropriate images
+            UpdateAvatarContainer("color",colorId,srcStr,layer.data("layer"),false);
+        };
+
+        // Saves the Avatars items
+        function SaveAvatar() {
+            $.post("@Url.Action("SaveAvatar")", { selectionJson: GetAvatarSelection() }, function (response) {
+                if (response.success == true) {
+                    $(".avatar-save-message").removeClass("text-danger").addClass("text-success");
+                    $(".avatar-save-message").text("@SharedLocalizer[GRA.Annotations.Interface.AvatarSaved]");
+                    $(".avatar-save-message").show().delay(2000).fadeOut("slow");
+
+                    @if (Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null){
+                        <text>
+                        if (unsavedChanges){
+                            gtag('event', 'avatar_update');
+                        }
+                        </text>
+                    }
+                    SetUnsavedChanges(false);
+                }
+                else {
+                    $(".avatar-save-message").removeClass("text-success").addClass("text-danger");
+                    $(".avatar-save-message").text(response.message);
+                    $(".avatar-save-message").show();
+                }
+            }).fail(function () {
+                $(".avatar-save-message").removeClass("text-success").addClass("text-danger");
+                $(".avatar-save-message").text("@SharedLocalizer[GRA.Annotations.Validate.CouldNotSaveAvatar]");
+                $(".avatar-save-message").show();
+            })
+            .always(function() {
+                $("#saveSpinner").addClass("hidden");
+                $("#saveAvatar").removeAttr("disabled");
+            });
+        }
+    </script>
+}
