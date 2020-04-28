@@ -11,6 +11,7 @@ using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
@@ -451,6 +452,52 @@ namespace GRA.Controllers.MissionControl
                 ShowAlertWarning("Unable to delete bundle: ", gex.Message);
             }
             return RedirectToAction("Bundles");
+        }
+
+        public async Task<IActionResult> GetLayersItems(
+            string type, int layerId, int selectedItemId, int bundleId, int[] selectedItemIds)
+        {
+            var success = false;
+            try
+            {
+                var layeritems = await _avatarService.GetUsersItemsByLayerAsync(layerId);
+                var model = new PremadeAvatarsViewModel
+                {
+                    ItemPath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/")
+                };
+                if (type == "Item")
+                {
+                    model.LayerItems = layeritems;
+                    model.SelectedItemId = selectedItemId;
+                    model.ItemPath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/");
+                    model.LayerId = layerId;
+                }
+                else if (type == "Color")
+                {
+                    model.LayerColors = await _avatarService.GetColorsByLayerAsync(layerId);
+                    model.SelectedItemId = selectedItemId;
+                    model.LayerId = layerId;
+                }
+                else
+                {
+                    model.Bundle = await _avatarService.GetBundleByIdAsync(bundleId);
+                    model.SelectedItemIds = selectedItemIds;
+                }
+                Response.StatusCode = StatusCodes.Status200OK;
+                return PartialView("_SlickPartial", model);
+            }
+            catch (GraException gex)
+            {
+                _logger.LogError(gex,
+                    "Could not retrieve layer items for layer id {layerId}: {Message}",
+                    layerId,
+                    gex.Message);
+                Response.StatusCode = StatusCodes.Status400BadRequest;
+                return Json(new
+                {
+                    success = false
+                });
+            }
         }
 
         public async Task<IActionResult> GetItemsList(string itemIds,
