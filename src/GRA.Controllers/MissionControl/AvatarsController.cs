@@ -11,6 +11,7 @@ using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
@@ -176,6 +177,50 @@ namespace GRA.Controllers.MissionControl
             return View(viewModel);
         }
 
+        public async Task<IActionResult> GetLayersItems(
+    string type, int layerId, int selectedItemId, int bundleId, int[] selectedItemIds)
+        {
+            try
+            {
+                var layeritems = await _avatarService.GetUsersItemsByLayerAsync(layerId);
+                var model = new PremadeAvatarsViewModel
+                {
+                    ItemPath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/")
+                };
+                if (type == "Item")
+                {
+                    model.LayerItems = layeritems;
+                    model.SelectedItemId = selectedItemId;
+                    model.ItemPath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/");
+                    model.LayerId = layerId;
+                }
+                else if (type == "Color")
+                {
+                    model.LayerColors = await _avatarService.GetColorsByLayerAsync(layerId);
+                    model.SelectedItemId = selectedItemId;
+                    model.LayerId = layerId;
+                }
+                else
+                {
+                    model.Bundle = await _avatarService.GetBundleByIdAsync(bundleId);
+                    model.SelectedItemIds = selectedItemIds;
+                }
+                Response.StatusCode = StatusCodes.Status200OK;
+                return PartialView("_SlickPartial", model);
+            }
+            catch (GraException gex)
+            {
+                _logger.LogError(gex,
+                    "Could not retrieve layer items for layer id {layerId}: {Message}",
+                    layerId,
+                    gex.Message);
+                Response.StatusCode = StatusCodes.Status400BadRequest;
+                return Json(new
+                {
+                    success = false
+                });
+            }
+        }
         [HttpPost]
         public async Task<IActionResult> DecreaseItemSort(ItemsListViewModel model)
         {
@@ -275,13 +320,22 @@ namespace GRA.Controllers.MissionControl
             });
         }
 
-        public async Task<IActionResult> Bundles(bool unlockable = true, int page = 1)
+        public async Task<IActionResult> Bundles(string search = null, int page = 1)
         {
-            var filter = new AvatarFilter(page)
+            var filter = new AvatarFilter(page);
+            if (search == "Unlockable")
             {
-                Unlockable = unlockable
-            };
-
+                filter.Unlockable = true;
+            }
+            else if (search == "Premade")
+            {
+                filter.Premade = true;
+            }
+            else
+            {
+                filter.Unlockable = false;
+                search = "Default";
+            }
             var bundleList = await _avatarService.GetPaginatedBundleListAsync(filter);
 
             var paginateModel = new PaginateViewModel
@@ -303,10 +357,14 @@ namespace GRA.Controllers.MissionControl
             {
                 Bundles = bundleList.Data,
                 PaginateModel = paginateModel,
-                Unlockable = unlockable
+                Search = search
             };
 
             PageTitle = "Avatar Bundles";
+            if (search == "Premade")
+            {
+                return View("Premade", viewModel);
+            }
             return View(viewModel);
         }
 
@@ -651,5 +709,4 @@ namespace GRA.Controllers.MissionControl
                 Title = "Importing avatars..."
             });
         }
-    }
 }

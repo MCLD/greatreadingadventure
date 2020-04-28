@@ -61,6 +61,15 @@ namespace GRA.Data.Repository
             await SaveAsync();
         }
 
+        public async Task<List<AvatarBundle>> GetBundlesByAssociatedId(int bundleId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.AssociatedBundleId == bundleId)
+                .ProjectTo<AvatarBundle>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
         public async Task<AvatarBundle> GetByIdAsync(int id, bool includeDeleted)
         {
             var bundles = DbSet.AsNoTracking()

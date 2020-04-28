@@ -18,5 +18,6 @@ namespace GRA.Domain.Repository
         void RemoveItemFromBundles(int id);
         Task<List<UserLog>> UserHistoryAsync(int userId);
         Task UpdateHasBeenViewedAsync(int userId, int bundleId);
+        Task<List<AvatarBundle>> GetBundlesByAssociatedId(int bundleId);
     }
 }
