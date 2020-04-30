@@ -277,13 +277,22 @@ namespace GRA.Controllers.MissionControl
             });
         }
 
-        public async Task<IActionResult> Bundles(bool unlockable = true, int page = 1)
+        public async Task<IActionResult> Bundles(string search = null, int page = 1)
         {
-            var filter = new AvatarFilter(page)
+            var filter = new AvatarFilter(page);
+            if (search == "Unlockable")
             {
-                Unlockable = unlockable
-            };
-
+                filter.Unlockable = true;
+            }
+            else if (search == "Premade")
+            {
+                filter.Premade = true;
+            }
+            else
+            {
+                filter.Unlockable = false;
+                search = "Default";
+            }
             var bundleList = await _avatarService.GetPaginatedBundleListAsync(filter);
 
             var paginateModel = new PaginateViewModel
@@ -305,10 +314,14 @@ namespace GRA.Controllers.MissionControl
             {
                 Bundles = bundleList.Data,
                 PaginateModel = paginateModel,
-                Unlockable = unlockable
+                Search = search
             };
 
             PageTitle = "Avatar Bundles";
+            if (search == "Premade")
+            {
+                return View("Premade", viewModel);
+            }
             return View(viewModel);
         }
 
