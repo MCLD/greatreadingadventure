@@ -109,6 +109,10 @@ namespace GRA.Data.Repository
             {
                 bundles = bundles.Where(_ => _.CanBeUnlocked);
             }
+            else if (filter.Premade)
+            {
+                bundles = bundles.Where(_ => _.Description != null);
+            }
 
             return bundles;
         }
