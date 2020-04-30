@@ -27,19 +27,11 @@
     </div>
 </div>
 
-
-<div class="row">
-    <div class="col-xs-12">
-        <ul class="nav nav-pills" style="padding: 10px 0;">
-            <li ActiveBy routeKey="Unlockable" value=",True"><a asp-action="Bundles">Unlockable</a></li>
-            <li ActiveBy routeKey="Unlockable" value="False"><a asp-action="Bundles" asp-route-Unlockable="False">Default</a></li>
-        </ul>
-    </div>
-</div>
+@await Html.PartialAsync("_BundlesTabPartial")
 
 <div class="row" style="padding: 10px 0;">
     <div class="col-xs-12">
-            <a asp-action="BundleCreate" class="btn btn-default">Create a new bundle</a>
+        <a asp-action="BundleCreate" class="btn btn-default">Create a new bundle</a>
     </div>
 </div>
 
