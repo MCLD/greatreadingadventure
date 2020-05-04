@@ -48,6 +48,14 @@ namespace GRA
                     Category = typeof(SiteSettingKey.Events).Name,
                     Format = SiteSettingFormat.Boolean
                 },
+                [SiteSettingKey.Events.HideUntilProgramOpen] =
+                new SiteSettingDefinition
+                {
+                    Name = "Hide until program opens",
+                    Info = "Put any text here to hide events until the program is open",
+                    Category = typeof(SiteSettingKey.Events).Name,
+                    Format = SiteSettingFormat.Boolean
+                },
                 [SiteSettingKey.Events.RequireBadge] =
                 new SiteSettingDefinition
                 {

@@ -47,6 +47,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Show associated system and branch on prize redemption screen
 - Display participant system and branch in Mission Control mail view
 - Vendor code generation through WebSocket job
+- Site setting to hide events until program open
 
 ### Changed
 - Script docker-build.bash to only build release images when branch starts with 'release/'
