@@ -346,6 +346,7 @@
         }
         // Initializes the item slick
         function SetItemSelectors() {
+            var itemIndex = 0;
             var totalitems = 0;
             if ($("#avatarItemSelectors").hasClass("slick-initialized")) {
                 $("#avatarItemSelectors").slick("unslick");
@@ -362,7 +363,7 @@
                     if (selectedbundles.length != 0) {
                         for (var i = 0; i < selectedbundles.length; i++) {
                             if (GetItemsLayer(selectedbundles[i], 8) == currentLayer.Id) {
-                                selectedItem = selectedbundles[i];
+                                selectedItem = parseInt(selectedbundles[i]);
                             }
                         }
                     }
@@ -389,7 +390,7 @@
                         $("#avatarItemSelectors").append(itemContainer);
                     });
 
-                    var itemIndex = Math.max(currentLayer.Items.indexOf(selectedItem), 0);
+                    itemIndex = Math.max(currentLayer.Items.indexOf(selectedItem), 0);
                 }
             }
             // If we're dealing with bundles
@@ -445,7 +446,6 @@
                         }
                     }
                 }
-                var itemIndex = 0;
             } if (showColorSelector) {
                 $("#avatarColors").removeClass("hide");
             }
@@ -459,7 +459,7 @@
             }
 
             $("#avatarItemSelectors").slick({
-                   arrows: false,
+                arrows: false,
                 initialSlide: Math.floor(itemIndex / itemRows),
                 lazyLoad: 'anticipated',
                 mobileFirst: true,
