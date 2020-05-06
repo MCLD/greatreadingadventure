@@ -536,10 +536,11 @@
                 flag = true;
                 currentLayer = GetLayerById(2);
                 $("#selector999").data("color", $("#selector2").data("color"));
+                if ($("#selector999").data("color")) {
+                    selectedColor = $("#selector999").data("color");
+                }
             }
-            if ($("#selector999").data("color")) {
-                selectedColor = $("#selector999").data("color");
-            }
+            
             //If we're showing colors
             if ($("#avatarColorSelectors").hasClass("slick-initialized")) {
             $("#avatarColorSelectors").slick("unslick");
