@@ -83,6 +83,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Badge requirements list using client-side evaluation
 - Community experience report using client-side evaluation
 - Return 404s for missing Mission Control files
+- Layer item selector not changing the initial slide when an items selected
+- Avatar items using the wrong layers initial color
 
 ### Removed
 - Recovery error logging at the controller level - it's logged in the
