@@ -5,6 +5,7 @@ using GRA.Abstract;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Service
@@ -12,35 +13,19 @@ namespace GRA.Domain.Service
     public class JobService : Abstract.BaseUserService<JobService>
     {
         private readonly IJobRepository _jobRepository;
-        private readonly AvatarService _avatarService;
-        private readonly EmailBulkService _emailBulkService;
-        private readonly ReportService _reportService;
-        private readonly UserService _userService;
-        private readonly VendorCodeService _vendorCodeService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public JobService(ILogger<JobService> logger,
             IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             IJobRepository jobRepository,
-            AvatarService avatarService,
-            EmailBulkService emailBulkService,
-            ReportService reportService,
-            UserService userService,
-            VendorCodeService vendorCodeService)
+            IHttpContextAccessor httpContextAccessor)
             : base(logger, dateTimeProvider, userContextProvider)
         {
             _jobRepository = jobRepository
                 ?? throw new ArgumentNullException(nameof(jobRepository));
-            _avatarService = avatarService
-                ?? throw new ArgumentNullException(nameof(avatarService));
-            _emailBulkService = emailBulkService
-                ?? throw new ArgumentNullException(nameof(emailBulkService));
-            _reportService = reportService
-                ?? throw new ArgumentNullException(nameof(reportService));
-            _userService = userService
-                ?? throw new ArgumentNullException(nameof(userService));
-            _vendorCodeService = vendorCodeService
-                ?? throw new ArgumentNullException(nameof(vendorCodeService));
+            _httpContextAccessor = httpContextAccessor
+                ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         }
 
         public async Task<JobStatus> RunJob(string jobTokenString,
@@ -62,7 +47,7 @@ namespace GRA.Domain.Service
                         using (Serilog.Context.LogContext.PushProperty(LoggingEnrichment.JobToken,
                             jobTokenString))
                         {
-                            progress.Report(new JobStatus
+                            progress?.Report(new JobStatus
                             {
                                 Status = "Loading job..."
                             });
@@ -75,34 +60,34 @@ namespace GRA.Domain.Service
                                 switch (jobInfo.JobType)
                                 {
                                     case JobType.AvatarImport:
-                                        status = await _avatarService.ImportAvatarsAsync(jobInfo.Id,
+                                        status = await ImportAvatarsAsync(jobInfo.Id,
                                             token,
                                             progress);
                                         break;
                                     case JobType.HouseholdImport:
-                                        status = await _userService.ImportHouseholdMembersAsync(jobInfo.Id,
+                                        status = await ImportHouseholdMembersAsync(jobInfo.Id,
                                             token,
                                             progress);
                                         break;
                                     case JobType.RunReport:
-                                        status = await _reportService.RunReportJobAsync(jobInfo.Id,
+                                        status = await RunReportJobAsync(jobInfo.Id,
                                             token,
                                             progress);
                                         break;
                                     case JobType.UpdateVendorStatus:
-                                        status = await _vendorCodeService.UpdateStatusFromExcelAsync(
+                                        status = await UpdateStatusFromExcelAsync(
                                             jobInfo.Id,
                                             token,
                                             progress);
                                         break;
                                     case JobType.GenerateVendorCodes:
-                                        status = await _vendorCodeService.GenerateVendorCodesAsync(
+                                        status = await GenerateVendorCodesAsync(
                                             jobInfo.Id,
                                             token,
                                             progress);
                                         break;
                                     default: // case JobType.SendBulkEmails:
-                                        status = await _emailBulkService.RunJobAsync(userId,
+                                        status = await SendBulkEmails(userId,
                                             jobInfo.Id,
                                             token,
                                             progress);
@@ -111,7 +96,6 @@ namespace GRA.Domain.Service
 
                                 await _jobRepository.UpdateFinishAsync(jobInfo.Id,
                                     token.IsCancellationRequested);
-
                             }
                             catch (Exception ex)
                             {
@@ -127,7 +111,7 @@ namespace GRA.Domain.Service
                                     Error = true,
                                     SuccessRedirect = false
                                 };
-                                progress.Report(status);
+                                progress?.Report(status);
                             }
                             return status;
                         }
@@ -177,6 +161,73 @@ namespace GRA.Domain.Service
             var insertedJob = await _jobRepository.AddSaveNoAuditAsync(job);
 
             return insertedJob.JobToken;
+        }
+
+        private async Task<JobStatus> ImportAvatarsAsync(int jobId,
+            CancellationToken token,
+            IProgress<JobStatus> progress = null)
+        {
+            var avatarService = _httpContextAccessor
+                .HttpContext
+                .RequestServices
+                .GetService(typeof(AvatarService)) as AvatarService;
+            return await avatarService.ImportAvatarsAsync(jobId, token, progress);
+        }
+
+        private async Task<JobStatus> ImportHouseholdMembersAsync(int jobId,
+            CancellationToken token,
+            IProgress<JobStatus> progress = null)
+        {
+            var userService = _httpContextAccessor
+                .HttpContext
+                .RequestServices
+                .GetService(typeof(UserService)) as UserService;
+            return await userService.ImportHouseholdMembersAsync(jobId, token, progress);
+        }
+
+        private async Task<JobStatus> RunReportJobAsync(int jobId,
+            CancellationToken token,
+            IProgress<JobStatus> progress = null)
+        {
+            var reportService = _httpContextAccessor
+                .HttpContext
+                .RequestServices
+                .GetService(typeof(ReportService)) as ReportService;
+            return await reportService.RunReportJobAsync(jobId, token, progress);
+        }
+
+        private async Task<JobStatus> UpdateStatusFromExcelAsync(int jobId,
+            CancellationToken token,
+            IProgress<JobStatus> progress = null)
+        {
+            var vendorCodeService = _httpContextAccessor
+                .HttpContext
+                .RequestServices
+                .GetService(typeof(VendorCodeService)) as VendorCodeService;
+            return await vendorCodeService.UpdateStatusFromExcelAsync(jobId, token, progress);
+        }
+
+        private async Task<JobStatus> GenerateVendorCodesAsync(int jobId,
+            CancellationToken token,
+            IProgress<JobStatus> progress = null)
+        {
+            var vendorCodeService = _httpContextAccessor
+                .HttpContext
+                .RequestServices
+                .GetService(typeof(VendorCodeService)) as VendorCodeService;
+            return await vendorCodeService.GenerateVendorCodesAsync(jobId, token, progress);
+        }
+
+        private async Task<JobStatus> SendBulkEmails(int userId,
+            int jobId,
+            CancellationToken token,
+            IProgress<JobStatus> progress = null)
+        {
+            var emailBulkService = _httpContextAccessor
+                .HttpContext
+                .RequestServices
+                .GetService(typeof(EmailBulkService)) as EmailBulkService;
+            return await emailBulkService.RunJobAsync(userId, jobId, token, progress);
         }
     }
 }
