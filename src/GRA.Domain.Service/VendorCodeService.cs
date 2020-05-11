@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using ExcelDataReader;
 using GRA.Abstract;
 using GRA.Domain.Model;
@@ -149,6 +150,7 @@ namespace GRA.Domain.Service
         private const string CouponRowHeading = "Coupon";
         private const string OrderDateRowHeading = "Order Date";
         private const string ShipDateRowHeading = "Ship Date";
+        private const string DetailsRowHeading = "Details";
 
         public async Task<JobStatus> UpdateStatusFromExcelAsync(int jobId,
             CancellationToken token,
@@ -170,19 +172,17 @@ namespace GRA.Domain.Service
 
                 token.Register(() =>
                 {
-                    string duration = "";
-                    if (sw?.Elapsed != null)
-                    {
-                        duration = $" after {sw.Elapsed.ToString("c")}";
-                    }
-                    _logger.LogWarning($"Import of {filename} for user {requestingUser} was cancelled{duration}.");
+                    _logger.LogWarning("Import of {FilePath} for user {UserId} was cancelled after {Elapsed} ms",
+                        filename,
+                        requestingUser,
+                        sw?.Elapsed.TotalMilliseconds);
                 });
 
                 string fullPath = _pathResolver.ResolvePrivateTempFilePath(filename);
 
                 if (!File.Exists(fullPath))
                 {
-                    _logger.LogError($"Could not find {fullPath}");
+                    _logger.LogError("Could not find {FilePath}", fullPath);
                     return new JobStatus
                     {
                         PercentComplete = 0,
@@ -199,6 +199,7 @@ namespace GRA.Domain.Service
                         int couponColumnId = 0;
                         int orderDateColumnId = 0;
                         int shipDateColumnId = 0;
+                        int detailsColumnId = 0;
                         var issues = new List<string>();
                         int row = 0;
                         int totalRows = 0;
@@ -247,7 +248,8 @@ namespace GRA.Domain.Service
                                             case ShipDateRowHeading:
                                                 shipDateColumnId = i;
                                                 break;
-                                            default:
+                                            case DetailsRowHeading:
+                                                detailsColumnId = i;
                                                 break;
                                         }
                                     }
@@ -261,32 +263,57 @@ namespace GRA.Domain.Service
                                         string coupon = null;
                                         DateTime? orderDate = null;
                                         DateTime? shipDate = null;
+                                        string details = null;
                                         try
                                         {
                                             coupon = excelReader.GetString(couponColumnId);
                                         }
-                                        catch (Exception ex)
+                                        catch (IndexOutOfRangeException ex)
                                         {
-                                            _logger.LogError($"Parse error on code, row {row}: {ex.Message}");
+                                            _logger.LogError("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
+                                                "code",
+                                                row,
+                                                ex.Message);
                                             issues.Add($"Issue reading code on line {row}: {ex.Message}");
                                         }
                                         try
                                         {
                                             orderDate = excelReader.GetDateTime(orderDateColumnId);
                                         }
-                                        catch (Exception ex)
+                                        catch (IndexOutOfRangeException ex)
                                         {
-                                            _logger.LogError($"Parse error on order date, row {row}: {ex.Message}");
+                                            _logger.LogError("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
+                                                "order date",
+                                                row,
+                                                ex.Message);
                                             issues.Add($"Issue reading order date on row {row}: {ex.Message}");
                                         }
                                         try
                                         {
                                             shipDate = excelReader.GetDateTime(shipDateColumnId);
                                         }
-                                        catch (Exception ex)
+                                        catch (IndexOutOfRangeException ex)
                                         {
-                                            _logger.LogError($"Parse error on ship date, row {row}: {ex.Message}");
+                                            _logger.LogError("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
+                                                "ship date",
+                                                row,
+                                                ex.Message);
                                             issues.Add($"Issue reading ship date on row {row}: {ex.Message}");
+                                        }
+                                        if (excelReader.GetValue(detailsColumnId) != null)
+                                        {
+                                            try
+                                            {
+                                                details = excelReader.GetString(detailsColumnId);
+                                            }
+                                            catch (IndexOutOfRangeException ex)
+                                            {
+                                                _logger.LogWarning("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
+                                                    "details",
+                                                    row,
+                                                    ex.Message);
+                                                issues.Add($"Issue reading details on row {row}: {ex.Message}");
+                                            }
                                         }
                                         if (!string.IsNullOrEmpty(coupon)
                                             && (orderDate != null && shipDate != null))
@@ -294,12 +321,15 @@ namespace GRA.Domain.Service
                                             var code = await _vendorCodeRepository.GetByCode(coupon);
                                             if (code == null)
                                             {
-                                                _logger.LogError($"File contained code {coupon} which was not found in the database");
+                                                _logger.LogError("File contained code {Code} which was not found in the database",
+                                                    coupon);
                                                 issues.Add($"Uploaded file contained code <code>{coupon}</code> which couldn't be found in the database.");
                                             }
                                             else
                                             {
-                                                if (orderDate == code.OrderDate && shipDate == code.ShipDate)
+                                                if (orderDate == code.OrderDate
+                                                    && shipDate == code.ShipDate
+                                                    && details == code.Details)
                                                 {
                                                     alreadyCurrent++;
                                                 }
@@ -313,6 +343,12 @@ namespace GRA.Domain.Service
                                                     if (shipDate != null)
                                                     {
                                                         code.ShipDate = shipDate;
+                                                    }
+                                                    if (!string.IsNullOrEmpty(details))
+                                                    {
+                                                        code.Details = details.Length > 255
+                                                            ? details.Substring(0, 255)
+                                                            : details;
                                                     }
                                                     await _vendorCodeRepository.UpdateSaveNoAuditAsync(code);
                                                     updated++;
@@ -337,6 +373,12 @@ namespace GRA.Domain.Service
                             };
                         }
 
+                        _logger.LogInformation("Import of {FileName} completed: {UpdatedRecords} updates, {CurrentRecords} already current, {IssueCount} issues in {Elapsed} ms",
+                            updated,
+                            alreadyCurrent,
+                            issues?.Count ?? 0,
+                            sw?.ElapsedMilliseconds ?? 0);
+
                         var sb = new StringBuilder("<strong>Import complete</strong>");
                         if (updated > 0)
                         {
@@ -358,7 +400,6 @@ namespace GRA.Domain.Service
 
                         if (issues.Count > 0)
                         {
-                            _logger.LogInformation($"Import complete with issues: {sb}");
                             sb.Append(" Issues detected:<ul>");
                             foreach (string issue in issues)
                             {
@@ -375,7 +416,6 @@ namespace GRA.Domain.Service
                         }
                         else
                         {
-                            _logger.LogInformation(sb.ToString());
                             return new JobStatus
                             {
                                 PercentComplete = 100,
@@ -392,7 +432,8 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {requestingUser} doesn't have permission to import vendor code statuses.");
+                _logger.LogError("User {UserId} doesn't have permission to import vendor code statuses.",
+                    requestingUser);
                 return new JobStatus
                 {
                     PercentComplete = 0,
@@ -503,13 +544,31 @@ namespace GRA.Domain.Service
                     user.VendorCode = vendorCode.Code;
                     user.VendorCodeUrl = vendorCode.Url;
 
+                    var vendorCodeMessage = new StringBuilder("Item");
+
+                    if (!string.IsNullOrEmpty(vendorCode.Details))
+                    {
+                        vendorCodeMessage.Append(" <strong>")
+                            .Append(HttpUtility.HtmlEncode(vendorCode.Details))
+                            .Append("</strong>");
+                    }
+
                     if (vendorCode.ShipDate.HasValue)
                     {
-                        user.VendorCodeMessage = $"Shipped: {vendorCode.ShipDate.Value.ToString("d")}";
+                        vendorCodeMessage.Append(" shipped <strong>")
+                            .Append(vendorCode.ShipDate.Value.ToString("d"))
+                            .Append("</strong>");
                     }
                     else if (vendorCode.OrderDate.HasValue)
                     {
-                        user.VendorCodeMessage = $"Ordered: {vendorCode.OrderDate.Value.ToString("d")}";
+                        vendorCodeMessage.Append(" ordered <strong>")
+                            .Append(vendorCode.OrderDate.Value.ToString("d"))
+                            .Append("</strong>");
+                    }
+
+                    if (vendorCodeMessage.ToString() != "Item")
+                    {
+                        user.VendorCodeMessage = vendorCodeMessage.ToString();
                     }
                 }
             }
