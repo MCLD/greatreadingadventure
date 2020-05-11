@@ -118,6 +118,5 @@ namespace GRA.Domain.Model
         public string UnsubscribeToken { get; set; }
 
         public bool IsSystemUser { get; set; }
-        public bool HasElevatedAccess { get; set; }
     }
 }
