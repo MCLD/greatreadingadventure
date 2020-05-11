@@ -4,14 +4,16 @@ using GRA.Data.SqlServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GRA.Data.SqlServer.Migrations
 {
     [DbContext(typeof(SqlServerContext))]
-    partial class SqlServerContextModelSnapshot : ModelSnapshot
+    [Migration("20200511192709_emailtemplate-fields-required")]
+    partial class emailtemplatefieldsrequired
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -274,10 +276,6 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("AltText")
-                        .IsRequired()
-                        .HasMaxLength(255);
 
                     b.Property<DateTime>("CreatedAt");
 
