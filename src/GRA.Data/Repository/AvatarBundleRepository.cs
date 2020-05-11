@@ -117,7 +117,6 @@ namespace GRA.Data.Repository
             {
                 bundles = bundles.Where(_ => _.Description == null);
             }
-
             return bundles;
         }
 
