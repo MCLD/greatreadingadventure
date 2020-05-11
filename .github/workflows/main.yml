@@ -10,10 +10,13 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Set Docker image name
-      run: echo ::set-env name=BLD_DOCKER_IMAGE::$GITHUB_REPOSITORY/${PWD##*/}
+      run: echo ::set-env name=BLD_DOCKER_IMAGE::$(echo $GITHUB_REPOSITORY/${PWD##*/}
+        | tr '[:upper:]' '[:lower:]')
 
     - name: Extract Docker username
-      run: echo ::set-env name=BLD_DOCKER_USERNAME::$(echo $GITHUB_REPOSITORY | cut -d/ -f1)
+      run: echo ::set-env name=BLD_DOCKER_USERNAME::$(echo $GITHUB_REPOSITORY 
+        | cut -d/ -f1
+        | tr '[:upper:]' '[:lower:]')
 
     - name: Run docker-build.bash
       env:
