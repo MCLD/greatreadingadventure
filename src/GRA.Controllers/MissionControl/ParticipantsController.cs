@@ -133,13 +133,6 @@ namespace GRA.Controllers.MissionControl
             }
 
             var participantsList = await _userService.GetPaginatedUserListAsync(filter);
-            if (UserHasPermission(Permission.DeleteParticipants))
-            {
-                foreach (var user in participantsList.Data.ToList())
-                {
-                    user.HasElevatedAccess = await _userService.UserHasRolesAsync(user.Id);
-                }
-            }
 
             var paginateModel = new PaginateViewModel
             {
@@ -552,7 +545,7 @@ namespace GRA.Controllers.MissionControl
                 }
                 if (UserHasPermission(Permission.EditParticipants))
                 {
-                    viewModel.HasEvelatedRole = await _userService.UserHasRolesAsync(user.Id);
+                    viewModel.HasEvelatedRole = user.IsAdmin;
                 }
 
                 if (UserHasPermission(Permission.EditParticipantUsernames)
@@ -755,7 +748,7 @@ namespace GRA.Controllers.MissionControl
             }
             if (UserHasPermission(Permission.EditParticipants))
             {
-                viewModel.HasEvelatedRole = await _userService.UserHasRolesAsync(user.Id);
+                viewModel.HasEvelatedRole = user.IsAdmin;
             }
 
             if (UserHasPermission(Permission.ManageVendorCodes))
@@ -956,7 +949,7 @@ namespace GRA.Controllers.MissionControl
                 }
                 if (UserHasPermission(Permission.EditParticipants))
                 {
-                    viewModel.HasEvelatedRole = await _userService.UserHasRolesAsync(id);
+                    viewModel.HasEvelatedRole = user.IsAdmin;
                 }
 
                 if (TempData.ContainsKey(ActivityMessage))
@@ -1911,7 +1904,7 @@ namespace GRA.Controllers.MissionControl
                 }
                 if (UserHasPermission(Permission.EditParticipants))
                 {
-                    viewModel.HasEvelatedRole = await _userService.UserHasRolesAsync(user.Id);
+                    viewModel.HasEvelatedRole = user.IsAdmin;
                 }
 
                 return View(viewModel);
@@ -2071,7 +2064,7 @@ namespace GRA.Controllers.MissionControl
                 }
                 if (UserHasPermission(Permission.EditParticipants))
                 {
-                    viewModel.HasEvelatedRole = await _userService.UserHasRolesAsync(user.Id);
+                    viewModel.HasEvelatedRole = user.IsAdmin;
                 }
 
                 bool editChallenges = UserHasPermission(Permission.EditChallenges);
@@ -2223,7 +2216,7 @@ namespace GRA.Controllers.MissionControl
                 }
                 if (UserHasPermission(Permission.EditParticipants))
                 {
-                    viewModel.HasEvelatedRole = await _userService.UserHasRolesAsync(id);
+                    viewModel.HasEvelatedRole = user.IsAdmin;
                 }
 
                 return View(viewModel);
@@ -2301,7 +2294,7 @@ namespace GRA.Controllers.MissionControl
                 }
                 if (UserHasPermission(Permission.EditParticipants))
                 {
-                    viewModel.HasEvelatedRole = await _userService.UserHasRolesAsync(user.Id);
+                    viewModel.HasEvelatedRole = user.IsAdmin;
                 }
                 return View(viewModel);
             }
@@ -2372,7 +2365,7 @@ namespace GRA.Controllers.MissionControl
                 }
                 if (UserHasPermission(Permission.EditParticipants))
                 {
-                    viewModel.HasEvelatedRole = await _userService.UserHasRolesAsync(user.Id);
+                    viewModel.HasEvelatedRole = user.IsAdmin;
                 }
 
                 return View(viewModel);
@@ -2504,7 +2497,7 @@ namespace GRA.Controllers.MissionControl
                 }
                 if (UserHasPermission(Permission.EditParticipants))
                 {
-                    viewModel.HasEvelatedRole = await _userService.UserHasRolesAsync(user.Id);
+                    viewModel.HasEvelatedRole = user.IsAdmin;
                 }
 
                 return View(viewModel);
@@ -2577,7 +2570,7 @@ namespace GRA.Controllers.MissionControl
 
                 if (UserHasPermission(Permission.EditParticipants))
                 {
-                    viewModel.HasEvelatedRole = await _userService.UserHasRolesAsync(user.Id);
+                    viewModel.HasEvelatedRole = user.IsAdmin;
                 }
 
                 return View(viewModel);
