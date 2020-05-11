@@ -70,7 +70,7 @@ namespace GRA.Controllers.MissionControl
             : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _mapper = context.Mapper;
+            _mapper = context?.Mapper;
             _activityService = activityService
                 ?? throw new ArgumentNullException(nameof(activityService));
             _authenticationService = authenticationService
