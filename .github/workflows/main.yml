@@ -1,0 +1,23 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set Docker image name
+      run: echo ::set-env name=BLD_DOCKER_IMAGE::$GITHUB_REPOSITORY/${PWD##*/}
+
+    - name: Extract Docker username
+      run: echo ::set-env name=BLD_DOCKER_USERNAME::$(echo $GITHUB_REPOSITORY | cut -d/ -f1)
+
+    - name: Run docker-build.bash
+      env:
+        BLD_DOCKER_HOST: docker.pkg.github.com
+        BLD_DOCKER_PASSWORD: ${{secrets.GITHUB_TOKEN}}
+      run: ./docker-build.bash
+
