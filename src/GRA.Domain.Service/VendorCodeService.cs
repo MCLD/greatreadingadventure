@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using ExcelDataReader;
 using GRA.Abstract;
 using GRA.Domain.Model;
@@ -543,13 +544,31 @@ namespace GRA.Domain.Service
                     user.VendorCode = vendorCode.Code;
                     user.VendorCodeUrl = vendorCode.Url;
 
+                    var vendorCodeMessage = new StringBuilder("Item");
+
+                    if (!string.IsNullOrEmpty(vendorCode.Details))
+                    {
+                        vendorCodeMessage.Append(" <strong>")
+                            .Append(HttpUtility.HtmlEncode(vendorCode.Details))
+                            .Append("</strong>");
+                    }
+
                     if (vendorCode.ShipDate.HasValue)
                     {
-                        user.VendorCodeMessage = $"Shipped: {vendorCode.ShipDate.Value.ToString("d")}";
+                        vendorCodeMessage.Append(" shipped <strong>")
+                            .Append(vendorCode.ShipDate.Value.ToString("d"))
+                            .Append("</strong>");
                     }
                     else if (vendorCode.OrderDate.HasValue)
                     {
-                        user.VendorCodeMessage = $"Ordered: {vendorCode.OrderDate.Value.ToString("d")}";
+                        vendorCodeMessage.Append(" ordered <strong>")
+                            .Append(vendorCode.OrderDate.Value.ToString("d"))
+                            .Append("</strong>");
+                    }
+
+                    if (vendorCodeMessage.ToString() != "Item")
+                    {
+                        user.VendorCodeMessage = vendorCodeMessage.ToString();
                     }
                 }
             }
