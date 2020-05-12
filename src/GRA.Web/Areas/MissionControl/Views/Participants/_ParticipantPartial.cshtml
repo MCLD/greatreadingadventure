@@ -2,10 +2,13 @@
 
 @if (Model.HasEvelatedRole)
 {
-    <div class="row" style="padding: 10px 0;">
+    <div class="row" style="padding: 10px 0; margin-top: 1rem;">
         <div class="col-xs-12">
             <div class="alert alert-warning">
-                This user has an elevated role.
+                <strong>
+                    <span class="fa fa-exclamation-triangle"></span>
+                    This user has an administrative role in this software.
+                </strong>
             </div>
         </div>
     </div>
