@@ -1934,7 +1934,7 @@ namespace GRA.Controllers.MissionControl
                     {
                         ShowAlertSuccess($"Added book '{model.Book.Title}'");
                     }
-                    
+
                 }
                 catch (GraException gex)
                 {
@@ -2181,7 +2181,7 @@ namespace GRA.Controllers.MissionControl
                     CurrentPage = page,
                     ItemsPerPage = filter.Take.Value
                 };
-                if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+                if (paginateModel.PastMaxPage)
                 {
                     return RedirectToRoute(
                         new
@@ -2196,6 +2196,10 @@ namespace GRA.Controllers.MissionControl
                 var groupInfo
                     = await _userService.GetGroupFromHouseholdHeadAsync(user.HouseholdHeadUserId ?? id);
 
+                await _vendorCodeService.PopulateVendorCodeStatusAsync(user);
+
+
+
                 var viewModel = new PrizeListViewModel
                 {
                     PrizeWinners = prizeList.Data,
@@ -2207,7 +2211,9 @@ namespace GRA.Controllers.MissionControl
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
                     HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                     EmailSubscriptionEnabled = await IsSiteSettingSetAsync(
-                        SiteSettingKey.Users.AskEmailSubPermission)
+                        SiteSettingKey.Users.AskEmailSubPermission),
+                    User = user,
+                    CanEditDetails = UserHasPermission(Permission.EditParticipants)
                 };
 
                 if (UserHasPermission(Permission.ManageRoles) && viewModel.HasAccount)

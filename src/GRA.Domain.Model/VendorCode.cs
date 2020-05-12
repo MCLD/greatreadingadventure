@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace GRA.Domain.Model
 {
@@ -17,6 +18,9 @@ namespace GRA.Domain.Model
         public string VendorCodeTypeDescription { get; set; }
         public bool? IsDonated { get; set; }
         public bool CanBeDonated { get; set; }
+        [MaxLength(255)]
         public string Url { get; set; }
+        [MaxLength(255)]
+        public string Details { get; set; }
     }
 }
