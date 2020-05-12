@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using ExcelDataReader;
 using GRA.Abstract;
 using GRA.Domain.Model;
@@ -102,40 +103,6 @@ namespace GRA.Domain.Service
                 vendorCodeTypeId);
         }
 
-        public async Task<int> GenerateVendorCodesAsync(int vendorCodeTypeId, int numberOfCodes)
-        {
-            VerifyManagementPermission();
-            var codeType = await _vendorCodeTypeRepository.GetByIdAsync(vendorCodeTypeId);
-            if (codeType == null)
-            {
-                throw new GraException("Unable to find vendor code type.");
-            }
-            if (codeType.SiteId != GetCurrentSiteId())
-            {
-                throw new GraException("Code type provided does not match current site.");
-            }
-
-            int count = 1;
-            var vendorCode = new VendorCode
-            {
-                IsUsed = false,
-                SiteId = codeType.SiteId,
-                VendorCodeTypeId = codeType.Id,
-            };
-            for (; count <= System.Math.Min(numberOfCodes, 5000); count++)
-            {
-                vendorCode.Code = _codeGenerator.Generate(15);
-                await _vendorCodeRepository.AddAsync(GetClaimId(ClaimType.UserId), vendorCode);
-                if (count % 1000 == 0)
-                {
-                    await _vendorCodeRepository.SaveAsync();
-                }
-            }
-            await _vendorCodeRepository.SaveAsync();
-
-            return --count;
-        }
-
         public async Task<VendorCode> GetUserVendorCodeAsync(int userId)
         {
             var authorized = false;
@@ -183,6 +150,7 @@ namespace GRA.Domain.Service
         private const string CouponRowHeading = "Coupon";
         private const string OrderDateRowHeading = "Order Date";
         private const string ShipDateRowHeading = "Ship Date";
+        private const string DetailsRowHeading = "Details";
 
         public async Task<JobStatus> UpdateStatusFromExcelAsync(int jobId,
             CancellationToken token,
@@ -204,19 +172,17 @@ namespace GRA.Domain.Service
 
                 token.Register(() =>
                 {
-                    string duration = "";
-                    if (sw?.Elapsed != null)
-                    {
-                        duration = $" after {sw.Elapsed.ToString("c")}";
-                    }
-                    _logger.LogWarning($"Import of {filename} for user {requestingUser} was cancelled{duration}.");
+                    _logger.LogWarning("Import of {FilePath} for user {UserId} was cancelled after {Elapsed} ms",
+                        filename,
+                        requestingUser,
+                        sw?.Elapsed.TotalMilliseconds);
                 });
 
                 string fullPath = _pathResolver.ResolvePrivateTempFilePath(filename);
 
                 if (!File.Exists(fullPath))
                 {
-                    _logger.LogError($"Could not find {fullPath}");
+                    _logger.LogError("Could not find {FilePath}", fullPath);
                     return new JobStatus
                     {
                         PercentComplete = 0,
@@ -233,6 +199,7 @@ namespace GRA.Domain.Service
                         int couponColumnId = 0;
                         int orderDateColumnId = 0;
                         int shipDateColumnId = 0;
+                        int detailsColumnId = 0;
                         var issues = new List<string>();
                         int row = 0;
                         int totalRows = 0;
@@ -281,7 +248,8 @@ namespace GRA.Domain.Service
                                             case ShipDateRowHeading:
                                                 shipDateColumnId = i;
                                                 break;
-                                            default:
+                                            case DetailsRowHeading:
+                                                detailsColumnId = i;
                                                 break;
                                         }
                                     }
@@ -295,32 +263,57 @@ namespace GRA.Domain.Service
                                         string coupon = null;
                                         DateTime? orderDate = null;
                                         DateTime? shipDate = null;
+                                        string details = null;
                                         try
                                         {
                                             coupon = excelReader.GetString(couponColumnId);
                                         }
-                                        catch (Exception ex)
+                                        catch (IndexOutOfRangeException ex)
                                         {
-                                            _logger.LogError($"Parse error on code, row {row}: {ex.Message}");
+                                            _logger.LogError("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
+                                                "code",
+                                                row,
+                                                ex.Message);
                                             issues.Add($"Issue reading code on line {row}: {ex.Message}");
                                         }
                                         try
                                         {
                                             orderDate = excelReader.GetDateTime(orderDateColumnId);
                                         }
-                                        catch (Exception ex)
+                                        catch (IndexOutOfRangeException ex)
                                         {
-                                            _logger.LogError($"Parse error on order date, row {row}: {ex.Message}");
+                                            _logger.LogError("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
+                                                "order date",
+                                                row,
+                                                ex.Message);
                                             issues.Add($"Issue reading order date on row {row}: {ex.Message}");
                                         }
                                         try
                                         {
                                             shipDate = excelReader.GetDateTime(shipDateColumnId);
                                         }
-                                        catch (Exception ex)
+                                        catch (IndexOutOfRangeException ex)
                                         {
-                                            _logger.LogError($"Parse error on ship date, row {row}: {ex.Message}");
+                                            _logger.LogError("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
+                                                "ship date",
+                                                row,
+                                                ex.Message);
                                             issues.Add($"Issue reading ship date on row {row}: {ex.Message}");
+                                        }
+                                        if (excelReader.GetValue(detailsColumnId) != null)
+                                        {
+                                            try
+                                            {
+                                                details = excelReader.GetString(detailsColumnId);
+                                            }
+                                            catch (IndexOutOfRangeException ex)
+                                            {
+                                                _logger.LogWarning("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
+                                                    "details",
+                                                    row,
+                                                    ex.Message);
+                                                issues.Add($"Issue reading details on row {row}: {ex.Message}");
+                                            }
                                         }
                                         if (!string.IsNullOrEmpty(coupon)
                                             && (orderDate != null && shipDate != null))
@@ -328,12 +321,15 @@ namespace GRA.Domain.Service
                                             var code = await _vendorCodeRepository.GetByCode(coupon);
                                             if (code == null)
                                             {
-                                                _logger.LogError($"File contained code {coupon} which was not found in the database");
+                                                _logger.LogError("File contained code {Code} which was not found in the database",
+                                                    coupon);
                                                 issues.Add($"Uploaded file contained code <code>{coupon}</code> which couldn't be found in the database.");
                                             }
                                             else
                                             {
-                                                if (orderDate == code.OrderDate && shipDate == code.ShipDate)
+                                                if (orderDate == code.OrderDate
+                                                    && shipDate == code.ShipDate
+                                                    && details == code.Details)
                                                 {
                                                     alreadyCurrent++;
                                                 }
@@ -347,6 +343,12 @@ namespace GRA.Domain.Service
                                                     if (shipDate != null)
                                                     {
                                                         code.ShipDate = shipDate;
+                                                    }
+                                                    if (!string.IsNullOrEmpty(details))
+                                                    {
+                                                        code.Details = details.Length > 255
+                                                            ? details.Substring(0, 255)
+                                                            : details;
                                                     }
                                                     await _vendorCodeRepository.UpdateSaveNoAuditAsync(code);
                                                     updated++;
@@ -371,6 +373,13 @@ namespace GRA.Domain.Service
                             };
                         }
 
+                        _logger.LogInformation("Import of {FileName} completed: {UpdatedRecords} updates, {CurrentRecords} already current, {IssueCount} issues in {Elapsed} ms",
+                            filename,
+                            updated,
+                            alreadyCurrent,
+                            issues?.Count ?? 0,
+                            sw?.ElapsedMilliseconds ?? 0);
+
                         var sb = new StringBuilder("<strong>Import complete</strong>");
                         if (updated > 0)
                         {
@@ -392,7 +401,6 @@ namespace GRA.Domain.Service
 
                         if (issues.Count > 0)
                         {
-                            _logger.LogInformation($"Import complete with issues: {sb}");
                             sb.Append(" Issues detected:<ul>");
                             foreach (string issue in issues)
                             {
@@ -409,7 +417,6 @@ namespace GRA.Domain.Service
                         }
                         else
                         {
-                            _logger.LogInformation(sb.ToString());
                             return new JobStatus
                             {
                                 PercentComplete = 100,
@@ -426,7 +433,8 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {requestingUser} doesn't have permission to import vendor code statuses.");
+                _logger.LogError("User {UserId} doesn't have permission to import vendor code statuses.",
+                    requestingUser);
                 return new JobStatus
                 {
                     PercentComplete = 0,
@@ -537,13 +545,31 @@ namespace GRA.Domain.Service
                     user.VendorCode = vendorCode.Code;
                     user.VendorCodeUrl = vendorCode.Url;
 
+                    var vendorCodeMessage = new StringBuilder("Item");
+
+                    if (!string.IsNullOrEmpty(vendorCode.Details))
+                    {
+                        vendorCodeMessage.Append(" <strong>")
+                            .Append(HttpUtility.HtmlEncode(vendorCode.Details))
+                            .Append("</strong>");
+                    }
+
                     if (vendorCode.ShipDate.HasValue)
                     {
-                        user.VendorCodeMessage = $"Shipped: {vendorCode.ShipDate.Value.ToString("d")}";
+                        vendorCodeMessage.Append(" shipped <strong>")
+                            .Append(vendorCode.ShipDate.Value.ToString("d"))
+                            .Append("</strong>");
                     }
                     else if (vendorCode.OrderDate.HasValue)
                     {
-                        user.VendorCodeMessage = $"Ordered: {vendorCode.OrderDate.Value.ToString("d")}";
+                        vendorCodeMessage.Append(" ordered <strong>")
+                            .Append(vendorCode.OrderDate.Value.ToString("d"))
+                            .Append("</strong>");
+                    }
+
+                    if (vendorCodeMessage.ToString() != "Item")
+                    {
+                        user.VendorCodeMessage = vendorCodeMessage.ToString();
                     }
                 }
             }
@@ -609,6 +635,172 @@ namespace GRA.Domain.Service
                 Subject = codeType.DonationSubject,
                 Body = codeType.DonationMail
             }, siteId);
+        }
+
+        public async Task<JobStatus> GenerateVendorCodesAsync(int jobId,
+            CancellationToken token,
+            IProgress<JobStatus> progress = null)
+        {
+            var requestingUser = GetClaimId(ClaimType.UserId);
+
+            if (HasPermission(Permission.ManageVendorCodes))
+            {
+                var stopwatch = Stopwatch.StartNew();
+
+                string timeElapsed;
+                string timeRemaining;
+                string status;
+                double msPerCode;
+                double remainingMs;
+
+                double lastUpdate = 0;
+                int lastSave = 0;
+                int lastLog = 0;
+                int count = 1;
+
+                var job = await _jobRepository.GetByIdAsync(jobId);
+                var jobDetails = JsonConvert
+                    .DeserializeObject<JobDetailsGenerateVendorCodes>(job.SerializedParameters);
+
+                token.Register(() =>
+                {
+                    _logger.LogWarning("Generating vendor codes for user {RequestingUser} was cancelled after {Elapsed} ms",
+                        requestingUser,
+                        stopwatch.ElapsedMilliseconds);
+                });
+
+                var codeType
+                    = await _vendorCodeTypeRepository.GetByIdAsync(jobDetails.VendorCodeTypeId);
+
+                if (codeType == null)
+                {
+                    return new JobStatus
+                    {
+                        PercentComplete = 0,
+                        Complete = true,
+                        Error = true,
+                        Status = $"Invalid vendor code type id: {jobDetails.VendorCodeTypeId}"
+                    };
+                }
+                else
+                {
+                    if (codeType.SiteId != GetCurrentSiteId())
+                    {
+                        return new JobStatus
+                        {
+                            PercentComplete = 0,
+                            Complete = true,
+                            Error = true,
+                            Status = $"Vendor code type id {jobDetails.VendorCodeTypeId} is not attached to site {GetCurrentSiteId()}"
+                        };
+                    }
+                }
+
+                _logger.LogInformation("User {RequestingUser} requested {NumberOfCodes} codes for Vendor Code Type Id {VendorCodeTypeId}",
+                    requestingUser,
+                    jobDetails.NumberOfCodes,
+                    jobDetails.VendorCodeTypeId);
+
+                var vendorCode = new VendorCode
+                {
+                    IsUsed = false,
+                    SiteId = codeType.SiteId,
+                    VendorCodeTypeId = codeType.Id
+                };
+
+                for (; count <= jobDetails.NumberOfCodes; count++)
+                {
+                    if (token.IsCancellationRequested)
+                    {
+                        break;
+                    }
+
+                    vendorCode.Code = _codeGenerator.Generate(jobDetails.CodeLength);
+                    await _vendorCodeRepository.AddAsync(requestingUser, vendorCode);
+
+                    if (count - lastSave > 1000)
+                    {
+                        await _vendorCodeRepository.SaveAsync();
+                        lastSave = count;
+                    }
+
+                    if (stopwatch.ElapsedMilliseconds - lastUpdate > 5000
+                        || count == 1)
+                    {
+                        if (stopwatch.ElapsedMilliseconds <= 1000 && count <= 1)
+                        {
+                            status = $"Generated {count}/{jobDetails.NumberOfCodes}";
+                        }
+                        else
+                        {
+                            timeElapsed = TimeSpan
+                                .FromMilliseconds(stopwatch.ElapsedMilliseconds)
+                                .ToString(@"mm\:ss",
+                                    System.Globalization.DateTimeFormatInfo.InvariantInfo);
+                            msPerCode = (double)stopwatch.ElapsedMilliseconds / count;
+                            remainingMs = msPerCode * (jobDetails.NumberOfCodes - count);
+                            timeRemaining = TimeSpan
+                                .FromMilliseconds(remainingMs)
+                                .ToString(@"mm\:ss",
+                                    System.Globalization.DateTimeFormatInfo.InvariantInfo);
+
+                            status = $"Generated {count}/{jobDetails.NumberOfCodes}, {timeElapsed} elasped, est. {timeRemaining} remaining";
+
+                            if (count - lastLog > jobDetails.NumberOfCodes / 10)
+                            {
+                                _logger.LogDebug("Vendor codes: {Percent}% {Count}/{Total} @ {Each} ea. {Elapsed} elasped, est. {Remaining} remaining",
+                                    GetPercent(count, jobDetails.NumberOfCodes),
+                                    count,
+                                    jobDetails.NumberOfCodes,
+                                    msPerCode,
+                                    timeElapsed,
+                                    timeRemaining);
+                                lastLog = count;
+                            }
+                        }
+
+                        progress?.Report(new JobStatus
+                        {
+                            PercentComplete = GetPercent(count, jobDetails.NumberOfCodes),
+                            Status = status,
+                            Error = false
+                        });
+
+                        lastUpdate = stopwatch.ElapsedMilliseconds;
+                    }
+                }
+                await _vendorCodeRepository.SaveAsync();
+
+                count--;
+
+                _logger.LogInformation("Inserted {Count} vendor codes in {Elapsed} ms.",
+                    count,
+                    stopwatch.ElapsedMilliseconds);
+
+                timeElapsed = TimeSpan
+                    .FromMilliseconds(stopwatch.ElapsedMilliseconds)
+                    .ToString(@"mm\:ss",
+                        System.Globalization.DateTimeFormatInfo.InvariantInfo);
+
+                return new JobStatus
+                {
+                    PercentComplete = token.IsCancellationRequested
+                        ? GetPercent(count, jobDetails.NumberOfCodes)
+                        : 100,
+                    Complete = true,
+                    Status = $"Inserted {count} vendor codes in {timeElapsed}."
+                };
+            }
+            else
+            {
+                return new JobStatus
+                {
+                    PercentComplete = 0,
+                    Complete = true,
+                    Error = true,
+                    Status = "You do not have permission to insert vendor codes."
+                };
+            }
         }
     }
 }
