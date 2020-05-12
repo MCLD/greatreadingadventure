@@ -374,6 +374,7 @@ namespace GRA.Domain.Service
                         }
 
                         _logger.LogInformation("Import of {FileName} completed: {UpdatedRecords} updates, {CurrentRecords} already current, {IssueCount} issues in {Elapsed} ms",
+                            filename,
                             updated,
                             alreadyCurrent,
                             issues?.Count ?? 0,
