@@ -1393,8 +1393,8 @@
     <value>You are already unsubscribed from emails.</value>
     <comment>Message shown if the participant has clicked an unsubscribe link when they are unsubscribed.</comment>
   </data>
-  <data name="To activate an authorization code, please sign in or &lt;a href=\&quot;{0}\&quot;&gt;join&lt;/a&gt;." xml:space="preserve">
-    <value>To activate an authorization code, please sign in or &lt;a href=\"{0}\"&gt;join&lt;/a&gt;.</value>
+  <data name="To activate an authorization code, please sign in or &lt;a href=&quot;{0}&quot;&gt;join&lt;/a&gt;." xml:space="preserve">
+    <value>To activate an authorization code, please sign in or &lt;a href="{0}"&gt;join&lt;/a&gt;.</value>
     <comment>If they desire to join with an authorization code and, tried accessing Mission Control's AuthorizationCode</comment>
   </data>
   <data name="Opens new window." xml:space="preserve">

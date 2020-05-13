@@ -193,13 +193,16 @@ namespace GRA.Controllers.MissionControl
                 var siteStage = GetSiteStage();
                 if (siteStage == SiteStage.ProgramOpen || siteStage == SiteStage.RegistrationOpen)
                 {
-                    ShowAlertWarning(_sharedLocalizer[Annotations.Validate.AuthorizationCodeWarning,
-                        Url.Action(nameof(JoinController.AuthorizationCode), JoinController.Name)]);
+                    ShowAlertWarning(
+                        _sharedLocalizer[Annotations.Validate.AuthorizationCodeWarning,
+                        Url.Action(nameof(JoinController.AuthorizationCode),
+                            JoinController.Name)]);
                     return RedirectToSignIn();
                 }
                 else
                 {
-                    return RedirectToAction(nameof(JoinController.AuthorizationCode), JoinController.Name);
+                    return RedirectToAction(nameof(JoinController.AuthorizationCode),
+                        JoinController.Name);
                 }
             }
 
