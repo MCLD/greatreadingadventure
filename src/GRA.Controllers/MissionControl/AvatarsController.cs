@@ -178,6 +178,51 @@ namespace GRA.Controllers.MissionControl
             return View(viewModel);
         }
 
+        public async Task<IActionResult> GetLayersItems(
+    string type, int layerId, int selectedItemId, int bundleId, int[] selectedItemIds)
+        {
+            var success = false;
+            try
+            {
+                var layeritems = await _avatarService.GetUsersItemsByLayerAsync(layerId);
+                var model = new PremadeAvatarsViewModel
+                {
+                    ItemPath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/")
+                };
+                if (type == "Item")
+                {
+                    model.LayerItems = layeritems;
+                    model.SelectedItemId = selectedItemId;
+                    model.ItemPath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/");
+                    model.LayerId = layerId;
+                }
+                else if (type == "Color")
+                {
+                    model.LayerColors = await _avatarService.GetColorsByLayerAsync(layerId);
+                    model.SelectedItemId = selectedItemId;
+                    model.LayerId = layerId;
+                }
+                else
+                {
+                    model.Bundle = await _avatarService.GetBundleByIdAsync(bundleId);
+                    model.SelectedItemIds = selectedItemIds;
+                }
+                Response.StatusCode = StatusCodes.Status200OK;
+                return PartialView("_SlickPartial", model);
+            }
+            catch (GraException gex)
+            {
+                _logger.LogError(gex,
+                    "Could not retrieve layer items for layer id {layerId}: {Message}",
+                    layerId,
+                    gex.Message);
+                Response.StatusCode = StatusCodes.Status400BadRequest;
+                return Json(new
+                {
+                    success = false
+                });
+            }
+        }
         [HttpPost]
         public async Task<IActionResult> DecreaseItemSort(ItemsListViewModel model)
         {
@@ -336,6 +381,29 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Create Bundle";
             return View("BundleDetail", viewModel);
         }
+        public async Task<IActionResult> PremadeDetails(int id)
+        {
+            var userWardrobe = await _avatarService.GetUserWardrobeAsync();
+
+            var layerGroupings = userWardrobe
+                .GroupBy(_ => _.GroupId)
+                .Select(_ => _.ToList())
+                .ToList();
+
+            var usersresult = await _avatarService.GetUserUnlockBundlesAsync();
+            var viewModel = new PremadeDetailsViewModel
+            {
+                LayerGroupings = layerGroupings,
+                Bundles = usersresult,
+                DefaultLayer = userWardrobe.First(_ => _.DefaultLayer).Id,
+                ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/")
+            };
+            var currentCulture = _userContextProvider.GetCurrentCulture();
+            var userAvatar = await _avatarService.GetUserAvatarAsync();
+            viewModel.NewAvatar = userAvatar.Count == 0;
+            PageTitle = "Edit Premade Avatar";
+            return View("PremadeDetails", viewModel);
+        }
 
         [HttpPost]
         public async Task<IActionResult> BundleCreate(BundlesDetailViewModel model)
@@ -464,52 +532,6 @@ namespace GRA.Controllers.MissionControl
                 ShowAlertWarning("Unable to delete bundle: ", gex.Message);
             }
             return RedirectToAction("Bundles");
-        }
-
-        public async Task<IActionResult> GetLayersItems(
-            string type, int layerId, int selectedItemId, int bundleId, int[] selectedItemIds)
-        {
-            var success = false;
-            try
-            {
-                var layeritems = await _avatarService.GetUsersItemsByLayerAsync(layerId);
-                var model = new PremadeAvatarsViewModel
-                {
-                    ItemPath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/")
-                };
-                if (type == "Item")
-                {
-                    model.LayerItems = layeritems;
-                    model.SelectedItemId = selectedItemId;
-                    model.ItemPath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/");
-                    model.LayerId = layerId;
-                }
-                else if (type == "Color")
-                {
-                    model.LayerColors = await _avatarService.GetColorsByLayerAsync(layerId);
-                    model.SelectedItemId = selectedItemId;
-                    model.LayerId = layerId;
-                }
-                else
-                {
-                    model.Bundle = await _avatarService.GetBundleByIdAsync(bundleId);
-                    model.SelectedItemIds = selectedItemIds;
-                }
-                Response.StatusCode = StatusCodes.Status200OK;
-                return PartialView("_SlickPartial", model);
-            }
-            catch (GraException gex)
-            {
-                _logger.LogError(gex,
-                    "Could not retrieve layer items for layer id {layerId}: {Message}",
-                    layerId,
-                    gex.Message);
-                Response.StatusCode = StatusCodes.Status400BadRequest;
-                return Json(new
-                {
-                    success = false
-                });
-            }
         }
 
         public async Task<IActionResult> GetItemsList(string itemIds,
