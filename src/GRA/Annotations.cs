@@ -203,6 +203,7 @@
 
         public static class Validate
         {
+            public const string AuthorizationCodeWarning = "To activate an authorization code, please sign in or <a href=\"{0}\">join</a>.";
             public const string BookTitle = "When providing an author of a book, please also provide a title.";
             public const string Branch = "The branch you've selected is not valid, please select another branch.";
             public const string CodeAlready = "All selected participants already have that Secret Code.";
