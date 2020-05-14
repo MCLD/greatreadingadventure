@@ -1,8 +1,8 @@
-﻿using GRA.Domain.Model;
-using GRA.Domain.Model.Filters;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 
 namespace GRA.Domain.Repository
 {
@@ -21,7 +21,7 @@ namespace GRA.Domain.Repository
         Task<int> CountRequirementsAsync(BaseFilter filter);
         Task<ICollection<TriggerRequirement>> PageRequirementsAsync(BaseFilter filter);
         Task<bool> CodeExistsAsync(int siteId, string secretCode, int? triggerId = null);
-        Task<bool> HasDependentsAsync(int triggerId);
+        Task<IDictionary<int, string>> DependentTriggers(int triggerId);
         Task<ICollection<Trigger>> GetTriggerDependentsAsync(int triggerBadgeId);
         Task<ICollection<Trigger>> GetChallengeDependentsAsync(int challengeId);
         Task<bool> SecretCodeInUseAsync(int siteId, string secretCode);
