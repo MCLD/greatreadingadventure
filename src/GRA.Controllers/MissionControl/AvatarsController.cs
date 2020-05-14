@@ -379,6 +379,29 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Create Bundle";
             return View("BundleDetail", viewModel);
         }
+        public async Task<IActionResult> PremadeDetails(int id)
+        {
+            var userWardrobe = await _avatarService.GetUserWardrobeAsync();
+
+            var layerGroupings = userWardrobe
+                .GroupBy(_ => _.GroupId)
+                .Select(_ => _.ToList())
+                .ToList();
+
+            var usersresult = await _avatarService.GetUserUnlockBundlesAsync();
+            var viewModel = new PremadeDetailsViewModel
+            {
+                LayerGroupings = layerGroupings,
+                Bundles = usersresult,
+                DefaultLayer = userWardrobe.First(_ => _.DefaultLayer).Id,
+                ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/")
+            };
+            var currentCulture = _userContextProvider.GetCurrentCulture();
+            var userAvatar = await _avatarService.GetUserAvatarAsync();
+            viewModel.NewAvatar = userAvatar.Count == 0;
+            PageTitle = "Edit Premade Avatar";
+            return View("PremadeDetails", viewModel);
+        }
 
         [HttpPost]
         public async Task<IActionResult> BundleCreate(BundlesDetailViewModel model)
