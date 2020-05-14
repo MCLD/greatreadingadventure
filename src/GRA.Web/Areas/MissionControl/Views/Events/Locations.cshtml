@@ -147,6 +147,8 @@
             <li ActiveBy routeKey="Action" value="Index"><a asp-action="Index">Events</a></li>
             <li ActiveBy routeKey="Action" value="CommunityExperiences"><a asp-action="CommunityExperiences">Community Experiences</a></li>
             <li ActiveBy routeKey="Action" value="Locations"><a asp-action="Locations">Locations</a></li>
+            <li ActiveBy routeKey="Action"
+                value="StreamingEvents"><a asp-action="StreamingEvents">Streaming Events</a></li>
         </ul>
     </div>
 </div>
@@ -247,7 +249,7 @@
 
 @section scripts {
     <script>
-        $('#editModal').on('show.bs.modal', function(event) {
+        $('#editModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
             var id = button.data('id');
             var name = button.data('name');
@@ -263,7 +265,7 @@
             modal.find('#Location_Telephone').val(telephone);
         })
 
-        $('#deleteModal').on('show.bs.modal', function(event) {
+        $('#deleteModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
             var id = button.data('id');
             var name = button.data('name');
