@@ -1393,4 +1393,8 @@
     <value>To activate an authorization code, please sign in or &lt;a href="{0}"&gt;join&lt;/a&gt;.</value>
     <comment>If they desire to join with an authorization code and, tried accessing Mission Control's AuthorizationCode</comment>
   </data>
+  <data name="Streaming Events" xml:space="preserve">
+    <value>Streaming Events</value>
+    <comment>Navigation link and title for streaming events</comment>
+  </data>
 </root>

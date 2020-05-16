@@ -675,6 +675,10 @@ namespace GRA.Controllers.MissionControl
             model.ShowGeolocation = IsSet;
             model.GoogleMapsAPIKey = SetValue;
 
+            // for now this will make streaming events play nice with the rest of the event code
+            // in future we may want to differentiate between event end and streaming access ends
+            model.Event.EndDate = model.Event.StreamingAccessEnds;
+
             if (model.Editing)
             {
                 PageTitle = "Edit Streaming Event";
