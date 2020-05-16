@@ -144,6 +144,7 @@
             public const string SentOn = "Sent to you on {0}";
             public const string Share = "Share";
             public const string SignedInAs = "You are now signed in as {0}.";
+            public const string StreamingEvents = "Streaming Events";
             public const string Subject = "Subject: {0}";
             public const string SwitchTo = "Switch To";
             public const string TotalPoints = "Total Points";
