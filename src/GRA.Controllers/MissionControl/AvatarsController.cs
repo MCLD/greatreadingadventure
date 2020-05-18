@@ -382,17 +382,17 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> PremadeDetails(int id)
         {
             var userWardrobe = await _avatarService.GetUserWardrobeAsync();
+            var allBundles = await _avatarService.GetAllBundlesAsync();
 
             var layerGroupings = userWardrobe
                 .GroupBy(_ => _.GroupId)
                 .Select(_ => _.ToList())
                 .ToList();
 
-            var usersresult = await _avatarService.GetUserUnlockBundlesAsync();
             var viewModel = new PremadeDetailsViewModel
             {
                 LayerGroupings = layerGroupings,
-                Bundles = usersresult,
+                Bundles = allBundles.Where(_=>_.Description == null).ToList(),
                 DefaultLayer = userWardrobe.First(_ => _.DefaultLayer).Id,
                 ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/")
             };
