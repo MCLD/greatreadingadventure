@@ -11,7 +11,7 @@
         <div class="col-xs-12 col-sm-5 pull-right">
             <div class="visible-xs" id="mobile-container">
                 <div class="avatar-container center-block">
-                    @foreach (var layer in Model.LayerGroupings.SelectMany(_ => _))
+                    @foreach (var layer in Model.LayerGroupings.FirstOrDefault())
                     {
                         <img src="~/@layer.FilePath"
                              class="@($"image{layer.Id}") xsLayer avatar-layer@(string.IsNullOrWhiteSpace(layer.FilePath) ? " hide" : "")"
@@ -26,7 +26,7 @@
             </div>
             <div class="hidden-xs" id="desktop-container">
                 <div class="avatar-container center-block">
-                    @foreach (var layer in Model.LayerGroupings.SelectMany(_ => _))
+                    @foreach (var layer in Model.LayerGroupings.FirstOrDefault())
                     {
                         <img src="~/@layer.FilePath"
                              class="@($"image{layer.Id}") avatar-layer@(string.IsNullOrWhiteSpace(layer.FilePath) ? " hide" : "")"
@@ -45,10 +45,8 @@
                 <div class="col-xs-12 text-center" id="layer-container">
                     @if (Model.LayerGroupings.Count > 0)
                     {
-                        foreach (var layerGroup in Model.LayerGroupings)
-                        {
                             <div style="display: inline-block;" class="@(Model.LayerGroupings.Count == 1 ? "hide" : "")">
-                                @foreach (var layer in layerGroup)
+                                @foreach (var layer in Model.LayerGroupings.FirstOrDefault())
                                 {
                                     <img src="~/@layer.Icon"
                                          id="@($"selector{layer.Id}")"
@@ -66,12 +64,9 @@
                                          data-colorrows="@(layer.ShowColorSelector ? (!layer.ShowItemSelector ? 5 : 2) : 0)" />
                                 }
                             </div>
-                        }
                     }
                     <div style="display: inline-block;" class="col-xs-24">
-                        <img src="@(Model.Bundles.Any(_=>!_.HasBeenViewed.Value && _.CanBeUnlocked)
-                            ? "/content/site1/avatarbundles/notif.png"
-                            : "/content/site1/avatarbundles/icon.png")"
+                        <img src="/content/site1/avatarbundles/icon.png"
                              id="selector999"
                              class="avatar-layer-selector"
                              data-layer="999"
@@ -90,16 +85,6 @@
 
                         @if (Model.Bundles.Count != 0)
                         {
-                            var counter = 0;
-                            @foreach (var bundle in Model.Bundles)
-                            {
-                                @if (bundle.CanBeUnlocked)
-                                {
-                                    counter += 1;
-                                }
-                            }
-                            @if (counter != 0)
-                            {
                                 <div class="dropdown" style="margin-top: 1rem;" id="bundleDropdown">
                                     <a class="dropdown-toggle btn btn-info"
                                        id="bundle-selected"
@@ -120,15 +105,6 @@
                                                    data-beenviewed="@bundle.HasBeenViewed"
                                                    onclick="GetBundleItems(this)">
                                                     @bundle.Name
-                                                    @if (!bundle.HasBeenViewed.Value)
-                                                    {
-                                                        <span class="fa-stack newBundleSpan">
-                                                            <span class="fas fa-certificate fa-stack-2x text-success"></span>
-                                                            <span class="fa-stack-1x"
-                                                                  style="color: white;
-                                                                  font-size: x-small;">New</span>
-                                                        </span>
-                                                    }
                                                 </a>
                                             </li>
                                         }
@@ -147,19 +123,6 @@
                                 </a>
                                 <ul class="dropdown-menu"></ul>
                             }
-                        }
-                        else
-                        {
-                            <a class="dropdown-toggle disabled"
-                               data-toggle="dropdown"
-                               href="#"
-                               role="button"
-                               aria-haspopup="true"
-                               aria-expanded="false">
-                                @SharedLocalizer[GRA.Annotations.Info.NoUnlockedBundles]<span class="caret"></span>
-                            </a>
-                            <ul class="dropdown-menu"></ul>
-                        }
                     </li>
                 </ul>
             </div>
