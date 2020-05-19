@@ -1360,4 +1360,19 @@
     <value>Para activar un código de autorización, inicie la sesión o &lt;a href="{0}"&gt;participar&lt;/a&gt;.</value>
     <comment>If they desire to join with an authorization code and, tried accessing Mission Control's AuthorizationCode</comment>
   </data>
+  <data name="Not streaming yet" xml:space="preserve">
+    <value>Not streaming yet</value>
+  </data>
+  <data name="Program is over" xml:space="preserve">
+    <value>Program is over</value>
+  </data>
+  <data name="Stream" xml:space="preserve">
+    <value>Stream</value>
+  </data>
+  <data name="Stream Now!" xml:space="preserve">
+    <value>Stream Now!</value>
+  </data>
+  <data name="Streaming Events" xml:space="preserve">
+    <value>Streaming Events</value>
+  </data>
 </root>
