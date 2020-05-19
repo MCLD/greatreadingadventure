@@ -120,6 +120,41 @@ namespace GRA.Controllers.MissionControl
             }
         }
 
+        public async Task<IActionResult> StreamingEvents(string search,
+            int? systemId, int? branchId, bool? mine, int? programId, int page = 1)
+        {
+            var site = await GetCurrentSiteAsync();
+            if (!string.IsNullOrEmpty(site.ExternalEventListUrl))
+            {
+                ShowAlertWarning($"Events will not be seen becuase all event requests will be <a href=\"{site.ExternalEventListUrl}\"> redirected to another site</a>.");
+            }
+
+            try
+            {
+                var viewModel
+                    = await GetEventList(2, search, systemId, branchId, mine, programId, page);
+
+                if (viewModel.PaginateModel.PastMaxPage)
+                {
+                    return RedirectToRoute(
+                        new
+                        {
+                            page = viewModel.PaginateModel.LastPage ?? 1
+                        });
+                }
+
+                viewModel.Streaming = true;
+                PageTitle = "Streaming Events";
+                return View("Index", viewModel);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Invalid event filter by User {GetId(ClaimType.UserId)}: {ex}");
+                ShowAlertDanger("Invalid filter parameters.");
+                return RedirectToAction("CommunityExperiences");
+            }
+        }
+
         private async Task<EventsListViewModel> GetEventList(int? eventType, string search,
             int? systemId, int? branchId, bool? mine, int? programId, int page = 1)
         {
@@ -236,29 +271,44 @@ namespace GRA.Controllers.MissionControl
             return viewModel;
         }
 
-        public async Task<IActionResult> Create(int? id, bool communityExperience = false)
+        public async Task<IActionResult> Create(int? id,
+            bool communityExperience = false,
+            bool streamingEvent = false)
         {
-            PageTitle = communityExperience
-                ? "Create Community Experience"
-                : "Create Event";
+            PageTitle = "Create Event";
+
+            if (communityExperience)
+            {
+                PageTitle = "Create Community Experience";
+            }
+            else if (streamingEvent)
+            {
+                PageTitle = "Create Streaming Event";
+            }
 
             var requireSecretCode = await GetSiteSettingBoolAsync(
                     SiteSettingKey.Events.RequireBadge);
-            var systemList = await _siteService.GetSystemList(true);
-            var locationList = await _eventService.GetLocations();
             var programList = await _siteService.GetProgramList();
+
             var viewModel = new EventsDetailViewModel
             {
                 CanAddSecretCode = requireSecretCode
                     || UserHasPermission(Permission.ManageTriggers),
                 CanManageLocations = UserHasPermission(Permission.ManageLocations),
                 CanRelateChallenge = UserHasPermission(Permission.ViewAllChallenges),
-                SystemList = new SelectList(systemList, "Id", "Name"),
-                LocationList = new SelectList(locationList, "Id", "Name"),
                 ProgramList = new SelectList(programList, "Id", "Name"),
                 IncludeSecretCode = requireSecretCode,
                 RequireSecretCode = requireSecretCode
             };
+
+            if (!streamingEvent)
+            {
+                viewModel.SystemList
+                    = new SelectList(await _siteService.GetSystemList(true), "Id", "Name");
+                viewModel.LocationList
+                    = new SelectList(await _eventService.GetLocations(), "Id", "Name");
+            }
+
             if (viewModel.CanAddSecretCode)
             {
                 var site = await GetCurrentSiteAsync();
@@ -293,7 +343,7 @@ namespace GRA.Controllers.MissionControl
                 }
             }
 
-            if (viewModel.BranchList == null)
+            if (viewModel.BranchList == null && !streamingEvent)
             {
                 viewModel.SystemId = GetId(ClaimType.SystemId);
                 viewModel.BranchList = new SelectList(await _siteService
@@ -310,7 +360,9 @@ namespace GRA.Controllers.MissionControl
             viewModel.ShowGeolocation = IsSet;
             viewModel.GoogleMapsAPIKey = SetValue;
 
-            return View(viewModel);
+            return streamingEvent
+                ? View("AddEditStreaming", viewModel)
+                : View(viewModel);
         }
 
         [HttpPost]
@@ -505,11 +557,212 @@ namespace GRA.Controllers.MissionControl
             return View(model);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> AddEditStreaming(EventsDetailViewModel model)
+        {
+            var requireSecretCode = await GetSiteSettingBoolAsync(
+                SiteSettingKey.Events.RequireBadge);
+
+            if (model.Event.StartDate >= model.Event.StreamingAccessEnds)
+            {
+                ModelState.AddModelError("Event.StreamingAccessEnds", "The streaming access end time cannot be before the start time");
+            }
+
+            if (!model.Editing && (model.IncludeSecretCode || requireSecretCode))
+            {
+                if (string.IsNullOrWhiteSpace(model.BadgeMakerImage) && model.BadgeUploadImage == null)
+                {
+                    ModelState.AddModelError("BadgemakerImage", "A badge is required.");
+                }
+                else if (model.BadgeUploadImage != null
+                    && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker)
+                    && (!ValidImageExtensions.Contains(Path.GetExtension(model.BadgeUploadImage.FileName).ToLower())))
+                {
+                    ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
+                }
+            }
+            else
+            {
+                ModelState.Remove(nameof(model.SecretCode));
+                ModelState.Remove(nameof(model.AwardMessage));
+                ModelState.Remove(nameof(model.AwardPoints));
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    if (model.Event.ChallengeId.HasValue)
+                    {
+                        model.Event.ChallengeGroupId = null;
+                    }
+
+                    int? triggerId = null;
+                    if (model.IncludeSecretCode && !model.Editing)
+                    {
+                        byte[] badgeBytes;
+                        string filename;
+                        if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage)
+                            && (model.BadgeUploadImage == null || model.UseBadgeMaker))
+                        {
+                            var badgeString = model.BadgeMakerImage.Split(',').Last();
+                            badgeBytes = Convert.FromBase64String(badgeString);
+                            filename = "badge.png";
+                        }
+                        else
+                        {
+                            using (var fileStream = model.BadgeUploadImage.OpenReadStream())
+                            {
+                                using (var ms = new MemoryStream())
+                                {
+                                    fileStream.CopyTo(ms);
+                                    badgeBytes = ms.ToArray();
+                                }
+                            }
+                            filename = Path.GetFileName(model.BadgeUploadImage.FileName);
+                        }
+                        var newBadge = new Badge
+                        {
+                            Filename = filename
+                        };
+                        var badge = await _badgeService.AddBadgeAsync(newBadge, badgeBytes);
+                        var trigger = new Trigger
+                        {
+                            Name = $"Event '{model.Event.Name}' code",
+                            SecretCode = model.SecretCode,
+                            AwardMessage = model.AwardMessage,
+                            AwardPoints = model.AwardPoints,
+                            AwardBadgeId = badge.Id,
+                        };
+                        triggerId = (await _triggerService.AddAsync(trigger)).Id;
+                    }
+
+                    var graEvent = model.Event;
+                    graEvent.IsActive = true;
+                    graEvent.IsValid = true;
+
+                    if (triggerId.HasValue)
+                    {
+                        graEvent.RelatedTriggerId = triggerId;
+                    }
+
+                    if (model.Editing)
+                    {
+                        await _eventService.Edit(graEvent);
+                        ShowAlertSuccess($"Streaming event '{graEvent.Name}' edited.");
+                    }
+                    else
+                    {
+                        await _eventService.Add(graEvent);
+                        ShowAlertSuccess($"Streaming event '{graEvent.Name}' created.");
+                    }
+
+                    return RedirectToAction("StreamingEvents");
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertWarning("Could not create streaming event: ", gex.Message);
+                }
+            }
+
+            var programList = await _siteService.GetProgramList();
+
+            model.ProgramList = new SelectList(programList, "Id", "Name");
+            model.RequireSecretCode = requireSecretCode;
+
+            var (IsSet, SetValue) = await _siteLookupService.GetSiteSettingStringAsync(
+                GetCurrentSiteId(), SiteSettingKey.Events.GoogleMapsAPIKey);
+            model.ShowGeolocation = IsSet;
+            model.GoogleMapsAPIKey = SetValue;
+
+            // for now this will make streaming events play nice with the rest of the event code
+            // in future we may want to differentiate between event end and streaming access ends
+            model.Event.EndDate = model.Event.StreamingAccessEnds;
+
+            if (model.Editing)
+            {
+                PageTitle = "Edit Streaming Event";
+                if (model.Event.CreatedBy != default)
+                {
+                    model.CreatedByName
+                        = await _userService.GetUsersNameByIdAsync(model.Event.CreatedBy);
+                }
+                model.Event = await _eventService.GetRelatedChallengeDetails(model.Event, true);
+
+            }
+            else
+            {
+                PageTitle = "Create Streaming Event";
+            }
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> EditStreaming(int id)
+        {
+            try
+            {
+                var graEvent = await _eventService.GetDetails(id, true);
+
+                if (!graEvent.IsStreaming)
+                {
+                    return RedirectToAction("Edit", new { id });
+                }
+
+                PageTitle = "Edit Streaming Event";
+
+                var programList = await _siteService.GetProgramList();
+                var (IsSet, SetValue) = await _siteLookupService.GetSiteSettingStringAsync(
+                    GetCurrentSiteId(), SiteSettingKey.Events.GoogleMapsAPIKey);
+
+                var model = new EventsDetailViewModel
+                {
+                    Editing = true,
+                    Event = graEvent,
+                    CreatedByName = await _userService.GetUsersNameByIdAsync(graEvent.CreatedBy),
+                    CanViewParticipants = UserHasPermission(Permission.ViewParticipantDetails),
+                    CanAddSecretCode = UserHasPermission(Permission.ManageTriggers),
+                    CanEditGroups = UserHasPermission(Permission.EditChallengeGroups),
+                    CanManageLocations = UserHasPermission(Permission.ManageLocations),
+                    CanRelateChallenge = UserHasPermission(Permission.ViewAllChallenges),
+                    ProgramList = new SelectList(programList, "Id", "Name"),
+                    RequireSecretCode = await GetSiteSettingBoolAsync(
+                        SiteSettingKey.Events.RequireBadge),
+
+                    ShowGeolocation = IsSet,
+                    GoogleMapsAPIKey = SetValue,
+                };
+
+                model.Event = await _eventService.GetRelatedChallengeDetails(model.Event, true);
+
+                if (graEvent.Challenge?.BadgeId != null)
+                {
+                    var badge = await _badgeService.GetByIdAsync(graEvent.Challenge.BadgeId.Value);
+                    graEvent.Challenge.BadgeFilename = _pathResolver
+                        .ResolveContentPath(badge.Filename);
+                }
+
+                return View("AddEditStreaming", model);
+
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning("Unable to view event/community experience: ", gex);
+                return RedirectToAction("Index");
+            }
+        }
+
         public async Task<IActionResult> Edit(int id)
         {
             try
             {
                 var graEvent = await _eventService.GetDetails(id, true);
+
+                if (graEvent.IsStreaming)
+                {
+                    return RedirectToAction("EditStreaming", new { id });
+                }
+
                 PageTitle = graEvent.IsCommunityExperience
                     ? "Edit Community Experience"
                     : "Edit Event";

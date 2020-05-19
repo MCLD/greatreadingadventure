@@ -65,6 +65,7 @@ namespace GRA.Data.Repository
                                  Id = eventInfo.Id,
                                  Name = eventInfo.Name,
                                  StartDate = eventInfo.StartDate,
+                                 StreamingAccessEnds = eventInfo.StreamingAccessEnds,
                                  EventLocationName = eventInfo.AtBranchId.HasValue ? branch.Name : location.Name,
                              };
             }
@@ -170,11 +171,15 @@ namespace GRA.Data.Repository
                 {
                     // case 0
                     default:
-                        events = events.Where(_ => !_.IsCommunityExperience);
+                        events = events.Where(_ => !_.IsCommunityExperience && !_.IsStreaming);
                         break;
 
-                    case 1:
+                    case (int)EventType.CommunityExperience:
                         events = events.Where(_ => _.IsCommunityExperience);
+                        break;
+
+                    case (int)EventType.StreamingEvent:
+                        events = events.Where(_ => _.IsStreaming);
                         break;
                 }
             }

@@ -51,6 +51,13 @@ namespace GRA.Data.Model
         public int? ChallengeGroupId { get; set; }
         public virtual ChallengeGroup ChallengeGroup { get; set; }
 
+        public bool IsStreaming { get; set; }
+        public bool IsStreamingEmbed { get; set; }
+
+        public DateTime? StreamingAccessEnds { get; set; }
+        [MaxLength(255)]
+        public string StreamingLinkData { get; set; }
+
         [NotMapped]
         public string EventLocationName { get; set; }
         [NotMapped]
