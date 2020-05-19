@@ -30,7 +30,6 @@ namespace GRA.Controllers.MissionControl
         private readonly JobService _jobService;
         private readonly ReportService _reportService;
         private readonly SchoolService _schoolService;
-        private readonly SiteLookupService _siteLookupService;
         private readonly SiteService _siteService;
         private readonly TriggerService _triggerService;
         private readonly UserService _userService;
@@ -41,7 +40,6 @@ namespace GRA.Controllers.MissionControl
             JobService jobService,
             ReportService reportService,
             SchoolService schoolService,
-            SiteLookupService siteLookupService,
             SiteService siteService,
             TriggerService triggerService,
             UserService userService,
@@ -53,8 +51,6 @@ namespace GRA.Controllers.MissionControl
                 ?? throw new ArgumentNullException(nameof(reportService));
             _schoolService = schoolService
                 ?? throw new ArgumentNullException(nameof(schoolService));
-            _siteLookupService = siteLookupService 
-                ?? throw new ArgumentNullException(nameof(siteLookupService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             _triggerService = triggerService
                 ?? throw new ArgumentNullException(nameof(triggerService));
