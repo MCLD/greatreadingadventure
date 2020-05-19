@@ -1401,6 +1401,22 @@
     <value>Streaming Events</value>
     <comment>Navigation link and title for streaming events</comment>
   </data>
+  <data name="Not streaming yet" xml:space="preserve">
+    <value>Not streaming yet</value>
+    <comment>Button text when streaming the event is not available yet</comment>
+  </data>
+  <data name="Stream" xml:space="preserve">
+    <value>Stream</value>
+    <comment>Column heading displayed in streaming event list which contains the streaming buttons</comment>
+  </data>
+  <data name="Stream Now!" xml:space="preserve">
+    <value>Stream Now!</value>
+    <comment>Button that participants click to see a streaming event</comment>
+  </data>
+  <data name="Program is over" xml:space="preserve">
+    <value>Program is over</value>
+    <comment>Disabled button for streaming programs if it is over</comment>
+  </data>
   <data name="Opens new window." xml:space="preserve">
     <value>(Opens new window)</value>
     <comment>Warning message for the screenreader to indicate the link will open a new window.</comment>

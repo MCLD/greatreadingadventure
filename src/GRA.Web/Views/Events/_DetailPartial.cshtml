@@ -41,20 +41,51 @@
     <div class="row-spacing" style="font-size:medium;">
         <table>
             <tr>
-                <td><strong>@SharedLocalizer[GRA.Annotations.Interface.Where]:&nbsp;</strong></td>
                 <td>
-                    @if (string.IsNullOrWhiteSpace(Model.Event.EventLocationLink))
+                    <strong>
+                        @(@Model.Event.IsStreaming
+                            ? @SharedLocalizer[GRA.Annotations.Interface.Stream]
+                            : @SharedLocalizer[GRA.Annotations.Interface.Where]):&nbsp;
+                    </strong>
+                </td>
+                <td>
+                    @if (Model.Event.IsStreaming)
                     {
-                        @Model.Event.EventLocationName
+                        @if (Model.Event.StartDate <= DateTime.Now
+                            && Model.Event.StreamingAccessEnds >= DateTime.Now)
+                        {
+                            <a class="btn btn-success"
+                               href="@Url.Action(nameof(EventsController.Stream),
+                                    new { eventId = Model.Event.Id })">
+                                <span class="fa fa-play-circle-o"></span>
+                                @SharedLocalizer[GRA.Annotations.Interface.StreamNow]
+                            </a>
+                        }
+                        else
+                        {
+                            <button disabled class="btn btn-secondary">
+                                <span class="fa fa-stop-circle-o"></span>
+                                @(@Model.Event.StartDate >= DateTime.Now
+                                    ? SharedLocalizer[GRA.Annotations.Interface.NotStreamingYet]
+                                    : SharedLocalizer[GRA.Annotations.Interface.ProgramIsOver])
+                            </button>
+                        }
+
                     }
                     else
                     {
-                        <a aria-label="@Model.Event.EventLocationName @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
-                           target="_blank"
-                           href="@Model.Event.EventLocationLink">
+                        @if (string.IsNullOrWhiteSpace(Model.Event.EventLocationLink))
+                        {
                             @Model.Event.EventLocationName
-                        </a>
-                    }
+                        }
+                        else
+                        {
+                            <a aria-label="@Model.Event.EventLocationName @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                               target="_blank"
+                               href="@Model.Event.EventLocationLink">
+                                @Model.Event.EventLocationName
+                            </a>
+                        }
                 </td>
             </tr>
             @if (!string.IsNullOrWhiteSpace(Model.Event.EventLocationAddress))

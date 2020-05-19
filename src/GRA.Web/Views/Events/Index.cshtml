@@ -201,7 +201,14 @@
                                             {
                                                 <th>@SharedLocalizer[GRA.Annotations.Interface.When]</th>
                                             }
-                                            <th>@SharedLocalizer[GRA.Annotations.Interface.Where]</th>
+                                            @if (Model.EventType == GRA.EventType.StreamingEvent)
+                                            {
+                                                <th>@SharedLocalizer[GRA.Annotations.Interface.Stream]</th>
+                                            }
+                                            else
+                                            {
+                                                <th>@SharedLocalizer[GRA.Annotations.Interface.Where]</th>
+                                            }
                                             @if (Model.ShowNearSearch && !string.IsNullOrWhiteSpace(Model.Near))
                                             {
                                                 <th>
@@ -239,23 +246,27 @@
                                                 {
                                                     <td>@SharedLocalizer[GRA.Annotations.Interface.DateAtTime, eventItem.StartDate.ToString("d"), eventItem.StartDate.ToString("t")]</td>
                                                 }
-                                                <td class="text-right">
+                                                <td>
                                                     @if (Model.EventType == GRA.EventType.StreamingEvent)
                                                     {
                                                         <div class="on-top" style="display: inline-block;">
                                                             @if (eventItem.StartDate <= DateTime.Now
-                                                             && eventItem.StreamingAccessEnds >= DateTime.Now)
+                                                                && eventItem.StreamingAccessEnds >= DateTime.Now)
                                                             {
-                                                                <button class="btn btn-success">
+                                                                <a class="btn btn-success float-right"
+                                                                   href="@Url.Action(nameof(EventsController.Stream),
+                                                                        new { eventId = eventItem.Id })">
                                                                     <span class="fa fa-play-circle-o"></span>
-                                                                    Stream now!
-                                                                </button>
+                                                                    @SharedLocalizer[GRA.Annotations.Interface.StreamNow]
+                                                                </a>
                                                             }
                                                             else
                                                             {
-                                                                <button disabled class="btn btn-secondary">
+                                                                <button disabled class="btn btn-secondary float-right">
                                                                     <span class="fa fa-stop-circle-o"></span>
-                                                                    Not streaming yet
+                                                                    @(eventItem.StartDate >= DateTime.Now
+                                                                        ? SharedLocalizer[GRA.Annotations.Interface.NotStreamingYet]
+                                                                        : SharedLocalizer[GRA.Annotations.Interface.ProgramIsOver])
                                                                 </button>
                                                             }
                                                         </div>
