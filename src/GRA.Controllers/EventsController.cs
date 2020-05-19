@@ -417,5 +417,30 @@ namespace GRA.Controllers
                 return Content(gex.Message);
             }
         }
+
+        public async Task<IActionResult> Stream(int eventId)
+        {
+            var graEvent = await _eventService.GetDetails(eventId);
+
+            if (!graEvent.IsStreaming)
+            {
+                return await Detail(eventId);
+            }
+            else
+            {
+                if (graEvent.IsStreamingEmbed)
+                {
+                    return View("Stream", new StreamViewModel
+                    {
+                        EventName = graEvent.Name,
+                        Embed = graEvent.StreamingLinkData
+                    });
+                }
+                else
+                {
+                    return Redirect(graEvent.StreamingLinkData);
+                }
+            }
+        }
     }
 }
