@@ -267,6 +267,7 @@
         <a asp-action="Index" class="btn btn-default">Return to Participants</a>
         @if (Model.CanEditDetails)
         {
+            <input asp-for="Action" value="@nameof(ParticipantsController.Detail)" type="hidden" />
             <input asp-for="CanEditDetails" type="hidden" />
             <input asp-for="Username" type="hidden" />
             <input asp-for="User.Id" type="hidden" />

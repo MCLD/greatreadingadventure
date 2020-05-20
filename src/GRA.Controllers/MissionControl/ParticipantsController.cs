@@ -2612,7 +2612,7 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> DonateCode(ParticipantsDetailViewModel viewModel)
         {
             await _vendorCodeService.ResolveCodeStatusAsync(viewModel.User.Id, true, false);
-            return RedirectToAction("Detail", "Participants", new { id = viewModel.User.Id });
+            return RedirectToAction(viewModel.Action, new { id = viewModel.User.Id });
         }
 
         [HttpPost]
@@ -2620,7 +2620,7 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> RedeemCode(ParticipantsDetailViewModel viewModel)
         {
             await _vendorCodeService.ResolveCodeStatusAsync(viewModel.User.Id, false, false);
-            return RedirectToAction("Detail", "Participants", new { id = viewModel.User.Id });
+            return RedirectToAction(viewModel.Action, new { id = viewModel.User.Id });
         }
 
         [HttpPost]
@@ -2645,7 +2645,7 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> UndonateCode(ParticipantsDetailViewModel viewModel)
         {
             await _vendorCodeService.ResolveCodeStatusAsync(viewModel.User.Id, null, null);
-            return RedirectToAction("Detail", "Participants", new { id = viewModel.User.Id });
+            return RedirectToAction(viewModel.Action, new { id = viewModel.User.Id });
         }
 
         [HttpPost]
