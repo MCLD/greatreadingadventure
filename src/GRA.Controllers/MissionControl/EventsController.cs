@@ -646,6 +646,10 @@ namespace GRA.Controllers.MissionControl
                     graEvent.IsActive = true;
                     graEvent.IsValid = true;
 
+                    // this will make streaming events play nice with the rest of the event code
+                    // in future we will differentiate between event end and streaming access ends
+                    graEvent.EndDate = graEvent.StreamingAccessEnds;
+
                     if (triggerId.HasValue)
                     {
                         graEvent.RelatedTriggerId = triggerId;
@@ -679,10 +683,6 @@ namespace GRA.Controllers.MissionControl
                 GetCurrentSiteId(), SiteSettingKey.Events.GoogleMapsAPIKey);
             model.ShowGeolocation = IsSet;
             model.GoogleMapsAPIKey = SetValue;
-
-            // for now this will make streaming events play nice with the rest of the event code
-            // in future we may want to differentiate between event end and streaming access ends
-            model.Event.EndDate = model.Event.StreamingAccessEnds;
 
             if (model.Editing)
             {
