@@ -1375,4 +1375,7 @@
   <data name="Streaming Events" xml:space="preserve">
     <value>Eventos de transmisión</value>
   </data>
+  <data name="Stream starts" xml:space="preserve">
+    <value>Empieza la transmisión</value>
+  </data>
 </root>

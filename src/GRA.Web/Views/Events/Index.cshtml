@@ -199,7 +199,14 @@
                                             }
                                             else
                                             {
-                                                <th>@SharedLocalizer[GRA.Annotations.Interface.When]</th>
+                                                @if (Model.EventType == GRA.EventType.StreamingEvent)
+                                                {
+                                                    <th>@SharedLocalizer[GRA.Annotations.Interface.StreamStarts]</th>
+                                                }
+                                                else
+                                                {
+                                                    <th>@SharedLocalizer[GRA.Annotations.Interface.When]</th>
+                                                }
                                             }
                                             @if (Model.EventType == GRA.EventType.StreamingEvent)
                                             {
@@ -251,7 +258,7 @@
                                                     {
                                                         <div class="on-top" style="display: inline-block;">
                                                             @if (eventItem.StartDate <= DateTime.Now
-                                                                && eventItem.StreamingAccessEnds >= DateTime.Now)
+                                                            && eventItem.StreamingAccessEnds >= DateTime.Now)
                                                             {
                                                                 <a class="btn btn-success float-right"
                                                                    href="@Url.Action(nameof(EventsController.Stream),
