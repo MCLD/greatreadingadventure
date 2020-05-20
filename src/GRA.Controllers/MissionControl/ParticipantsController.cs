@@ -2611,7 +2611,7 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.EditParticipants)]
         public async Task<IActionResult> DonateCode(ParticipantsDetailViewModel viewModel)
         {
-            await _vendorCodeService.ResolveDonationStatusAsync(viewModel.User.Id, true);
+            await _vendorCodeService.ResolveCodeStatusAsync(viewModel.User.Id, true, false);
             return RedirectToAction("Detail", "Participants", new { id = viewModel.User.Id });
         }
 
@@ -2619,15 +2619,41 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.EditParticipants)]
         public async Task<IActionResult> RedeemCode(ParticipantsDetailViewModel viewModel)
         {
-            await _vendorCodeService.ResolveDonationStatusAsync(viewModel.User.Id, false);
+            await _vendorCodeService.ResolveCodeStatusAsync(viewModel.User.Id, false, false);
             return RedirectToAction("Detail", "Participants", new { id = viewModel.User.Id });
+        }
+
+        [HttpPost]
+        [Authorize(Policy = Policy.EditParticipants)]
+        public async Task<IActionResult> EmailAward(EmailAwardViewModel emailAwardModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(emailAwardModel);
+            }
+
+            await _vendorCodeService.ResolveCodeStatusAsync(emailAwardModel.UserId,
+                false,
+                true,
+                emailAwardModel.Email);
+
+            if (emailAwardModel.Household)
+            {
+                return RedirectToAction(nameof(ParticipantsController.Household), 
+                    new { id = emailAwardModel.UserId });
+            }
+            else
+            {
+                return RedirectToAction(nameof(ParticipantsController.Detail), 
+                    new { id = emailAwardModel.UserId });
+            }
         }
 
         [HttpPost]
         [Authorize(Policy = Policy.UnDonateVendorCode)]
         public async Task<IActionResult> UndonateCode(ParticipantsDetailViewModel viewModel)
         {
-            await _vendorCodeService.ResolveDonationStatusAsync(viewModel.User.Id, null);
+            await _vendorCodeService.ResolveCodeStatusAsync(viewModel.User.Id, null, null);
             return RedirectToAction("Detail", "Participants", new { id = viewModel.User.Id });
         }
 
@@ -2662,7 +2688,7 @@ namespace GRA.Controllers.MissionControl
             }
             else
             {
-                await _vendorCodeService.ResolveDonationStatusAsync(userId, donationStatus);
+                await _vendorCodeService.ResolveCodeStatusAsync(userId, donationStatus, null);
             }
             return RedirectToAction("Household", "Participants", new { id = viewModel.Id });
         }

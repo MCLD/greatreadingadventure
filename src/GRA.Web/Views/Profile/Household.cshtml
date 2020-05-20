@@ -27,6 +27,43 @@
     </div>
 }
 
+@if (Model.ShowVendorCodes)
+{
+    <div class="row">
+        <div class="modal fade"
+             id="emailAwardModal"
+             tabindex="-1"
+             role="dialog"
+             aria-labelledby="emailAwardLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form asp-action="@nameof(ProfileController.EmailAward)" method="post" role="form" style="display:inline">
+                        <input asp-for="EmailAwardModel.UserId" type="hidden" />
+                        <input asp-for="EmailAwardModel.Household" value="true" type="hidden" />
+                        <div class="modal-body">
+                            <p>@SharedLocalizer[GRA.Annotations.Info.FreeBookEmailAwardInstructions]</p>
+                            <div class="row row-spacing">
+                                <div class="col-xs-12">
+                                    <label asp-for="EmailAwardModel.Email" class="control-label"></label>
+                                    <input asp-for="EmailAwardModel.Email" class="form-control" />
+                                    <span asp-validation-for="EmailAwardModel.Email" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">@SharedLocalizer[GRA.Annotations.Interface.Cancel]</button>
+                            <button type="submit" class="btn btn-warning btn-spinner pull-right" aria-label="Confirm">
+                                @SharedLocalizer[GRA.Annotations.Interface.Confirm]
+                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 <div class="modal fade pendingModal"
      tabindex="-1"
      role="dialog"
@@ -289,23 +326,37 @@
                                                 @if (Model.ShowVendorCodes)
                                                 {
                                                     <td>
-                                                        @if (Model.Head.NeedsToAnswerDonationQuestion)
+                                                        @if (Model.Head.NeedsToAnswerVendorCodeQuestion)
                                                         {
                                                             <button class="btn btn-info btn-sm btn-spinner"
                                                                     name="redeemButton"
                                                                     value="@Model.Head.Id"
                                                                     asp-action="HandleHouseholdDonation">
-                                                                <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.RedeemCode]</span>
+                                                                <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.RedeemYourCode]</span>
                                                                 <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                                                             </button>
-                                                            @:or
-                                                            <button class="btn btn-success btn-sm btn-spinner"
-                                                                    name="donateButton"
-                                                                    value="@Model.Head.Id"
-                                                                    asp-action="HandleHouseholdDonation">
-                                                                <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.DonateBook]</span>
-                                                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                                                            </button>
+                                                            @if (Model.Head.CanDonateVendorCode)
+                                                            {
+                                                                @SharedLocalizer[GRA.Annotations.Interface.Or].ToString().ToLower()
+                                                                <button class="btn btn-success btn-sm btn-spinner"
+                                                                        name="donateButton"
+                                                                        value="@Model.Head.Id"
+                                                                        asp-action="HandleHouseholdDonation">
+                                                                    <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.DonateYourBook]</span>
+                                                                    <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                                                </button>
+                                                            }
+                                                            @if (Model.Head.CanEmailAwardVendorCode)
+                                                            {
+                                                                @SharedLocalizer[GRA.Annotations.Interface.Or].ToString().ToLower()
+                                                                <a class="btn btn-warning btn-sm emailAwardButton"
+                                                                   asp-action="@nameof(ProfileController.EmailAward)"
+                                                                   asp-route-id="@Model.Head.Id"
+                                                                   data-email="@Model.Head.Email"
+                                                                   data-userid="@Model.Head.Id">
+                                                                    <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.ReceiveAudioBook]</span>
+                                                                </a>
+                                                            }
                                                         }
                                                         else
                                                         {
@@ -428,23 +479,37 @@
                                                     @if (Model.ShowVendorCodes)
                                                     {
                                                         <td>
-                                                            @if (user.NeedsToAnswerDonationQuestion)
+                                                            @if (user.NeedsToAnswerVendorCodeQuestion)
                                                             {
                                                                 <button class="btn btn-info btn-sm btn-spinner"
                                                                         name="redeemButton"
                                                                         value="@user.Id"
                                                                         asp-action="HandleHouseholdDonation">
-                                                                    <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.RedeemCode]</span>
+                                                                    <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.RedeemYourCode]</span>
                                                                     <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                                                                 </button>
-                                                                @:or
-                                                                <button class="btn btn-success btn-sm btn-spinner"
-                                                                        name="donateButton"
-                                                                        value="@user.Id"
-                                                                        asp-action="HandleHouseholdDonation">
-                                                                    <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.DonateBook]</span>
-                                                                    <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                                                                </button>
+                                                                @if (user.CanDonateVendorCode)
+                                                                {
+                                                                    @SharedLocalizer[GRA.Annotations.Interface.Or].ToString().ToLower()
+                                                                    <button class="btn btn-success btn-sm btn-spinner"
+                                                                            name="donateButton"
+                                                                            value="@user.Id"
+                                                                            asp-action="HandleHouseholdDonation">
+                                                                        <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.DonateYourBook]</span>
+                                                                        <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                                                    </button>
+                                                                }
+                                                                @if (user.CanEmailAwardVendorCode)
+                                                                {
+                                                                    @SharedLocalizer[GRA.Annotations.Interface.Or].ToString().ToLower()
+                                                                    <a class="btn btn-warning btn-sm emailAwardButton"
+                                                                       asp-action="@nameof(ProfileController.EmailAward)"
+                                                                       asp-route-id="@user.Id"
+                                                                       data-email="@user.Email"
+                                                                       data-userid="@user.Id">
+                                                                        <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.ReceiveAudioBook]</span>
+                                                                    </a>
+                                                                }
                                                             }
                                                             else
                                                             {
@@ -466,7 +531,7 @@
                                                     @if (Model.AuthUserIsHead && Model.CanEditHousehold)
                                                     {
                                                         <td>
-                                                            <a asp-action="@nameof(ProfileController.RemoveHouseholdMember)" 
+                                                            <a asp-action="@nameof(ProfileController.RemoveHouseholdMember)"
                                                                asp-route-id="@user.Id" class="btn btn-xs btn-danger"
                                                                title="Remove @user.FullName from this @Model.LocalizedHouseholdTitle">
                                                                 <span class="fa fa-sign-out"></span>
@@ -586,6 +651,14 @@
                 $("#dailyImageModalDialog").removeClass("modal-lg")
             }
             $("#dailyImageModal").modal().show();
+        });
+
+        $(".emailAwardButton").on("click", function (event) {
+            event.preventDefault();
+            var modal = $("#emailAwardModal");
+            modal.find("#EmailAwardModel_Email").val($(this).data("email"));
+            modal.find("#EmailAwardModel_UserId").val($(this).data("userid"));
+            modal.modal();
         });
     </script>
 }

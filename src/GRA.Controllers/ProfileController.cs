@@ -1066,7 +1066,7 @@ namespace GRA.Controllers
                 {
                     model.Book.Author = model.Book.Author.Trim();
                     model.Book.Title = model.Book.Title.Trim();
-                    var result =  await _activityService.AddBookAsync(GetActiveUserId(), model.Book);
+                    var result = await _activityService.AddBookAsync(GetActiveUserId(), model.Book);
                     if (result.Status == ServiceResultStatus.Warning
                             && !string.IsNullOrWhiteSpace(result.Message))
                     {
@@ -1218,8 +1218,8 @@ namespace GRA.Controllers
                             bundle.AvatarItems.First().Thumbnail);
                         if (bundle.AvatarItems.Count > 1)
                         {
-                            var bundleLink = Url.Action(nameof(AvatarController.Index), 
-                                AvatarController.Name, 
+                            var bundleLink = Url.Action(nameof(AvatarController.Index),
+                                AvatarController.Name,
                                 new { bundle = item.AvatarBundleId.Value });
                             description.AppendFormat(
                                 " <strong><a href=\"{0}\">{1}</a></strong>",
@@ -1289,15 +1289,66 @@ namespace GRA.Controllers
         [HttpPost]
         public async Task<IActionResult> DonateCode(ProfileDetailViewModel viewModel)
         {
-            await _vendorCodeService.ResolveDonationStatusAsync(viewModel.User.Id, true);
+            await _vendorCodeService.ResolveCodeStatusAsync(viewModel.User.Id, true, false);
             return RedirectToAction(nameof(ProfileController.Index), ProfileController.Name);
         }
 
         [HttpPost]
         public async Task<IActionResult> RedeemCode(ProfileDetailViewModel viewModel)
         {
-            await _vendorCodeService.ResolveDonationStatusAsync(viewModel.User.Id, false);
+            await _vendorCodeService.ResolveCodeStatusAsync(viewModel.User.Id, false, false);
             return RedirectToAction(nameof(ProfileController.Index), ProfileController.Name);
+        }
+
+        public async Task<IActionResult> EmailAward(int? id)
+        {
+            try
+            {
+                User user = await _userService.GetDetails(id ?? GetActiveUserId());
+                await _vendorCodeService.PopulateVendorCodeStatusAsync(user);
+
+                if (!user.NeedsToAnswerVendorCodeQuestion)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+
+                var viewModel = new EmailAwardViewModel
+                {
+                    Email = user.Email,
+                    Household = id.HasValue,
+                    UserId = user.Id,
+                };
+
+                return View(viewModel);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger(gex.Message);
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EmailAward(EmailAwardViewModel emailAwardModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(emailAwardModel);
+            }
+
+            await _vendorCodeService.ResolveCodeStatusAsync(emailAwardModel.UserId,
+                false,
+                true,
+                emailAwardModel.Email);
+
+            if (emailAwardModel.Household)
+            {
+                return RedirectToAction(nameof(ProfileController.Household));
+            }
+            else
+            {
+                return RedirectToAction(nameof(ProfileController.Index));
+            }
         }
 
         [HttpPost]
@@ -1325,7 +1376,7 @@ namespace GRA.Controllers
             }
             else
             {
-                await _vendorCodeService.ResolveDonationStatusAsync(userId, donationStatus);
+                await _vendorCodeService.ResolveCodeStatusAsync(userId, donationStatus, false);
             }
             return RedirectToAction(nameof(ProfileController.Household), ProfileController.Name);
         }
@@ -1336,7 +1387,7 @@ namespace GRA.Controllers
             string redeemButton)
         {
             int userId = int.Parse(redeemButton);
-            await _vendorCodeService.ResolveDonationStatusAsync(userId, false);
+            await _vendorCodeService.ResolveCodeStatusAsync(userId, false, false);
             return RedirectToAction(nameof(ProfileController.Household), ProfileController.Name);
         }
 

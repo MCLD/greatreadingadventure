@@ -37,6 +37,9 @@
             public const string ConfirmBookDelete = "Are you sure you want to delete this book from your book list:";
             public const string CouldNotFind = "We couldn't find what you were looking for. Sorry about that!";
             public const string EventLimitedToProgram = "This event is limited to the program: {0}";
+            public const string FreeBookEmailAwardInstructions = "FreeBookEmailAwardInstructions";
+            public const string FreeBookRedeemDashboard = " You've earned a free book! Head over to <a href=\"Profile\"><strong>My Profile</strong></a> page to choose what to do with it.";
+            public const string FreeBookRedeemExpirationDashboard = " You've earned a free book! Head over to <a href=\"Profile\"><strong>My Profile</strong></a> page by {0} to choose what to do with it.";
             public const string Goal = "The goal of this program is {0} points.";
             public const string GroupAdd = "Add existing participant to your {0}";
             public const string GroupCannot = "A {0} cannot be created at this time.";
@@ -89,6 +92,7 @@
             public const string Clear = "Clear";
             public const string CommunityExperiences = "Community Experiences";
             public const string Completed = "Completed!";
+            public const string Confirm = "Confirm";
             public const string CouldNotCreate = "Could not create {0}: {1}";
             public const string CouldNotRemove = "Could not remove {0}: {1}";
             public const string CouldNotUpdate = "Could not update {0}: {1}.";
@@ -108,6 +112,7 @@
             public const string Find = "Find";
             public const string FreeBookCode = "Free book code";
             public const string FreeBookCongratulations = "Congratulations, you've earned a free book!";
+            public const string FreeBookOption = "You may:";
             public const string Group = "Group";
             public const string History = "History";
             public const string Joined = "Joined {0}!";
@@ -120,13 +125,15 @@
             public const string NoChallenges = "No Challenges";
             public const string NoEvents = "No Events";
             public const string NoMail = "You currently have no mail.";
-            public const string NotStreamingYet = "Not streaming yet";
+			public const string NotStreamingYet = "Not streaming yet";
+            public const string Or = "Or";
             public const string PasswordChanged = "Your password has been changed.";
             public const string PointsYoullEarn = "Points you'll earn";
             public const string ProfileUpdated = "Profile updated.";
             public const string ProgramIsOver = "Program is over";
             public const string Progress = "Progress";
             public const string Read = "Read";
+            public const string ReceiveAudioBook = "Receive an audiobook";
             public const string RedeemCode = "Redeem code";
             public const string RedeemYourCode = "Redeem your code";
             public const string RelatedChallenge = "Related Challenge";

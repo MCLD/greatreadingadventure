@@ -97,9 +97,12 @@ namespace GRA.Domain.Model
         public bool HasPendingQuestionnaire { get; set; }
         public string VendorCode { get; set; }
         public string VendorCodeMessage { get; set; }
-        public bool NeedsToAnswerDonationQuestion { get; set; }
+        public bool NeedsToAnswerVendorCodeQuestion { get; set; }
+        public bool CanDonateVendorCode { get; set; }
+        public bool CanEmailAwardVendorCode { get; set; }
         public string VendorCodeUrl { get; set; }
         public bool? Donated { get; set; }
+        public bool? EmailAwarded { get; set; }
 
         public bool IsEmailSubscribed { get; set; }
 

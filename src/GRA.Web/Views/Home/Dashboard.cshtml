@@ -50,17 +50,19 @@
     </div>
 }
 
-@if (Model.HasPendingDonationQuestion)
+@if (Model.HasPendingVendorCodeQuestion)
 {
     <div class="row">
         <div class="col-xs-12 text-center">
             <div class="alert alert-success" style="font-size:large">
-                You've earned a free book! Head over to <a asp-controller="Profile" asp-action="Index"><strong>My Profile</strong></a> page
                 @if (Model.VendorCodeExpiration.HasValue)
                 {
-                    <text>by @Model.VendorCodeExpiration.Value.AddMilliseconds(-1).ToString("MMMM dd")</text>
+                    @SharedHtmlLocalizer[GRA.Annotations.Info.FreeBookRedeemExpirationDashboard, Model.VendorCodeExpiration.Value.AddMilliseconds(-1).ToString("MMMM dd")]
                 }
-                to redeem or donate it!
+                else
+                {
+                    @SharedHtmlLocalizer[GRA.Annotations.Info.FreeBookRedeemDashboard]
+                }
             </div>
         </div>
     </div>

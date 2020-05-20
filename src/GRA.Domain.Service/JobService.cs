@@ -86,6 +86,13 @@ namespace GRA.Domain.Service
                                             token,
                                             progress);
                                         break;
+                                    case JobType.UpdateEmailAwardStatus:
+                                        status = await _vendorCodeService
+                                            .UpdateEmailAwardStatusFromExcelAsync(
+                                                jobInfo.Id,
+                                                token,
+                                                progress);
+                                        break;
                                     default: // case JobType.SendBulkEmails:
                                         status = await SendBulkEmails(userId,
                                             jobInfo.Id,
