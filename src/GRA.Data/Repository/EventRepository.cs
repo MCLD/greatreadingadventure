@@ -239,17 +239,34 @@ namespace GRA.Data.Repository
             }
 
             // filter by dates
-            if (filter.StartDate != null)
+            if (filter.EventType == (int)EventType.StreamingEvent)
             {
-                events = events.Where(_ =>
-                ((!_.AllDay || !_.EndDate.HasValue) && _.StartDate.Date >= filter.StartDate.Value.Date)
-                || _.EndDate.Value.Date >= filter.StartDate.Value.Date);
+                if (filter.StartDate != null)
+                {
+                    events = events.Where(_ => _.StartDate >= filter.StartDate
+                        || (_.StartDate <= filter.StartDate 
+                            && filter.StartDate <= _.StreamingAccessEnds));
+                }
+                if (filter.EndDate != null)
+                {
+                    events = events.Where(_ => filter.EndDate <= _.StreamingAccessEnds);
+                }
             }
-            if (filter.EndDate != null)
+            else
             {
-                events = events.Where(_ =>
-                ((!_.AllDay || !_.EndDate.HasValue) && _.StartDate.Date <= filter.EndDate.Value.Date)
-                || _.StartDate.Date <= filter.EndDate.Value.Date);
+
+                if (filter.StartDate != null)
+                {
+                    events = events.Where(_ =>
+                        ((!_.AllDay || !_.EndDate.HasValue) && _.StartDate.Date >= filter.StartDate.Value.Date)
+                        || _.EndDate.Value.Date >= filter.StartDate.Value.Date);
+                }
+                if (filter.EndDate != null)
+                {
+                    events = events.Where(_ =>
+                        ((!_.AllDay || !_.EndDate.HasValue) && _.StartDate.Date <= filter.EndDate.Value.Date)
+                        || _.StartDate.Date <= filter.EndDate.Value.Date);
+                }
             }
 
             // apply search
