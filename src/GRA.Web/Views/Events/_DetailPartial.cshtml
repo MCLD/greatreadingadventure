@@ -11,7 +11,14 @@
 </div>
 <div class="modal-body">
     <div class="row-spacing" style="font-size:medium;">
-        <strong>@SharedLocalizer[GRA.Annotations.Interface.When]:&nbsp;</strong>
+        @if (Model.Event.IsStreaming)
+        {
+            <string>@SharedLocalizer[GRA.Annotations.Interface.StreamStarts]:&nbsp;</string>
+        }
+        else
+        {
+            <string>@SharedLocalizer[GRA.Annotations.Interface.When]:&nbsp;</string>
+        }
         @if (Model.Event.AllDay)
         {
             @:@Model.Event.StartDate.ToString("d") @(Model.Event.EndDate.HasValue ? "– " + Model.Event.EndDate.Value.ToString("d") : "")
@@ -52,7 +59,7 @@
                     @if (Model.Event.IsStreaming)
                     {
                         @if (Model.Event.StartDate <= DateTime.Now
-                            && Model.Event.StreamingAccessEnds >= DateTime.Now)
+                         && Model.Event.StreamingAccessEnds >= DateTime.Now)
                         {
                             <a class="btn btn-success"
                                href="@Url.Action(nameof(EventsController.Stream),

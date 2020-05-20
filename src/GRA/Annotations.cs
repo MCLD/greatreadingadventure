@@ -149,6 +149,7 @@
             public const string Stream = "Stream";
             public const string StreamingEvents = "Streaming Events";
             public const string StreamNow = "Stream Now!";
+            public const string StreamStarts = "Stream starts";
             public const string Subject = "Subject: {0}";
             public const string SwitchTo = "Switch To";
             public const string TotalPoints = "Total Points";

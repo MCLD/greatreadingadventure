@@ -1417,6 +1417,10 @@
     <value>Program is over</value>
     <comment>Disabled button for streaming programs if it is over</comment>
   </data>
+  <data name="Stream starts" xml:space="preserve">
+    <value>Stream starts</value>
+    <comment>Heading for the field with the date and time that a streaming event begins</comment>
+  </data>
   <data name="Opens new window." xml:space="preserve">
     <value>(Opens new window)</value>
     <comment>Warning message for the screenreader to indicate the link will open a new window.</comment>
