@@ -2637,16 +2637,7 @@ namespace GRA.Controllers.MissionControl
                 true,
                 emailAwardModel.Email);
 
-            if (emailAwardModel.Household)
-            {
-                return RedirectToAction(nameof(ParticipantsController.Household), 
-                    new { id = emailAwardModel.UserId });
-            }
-            else
-            {
-                return RedirectToAction(nameof(ParticipantsController.Detail), 
-                    new { id = emailAwardModel.UserId });
-            }
+            return RedirectToAction(emailAwardModel.Action, new { id = emailAwardModel.UserId });
         }
 
         [HttpPost]

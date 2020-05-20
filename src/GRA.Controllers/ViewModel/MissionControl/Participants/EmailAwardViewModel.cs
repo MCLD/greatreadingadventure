@@ -14,6 +14,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         [MaxLength(254)]
         public string Email { get; set; }
 
-        public bool Household { get; set; }
+        public string Action { get; set; }
     }
 }

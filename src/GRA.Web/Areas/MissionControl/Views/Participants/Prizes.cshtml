@@ -4,13 +4,50 @@
 
 @await Html.PartialAsync("_ParticipantPartial")
 
+@if (Model.CanEditDetails && Model.User.NeedsToAnswerVendorCodeQuestion && Model.User.CanEmailAwardVendorCode)
+{
+    <div class="row">
+        <div class="modal fade"
+             id="emailAwardModal"
+             tabindex="-1"
+             role="dialog"
+             aria-labelledby="emailAwardLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form asp-action="@nameof(ParticipantsController.EmailAward)" method="post" role="form" style="display:inline">
+                        <input asp-for="EmailAwardModel.UserId" value="@Model.User.Id" type="hidden" />
+                        <input asp-for="EmailAwardModel.Action" value="@nameof(ParticipantsController.Prizes)" type="hidden" />
+                        <div class="modal-body">
+                            <p>@GRA.Annotations.Info.FreeBookEmailAwardInstructions</p>
+                            <div class="row row-spacing">
+                                <div class="col-xs-12">
+                                    <label asp-for="EmailAwardModel.Email" class="control-label"></label>
+                                    <input asp-for="EmailAwardModel.Email" class="form-control" value="@Model.User.Email" />
+                                    <span asp-validation-for="EmailAwardModel.Email" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">@GRA.Annotations.Interface.Cancel</button>
+                            <button type="submit" class="btn btn-warning btn-spinner pull-right" aria-label="Confirm">
+                                @GRA.Annotations.Interface.Confirm
+                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 @if (!string.IsNullOrWhiteSpace(Model.User.VendorCode)
-   || Model.User.NeedsToAnswerDonationQuestion)
+|| Model.User.NeedsToAnswerVendorCodeQuestion)
 {
     <div class="row" style="padding: 1rem 0; margin-top: 1rem; margin-bottom: 1rem; font-size: 1.5rem; border: 1px solid grey;">
         <div class="col-xs-12">
             <strong>Free Book Code:</strong>
-            @if (Model.User.NeedsToAnswerDonationQuestion)
+            @if (Model.User.NeedsToAnswerVendorCodeQuestion)
             {
                 <button class="btn btn-info btn-spinner"
                         asp-action="RedeemCode"
@@ -18,13 +55,25 @@
                     <span class="buttonText">Redeem code</span>
                     <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                 </button>
-                @:or
-                <button class="btn btn-success btn-spinner"
-                        asp-action="DonateCode"
-                        asp-is-disabled="@(!Model.CanEditDetails)">
-                    <span class="buttonText">Donate book</span>
-                    <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                </button>
+                @if (Model.User.CanDonateVendorCode)
+                {
+                    @:or
+                    <button class="btn btn-success btn-spinner"
+                            asp-action="DonateCode"
+                            asp-is-disabled="@(!Model.CanEditDetails)">
+                        <span class="buttonText">Donate book</span>
+                        <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                    </button>
+                }
+                @if (Model.User.CanEmailAwardVendorCode)
+                {
+                    @:or
+                    <button id="emailAwardButton"
+                            class="btn btn-warning"
+                            asp-is-disabled="@(!Model.CanEditDetails)">
+                        <span class="buttonText">Email audiobook</span>
+                    </button>
+                }
             }
             else
             {
@@ -142,3 +191,16 @@
 <div class="form-group">
     <a asp-action="Index" class="btn btn-default">Return to Participants</a>
 </div>
+
+@if (Model.User.NeedsToAnswerVendorCodeQuestion && Model.User.CanEmailAwardVendorCode
+     && Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.EditParticipants.ToString()))
+{
+    @section scripts {
+        <script>
+            $("#emailAwardButton").on("click", function (event) {
+                event.preventDefault();
+                $("#emailAwardModal").modal();
+            });
+        </script>
+    }
+}

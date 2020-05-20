@@ -171,7 +171,7 @@
                 <div class="modal-content">
                     <form asp-action="@nameof(ParticipantsController.EmailAward)" method="post" role="form" style="display:inline">
                         <input asp-for="EmailAwardModel.UserId" type="hidden" />
-                        <input asp-for="EmailAwardModel.Household" value="true" type="hidden" />
+                        <input asp-for="EmailAwardModel.Action" value="@nameof(ParticipantsController.Household)" type="hidden" />
                         <div class="modal-body">
                             <p>@GRA.Annotations.Info.FreeBookEmailAwardInstructions</p>
                             <div class="row row-spacing">
