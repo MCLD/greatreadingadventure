@@ -1361,18 +1361,21 @@
     <comment>If they desire to join with an authorization code and, tried accessing Mission Control's AuthorizationCode</comment>
   </data>
   <data name="Not streaming yet" xml:space="preserve">
-    <value>Not streaming yet</value>
+    <value>Todavía no se está transmitiendo</value>
   </data>
   <data name="Program is over" xml:space="preserve">
-    <value>Program is over</value>
+    <value>El evento ha terminado</value>
   </data>
   <data name="Stream" xml:space="preserve">
-    <value>Stream</value>
+    <value>Transmite</value>
   </data>
   <data name="Stream Now!" xml:space="preserve">
-    <value>Stream Now!</value>
+    <value>Transmitir ahora!</value>
   </data>
   <data name="Streaming Events" xml:space="preserve">
-    <value>Streaming Events</value>
+    <value>Eventos de transmisión</value>
+  </data>
+  <data name="Stream starts" xml:space="preserve">
+    <value>Empieza la transmisión</value>
   </data>
 </root>
