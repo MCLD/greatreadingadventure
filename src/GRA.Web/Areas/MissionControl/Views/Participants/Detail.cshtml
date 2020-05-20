@@ -229,7 +229,7 @@
                             }
                             if (Model.User.Donated == true
                                 && User.HasClaim(ClaimType.Permission,
-                                    Permission.PerformDrawing.ToString()))
+                                    Permission.UnDonateVendorCode.ToString()))
                             {
                                 <button class="btn btn-info btn-spinner"
                                         asp-action="UndonateCode"
