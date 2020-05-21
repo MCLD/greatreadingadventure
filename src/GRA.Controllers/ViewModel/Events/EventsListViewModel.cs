@@ -13,7 +13,6 @@ namespace GRA.Controllers.ViewModel.Events
         public PaginateViewModel PaginateModel { get; set; }
         public string Sort { get; set; }
         public bool? UseLocation { get; set; }
-        public bool CommunityExperiences { get; set; }
         public bool ShowNearSearch { get; set; }
         public string CommunityExperienceDescription { get; set; }
         public string UserZipCode { get; set; }
@@ -52,5 +51,23 @@ namespace GRA.Controllers.ViewModel.Events
         public SelectList LocationList { get; set; }
         public SelectList ProgramList { get; set; }
         public bool IsLoggedIn { get; set; }
+
+        public EventType EventType { get; set; }
+
+        public string FormAction
+        {
+            get
+            {
+                switch (EventType)
+                {
+                    default:
+                        return nameof(EventsController.Index);
+                    case EventType.CommunityExperience:
+                        return nameof(EventsController.CommunityExperiences);
+                    case EventType.StreamingEvent:
+                        return nameof(EventsController.StreamingEvents);
+                }
+            }
+        }
     }
 }

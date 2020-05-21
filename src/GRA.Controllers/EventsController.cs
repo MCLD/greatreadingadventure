@@ -84,7 +84,38 @@ namespace GRA.Controllers
                 EndDate,
                 true,
                 Favorites,
-                Status);
+                Status,
+                EventType.CommunityExperience);
+        }
+        public async Task<IActionResult> StreamingEvents(int page = 1,
+            string sort = null,
+            string search = null,
+            string near = null,
+            int? system = null,
+            int? branch = null,
+            int? location = null,
+            int? program = null,
+            string StartDate = null,
+            string EndDate = null)
+        {
+            var site = await GetCurrentSiteAsync();
+            if (!string.IsNullOrEmpty(site.ExternalEventListUrl))
+            {
+                return new RedirectResult(site.ExternalEventListUrl);
+            }
+
+            PageTitle = _sharedLocalizer[Annotations.Title.CommunityExperiences];
+            return await Index(page,
+                sort,
+                search,
+                near,
+                system,
+                branch,
+                location,
+                program,
+                StartDate,
+                EndDate,
+                EventType.StreamingEvent);
         }
 
         public async Task<IActionResult> Index(int page = 1,
@@ -100,6 +131,7 @@ namespace GRA.Controllers
             bool CommunityExperiences = false,
             bool Favorites = false,
             string Visited = null,
+            EventType eventType = EventType.Event,
             HttpStatusCode httpStatus = HttpStatusCode.OK)
         {
             var site = await GetCurrentSiteAsync();
@@ -112,7 +144,7 @@ namespace GRA.Controllers
             var filter = new EventFilter(page)
             {
                 Search = search,
-                EventType = CommunityExperiences ? 1 : 0
+                EventType = (int)eventType
             };
 
             var nearSearchEnabled = await _siteLookupService
@@ -227,6 +259,7 @@ namespace GRA.Controllers
                 ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
                 CommunityExperiences = CommunityExperiences,
                 Visited = Visited,
+                EventType = eventType,
                 ShowNearSearch = nearSearchEnabled
             };
 
@@ -299,7 +332,6 @@ namespace GRA.Controllers
         {
             string startDate = "False";
             string endDate = null;
-            bool? isCommunityExperience = null;
 
             if (model.UseLocation == true)
             {
@@ -353,6 +385,7 @@ namespace GRA.Controllers
                 model.Favorites,
                 model.Visited,
                 CommunityExperiences = isCommunityExperience
+                model.EventType
             });
         }
 
@@ -495,6 +528,31 @@ namespace GRA.Controllers
             {
                 Response.StatusCode = (int)HttpStatusCode.NotFound;
                 return Content(gex.Message);
+            }
+        }
+
+        public async Task<IActionResult> Stream(int eventId)
+        {
+            var graEvent = await _eventService.GetDetails(eventId);
+
+            if (!graEvent.IsStreaming)
+            {
+                return await Detail(eventId);
+            }
+            else
+            {
+                if (graEvent.IsStreamingEmbed)
+                {
+                    return View("Stream", new StreamViewModel
+                    {
+                        EventName = graEvent.Name,
+                        Embed = graEvent.StreamingLinkData
+                    });
+                }
+                else
+                {
+                    return Redirect(graEvent.StreamingLinkData);
+                }
             }
         }
     }

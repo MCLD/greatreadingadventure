@@ -1356,4 +1356,26 @@
     <value>Ilustración de un bosque.</value>
     <comment>The alt tag on the front page banner image for those who cannot see the image; the image is an illustration of a forest.</comment>
   </data>
+  <data name="To activate an authorization code, please sign in or &lt;a href=&quot;{0}&quot;&gt;join&lt;/a&gt;." xml:space="preserve">
+    <value>Para activar un código de autorización, inicie la sesión o &lt;a href="{0}"&gt;participar&lt;/a&gt;.</value>
+    <comment>If they desire to join with an authorization code and, tried accessing Mission Control's AuthorizationCode</comment>
+  </data>
+  <data name="Not streaming yet" xml:space="preserve">
+    <value>Todavía no se está transmitiendo</value>
+  </data>
+  <data name="Program is over" xml:space="preserve">
+    <value>El evento ha terminado</value>
+  </data>
+  <data name="Stream" xml:space="preserve">
+    <value>Transmite</value>
+  </data>
+  <data name="Stream Now!" xml:space="preserve">
+    <value>Transmitir ahora!</value>
+  </data>
+  <data name="Streaming Events" xml:space="preserve">
+    <value>Eventos de transmisión</value>
+  </data>
+  <data name="Stream starts" xml:space="preserve">
+    <value>Empieza la transmisión</value>
+  </data>
 </root>

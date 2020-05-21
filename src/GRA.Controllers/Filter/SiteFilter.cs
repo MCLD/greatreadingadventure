@@ -57,21 +57,21 @@ namespace GRA.Controllers.Filter
             ResourceExecutionDelegate next)
         {
             Site site = null;
-            var httpContext = context.HttpContext;
-            await httpContext.Session.LoadAsync();
+            await context.HttpContext.Session.LoadAsync();
             // if we've already fetched it on this request it's present in Items
             int? siteId = null;
-            if (httpContext.User.Identity.IsAuthenticated)
+            if (context.HttpContext.User.Identity.IsAuthenticated)
             {
                 // if the user is authenticated, that is their site
                 try
                 {
-                    siteId = _userContextProvider.GetId(httpContext.User, ClaimType.SiteId);
+                    siteId = _userContextProvider.GetId(context.HttpContext.User,
+                        ClaimType.SiteId);
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError("Unable to get SiteId claim for user {Name}: {Message}",
-                        httpContext.User.Identity.Name,
+                        context.HttpContext.User.Identity.Name,
                         ex.Message);
                 }
             }
@@ -91,7 +91,7 @@ namespace GRA.Controllers.Filter
                 // if not check if they already have one in their session
                 if (siteId == null)
                 {
-                    siteId = httpContext.Session.GetInt32(SessionKey.SiteId);
+                    siteId = context.HttpContext.Session.GetInt32(SessionKey.SiteId);
                 }
                 // if not then resort to the default
                 if (siteId == null)
@@ -106,37 +106,50 @@ namespace GRA.Controllers.Filter
 
             var siteStage = _siteLookupService.GetSiteStage(site);
 
+            // we might need to hide challenges and/or events based on system settings
+            // the setting is to hide so the logic is == null rather than != null
             bool showChallenges = true;
             bool showEvents = true;
 
+            if (siteStage == SiteStage.RegistrationOpen
+                || siteStage == SiteStage.BeforeRegistration)
+            {
+                showEvents = site.Settings
+                    .FirstOrDefault(_ => _.Key == SiteSettingKey
+                        .Events
+                        .HideUntilProgramOpen)?
+                    .Value == null;
+            }
+
             if (siteStage == SiteStage.BeforeRegistration)
             {
-                // we might need to hide challenges and/or events since we're pre-registration
-                // hide means that if the value is set then we want showChallenges to be false
-                // hence == null rather than != null
                 showChallenges = site.Settings
                     .FirstOrDefault(_ => _.Key == SiteSettingKey
                         .Challenges
                         .HideUntilRegistrationOpen)?
                     .Value == null;
 
-                showEvents = site.Settings
-                    .FirstOrDefault(_ => _.Key == SiteSettingKey
-                        .Events
-                        .HideUntilRegistrationOpen)?
-                    .Value == null;
+                if (!showEvents)
+                {
+                    // they might be hidden above
+                    showEvents = site.Settings
+                        .FirstOrDefault(_ => _.Key == SiteSettingKey
+                            .Events
+                            .HideUntilRegistrationOpen)?
+                        .Value == null;
+                }
             }
 
-            httpContext.Items[ItemKey.GoogleAnalytics] = site.GoogleAnalyticsTrackingId;
-            httpContext.Items[ItemKey.RouteId] = context.RouteData.Values["id"];
-            httpContext.Items[ItemKey.SiteName] = site?.Name
+            context.HttpContext.Items[ItemKey.GoogleAnalytics] = site.GoogleAnalyticsTrackingId;
+            context.HttpContext.Items[ItemKey.RouteId] = context.RouteData.Values["id"];
+            context.HttpContext.Items[ItemKey.SiteName] = site?.Name
                 ?? _config[ConfigurationKey.DefaultSiteName];
-            httpContext.Items[ItemKey.SiteStage] = siteStage;
-            httpContext.Session.SetInt32(SessionKey.SiteId, (int)siteId);
-            httpContext.Items[ItemKey.SiteId] = (int)siteId;
-            httpContext.Items[ItemKey.ShowChallenges] = showChallenges;
-            httpContext.Items[ItemKey.ShowEvents] = showEvents;
-            httpContext.Items[ItemKey.WebScheme] = site.IsHttpsForced ? "https" : "http";
+            context.HttpContext.Items[ItemKey.SiteStage] = siteStage;
+            context.HttpContext.Session.SetInt32(SessionKey.SiteId, (int)siteId);
+            context.HttpContext.Items[ItemKey.SiteId] = (int)siteId;
+            context.HttpContext.Items[ItemKey.ShowChallenges] = showChallenges;
+            context.HttpContext.Items[ItemKey.ShowEvents] = showEvents;
+            context.HttpContext.Items[ItemKey.WebScheme] = site.IsHttpsForced ? "https" : "http";
 
             // only check if the site.css and site.js have changed periodically by default and
             // cache the last modification time
@@ -201,32 +214,40 @@ namespace GRA.Controllers.Filter
 
                 if (!string.IsNullOrEmpty(cssLastModified))
                 {
-                    httpContext.Items[ItemKey.SiteCss] = $"{contentPath}/site{siteId}/styles/site.css?v={cssLastModified}";
+                    context.HttpContext.Items[ItemKey.SiteCss]
+                        = $"{contentPath}/site{siteId}/styles/site.css?v={cssLastModified}";
                 }
                 if (!string.IsNullOrEmpty(jsLastModified))
                 {
-                    httpContext.Items[ItemKey.SiteJs] = $"{contentPath}/site{siteId}/scripts/site.js?v={jsLastModified}";
+                    context.HttpContext.Items[ItemKey.SiteJs]
+                        = $"{contentPath}/site{siteId}/scripts/site.js?v={jsLastModified}";
                 }
             }
 
-            httpContext.Items[ItemKey.HouseholdTitle]
-                = string.IsNullOrEmpty(httpContext.Session.GetString(SessionKey.CallItGroup))
+            context.HttpContext.Items[ItemKey.HouseholdTitle]
+                = string.IsNullOrEmpty(context
+                    .HttpContext
+                    .Session
+                    .GetString(SessionKey.CallItGroup))
                 ? Annotations.Interface.Family
                 : Annotations.Interface.Group;
 
             if (!string.IsNullOrWhiteSpace(site.ExternalEventListUrl))
             {
-                httpContext.Items[ItemKey.ExternalEventListUrl] = site.ExternalEventListUrl;
+                context.HttpContext.Items[ItemKey.ExternalEventListUrl]
+                    = site.ExternalEventListUrl;
             }
 
             var currentCulture = _userContextProvider.GetCurrentCulture();
-            httpContext.Items[ItemKey.ISOLanguageName] = currentCulture.TwoLetterISOLanguageName;
+            context.HttpContext.Items[ItemKey.ISOLanguageName]
+                = currentCulture.TwoLetterISOLanguageName;
 
             int? activeUserId = _userContextProvider.GetContext().ActiveUserId;
 
             if (_l10nOptions.Value?.SupportedCultures.Count > 1)
             {
-                var cookieCulture = httpContext
+                var cookieCulture = context
+                    .HttpContext
                     .Request
                     .Cookies[CookieRequestCultureProvider.DefaultCookieName];
 
@@ -234,7 +255,8 @@ namespace GRA.Controllers.Filter
                 {
                     if (cookieCulture != null)
                     {
-                        httpContext
+                        context
+                            .HttpContext
                             .Response
                             .Cookies
                             .Delete(CookieRequestCultureProvider.DefaultCookieName);
@@ -247,7 +269,7 @@ namespace GRA.Controllers.Filter
                 else
                 {
                     // no cookie or new culture selected, reset cookie
-                    httpContext.Response.Cookies.Append(
+                    context.HttpContext.Response.Cookies.Append(
                         CookieRequestCultureProvider.DefaultCookieName,
                         CookieRequestCultureProvider
                             .MakeCookieValue(new RequestCulture(currentCulture.Name)),
@@ -281,8 +303,8 @@ namespace GRA.Controllers.Filter
                         }
                     }
                 }
-                httpContext.Items[ItemKey.HrefLang] = cultureHrefLang;
-                httpContext.Items[ItemKey.L10n] = cultureList.OrderBy(_ => _.Text);
+                context.HttpContext.Items[ItemKey.HrefLang] = cultureHrefLang;
+                context.HttpContext.Items[ItemKey.L10n] = cultureList.OrderBy(_ => _.Text);
             }
 
             using (LogContext.PushProperty(LoggingEnrichment.ActiveUserId, activeUserId))

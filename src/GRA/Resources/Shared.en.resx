@@ -1432,5 +1432,32 @@
   <data name="Error retrieving badge information." xml:space="preserve">
     <value>Error retrieving badge information.</value>
     <comment>Message letting the participant know there was an error retrieving the information associated with one of their badges.</comment>
+  <data name="To activate an authorization code, please sign in or &lt;a href=&quot;{0}&quot;&gt;join&lt;/a&gt;." xml:space="preserve">
+    <value>To activate an authorization code, please sign in or &lt;a href="{0}"&gt;join&lt;/a&gt;.</value>
+    <comment>If they desire to join with an authorization code and, tried accessing Mission Control's AuthorizationCode</comment>
+  </data>
+  <data name="Streaming Events" xml:space="preserve">
+    <value>Streaming Events</value>
+    <comment>Navigation link and title for streaming events</comment>
+  </data>
+  <data name="Not streaming yet" xml:space="preserve">
+    <value>Not streaming yet</value>
+    <comment>Button text when streaming the event is not available yet</comment>
+  </data>
+  <data name="Stream" xml:space="preserve">
+    <value>Stream</value>
+    <comment>Column heading displayed in streaming event list which contains the streaming buttons</comment>
+  </data>
+  <data name="Stream Now!" xml:space="preserve">
+    <value>Stream Now!</value>
+    <comment>Button that participants click to see a streaming event</comment>
+  </data>
+  <data name="Program is over" xml:space="preserve">
+    <value>Program is over</value>
+    <comment>Disabled button for streaming programs if it is over</comment>
+  </data>
+  <data name="Stream starts" xml:space="preserve">
+    <value>Stream starts</value>
+    <comment>Heading for the field with the date and time that a streaming event begins</comment>
   </data>
 </root>

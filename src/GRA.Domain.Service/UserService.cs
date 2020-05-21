@@ -239,6 +239,18 @@ namespace GRA.Domain.Service
         {
             if (HasPermission(Permission.ViewParticipantList))
             {
+                if (!string.IsNullOrEmpty(filter.Search))
+                {
+                    var vendorCode = await _vendorCodeService.GetVendorCodeByCode(filter.Search.ToUpper());
+                    if (vendorCode?.UserId.HasValue == true)
+                    {
+                        filter.UserIds = new List<int>
+                        {
+                            vendorCode.UserId.Value
+                        };
+                        filter.Search = null;
+                    }
+                }
                 filter.SiteId = GetClaimId(ClaimType.SiteId);
                 return new DataWithCount<IEnumerable<User>>
                 {
