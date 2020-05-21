@@ -1432,6 +1432,7 @@
   <data name="Error retrieving badge information." xml:space="preserve">
     <value>Error retrieving badge information.</value>
     <comment>Message letting the participant know there was an error retrieving the information associated with one of their badges.</comment>
+  </data>
   <data name="To activate an authorization code, please sign in or &lt;a href=&quot;{0}&quot;&gt;join&lt;/a&gt;." xml:space="preserve">
     <value>To activate an authorization code, please sign in or &lt;a href="{0}"&gt;join&lt;/a&gt;.</value>
     <comment>If they desire to join with an authorization code and, tried accessing Mission Control's AuthorizationCode</comment>

@@ -82,7 +82,6 @@ namespace GRA.Controllers
                 program,
                 StartDate,
                 EndDate,
-                true,
                 Favorites,
                 Status,
                 EventType.CommunityExperience);
@@ -96,7 +95,9 @@ namespace GRA.Controllers
             int? location = null,
             int? program = null,
             string StartDate = null,
-            string EndDate = null)
+            string EndDate = null,
+            bool Favorites = false,
+            string Status = null)
         {
             var site = await GetCurrentSiteAsync();
             if (!string.IsNullOrEmpty(site.ExternalEventListUrl))
@@ -115,6 +116,8 @@ namespace GRA.Controllers
                 program,
                 StartDate,
                 EndDate,
+                Favorites,
+                Status,
                 EventType.StreamingEvent);
         }
 
@@ -128,7 +131,6 @@ namespace GRA.Controllers
             int? program = null,
             string StartDate = null,
             string EndDate = null,
-            bool CommunityExperiences = false,
             bool Favorites = false,
             string Visited = null,
             EventType eventType = EventType.Event,
@@ -257,7 +259,6 @@ namespace GRA.Controllers
                 IsLoggedIn = AuthUser.Identity.IsAuthenticated,
                 ProgramId = program,
                 ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
-                CommunityExperiences = CommunityExperiences,
                 Visited = Visited,
                 EventType = eventType,
                 ShowNearSearch = nearSearchEnabled
@@ -359,11 +360,6 @@ namespace GRA.Controllers
                 endDate = model.EndDate.Value.ToString("MM-dd-yyyy");
             }
 
-            if (model.CommunityExperiences)
-            {
-                isCommunityExperience = true;
-            }
-
             int? page = null;
             if (keepPage && model.PaginateModel?.CurrentPage > 1)
             {
@@ -384,7 +380,6 @@ namespace GRA.Controllers
                 EndDate = endDate,
                 model.Favorites,
                 model.Visited,
-                CommunityExperiences = isCommunityExperience
                 model.EventType
             });
         }
