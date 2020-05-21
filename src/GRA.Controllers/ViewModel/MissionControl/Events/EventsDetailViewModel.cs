@@ -8,6 +8,8 @@ namespace GRA.Controllers.ViewModel.MissionControl.Events
     public class EventsDetailViewModel
     {
         public GRA.Domain.Model.Event Event { get; set; }
+        public string CreatedByName { get; set; }
+        public bool CanViewParticipants { get; set; }
         public bool UseLocation { get; set; }
         public bool NewCommunityExperience { get; set; }
 
@@ -50,5 +52,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Events
         public SelectList BranchList { get; set; }
         public SelectList LocationList { get; set; }
         public SelectList ProgramList { get; set; }
+
+        public bool Editing { get; set; }
     }
 }

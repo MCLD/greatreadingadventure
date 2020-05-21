@@ -4,14 +4,16 @@ using GRA.Data.SqlServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GRA.Data.SqlServer.Migrations
 {
     [DbContext(typeof(SqlServerContext))]
-    partial class SqlServerContextModelSnapshot : ModelSnapshot
+    [Migration("20200511192709_emailtemplate-fields-required")]
+    partial class emailtemplatefieldsrequired
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -955,10 +957,6 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<bool>("IsCommunityExperience");
 
-                    b.Property<bool>("IsStreaming");
-
-                    b.Property<bool>("IsStreamingEmbed");
-
                     b.Property<bool>("IsValid");
 
                     b.Property<string>("Name")
@@ -978,11 +976,6 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<int>("SiteId");
 
                     b.Property<DateTime>("StartDate");
-
-                    b.Property<DateTime?>("StreamingAccessEnds");
-
-                    b.Property<string>("StreamingLinkData")
-                        .HasMaxLength(255);
 
                     b.HasKey("Id");
 
@@ -2828,17 +2821,13 @@ namespace GRA.Data.SqlServer.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(255);
+                        .IsRequired();
 
                     b.Property<DateTime>("CreatedAt");
 
                     b.Property<int>("CreatedBy");
 
                     b.Property<DateTime>("DateUsed");
-
-                    b.Property<string>("Details")
-                        .HasMaxLength(255);
 
                     b.Property<bool?>("IsDonated");
 

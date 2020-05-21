@@ -8,6 +8,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public int HouseholdCount { get; set; }
         public int PrizeCount { get; set; }
         public int RoleCount { get; set; }
+        public bool HasEvelatedRole { get; set; }
         public bool HasAccount { get; set; }
         public bool IsGroup { get; set; }
         public bool EmailSubscriptionEnabled { get; set; }
