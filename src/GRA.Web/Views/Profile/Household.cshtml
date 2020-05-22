@@ -39,9 +39,8 @@
                 <div class="modal-content">
                     <form asp-action="@nameof(ProfileController.EmailAward)" method="post" role="form" style="display:inline">
                         <input asp-for="EmailAwardModel.UserId" type="hidden" />
-                        <input asp-for="EmailAwardModel.Household" value="true" type="hidden" />
                         <div class="modal-body">
-                            <p>@SharedLocalizer[GRA.Annotations.Info.FreeBookEmailAwardInstructions]</p>
+                            <p>@Model.Head.EmailAwardInstructions</p>
                             <div class="row row-spacing">
                                 <div class="col-xs-12">
                                     <label asp-for="EmailAwardModel.Email" class="control-label"></label>
@@ -354,7 +353,7 @@
                                                                    asp-route-id="@Model.Head.Id"
                                                                    data-email="@Model.Head.Email"
                                                                    data-userid="@Model.Head.Id">
-                                                                    <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.ReceiveAudioBook]</span>
+                                                                    <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.ReceiveEAudiobook]</span>
                                                                 </a>
                                                             }
                                                         }
@@ -507,7 +506,7 @@
                                                                        asp-route-id="@user.Id"
                                                                        data-email="@user.Email"
                                                                        data-userid="@user.Id">
-                                                                        <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.ReceiveAudioBook]</span>
+                                                                        <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.ReceiveEAudiobook]</span>
                                                                     </a>
                                                                 }
                                                             }

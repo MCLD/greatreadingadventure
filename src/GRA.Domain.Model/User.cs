@@ -103,6 +103,7 @@ namespace GRA.Domain.Model
         public string VendorCodeUrl { get; set; }
         public bool? Donated { get; set; }
         public bool? EmailAwarded { get; set; }
+        public string EmailAwardInstructions { get; set; }
 
         public bool IsEmailSubscribed { get; set; }
 

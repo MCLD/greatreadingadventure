@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace GRA.Data.SqlServer.Migrations
 {
-    public partial class addvendorcodeemailaward : Migration
+    public partial class addvendorcoeemailaward : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -55,10 +55,43 @@ namespace GRA.Data.SqlServer.Migrations
                 name: "IsEmailAward",
                 table: "VendorCodes",
                 nullable: true);
+
+            migrationBuilder.CreateTable(
+                name: "VendorCodeTypeTexts",
+                columns: table => new
+                {
+                    VendorCodeTypeId = table.Column<int>(nullable: false),
+                    LanguageId = table.Column<int>(nullable: false),
+                    EmailAwardInstructions = table.Column<string>(maxLength: 1000, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VendorCodeTypeTexts", x => new { x.LanguageId, x.VendorCodeTypeId });
+                    table.ForeignKey(
+                        name: "FK_VendorCodeTypeTexts_Languages_LanguageId",
+                        column: x => x.LanguageId,
+                        principalTable: "Languages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_VendorCodeTypeTexts_VendorCodeTypes_VendorCodeTypeId",
+                        column: x => x.VendorCodeTypeId,
+                        principalTable: "VendorCodeTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VendorCodeTypeTexts_VendorCodeTypeId",
+                table: "VendorCodeTypeTexts",
+                column: "VendorCodeTypeId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "VendorCodeTypeTexts");
+
             migrationBuilder.DropColumn(
                 name: "EmailAwardMail",
                 table: "VendorCodeTypes");

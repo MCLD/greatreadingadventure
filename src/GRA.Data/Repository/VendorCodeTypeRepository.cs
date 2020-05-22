@@ -76,5 +76,14 @@ namespace GRA.Data.Repository
                 .AnyAsync(_ => _.SiteId == siteId 
                     && !string.IsNullOrWhiteSpace(_.EmailAwardSubject));
         }
+
+        public async Task<string> GetEmailAwardInstructionText(int typeId, int languageId)
+        {
+            return await _context.VendorCodeTypeTexts
+                .AsNoTracking()
+                .Where(_ => _.VendorCodeTypeId == typeId && _.LanguageId == languageId)
+                .Select(_ => _.EmailAwardInstructions)
+                .SingleOrDefaultAsync();
+        }
     }
 }

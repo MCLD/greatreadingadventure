@@ -13,5 +13,6 @@ namespace GRA.Domain.Repository
         Task<int> CountAsync(BaseFilter filter);
         Task<bool> SiteHasCodesAsync(int siteId);
         Task<bool> SiteHasEmailAwards(int siteId);
+        Task<string> GetEmailAwardInstructionText(int typeId, int languageId);
     }
 }

@@ -410,6 +410,14 @@ namespace GRA.Controllers
                 viewModel.SecretCodeMessage = (string)TempData[SecretCodeMessage];
             }
 
+            if (string.IsNullOrWhiteSpace(viewModel.Head.EmailAwardInstructions))
+            {
+                viewModel.Head.EmailAwardInstructions = viewModel.Users
+                    .Where(_ => !string.IsNullOrWhiteSpace(_.EmailAwardInstructions))
+                    .Select(_ => _.EmailAwardInstructions)
+                    .FirstOrDefault();
+            }
+
             return View(viewModel);
         }
 
@@ -1315,8 +1323,9 @@ namespace GRA.Controllers
                 var viewModel = new EmailAwardViewModel
                 {
                     Email = user.Email,
-                    Household = id.HasValue,
-                    UserId = user.Id,
+                    EmailAwardInstructions = user.EmailAwardInstructions,
+                    Name = user.FullName,
+                    UserId = id
                 };
 
                 return View(viewModel);
@@ -1333,15 +1342,24 @@ namespace GRA.Controllers
         {
             if (!ModelState.IsValid)
             {
+                User user = await _userService.GetDetails(emailAwardModel.UserId
+                    ?? GetActiveUserId());
+                await _vendorCodeService.PopulateVendorCodeStatusAsync(user);
+
+                emailAwardModel.Name = user.FullName;
+                emailAwardModel.EmailAwardInstructions = user.EmailAwardInstructions;
+
                 return View(emailAwardModel);
             }
 
-            await _vendorCodeService.ResolveCodeStatusAsync(emailAwardModel.UserId,
+            var userId = emailAwardModel.UserId ?? GetActiveUserId();
+
+            await _vendorCodeService.ResolveCodeStatusAsync(userId,
                 false,
                 true,
                 emailAwardModel.Email);
 
-            if (emailAwardModel.Household)
+            if (emailAwardModel.UserId.HasValue)
             {
                 return RedirectToAction(nameof(ProfileController.Household));
             }

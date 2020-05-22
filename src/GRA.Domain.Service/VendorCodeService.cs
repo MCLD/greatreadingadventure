@@ -26,6 +26,7 @@ namespace GRA.Domain.Service
         private readonly IVendorCodeRepository _vendorCodeRepository;
         private readonly IVendorCodeTypeRepository _vendorCodeTypeRepository;
         private readonly MailService _mailService;
+        private readonly LanguageService _languageService;
 
         public VendorCodeService(ILogger<VendorCodeService> logger,
             IDateTimeProvider dateTimeProvider,
@@ -36,7 +37,8 @@ namespace GRA.Domain.Service
             IUserRepository userRepository,
             IVendorCodeRepository vendorCodeRepository,
             IVendorCodeTypeRepository vendorCodeTypeRepository,
-            MailService mailService)
+            MailService mailService,
+            LanguageService languageService)
             : base(logger, dateTimeProvider, userContextProvider)
         {
             SetManagementPermission(Permission.ManageVendorCodes);
@@ -52,6 +54,8 @@ namespace GRA.Domain.Service
             _vendorCodeTypeRepository = vendorCodeTypeRepository
                 ?? throw new ArgumentNullException(nameof(vendorCodeTypeRepository));
             _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
+            _languageService = languageService
+                ?? throw new ArgumentNullException(nameof(languageService));
         }
 
         public async Task<VendorCodeType> GetTypeById(int id)
@@ -574,6 +578,33 @@ namespace GRA.Domain.Service
                         user.CanDonateVendorCode = vendorCode.CanBeDonated;
                         user.CanEmailAwardVendorCode = vendorCode.CanBeEmailAward;
                         user.NeedsToAnswerVendorCodeQuestion = true;
+
+                        if (vendorCode.CanBeEmailAward)
+                        {
+                            var currentCultureName = _userContextProvider.GetCurrentCulture()?.Name;
+                            if (currentCultureName != null)
+                            {
+                                var currentLanguageId = await _languageService
+                                    .GetLanguageIdAsync(currentCultureName);
+                                user.EmailAwardInstructions = await _vendorCodeTypeRepository
+                                    .GetEmailAwardInstructionText(vendorCode.VendorCodeTypeId,
+                                        currentLanguageId);
+                            }
+                            if (string.IsNullOrWhiteSpace(user.EmailAwardInstructions))
+                            {
+                                var defaultLanguageId = await _languageService
+                                    .GetDefaultLanguageIdAsync();
+                                user.EmailAwardInstructions = await _vendorCodeTypeRepository
+                                    .GetEmailAwardInstructionText(vendorCode.VendorCodeTypeId,
+                                        defaultLanguageId);
+                            }
+                            if (string.IsNullOrWhiteSpace(user.EmailAwardInstructions))
+                            {
+                                _logger.LogError("Email award instructions are not set for code type {codeTypeId}",
+                                    vendorCode.VendorCodeTypeId);
+                            }
+                        }
+
                     }
                 }
                 else if (vendorCode.CanBeDonated && vendorCode.IsDonated == true)

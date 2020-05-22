@@ -981,6 +981,14 @@ namespace GRA.Controllers.MissionControl
                     }
                 }
 
+                if (string.IsNullOrWhiteSpace(viewModel.Head.EmailAwardInstructions))
+                {
+                    viewModel.Head.EmailAwardInstructions = viewModel.Users
+                        .Where(_ => !string.IsNullOrWhiteSpace(_.EmailAwardInstructions))
+                        .Select(_ => _.EmailAwardInstructions)
+                        .FirstOrDefault();
+                }
+
                 return View(viewModel);
             }
             catch (GraException gex)

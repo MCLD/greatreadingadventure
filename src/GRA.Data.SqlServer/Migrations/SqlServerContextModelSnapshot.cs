@@ -2930,6 +2930,22 @@ namespace GRA.Data.SqlServer.Migrations
                     b.ToTable("VendorCodeTypes");
                 });
 
+            modelBuilder.Entity("GRA.Data.Model.VendorCodeTypeText", b =>
+                {
+                    b.Property<int>("LanguageId");
+
+                    b.Property<int>("VendorCodeTypeId");
+
+                    b.Property<string>("EmailAwardInstructions")
+                        .HasMaxLength(1000);
+
+                    b.HasKey("LanguageId", "VendorCodeTypeId");
+
+                    b.HasIndex("VendorCodeTypeId");
+
+                    b.ToTable("VendorCodeTypeTexts");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.DataProtectionKey", b =>
                 {
                     b.Property<int>("Id")
@@ -3626,6 +3642,19 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.Site", "Site")
                         .WithMany()
                         .HasForeignKey("SiteId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.VendorCodeTypeText", b =>
+                {
+                    b.HasOne("GRA.Data.Model.Language", "Language")
+                        .WithMany()
+                        .HasForeignKey("LanguageId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GRA.Data.Model.VendorCodeType", "VendorCodeType")
+                        .WithMany()
+                        .HasForeignKey("VendorCodeTypeId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618
