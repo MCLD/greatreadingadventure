@@ -111,7 +111,7 @@
                                             }
                                             @if (!string.IsNullOrWhiteSpace(Model.User.VendorCodeMessage))
                                             {
-                                                <p>@Model.User.VendorCodeMessage</p>
+                                                <p>@Html.Raw(Model.User.VendorCodeMessage)</p>
                                             }
                                         </div>
                                     </div>

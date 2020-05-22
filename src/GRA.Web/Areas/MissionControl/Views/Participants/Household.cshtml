@@ -556,7 +556,7 @@
                                         }
                                         @if (!string.IsNullOrEmpty(Model.Head.VendorCodeMessage))
                                         {
-                                            <br />@Model.Head.VendorCodeMessage
+                                            <br />@Html.Raw(Model.Head.VendorCodeMessage)
                                         }
                                     </td>
                                 }
@@ -703,7 +703,7 @@
                                             }
                                             @if (!string.IsNullOrEmpty(user.VendorCodeMessage))
                                             {
-                                                <br />@user.VendorCodeMessage
+                                                <br />@Html.Raw(user.VendorCodeMessage)
                                             }
                                         </td>
                                     }
