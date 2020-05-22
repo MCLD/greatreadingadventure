@@ -1477,11 +1477,6 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<int> GetSystemUserId()
-        {
-            return await _userRepository.GetSystemUserId();
-        }
-
         public async Task<DataWithCount<ICollection<GroupInfo>>> GetPaginatedGroupListAsync(
             GroupFilter filter)
         {
