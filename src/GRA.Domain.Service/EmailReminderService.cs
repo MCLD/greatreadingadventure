@@ -38,7 +38,8 @@ namespace GRA.Domain.Service
                 });
             }
         }
-        public async Task<bool> AddImportEmailReminderAsync(Model.EmailReminder emailReminder)
+        public async Task<bool> ImportEmailToListAsync(int userId,
+            Model.EmailReminder emailReminder)
         {
             if (string.IsNullOrEmpty(emailReminder.Email))
             {
@@ -48,19 +49,25 @@ namespace GRA.Domain.Service
             {
                 throw new ArgumentNullException(nameof(emailReminder.SignUpSource));
             }
-            var alreadySubscribed
-                = await _emailReminderRepository.ExistsEmailSourceAsync(emailReminder.Email, emailReminder.SignUpSource);
+            var alreadySubscribed = await _emailReminderRepository
+                .ExistsEmailSourceAsync(emailReminder.Email, emailReminder.SignUpSource);
             if (!alreadySubscribed)
             {
-                await _emailReminderRepository.AddSaveNoAuditAsync(new Model.EmailReminder
-                {
-                    CreatedAt = emailReminder.CreatedAt,
-                    Email = emailReminder.Email,
-                    SignUpSource = emailReminder.SignUpSource
-                });
+                await _emailReminderRepository.AddAsync(userId,
+                    new Model.EmailReminder
+                    {
+                        CreatedAt = emailReminder.CreatedAt,
+                        Email = emailReminder.Email,
+                        SignUpSource = emailReminder.SignUpSource
+                    });
                 return true;
             }
             return false;
+        }
+
+        public async Task SaveImportAsync()
+        {
+            await _emailReminderRepository.SaveAsync();
         }
     }
 }

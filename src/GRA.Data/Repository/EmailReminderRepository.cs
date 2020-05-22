@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
@@ -12,7 +11,7 @@ using Microsoft.Extensions.Logging;
 namespace GRA.Data.Repository
 {
     public class EmailReminderRepository
-        : AuditingRepository<Model.EmailReminder, Domain.Model.EmailReminder>,
+        : AuditingRepository<Model.EmailReminder, EmailReminder>,
         IEmailReminderRepository
     {
         public EmailReminderRepository(ServiceFacade.Repository repositoryFacade,
@@ -29,19 +28,20 @@ namespace GRA.Data.Repository
             return lookup != null;
         }
 
-        public ICollection<DataWithCount<string>> GetAllEmailReminders()
+        public async Task<ICollection<DataWithCount<string>>> GetEmailListsAsync()
         {
-            return DbSet
+            return await DbSet
+                .AsNoTracking()
                 .GroupBy(_ => _.SignUpSource)
                 .Select(_ => new DataWithCount<string>
                 {
                     Data = _.Key,
                     Count = _.Distinct().Count()
                 })
-                .ToList();
+                .ToListAsync();
         }
 
-        public async Task<ICollection<EmailReminder>> GetEmailRemindersBySignUpSource(string signUpSource)
+        public async Task<ICollection<EmailReminder>> GetListSubscribersAsync(string signUpSource)
         {
             return await DbSet
                 .AsNoTracking()
