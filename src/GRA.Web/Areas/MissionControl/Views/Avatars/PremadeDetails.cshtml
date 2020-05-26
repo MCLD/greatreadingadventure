@@ -11,13 +11,13 @@
         <div class="col-xs-12 col-sm-5 pull-right">
             <div class="visible-xs" id="mobile-container">
                 <div class="avatar-container center-block">
-                    @foreach (var layer in Model.LayerGroupings.FirstOrDefault())
+                    @foreach (var layer in Model.LayerGroupings.SelectMany(_ => _))
                     {
-                        <img src="~/@layer.FilePath"
-                             class="@($"image{layer.Id}") xsLayer avatar-layer@(string.IsNullOrWhiteSpace(layer.FilePath) ? " hide" : "")"
-                             style="z-index: @(layer.Position + 1);"
-                             data-layer="@layer.Id"
-                             data-item="@layer.SelectedItem" />
+                            <img src="~/@layer.FilePath"
+                                 class="@($"image{layer.Id}") xsLayer avatar-layer@(string.IsNullOrWhiteSpace(layer.FilePath) ? " hide" : "")  @(layer.GroupId == 1 ? "bundle-item" : "")"
+                                 style="z-index: @(layer.Position + 1);"
+                                 data-layer="@layer.Id"
+                                 data-item="@layer.SelectedItem" />
                     }
                 </div>
                 <button type="button" class="btn btn-default avatar-zoom-button">
@@ -26,10 +26,10 @@
             </div>
             <div class="hidden-xs" id="desktop-container">
                 <div class="avatar-container center-block">
-                    @foreach (var layer in Model.LayerGroupings.FirstOrDefault())
+                    @foreach (var layer in Model.LayerGroupings.SelectMany(_ => _))
                     {
                         <img src="~/@layer.FilePath"
-                             class="@($"image{layer.Id}") avatar-layer@(string.IsNullOrWhiteSpace(layer.FilePath) ? " hide" : "")"
+                             class="@($"image{layer.Id}") avatar-layer@(string.IsNullOrWhiteSpace(layer.FilePath) ? " hide" : "")  @(layer.GroupId == 1 ? "bundle-item" : "")"
                              style="z-index: @(layer.Position + 1);"
                              data-layer="@layer.Id"
                              data-item="@layer.SelectedItem" />
@@ -45,12 +45,14 @@
                 <div class="col-xs-12 text-center" id="layer-container">
                     @if (Model.LayerGroupings.Count > 0)
                     {
-                            <div style="display: inline-block;" class="@(Model.LayerGroupings.Count == 1 ? "hide" : "")">
-                                @foreach (var layer in Model.LayerGroupings.FirstOrDefault())
+                        foreach (var layerGroup in Model.LayerGroupings)
+                        {
+                            <div style="display: inline-block;" class="@(Model.LayerGroupings.Count == 1 ? "hide bundle-item" : "")">
+                                @foreach (var layer in layerGroup)
                                 {
                                     <img src="~/@layer.Icon"
                                          id="@($"selector{layer.Id}")"
-                                         class="avatar-layer-selector@(Model.DefaultLayer == layer.Id ? " selected" : "")"
+                                         class="avatar-layer-selector@(Model.DefaultLayer == layer.Id ? " selected" : "") @(layer.GroupId != 0 ? "hide" : "")"
                                          data-layer="@layer.Id"
                                          data-name="@layer.Name"
                                          data-removelabel="@layer.RemoveLabel"
@@ -64,6 +66,7 @@
                                          data-colorrows="@(layer.ShowColorSelector ? (!layer.ShowItemSelector ? 5 : 2) : 0)" />
                                 }
                             </div>
+                        }
                     }
                     <div style="display: inline-block;" class="col-xs-24">
                         <img src="/content/site1/avatarbundles/icon.png"
@@ -258,6 +261,22 @@
                 }
             }
             return items;
+        }
+
+        //Resets avatar when bundle is changed
+        function ResetAvatarSelections() {
+            $(".avatar-layer-selector.bundle-item").each(function () {
+                var layer = $(this);
+                layer.data("item", "");
+            });
+            $(".avatar-container").each(function () {
+                var container = $(this);
+                $(container).find(".bundle-item").each(function () {
+                    var layer = $(this);
+                    layer.attr("src", "");
+                    layer.data("item", "");
+                });
+            });
         }
         //Updates the the layer's image
         function UpdateAvatarContainer(type,id, srcStr, layerId, hide) {
@@ -560,6 +579,7 @@
             $($("#bundle-drop").find(".active")).removeClass("active");
             $("#bundle-selected").data("bundleid", listItem.data("bundleid"));
             listItem.addClass("active");
+            ResetAvatarSelections();
             SetLayersSelectors("#avatarItemSelectors", 3);
         }
 
