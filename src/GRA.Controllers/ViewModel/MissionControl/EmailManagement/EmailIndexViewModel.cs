@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -29,6 +30,15 @@ namespace GRA.Controllers.ViewModel.MissionControl.EmailManagement
 
         public SelectList AddressTypes { get; set; }
 
-        public string BulkEmailType { get; set; }
+        public string EmailList { get; set; }
+        public string SendButtonDisabled
+        {
+            get
+            {
+                return AddressTypes?.Any() == true
+                    ? null
+                    : "disabled";
+            }
+        }
     }
 }

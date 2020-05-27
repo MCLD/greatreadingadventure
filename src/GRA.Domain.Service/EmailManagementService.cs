@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
@@ -125,7 +123,8 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError("User {UserId} doesn't have permission to view the email template list.", GetClaimId(ClaimType.UserId));
+                _logger.LogError("User {UserId} doesn't have permission to view the email template list.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
         }
@@ -190,28 +189,16 @@ namespace GRA.Domain.Service
 
         public async Task<int> GetSubscriberCount()
         {
-            var subscribed = await _userRepository.GetCountAsync(new UserFilter
+            return await _userRepository.GetCountAsync(new UserFilter
             {
                 SiteId = GetCurrentSiteId(),
                 IsSubscribed = true
             });
-            return subscribed;
         }
 
         public async Task<ICollection<DataWithCount<string>>> GetEmailListsAsync()
         {
             return await _emailReminderRepository.GetEmailListsAsync();
-        }
-
-        public async Task<IEnumerable> GetListSubscribersAsync(string signUpSource)
-        {
-            var subscribers = await _emailReminderRepository.GetListSubscribersAsync(signUpSource);
-            return subscribers.Select(_ => new
-            {
-                _.SignUpSource,
-                _.Email,
-                _.CreatedAt
-            });
         }
     }
 }

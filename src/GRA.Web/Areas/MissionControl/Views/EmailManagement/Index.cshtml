@@ -28,27 +28,33 @@
 </div>
 <div class="modal fade" id="sendModal" tabindex="-1" role="dialog" aria-labelledby="sendModalLabel">
     <div class="modal-dialog" role="document">
-        <form asp-action="@nameof(EmailManagementController.SendEmail)" method="post" role="form" style="display:inline">
+        <form asp-action="@nameof(EmailManagementController.SendEmail)"
+              method="post"
+              role="form"
+              style="display:inline">
             <input id="sendEmailTemplateId" name="SendEmailTemplateId" type="hidden" />
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="sendModalHeader">Send Email</h4>
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="sendModalHeader">Send email</h4>
                 </div>
                 <div class="modal-body">
-
-                    <div class="alert alert-warning">
-                        <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
-                        You are about to send this email to up to approximately @Model.SubscribedParticipants subscribed participants
-                    </div>
-
                     <div class="row row-spacing">
                         <div class="col-xs-12">
-                            <label asp-for="BulkEmailType" class="control-label">Select the email's Recipients:</label>
-                            <select asp-for="BulkEmailType" asp-items="@Model.AddressTypes" class="form-control" formgroup>
-                                <option value="">@(Model.AddressTypes.Count() == 0 ? "No Email Reminders" : "Select A Signup Source")</option>
+                            <label asp-for="EmailList"
+                                   class="control-label">Select a mailing list:</label>
+                            <select asp-for="EmailList"
+                                    asp-items="@Model.AddressTypes"
+                                    placeholder="Select a mailing list"
+                                    class="form-control"
+                                    formgroup>
                             </select>
-                            <span asp-validation-for="BulkEmailType" class="text-danger"></span>
+                            <span asp-validation-for="EmailList" class="text-danger"></span>
                         </div>
                     </div>
 
@@ -56,10 +62,25 @@
                         <label asp-for="SendValidation" class="control-label"></label>
                         <input asp-for="SendValidation" class="form-control" hidden />
                     </div>
+
+                    <div class="form-group">
+                        If you send to a list other than subscribed participants, the email will
+                        not be sent to subscribed participants on that list.
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                    <button type="submit" class="btn btn-warning pull-right" aria-label="Confirm">Send up to @Model.SubscribedParticipants Emails</button>
+                    <button type="button"
+                            class="btn btn-default"
+                            data-dismiss="modal"
+                            style="margin-right: 1em;">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="btn btn-warning pull-right"
+                            aria-label="Confirm"
+                            disabled="@Model.SendButtonDisabled">
+                        Send emails
+                    </button>
                 </div>
             </div>
         </form>
@@ -67,12 +88,12 @@
 </div>
 <div class="row" style="margin: 1rem 0;">
     <div class="col-xs-12">
-        <a asp-action="@nameof(EmailManagementController.Create)" 
+        <a asp-action="@nameof(EmailManagementController.Create)"
            class="btn btn-success">
             <span class="fas fa-plus-circle"></span>
             Create Email
         </a>
-        <a asp-action="@nameof(EmailManagementController.Addresses)" 
+        <a asp-action="@nameof(EmailManagementController.Addresses)"
            class="btn btn-default">
             <span class="fas fa-list-alt"></span>
             Manage Lists
@@ -127,7 +148,8 @@
                                                 data-toggle="modal"
                                                 data-target="#sendModal"
                                                 data-id="@template.Id"
-                                                data-descr="@template.Description">
+                                                data-descr="@template.Description"
+                                                disabled="@Model.SendButtonDisabled">
                                             Send Email
                                         </button>
                                     }

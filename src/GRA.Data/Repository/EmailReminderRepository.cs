@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -41,12 +40,50 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task<ICollection<EmailReminder>> GetListSubscribersAsync(string signUpSource)
+        public async Task<int> GetListSubscribersCountAsync(string signUpSource)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.SignUpSource == signUpSource && _.SentAt == null)
+                .CountAsync();
+        }
+
+        public async Task<ICollection<EmailReminder>> GetListSubscribersAsync(string signUpSource,
+            int skip,
+            int take)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.SignUpSource == signUpSource && _.SentAt == null)
+                .OrderBy(_ => _.CreatedAt)
+                .Skip(skip)
+                .Take(System.Math.Min(take, 100))
+                .ProjectTo<EmailReminder>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
+        public async Task UpdateSentDateAsync(int emailReminderId)
+        {
+            var reminder = await DbSet.Where(_ => _.Id == emailReminderId).SingleOrDefaultAsync();
+            if (reminder != null)
+            {
+                reminder.SentAt = _dateTimeProvider.Now;
+                DbSet.Update(reminder);
+            }
+            else
+            {
+                throw new GraException($"Could not find email reminder ID {emailReminderId}");
+            }
+        }
+
+        public async Task<ICollection<EmailReminder>>
+            GetAllListSubscribersAsync(string signUpSource)
         {
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.SignUpSource == signUpSource)
-                .ProjectTo<EmailReminder>(_mapper.ConfigurationProvider)
+                .OrderBy(_ => _.CreatedAt)
+                .ProjectTo<EmailReminder>()
                 .ToListAsync();
         }
     }

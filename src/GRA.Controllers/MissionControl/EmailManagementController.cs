@@ -29,6 +29,8 @@ namespace GRA.Controllers.MissionControl
         private readonly JobService _jobService;
         private readonly UserService _userService;
 
+        private const string SubscribedParticipants = "SubscribedParticipants";
+
         public EmailManagementController(ServiceFacade.Controller context,
             ILogger<EmailManagementController> logger,
             EmailManagementService emailManagementService,
@@ -42,7 +44,8 @@ namespace GRA.Controllers.MissionControl
             _emailManagementService = emailManagementService
                 ?? throw new ArgumentNullException(nameof(emailManagementService));
             _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
-            _emailReminderService = emailReminderService ?? throw new ArgumentNullException(nameof(emailReminderService));
+            _emailReminderService = emailReminderService
+                ?? throw new ArgumentNullException(nameof(emailReminderService));
             _jobService = jobService ?? throw new ArgumentNullException(nameof(jobService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             PageTitle = "Email Management";
@@ -73,31 +76,41 @@ namespace GRA.Controllers.MissionControl
             int subscribedParticipants = await _emailManagementService.GetSubscriberCount();
             var addressTypes = new List<SelectListItem>();
             var emailLists = await _emailManagementService.GetEmailListsAsync();
-            foreach (var emailList in emailLists)
+            foreach (var emailList in emailLists.Where(_ => _.Count > 0))
             {
                 var signupsourcedata = new SelectListItem
                 {
-                    Text = emailList.Data + " (" + emailList.Count.ToString() + ")",
+                    Text = $"{emailList.Data} ({emailList.Count} subscribed)",
                     Value = emailList.Data
                 };
                 addressTypes.Add(signupsourcedata);
             }
-            addressTypes.Add(new SelectListItem
+            if (subscribedParticipants > 0)
             {
-                Text = "Subscribed Participants (" + subscribedParticipants.ToString() + ")",
-                Value = "Subscribed"
-            });
+                addressTypes.Add(new SelectListItem
+                {
+                    Text = $"Subscribed participants ({subscribedParticipants} subscribed)",
+                    Value = SubscribedParticipants
+                });
+            }
             var addressSelectList = new SelectList(addressTypes, "Value", "Text");
 
-            return View(new EmailIndexViewModel
+            var viewModel = new EmailIndexViewModel
             {
                 PaginateModel = paginateModel,
                 EmailTemplates = templateList.Data,
                 SubscribedParticipants = subscribedParticipants,
                 DefaultTestEmail = currentUser?.Email,
-                IsAdmin = currentUser.IsAdmin,
+                IsAdmin = currentUser?.IsAdmin == true,
                 AddressTypes = addressSelectList
-            });
+            };
+
+            if (!string.IsNullOrEmpty(viewModel.SendButtonDisabled))
+            {
+                ShowAlertWarning("There are no subscribed participants or interested parties to send an email to.");
+            }
+
+            return View(viewModel);
         }
 
         public async Task<IActionResult> Create()
@@ -221,7 +234,10 @@ namespace GRA.Controllers.MissionControl
                     SerializedParameters = JsonConvert
                         .SerializeObject(new JobDetailsSendBulkEmails
                         {
-                            EmailTemplateId = viewModel.SendEmailTemplateId
+                            EmailTemplateId = viewModel.SendEmailTemplateId,
+                            MailingList = viewModel.EmailList == SubscribedParticipants
+                                ? null
+                                : viewModel.EmailList
                         })
                 });
 
@@ -275,9 +291,8 @@ namespace GRA.Controllers.MissionControl
                     "Please select a list to export.");
                 return await ShowAddressView(viewModel);
             }
-            var emailReminders = await _emailManagementService
-                .GetListSubscribersAsync(viewModel.SignUpSource);
-            var json = JsonConvert.SerializeObject(emailReminders);
+            var json = JsonConvert.SerializeObject(await _emailReminderService
+                .GetAllSubscribersAsync(viewModel.SignUpSource));
 
             var filename = $"EmailList-{viewModel.SignUpSource}.json";
 
@@ -326,6 +341,7 @@ namespace GRA.Controllers.MissionControl
                                 success++;
                             }
                         }
+#pragma warning disable CA1031 // Do not catch general exception types
                         catch (Exception ex)
                         {
                             _logger.LogError("Issue in {Filename} on record {RecordNumber}: {ErrorMessage}",
@@ -334,6 +350,7 @@ namespace GRA.Controllers.MissionControl
                                 ex.Message);
                             issues.Add($"Issue in item {recordNumber}: {ex.Message}");
                         }
+#pragma warning restore CA1031 // Do not catch general exception types
 
                         if (recordNumber % 50 == 0)
                         {
@@ -343,8 +360,8 @@ namespace GRA.Controllers.MissionControl
                         recordNumber++;
                     }
                     await _emailReminderService.SaveImportAsync();
-
                 }
+#pragma warning disable CA1031 // Do not catch general exception types
                 catch (Exception ex)
                 {
                     _logger.LogError("Import failed for {Filename} on record {RecordNumber}: {ErrorMessage}",
@@ -354,6 +371,7 @@ namespace GRA.Controllers.MissionControl
                     ShowAlertDanger($"Failed to import addresses: {ex.Message}");
                     return RedirectToAction(nameof(EmailManagementController.Addresses));
                 }
+#pragma warning restore CA1031 // Do not catch general exception types
 
                 var response = new StringBuilder();
                 if (success > 0)
