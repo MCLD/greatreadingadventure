@@ -65,7 +65,7 @@
                                             {
                                                 <p><strong>@SharedLocalizer[GRA.Annotations.Interface.FreeBookCongratulations]</strong></p>
                                                 <p>
-                                                    @SharedLocalizer[GRA.Annotations.Interface.FreeBookOption]
+                                                    @SharedLocalizer[GRA.Annotations.Interface.ChooseAnOption]
                                                     <button class="btn btn-info btn-spinner"
                                                             asp-action="RedeemCode"
                                                             style="margin-top: 0.25em; margin-bottom: 0.25em;">
@@ -74,7 +74,6 @@
                                                     </button>
                                                     @if (Model.User.CanDonateVendorCode)
                                                     {
-                                                        @SharedLocalizer[GRA.Annotations.Interface.Or].ToString().ToLower()
                                                         <button class="btn btn-success btn-spinner"
                                                                 asp-action="DonateCode"
                                                                 style="margin-top: 0.25em; margin-bottom: 0.25em;">
@@ -84,7 +83,6 @@
                                                     }
                                                     @if (Model.User.CanEmailAwardVendorCode)
                                                     {
-                                                        @SharedLocalizer[GRA.Annotations.Interface.Or].ToString().ToLower()
                                                         <a id="emailAwardButton"
                                                            class="btn btn-warning"
                                                            asp-action="@nameof(ProfileController.EmailAward)"

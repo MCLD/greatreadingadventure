@@ -327,6 +327,7 @@
                                                     <td>
                                                         @if (Model.Head.NeedsToAnswerVendorCodeQuestion)
                                                         {
+                                                            @SharedLocalizer[GRA.Annotations.Interface.ChooseAnOption]
                                                             <button class="btn btn-info btn-sm btn-spinner"
                                                                     name="redeemButton"
                                                                     value="@Model.Head.Id"
@@ -336,7 +337,6 @@
                                                             </button>
                                                             @if (Model.Head.CanDonateVendorCode)
                                                             {
-                                                                @SharedLocalizer[GRA.Annotations.Interface.Or].ToString().ToLower()
                                                                 <button class="btn btn-success btn-sm btn-spinner"
                                                                         name="donateButton"
                                                                         value="@Model.Head.Id"
@@ -347,7 +347,6 @@
                                                             }
                                                             @if (Model.Head.CanEmailAwardVendorCode)
                                                             {
-                                                                @SharedLocalizer[GRA.Annotations.Interface.Or].ToString().ToLower()
                                                                 <a class="btn btn-warning btn-sm emailAwardButton"
                                                                    asp-action="@nameof(ProfileController.EmailAward)"
                                                                    asp-route-id="@Model.Head.Id"
@@ -480,6 +479,7 @@
                                                         <td>
                                                             @if (user.NeedsToAnswerVendorCodeQuestion)
                                                             {
+                                                                @SharedLocalizer[GRA.Annotations.Interface.ChooseAnOption]
                                                                 <button class="btn btn-info btn-sm btn-spinner"
                                                                         name="redeemButton"
                                                                         value="@user.Id"
@@ -489,7 +489,6 @@
                                                                 </button>
                                                                 @if (user.CanDonateVendorCode)
                                                                 {
-                                                                    @SharedLocalizer[GRA.Annotations.Interface.Or].ToString().ToLower()
                                                                     <button class="btn btn-success btn-sm btn-spinner"
                                                                             name="donateButton"
                                                                             value="@user.Id"
@@ -500,7 +499,6 @@
                                                                 }
                                                                 @if (user.CanEmailAwardVendorCode)
                                                                 {
-                                                                    @SharedLocalizer[GRA.Annotations.Interface.Or].ToString().ToLower()
                                                                     <a class="btn btn-warning btn-sm emailAwardButton"
                                                                        asp-action="@nameof(ProfileController.EmailAward)"
                                                                        asp-route-id="@user.Id"
