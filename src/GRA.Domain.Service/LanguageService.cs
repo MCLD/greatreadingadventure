@@ -30,7 +30,7 @@ namespace GRA.Domain.Service
             _l10nOptions = l10nOptions ?? throw new ArgumentNullException(nameof(l10nOptions));
             _languageRepository = languageRepository
                 ?? throw new ArgumentNullException(nameof(languageRepository));
-            siteLookupService = siteLookupService
+            _siteLookupService = siteLookupService
                 ?? throw new ArgumentNullException(nameof(siteLookupService));
         }
 
