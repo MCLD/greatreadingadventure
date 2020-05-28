@@ -1417,8 +1417,8 @@
     <value>Stream starts</value>
     <comment>Heading for the field with the date and time that a streaming event begins</comment>
   </data>
-  <data name="You've earned a free book! Head over to &lt;a href=&quot;Profile&quot;&gt;&lt;strong&gt;My Profile&lt;/strong&gt;&lt;/a&gt; page to choose what to do with it." xml:space="preserve">
-    <value>You've earned a free book! Head over to &lt;a href="Profile"&gt;&lt;strong&gt;My Profile&lt;/strong&gt;&lt;/a&gt; page to choose what to do with it.</value>
+  <data name="You've earned a free book! Head over to &lt;a href=&quot;{0}&quot;&gt;&lt;strong&gt;My Profile&lt;/strong&gt;&lt;/a&gt; page to choose what to do with it." xml:space="preserve">
+    <value>You've earned a free book! Head over to &lt;a href="{0}"&gt;&lt;strong&gt;My Profile&lt;/strong&gt;&lt;/a&gt; page to choose what to do with it.</value>
     <comment>Dashboard message telling participant they've earned a free book and where to go to redeem it.</comment>
   </data>
   <data name="Choose an option:" xml:space="preserve">
@@ -1433,8 +1433,8 @@
     <value>Receive an e-audiobook</value>
     <comment>Button text for the participant to redeem their free book as an e-audiobook</comment>
   </data>
-  <data name="You've earned a free book! Head over to &lt;a href=&quot;Profile&quot;&gt;&lt;strong&gt;My Profile&lt;/strong&gt;&lt;/a&gt; page by {0} to choose what to do with it." xml:space="preserve">
-    <value>You've earned a free book! Head over to &lt;a href="Profile"&gt;&lt;strong&gt;My Profile&lt;/strong&gt;&lt;/a&gt; page by {0} to choose what to do with it.</value>
+  <data name="You've earned a free book! Head over to &lt;a href=&quot;{0}&quot;&gt;&lt;strong&gt;My Profile&lt;/strong&gt;&lt;/a&gt; page by {1} to choose what to do with it." xml:space="preserve">
+    <value>You've earned a free book! Head over to &lt;a href="{0}"&gt;&lt;strong&gt;My Profile&lt;/strong&gt;&lt;/a&gt; page by {1} to choose what to do with it.</value>
     <comment>Dashboard message telling participant they've earned a free book, when it expires, and where to go to redeem it; {0} is replaced with the date the code expires.</comment>
   </data>
 </root>

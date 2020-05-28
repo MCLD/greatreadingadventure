@@ -57,11 +57,14 @@
             <div class="alert alert-success" style="font-size:large">
                 @if (Model.VendorCodeExpiration.HasValue)
                 {
-                    @SharedHtmlLocalizer[GRA.Annotations.Info.FreeBookRedeemExpirationDashboard, Model.VendorCodeExpiration.Value.AddMilliseconds(-1).ToString("MMMM dd")]
+                    @SharedHtmlLocalizer[GRA.Annotations.Info.FreeBookRedeemExpirationDashboard,
+                        Url.Action(nameof(ProfileController.Index), ProfileController.Name),
+                        Model.VendorCodeExpiration.Value.AddMilliseconds(-1).ToString("MMMM dd")]
                 }
                 else
                 {
-                    @SharedHtmlLocalizer[GRA.Annotations.Info.FreeBookRedeemDashboard]
+                    @SharedHtmlLocalizer[GRA.Annotations.Info.FreeBookRedeemDashboard,
+                        Url.Action(nameof(ProfileController.Index), ProfileController.Name)]
                 }
             </div>
         </div>
