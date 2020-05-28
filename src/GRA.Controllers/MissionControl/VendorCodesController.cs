@@ -45,10 +45,7 @@ namespace GRA.Controllers.MissionControl
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var emailAwardCodeTypes = await _vendorCodeService.GetEmailAwardTypesAsync();
-            var emailAwardsAvailable = emailAwardCodeTypes.Count > 0;
-
-            return View(emailAwardsAvailable);
+            return View();
         }
 
         [HttpGet]
@@ -123,13 +120,8 @@ namespace GRA.Controllers.MissionControl
         [HttpGet]
         public async Task<IActionResult> EmailAward()
         {
-            var emailAwardCodeTypes = await _vendorCodeService.GetEmailAwardTypesAsync();
-            if (emailAwardCodeTypes.Count < 1)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            var emailAwardCodeTypeSelectList = emailAwardCodeTypes.Select(_ => new SelectListItem
+            var codeTypes = await _vendorCodeService.GetTypeAllAsync();
+            var codeTypeSelectList = codeTypes.Select(_ => new SelectListItem
             {
                 Value = _.Id.ToString(),
                 Text = _.Description
@@ -137,19 +129,13 @@ namespace GRA.Controllers.MissionControl
 
             PageTitle = "Vendor Code Email Award";
 
-            return View(emailAwardCodeTypeSelectList);
+            return View(codeTypeSelectList);
         }
 
         [HttpGet]
         public async Task<IActionResult> DownloadUnreportedEmailAddresses(int vendorCodeTypeId)
         {
             var vendorCodeType = await _vendorCodeService.GetTypeById(vendorCodeTypeId);
-
-            if (string.IsNullOrWhiteSpace(vendorCodeType?.EmailAwardSubject))
-            {
-                ShowAlertWarning("Vendor code type does not offer email awards.");
-                return null;
-            }
 
             var unreportedVendorCodes = await _vendorCodeService.GetUnreportedEmailAwardCodes(
                 vendorCodeTypeId);

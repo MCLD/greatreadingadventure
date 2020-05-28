@@ -1,12 +1,7 @@
-﻿@model bool
-
-<div class="row">
+﻿<div class="row">
     <div class="col-xs-12">
         <a asp-action="@nameof(VendorCodesController.ImportStatus)" class="btn btn-info">Import Status</a>
-        @if (Model)
-        {
-            <a asp-action="@nameof(VendorCodesController.EmailAward)" class="btn btn-info">Email Awards</a>
-        }
+        <a asp-action="@nameof(VendorCodesController.EmailAward)" class="btn btn-info">Email Awards</a>
     </div>
 </div>
 
