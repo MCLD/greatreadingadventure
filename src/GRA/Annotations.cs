@@ -122,9 +122,11 @@
             public const string NoChallenges = "No Challenges";
             public const string NoEvents = "No Events";
             public const string NoMail = "You currently have no mail.";
+            public const string NotStreamingYet = "Not streaming yet";
             public const string PasswordChanged = "Your password has been changed.";
             public const string PointsYoullEarn = "Points you'll earn";
             public const string ProfileUpdated = "Profile updated.";
+            public const string ProgramIsOver = "Program is over";
             public const string Progress = "Progress";
             public const string Read = "Read";
             public const string RedeemCode = "Redeem code";
@@ -145,6 +147,10 @@
             public const string SentOn = "Sent to you on {0}";
             public const string Share = "Share";
             public const string SignedInAs = "You are now signed in as {0}.";
+            public const string Stream = "Stream";
+            public const string StreamingEvents = "Streaming Events";
+            public const string StreamNow = "Stream Now!";
+            public const string StreamStarts = "Stream starts";
             public const string Subject = "Subject: {0}";
             public const string SwitchTo = "Switch To";
             public const string TotalPoints = "Total Points";
@@ -206,6 +212,7 @@
 
         public static class Validate
         {
+            public const string AuthorizationCodeWarning = "To activate an authorization code, please sign in or <a href=\"{0}\">join</a>.";
             public const string BookTitle = "When providing an author of a book, please also provide a title.";
             public const string Branch = "The branch you've selected is not valid, please select another branch.";
             public const string CodeAlready = "All selected participants already have that Secret Code.";

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace GRA.Domain.Model
 {
@@ -8,5 +9,6 @@ namespace GRA.Domain.Model
         public string Email { get; set; }
         [Required]
         public string SignUpSource { get; set; }
+        public DateTime? SentAt { get; set; }
     }
 }

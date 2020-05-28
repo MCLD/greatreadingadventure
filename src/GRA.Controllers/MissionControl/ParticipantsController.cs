@@ -543,6 +543,10 @@ namespace GRA.Controllers.MissionControl
                 {
                     viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
                 }
+                if (UserHasPermission(Permission.EditParticipants))
+                {
+                    viewModel.HasEvelatedRole = user.IsAdmin;
+                }
 
                 if (UserHasPermission(Permission.EditParticipantUsernames)
                     && !string.IsNullOrWhiteSpace(user.Username))
@@ -601,7 +605,6 @@ namespace GRA.Controllers.MissionControl
             {
                 ModelState.AddModelError("User.Username", "The Username field is required.");
             }
-
             var (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
                 SiteSettingKey.Users.AskEmailSubPermission);
             if (askEmailSubscription && model.User.IsEmailSubscribed
@@ -742,6 +745,10 @@ namespace GRA.Controllers.MissionControl
             if (UserHasPermission(Permission.ManageRoles) && viewModel.HasAccount)
             {
                 viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
+            }
+            if (UserHasPermission(Permission.EditParticipants))
+            {
+                viewModel.HasEvelatedRole = user.IsAdmin;
             }
 
             if (UserHasPermission(Permission.ManageVendorCodes))
@@ -939,6 +946,10 @@ namespace GRA.Controllers.MissionControl
                 if (UserHasPermission(Permission.ManageRoles) && viewModel.HasAccount)
                 {
                     viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
+                }
+                if (UserHasPermission(Permission.EditParticipants))
+                {
+                    viewModel.HasEvelatedRole = user.IsAdmin;
                 }
 
                 if (TempData.ContainsKey(ActivityMessage))
@@ -1891,6 +1902,10 @@ namespace GRA.Controllers.MissionControl
                 {
                     viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
                 }
+                if (UserHasPermission(Permission.EditParticipants))
+                {
+                    viewModel.HasEvelatedRole = user.IsAdmin;
+                }
 
                 return View(viewModel);
             }
@@ -1919,7 +1934,7 @@ namespace GRA.Controllers.MissionControl
                     {
                         ShowAlertSuccess($"Added book '{model.Book.Title}'");
                     }
-                    
+
                 }
                 catch (GraException gex)
                 {
@@ -2047,6 +2062,10 @@ namespace GRA.Controllers.MissionControl
                 {
                     viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
                 }
+                if (UserHasPermission(Permission.EditParticipants))
+                {
+                    viewModel.HasEvelatedRole = user.IsAdmin;
+                }
 
                 bool editChallenges = UserHasPermission(Permission.EditChallenges);
 
@@ -2162,7 +2181,7 @@ namespace GRA.Controllers.MissionControl
                     CurrentPage = page,
                     ItemsPerPage = filter.Take.Value
                 };
-                if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+                if (paginateModel.PastMaxPage)
                 {
                     return RedirectToRoute(
                         new
@@ -2177,6 +2196,10 @@ namespace GRA.Controllers.MissionControl
                 var groupInfo
                     = await _userService.GetGroupFromHouseholdHeadAsync(user.HouseholdHeadUserId ?? id);
 
+                await _vendorCodeService.PopulateVendorCodeStatusAsync(user);
+
+
+
                 var viewModel = new PrizeListViewModel
                 {
                     PrizeWinners = prizeList.Data,
@@ -2188,12 +2211,18 @@ namespace GRA.Controllers.MissionControl
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
                     HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                     EmailSubscriptionEnabled = await IsSiteSettingSetAsync(
-                        SiteSettingKey.Users.AskEmailSubPermission)
+                        SiteSettingKey.Users.AskEmailSubPermission),
+                    User = user,
+                    CanEditDetails = UserHasPermission(Permission.EditParticipants)
                 };
 
                 if (UserHasPermission(Permission.ManageRoles) && viewModel.HasAccount)
                 {
                     viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
+                }
+                if (UserHasPermission(Permission.EditParticipants))
+                {
+                    viewModel.HasEvelatedRole = user.IsAdmin;
                 }
 
                 return View(viewModel);
@@ -2269,7 +2298,10 @@ namespace GRA.Controllers.MissionControl
                 {
                     viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
                 }
-
+                if (UserHasPermission(Permission.EditParticipants))
+                {
+                    viewModel.HasEvelatedRole = user.IsAdmin;
+                }
                 return View(viewModel);
             }
             catch (GraException gex)
@@ -2336,6 +2368,10 @@ namespace GRA.Controllers.MissionControl
                 if (UserHasPermission(Permission.ManageRoles) && viewModel.HasAccount)
                 {
                     viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
+                }
+                if (UserHasPermission(Permission.EditParticipants))
+                {
+                    viewModel.HasEvelatedRole = user.IsAdmin;
                 }
 
                 return View(viewModel);
@@ -2465,6 +2501,10 @@ namespace GRA.Controllers.MissionControl
                 {
                     viewModel.RoleCount = (await _userService.GetUserRolesAsync(id)).Count;
                 }
+                if (UserHasPermission(Permission.EditParticipants))
+                {
+                    viewModel.HasEvelatedRole = user.IsAdmin;
+                }
 
                 return View(viewModel);
             }
@@ -2533,6 +2573,11 @@ namespace GRA.Controllers.MissionControl
                 viewModel.RoleCount = userRoles.Count;
                 viewModel.SelectedRoles = roles.Where(_ => userRoles.Contains(_.Id));
                 viewModel.UnselectedRoles = roles.Except(viewModel.SelectedRoles);
+
+                if (UserHasPermission(Permission.EditParticipants))
+                {
+                    viewModel.HasEvelatedRole = user.IsAdmin;
+                }
 
                 return View(viewModel);
             }
