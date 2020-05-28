@@ -1378,4 +1378,10 @@
   <data name="Stream starts" xml:space="preserve">
     <value>Empieza la transmisión</value>
   </data>
+  <data name="Bundle" xml:space="preserve">
+    <value>Paquete</value>
+  </data>
+  <data name="No unlocked bundles" xml:space="preserve">
+    <value>No hay paquetes desbloqueados</value>
+  </data>
 </root>
