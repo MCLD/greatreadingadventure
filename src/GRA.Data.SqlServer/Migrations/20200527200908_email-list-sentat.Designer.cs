@@ -4,14 +4,16 @@ using GRA.Data.SqlServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GRA.Data.SqlServer.Migrations
 {
     [DbContext(typeof(SqlServerContext))]
-    partial class SqlServerContextModelSnapshot : ModelSnapshot
+    [Migration("20200527200908_email-list-sentat")]
+    partial class emaillistsentat
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2842,16 +2844,7 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<string>("Details")
                         .HasMaxLength(255);
 
-                    b.Property<string>("EmailAwardAddress")
-                        .HasMaxLength(255);
-
-                    b.Property<DateTime?>("EmailAwardReported");
-
-                    b.Property<DateTime?>("EmailAwardSent");
-
                     b.Property<bool?>("IsDonated");
-
-                    b.Property<bool?>("IsEmailAward");
 
                     b.Property<bool>("IsUsed");
 
@@ -2893,16 +2886,12 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<string>("DonationMessage")
                         .HasMaxLength(255);
 
-                    b.Property<string>("DonationSubject")
-                        .HasMaxLength(255);
-
-                    b.Property<string>("EmailAwardMail")
+                    b.Property<string>("DonationOptionMail")
                         .HasMaxLength(1250);
 
-                    b.Property<string>("EmailAwardMessage")
-                        .HasMaxLength(255);
+                    b.Property<string>("DonationOptionSubject");
 
-                    b.Property<string>("EmailAwardSubject")
+                    b.Property<string>("DonationSubject")
                         .HasMaxLength(255);
 
                     b.Property<DateTime?>("ExpirationDate");
@@ -2915,11 +2904,6 @@ namespace GRA.Data.SqlServer.Migrations
                         .IsRequired()
                         .HasMaxLength(255);
 
-                    b.Property<string>("OptionMail")
-                        .HasMaxLength(1250);
-
-                    b.Property<string>("OptionSubject");
-
                     b.Property<int>("SiteId");
 
                     b.Property<string>("Url")
@@ -2930,22 +2914,6 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasIndex("SiteId");
 
                     b.ToTable("VendorCodeTypes");
-                });
-
-            modelBuilder.Entity("GRA.Data.Model.VendorCodeTypeText", b =>
-                {
-                    b.Property<int>("LanguageId");
-
-                    b.Property<int>("VendorCodeTypeId");
-
-                    b.Property<string>("EmailAwardInstructions")
-                        .HasMaxLength(1000);
-
-                    b.HasKey("LanguageId", "VendorCodeTypeId");
-
-                    b.HasIndex("VendorCodeTypeId");
-
-                    b.ToTable("VendorCodeTypeTexts");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.DataProtectionKey", b =>
@@ -3644,19 +3612,6 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.Site", "Site")
                         .WithMany()
                         .HasForeignKey("SiteId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("GRA.Data.Model.VendorCodeTypeText", b =>
-                {
-                    b.HasOne("GRA.Data.Model.Language", "Language")
-                        .WithMany()
-                        .HasForeignKey("LanguageId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GRA.Data.Model.VendorCodeType", "VendorCodeType")
-                        .WithMany()
-                        .HasForeignKey("VendorCodeTypeId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618

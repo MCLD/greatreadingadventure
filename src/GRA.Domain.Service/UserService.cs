@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -241,7 +242,8 @@ namespace GRA.Domain.Service
             {
                 if (!string.IsNullOrEmpty(filter.Search))
                 {
-                    var vendorCode = await _vendorCodeService.GetVendorCodeByCode(filter.Search.ToUpper());
+                    var vendorCode = await _vendorCodeService
+                        .GetVendorCodeByCode(filter.Search.ToUpper(CultureInfo.InvariantCulture));
                     if (vendorCode?.UserId.HasValue == true)
                     {
                         filter.UserIds = new List<int>
@@ -607,7 +609,7 @@ namespace GRA.Domain.Service
         public async Task<string>
             ActivateAuthorizationCode(string authorizationCode, int? joiningUserId = null)
         {
-            string fixedCode = authorizationCode.Trim().ToLower();
+            string fixedCode = authorizationCode.Trim().ToLower(CultureInfo.InvariantCulture);
             int siteId = GetCurrentSiteId();
             var authCode
                 = await _authorizationCodeRepository.GetByCodeAsync(siteId, fixedCode);
@@ -653,8 +655,8 @@ namespace GRA.Domain.Service
                 var rolePermissions = (await _roleRepository
                     .GetPermissionNamesForRoleAsync(authCode.RoleId)).ToList();
 
-                if (rolePermissions.Contains(Permission.NewsAutoSubscribe.ToString())
-                    && (rolePermissions.Contains(Permission.AccessMissionControl.ToString())
+                if (rolePermissions.Contains(nameof(Permission.NewsAutoSubscribe))
+                    && (rolePermissions.Contains(nameof(Permission.AccessMissionControl))
                         || HasPermission(Permission.AccessMissionControl)))
                 {
                     user.IsNewsSubscribed = true;
@@ -1586,7 +1588,6 @@ namespace GRA.Domain.Service
                 var sw = new Stopwatch();
                 sw.Start();
 
-
                 var job = await _jobRepository.GetByIdAsync(jobId);
                 var jobDetails
                     = JsonConvert
@@ -1766,7 +1767,6 @@ namespace GRA.Domain.Service
                     Status = "<strong>Import Complete</strong>"
                 };
             }
-
             else
             {
                 _logger.LogError("User {UserId} doesn't have permission to import household members.",
@@ -1779,6 +1779,11 @@ namespace GRA.Domain.Service
                     Complete = true
                 };
             }
+        }
+
+        public async Task<bool> IsEmailSubscribedAsync(string email)
+        {
+            return await _userRepository.IsEmailSubscribedAsync(email);
         }
     }
 }

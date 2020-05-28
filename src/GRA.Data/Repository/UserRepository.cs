@@ -53,7 +53,9 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task UpdateUserRolesAsync(int currentUserId, int userId, IEnumerable<int> rolesToAdd,
+        public async Task UpdateUserRolesAsync(int currentUserId,
+            int userId,
+            IEnumerable<int> rolesToAdd,
             IEnumerable<int> rolesToRemove)
         {
             var now = _dateTimeProvider.Now;
@@ -218,12 +220,6 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task<int> GetCountAsync(UserFilter filter)
-        {
-            return await ApplyUserFilter(filter)
-                .CountAsync();
-        }
-
         private IQueryable<Model.User> ApplyUserFilter(UserFilter filter)
         {
             var userList = DbSet.AsNoTracking()
@@ -246,7 +242,8 @@ namespace GRA.Data.Repository
 
             if (filter.ProgramIds?.Any() == true)
             {
-                userList = userList.Where(_ => filter.ProgramIds.Cast<int>().Contains(_.ProgramId));
+                userList = userList
+                    .Where(_ => filter.ProgramIds.Cast<int>().Contains(_.ProgramId));
             }
 
             if (!string.IsNullOrWhiteSpace(filter.Search))
@@ -329,6 +326,12 @@ namespace GRA.Data.Repository
         public async Task<int> GetCountAsync(ReportCriterion request)
         {
             return await ApplyUserFilter(request).CountAsync();
+        }
+
+        public async Task<int> GetCountAsync(UserFilter filter)
+        {
+            return await ApplyUserFilter(filter)
+                .CountAsync();
         }
 
         public async Task<int> GetFirstTimeCountAsync(ReportCriterion request)
@@ -442,7 +445,8 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<User>> GetTopScoresAsync(ReportCriterion criterion, int scoresToReturn)
+        public async Task<IEnumerable<User>> GetTopScoresAsync(ReportCriterion criterion,
+            int scoresToReturn)
         {
             return await ApplyUserFilter(criterion)
                 .OrderByDescending(_ => _.PointsEarned)
@@ -582,7 +586,9 @@ namespace GRA.Data.Repository
                     && _.EmailAddress == emailAddress);
         }
 
-        public async Task AddBulkEmailLogAsync(int userId, int emailTemplateId, string emailAddress)
+        public async Task AddBulkEmailLogAsync(int userId,
+            int emailTemplateId,
+            string emailAddress)
         {
             await _context.EmailUserLogs.AddAsync(new Model.EmailUserLog
             {
@@ -600,6 +606,14 @@ namespace GRA.Data.Repository
                 .Where(_ => _.Email == email)
                 .ProjectTo<User>(_mapper.ConfigurationProvider)
                 .ToListAsync();
+        }
+
+        public async Task<bool> IsEmailSubscribedAsync(string email)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.Email == email && _.IsEmailSubscribed && !_.IsDeleted)
+                .AnyAsync();
         }
     }
 }
