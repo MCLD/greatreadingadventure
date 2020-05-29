@@ -18,6 +18,7 @@ namespace GRA.Domain.Service
         private readonly IDistributedCache _cache;
         private readonly ISiteRepository _siteRepository;
         private readonly ISiteSettingRepository _siteSettingRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IInitialSetupService _initialSetupService;
 
         public SiteLookupService(ILogger<SiteLookupService> logger,
@@ -26,6 +27,7 @@ namespace GRA.Domain.Service
             IDistributedCache cache,
             ISiteRepository siteRepository,
             ISiteSettingRepository siteSettingRepository,
+            IUserRepository userRepository,
             IInitialSetupService initialSetupService) : base(logger, dateTimeProvider)
         {
             _cache = cache ?? throw new ArgumentNullException(nameof(cache));
@@ -34,8 +36,15 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(siteRepository));
             _siteSettingRepository = siteSettingRepository
                 ?? throw new ArgumentNullException(nameof(siteSettingRepository));
+            _userRepository = userRepository
+                ?? throw new ArgumentNullException(nameof(userRepository));
             _initialSetupService = initialSetupService
                 ?? throw new ArgumentNullException(nameof(initialSetupService));
+        }
+
+        public async Task<int> GetSystemUserId()
+        {
+            return await _userRepository.GetSystemUserId();
         }
 
         private async Task<IEnumerable<Site>> GetSitesFromCacheAsync()

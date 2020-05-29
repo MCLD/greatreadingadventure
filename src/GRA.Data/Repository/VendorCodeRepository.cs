@@ -93,7 +93,7 @@ namespace GRA.Data.Repository
             var validUsers = _context.Users.AsNoTracking()
                 .Where(_ => _.SiteId == criterion.SiteId);
 
-            if(criterion.IsFirstTimeParticipant == true)
+            if (criterion.IsFirstTimeParticipant == true)
             {
                 validUsers = validUsers.Where(_ => _.IsFirstTime == true);
             }
@@ -123,11 +123,22 @@ namespace GRA.Data.Repository
                 .Where(_ => _.Id == headOfHouseholdId || _.HouseholdHeadUserId == headOfHouseholdId);
 
             return await DbSet.AsNoTracking()
-                .Where(_ => _.UserId.HasValue && _.IsDonated == null)
+                .Where(_ => _.UserId.HasValue && _.IsDonated == null && _.IsEmailAward == null)
                 .Join(householdUsers,
                     vendorCode => vendorCode.UserId,
                     user => user.Id,
                     (vendorCode, _) => vendorCode)
+                .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
+        public async Task<ICollection<VendorCode>> GetUnreportedEmailAwardCodes(int siteId,
+            int vendorCodeTypeId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId && _.VendorCodeTypeId == vendorCodeTypeId
+                    && _.IsEmailAward == true && !_.EmailAwardReported.HasValue)
                 .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
