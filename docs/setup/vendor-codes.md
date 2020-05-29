@@ -88,3 +88,8 @@ language needs to be added. The **EmailAwardInstructions** field is a
 message displayed to the participant when they select the email delivery
 option letting them know how the reward will arrive and what steps are
 needed to redeem it.
+
+Vendor codes that require an option be selected can have an
+**ExpirationDate** set. If set the date the reward expires will be shown
+to participants and after the date has passed the buttons to select a
+redemption option will be hidden.
