@@ -66,6 +66,8 @@ namespace GRA.Data
                 .HasKey(_ => new { _.UserId, _.RoleId });
             modelBuilder.Entity<Model.UserTrigger>()
                 .HasKey(_ => new { _.UserId, _.TriggerId });
+            modelBuilder.Entity<Model.VendorCodeTypeText>()
+                .HasKey(_ => new { _.LanguageId, _.VendorCodeTypeId });
 
             // add indexing as needed
             // https://docs.microsoft.com/en-us/ef/core/modeling/indexes
@@ -230,5 +232,6 @@ namespace GRA.Data
         public DbSet<Model.UserTrigger> UserTriggers { get; set; }
         public DbSet<Model.VendorCode> VendorCodes { get; set; }
         public DbSet<Model.VendorCodeType> VendorCodeTypes { get; set; }
+        public DbSet<Model.VendorCodeTypeText> VendorCodeTypeTexts { get; set; }
     }
 }

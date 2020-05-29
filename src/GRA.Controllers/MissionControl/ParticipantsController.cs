@@ -495,7 +495,7 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
-                var user = await _userService.GetDetails(id);
+                var user = await _userService.GetDetailsByPermission(id);
                 SetPageTitle(user);
                 var branchList = await _siteService.GetBranches(user.SystemId);
                 var systemList = await _siteService.GetSystemList();
@@ -716,7 +716,7 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.LogActivityForAny)]
         public async Task<IActionResult> LogActivity(int id)
         {
-            var user = await _userService.GetDetails(id);
+            var user = await _userService.GetDetailsByPermission(id);
             SetPageTitle(user);
 
             var groupInfo
@@ -769,7 +769,7 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> LogActivity(LogActivityViewModel model, bool isSecretCode)
         {
-            var user = await _userService.GetDetails(model.Id);
+            var user = await _userService.GetDetailsByPermission(model.Id);
             SetPageTitle(user);
             model.PointTranslation = await _pointTranslationService
                 .GetByProgramIdAsync(user.ProgramId, true);
@@ -857,12 +857,12 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
-                var user = await _userService.GetDetails(id);
+                var user = await _userService.GetDetailsByPermission(id);
                 var showVendorCodes = await _vendorCodeService.SiteHasCodesAsync();
                 SetPageTitle(user);
 
                 var head = user.HouseholdHeadUserId.HasValue
-                    ? await _userService.GetDetails(user.HouseholdHeadUserId.Value)
+                    ? await _userService.GetDetailsByPermission(user.HouseholdHeadUserId.Value)
                     : user;
 
                 if (showVendorCodes)
@@ -981,6 +981,14 @@ namespace GRA.Controllers.MissionControl
                     }
                 }
 
+                if (string.IsNullOrWhiteSpace(viewModel.Head.EmailAwardInstructions))
+                {
+                    viewModel.Head.EmailAwardInstructions = viewModel.Users
+                        .Where(_ => !string.IsNullOrWhiteSpace(_.EmailAwardInstructions))
+                        .Select(_ => _.EmailAwardInstructions)
+                        .FirstOrDefault();
+                }
+
                 return View(viewModel);
             }
             catch (GraException gex)
@@ -994,7 +1002,7 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> HouseholdApplyActivity(HouseholdListViewModel model)
         {
-            var user = await _userService.GetDetails(model.Id);
+            var user = await _userService.GetDetailsByPermission(model.Id);
             model.PointTranslation = await _pointTranslationService
                 .GetByProgramIdAsync(user.ProgramId, true);
             if (model.ActivityAmount < 1 && !model.PointTranslation.IsSingleEvent)
@@ -1111,11 +1119,11 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
-                var headOfHousehold = await _userService.GetDetails(id);
+                var headOfHousehold = await _userService.GetDetailsByPermission(id);
                 if (headOfHousehold.HouseholdHeadUserId != null)
                 {
                     headOfHousehold = await _userService
-                        .GetDetails((int)headOfHousehold.HouseholdHeadUserId);
+                        .GetDetailsByPermission((int)headOfHousehold.HouseholdHeadUserId);
                 }
 
                 var groupInfo
@@ -1192,11 +1200,11 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> AddHouseholdMember(HouseholdAddViewModel model)
         {
             var site = await GetCurrentSiteAsync();
-            var headOfHousehold = await _userService.GetDetails(model.Id);
+            var headOfHousehold = await _userService.GetDetailsByPermission(model.Id);
             if (headOfHousehold.HouseholdHeadUserId != null)
             {
                 headOfHousehold = await _userService
-                    .GetDetails((int)headOfHousehold.HouseholdHeadUserId);
+                    .GetDetailsByPermission((int)headOfHousehold.HouseholdHeadUserId);
             }
 
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.User.PostalCode))
@@ -1366,7 +1374,7 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
-                var user = await _userService.GetDetails(id);
+                var user = await _userService.GetDetailsByPermission(id);
                 if (!string.IsNullOrWhiteSpace(user.Username))
                 {
                     return RedirectToAction("Household", new { id });
@@ -1391,7 +1399,7 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> RegisterHouseholdMember(HouseholdRegisterViewModel model)
         {
-            var user = await _userService.GetDetails(model.Id);
+            var user = await _userService.GetDetailsByPermission(model.Id);
             if (!string.IsNullOrWhiteSpace(user.Username))
             {
                 return RedirectToAction("Household", new { id = model.Id });
@@ -1478,7 +1486,7 @@ namespace GRA.Controllers.MissionControl
             {
                 _userService.VerifyCanHouseholdAction();
 
-                var headOfHousehold = await _userService.GetDetails(id);
+                var headOfHousehold = await _userService.GetDetailsByPermission(id);
                 if (headOfHousehold.HouseholdHeadUserId != null)
                 {
                     return RedirectToAction(nameof(HouseholdImport),
@@ -1539,11 +1547,11 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction("Index");
             }
 
-            var headOfHousehold = await _userService.GetDetails(model.Id);
+            var headOfHousehold = await _userService.GetDetailsByPermission(model.Id);
             if (headOfHousehold.HouseholdHeadUserId != null)
             {
                 headOfHousehold = await _userService
-                    .GetDetails(headOfHousehold.HouseholdHeadUserId.Value);
+                    .GetDetailsByPermission(headOfHousehold.HouseholdHeadUserId.Value);
             }
 
             var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
@@ -1669,11 +1677,11 @@ namespace GRA.Controllers.MissionControl
                     throw new GraException("No prize selected");
                 }
 
-                var user = await _userService.GetDetails(id);
+                var user = await _userService.GetDetailsByPermission(id);
                 SetPageTitle(user);
 
                 var head = user.HouseholdHeadUserId.HasValue
-                    ? await _userService.GetDetails(user.HouseholdHeadUserId.Value)
+                    ? await _userService.GetDetailsByPermission(user.HouseholdHeadUserId.Value)
                     : user;
 
                 var prizeKey = prize.Substring(0, 1);
@@ -1757,11 +1765,11 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> HouseholdPrize(HouseholdPrizeViewModel model)
         {
-            var user = await _userService.GetDetails(model.Id);
+            var user = await _userService.GetDetailsByPermission(model.Id);
             SetPageTitle(user);
 
             var head = user.HouseholdHeadUserId.HasValue
-                ? await _userService.GetDetails(user.HouseholdHeadUserId.Value)
+                ? await _userService.GetDetailsByPermission(user.HouseholdHeadUserId.Value)
                 : user;
 
             var selectedUsers = model.UserSelection
@@ -1868,7 +1876,7 @@ namespace GRA.Controllers.MissionControl
                         });
                 }
 
-                var user = await _userService.GetDetails(id);
+                var user = await _userService.GetDetailsByPermission(id);
                 SetPageTitle(user);
 
                 var groupInfo
@@ -2032,7 +2040,7 @@ namespace GRA.Controllers.MissionControl
                         });
                 }
 
-                var user = await _userService.GetDetails(id);
+                var user = await _userService.GetDetailsByPermission(id);
                 SetPageTitle(user);
 
                 var groupInfo
@@ -2190,7 +2198,7 @@ namespace GRA.Controllers.MissionControl
                         });
                 }
 
-                var user = await _userService.GetDetails(id);
+                var user = await _userService.GetDetailsByPermission(id);
                 SetPageTitle(user);
 
                 var groupInfo
@@ -2272,7 +2280,7 @@ namespace GRA.Controllers.MissionControl
             {
                 var auditLog = await _emailManagementService.GetUserAuditLogAsync(id);
 
-                var user = await _userService.GetDetails(id);
+                var user = await _userService.GetDetailsByPermission(id);
                 SetPageTitle(user);
 
                 var groupInfo
@@ -2340,7 +2348,7 @@ namespace GRA.Controllers.MissionControl
                         });
                 }
 
-                var user = await _userService.GetDetails(id);
+                var user = await _userService.GetDetailsByPermission(id);
                 SetPageTitle(user);
 
                 var groupInfo
@@ -2395,7 +2403,7 @@ namespace GRA.Controllers.MissionControl
                     mail.Body = CommonMark.CommonMarkConverter.Convert(mail.Body);
                 }
 
-                var user = await _userService.GetDetails(userId);
+                var user = await _userService.GetDetailsByPermission(userId);
                 SetPageTitle(user, mail.ToUserId.HasValue ? "To" : "From");
 
                 var viewModel = new MailDetailViewModel
@@ -2428,7 +2436,7 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
-                var user = await _userService.GetDetails(id);
+                var user = await _userService.GetDetailsByPermission(id);
                 SetPageTitle(user, "Send Mail");
 
                 var viewModel = new MailSendViewModel
@@ -2462,7 +2470,7 @@ namespace GRA.Controllers.MissionControl
             }
             else
             {
-                var user = await _userService.GetDetails(model.Id);
+                var user = await _userService.GetDetailsByPermission(model.Id);
                 SetPageTitle(user, "Send Mail");
                 return View();
             }
@@ -2475,7 +2483,7 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
-                var user = await _userService.GetDetails(id);
+                var user = await _userService.GetDetailsByPermission(id);
                 SetPageTitle(user);
 
                 var groupInfo
@@ -2519,7 +2527,7 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> PasswordReset(PasswordResetViewModel model)
         {
-            var user = await _userService.GetDetails(model.Id);
+            var user = await _userService.GetDetailsByPermission(model.Id);
             if (ModelState.IsValid)
             {
                 try
@@ -2545,7 +2553,7 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
-                var user = await _userService.GetDetails(id);
+                var user = await _userService.GetDetailsByPermission(id);
                 if (string.IsNullOrWhiteSpace(user.Username))
                 {
                     ShowAlertDanger("User doesn't have a username and can't be assigned roles.");
@@ -2611,24 +2619,41 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.EditParticipants)]
         public async Task<IActionResult> DonateCode(ParticipantsDetailViewModel viewModel)
         {
-            await _vendorCodeService.ResolveDonationStatusAsync(viewModel.User.Id, true);
-            return RedirectToAction("Detail", "Participants", new { id = viewModel.User.Id });
+            await _vendorCodeService.ResolveCodeStatusAsync(viewModel.User.Id, true, false);
+            return RedirectToAction(viewModel.Action, new { id = viewModel.User.Id });
         }
 
         [HttpPost]
         [Authorize(Policy = Policy.EditParticipants)]
         public async Task<IActionResult> RedeemCode(ParticipantsDetailViewModel viewModel)
         {
-            await _vendorCodeService.ResolveDonationStatusAsync(viewModel.User.Id, false);
-            return RedirectToAction("Detail", "Participants", new { id = viewModel.User.Id });
+            await _vendorCodeService.ResolveCodeStatusAsync(viewModel.User.Id, false, false);
+            return RedirectToAction(viewModel.Action, new { id = viewModel.User.Id });
+        }
+
+        [HttpPost]
+        [Authorize(Policy = Policy.EditParticipants)]
+        public async Task<IActionResult> EmailAward(EmailAwardViewModel emailAwardModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(emailAwardModel);
+            }
+
+            await _vendorCodeService.ResolveCodeStatusAsync(emailAwardModel.UserId,
+                false,
+                true,
+                emailAwardModel.Email);
+
+            return RedirectToAction(emailAwardModel.Action, new { id = emailAwardModel.UserId });
         }
 
         [HttpPost]
         [Authorize(Policy = Policy.UnDonateVendorCode)]
         public async Task<IActionResult> UndonateCode(ParticipantsDetailViewModel viewModel)
         {
-            await _vendorCodeService.ResolveDonationStatusAsync(viewModel.User.Id, null);
-            return RedirectToAction("Detail", "Participants", new { id = viewModel.User.Id });
+            await _vendorCodeService.ResolveCodeStatusAsync(viewModel.User.Id, null, null);
+            return RedirectToAction(viewModel.Action, new { id = viewModel.User.Id });
         }
 
         [HttpPost]
@@ -2662,7 +2687,7 @@ namespace GRA.Controllers.MissionControl
             }
             else
             {
-                await _vendorCodeService.ResolveDonationStatusAsync(userId, donationStatus);
+                await _vendorCodeService.ResolveCodeStatusAsync(userId, donationStatus, null);
             }
             return RedirectToAction("Household", "Participants", new { id = viewModel.Id });
         }
@@ -2671,7 +2696,7 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.RedeemBulkVendorCodes)]
         public async Task<IActionResult> HouseholdBulkRedeemCode(int id)
         {
-            var user = await _userService.GetDetails(id);
+            var user = await _userService.GetDetailsByPermission(id);
 
             var headOfHouseholdId = user.HouseholdHeadUserId ?? user.Id;
 
@@ -2744,7 +2769,7 @@ namespace GRA.Controllers.MissionControl
 
             try
             {
-                var user = await _userService.GetDetails(viewModel.Id);
+                var user = await _userService.GetDetailsByPermission(viewModel.Id);
                 viewModel.GroupInfo.UserId = user.HouseholdHeadUserId ?? user.Id;
                 await _userService.CreateGroup(GetActiveUserId(), viewModel.GroupInfo);
             }
@@ -2860,7 +2885,7 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.ViewUserPrizes)]
         public async Task<IActionResult> UpdatePrizes(int id, string returnUrl)
         {
-            var user = await _userService.GetDetails(id);
+            var user = await _userService.GetDetailsByPermission(id);
 
             var headId = user.HouseholdHeadUserId ?? user.Id;
 

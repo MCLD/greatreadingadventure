@@ -123,7 +123,7 @@ namespace GRA.Controllers.MissionControl
                 int from = mail.ToUserId ?? mail.FromUserId;
                 if (from > 0)
                 {
-                    viewModel.User = await _userService.GetDetails(from);
+                    viewModel.User = await _userService.GetDetailsByPermission(from);
                 }
                 return View(viewModel);
             }
@@ -159,7 +159,7 @@ namespace GRA.Controllers.MissionControl
                 var mail = await _mailService.GetDetails(id);
                 if (mail.ToUserId == null)
                 {
-                    var participant = await _userService.GetDetails(mail.FromUserId);
+                    var participant = await _userService.GetDetailsByPermission(mail.FromUserId);
                     string participantLink =
                         Url.Action("Detail", "Participants", new { id = participant.Id });
                     string participantName = participant.FullName;

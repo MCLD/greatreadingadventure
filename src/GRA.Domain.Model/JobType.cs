@@ -7,6 +7,7 @@
         UpdateVendorStatus,
         AvatarImport,
         HouseholdImport,
-        GenerateVendorCodes
+        GenerateVendorCodes,
+        UpdateEmailAwardStatus
     }
 }

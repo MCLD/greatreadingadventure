@@ -330,23 +330,34 @@ namespace GRA.Domain.Service
             int authUserId = GetClaimId(ClaimType.UserId);
             var authUser = await _userRepository.GetByIdAsync(authUserId);
             var requestedUser = await _userRepository.GetByIdAsync(userId);
-            if (requestedUser == null)
-            {
-                throw new GraException("The requested participant could not be accessed or does not exist.");
-            }
-            if (authUserId == userId
-                || requestedUser.HouseholdHeadUserId == authUserId
-                || authUser.HouseholdHeadUserId == userId
-                || HasPermission(Permission.ViewParticipantDetails))
+
+            if (requestedUser != null
+                && (authUserId == userId
+                    || requestedUser.HouseholdHeadUserId == authUserId
+                    || authUser.HouseholdHeadUserId == userId))
             {
                 return requestedUser;
             }
             else
             {
-                _logger.LogError("User {UserId} doesn't have permission to view participant details",
-                    authUserId);
+                _logger.LogError("User {AuthUserId} is not allowed to view participant details of {UserId}",
+                    authUserId,
+                    userId);
                 throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
+        }
+
+        public async Task<User> GetDetailsByPermission(int userId)
+        {
+            VerifyPermission(Permission.ViewParticipantDetails);
+
+            var requestedUser = await _userRepository.GetByIdAsync(userId);
+            if (requestedUser == null)
+            {
+                throw new GraException("The requested participant could not be accessed or does not exist.");
+            }
+
+            return requestedUser;
         }
 
         public async Task<User> Update(User userToUpdate)
@@ -1497,11 +1508,6 @@ namespace GRA.Domain.Service
                 authUser.Culture = cultureName;
                 await _userRepository.UpdateSaveNoAuditAsync(authUser);
             }
-        }
-
-        public async Task<int> GetSystemUserId()
-        {
-            return await _userRepository.GetSystemUserId();
         }
 
         public async Task<DataWithCount<ICollection<GroupInfo>>> GetPaginatedGroupListAsync(
