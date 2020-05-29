@@ -12,7 +12,7 @@
                 <div class="modal-content">
                     <form asp-action="@nameof(ProfileController.EmailAward)" method="post" role="form" style="display:inline">
                         <div class="modal-body">
-                            <p>@Model.User.EmailAwardInstructions</p>
+                            <p>@Html.Raw(Model.User.EmailAwardInstructions)</p>
                             <div class="row row-spacing">
                                 <div class="col-xs-12">
                                     <label asp-for="EmailAwardModel.Email" class="control-label"></label>

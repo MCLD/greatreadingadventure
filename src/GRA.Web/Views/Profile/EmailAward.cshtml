@@ -7,7 +7,7 @@
                 <input asp-for="UserId" type="hidden" />
                 <div class="panel-body">
                     <h4>@Model.Name</h4>
-                    <p>@Model.EmailAwardInstructions</p>
+                    <p>@Html.Raw(Model.EmailAwardInstructions)</p>
                     <div class="row row-spacing">
                         <div class="col-xs-12">
                             <label asp-for="Email" class="control-label"></label>

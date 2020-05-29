@@ -40,7 +40,7 @@
                     <form asp-action="@nameof(ProfileController.EmailAward)" method="post" role="form" style="display:inline">
                         <input asp-for="EmailAwardModel.UserId" type="hidden" />
                         <div class="modal-body">
-                            <p>@Model.Head.EmailAwardInstructions</p>
+                            <p>@Html.Raw(Model.Head.EmailAwardInstructions)</p>
                             <div class="row row-spacing">
                                 <div class="col-xs-12">
                                     <label asp-for="EmailAwardModel.Email" class="control-label"></label>
