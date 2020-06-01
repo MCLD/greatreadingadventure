@@ -83,7 +83,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.SignUpSource == signUpSource)
                 .OrderBy(_ => _.CreatedAt)
-                .ProjectTo<EmailReminder>()
+                .ProjectTo<EmailReminder>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
     }
