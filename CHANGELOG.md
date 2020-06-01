@@ -87,6 +87,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Layer item selector not changing the initial slide when an items selected
 - Avatar items using the wrong layers initial color
 - Un-donate buttons using the wrong permission
+- Add book erroring when author field is empty
 
 ### Removed
 - Recovery error logging at the controller level - it's logged in the
