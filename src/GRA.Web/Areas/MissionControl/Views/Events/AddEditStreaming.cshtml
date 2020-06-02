@@ -151,6 +151,12 @@
                type="hidden" />
         <input name="Editing" value="true" type="hidden" />
 
+        <input asp-for="Event.IsActive" type="hidden" />
+        <input asp-for="Event.IsValid" type="hidden" />
+        <input asp-for="Event.RelatedBranchId" type="hidden" />
+        <input asp-for="Event.RelatedSystemId" type="hidden" />
+        <input asp-for="Event.RelatedTriggerId" type="hidden" />
+
         <div style="font-size:large;  padding-top:10px;">
             Created By:
             @if (Model.CanViewParticipants)
@@ -262,8 +268,8 @@
     </div>
 
     @if (Model.Editing &&
-     (Model.CanRelateChallenge
-     || Model.Event.Challenge != null || Model.Event.ChallengeGroup != null))
+  (Model.CanRelateChallenge
+  || Model.Event.Challenge != null || Model.Event.ChallengeGroup != null))
     {
         <div class="row row-spacing">
             <div class="col-xs-12">
