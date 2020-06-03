@@ -13,9 +13,10 @@ namespace GRA.Controllers.ViewModel.MissionControl.Avatar
         public bool NewAvatar { get; set; }
         public ICollection<AvatarItem> LayerItems { get; set; }
         public ICollection<AvatarColor> LayerColors { get; set; }
-        public int SelectedItemId { get; set; }
-        public int[] SelectedItemIds { get; set; }
-        public string ItemPath { get; set; }
-        public int LayerId { get; set; }
+        public List<int> SelectedItemIds { get; set; }
+        public ICollection<AvatarItem> SelectedItems { get; set; }
+        public string Description { get; set; }
+        public string Name { get; set; }
+        public int AssociatedBundleId { get; set; }
     }
 }

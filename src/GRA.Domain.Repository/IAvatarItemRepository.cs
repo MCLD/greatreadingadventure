@@ -26,5 +26,6 @@ namespace GRA.Domain.Repository
         Task RemoveUserItemAsync(int id);
         void RemoveUserUnlockedItem(int id);
         Task<List<AvatarItem>> GetBundleItemsAsync(int bundleId);
+        Task<AvatarItem> GetDefaultLayerItemAsync(int defaultLayerId);
     }
 }

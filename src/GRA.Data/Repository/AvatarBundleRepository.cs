@@ -178,6 +178,15 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
+        public async Task<ICollection<AvatarBundle>> GetAllPremadeParentsAsync(int siteId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId && !_.IsDeleted && _.CanBeUnlocked && _.AssociatedBundleId == null && _.Description == null)
+                .ProjectTo<AvatarBundle>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
         public async Task<bool> IsItemInBundleAsync(int itemId, bool? unlockable = null)
         {
             var inBundle = _context.AvatarBundleItems
