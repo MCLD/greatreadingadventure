@@ -225,6 +225,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Create(TriggersDetailViewModel model)
         {
+            byte[] badgeBytes = null;
+
             var badgeRequiredList = new List<int>();
             var challengeRequiredList = new List<int>();
             if (!string.IsNullOrWhiteSpace(model.BadgeRequiredList))
@@ -250,11 +252,29 @@ namespace GRA.Controllers.MissionControl
                 ModelState.AddModelError("BadgePath", "A badge is required.");
             }
             else if (model.BadgeUploadImage != null
-                && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker)
-                && (!ValidImageExtensions.Contains(Path.GetExtension(model.BadgeUploadImage.FileName).ToLower())))
+                    && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker))
             {
-                ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
+                if (!ValidImageExtensions.Contains(
+                    Path.GetExtension(model.BadgeUploadImage.FileName).ToLower()))
+                {
+                    ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
+                }
+
+                try
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        await model.BadgeUploadImage.CopyToAsync(ms);
+                        badgeBytes = ms.ToArray();
+                    }
+                    await _badgeService.ValidateBadgeImageAsync(badgeBytes);
+                }
+                catch (GraException gex)
+                {
+                    ModelState.AddModelError("BadgeUploadImage", gex.Message);
+                }
             }
+
             if (!model.IsSecretCode)
             {
                 if ((!model.Trigger.Points.HasValue || model.Trigger.Points < 1)
@@ -335,7 +355,6 @@ namespace GRA.Controllers.MissionControl
                     if (model.BadgeUploadImage != null
                         || !string.IsNullOrWhiteSpace(model.BadgeMakerImage))
                     {
-                        byte[] badgeBytes;
                         string filename;
                         if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage)
                             && (model.BadgeUploadImage == null || model.UseBadgeMaker))
@@ -346,11 +365,11 @@ namespace GRA.Controllers.MissionControl
                         }
                         else
                         {
-                            using (var fileStream = model.BadgeUploadImage.OpenReadStream())
+                            if (badgeBytes == null)
                             {
                                 using (var ms = new MemoryStream())
                                 {
-                                    fileStream.CopyTo(ms);
+                                    await model.BadgeUploadImage.CopyToAsync(ms);
                                     badgeBytes = ms.ToArray();
                                 }
                             }
@@ -492,6 +511,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Edit(TriggersDetailViewModel model)
         {
+            byte[] badgeBytes = null;
+
             var badgeRequiredList = new List<int>();
             var challengeRequiredList = new List<int>();
             if (!string.IsNullOrWhiteSpace(model.BadgeRequiredList))
@@ -513,10 +534,27 @@ namespace GRA.Controllers.MissionControl
             var requirementCount = badgeRequiredList.Count + challengeRequiredList.Count;
 
             if (model.BadgeUploadImage != null
-                && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker)
-                && (!ValidImageExtensions.Contains(Path.GetExtension(model.BadgeUploadImage.FileName).ToLower())))
+                    && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker))
             {
-                ModelState.AddModelError("BadgeImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
+                if (!ValidImageExtensions.Contains(
+                    Path.GetExtension(model.BadgeUploadImage.FileName).ToLower()))
+                {
+                    ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
+                }
+
+                try
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        await model.BadgeUploadImage.CopyToAsync(ms);
+                        badgeBytes = ms.ToArray();
+                    }
+                    await _badgeService.ValidateBadgeImageAsync(badgeBytes);
+                }
+                catch (GraException gex)
+                {
+                    ModelState.AddModelError("BadgeUploadImage", gex.Message);
+                }
             }
 
             if (!model.IsSecretCode)
@@ -596,7 +634,6 @@ namespace GRA.Controllers.MissionControl
                     if (model.BadgeUploadImage != null
                         || !string.IsNullOrWhiteSpace(model.BadgeMakerImage))
                     {
-                        byte[] badgeBytes;
                         string filename;
                         if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage)
                             && (model.BadgeUploadImage == null || model.UseBadgeMaker))
@@ -607,16 +644,17 @@ namespace GRA.Controllers.MissionControl
                         }
                         else
                         {
-                            using (var fileStream = model.BadgeUploadImage.OpenReadStream())
+                            if (badgeBytes == null)
                             {
                                 using (var ms = new MemoryStream())
                                 {
-                                    fileStream.CopyTo(ms);
+                                    await model.BadgeUploadImage.CopyToAsync(ms);
                                     badgeBytes = ms.ToArray();
                                 }
                             }
                             filename = Path.GetFileName(model.BadgeUploadImage.FileName);
                         }
+
                         var existing = await _badgeService
                                     .GetByIdAsync(model.Trigger.AwardBadgeId);
                         existing.Filename = Path.GetFileName(model.BadgePath);

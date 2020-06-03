@@ -1,29 +1,37 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using GRA.Abstract;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using SixLabors.ImageSharp;
 
 namespace GRA.Domain.Service
 {
     public class BadgeService : Abstract.BaseUserService<BadgeService>
     {
+        public static readonly int KBSize = 1024;
+
         private const string BadgePath = "badges";
         private readonly IConfiguration _config;
         private readonly IBadgeRepository _badgeRepository;
         private readonly IPathResolver _pathResolver;
+        private readonly SiteLookupService _siteLookupService;
         public BadgeService(ILogger<BadgeService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             IConfiguration config,
             IBadgeRepository badgeRepository,
-            IPathResolver pathResolver) : base(logger, dateTimeProvider, userContextProvider)
+            IPathResolver pathResolver,
+            SiteLookupService siteLookupService) : base(logger, dateTimeProvider, userContextProvider)
         {
             _config = Require.IsNotNull(config, nameof(config));
             _badgeRepository = Require.IsNotNull(badgeRepository, nameof(badgeRepository));
             _pathResolver = Require.IsNotNull(pathResolver, nameof(pathResolver));
+            _siteLookupService = siteLookupService
+                ?? throw new ArgumentNullException(nameof(siteLookupService));
         }
 
         private string GetFilePath(string filename)
@@ -91,6 +99,24 @@ namespace GRA.Domain.Service
         public async Task<string> GetBadgeFilenameAsync(int id)
         {
             return await _badgeRepository.GetBadgeFileNameAsync(id);
+        }
+
+        public async Task ValidateBadgeImageAsync(byte[] badgeImage)
+        {
+            var maxUploadSize = await _siteLookupService
+                    .GetSiteSettingIntAsync(GetCurrentSiteId(), SiteSettingKey.Badges.MaxFileSize);
+            if (maxUploadSize.IsSet && badgeImage.Length > maxUploadSize.SetValue * KBSize)
+            {
+                throw new GraException($"File size exceeds the maximum of {maxUploadSize.SetValue}KB");
+            }
+
+            using (var image = Image.Load(badgeImage))
+            {
+                if (image.Height != image.Width || image.Height > 400 || image.Width > 400)
+                {
+                    throw new GraException("Image height and width must be the same and cannot exceed 400px");
+                }
+            }
         }
     }
 }

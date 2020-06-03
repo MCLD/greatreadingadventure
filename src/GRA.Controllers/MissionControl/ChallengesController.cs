@@ -290,6 +290,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Create(ChallengesDetailViewModel model)
         {
+            byte[] badgeBytes = null;
+
             var site = await GetCurrentSiteAsync();
             if (site.MaxPointsPerChallengeTask.HasValue && model.Challenge.TasksToComplete.HasValue
                 && model.Challenge.TasksToComplete != 0)
@@ -307,6 +309,20 @@ namespace GRA.Controllers.MissionControl
                 {
                     ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                 }
+
+                try
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        await model.BadgeUploadImage.CopyToAsync(ms);
+                        badgeBytes = ms.ToArray();
+                    }
+                    await _badgeService.ValidateBadgeImageAsync(badgeBytes);
+                }
+                catch (GraException gex)
+                {
+                    ModelState.AddModelError("BadgeUploadImage", gex.Message);
+                }
             }
             if (ModelState.IsValid)
             {
@@ -316,10 +332,9 @@ namespace GRA.Controllers.MissionControl
                     if (model.BadgeUploadImage != null
                         || !string.IsNullOrWhiteSpace(model.BadgeMakerImage))
                     {
-                        byte[] badgeBytes;
                         string filename;
                         if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage)
-                            && (model.BadgeUploadImage != null || model.UseBadgeMaker))
+                            && (model.BadgeUploadImage == null || model.UseBadgeMaker))
                         {
                             var badgeString = model.BadgeMakerImage.Split(',').Last();
                             badgeBytes = Convert.FromBase64String(badgeString);
@@ -327,11 +342,11 @@ namespace GRA.Controllers.MissionControl
                         }
                         else
                         {
-                            using (var fileStream = model.BadgeUploadImage.OpenReadStream())
+                            if (badgeBytes == null)
                             {
                                 using (var ms = new MemoryStream())
                                 {
-                                    fileStream.CopyTo(ms);
+                                    await model.BadgeUploadImage.CopyToAsync(ms);
                                     badgeBytes = ms.ToArray();
                                 }
                             }
@@ -479,6 +494,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Edit(ChallengesDetailViewModel model, string Submit)
         {
+            byte[] badgeBytes = null;
+
             var site = await GetCurrentSiteAsync();
             if (site.MaxPointsPerChallengeTask.HasValue && model.Challenge.TasksToComplete.HasValue
                 && model.Challenge.TasksToComplete != 0)
@@ -496,6 +513,20 @@ namespace GRA.Controllers.MissionControl
                 {
                     ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                 }
+
+                try
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        await model.BadgeUploadImage.CopyToAsync(ms);
+                        badgeBytes = ms.ToArray();
+                    }
+                    await _badgeService.ValidateBadgeImageAsync(badgeBytes);
+                }
+                catch (GraException gex)
+                {
+                    ModelState.AddModelError("BadgeUploadImage", gex.Message);
+                }
             }
             if (ModelState.IsValid)
             {
@@ -503,10 +534,9 @@ namespace GRA.Controllers.MissionControl
                 if (model.BadgeUploadImage != null
                         || !string.IsNullOrWhiteSpace(model.BadgeMakerImage))
                 {
-                    byte[] badgeBytes;
                     string filename;
                     if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage)
-                        && (model.BadgeUploadImage != null || model.UseBadgeMaker))
+                        && (model.BadgeUploadImage == null || model.UseBadgeMaker))
                     {
                         var badgeString = model.BadgeMakerImage.Split(',').Last();
                         badgeBytes = Convert.FromBase64String(badgeString);
@@ -514,11 +544,11 @@ namespace GRA.Controllers.MissionControl
                     }
                     else
                     {
-                        using (var fileStream = model.BadgeUploadImage.OpenReadStream())
+                        if (badgeBytes == null)
                         {
                             using (var ms = new MemoryStream())
                             {
-                                fileStream.CopyTo(ms);
+                                await model.BadgeUploadImage.CopyToAsync(ms);
                                 badgeBytes = ms.ToArray();
                             }
                         }
