@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="~/css/slick.min.css" asp-append-version="true" />
 }
 <div class="alert alert-danger" id="error-container"></div>
+<input asp-for="BundleId" value="@Model.Bundle.Id" type="hidden" />
 <div class="row row-spacing">
     <div class="col-xs-12">
         <label asp-for="Bundle.Name" class="control-label"></label>
@@ -110,32 +111,32 @@
                         @if (Model.Bundles.Count > 0)
                         {
                             <div class="col">
-                            <div class="dropdown" style="margin-top: 1rem;" id="bundleDropdown">
-                                <a class="dropdown-toggle btn btn-info"
-                                   id="bundle-selected"
-                                   data-toggle="dropdown"
-                                   href="#" role="button"
-                                   aria-haspopup="true"
-                                   aria-expanded="false">
-                                    @SharedLocalizer[GRA.Domain.Model.DisplayNames.SelectABundle]
-                                    <span class="caret"></span>
-                                </a>
-                                <ul class="dropdown-menu" id="bundle-drop">
-                                    @foreach (var bundle in Model.Bundles)
-                                    {
-                                        <li class="dropdown-item">
-                                            <a href="#"
-                                               class="bundle-selectors"
-                                               data-bundleid="@bundle.Id"
-                                               data-beenviewed="@bundle.HasBeenViewed"
-                                               onclick="GetBundleItems(this)">
-                                                @bundle.Name
-                                            </a>
-                                        </li>
-                                    }
-                                </ul>
-                            </div>
-                            <span asp-validation-for="SelectedItemIds" class="text-danger"></span>
+                                <div class="dropdown" style="margin-top: 1rem;" id="bundleDropdown">
+                                    <a class="dropdown-toggle btn btn-info"
+                                       id="bundle-selected"
+                                       data-toggle="dropdown"
+                                       href="#" role="button"
+                                       aria-haspopup="true"
+                                       aria-expanded="false">
+                                        @SharedLocalizer[GRA.Domain.Model.DisplayNames.SelectABundle]
+                                        <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu" id="bundle-drop">
+                                        @foreach (var bundle in Model.Bundles)
+                                        {
+                                            <li class="dropdown-item">
+                                                <a href="#"
+                                                   class="bundle-selectors"
+                                                   data-bundleid="@bundle.Id"
+                                                   data-beenviewed="@bundle.HasBeenViewed"
+                                                   onclick="GetBundleItems(this)">
+                                                    @bundle.Name
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                                <span asp-validation-for="SelectedItemIds" class="text-danger"></span>
                             </div>
                         }
                         else
@@ -172,12 +173,14 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div style="text-align:center;vertical-align:top;">
-                        <a asp-controller="Home"
-                           asp-action="Index"
+                        <a asp-area="MissionControl"
+                           asp-controller="Avatars"
+                           asp-action="@nameof(AvatarsController.Bundles)"
+                           asp-route-search="Premade"
                            class="btn btn-lg btn-default"
                            style="margin:5px;">
-                            <span class="fa fa-home"></span>
-                            @SharedLocalizer[GRA.Domain.Model.DisplayNames.Home]
+                            <span class="fa fa-arrow-alt-circle-left"></span>
+                            Back
                         </a>
                         <button id="removeButton"
                                 class="btn btn-lg btn-default hide"
@@ -669,21 +672,19 @@
         // Saves the Avatars items
         function SaveAvatar() {
             datas = {
+                BundleId: $("#BundleId").val(),
                 Name: $("#Bundle_Name").val(),
                 Description: $("#Bundle_Description").val(),
                 AssociatedBundleId: $("#bundle-drop").find(".active").data("bundleid"),
                 SelectedItemIds: GetAvatarSelection()
             };
             $.ajax({
-                url: "@Url.Action(nameof(AvatarsController.CreatePremadeAvatar))",
+                url: "@(Model.NewAvatar ? Url.Action(nameof(AvatarsController.CreatePremadeAvatar)) : Url.Action(nameof(AvatarsController.UpdatePremadeAvatar)))",
                 type: "POST",
                 contentType: "application/json; charset=utf-8",
                 data: JSON.stringify(datas),
                 success: function (result) {
                     $("body").html(result);
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-
                 }
             });
         }
