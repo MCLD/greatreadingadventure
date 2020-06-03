@@ -146,7 +146,46 @@ namespace GRA.Domain.Service
             return layers.Where(_ => _.AvatarItems.Count > 0).ToList();
         }
 
-        public async Task<IEnumerable<AvatarLayer>> GetLayersAsync()
+        public async Task<List<List<AvatarLayer>>> GetWardrobe(List<int> itemIds)
+        {
+            var siteId = GetCurrentSiteId();
+            var layers = await GetLayersAsync();
+            var layerGroupings = layers
+                .GroupBy(_ => _.GroupId)
+                .Select(_ => _.ToList())
+                .ToList();
+            var filePath = _pathResolver.ResolveContentPath($"site{siteId}/avatars/");
+            if (itemIds != null)
+            {
+                var items = await GetItemsByIdsAsync(itemIds);
+                foreach (var layer in layerGroupings.SelectMany(_ => _))
+                {
+                    var item = items
+                        .FirstOrDefault(_ => _.AvatarLayerId == layer.Id);
+                    if (item != null)
+                    {
+                        var fileName = "item";
+                        var element = await _avatarElementRepository.GetRandomColorByItemAsync(item.Id);
+                        if (element.AvatarColorId != null)
+                        {
+                            fileName += $"_{element.AvatarColorId}";
+                        }
+                        fileName += ".png";
+                        layer.SelectedItem = item.Id;
+                        layer.FilePath = Path.Combine(filePath, $"layer{layer.Id}", $"item{item.Id}", fileName);
+                    }
+                }
+            }
+            return layerGroupings;
+        }
+
+        public async Task<AvatarItem> GetRandomMannequinAsync()
+        {
+            var layer = await _avatarLayerRepository.GetDefaultLayer();
+            return await _avatarItemRepository.GetDefaultLayerItemAsync(layer.Id);
+        }
+
+            public async Task<IEnumerable<AvatarLayer>> GetLayersAsync()
         {
             var currentCultureName = _userContextProvider.GetCurrentCulture()?.Name;
             var currentLanguageId = currentCultureName != null ?
@@ -401,15 +440,24 @@ namespace GRA.Domain.Service
         {
             VerifyManagementPermission();
             var items = await _avatarItemRepository.GetByIdsAsync(itemIds);
-            if (items.Any(_ => _.Unlockable != bundle.CanBeUnlocked))
+            if (bundle.AssociatedBundleId == null && items.Any(_ => _.Unlockable != bundle.CanBeUnlocked))
             {
                 throw new GraException($"Not all items are {(bundle.CanBeUnlocked ? "Unlockable" : "Available")}.");
             }
 
-            if (!bundle.CanBeUnlocked
-                && items.GroupBy(_ => _.AvatarLayerId).Any(_ => _.Skip(1).Any()))
+            if (bundle.AssociatedBundleId == null && (!bundle.CanBeUnlocked
+                && items.GroupBy(_ => _.AvatarLayerId).Any(_ => _.Skip(1).Any())))
             {
                 throw new GraException($"Default bundles cannot have multiple items per layer.");
+            }
+
+            if (!string.IsNullOrEmpty(bundle.Name))
+            {
+                bundle.Name = bundle.Name.Trim();
+            }
+            if (!string.IsNullOrEmpty(bundle.Description))
+            {
+                bundle.Description = bundle.Description.Trim();
             }
 
             bundle.SiteId = GetCurrentSiteId();
@@ -574,6 +622,17 @@ namespace GRA.Domain.Service
         {
             VerifyManagementPermission();
             return await _avatarBundleRepository.GetAllAsync(GetCurrentSiteId(), unlockable);
+        }
+        public async Task<ICollection<AvatarBundle>> GetAllPremadeParentBundlesAsync(
+            bool? unlockable = null)
+        {
+            VerifyManagementPermission();
+            return await _avatarBundleRepository.GetAllPremadeParentsAsync(GetCurrentSiteId());
+        }
+
+        public async Task<ICollection<AvatarItem>> GetBundleItemsAsync(int bundleId)
+        {
+            return await _avatarItemRepository.GetBundleItemsAsync(bundleId);
         }
 
         public async Task<AvatarBundle> GetBundleByIdAsync(int id, bool includeDeleted = false)

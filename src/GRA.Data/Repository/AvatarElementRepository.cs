@@ -26,6 +26,14 @@ namespace GRA.Data.Repository
                 .SingleOrDefaultAsync();
         }
 
+        public async Task<AvatarElement> GetRandomColorByItemAsync(int item)
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.AvatarItemId == item)
+                .ProjectTo<AvatarElement>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<ICollection<AvatarElement>> GetUserAvatarAsync(int userId)
         {
             return await _context.UserAvatars.AsNoTracking()

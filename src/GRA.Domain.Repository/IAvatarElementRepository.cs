@@ -10,5 +10,7 @@ namespace GRA.Domain.Repository
         Task<ICollection<AvatarElement>> GetUserAvatarAsync(int userId);
         Task SetUserAvatarAsync(int userId, List<int> elementIds);
         void RemoveByItemIdAsync(int id);
+
+        Task<AvatarElement> GetRandomColorByItemAsync(int item);
     }
 }
