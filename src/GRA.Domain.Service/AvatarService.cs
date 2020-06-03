@@ -386,16 +386,24 @@ namespace GRA.Domain.Service
                 throw new GraException("This bundle has been awarded to a participant and can no longer be edited. ");
             }
 
-            var items = await _avatarItemRepository.GetByIdsAsync(itemIds);
-            if (items.Any(_ => _.Unlockable != currentBundle.CanBeUnlocked))
+            if (bundle.AssociatedBundleId == null)
             {
-                throw new GraException($"Not all items are {(bundle.CanBeUnlocked ? "Unlockable" : "Available")}.");
-            }
+                if (currentBundle.HasBeenAwarded)
+                {
+                    throw new GraException($"This bundle has been awarded to a participant and can no longer be edited. ");
+                }
 
-            if (!currentBundle.CanBeUnlocked
-                && items.GroupBy(_ => _.AvatarLayerId).Any(_ => _.Skip(1).Any()))
-            {
-                throw new GraException("Default bundles cannot have multiple items per layer.");
+                var items = await _avatarItemRepository.GetByIdsAsync(itemIds);
+                if (items.Any(_ => _.Unlockable != currentBundle.CanBeUnlocked))
+                {
+                    throw new GraException($"Not all items are {(bundle.CanBeUnlocked ? "Unlockable" : "Available")}.");
+                }
+
+                if (!currentBundle.CanBeUnlocked
+                    && items.GroupBy(_ => _.AvatarLayerId).Any(_ => _.Skip(1).Any()))
+                {
+                    throw new GraException($"Default bundles cannot have multiple items per layer.");
+                }
             }
             else
             {
