@@ -2,6 +2,13 @@
 {
     public struct SiteSettingKey : System.IEquatable<SiteSettingKey>
     {
+        public struct Badges : System.IEquatable<Badges>
+        {
+            public static readonly string MaxFileSize = "Badges.MaxFileSize";
+
+            public bool Equals(Badges other) { return true; }
+        }
+
         public struct Challenges : System.IEquatable<Challenges>
         {
             public static readonly string HideUntilRegistrationOpen
