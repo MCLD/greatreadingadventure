@@ -351,8 +351,8 @@ namespace GRA.Domain.Service
                 throw new GraException($"Not all items are {(bundle.CanBeUnlocked ? "Unlockable" : "Available")}.");
             }
 
-            if (!bundle.CanBeUnlocked
-                && items.GroupBy(_ => _.AvatarLayerId).Any(_ => _.Skip(1).Any()))
+            if (bundle.AssociatedBundleId == null && (!bundle.CanBeUnlocked
+                && items.GroupBy(_ => _.AvatarLayerId).Any(_ => _.Skip(1).Any())))
             {
                 throw new GraException("Default bundles cannot have multiple items per layer.");
             }
@@ -533,8 +533,8 @@ namespace GRA.Domain.Service
             VerifyManagementPermission();
             return await _avatarBundleRepository.GetAllAsync(GetCurrentSiteId(), unlockable);
         }
-
-        public async Task<ICollection<AvatarBundle>> GetAllPremadeParentBundlesAsync()
+        public async Task<ICollection<AvatarBundle>> GetAllPremadeParentBundlesAsync(
+            bool? unlockable = null)
         {
             VerifyManagementPermission();
             return await _avatarBundleRepository.GetAllPremadeParentsAsync(GetCurrentSiteId());

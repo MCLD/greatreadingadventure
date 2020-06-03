@@ -52,6 +52,14 @@ namespace GRA.Data.Repository
             await _context.AvatarLayerTexts
                 .AddAsync(layerText);
         }
+
+        public async Task<AvatarLayer> GetDefaultLayer()
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.DefaultLayer)
+                .ProjectTo<AvatarLayer>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync();
+        }
         public Dictionary<string, string> GetNameAndLabelByLanguageId(int layerId, int languageId)
         {
             var layerText = _context.AvatarLayerTexts

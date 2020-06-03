@@ -379,27 +379,38 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Create Bundle";
             return View("BundleDetail", viewModel);
         }
-        public async Task<IActionResult> PremadeDetails(int id)
+        
+        public async Task<IActionResult> PremadeDetails(int? bundleId = null)
         {
-            var userWardrobe = await _avatarService.GetUserWardrobeAsync();
-            var allBundles = await _avatarService.GetAllBundlesAsync();
+            var selectedIds = new List<int>();
+            var mannequin = await _avatarService.GetRandomMannequinAsync();
+            selectedIds.Add(mannequin.Id);
+            var allBundles = await _avatarService.GetAllPremadeParentBundlesAsync();
 
-            var layerGroupings = userWardrobe
-                .GroupBy(_ => _.GroupId)
-                .Select(_ => _.ToList())
-                .ToList();
 
             var viewModel = new PremadeDetailsViewModel
             {
-                LayerGroupings = layerGroupings,
+                LayerGroupings = await _avatarService.GetWardrobe(selectedIds),
                 Bundles = allBundles.Where(_=>_.Description == null).ToList(),
-                DefaultLayer = userWardrobe.First(_ => _.DefaultLayer).Id,
-                ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/")
+                ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/"),
+                Bundle = new AvatarBundle(),
+                SelectedItemIds = selectedIds,
             };
-            var currentCulture = _userContextProvider.GetCurrentCulture();
+            if (bundleId.HasValue)
+            {
+                viewModel.SelectedItems = await _avatarService.GetBundleItemsAsync(bundleId.Value);
+                foreach(var layer in viewModel.LayerGroupings.SelectMany(_ => _))
+                {
+                    layer.SelectedItem = viewModel.SelectedItems
+                        .Where(_ => _.AvatarLayerId == layer.Id)
+                        .Select(_ => _.Id)
+                        .FirstOrDefault();
+                }
+            }
             var userAvatar = await _avatarService.GetUserAvatarAsync();
             viewModel.NewAvatar = userAvatar.Count == 0;
-            PageTitle = "Edit Premade Avatar";
+            PageTitle = bundleId == null ? "Edit Premade Avatar" : "Create Premade Avatar";
+            viewModel.NewAvatar = bundleId == null;
             return View("PremadeDetails", viewModel);
         }
 
@@ -731,5 +742,68 @@ namespace GRA.Controllers.MissionControl
                 SuccessUrl = Url.Action(nameof(Index)),
                 Title = "Importing avatars..."
             });
+        }
+        public async Task<IActionResult> CreatePremadeAvatar([FromBody]PremadeDetailsViewModel model)
+        {
+            var bundle = new AvatarBundle
+            {
+                Name = model.Name,
+                Description = model.Description,
+                AssociatedBundleId = model.AssociatedBundleId,
+                
+            };
+            if (string.IsNullOrEmpty(bundle.Name))
+            {
+                ModelState.AddModelError("Bundle.Name",
+                    _sharedLocalizer[ErrorMessages.Field, nameof(AvatarBundle.Name)]);
+            }
+            if (string.IsNullOrEmpty(bundle.Description))
+            {
+                ModelState.AddModelError("Bundle.Description",
+                    _sharedLocalizer[ErrorMessages.Field, nameof(AvatarBundle.Description)]);
+            }
+            if (bundle.AssociatedBundleId == 0 || model.SelectedItemIds.Count < 1)
+            {
+                ModelState.AddModelError("SelectedItemIds", "A bundle and items must be selected.");
+            }
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var newPremade = await _avatarService.AddBundleAsync(bundle, model.SelectedItemIds);
+                    RedirectToAction(nameof(PremadeDetails), new { id = newPremade.Id});
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger(gex.Message);
+                }
+            }
+            else
+            {
+                ShowAlertDanger(_sharedLocalizer[Annotations.Validate.SomethingWentWrong]);
+            }
+            var layers = await _avatarService.GetLayersAsync();
+            var mannequin = await _avatarService.GetRandomMannequinAsync();
+            model.SelectedItemIds.Add(mannequin.Id);
+            if (model.SelectedItemIds.Count > 0)
+            {
+                model.LayerGroupings = await _avatarService.GetWardrobe(model.SelectedItemIds);
+            }
+            else
+            {
+                var wardrobe = await _avatarService.GetLayersAsync();
+
+                model.LayerGroupings = wardrobe
+                    .GroupBy(_ => _.GroupId)
+                    .Select(_ => _.ToList())
+                    .ToList();
+
+            }
+            model.Bundles = await _avatarService.GetAllPremadeParentBundlesAsync();
+            model.ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/");
+            
+            model.Bundle = bundle;
+            model.NewAvatar = true;
+            return View("PremadeDetails", model);
         }
 }
