@@ -3433,6 +3433,9 @@ namespace GRA.Data.SqlServer.Migrations
                         .HasMaxLength(32)
                         .HasColumnType("nvarchar(32)");
 
+                    b.Property<int?>("PremadeAvatarId")
+                        .HasColumnType("int");
+
                     b.Property<int>("ProgramId")
                         .HasColumnType("int");
 
