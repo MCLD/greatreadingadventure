@@ -24,6 +24,7 @@ namespace GRA.Controllers
     {
         private readonly ILogger<AvatarController> _logger;
         private readonly AvatarService _avatarService;
+        private readonly UserService _userService;
         private readonly SiteService _siteService;
 
         public static string Name { get { return "Avatar"; } }
@@ -31,12 +32,15 @@ namespace GRA.Controllers
         public AvatarController(ILogger<AvatarController> logger,
             ServiceFacade.Controller context,
             AvatarService avatarService,
+            UserService userService,
             SiteService siteService)
             : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _avatarService = avatarService
                 ?? throw new ArgumentNullException(nameof(avatarService));
+            _userService = userService
+                ?? throw new ArgumentNullException(nameof(userService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             PageTitle = _sharedLocalizer[Annotations.Title.Avatar];
         }
@@ -44,6 +48,8 @@ namespace GRA.Controllers
         public async Task<IActionResult> Index()
         {
             var userWardrobe = await _avatarService.GetUserWardrobeAsync();
+            var user = await _userService.GetDetails(GetActiveUserId());
+
             if (userWardrobe.Count == 0)
             {
                 ShowAlertDanger("Avatars have not been configured.");
@@ -56,7 +62,6 @@ namespace GRA.Controllers
                 .GroupBy(_ => _.GroupId)
                 .Select(_ => _.ToList())
                 .ToList();
-
             var viewModel = new AvatarViewModel
             {
                 LayerGroupings = layerGroupings,
@@ -65,17 +70,28 @@ namespace GRA.Controllers
                 DefaultLayer = userWardrobe.First(_ => _.DefaultLayer).Id,
                 ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/")
             };
+            if (user.PremadeAvatarId.HasValue)
+            {
+                viewModel.PremadeAvatar = await _avatarService.GetBundleByIdAsync(user.PremadeAvatarId.Value);
+            }
+            var currentCulture = _userContextProvider.GetCurrentCulture();
             var userAvatar = await _avatarService.GetUserAvatarAsync();
             viewModel.NewAvatar = userAvatar.Count == 0;
             return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<JsonResult> SaveAvatar(string selectionJson)
+        public async Task<JsonResult> SaveAvatar(string selectionJson, int? premadeId)
         {
             try
             {
                 await UpdateAvatarAsync(selectionJson);
+                if (premadeId.HasValue)
+                {
+                    var user = await _userService.GetDetails(GetActiveUserId());
+                    user.PremadeAvatarId = premadeId;
+                    await _userService.Update(user);
+                }
                 return Json(new { success = true });
             }
             catch (GraException gex)

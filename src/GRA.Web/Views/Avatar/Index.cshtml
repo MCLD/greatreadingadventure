@@ -6,7 +6,7 @@
 <div class="alert alert-danger" id="error-container"></div>
 <div class="panel panel-default">
     <div class="row">
-        <div class="col-xs-12 col-sm-5 pull-right" id="avatarImageContainer">
+        <div class="col-xs-12 col-sm-5 pull-right" id="avatarImageContainer" aria-label="@(Model.PremadeAvatar != null ? Model.PremadeAvatar.Description : "" )">
             <div class="visible-xs" id="mobile-container" aria-hidden="true">
                 <div class="avatar-container center-block">
                     @foreach (var layer in Model.LayerGroupings.SelectMany(_ => _))
@@ -254,6 +254,7 @@
         var xsZoom = false;
         var unsavedChanges = @Model.NewAvatar.ToString().ToLower();
         var prevLayerSelected = [];
+        var initialPremade = @(Model.PremadeAvatar!= null ? Model.PremadeAvatar.Id.ToString() : "undefined");
 
 
         $.ajaxSetup({
@@ -363,6 +364,7 @@
                             UpdateAvatarContainer("item", item.Id, srcStr, item.AvatarLayerId, false);
                         };
                         $("#avatarImageContainer").attr("aria-label", description);
+                        $("#avatarImageContainer").data("premade", id);
                     }
                     else {
                         $("#error-container").text("@SharedLocalizer[GRA.Annotations.Validate.SomethingWentWrong]");
@@ -748,7 +750,13 @@
 
         // Saves the Avatars items
         function SaveAvatar() {
-            $.post("@Url.Action("SaveAvatar")", { selectionJson: GetAvatarSelection() }, function (response) {
+            var currentPremadeId = $("#avatarImageContainer").data("premade");
+            var premadeId = undefined;
+            if (currentPremadeId != initialPremade) {
+                premadeId = currentPremadeId;
+            }
+
+            $.post("@Url.Action("SaveAvatar")", { selectionJson: GetAvatarSelection(), premadeId}, function (response) {
                 if (response.success == true) {
                     $(".avatar-save-message").removeClass("text-danger").addClass("text-success");
                     $(".avatar-save-message").text("@SharedLocalizer[GRA.Annotations.Interface.AvatarSaved]");
@@ -762,6 +770,7 @@
                         </text>
                     }
                     SetUnsavedChanges(false);
+                    initialPremade = premadeId;
                 }
                 else {
                     $(".avatar-save-message").removeClass("text-success").addClass("text-danger");
