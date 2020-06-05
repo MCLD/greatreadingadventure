@@ -2645,8 +2645,6 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<int>("AvatarElementId");
 
-                    b.Property<int?>("PremadeAatarId");
-
                     b.HasKey("UserId", "AvatarElementId");
 
                     b.HasIndex("AvatarElementId");

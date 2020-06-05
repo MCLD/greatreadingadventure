@@ -11,6 +11,5 @@ namespace GRA.Data.Model
         [Required]
         public int AvatarElementId { get; set; }
         public AvatarElement AvatarElement { get; set; }
-        public int? PremadeAatarId { get; set; }
     }
 }
