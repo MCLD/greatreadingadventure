@@ -1181,6 +1181,10 @@
     <value>You must select a branch.</value>
     <comment>Inform the user they must select a library branch.</comment>
   </data>
+  <data name="Premade Avatars" xml:space="preserve">
+    <value>Premade Avatars</value>
+    <comment>Label for Premade Avatars</comment>
+  </data>
   <data name="You must select a program." xml:space="preserve">
     <value>You must select a program.</value>
     <comment>Inform the user they must select a program.</comment>

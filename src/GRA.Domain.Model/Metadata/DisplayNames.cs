@@ -39,6 +39,7 @@
         public const string OldPassword = "Old Password";
         public const string Password = "Password";
         public const string PhoneNumber = "Phone Number";
+        public const string PremadeAvatars = "Premade Avatars";
         public const string Program = "Program";
         public const string ReturnToSignIn = "Return to Sign In";
         public const string School = "School";

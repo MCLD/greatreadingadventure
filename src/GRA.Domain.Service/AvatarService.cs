@@ -532,7 +532,7 @@ namespace GRA.Domain.Service
             return await _avatarElementRepository.GetUserAvatarAsync(GetActiveUserId());
         }
 
-        public async Task<List<AvatarBundle>> GetUserUnlockBundlesAsync()
+        public async Task<List<AvatarBundle>> GetUserUnlockBundlesAsync(bool premadeAvatar = false)
         {
             var userHistory = await _avatarBundleRepository.UserHistoryAsync(GetActiveUserId());
             var bundles = new List<AvatarBundle>();
@@ -540,9 +540,17 @@ namespace GRA.Domain.Service
             {
                 if (!bundles.Any(bundle => bundle.Id == historyItem.AvatarBundleId))
                 {
-                    var bundle = await GetBundleByIdAsync(historyItem.AvatarBundleId.Value);
-                    bundle.HasBeenViewed = historyItem.HasBeenViewed ?? false;
-                    bundles.Add(bundle);
+                    if (premadeAvatar)
+                    {
+                        var premadeBundles = await GetBundlesPremadeAvatarsByIdAsync(historyItem.AvatarBundleId.Value);
+                        bundles.AddRange(premadeBundles);
+                    }
+                    else
+                    {
+                        var bundle = await GetBundleByIdAsync(historyItem.AvatarBundleId.Value);
+                        bundle.HasBeenViewed = historyItem.HasBeenViewed ?? false;
+                        bundles.Add(bundle);
+                    }
                 }
             }
             return bundles;
