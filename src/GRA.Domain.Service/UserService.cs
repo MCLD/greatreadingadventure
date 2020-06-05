@@ -362,6 +362,7 @@ namespace GRA.Domain.Service
                 currentEntity.LastName = userToUpdate.LastName?.Trim();
                 currentEntity.PhoneNumber = userToUpdate.PhoneNumber?.Trim();
                 currentEntity.PostalCode = userToUpdate.PostalCode?.Trim();
+                currentEntity.PremadeAvatarId = userToUpdate.PremadeAvatarId;
                 currentEntity.ProgramId = userToUpdate.ProgramId;
                 currentEntity.ProgramName = null;
                 currentEntity.SchoolId = userToUpdate.SchoolId;

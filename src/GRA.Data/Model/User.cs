@@ -80,5 +80,6 @@ namespace GRA.Data.Model
         public string UnsubscribeToken { get; set; }
 
         public bool IsSystemUser { get; set; }
+        public int? PremadeAvatarId { get; set; }
     }
 }
