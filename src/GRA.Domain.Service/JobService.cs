@@ -86,6 +86,12 @@ namespace GRA.Domain.Service
                                             token,
                                             progress);
                                         break;
+                                    case JobType.UpdateEmailAwardStatus:
+                                        status = await UpdateEmailAwardStatusFromExcelAsync(
+                                                jobInfo.Id,
+                                                token,
+                                                progress);
+                                        break;
                                     default: // case JobType.SendBulkEmails:
                                         status = await SendBulkEmails(userId,
                                             jobInfo.Id,
@@ -216,6 +222,18 @@ namespace GRA.Domain.Service
                 .RequestServices
                 .GetService(typeof(VendorCodeService)) as VendorCodeService;
             return await vendorCodeService.GenerateVendorCodesAsync(jobId, token, progress);
+        }
+
+        private async Task<JobStatus> UpdateEmailAwardStatusFromExcelAsync(int jobId,
+            CancellationToken token,
+            IProgress<JobStatus> progress = null)
+        {
+            var vendorCodeService = _httpContextAccessor
+                .HttpContext
+                .RequestServices
+                .GetService(typeof(VendorCodeService)) as VendorCodeService;
+            return await vendorCodeService.UpdateEmailAwardStatusFromExcelAsync(
+                jobId, token, progress);
         }
 
         private async Task<JobStatus> SendBulkEmails(int userId,

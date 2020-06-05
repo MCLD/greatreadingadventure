@@ -51,7 +51,7 @@ namespace GRA.Controllers.ViewModel.Home
         public Carousel Carousel { get; set; }
         public SiteStage SiteStage { get; set; }
 
-        public bool HasPendingDonationQuestion { get; set; }
+        public bool HasPendingVendorCodeQuestion { get; set; }
         public DateTime? VendorCodeExpiration { get; set; }
     }
 }
