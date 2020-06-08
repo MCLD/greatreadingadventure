@@ -89,8 +89,8 @@ namespace GRA.Controllers.MissionControl
                 code = await _vendorCodeService.AddTypeAsync(new VendorCodeType
                 {
                     Description = "Free Book Code",
-                    DonationOptionSubject = "Choose whether to receive your free book or donate it to a child",
-                    DonationOptionMail = "If you'd like to redeem your free book code, please visit <a href=\"/Profile/\">your profile</a> and select the redeem option. If you're not interested in redeeming it, you can select the option to donate it to a child.",
+                    OptionSubject = "Choose whether to receive your free book or donate it to a child",
+                    OptionMail = "If you'd like to redeem your free book code, please visit <a href=\"/Profile/\">your profile</a> and select the redeem option. If you're not interested in redeeming it, you can select the option to donate it to a child.",
                     MailSubject = "Here's your Free Book Code!",
                     Mail = $"Congratulations, you've earned a free book! Your free book code is: {TemplateToken.VendorCodeToken}!",
                     DonationMessage = "Your free book has been donated.Thank you!!!",

@@ -28,5 +28,7 @@ namespace GRA.Controllers.ViewModel.Profile
         public bool GroupLeader { get; set; }
 
         public string LocalizedHouseholdTitle { get; set; }
+
+        public EmailAwardViewModel EmailAwardModel { get; set; }
     }
 }

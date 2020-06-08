@@ -261,7 +261,7 @@ namespace GRA.Controllers
                     && (!userVendorCode.ExpirationDate.HasValue
                         || userVendorCode.ExpirationDate.Value > _dateTimeProvider.Now))
                 {
-                    viewModel.HasPendingDonationQuestion = true;
+                    viewModel.HasPendingVendorCodeQuestion = true;
                     viewModel.VendorCodeExpiration = userVendorCode.ExpirationDate;
                 }
 

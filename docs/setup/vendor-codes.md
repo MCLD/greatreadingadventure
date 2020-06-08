@@ -63,3 +63,33 @@ the coupon code in the sheet.
 
 An administrator of the reading program can import these spreadsheets
 periodically as needed so that participants can see their order status.
+
+### Additional redemption options
+
+The GRA can be configured to allow for the reward to be donated or
+delivered via email. 
+
+To enable either of these options the following fields on VendorCodeType must be set:
+- **OptionSubject** - The subject of the in-game mail sent letting the participant know they need to choose an option for the code
+- **OptionMail** - The message of the in-game mail sent letting the participant know they need to choose an option for the code
+
+To enable donations the additional fields on VendorCodeType need to be set:
+- **DonationSubject** - The subject of the in-game mail sent letting the participant know their reward has been donated.
+- **DonationMail** - The message of the in-game mail sent letting the participant know their reward has been donated.
+- **DonationMessage** - A short message shown on the users profile letting them know the reward has been donated.
+
+To enable email delivery the additional fields on VendorCodeType need to be set:
+- **EmailAwardSubject** - The subject of the in-game mail sent letting the participant know their reward will arrive via email.
+- **EmailAwardMail** - The message of the in-game mail sent letting the participant know their reward will arrive via email.
+- **EmailAwardMessage** - A short message shown on the users profile letting the participant know their reward will arrive via email.
+
+Addtionally for email delivery a **VendorCodeTypeText** record for each
+language needs to be added. The **EmailAwardInstructions** field is a
+message displayed to the participant when they select the email delivery
+option letting them know how the reward will arrive and what steps are
+needed to redeem it.
+
+Vendor codes that require an option be selected can have an
+**ExpirationDate** set. If set the date the reward expires will be shown
+to participants and after the date has passed the buttons to select a
+redemption option will be hidden.

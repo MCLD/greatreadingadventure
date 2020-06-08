@@ -6,7 +6,7 @@
 }
 
 <div class="row">
-    <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 ">
+    <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <span class="lead">
@@ -15,7 +15,14 @@
             </div>
             <div class="panel-body">
                 <div class="row-spacing" style="font-size:medium;">
-                    <strong>@SharedLocalizer[GRA.Annotations.Interface.When]:&nbsp;</strong>
+                    @if (Model.Event.IsStreaming)
+                    {
+                        <string>@SharedLocalizer[GRA.Annotations.Interface.StreamStarts]:&nbsp;</string>
+                    }
+                    else
+                    {
+                        <string>@SharedLocalizer[GRA.Annotations.Interface.When]:&nbsp;</string>
+                    }
                     @if (Model.Event.AllDay)
                     {
                         @:@Model.Event.StartDate.ToString("d") @(Model.Event.EndDate.HasValue ? "– " + Model.Event.EndDate.Value.ToString("d") : "")
@@ -35,15 +42,48 @@
                 <div class="row-spacing" style="font-size:medium;">
                     <table>
                         <tr>
-                            <td><strong>@SharedLocalizer[GRA.Annotations.Interface.Where]:&nbsp;</strong></td>
                             <td>
-                                @if (string.IsNullOrWhiteSpace(Model.Event.EventLocationLink))
+                                <strong>
+                                    @(@Model.Event.IsStreaming
+                                        ? @SharedLocalizer[GRA.Annotations.Interface.Stream]
+                                        : @SharedLocalizer[GRA.Annotations.Interface.Where]):&nbsp;
+                                </strong>
+                            </td>
+                            <td>
+                                @if (Model.Event.IsStreaming)
                                 {
-                                    @Model.Event.EventLocationName
+                                    @if (Model.Event.StartDate <= DateTime.Now
+                                       && Model.Event.StreamingAccessEnds >= DateTime.Now)
+                                    {
+                                        <a class="btn btn-success"
+                                           href="@Url.Action(nameof(EventsController.Stream),
+                                                new { eventId = Model.Event.Id })">
+                                            <span class="fa fa-play-circle-o"></span>
+                                            @SharedLocalizer[GRA.Annotations.Interface.StreamNow]
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <button disabled class="btn btn-secondary">
+                                            <span class="fa fa-stop-circle-o"></span>
+                                            @(@Model.Event.StartDate <= DateTime.Now
+                                                ? SharedLocalizer[GRA.Annotations.Interface.NotStreamingYet]
+                                                : SharedLocalizer[GRA.Annotations.Interface.ProgramIsOver])
+                                        </button>
+                                    }
+
                                 }
                                 else
                                 {
-                                    <a target="_blank" href="@Model.Event.EventLocationLink">@Model.Event.EventLocationName</a>
+                                    @if (string.IsNullOrWhiteSpace(Model.Event.EventLocationLink))
+                                    {
+                                        @Model.Event.EventLocationName
+                                    }
+                                    else
+                                    {
+                                        <a target="_blank"
+                                           href="@Model.Event.EventLocationLink">@Model.Event.EventLocationName</a>
+                                    }
                                 }
                             </td>
                         </tr>

@@ -24,5 +24,7 @@ namespace GRA.Controllers.ViewModel.Profile
 
         public string TranslationDescriptionPastTense { get; set; }
         public string ActivityDescriptionPlural { get; set; }
+
+        public EmailAwardViewModel EmailAwardModel { get; set; }
     }
 }
