@@ -3,7 +3,45 @@
 @using GRA.Domain.Model
 @await Html.PartialAsync("_ParticipantPartial")
 
+
 @inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
+
+@if (Model.CanEditDetails && Model.User.NeedsToAnswerVendorCodeQuestion && Model.User.CanEmailAwardVendorCode)
+{
+    <div class="row">
+        <div class="modal fade"
+             id="emailAwardModal"
+             tabindex="-1"
+             role="dialog"
+             aria-labelledby="emailAwardLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form asp-action="@nameof(ParticipantsController.EmailAward)" method="post" role="form" style="display:inline">
+                        <input asp-for="EmailAwardModel.UserId" value="@Model.User.Id" type="hidden" />
+                        <input asp-for="EmailAwardModel.Action" value="@nameof(ParticipantsController.Detail)" type="hidden" />
+                        <div class="modal-body">
+                            <p>@Html.Raw(Model.User.EmailAwardInstructions)</p>
+                            <div class="row row-spacing">
+                                <div class="col-xs-12">
+                                    <label asp-for="EmailAwardModel.Email" class="control-label"></label>
+                                    <input asp-for="EmailAwardModel.Email" class="form-control" value="@Model.User.Email" />
+                                    <span asp-validation-for="EmailAwardModel.Email" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">@GRA.Annotations.Interface.Cancel</button>
+                            <button type="submit" class="btn btn-warning btn-spinner pull-right" aria-label="Confirm">
+                                @GRA.Annotations.Interface.Confirm
+                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 <form asp-controller="Participants" method="post" role="form">
     <input asp-for="Id" type="hidden" />
@@ -159,64 +197,69 @@
                 </div>
             }
 
-            @if (!string.IsNullOrWhiteSpace(Model.User.VendorCode) || Model.User.NeedsToAnswerDonationQuestion)
+            @if (!string.IsNullOrWhiteSpace(Model.User.VendorCode) || Model.User.NeedsToAnswerVendorCodeQuestion)
             {
-                <div class="row row spacing">
+                <div class="row row-spacing" style="padding: 1rem 0; margin-top: 2rem; font-size: 1.5rem; border-radius: 0.5rem; border: 1px solid grey;">
                     <div class="col-xs-12">
-                        <table style="font-size: 16px;">
-                            <tr>
-                                <td>
-                                    Free Book Code:
-                                    @if (Model.User.NeedsToAnswerDonationQuestion)
-                                    {
-                                        <button class="btn btn-info btn-spinner"
-                                                asp-action="RedeemCode"
-                                                asp-is-disabled="@(!Model.CanEditDetails)">
-                                            <span class="buttonText">Redeem code</span>
-                                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                                        </button>
-                                        @:or
-                                        <button class="btn btn-success btn-spinner"
-                                                asp-action="DonateCode"
-                                                asp-is-disabled="@(!Model.CanEditDetails)">
-                                            <span class="buttonText">Donate book</span>
-                                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                                        </button>
-                                    }
-                                    else
-                                    {
-                                        if (!string.IsNullOrEmpty(Model.User.VendorCodeUrl))
-                                        {
-                                            <strong>
-                                                <a aria-label="@Model.User.VendorCode @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
-                                                   href="@Model.User.VendorCodeUrl"
-                                                   target="_blank">@Model.User.VendorCode</a>
-                                            </strong>
-                                        }
-                                        else
-                                        {
-                                            <strong>@Model.User.VendorCode</strong>
-                                        }
-                                        if (Model.User.Donated == true && User.HasClaim(ClaimType.Permission, Permission.PerformDrawing.ToString()))
-                                        {
-                                            <button class="btn btn-info btn-spinner"
-                                                    asp-action="UndonateCode"
-                                                    asp-is-disabled="@(!Model.CanEditDetails)">
-                                                <span class="buttonText">Un-donate</span>
-                                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                                            </button>
-                                        }
-                                    }
-                                </td>
-                            </tr>
-                            @if (!string.IsNullOrWhiteSpace(Model.User.VendorCodeMessage))
+                        <strong>Free Book Code:</strong>
+                        @if (Model.User.NeedsToAnswerVendorCodeQuestion)
+                        {
+                            <button class="btn btn-info btn-spinner"
+                                    asp-action="RedeemCode"
+                                    asp-is-disabled="@(!Model.CanEditDetails)">
+                                <span class="buttonText">Redeem code</span>
+                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                            </button>
+                            @if (Model.User.CanDonateVendorCode)
                             {
-                                <tr>
-                                    <td>@Model.User.VendorCodeMessage</td>
-                                </tr>
+                                @:or
+                                <button class="btn btn-success btn-spinner"
+                                        asp-action="DonateCode"
+                                        asp-is-disabled="@(!Model.CanEditDetails)">
+                                    <span class="buttonText">Donate book</span>
+                                    <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                </button>
                             }
-                        </table>
-
+                            @if (Model.User.CanEmailAwardVendorCode)
+                            {
+                                @:or
+                                <button id="emailAwardButton"
+                                        class="btn btn-warning"
+                                        asp-is-disabled="@(!Model.CanEditDetails)">
+                                    <span class="buttonText">Email e-audiobook</span>
+                                </button>
+                            }
+                        }
+                        else
+                        {
+                            if (!string.IsNullOrEmpty(Model.User.VendorCodeUrl))
+                            {
+                                <strong>
+                                    <a href="@Model.User.VendorCodeUrl"
+                                       target="_blank">@Model.User.VendorCode</a>
+                                </strong>
+                            }
+                            else
+                            {
+                                <strong>@Model.User.VendorCode</strong>
+                            }
+                            if (Model.User.Donated == true
+                                && User.HasClaim(ClaimType.Permission,
+                                    Permission.UnDonateVendorCode.ToString()))
+                            {
+                                <button class="btn btn-info btn-spinner"
+                                        asp-action="UndonateCode"
+                                        asp-is-disabled="@(!Model.CanEditDetails)">
+                                    <span class="buttonText">Un-donate</span>
+                                    <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                </button>
+                            }
+                        }
+                        @if (!string.IsNullOrWhiteSpace(Model.User.VendorCodeMessage))
+                        {
+                            @:/
+                            @Html.Raw(Model.User.VendorCodeMessage)
+                        }
                     </div>
                 </div>
             }
@@ -227,6 +270,7 @@
         <a asp-action="Index" class="btn btn-default">Return to Participants</a>
         @if (Model.CanEditDetails)
         {
+            <input asp-for="Action" value="@nameof(ParticipantsController.Detail)" type="hidden" />
             <input asp-for="CanEditDetails" type="hidden" />
             <input asp-for="Username" type="hidden" />
             <input asp-for="User.Id" type="hidden" />
@@ -376,6 +420,17 @@
         $("#User_Username").on("keypress", function () {
             $("#Username-Icon").addClass("hide");
         });
+        </text>
+        }
+
+        @if (Model.User.NeedsToAnswerVendorCodeQuestion && Model.User.CanEmailAwardVendorCode
+            && Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.EditParticipants.ToString()))
+        {
+        <text>
+            $("#emailAwardButton").on("click", function (event) {
+                event.preventDefault();
+                $("#emailAwardModal").modal();
+            });
         </text>
         }
     </script>

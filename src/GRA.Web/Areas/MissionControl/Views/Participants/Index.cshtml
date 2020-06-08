@@ -11,8 +11,20 @@
                         <div class="modal-title h4" id="deleteModalLabel">Delete participant</div>
                     </div>
                     <div class="modal-body">
-                        <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
-                        <span id="modal-text"></span>
+                        @if (Model.CanRemoveParticipant)
+                        {
+                            <div class="row" id="elevatedWarning">
+                                <div class="col-xs-12">
+                                    <div class="alert alert-warning">
+                                        <strong>
+                                            <span class="fa fa-exclamation-triangle"></span>
+                                            This user has an administrative role in this software.
+                                        </strong>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <strong id="modal-text"></strong>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
@@ -115,18 +127,18 @@
     }
     <div class="row row-spacing">
         <div class="col-xs-8">
-            <input asp-for="Search" 
+            <input asp-for="Search"
                    class="form-control"
                    placeholder="Search by username, first or last name, full name, free book code" />
         </div>
         <div class="col-xs-4">
-            <input type="submit" 
-                   value="Search" 
-                   class="btn btn-default" 
+            <input type="submit"
+                   value="Search"
+                   class="btn btn-default"
                    style="margin-right: 8px;" />
-            <a asp-action="Index" 
-               asp-route-SystemId="@Model.SystemId" 
-               asp-route-BranchId="@Model.BranchId" 
+            <a asp-action="Index"
+               asp-route-SystemId="@Model.SystemId"
+               asp-route-BranchId="@Model.BranchId"
                asp-route-ProgramId="@Model.ProgramId" class="btn btn-default">Clear</a>
         </div>
     </div>
@@ -198,7 +210,8 @@
                                                 data-toggle="modal"
                                                 data-target="#deleteModal"
                                                 data-id="@user.Id"
-                                                data-name="@(user.Username ?? user.FullName)">
+                                                data-name="@(user.Username ?? user.FullName)"
+                                                data-iselevated="@user.IsAdmin">
                                             <span class="fa fa-remove" aria-hidden="true"></span>
                                         </button>
                                     </td>
@@ -240,8 +253,15 @@
             var button = $(event.relatedTarget);
             var id = button.data('id');
             var name = button.data('name');
+            var isElevated = button.data("iselevated");
+            if (isElevated == "True") {
+                $("#elevatedWarning").removeClass("hide");
+            }
+            else {
+                $("#elevatedWarning").addClass("hide");
+            }
             var modal = $(this);
-            modal.find('#modal-text').text('Are you sure you wish to delete the participant "' + name + '" ?');
+            modal.find('#modal-text').text('Are you sure you wish to delete the participant "' + name + '"?');
             modal.find('#Id').val(id);
         })
         </text>

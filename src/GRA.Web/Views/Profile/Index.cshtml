@@ -1,6 +1,42 @@
 ﻿@model GRA.Controllers.ViewModel.Profile.ProfileDetailViewModel
 
+
 @inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
+
+@if (Model.User.NeedsToAnswerVendorCodeQuestion && Model.User.CanEmailAwardVendorCode)
+{
+    <div class="row">
+        <div class="modal fade"
+             id="emailAwardModal"
+             tabindex="-1"
+             role="dialog"
+             aria-labelledby="emailAwardLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form asp-action="@nameof(ProfileController.EmailAward)" method="post" role="form" style="display:inline">
+                        <div class="modal-body">
+                            <p>@Html.Raw(Model.User.EmailAwardInstructions)</p>
+                            <div class="row row-spacing">
+                                <div class="col-xs-12">
+                                    <label asp-for="EmailAwardModel.Email" class="control-label"></label>
+                                    <input asp-for="EmailAwardModel.Email" class="form-control" value="@Model.User.Email" />
+                                    <span asp-validation-for="EmailAwardModel.Email" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">@SharedLocalizer[GRA.Annotations.Interface.Cancel]</button>
+                            <button type="submit" class="btn btn-warning btn-spinner pull-right" aria-label="Confirm">
+                                @SharedLocalizer[GRA.Annotations.Interface.Confirm]
+                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 <div class="row">
     <div class="col-xs-12 col-sm-10 col-sm-offset-1">
@@ -23,29 +59,40 @@
                             <input asp-for="User.VendorCode" type="hidden" />
                             <input asp-for="User.VendorCodeMessage" type="hidden" />
 
-                            @if (!string.IsNullOrWhiteSpace(Model.User.VendorCode) || Model.User.NeedsToAnswerDonationQuestion)
+                            @if (!string.IsNullOrWhiteSpace(Model.User.VendorCode) || Model.User.NeedsToAnswerVendorCodeQuestion)
                             {
                                 <div class="row row spacing">
                                     <div class="col-xs-12">
                                         <div class="alert alert-info" style="padding: 1em;">
-                                            @if (Model.User.NeedsToAnswerDonationQuestion)
+                                            @if (Model.User.NeedsToAnswerVendorCodeQuestion)
                                             {
                                                 <p><strong>@SharedLocalizer[GRA.Annotations.Interface.FreeBookCongratulations]</strong></p>
                                                 <p>
-                                                    You may:
+                                                    @SharedLocalizer[GRA.Annotations.Interface.ChooseAnOption]
                                                     <button class="btn btn-info btn-spinner"
                                                             asp-action="RedeemCode"
                                                             style="margin-top: 0.25em; margin-bottom: 0.25em;">
                                                         <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.RedeemYourCode]</span>
                                                         <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                                                     </button>
-                                                    or
-                                                    <button class="btn btn-success btn-spinner"
-                                                            asp-action="DonateCode"
-                                                            style="margin-top: 0.25em; margin-bottom: 0.25em;">
-                                                        <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.DonateYourBook]</span>
-                                                        <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                                                    </button>
+                                                    @if (Model.User.CanDonateVendorCode)
+                                                    {
+                                                        <button class="btn btn-success btn-spinner"
+                                                                asp-action="DonateCode"
+                                                                style="margin-top: 0.25em; margin-bottom: 0.25em;">
+                                                            <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.DonateYourBook]</span>
+                                                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                                        </button>
+                                                    }
+                                                    @if (Model.User.CanEmailAwardVendorCode)
+                                                    {
+                                                        <a id="emailAwardButton"
+                                                           class="btn btn-warning"
+                                                           asp-action="@nameof(ProfileController.EmailAward)"
+                                                           style="margin-top: 0.25em; margin-bottom: 0.25em;">
+                                                            <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.ReceiveEAudiobook]</span>
+                                                        </a>
+                                                    }
                                                 </p>
                                             }
                                             else
@@ -68,7 +115,7 @@
                                             }
                                             @if (!string.IsNullOrWhiteSpace(Model.User.VendorCodeMessage))
                                             {
-                                                <p>@Model.User.VendorCodeMessage</p>
+                                                <p>@Html.Raw(Model.User.VendorCodeMessage)</p>
                                             }
                                         </div>
                                     </div>
@@ -204,7 +251,7 @@
                                 <input asp-for="User.ProgramId" type="hidden" />
                             }
 
-                            <div id="ageField" class="row row-spacing @(Model.ShowAge ? "": "hide")">
+                            <div id="ageField" class="row row-spacing @(Model.ShowAge ? "" : "hide")">
                                 <div class="col-xs-12">
                                     <label asp-for="User.Age" class="control-label"></label>
                                     <input asp-for="User.Age" class="form-control" type="text" />
@@ -212,7 +259,7 @@
                                 </div>
                             </div>
 
-                            <div id="schoolFields" class="@(Model.ShowSchool ? "": "hide")">
+                            <div id="schoolFields" class="@(Model.ShowSchool ? "" : "hide")">
                                 @await Html.PartialAsync("_SchoolSelectionPartial", Model)
                             </div>
 
@@ -337,6 +384,16 @@
             {
                 message.text("");
             }
+        }
+
+        @if (Model.User.NeedsToAnswerVendorCodeQuestion && Model.User.CanEmailAwardVendorCode)
+        {
+        <text>
+            $("#emailAwardButton").on("click", function(event) {
+                event.preventDefault();
+                $("#emailAwardModal").modal();
+            });
+        </text>
         }
     </script>
 

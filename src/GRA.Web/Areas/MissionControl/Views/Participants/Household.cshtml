@@ -162,6 +162,40 @@
             </div>
         </div>
     </div>
+
+    <div class="row">
+        <div class="modal fade"
+             id="emailAwardModal"
+             tabindex="-1"
+             role="dialog"
+             aria-labelledby="emailAwardLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form asp-action="@nameof(ParticipantsController.EmailAward)" method="post" role="form" style="display:inline">
+                        <input asp-for="EmailAwardModel.UserId" type="hidden" />
+                        <input asp-for="EmailAwardModel.Action" value="@nameof(ParticipantsController.Household)" type="hidden" />
+                        <div class="modal-body">
+                            <p>@Html.Raw(Model.Head.EmailAwardInstructions)</p>
+                            <div class="row row-spacing">
+                                <div class="col-xs-12">
+                                    <label asp-for="EmailAwardModel.Email" class="control-label"></label>
+                                    <input asp-for="EmailAwardModel.Email" class="form-control" />
+                                    <span asp-validation-for="EmailAwardModel.Email" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">@GRA.Annotations.Interface.Cancel</button>
+                            <button type="submit" class="btn btn-warning btn-spinner pull-right" aria-label="Confirm">
+                                @GRA.Annotations.Interface.Confirm
+                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 }
 
 @if (Model.CanViewPrizes && Model.HouseholdPrizeList.Count > 0 && Model.Users.Any())
@@ -465,7 +499,7 @@
                                 @if (Model.ShowVendorCodes)
                                 {
                                     <td>
-                                        @if (Model.Head.NeedsToAnswerDonationQuestion)
+                                        @if (Model.Head.NeedsToAnswerVendorCodeQuestion)
                                         {
                                             <button class="btn btn-info btn-xs btn-spinner btn-on-top"
                                                     name="redeemButton"
@@ -475,15 +509,29 @@
                                                 <span class="buttonText">Redeem code</span>
                                                 <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                                             </button>
-                                            @:or
-                                            <button class="btn btn-success btn-xs btn-spinner btn-on-top"
-                                                    name="donateButton"
-                                                    value="@Model.Head.Id"
-                                                    asp-action="HandleHouseholdDonation"
-                                                    asp-is-disabled="@(!Model.CanEditDetails)">
-                                                <span class="buttonText">Donate book</span>
-                                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                                            </button>
+                                            @if (Model.Head.CanDonateVendorCode)
+                                            {
+                                                @:or
+                                                <button class="btn btn-success btn-xs btn-spinner btn-on-top"
+                                                        name="donateButton"
+                                                        value="@Model.Head.Id"
+                                                        asp-action="HandleHouseholdDonation"
+                                                        asp-is-disabled="@(!Model.CanEditDetails)">
+                                                    <span class="buttonText">Donate book</span>
+                                                    <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                                </button>
+                                            }
+                                            @if (Model.Head.CanEmailAwardVendorCode)
+                                            {
+                                                @:or
+                                                <button class="btn btn-warning btn-xs btn-on-top emailAwardButton"
+                                                        asp-action="HandleHouseholdDonation"
+                                                        asp-is-disabled="@(!Model.CanEditDetails)"
+                                                        data-email="@Model.Head.Email"
+                                                        data-userid="@Model.Head.Id">
+                                                    <span class="buttonText">Email e-audiobook</span>
+                                                </button>
+                                            }
                                         }
                                         else
                                         {
@@ -514,7 +562,7 @@
                                         }
                                         @if (!string.IsNullOrEmpty(Model.Head.VendorCodeMessage))
                                         {
-                                            <br />@Model.Head.VendorCodeMessage
+                                            <br />@Html.Raw(Model.Head.VendorCodeMessage)
                                         }
                                     </td>
                                 }
@@ -603,7 +651,7 @@
                                     @if (Model.ShowVendorCodes)
                                     {
                                         <td>
-                                            @if (user.NeedsToAnswerDonationQuestion)
+                                            @if (user.NeedsToAnswerVendorCodeQuestion)
                                             {
                                                 <button class="btn btn-info btn-xs btn-spinner btn-on-top"
                                                         name="redeemButton"
@@ -613,15 +661,29 @@
                                                     <span class="buttonText">Redeem code</span>
                                                     <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                                                 </button>
-                                                @:or
-                                                <button class="btn btn-success btn-xs btn-spinner btn-on-top"
-                                                        name="donateButton"
-                                                        value="@user.Id"
-                                                        asp-action="HandleHouseholdDonation"
-                                                        asp-is-disabled="@(!Model.CanEditDetails)">
-                                                    <span class="buttonText">Donate book</span>
-                                                    <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                                                </button>
+                                                @if (user.CanDonateVendorCode)
+                                                {
+                                                    @:or
+                                                    <button class="btn btn-success btn-xs btn-spinner btn-on-top"
+                                                            name="donateButton"
+                                                            value="@user.Id"
+                                                            asp-action="HandleHouseholdDonation"
+                                                            asp-is-disabled="@(!Model.CanEditDetails)">
+                                                        <span class="buttonText">Donate book</span>
+                                                        <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                                    </button>
+                                                }
+                                                @if (user.CanEmailAwardVendorCode)
+                                                {
+                                                    @:or
+                                                    <button class="btn btn-warning btn-xs btn-on-top emailAwardButton"
+                                                            asp-action="HandleHouseholdDonation"
+                                                            asp-is-disabled="@(!Model.CanEditDetails)"
+                                                            data-email="@user.Email"
+                                                            data-userid="@user.Id">
+                                                        <span class="buttonText">Email e-audiobook</span>
+                                                    </button>
+                                                }
                                             }
                                             else
                                             {
@@ -651,7 +713,7 @@
                                             }
                                             @if (!string.IsNullOrEmpty(user.VendorCodeMessage))
                                             {
-                                                <br />@user.VendorCodeMessage
+                                                <br />@Html.Raw(user.VendorCodeMessage)
                                             }
                                         </td>
                                     }
@@ -724,234 +786,240 @@
         });
     });
 
-    /**/
-@if (Model.CanLogActivity)
+    @if (Model.CanLogActivity)
     {
-<text>
-    /**/
-    var submitting = false;
+    <text>
+        var submitting = false;
 
-    $("#checkAll").on("change", function (e) {
-        if (e.originalEvent) {
-            $(".userSelection").prop("checked", $(this).prop("checked"));
+        $("#checkAll").on("change", function (e) {
+            if (e.originalEvent) {
+                $(".userSelection").prop("checked", $(this).prop("checked"));
+            }
+        });
+
+        $(".userSelection").on("change", function (e) {
+            if (e.originalEvent) {
+                if ($(".userSelection:not(:checked)").length) {
+                    $("#checkAll").prop("checked", false);
+                }
+                else {
+                    $("#checkAll").prop("checked", true);
+                }
+            }
+        });
+
+        $(".activityInput").on("keypress", function (e) {
+            var keyCode = e.keyCode || e.which;
+            if (keyCode === 13) {
+                e.preventDefault();
+                if (submitting != true) {
+                    submitting = true;
+                    $("#ActivityAmount").val($(this).val());
+                    SetUserSelection();
+                    $("#form").attr("action", $(this).data("action")).submit();
+                }
+            }
+        });
+
+        $(".codeInput").on("keypress", function (e) {
+            var keyCode = e.keyCode || e.which;
+            if (keyCode === 13) {
+                e.preventDefault();
+                if (submitting != true) {
+                    submitting = true;
+                    $("#SecretCode").val($(this).val());
+                    SetUserSelection();
+                    $("#form").attr("action", $(this).data("action")).submit();
+                }
+            }
+        });
+
+        $(".activityButton").on("click", function (e) {
+            e.preventDefault();
+            if (submitting != true) {
+                submitting = true;
+                $("#ActivityAmount").val($(this).parent().parent().find(".activityInput").val());
+                SetUserSelection();
+                $("#form").attr("action", $(this).data("action")).submit();
+            }
+        });
+
+        $(".codeButton").on("click", function (e) {
+            e.preventDefault();
+            if (submitting != true) {
+                submitting = true;
+                $("#SecretCode").val($(this).parent().parent().find(".codeInput").val());
+                SetUserSelection();
+                $("#form").attr("action", $(this).data("action")).submit();
+            }
+        });
+
+        function SetUserSelection() {
+            var selectionArray = [];
+            $(".userSelection:checked").each(function () {
+                selectionArray.push($(this).data("id"));
+            });
+            $("#UserSelection").val(selectionArray);
+        };
+    </text>
+    }
+
+    @if (Model.CanEditDetails)
+    {
+    <text>
+        var userId = @Model.Id
+        var defaultSystemId = @Model.SystemId;
+        var participantsUrl = "@Url.Action("HouseholdGetParticipantsList")";
+        var branchUrl = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
+        var systemId = null;
+        var branchId = null;
+        var search = "";
+        var page = 1;
+
+        function UpdateParticipantsList() {
+            $.get(participantsUrl,
+                {
+                    userId: userId,
+                    systemId: systemId,
+                    branchId: branchId,
+                    search: search,
+                    page: page
+                }, function (response) {
+                    $("#modalParticipantsList").html(response);
+                });
         }
-    });
 
-    $(".userSelection").on("change", function (e) {
-        if (e.originalEvent) {
-            if ($(".userSelection:not(:checked)").length) {
-                $("#checkAll").prop("checked", false);
+        function UpdateBranchList(system) {
+            $.get(branchUrl,
+                {
+                    systemId: system,
+                    branchId: null,
+                    prioritize: true
+                }, function (response) {
+                    $("#branchDropdown").empty();
+                    $.each(response, function (index, item) {
+                        $("#branchDropdown").append('<li><a class="branch-selector" data-id="' + item.value + '">' + item.text + '</a></li>');
+                    });
+                });
+        }
+
+        $('#listModal').on('show.bs.modal', function () {
+            UpdateParticipantsList();
+        })
+
+        $("#All").on("click", function () {
+            if (systemId != null) {
+                $(this).siblings().removeClass("active");
+                $(this).addClass().addClass("active");
+                $("#systemText").text("System");
+                $("#branchText").text("Branch");
+                if (systemId != defaultSystemId) {
+                    UpdateBranchList(defaultSystemId);
+                }
+                systemId = null;
+                branchId = null;
+                page = 1;
+                UpdateParticipantsList();
+            }
+        });
+
+        $(".system-selector").on("click", function (e) {
+            var thisId = $(this).data("id");
+            if (systemId != thisId || branchId != null) {
+                if (systemId == null || branchId != null) {
+                    var navPill = $(this).parent().parent().parent();
+                    navPill.siblings().removeClass("active");
+                    navPill.addClass().addClass("active");
+                    if (branchId != null) {
+                        $("#branchText").text("Branch");
+                    }
+                }
+                $("#systemText").text($(this).text());
+                if (systemId != thisId && (systemId != null || thisId != defaultSystemId)) {
+                    UpdateBranchList(thisId);
+                }
+                systemId = thisId;
+                branchId = null;
+                page = 1;
+                UpdateParticipantsList();
+            }
+        });
+
+        $(document).on("click", ".branch-selector", function (e) {
+            var thisId = $(this).data("id");
+            if (branchId != thisId) {
+                if (branchId == null) {
+                    var navPill = $(this).parent().parent().parent();
+                    navPill.siblings().removeClass("active");
+                    navPill.addClass().addClass("active");
+                    if (systemId == null) {
+                        systemId = defaultSystemId;
+                        $("#systemText").text($(".system-selector").first().text());
+                    }
+                }
+                $("#branchText").text($(this).text());
+                branchId = thisId;
+                page = 1;
+                UpdateParticipantsList();
+            }
+        });
+
+        $("#searchButton").on("click", function () {
+            search = $("#searchText").val();
+            if (search != "") {
+                $("#searchMessage").removeClass("hide");
+                $("#searchTerm").html(search);
             }
             else {
-                $("#checkAll").prop("checked", true);
+                $("#searchMessage").addClass("hide");
             }
-        }
-    });
+            page = 1;
+            UpdateParticipantsList();
+        })
 
-    $(".activityInput").on("keypress", function (e) {
-        var keyCode = e.keyCode || e.which;
-        if (keyCode === 13) {
-            e.preventDefault();
-            if (submitting != true) {
-                submitting = true;
-                $("#ActivityAmount").val($(this).val());
-                SetUserSelection();
-                $("#form").attr("action", $(this).data("action")).submit();
+        $("#clearButton").on("click", function () {
+            $("#searchText").val("");
+            if (search != "") {
+                search = "";
+                $("#searchMessage").addClass("hide");
+                page = 1;
+                UpdateParticipantsList();
             }
-        }
-    });
+        })
 
-    $(".codeInput").on("keypress", function (e) {
-        var keyCode = e.keyCode || e.which;
-        if (keyCode === 13) {
-            e.preventDefault();
-            if (submitting != true) {
-                submitting = true;
-                $("#SecretCode").val($(this).val());
-                SetUserSelection();
-                $("#form").attr("action", $(this).data("action")).submit();
+        $(document).on("click", ".page-button", function () {
+            if (!$(this).hasClass("disabled")) {
+                page = $(this).data("page");
+                UpdateParticipantsList();
             }
-        }
-    });
-
-    $(".activityButton").on("click", function (e) {
-        e.preventDefault();
-        if (submitting != true) {
-            submitting = true;
-            $("#ActivityAmount").val($(this).parent().parent().find(".activityInput").val());
-            SetUserSelection();
-            $("#form").attr("action", $(this).data("action")).submit();
-        }
-    });
-
-    $(".codeButton").on("click", function (e) {
-        e.preventDefault();
-        if (submitting != true) {
-            submitting = true;
-            $("#SecretCode").val($(this).parent().parent().find(".codeInput").val());
-            SetUserSelection();
-            $("#form").attr("action", $(this).data("action")).submit();
-        }
-    });
-
-    function SetUserSelection() {
-        var selectionArray = [];
-        $(".userSelection:checked").each(function () {
-            selectionArray.push($(this).data("id"));
         });
-        $("#UserSelection").val(selectionArray);
-    };
-</text>
-}
-/**/
-@if (Model.CanEditDetails)
-    {
-<text>
-    var userId = @Model.Id
-    var defaultSystemId = @Model.SystemId;
-    var participantsUrl = "@Url.Action("HouseholdGetParticipantsList")";
-    var branchUrl = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
-    var systemId = null;
-    var branchId = null;
-    var search = "";
-    var page = 1;
 
-    function UpdateParticipantsList() {
-        $.get(participantsUrl,
-            {
-                userId: userId,
-                systemId: systemId,
-                branchId: branchId,
-                search: search,
-                page: page
-            }, function (response) {
-                $("#modalParticipantsList").html(response);
-            });
+        $('#promoteModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            var name = button.data('name');
+            var modal = $(this);
+            modal.find('#modal-text').text('Are you sure you wish to promote "' + name + '" to @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group") manager?');
+            modal.find('#PromoteId').val(id);
+        })
+
+        $('#removeModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            var name = button.data('name');
+            var modal = $(this);
+            modal.find('#modal-text').text('Are you sure you wish to remove "' + name + '" from the @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group")?');
+            modal.find('#RemoveId').val(id);
+        })
+
+        $(".emailAwardButton").on("click", function (event) {
+            event.preventDefault();
+            var modal = $("#emailAwardModal");
+            modal.find("#EmailAwardModel_Email").val($(this).data("email"));
+            modal.find("#EmailAwardModel_UserId").val($(this).data("userid"));
+            modal.modal();
+        });
+    </text>
     }
-
-    function UpdateBranchList(system) {
-        $.get(branchUrl,
-            {
-                systemId: system,
-                branchId: null,
-                prioritize: true
-            }, function (response) {
-                $("#branchDropdown").empty();
-                $.each(response, function (index, item) {
-                    $("#branchDropdown").append('<li><a class="branch-selector" data-id="' + item.value + '">' + item.text + '</a></li>');
-                });
-            });
-    }
-
-    $('#listModal').on('show.bs.modal', function () {
-        UpdateParticipantsList();
-    })
-
-    $("#All").on("click", function () {
-        if (systemId != null) {
-            $(this).siblings().removeClass("active");
-            $(this).addClass().addClass("active");
-            $("#systemText").text("System");
-            $("#branchText").text("Branch");
-            if (systemId != defaultSystemId) {
-                UpdateBranchList(defaultSystemId);
-            }
-            systemId = null;
-            branchId = null;
-            page = 1;
-            UpdateParticipantsList();
-        }
-    });
-
-    $(".system-selector").on("click", function (e) {
-        var thisId = $(this).data("id");
-        if (systemId != thisId || branchId != null) {
-            if (systemId == null || branchId != null) {
-                var navPill = $(this).parent().parent().parent();
-                navPill.siblings().removeClass("active");
-                navPill.addClass().addClass("active");
-                if (branchId != null) {
-                    $("#branchText").text("Branch");
-                }
-            }
-            $("#systemText").text($(this).text());
-            if (systemId != thisId && (systemId != null || thisId != defaultSystemId)) {
-                UpdateBranchList(thisId);
-            }
-            systemId = thisId;
-            branchId = null;
-            page = 1;
-            UpdateParticipantsList();
-        }
-    });
-
-    $(document).on("click", ".branch-selector", function (e) {
-        var thisId = $(this).data("id");
-        if (branchId != thisId) {
-            if (branchId == null) {
-                var navPill = $(this).parent().parent().parent();
-                navPill.siblings().removeClass("active");
-                navPill.addClass().addClass("active");
-                if (systemId == null) {
-                    systemId = defaultSystemId;
-                    $("#systemText").text($(".system-selector").first().text());
-                }
-            }
-            $("#branchText").text($(this).text());
-            branchId = thisId;
-            page = 1;
-            UpdateParticipantsList();
-        }
-    });
-
-    $("#searchButton").on("click", function () {
-        search = $("#searchText").val();
-        if (search != "") {
-            $("#searchMessage").removeClass("hide");
-            $("#searchTerm").html(search);
-        }
-        else {
-            $("#searchMessage").addClass("hide");
-        }
-        page = 1;
-        UpdateParticipantsList();
-    })
-
-    $("#clearButton").on("click", function () {
-        $("#searchText").val("");
-        if (search != "") {
-            search = "";
-            $("#searchMessage").addClass("hide");
-            page = 1;
-            UpdateParticipantsList();
-        }
-    })
-
-    $(document).on("click", ".page-button", function () {
-        if (!$(this).hasClass("disabled")) {
-            page = $(this).data("page");
-            UpdateParticipantsList();
-        }
-    });
-
-    $('#promoteModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget);
-        var id = button.data('id');
-        var name = button.data('name');
-        var modal = $(this);
-        modal.find('#modal-text').text('Are you sure you wish to promote "' + name + '" to @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group") manager?');
-        modal.find('#PromoteId').val(id);
-    })
-
-    $('#removeModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget);
-        var id = button.data('id');
-        var name = button.data('name');
-        var modal = $(this);
-        modal.find('#modal-text').text('Are you sure you wish to remove "' + name + '" from the @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group")?');
-        modal.find('#RemoveId').val(id);
-    })
-</text>
-}
     </script>
 }

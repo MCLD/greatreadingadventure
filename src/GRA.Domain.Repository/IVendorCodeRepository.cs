@@ -11,5 +11,8 @@ namespace GRA.Domain.Repository
         Task<VendorCode> GetByCode(string code);
         Task<ICollection<VendorCode>> GetEarnedCodesAsync(ReportCriterion criterion);
         Task<ICollection<VendorCode>> GetPendingHouseholdCodes(int headOfHouseholdId);
+
+        Task<ICollection<VendorCode>> GetUnreportedEmailAwardCodes(int siteId,
+            int vendorCodeTypeId);
     }
 }

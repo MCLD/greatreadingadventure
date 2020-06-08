@@ -14,22 +14,23 @@ namespace GRA.Domain.Service
     {
         private readonly IRoleRepository _roleRepository;
         private readonly ISiteRepository _siteRepository;
-        private readonly IUserRepository _userRepository;
+        private readonly SiteLookupService _siteLookupService;
 
         public RoleService(ILogger<RoleService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             IRoleRepository roleRepository,
             ISiteRepository siteRepository,
-            IUserRepository userRepository) : base(logger, dateTimeProvider, userContextProvider)
+            SiteLookupService siteLookupService)
+            : base(logger, dateTimeProvider, userContextProvider)
         {
             SetManagementPermission(Permission.ManageRoles);
             _roleRepository = roleRepository
                 ?? throw new ArgumentNullException(nameof(roleRepository));
             _siteRepository = siteRepository
                 ?? throw new ArgumentNullException(nameof(siteRepository));
-            _userRepository = userRepository
-                ?? throw new ArgumentNullException(nameof(userRepository));
+            _siteLookupService = siteLookupService
+                ?? throw new ArgumentNullException(nameof(siteLookupService));
         }
 
         public async Task<Role> GetByIdAsync(int id)
@@ -150,7 +151,7 @@ namespace GRA.Domain.Service
                 {
                     if (permissionsToAdd.Any())
                     {
-                        var userId = await _userRepository.GetSystemUserId();
+                        var userId = await _siteLookupService.GetSystemUserId();
                         await _roleRepository.AddPermissionListAsync(userId, permissionsToAdd);
                     }
                     if (permissionsToRemove.Any())

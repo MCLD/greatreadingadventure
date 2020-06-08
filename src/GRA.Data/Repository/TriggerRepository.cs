@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using GRA.Domain.Model;
-using GRA.Domain.Repository;
-using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using AutoMapper.QueryableExtensions;
-using System;
-using GRA.Domain.Repository.Extensions;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper.QueryableExtensions;
+using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
+using GRA.Domain.Repository;
+using GRA.Domain.Repository.Extensions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace GRA.Data.Repository
 {
@@ -83,7 +83,8 @@ namespace GRA.Data.Repository
 
             foreach (var trigger in triggerList)
             {
-                trigger.HasDependents = await HasDependentsAsync(trigger.Id);
+                var dependents = await DependentTriggers(trigger.Id);
+                trigger.HasDependents = dependents?.Count() > 1;
             }
 
             return triggerList;
@@ -600,13 +601,26 @@ namespace GRA.Data.Repository
             return updatedTrigger;
         }
 
-        public async Task<bool> HasDependentsAsync(int triggerId)
+        public async Task<IDictionary<int, string>> DependentTriggers(int triggerId)
         {
-            return await (from triggerBadges in _context.TriggerBadges
-                          join trigger in DbSet.Where(_ => _.Id == triggerId)
-                          on triggerBadges.BadgeId equals trigger.AwardBadgeId
-                          select triggerBadges)
-                          .AnyAsync();
+            var relatedTriggerIds = _context.TriggerBadges
+                .AsNoTracking()
+                .Join(_context.Triggers.AsNoTracking().Where(_ => _.Id == triggerId),
+                        tb => tb.BadgeId,
+                        t => t.AwardBadgeId,
+                        (tb, _) => tb.TriggerId);
+
+            if (relatedTriggerIds.Count() > 0)
+            {
+                return await DbSet
+                    .AsNoTracking()
+                    .Where(_ => relatedTriggerIds.Contains(_.Id))
+                    .ToDictionaryAsync(k => k.Id, v => v.Name);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public async Task<ICollection<Trigger>> GetTriggerDependentsAsync(int triggerBadgeId)
