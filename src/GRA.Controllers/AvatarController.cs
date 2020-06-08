@@ -216,7 +216,6 @@ namespace GRA.Controllers
         public async Task<IActionResult> GetLayersItems(
             string type, int layerId, int selectedItemId, int bundleId, int[] selectedItemIds)
         {
-            var success = false;
             try
             {
                 var layeritems = await _avatarService.GetUsersItemsByLayerAsync(layerId);

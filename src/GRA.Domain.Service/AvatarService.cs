@@ -230,7 +230,7 @@ namespace GRA.Domain.Service
             var currentlayer = await _avatarLayerRepository.AddSaveAsync(
                 GetClaimId(ClaimType.UserId), layer);
             var languageId = await _languageService.GetDefaultLanguageIdAsync();
-            _avatarLayerRepository.AddAvatarLayerTextAsync(
+            await _avatarLayerRepository.AddAvatarLayerTextAsync(
                 layer,
                 languageId,
                 currentlayer.Id);
@@ -638,8 +638,8 @@ namespace GRA.Domain.Service
             VerifyManagementPermission();
             return await _avatarBundleRepository.GetAllAsync(GetCurrentSiteId(), unlockable);
         }
-        public async Task<ICollection<AvatarBundle>> GetAllPremadeParentBundlesAsync(
-            bool? unlockable = null)
+
+        public async Task<ICollection<AvatarBundle>> GetAllPremadeParentBundlesAsync()
         {
             VerifyManagementPermission();
             return await _avatarBundleRepository.GetAllPremadeParentsAsync(GetCurrentSiteId());

@@ -183,7 +183,6 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> GetLayersItems(
     string type, int layerId, int selectedItemId, int bundleId, int[] selectedItemIds)
         {
-            var success = false;
             try
             {
                 var layeritems = await _avatarService.GetUsersItemsByLayerAsync(layerId);
@@ -429,7 +428,6 @@ namespace GRA.Controllers.MissionControl
             var mannequin = await _avatarService.GetRandomMannequinAsync();
             var allBundles = await _avatarService.GetAllPremadeParentBundlesAsync();
 
-
             var viewModel = new PremadeDetailsViewModel
             {
                 Bundles = allBundles.Where(_ => _.Description == null).ToList(),
@@ -602,7 +600,6 @@ namespace GRA.Controllers.MissionControl
                 Name = model.Name,
                 Description = model.Description,
                 AssociatedBundleId = model.AssociatedBundleId,
-                
             };
             if (string.IsNullOrEmpty(bundle.Name))
             {
@@ -650,11 +647,9 @@ namespace GRA.Controllers.MissionControl
                     .GroupBy(_ => _.GroupId)
                     .Select(_ => _.ToList())
                     .ToList();
-
             }
             model.Bundles = await _avatarService.GetAllPremadeParentBundlesAsync();
             model.ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/");
-            
             model.Bundle = bundle;
             model.NewAvatar = true;
             PageTitle = "Create Premade Avatar";
@@ -670,7 +665,6 @@ namespace GRA.Controllers.MissionControl
                 Name = model.Name,
                 Description = model.Description,
                 AssociatedBundleId = model.AssociatedBundleId,
-
             };
             if (string.IsNullOrEmpty(bundle.Name))
             {
@@ -718,7 +712,6 @@ namespace GRA.Controllers.MissionControl
                     .GroupBy(_ => _.GroupId)
                     .Select(_ => _.ToList())
                     .ToList();
-
             }
             model.Bundles = await _avatarService.GetAllPremadeParentBundlesAsync();
             model.ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/");
