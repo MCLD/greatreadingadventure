@@ -349,6 +349,31 @@
             @:&nbsp;
         }
     </div>
+    <div class="col-sm-3 text-center">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th class="text-center">
+                        <a href="" class="lead">@SharedLocalizer[GRA.Annotations.Interface.StreamingEvents]</a>
+                    </th>
+                </tr>
+            </thead>
+            @if (Model.UpcomingStreams != null)
+            {
+                <tbody>
+                    @foreach (var stream in Model.UpcomingStreams)
+                    {
+
+                        <tr>
+                            <td>
+                                <a href="@stream.ExternalLink">@stream.Name</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            }
+        </table>
+    </div>
 </div>
 
 @if (!string.IsNullOrWhiteSpace(Model.DashboardPageContent))
