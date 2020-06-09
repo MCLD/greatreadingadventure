@@ -29,6 +29,7 @@ namespace GRA.Controllers
         private readonly DashboardContentService _dashboardContentService;
         private readonly EmailManagementService _emailManagementService;
         private readonly EmailReminderService _emailReminderService;
+        private readonly EventService _eventService;
         private readonly PerformerSchedulingService _performerSchedulingService;
         private readonly SiteService _siteService;
         private readonly UserService _userService;
@@ -45,6 +46,7 @@ namespace GRA.Controllers
             DashboardContentService dashboardContentService,
             EmailManagementService emailManagementService,
             EmailReminderService emailReminderService,
+            EventService eventService,
             PerformerSchedulingService performerSchedulingService,
             SiteService siteService,
             UserService userService,
@@ -66,6 +68,8 @@ namespace GRA.Controllers
                 ?? throw new ArgumentNullException(nameof(emailManagementService));
             _emailReminderService = emailReminderService
                 ?? throw new ArgumentNullException(nameof(emailReminderService));
+            _eventService = eventService
+                ?? throw new ArgumentException(nameof(eventService));
             _performerSchedulingService = performerSchedulingService
                 ?? throw new ArgumentNullException(nameof(performerSchedulingService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
@@ -140,7 +144,8 @@ namespace GRA.Controllers
                     ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural,
                     Badges = badges.Data,
                     DisableSecretCode
-                        = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable)
+                        = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable),
+                    UpcomingStreams = await _eventService.GetUpcomingStreams()
                 };
 
                 try

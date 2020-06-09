@@ -18,5 +18,6 @@ namespace GRA.Domain.Repository
         Task DetachRelatedChallengeGroup(int userId, int challengeGroupId);
         Task<ICollection<DataWithCount<Event>>> GetCommunityExperienceAttendanceAsync(
             ReportCriterion criterion);
+        Task<ICollection<Event>> GetUpcomingStreams(int siteId, System.DateTime rightNow);
     }
 }

@@ -300,6 +300,18 @@ namespace GRA.Data.Repository
             return events;
         }
 
+        public async Task<ICollection<Event>> GetUpcomingStreams(int siteId,System.DateTime rightNow)
+        {
+            var streams =  DbSet
+                .AsNoTracking()
+                .Where(_ => _.IsStreaming && _.IsActive && _.SiteId == siteId)
+                .OrderBy(_=>_.StartDate)
+                .ProjectTo<Event>(_mapper.ConfigurationProvider);
+            streams = streams.Where(_ => _.StartDate <= rightNow && _.StreamingAccessEnds >= rightNow);
+            return await streams.ToListAsync();
+
+        }
+
         public async Task<bool> LocationInUse(int siteId, int locationId)
         {
             return await DbSet
