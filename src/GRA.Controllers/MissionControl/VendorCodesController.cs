@@ -8,6 +8,7 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
+using GRA.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -45,7 +46,7 @@ namespace GRA.Controllers.MissionControl
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View();
+            return View(await _vendorCodeService.GetStatusAsync());
         }
 
         [HttpGet]
@@ -135,22 +136,15 @@ namespace GRA.Controllers.MissionControl
         [HttpGet]
         public async Task<IActionResult> DownloadUnreportedEmailAddresses(int vendorCodeTypeId)
         {
-            var vendorCodeType = await _vendorCodeService.GetTypeById(vendorCodeTypeId);
+            var unreportedEmailAddresses = await _vendorCodeService
+                .GetUnreportedEmailAwardCodes(vendorCodeTypeId);
 
-            var unreportedVendorCodes = await _vendorCodeService.GetUnreportedEmailAwardCodes(
-                vendorCodeTypeId);
+            var processed = _dateTimeProvider.Now;
 
             try
             {
-                await _vendorCodeService.MarkEmailAwardCodesReported(unreportedVendorCodes);
-
-                var unreportedEmailAddresses = unreportedVendorCodes.Select(_ => new List<object>
-                {
-                    _.UserId,
-                    _.EmailAwardAddress
-                });
-
-                var ms = new System.IO.MemoryStream();
+                // this will be disposed by FileStreamResult
+                var ms = new MemoryStream();
 
                 using (var workbook = SpreadsheetDocument.Create(ms,
                     DocumentFormat.OpenXml.SpreadsheetDocumentType.Workbook))
@@ -182,7 +176,11 @@ namespace GRA.Controllers.MissionControl
 
                     var maximumColumnWidth = new Dictionary<int, int>();
 
-                    var headerColumns = new List<string> { "User Id", "Email Address" };
+                    var headerColumns = new string[] {
+                            "User Id",
+                            "Name",
+                            "Email Address"
+                        };
 
                     var headerRow = new Row();
                     int columnNumber = 0;
@@ -209,7 +207,14 @@ namespace GRA.Controllers.MissionControl
                         var row = new Row();
                         int rowColumnNumber = 0;
 
-                        foreach (var resultItem in emailAddress)
+                        var rowValues = new object[]
+                        {
+                                emailAddress.UserId,
+                                emailAddress.Name,
+                                emailAddress.Email
+                        };
+
+                        foreach (var resultItem in rowValues)
                         {
                             (var cell, var length) = CreateCell(resultItem ?? string.Empty);
                             row.AppendChild(cell);
@@ -225,7 +230,14 @@ namespace GRA.Controllers.MissionControl
                             rowColumnNumber++;
                         }
                         sheetData.Append(row);
+
+                        await _vendorCodeService
+                            .UpdateEmailReportedAsync(GetActiveUserId(),
+                            processed,
+                            emailAddress.VendorCodeId);
                     }
+
+                    await _vendorCodeService.SaveAsync();
 
                     foreach (var value in maximumColumnWidth.Keys.OrderByDescending(_ => _))
                     {
@@ -271,14 +283,16 @@ namespace GRA.Controllers.MissionControl
 
                     workbook.Save();
                     workbook.Close();
-                    ms.Seek(0, System.IO.SeekOrigin.Begin);
-                    var fileOutput = new FileStreamResult(ms, ExcelMimeType)
+                    ms.Seek(0, SeekOrigin.Begin);
+
+                    return new FileStreamResult(ms, ExcelMimeType)
                     {
-                        FileDownloadName = $"Email Awards.{ExcelFileExtension}"
+                        FileDownloadName = FileUtility
+                            .EnsureValidFilename($"EmailAwards.{ExcelFileExtension}")
                     };
-                    return fileOutput;
                 }
             }
+#pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception ex)
             {
                 _logger.LogError(ex,
@@ -287,10 +301,12 @@ namespace GRA.Controllers.MissionControl
                     ex.Message);
                 ShowAlertDanger("Error creating report of unreported email award codes");
 
-                await _vendorCodeService.UnmarkEmailAwardCodesReported(unreportedVendorCodes);
+                await _vendorCodeService.UpdateEmailNotReportedAsync(GetActiveUserId(),
+                    unreportedEmailAddresses);
 
                 return RedirectToAction(nameof(EmailAward));
             }
+#pragma warning restore CA1031 // Do not catch general exception types
         }
 
         [HttpPost]

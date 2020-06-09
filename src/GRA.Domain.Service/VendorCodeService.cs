@@ -171,8 +171,7 @@ namespace GRA.Domain.Service
 
             if (HasPermission(Permission.ManageVendorCodes))
             {
-                var sw = new Stopwatch();
-                sw.Start();
+                var sw = Stopwatch.StartNew();
 
                 var job = await _jobRepository.GetByIdAsync(jobId);
                 var jobDetails
@@ -268,8 +267,9 @@ namespace GRA.Domain.Service
                                 else
                                 {
                                     if (excelReader.GetValue(couponColumnId) != null
-                                        && excelReader.GetValue(orderDateColumnId) != null
-                                        && excelReader.GetValue(shipDateColumnId) != null)
+                                        && (excelReader.GetValue(orderDateColumnId) != null
+                                            || excelReader.GetValue(shipDateColumnId) != null
+                                            || excelReader.GetValue(detailsColumnId) != null))
                                     {
                                         string coupon = null;
                                         DateTime? orderDate = null;
@@ -289,7 +289,31 @@ namespace GRA.Domain.Service
                                         }
                                         try
                                         {
-                                            orderDate = excelReader.GetDateTime(orderDateColumnId);
+                                            try
+                                            {
+                                                orderDate = excelReader.GetDateTime(orderDateColumnId);
+                                            }
+                                            catch (NullReferenceException)
+                                            { }
+                                            catch (InvalidCastException)
+                                            {
+                                                string orderDateString
+                                                    = excelReader.GetString(orderDateColumnId);
+                                                if (DateTime.TryParse(
+                                                    orderDateString,
+                                                    out var orderDateConversion))
+                                                {
+                                                    orderDate = orderDateConversion;
+                                                }
+                                                else
+                                                {
+                                                    _logger.LogError("Unable to parse {Field}, row {SpreadsheetRow}: {Value}",
+                                                        "order date",
+                                                        row,
+                                                        orderDateString);
+                                                    issues.Add($"Issue reading order date on row {row}: {orderDateString}");
+                                                }
+                                            }
                                         }
                                         catch (IndexOutOfRangeException ex)
                                         {
@@ -299,9 +323,34 @@ namespace GRA.Domain.Service
                                                 ex.Message);
                                             issues.Add($"Issue reading order date on row {row}: {ex.Message}");
                                         }
+
                                         try
                                         {
-                                            shipDate = excelReader.GetDateTime(shipDateColumnId);
+                                            try
+                                            {
+                                                shipDate = excelReader.GetDateTime(shipDateColumnId);
+                                            }
+                                            catch (NullReferenceException)
+                                            { }
+                                            catch (InvalidCastException)
+                                            {
+                                                string shipDateString
+                                                    = excelReader.GetString(shipDateColumnId);
+                                                if (DateTime.TryParse(
+                                                    shipDateString,
+                                                    out var shipDateConversion))
+                                                {
+                                                    shipDate = shipDateConversion;
+                                                }
+                                                else
+                                                {
+                                                    _logger.LogError("Unable to parse {Field}, row {SpreadsheetRow}: {Value}",
+                                                        "ship date",
+                                                        row,
+                                                        shipDateString);
+                                                    issues.Add($"Issue reading order date on row {row}: {shipDateString}");
+                                                }
+                                            }
                                         }
                                         catch (IndexOutOfRangeException ex)
                                         {
@@ -311,6 +360,7 @@ namespace GRA.Domain.Service
                                                 ex.Message);
                                             issues.Add($"Issue reading ship date on row {row}: {ex.Message}");
                                         }
+
                                         if (excelReader.GetValue(detailsColumnId) != null)
                                         {
                                             try
@@ -327,7 +377,9 @@ namespace GRA.Domain.Service
                                             }
                                         }
                                         if (!string.IsNullOrEmpty(coupon)
-                                            && (orderDate != null && shipDate != null))
+                                            && (orderDate != null
+                                                || shipDate != null
+                                                || !string.IsNullOrEmpty(details)))
                                         {
                                             var code = await _vendorCodeRepository.GetByCode(coupon);
                                             if (code == null)
@@ -498,7 +550,6 @@ namespace GRA.Domain.Service
                 {
                     vendorCode.IsDonated = true;
                     vendorCode.IsEmailAward = false;
-
                 }
                 else if (emailAward == true && !string.IsNullOrWhiteSpace(emailAddrses)
                     && !string.IsNullOrWhiteSpace(vendorCodeType.EmailAwardSubject))
@@ -506,7 +557,6 @@ namespace GRA.Domain.Service
                     vendorCode.EmailAwardAddress = emailAddrses;
                     vendorCode.IsDonated = false;
                     vendorCode.IsEmailAward = true;
-
                 }
                 else if (donate == false && emailAward == false)
                 {
@@ -604,7 +654,6 @@ namespace GRA.Domain.Service
                                     vendorCode.VendorCodeTypeId);
                             }
                         }
-
                     }
                 }
                 else if (vendorCode.CanBeDonated && vendorCode.IsDonated == true)
@@ -659,7 +708,7 @@ namespace GRA.Domain.Service
             VendorCodeType codeType,
             string assignedCode)
         {
-            string body = null;
+            string body;
             if (!codeType.Mail.Contains(TemplateToken.VendorCodeToken))
             {
                 // the token isn't in the message, just append the code to the end
@@ -674,7 +723,7 @@ namespace GRA.Domain.Service
                 }
                 else
                 {
-                    string url = null;
+                    string url;
                     // see if the url has the token in it, if so swap in the code
                     if (!codeType.Url.Contains(TemplateToken.VendorCodeToken))
                     {
@@ -895,7 +944,7 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<ICollection<VendorCode>> GetUnreportedEmailAwardCodes(
+        public async Task<ICollection<VendorCodeEmailAward>> GetUnreportedEmailAwardCodes(
             int vendorCodeTypeId)
         {
             VerifyManagementPermission();
@@ -904,27 +953,37 @@ namespace GRA.Domain.Service
                 vendorCodeTypeId);
         }
 
-        public async Task MarkEmailAwardCodesReported(ICollection<VendorCode> vendorCodes)
+        public async Task UpdateEmailReportedAsync(int currentUserId,
+            DateTime when,
+            int vendorCodeId)
         {
             VerifyManagementPermission();
 
-            var now = _dateTimeProvider.Now;
-
-            foreach (var vendorCode in vendorCodes)
-            {
-                vendorCode.EmailAwardReported = now;
-                await _vendorCodeRepository.UpdateSaveNoAuditAsync(vendorCode);
-            }
+            var vendorCode = await _vendorCodeRepository.GetByIdAsync(vendorCodeId);
+            vendorCode.EmailAwardReported = when;
+            await _vendorCodeRepository.UpdateAsync(currentUserId, vendorCode);
         }
 
-        public async Task UnmarkEmailAwardCodesReported(ICollection<VendorCode> vendorCodes)
+        public async Task SaveAsync()
+        {
+            await _vendorCodeRepository.SaveAsync();
+        }
+
+        public async Task UpdateEmailNotReportedAsync(int currentUserId,
+            IEnumerable<VendorCodeEmailAward> emailAwards)
         {
             VerifyManagementPermission();
 
-            foreach (var vendorCode in vendorCodes)
+            if (emailAwards != null)
             {
-                vendorCode.EmailAwardReported = null;
-                await _vendorCodeRepository.UpdateSaveNoAuditAsync(vendorCode);
+                foreach (var emailAward in emailAwards)
+                {
+                    var vendorCode = await _vendorCodeRepository
+                        .GetByIdAsync(emailAward.VendorCodeId);
+                    vendorCode.EmailAwardReported = null;
+                    await _vendorCodeRepository.UpdateAsync(currentUserId, vendorCode);
+                }
+                await _vendorCodeRepository.SaveAsync();
             }
         }
 
@@ -940,8 +999,7 @@ namespace GRA.Domain.Service
 
             if (HasPermission(Permission.ManageVendorCodes))
             {
-                var sw = new Stopwatch();
-                sw.Start();
+                var sw = Stopwatch.StartNew();
 
                 var job = await _jobRepository.GetByIdAsync(jobId);
                 var jobDetails
@@ -955,7 +1013,7 @@ namespace GRA.Domain.Service
                     string duration = "";
                     if (sw?.Elapsed != null)
                     {
-                        duration = $" after {sw.Elapsed.ToString("c")}";
+                        duration = $" after {sw.Elapsed:c}";
                     }
                     _logger.LogWarning($"Import of {filename} for user {requestingUser} was cancelled{duration}.");
                 });
@@ -1181,6 +1239,13 @@ namespace GRA.Domain.Service
                     Complete = true
                 };
             }
+        }
+
+        public async Task<VendorCodeStatus> GetStatusAsync()
+        {
+            VerifyManagementPermission();
+
+            return await _vendorCodeRepository.GetStatusAsync();
         }
     }
 }

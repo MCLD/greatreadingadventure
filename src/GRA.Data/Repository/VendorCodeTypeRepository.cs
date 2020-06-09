@@ -28,7 +28,6 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-
         public async Task<ICollection<VendorCodeType>> GetEmailAwardTypesAsync(int siteId)
         {
             return await DbSet
@@ -73,7 +72,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .AnyAsync(_ => _.SiteId == siteId 
+                .AnyAsync(_ => _.SiteId == siteId
                     && !string.IsNullOrWhiteSpace(_.EmailAwardSubject));
         }
 
