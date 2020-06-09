@@ -188,24 +188,31 @@ namespace GRA.Domain.Service
         {
             VerifyManagementPermission();
             layer.SiteId = GetCurrentSiteId();
-            var currentlayer = await _avatarLayerRepository.AddSaveAsync(
+            var currentLayer = await _avatarLayerRepository.AddSaveAsync(
                 GetClaimId(ClaimType.UserId), layer);
-            var languageId = await _languageService.GetDefaultLanguageIdAsync();
-            _avatarLayerRepository.AddAvatarLayerTextAsync(
-                layer,
-                languageId,
-                currentlayer.Id);
-            await _avatarItemRepository.SaveAsync();
-            var layerData = _avatarLayerRepository.GetNameAndLabelByLanguageId(currentlayer.Id,languageId);
-            currentlayer.Name = layerData["Name"];
-            return currentlayer;
+
+            foreach (var text in layer.Texts)
+            {
+                var languageId = await _languageService.GetLanguageIdAsync(text.Language);
+                if (languageId != default)
+                {
+                    await _avatarLayerRepository.AddAvatarLayerTextAsync(currentLayer.Id,
+                        languageId,
+                        text);
+                }
+            }
+            await _avatarLayerRepository.SaveAsync();
+
+            var layerData = _avatarLayerRepository.GetNameAndLabelByLanguageId(currentLayer.Id,
+                await _languageService.GetDefaultLanguageIdAsync());
+            currentLayer.Name = layerData["Name"];
+            return currentLayer;
         }
 
-        public async Task AddLayerTextAsync(
-            AvatarLayer layer, int languageId, int layerId)
+        public async Task AddLayerTextAsync(int languageId, int layerId, AvatarLayerText text)
         {
             VerifyManagementPermission();
-            await _avatarLayerRepository.AddAvatarLayerTextAsync(layer, languageId, layerId);
+            await _avatarLayerRepository.AddAvatarLayerTextAsync(layerId, languageId, text);
         }
 
         public async Task<AvatarLayer> UpdateLayerAsync(AvatarLayer layer)
