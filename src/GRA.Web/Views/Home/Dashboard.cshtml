@@ -348,7 +348,9 @@
             <thead>
                 <tr>
                     <th class="text-center">
-                        <a href="" class="lead">@SharedLocalizer[GRA.Annotations.Interface.StreamingEvents]</a>
+                        <a asp-action="@nameof(EventsController.StreamingEvents)"
+                           asp-controller="Events"
+                           class="lead">@SharedLocalizer[GRA.Annotations.Interface.StreamingEvents]</a>
                     </th>
                 </tr>
             </thead>
@@ -360,7 +362,9 @@
 
                         <tr>
                             <td>
-                                <a href="@stream.ExternalLink">@stream.Name</a>
+                                <a href="@Url.Action(nameof(EventsController.Stream), "Events", new { eventId = stream.Id })">
+                                    @stream.Name
+                                </a>
                             </td>
                         </tr>
                     }
