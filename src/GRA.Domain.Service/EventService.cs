@@ -116,6 +116,11 @@ namespace GRA.Domain.Service
             return await _eventRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), graEvent);
         }
 
+        public async Task<ICollection<Event>> GetUpcomingStreams()
+        {
+            return await _eventRepository.GetUpcomingStreams(GetCurrentSiteId(), DateTime.Now);
+        }
+
         public async Task<Event> Edit(Event graEvent)
         {
             VerifyPermission(Permission.ManageEvents);
