@@ -350,33 +350,35 @@
         }
     </div>
     <div class="col-sm-3 text-center">
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th class="text-center">
-                        <a asp-action="@nameof(EventsController.StreamingEvents)"
-                           asp-controller="Events"
-                           class="lead">@SharedLocalizer[GRA.Annotations.Interface.StreamingEvents]</a>
-                    </th>
-                </tr>
-            </thead>
-            @if (Model.UpcomingStreams != null)
-            {
-                <tbody>
-                    @foreach (var stream in Model.UpcomingStreams)
-                    {
+        <div class="panel panel-default">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th class="text-center">
+                            <a asp-action="@nameof(EventsController.StreamingEvents)"
+                               asp-controller="Events"
+                               class="lead">@SharedLocalizer[GRA.Annotations.Interface.StreamingEvents]</a>
+                        </th>
+                    </tr>
+                </thead>
+                @if (Model.UpcomingStreams != null)
+                {
+                    <tbody>
+                        @foreach (var stream in Model.UpcomingStreams)
+                        {
 
-                        <tr>
-                            <td>
-                                <a href="@Url.Action(nameof(EventsController.Stream), "Events", new { eventId = stream.Id })">
-                                    @stream.Name
-                                </a>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            }
-        </table>
+                            <tr>
+                                <td>
+                                    <a href="@Url.Action(nameof(EventsController.Stream), "Events", new { eventId = stream.Id })">
+                                        @stream.Name
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                }
+            </table>
+        </div>
     </div>
 </div>
 
