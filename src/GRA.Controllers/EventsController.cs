@@ -105,7 +105,7 @@ namespace GRA.Controllers
                 return new RedirectResult(site.ExternalEventListUrl);
             }
 
-            PageTitle = _sharedLocalizer[Annotations.Title.CommunityExperiences];
+            PageTitle = _sharedLocalizer[Annotations.Title.StreamingEvents];
             return await Index(page,
                 sort,
                 search,

@@ -201,6 +201,7 @@
             public const string ShareYourAvatar = "Share Your Avatar";
             public const string SignIn = "Sign in";
             public const string SignInTo = "Sign in to {0}";
+            public const string StreamingEvents = "Streaming Events";
             public const string Subject = "Subject";
             public const string UpdateGroupDetails = "Update Group details";
             public const string UpgradeToGroup = "Upgrade from Family to Group";
