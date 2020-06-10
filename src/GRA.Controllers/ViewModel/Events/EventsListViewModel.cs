@@ -46,6 +46,9 @@ namespace GRA.Controllers.ViewModel.Events
         [DisplayName(DisplayNames.Visited)]
         public string Visited { get; set; }
 
+        [DisplayName(DisplayNames.Viewed)]
+        public string Viewed { get; set; }
+
         public SelectList SystemList { get; set; }
         public SelectList BranchList { get; set; }
         public SelectList LocationList { get; set; }

@@ -57,6 +57,7 @@
         public const string ToggleNavigation = "Toggle navigation";
         public const string Token = "Token";
         public const string Username = "Username";
+        public const string Viewed = "Viewed";
         public const string Visited = "Visited";
         public const string ZipCode = "ZIP Code";
     }

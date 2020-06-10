@@ -259,7 +259,6 @@ namespace GRA.Controllers
                 IsLoggedIn = AuthUser.Identity.IsAuthenticated,
                 ProgramId = program,
                 ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
-                Visited = Visited,
                 EventType = eventType,
                 ShowNearSearch = nearSearchEnabled
             };
@@ -320,6 +319,15 @@ namespace GRA.Controllers
                 viewModel.CommunityExperienceDescription = communityExperienceDescription;
             }
 
+            if (eventType == EventType.StreamingEvent)
+            {
+                viewModel.Viewed = Visited;
+            }
+            else
+            {
+                viewModel.Visited = Visited;
+            }
+
             if (httpStatus != HttpStatusCode.OK)
             {
                 Response.StatusCode = (int)httpStatus;
@@ -333,6 +341,7 @@ namespace GRA.Controllers
         {
             string startDate = "False";
             string endDate = null;
+            string visited = null;
 
             if (model.UseLocation == true)
             {
@@ -360,6 +369,15 @@ namespace GRA.Controllers
                 endDate = model.EndDate.Value.ToString("MM-dd-yyyy");
             }
 
+            if (model.EventType == EventType.StreamingEvent)
+            {
+                visited = model.Viewed;
+            }
+            else
+            {
+                visited = model.Visited;
+            }
+
             int? page = null;
             if (keepPage && model.PaginateModel?.CurrentPage > 1)
             {
@@ -379,7 +397,7 @@ namespace GRA.Controllers
                 StartDate = startDate,
                 EndDate = endDate,
                 model.Favorites,
-                model.Visited,
+                visited,
                 model.EventType
             });
         }

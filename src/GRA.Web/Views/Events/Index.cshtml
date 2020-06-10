@@ -146,12 +146,24 @@
                     {
                         <div class="row row-spacing">
                             <div class="col-xs-12">
-                                <label asp-for="Visited" class="control-label"></label>
-                                <select asp-for="Visited" class="form-control">
-                                    <option value="@EventsController.VisitedNo">@SharedLocalizer[GRA.Annotations.Interface.No]</option>
-                                    <option value="@EventsController.VisitedYes">@SharedLocalizer[GRA.Annotations.Interface.Yes]</option>
-                                    <option value="@EventsController.VisitedAll">@SharedLocalizer[GRA.Annotations.Interface.ViewAll]</option>
-                                </select>
+                                @if (Model.EventType == GRA.EventType.StreamingEvent)
+                                {
+                                    <label asp-for="Viewed" class="control-label"></label>
+                                    <select asp-for="Viewed" class="form-control">
+                                        <option value="@EventsController.VisitedNo">@SharedLocalizer[GRA.Annotations.Interface.No]</option>
+                                        <option value="@EventsController.VisitedYes">@SharedLocalizer[GRA.Annotations.Interface.Yes]</option>
+                                        <option value="@EventsController.VisitedAll">@SharedLocalizer[GRA.Annotations.Interface.ViewAll]</option>
+                                    </select>
+                                }
+                                else
+                                {
+                                    <label asp-for="Visited" class="control-label"></label>
+                                    <select asp-for="Visited" class="form-control">
+                                        <option value="@EventsController.VisitedNo">@SharedLocalizer[GRA.Annotations.Interface.No]</option>
+                                        <option value="@EventsController.VisitedYes">@SharedLocalizer[GRA.Annotations.Interface.Yes]</option>
+                                        <option value="@EventsController.VisitedAll">@SharedLocalizer[GRA.Annotations.Interface.ViewAll]</option>
+                                    </select>
+                                }
                             </div>
                         </div>
                     }

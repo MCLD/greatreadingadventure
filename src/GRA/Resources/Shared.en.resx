@@ -1461,4 +1461,8 @@
     <value>Stream starts</value>
     <comment>Heading for the field with the date and time that a streaming event begins</comment>
   </data>
+  <data name="Viewed" xml:space="preserve">
+    <value>Viewed</value>
+    <comment>Prompt to select which events to view based on if they've been viewed</comment>
+  </data>
 </root>
