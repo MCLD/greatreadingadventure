@@ -69,7 +69,7 @@ namespace GRA.Controllers
             _emailReminderService = emailReminderService
                 ?? throw new ArgumentNullException(nameof(emailReminderService));
             _eventService = eventService
-                ?? throw new ArgumentException(nameof(eventService));
+                ?? throw new ArgumentNullException(nameof(eventService));
             _performerSchedulingService = performerSchedulingService
                 ?? throw new ArgumentNullException(nameof(performerSchedulingService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
@@ -145,7 +145,7 @@ namespace GRA.Controllers
                     Badges = badges.Data,
                     DisableSecretCode
                         = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable),
-                    UpcomingStreams = await _eventService.GetUpcomingStreams()
+                    UpcomingStreams = await _eventService.GetUpcomingStreamListAsync()
                 };
 
                 try

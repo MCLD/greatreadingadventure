@@ -48,7 +48,7 @@
                         {
                             <a class="btn btn-success"
                                href="@Url.Action(nameof(EventsController.Stream),
-                                    new { eventId = Model.Event.Id })">
+                                    new { id = Model.Event.Id })">
                                 <span class="fa fa-play-circle-o"></span>
                                 @SharedLocalizer[GRA.Annotations.Interface.StreamNow]
                             </a>
