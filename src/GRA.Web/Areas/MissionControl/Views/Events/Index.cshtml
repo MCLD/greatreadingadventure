@@ -108,7 +108,10 @@
     </div>
 </div>
 
-<form asp-controller="Events" asp-action="@(Model.CommunityExperience ? "CommunityExperiences" : "Index")" method="get" role="form">
+<form asp-controller="Events"
+      asp-action="@(Model.CommunityExperience ? "CommunityExperiences" : Model.Streaming ? "StreamingEvents" : "Index")"
+      method="get"
+      role="form">
     @if (Model.SystemId.HasValue)
     {
         <input asp-for="SystemId" type="hidden" />
@@ -125,7 +128,6 @@
     {
         <input asp-for="ProgramId" type="hidden" />
     }
-
     <div class="row row-spacing">
         <div class="col-xs-8">
             <input asp-for="Search" class="form-control" />

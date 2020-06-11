@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
@@ -243,9 +244,17 @@ namespace GRA.Data.Repository
             {
                 if (filter.StartDate != null)
                 {
-                    events = events.Where(_ => _.StartDate >= filter.StartDate
-                        || (_.StartDate <= filter.StartDate 
-                            && filter.StartDate <= _.StreamingAccessEnds));
+                    if (filter.IsStreamingNow == true)
+                    {
+                        events = events.Where(_ => _.StartDate <= filter.StartDate
+                                && filter.StartDate <= _.StreamingAccessEnds);
+                    }
+                    else
+                    {
+                        events = events.Where(_ => _.StartDate >= filter.StartDate
+                            || (_.StartDate <= filter.StartDate
+                                && filter.StartDate <= _.StreamingAccessEnds));
+                    }
                 }
                 if (filter.EndDate != null)
                 {
@@ -254,7 +263,6 @@ namespace GRA.Data.Repository
             }
             else
             {
-
                 if (filter.StartDate != null)
                 {
                     events = events.Where(_ =>
@@ -300,16 +308,22 @@ namespace GRA.Data.Repository
             return events;
         }
 
-        public async Task<ICollection<Event>> GetUpcomingStreams(int siteId,System.DateTime rightNow)
+        public async Task<ICollection<Event>> GetEventListAsync(EventFilter filter)
         {
-            var streams =  DbSet
-                .AsNoTracking()
-                .Where(_ => _.IsStreaming && _.IsActive && _.SiteId == siteId)
-                .OrderBy(_=>_.StartDate)
-                .ProjectTo<Event>(_mapper.ConfigurationProvider);
-            streams = streams.Where(_ => _.StartDate <= rightNow && _.StreamingAccessEnds >= rightNow);
-            return await streams.ToListAsync();
+            if (filter == null)
+            {
+                throw new ArgumentNullException(nameof(filter));
+            }
 
+            return await ApplyFilters(filter).Select(_ => new Event
+            {
+                Id = _.Id,
+                Name = _.Name,
+                StartDate = _.StartDate,
+                StreamingAccessEnds = _.StreamingAccessEnds,
+                EndDate = _.EndDate
+            })
+            .ToListAsync();
         }
 
         public async Task<bool> LocationInUse(int siteId, int locationId)

@@ -21,6 +21,8 @@ namespace GRA.Controllers
         private readonly SpatialService _spatialService;
         private readonly UserService _userService;
 
+        public static string Name { get { return "Events"; } }
+
         public EventsController(ServiceFacade.Controller context,
             EventService eventService,
             SiteService siteService,
@@ -221,7 +223,7 @@ namespace GRA.Controllers
                 ProgramId = program,
                 ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
                 EventType = eventType,
-                ShowNearSearch = nearSearchEnabled
+                ShowNearSearch = nearSearchEnabled,
             };
 
             if (nearSearchEnabled)
@@ -418,27 +420,68 @@ namespace GRA.Controllers
             }
         }
 
-        public async Task<IActionResult> Stream(int eventId)
+        public async Task<IActionResult> Stream(int id)
         {
-            var graEvent = await _eventService.GetDetails(eventId);
+            if (!AuthUser.Identity.IsAuthenticated)
+            {
+                AlertInfo = "Sign in to access streaming programs!";
+                return RedirectToSignIn();
+            }
+
+            Event graEvent = null;
+            try
+            {
+                graEvent = await _eventService.GetDetails(id);
+            }
+            catch (GraException) { }
+
+            if (graEvent == null
+                && Request.Query.ContainsKey("eventId")
+                && int.TryParse(Request.Query["eventId"], out id))
+            {
+                try
+                {
+                    graEvent = await _eventService.GetDetails(id);
+                }
+                catch (GraException) { }
+            }
+
+            if (graEvent == null)
+            {
+                AlertWarning = "Could not find the requested event.";
+                return RedirectToAction(nameof(StreamingEvents));
+            }
 
             if (!graEvent.IsStreaming)
             {
-                return await Detail(eventId);
+                return RedirectToAction(nameof(Detail), new { id });
             }
             else
             {
-                if (graEvent.IsStreamingEmbed)
+                if (_dateTimeProvider.Now < graEvent.StartDate)
                 {
-                    return View("Stream", new StreamViewModel
-                    {
-                        EventName = graEvent.Name,
-                        Embed = graEvent.StreamingLinkData
-                    });
+                    AlertWarning = "This streaming event has not started yet.";
+                    return RedirectToAction(nameof(Detail), new { id });
+                }
+                else if (_dateTimeProvider.Now > graEvent.StreamingAccessEnds)
+                {
+                    AlertWarning = "This streaming event has ended.";
+                    return RedirectToAction(nameof(Detail), new { id });
                 }
                 else
                 {
-                    return Redirect(graEvent.StreamingLinkData);
+                    if (graEvent.IsStreamingEmbed)
+                    {
+                        return View("Stream", new StreamViewModel
+                        {
+                            EventName = graEvent.Name,
+                            Embed = graEvent.StreamingLinkData
+                        });
+                    }
+                    else
+                    {
+                        return Redirect(graEvent.StreamingLinkData);
+                    }
                 }
             }
         }
