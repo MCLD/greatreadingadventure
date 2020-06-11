@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace GRA.Domain.Service
 {
     public class EventService : BaseUserService<EventService>
     {
+        private readonly IDistributedCache _cache;
         private readonly IBranchRepository _branchRepository;
         private readonly IChallengeRepository _challengeRepository;
         private readonly IChallengeGroupRepository _challengeGroupRepository;
@@ -21,6 +25,7 @@ namespace GRA.Domain.Service
 
         public EventService(ILogger<EventService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
+            IDistributedCache cache,
             IUserContextProvider userContextProvider,
             IBranchRepository branchRepository,
             IChallengeRepository challengeRepository,
@@ -31,14 +36,20 @@ namespace GRA.Domain.Service
             ISpatialDistanceRepository spatialDistanceRepository)
             : base(logger, dateTimeProvider, userContextProvider)
         {
-            _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
-            _challengeRepository = Require.IsNotNull(
-                challengeRepository, nameof(challengeRepository));
-            _challengeGroupRepository = Require.IsNotNull(
-                challengeGroupRepository, nameof(challengeGroupRepository));
-            _eventRepository = Require.IsNotNull(eventRepository, nameof(eventRepository));
-            _locationRepository = Require.IsNotNull(locationRepository, nameof(locationRepository));
-            _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));
+            _branchRepository = branchRepository
+                ?? throw new ArgumentNullException(nameof(branchRepository));
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
+            _challengeRepository =
+                challengeRepository
+                ?? throw new ArgumentNullException(nameof(challengeRepository));
+            _challengeGroupRepository = challengeGroupRepository
+                ?? throw new ArgumentNullException(nameof(challengeGroupRepository));
+            _eventRepository = eventRepository
+                ?? throw new ArgumentNullException(nameof(eventRepository));
+            _locationRepository = locationRepository
+                ?? throw new ArgumentNullException(nameof(locationRepository));
+            _programRepository = programRepository
+                ?? throw new ArgumentNullException(nameof(programRepository));
             _spatialDistanceRepository = spatialDistanceRepository
                 ?? throw new ArgumentNullException(nameof(spatialDistanceRepository));
         }
@@ -113,7 +124,55 @@ namespace GRA.Domain.Service
                 graEvent.ChallengeGroupId = null;
             }
             await ValidateEvent(graEvent);
+            if (graEvent.IsStreaming)
+            {
+                await _cache.RemoveAsync(CacheKey.StreamingEvents);
+            }
             return await _eventRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), graEvent);
+        }
+
+        public async Task<ICollection<Event>> GetUpcomingStreamListAsync()
+        {
+            ICollection<Event> events = null;
+
+            var cachedEvents = await _cache.GetStringAsync(CacheKey.StreamingEvents);
+
+            if (!string.IsNullOrEmpty(cachedEvents))
+            {
+                events = JsonConvert.DeserializeObject<ICollection<Event>>(cachedEvents);
+            }
+            else
+            {
+                var filter = new EventFilter
+                {
+                    SiteId = GetCurrentSiteId(),
+                    IsActive = true,
+                    EventType = (int)EventType.StreamingEvent,
+                    IsStreamingNow = true,
+                    StartDate = _dateTimeProvider.Now
+                };
+
+                events = await _eventRepository.GetEventListAsync(filter);
+
+                // expire cache at the earlier of: StreamingAccessEnds or one hour from now
+                var expiration = events.OrderBy(_ => _.StreamingAccessEnds)
+                    .Select(_ => _.StreamingAccessEnds)
+                    .FirstOrDefault();
+
+                if (expiration == null || expiration > _dateTimeProvider.Now.AddHours(1))
+                {
+                    expiration = _dateTimeProvider.Now.AddHours(1);
+                }
+
+                await _cache.SetStringAsync(CacheKey.StreamingEvents,
+                    JsonConvert.SerializeObject(events),
+                    new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpiration = expiration
+                    });
+            }
+
+            return events;
         }
 
         public async Task<Event> Edit(Event graEvent)
@@ -127,12 +186,17 @@ namespace GRA.Domain.Service
                 graEvent.ChallengeGroupId = currentEvent.ChallengeGroupId;
             }
             await ValidateEvent(graEvent);
+            if (graEvent.IsStreaming)
+            {
+                await _cache.RemoveAsync(CacheKey.StreamingEvents);
+            }
             return await _eventRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), graEvent);
         }
 
         public async Task Remove(int eventId)
         {
             VerifyPermission(Permission.ManageEvents);
+            await _cache.RemoveAsync(CacheKey.StreamingEvents);
             await _eventRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), eventId);
         }
 

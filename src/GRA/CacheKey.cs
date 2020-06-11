@@ -11,6 +11,7 @@
         public static readonly string SiteJs = "SiteJs";
         public static readonly string Sites = "Sites";
         public static readonly string SiteSettings = "SiteSettings";
+        public static readonly string StreamingEvents = "StreamingEvents";
         public static readonly string UnhandledMailCount = "UnhandledMailCount";
         public static readonly string UserUnreadMailCount = "UserUnreadMailCount";
     }
