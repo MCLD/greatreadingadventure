@@ -163,6 +163,11 @@ namespace GRA.Domain.Service
                 {
                     expiration = _dateTimeProvider.Now.AddHours(1);
                 }
+                else
+                {
+                    _logger.LogDebug("Expiring dashboard streaming events early becuase an event stops streaming at {Expiration}",
+                        expiration);
+                }
 
                 await _cache.SetStringAsync(CacheKey.StreamingEvents,
                     JsonConvert.SerializeObject(events),

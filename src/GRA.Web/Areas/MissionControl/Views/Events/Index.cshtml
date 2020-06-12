@@ -170,13 +170,18 @@
                                 <th>Branch/Locations</th>
                             }
                             <th>Start Date</th>
+                            @if (Model.Streaming)
+                            {
+                                <th>Streaming Ends</th>
+                            }
                             <th>&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var eventItem in Model.Events)
                         {
-                            <tr>
+                            var streamingNowClass = Model.Streaming && eventItem.StartDate <= DateTime.Now && eventItem.StreamingAccessEnds >= DateTime.Now ? "alert-info" : "";
+                            <tr class="@streamingNowClass">
                                 <td class="td-class">
                                     <a asp-action="Edit" asp-route-id="@eventItem.Id" class="rowlink">
                                         @eventItem.Name
@@ -189,9 +194,14 @@
                                 }
                                 else
                                 {
-                                    <td>@eventItem.StartDate.ToString()</td>
+                                    <td>@eventItem.StartDate</td>
 
                                 }
+                                @if (Model.Streaming)
+                                {
+                                    <td>@eventItem.StreamingAccessEnds</td>
+                                }
+
                                 <td class="on-top gra-mc-icon">
                                     <button type="button"
                                             class="btn btn-danger btn-xs"
