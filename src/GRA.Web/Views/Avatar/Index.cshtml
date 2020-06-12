@@ -439,9 +439,8 @@
                     success: function (data) {
                         $($(divId).parent()).html(data);
                     },
-                    error: function (data) {
-                        $("#error-container").text("@SharedLocalizer[GRA.Annotations.Validate.SomethingWentWrong]");
-                        $("#error-container").show().delay(20000).fadeOut("slow");;
+                    error: function () {
+                        window.location.href = "@(Url.Action(nameof(SignInController.Index)))"
                     }
                 })
             .then(function () {

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Localization;
 
@@ -47,6 +49,16 @@ namespace GRA.Controllers.Filter
 
                     controller.TempData[TempDataKey.AlertWarning]
                         = _sharedLocalizer[Annotations.Validate.SessionExpired].ToString();
+
+                    var controllerActionDescriptor
+                        = context.ActionDescriptor as ControllerActionDescriptor;
+                    if (controllerActionDescriptor.ControllerTypeInfo
+                            .IsDefined(typeof(Attributes.PreventAjaxRedirect))
+                        && controllerActionDescriptor.MethodInfo
+                            .IsDefined(typeof(Attributes.PreventAjaxRedirect)))
+                    {
+                        context.Result = controller.StatusCode(StatusCodes.Status401Unauthorized);
+                    }
                 }
 
                 await controller.LogoutUserAsync();

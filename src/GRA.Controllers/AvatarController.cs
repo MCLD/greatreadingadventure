@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using GRA.Controllers.Attributes;
 using GRA.Controllers.ViewModel.Avatar;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
@@ -19,6 +20,7 @@ using SixLabors.Primitives;
 namespace GRA.Controllers
 {
     [Authorize]
+    [PreventAjaxRedirect]
     public class AvatarController : Base.UserController
     {
         private readonly ILogger<AvatarController> _logger;
