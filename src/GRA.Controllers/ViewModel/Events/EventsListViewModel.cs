@@ -63,5 +63,7 @@ namespace GRA.Controllers.ViewModel.Events
                 }
             }
         }
+
+        public bool IsAuthenticated { get; set; }
     }
 }
