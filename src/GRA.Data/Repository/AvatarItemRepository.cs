@@ -237,7 +237,11 @@ namespace GRA.Data.Repository
 
         public async Task<bool> IsLastInRequiredLayer(int itemId)
         {
-            var layer = await DbSet.AsNoTracking().Where(_ => _.Id == itemId).Select(_ => _.AvatarLayer).SingleAsync();
+            var layer = await DbSet
+                .AsNoTracking()
+                .Where(_ => _.Id == itemId)
+                .Select(_ => _.AvatarLayer)
+                .SingleAsync();
             if (!layer.CanBeEmpty)
             {
                 var availableItems = await DbSet.AsNoTracking()

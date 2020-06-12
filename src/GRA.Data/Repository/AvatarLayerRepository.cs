@@ -38,7 +38,8 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task AddAvatarLayerTextAsync(int layerId, int languageId, AvatarLayerText text)
+        public async Task AddAvatarLayerTextAsync(int layerId,
+            int languageId, AvatarLayerText text)
         {
             var layerText = new Model.AvatarLayerText
             {

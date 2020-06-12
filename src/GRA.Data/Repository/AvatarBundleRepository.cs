@@ -47,8 +47,8 @@ namespace GRA.Data.Repository
         {
             var userLogBundles = await _context.UserLogs
                 .Where(_ => _.UserId == userId
-                && !_.IsDeleted
-                && _.AvatarBundleId == bundleId)
+                    && !_.IsDeleted
+                    && _.AvatarBundleId == bundleId)
                 .ToListAsync();
 
             foreach (var bundle in userLogBundles)

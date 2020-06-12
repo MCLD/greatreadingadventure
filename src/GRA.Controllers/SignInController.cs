@@ -48,7 +48,7 @@ namespace GRA.Controllers
                 sendTo = TempData[TempDataKey.ReturnUrl].ToString();
                 TempData.Remove(TempDataKey.ReturnUrl);
             }
-            Response.StatusCode = 404;
+
             return View(new SignInViewModel { ReturnUrl = sendTo });
         }
 

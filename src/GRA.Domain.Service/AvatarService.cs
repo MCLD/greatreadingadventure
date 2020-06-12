@@ -209,12 +209,6 @@ namespace GRA.Domain.Service
             return currentLayer;
         }
 
-        public async Task AddLayerTextAsync(int languageId, int layerId, AvatarLayerText text)
-        {
-            VerifyManagementPermission();
-            await _avatarLayerRepository.AddAvatarLayerTextAsync(layerId, languageId, text);
-        }
-
         public async Task<AvatarLayer> UpdateLayerAsync(AvatarLayer layer)
         {
             VerifyManagementPermission();
@@ -240,42 +234,6 @@ namespace GRA.Domain.Service
             VerifyManagementPermission();
             return await _avatarItemRepository.GetByLayerPositionSortOrderAsync(layerPosition,
                 sortOrder);
-        }
-
-        public async Task<AvatarItem> AddItemAsync(AvatarItem item)
-        {
-            VerifyManagementPermission();
-            return await _avatarItemRepository.AddSaveAsync(
-                GetClaimId(ClaimType.UserId), item);
-        }
-
-        public async Task AddItemListAsync(ICollection<AvatarItem> itemList)
-        {
-            VerifyManagementPermission();
-            var userId = GetClaimId(ClaimType.UserId);
-            foreach (var item in itemList)
-            {
-                await _avatarItemRepository.AddAsync(userId, item);
-            }
-            await _avatarItemRepository.SaveAsync();
-        }
-
-        public async Task<AvatarItem> UpdateItemAsync(AvatarItem item)
-        {
-            VerifyManagementPermission();
-            return await _avatarItemRepository.UpdateSaveAsync(
-                GetClaimId(ClaimType.UserId), item);
-        }
-
-        public async Task UpdateItemListAsync(ICollection<AvatarItem> itemList)
-        {
-            VerifyManagementPermission();
-            var userId = GetClaimId(ClaimType.UserId);
-            foreach (var item in itemList)
-            {
-                await _avatarItemRepository.UpdateAsync(userId, item);
-            }
-            await _avatarItemRepository.SaveAsync();
         }
 
         public async Task DescreaseItemSortAsync(int id)
@@ -333,7 +291,7 @@ namespace GRA.Domain.Service
             }
             await _avatarItemRepository.RemoveUserItemAsync(id);
             _avatarItemRepository.RemoveUserUnlockedItem(id);
-            _avatarElementRepository.RemoveByItemIdAsync(id);
+            _avatarElementRepository.RemoveByItemId(id);
             _avatarBundleRepository.RemoveItemFromBundles(id);
             await _avatarItemRepository.RemoveAsync(GetClaimId(ClaimType.UserId), id);
             await _avatarItemRepository.SaveAsync();
@@ -342,65 +300,6 @@ namespace GRA.Domain.Service
         public async Task<ICollection<AvatarColor>> GetColorsByLayerAsync(int layerId)
         {
             return await _avatarColorRepository.GetByLayerAsync(layerId);
-        }
-
-        public async Task<AvatarColor> AddColorAsync(AvatarColor color)
-        {
-            VerifyManagementPermission();
-            return await _avatarColorRepository.AddSaveAsync(
-                GetClaimId(ClaimType.UserId), color);
-        }
-
-        public async Task AddColorListAsync(ICollection<AvatarColor> colorList)
-        {
-            VerifyManagementPermission();
-            var userId = GetClaimId(ClaimType.UserId);
-            foreach (var color in colorList)
-            {
-                await _avatarColorRepository.AddAsync(userId, color);
-            }
-            await _avatarColorRepository.SaveAsync();
-        }
-
-        public async Task<AvatarColor> UpdateColorAsync(AvatarColor color)
-        {
-            VerifyManagementPermission();
-            return await _avatarColorRepository.UpdateSaveAsync(
-                GetClaimId(ClaimType.UserId), color);
-        }
-
-        public async Task<AvatarElement> AddElementAsync(AvatarElement element)
-        {
-            VerifyManagementPermission();
-            return await _avatarElementRepository.AddSaveAsync(
-                GetClaimId(ClaimType.UserId), element);
-        }
-
-        public async Task AddElementListAsync(List<AvatarElement> elementList)
-        {
-            VerifyManagementPermission();
-            var userId = GetClaimId(ClaimType.UserId);
-            var count = 0;
-            foreach (var element in elementList)
-            {
-                await _avatarElementRepository.AddAsync(userId, element);
-                count++;
-                if (count % 500 == 0)
-                {
-                    await _avatarElementRepository.SaveAsync();
-                }
-            }
-            if (count % 500 != 0)
-            {
-                await _avatarElementRepository.SaveAsync();
-            }
-        }
-
-        public async Task<AvatarElement> UpdateElementAsync(AvatarElement element)
-        {
-            VerifyManagementPermission();
-            return await _avatarElementRepository.UpdateSaveAsync(
-                GetClaimId(ClaimType.UserId), element);
         }
 
         public async Task<AvatarBundle> AddBundleAsync(AvatarBundle bundle,
@@ -678,7 +577,8 @@ namespace GRA.Domain.Service
                     var addedLayer = await AddLayerAsync(layer);
 
                     var layerAssetPath = Path.Combine(assetPath, layer.Name);
-                    var destinationRoot = Path.Combine($"site{siteId}", "avatars", $"layer{addedLayer.Id}");
+                    var destinationRoot = Path.Combine($"site{siteId}",
+                        "avatars", $"layer{addedLayer.Id}");
                     var destinationPath = _pathResolver.ResolveContentFilePath(destinationRoot);
                     if (!Directory.Exists(destinationPath))
                     {
@@ -706,7 +606,8 @@ namespace GRA.Domain.Service
                         var currentColor = 1;
                         foreach (var color in colors)
                         {
-                            var secondsFromLastUpdate = (int)sw.Elapsed.TotalSeconds - lastUpdateSent;
+                            var secondsFromLastUpdate =
+                                (int)sw.Elapsed.TotalSeconds - lastUpdateSent;
                             if (secondsFromLastUpdate >= 5)
                             {
                                 progress.Report(new JobStatus
@@ -886,7 +787,8 @@ namespace GRA.Domain.Service
                     using (StreamReader file = System.IO.File.OpenText(bundleJsonPath))
                     {
                         var jsonString = await file.ReadToEndAsync();
-                        bundleList = JsonConvert.DeserializeObject<IEnumerable<AvatarBundle>>(jsonString);
+                        bundleList = JsonConvert
+                            .DeserializeObject<IEnumerable<AvatarBundle>>(jsonString);
                     }
 
                     foreach (var bundle in bundleList)

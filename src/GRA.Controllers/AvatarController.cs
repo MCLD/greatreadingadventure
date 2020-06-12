@@ -24,7 +24,6 @@ namespace GRA.Controllers
     public class AvatarController : Base.UserController
     {
         private readonly ILogger<AvatarController> _logger;
-        private readonly AutoMapper.IMapper _mapper;
         private readonly AvatarService _avatarService;
         private readonly SiteService _siteService;
 
@@ -37,7 +36,6 @@ namespace GRA.Controllers
             : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _mapper = context.Mapper;
             _avatarService = avatarService
                 ?? throw new ArgumentNullException(nameof(avatarService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
@@ -68,7 +66,6 @@ namespace GRA.Controllers
                 DefaultLayer = userWardrobe.First(_ => _.DefaultLayer).Id,
                 ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/")
             };
-            var currentCulture = _userContextProvider.GetCurrentCulture();
             var userAvatar = await _avatarService.GetUserAvatarAsync();
             viewModel.NewAvatar = userAvatar.Count == 0;
             return View(viewModel);
@@ -203,7 +200,6 @@ namespace GRA.Controllers
         public async Task<IActionResult> GetLayersItems(
             string type, int layerId, int selectedItemId, int bundleId, int[] selectedItemIds)
         {
-            var success = false;
             try
             {
                 var layeritems = await _avatarService.GetUsersItemsByLayerAsync(layerId);
