@@ -350,7 +350,7 @@
         }
     </div>
 
-    @if (Model.UpcomingStreams != null)
+    @if (Model.UpcomingStreams?.Count() > 0)
     {
         <div class="col-sm-3 text-center">
             <div class="panel panel-default">
