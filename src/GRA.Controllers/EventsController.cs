@@ -214,6 +214,7 @@ namespace GRA.Controllers
 
             var viewModel = new EventsListViewModel
             {
+                IsAuthenticated = AuthUser.Identity.IsAuthenticated,
                 Events = eventList.Data,
                 PaginateModel = paginateModel,
                 Sort = filter.SortBy.ToString(),
@@ -349,6 +350,7 @@ namespace GRA.Controllers
             {
                 var viewModel = new EventsDetailViewModel
                 {
+                    IsAuthenticated = AuthUser.Identity.IsAuthenticated,
                     Event = await _eventService.GetDetails(id)
                 };
 
@@ -400,6 +402,7 @@ namespace GRA.Controllers
             {
                 var viewModel = new EventsDetailViewModel
                 {
+                    IsAuthenticated = AuthUser.Identity.IsAuthenticated,
                     Event = await _eventService.GetDetails(eventId)
                 };
 
@@ -424,7 +427,7 @@ namespace GRA.Controllers
         {
             if (!AuthUser.Identity.IsAuthenticated)
             {
-                AlertInfo = "Sign in to access streaming programs!";
+                AlertInfo = _sharedLocalizer[Annotations.Interface.SignInForStreams];
                 return RedirectToSignIn();
             }
 
@@ -448,7 +451,7 @@ namespace GRA.Controllers
 
             if (graEvent == null)
             {
-                AlertWarning = "Could not find the requested event.";
+                AlertWarning = _sharedLocalizer[Annotations.Interface.EventNotFound];
                 return RedirectToAction(nameof(StreamingEvents));
             }
 
@@ -460,12 +463,12 @@ namespace GRA.Controllers
             {
                 if (_dateTimeProvider.Now < graEvent.StartDate)
                 {
-                    AlertWarning = "This streaming event has not started yet.";
+                    AlertWarning = _sharedLocalizer[Annotations.Interface.EventNotStarted];
                     return RedirectToAction(nameof(Detail), new { id });
                 }
                 else if (_dateTimeProvider.Now > graEvent.StreamingAccessEnds)
                 {
-                    AlertWarning = "This streaming event has ended.";
+                    AlertWarning = _sharedLocalizer[Annotations.Interface.EventHasEnded];
                     return RedirectToAction(nameof(Detail), new { id });
                 }
                 else
