@@ -133,8 +133,8 @@
             <div class="panel-body text-center">
                 <span class="lead">@SharedHtmlLocalizer["Welcome <strong>{0}!</strong>", Model.FirstName]</span>
                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessPerformerRegistration))
-         && !Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessMissionControl))
-         && Model.SiteStage == GRA.Domain.Model.SiteStage.BeforeRegistration)
+        && !Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessMissionControl))
+        && Model.SiteStage == GRA.Domain.Model.SiteStage.BeforeRegistration)
                 {
                     <p class="lead" style="padding-top: 2rem;">
                         Welcome, performer! Please click on the theater masks icon at the top of the
@@ -344,7 +344,7 @@
         }
     </div>
 
-    @if (Model.UpcomingStreams != null)
+    @if (Model.UpcomingStreams?.Count() > 0)
     {
         <div class="col-sm-3 text-center">
             <div class="panel panel-default">

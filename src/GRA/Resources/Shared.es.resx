@@ -1398,19 +1398,19 @@
     <comment>Event details were requested but the event could not be found</comment>
   </data>
   <data name="Sign in to access streaming programs!" xml:space="preserve">
-    <value>¡Iniciar sesion para acceder a programas de transmision!</value>
+    <value>¡Iniciar sesión para acceder a programas de transmisión!</value>
     <comment>This message is displayed to a user who wants to view a streaming program but isn't logged in.</comment>
   </data>
   <data name="Sign in to stream!" xml:space="preserve">
-    <value>¡Iniciar sesion para transmitir!</value>
+    <value>¡Iniciar sesión para transmitir!</value>
     <comment>Button shown to unauthenticated users encouraging them to sign in and stream programs.</comment>
   </data>
   <data name="This streaming event has ended." xml:space="preserve">
-    <value>Este evento de transmision a terminado.</value>
+    <value>Este evento de transmisión a terminado.</value>
     <comment>Message indicating that a streaming event is no longer available to view.</comment>
   </data>
   <data name="This streaming event has not started yet." xml:space="preserve">
-    <value>Este evento de transmision aun no ha comenzado.</value>
+    <value>Este evento de transmisión aun no ha comenzado.</value>
     <comment>Message indicating that a streaming event is not yet available.</comment>
   </data>
 </root>

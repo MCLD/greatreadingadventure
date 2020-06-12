@@ -14,12 +14,12 @@
             <tr class="info">
                 <th>Assigned vendor codes</th>
                 <td>@Model.AssignedCodes</td>
-                <td>@Model.Percent(Model.AssignedCodes, Model.TotalCodes) of total</td>
+                <td>@Model.Percent(Model.AssignedCodes, Model.TotalCodes, "of total")</td>
             </tr>
             <tr>
                 <th>Unassigned vendor codes</th>
                 <td>@Model.UnusedCodes</td>
-                <td>@Model.Percent(Model.UnusedCodes, Model.TotalCodes) of total</td>
+                <td>@Model.Percent(Model.UnusedCodes, Model.TotalCodes, "of total")</td>
             </tr>
             <tr>
                 <th>Total vendor codes</th>
@@ -32,7 +32,7 @@
             <tr class="info">
                 <th>Donated</th>
                 <td>@Model.Donated</td>
-                <td>@Model.Percent(Model.Donated, Model.AssignedCodes) of assigned</td>
+                <td>@Model.Percent(Model.Donated, Model.AssignedCodes, "of assigned")</td>
             </tr>
             <tr>
                 <td colspan="3">&nbsp;</td>
@@ -40,22 +40,22 @@
             <tr class="info">
                 <th>Vendor redemption selected</th>
                 <td>@Model.VendorSelected</td>
-                <td>@Model.Percent(Model.VendorSelected, Model.AssignedCodes) of assigned</td>
+                <td>@Model.Percent(Model.VendorSelected, Model.AssignedCodes, "of assigned")</td>
             </tr>
             <tr>
                 <th>Assigned codes with no order or ship date</th>
                 <td>@Model.NoStatus</td>
-                <td>@Model.Percent(Model.NoStatus, Model.VendorSelected) of vendor selected</td>
+                <td>@Model.Percent(Model.NoStatus, Model.VendorSelected, "of vendor selected")</td>
             </tr>
             <tr>
                 <th>Ordered Items</th>
                 <td>@Model.Ordered</td>
-                <td>@Model.Percent(Model.Ordered, Model.VendorSelected) of vendor selected</td>
+                <td>@Model.Percent(Model.Ordered, Model.VendorSelected, "of vendor selected")</td>
             </tr>
             <tr class="success">
                 <th>Shipped Items</th>
                 <td>@Model.Shipped</td>
-                <td>@Model.Percent(Model.Shipped, Model.VendorSelected) of vendor selected</td>
+                <td>@Model.Percent(Model.Shipped, Model.VendorSelected, "of vendor selected")</td>
             </tr>
             <tr>
                 <td colspan="3">&nbsp;</td>
@@ -63,22 +63,22 @@
             <tr class="info">
                 <th>Email award selected</th>
                 <td>@Model.EmailAwardSelected</td>
-                <td>@Model.Percent(Model.EmailAwardSelected, Model.AssignedCodes) of assigned</td>
+                <td>@Model.Percent(Model.EmailAwardSelected, Model.AssignedCodes, "of assigned")</td>
             </tr>
             <tr>
                 <th>Email award pending download</th>
                 <td>@Model.EmailAwardPendingDownload</td>
-                <td>@Model.Percent(Model.EmailAwardPendingDownload, Model.EmailAwardSelected) of email selected</td>
+                <td>@Model.Percent(Model.EmailAwardPendingDownload, Model.EmailAwardSelected, "of email selected")</td>
             </tr>
             <tr>
                 <th>Email award downloaded in report</th>
                 <td>@Model.EmailAwardDownloadedInReport</td>
-                <td>@Model.Percent(Model.EmailAwardDownloadedInReport, Model.EmailAwardSelected) of email selected</td>
+                <td>@Model.Percent(Model.EmailAwardDownloadedInReport, Model.EmailAwardSelected, "of email selected")</td>
             </tr>
             <tr class="success">
                 <th>Email award sent</th>
                 <td>@Model.EmailAwardSent</td>
-                <td>@Model.Percent(Model.EmailAwardSent, Model.EmailAwardSelected) of email selected</td>
+                <td>@Model.Percent(Model.EmailAwardSent, Model.EmailAwardSelected, "of email selected")</td>
             </tr>
         </table>
     </div>

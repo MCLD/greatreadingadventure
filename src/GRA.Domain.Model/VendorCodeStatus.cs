@@ -14,11 +14,11 @@
         public int TotalCodes { get { return AssignedCodes + UnusedCodes; } }
         public int UnusedCodes { get; set; }
         public int VendorSelected { get; set; }
-        public string Percent(int items, int total)
+        public string Percent(int items, int total, string label)
         {
             return total == 0
-                ? "&nbsp;"
-                : string.Format("{0:0.00}%", items * 100.0 / total);
+                ? "\u00A0"
+                : string.Format("{0:0.00}% {1}", items * 100.0 / total, label);
         }
     }
 }
