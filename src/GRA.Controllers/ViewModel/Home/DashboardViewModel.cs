@@ -53,5 +53,6 @@ namespace GRA.Controllers.ViewModel.Home
 
         public bool HasPendingVendorCodeQuestion { get; set; }
         public DateTime? VendorCodeExpiration { get; set; }
+        public ICollection<Event> UpcomingStreams { get; set; }
     }
 }
