@@ -16,7 +16,7 @@
                      data-layer="@Model.LayerId"
                      src="/@(Model.ItemPath + "layer" + @Model.LayerId.ToString() + "/item" + item.Id + "/thumbnail.jpg")"
                      class="avatar-item-selector item@(item.Id) @(Model.SelectedItemId == item.Id ? "selected" : "")"
-                     onclick="SelectItem(this)"/>
+                     onclick="SelectItem(this)" />
             </div>
         }
     </div>
@@ -50,12 +50,12 @@
     {
         index = Model.SelectedItemIds
             .Select(_ => Model.Bundle.AvatarItems.ToList()
-                .Select(__=>__.Id)
+                .Select(__ => __.Id)
                 .ToList()
                 .IndexOf(_)
                 )
             .ToList()
-            .Where(_=>_ != -1)
+            .Where(_ => _ != -1)
             .Min();
     }
     catch
@@ -76,7 +76,7 @@
                      data-layer="@item.AvatarLayerId"
                      src="/@(Model.ItemPath + "layer" + item.AvatarLayerId + "/item" + item.Id + "/thumbnail.jpg")"
                      class="avatar-item-selector item@(item.Id) @(Model.SelectedItemIds.Contains(item.Id) ? "selected" : "")"
-                     onclick="SelectItem(this)"/>
+                     onclick="SelectItem(this)" />
             </div>
         }
     </div>
