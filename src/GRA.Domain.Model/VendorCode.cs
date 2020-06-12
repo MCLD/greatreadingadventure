@@ -31,5 +31,6 @@ namespace GRA.Domain.Model
         public string Url { get; set; }
         [MaxLength(255)]
         public string Details { get; set; }
+        public string ParticipantName { get; set; }
     }
 }
