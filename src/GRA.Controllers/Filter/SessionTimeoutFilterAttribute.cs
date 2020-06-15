@@ -73,7 +73,6 @@ namespace GRA.Controllers.Filter
                             : nameof(SignInController.Index)
                     });
                 }
-
             }
             else
             {
