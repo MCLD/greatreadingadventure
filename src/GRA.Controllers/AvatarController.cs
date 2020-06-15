@@ -74,7 +74,6 @@ namespace GRA.Controllers
             {
                 viewModel.PremadeAvatar = await _avatarService.GetBundleByIdAsync(user.PremadeAvatarId.Value);
             }
-            var currentCulture = _userContextProvider.GetCurrentCulture();
             var userAvatar = await _avatarService.GetUserAvatarAsync();
             viewModel.NewAvatar = userAvatar.Count == 0;
             return View(viewModel);

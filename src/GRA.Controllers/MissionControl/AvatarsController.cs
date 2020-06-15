@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using DocumentFormat.OpenXml.EMMA;
-using DocumentFormat.OpenXml.Math;
 using GRA.Controllers.ViewModel.MissionControl.Avatar;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
@@ -632,7 +630,6 @@ namespace GRA.Controllers.MissionControl
             {
                 ShowAlertDanger("Could not create premade avatar.");
             }
-            var layers = await _avatarService.GetLayersAsync();
             var mannequin = await _avatarService.GetRandomMannequinAsync();
             model.SelectedItemIds.Add(mannequin.Id);
             if (model.SelectedItemIds.Count > 0)
@@ -697,7 +694,6 @@ namespace GRA.Controllers.MissionControl
             {
                 ShowAlertDanger("Could not update premade avatar.");
             }
-            var layers = await _avatarService.GetLayersAsync();
             var mannequin = await _avatarService.GetRandomMannequinAsync();
             model.SelectedItemIds.Add(mannequin.Id);
             if (model.SelectedItemIds.Count > 0)
