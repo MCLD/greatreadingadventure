@@ -178,33 +178,35 @@
                     </div>
                 </div>
             </div>
-            <div class="row col-xs-12" style="text-align:center;">
-                <ul class="nav" style="display: inline-table;">
-                    <li>
-                        <div class="dropdown" style="margin-top: 1rem;" id="premadeDropdown">
-                            <a class="dropdown-toggle btn btn-info"
-                               id="premade-selected"
-                               data-toggle="dropdown"
-                               href="#" role="button"
-                               aria-haspopup="true"
-                               aria-expanded="false">
-                                @SharedLocalizer[GRA.Domain.Model.DisplayNames.PremadeAvatars]
-                                <span class="caret"></span>
-                            </a>
-                            <ul class="dropdown-menu" id="premade-drop">
-                                @foreach (var avatar in Model.PremadeAvatars)
-                                {
-                                    <li class="dropdown-item">
-                                        <a href="#" role="button" onclick="GetPremadeAvatar(@avatar.Id, '@avatar.Description')" aria-label="@avatar.Description">
-                                            @avatar.Name
-                                        </a>
-                                    </li>
-                                }
-                            </ul>
-                        </div>
-                    </li>
-                </ul>
-            </div>
+            @if (Model.PremadeAvatars.Count > 0) {
+                <div class="row col-xs-12" style="text-align:center;">
+                    <ul class="nav" style="display: inline-table;">
+                        <li>
+                            <div class="dropdown" style="margin-top: 1rem;" id="premadeDropdown">
+                                <a class="dropdown-toggle btn btn-info"
+                                   id="premade-selected"
+                                   data-toggle="dropdown"
+                                   href="#" role="button"
+                                   aria-haspopup="true"
+                                   aria-expanded="false">
+                                    @SharedLocalizer[GRA.Domain.Model.DisplayNames.PremadeAvatars]
+                                    <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu" id="premade-drop">
+                                    @foreach (var avatar in Model.PremadeAvatars)
+                                    {
+                                        <li class="dropdown-item">
+                                            <a href="#" role="button" onclick="GetPremadeAvatar(@avatar.Id, '@avatar.Description')" aria-label="@avatar.Description">
+                                                @avatar.Name
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            }
             <div class="row">
                 <div class="col-xs-12">
                     <div style="text-align:center;vertical-align:top;">
@@ -365,13 +367,14 @@
                         };
                         $("#avatarImageContainer").attr("aria-label", description);
                         $("#avatarImageContainer").data("premade", id);
+                        $("#saveAvatar").addClass("btn-success");
                     }
                     else {
                         $("#error-container").text("@SharedLocalizer[GRA.Annotations.Validate.SomethingWentWrong]");
                         $("#error-container").show().delay(20000).fadeOut("slow");;
                     }
                 },
-                error: function (data) {
+                error: function () {
                     $("#error-container").text("@SharedLocalizer[GRA.Annotations.Validate.SomethingWentWrong]");
                     $("#error-container").show().delay(20000).fadeOut("slow");;
                 }
