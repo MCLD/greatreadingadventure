@@ -132,6 +132,7 @@
 			public const string NotStreamingYet = "Not streaming yet";
             public const string PasswordChanged = "Your password has been changed.";
             public const string PointsYoullEarn = "Points you'll earn";
+            public const string PremadeAvatars = "Premade Avatars";
             public const string ProfileUpdated = "Profile updated.";
             public const string ProgramIsOver = "Program is over";
             public const string Progress = "Progress";
