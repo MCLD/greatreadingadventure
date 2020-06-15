@@ -20,7 +20,6 @@ using SixLabors.Primitives;
 namespace GRA.Controllers
 {
     [Authorize]
-    [PreventAjaxRedirect]
     public class AvatarController : Base.UserController
     {
         private readonly ILogger<AvatarController> _logger;
@@ -197,6 +196,7 @@ namespace GRA.Controllers
             return RedirectToAction(nameof(Share));
         }
 
+        [PreventAjaxRedirect]
         public async Task<IActionResult> GetLayersItems(
             string type, int layerId, int selectedItemId, int bundleId, int[] selectedItemIds)
         {

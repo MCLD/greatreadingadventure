@@ -49,28 +49,31 @@ namespace GRA.Controllers.Filter
 
                     controller.TempData[TempDataKey.AlertWarning]
                         = _sharedLocalizer[Annotations.Validate.SessionExpired].ToString();
-
-                    var controllerActionDescriptor
-                        = context.ActionDescriptor as ControllerActionDescriptor;
-                    if (controllerActionDescriptor.ControllerTypeInfo
-                            .IsDefined(typeof(Attributes.PreventAjaxRedirect))
-                        && controllerActionDescriptor.MethodInfo
-                            .IsDefined(typeof(Attributes.PreventAjaxRedirect)))
-                    {
-                        context.Result = controller.StatusCode(StatusCodes.Status401Unauthorized);
-                    }
                 }
 
                 await controller.LogoutUserAsync();
 
-                context.Result = controller.RedirectToRoute(new
+                var controllerActionDescriptor
+                    = context.ActionDescriptor as ControllerActionDescriptor;
+                if (controllerActionDescriptor.ControllerTypeInfo
+                        .IsDefined(typeof(Attributes.PreventAjaxRedirect))
+                    || controllerActionDescriptor.MethodInfo
+                        .IsDefined(typeof(Attributes.PreventAjaxRedirect)))
                 {
-                    area = string.Empty,
-                    controller = redirectController,
-                    action = redirectController == HomeController.Name
-                        ? nameof(HomeController.Index)
-                        : nameof(SignInController.Index)
-                });
+                    context.Result = controller.StatusCode(StatusCodes.Status401Unauthorized);
+                }
+                else
+                {
+                    context.Result = controller.RedirectToRoute(new
+                    {
+                        area = string.Empty,
+                        controller = redirectController,
+                        action = redirectController == HomeController.Name
+                            ? nameof(HomeController.Index)
+                            : nameof(SignInController.Index)
+                    });
+                }
+
             }
             else
             {
