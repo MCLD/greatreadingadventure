@@ -484,6 +484,28 @@ namespace GRA.Domain.Service
             return await _avatarBundleRepository.GetBundlesByAssociatedId(bundleId);
         }
 
+        public async Task<List<AvatarBundle>> GetUsersUnlockedPremadeAvatarsAsync()
+        {
+            var userHistory = await _avatarBundleRepository.UserHistoryAsync(GetActiveUserId());
+            var bundles = new List<AvatarBundle>();
+            foreach (var historyItem in userHistory.Where(_ => _.AvatarBundleId.HasValue))
+            {
+                if (!bundles.Any(bundle => bundle.Id == historyItem.AvatarBundleId))
+                {
+                    var premadeAvatars = await _avatarBundleRepository.GetBundlesByAssociatedId(historyItem.AvatarBundleId.Value);
+                    if (premadeAvatars.Count > 0)
+                    {
+                        bundles.AddRange(premadeAvatars);
+                    }
+                }
+            }
+            return bundles;
+        }
+        public async Task<List<AvatarBundle>> GetBundlesPremadeAvatarsByIdAsync(int bundleId)
+        {
+            return await _avatarBundleRepository.GetBundlesByAssociatedId(bundleId);
+        }
+
         public async Task UpdateBundleHasBeenViewedAsync(int bundleId)
         {
             await _avatarBundleRepository.UpdateHasBeenViewedAsync(GetActiveUserId(),
