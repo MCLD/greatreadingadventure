@@ -782,7 +782,6 @@ namespace GRA.Controllers.MissionControl
             {
                 ShowAlertDanger("Could not create premade avatar.");
             }
-            var layers = await _avatarService.GetLayersAsync();
             var mannequin = await _avatarService.GetRandomMannequinAsync();
             model.SelectedItemIds.Add(mannequin.Id);
             if (model.SelectedItemIds.Count > 0)
@@ -847,7 +846,6 @@ namespace GRA.Controllers.MissionControl
             {
                 ShowAlertDanger("Could not update premade avatar.");
             }
-            var layers = await _avatarService.GetLayersAsync();
             var mannequin = await _avatarService.GetRandomMannequinAsync();
             model.SelectedItemIds.Add(mannequin.Id);
             if (model.SelectedItemIds.Count > 0)
