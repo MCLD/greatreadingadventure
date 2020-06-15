@@ -368,6 +368,7 @@
                         $("#avatarImageContainer").attr("aria-label", description);
                         $("#avatarImageContainer").data("premade", id);
                         $("#saveAvatar").addClass("btn-success");
+                        unsavedChanges = true;
                     }
                     else {
                         $("#error-container").text("@SharedLocalizer[GRA.Annotations.Validate.SomethingWentWrong]");
