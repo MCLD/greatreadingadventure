@@ -258,6 +258,7 @@ namespace GRA.Controllers
             }
         }
 
+        [PreventAjaxRedirect]
         public async Task<IActionResult> GetPremadeAvatarItems(int bundleId)
         {
             try
