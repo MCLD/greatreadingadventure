@@ -109,8 +109,6 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
-            var requireSecretCode = await GetSiteSettingBoolAsync(
-                    SiteSettingKey.Events.RequireBadge);
             foreach (var trigger in triggerList.Data)
             {
                 trigger.AwardBadgeFilename =
@@ -207,6 +205,10 @@ namespace GRA.Controllers.MissionControl
                 ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name")
             };
 
+            if (site.MaxPointsPerTrigger.HasValue)
+            {
+                viewModel.MaxPointLimit = site.MaxPointsPerTrigger.Value;
+            }
             if (viewModel.EditVendorCode)
             {
                 viewModel.VendorCodeTypeList = new SelectList(
@@ -227,6 +229,14 @@ namespace GRA.Controllers.MissionControl
         {
             var badgeRequiredList = new List<int>();
             var challengeRequiredList = new List<int>();
+            var site = await GetCurrentSiteAsync();
+            if (site.MaxPointsPerTrigger.HasValue
+                && !UserHasPermission(Permission.IgnorePointLimits)
+                && model.Trigger.AwardPoints > site.MaxPointsPerTrigger)
+            {
+                ModelState.AddModelError("Trigger.AwardPoints",
+                    $"The maximum points awarded is {site.MaxPointsPerTrigger}");
+            }
             if (!string.IsNullOrWhiteSpace(model.BadgeRequiredList))
             {
                 badgeRequiredList = model.BadgeRequiredList
@@ -435,8 +445,17 @@ namespace GRA.Controllers.MissionControl
                 BadgeRequiredList = string.Join(",", trigger.BadgeIds),
                 ChallengeRequiredList = string.Join(",", trigger.ChallengeIds),
                 SystemList = new SelectList(await _siteService.GetSystemList(), "Id", "Name"),
-                ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name")
-            };
+                ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
+                IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits)
+        };
+            if (site.MaxPointsPerTrigger.HasValue)
+            {
+                viewModel.MaxPointLimit = site.MaxPointsPerTrigger.Value;
+            }
+            if (site.MaxPointsPerTrigger.HasValue && trigger.AwardPoints > site.MaxPointsPerTrigger)
+            {
+                ShowAlertWarning("This Trigger's number of points awarded is higher than what is allowed by the configuration.");
+            }
 
             if (viewModel.EditVendorCode)
             {
@@ -494,6 +513,15 @@ namespace GRA.Controllers.MissionControl
         {
             var badgeRequiredList = new List<int>();
             var challengeRequiredList = new List<int>();
+            var site = await GetCurrentSiteAsync();
+            var currentTrigger = await _triggerService.GetByIdAsync(model.Trigger.Id);
+            if (site.MaxPointsPerTrigger.HasValue
+                && !UserHasPermission(Permission.IgnorePointLimits)
+                && model.Trigger.AwardPoints > site.MaxPointsPerTrigger
+                && model.Trigger.AwardPoints != currentTrigger.AwardPoints)
+            {
+                ModelState.AddModelError("Trigger.AwardPoints", $"The maximum points awarded is {site.MaxPointsPerTrigger}");
+            }
             if (!string.IsNullOrWhiteSpace(model.BadgeRequiredList))
             {
                 badgeRequiredList = model.BadgeRequiredList
