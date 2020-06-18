@@ -20,6 +20,8 @@ namespace GRA.Controllers.ViewModel.MissionControl.Challenges
         public bool CanManageEvents { get; set; }
         public bool CanViewParticipants { get; set; }
         public bool CanViewTriggers { get; set; }
+        public bool IgnorePointLimits { get; set; }
+        public int? MaxPointLimit { get; set; }
         public string MaxPointsMessage { get; set; }
         public string BadgeMakerUrl { get; set; }
         public bool UseBadgeMaker { get; set; }

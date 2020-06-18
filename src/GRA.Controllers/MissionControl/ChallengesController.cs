@@ -274,13 +274,18 @@ namespace GRA.Controllers.MissionControl
             var viewModel = new ChallengesDetailViewModel
             {
                 BadgeMakerUrl = GetBadgeMakerUrl(siteUrl, site.FromEmailAddress),
-                UseBadgeMaker = true
+                UseBadgeMaker = true,
+                IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits)
             };
 
             viewModel = await GetDetailLists(viewModel);
             if (site.MaxPointsPerChallengeTask.HasValue)
             {
                 viewModel.MaxPointsMessage = $"(Up to {site.MaxPointsPerChallengeTask.Value} points per required task)";
+            }
+            if (site.MaxPointsPerChallengeTask.HasValue)
+            {
+                viewModel.MaxPointLimit = site.MaxPointsPerChallengeTask.Value;
             }
 
             return View(viewModel);
@@ -291,7 +296,9 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Create(ChallengesDetailViewModel model)
         {
             var site = await GetCurrentSiteAsync();
-            if (site.MaxPointsPerChallengeTask.HasValue && model.Challenge.TasksToComplete.HasValue
+            if (site.MaxPointsPerChallengeTask.HasValue
+                && !UserHasPermission(Permission.IgnorePointLimits)
+                && model.Challenge.TasksToComplete.HasValue
                 && model.Challenge.TasksToComplete != 0)
             {
                 double pointsPerChallenge = (double)model.Challenge.PointsAwarded / model.Challenge.TasksToComplete.Value;
@@ -435,12 +442,23 @@ namespace GRA.Controllers.MissionControl
                 Groups = await _challengeService.GetGroupsByChallengeId(challenge.Id),
                 RelatedEvents = await _eventService.GetByChallengeIdAsync(challenge.Id),
                 BadgeMakerUrl = GetBadgeMakerUrl(siteUrl, site.FromEmailAddress),
-                UseBadgeMaker = true
+                UseBadgeMaker = true,
+                IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits)
             };
 
             if (site.MaxPointsPerChallengeTask.HasValue)
             {
                 viewModel.MaxPointsMessage = $"(Up to {site.MaxPointsPerChallengeTask.Value} points per required task)";
+                viewModel.MaxPointLimit = site.MaxPointsPerChallengeTask.Value;
+            }
+
+            if (site.MaxPointsPerChallengeTask.HasValue && challenge.TasksToComplete.HasValue)
+            {
+                if (challenge.PointsAwarded / challenge.TasksToComplete.Value
+                    > site.MaxPointsPerChallengeTask)
+                {
+                    ShowAlertWarning("This Challenge's number of points awarded is higher than what is allowed by the configuration.");
+                }
             }
 
             if (challenge.BadgeId != null)
@@ -480,10 +498,16 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Edit(ChallengesDetailViewModel model, string Submit)
         {
             var site = await GetCurrentSiteAsync();
-            if (site.MaxPointsPerChallengeTask.HasValue && model.Challenge.TasksToComplete.HasValue
-                && model.Challenge.TasksToComplete != 0)
+            var currentChallenge =
+                await _challengeService.MCGetChallengeDetailsAsync(model.Challenge.Id);
+            if (site.MaxPointsPerChallengeTask.HasValue
+                && model.Challenge.TasksToComplete.HasValue
+                && model.Challenge.TasksToComplete != 0
+                && model.Challenge.PointsAwarded != currentChallenge.PointsAwarded
+                && !UserHasPermission(Permission.IgnorePointLimits))
             {
-                double pointsPerChallenge = (double)model.Challenge.PointsAwarded / model.Challenge.TasksToComplete.Value;
+                double pointsPerChallenge =
+                    (double)model.Challenge.PointsAwarded/ model.Challenge.TasksToComplete.Value;
                 if (pointsPerChallenge > site.MaxPointsPerChallengeTask)
                 {
                     ModelState.AddModelError("Challenge.PointsAwarded", $"Too many points awarded.");
