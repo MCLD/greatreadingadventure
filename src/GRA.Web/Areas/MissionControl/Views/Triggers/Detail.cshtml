@@ -44,35 +44,35 @@
 @if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
 {
 
-<div class="modal fade" id="warningModal" tabindex="-1" role="dialog" aria-labelledby="warningModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="deleteModalLabel">Warning: Award points exceed maximum</h4>
-            </div>
-            <div class="modal-body">
-                <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
-                <span id="modal-text">The awarded points for this trigger exceed the maximum of <strong>@Model.MaxPointLimit points</strong>. Do you wish to continue?</span>
-            </div>
-            <div class="modal-footer">
-                <button type="button"
-                        class="btn btn-default"
-                        data-dismiss="modal"
-                        style="margin-right: 1em;">
-                    Cancel
-                </button>
-                <button id="warningSave"
-                        type="button"
-                        class="btn btn-primary"
-                        data-dismiss="modal"
-                        style="margin-right: 1em;">
-                    Save Trigger
-                </button>
+    <div class="modal fade" id="warningModal" tabindex="-1" role="dialog" aria-labelledby="warningModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="deleteModalLabel">Warning: Award points exceed maximum</h4>
+                </div>
+                <div class="modal-body">
+                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                    <span id="modal-text">The awarded points for this trigger exceed the maximum of <strong>@Model.MaxPointLimit points</strong>. Do you wish to continue?</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-default"
+                            data-dismiss="modal"
+                            style="margin-right: 1em;">
+                        Cancel
+                    </button>
+                    <button id="warningSave"
+                            type="button"
+                            class="btn btn-primary"
+                            data-dismiss="modal"
+                            style="margin-right: 1em;">
+                        Save Trigger
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 }
 
@@ -908,9 +908,21 @@
                 <text>
                 $("#saveButton").on("click",function(e) {
                     e.preventDefault();
-                    if ($("#Trigger_AwardPoints").val() > @Model.MaxPointLimit
-                        && $("#Trigger_AwardPoints").val() != @Model.Trigger.AwardPoints) {
-                        $('#warningModal').modal("show");
+                    if ($("#Trigger_AwardPoints").val() > @Model.MaxPointLimit) {
+                        @if (Model.Trigger != null)
+                        {
+                            <text>
+                            if ($("#Trigger_AwardPoints").val() != @Model.Trigger.AwardPoints)
+                            {
+                                $('#warningModal').modal("show");
+                            }
+                            </text>
+                        }
+                        else
+                        {
+                            @:$('#warningModal').modal("show");
+                        }
+
                     }
                     else {
                         $("#triggerForm").submit();

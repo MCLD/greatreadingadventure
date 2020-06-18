@@ -36,7 +36,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.Triggers
 
         public bool AwardsMail { get; set; }
         public bool AwardsPrize { get; set; }
-        public bool AwardPointsOveridden { get; set; }
         public bool IgnorePointLimits { get; set; }
         public int? MaxPointLimit { get; set; }
 

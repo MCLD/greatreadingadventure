@@ -202,7 +202,8 @@ namespace GRA.Controllers.MissionControl
                 EditVendorCode = UserHasPermission(Permission.ManageVendorCodes),
                 SystemList = new SelectList(await _siteService.GetSystemList(), "Id", "Name"),
                 BranchList = new SelectList(await _siteService.GetAllBranches(), "Id", "Name"),
-                ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name")
+                ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
+                IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits)
             };
 
             if (site.MaxPointsPerTrigger.HasValue)
