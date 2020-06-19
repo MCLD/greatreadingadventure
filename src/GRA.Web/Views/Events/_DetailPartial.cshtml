@@ -56,14 +56,27 @@
                     @if (Model.Event.IsStreaming)
                     {
                         @if (Model.Event.StartDate <= DateTime.Now
-                         && Model.Event.StreamingAccessEnds >= DateTime.Now)
+                  && Model.Event.StreamingAccessEnds >= DateTime.Now)
                         {
-                            <a class="btn btn-success"
-                               href="@Url.Action(nameof(EventsController.Stream),
-                                    new { eventId = Model.Event.Id })">
-                                <span class="fa fa-play-circle-o"></span>
-                                @SharedLocalizer[GRA.Annotations.Interface.StreamNow]
-                            </a>
+                            if (Model.IsAuthenticated)
+                            {
+                                <a class="btn btn-success"
+                                   href="@Url.Action(nameof(EventsController.Stream),
+                                        new { id = Model.Event.Id })">
+                                    <span class="fa fa-play-circle-o"></span>
+                                    @SharedLocalizer[GRA.Annotations.Interface.StreamNow]
+                                </a>
+                            }
+                            else
+                            {
+                                <a class="btn btn-success float-right"
+                                   href="@Url.Action(nameof(EventsController.Stream),
+                                        new { id = Model.Event.Id })">
+                                    <span class="fas fa-sign-in-alt"></span>
+                                    @SharedLocalizer[GRA.Annotations.Interface.SignInToStream]
+                                </a>
+
+                            }
                         }
                         else
                         {

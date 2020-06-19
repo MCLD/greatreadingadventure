@@ -110,7 +110,10 @@
             public const string EnterAddressOrZipCode = "Enter an address or ZIP code";
             public const string EnterChallengeSearch = "Enter text to search for a challenge here";
             public const string EnterEventSearch = "Enter text to search for an event here";
+            public const string EventHasEnded = "This streaming event has ended.";
             public const string Events = "Events";
+            public const string EventNotFound = "Could not find the requested event.";
+            public const string EventNotStarted = "This streaming event has not started yet.";
             public const string Family = "Family";
             public const string Find = "Find";
             public const string FreeBookCode = "Free book code";
@@ -152,6 +155,8 @@
             public const string SentOn = "Sent to you on {0}";
             public const string Share = "Share";
             public const string SignedInAs = "You are now signed in as {0}.";
+            public const string SignInForStreams = "Sign in to access streaming programs!";
+            public const string SignInToStream = "Sign in to stream!";
             public const string Stream = "Stream";
             public const string StreamingEvents = "Streaming Events";
             public const string StreamNow = "Stream Now!";

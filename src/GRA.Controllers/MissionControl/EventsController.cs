@@ -42,14 +42,16 @@ namespace GRA.Controllers.MissionControl
             UserService userService)
             : base(context)
         {
-            _logger = Require.IsNotNull(logger, nameof(logger));
-            _badgeService = Require.IsNotNull(badgeService, nameof(badgeService));
-            _eventImportService = Require.IsNotNull(eventImportService, nameof(eventImportService));
-            _eventService = Require.IsNotNull(eventService, nameof(eventService));
-            _siteService = Require.IsNotNull(siteService, nameof(SiteService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _badgeService = badgeService ?? throw new ArgumentNullException(nameof(badgeService));
+            _eventImportService = eventImportService
+                ?? throw new ArgumentNullException(nameof(eventImportService));
+            _eventService = eventService ?? throw new ArgumentNullException(nameof(eventService));
+            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             _spatialService = spatialService
                 ?? throw new ArgumentNullException(nameof(spatialService));
-            _triggerService = Require.IsNotNull(triggerService, nameof(TriggerService));
+            _triggerService = triggerService
+                ?? throw new ArgumentNullException(nameof(triggerService));
             _userService = userService
                 ?? throw new ArgumentNullException(nameof(userService));
             PageTitle = "Events";
@@ -699,7 +701,6 @@ namespace GRA.Controllers.MissionControl
                         = await _userService.GetUsersNameByIdAsync(model.Event.CreatedBy);
                 }
                 model.Event = await _eventService.GetRelatedChallengeDetails(model.Event, true);
-
             }
             else
             {
@@ -754,7 +755,6 @@ namespace GRA.Controllers.MissionControl
                 }
 
                 return View("AddEditStreaming", model);
-
             }
             catch (GraException gex)
             {
@@ -1299,18 +1299,19 @@ namespace GRA.Controllers.MissionControl
                         case ImportStatus.Success:
                             AlertSuccess = message;
                             break;
-                        default:
-                            AlertInfo = message;
-                            break;
                         case ImportStatus.Warning:
                             AlertWarning = message;
                             break;
                         case ImportStatus.Danger:
                             AlertDanger = message;
                             break;
+                        default:
+                            AlertInfo = message;
+                            break;
                     }
                 }
             }
+
             return RedirectToAction("Import");
         }
     }

@@ -1441,6 +1441,26 @@
     <value>You've earned a free book! Head over to &lt;a href="{0}"&gt;&lt;strong&gt;My Profile&lt;/strong&gt;&lt;/a&gt; page by {1} to choose what to do with it.</value>
     <comment>Dashboard message telling participant they've earned a free book, when it expires, and where to go to redeem it; {0} is replaced with the date the code expires.</comment>
   </data>
+  <data name="Could not find the requested event." xml:space="preserve">
+    <value>Could not find the requested event.</value>
+    <comment>Event details were requested but the event could not be found</comment>
+  </data>
+  <data name="Sign in to access streaming programs!" xml:space="preserve">
+    <value>Sign in to access streaming programs!</value>
+    <comment>This message is displayed to a user who wants to view a streaming program but isn't logged in.</comment>
+  </data>
+  <data name="Sign in to stream!" xml:space="preserve">
+    <value>Sign in to stream!</value>
+    <comment>Button shown to unauthenticated users encouraging them to sign in and stream programs.</comment>
+  </data>
+  <data name="This streaming event has ended." xml:space="preserve">
+    <value>This streaming event has ended.</value>
+    <comment>Message indicating that a streaming event is no longer available to view.</comment>
+  </data>
+  <data name="This streaming event has not started yet." xml:space="preserve">
+    <value>This streaming event has not started yet.</value>
+    <comment>Message indicating that a streaming event is not yet available.</comment>
+  </data>
     <data name="Opens new window." xml:space="preserve">
     <value>(Opens new window)</value>
     <comment>Warning message for the screenreader to indicate the link will open a new window.</comment>
