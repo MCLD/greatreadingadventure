@@ -1,7 +1,5 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.PerformerViewModel
 
-@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
-
 @section styles {
     <link rel="stylesheet" href="~/css/performerregistration.min.css" asp-append-version="true" />
 }
@@ -25,7 +23,7 @@
                             <div>
                                 <span class="colored-icon fa fa-lg @(Model.BranchAvailability.Contains(branch.Id) || Model.Performer.AllBranches ? "fa-check" : "fa-times")"></span>
                                 <label data-toggle="tooltip" data-placement="top" title="@branch.Address">@branch.Name</label>
-                                <a aria-label="Map @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                <a aria-label="Map (Opens new window)"
                                    href="https://www.google.com/maps/search/@branch.Address"
                                    target="_blank">
                                     <span class="fa fa-map-o"></span>
@@ -133,7 +131,7 @@
         </div>
         <div class="row" style="padding-bottom:15px;">
             <div class="col-xs-12" style="text-align:center;">
-                <a aria-label="View References @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                <a aria-label="View References (Opens new window)"
                    href="~/@Model.ReferencesPath"
                    target="_blank"
                    class="btn btn-primary">View References</a>
@@ -181,7 +179,7 @@
                 <div>
                     @if (Model.Uri != null)
                     {
-                        <a aria-label="@Model.Performer.Website @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                        <a aria-label="@Model.Performer.Website (Opens new window)"
                            href="@Model.Uri"
                            target="_blank">@Model.Performer.Website</a>
                     }

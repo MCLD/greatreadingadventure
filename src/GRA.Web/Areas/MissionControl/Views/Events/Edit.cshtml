@@ -1,8 +1,5 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Events.EventsDetailViewModel
 
-
-@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
-
 @if (Model.CanRelateChallenge)
 {
     <div class="row">
@@ -174,7 +171,7 @@
         Created By:
         @if (Model.CanViewParticipants)
         {
-            <a aria-label="@Model.CreatedByName @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+            <a aria-label="@Model.CreatedByName (Opens new window)"
                asp-controller="Participants"
                asp-action="@nameof(ParticipantsController.Detail)"
                asp-route-id="@Model.Event.CreatedBy"
@@ -192,7 +189,7 @@
         {
             <div class="row" style="padding-top:10px;">
                 <div class="col-xs-12">
-                    <a aria-label="View Related Trigger @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                    <a aria-label="View Related Trigger (Opens new window)"
                        asp-controller="Triggers"
                        asp-action="Edit"
                        asp-route-id="@Model.Event.RelatedTriggerId"
@@ -351,7 +348,7 @@
                         {
                             <tr>
                                 <td>
-                                    <a aria-label="@Model.Event.Challenge.Name @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                    <a aria-label="@Model.Event.Challenge.Name (Opens new window)"
                                        asp-action="Edit"
                                        asp-route-id="@Model.Event.Challenge.Id"
                                        target="_blank">@Model.Event.Challenge.Name</a>
@@ -409,7 +406,7 @@
                                 <td>
                                     @if (Model.CanEditGroups)
                                     {
-                                        <a aria-label="@Model.Event.ChallengeGroup.Name @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                        <a aria-label="@Model.Event.ChallengeGroup.Name (Opens new window)"
                                            asp-controller="Challenges"
                                            asp-action="EditGroup"
                                            asp-route-id="@Model.Event.ChallengeGroup.Id"
@@ -424,7 +421,7 @@
                                     @Model.Event.ChallengeGroup.Description
                                 </td>
                                 <td>
-                                    <a aria-label="@Model.Event.ChallengeGroup.Stub @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                    <a aria-label="@Model.Event.ChallengeGroup.Stub (Opens new window)"
                                        asp-area=""asp-controller="Challenges"
                                        asp-action="List"
                                        asp-route-id="@Model.Event.ChallengeGroup.Stub"

@@ -1,8 +1,5 @@
 ﻿@model GRA.Controllers.ViewModel.Profile.ProfileDetailViewModel
 
-
-@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
-
 @if (Model.User.NeedsToAnswerVendorCodeQuestion && Model.User.CanEmailAwardVendorCode)
 {
     <div class="row">

@@ -1,7 +1,5 @@
 ﻿@model GRA.Controllers.ViewModel.Events.EventsDetailViewModel
 
-@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
-
 @section metadata {
     <meta name="description" content="@Model.Event.Description" />
     <link rel="canonical" href="@Url.Action("Detail", "Events", new { id = Model.Event.Id })" />

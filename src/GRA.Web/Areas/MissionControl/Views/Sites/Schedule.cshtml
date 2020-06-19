@@ -1,7 +1,5 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Sites.SiteScheduleViewModel
 
-@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
-
 @await Html.PartialAsync("_SitePartial")
 
 <form asp-controller="Sites" asp-action="Schedule" method="post" role="form">

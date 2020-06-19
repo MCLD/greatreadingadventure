@@ -1,7 +1,5 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Avatar.BundlesDetailViewModel
 
-@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
-
 @if (Model.Bundle?.HasBeenAwarded != true)
 {
     <div class="row">
@@ -84,7 +82,10 @@
                             @foreach (var trigger in Model.TriggersAwardingBundle)
                             {
                                 <li>
-                                    <a aria-label="@trigger.Name @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]" target="_blank" href="@Url.Action("Edit", "Triggers", new { id = trigger.Id })"> @trigger.Name</a>
+                                    <a aria-label="@trigger.Name (Opens new window)"
+                                       target="_blank"
+                                       href="@Url.Action("Edit", "Triggers", new { id = trigger.Id })">
+                                    @trigger.Name</a>
                                 </li>
                             }
                         </ul>

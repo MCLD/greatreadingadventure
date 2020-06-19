@@ -3,9 +3,6 @@
 @using GRA.Domain.Model
 @await Html.PartialAsync("_ParticipantPartial")
 
-
-@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
-
 @if (Model.CanEditDetails && Model.User.NeedsToAnswerVendorCodeQuestion && Model.User.CanEmailAwardVendorCode)
 {
     <div class="row">

@@ -1,8 +1,6 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Challenges.ChallengesDetailViewModel
 @using GRA.Domain.Model
 
-@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
-
 @section styles {
     <link rel="stylesheet" href="~/css/markdown.min.css" asp-append-version="true" />
     <style>
@@ -17,7 +15,7 @@
         Created By:
         @if (Model.CanViewParticipants)
         {
-            <a aria-label="@Model.CreatedByName @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+            <a aria-label="@Model.CreatedByName (Opens new window)"
                asp-controller="Participants"
                asp-action="@nameof(ParticipantsController.Detail)"
                asp-route-id="@Model.Challenge.CreatedBy"
@@ -184,7 +182,7 @@
                                         {
                                             <label class="control-label">
                                                 Edit File &ndash;
-                                                <a aria-label="Link @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                                <a aria-label="Link (Opens new window)"
                                                    href="@Model.TaskFilePath"
                                                    target="_blank">Link</a>
                                             </label>
@@ -311,7 +309,7 @@
                                 @if (Model.CanEditGroups)
                                 {
                                     <li>
-                                        <a aria-label="@group.Name @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                        <a aria-label="@group.Name (Opens new window)"
                                            asp-action="EditGroup"
                                            asp-route-id="@group.Id"
                                            target="_blank">@group.Name</a>
@@ -320,7 +318,7 @@
                                 else
                                 {
                                     <li>
-                                        <a aria-label="@group.Name @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                        <a aria-label="@group.Name (Opens new window)"
                                            asp-area=""
                                            asp-controller="Challenges"
                                            asp-action="List"
@@ -356,7 +354,7 @@
                                 @if (Model.CanManageEvents)
                                 {
                                     <li>
-                                        <a aria-label="@graEvent.Name @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                        <a aria-label="@graEvent.Name (Opens new window)"
                                            asp-controller="Events"
                                            asp-action="Edit"
                                            asp-route-id="@graEvent.Id"
@@ -366,7 +364,7 @@
                                 else
                                 {
                                     <li>
-                                        <a aria-label="@graEvent.Id @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                        <a aria-label="@graEvent.Id (Opens new window)"
                                            asp-area=""
                                            asp-controller="Events"
                                            asp-action="Detail"
@@ -402,7 +400,7 @@
                                 @if (Model.CanViewTriggers)
                                 {
                                     <li>
-                                        <a aria-label="@trigger.Name @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                        <a aria-label="@trigger.Name (Opens new window)"
                                            asp-controller="Triggers"
                                            asp-action="Edit"
                                            asp-route-id="@trigger.Id"
@@ -620,7 +618,7 @@
                                 @Html.Raw(task.Description)
                                 @if (!string.IsNullOrWhiteSpace(task.Filename))
                                 {
-                                    <a aria-label="View Attachment @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                    <a aria-label="View Attachment (Opens new window)"
                                        href="@task.Filename"
                                        target="_blank"
                                        class="btn btn-xs btn-default on-top"
@@ -639,7 +637,7 @@
                                 </div>
                                 @if (!string.IsNullOrWhiteSpace(task.Filename))
                                 {
-                                    <a aria-label="View Attachment @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                    <a aria-label="View Attachment (Opens new window)"
                                        href="@task.Filename"
                                        target="_blank"
                                        class="btn btn-xs btn-default on-top"

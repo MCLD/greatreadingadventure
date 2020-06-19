@@ -1,7 +1,5 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.HouseholdListViewModel
 
-@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
-
 @section styles {
     <style>
         .system-selector {
@@ -538,7 +536,7 @@
                                             if (!string.IsNullOrEmpty(Model.Head.VendorCodeUrl))
                                             {
                                                 <strong class="on-top-nobg">
-                                                    <a aria-label="@Model.Head.VendorCode @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                                    <a aria-label="@Model.Head.VendorCode (Opens new window)"
                                                        href="@Model.Head.VendorCodeUrl"
                                                        target="_blank">@Model.Head.VendorCode</a>
                                                 </strong>
@@ -690,7 +688,7 @@
                                                 if (!string.IsNullOrEmpty(user.VendorCodeUrl))
                                                 {
                                                     <strong class="on-top-nobg">
-                                                        <a aria-label="@user.VendorCode @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                                        <a aria-label="@user.VendorCode (Opens new window)"
                                                            href="@user.VendorCodeUrl"
                                                            target="_blank">@user.VendorCode</a>
                                                     </strong>
