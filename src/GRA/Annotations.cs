@@ -26,7 +26,6 @@
 
         public static class Info
         {
-            public const string AltTextExplanation = "How should this {0} be described to those who can’t see it?";
             public const string BetterSuitedOption = "This program may be better-suited to your age:";
             public const string ChallengeBookLinkTitle = "Read <strong><em><a href=\"{0}\" target=\"_blank\">{1}</a></em></strong>";
             public const string ChallengeBookLinkTitleAuthor = "Read <strong><em><a href=\"{0}\" target=\"_blank\">{1}</a></em></strong> by <strong>{2}</strong>";
