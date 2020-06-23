@@ -26,6 +26,7 @@ namespace GRA.Domain.Service
         private readonly ICodeGenerator _codeGenerator;
         private readonly IPasswordValidator _passwordValidator;
         private readonly IAuthorizationCodeRepository _authorizationCodeRepository;
+        private readonly IAvatarBundleRepository _avatarBundleRepository;
         private readonly IBadgeRepository _badgeRepository;
         private readonly IBookRepository _bookRepository;
         private readonly IBranchRepository _branchRepository;
@@ -57,6 +58,7 @@ namespace GRA.Domain.Service
             ICodeGenerator codeGenerator,
             IPasswordValidator passwordValidator,
             IAuthorizationCodeRepository authorizationCodeRepository,
+            IAvatarBundleRepository avatarBundleRepository,
             IBadgeRepository badgeRepository,
             IBookRepository bookRepository,
             IBranchRepository branchRepository,
@@ -90,6 +92,8 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(passwordValidator));
             _authorizationCodeRepository = authorizationCodeRepository
                 ?? throw new ArgumentNullException(nameof(authorizationCodeRepository));
+            _avatarBundleRepository = avatarBundleRepository
+                ?? throw new ArgumentNullException(nameof(avatarBundleRepository));
             _badgeRepository = badgeRepository
                 ?? throw new ArgumentNullException(nameof(badgeRepository));
             _bookRepository = bookRepository
@@ -825,7 +829,23 @@ namespace GRA.Domain.Service
 
         public async Task<IEnumerable<Notification>> GetNotificationsForUser()
         {
-            return await _notificationRepository.GetByUserIdAsync(GetActiveUserId());
+            var notifications = await _notificationRepository.GetByUserIdAsync(GetActiveUserId());
+            foreach(var notification in notifications)
+            {
+                if (notification.AvatarBundleId.HasValue)
+                {
+                    var bundle = await _avatarBundleRepository
+                        .GetByIdAsync(notification.AvatarBundleId.Value);
+                    notification.AltText =
+                        _sharedLocalizer[Annotations.Interface.AvatarBundleAltText, bundle.Name];
+                }
+                else if (notification.BadgeId.HasValue)
+                {
+                    var badge = await _badgeRepository.GetByIdAsync(notification.BadgeId.Value);
+                    notification.AltText = badge.AltText;
+                }
+            }
+            return notifications;
         }
 
         public async Task ClearNotificationsForUser()
