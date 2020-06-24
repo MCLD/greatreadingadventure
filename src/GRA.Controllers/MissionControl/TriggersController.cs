@@ -417,6 +417,7 @@ namespace GRA.Controllers.MissionControl
             }
             var site = await GetCurrentSiteAsync();
             var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
+            var badge = await _badgeService.GetByIdAsync(trigger.AwardBadgeId);
             var viewModel = new TriggersDetailViewModel
             {
                 Trigger = trigger,
@@ -436,8 +437,9 @@ namespace GRA.Controllers.MissionControl
                 BadgeRequiredList = string.Join(",", trigger.BadgeIds),
                 ChallengeRequiredList = string.Join(",", trigger.ChallengeIds),
                 SystemList = new SelectList(await _siteService.GetSystemList(), "Id", "Name"),
-                ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name")
-            };
+                ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
+                BadgeAltText = badge.AltText
+        };
 
             if (viewModel.EditVendorCode)
             {
@@ -481,11 +483,6 @@ namespace GRA.Controllers.MissionControl
             {
                 viewModel.BadgePath = _pathResolver.ResolveContentPath(viewModel.Trigger.AwardBadgeFilename);
             }
-            if(viewModel.Trigger.AwardBadgeId != null)
-            {
-                var badge = await _badgeService.GetByIdAsync(viewModel.Trigger.AwardBadgeId);
-                viewModel.BadgeAltText = badge.AltText;
-            }
             if (UserHasPermission(Permission.ManageEvents))
             {
                 viewModel.RelatedEvents = await _eventService.GetRelatedEventsForTriggerAsync(id);
@@ -526,12 +523,6 @@ namespace GRA.Controllers.MissionControl
             if (string.IsNullOrWhiteSpace(model.BadgeAltText))
             {
                 ModelState.AddModelError("BadgeAltText", "The Badge's Alt-Text is required.");
-            }
-            if (!string.IsNullOrWhiteSpace(model.BadgeAltText) && model.BadgeUploadImage == null
-                && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || model.UseBadgeMaker))
-            {
-                ModelState.AddModelError("BadgeUploadImage", "A badge is required for the alt-text.");
-                ModelState.AddModelError("BadgeMakerImage", "A badge is required for the alt-text.");
             }
 
             if (!model.IsSecretCode)
