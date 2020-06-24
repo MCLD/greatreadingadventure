@@ -12,6 +12,8 @@ namespace GRA.Domain.Model
 
         public int? BadgeId { get; set; }
         public string BadgeFilename { get; set; }
+
+        [MaxLength(255)]
         public string AltText { get; set; }
         public int? ChallengeId { get; set; }
         public int? PointsEarned { get; set; }

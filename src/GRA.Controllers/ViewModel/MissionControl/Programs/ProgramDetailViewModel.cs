@@ -17,6 +17,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Programs
         public int SchoolValues { get; set; }
 
         [DisplayName("Badge Alt-Text")]
+        [MaxLength(255)]
         public string BadgeAltText { get; set; }
         public string BadgePath { get; set; }
         public IFormFile BadgeUploadImage { get; set; }
