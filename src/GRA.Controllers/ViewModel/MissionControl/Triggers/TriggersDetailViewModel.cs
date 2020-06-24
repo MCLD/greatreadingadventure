@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Triggers
 {
@@ -20,6 +21,8 @@ namespace GRA.Controllers.ViewModel.MissionControl.Triggers
         [DisplayName("Challenges and triggers the participant must have earned")]
         public ICollection<TriggerRequirement> TriggerRequirements { get; set; }
         public string BadgeRequiredList { get; set; }
+
+        [MaxLength(255)]
         public string BadgeAltText { get; set; }
         public string ChallengeRequiredList { get; set; }
 
@@ -32,7 +35,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Triggers
         public bool EditAvatarBundle { get; set; }
         public bool EditMail { get; set; }
         public bool EditVendorCode { get; set; }
-        
+
         public string UnlockableAvatarBundle { get; set; }
         public string VendorCodeType { get; set; }
 
