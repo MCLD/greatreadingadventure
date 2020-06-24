@@ -22,6 +22,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Triggers
         public ICollection<TriggerRequirement> TriggerRequirements { get; set; }
         public string BadgeRequiredList { get; set; }
 
+        [DisplayName("Badge Alt-Text")]
         [MaxLength(255)]
         public string BadgeAltText { get; set; }
         public string ChallengeRequiredList { get; set; }
