@@ -371,7 +371,6 @@ namespace GRA.Domain.Service
                 {
                     RemoveTaskFile(originalTask);
                     task.Filename = null;
-
                 }
                 else
                 {
