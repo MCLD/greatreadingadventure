@@ -319,7 +319,8 @@ namespace GRA.Controllers.MissionControl
                             model.Program.JoinBadgeId = badge.Id;
                         }
                     }
-                    if (model.Program.JoinBadgeId.HasValue && !string.IsNullOrEmpty(model.BadgeAltText))
+                    if (model.Program.JoinBadgeId.HasValue
+                        && !string.IsNullOrEmpty(model.BadgeAltText))
                     {
                         var existing = await _badgeService
                             .GetByIdAsync(model.Program.JoinBadgeId.Value);
