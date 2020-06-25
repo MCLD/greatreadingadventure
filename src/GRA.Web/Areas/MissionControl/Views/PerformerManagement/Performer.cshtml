@@ -9,7 +9,12 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close dialog"><span aria-hidden="true">&times;</span></button>
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close dialog">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                     <div class="modal-title h4" id="branchModalLabel">Branch Selection</div>
                 </div>
                 <div class="modal-body" style="max-height: calc(100vh - 200px); overflow-y:auto;">
@@ -46,7 +51,12 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close dialog"><span aria-hidden="true">&times;</span></button>
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close dialog">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                     <div class="modal-title h4" id="deleteModalLabel">Delete program</div>
                 </div>
                 <div class="modal-body">
@@ -106,12 +116,19 @@
             <form method="post" role="form" style="display:inline;">
                 <input asp-for="Performer.Id" type="hidden" />
                 <input asp-for="Approve" type="hidden" />
-                <button asp-action="PerformerApprove" class="btn btn-lg @(Model.Approve ? "btn-success" : "btn-danger") pull-right">@(Model.Approve ? "Approve" : "Unapprove")</button>
+                <button asp-action="PerformerApprove"
+                        class="btn btn-lg @(Model.Approve ? "btn-success" : "btn-danger") pull-right">
+                    @(Model.Approve ? "Approve" : "Unapprove")
+                </button>
             </form>
         }
         else if (Model.SchedulingStage >= GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
         {
-            <a asp-action="PerformerSelections" asp-route-id="@Model.Performer.Id" class="btn btn-lg btn-default pull-right">View Selections</a>
+            <a asp-action="PerformerSelections"
+               asp-route-id="@Model.Performer.Id"
+               class="btn btn-lg btn-default pull-right">
+                View Selections
+            </a>
         }
 
     </div>

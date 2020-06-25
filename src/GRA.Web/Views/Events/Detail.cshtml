@@ -30,7 +30,8 @@
 
                 @if (!string.IsNullOrWhiteSpace(Model.Event.ExternalLink))
                 {
-                    <div class="row-spacing" style="font-size:medium;"><strong>@SharedLocalizer[GRA.Annotations.Interface.MoreInformation]: </strong>
+                    <div class="row-spacing" style="font-size:medium;">
+                        <strong>@SharedLocalizer[GRA.Annotations.Interface.MoreInformation]: </strong>
                         <a aria-label="@Model.Event.Name @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
                            target="_blank"
                            href="@Model.Event.ExternalLink">
