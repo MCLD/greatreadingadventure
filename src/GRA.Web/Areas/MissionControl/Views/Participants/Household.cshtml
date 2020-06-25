@@ -227,7 +227,10 @@
                                     aria-label="Close dialog">
                                 <span aria-hidden="true">&times;</span>
                             </button>
-                            <div class="modal-title h4" id="deleteModalLabel">Redeem @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group") prize</div>
+                            <div class="modal-title h4"
+                                 id="deleteModalLabel">
+                                Redeem @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group") prize
+                            </div>
                         </div>
                         <div class="modal-body">
                             <label asp-for="Prize" class="control-label">Select which prize to redeem:</label>
@@ -265,7 +268,9 @@
                                     aria-label="Close dialog">
                                 <span aria-hidden="true">&times;</span>
                             </button>
-                            <div class="modal-title h4" id="deleteModalLabel">Redeem @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group") codes</div>
+                            <div class="modal-title h4" id="deleteModalLabel">
+                                Redeem @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group") codes
+                            </div>
                         </div>
                         <div class="modal-body">
                             <p>This will redeem codes for every member of this @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group"). Once codes are redeemed, they cannot be donated.</p>
