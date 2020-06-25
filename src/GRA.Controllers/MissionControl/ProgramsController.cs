@@ -323,7 +323,7 @@ namespace GRA.Controllers.MissionControl
                     {
                         var existing = await _badgeService
                             .GetByIdAsync(model.Program.JoinBadgeId.Value);
-                        if (!String.Equals(existing.AltText, model.BadgeAltText, StringComparison.OrdinalIgnoreCase))
+                        if (!string.Equals(existing.AltText, model.BadgeAltText, StringComparison.OrdinalIgnoreCase))
                         {
                             existing.AltText = model.BadgeAltText;
                             await _badgeService.UpdateBadgeAsync(existing);
