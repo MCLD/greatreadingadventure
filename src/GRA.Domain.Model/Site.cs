@@ -66,9 +66,6 @@ namespace GRA.Domain.Model
         [DisplayName("Max Points Per Challenge Task")]
         public int? MaxPointsPerChallengeTask { get; set; }
 
-        [DisplayName("Max Points Awarded Per Trigger")]
-        public int? MaxPointsPerTrigger { get; set; }
-
         [DisplayName("From Email Name")]
         public string FromEmailName { get; set; }
         [DisplayName("From Email Address")]
