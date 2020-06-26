@@ -2248,8 +2248,6 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<bool>("IsHttpsForced");
 
-                    b.Property<int?>("MaxPointsPerChallengeTask");
-
                     b.Property<string>("MetaDescription")
                         .HasMaxLength(150);
 
