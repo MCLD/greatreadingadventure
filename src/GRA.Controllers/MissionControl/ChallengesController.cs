@@ -282,12 +282,8 @@ namespace GRA.Controllers.MissionControl
             if (site.MaxPointsPerChallengeTask.HasValue)
             {
                 viewModel.MaxPointsMessage = $"(Up to {site.MaxPointsPerChallengeTask.Value} points per required task)";
-            }
-            if (site.MaxPointsPerChallengeTask.HasValue)
-            {
                 viewModel.MaxPointLimit = site.MaxPointsPerChallengeTask.Value;
             }
-
             return View(viewModel);
         }
 
@@ -446,14 +442,11 @@ namespace GRA.Controllers.MissionControl
                 IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits)
             };
 
-            if (site.MaxPointsPerChallengeTask.HasValue)
+            if (site.MaxPointsPerChallengeTask.HasValue && challenge.TasksToComplete.HasValue)
             {
                 viewModel.MaxPointsMessage = $"(Up to {site.MaxPointsPerChallengeTask.Value} points per required task)";
                 viewModel.MaxPointLimit = site.MaxPointsPerChallengeTask.Value;
-            }
 
-            if (site.MaxPointsPerChallengeTask.HasValue && challenge.TasksToComplete.HasValue)
-            {
                 if (challenge.PointsAwarded / challenge.TasksToComplete.Value
                     > site.MaxPointsPerChallengeTask)
                 {

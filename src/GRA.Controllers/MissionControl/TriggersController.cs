@@ -452,10 +452,10 @@ namespace GRA.Controllers.MissionControl
             if (site.MaxPointsPerTrigger.HasValue)
             {
                 viewModel.MaxPointLimit = site.MaxPointsPerTrigger.Value;
-            }
-            if (site.MaxPointsPerTrigger.HasValue && trigger.AwardPoints > site.MaxPointsPerTrigger)
-            {
-                ShowAlertWarning("This Trigger's number of points awarded is higher than what is allowed by the configuration.");
+                if (trigger.AwardPoints > site.MaxPointsPerTrigger)
+                {
+                    ShowAlertWarning("This Trigger's number of points awarded is higher than what is allowed by the configuration.");
+                }
             }
 
             if (viewModel.EditVendorCode)
