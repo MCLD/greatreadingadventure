@@ -14,8 +14,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.Sites
         public string ExternalEventListUrl { get; set; }
         [DisplayName("Max Points Per Challenge Task")]
         public int? MaxPointsPerChallengeTask { get; set; }
-        [DisplayName("Max Points Awarded Per Trigger")]
-        public int? MaxPointsPerTrigger { get; set; }
         [DisplayName("Require Postal Code")]
         public bool RequirePostalCode { get; set; }
         [DisplayName("Single Page Sign Up")]
