@@ -276,7 +276,7 @@ namespace GRA.Domain.Service
         public async Task<int> GetMaximumAllowedPointsAsync(int siteId)
         {
             var (IsSet, SetValue) = await _siteLookupService.GetSiteSettingIntAsync(siteId,
-                SiteSettingKey.Trigger.MaxPointsPerTrigger);
+                SiteSettingKey.Triggers.MaxPointsPerTrigger);
 
             return IsSet ? SetValue : int.MaxValue;
         }

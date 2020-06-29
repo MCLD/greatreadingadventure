@@ -88,12 +88,12 @@ namespace GRA
                     Category = typeof(SiteSettingKey.Users).Name,
                     Format = SiteSettingFormat.Boolean,
                 },
-                [SiteSettingKey.Trigger.MaxPointsPerTrigger] =
+                [SiteSettingKey.Triggers.MaxPointsPerTrigger] =
                 new SiteSettingDefinition
                 {
                     Name = "Maximum points per trigger",
                     Info = "A number representing the maximum amount of points permitted for a trigger (it may be able to be overidden from Mission Control).",
-                    Category = typeof(SiteSettingKey.Trigger).Name,
+                    Category = typeof(SiteSettingKey.Triggers).Name,
                     Format = SiteSettingFormat.Integer
                 },
                 [SiteSettingKey.Users.MaximumHouseholdSizeBeforeGroup] =

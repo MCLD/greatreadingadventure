@@ -43,10 +43,10 @@
             public bool Equals(SecretCode other) { return true; }
         }
 
-        public struct Trigger : System.IEquatable<Trigger>
+        public struct Triggers : System.IEquatable<Triggers>
         {
-            public static readonly string MaxPointsPerTrigger = "Trigger.MaxPointsPerTrigger";
-            public bool Equals(Trigger other) { return true; }
+            public static readonly string MaxPointsPerTrigger = "Triggers.MaxPointsPerTrigger";
+            public bool Equals(Triggers other) { return true; }
         }
 
         public struct Users : System.IEquatable<Users>
