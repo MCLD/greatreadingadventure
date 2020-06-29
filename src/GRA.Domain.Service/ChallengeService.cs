@@ -25,7 +25,6 @@ namespace GRA.Domain.Service
         private readonly IPathResolver _pathResolver;
         private readonly SiteLookupService _siteLookupService;
         private readonly ITriggerRepository _triggerRepository;
-        private readonly IUserRepository _userRepository;
 
         public ChallengeService(ILogger<ChallengeService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
@@ -39,8 +38,7 @@ namespace GRA.Domain.Service
             IEventRepository eventRepository,
             IPathResolver pathResolver,
             SiteLookupService siteLookupService,
-            ITriggerRepository triggerRepository,
-            IUserRepository userRepository) : base(logger, dateTimeProvider, userContextProvider)
+            ITriggerRepository triggerRepository) : base(logger, dateTimeProvider, userContextProvider)
         {
             _badgeRepository = Require.IsNotNull(badgeRepository, nameof(badgeRepository));
             _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
@@ -55,7 +53,6 @@ namespace GRA.Domain.Service
             _pathResolver = Require.IsNotNull(pathResolver, nameof(pathResolver));
             _siteLookupService = Require.IsNotNull(siteLookupService, nameof(siteLookupService));
             _triggerRepository = Require.IsNotNull(triggerRepository, nameof(triggerRepository));
-            _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
         }
 
         public async Task<DataWithCount<IEnumerable<Challenge>>>
@@ -374,7 +371,6 @@ namespace GRA.Domain.Service
                 {
                     RemoveTaskFile(originalTask);
                     task.Filename = null;
-
                 }
                 else
                 {
