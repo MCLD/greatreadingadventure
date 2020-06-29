@@ -482,7 +482,6 @@
     <div class="row">
         <div class="col-xs-12 col-sm-6 row-spacing">
             <label asp-for="Challenge.PointsAwarded" class="control-label"></label>
-            <label style="font-size: 12px;">@Model.MaxPointsMessage</label>
             <input asp-for="Challenge.PointsAwarded" type="number" min="1" class="form-control ignore" />
             <span asp-validation-for="Challenge.PointsAwarded" class="text-danger"></span>
         </div>
