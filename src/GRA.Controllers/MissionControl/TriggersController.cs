@@ -203,13 +203,10 @@ namespace GRA.Controllers.MissionControl
                 SystemList = new SelectList(await _siteService.GetSystemList(), "Id", "Name"),
                 BranchList = new SelectList(await _siteService.GetAllBranches(), "Id", "Name"),
                 ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
-                IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits)
+                IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits),
+                MaxPointLimit = await _triggerService.GetMaximumAllowedPointsAsync(GetCurrentSiteId())
             };
 
-            if (site.MaxPointsPerTrigger.HasValue)
-            {
-                viewModel.MaxPointLimit = site.MaxPointsPerTrigger.Value;
-            }
             if (viewModel.EditVendorCode)
             {
                 viewModel.VendorCodeTypeList = new SelectList(
@@ -230,13 +227,13 @@ namespace GRA.Controllers.MissionControl
         {
             var badgeRequiredList = new List<int>();
             var challengeRequiredList = new List<int>();
-            var site = await GetCurrentSiteAsync();
-            if (site.MaxPointsPerTrigger.HasValue
-                && !UserHasPermission(Permission.IgnorePointLimits)
-                && model.Trigger.AwardPoints > site.MaxPointsPerTrigger)
+            model.MaxPointLimit =
+                await _triggerService.GetMaximumAllowedPointsAsync(GetCurrentSiteId());
+            if (!UserHasPermission(Permission.IgnorePointLimits)
+                && model.Trigger.AwardPoints > model.MaxPointLimit)
             {
                 ModelState.AddModelError("Trigger.AwardPoints",
-                    $"The maximum points awarded is {site.MaxPointsPerTrigger}");
+                    $"The maximum points awarded is {model.MaxPointLimit}");
             }
             if (!string.IsNullOrWhiteSpace(model.BadgeRequiredList))
             {
@@ -447,15 +444,13 @@ namespace GRA.Controllers.MissionControl
                 ChallengeRequiredList = string.Join(",", trigger.ChallengeIds),
                 SystemList = new SelectList(await _siteService.GetSystemList(), "Id", "Name"),
                 ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
-                IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits)
-        };
-            if (site.MaxPointsPerTrigger.HasValue)
+                IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits),
+                MaxPointLimit =
+                    await _triggerService.GetMaximumAllowedPointsAsync(GetCurrentSiteId())
+            };
+            if (trigger.AwardPoints > viewModel.MaxPointLimit)
             {
-                viewModel.MaxPointLimit = site.MaxPointsPerTrigger.Value;
-                if (trigger.AwardPoints > site.MaxPointsPerTrigger)
-                {
-                    ShowAlertWarning("This Trigger's number of points awarded is higher than what is allowed by the configuration.");
-                }
+                viewModel.MaxPointsMessage = "This Trigger's number of points awarded is higher than what is allowed by the configuration.";
             }
 
             if (viewModel.EditVendorCode)
@@ -514,14 +509,14 @@ namespace GRA.Controllers.MissionControl
         {
             var badgeRequiredList = new List<int>();
             var challengeRequiredList = new List<int>();
-            var site = await GetCurrentSiteAsync();
             var currentTrigger = await _triggerService.GetByIdAsync(model.Trigger.Id);
-            if (site.MaxPointsPerTrigger.HasValue
-                && !UserHasPermission(Permission.IgnorePointLimits)
-                && model.Trigger.AwardPoints > site.MaxPointsPerTrigger
+            model.MaxPointLimit =
+                await _triggerService.GetMaximumAllowedPointsAsync(GetCurrentSiteId());
+            if (!UserHasPermission(Permission.IgnorePointLimits)
+                && model.Trigger.AwardPoints > model.MaxPointLimit
                 && model.Trigger.AwardPoints != currentTrigger.AwardPoints)
             {
-                ModelState.AddModelError("Trigger.AwardPoints", $"The maximum points awarded is {site.MaxPointsPerTrigger}");
+                ModelState.AddModelError("Trigger.AwardPoints", $"The maximum points awarded is {model.MaxPointLimit}");
             }
             if (!string.IsNullOrWhiteSpace(model.BadgeRequiredList))
             {

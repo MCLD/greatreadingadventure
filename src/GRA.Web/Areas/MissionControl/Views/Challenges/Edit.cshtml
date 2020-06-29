@@ -9,6 +9,7 @@
         }
     </style>
 }
+
 @if (!string.IsNullOrEmpty(Model.CreatedByName))
 {
     <div style="font-size:large;">
@@ -24,6 +25,15 @@
         {
             @Model.CreatedByName
         }
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(Model.MaxPointsMessage))
+{
+    <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+        <div class="alert alert-warning">
+            <span class="fa fa-exclamation-circle" aria-hidden="true"></span> @Model.MaxPointsMessage
+        </div>
     </div>
 }
 

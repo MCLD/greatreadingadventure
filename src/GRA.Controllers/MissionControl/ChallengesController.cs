@@ -275,15 +275,12 @@ namespace GRA.Controllers.MissionControl
             {
                 BadgeMakerUrl = GetBadgeMakerUrl(siteUrl, site.FromEmailAddress),
                 UseBadgeMaker = true,
-                IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits)
+                IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits),
+                MaxPointLimit = await _challengeService.GetMaximumAllowedPointsAsync(site.Id)
             };
 
             viewModel = await GetDetailLists(viewModel);
-            if (site.MaxPointsPerChallengeTask.HasValue)
-            {
-                viewModel.MaxPointsMessage = $"(Up to {site.MaxPointsPerChallengeTask.Value} points per required task)";
-                viewModel.MaxPointLimit = site.MaxPointsPerChallengeTask.Value;
-            }
+            viewModel.MaxPointsMessage = "This Challenge's number of points awarded is higher than what is allowed by the configuration.";
             return View(viewModel);
         }
 
@@ -291,14 +288,13 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Create(ChallengesDetailViewModel model)
         {
-            var site = await GetCurrentSiteAsync();
-            if (site.MaxPointsPerChallengeTask.HasValue
-                && !UserHasPermission(Permission.IgnorePointLimits)
+            var maxPoints = await _challengeService.GetMaximumAllowedPointsAsync(GetCurrentSiteId());
+            if (!UserHasPermission(Permission.IgnorePointLimits)
                 && model.Challenge.TasksToComplete.HasValue
                 && model.Challenge.TasksToComplete != 0)
             {
                 double pointsPerChallenge = (double)model.Challenge.PointsAwarded / model.Challenge.TasksToComplete.Value;
-                if (pointsPerChallenge > site.MaxPointsPerChallengeTask)
+                if (pointsPerChallenge > maxPoints)
                 {
                     ModelState.AddModelError("Challenge.PointsAwarded", $"Too many points awarded.");
                 }
@@ -439,18 +435,18 @@ namespace GRA.Controllers.MissionControl
                 RelatedEvents = await _eventService.GetByChallengeIdAsync(challenge.Id),
                 BadgeMakerUrl = GetBadgeMakerUrl(siteUrl, site.FromEmailAddress),
                 UseBadgeMaker = true,
-                IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits)
+                IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits),
+                MaxPointLimit = await _challengeService.GetMaximumAllowedPointsAsync(site.Id)
             };
 
-            if (site.MaxPointsPerChallengeTask.HasValue && challenge.TasksToComplete.HasValue)
+            if (challenge.TasksToComplete.HasValue)
             {
-                viewModel.MaxPointsMessage = $"(Up to {site.MaxPointsPerChallengeTask.Value} points per required task)";
-                viewModel.MaxPointLimit = site.MaxPointsPerChallengeTask.Value;
+                viewModel.MaxPointLimit = await _challengeService.GetMaximumAllowedPointsAsync(site.Id);
 
                 if (challenge.PointsAwarded / challenge.TasksToComplete.Value
-                    > site.MaxPointsPerChallengeTask)
+                    > viewModel.MaxPointLimit)
                 {
-                    ShowAlertWarning("This Challenge's number of points awarded is higher than what is allowed by the configuration.");
+                    viewModel.MaxPointsMessage = "This Challenge's number of points awarded is higher than what is allowed by the configuration.";
                 }
             }
 
@@ -490,18 +486,19 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Edit(ChallengesDetailViewModel model, string Submit)
         {
-            var site = await GetCurrentSiteAsync();
             var currentChallenge =
                 await _challengeService.MCGetChallengeDetailsAsync(model.Challenge.Id);
-            if (site.MaxPointsPerChallengeTask.HasValue
-                && model.Challenge.TasksToComplete.HasValue
+            model.MaxPointLimit =
+                await _challengeService.GetMaximumAllowedPointsAsync(GetCurrentSiteId());
+
+            if (model.Challenge.TasksToComplete.HasValue
                 && model.Challenge.TasksToComplete != 0
                 && model.Challenge.PointsAwarded != currentChallenge.PointsAwarded
                 && !UserHasPermission(Permission.IgnorePointLimits))
             {
                 double pointsPerChallenge =
-                    (double)model.Challenge.PointsAwarded/ model.Challenge.TasksToComplete.Value;
-                if (pointsPerChallenge > site.MaxPointsPerChallengeTask)
+                    (double)model.Challenge.PointsAwarded / model.Challenge.TasksToComplete.Value;
+                if (pointsPerChallenge > model.MaxPointLimit)
                 {
                     ModelState.AddModelError("Challenge.PointsAwarded", $"Too many points awarded.");
                 }

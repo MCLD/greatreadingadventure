@@ -30,7 +30,7 @@ namespace GRA
                     Name = "Maximum points per challenge task",
                     Info = "A number representing the maximum amount of points permitted per challenge task (it may be able to be overidden from Mission Control).",
                     Category = typeof(SiteSettingKey.Challenges).Name,
-                    Format = SiteSettingFormat.Boolean
+                    Format = SiteSettingFormat.Integer
                 },
                 [SiteSettingKey.Events.CommunityExperienceDescription] =
                 new SiteSettingDefinition
