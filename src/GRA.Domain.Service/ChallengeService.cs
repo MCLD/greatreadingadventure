@@ -23,6 +23,7 @@ namespace GRA.Domain.Service
         private readonly IChallengeTaskRepository _challengeTaskRepository;
         private readonly IEventRepository _eventRepository;
         private readonly IPathResolver _pathResolver;
+        private readonly SiteLookupService _siteLookupService;
         private readonly ITriggerRepository _triggerRepository;
         private readonly IUserRepository _userRepository;
 
@@ -37,6 +38,7 @@ namespace GRA.Domain.Service
             IChallengeTaskRepository challengeTaskRepository,
             IEventRepository eventRepository,
             IPathResolver pathResolver,
+            SiteLookupService siteLookupService,
             ITriggerRepository triggerRepository,
             IUserRepository userRepository) : base(logger, dateTimeProvider, userContextProvider)
         {
@@ -51,6 +53,7 @@ namespace GRA.Domain.Service
                 nameof(challengeTaskRepository));
             _eventRepository = Require.IsNotNull(eventRepository, nameof(eventRepository));
             _pathResolver = Require.IsNotNull(pathResolver, nameof(pathResolver));
+            _siteLookupService = Require.IsNotNull(siteLookupService, nameof(siteLookupService));
             _triggerRepository = Require.IsNotNull(triggerRepository, nameof(triggerRepository));
             _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
         }
@@ -639,6 +642,14 @@ namespace GRA.Domain.Service
         {
             VerifyPermission(Permission.AddChallengeGroups);
             return await _challengeGroupRepository.StubInUseAsync(GetCurrentSiteId(), stub.ToLower());
+        }
+
+        public async Task<int> GetMaximumAllowedPointsAsync(int siteId)
+        {
+            var (IsSet, SetValue) = await _siteLookupService.GetSiteSettingIntAsync(siteId,
+                SiteSettingKey.Challenges.MaxPointsPerChallengeTask);
+
+            return IsSet ? SetValue : int.MaxValue;
         }
     }
 }
