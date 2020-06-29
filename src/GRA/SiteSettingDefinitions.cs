@@ -24,6 +24,14 @@ namespace GRA
                     Category = typeof(SiteSettingKey.Challenges).Name,
                     Format = SiteSettingFormat.Boolean
                 },
+                [SiteSettingKey.Challenges.MaxPointsPerChallengeTask] =
+                new SiteSettingDefinition
+                {
+                    Name = "Maximum points per challenge task",
+                    Info = "A number representing the maximum amount of points permitted per challenge task (it may be able to be overidden from Mission Control).",
+                    Category = typeof(SiteSettingKey.Challenges).Name,
+                    Format = SiteSettingFormat.Boolean
+                },
                 [SiteSettingKey.Events.CommunityExperienceDescription] =
                 new SiteSettingDefinition
                 {
@@ -79,6 +87,14 @@ namespace GRA
                     Info = "Put any text here to forbid participants from changing their system/branch after joining",
                     Category = typeof(SiteSettingKey.Users).Name,
                     Format = SiteSettingFormat.Boolean,
+                },
+                [SiteSettingKey.Trigger.MaxPointsPerTrigger] =
+                new SiteSettingDefinition
+                {
+                    Name = "Maximum points per trigger",
+                    Info = "A number representing the maximum amount of points permitted for a trigger (it may be able to be overidden from Mission Control).",
+                    Category = typeof(SiteSettingKey.Trigger).Name,
+                    Format = SiteSettingFormat.Integer
                 },
                 [SiteSettingKey.Users.MaximumHouseholdSizeBeforeGroup] =
                 new SiteSettingDefinition
