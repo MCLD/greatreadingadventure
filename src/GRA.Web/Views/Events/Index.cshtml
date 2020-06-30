@@ -264,68 +264,68 @@
                                 <div>
                                     <table class="table table-condensed table-bordered link-table">
                                         <thead>
-                                           <tr>
-                                             @if (Model.IsLoggedIn)
-                                             {
-                                                 <th width="58px">&nbsp;</th>
-                                             }
-                                            <th>@SharedLocalizer[GRA.Annotations.Interface.What]</th>
-                                            @if (!string.IsNullOrWhiteSpace(Model.Near))
-                                            {
-                                                <th>
-                                                    <a class="text-nowrap"
-                                                       sort sortColumn="@(Model.Sort == nameof(GRA.Domain.Model.SortEventsBy.StartDate))"
-                                                       asp-action="@Model.FormAction"
-                                                       asp-route-Search="@Model.Search"
-                                                       asp-route-Near="@Model.Near"
-                                                       asp-route-StartDate="@Model.StartDate?.ToShortDateString()"
-                                                       asp-route-EndDate="@Model.EndDate?.ToShortDateString()"
-                                                       asp-route-Program="@Model.ProgramId"
-                                                       asp-route-Favorite="@Model.Favorites"
-                                                       asp-route-Visited="@Model.Visited"
-                                                       asp-route-Sort="@nameof(GRA.Domain.Model.SortEventsBy.StartDate)">@SharedLocalizer[GRA.Annotations.Interface.When]</a>
-                                                </th>
-                                            }
-                                            else
-                                            {
-                                                @if (Model.EventType == GRA.EventType.StreamingEvent)
+                                            <tr>
+                                                @if (Model.IsLoggedIn)
                                                 {
-                                                    <th>@SharedLocalizer[GRA.Annotations.Interface.StreamStarts]</th>
+                                                    <th width="58px">&nbsp;</th>
+                                                }
+                                                <th>@SharedLocalizer[GRA.Annotations.Interface.What]</th>
+                                                @if (!string.IsNullOrWhiteSpace(Model.Near))
+                                                {
+                                                    <th>
+                                                        <a class="text-nowrap"
+                                                           sort sortColumn="@(Model.Sort == nameof(GRA.Domain.Model.SortEventsBy.StartDate))"
+                                                           asp-action="@Model.FormAction"
+                                                           asp-route-Search="@Model.Search"
+                                                           asp-route-Near="@Model.Near"
+                                                           asp-route-StartDate="@Model.StartDate?.ToShortDateString()"
+                                                           asp-route-EndDate="@Model.EndDate?.ToShortDateString()"
+                                                           asp-route-Program="@Model.ProgramId"
+                                                           asp-route-Favorite="@Model.Favorites"
+                                                           asp-route-Visited="@Model.Visited"
+                                                           asp-route-Sort="@nameof(GRA.Domain.Model.SortEventsBy.StartDate)">@SharedLocalizer[GRA.Annotations.Interface.When]</a>
+                                                    </th>
                                                 }
                                                 else
                                                 {
-                                                    <th>@SharedLocalizer[GRA.Annotations.Interface.When]</th>
+                                                    @if (Model.EventType == GRA.EventType.StreamingEvent)
+                                                    {
+                                                        <th>@SharedLocalizer[GRA.Annotations.Interface.StreamStarts]</th>
+                                                    }
+                                                    else
+                                                    {
+                                                        <th>@SharedLocalizer[GRA.Annotations.Interface.When]</th>
+                                                    }
                                                 }
-                                            }
-                                            @if (Model.EventType == GRA.EventType.StreamingEvent)
-                                            {
-                                                <th>@SharedLocalizer[GRA.Annotations.Interface.Stream]</th>
-                                            }
-                                            else
-                                            {
-                                                <th>@SharedLocalizer[GRA.Annotations.Interface.Where]</th>
-                                            }
-                                            @if (Model.ShowNearSearch && !string.IsNullOrWhiteSpace(Model.Near))
-                                            {
-                                                <th>
-                                                    <a class="text-nowrap"
-                                                       sort
-                                                       sortColumn="@(Model.Sort == nameof(GRA.Domain.Model.SortEventsBy.Distance))"
-                                                       asp-action="@Model.FormAction"
-                                                       asp-route-Search="@Model.Search"
-                                                       asp-route-Near="@Model.Near"
-                                                       asp-route-StartDate="@Model.StartDate?.ToShortDateString()"
-                                                       asp-route-EndDate="@Model.EndDate?.ToShortDateString()"
-                                                       asp-route-Program="@Model.ProgramId"
-                                                       asp-route-Favorite="@Model.Favorites"
-                                                       asp-route-Visited="@Model.Visited"
-                                                       asp-route-Sort="@nameof(GRA.Domain.Model.SortEventsBy.Distance)">@SharedLocalizer[GRA.Annotations.Interface.Distance]</a>
-                                                </th>
+                                                @if (Model.EventType == GRA.EventType.StreamingEvent)
+                                                {
+                                                    <th>@SharedLocalizer[GRA.Annotations.Interface.Stream]</th>
+                                                }
+                                                else
+                                                {
+                                                    <th>@SharedLocalizer[GRA.Annotations.Interface.Where]</th>
+                                                }
+                                                @if (Model.ShowNearSearch && !string.IsNullOrWhiteSpace(Model.Near))
+                                                {
+                                                    <th>
+                                                        <a class="text-nowrap"
+                                                           sort
+                                                           sortColumn="@(Model.Sort == nameof(GRA.Domain.Model.SortEventsBy.Distance))"
+                                                           asp-action="@Model.FormAction"
+                                                           asp-route-Search="@Model.Search"
+                                                           asp-route-Near="@Model.Near"
+                                                           asp-route-StartDate="@Model.StartDate?.ToShortDateString()"
+                                                           asp-route-EndDate="@Model.EndDate?.ToShortDateString()"
+                                                           asp-route-Program="@Model.ProgramId"
+                                                           asp-route-Favorite="@Model.Favorites"
+                                                           asp-route-Visited="@Model.Visited"
+                                                           asp-route-Sort="@nameof(GRA.Domain.Model.SortEventsBy.Distance)">@SharedLocalizer[GRA.Annotations.Interface.Distance]</a>
+                                                    </th>
 
-                                            }
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                                                }
+                                            </tr>
+                                        </thead>
+                                        <tbody>
                                             @for (int i = 0; i < Model.Events.Count(); i++)
                                             {
                                                 <tr>
@@ -351,50 +351,51 @@
                                                     @if (Model.Events[i].AllDay)
                                                     {
                                                         <td>@Model.Events[i].StartDate.ToString("d") @(Model.Events[i].EndDate.HasValue ? "– " + Model.Events[i].EndDate.Value.ToString("d") : "")</td>
+                                                    }
                                                     else
                                                     {
-                                                        <td>@SharedLocalizer[GRA.Annotations.Interface.DateAtTime, Model.Events[i].StartDate.ToString("d"), Model.Events[i].StartDate.ToString("t")]</td>
+                                                        <td> @SharedLocalizer[GRA.Annotations.Interface.DateAtTime, Model.Events[i].StartDate.ToString("d"), Model.Events[i].StartDate.ToString("t")] </td>
                                                     }
                                                     <td>
                                                         @if (Model.EventType == GRA.EventType.StreamingEvent)
                                                         {
-                                                        <div class="on-top" style="display: inline-block;">
-                                                            @if (eventItem.StartDate <= DateTime.Now
-                                                            && eventItem.StreamingAccessEnds >= DateTime.Now)
-                                                            {
-                                                                if (Model.IsAuthenticated)
+                                                            <div class="on-top" style="display: inline-block;">
+                                                                @if (Model.Events[i].StartDate <= DateTime.Now
+                                                               && Model.Events[i].StreamingAccessEnds >= DateTime.Now)
                                                                 {
-                                                                    <a class="btn btn-success float-right"
-                                                                       href="@Url.Action(nameof(EventsController.Stream),
-                                                                                    new { id = eventItem.Id })">
-                                                                        <span class="fa fa-play-circle-o"></span>
-                                                                        @SharedLocalizer[GRA.Annotations.Interface.StreamNow]
-                                                                    </a>
+                                                                    if (Model.IsAuthenticated)
+                                                                    {
+                                                                        <a class="btn btn-success float-right"
+                                                                           href="@Url.Action(nameof(EventsController.Stream),
+                                                                                new { id = Model.Events[i].Id })">
+                                                                            <span class="fa fa-play-circle-o"></span>
+                                                                            @SharedLocalizer[GRA.Annotations.Interface.StreamNow]
+                                                                        </a>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <a class="btn btn-success float-right"
+                                                                           href="@Url.Action(nameof(EventsController.Stream),
+                                                                                new { id = Model.Events[i].Id })">
+                                                                            <span class="fas fa-sign-in-alt"></span>
+                                                                            @SharedLocalizer[GRA.Annotations.Interface.SignInToStream]
+                                                                        </a>
+                                                                    }
                                                                 }
                                                                 else
                                                                 {
-                                                                    <a class="btn btn-success float-right"
-                                                                       href="@Url.Action(nameof(EventsController.Stream),
-                                                                                    new { id = eventItem.Id })">
-                                                                        <span class="fas fa-sign-in-alt"></span>
-                                                                        @SharedLocalizer[GRA.Annotations.Interface.SignInToStream]
-                                                                    </a>
+                                                                    <button disabled class="btn btn-secondary float-right">
+                                                                        <span class="fa fa-stop-circle-o"></span>
+                                                                        @(Model.Events[i].StartDate >= DateTime.Now
+                                                                    ? SharedLocalizer[GRA.Annotations.Interface.NotStreamingYet]
+                                                                    : SharedLocalizer[GRA.Annotations.Interface.ProgramIsOver])
+                                                                    </button>
                                                                 }
-                                                            }
-                                                            else
-                                                            {
-                                                                <button disabled class="btn btn-secondary float-right">
-                                                                    <span class="fa fa-stop-circle-o"></span>
-                                                                    @(eventItem.StartDate >= DateTime.Now
-                                                                        ? SharedLocalizer[GRA.Annotations.Interface.NotStreamingYet]
-                                                                        : SharedLocalizer[GRA.Annotations.Interface.ProgramIsOver])
-                                                                </button>
-                                                            }
-                                                        </div>
+                                                            </div>
                                                         }
                                                         else
                                                         {
-                                                          @Model.Events[i].EventLocationName
+                                                            @Model.Events[i].EventLocationName
                                                         }
                                                     </td>
                                                     @if (Model.ShowNearSearch && !string.IsNullOrWhiteSpace(Model.Near))
