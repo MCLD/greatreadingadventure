@@ -26,6 +26,7 @@ namespace GRA.Domain.Service
         private readonly IVendorCodeRepository _vendorCodeRepository;
         private readonly IVendorCodeTypeRepository _vendorCodeTypeRepository;
         private readonly MailService _mailService;
+        private readonly LanguageService _languageService;
 
         public VendorCodeService(ILogger<VendorCodeService> logger,
             IDateTimeProvider dateTimeProvider,
@@ -36,7 +37,8 @@ namespace GRA.Domain.Service
             IUserRepository userRepository,
             IVendorCodeRepository vendorCodeRepository,
             IVendorCodeTypeRepository vendorCodeTypeRepository,
-            MailService mailService)
+            MailService mailService,
+            LanguageService languageService)
             : base(logger, dateTimeProvider, userContextProvider)
         {
             SetManagementPermission(Permission.ManageVendorCodes);
@@ -52,6 +54,8 @@ namespace GRA.Domain.Service
             _vendorCodeTypeRepository = vendorCodeTypeRepository
                 ?? throw new ArgumentNullException(nameof(vendorCodeTypeRepository));
             _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
+            _languageService = languageService
+                ?? throw new ArgumentNullException(nameof(languageService));
         }
 
         public async Task<VendorCodeType> GetTypeById(int id)
@@ -67,6 +71,11 @@ namespace GRA.Domain.Service
         public async Task<ICollection<VendorCodeType>> GetTypeAllAsync()
         {
             return await _vendorCodeTypeRepository.GetAllAsync(GetCurrentSiteId());
+        }
+
+        public async Task<ICollection<VendorCodeType>> GetEmailAwardTypesAsync()
+        {
+            return await _vendorCodeTypeRepository.GetEmailAwardTypesAsync(GetCurrentSiteId());
         }
 
         public async Task<DataWithCount<ICollection<VendorCodeType>>> GetTypePaginatedListAsync(BaseFilter filter)
@@ -125,7 +134,9 @@ namespace GRA.Domain.Service
                 {
                     var codeType = await _vendorCodeTypeRepository
                         .GetByIdAsync(vendorCode.VendorCodeTypeId);
-                    vendorCode.CanBeDonated = !string.IsNullOrEmpty(codeType.DonationMessage);
+                    vendorCode.CanBeDonated = !string.IsNullOrEmpty(codeType.DonationSubject);
+                    vendorCode.CanBeEmailAward =
+                        !string.IsNullOrWhiteSpace(codeType.EmailAwardSubject);
                     vendorCode.ExpirationDate = codeType.ExpirationDate;
                     if (!string.IsNullOrEmpty(codeType.Url))
                     {
@@ -160,8 +171,7 @@ namespace GRA.Domain.Service
 
             if (HasPermission(Permission.ManageVendorCodes))
             {
-                var sw = new Stopwatch();
-                sw.Start();
+                var sw = Stopwatch.StartNew();
 
                 var job = await _jobRepository.GetByIdAsync(jobId);
                 var jobDetails
@@ -257,8 +267,9 @@ namespace GRA.Domain.Service
                                 else
                                 {
                                     if (excelReader.GetValue(couponColumnId) != null
-                                        && excelReader.GetValue(orderDateColumnId) != null
-                                        && excelReader.GetValue(shipDateColumnId) != null)
+                                        && (excelReader.GetValue(orderDateColumnId) != null
+                                            || excelReader.GetValue(shipDateColumnId) != null
+                                            || excelReader.GetValue(detailsColumnId) != null))
                                     {
                                         string coupon = null;
                                         DateTime? orderDate = null;
@@ -278,7 +289,31 @@ namespace GRA.Domain.Service
                                         }
                                         try
                                         {
-                                            orderDate = excelReader.GetDateTime(orderDateColumnId);
+                                            try
+                                            {
+                                                orderDate = excelReader.GetDateTime(orderDateColumnId);
+                                            }
+                                            catch (NullReferenceException)
+                                            { }
+                                            catch (InvalidCastException)
+                                            {
+                                                string orderDateString
+                                                    = excelReader.GetString(orderDateColumnId);
+                                                if (DateTime.TryParse(
+                                                    orderDateString,
+                                                    out var orderDateConversion))
+                                                {
+                                                    orderDate = orderDateConversion;
+                                                }
+                                                else
+                                                {
+                                                    _logger.LogError("Unable to parse {Field}, row {SpreadsheetRow}: {Value}",
+                                                        "order date",
+                                                        row,
+                                                        orderDateString);
+                                                    issues.Add($"Issue reading order date on row {row}: {orderDateString}");
+                                                }
+                                            }
                                         }
                                         catch (IndexOutOfRangeException ex)
                                         {
@@ -288,9 +323,34 @@ namespace GRA.Domain.Service
                                                 ex.Message);
                                             issues.Add($"Issue reading order date on row {row}: {ex.Message}");
                                         }
+
                                         try
                                         {
-                                            shipDate = excelReader.GetDateTime(shipDateColumnId);
+                                            try
+                                            {
+                                                shipDate = excelReader.GetDateTime(shipDateColumnId);
+                                            }
+                                            catch (NullReferenceException)
+                                            { }
+                                            catch (InvalidCastException)
+                                            {
+                                                string shipDateString
+                                                    = excelReader.GetString(shipDateColumnId);
+                                                if (DateTime.TryParse(
+                                                    shipDateString,
+                                                    out var shipDateConversion))
+                                                {
+                                                    shipDate = shipDateConversion;
+                                                }
+                                                else
+                                                {
+                                                    _logger.LogError("Unable to parse {Field}, row {SpreadsheetRow}: {Value}",
+                                                        "ship date",
+                                                        row,
+                                                        shipDateString);
+                                                    issues.Add($"Issue reading order date on row {row}: {shipDateString}");
+                                                }
+                                            }
                                         }
                                         catch (IndexOutOfRangeException ex)
                                         {
@@ -300,6 +360,7 @@ namespace GRA.Domain.Service
                                                 ex.Message);
                                             issues.Add($"Issue reading ship date on row {row}: {ex.Message}");
                                         }
+
                                         if (excelReader.GetValue(detailsColumnId) != null)
                                         {
                                             try
@@ -316,7 +377,9 @@ namespace GRA.Domain.Service
                                             }
                                         }
                                         if (!string.IsNullOrEmpty(coupon)
-                                            && (orderDate != null && shipDate != null))
+                                            && (orderDate != null
+                                                || shipDate != null
+                                                || !string.IsNullOrEmpty(details)))
                                         {
                                             var code = await _vendorCodeRepository.GetByCode(coupon);
                                             if (code == null)
@@ -450,7 +513,10 @@ namespace GRA.Domain.Service
             return await _vendorCodeTypeRepository.SiteHasCodesAsync(GetCurrentSiteId());
         }
 
-        public async Task<VendorCode> ResolveDonationStatusAsync(int userId, bool? donate)
+        public async Task<VendorCode> ResolveCodeStatusAsync(int userId,
+            bool? donate,
+            bool? emailAward,
+            string emailAddrses = null)
         {
             var authorized = false;
             var authId = GetClaimId(ClaimType.UserId);
@@ -480,17 +546,42 @@ namespace GRA.Domain.Service
                     throw new GraException("The code you are trying to redeem has expired.");
                 }
 
-                vendorCode.IsDonated = donate;
+                if (donate == true && !string.IsNullOrWhiteSpace(vendorCodeType.DonationSubject))
+                {
+                    vendorCode.IsDonated = true;
+                    vendorCode.IsEmailAward = false;
+                }
+                else if (emailAward == true && !string.IsNullOrWhiteSpace(emailAddrses)
+                    && !string.IsNullOrWhiteSpace(vendorCodeType.EmailAwardSubject))
+                {
+                    vendorCode.EmailAwardAddress = emailAddrses;
+                    vendorCode.IsDonated = false;
+                    vendorCode.IsEmailAward = true;
+                }
+                else if (donate == false && emailAward == false)
+                {
+                    vendorCode.IsDonated = false;
+                    vendorCode.IsEmailAward = false;
+                }
+                else if (donate == null && emailAward == null)
+                {
+                    vendorCode.EmailAwardAddress = null;
+                    vendorCode.IsDonated = null;
+                    vendorCode.IsEmailAward = null;
+                }
                 await _vendorCodeRepository.UpdateSaveAsync(userId, vendorCode);
 
-                if (donate == null || donate == false)
-                {
-                    await SendVendorCodeMailAsync(userId, siteId, vendorCodeType, vendorCode.Code);
-                }
-                else if (!string.IsNullOrEmpty(vendorCodeType.DonationSubject)
-                  && !string.IsNullOrEmpty(vendorCodeType.DonationMail))
+                if (vendorCode.IsDonated == true)
                 {
                     await SendVendorDonationMailAsync(userId, siteId, vendorCodeType);
+                }
+                else if (vendorCode.IsEmailAward == true)
+                {
+                    await SendVendorEmailAwardMailAsync(userId, siteId, vendorCodeType);
+                }
+                else if (vendorCode.IsDonated == false && vendorCode.IsEmailAward == false)
+                {
+                    await SendVendorCodeMailAsync(userId, siteId, vendorCodeType, vendorCode.Code);
                 }
 
                 return vendorCode;
@@ -513,6 +604,7 @@ namespace GRA.Domain.Service
             foreach (var code in householdPendingCodes)
             {
                 code.IsDonated = false;
+                code.IsEmailAward = false;
                 await _vendorCodeRepository.UpdateSaveAsync(authId, code);
             }
 
@@ -525,13 +617,43 @@ namespace GRA.Domain.Service
             if (vendorCode != null)
             {
                 user.Donated = vendorCode.IsDonated;
+                user.EmailAwarded = vendorCode.IsEmailAward;
 
-                if (vendorCode.CanBeDonated && vendorCode.IsDonated == null)
+                if ((vendorCode.CanBeDonated || vendorCode.CanBeEmailAward)
+                    && vendorCode.IsDonated == null && vendorCode.IsEmailAward == null)
                 {
                     if (!vendorCode.ExpirationDate.HasValue
                         || vendorCode.ExpirationDate.Value > _dateTimeProvider.Now)
                     {
-                        user.NeedsToAnswerDonationQuestion = true;
+                        user.CanDonateVendorCode = vendorCode.CanBeDonated;
+                        user.CanEmailAwardVendorCode = vendorCode.CanBeEmailAward;
+                        user.NeedsToAnswerVendorCodeQuestion = true;
+
+                        if (vendorCode.CanBeEmailAward)
+                        {
+                            var currentCultureName = _userContextProvider.GetCurrentCulture()?.Name;
+                            if (currentCultureName != null)
+                            {
+                                var currentLanguageId = await _languageService
+                                    .GetLanguageIdAsync(currentCultureName);
+                                user.EmailAwardInstructions = await _vendorCodeTypeRepository
+                                    .GetEmailAwardInstructionText(vendorCode.VendorCodeTypeId,
+                                        currentLanguageId);
+                            }
+                            if (string.IsNullOrWhiteSpace(user.EmailAwardInstructions))
+                            {
+                                var defaultLanguageId = await _languageService
+                                    .GetDefaultLanguageIdAsync();
+                                user.EmailAwardInstructions = await _vendorCodeTypeRepository
+                                    .GetEmailAwardInstructionText(vendorCode.VendorCodeTypeId,
+                                        defaultLanguageId);
+                            }
+                            if (string.IsNullOrWhiteSpace(user.EmailAwardInstructions))
+                            {
+                                _logger.LogError("Email award instructions are not set for code type {codeTypeId}",
+                                    vendorCode.VendorCodeTypeId);
+                            }
+                        }
                     }
                 }
                 else if (vendorCode.CanBeDonated && vendorCode.IsDonated == true)
@@ -539,6 +661,12 @@ namespace GRA.Domain.Service
                     var vendorCodeType
                         = await _vendorCodeTypeRepository.GetByIdAsync(vendorCode.VendorCodeTypeId);
                     user.VendorCode = vendorCodeType.DonationMessage;
+                }
+                else if (vendorCode.CanBeEmailAward && vendorCode.IsEmailAward == true)
+                {
+                    var vendorCodeType
+                        = await _vendorCodeTypeRepository.GetByIdAsync(vendorCode.VendorCodeTypeId);
+                    user.VendorCode = vendorCodeType.EmailAwardMessage;
                 }
                 else
                 {
@@ -580,7 +708,7 @@ namespace GRA.Domain.Service
             VendorCodeType codeType,
             string assignedCode)
         {
-            string body = null;
+            string body;
             if (!codeType.Mail.Contains(TemplateToken.VendorCodeToken))
             {
                 // the token isn't in the message, just append the code to the end
@@ -595,7 +723,7 @@ namespace GRA.Domain.Service
                 }
                 else
                 {
-                    string url = null;
+                    string url;
                     // see if the url has the token in it, if so swap in the code
                     if (!codeType.Url.Contains(TemplateToken.VendorCodeToken))
                     {
@@ -634,6 +762,19 @@ namespace GRA.Domain.Service
                 CanParticipantDelete = false,
                 Subject = codeType.DonationSubject,
                 Body = codeType.DonationMail
+            }, siteId);
+        }
+
+        private async Task SendVendorEmailAwardMailAsync(int userId,
+            int? siteId,
+            VendorCodeType codeType)
+        {
+            await _mailService.SendSystemMailAsync(new Mail
+            {
+                ToUserId = userId,
+                CanParticipantDelete = false,
+                Subject = codeType.EmailAwardSubject,
+                Body = codeType.EmailAwardMail
             }, siteId);
         }
 
@@ -801,6 +942,310 @@ namespace GRA.Domain.Service
                     Status = "You do not have permission to insert vendor codes."
                 };
             }
+        }
+
+        public async Task<ICollection<VendorCodeEmailAward>> GetUnreportedEmailAwardCodes(
+            int vendorCodeTypeId)
+        {
+            VerifyManagementPermission();
+
+            return await _vendorCodeRepository.GetUnreportedEmailAwardCodes(GetCurrentSiteId(),
+                vendorCodeTypeId);
+        }
+
+        public async Task UpdateEmailReportedAsync(int currentUserId,
+            DateTime when,
+            int vendorCodeId)
+        {
+            VerifyManagementPermission();
+
+            var vendorCode = await _vendorCodeRepository.GetByIdAsync(vendorCodeId);
+            vendorCode.EmailAwardReported = when;
+            await _vendorCodeRepository.UpdateAsync(currentUserId, vendorCode);
+        }
+
+        public async Task SaveAsync()
+        {
+            await _vendorCodeRepository.SaveAsync();
+        }
+
+        public async Task UpdateEmailNotReportedAsync(int currentUserId,
+            IEnumerable<VendorCodeEmailAward> emailAwards)
+        {
+            VerifyManagementPermission();
+
+            if (emailAwards != null)
+            {
+                foreach (var emailAward in emailAwards)
+                {
+                    var vendorCode = await _vendorCodeRepository
+                        .GetByIdAsync(emailAward.VendorCodeId);
+                    vendorCode.EmailAwardReported = null;
+                    await _vendorCodeRepository.UpdateAsync(currentUserId, vendorCode);
+                }
+                await _vendorCodeRepository.SaveAsync();
+            }
+        }
+
+        private const string EmailAddressRowHeading = "Email Address";
+        private const string SentDateRowHeading = "Sent Date";
+        private const string UserIdRowHeading = "User Id";
+
+        public async Task<JobStatus> UpdateEmailAwardStatusFromExcelAsync(int jobId,
+            CancellationToken token,
+            IProgress<JobStatus> progress = null)
+        {
+            var requestingUser = GetClaimId(ClaimType.UserId);
+
+            if (HasPermission(Permission.ManageVendorCodes))
+            {
+                var sw = Stopwatch.StartNew();
+
+                var job = await _jobRepository.GetByIdAsync(jobId);
+                var jobDetails
+                    = JsonConvert
+                        .DeserializeObject<JobDetailsVendorCodeStatus>(job.SerializedParameters);
+
+                string filename = jobDetails.Filename;
+
+                token.Register(() =>
+                {
+                    string duration = "";
+                    if (sw?.Elapsed != null)
+                    {
+                        duration = $" after {sw.Elapsed:c}";
+                    }
+                    _logger.LogWarning($"Import of {filename} for user {requestingUser} was cancelled{duration}.");
+                });
+
+                string fullPath = _pathResolver.ResolvePrivateTempFilePath(filename);
+
+                if (!File.Exists(fullPath))
+                {
+                    _logger.LogError($"Could not find {fullPath}");
+                    return new JobStatus
+                    {
+                        PercentComplete = 0,
+                        Status = "Could not find the import file.",
+                        Error = true,
+                        Complete = true
+                    };
+                }
+
+                try
+                {
+                    using (var stream = new FileStream(fullPath, FileMode.Open))
+                    {
+                        int emailAddressColumnId = 0;
+                        int sentDateColumnId = 0;
+                        int userIdColumnId = 0;
+                        var issues = new List<string>();
+                        int row = 0;
+                        int totalRows = 0;
+                        int updated = 0;
+                        int alreadyCurrent = 0;
+                        using (var excelReader = ExcelReaderFactory.CreateBinaryReader(stream))
+                        {
+                            while (excelReader.Read())
+                            {
+                                row++;
+                            }
+                            totalRows = row;
+                            row = 0;
+
+                            excelReader.Reset();
+                            while (excelReader.Read())
+                            {
+                                row++;
+                                if (row % 10 == 0)
+                                {
+                                    progress.Report(new JobStatus
+                                    {
+                                        PercentComplete = row * 100 / totalRows,
+                                        Status = $"Processing row {row}/{totalRows}...",
+                                        Error = false
+                                    });
+                                }
+                                if (row == 1)
+                                {
+                                    progress.Report(new JobStatus
+                                    {
+                                        PercentComplete = 1,
+                                        Status = $"Processing row {row}/{totalRows}...",
+                                        Error = false
+                                    });
+                                    for (int i = 0; i < excelReader.FieldCount; i++)
+                                    {
+                                        switch (excelReader.GetString(i)?.Trim() ?? $"Column{i}")
+                                        {
+                                            case EmailAddressRowHeading:
+                                                emailAddressColumnId = i;
+                                                break;
+                                            case SentDateRowHeading:
+                                                sentDateColumnId = i;
+                                                break;
+                                            case UserIdRowHeading:
+                                                userIdColumnId = i;
+                                                break;
+                                            default:
+                                                break;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (excelReader.GetValue(emailAddressColumnId) != null
+                                        && excelReader.GetValue(sentDateColumnId) != null
+                                        && excelReader.GetValue(userIdColumnId) != null)
+                                    {
+                                        string emailAddress = null;
+                                        DateTime? sentDate = null;
+                                        int? userId = null;
+                                        try
+                                        {
+                                            emailAddress = excelReader
+                                                .GetString(emailAddressColumnId);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            _logger.LogError($"Parse error on code, row {row}: {ex.Message}");
+                                            issues.Add($"Issue reading code on line {row}: {ex.Message}");
+                                        }
+                                        try
+                                        {
+                                            sentDate = excelReader.GetDateTime(sentDateColumnId);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            _logger.LogError($"Parse error on order date, row {row}: {ex.Message}");
+                                            issues.Add($"Issue reading order date on row {row}: {ex.Message}");
+                                        }
+                                        try
+                                        {
+                                            userId = int.Parse(excelReader.GetValue(
+                                                userIdColumnId).ToString());
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            _logger.LogError($"Parse error on ship date, row {row}: {ex.Message}");
+                                            issues.Add($"Issue reading ship date on row {row}: {ex.Message}");
+                                        }
+                                        if (!string.IsNullOrEmpty(emailAddress)
+                                            && sentDate.HasValue && userId.HasValue)
+                                        {
+                                            var code = await _vendorCodeRepository
+                                                .GetUserVendorCode(userId.Value);
+                                            if (code == null)
+                                            {
+                                                _logger.LogError($"File contained code for user {userId} which was not found in the database");
+                                                issues.Add($"Uploaded file contained code for user <code>{userId}</code> which couldn't be found in the database.");
+                                            }
+                                            else
+                                            {
+                                                if (sentDate == code.EmailAwardSent)
+                                                {
+                                                    alreadyCurrent++;
+                                                }
+                                                else
+                                                {
+                                                    if (sentDate != null)
+                                                    {
+                                                        code.EmailAwardSent = sentDate;
+                                                    }
+                                                    await _vendorCodeRepository.UpdateSaveNoAuditAsync(code);
+                                                    updated++;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                if (token.IsCancellationRequested)
+                                {
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (token.IsCancellationRequested)
+                        {
+                            return new JobStatus
+                            {
+                                PercentComplete = 100,
+                                Status = $"Operation cancelled at row {row}."
+                            };
+                        }
+
+                        var sb = new StringBuilder("<strong>Import complete</strong>");
+                        if (updated > 0)
+                        {
+                            sb.Append(": ").Append(updated).Append(" records were updated");
+                        }
+                        if (alreadyCurrent > 0)
+                        {
+                            if (updated > 0)
+                            {
+                                sb.Append(", ");
+                            }
+                            else
+                            {
+                                sb.Append(": ");
+                            }
+                            sb.Append(alreadyCurrent).Append(" records were already current");
+                        }
+                        sb.Append(".");
+
+                        if (issues.Count > 0)
+                        {
+                            _logger.LogInformation($"Import complete with issues: {sb}");
+                            sb.Append(" Issues detected:<ul>");
+                            foreach (string issue in issues)
+                            {
+                                sb.Append("<li>").Append(issue).Append("</li>");
+                            }
+                            sb.Append("</ul>");
+                            return new JobStatus
+                            {
+                                PercentComplete = 100,
+                                Complete = true,
+                                Status = sb.ToString(),
+                                Error = true
+                            };
+                        }
+                        else
+                        {
+                            _logger.LogInformation(sb.ToString());
+                            return new JobStatus
+                            {
+                                PercentComplete = 100,
+                                Complete = true,
+                                Status = sb.ToString(),
+                            };
+                        }
+                    }
+                }
+                finally
+                {
+                    File.Delete(fullPath);
+                }
+            }
+            else
+            {
+                _logger.LogError($"User {requestingUser} doesn't have permission to import email award code statuses.");
+                return new JobStatus
+                {
+                    PercentComplete = 0,
+                    Status = "Permission denied.",
+                    Error = true,
+                    Complete = true
+                };
+            }
+        }
+
+        public async Task<VendorCodeStatus> GetStatusAsync()
+        {
+            VerifyManagementPermission();
+
+            return await _vendorCodeRepository.GetStatusAsync();
         }
     }
 }

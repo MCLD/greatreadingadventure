@@ -41,6 +41,8 @@
             public const string EarnedOn = "Earned on {0}";
             public const string EventBadgeEarned = "You earned this badge for attending the event: <a href=\"{0}\" target=\"_blank\">{1}</a>";
             public const string EventLimitedToProgram = "This event is limited to the program: {0}";
+            public const string FreeBookRedeemDashboard = "You've earned a free book! Head over to <a href=\"{0}\"><strong>My Profile</strong></a> page to choose what to do with it.";
+            public const string FreeBookRedeemExpirationDashboard = "You've earned a free book! Head over to <a href=\"{0}\"><strong>My Profile</strong></a> page by {1} to choose what to do with it.";
             public const string Goal = "The goal of this program is {0} points.";
             public const string GroupAdd = "Add existing participant to your {0}";
             public const string GroupCannot = "A {0} cannot be created at this time.";
@@ -91,9 +93,11 @@
             public const string BookList = "Book List";
             public const string Cancel = "Cancel";
             public const string ChangePassword = "Change Password";
+            public const string ChooseAnOption = "Choose an option:";
             public const string Clear = "Clear";
             public const string CommunityExperiences = "Community Experiences";
             public const string Completed = "Completed!";
+            public const string Confirm = "Confirm";
             public const string CouldNotCreate = "Could not create {0}: {1}";
             public const string CouldNotRemove = "Could not remove {0}: {1}";
             public const string CouldNotUpdate = "Could not update {0}: {1}.";
@@ -108,7 +112,10 @@
             public const string EnterAddressOrZipCode = "Enter an address or ZIP code";
             public const string EnterChallengeSearch = "Enter text to search for a challenge here";
             public const string EnterEventSearch = "Enter text to search for an event here";
+            public const string EventHasEnded = "This streaming event has ended.";
             public const string Events = "Events";
+            public const string EventNotFound = "Could not find the requested event.";
+            public const string EventNotStarted = "This streaming event has not started yet.";
             public const string Family = "Family";
             public const string Find = "Find";
             public const string FreeBookCode = "Free book code";
@@ -126,13 +133,14 @@
             public const string NoChallenges = "No Challenges";
             public const string NoEvents = "No Events";
             public const string NoMail = "You currently have no mail.";
-            public const string NotStreamingYet = "Not streaming yet";
+			public const string NotStreamingYet = "Not streaming yet";
             public const string PasswordChanged = "Your password has been changed.";
             public const string PointsYoullEarn = "Points you'll earn";
             public const string ProfileUpdated = "Profile updated.";
             public const string ProgramIsOver = "Program is over";
             public const string Progress = "Progress";
             public const string Read = "Read";
+            public const string ReceiveEAudiobook = "Receive an e-audiobook";
             public const string RedeemCode = "Redeem code";
             public const string RedeemYourCode = "Redeem your code";
             public const string RelatedChallenge = "Related Challenge";
@@ -150,6 +158,8 @@
             public const string SentOn = "Sent to you on {0}";
             public const string Share = "Share";
             public const string SignedInAs = "You are now signed in as {0}.";
+            public const string SignInForStreams = "Sign in to access streaming programs!";
+            public const string SignInToStream = "Sign in to stream!";
             public const string Status = "Status";
             public const string Stream = "Stream";
             public const string StreamingEvents = "Streaming Events";

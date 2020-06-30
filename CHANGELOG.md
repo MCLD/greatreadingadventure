@@ -48,6 +48,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Display participant system and branch in Mission Control mail view
 - Vendor code generation through WebSocket job
 - Site setting to hide events until program open
+- Email award option for vendor codes
 - User favoriting of events
 - User filtering challenges and events by completed/uncompleted
 - User badge gallery
@@ -88,6 +89,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Return 404s for missing Mission Control files
 - Layer item selector not changing the initial slide when an items selected
 - Avatar items using the wrong layers initial color
+- Un-donate buttons using the wrong permission
+- Add book erroring when author field is empty
 
 ### Removed
 - Recovery error logging at the controller level - it's logged in the

@@ -1378,4 +1378,39 @@
   <data name="Stream starts" xml:space="preserve">
     <value>Empieza la transmisión</value>
   </data>
+  <data name="Choose an option:" xml:space="preserve">
+    <value>Escoga una opcion:</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Confirme</value>
+  </data>
+  <data name="Receive an e-audiobook" xml:space="preserve">
+    <value>Reciba un audiolibro electronico</value>
+  </data>
+  <data name="You've earned a free book! Head over to &lt;a href=&quot;{0}&quot;&gt;&lt;strong&gt;My Profile&lt;/strong&gt;&lt;/a&gt; page to choose what to do with it." xml:space="preserve">
+    <value>Usted se ha ganado un libro gratis!  Vallase a &lt;a href="{0}"&gt;&lt;strong&gt;Mi Perfil&lt;/strong&gt;&lt;/a&gt; para que escoga lo que quiere hacer con el.</value>
+  </data>
+  <data name="You've earned a free book! Head over to &lt;a href=&quot;{0}&quot;&gt;&lt;strong&gt;My Profile&lt;/strong&gt;&lt;/a&gt; page by {1} to choose what to do with it." xml:space="preserve">
+    <value>Usted se ha ganado un libro gratis!  Vallase a &lt;a href="{0}"&gt;Mi Perfil&lt;/a&gt; para que escoga lo que quiere hacer con el antes del {1}.</value>
+  </data>
+  <data name="Could not find the requested event." xml:space="preserve">
+    <value>No se encontro el evento solicitado.</value>
+    <comment>Event details were requested but the event could not be found</comment>
+  </data>
+  <data name="Sign in to access streaming programs!" xml:space="preserve">
+    <value>¡Iniciar sesión para acceder a programas de transmisión!</value>
+    <comment>This message is displayed to a user who wants to view a streaming program but isn't logged in.</comment>
+  </data>
+  <data name="Sign in to stream!" xml:space="preserve">
+    <value>¡Iniciar sesión para transmitir!</value>
+    <comment>Button shown to unauthenticated users encouraging them to sign in and stream programs.</comment>
+  </data>
+  <data name="This streaming event has ended." xml:space="preserve">
+    <value>Este evento de transmisión a terminado.</value>
+    <comment>Message indicating that a streaming event is no longer available to view.</comment>
+  </data>
+  <data name="This streaming event has not started yet." xml:space="preserve">
+    <value>Este evento de transmisión aun no ha comenzado.</value>
+    <comment>Message indicating that a streaming event is not yet available.</comment>
+  </data>
 </root>

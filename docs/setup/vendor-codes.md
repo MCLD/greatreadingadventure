@@ -1,7 +1,16 @@
 # Vendor codes
 
-Vendor codes are generated in the GRA software and can then be provided
-to outside vendors for redemption.
+Vendor codes are generated in the GRA software and can then be provided to outside vendors
+for redemption. The typical vendor code approach would look something like this:
+
+1. At the start of the program, staff generate vendor codes.
+2. Codes are sent to an outside vendor.
+3. The vendor enters those codes into their system as valid for redemption.
+4. Staff configure a trigger with the vendor code selected in "Award vendor code".
+5. When a participant activates the trigger they are given their unique vendor code.
+6. The participant can redeem that vendor code through the outside vendor.
+7. Optionally, the vendor can send back status reports containing an Order Date, a Ship
+Date, and an item description which can be uploaded into the software.
 
 ## Vendor interface
 
@@ -46,20 +55,58 @@ the vendor dispatched the item via a shipping service.
 The format for reporting order and ship dates is an Excel file with the
 following format:
 
-There can be as many columns as needed in the spreadsheet so long as the
-following three columns are present:
+There can be as many columns as needed in the spreadsheet, the software looks for the
+following:
 
-- "Coupon" (this is referred to as "code" above, e.g.
-`X123X-456YY-ZZ789`)
-- "Order Date"
-- "Ship Date"
+- "Coupon" (required) - used to map to a participant (this is referred to as "code" above,
+e.g. `X123X-456YY-ZZ789`)
+- "Order Date" (optional) - the date that the outside item was placed in an "ordered" status
+- "Ship Date" (optional) - the date that the outside item was placed in a "shipped" status
+- "Details" (optional) - details about the item that was selected
 
 Those titles should appear exactly as shown here in the first row of the
 spreadsheet.
 
-In the sheet either the Order Date or Ship Date column can be left empty
-if the date isn't known. If both are blank there's no reason to include
-the coupon code in the sheet.
+If all fields except coupon are blank there's no reason to include the coupon code in the
+sheet.
 
 An administrator of the reading program can import these spreadsheets
 periodically as needed so that participants can see their order status.
+
+### Additional redemption options
+
+The GRA can be configured to allow for the reward to be donated or
+delivered via email.
+
+To enable either of these options the following fields on VendorCodeType must be set:
+- **OptionSubject** - The subject of the in-game mail sent letting the participant know they
+need to choose an option for the code
+- **OptionMail** - The message of the in-game mail sent letting the participant know they
+need to choose an option for the code
+
+To enable donations the additional fields on VendorCodeType need to be set:
+- **DonationSubject** - The subject of the in-game mail sent letting the participant know
+their reward has been donated.
+- **DonationMail** - The message of the in-game mail sent letting the participant know their
+reward has been donated.
+- **DonationMessage** - A short message shown on the users profile letting them know the
+reward has been donated.
+
+To enable email delivery the additional fields on VendorCodeType need to be set:
+- **EmailAwardSubject** - The subject of the in-game mail sent letting the participant know
+their reward will arrive via email.
+- **EmailAwardMail** - The message of the in-game mail sent letting the participant know
+their reward will arrive via email.
+- **EmailAwardMessage** - A short message shown on the users profile letting the participant
+know their reward will arrive via email.
+
+Addtionally for email delivery a **VendorCodeTypeText** record for each
+language needs to be added. The **EmailAwardInstructions** field is a
+message displayed to the participant when they select the email delivery
+option letting them know how the reward will arrive and what steps are
+needed to redeem it.
+
+Vendor codes that require an option be selected can have an
+**ExpirationDate** set. If set the date the reward expires will be shown
+to participants and after the date has passed the buttons to select a
+redemption option will be hidden.

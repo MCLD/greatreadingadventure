@@ -909,20 +909,20 @@ namespace GRA.Domain.Service
                 {
                     await _vendorCodeRepository.AssignCodeAsync((int)vendorCodeTypeId, userId);
 
-                    // if donation is not an option then send the email with the code
-                    if (string.IsNullOrEmpty(codeType.DonationMessage))
+                    // if there are no award options then send the email with the code
+                    if (string.IsNullOrEmpty(codeType.OptionSubject))
                     {
-                        await _vendorCodeService.ResolveDonationStatusAsync(userId, null);
+                        await _vendorCodeService.ResolveCodeStatusAsync(userId, false, false);
                     }
-                    else if (!string.IsNullOrEmpty(codeType.DonationOptionMail))
+                    else
                     {
-                        // donation is an option, let the user know
+                        // award has options, let the user know
                         await _mailService.SendSystemMailAsync(new Mail
                         {
                             ToUserId = userId,
                             CanParticipantDelete = false,
-                            Subject = codeType.DonationOptionSubject,
-                            Body = codeType.DonationOptionMail
+                            Subject = codeType.OptionSubject,
+                            Body = codeType.OptionMail
                         }, siteId);
                     }
                 }

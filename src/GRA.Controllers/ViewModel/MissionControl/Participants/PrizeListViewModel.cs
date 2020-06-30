@@ -10,5 +10,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public int? HeadOfHouseholdId { get; set; }
         public Domain.Model.User User { get; set; }
         public bool CanEditDetails { get; set; }
+
+        public EmailAwardViewModel EmailAwardModel { get; set; }
     }
 }

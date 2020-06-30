@@ -1,7 +1,7 @@
-﻿using GRA.Domain.Model;
-using GRA.Domain.Model.Filters;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 
 namespace GRA.Domain.Repository
 {
@@ -24,5 +24,6 @@ namespace GRA.Domain.Repository
             IEnumerable<int> favoritesToAdd, IEnumerable<int> favoritesToRemove);
         Task<IEnumerable<int>> ValidateEventIdsAsync(int siteId,
             IEnumerable<int> eventIds);
+        Task<ICollection<Event>> GetEventListAsync(EventFilter filter);
     }
 }
