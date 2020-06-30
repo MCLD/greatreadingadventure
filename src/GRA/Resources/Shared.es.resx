@@ -1356,4 +1356,61 @@
     <value>Ilustración de un bosque.</value>
     <comment>The alt tag on the front page banner image for those who cannot see the image; the image is an illustration of a forest.</comment>
   </data>
+  <data name="To activate an authorization code, please sign in or &lt;a href=&quot;{0}&quot;&gt;join&lt;/a&gt;." xml:space="preserve">
+    <value>Para activar un código de autorización, inicie la sesión o &lt;a href="{0}"&gt;participar&lt;/a&gt;.</value>
+    <comment>If they desire to join with an authorization code and, tried accessing Mission Control's AuthorizationCode</comment>
+  </data>
+  <data name="Not streaming yet" xml:space="preserve">
+    <value>Todavía no se está transmitiendo</value>
+  </data>
+  <data name="Program is over" xml:space="preserve">
+    <value>El evento ha terminado</value>
+  </data>
+  <data name="Stream" xml:space="preserve">
+    <value>Transmite</value>
+  </data>
+  <data name="Stream Now!" xml:space="preserve">
+    <value>Transmitir ahora!</value>
+  </data>
+  <data name="Streaming Events" xml:space="preserve">
+    <value>Eventos de transmisión</value>
+  </data>
+  <data name="Stream starts" xml:space="preserve">
+    <value>Empieza la transmisión</value>
+  </data>
+  <data name="Choose an option:" xml:space="preserve">
+    <value>Escoga una opcion:</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Confirme</value>
+  </data>
+  <data name="Receive an e-audiobook" xml:space="preserve">
+    <value>Reciba un audiolibro electronico</value>
+  </data>
+  <data name="You've earned a free book! Head over to &lt;a href=&quot;{0}&quot;&gt;&lt;strong&gt;My Profile&lt;/strong&gt;&lt;/a&gt; page to choose what to do with it." xml:space="preserve">
+    <value>Usted se ha ganado un libro gratis!  Vallase a &lt;a href="{0}"&gt;&lt;strong&gt;Mi Perfil&lt;/strong&gt;&lt;/a&gt; para que escoga lo que quiere hacer con el.</value>
+  </data>
+  <data name="You've earned a free book! Head over to &lt;a href=&quot;{0}&quot;&gt;&lt;strong&gt;My Profile&lt;/strong&gt;&lt;/a&gt; page by {1} to choose what to do with it." xml:space="preserve">
+    <value>Usted se ha ganado un libro gratis!  Vallase a &lt;a href="{0}"&gt;Mi Perfil&lt;/a&gt; para que escoga lo que quiere hacer con el antes del {1}.</value>
+  </data>
+  <data name="Could not find the requested event." xml:space="preserve">
+    <value>No se encontro el evento solicitado.</value>
+    <comment>Event details were requested but the event could not be found</comment>
+  </data>
+  <data name="Sign in to access streaming programs!" xml:space="preserve">
+    <value>¡Iniciar sesión para acceder a programas de transmisión!</value>
+    <comment>This message is displayed to a user who wants to view a streaming program but isn't logged in.</comment>
+  </data>
+  <data name="Sign in to stream!" xml:space="preserve">
+    <value>¡Iniciar sesión para transmitir!</value>
+    <comment>Button shown to unauthenticated users encouraging them to sign in and stream programs.</comment>
+  </data>
+  <data name="This streaming event has ended." xml:space="preserve">
+    <value>Este evento de transmisión a terminado.</value>
+    <comment>Message indicating that a streaming event is no longer available to view.</comment>
+  </data>
+  <data name="This streaming event has not started yet." xml:space="preserve">
+    <value>Este evento de transmisión aun no ha comenzado.</value>
+    <comment>Message indicating that a streaming event is not yet available.</comment>
+  </data>
 </root>

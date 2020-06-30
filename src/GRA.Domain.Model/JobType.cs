@@ -6,6 +6,8 @@
         RunReport,
         UpdateVendorStatus,
         AvatarImport,
-        HouseholdImport
+        HouseholdImport,
+        GenerateVendorCodes,
+        UpdateEmailAwardStatus
     }
 }

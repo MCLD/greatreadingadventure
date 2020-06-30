@@ -20,6 +20,9 @@
             public static readonly string HideUntilRegistrationOpen
                 = "Events.HideUntilRegistrationOpen";
 
+            public static readonly string HideUntilProgramOpen
+                = "Events.HideUntilProgramOpen";
+
             public static readonly string RequireBadge = "Events.RequireBadge";
             public bool Equals(Events other) { return true; }
         }

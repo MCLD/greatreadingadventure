@@ -830,6 +830,8 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<string>("Email")
                         .IsRequired();
 
+                    b.Property<DateTime?>("SentAt");
+
                     b.Property<string>("SignUpSource")
                         .IsRequired();
 
@@ -879,19 +881,23 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<int>("CreatedBy");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasMaxLength(255);
 
                     b.Property<int>("EmailsSent");
 
                     b.Property<string>("FromAddress")
+                        .IsRequired()
                         .HasMaxLength(255);
 
                     b.Property<string>("FromName")
+                        .IsRequired()
                         .HasMaxLength(255);
 
                     b.Property<int>("SiteId");
 
                     b.Property<string>("Subject")
+                        .IsRequired()
                         .HasMaxLength(255);
 
                     b.HasKey("Id");
@@ -951,6 +957,10 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<bool>("IsCommunityExperience");
 
+                    b.Property<bool>("IsStreaming");
+
+                    b.Property<bool>("IsStreamingEmbed");
+
                     b.Property<bool>("IsValid");
 
                     b.Property<string>("Name")
@@ -970,6 +980,11 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<int>("SiteId");
 
                     b.Property<DateTime>("StartDate");
+
+                    b.Property<DateTime?>("StreamingAccessEnds");
+
+                    b.Property<string>("StreamingLinkData")
+                        .HasMaxLength(255);
 
                     b.HasKey("Id");
 
@@ -2815,7 +2830,8 @@ namespace GRA.Data.SqlServer.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Code")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasMaxLength(255);
 
                     b.Property<DateTime>("CreatedAt");
 
@@ -2823,7 +2839,19 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<DateTime>("DateUsed");
 
+                    b.Property<string>("Details")
+                        .HasMaxLength(255);
+
+                    b.Property<string>("EmailAwardAddress")
+                        .HasMaxLength(255);
+
+                    b.Property<DateTime?>("EmailAwardReported");
+
+                    b.Property<DateTime?>("EmailAwardSent");
+
                     b.Property<bool?>("IsDonated");
+
+                    b.Property<bool?>("IsEmailAward");
 
                     b.Property<bool>("IsUsed");
 
@@ -2865,12 +2893,16 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<string>("DonationMessage")
                         .HasMaxLength(255);
 
-                    b.Property<string>("DonationOptionMail")
+                    b.Property<string>("DonationSubject")
+                        .HasMaxLength(255);
+
+                    b.Property<string>("EmailAwardMail")
                         .HasMaxLength(1250);
 
-                    b.Property<string>("DonationOptionSubject");
+                    b.Property<string>("EmailAwardMessage")
+                        .HasMaxLength(255);
 
-                    b.Property<string>("DonationSubject")
+                    b.Property<string>("EmailAwardSubject")
                         .HasMaxLength(255);
 
                     b.Property<DateTime?>("ExpirationDate");
@@ -2883,6 +2915,11 @@ namespace GRA.Data.SqlServer.Migrations
                         .IsRequired()
                         .HasMaxLength(255);
 
+                    b.Property<string>("OptionMail")
+                        .HasMaxLength(1250);
+
+                    b.Property<string>("OptionSubject");
+
                     b.Property<int>("SiteId");
 
                     b.Property<string>("Url")
@@ -2893,6 +2930,22 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasIndex("SiteId");
 
                     b.ToTable("VendorCodeTypes");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.VendorCodeTypeText", b =>
+                {
+                    b.Property<int>("LanguageId");
+
+                    b.Property<int>("VendorCodeTypeId");
+
+                    b.Property<string>("EmailAwardInstructions")
+                        .HasMaxLength(1000);
+
+                    b.HasKey("LanguageId", "VendorCodeTypeId");
+
+                    b.HasIndex("VendorCodeTypeId");
+
+                    b.ToTable("VendorCodeTypeTexts");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.DataProtectionKey", b =>
@@ -3591,6 +3644,19 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.Site", "Site")
                         .WithMany()
                         .HasForeignKey("SiteId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.VendorCodeTypeText", b =>
+                {
+                    b.HasOne("GRA.Data.Model.Language", "Language")
+                        .WithMany()
+                        .HasForeignKey("LanguageId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GRA.Data.Model.VendorCodeType", "VendorCodeType")
+                        .WithMany()
+                        .HasForeignKey("VendorCodeTypeId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -18,28 +18,30 @@ namespace GRA.Controllers.MissionControl
     {
         private readonly ILogger<FlightController> _logger;
         private readonly ActivityService _activityService;
+        private readonly JobService _jobService;
         private readonly QuestionnaireService _questionnaireService;
         private readonly SampleDataService _sampleDataService;
         private readonly VendorCodeService _vendorCodeService;
-        private readonly IHostingEnvironment _hostingEnvironment;
 
         public FlightController(ILogger<FlightController> logger,
             ServiceFacade.Controller context,
             ActivityService activityService,
+            JobService jobService,
             QuestionnaireService questionnaireService,
             SampleDataService sampleDataService,
-            VendorCodeService vendorCodeService,
-            IHostingEnvironment hostingEnvironment)
+            VendorCodeService vendorCodeService)
             : base(context)
         {
-            _logger = Require.IsNotNull(logger, nameof(logger));
-            _activityService = Require.IsNotNull(activityService, nameof(activityService));
-            _questionnaireService = Require.IsNotNull(questionnaireService,
-                nameof(questionnaireService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _activityService = activityService
+                ?? throw new ArgumentNullException(nameof(activityService));
+            _jobService = jobService ?? throw new ArgumentNullException(nameof(jobService));
+            _questionnaireService = questionnaireService
+                ?? throw new ArgumentNullException(nameof(questionnaireService));
             _sampleDataService = sampleDataService
                 ?? throw new ArgumentNullException(nameof(sampleDataService));
-            _vendorCodeService = Require.IsNotNull(vendorCodeService, nameof(vendorCodeService));
-            _hostingEnvironment = Require.IsNotNull(hostingEnvironment, nameof(hostingEnvironment));
+            _vendorCodeService = vendorCodeService
+                ?? throw new ArgumentNullException(nameof(vendorCodeService));
             PageTitle = "Flight Director";
         }
 
@@ -87,8 +89,8 @@ namespace GRA.Controllers.MissionControl
                 code = await _vendorCodeService.AddTypeAsync(new VendorCodeType
                 {
                     Description = "Free Book Code",
-                    DonationOptionSubject = "Choose whether to receive your free book or donate it to a child",
-                    DonationOptionMail = "If you'd like to redeem your free book code, please visit <a href=\"/Profile/\">your profile</a> and select the redeem option. If you're not interested in redeeming it, you can select the option to donate it to a child.",
+                    OptionSubject = "Choose whether to receive your free book or donate it to a child",
+                    OptionMail = "If you'd like to redeem your free book code, please visit <a href=\"/Profile/\">your profile</a> and select the redeem option. If you're not interested in redeeming it, you can select the option to donate it to a child.",
                     MailSubject = "Here's your Free Book Code!",
                     Mail = $"Congratulations, you've earned a free book! Your free book code is: {TemplateToken.VendorCodeToken}!",
                     DonationMessage = "Your free book has been donated.Thank you!!!",
@@ -97,14 +99,28 @@ namespace GRA.Controllers.MissionControl
                     Url = "http://freebook/?Code={Code}"
                 });
             }
-            var sw = new Stopwatch();
-            sw.Start();
-            var generatedCount = await _vendorCodeService.GenerateVendorCodesAsync(code.Id, numberOfCodes);
-            sw.Stop();
 
-            AlertSuccess = $"Generated {generatedCount} codes in {sw.Elapsed.TotalSeconds} seconds of type: {code.Description}";
+            var jobToken = await _jobService.CreateJobAsync(new Job
+            {
+                JobType = JobType.GenerateVendorCodes,
+                SerializedParameters = JsonConvert.SerializeObject(
+                    new JobDetailsGenerateVendorCodes
+                    {
+                        NumberOfCodes = numberOfCodes,
+                        VendorCodeTypeId = code.Id,
+                        CodeLength = 15
+                    })
+            });
 
-            return View("Index");
+            return View("Job", new ViewModel.MissionControl.Shared.JobViewModel
+            {
+                CancelUrl = Url.Action(nameof(Index)),
+                JobToken = jobToken.ToString(),
+                PingSeconds = 5,
+                SuccessRedirectUrl = "",
+                SuccessUrl = Url.Action(nameof(Index)),
+                Title = "Generating vendor codes..."
+            });
         }
 
         public async Task<IActionResult> RedeemSecretCodeAsync()
@@ -167,9 +183,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> ReloadSiteCacheAsync()
         {
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-            var sites = await _siteLookupService.ReloadSiteCacheAsync();
+            var sw = Stopwatch.StartNew();
+            await _siteLookupService.ReloadSiteCacheAsync();
             sw.Stop();
             ShowAlertSuccess($"Sites flushed from cache, reloaded in {sw.ElapsedMilliseconds} ms.");
             return RedirectToAction("Index");

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
@@ -65,6 +66,7 @@ namespace GRA.Data.Repository
                                  Id = eventInfo.Id,
                                  Name = eventInfo.Name,
                                  StartDate = eventInfo.StartDate,
+                                 StreamingAccessEnds = eventInfo.StreamingAccessEnds,
                                  EventLocationName = eventInfo.AtBranchId.HasValue ? branch.Name : location.Name,
                              };
             }
@@ -170,11 +172,15 @@ namespace GRA.Data.Repository
                 {
                     // case 0
                     default:
-                        events = events.Where(_ => !_.IsCommunityExperience);
+                        events = events.Where(_ => !_.IsCommunityExperience && !_.IsStreaming);
                         break;
 
-                    case 1:
+                    case (int)EventType.CommunityExperience:
                         events = events.Where(_ => _.IsCommunityExperience);
+                        break;
+
+                    case (int)EventType.StreamingEvent:
+                        events = events.Where(_ => _.IsStreaming);
                         break;
                 }
             }
@@ -234,17 +240,41 @@ namespace GRA.Data.Repository
             }
 
             // filter by dates
-            if (filter.StartDate != null)
+            if (filter.EventType == (int)EventType.StreamingEvent)
             {
-                events = events.Where(_ =>
-                ((!_.AllDay || !_.EndDate.HasValue) && _.StartDate.Date >= filter.StartDate.Value.Date)
-                || _.EndDate.Value.Date >= filter.StartDate.Value.Date);
+                if (filter.StartDate != null)
+                {
+                    if (filter.IsStreamingNow == true)
+                    {
+                        events = events.Where(_ => _.StartDate <= filter.StartDate
+                                && filter.StartDate <= _.StreamingAccessEnds);
+                    }
+                    else
+                    {
+                        events = events.Where(_ => _.StartDate >= filter.StartDate
+                            || (_.StartDate <= filter.StartDate
+                                && filter.StartDate <= _.StreamingAccessEnds));
+                    }
+                }
+                if (filter.EndDate != null)
+                {
+                    events = events.Where(_ => filter.EndDate <= _.StreamingAccessEnds);
+                }
             }
-            if (filter.EndDate != null)
+            else
             {
-                events = events.Where(_ =>
-                ((!_.AllDay || !_.EndDate.HasValue) && _.StartDate.Date <= filter.EndDate.Value.Date)
-                || _.StartDate.Date <= filter.EndDate.Value.Date);
+                if (filter.StartDate != null)
+                {
+                    events = events.Where(_ =>
+                        ((!_.AllDay || !_.EndDate.HasValue) && _.StartDate.Date >= filter.StartDate.Value.Date)
+                        || _.EndDate.Value.Date >= filter.StartDate.Value.Date);
+                }
+                if (filter.EndDate != null)
+                {
+                    events = events.Where(_ =>
+                        ((!_.AllDay || !_.EndDate.HasValue) && _.StartDate.Date <= filter.EndDate.Value.Date)
+                        || _.StartDate.Date <= filter.EndDate.Value.Date);
+                }
             }
 
             // apply search
@@ -276,6 +306,24 @@ namespace GRA.Data.Repository
             }
 
             return events;
+        }
+
+        public async Task<ICollection<Event>> GetEventListAsync(EventFilter filter)
+        {
+            if (filter == null)
+            {
+                throw new ArgumentNullException(nameof(filter));
+            }
+
+            return await ApplyFilters(filter).Select(_ => new Event
+            {
+                Id = _.Id,
+                Name = _.Name,
+                StartDate = _.StartDate,
+                StreamingAccessEnds = _.StreamingAccessEnds,
+                EndDate = _.EndDate
+            })
+            .ToListAsync();
         }
 
         public async Task<bool> LocationInUse(int siteId, int locationId)
