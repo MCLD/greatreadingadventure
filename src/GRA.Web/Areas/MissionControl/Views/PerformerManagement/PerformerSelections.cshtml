@@ -11,11 +11,20 @@
     </style>
 }
 <div class="row">
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+    <div class="modal fade"
+         id="deleteModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="deleteModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                     <h4 class="modal-title" id="deleteModalLabel">Delete branch selection</h4>
                 </div>
                 <div class="modal-body">
@@ -30,8 +39,16 @@
                           id="deletePerformerForm">
                         <input class="hidden" asp-for="Performer.Id" aria-hidden="true" />
                         <input class="hidden" asp-for="BranchSelectionId" aria-hidden="true" />
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <button type="submit" id="buttonDelete" class="btn btn-danger pull-right" aria-label="Confirm">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                id="buttonDelete"
+                                class="btn btn-danger pull-right"
+                                aria-label="Confirm">
                             <span class="fa fa-remove" aria-hidden="true"></span>
                             Delete
                         </button>
@@ -42,11 +59,17 @@
     </div>
 </div>
 <div class="row">
-    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+    <div class="modal fade"
+         id="editModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="editModalLabel">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                     <h4 class="modal-title" id="deleteModalLabel">Edit Date/Time</h4>
                 </div>
                 <div id="calendarContainer" class="modal-body">
@@ -54,7 +77,12 @@
                 </div>
                 <div class="modal-footer">
                     <form>
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
                     </form>
                 </div>
             </div>
@@ -165,50 +193,70 @@
                     <tbody>
                         @foreach (var branchSelection in branchSelectionDate)
                         {
-                        <tr>
-                            <td>@branchSelection.ScheduleStartTime.ToShortTimeString() &ndash; @branchSelection.ScheduleStartTime.AddMinutes(branchSelection.ScheduleDuration).ToShortTimeString()</td>
-                            <td>@branchSelection.RequestedStartTime.ToShortTimeString()@(branchSelection.BackToBackProgram ? $", {branchSelection.RequestedStartTime.AddMinutes(branchSelection.Program.ProgramLengthMinutes + branchSelection.Program.BackToBackMinutes).ToShortTimeString()}" : "")</td>
-                            <td>@branchSelection.AgeGroup.Name</td>
-                            <td><a asp-action="Program" asp-route-id="@branchSelection.ProgramId" target="_blank">@branchSelection.Program.Title</a></td>
-                            <td>@branchSelection.Branch.SystemName: <span style="white-space:nowrap">@branchSelection.Branch.Name <a href="https://www.google.com/maps/search/@branchSelection.Branch.Address" target="_blank" class="hidden-print"><span class="fa fa-map-o"></span></a><span class="visible-print">(@branchSelection.Branch.Address)</span></span></td>
-                            <td>
-                                <table style="width:100%;">
-                                    <tr>
-                                        <td>
-                                            <input class="secretCode form-control" data-id="@branchSelection.Id" value="@branchSelection.SecretCode" autocomplete="off" />
-                                        </td>
-                                        <td style="padding-left:3px; text-align:center; width:30px;">
-                                            <span class="icon fa fa-lg colored-icon @(!string.IsNullOrWhiteSpace(branchSelection.SecretCode) ? "fa-check" : "hidden")"></span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2">
-                                            <div class="errorMessage text-danger"></div>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                            <td class="hidden-print" style="text-align:center;">
-                                <button type="button"
-                                        class="btn btn-xs btn-primary"
-                                        data-toggle="modal"
-                                        data-target="#editModal"
-                                        data-selectionid="@branchSelection.Id">
-                                    <span class="fa fa-edit"></span>
-                                </button>
-                            </td>
-                            <td class="hidden-print" style="text-align:center;">
-                                <button type="button"
-                                        class="btn btn-xs btn-danger delete-selection"
-                                        data-toggle="modal"
-                                        data-target="#deleteModal"
-                                        data-selectionid="@branchSelection.Id"
-                                        data-branchname="@branchSelection.Branch.Name"
-                                        data-programtitle="@branchSelection.Program.Title">
-                                    <span class="fa fa-minus-circle"></span>
-                                </button>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td>@branchSelection.ScheduleStartTime.ToShortTimeString() &ndash; @branchSelection.ScheduleStartTime.AddMinutes(branchSelection.ScheduleDuration).ToShortTimeString()</td>
+                                <td>
+                                    @branchSelection.RequestedStartTime.ToShortTimeString()@(branchSelection.BackToBackProgram ? $", {branchSelection.RequestedStartTime.AddMinutes(branchSelection.Program.ProgramLengthMinutes + branchSelection.Program.BackToBackMinutes).ToShortTimeString()}" : "")
+                                </td>
+                                <td>@branchSelection.AgeGroup.Name</td>
+                                <td>
+                                    <a asp-action="Program"
+                                       asp-route-id="@branchSelection.ProgramId"
+                                       target="_blank">@branchSelection.Program.Title</a>
+                                </td>
+                                <td>
+                                    @branchSelection.Branch.SystemName:
+                                    <span style="white-space:nowrap">
+                                        @branchSelection.Branch.Name
+                                        <a href="https://www.google.com/maps/search/@branchSelection.Branch.Address"
+                                           target="_blank"
+                                           class="hidden-print">
+                                            <span class="fa fa-map-o"></span>
+                                        </a>
+                                        <span class="visible-print">(@branchSelection.Branch.Address)</span>
+                                    </span>
+                                </td>
+                                <td>
+                                    <table style="width:100%;">
+                                        <tr>
+                                            <td>
+                                                <input class="secretCode form-control"
+                                                       data-id="@branchSelection.Id"
+                                                       value="@branchSelection.SecretCode"
+                                                       autocomplete="off" />
+                                            </td>
+                                            <td style="padding-left:3px; text-align:center; width:30px;">
+                                                <span class="icon fa fa-lg colored-icon @(!string.IsNullOrWhiteSpace(branchSelection.SecretCode) ? "fa-check" : "hidden")"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <div class="errorMessage text-danger"></div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td class="hidden-print" style="text-align:center;">
+                                    <button type="button"
+                                            class="btn btn-xs btn-primary"
+                                            data-toggle="modal"
+                                            data-target="#editModal"
+                                            data-selectionid="@branchSelection.Id">
+                                        <span class="fa fa-edit"></span>
+                                    </button>
+                                </td>
+                                <td class="hidden-print" style="text-align:center;">
+                                    <button type="button"
+                                            class="btn btn-xs btn-danger delete-selection"
+                                            data-toggle="modal"
+                                            data-target="#deleteModal"
+                                            data-selectionid="@branchSelection.Id"
+                                            data-branchname="@branchSelection.Branch.Name"
+                                            data-programtitle="@branchSelection.Program.Title">
+                                        <span class="fa fa-minus-circle"></span>
+                                    </button>
+                                </td>
+                            </tr>
                         }
                     </tbody>
                 </table>
@@ -257,7 +305,7 @@
                 input.attr("readonly", "readonly");
                 icon.removeClass("hidden fa-check fa-times").addClass("fa-spinner fa-pulse fa-fw");
                 errorMessage.text("");
-                $.post(secretCodeUrl, { id: input.data("id"), secretCode: input.val() }, function (response) {
+                $.post(secretCodeUrl,{ id: input.data("id"), secretCode: input.val() }, function (response) {
                     setTimeout(function () {
                         input.val(response.secretCode).removeAttr("readonly");
                         if (response.success) {

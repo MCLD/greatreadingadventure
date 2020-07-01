@@ -54,11 +54,17 @@
     </div>
 </div>
 <div class="row">
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+    <div class="modal fade"
+         id="deleteModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="deleteModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                     <h4 class="modal-title" id="deleteModalLabel">Delete branch selection</h4>
                 </div>
                 <div class="modal-body">
@@ -73,8 +79,16 @@
                           id="deleteKitForm">
                         <input class="hidden" asp-for="Kit.Id" aria-hidden="true" />
                         <input class="hidden" asp-for="BranchSelectionId" aria-hidden="true" />
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <button type="submit" id="buttonDelete" class="btn btn-danger pull-right" aria-label="Confirm">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                id="buttonDelete"
+                                class="btn btn-danger pull-right"
+                                aria-label="Confirm">
                             <span class="fa fa-remove" aria-hidden="true"></span>
                             Delete
                         </button>
@@ -154,36 +168,36 @@
                 <tbody>
                     @foreach (var branchSelection in Model.BranchSelections)
                     {
-                    <tr>
-                        <td>@branchSelection.Branch.SystemName</td>
-                        <td>@branchSelection.Branch.Name</td>
-                        <td>@branchSelection.AgeGroup.Name</td>
-                        <td style="text-align:center;">
-                            <button type="button"
-                                    class="btn btn-xs btn-primary"
-                                    data-toggle="modal"
-                                    data-target="#editModal"
-                                    data-id="@branchSelection.Id"
-                                    data-agegroupid="@branchSelection.AgeGroupId"
-                                    data-agegroupname="@branchSelection.AgeGroup.Name"
-                                    data-branchid="@branchSelection.BranchId"
-                                    data-branchname="@branchSelection.Branch.Name"
-                                    data-systemname="@branchSelection.Branch.SystemName">
-                                <span class="fa fa-edit"></span>
-                            </button>
-                        </td>
-                        <td class="hidden-print" style="text-align:center;">
-                            <button type="button"
-                                    class="btn btn-xs btn-danger delete-selection"
-                                    data-toggle="modal"
-                                    data-target="#deleteModal"
-                                    data-selectionid="@branchSelection.Id"
-                                    data-branchname="@branchSelection.Branch.Name"
-                                    data-kitname="@branchSelection.Kit.Name">
-                                <span class="fa fa-minus-circle"></span>
-                            </button>
-                        </td>
-                    </tr>
+                        <tr>
+                            <td>@branchSelection.Branch.SystemName</td>
+                            <td>@branchSelection.Branch.Name</td>
+                            <td>@branchSelection.AgeGroup.Name</td>
+                            <td style="text-align:center;">
+                                <button type="button"
+                                        class="btn btn-xs btn-primary"
+                                        data-toggle="modal"
+                                        data-target="#editModal"
+                                        data-id="@branchSelection.Id"
+                                        data-agegroupid="@branchSelection.AgeGroupId"
+                                        data-agegroupname="@branchSelection.AgeGroup.Name"
+                                        data-branchid="@branchSelection.BranchId"
+                                        data-branchname="@branchSelection.Branch.Name"
+                                        data-systemname="@branchSelection.Branch.SystemName">
+                                    <span class="fa fa-edit"></span>
+                                </button>
+                            </td>
+                            <td class="hidden-print" style="text-align:center;">
+                                <button type="button"
+                                        class="btn btn-xs btn-danger delete-selection"
+                                        data-toggle="modal"
+                                        data-target="#deleteModal"
+                                        data-selectionid="@branchSelection.Id"
+                                        data-branchname="@branchSelection.Branch.Name"
+                                        data-kitname="@branchSelection.Kit.Name">
+                                    <span class="fa fa-minus-circle"></span>
+                                </button>
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>
@@ -255,7 +269,6 @@
                 }
                 $("#checkAlert").text(response.message);
                 $("#checkAlert").removeClass("hidden");
-                
             });
         });
 
