@@ -297,7 +297,7 @@ namespace GRA.Controllers.MissionControl
                 double pointsPerChallenge = (double)model.Challenge.PointsAwarded / model.Challenge.TasksToComplete.Value;
                 if (pointsPerChallenge > site.MaxPointsPerChallengeTask)
                 {
-                    ModelState.AddModelError("Challenge.PointsAwarded", $"Too many points awarded.");
+                    ModelState.AddModelError("Challenge.PointsAwarded", "Too many points awarded.");
                 }
             }
             if (model.BadgeUploadImage != null
@@ -307,20 +307,21 @@ namespace GRA.Controllers.MissionControl
                 {
                     ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                 }
-                if (string.IsNullOrWhiteSpace(model.BadgeAltText))
+                if (model.BadgeUploadImage != null && string.IsNullOrWhiteSpace(model.BadgeAltText))
                 {
                     ModelState.AddModelError("BadgeAltText", "The Badge's Alt-Text is required.");
                 }
             }
-            if (!string.IsNullOrWhiteSpace(model.BadgeAltText) && model.BadgeUploadImage == null
-                && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || model.UseBadgeMaker))
+            if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage) && model.UseBadgeMaker
+                && string.IsNullOrWhiteSpace(model.BadgeAltText))
+            {
+                ModelState.AddModelError("BadgeAltText", "The Badge's Alt-Text is required.");
+            }
+            if (!string.IsNullOrWhiteSpace(model.BadgeAltText) && (model.BadgeUploadImage == null
+                && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) && model.UseBadgeMaker)))
             {
                 ModelState.AddModelError("BadgeUploadImage", "A badge is required for the alt-text.");
                 ModelState.AddModelError("BadgeMakerImage", "A badge is required for the alt-text.");
-                if (string.IsNullOrWhiteSpace(model.BadgeAltText))
-                {
-                    ModelState.AddModelError("BadgeAltText", "The Badge's Alt-Text is required.");
-                }
             }
             if (ModelState.IsValid)
             {
@@ -496,13 +497,26 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Edit(ChallengesDetailViewModel model, string Submit)
         {
             var site = await GetCurrentSiteAsync();
+
+            var existing = model.Challenge.BadgeId.HasValue ?
+                await _badgeService.GetByIdAsync(model.Challenge.BadgeId.Value) : null;
+            if (existing != null && string.IsNullOrWhiteSpace(model.BadgeAltText))
+            {
+                ModelState.AddModelError("BadgeAltText", "The Badge's Alt-Text is required.");
+            }
+            if (!string.IsNullOrWhiteSpace(model.BadgeAltText) && model.BadgeUploadImage == null
+                && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || model.UseBadgeMaker))
+            {
+                ModelState.AddModelError("BadgeUploadImage", "A badge is required for the alt-text.");
+                ModelState.AddModelError("BadgeMakerImage", "A badge is required for the alt-text.");
+            }
             if (site.MaxPointsPerChallengeTask.HasValue && model.Challenge.TasksToComplete.HasValue
                 && model.Challenge.TasksToComplete != 0)
             {
                 double pointsPerChallenge = (double)model.Challenge.PointsAwarded / model.Challenge.TasksToComplete.Value;
                 if (pointsPerChallenge > site.MaxPointsPerChallengeTask)
                 {
-                    ModelState.AddModelError("Challenge.PointsAwarded", $"Too many points awarded.");
+                    ModelState.AddModelError("Challenge.PointsAwarded", "Too many points awarded.");
                 }
             }
             if (model.BadgeUploadImage != null
@@ -517,18 +531,8 @@ namespace GRA.Controllers.MissionControl
                     ModelState.AddModelError("BadgeAltText", "The Badge's Alt-Text is required.");
                 }
             }
-            if (!string.IsNullOrWhiteSpace(model.BadgeAltText) && model.BadgeUploadImage == null
-                && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || model.UseBadgeMaker))
-            {
-                ModelState.AddModelError("BadgeUploadImage", "A badge is required for the alt-text.");
-                ModelState.AddModelError("BadgeMakerImage", "A badge is required for the alt-text.");
-                if (string.IsNullOrWhiteSpace(model.BadgeAltText))
-                {
-                    ModelState.AddModelError("BadgeAltText", "The Badge's Alt-Text is required.");
-                }
-            }
-            if (string.IsNullOrWhiteSpace(model.BadgeAltText) && (model.BadgeUploadImage != null ||
-                (!string.IsNullOrWhiteSpace(model.BadgeMakerImage) || model.UseBadgeMaker)))
+            if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage) && model.UseBadgeMaker
+                && string.IsNullOrWhiteSpace(model.BadgeAltText))
             {
                 ModelState.AddModelError("BadgeAltText", "The Badge's Alt-Text is required.");
             }
@@ -571,8 +575,6 @@ namespace GRA.Controllers.MissionControl
                     }
                     else
                     {
-                        var existing = await _badgeService
-                                    .GetByIdAsync((int)challenge.BadgeId);
                         existing.Filename = Path.GetFileName(model.BadgePath);
                         var newBadge = await _badgeService
                             .ReplaceBadgeFileAsync(existing, badgeBytes);
@@ -580,15 +582,11 @@ namespace GRA.Controllers.MissionControl
                         await _badgeService.UpdateBadgeAsync(newBadge);
                     }
                 }
-                else if (challenge.BadgeId != null)
+                else if (challenge.BadgeId != null && !string.IsNullOrEmpty(model.BadgeAltText)
+                    && existing?.AltText.Equals(model.BadgeAltText) == false)
                 {
-                    var existing = await _badgeService
-                        .GetByIdAsync((int)challenge.BadgeId);
-                    if (existing?.AltText.Equals(model.BadgeAltText) == false)
-                    {
                         existing.AltText = model.BadgeAltText;
                         await _badgeService.UpdateBadgeAsync(existing);
-                    }
                 }
                 try
                 {
