@@ -492,6 +492,19 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Edit(ChallengesDetailViewModel model, string Submit)
         {
             var site = await GetCurrentSiteAsync();
+
+            var existing = model.Challenge.BadgeId.HasValue ?
+                await _badgeService.GetByIdAsync(model.Challenge.BadgeId.Value) : null;
+            if (existing != null && string.IsNullOrWhiteSpace(model.BadgeAltText))
+            {
+                ModelState.AddModelError("BadgeAltText", "The Badge's Alt-Text is required.");
+            }
+            if (!string.IsNullOrWhiteSpace(model.BadgeAltText) && model.BadgeUploadImage == null
+                && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || model.UseBadgeMaker))
+            {
+                ModelState.AddModelError("BadgeUploadImage", "A badge is required for the alt-text.");
+                ModelState.AddModelError("BadgeMakerImage", "A badge is required for the alt-text.");
+            }
             if (site.MaxPointsPerChallengeTask.HasValue && model.Challenge.TasksToComplete.HasValue
                 && model.Challenge.TasksToComplete != 0)
             {
@@ -558,8 +571,6 @@ namespace GRA.Controllers.MissionControl
                     }
                     else
                     {
-                        var existing = await _badgeService
-                                    .GetByIdAsync((int)challenge.BadgeId);
                         existing.Filename = Path.GetFileName(model.BadgePath);
                         var newBadge = await _badgeService
                             .ReplaceBadgeFileAsync(existing, badgeBytes);
@@ -567,15 +578,11 @@ namespace GRA.Controllers.MissionControl
                         await _badgeService.UpdateBadgeAsync(newBadge);
                     }
                 }
-                else if (challenge.BadgeId != null)
+                else if (challenge.BadgeId != null 
+                    && existing?.AltText.Equals(model.BadgeAltText) == false)
                 {
-                    var existing = await _badgeService
-                        .GetByIdAsync((int)challenge.BadgeId);
-                    if (existing?.AltText.Equals(model.BadgeAltText) == false)
-                    {
                         existing.AltText = model.BadgeAltText;
                         await _badgeService.UpdateBadgeAsync(existing);
-                    }
                 }
                 try
                 {
