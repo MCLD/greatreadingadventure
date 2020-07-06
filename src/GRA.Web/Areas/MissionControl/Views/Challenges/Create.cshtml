@@ -134,6 +134,9 @@
                     <button id="openMaker" type="button" class="btn btn-default">
                         <span class="fa fa-certificate"></span> Create a Badge
                     </button>
+                    <div>
+                        <span class="text-danger" asp-validation-for="BadgeMakerImage"></span>
+                    </div>
                 </div>
 
                 <div role="tabpanel" class="tab-pane gra-tab-pane @(Model.UseBadgeMaker ? "" : "active")" id="upload">
