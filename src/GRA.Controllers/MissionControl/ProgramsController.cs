@@ -124,6 +124,13 @@ namespace GRA.Controllers.MissionControl
                 }
             }
 
+            if (!string.IsNullOrWhiteSpace(model.BadgeAltText) &&
+                (string.IsNullOrWhiteSpace(model.BadgeMakerImage)
+                && model.BadgeUploadImage == null && string.IsNullOrWhiteSpace(model.BadgePath)))
+            {
+                ModelState.AddModelError("BadgePath", "Please provide an image for the badge.");
+            }
+
             if (model.Program.AgeMaximum < model.Program.AgeMinimum)
             {
                 ModelState.AddModelError("Program.AgeMaximum", "The maximum age cannot be lower than the minimum age.");
@@ -246,6 +253,10 @@ namespace GRA.Controllers.MissionControl
                     || currentProgram.JoinBadgeId.HasValue))
             {
                 ModelState.AddModelError("Program.JoinBadgeName", "Please provide a name for the badge");
+                if (string.IsNullOrWhiteSpace(model.BadgeAltText))
+                {
+                    ModelState.AddModelError("BadgeAltText", "The Badge's Alt-Text is required.");
+                }
             }
 
             if (!string.IsNullOrWhiteSpace(model.Program.JoinBadgeName)
@@ -254,18 +265,30 @@ namespace GRA.Controllers.MissionControl
                 && !currentProgram.JoinBadgeId.HasValue)
             {
                 ModelState.AddModelError("BadgemakerImage", "Please provide an image for the badge.");
+                if (string.IsNullOrWhiteSpace(model.BadgeAltText))
+                {
+                    ModelState.AddModelError("BadgeAltText", "The Badge's Alt-Text is required.");
+                }
+            }
+
+            if ((!string.IsNullOrWhiteSpace(model.BadgePath) || (!string.IsNullOrWhiteSpace(model.BadgeMakerImage)
+                || model.BadgeUploadImage != null)) && string.IsNullOrWhiteSpace(model.BadgeAltText))
+            {
+                ModelState.AddModelError("BadgeAltText", "The Badge's Alt-Text is required.");
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.BadgeAltText) &&
+                (string.IsNullOrWhiteSpace(model.BadgeMakerImage)
+                && model.BadgeUploadImage == null && string.IsNullOrWhiteSpace(model.BadgePath)))
+            {
+                ModelState.AddModelError("BadgePath", "Please provide an image for the badge.");
             }
 
             if (model.BadgeUploadImage != null
-                    && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker)
-                    && (!ValidImageExtensions.Contains(Path.GetExtension(model.BadgeUploadImage.FileName).ToLower())))
+                && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker)
+                && (!ValidImageExtensions.Contains(Path.GetExtension(model.BadgeUploadImage.FileName).ToLower())))
             {
                 ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
-            }
-
-            if (string.IsNullOrWhiteSpace(model.BadgeAltText))
-            {
-                ModelState.AddModelError("BadgeAltText", "The Badge's Alt-Text is required.");
             }
 
             if (model.Program.AgeMaximum < model.Program.AgeMinimum)
