@@ -307,13 +307,18 @@ namespace GRA.Controllers.MissionControl
                 {
                     ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                 }
-                if (string.IsNullOrWhiteSpace(model.BadgeAltText))
+                if (model.BadgeUploadImage != null && string.IsNullOrWhiteSpace(model.BadgeAltText))
                 {
                     ModelState.AddModelError("BadgeAltText", "The Badge's Alt-Text is required.");
                 }
             }
-            if (!string.IsNullOrWhiteSpace(model.BadgeAltText) && model.BadgeUploadImage == null
-                && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || model.UseBadgeMaker))
+            if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage) && model.UseBadgeMaker
+                && string.IsNullOrWhiteSpace(model.BadgeAltText))
+            {
+                ModelState.AddModelError("BadgeAltText", "The Badge's Alt-Text is required.");
+            }
+            if (!string.IsNullOrWhiteSpace(model.BadgeAltText) && (model.BadgeUploadImage == null
+                && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) && model.UseBadgeMaker)))
             {
                 ModelState.AddModelError("BadgeUploadImage", "A badge is required for the alt-text.");
                 ModelState.AddModelError("BadgeMakerImage", "A badge is required for the alt-text.");
@@ -526,11 +531,10 @@ namespace GRA.Controllers.MissionControl
                     ModelState.AddModelError("BadgeAltText", "The Badge's Alt-Text is required.");
                 }
             }
-            if (!string.IsNullOrWhiteSpace(model.BadgeAltText) && model.BadgeUploadImage == null
-                && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || model.UseBadgeMaker))
+            if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage) && model.UseBadgeMaker
+                && string.IsNullOrWhiteSpace(model.BadgeAltText))
             {
-                ModelState.AddModelError("BadgeUploadImage", "A badge is required for the alt-text.");
-                ModelState.AddModelError("BadgeMakerImage", "A badge is required for the alt-text.");
+                ModelState.AddModelError("BadgeAltText", "The Badge's Alt-Text is required.");
             }
             if (ModelState.IsValid)
             {
@@ -578,7 +582,7 @@ namespace GRA.Controllers.MissionControl
                         await _badgeService.UpdateBadgeAsync(newBadge);
                     }
                 }
-                else if (challenge.BadgeId != null 
+                else if (challenge.BadgeId != null && !string.IsNullOrEmpty(model.BadgeAltText)
                     && existing?.AltText.Equals(model.BadgeAltText) == false)
                 {
                         existing.AltText = model.BadgeAltText;
