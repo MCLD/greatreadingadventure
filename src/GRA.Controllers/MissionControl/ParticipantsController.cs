@@ -2206,8 +2206,6 @@ namespace GRA.Controllers.MissionControl
 
                 await _vendorCodeService.PopulateVendorCodeStatusAsync(user);
 
-
-
                 var viewModel = new PrizeListViewModel
                 {
                     PrizeWinners = prizeList.Data,

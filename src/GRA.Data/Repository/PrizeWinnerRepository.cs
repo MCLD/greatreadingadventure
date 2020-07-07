@@ -180,5 +180,14 @@ namespace GRA.Data.Repository
                 .OrderBy(_ => _.Name)
                 .ToList();
         }
+
+        public async Task<ICollection<PrizeWinner>> GetVendorCodePrizesAsync(int userId)
+        {
+            return await DbSet
+                .Where(_ => _.UserId == userId && _.VendorCodeId != null)
+                .AsNoTracking()
+                .ProjectTo<PrizeWinner>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
     }
 }
