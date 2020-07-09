@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,6 +28,7 @@ namespace GRA.Domain.Service
         private readonly IVendorCodeTypeRepository _vendorCodeTypeRepository;
         private readonly MailService _mailService;
         private readonly LanguageService _languageService;
+        private readonly PrizeWinnerService _prizeWinnerService;
 
         public VendorCodeService(ILogger<VendorCodeService> logger,
             IDateTimeProvider dateTimeProvider,
@@ -38,7 +40,8 @@ namespace GRA.Domain.Service
             IVendorCodeRepository vendorCodeRepository,
             IVendorCodeTypeRepository vendorCodeTypeRepository,
             MailService mailService,
-            LanguageService languageService)
+            LanguageService languageService,
+                        PrizeWinnerService prizeWinnerService)
             : base(logger, dateTimeProvider, userContextProvider)
         {
             SetManagementPermission(Permission.ManageVendorCodes);
@@ -56,6 +59,8 @@ namespace GRA.Domain.Service
             _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
             _languageService = languageService
                 ?? throw new ArgumentNullException(nameof(languageService));
+            _prizeWinnerService = prizeWinnerService
+                ?? throw new ArgumentNullException(nameof(prizeWinnerService));
         }
 
         public async Task<VendorCodeType> GetTypeById(int id)
@@ -158,10 +163,11 @@ namespace GRA.Domain.Service
             }
         }
 
+        private const string BranchIdRowHeading = "Branch Id";
         private const string CouponRowHeading = "Coupon";
+        private const string DetailsRowHeading = "Details";
         private const string OrderDateRowHeading = "Order Date";
         private const string ShipDateRowHeading = "Ship Date";
-        private const string DetailsRowHeading = "Details";
 
         public async Task<JobStatus> UpdateStatusFromExcelAsync(int jobId,
             CancellationToken token,
@@ -206,15 +212,17 @@ namespace GRA.Domain.Service
                 {
                     using (var stream = new FileStream(fullPath, FileMode.Open))
                     {
+                        int branchColumnId = 0;
                         int couponColumnId = 0;
+                        int detailsColumnId = 0;
                         int orderDateColumnId = 0;
                         int shipDateColumnId = 0;
-                        int detailsColumnId = 0;
                         var issues = new List<string>();
                         int row = 0;
                         int totalRows = 0;
                         int updated = 0;
                         int alreadyCurrent = 0;
+                        VendorCodeType vendorCodeType = null;
                         using (var excelReader = ExcelReaderFactory.CreateBinaryReader(stream))
                         {
                             while (excelReader.Read())
@@ -249,17 +257,20 @@ namespace GRA.Domain.Service
                                     {
                                         switch (excelReader.GetString(i)?.Trim() ?? $"Column{i}")
                                         {
+                                            case BranchIdRowHeading:
+                                                branchColumnId = i;
+                                                break;
                                             case CouponRowHeading:
                                                 couponColumnId = i;
+                                                break;
+                                            case DetailsRowHeading:
+                                                detailsColumnId = i;
                                                 break;
                                             case OrderDateRowHeading:
                                                 orderDateColumnId = i;
                                                 break;
                                             case ShipDateRowHeading:
                                                 shipDateColumnId = i;
-                                                break;
-                                            case DetailsRowHeading:
-                                                detailsColumnId = i;
                                                 break;
                                         }
                                     }
@@ -269,12 +280,15 @@ namespace GRA.Domain.Service
                                     if (excelReader.GetValue(couponColumnId) != null
                                         && (excelReader.GetValue(orderDateColumnId) != null
                                             || excelReader.GetValue(shipDateColumnId) != null
-                                            || excelReader.GetValue(detailsColumnId) != null))
+                                            || excelReader.GetValue(detailsColumnId) != null
+                                            || excelReader.GetValue(branchColumnId) != null))
                                     {
                                         string coupon = null;
                                         DateTime? orderDate = null;
                                         DateTime? shipDate = null;
                                         string details = null;
+                                        int? branchId = null;
+
                                         try
                                         {
                                             coupon = excelReader.GetString(couponColumnId);
@@ -287,6 +301,7 @@ namespace GRA.Domain.Service
                                                 ex.Message);
                                             issues.Add($"Issue reading code on line {row}: {ex.Message}");
                                         }
+
                                         try
                                         {
                                             try
@@ -376,10 +391,41 @@ namespace GRA.Domain.Service
                                                 issues.Add($"Issue reading details on row {row}: {ex.Message}");
                                             }
                                         }
+
+                                        if (excelReader.GetValue(branchColumnId) != null)
+                                        {
+                                            try
+                                            {
+                                                string branch
+                                                    = excelReader.GetString(branchColumnId);
+                                                if (int.TryParse(branch, out int branchIdNum))
+                                                {
+                                                    branchId = branchIdNum;
+                                                }
+                                                else
+                                                {
+                                                    _logger.LogWarning("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
+                                                        "branch id",
+                                                        row,
+                                                        "Couldn't convert to a number");
+                                                    issues.Add($"Issue reading details on row {row}: Couldn't convert to a number");
+                                                }
+                                            }
+                                            catch (IndexOutOfRangeException ex)
+                                            {
+                                                _logger.LogWarning("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
+                                                    "branch id",
+                                                    row,
+                                                    ex.Message);
+                                                issues.Add($"Issue reading details on row {row}: {ex.Message}");
+                                            }
+                                        }
+
                                         if (!string.IsNullOrEmpty(coupon)
                                             && (orderDate != null
                                                 || shipDate != null
-                                                || !string.IsNullOrEmpty(details)))
+                                                || !string.IsNullOrEmpty(details)
+                                                || branchId != null))
                                         {
                                             var code = await _vendorCodeRepository.GetByCode(coupon);
                                             if (code == null)
@@ -392,28 +438,19 @@ namespace GRA.Domain.Service
                                             {
                                                 if (orderDate == code.OrderDate
                                                     && shipDate == code.ShipDate
-                                                    && details == code.Details)
+                                                    && details == code.Details
+                                                    && branchId == code.BranchId)
                                                 {
                                                     alreadyCurrent++;
                                                 }
                                                 else
                                                 {
-                                                    code.IsUsed = true;
-                                                    if (orderDate != null)
-                                                    {
-                                                        code.OrderDate = orderDate;
-                                                    }
-                                                    if (shipDate != null)
-                                                    {
-                                                        code.ShipDate = shipDate;
-                                                    }
-                                                    if (!string.IsNullOrEmpty(details))
-                                                    {
-                                                        code.Details = details.Length > 255
-                                                            ? details.Substring(0, 255)
-                                                            : details;
-                                                    }
-                                                    await _vendorCodeRepository.UpdateSaveNoAuditAsync(code);
+                                                    await UpdateVendorCodeAsync(code,
+                                                        orderDate,
+                                                        shipDate,
+                                                        details,
+                                                        branchId,
+                                                        vendorCodeType);
                                                     updated++;
                                                 }
                                             }
@@ -506,6 +543,64 @@ namespace GRA.Domain.Service
                     Complete = true
                 };
             }
+        }
+
+        private async Task UpdateVendorCodeAsync(VendorCode code,
+            DateTime? orderDate,
+            DateTime? shipDate,
+            string details,
+            int? branchId,
+            VendorCodeType vendorCodeType)
+        {
+            code.IsUsed = true;
+            if (orderDate != null)
+            {
+                code.OrderDate = orderDate;
+            }
+            if (shipDate != null)
+            {
+                code.ShipDate = shipDate;
+            }
+            if (!string.IsNullOrEmpty(details))
+            {
+                code.Details = details.Length > 255
+                    ? details.Substring(0, 255)
+                    : details;
+            }
+            if (branchId != null)
+            {
+                code.BranchId = branchId;
+            }
+
+            if (code.ShipDate != null
+                && code.BranchId != null)
+            {
+                if (vendorCodeType?.Id
+                    != code.VendorCodeTypeId)
+                {
+                    vendorCodeType =
+                        await _vendorCodeTypeRepository.GetByIdAsync(code.VendorCodeTypeId);
+                }
+
+                if (vendorCodeType.AwardPrizeOnShipDate)
+                {
+                    var vcPrizes = await _prizeWinnerService.GetVendorCodePrizes((int)code.UserId);
+
+                    var thisVcPrize = vcPrizes.SingleOrDefault(_ => _.VendorCodeId == code.Id);
+
+                    if (thisVcPrize == null)
+                    {
+                        await _prizeWinnerService.AddPrizeWinnerAsync(new PrizeWinner
+                        {
+                            UserId = (int)code.UserId,
+                            VendorCodeId = code.Id,
+                        });
+                    }
+                }
+            }
+
+            await _vendorCodeRepository.UpdateSaveNoAuditAsync(code);
+
         }
 
         public async Task<bool> SiteHasCodesAsync()

@@ -4,14 +4,16 @@ using GRA.Data.SqlServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GRA.Data.SqlServer.Migrations
 {
     [DbContext(typeof(SqlServerContext))]
-    partial class SqlServerContextModelSnapshot : ModelSnapshot
+    [Migration("20200707225552_add-vendor-code-prize")]
+    partial class addvendorcodeprize
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2249,6 +2251,8 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<bool>("IsDefault");
 
                     b.Property<bool>("IsHttpsForced");
+
+                    b.Property<int?>("MaxPointsPerChallengeTask");
 
                     b.Property<string>("MetaDescription")
                         .HasMaxLength(150);
