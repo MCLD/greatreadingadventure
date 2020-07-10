@@ -441,8 +441,6 @@ namespace GRA.Controllers.MissionControl
 
             if (challenge.TasksToComplete.HasValue)
             {
-                viewModel.MaxPointLimit = await _challengeService.GetMaximumAllowedPointsAsync(site.Id);
-
                 if (challenge.PointsAwarded / challenge.TasksToComplete.Value
                     > viewModel.MaxPointLimit)
                 {
