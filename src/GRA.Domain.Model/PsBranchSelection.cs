@@ -42,5 +42,6 @@ namespace GRA.Domain.Model
         public string StartsAt { get; set; }
         public string EndsAt { get; set; }
         public string Summary { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

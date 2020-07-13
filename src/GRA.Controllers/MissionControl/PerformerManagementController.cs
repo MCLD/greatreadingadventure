@@ -21,6 +21,8 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.ManagePerformers)]
     public class PerformerManagementController : Base.MCController
     {
+        public static string Name { get { return "PerformerManagement"; } }
+
         private const int MaxUploadMB = 25;
         private const int MBSize = 1024 * 1024;
 
@@ -241,6 +243,38 @@ namespace GRA.Controllers.MissionControl
                 new { page = model.PaginateModel.CurrentPage });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> PerformerSelectionDelete
+            (PerformerSelectionsViewModel model)
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
+            if (schedulingStage < PsSchedulingStage.SchedulingOpen)
+            {
+                return RedirectToAction(nameof(PerformerManagementController.PerformerSelections),
+                    new { id = model.Performer.Id });
+            }
+            try
+            {
+                var branchSelection = await _performerSchedulingService
+                    .GetBranchProgramSelectionByIdAsync(model.BranchSelectionId);
+                await _performerSchedulingService.DeleteBranchSelectionAsync(branchSelection);
+                var branch = await _siteService.GetBranchByIdAsync(branchSelection.BranchId);
+                var program = await _performerSchedulingService
+                    .GetProgramByIdAsync(branchSelection.ProgramId.Value);
+                ShowAlertSuccess($"{branch.Name}'s selection of \"{program.Title}\" is deleted!.");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to delete selection: ", gex);
+                _logger.LogError(gex,
+                    "Error deleting branch selection Id {BranchSelectionId} by user {GetActiveUserId}: {ErrorMessage}",
+                    model.BranchSelectionId, GetActiveUserId(), gex.Message);
+            }
+            return RedirectToAction(nameof(PerformerManagementController.PerformerSelections),
+                new { id = model.Performer.Id });
+        }
+
         public async Task<IActionResult> Performer(int id)
         {
             var settings = await _performerSchedulingService.GetSettingsAsync();
@@ -265,7 +299,7 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(Performers));
             }
 
-            if(string.IsNullOrEmpty(settings.VendorIdPrompt))
+            if (string.IsNullOrEmpty(settings.VendorIdPrompt))
             {
                 settings.VendorIdPrompt = "Vendor ID";
             }
@@ -1521,6 +1555,36 @@ namespace GRA.Controllers.MissionControl
                 model.MaxUploadMB = MaxUploadMB;
             }
             return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteKitSelection(KitSelectionsViewModel model)
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
+            if (schedulingStage == PsSchedulingStage.Unavailable)
+            {
+                return RedirectToAction(nameof(PerformerManagementController.KitSelections),
+                    new { id = model.Kit.Id });
+            }
+            try
+            {
+                var branchSelection = await _performerSchedulingService
+                    .GetBranchProgramSelectionByIdAsync(model.BranchSelectionId);
+                await _performerSchedulingService.DeleteBranchSelectionAsync(branchSelection);
+                var branch = await _siteService.GetBranchByIdAsync(branchSelection.BranchId);
+                var kit = await _performerSchedulingService.GetKitByIdAsync(model.Kit.Id);
+                ShowAlertSuccess($"{branch.Name}'s selection of \"{kit.Name}\" is deleted!");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to delete selection: ", gex);
+                _logger.LogError(gex,
+                    "Error deleting branch selection Id {BranchSelectionId} by user {GetActiveUserId}: {ErrorMessage}",
+                    model.BranchSelectionId, GetActiveUserId(),gex.Message);
+            }
+            return RedirectToAction(nameof(PerformerManagementController.KitSelections),
+                new { id = model.Kit.Id });
         }
 
         public async Task<IActionResult> KitImages(int id)
