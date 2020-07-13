@@ -32,5 +32,6 @@ namespace GRA.Domain.Model
         [MaxLength(255)]
         public string Details { get; set; }
         public string ParticipantName { get; set; }
+        public int? BranchId { get; set; }
     }
 }
