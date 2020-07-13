@@ -4,14 +4,16 @@ using GRA.Data.SqlServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GRA.Data.SqlServer.Migrations
 {
     [DbContext(typeof(SqlServerContext))]
-    partial class SqlServerContextModelSnapshot : ModelSnapshot
+    [Migration("20200713220317_program-kit-selections-deletable")]
+    partial class programkitselectionsdeletable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1433,8 +1435,6 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<int>("UserId");
 
-                    b.Property<int?>("VendorCodeId");
-
                     b.HasKey("Id");
 
                     b.HasIndex("TriggerId");
@@ -2833,8 +2833,6 @@ namespace GRA.Data.SqlServer.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("BranchId");
-
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(255);
@@ -2884,8 +2882,6 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("AwardPrizeOnShipDate");
 
                     b.Property<DateTime>("CreatedAt");
 
