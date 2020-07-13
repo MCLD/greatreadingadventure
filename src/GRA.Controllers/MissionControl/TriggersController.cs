@@ -230,6 +230,7 @@ namespace GRA.Controllers.MissionControl
             model.MaxPointLimit =
                 await _triggerService.GetMaximumAllowedPointsAsync(GetCurrentSiteId());
             if (!UserHasPermission(Permission.IgnorePointLimits)
+                && model.MaxPointLimit.HasValue
                 && model.Trigger.AwardPoints > model.MaxPointLimit)
             {
                 ModelState.AddModelError("Trigger.AwardPoints",
@@ -513,6 +514,7 @@ namespace GRA.Controllers.MissionControl
             model.MaxPointLimit =
                 await _triggerService.GetMaximumAllowedPointsAsync(GetCurrentSiteId());
             if (!UserHasPermission(Permission.IgnorePointLimits)
+                && model.MaxPointLimit.HasValue
                 && model.Trigger.AwardPoints > model.MaxPointLimit
                 && model.Trigger.AwardPoints != currentTrigger.AwardPoints)
             {

@@ -640,12 +640,12 @@ namespace GRA.Domain.Service
             return await _challengeGroupRepository.StubInUseAsync(GetCurrentSiteId(), stub.ToLower());
         }
 
-        public async Task<int> GetMaximumAllowedPointsAsync(int siteId)
+        public async Task<int?> GetMaximumAllowedPointsAsync(int siteId)
         {
             var (IsSet, SetValue) = await _siteLookupService.GetSiteSettingIntAsync(siteId,
                 SiteSettingKey.Challenges.MaxPointsPerChallengeTask);
 
-            return IsSet ? SetValue : int.MaxValue;
+            return IsSet ? SetValue : (int?)null;
         }
     }
 }

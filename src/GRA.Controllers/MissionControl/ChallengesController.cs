@@ -280,7 +280,11 @@ namespace GRA.Controllers.MissionControl
             };
 
             viewModel = await GetDetailLists(viewModel);
-            viewModel.MaxPointsMessage = "This Challenge's number of points awarded is higher than what is allowed by the configuration.";
+            if (viewModel.MaxPointLimit.HasValue)
+            {
+                viewModel.MaxPointsMessage = $"(Up to {viewModel.MaxPointLimit.Value} points per required task)";
+            }
+
             return View(viewModel);
         }
 
@@ -439,13 +443,12 @@ namespace GRA.Controllers.MissionControl
                 MaxPointLimit = await _challengeService.GetMaximumAllowedPointsAsync(site.Id)
             };
 
-            if (challenge.TasksToComplete.HasValue)
-            {
-                if (challenge.PointsAwarded / challenge.TasksToComplete.Value
+            if (challenge.TasksToComplete.HasValue
+                && viewModel.MaxPointLimit.HasValue
+                && challenge.PointsAwarded / challenge.TasksToComplete.Value
                     > viewModel.MaxPointLimit)
-                {
-                    viewModel.MaxPointsMessage = "This Challenge's number of points awarded is higher than what is allowed by the configuration.";
-                }
+            {
+                viewModel.MaxPointsMessage = $"(Up to {viewModel.MaxPointLimit.Value} points per required task)";
             }
 
             if (challenge.BadgeId != null)
