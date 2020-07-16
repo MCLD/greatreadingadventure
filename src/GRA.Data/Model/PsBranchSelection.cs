@@ -29,5 +29,7 @@ namespace GRA.Data.Model
 
         [MaxLength(50)]
         public string SecretCode { get; set; }
+
+        public bool IsDeleted { get; set; }
     }
 }

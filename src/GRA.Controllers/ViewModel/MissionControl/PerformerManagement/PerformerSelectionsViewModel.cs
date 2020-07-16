@@ -12,6 +12,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.PerformerManagement
         public int? NextPerformer { get; set; }
         public int? PrevPerformer { get; set; }
         public int ReturnPage { get; set; }
+        public int BranchSelectionId { get; set; }
 
         public DateTime DefaultPerformerScheduleStartTime { get; set; }
         public DateTime DefaultPerformerScheduleEndTime { get; set; }
