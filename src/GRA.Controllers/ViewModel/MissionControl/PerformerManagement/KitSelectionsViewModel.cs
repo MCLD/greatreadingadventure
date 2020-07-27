@@ -12,6 +12,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.PerformerManagement
         public int? NextKit { get; set; }
         public int? PrevKit { get; set; }
         public int ReturnPage { get; set; }
+        public int BranchSelectionId { get; set; }
 
         public SelectList KitList { get; set; }
         public SelectList AgeGroupList { get; set; }

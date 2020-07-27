@@ -56,5 +56,6 @@ namespace GRA.Domain.Model
         public string Url { get; set; }
 
         public DateTime? ExpirationDate { get; set; }
+        public bool AwardPrizeOnShipDate { get; set; }
     }
 }

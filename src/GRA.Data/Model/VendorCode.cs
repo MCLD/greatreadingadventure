@@ -30,5 +30,6 @@ namespace GRA.Data.Model
         public DateTime? EmailAwardSent { get; set; }
         [MaxLength(255)]
         public string Details { get; set; }
+        public int? BranchId { get; set; }
     }
 }
