@@ -297,7 +297,7 @@ namespace GRA.Controllers.MissionControl
                 double pointsPerChallenge = (double)model.Challenge.PointsAwarded / model.Challenge.TasksToComplete.Value;
                 if (pointsPerChallenge > site.MaxPointsPerChallengeTask)
                 {
-                    ModelState.AddModelError("Challenge.PointsAwarded", $"Too many points awarded.");
+                    ModelState.AddModelError("Challenge.PointsAwarded", "Too many points awarded.");
                 }
             }
             if (model.BadgeUploadImage != null
@@ -516,7 +516,7 @@ namespace GRA.Controllers.MissionControl
                 double pointsPerChallenge = (double)model.Challenge.PointsAwarded / model.Challenge.TasksToComplete.Value;
                 if (pointsPerChallenge > site.MaxPointsPerChallengeTask)
                 {
-                    ModelState.AddModelError("Challenge.PointsAwarded", $"Too many points awarded.");
+                    ModelState.AddModelError("Challenge.PointsAwarded", "Too many points awarded.");
                 }
             }
             if (model.BadgeUploadImage != null
