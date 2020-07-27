@@ -141,7 +141,8 @@
                                 <td>@branchSelection.ScheduleStartTime.ToShortTimeString() &ndash; @branchSelection.ScheduleStartTime.AddMinutes(branchSelection.ScheduleDuration).ToShortTimeString()</td>
                                 <td>@branchSelection.RequestedStartTime.ToShortTimeString()@(branchSelection.BackToBackProgram ? $", {branchSelection.RequestedStartTime.AddMinutes(branchSelection.Program.ProgramLengthMinutes + branchSelection.Program.BackToBackMinutes).ToShortTimeString()}" : "")</td>
                                 <td>@branchSelection.AgeGroup.Name</td>
-                                <td><a asp-action="Program"
+                                <td>
+                                    <a asp-action="Program"
                                        asp-route-id="@branchSelection.ProgramId"
                                        target="_blank">@branchSelection.Program.Title</a>
                                 </td>
