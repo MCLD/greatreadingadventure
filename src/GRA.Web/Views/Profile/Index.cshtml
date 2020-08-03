@@ -177,6 +177,9 @@
 
                             @if (Model.RestrictChangingSystemBranch)
                             {
+                                <input asp-for="User.BranchId" type="hidden" />
+                                <input asp-for="User.SystemId" type="hidden" />
+
                                 @if (Model.SystemList.Count() > 1)
                                 {
                                     <div class="row row-spacing">
