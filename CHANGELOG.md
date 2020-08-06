@@ -88,6 +88,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Avatar items using the wrong layers initial color
 - Un-donate buttons using the wrong permission
 - Add book erroring when author field is empty
+- Viewing participants with schools without the edit permission
+- Profile school values disappearing after model error
 
 ### Removed
 - Recovery error logging at the controller level - it's logged in the
