@@ -114,6 +114,7 @@
             public const string EventNotFound = "Could not find the requested event.";
             public const string EventNotStarted = "This streaming event has not started yet.";
             public const string Family = "Family";
+            public const string Favorited = "Favorited";
             public const string Find = "Find";
             public const string FreeBookCode = "Free book code";
             public const string FreeBookCongratulations = "Congratulations, you've earned a free book!";
@@ -163,6 +164,7 @@
             public const string Subject = "Subject: {0}";
             public const string SwitchTo = "Switch To";
             public const string TotalPoints = "Total Points";
+            public const string Unfavorited = "Unfavorited";
             public const string Unsubscribed = "You are now unsubscribed and will not receive any more emails from {0}.";
             public const string UpdatedItem = "Updated: {0}";
             public const string UpgradeToGroup = "Upgrade to Group";

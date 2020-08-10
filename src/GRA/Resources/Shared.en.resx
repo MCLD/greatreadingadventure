@@ -1469,4 +1469,12 @@
     <value>This badge is showing articles of {0} clothing to customize your avatar with</value>
     <comment>The alt-text description for unlocking an avatar bundle.</comment>
   </data>
+  <data name="Favorited" xml:space="preserve">
+    <value>Favorited</value>
+    <comment>The alt text for the favorited icons</comment>
+  </data>
+  <data name="Unfavorited" xml:space="preserve">
+    <value>Unfavorited</value>
+    <comment>The alt text for the unfavorited icons</comment>
+  </data>
 </root>
