@@ -262,8 +262,21 @@ namespace GRA.Controllers
                 = new SelectList(await _schoolService.GetSchoolsAsync(), "Id", "Name");
             model.ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject);
             model.RequirePostalCode = site.RequirePostalCode;
+            model.RestrictChangingSystemBranch = await GetSiteSettingBoolAsync(SiteSettingKey
+                    .Users
+                    .RestrictChangingSystemBranch);
             model.ShowAge = program.AskAge;
             model.ShowSchool = program.AskSchool;
+
+            if (model.RestrictChangingSystemBranch)
+            {
+                model.SystemName = systemList
+                    .FirstOrDefault(_ => _.Id == model.User.SystemId)?
+                    .Name;
+                model.BranchName = branchList
+                    .FirstOrDefault(_ => _.Id == model.User.BranchId)?
+                    .Name;
+            }
 
             if (askEmailSubscription)
             {
