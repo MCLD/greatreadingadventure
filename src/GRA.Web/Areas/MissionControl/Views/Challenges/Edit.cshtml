@@ -482,7 +482,10 @@
     <div class="row">
         <div class="col-xs-12 col-sm-6 row-spacing">
             <label asp-for="Challenge.PointsAwarded" class="control-label"></label>
-            <input asp-for="Challenge.PointsAwarded" type="number" min="1" class="form-control ignore" />
+            <input asp-for="Challenge.PointsAwarded"
+                   type="number"
+                   min="1"
+                   class="form-control ignore" />
             <span asp-validation-for="Challenge.PointsAwarded" class="text-danger"></span>
         </div>
 
@@ -626,7 +629,7 @@
             <tr>
                 <th>Title</th>
                 <th>Type</th>
-                <th width="107">&nbsp;</th>
+                <th width="@(Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsMessage) ? 107 : 65)">&nbsp;</th>
             </tr>
         </thead>
         @if (Model.Challenge.Tasks != null)
@@ -635,11 +638,17 @@
             {
                 <tr>
                     <td class="td-class">
-                        <input type="submit" asp-action="OpenModifyTask" asp-route-taskId="@task.Id" hidden />
+                        @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsMessage))
+                        {
+                            <input type="submit" asp-action="OpenModifyTask" asp-route-taskId="@task.Id" hidden />
+                        }
 
                         @if (!string.IsNullOrWhiteSpace(task.Description))
                         {
-                            <a class="rowlink"></a>
+                            @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsMessage))
+                            {
+                                <a class="rowlink"></a>
+                            }
                             <div class="task-description">
                                 @Html.Raw(task.Description)
                                 @if (!string.IsNullOrWhiteSpace(task.Filename))
@@ -653,7 +662,23 @@
                         }
                         else
                         {
-                            <a class="rowlink">
+                            @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsMessage))
+                            {
+                                <a class="rowlink">
+                                    <div>
+                                        @task.Title
+                                    </div>
+                                    @if (!string.IsNullOrWhiteSpace(task.Filename))
+                                    {
+                                        <a href="@task.Filename" target="_blank" class="btn btn-xs btn-default on-top" style="margin-top:5px;">
+                                            <span class="fa fa-file-o"></span>
+                                            View Attachment
+                                        </a>
+                                    }
+                                </a>
+                            }
+                            else
+                            {
                                 <div>
                                     @task.Title
                                 </div>
@@ -664,7 +689,7 @@
                                         View Attachment
                                     </a>
                                 }
-                            </a>
+                            }
                         }
                     </td>
                     <td>@task.ChallengeTaskType</td>
@@ -675,25 +700,29 @@
                         <button type="button" data-id="@task.Id" class="btn btn-default btn-xs increaseTaskSort" style="width:25px;" disabled="@(task == Model.Challenge.Tasks.Last() ? " disabled" : null)">
                             <span class="fa fa-arrow-down"></span>
                         </button>
-                        <button type="button"
-                                class="btn btn-danger btn-xs"
-                                style="margin-left:16px;"
-                                data-toggle="modal"
-                                data-target="#deleteModal"
-                                data-id="@task.Id"
-                                data-name="@task.Title">
-                            <span class="fa fa-remove" aria-hidden="true"></span>
-                        </button>
+                        @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsMessage))
+                        {
+                            <button type="button"
+                                    class="btn btn-danger btn-xs"
+                                    style="margin-left:16px;"
+                                    data-toggle="modal"
+                                    data-target="#deleteModal"
+                                    data-id="@task.Id"
+                                    data-name="@task.Title">
+                                <span class="fa fa-remove" aria-hidden="true"></span>
+                            </button>
+                        }
                     </td>
                 </tr>
             }
         }
     </table>
-
-    <button type="submit" formmethod="post" asp-action="OpenAddTask" asp-route-id="@Model.Challenge.Id" class="btn btn-primary">
-        <span class="buttonText">Add Task</span>
-    </button>
-
+    @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsMessage))
+    {
+        <button type="submit" formmethod="post" asp-action="OpenAddTask" asp-route-id="@Model.Challenge.Id" class="btn btn-primary">
+            <span class="buttonText">Add Task</span>
+        </button>
+    }
 </form>
 
 @section scripts {
@@ -715,7 +744,11 @@
         });
 
         $(document).ready(function () {
-
+             @if(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsMessage))
+             {
+                 @:$("#Challenge_PointsAwarded").attr("disabled", "disabled");
+                @:$("#Challenge_TasksToComplete").attr("disabled", "disabled");
+             }
             @if (Model.AddTask || Model.Task != null)
             {
                 <text>

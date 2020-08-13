@@ -448,7 +448,7 @@ namespace GRA.Controllers.MissionControl
                 && challenge.PointsAwarded / challenge.TasksToComplete.Value
                     > viewModel.MaxPointLimit)
             {
-                viewModel.MaxPointsMessage = $"(Up to {viewModel.MaxPointLimit.Value} points per required task)";
+                viewModel.MaxPointsMessage = $"This Challenge exceeds the maximum of {viewModel.MaxPointLimit.Value} points per required task. Only Administrators can edit tasks and points.";
             }
 
             if (challenge.BadgeId != null)
