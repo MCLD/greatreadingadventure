@@ -25,8 +25,11 @@
             margin-top: 2rem;
             margin-bottom: 2rem;
         }
+
         @@media (max-width: 768px) {
-            .text-sm-left { text-align:left; }
+            .text-sm-left {
+                text-align: left;
+            }
         }
     </style>
 }
@@ -952,7 +955,15 @@
                 });
                 </text>
             }
-        });
+            else
+            {
+            <text>
+                $("#saveButton").on("click", function (e) {
+                    $("#triggerForm").submit();
+                });
+            </text>
+            }
+            });
         @if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
         {
             <text>
