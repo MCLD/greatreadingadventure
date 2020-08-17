@@ -451,7 +451,7 @@ namespace GRA.Controllers.MissionControl
             };
             if (trigger.AwardPoints > viewModel.MaxPointLimit)
             {
-                viewModel.MaxPointsMessage = "This Trigger's number of points awarded is higher than what is allowed by the configuration.";
+                viewModel.MaxPointsMessage = $"This Trigger exceeds the maximum of {viewModel.MaxPointLimit.Value} points per required task. Only Administrators can edit the points awarded.";
             }
 
             if (viewModel.EditVendorCode)

@@ -913,17 +913,20 @@
             if ($('.trigger-name-field').first().val() === "") {
                 $('.trigger-name-field').first().focus();
             }
+            @if(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsMessage))
+             {
+                 @:$("#Trigger_AwardPoints").attr("disabled", "disabled");
+             }
             @if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
             {
                 <text>
-                $("#saveButton").on("click",function(e) {
+                $("#saveButton").on("click", function (e) {
                     e.preventDefault();
                     if ($("#Trigger_AwardPoints").val() > @Model.MaxPointLimit) {
                         @if (Model.Trigger != null)
                         {
                             <text>
-                            if ($("#Trigger_AwardPoints").val() != @Model.Trigger.AwardPoints)
-                            {
+                            if ($("#Trigger_AwardPoints").val() != @Model.Trigger.AwardPoints) {
                                 $('#warningModal').modal("show");
                             }
                             </text>
@@ -932,7 +935,6 @@
                         {
                             @:$('#warningModal').modal("show");
                         }
-
                     }
                     else {
                         $("#triggerForm").submit();
@@ -940,7 +942,7 @@
                 });
                 </text>
             }
-        })
+        });
         @if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
         {
             <text>
