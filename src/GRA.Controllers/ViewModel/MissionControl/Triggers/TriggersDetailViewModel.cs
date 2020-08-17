@@ -38,6 +38,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Triggers
         public bool AwardsPrize { get; set; }
         public bool IgnorePointLimits { get; set; }
         public int? MaxPointLimit { get; set; }
+        public string MaxPointsWarningMessage { get; set; }
         public string MaxPointsMessage { get; set; }
 
         public SelectList SystemList { get; set; }

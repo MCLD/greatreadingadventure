@@ -25,6 +25,9 @@
             margin-top: 2rem;
             margin-bottom: 2rem;
         }
+        @@media (max-width: 768px) {
+            .text-sm-left { text-align:left; }
+        }
     </style>
 }
 
@@ -237,11 +240,11 @@
             }
         </div>
 
-        @if (!string.IsNullOrEmpty(Model.MaxPointsMessage))
+        @if (!string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
         {
             <div class="col-xs-12 col-sm-6 col-sm-offset-3">
                 <div class="alert alert-warning">
-                    <span class="fa fa-exclamation-circle" aria-hidden="true"></span> @Model.MaxPointsMessage
+                    <span class="fa fa-exclamation-circle" aria-hidden="true"></span> @Model.MaxPointsWarningMessage
                 </div>
             </div>
         }
@@ -447,7 +450,14 @@
             </div>
 
             <div class="col-xs-12 form-group">
-                <label asp-for="Trigger.AwardPoints" class="control-label col-sm-3"></label>
+                <div class="col-sm-3">
+                    <div class="row-12 text-right text-sm-left">
+                        <label asp-for="Trigger.AwardPoints" class="control-label"></label>
+                    </div>
+                    <div class="row-12 text-right text-sm-left">
+                        <label style="font-size: 12px;">@Model.MaxPointsMessage</label>
+                    </div>
+                </div>
                 <div class="col-sm-9">
                     <input asp-for="Trigger.AwardPoints" value="@(Model.Trigger?.AwardPoints ?? 0)" min="0" class="form-control" />
                     <span asp-validation-for="Trigger.AwardPoints" class="text-danger"></span>
@@ -913,8 +923,8 @@
             if ($('.trigger-name-field').first().val() === "") {
                 $('.trigger-name-field').first().focus();
             }
-            @if(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsMessage))
-             {
+            @if(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
+            {
                  @:$("#Trigger_AwardPoints").attr("disabled", "disabled");
              }
             @if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
