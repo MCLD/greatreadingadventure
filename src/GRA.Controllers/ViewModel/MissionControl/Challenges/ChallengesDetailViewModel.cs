@@ -22,6 +22,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Challenges
         public bool IgnorePointLimits { get; set; }
         public int? MaxPointLimit { get; set; }
         public string MaxPointsMessage { get; set; }
+        public string MaxPointsWarningMessage { get; set; }
         public string BadgeMakerUrl { get; set; }
         public bool UseBadgeMaker { get; set; }
         public string BadgeMakerImage { get; set; }

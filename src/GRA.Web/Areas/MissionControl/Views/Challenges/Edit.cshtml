@@ -28,11 +28,11 @@
     </div>
 }
 
-@if (!string.IsNullOrEmpty(Model.MaxPointsMessage))
+@if (!string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
 {
     <div class="col-xs-12 col-sm-6 col-sm-offset-3">
         <div class="alert alert-warning">
-            <span class="fa fa-exclamation-circle" aria-hidden="true"></span> @Model.MaxPointsMessage
+            <span class="fa fa-exclamation-circle" aria-hidden="true"></span> @Model.MaxPointsWarningMessage
         </div>
     </div>
 }
@@ -482,6 +482,7 @@
     <div class="row">
         <div class="col-xs-12 col-sm-6 row-spacing">
             <label asp-for="Challenge.PointsAwarded" class="control-label"></label>
+            <label style="font-size: 12px;">@Model.MaxPointsMessage</label>
             <input asp-for="Challenge.PointsAwarded"
                    type="number"
                    min="1"
@@ -629,7 +630,7 @@
             <tr>
                 <th>Title</th>
                 <th>Type</th>
-                <th width="@(Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsMessage) ? 107 : 65)">&nbsp;</th>
+                <th width="@(Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? 107 : 65)">&nbsp;</th>
             </tr>
         </thead>
         @if (Model.Challenge.Tasks != null)
@@ -638,14 +639,14 @@
             {
                 <tr>
                     <td class="td-class">
-                        @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsMessage))
+                        @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
                         {
                             <input type="submit" asp-action="OpenModifyTask" asp-route-taskId="@task.Id" hidden />
                         }
 
                         @if (!string.IsNullOrWhiteSpace(task.Description))
                         {
-                            @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsMessage))
+                            @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
                             {
                                 <a class="rowlink"></a>
                             }
@@ -662,7 +663,7 @@
                         }
                         else
                         {
-                            @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsMessage))
+                            @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
                             {
                                 <a class="rowlink">
                                     <div>
@@ -700,7 +701,7 @@
                         <button type="button" data-id="@task.Id" class="btn btn-default btn-xs increaseTaskSort" style="width:25px;" disabled="@(task == Model.Challenge.Tasks.Last() ? " disabled" : null)">
                             <span class="fa fa-arrow-down"></span>
                         </button>
-                        @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsMessage))
+                        @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
                         {
                             <button type="button"
                                     class="btn btn-danger btn-xs"
@@ -717,7 +718,7 @@
             }
         }
     </table>
-    @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsMessage))
+    @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
     {
         <button type="submit" formmethod="post" asp-action="OpenAddTask" asp-route-id="@Model.Challenge.Id" class="btn btn-primary">
             <span class="buttonText">Add Task</span>
@@ -744,7 +745,7 @@
         });
 
         $(document).ready(function () {
-             @if(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsMessage))
+             @if(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
              {
                  @:$("#Challenge_PointsAwarded").attr("disabled", "disabled");
                 @:$("#Challenge_TasksToComplete").attr("disabled", "disabled");
