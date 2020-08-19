@@ -300,8 +300,11 @@ namespace GRA.Controllers.MissionControl
                 CanRelateChallenge = UserHasPermission(Permission.ViewAllChallenges),
                 ProgramList = new SelectList(programList, "Id", "Name"),
                 IncludeSecretCode = requireSecretCode,
-                RequireSecretCode = requireSecretCode
+                RequireSecretCode = requireSecretCode,
+                IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits),
+                MaxPointLimit = await _triggerService.GetMaximumAllowedPointsAsync(GetCurrentSiteId())
             };
+            viewModel.MaxPointLimitMessage = $"(Up to {viewModel.MaxPointLimit.Value} points)";
 
             if (!streamingEvent)
             {
@@ -373,6 +376,9 @@ namespace GRA.Controllers.MissionControl
             var requireSecretCode = await GetSiteSettingBoolAsync(
                 SiteSettingKey.Events.RequireBadge);
 
+            model.IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits);
+            model.MaxPointLimit =
+                await _triggerService.GetMaximumAllowedPointsAsync(GetCurrentSiteId());
             if (model.Event.AllDay)
             {
                 if (model.Event.EndDate.HasValue && model.Event.StartDate > model.Event.EndDate)
@@ -407,6 +413,13 @@ namespace GRA.Controllers.MissionControl
                     && (!ValidImageExtensions.Contains(Path.GetExtension(model.BadgeUploadImage.FileName).ToLower())))
                 {
                     ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
+                }
+                if (!UserHasPermission(Permission.IgnorePointLimits)
+                    && model.MaxPointLimit.HasValue
+                    && model.AwardPoints > model.MaxPointLimit)
+                {
+                    ModelState.AddModelError("AwardPoints",
+                        $"The maximum points awarded is {model.MaxPointLimit}");
                 }
             }
             else

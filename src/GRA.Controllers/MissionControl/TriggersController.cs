@@ -206,6 +206,7 @@ namespace GRA.Controllers.MissionControl
                 IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits),
                 MaxPointLimit = await _triggerService.GetMaximumAllowedPointsAsync(GetCurrentSiteId())
             };
+            viewModel.MaxPointsMessage = $"(Up to {viewModel.MaxPointLimit.Value} points)";
 
             if (viewModel.EditVendorCode)
             {
