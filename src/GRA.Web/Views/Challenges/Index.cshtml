@@ -168,7 +168,20 @@
                                                     @if (Model.IsLoggedIn)
                                                     {
                                                         <td style="text-align:center;vertical-align:middle;">
-                                                            <div class="favorite-button @(Model.Challenges[i].IsFavorited ? "fas" : "far") fa-star" data-challengeid="@Model.Challenges[i].Id" data-favorite="@Model.Challenges[i].IsFavorited"></div>
+                                                            <a href="#"
+                                                                role="button"
+                                                                class="favorite-button @(Model.Challenges[i].IsFavorited ? "fas" : "far") fa-star"
+                                                                data-challengeid="@Model.Challenges[i].Id"
+                                                                data-favorite="@Model.Challenges[i].IsFavorited"
+                                                                alt="@(Model.Challenges[i].IsFavorited ?
+                                                                SharedLocalizer[GRA.Annotations.Interface.Favorited] :
+                                                                SharedLocalizer[GRA.Annotations.Interface.Unfavorited])">
+                                                                <span class="sr-only">
+                                                                    @(Model.Challenges[i].IsFavorited ?
+                                                                    SharedLocalizer[GRA.Annotations.Interface.Favorited] :
+                                                                    SharedLocalizer[GRA.Annotations.Interface.Unfavorited])
+                                                                </span>
+                                                            </a>
                                                             <noscript>
                                                                 <input asp-for="@Model.Challenges[i].Id" type="hidden" />
                                                                 <input asp-for="@Model.Challenges[i].IsFavorited" class="favorite-checkbox" />
@@ -191,10 +204,20 @@
                                                     {
                                                         <td style="text-align:center; vertical-align:middle;">
                                                             @Model.Challenges[i].Status
-                                                            <div class="progress" style="margin:0px;">
-                                                                <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="@Model.Challenges[i].PercentComplete" aria-valuemin="0" aria-valuemax="100" style="width: @Model.Challenges[i].PercentComplete%;">
+                                                            <div class="progress" aria-hidden="true" style="margin:0px;">
+                                                                <div class="progress-bar progress-bar-success progress-bar-striped"
+                                                                     role="progressbar"
+                                                                     aria-valuenow="@Model.Challenges[i].PercentComplete"
+                                                                     aria-valuemin="0"
+                                                                     aria-valuemax="100"
+                                                                     style="width: @Model.Challenges[i].PercentComplete%;">
                                                                 </div>
                                                             </div>
+                                                            <span class="sr-only">
+                                                                @SharedLocalizer[GRA.Annotations.Interface.ProgressCompleted,
+                                                                (Model.Challenges[i].PercentComplete == null ?
+                                                                0 : Model.Challenges[i].PercentComplete)]
+                                                            </span>
                                                         </td>
                                                     }
                                                     <td style="font-size:large; text-align:center; vertical-align:middle;">@Model.Challenges[i].PointsAwarded</td>
@@ -278,6 +301,8 @@
                             if (response.favorite) {
                                 button.addClass("fa-star");
                                 button.data("favorite", "True");
+                                var screenreader = button.find("span");
+                                screenreader.text("@SharedLocalizer[GRA.Annotations.Interface.Favorited]");
                             }
                             else {
                                 if (showFavorites) {
@@ -287,6 +312,8 @@
                                     button.removeClass("fas");
                                     button.addClass("far fa-star");
                                     button.data("favorite", "False");
+                                    var screenreader = button.find("span");
+                                    screenreader.text("@SharedLocalizer[GRA.Annotations.Interface.Unfavorited]");
                                 }
                             }
                             button.removeClass("fa-spinner fa-pulse").css("transform", "none");

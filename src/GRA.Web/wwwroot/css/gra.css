@@ -411,7 +411,13 @@ input.form-checkbox {
         font-weight: 900;
     }
 
+.favorite-button:hover,
+.favorite-button:focus {
+    text-decoration: none;
+}
+
 .favorite-button {
+    text-decoration: none;
     cursor: pointer;
     font-size: 24px;
 }

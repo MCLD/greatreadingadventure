@@ -136,6 +136,7 @@
             public const string ProfileUpdated = "Profile updated.";
             public const string ProgramIsOver = "Program is over";
             public const string Progress = "Progress";
+            public const string ProgressCompleted = "Progress completed";
             public const string Read = "Read";
             public const string ReceiveEAudiobook = "Receive an e-audiobook";
             public const string RedeemCode = "Redeem code";

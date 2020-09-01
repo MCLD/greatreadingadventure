@@ -1469,12 +1469,16 @@
     <value>This badge is showing articles of {0} clothing to customize your avatar with</value>
     <comment>The alt-text description for unlocking an avatar bundle.</comment>
   </data>
+  <data name="Unfavorited" xml:space="preserve">
+    <value>Unfavorited. Click to favorite.</value>
+    <comment>The alt text for the unfavorited icons</comment>
+  </data>
   <data name="Favorited" xml:space="preserve">
-    <value>Favorited</value>
+    <value>Favorited. Click to unfavorite.</value>
     <comment>The alt text for the favorited icons</comment>
   </data>
-  <data name="Unfavorited" xml:space="preserve">
-    <value>Unfavorited</value>
-    <comment>The alt text for the unfavorited icons</comment>
+  <data name="Progress completed" xml:space="preserve">
+    <value>You have completed {0}% of this challenge</value>
+    <comment>The percentage of completed tasks for a challenge.</comment>
   </data>
 </root>

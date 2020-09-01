@@ -23,7 +23,16 @@
                             @if (Model.IsLoggedIn)
                             {
                                 <td id="favoriteCell" style="text-align:center;vertical-align:top;width:40px">
-                                    <div class="favorite-button pull-right @(Model.Challenge.IsFavorited ? "fa-star" : "fa-star-o")" data-favorite="@Model.Challenge.IsFavorited"></div>
+                                    <a href="#"
+                                       role="button"
+                                       class="favorite-button pull-right @(Model.Challenge.IsFavorited ? "fas" : "far") fa-star"
+                                       data-favorite="@Model.Challenge.IsFavorited">
+                                        <span class="sr-only">
+                                            @(Model.Challenge.IsFavorited ?
+                                                GRA.Annotations.Interface.Favorited :
+                                                GRA.Annotations.Interface.Unfavorited)
+                                        </span>
+                                    </a>
                                 </td>
                             }
                         </tr>
@@ -174,7 +183,7 @@
         $(".favorite-button").on("click", function () {
             var button = $(this);
             if (button.hasClass("fa-spinner") == false) {
-                button.removeClass("fa-star fa-star-o").addClass("fa-spinner fa-pulse");
+                button.removeClass("far fa-star").addClass("fas fa-spinner fa-pulse");
                 var favorite = button.data("favorite") == "False";
 
                 $.post(favoriteUrl, { challengeId: @Model.Challenge.Id, favorite: favorite }, function (response) {
@@ -183,10 +192,15 @@
                             if (response.favorite) {
                                 button.addClass("fa-star");
                                 button.data("favorite", "True");
+                                var screenreader = button.find("span");
+                                screenreader.text("@SharedLocalizer[GRA.Annotations.Interface.Favorited]");
                             }
                             else {
-                                button.addClass("fa-star-o");
+                                button.removeClass("fas");
+                                button.addClass("far fa-star");
                                 button.data("favorite", "False");
+                                var screenreader = button.find("span");
+                                screenreader.text("@SharedLocalizer[GRA.Annotations.Interface.Unfavorited]");
                             }
                             button.removeClass("fa-spinner fa-pulse").css("transform", "none");
                             }
