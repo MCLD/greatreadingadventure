@@ -1,5 +1,12 @@
 ﻿@model GRA.Controllers.ViewModel.Events.EventsListViewModel
 
+@section styles{ 
+<style>
+    h1.event-type{
+        margin: 0;
+    }
+</style>
+}
 <div class="row">
     <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel">
         <div class="modal-dialog" role="document">
@@ -13,7 +20,20 @@
     <div class="col-xs-12 col-sm-10 col-sm-offset-1">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <span class="lead">@SharedLocalizer[GRA.Annotations.Title.EventsAndCommunityExperiences]</span>
+                <h1 class="lead event-type">
+                    @if (Model.EventType == GRA.EventType.Event)
+                    {
+                        @SharedLocalizer[GRA.Annotations.Interface.Events]
+                    }
+                    else if (Model.EventType == GRA.EventType.CommunityExperience)
+                    {
+                        @SharedLocalizer[GRA.Annotations.Interface.CommunityExperiences]
+                    }
+                    else if (Model.EventType == GRA.EventType.StreamingEvent)
+                    {
+                        @SharedLocalizer[GRA.Annotations.Interface.StreamingEvents]
+                    }
+                </h1>
             </div>
             <div class="panel-body">
                 <div class="row row-spacing">
