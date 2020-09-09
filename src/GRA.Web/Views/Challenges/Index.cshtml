@@ -42,9 +42,9 @@
                         }
 
                         <div class="row row-spacing">
-                            <div class="col-xs-12 col-sm-2" style="margin-bottom:5px;">
+                            <label class="col-xs-12 col-sm-2" style="margin-bottom:5px; font-weight:normal;" for="Search">
                                 <span style="font-size:large;">Search:</span>
-                            </div>
+                            </label>
                             <div class="col-xs-12 col-sm-10 gra-search-container">
                                 <input asp-for="Search"
                                        class="form-control"
@@ -54,7 +54,7 @@
 
                         <div class="row row-spacing">
                             <div class="col-xs-12 col-sm-2" style="margin-bottom:5px;">
-                                <span style="font-size:large;">@SharedLocalizer[GRA.Domain.Model.DisplayNames.Program]:</span>
+                                <label for="Program" style="font-size:large; font-weight:normal;">@SharedLocalizer[GRA.Domain.Model.DisplayNames.Program]:</label>
                             </div>
                             <div class="col-xs-12 col-sm-10">
                                 <select asp-for="Program" asp-items="Model.ProgramList" class="form-control">
@@ -67,7 +67,7 @@
                         {
                             <div id="Category" class="row row-spacing">
                                 <div class="col-xs-12 col-sm-2" style="margin-bottom:5px;">
-                                    <span style="font-size:large;">@SharedLocalizer[GRA.Domain.Model.DisplayNames.Category]:</span>
+                                    <label style="font-size:large; font-weight:normal;" for="Category">@SharedLocalizer[GRA.Domain.Model.DisplayNames.Category]:</label>
                                 </div>
                                 <div class="col-xs-12 col-sm-10">
                                     <noscript id="noscript">
