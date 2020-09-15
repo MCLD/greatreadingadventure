@@ -746,8 +746,8 @@
         $(document).ready(function () {
              @if(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
              {
-                 @:$("#Challenge_PointsAwarded").attr("disabled", "disabled");
-                @:$("#Challenge_TasksToComplete").attr("disabled", "disabled");
+                 @:$("#Challenge_PointsAwarded").attr("readonly", "readonly");
+                @:$("#Challenge_TasksToComplete").attr("readonly", "readonly");
              }
             @if (Model.AddTask || Model.Task != null)
             {

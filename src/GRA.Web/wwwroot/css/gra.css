@@ -234,6 +234,10 @@ input.form-checkbox {
         cursor: not-allowed;
     }
 
+input:read-only {
+    cursor: not-allowed;
+}
+
 .text-strong {
     font-weight: bold;
 }

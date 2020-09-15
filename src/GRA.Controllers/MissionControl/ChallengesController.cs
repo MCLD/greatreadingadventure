@@ -491,11 +491,20 @@ namespace GRA.Controllers.MissionControl
                 await _challengeService.MCGetChallengeDetailsAsync(model.Challenge.Id);
             model.MaxPointLimit =
                 await _challengeService.GetMaximumAllowedPointsAsync(GetCurrentSiteId());
+            model.IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits);
+
+            if (model.Challenge.TasksToComplete.HasValue
+                && model.MaxPointLimit.HasValue
+                && model.Challenge.PointsAwarded / model.Challenge.TasksToComplete.Value
+                > model.MaxPointLimit)
+            {
+                model.MaxPointsWarningMessage = $"This Challenge exceeds the maximum of {model.MaxPointLimit.Value} points per required task. Only Administrators can edit tasks and points.";
+            }
 
             if (model.Challenge.TasksToComplete.HasValue
                 && model.Challenge.TasksToComplete != 0
                 && model.Challenge.PointsAwarded != currentChallenge.PointsAwarded
-                && !UserHasPermission(Permission.IgnorePointLimits))
+                && !model.IgnorePointLimits)
             {
                 double pointsPerChallenge =
                     (double)model.Challenge.PointsAwarded / model.Challenge.TasksToComplete.Value;
