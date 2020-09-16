@@ -492,18 +492,14 @@ namespace GRA.Controllers.MissionControl
             model.MaxPointLimit =
                 await _challengeService.GetMaximumAllowedPointsAsync(GetCurrentSiteId());
             model.IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits);
-
-            if (model.Challenge.TasksToComplete.HasValue
-                && model.MaxPointLimit.HasValue
-                && model.Challenge.PointsAwarded / model.Challenge.TasksToComplete.Value
-                > model.MaxPointLimit)
-            {
-                model.MaxPointsWarningMessage = $"This Challenge exceeds the maximum of {model.MaxPointLimit.Value} points per required task. Only Administrators can edit tasks and points.";
+            if (model.MaxPointLimit.HasValue) {
+                model.MaxPointsMessage = $"(Up to {model.MaxPointLimit.Value} points per required task)";
             }
+
 
             if (model.Challenge.TasksToComplete.HasValue
                 && model.Challenge.TasksToComplete != 0
-                && model.Challenge.PointsAwarded != currentChallenge.PointsAwarded
+                && model.Challenge.PointsAwarded != 0
                 && !model.IgnorePointLimits)
             {
                 double pointsPerChallenge =
@@ -513,6 +509,14 @@ namespace GRA.Controllers.MissionControl
                     ModelState.AddModelError("Challenge.PointsAwarded", "Too many points awarded.");
                 }
             }
+            else if (model.Challenge.TasksToComplete.HasValue
+                && model.MaxPointLimit.HasValue
+                && model.Challenge.PointsAwarded / model.Challenge.TasksToComplete.Value
+                > model.MaxPointLimit)
+            {
+                model.MaxPointsWarningMessage = $"This Challenge exceeds the maximum of {model.MaxPointLimit.Value} points per required task. Only Administrators can edit tasks and points.";
+            }
+
             if (model.BadgeUploadImage != null
                 && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker))
             {
