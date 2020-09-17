@@ -942,6 +942,9 @@
                             if ($("#Trigger_AwardPoints").val() != @Model.Trigger.AwardPoints) {
                                 $('#warningModal').modal("show");
                             }
+                            else {
+                                $("#triggerForm").submit();
+                            }
                             </text>
                         }
                         else
