@@ -511,10 +511,20 @@ namespace GRA.Domain.Service
                             continue;
                         }
 
-                        var isParticipant = await _userService
-                            .IsEmailSubscribedAsync(emailReminder.Email);
+                        bool clearToSend = true;
 
-                        if (emailReminder.SentAt != null || isParticipant)
+                        if(!jobDetails.SendToParticipantsToo)
+                        {
+                            var isParticipant = await _userService
+                                .IsEmailSubscribedAsync(emailReminder.Email);
+
+                            if(isParticipant)
+                            {
+                                clearToSend = false;
+                            }
+                        }
+
+                        if (emailReminder.SentAt != null || !clearToSend)
                         {
                             // send email
                             _logger.LogTrace("Email job {JobId}: skipping email {Count}/{Total} to {Email}: {Message}",
