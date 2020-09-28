@@ -40,5 +40,8 @@ namespace GRA.Controllers.ViewModel.MissionControl.EmailManagement
                     : "disabled";
             }
         }
+
+        [DisplayName("Send to subscribed participants as well?")]
+        public bool SendToParticipantsToo { get; set; }
     }
 }
