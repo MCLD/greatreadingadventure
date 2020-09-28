@@ -496,7 +496,6 @@ namespace GRA.Controllers.MissionControl
                 model.MaxPointsMessage = $"(Up to {model.MaxPointLimit.Value} points per required task)";
             }
 
-
             if (model.Challenge.TasksToComplete.HasValue
                 && model.Challenge.TasksToComplete != 0
                 && model.Challenge.PointsAwarded != 0

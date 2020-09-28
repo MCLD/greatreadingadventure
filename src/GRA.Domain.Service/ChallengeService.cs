@@ -176,7 +176,7 @@ namespace GRA.Domain.Service
                 var maxPointLimit = await GetMaximumAllowedPointsAsync(GetCurrentSiteId());
                 var currentUser = GetAuthUser();
                 var ignorePointLimit = _userContextProvider
-                    .UserHasPermission(currentUser, Permission.IgnorePointLimits.ToString());
+                    .UserHasPermission(currentUser, nameof(Permission.IgnorePointLimits));
                 if (maxPointLimit.HasValue && !ignorePointLimit &&
                         (challenge.PointsAwarded > maxPointLimit))
                 {
@@ -234,7 +234,7 @@ namespace GRA.Domain.Service
                 var maxPointLimit = await GetMaximumAllowedPointsAsync(GetCurrentSiteId());
                 var currentUser = GetAuthUser();
                 var ignorePointLimit = _userContextProvider
-                    .UserHasPermission(currentUser, Permission.IgnorePointLimits.ToString());
+                    .UserHasPermission(currentUser, nameof(Permission.IgnorePointLimits));
                 if (maxPointLimit.HasValue && !ignorePointLimit &&
                         (challenge.PointsAwarded > maxPointLimit))
                 {
