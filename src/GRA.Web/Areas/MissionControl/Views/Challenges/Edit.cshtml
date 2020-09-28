@@ -601,15 +601,18 @@
 
     <div class="form-group">
         <a asp-action="Index" class="btn btn-default">Return to List</a>
-        <button id="saveChallenge"
-                type="submit"
-                asp-action="Edit"
-                name="Submit"
-                value="Edit"
-                class="btn btn-primary btn-spinner">
-            <span class="buttonText">Save Changes</span>
-            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-        </button>
+        @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
+        {
+            <button id="saveChallenge"
+                    type="submit"
+                    asp-action="Edit"
+                    name="Submit"
+                    value="Edit"
+                    class="btn btn-primary btn-spinner">
+                <span class="buttonText">Save Changes</span>
+                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+            </button>
+        }
         @if (Model.CanActivate)
         {
             <input asp-for="CanActivate" type="hidden" />
@@ -629,7 +632,12 @@
             <tr>
                 <th>Title</th>
                 <th>Type</th>
-                <th width="@(Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? 107 : 65)">&nbsp;</th>
+                @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
+                {
+                    <th width="@(Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? 107 : 65)">
+                        &nbsp;
+                    </th>
+                }
             </tr>
         </thead>
         @if (Model.Challenge.Tasks != null)
@@ -693,15 +701,15 @@
                         }
                     </td>
                     <td>@task.ChallengeTaskType</td>
-                    <td class="on-top" style="white-space:nowrap;">
-                        <button type="button" data-id="@task.Id" class="btn btn-default btn-xs decreaseTaskSort" style="width:25px;" disabled="@(task == Model.Challenge.Tasks.First() ? " disabled" : null)">
-                            <span class="fa fa-arrow-up"></span>
-                        </button>
-                        <button type="button" data-id="@task.Id" class="btn btn-default btn-xs increaseTaskSort" style="width:25px;" disabled="@(task == Model.Challenge.Tasks.Last() ? " disabled" : null)">
-                            <span class="fa fa-arrow-down"></span>
-                        </button>
-                        @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
-                        {
+                    @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
+                    {
+                        <td class="on-top" style="white-space:nowrap;">
+                            <button type="button" data-id="@task.Id" class="btn btn-default btn-xs decreaseTaskSort" style="width:25px;" disabled="@(task == Model.Challenge.Tasks.First() ? " disabled" : null)">
+                                <span class="fa fa-arrow-up"></span>
+                            </button>
+                            <button type="button" data-id="@task.Id" class="btn btn-default btn-xs increaseTaskSort" style="width:25px;" disabled="@(task == Model.Challenge.Tasks.Last() ? " disabled" : null)">
+                                <span class="fa fa-arrow-down"></span>
+                            </button>
                             <button type="button"
                                     class="btn btn-danger btn-xs"
                                     style="margin-left:16px;"
@@ -711,8 +719,8 @@
                                     data-name="@task.Title">
                                 <span class="fa fa-remove" aria-hidden="true"></span>
                             </button>
-                        }
-                    </td>
+                        </td>
+                    }
                 </tr>
             }
         }
@@ -746,8 +754,16 @@
         $(document).ready(function () {
              @if(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
              {
-                 @:$("#Challenge_PointsAwarded").attr("readonly", "readonly");
-                @:$("#Challenge_TasksToComplete").attr("readonly", "readonly");
+                 <text>
+                     $("#Challenge_PointsAwarded").attr("readonly", "readonly");
+                     $("#Challenge_TasksToComplete").attr("readonly", "readonly");
+                     $("#Challenge_Name").attr("readonly", "readonly");
+                     $("#Challenge_Description").attr("readonly", "readonly");
+                     $("#Challenge_CategoryIds").multiselect("disable");
+                     $("#Challenge_LimitToSystemId").attr("disabled", "disabled");
+                     $("#Challenge_LimitToBranchId").attr("disabled", "disabled");
+                     $("#Challenge_AssociatedProgramId").attr("disabled", "disabled");
+                 </text>
              }
             @if (Model.AddTask || Model.Task != null)
             {

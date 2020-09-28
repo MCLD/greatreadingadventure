@@ -651,13 +651,16 @@
 
     <div class="form-group">
         <a asp-action="Index" class="btn btn-default">Return to List</a>
-        <button type="submit" class="btn btn-primary">
-            <span id="saveButton"
-                  class="buttonText">
-                @(Model.Action == "Edit" ? "Save" : Model.Action) Trigger
-            </span>
-            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-        </button>
+        @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
+        {
+            <button type="submit" class="btn btn-primary">
+                <span id="saveButton"
+                      class="buttonText">
+                    @(Model.Action == "Edit" ? "Save" : Model.Action) Trigger
+                </span>
+                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+            </button>
+        }
     </div>
 </form>
 
@@ -928,7 +931,23 @@
             }
             @if(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
             {
-                 @:$("#Trigger_AwardPoints").attr("disabled", "disabled");
+                <text>
+                    $("#Trigger_Name").attr("readonly", "readonly");
+                    $("#Trigger_AwardPoints").attr("readonly", "readonly");
+                    $("#Trigger_SecretCode").attr("readonly", "readonly");
+                    $("#Trigger_ActivationDate").attr("readonly", "readonly");
+                    $("#Trigger_Points").attr("readonly", "readonly");
+                    $("#Trigger_ItemsRequired").attr("readonly", "readonly");
+                    $("#addButton").attr("disabled", "disabled");
+                    $("#Trigger_LimitToSystemId").attr("disabled", "disabled");
+                    $("#Trigger_LimitToBranchId").attr("disabled", "disabled");
+                    $("#Trigger_LimitToProgramId").attr("disabled", "disabled");
+                    $("#Trigger_AwardMessage").attr("readonly", "readonly");
+                    $("#Trigger_AwardPrizeName").attr("readonly", "readonly");
+                    $("#Trigger_AwardPrizeRedemptionInstructions").attr("readonly", "readonly");
+                    $("#Trigger_AwardMailSubject").attr("readonly", "readonly");
+                    $("#Trigger_AwardMail").attr("readonly", "readonly");
+                </text>
              }
             @if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
             {
