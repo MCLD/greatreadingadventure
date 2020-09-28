@@ -173,6 +173,15 @@ namespace GRA.Domain.Service
             int authUserId = GetClaimId(ClaimType.UserId);
             if (HasPermission(Permission.AddChallenges))
             {
+                var maxPointLimit = await GetMaximumAllowedPointsAsync(GetCurrentSiteId());
+                var currentUser = GetAuthUser();
+                var ignorePointLimit = _userContextProvider
+                    .UserHasPermission(currentUser, Permission.IgnorePointLimits.ToString());
+                if (maxPointLimit.HasValue && !ignorePointLimit &&
+                        (challenge.PointsAwarded > maxPointLimit))
+                {
+                    throw new GraException("Too many points awarded.");
+                }
                 if (challenge.LimitToSystemId.HasValue && challenge.LimitToBranchId.HasValue)
                 {
                     var branch = await _branchRepository
@@ -222,6 +231,15 @@ namespace GRA.Domain.Service
             int authUserId = GetClaimId(ClaimType.UserId);
             if (HasPermission(Permission.EditChallenges))
             {
+                var maxPointLimit = await GetMaximumAllowedPointsAsync(GetCurrentSiteId());
+                var currentUser = GetAuthUser();
+                var ignorePointLimit = _userContextProvider
+                    .UserHasPermission(currentUser, Permission.IgnorePointLimits.ToString());
+                if (maxPointLimit.HasValue && !ignorePointLimit &&
+                        (challenge.PointsAwarded > maxPointLimit))
+                {
+                    throw new GraException("Too many points awarded.");
+                }
                 if (challenge.LimitToSystemId.HasValue && challenge.LimitToBranchId.HasValue)
                 {
                     var branch = await _branchRepository
