@@ -237,7 +237,8 @@ namespace GRA.Controllers.MissionControl
                             EmailTemplateId = viewModel.SendEmailTemplateId,
                             MailingList = viewModel.EmailList == SubscribedParticipants
                                 ? null
-                                : viewModel.EmailList
+                                : viewModel.EmailList,
+                            SendToParticipantsToo = viewModel.SendToParticipantsToo
                         })
                 });
 
