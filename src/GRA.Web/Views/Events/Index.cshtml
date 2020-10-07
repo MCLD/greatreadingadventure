@@ -1,13 +1,12 @@
 ﻿@model GRA.Controllers.ViewModel.Events.EventsListViewModel
 
-<div class="row">
-    <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel">
-        <div class="modal-dialog" role="document">
-            <div id="detailModalContent" class="modal-content">
-            </div>
-        </div>
-    </div>
-</div>
+@section styles{
+    <style>
+        h1.event-type {
+            margin: 0;
+        }
+    </style>
+}
 
 <div class="row">
     <div class="col-xs-12 col-sm-10 col-sm-offset-1">
@@ -228,7 +227,48 @@
                                                 {
                                                     <td>@SharedLocalizer[GRA.Annotations.Interface.DateAtTime, eventItem.StartDate.ToString("d"), eventItem.StartDate.ToString("t")]</td>
                                                 }
-                                                <td>@eventItem.EventLocationName</td>
+                                                <td>
+                                                    @if (Model.EventType == GRA.EventType.StreamingEvent)
+                                                    {
+                                                        <div class="on-top" style="display: inline-block;">
+                                                            @if (eventItem.StartDate <= DateTime.Now
+                                                           && eventItem.StreamingAccessEnds >= DateTime.Now)
+                                                            {
+                                                                if (Model.IsAuthenticated)
+                                                                {
+                                                                    <a class="btn btn-success float-right"
+                                                                       href="@Url.Action(nameof(EventsController.Stream),
+                                                                                    new { id = eventItem.Id })">
+                                                                        <span class="fa fa-play-circle-o"></span>
+                                                                        @SharedLocalizer[GRA.Annotations.Interface.StreamNow]
+                                                                    </a>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <a class="btn btn-success float-right"
+                                                                       href="@Url.Action(nameof(EventsController.Stream),
+                                                                                    new { id = eventItem.Id })">
+                                                                        <span class="fas fa-sign-in-alt"></span>
+                                                                        @SharedLocalizer[GRA.Annotations.Interface.SignInToStream]
+                                                                    </a>
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                <button disabled class="btn btn-secondary float-right">
+                                                                    <span class="fa fa-stop-circle-o"></span>
+                                                                    @(eventItem.StartDate >= DateTime.Now
+                                                                        ? SharedLocalizer[GRA.Annotations.Interface.NotStreamingYet]
+                                                                        : SharedLocalizer[GRA.Annotations.Interface.ProgramIsOver])
+                                                                </button>
+                                                            }
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        @eventItem.EventLocationName
+                                                    }
+                                                </td>
                                                 @if (Model.ShowNearSearch && !string.IsNullOrWhiteSpace(Model.Near))
                                                 {
                                                     <td>@SharedLocalizer["{0} mile(s)", Math.Round(eventItem.EventLocationDistance, 1)]</td>
@@ -245,6 +285,15 @@
                         }
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel">
+        <div class="modal-dialog" role="document">
+            <div id="detailModalContent" class="modal-content">
             </div>
         </div>
     </div>

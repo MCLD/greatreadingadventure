@@ -3,54 +3,7 @@
 @inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
 @inject Microsoft.AspNetCore.Mvc.Localization.IHtmlLocalizer<GRA.Resources.Shared> SharedHtmlLocalizer
 
-@if (!string.IsNullOrWhiteSpace(Model.DailyImageMessage))
-{
-    <div class="row">
-        <div class="modal fade" id="dailyImageModal" style="text-align:center;" tabindex="-1" role="dialog" aria-labelledby="dailyImageModalLabel">
-            <div class="modal-dialog @(Model.DailyImageLarge ? "modal-lg" : "")" style="display: inline-block;" role="document">
-                <div class="modal-content">
-                    <span class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute" data-dismiss="modal">
-                        <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
-                        <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
-                    </span>
-                    <div style="padding: 25px;">
-                        <img class="img img-responsive daily-image" />
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-}
-
-@if (Model.Carousel != null)
-{
-    <div class="row">
-        <div class="modal gra-carousel-modal" id="graCarouselModal" tabindex="-1" role="dialog" aria-labelledby="graCarouselModal">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <span class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute" data-dismiss="modal">
-                            <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
-                            <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
-                        </span>
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-3 ">
-                                <img id="graCarouselModalImage"
-                                     class="center-block gra-carousel-modal-image" />
-                            </div>
-                            <div class="col-xs-12 col-sm-9">
-                                <p style="font-size: 2rem; font-weight: bold;" id="graCarouselModalHeader"></p>
-                                <p id="graCarouselModalContent" class="gra-carousel-modal-content"></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-}
-
-@if (Model.HasPendingDonationQuestion)
+@if (Model.HasPendingVendorCodeQuestion)
 {
     <div class="row">
         <div class="col-xs-12 text-center">
@@ -102,15 +55,15 @@
                     {
                         <p style="font-size:large">@SharedLocalizer[GRA.Domain.Model.DisplayNames.MyProgress]</p>
                         <div class="progress" style="margin:0px;">
-                            <div class="progress-bar progress-bar-striped@(Model.PercentComplete == 100 ? " progress-bar-success" : "") wide-tooltip" 
-                                    role="progressbar" 
-                                    aria-valuenow="@Model.PercentComplete" 
-                                    aria-valuemin="0" 
-                                    aria-valuemax="100" 
-                                    style="width: @Model.PercentComplete%;" 
-                                    title="@Model.ProgressMessage" 
-                                    data-toggle="tooltip" 
-                                    data-placement="top">
+                            <div class="progress-bar progress-bar-striped@(Model.PercentComplete == 100 ? " progress-bar-success" : "") wide-tooltip"
+                                 role="progressbar"
+                                 aria-valuenow="@Model.PercentComplete"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100"
+                                 style="width: @Model.PercentComplete%;"
+                                 title="@Model.ProgressMessage"
+                                 data-toggle="tooltip"
+                                 data-placement="top">
                                 @Model.PercentComplete%
                             </div>
                         </div>
@@ -128,8 +81,8 @@
             <div class="panel-body text-center">
                 <span class="lead">@SharedHtmlLocalizer["Welcome <strong>{0}!</strong>", Model.FirstName]</span>
                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessPerformerRegistration))
-                    && !Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessMissionControl))
-                    && Model.SiteStage == GRA.Domain.Model.SiteStage.BeforeRegistration)
+                   && !Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessMissionControl))
+                   && Model.SiteStage == GRA.Domain.Model.SiteStage.BeforeRegistration)
                 {
                     <p class="lead" style="padding-top: 2rem;">
                         Welcome, performer! Please click on the theater masks icon at the top of the
@@ -379,6 +332,53 @@
                                 </a>
                             </div>
                         }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (Model.Carousel != null)
+{
+    <div class="row">
+        <div class="modal gra-carousel-modal" id="graCarouselModal" tabindex="-1" role="dialog" aria-labelledby="graCarouselModal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <span class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute" data-dismiss="modal">
+                            <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
+                            <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
+                        </span>
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-3 ">
+                                <img id="graCarouselModalImage"
+                                     class="center-block gra-carousel-modal-image" />
+                            </div>
+                            <div class="col-xs-12 col-sm-9">
+                                <p style="font-size: 2rem; font-weight: bold;" id="graCarouselModalHeader"></p>
+                                <p id="graCarouselModalContent" class="gra-carousel-modal-content"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.DailyImageMessage))
+{
+    <div class="row">
+        <div class="modal fade" id="dailyImageModal" style="text-align:center;" tabindex="-1" role="dialog" aria-labelledby="dailyImageModalLabel">
+            <div class="modal-dialog @(Model.DailyImageLarge ? "modal-lg" : "")" style="display: inline-block;" role="document">
+                <div class="modal-content">
+                    <span class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute" data-dismiss="modal">
+                        <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
+                        <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
+                    </span>
+                    <div style="padding: 25px;">
+                        <img class="img img-responsive daily-image" />
                     </div>
                 </div>
             </div>
