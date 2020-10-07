@@ -1,5 +1,55 @@
 ﻿@model GRA.Domain.Model.Mail
 
+<div class="row">
+    <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="lead">
+                    @SharedLocalizer[GRA.Annotations.Interface.SentOn,
+                        Model.CreatedAt.ToString("d")]
+                </span>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <p style="font-size:large">
+                            <strong>
+                                @SharedLocalizer[GRA.Annotations.Interface.Subject, Model.Subject]
+                            </strong>
+                        </p>
+                        @Html.Raw(Model.Body)
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer clearfix hidden-print">
+                <a asp-action="Index" class="btn btn-default">
+                    @SharedLocalizer[GRA.Annotations.Interface.BackToMailbox]
+                </a>
+                <div class="pull-right">
+                    @if (Model.CanParticipantDelete)
+                    {
+                        <div style="display: inline-block">
+                            <form asp-controller="Mail" method="post" role="form">
+                                <input asp-for="Id" type="hidden" />
+                                <button type="submit"
+                                        id="Delete"
+                                        asp-action="Delete"
+                                        class="btn btn-danger"
+                                        style="margin-right: 12px;">
+                                    @SharedLocalizer[GRA.Annotations.Title.DeleteMail]
+                                </button>
+                            </form>
+                        </div>
+                    }
+                    <a asp-action="Reply" asp-route-id="@Model.Id" class="btn btn-primary">
+                        @SharedLocalizer[GRA.Annotations.Interface.Reply]
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @if (Model.CanParticipantDelete)
 {
     <div class="row">
@@ -53,57 +103,6 @@
         </div>
     </div>
 }
-
-<div class="row">
-    <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <span class="lead">
-                    @SharedLocalizer[GRA.Annotations.Interface.SentOn,
-                        Model.CreatedAt.ToString("d")]
-                </span>
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-xs-12">
-                        <p style="font-size:large">
-                            <strong>
-                                @SharedLocalizer[GRA.Annotations.Interface.Subject, Model.Subject]
-                            </strong>
-                        </p>
-                        @Html.Raw(Model.Body)
-                    </div>
-                </div>
-            </div>
-            <div class="panel-footer clearfix hidden-print">
-                <a asp-action="Index" class="btn btn-default">
-                    @SharedLocalizer[GRA.Annotations.Interface.BackToMailbox]
-                </a>
-                <div class="pull-right">
-                    @if (Model.CanParticipantDelete)
-                    {
-                        <div style="display: inline-block">
-                            <form asp-controller="Mail" method="post" role="form">
-                                <input asp-for="Id" type="hidden" />
-                                <button type="submit"
-                                        id="Delete"
-                                        asp-action="Delete"
-                                        class="btn btn-danger"
-                                        style="margin-right: 12px;">
-                                    @SharedLocalizer[GRA.Annotations.Title.DeleteMail]
-                                </button>
-                            </form>
-                        </div>
-                    }
-                    <a asp-action="Reply" asp-route-id="@Model.Id" class="btn btn-primary">
-                        @SharedLocalizer[GRA.Annotations.Interface.Reply]
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 
 @section scripts
     {
