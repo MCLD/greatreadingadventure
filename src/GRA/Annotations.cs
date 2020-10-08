@@ -87,6 +87,7 @@
             public const string Cancel = "Cancel";
             public const string ChangePassword = "Change Password";
             public const string Clear = "Clear";
+            public const string CloseDialog = "Close dialog.";
             public const string CommunityExperiences = "Community Experiences";
             public const string Completed = "Completed!";
             public const string CouldNotCreate = "Could not create {0}: {1}";

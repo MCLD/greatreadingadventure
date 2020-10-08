@@ -345,10 +345,12 @@
         <div class="modal fade" id="dailyImageModal" style="text-align:center;" tabindex="-1" role="dialog" aria-labelledby="dailyImageModalLabel">
             <div class="modal-dialog @(Model.DailyImageLarge ? "modal-lg" : "")" style="display: inline-block;" role="document">
                 <div class="modal-content">
-                    <span class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute" data-dismiss="modal">
+                    <button class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute"
+                            data-dismiss="modal"
+                            alt="@SharedLocalizer[GRA.Annotations.Interface.CloseDialog]">
                         <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
                         <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
-                    </span>
+                    </button>
                     <div style="padding: 25px;">
                         <img class="img img-responsive daily-image" />
                     </div>
@@ -365,10 +367,12 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <span class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute" data-dismiss="modal">
+                        <button class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute"
+                                data-dismiss="modal"
+                                alt="@SharedLocalizer[GRA.Annotations.Interface.CloseDialog]">
                             <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
                             <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
-                        </span>
+                        </button>
                         <div class="row">
                             <div class="col-xs-12 col-sm-3 ">
                                 <img id="graCarouselModalImage"
