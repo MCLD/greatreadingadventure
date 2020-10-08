@@ -10,7 +10,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="branchModalLabel">Branch Selection</h4>
+                    <h1 class="modal-title h4" id="branchModalLabel">Branch Selection</h1>
                 </div>
                 <div class="modal-body" style="max-height: calc(100vh - 200px); overflow-y:auto;">
                     <p>
@@ -34,7 +34,9 @@
                             <div>
                                 <input id="@($"branch{branch.Id}")" class="branchSelector" data-id="@branch.Id" type="checkbox" asp-checked="@(Model.BranchAvailability?.Contains(branch.Id) == true)" />
                                 <label for="@($"branch{branch.Id}")" data-toggle="tooltip" data-placement="top" title="@branch.Address">@branch.Name</label>
-                                <a href="https://www.google.com/maps/search/@branch.Address" target="_blank"><span class="fa fa-map-o"></span></a>
+                                <a aria-label="Map (Opens new window)"
+                                   href="https://www.google.com/maps/search/@branch.Address"
+                                   target="_blank"><span class="fa fa-map-o"></span></a>
                             </div>
                         }
                         <br />

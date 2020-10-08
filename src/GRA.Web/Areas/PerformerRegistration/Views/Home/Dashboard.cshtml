@@ -6,7 +6,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="branchModalLabel">Branch Selection</h4>
+                    <h1 class="modal-title h4" id="branchModalLabel">Branch Selection</h1>
                 </div>
                 <div class="modal-body" style="max-height: calc(100vh - 200px); overflow-y:auto;">
                     @foreach (var system in Model.Systems)
@@ -19,7 +19,9 @@
                             <div>
                                 <span class="colored-icon fa fa-lg @(Model.BranchAvailability.Contains(branch.Id) || Model.Performer.AllBranches ? "fa-check" : "fa-times")"></span>
                                 <label data-toggle="tooltip" data-placement="top" title="@branch.Address">@branch.Name</label>
-                                <a href="https://www.google.com/maps/search/@branch.Address" target="_blank"><span class="fa fa-map-o"></span></a>
+                                <a aria-label="Map (Opens new window)"
+                                   href="https://www.google.com/maps/search/@branch.Address"
+                                   target="_blank"><span class="fa fa-map-o"></span></a>
                             </div>
                         }
                         <br />
@@ -39,7 +41,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="deleteModalLabel">Delete program</h4>
+                    <h1 class="modal-title h4" id="deleteModalLabel">Delete program</h1>
                 </div>
                 <div class="modal-body">
                     <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
@@ -108,7 +110,10 @@
         </div>
         <div class="row" style="padding-bottom:15px;">
             <div class="col-xs-12" style="text-align:center;">
-                <a href="~/@Model.ReferencesPath" target="_blank" class="btn btn-primary">View References</a>
+                <a aria-label="View References (Opens new window)"
+                   href="~/@Model.ReferencesPath"
+                   target="_blank"
+                   class="btn btn-primary">View References</a>
             </div>
         </div>
     </div>
@@ -140,7 +145,9 @@
                 <div>
                     @if (Model.Uri != null)
                     {
-                        <a href="@Model.Uri" target="_blank">@Model.Performer.Website</a>
+                        <a aria-label="@Model.Performer.Website (Opens new window)"
+                           href="@Model.Uri"
+                           target="_blank">@Model.Performer.Website</a>
                     }
                     else
                     {

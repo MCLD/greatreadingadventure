@@ -9,8 +9,13 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="deleteModalLabel">Edit Kit Selection</h4>
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close dialog">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h1 class="modal-title h4" id="deleteModalLabel">Edit Kit Selection</h1>
                 </div>
                 <div class="modal-body">
                     <div id="kitInformation" class="col-xs-12" style="font-size:larger;margin-bottom:10px;">
@@ -53,7 +58,51 @@
         </div>
     </div>
 </div>
-
+<div class="row">
+    <div class="modal fade"
+         id="deleteModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="deleteModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h1 class="modal-title h4" id="deleteModalLabel">Delete branch selection</h1>
+                </div>
+                <div class="modal-body">
+                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                    <span id="modal-text"></span>
+                </div>
+                <div class="modal-footer">
+                    <form asp-controller="@PerformerManagementController.Name"
+                          asp-action="@nameof(PerformerManagementController.DeleteKitSelection)"
+                          method="post"
+                          role="form"
+                          id="deleteKitForm">
+                        <input class="hidden" asp-for="Kit.Id" aria-hidden="true" />
+                        <input class="hidden" asp-for="BranchSelectionId" aria-hidden="true" />
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                id="buttonDelete"
+                                class="btn btn-danger pull-right"
+                                aria-label="Confirm">
+                            <span class="fa fa-remove" aria-hidden="true"></span>
+                            Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="row">
     <div class="col-xs-12">
         <table style="margin:0 auto;">
@@ -118,6 +167,7 @@
                         <th>Branch</th>
                         <th>Age Group</th>
                         <th width="36px">&nbsp;</th>
+                        <th width="36px">&nbsp;</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -139,6 +189,17 @@
                                         data-branchname="@branchSelection.Branch.Name"
                                         data-systemname="@branchSelection.Branch.SystemName">
                                     <span class="fa fa-edit"></span>
+                                </button>
+                            </td>
+                            <td class="hidden-print" style="text-align:center;">
+                                <button type="button"
+                                        class="btn btn-xs btn-danger delete-selection"
+                                        data-toggle="modal"
+                                        data-target="#deleteModal"
+                                        data-selectionid="@branchSelection.Id"
+                                        data-branchname="@branchSelection.Branch.Name"
+                                        data-kitname="@branchSelection.Kit.Name">
+                                    <span class="fa fa-minus-circle"></span>
                                 </button>
                             </td>
                         </tr>
@@ -213,7 +274,6 @@
                 }
                 $("#checkAlert").text(response.message);
                 $("#checkAlert").removeClass("hidden");
-                
             });
         });
 
@@ -232,6 +292,20 @@
                 });
             }
         });
+        $("#deleteModal").on("show.bs.modal", function (event) {
+            var button = $(event.relatedTarget);
+            var branchName = button.data("branchname");
+            var kitName = button.data("kitname");
+            $("#deleteModal").find("#modal-text").html("Are you sure you want to delete <strong>" +
+                branchName + "'s </strong> selection of <strong>" + kitName + "</strong>?");
+        });
 
+        $(".delete-selection").on("click", function () {
+            var button = $(this);
+            var perfId = $("#deleteKitForm").find("#Performer_Id");
+            var branchSelection = $("#deleteKitForm").find("#BranchSelectionId");
+            perfId.val("@Model.Kit.Id");
+            branchSelection.val(button.data("selectionid"));
+        });
     </script>
 }
