@@ -92,6 +92,7 @@
             public const string ChangePassword = "Change Password";
             public const string ChooseAnOption = "Choose an option:";
             public const string Clear = "Clear";
+            public const string Close = "Close.";
             public const string CommunityExperiences = "Community Experiences";
             public const string Completed = "Completed!";
             public const string Confirm = "Confirm";
