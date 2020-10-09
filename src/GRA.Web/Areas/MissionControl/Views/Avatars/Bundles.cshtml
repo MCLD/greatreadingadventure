@@ -11,7 +11,7 @@
                             aria-label="Close dialog">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h1 class="modal-title h4" id="deleteModalLabel">Delete bundle</h1>
+                    <h1 class="modal-title lead" id="deleteModalLabel">Delete bundle</h1>
                 </div>
                 <div class="modal-body">
                     <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
@@ -117,7 +117,7 @@
             var id = button.data('id');
             var name = button.data('name');
             var modal = $(this);
-            modal.find('#modal-text').text('Are you sure you wish to delete the bundle"' + name + '" ?');
+            modal.find('#modal-text').text('Are you sure you wish to delete the bundle "' + name + '" ?');
             modal.find('#Id').val(id);
         })
     </script>
