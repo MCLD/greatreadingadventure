@@ -744,6 +744,9 @@ p.password-note {
 
 .gra-close-stack-absolute {
     position: absolute;
+    display: flex;
+    background-color: transparent;
+    border: none;
 }
 
 .gra-close-stack > .gra-close-times {
