@@ -1,7 +1,5 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Challenges.ChallengeGroupListViewModel
 
-@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
-
 @if (Model.CanEditGroups)
 {
     <div class="row">
@@ -98,7 +96,7 @@
                                     @group.Description
                                 </td>
                                 <td>
-                                    <a aria-label="@group.Stub @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                    <a aria-label="@group.Stub (Opens new window)"
                                        asp-area=""
                                        asp-controller="Challenges"
                                        asp-action="List"

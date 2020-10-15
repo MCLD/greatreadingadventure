@@ -1,12 +1,10 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Drawing.CriterionDetailViewModel
 
-@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
-
 <div style="font-size:large;  padding-top:10px;">
     Created By:
     @if (Model.CanViewParticipants)
     {
-        <a aria-label="@Model.CreatedByName @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+        <a aria-label="@Model.CreatedByName (Opens new window)"
            asp-controller="Participants"
            asp-action="@nameof(ParticipantsController.Detail)"
            asp-route-id="@Model.Criterion.CreatedBy" target="_blank">@Model.CreatedByName</a>

@@ -1,7 +1,5 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Drawing.DrawingDetailViewModel
 
-@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
-
 <div class="row">
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
         <div class="modal-dialog" role="document">
@@ -35,7 +33,7 @@
     Created By:
     @if (Model.CanViewParticipants)
     {
-        <a aria-label="@Model.CreatedByName @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+        <a aria-label="@Model.CreatedByName (Opens new window)"
            asp-controller="Participants"
            asp-action="@nameof(ParticipantsController.Detail)"
            asp-route-id="@Model.Drawing.CreatedBy"

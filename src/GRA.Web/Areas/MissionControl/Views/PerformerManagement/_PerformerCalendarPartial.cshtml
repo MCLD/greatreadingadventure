@@ -1,10 +1,8 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.PerformerCalendarViewModel
 
-@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
-
 <div class="row">
     <div class="col-xs-12" style="font-size:larger;margin-bottom:10px;">
-        @Model.BranchSelection.Branch.Name <a aria-label="Map @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]" href="https://www.google.com/maps/search/@Model.BranchSelection.Branch.Address" target="_blank"><span class="fa fa-map-o"></span></a> &ndash; Starting at @Model.BranchSelection.RequestedStartTime.ToShortTimeString()@(Model.BranchSelection.BackToBackProgram ? $" & {Model.BranchSelection.RequestedStartTime.AddMinutes(Model.BranchSelection.Program.ProgramLengthMinutes + Model.BranchSelection.Program.BackToBackMinutes).ToShortTimeString()}" : ""): @Model.BranchSelection.Program.Title
+        @Model.BranchSelection.Branch.Name <a aria-label="Map (Opens new window)" href="https://www.google.com/maps/search/@Model.BranchSelection.Branch.Address" target="_blank"><span class="fa fa-map-o"></span></a> &ndash; Starting at @Model.BranchSelection.RequestedStartTime.ToShortTimeString()@(Model.BranchSelection.BackToBackProgram ? $" & {Model.BranchSelection.RequestedStartTime.AddMinutes(Model.BranchSelection.Program.ProgramLengthMinutes + Model.BranchSelection.Program.BackToBackMinutes).ToShortTimeString()}" : ""): @Model.BranchSelection.Program.Title
     </div>
 </div>
 
@@ -97,7 +95,7 @@
                     {
                         @Html.Raw($"&ndash; {Model.DayScheduleModel.BranchSelections[i].ScheduleStartTime.ToLongTimeString()}</li>")
                     }
-                    <li>Booked: @Model.DayScheduleModel.BranchSelections[i].ScheduleStartTime.ToLongTimeString() &ndash; @Model.DayScheduleModel.BranchSelections[i].ScheduleStartTime.AddMinutes(Model.DayScheduleModel.BranchSelections[i].ScheduleDuration).ToLongTimeString() @@ @Model.DayScheduleModel.BranchSelections[i].Branch.Name <a aria-label="Map @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]" href="https://www.google.com/maps/search/@Model.DayScheduleModel.BranchSelections[i].Branch.Address" target="_blank"><span class="fa fa-map-o"></span></a></li>
+                    <li>Booked: @Model.DayScheduleModel.BranchSelections[i].ScheduleStartTime.ToLongTimeString() &ndash; @Model.DayScheduleModel.BranchSelections[i].ScheduleStartTime.AddMinutes(Model.DayScheduleModel.BranchSelections[i].ScheduleDuration).ToLongTimeString() @@ @Model.DayScheduleModel.BranchSelections[i].Branch.Name <a aria-label="Map (Opens new window)" href="https://www.google.com/maps/search/@Model.DayScheduleModel.BranchSelections[i].Branch.Address" target="_blank"><span class="fa fa-map-o"></span></a></li>
                     if (i != Model.DayScheduleModel.BranchSelections.Count - 1 || !string.IsNullOrWhiteSpace(Model.DayScheduleModel.EndTime))
                     {
                         @Html.Raw($"<li>Available: {Model.DayScheduleModel.BranchSelections[i].ScheduleStartTime.AddMinutes(Model.DayScheduleModel.BranchSelections[i].ScheduleDuration).ToLongTimeString()}")

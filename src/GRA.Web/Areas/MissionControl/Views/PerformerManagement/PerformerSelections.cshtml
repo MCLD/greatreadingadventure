@@ -1,7 +1,5 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerManagement.PerformerSelectionsViewModel
 
-@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
-
 @section Styles {
     <link rel="stylesheet" href="~/css/performerregistration.min.css" asp-append-version="true" />
     <style>
@@ -142,7 +140,7 @@
                                 <td>@branchSelection.Branch.SystemName:
                                     <span style="white-space:nowrap">
                                         @branchSelection.Branch.Name
-                                        <a aria-label="Map @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                        <a aria-label="Map (Opens new window)"
                                            href="https://www.google.com/maps/search/@branchSelection.Branch.Address"
                                            target="_blank"
                                            class="hidden-print">

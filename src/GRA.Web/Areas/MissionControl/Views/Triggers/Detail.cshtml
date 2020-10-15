@@ -1,7 +1,5 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Triggers.TriggersDetailViewModel
 
-@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
-
 @section styles {
     <style>
         .trigger-details-form .tab-pane {
@@ -151,7 +149,7 @@
                             @foreach (var trigger in Model.DependentTriggers)
                             {
                                 <li>
-                                    <a aria-label="@trigger.Name @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                    <a aria-label="@trigger.Name (Opens new window)"
                                        target="_blank"
                                        href="@Url.Action("Edit", new { id = trigger.Id })"> @trigger.Name</a>
                                 </li>
@@ -181,7 +179,7 @@
                             @foreach (var graEvent in Model.RelatedEvents)
                             {
                                 <li>
-                                    <a aria-label="@graEvent.Name @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                    <a aria-label="@graEvent.Name (Opens new window)"
                                        target="_blank"
                                        href="@Url.Action("Edit", "Events", new { id = graEvent.Id })"> @graEvent.Name</a>
                                 </li>
@@ -199,7 +197,7 @@
             Created By:
             @if (Model.CanViewParticipants)
             {
-                <a aria-label="@Model.CreatedByName @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                <a aria-label="@Model.CreatedByName (Opens new window)"
                    asp-controller="Participants"
                    asp-action="@nameof(ParticipantsController.Detail)"
                    asp-route-id="@Model.Trigger.CreatedBy"

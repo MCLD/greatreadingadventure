@@ -1,7 +1,5 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Questionnaires.QuestionnairesDetailViewModel
 
-@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
-
 @section styles {
     <style>
         .removeRow {
@@ -88,7 +86,7 @@
         </div>
     </div>
 
-    <a aria-label="Preview @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+    <a aria-label="Preview (Opens new window)"
        href="@Url.Action("Preview", new { id = Model.Questionnaire.Id })"
        target="_blank"
        class="btn btn-primary">Preview</a>

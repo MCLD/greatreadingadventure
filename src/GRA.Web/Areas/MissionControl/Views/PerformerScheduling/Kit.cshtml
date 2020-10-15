@@ -1,7 +1,5 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.PerformerScheduling.KitViewModel
 
-@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
-
 @section styles {
     <link rel="stylesheet" href="~/css/performerregistration.min.css" asp-append-version="true" />
 }
@@ -71,7 +69,9 @@
                 <div>
                     @if (Model.Uri != null)
                     {
-                        <a aria-label="@Model.Kit.Website @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]" href="@Model.Uri" target="_blank">@Model.Kit.Website</a>
+                        <a aria-label="@Model.Kit.Website (Opens new window)"
+                           href="@Model.Uri"
+                           target="_blank">@Model.Kit.Website</a>
                     }
                     else
                     {

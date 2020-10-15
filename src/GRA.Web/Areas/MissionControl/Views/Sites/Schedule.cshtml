@@ -1,7 +1,5 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Sites.SiteScheduleViewModel
 
-@inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
-
 @await Html.PartialAsync("_SitePartial")
 
 <form asp-controller="Sites" asp-action="Schedule" method="post" role="form">
@@ -12,13 +10,13 @@
             <label class="control-label">Prior to Registration Opening</label>
             <em class="gra-preview-landings">
                 Preview
-                <a aria-label="Landing @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                <a aria-label="Landing (Opens new window)"
                    asp-area=""
                    asp-controller="Home"
                    asp-action="PreviewLanding"
                    asp-route-id="@nameof(GRA.Domain.Model.SiteStage.BeforeRegistration)"
                    target="_blank">Landing</a> /
-                <a aria-label="Exit @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                <a aria-label="Exit (Opens new window)"
                    asp-area=""
                    asp-controller="Home"
                    asp-action="PreviewExit"
@@ -33,13 +31,13 @@
             <label asp-for="RegistrationOpens" class="control-label"></label>
             <em class="gra-preview-landings">
                 Preview
-                <a aria-label="Landing @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                <a aria-label="Landing (Opens new window)"
                    asp-area=""
                    asp-controller="Home"
                    asp-action="PreviewLanding"
                    asp-route-id="@nameof(GRA.Domain.Model.SiteStage.RegistrationOpen)"
                    target="_blank">Landing</a> /
-                <a aria-label="Exit @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                <a aria-label="Exit (Opens new window)"
                    asp-area=""
                    asp-controller="Home"
                    asp-action="PreviewExit"
@@ -61,13 +59,13 @@
             <label asp-for="ProgramStarts" class="control-label"></label>
             <em class="gra-preview-landings">
                 Preview
-                <a aria-label="Landing @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                <a aria-label="Landing (Opens new window)"
                    asp-area=""
                    asp-controller="Home"
                    asp-action="PreviewLanding"
                    asp-route-id="@nameof(GRA.Domain.Model.SiteStage.ProgramOpen)"
                    target="_blank">Landing</a> /
-                <a aria-label="Exit @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                <a aria-label="Exit (Opens new window)"
                    asp-area=""
                    asp-controller="Home"
                    asp-action="PreviewExit"
@@ -89,13 +87,13 @@
             <label asp-for="ProgramEnds" class="control-label"></label>
             <em class="gra-preview-landings">
                 Preview
-                <a aria-label="Landing @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                <a aria-label="Landing (Opens new window)"
                    asp-area=""
                    asp-controller="Home"
                    asp-action="PreviewLanding"
                    asp-route-id="@nameof(GRA.Domain.Model.SiteStage.ProgramEnded)"
                    target="_blank">Landing</a> /
-                <a aria-label="Exit @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                <a aria-label="Exit (Opens new window)"
                    asp-area=""
                    asp-controller="Home"
                    asp-action="PreviewExit"
@@ -117,13 +115,13 @@
             <label asp-for="AccessClosed" class="control-label"></label>
             <em class="gra-preview-landings">
                 Preview
-                <a aria-label="Landing @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                <a aria-label="Landing (Opens new window)"
                    asp-area=""
                    asp-controller="Home"
                    asp-action="PreviewLanding"
                    asp-route-id="@nameof(GRA.Domain.Model.SiteStage.AccessClosed)"
                    target="_blank">Landing</a> /
-                <a aria-label="Exit @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                <a aria-label="Exit (Opens new window)"
                    asp-area=""
                    asp-controller="Home"
                    asp-action="PreviewExit"
