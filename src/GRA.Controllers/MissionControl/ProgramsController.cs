@@ -319,11 +319,13 @@ namespace GRA.Controllers.MissionControl
                             model.Program.JoinBadgeId = badge.Id;
                         }
                     }
-                    if (model.Program.JoinBadgeId.HasValue && !string.IsNullOrEmpty(model.BadgeAltText))
+                    if (model.Program.JoinBadgeId.HasValue
+                        && !string.IsNullOrEmpty(model.BadgeAltText))
                     {
                         var existing = await _badgeService
                             .GetByIdAsync(model.Program.JoinBadgeId.Value);
-                        if (!String.Equals(existing.AltText, model.BadgeAltText, StringComparison.OrdinalIgnoreCase))
+                        if (!string.Equals(existing.AltText,
+                            model.BadgeAltText, StringComparison.OrdinalIgnoreCase))
                         {
                             existing.AltText = model.BadgeAltText;
                             await _badgeService.UpdateBadgeAsync(existing);
