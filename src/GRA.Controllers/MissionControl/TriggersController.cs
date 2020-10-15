@@ -626,7 +626,9 @@ namespace GRA.Controllers.MissionControl
                         var existing = await _badgeService
                                     .GetByIdAsync(model.Trigger.AwardBadgeId);
                         existing.Filename = Path.GetFileName(model.BadgePath);
-                        var newBadge = await _badgeService.ReplaceBadgeFileAsync(existing, badgeBytes);
+                        var newBadge = await _badgeService
+                            .ReplaceBadgeFileAsync(existing, badgeBytes);
+
                         if (newBadge?.AltText.Equals(model.BadgeAltText) == false)
                         {
                             existing.AltText = model.BadgeAltText;
