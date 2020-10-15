@@ -21,6 +21,8 @@ namespace GRA.Controllers
         private readonly SpatialService _spatialService;
         private readonly UserService _userService;
 
+        public static string Name { get { return "Events"; } }
+
         public EventsController(ServiceFacade.Controller context,
             EventService eventService,
             SiteService siteService,
@@ -64,7 +66,37 @@ namespace GRA.Controllers
                 program,
                 StartDate,
                 EndDate,
-                true);
+                EventType.CommunityExperience);
+        }
+        public async Task<IActionResult> StreamingEvents(int page = 1,
+            string sort = null,
+            string search = null,
+            string near = null,
+            int? system = null,
+            int? branch = null,
+            int? location = null,
+            int? program = null,
+            string StartDate = null,
+            string EndDate = null)
+        {
+            var site = await GetCurrentSiteAsync();
+            if (!string.IsNullOrEmpty(site.ExternalEventListUrl))
+            {
+                return new RedirectResult(site.ExternalEventListUrl);
+            }
+
+            PageTitle = _sharedLocalizer[Annotations.Title.CommunityExperiences];
+            return await Index(page,
+                sort,
+                search,
+                near,
+                system,
+                branch,
+                location,
+                program,
+                StartDate,
+                EndDate,
+                EventType.StreamingEvent);
         }
 
         public async Task<IActionResult> Index(int page = 1,
@@ -77,7 +109,7 @@ namespace GRA.Controllers
             int? program = null,
             string StartDate = null,
             string EndDate = null,
-            bool CommunityExperiences = false,
+            EventType eventType = EventType.Event,
             HttpStatusCode httpStatus = HttpStatusCode.OK)
         {
             var site = await GetCurrentSiteAsync();
@@ -90,7 +122,7 @@ namespace GRA.Controllers
             var filter = new EventFilter(page)
             {
                 Search = search,
-                EventType = CommunityExperiences ? 1 : 0
+                EventType = (int)eventType
             };
 
             var nearSearchEnabled = await _siteLookupService
@@ -182,6 +214,7 @@ namespace GRA.Controllers
 
             var viewModel = new EventsListViewModel
             {
+                IsAuthenticated = AuthUser.Identity.IsAuthenticated,
                 Events = eventList.Data,
                 PaginateModel = paginateModel,
                 Sort = filter.SortBy.ToString(),
@@ -190,8 +223,8 @@ namespace GRA.Controllers
                 EndDate = filter.EndDate,
                 ProgramId = program,
                 ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
-                CommunityExperiences = CommunityExperiences,
-                ShowNearSearch = nearSearchEnabled
+                EventType = eventType,
+                ShowNearSearch = nearSearchEnabled,
             };
 
             if (nearSearchEnabled)
@@ -263,7 +296,6 @@ namespace GRA.Controllers
         {
             string startDate = "False";
             string endDate = null;
-            bool? isCommunityExperience = null;
 
             if (model.UseLocation == true)
             {
@@ -291,11 +323,6 @@ namespace GRA.Controllers
                 endDate = model.EndDate.Value.ToString("MM-dd-yyyy");
             }
 
-            if (model.CommunityExperiences)
-            {
-                isCommunityExperience = true;
-            }
-
             return RedirectToAction(nameof(Index), new
             {
                 model.Sort,
@@ -307,7 +334,7 @@ namespace GRA.Controllers
                 Program = model.ProgramId,
                 StartDate = startDate,
                 EndDate = endDate,
-                CommunityExperiences = isCommunityExperience
+                model.EventType
             });
         }
 
@@ -323,6 +350,7 @@ namespace GRA.Controllers
             {
                 var viewModel = new EventsDetailViewModel
                 {
+                    IsAuthenticated = AuthUser.Identity.IsAuthenticated,
                     Event = await _eventService.GetDetails(id)
                 };
 
@@ -374,6 +402,7 @@ namespace GRA.Controllers
             {
                 var viewModel = new EventsDetailViewModel
                 {
+                    IsAuthenticated = AuthUser.Identity.IsAuthenticated,
                     Event = await _eventService.GetDetails(eventId)
                 };
 
@@ -391,6 +420,72 @@ namespace GRA.Controllers
             {
                 Response.StatusCode = (int)HttpStatusCode.NotFound;
                 return Content(gex.Message);
+            }
+        }
+
+        public async Task<IActionResult> Stream(int id)
+        {
+            if (!AuthUser.Identity.IsAuthenticated)
+            {
+                AlertInfo = _sharedLocalizer[Annotations.Interface.SignInForStreams];
+                return RedirectToSignIn();
+            }
+
+            Event graEvent = null;
+            try
+            {
+                graEvent = await _eventService.GetDetails(id);
+            }
+            catch (GraException) { }
+
+            if (graEvent == null
+                && Request.Query.ContainsKey("eventId")
+                && int.TryParse(Request.Query["eventId"], out id))
+            {
+                try
+                {
+                    graEvent = await _eventService.GetDetails(id);
+                }
+                catch (GraException) { }
+            }
+
+            if (graEvent == null)
+            {
+                AlertWarning = _sharedLocalizer[Annotations.Interface.EventNotFound];
+                return RedirectToAction(nameof(StreamingEvents));
+            }
+
+            if (!graEvent.IsStreaming)
+            {
+                return RedirectToAction(nameof(Detail), new { id });
+            }
+            else
+            {
+                if (_dateTimeProvider.Now < graEvent.StartDate)
+                {
+                    AlertWarning = _sharedLocalizer[Annotations.Interface.EventNotStarted];
+                    return RedirectToAction(nameof(Detail), new { id });
+                }
+                else if (_dateTimeProvider.Now > graEvent.StreamingAccessEnds)
+                {
+                    AlertWarning = _sharedLocalizer[Annotations.Interface.EventHasEnded];
+                    return RedirectToAction(nameof(Detail), new { id });
+                }
+                else
+                {
+                    if (graEvent.IsStreamingEmbed)
+                    {
+                        return View("Stream", new StreamViewModel
+                        {
+                            EventName = graEvent.Name,
+                            Embed = graEvent.StreamingLinkData
+                        });
+                    }
+                    else
+                    {
+                        return Redirect(graEvent.StreamingLinkData);
+                    }
+                }
             }
         }
     }

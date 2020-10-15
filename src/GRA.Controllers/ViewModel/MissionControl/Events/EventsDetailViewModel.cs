@@ -56,5 +56,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Events
         public SelectList BranchList { get; set; }
         public SelectList LocationList { get; set; }
         public SelectList ProgramList { get; set; }
+
+        public bool Editing { get; set; }
     }
 }

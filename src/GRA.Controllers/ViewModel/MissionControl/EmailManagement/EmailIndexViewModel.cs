@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GRA.Controllers.ViewModel.MissionControl.EmailManagement
 {
@@ -23,5 +25,23 @@ namespace GRA.Controllers.ViewModel.MissionControl.EmailManagement
         public int SendTestTemplateId { get; set; }
 
         public string DefaultTestEmail { get; set; }
+
+        public bool IsAdmin { get; set; }
+
+        public SelectList AddressTypes { get; set; }
+
+        public string EmailList { get; set; }
+        public string SendButtonDisabled
+        {
+            get
+            {
+                return AddressTypes?.Any() == true
+                    ? null
+                    : "disabled";
+            }
+        }
+
+        [DisplayName("Send to subscribed participants as well?")]
+        public bool SendToParticipantsToo { get; set; }
     }
 }

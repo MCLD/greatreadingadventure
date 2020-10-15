@@ -88,6 +88,14 @@ namespace GRA.Domain.Report
 
             var prizes = await _prizeWinnerRepository.GetRedemptionsAsync(criterion);
 
+            foreach (var prize in prizes
+                .Where(_ => string.IsNullOrEmpty(_.PrizeName)
+                && _.DrawingId == null
+                && _.TriggerId == null))
+            {
+                prize.PrizeName = "Free Book";
+            }
+
             var prizeGroups = prizes.GroupBy(_ => new
             {
                 _.PrizeName,
