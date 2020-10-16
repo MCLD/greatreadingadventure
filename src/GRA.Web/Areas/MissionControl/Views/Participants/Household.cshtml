@@ -18,12 +18,7 @@
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
             <div class="modal-body">
-                <button type="button"
-                        class="close"
-                        data-dismiss="modal"
-                        aria-label="Close dialog">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close dialog"><span aria-hidden="true">&times;</span></button>
                 <br />
                 Activity cannot be logged for this participant until they log in and answer a questionnaire.
             </div>
@@ -115,12 +110,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button"
-                                class="close"
-                                data-dismiss="modal"
-                                aria-label="Close dialog">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close dialog"><span aria-hidden="true">&times;</span></button>
                         <div class="modal-title h4" id="promoteModalLabel">Promote to Manager</div>
                     </div>
                     <div class="modal-body">
@@ -148,12 +138,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button"
-                                class="close"
-                                data-dismiss="modal"
-                                aria-label="Close dialog">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close dialog"><span aria-hidden="true">&times;</span></button>
                         <div class="modal-title h4" id="deleteModalLabel">Remove from family/group</div>
                     </div>
                     <div class="modal-body">
@@ -221,16 +206,8 @@
                         <input asp-for="Id" type="hidden" />
 
                         <div class="modal-header">
-                            <button type="button"
-                                    class="close"
-                                    data-dismiss="modal"
-                                    aria-label="Close dialog">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                            <div class="modal-title h4"
-                                 id="deleteModalLabel">
-                                Redeem @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group") prize
-                            </div>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close dialog"><span aria-hidden="true">&times;</span></button>
+                            <div class="modal-title h4" id="deleteModalLabel">Redeem @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group") prize</div>
                         </div>
                         <div class="modal-body">
                             <label asp-for="Prize" class="control-label">Select which prize to redeem:</label>
@@ -262,15 +239,8 @@
                         <input id="bulkRedeemId" asp-for="Id" type="hidden" />
 
                         <div class="modal-header">
-                            <button type="button"
-                                    class="close"
-                                    data-dismiss="modal"
-                                    aria-label="Close dialog">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                            <div class="modal-title h4" id="deleteModalLabel">
-                                Redeem @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group") codes
-                            </div>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close dialog"><span aria-hidden="true">&times;</span></button>
+                            <div class="modal-title h4" id="deleteModalLabel">Redeem @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group") codes</div>
                         </div>
                         <div class="modal-body">
                             <p>This will redeem codes for every member of this @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group"). Once codes are redeemed, they cannot be donated.</p>

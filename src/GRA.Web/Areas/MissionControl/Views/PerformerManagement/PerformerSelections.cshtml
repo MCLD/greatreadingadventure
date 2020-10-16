@@ -67,12 +67,7 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button"
-                            class="close"
-                            data-dismiss="modal"
-                            aria-label="Close dialog">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close dialog"><span aria-hidden="true">&times;</span></button>
                     <div class="modal-title h4" id="deleteModalLabel">Edit Date/Time</div>
                 </div>
                 <div id="calendarContainer" class="modal-body">
@@ -202,6 +197,7 @@
                                     @branchSelection.RequestedStartTime.ToShortTimeString()@(branchSelection.BackToBackProgram ? $", {branchSelection.RequestedStartTime.AddMinutes(branchSelection.Program.ProgramLengthMinutes + branchSelection.Program.BackToBackMinutes).ToShortTimeString()}" : "")
                                 </td>
                                 <td>@branchSelection.AgeGroup.Name</td>
+<<<<<<< HEAD
                                 <td>
                                     <a asp-action="Program"
                                        asp-route-id="@branchSelection.ProgramId"
@@ -209,6 +205,10 @@
                                 </td>
                                 <td>
                                     @branchSelection.Branch.SystemName:
+=======
+                                <td><a asp-action="Program" asp-route-id="@branchSelection.ProgramId" target="_blank">@branchSelection.Program.Title</a></td>
+                                <td>@branchSelection.Branch.SystemName:
+>>>>>>> parent of 7dcf1b0a... # This is a combination of 2 commits.
                                     <span style="white-space:nowrap">
                                         @branchSelection.Branch.Name
                                         <a aria-label="Map (Opens new window)"
@@ -217,9 +217,7 @@
                                            class="hidden-print">
                                             <span class="fa fa-map-o"></span>
                                         </a>
-                                        <span class="visible-print">
-                                            (@branchSelection.Branch.Address)
-                                        </span>
+                                        <span class="visible-print">(@branchSelection.Branch.Address)</span>
                                     </span>
                                 </td>
                                 <td>
