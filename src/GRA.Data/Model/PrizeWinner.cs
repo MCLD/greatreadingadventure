@@ -22,5 +22,6 @@ namespace GRA.Data.Model
         public int? RedeemedByBranch { get; set; }
         public int? RedeemedBySystem { get; set; }
         public int? MailId { get; set; }
+        public int? VendorCodeId { get; set; }
     }
 }

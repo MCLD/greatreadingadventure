@@ -535,6 +535,11 @@ namespace GRA.Controllers.MissionControl
                         SiteSettingKey.Users.AskEmailSubPermission)
                 };
 
+                if (viewModel.SchoolId.HasValue)
+                {
+                    viewModel.School = await _schoolService.GetByIdAsync(viewModel.SchoolId.Value);
+                }
+
                 if (UserHasPermission(Permission.ViewUserPrizes))
                 {
                     viewModel.PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false);
@@ -2203,8 +2208,6 @@ namespace GRA.Controllers.MissionControl
                     = await _userService.GetGroupFromHouseholdHeadAsync(user.HouseholdHeadUserId ?? id);
 
                 await _vendorCodeService.PopulateVendorCodeStatusAsync(user);
-
-
 
                 var viewModel = new PrizeListViewModel
                 {
