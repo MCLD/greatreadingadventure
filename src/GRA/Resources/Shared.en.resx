@@ -361,10 +361,6 @@
     <value>Secret Code</value>
     <comment>Dashboard prompt for entering a secret code</comment>
   </data>
-  <data name="See more of your badges in your history!" xml:space="preserve">
-    <value>See more of your badges in your history!</value>
-    <comment>Dashboard link to view participant's history, displayed underneath their badges</comment>
-  </data>
   <data name="See your activity history." xml:space="preserve">
     <value>See your activity history.</value>
     <comment>Dashboard link to view history of program activities</comment>
@@ -1418,11 +1414,11 @@
     <comment>Prompt to select which events to view based on if they've been visited</comment>
   </data>
   <data name="You earned this badge for attending the event: &lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;" xml:space="preserve">
-    <value>You earned this badge for attending the event: &lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;</value>
+    <value>You earned this badge for attending the event: &lt;a href="{0}" target="_blank"&gt;{1}&lt;/a&gt;</value>
     <comment>Message explaining how the participant earned the badge, {0} is a link to the eventand {1} is the name of the event</comment>
   </data>
   <data name="You earned this badge for completing the challenge: &lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;" xml:space="preserve">
-    <value>You earned this badge for completing the challenge: &lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;</value>
+    <value>You earned this badge for completing the challenge: &lt;a href="{0}" target="_blank"&gt;{1}&lt;/a&gt;</value>
     <comment>Message explaining how the participant earned the badge, {0} is a link to the challenge and {1} is the name of the challenge</comment>
   </data>
   <data name="One or more of the selected {0} could not be favorited." xml:space="preserve">
@@ -1504,5 +1500,9 @@
   <data name="This streaming event has not started yet." xml:space="preserve">
     <value>This streaming event has not started yet.</value>
     <comment>Message indicating that a streaming event is not yet available.</comment>
+  </data>
+  <data name="Badge Details" xml:space="preserve">
+    <value>Badge Details</value>
+    <comment>Heading of a pop-up showing information about an earned badge</comment>
   </data>
 </root>

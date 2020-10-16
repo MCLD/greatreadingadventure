@@ -1,12 +1,31 @@
 ﻿@model GRA.Controllers.ViewModel.Profile.BadgeListViewModel
 
-<div class="modal fade" id="earnedModal" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel">
+<div class="modal fade"
+     id="badgeDetailsModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="badgeDetailsModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
+            <div class="modal-header">
+                <button type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <span class="h4 modal-title">
+                    @SharedLocalizer[GRA.Annotations.Interface.BadgeDetails]
+                </span>
+            </div>
             <div class="modal-body" id="modal-body">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">@SharedLocalizer[GRA.Annotations.Interface.Cancel]</button>
+                <button type="button"
+                        class="btn btn-default"
+                        data-dismiss="modal">
+                    @SharedLocalizer[GRA.Annotations.Interface.Back]
+                </button>
             </div>
         </div>
     </div>
@@ -22,14 +41,15 @@
 
                 @await Html.PartialAsync("_ProfilePartial")
 
-                <div class="row">
+                <div class="row text-center" style="margin-top: 2rem;">
                     @foreach (var userLog in Model.UserLogs)
                     {
-                        <div class="col-xs-3 col-sm-3 col-md-2 badge-thumbnail mx-auto">
+                        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3"
+                             style="margin-bottom: 2rem;">
                             <a href="#"
-                                data-toggle="modal"
-                                data-target="#earnedModal"
-                                data-id="@userLog.Id">
+                               data-toggle="modal"
+                               data-target="#badgeDetailsModal"
+                               data-id="@userLog.Id">
                                 <img src="~/@userLog.BadgeFilename" class="img-responsive img-thumbnail">
                             </a>
                         </div>
@@ -37,22 +57,27 @@
                 </div>
                 @if (Model.PaginateModel.MaxPage > 1)
                 {
-                    <paginate paginateModel="@Model.PaginateModel"></paginate>
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <paginate paginateModel="@Model.PaginateModel"></paginate>
+                        </div>
+                    </div>
                 }
             </div>
         </div>
     </div>
 </div>
+
 @section scripts
 {
     <script>
-        $("#earnedModal").on("show.bs.modal", function (event) {
+        $("#badgeDetailsModal").on("show.bs.modal", function (event) {
             var button = $(event.relatedTarget);
             var id = button.data("id");
             var modal = $(this);
 
             var modalBody = modal.find(".modal-body");
-            modalBody.html("<span class=\"fa fa-spinner fa-2x fa-pulse\"></span>");
+            modalBody.html("<div class=\"text-center\" style=\"width: 100%;\"><span class=\"fa fa-spinner fa-2x fa-pulse\"></span></div>");
 
             $.get("@Url.Action(nameof(ProfileController.GetUserBadgeInfo), ProfileController.Name)",
                 { id },

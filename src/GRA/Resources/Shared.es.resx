@@ -360,9 +360,9 @@
     <value>Código Secreto</value>
     <comment>Dashboard prompt for entering a secret code</comment>
   </data>
-  <data name="See more of your badges in your history!" xml:space="preserve">
-    <value>¡Vea más de sus medallas en su historial!</value>
-    <comment>Dashboard link to view participant's history, displayed underneath their badges</comment>
+  <data name="See more of your badges" xml:space="preserve">
+    <value>Vea más de sus medallas</value>
+    <comment>Dashboard link to view participant's badge gallery, displayed underneath their badges</comment>
   </data>
   <data name="See your activity history." xml:space="preserve">
     <value>Vea su historial de actividad.</value>

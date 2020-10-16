@@ -1264,12 +1264,14 @@ namespace GRA.Controllers
             };
 
             var userLogs = await _userService.GetPaginatedUserHistoryAsync(user.Id, filter);
+
             var paginateModel = new PaginateViewModel
             {
                 ItemCount = userLogs.Count,
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
+
             if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
@@ -1283,6 +1285,7 @@ namespace GRA.Controllers
             {
                 userLog.BadgeFilename = _pathResolver.ResolveContentPath(userLog.BadgeFilename);
             }
+
             var viewModel = new BadgeListViewModel
             {
                 UserLogs = userLogs.Data,

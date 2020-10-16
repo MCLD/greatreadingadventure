@@ -814,29 +814,6 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<DataWithCount<IEnumerable<Badge>>>
-            GetPaginatedBadges(int userId, int skip, int take)
-        {
-            int activeUserId = GetActiveUserId();
-
-            if (userId == activeUserId
-                || HasPermission(Permission.ViewParticipantDetails))
-            {
-                return new DataWithCount<IEnumerable<Badge>>
-                {
-                    Data = await _badgeRepository.PageForUserAsync(userId, skip, take),
-                    Count = await _badgeRepository.GetCountForUserAsync(userId)
-                };
-            }
-            else
-            {
-                _logger.LogError("User {UserId} doesn't have permission to view details for {EditingUserId}",
-                    activeUserId,
-                    userId);
-                throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
-            }
-        }
-
         public async Task<IEnumerable<Notification>> GetNotificationsForUser()
         {
             return await _notificationRepository.GetByUserIdAsync(GetActiveUserId());

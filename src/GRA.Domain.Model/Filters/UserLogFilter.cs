@@ -8,6 +8,6 @@ namespace GRA.Domain.Model.Filters
     {
         public bool? HasBadge { get; set; }
 
-        public UserLogFilter(int? page = null, int take = 15) : base(page, take) { }
+        public UserLogFilter(int? page = null, int take = 12) : base(page, take) { }
     }
 }
