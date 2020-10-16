@@ -151,9 +151,7 @@
                                 <li>
                                     <a aria-label="@trigger.Name (Opens new window)"
                                        target="_blank"
-                                       href="@Url.Action("Edit", new { id = trigger.Id })">
-                                        @trigger.Name
-                                    </a>
+                                       href="@Url.Action("Edit", new { id = trigger.Id })"> @trigger.Name</a>
                                 </li>
                             }
                         </ul>
@@ -183,9 +181,7 @@
                                 <li>
                                     <a aria-label="@graEvent.Name (Opens new window)"
                                        target="_blank"
-                                       href="@Url.Action("Edit", "Events", new { id = graEvent.Id })">
-                                        @graEvent.Name
-                                    </a>
+                                       href="@Url.Action("Edit", "Events", new { id = graEvent.Id })"> @graEvent.Name</a>
                                 </li>
                             }
                         </ul>

@@ -288,19 +288,13 @@
                                 if (display < 3)
                                 {
                                     <div class="col-md-6 col-sm-12 col-xs-4 dashboard-badge">
-                                        <img class="img-thumbnail badge-sm"
-                                             src="~/@badge.Filename"
-                                             alt="@badge.AltText"
-                                             asp-append-version="true" />
+                                        <img class="img-thumbnail badge-sm" src="~/@badge.Filename" alt="@badge.AltText" asp-append-version="true" />
                                     </div>
                                 }
                                 else
                                 {
                                     <div class="col-md-6 col-sm-12 col-xs-4 visible-lg visible-md visible-xs dashboard-badge">
-                                        <img class="img-thumbnail badge-sm"
-                                             src="~/@badge.Filename"
-                                             alt="@badge.AltText"
-                                             asp-append-version="true" />
+                                        <img class="img-thumbnail badge-sm" src="~/@badge.Filename" alt="@badge.AltText" asp-append-version="true" />
                                     </div>
                                 }
                                 display++;
@@ -391,23 +385,7 @@
 
 @if (Model.Carousel != null)
 {
-    <div class="sr-only">
-    @if (!string.IsNullOrEmpty(Model.Carousel.Heading))
-        {
-            <h2>
-                @Model.Carousel.Heading
-            </h2>
-        }
-        <ul>
-            @foreach (var item in Model.Carousel.Items)
-            {
-                <li>
-                    @item.Title
-                </li>
-            }
-        </ul>
-    </div>
-    <div class="row gra-js-required gra-carousel-container" aria-hidden="true">
+    <div class="row gra-js-required gra-carousel-container">
         <div class="col-xs-12">
             <div class="panel panel-default">
                 @if (!string.IsNullOrEmpty(Model.Carousel.Heading))

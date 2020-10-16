@@ -7,8 +7,7 @@
         <a aria-label="@Model.CreatedByName (Opens new window)"
            asp-controller="Participants"
            asp-action="@nameof(ParticipantsController.Detail)"
-           asp-route-id="@Model.Criterion.CreatedBy"
-           target="_blank">@Model.CreatedByName</a>
+           asp-route-id="@Model.Criterion.CreatedBy" target="_blank">@Model.CreatedByName</a>
     }
     else
     {
