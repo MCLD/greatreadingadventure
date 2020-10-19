@@ -188,11 +188,11 @@
             var button = $(e.relatedTarget);
             var id = button.data("id");
             var name = button.data("name");
-            var branchIds = button.data("branchids"); 
+            var branchIds = button.data("branchids");
             var modal = $(this);
             modal.find("#AgeGroup_Id").val(id);
             modal.find("#AgeGroup_Name").val(name);
-            
+
             modal.find(".branchSelector").prop("checked", false);
             $.each(branchIds.split(","), function(index, value) {
                 modal.find("#branch" + value).prop("checked", true);
