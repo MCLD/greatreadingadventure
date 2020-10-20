@@ -73,10 +73,37 @@ namespace GRA.Domain.Service
             {
                 // paginate for public
                 filter.IsActive = true;
+
+                if (GetAuthUser().Identity.IsAuthenticated)
+                {
+                    filter.CurrentUserId = GetActiveUserId();
+                }
+
                 data = await _eventRepository.PageAsync(filter);
                 count = await _eventRepository.CountAsync(filter);
-            }
 
+                if (GetAuthUser().Identity.IsAuthenticated)
+                {
+                    if (filter.Favorites == true)
+                    {
+                        data = data.Select(_ => { _.IsFavorited = true; return _; }).ToList();
+                    }
+                    else
+                    {
+                        var eventIds = data.Select(_ => _.Id);
+                        var favoritedEventIds = await _eventRepository.GetUserFavoriteEvents(
+                            filter.CurrentUserId.Value, eventIds);
+
+                        foreach (var graEvent in data)
+                        {
+                            if (favoritedEventIds.Contains(graEvent.Id))
+                            {
+                                graEvent.IsFavorited = true;
+                            }
+                        }
+                    }
+                }
+            }
             return new DataWithCount<IEnumerable<Event>>
             {
                 Data = data,

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using GRA.Controllers.Attributes;
 using GRA.Controllers.ViewModel.Home;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -129,10 +130,16 @@ namespace GRA.Controllers
                     return RedirectToAction(nameof(SignOut));
                 }
 
-                var badges = await _userService.GetPaginatedBadges(user.Id, 0, BadgesToDisplay);
-                foreach (var badge in badges.Data)
+                var userLogs = await _userService.GetPaginatedUserHistoryAsync(user.Id,
+                    new UserLogFilter(take: BadgesToDisplay)
+                    {
+                        HasBadge = true
+                    });
+
+                foreach (var userLog in userLogs.Data)
                 {
-                    badge.Filename = _pathResolver.ResolveContentPath(badge.Filename);
+                    userLog.BadgeFilename
+                        = _pathResolver.ResolveContentPath(userLog.BadgeFilename);
                 }
 
                 var pointTranslation = await _activityService.GetUserPointTranslationAsync();
@@ -142,7 +149,7 @@ namespace GRA.Controllers
                     CurrentPointTotal = user.PointsEarned,
                     SingleEvent = pointTranslation.IsSingleEvent,
                     ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural,
-                    Badges = badges.Data,
+                    UserLogs = userLogs.Data,
                     DisableSecretCode
                         = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable),
                     UpcomingStreams = await _eventService.GetUpcomingStreamListAsync()

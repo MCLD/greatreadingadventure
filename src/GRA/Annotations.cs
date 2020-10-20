@@ -26,7 +26,9 @@
 
         public static class Info
         {
+            public const string BadgeInfoError = "Error retrieving badge information.";
             public const string BetterSuitedOption = "This program may be better-suited to your age:";
+            public const string ChallengeBadgeEarned = "You earned this badge for completing the challenge: <a href=\"{0}\" target=\"_blank\">{1}</a>";
             public const string ChallengeBookLinkTitle = "Read <strong><em><a href=\"{0}\" target=\"_blank\">{1}</a></em></strong>";
             public const string ChallengeBookLinkTitleAuthor = "Read <strong><em><a href=\"{0}\" target=\"_blank\">{1}</a></em></strong> by <strong>{2}</strong>";
             public const string ChallengeBookTitle = "Read <strong><em>{0}</em></strong>";
@@ -36,6 +38,8 @@
             public const string CompleteTasksEarnPointsBadge = "When you complete <strong>{0}</strong>, you will earn <strong>{1}</strong> and a badge.";
             public const string ConfirmBookDelete = "Are you sure you want to delete this book from your book list:";
             public const string CouldNotFind = "We couldn't find what you were looking for. Sorry about that!";
+            public const string EarnedOn = "Earned on {0}";
+            public const string EventBadgeEarned = "You earned this badge for attending the event: <a href=\"{0}\" target=\"_blank\">{1}</a>";
             public const string EventLimitedToProgram = "This event is limited to the program: {0}";
             public const string FreeBookRedeemDashboard = "You've earned a free book! Head over to <a href=\"{0}\"><strong>My Profile</strong></a> page to choose what to do with it.";
             public const string FreeBookRedeemExpirationDashboard = "You've earned a free book! Head over to <a href=\"{0}\"><strong>My Profile</strong></a> page by {1} to choose what to do with it.";
@@ -85,6 +89,8 @@
             public const string BackToEventsCommunityExperiences = "Back to Events & Community Experiences";
             public const string BackToMailbox = "Back to Mailbox";
             public const string Badge = "Badge";
+            public const string BadgeDetails = "Badge Details";
+            public const string Badges = "Badges";
             public const string BookList = "Book List";
             public const string Cancel = "Cancel";
             public const string ChangePassword = "Change Password";
@@ -124,6 +130,7 @@
             public const string MyFavorites = "My Favorites";
             public const string Name = "Name";
             public const string NewMail = "New Mail!";
+            public const string No = "No";
             public const string NoChallenges = "No Challenges";
             public const string NoEvents = "No Events";
             public const string NoMail = "You currently have no mail.";
@@ -154,6 +161,7 @@
             public const string SignedInAs = "You are now signed in as {0}.";
             public const string SignInForStreams = "Sign in to access streaming programs!";
             public const string SignInToStream = "Sign in to stream!";
+            public const string Status = "Status";
             public const string Stream = "Stream";
             public const string StreamingEvents = "Streaming Events";
             public const string StreamNow = "Stream Now!";
@@ -165,10 +173,14 @@
             public const string UpdatedItem = "Updated: {0}";
             public const string UpgradeToGroup = "Upgrade to Group";
             public const string UseMyZipCode = "Use my ZIP code";
+            public const string ViewAll = "View All";
             public const string ViewAttachment = "View Attachment";
+            public const string ViewCompleted = "View Completed";
+            public const string ViewUncompleted = "View Uncompleted";
             public const string What = "What";
             public const string When = "When";
             public const string Where = "Where";
+            public const string Yes = "Yes";
         }
 
         public static class Title
@@ -200,6 +212,7 @@
             public const string ShareYourAvatar = "Share Your Avatar";
             public const string SignIn = "Sign in";
             public const string SignInTo = "Sign in to {0}";
+            public const string StreamingEvents = "Streaming Events";
             public const string Subject = "Subject";
             public const string UpdateGroupDetails = "Update Group details";
             public const string UpgradeToGroup = "Upgrade from Family to Group";
@@ -224,6 +237,7 @@
             public const string Branch = "The branch you've selected is not valid, please select another branch.";
             public const string CodeAlready = "All selected participants already have that Secret Code.";
             public const string CouldNotCreate = "Could not create your account: {0}";
+            public const string CouldNotFavorite = "One or more of the selected {0} could not be favorited.";
             public const string CouldNotLog = "Sorry, we couldn't log your activity: {0}";
             public const string CouldNotRecover = "Could not recover username(s): {0}";
             public const string CouldNotSaveAvatar = "Couldn't save your avatar, sorry!";

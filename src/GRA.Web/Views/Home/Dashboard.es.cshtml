@@ -58,14 +58,48 @@
                 @if (Model.VendorCodeExpiration.HasValue)
                 {
                     @SharedHtmlLocalizer[GRA.Annotations.Info.FreeBookRedeemExpirationDashboard,
-                        Url.Action(nameof(ProfileController.Index), ProfileController.Name),
-                        Model.VendorCodeExpiration.Value.AddMilliseconds(-1).ToString("MMMM dd")]
+                 Url.Action(nameof(ProfileController.Index), ProfileController.Name),
+                 Model.VendorCodeExpiration.Value.AddMilliseconds(-1).ToString("MMMM dd")]
                 }
                 else
                 {
                     @SharedHtmlLocalizer[GRA.Annotations.Info.FreeBookRedeemDashboard,
-                        Url.Action(nameof(ProfileController.Index), ProfileController.Name)]
+                 Url.Action(nameof(ProfileController.Index), ProfileController.Name)]
                 }
+            </div>
+        </div>
+    </div>
+}
+
+@if (Model.UserLogs?.Count() > 0)
+{
+    <div class="modal fade"
+         id="badgeDetailsModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="badgeDetailsModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <span class="h4 modal-title">
+                        @SharedLocalizer[GRA.Annotations.Interface.BadgeDetails]
+                    </span>
+                </div>
+                <div class="modal-body" id="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-default"
+                            data-dismiss="modal">
+                        @SharedLocalizer[GRA.Annotations.Interface.Back]
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -133,8 +167,8 @@
             <div class="panel-body text-center">
                 <span class="lead">@SharedHtmlLocalizer["Welcome <strong>{0}!</strong>", Model.FirstName]</span>
                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessPerformerRegistration))
-        && !Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessMissionControl))
-        && Model.SiteStage == GRA.Domain.Model.SiteStage.BeforeRegistration)
+&& !Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessMissionControl))
+&& Model.SiteStage == GRA.Domain.Model.SiteStage.BeforeRegistration)
                 {
                     <p class="lead" style="padding-top: 2rem;">
                         Welcome, performer! Please click on the theater masks icon at the top of the
@@ -276,25 +310,41 @@
         {
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <a asp-controller="Profile" asp-action="History" class="lead">@SharedLocalizer["Your badges"]</a>
+                    <a asp-controller="Profile"
+                       asp-action="Badges"
+                       class="lead">@SharedLocalizer["Your badges"]</a>
                 </div>
                 <div class="panel-body">
                     <div class="row">
-                        @if (Model.Badges.Count() > 0)
+                        @if (Model.UserLogs.Count() > 0)
                         {
                             int display = 0;
-                            foreach (var badge in Model.Badges)
+                            foreach (var userLog in Model.UserLogs)
                             {
                                 if (display < 3)
                                 {
                                     <div class="col-md-6 col-sm-12 col-xs-4 dashboard-badge">
-                                        <img class="img-thumbnail badge-sm" src="~/@badge.Filename" asp-append-version="true" />
+                                        <a href="#"
+                                           data-toggle="modal"
+                                           data-target="#badgeDetailsModal"
+                                           data-id="@userLog.Id">
+                                            <img class="img-thumbnail badge-sm"
+                                                 src="~/@userLog.BadgeFilename"
+                                                 asp-append-version="true" />
+                                        </a>
                                     </div>
                                 }
                                 else
                                 {
                                     <div class="col-md-6 col-sm-12 col-xs-4 visible-lg visible-md visible-xs dashboard-badge">
-                                        <img class="img-thumbnail badge-sm" src="~/@badge.Filename" asp-append-version="true" />
+                                        <a href="#"
+                                           data-toggle="modal"
+                                           data-target="#badgeDetailsModal"
+                                           data-id="@userLog.Id">
+                                            <img class="img-thumbnail badge-sm"
+                                                 src="~/@userLog.BadgeFilename"
+                                                 asp-append-version="true" />
+                                        </a>
                                     </div>
                                 }
                                 display++;
@@ -302,7 +352,9 @@
                                 if (display >= 6)
                                 {
                                     <div class="col-xs-12 visible-lg visible-md visible-xs">
-                                        <a asp-controller="Profile" asp-action="History" class="lead">@SharedLocalizer["See more of your badges in your history!"]</a>
+                                        <a asp-controller="Profile"
+                                           asp-action="Badges"
+                                           class="lead">@SharedLocalizer["See more of your badges"]</a>
                                     </div>
                                     break;
                                 }
@@ -310,7 +362,9 @@
                             if (display >= 3)
                             {
                                 <div class="col-xs-12 visible-sm">
-                                    <a asp-controller="Profile" asp-action="History" class="lead">@SharedLocalizer["See more of your badges in your history!"]</a>
+                                    <a asp-controller="Profile"
+                                       asp-action="Badges"
+                                       class="lead">@SharedLocalizer["See more of your badges"]</a>
                                 </div>
                             }
                         }
@@ -433,7 +487,7 @@
                 <text>
                     gtag('event', 'sign_up', {
                         'First Time Participant': '@Model.FirstTimeParticipant',
-                        'Program Name': '@Model.ProgramName'
+                        'Program Name': '@Model.ProgramName',
                     });
                 </text>
             }
@@ -465,5 +519,27 @@
         </script>
         <link rel="stylesheet" type="text/css" href="@Url.Content("~/css/slick.min.css")" />
         <script type="text/javascript" src="@Url.Content("~/js/slick.min.js")"></script>
+    }
+    @if (Model.UserLogs?.Count() > 0)
+    {
+        <script>
+        $("#badgeDetailsModal").on("show.bs.modal", function (event) {
+            var button = $(event.relatedTarget);
+            var id = button.data("id");
+            var modal = $(this);
+
+            var modalBody = modal.find(".modal-body");
+            modalBody.html("<div class=\"text-center\" style=\"width: 100%;\"><span class=\"fa fa-spinner fa-2x fa-pulse\"></span></div>");
+
+            $.get("@Url.Action(nameof(ProfileController.GetUserBadgeInfo), ProfileController.Name)",
+                { id },
+                function (response) {
+                    modalBody.html(response);
+                })
+                .fail(function () {
+                    modalBody.html("@SharedLocalizer[GRA.Annotations.Info.BadgeInfoError]");
+                });
+        });
+        </script>
     }
 }

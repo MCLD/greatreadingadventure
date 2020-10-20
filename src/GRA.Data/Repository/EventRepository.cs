@@ -22,8 +22,7 @@ namespace GRA.Data.Repository
 
         public async Task<int> CountAsync(EventFilter filter)
         {
-            return await ApplyFilters(filter)
-                .CountAsync();
+            return await ApplyFilters(filter).CountAsync();
         }
 
         public async Task<ICollection<Event>> PageAsync(EventFilter filter)
@@ -88,69 +87,6 @@ namespace GRA.Data.Repository
             return await eventQuery.ApplyPagination(filter)
                 .ProjectTo<Event>(_mapper.ConfigurationProvider)
                 .ToListAsync();
-        }
-
-        public override async Task<Event> GetByIdAsync(int id)
-        {
-            var evt = await DbSet
-                .AsNoTracking()
-                .Where(_ => _.Id == id)
-                .ProjectTo<Event>(_mapper.ConfigurationProvider)
-                .SingleOrDefaultAsync();
-
-            if (evt != null)
-            {
-                await AddLocationData(evt);
-            }
-            return evt;
-        }
-
-        public async Task<List<Event>> GetByChallengeIdAsync(int challengeId)
-        {
-            return await DbSet.AsNoTracking()
-                .Where(_ => _.ChallengeId == challengeId)
-                .ProjectTo<Event>(_mapper.ConfigurationProvider)
-                .ToListAsync();
-        }
-
-        public async Task<List<Event>> GetByChallengeGroupIdAsync(int challengeGroupId)
-        {
-            return await DbSet.AsNoTracking()
-                   .Where(_ => _.ChallengeGroupId == challengeGroupId)
-                   .ProjectTo<Event>(_mapper.ConfigurationProvider)
-                   .ToListAsync();
-        }
-
-        private async Task AddLocationData(Event evt)
-        {
-            if (evt.AtLocationId != null)
-            {
-                var location = await _context.Locations
-                    .AsNoTracking()
-                    .Where(_ => _.Id == evt.AtLocationId)
-                    .SingleOrDefaultAsync();
-                if (location != null)
-                {
-                    evt.EventLocationAddress = location.Address;
-                    evt.EventLocationLink = location.Url;
-                    evt.EventLocationName = location.Name;
-                    evt.EventLocationTelephone = location.Telephone;
-                }
-            }
-            else if (evt.AtBranchId != null)
-            {
-                var branch = await _context.Branches
-                    .AsNoTracking()
-                    .Where(_ => _.Id == evt.AtBranchId)
-                    .SingleOrDefaultAsync();
-                if (branch != null)
-                {
-                    evt.EventLocationAddress = branch.Address;
-                    evt.EventLocationLink = branch.Url;
-                    evt.EventLocationName = branch.Name;
-                    evt.EventLocationTelephone = branch.Telephone;
-                }
-            }
         }
 
         private IQueryable<Model.Event> ApplyFilters(EventFilter filter)
@@ -277,6 +213,33 @@ namespace GRA.Data.Repository
                 }
             }
 
+            // filter for favorites
+            if (filter.Favorites == true && filter.CurrentUserId.HasValue)
+            {
+                var userFavoriteEvents = _context.UserFavoriteEvents
+                    .AsNoTracking()
+                    .Where(_ => _.UserId == filter.CurrentUserId);
+
+                events = events.Join(userFavoriteEvents,
+                    graEvent => graEvent.Id,
+                    favoritedEvent => favoritedEvent.EventId,
+                    (graEvent, favoritedEvent) => graEvent);
+            }
+
+            // filter for attended
+            if (filter.IsAttended.HasValue && filter.CurrentUserId.HasValue)
+            {
+                var userAttendedEvents = _context.UserLogs
+                    .AsNoTracking()
+                    .Where(_ => _.UserId == filter.CurrentUserId
+                        && _.EventId.HasValue
+                        && !_.IsDeleted)
+                    .Select(_ => _.EventId);
+
+                events = events
+                    .Where(_ => userAttendedEvents.Contains(_.Id) == filter.IsAttended.Value);
+            }
+
             // apply search
             if (!string.IsNullOrEmpty(filter.Search))
             {
@@ -308,6 +271,67 @@ namespace GRA.Data.Repository
             return events;
         }
 
+        public override async Task<Event> GetByIdAsync(int id)
+        {
+            var currentEvent = await DbSet
+                .AsNoTracking()
+                .Where(_ => _.Id == id)
+                .ProjectTo<Event>(_mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync();
+
+            if (currentEvent != null)
+            {
+                await AddLocationData(currentEvent);
+            }
+            return currentEvent;
+        }
+
+        public async Task<List<Event>> GetByChallengeIdAsync(int challengeId)
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.ChallengeId == challengeId)
+                .ProjectTo<Event>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
+        public async Task<List<Event>> GetByChallengeGroupIdAsync(int challengeGroupId)
+        {
+            return await DbSet.AsNoTracking()
+                   .Where(_ => _.ChallengeGroupId == challengeGroupId)
+                   .ProjectTo<Event>(_mapper.ConfigurationProvider)
+                   .ToListAsync();
+        }
+
+        private async Task AddLocationData(Event currentEvent)
+        {
+            if (currentEvent.AtLocationId != null)
+            {
+                var location = await _context.Locations
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(_ => _.Id == currentEvent.AtLocationId);
+                if (location != null)
+                {
+                    currentEvent.EventLocationAddress = location.Address;
+                    currentEvent.EventLocationLink = location.Url;
+                    currentEvent.EventLocationName = location.Name;
+                    currentEvent.EventLocationTelephone = location.Telephone;
+                }
+            }
+            else if (currentEvent.AtBranchId != null)
+            {
+                var branch = await _context.Branches
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(_ => _.Id == currentEvent.AtBranchId);
+                if (branch != null)
+                {
+                    currentEvent.EventLocationAddress = branch.Address;
+                    currentEvent.EventLocationLink = branch.Url;
+                    currentEvent.EventLocationName = branch.Name;
+                    currentEvent.EventLocationTelephone = branch.Telephone;
+                }
+            }
+        }
+        
         public async Task<ICollection<Event>> GetEventListAsync(EventFilter filter)
         {
             if (filter == null)
@@ -406,6 +430,63 @@ namespace GRA.Data.Repository
                 })
                 .OrderBy(_ => _.Data.Name)
                 .ToList();
+        }
+
+        public async Task<IEnumerable<int>> GetUserFavoriteEvents(int userId,
+            IEnumerable<int> eventIds = null)
+        {
+            var favoriteEvents = _context.UserFavoriteEvents
+                .AsNoTracking()
+                .Where(_ => _.UserId == userId);
+
+            if (eventIds?.Count() > 0)
+            {
+                favoriteEvents = favoriteEvents
+                    .Where(_ => eventIds.Contains(_.EventId));
+            }
+
+            return await favoriteEvents
+                .Select(_ => _.EventId)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<int>> ValidateEventIdsAsync(int siteId,
+            IEnumerable<int> eventIds)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId && eventIds.Contains(_.Id))
+                .Select(_ => _.Id)
+                .ToListAsync();
+        }
+
+        public async Task UpdateUserFavoritesAsync(int authUserId, int userId,
+            IEnumerable<int> favoritesToAdd, IEnumerable<int> favoritesToRemove)
+        {
+            if (favoritesToAdd.Any())
+            {
+                var time = _dateTimeProvider.Now;
+                var userFavoriteList = new List<Model.UserFavoriteEvent>();
+                foreach (var eventId in favoritesToAdd)
+                {
+                    userFavoriteList.Add(new Model.UserFavoriteEvent
+                    {
+                        UserId = userId,
+                        EventId = eventId,
+                        CreatedAt = time,
+                        CreatedBy = authUserId
+                    });
+                }
+                await _context.UserFavoriteEvents.AddRangeAsync(userFavoriteList);
+            }
+            if (favoritesToRemove.Any())
+            {
+                var removeList = _context.UserFavoriteEvents
+                    .Where(_ => _.UserId == userId && favoritesToRemove
+                    .Contains(_.EventId));
+                _context.UserFavoriteEvents.RemoveRange(removeList);
+            }
+            await SaveAsync();
         }
     }
 }

@@ -87,5 +87,10 @@ namespace GRA.Domain.Service
         {
             return await _badgeRepository.GetByIdAsync(badgeId);
         }
+
+        public async Task<string> GetBadgeFilenameAsync(int id)
+        {
+            return await _badgeRepository.GetBadgeFileNameAsync(id);
+        }
     }
 }

@@ -49,6 +49,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Vendor code generation through WebSocket job
 - Site setting to hide events until program open
 - Email award option for vendor codes
+- User favoriting of events
+- User filtering challenges and events by completed/uncompleted
+- User badge gallery
 
 ### Changed
 - Script docker-build.bash to only build release images when branch starts with 'release/'
