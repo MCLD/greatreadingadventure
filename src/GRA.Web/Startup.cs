@@ -601,6 +601,10 @@ namespace GRA.Web
                     defaults: new { controller = "Info", action = "Index" });
                 routes.MapRoute(
                     name: null,
+                    template: "{culture:cultureConstraint}/{area:exists}/{controller}/{action}/{id?}",
+                    defaults: new { controller = "Home", action = "Index" });
+                routes.MapRoute(
+                    name: null,
                     template: "{area:exists}/{controller}/{action}/{id?}",
                     defaults: new { controller = "Home", action = "Index" });
                 routes.MapRoute(

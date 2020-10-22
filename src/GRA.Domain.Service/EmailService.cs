@@ -211,7 +211,7 @@ namespace GRA.Domain.Service
 
             if (!string.IsNullOrWhiteSpace(_config[ConfigurationKey.EmailOverride]))
             {
-                message.To.Add(new MailboxAddress(_config[ConfigurationKey.EmailOverride]));
+                message.To.Add(MailboxAddress.Parse(_config[ConfigurationKey.EmailOverride]));
             }
             else
             {
@@ -221,7 +221,7 @@ namespace GRA.Domain.Service
                 }
                 else
                 {
-                    message.To.Add(new MailboxAddress(emailAddress));
+                    message.To.Add(MailboxAddress.Parse(emailAddress));
                 }
             }
             message.Subject = subject;
