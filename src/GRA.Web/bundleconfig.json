@@ -2,13 +2,13 @@
   {
     "outputFileName": "wwwroot/css/main.min.css",
     "inputFiles": [
-      "wwwroot/lib/bootstrap/dist/css/bootstrap.css",
-      "wwwroot/lib/font-awesome/web-fonts-with-css/css/fontawesome-all.css",
-      "wwwroot/lib/font-awesome/web-fonts-with-css/css/v4-shims.css",
-      "wwwroot/lib/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css",
-      "wwwroot/lib/bootstrap-multiselect/dist/css/bootstrap-multiselect.css",
-      "wwwroot/lib/bootstrap-select/dist/css/bootstrap-select.min.css",
-      "wwwroot/css/gra.css"
+      "node_modules/bootstrap/dist/css/bootstrap.css",
+      "node_modules/@fortawesome/fontawesome-free/css/all.css",
+      "node_modules/@fortawesome/fontawesome-free/css/v4-shims.css",
+      "node_modules/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css",
+      "node_modules/bootstrap-multiselect/dist/css/bootstrap-multiselect.css",
+      "node_modules/bootstrap-select/dist/css/bootstrap-select.css",
+      "Styles/gra.css"
     ],
     "minify": {
       "enabled": true,
@@ -18,15 +18,15 @@
   {
     "outputFileName": "wwwroot/js/main.min.js",
     "inputFiles": [
-      "wwwroot/lib/jquery/dist/jquery.js",
-      "wwwroot/lib/jquery-validation/dist/jquery.validate.js",
-      "wwwroot/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js",
-      "wwwroot/lib/bootstrap/dist/js/bootstrap.js",
-      "wwwroot/lib/moment/moment.js",
-      "wwwroot/lib/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js",
-      "wwwroot/lib/bootstrap-multiselect/dist/js/bootstrap-multiselect.js",
-      "wwwroot/lib/bootstrap-select/dist/js/bootstrap-select.min.js",
-      "wwwroot/js/gra.js"
+      "node_modules/jquery/dist/jquery.js",
+      "node_modules/jquery-validation/dist/jquery.validate.js",
+      "node_modules/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js",
+      "node_modules/bootstrap/dist/js/bootstrap.js",
+      "node_modules/moment/dist/moment.js",
+      "node_modules/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js",
+      "node_modules/bootstrap-multiselect/dist/js/bootstrap-multiselect.js",
+      "node_modules/bootstrap-select/dist/js/bootstrap-select.js",
+      "Scripts/gra.js"
     ],
     "minify": {
       "enabled": true,
@@ -36,7 +36,7 @@
   {
     "outputFileName": "wwwroot/css/missioncontrol.min.css",
     "inputFiles": [
-      "wwwroot/css/missioncontrol.css"
+      "Styles/missioncontrol.css"
     ],
     "minify": {
       "enabled": true,
@@ -46,7 +46,7 @@
   {
     "outputFileName": "wwwroot/js/performerregistration.min.js",
     "inputFiles": [
-      "wwwroot/js/performerregistration.js"
+      "Scripts/performerregistration.js"
     ],
     "minify": {
       "enabled": true,
@@ -56,7 +56,7 @@
   {
     "outputFileName": "wwwroot/css/performerregistration.min.css",
     "inputFiles": [
-      "wwwroot/css/performerregistration.css"
+      "Styles/performerregistration.css"
     ],
     "minify": {
       "enabled": true,
@@ -66,8 +66,8 @@
   {
     "outputFileName": "wwwroot/js/markdown.min.js",
     "inputFiles": [
-      "wwwroot/lib/commonmark/dist/commonmark.js",
-      "wwwroot/js/WMD.js"
+      "node_modules/commonmark/dist/commonmark.js",
+      "Scripts/WMD.js"
     ],
     "minify": {
       "enabled": true,
@@ -77,7 +77,7 @@
   {
     "outputFileName": "wwwroot/css/markdown.min.css",
     "inputFiles": [
-      "wwwroot/css/WMD.css"
+      "Styles/WMD.css"
     ],
     "minify": {
       "enabled": true,
@@ -87,8 +87,8 @@
   {
     "outputFileName": "wwwroot/css/slick.min.css",
     "inputFiles": [
-      "wwwroot/lib/slick-carousel/slick/slick.css",
-      "wwwroot/lib/slick-carousel/slick/slick-theme.css"
+      "node_modules/slick-carousel/slick/slick.css",
+      "node_modules/slick-carousel/slick/slick-theme.css"
     ],
     "minify": {
       "enabled": true,
@@ -98,7 +98,7 @@
   {
     "outputFileName": "wwwroot/js/slick.min.js",
     "inputFiles": [
-      "wwwroot/lib/slick-carousel/slick/slick.js"
+      "node_modules/slick-carousel/slick/slick.js"
     ],
     "minify": {
       "enabled": true,
@@ -108,7 +108,7 @@
   {
     "outputFileName": "wwwroot/js/slick-avatar.min.js",
     "inputFiles": [
-      "wwwroot/js/slick-avatar.js"
+      "Scripts/slick-avatar.js"
     ],
     "minify": {
       "enabled": true,
@@ -118,7 +118,7 @@
   {
     "outputFileName": "wwwroot/css/performerregistration.min.css",
     "inputFiles": [
-      "wwwroot/css/performerregistration.css"
+      "Styles/performerregistration.css"
     ]
   }
 ]
