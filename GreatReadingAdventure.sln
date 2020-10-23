@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E31857E8-98F8-4579-B9C2-7C6079EF234F}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 		.travis.yml = .travis.yml
 		CHANGELOG.md = CHANGELOG.md
@@ -16,6 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Dockerfile = Dockerfile
 		global.json = global.json
 		GRARuleSet.ruleset = GRARuleSet.ruleset
+		.github\workflows\main.yml = .github\workflows\main.yml
 		README.md = README.md
 		release-prep.bash = release-prep.bash
 		release-publish.bash = release-publish.bash
@@ -53,6 +55,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dev", "dev", "{2F931D25-1A22-4710-896D-1327AE97C435}"
 	ProjectSection(SolutionItems) = preProject
 		dev\adding-an-entity.md = dev\adding-an-entity.md
+		dev\docker-yarn-update.sh = dev\docker-yarn-update.sh
 		dev\docker.md = dev\docker.md
 		dev\initial-developer-setup.md = dev\initial-developer-setup.md
 		dev\project-organization.md = dev\project-organization.md

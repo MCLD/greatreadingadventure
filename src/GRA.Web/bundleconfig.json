@@ -121,5 +121,17 @@
     "inputFiles": [
       "Styles/performerregistration.css"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/js/jquery-ui.min.js",
+    "inputFiles": [
+      "Scripts/jquery-ui-1.12.1.custom/jquery-ui.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/jquery-ui.min.css",
+    "inputFiles": [
+      "Scripts/jquery-ui-1.12.1.custom/jquery-ui.css"
+    ]
   }
 ]
