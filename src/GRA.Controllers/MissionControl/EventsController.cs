@@ -408,7 +408,7 @@ namespace GRA.Controllers.MissionControl
                     && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker))
                 {
                     if (!ValidImageExtensions.Contains(
-                        Path.GetExtension(model.BadgeUploadImage.FileName).ToLower()))
+                        Path.GetExtension(model.BadgeUploadImage.FileName).ToLowerInvariant()))
                     {
                         ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                     }
@@ -600,7 +600,7 @@ namespace GRA.Controllers.MissionControl
                     && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker))
                 {
                     if (!ValidImageExtensions.Contains(
-                        Path.GetExtension(model.BadgeUploadImage.FileName).ToLower()))
+                        Path.GetExtension(model.BadgeUploadImage.FileName).ToLowerInvariant()))
                     {
                         ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                     }
@@ -1306,7 +1306,8 @@ namespace GRA.Controllers.MissionControl
         {
             PageTitle = "Import Events";
             if (eventFileCsv == null
-                || !ValidCsvExtensions.Contains(Path.GetExtension(eventFileCsv.FileName).ToLower()))
+                || !ValidCsvExtensions
+                    .Contains(Path.GetExtension(eventFileCsv.FileName).ToLowerInvariant()))
             {
                 AlertDanger = "You must select a .csv file.";
                 ModelState.AddModelError("eventFileCsv", "You must select a .csv file.");
