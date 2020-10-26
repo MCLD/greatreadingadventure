@@ -164,7 +164,7 @@ namespace GRA
                 new SiteSettingDefinition
                 {
                     Name = "Max File Size (KB)",
-                    Info = "Maximum file size of a badge in kilobytes allowed to be uploaded..",
+                    Info = "Maximum file size of a badge in kilobytes allowed to be uploaded.",
                     Category = typeof(SiteSettingKey.Badges).Name,
                     Format = SiteSettingFormat.Integer
                 }
