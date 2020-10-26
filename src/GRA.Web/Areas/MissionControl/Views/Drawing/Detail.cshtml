@@ -33,7 +33,11 @@
     Created By:
     @if (Model.CanViewParticipants)
     {
-        <a asp-controller="Participants" asp-action="@nameof(ParticipantsController.Detail)" asp-route-id="@Model.Drawing.CreatedBy" target="_blank">@Model.CreatedByName</a>
+        <a aria-label="@Model.CreatedByName (Opens new window)"
+           asp-controller="Participants"
+           asp-action="@nameof(ParticipantsController.Detail)"
+           asp-route-id="@Model.Drawing.CreatedBy"
+           target="_blank">@Model.CreatedByName</a>
     }
     else
     {
@@ -165,7 +169,7 @@
 @section scripts
 {
     <script>
-        $('#deleteModal').on('show.bs.modal', function(event) {
+        $('#deleteModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
             var id = button.data('id');
             var name = button.data('name');

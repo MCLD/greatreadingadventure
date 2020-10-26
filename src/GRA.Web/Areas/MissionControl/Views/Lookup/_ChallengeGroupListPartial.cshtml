@@ -23,7 +23,11 @@ else
                         <td>
                             @if (Model.CanEditGroups)
                             {
-                                <a asp-controller="Challenges" asp-action="EditGroup" asp-route-id="@group.Id" target="_blank">@group.Name</a>
+                                <a aria-label="@group.Name (Opens new window)"
+                                   asp-controller="Challenges"
+                                   asp-action="EditGroup"
+                                   asp-route-id="@group.Id"
+                                   target="_blank">@group.Name</a>
                             }
                             else
                             {
@@ -34,7 +38,12 @@ else
                             @group.Description
                         </td>
                         <td>
-                            <a asp-area="" asp-controller="Challenges" asp-action="List" asp-route-id="@group.Stub" target="_blank">@group.Stub</a>
+                            <a aria-label="@group.Stub (Opens new window)"
+                               asp-area=""
+                               asp-controller="Challenges"
+                               asp-action="List"
+                               asp-route-id="@group.Stub"
+                               target="_blank">@group.Stub</a>
                         </td>
                         <td class="gra-mc-icon">
                             <button type="button"

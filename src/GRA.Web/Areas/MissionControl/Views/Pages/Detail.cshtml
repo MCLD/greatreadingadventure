@@ -62,7 +62,8 @@
                     {
                         <label class="control-label">Link to page</label>
                         <br />
-                        <a href="@Model.PageUrl"
+                        <a aria-label="@Model.PageUrl (Opens new window)"
+                           href="@Model.PageUrl"
                            target="_blank">
                             @Model.PageUrl
                         </a>
@@ -70,9 +71,9 @@
                 </div>
                 <div class="col-xs-6">
                     <a asp-action="@nameof(PagesController.Preview)"
-                            asp-route-headerId="@Model.HeaderId"
-                            asp-route-languageId="@Model.SelectedLanguageId"
-                            class="btn btn-default pull-right">
+                       asp-route-headerId="@Model.HeaderId"
+                       asp-route-languageId="@Model.SelectedLanguageId"
+                       class="btn btn-default pull-right">
                         Preview
                     </a>
                 </div>

@@ -35,5 +35,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public bool UseGroups { get; set; }
         public string GroupName { get; set; }
         public string GroupType { get; set; }
+
+        public EmailAwardViewModel EmailAwardModel { get; set; }
     }
 }

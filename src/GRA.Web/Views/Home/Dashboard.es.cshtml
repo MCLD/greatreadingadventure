@@ -50,17 +50,22 @@
     </div>
 }
 
-@if (Model.HasPendingDonationQuestion)
+@if (Model.HasPendingVendorCodeQuestion)
 {
     <div class="row">
         <div class="col-xs-12 text-center">
             <div class="alert alert-success" style="font-size:large">
-                You've earned a free book! Head over to <a asp-controller="Profile" asp-action="Index"><strong>My Profile</strong></a> page
                 @if (Model.VendorCodeExpiration.HasValue)
                 {
-                    <text>by @Model.VendorCodeExpiration.Value.AddMilliseconds(-1).ToString("MMMM dd")</text>
+                    @SharedHtmlLocalizer[GRA.Annotations.Info.FreeBookRedeemExpirationDashboard,
+                        Url.Action(nameof(ProfileController.Index), ProfileController.Name),
+                        Model.VendorCodeExpiration.Value.AddMilliseconds(-1).ToString("MMMM dd")]
                 }
-                to redeem or donate it!
+                else
+                {
+                    @SharedHtmlLocalizer[GRA.Annotations.Info.FreeBookRedeemDashboard,
+                        Url.Action(nameof(ProfileController.Index), ProfileController.Name)]
+                }
             </div>
         </div>
     </div>
@@ -128,8 +133,8 @@
             <div class="panel-body text-center">
                 <span class="lead">@SharedHtmlLocalizer["Welcome <strong>{0}!</strong>", Model.FirstName]</span>
                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessPerformerRegistration))
-                   && !Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessMissionControl))
-                   && Model.SiteStage == GRA.Domain.Model.SiteStage.BeforeRegistration)
+        && !Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessMissionControl))
+        && Model.SiteStage == GRA.Domain.Model.SiteStage.BeforeRegistration)
                 {
                     <p class="lead" style="padding-top: 2rem;">
                         Welcome, performer! Please click on the theater masks icon at the top of the
@@ -344,6 +349,31 @@
             @:&nbsp;
         }
     </div>
+
+    @if (Model.UpcomingStreams?.Count() > 0)
+    {
+        <div class="col-sm-3 text-center">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <a asp-controller="@EventsController.Name"
+                       asp-action="@nameof(EventsController.StreamingEvents)"
+                       class="lead">@SharedLocalizer[GRA.Annotations.Interface.StreamingEvents]</a>
+                </div>
+                <ul class="list-group">
+                    @foreach (var stream in Model.UpcomingStreams)
+                    {
+                        <li class="list-group-item">
+                            <a href="@Url.Action(nameof(EventsController.Stream),
+                                    EventsController.Name,
+                                    new { id = stream.Id })">
+                                @stream.Name
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    }
 </div>
 
 @if (!string.IsNullOrWhiteSpace(Model.DashboardPageContent))

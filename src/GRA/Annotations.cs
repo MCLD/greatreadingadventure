@@ -37,6 +37,8 @@
             public const string ConfirmBookDelete = "Are you sure you want to delete this book from your book list:";
             public const string CouldNotFind = "We couldn't find what you were looking for. Sorry about that!";
             public const string EventLimitedToProgram = "This event is limited to the program: {0}";
+            public const string FreeBookRedeemDashboard = "You've earned a free book! Head over to <a href=\"{0}\"><strong>My Profile</strong></a> page to choose what to do with it.";
+            public const string FreeBookRedeemExpirationDashboard = "You've earned a free book! Head over to <a href=\"{0}\"><strong>My Profile</strong></a> page by {1} to choose what to do with it.";
             public const string Goal = "The goal of this program is {0} points.";
             public const string GroupAdd = "Add existing participant to your {0}";
             public const string GroupCannot = "A {0} cannot be created at this time.";
@@ -48,6 +50,7 @@
             public const string MailForHelp = "If you can't find something, please <a href=\"{0}\">send us a mail</a> and let us know what you were looking for, we'll do our best to help.";
             public const string NoBooksLogged = "No books logged.";
             public const string NoHistory = "No history to display.";
+            public const string OpensNewWindow = "Opens new window.";
             public const string PasswordRecoverySent = "A password recovery email has been sent to the email for username '{0}'.";
             public const string PasswordResetFor = "Password reset for: {0}";
             public const string PointSingular = "{0} point";
@@ -87,9 +90,11 @@
             public const string BookList = "Book List";
             public const string Cancel = "Cancel";
             public const string ChangePassword = "Change Password";
+            public const string ChooseAnOption = "Choose an option:";
             public const string Clear = "Clear";
             public const string CommunityExperiences = "Community Experiences";
             public const string Completed = "Completed!";
+            public const string Confirm = "Confirm";
             public const string CouldNotCreate = "Could not create {0}: {1}";
             public const string CouldNotRemove = "Could not remove {0}: {1}";
             public const string CouldNotUpdate = "Could not update {0}: {1}.";
@@ -104,7 +109,10 @@
             public const string EnterAddressOrZipCode = "Enter an address or ZIP code";
             public const string EnterChallengeSearch = "Enter text to search for a challenge here";
             public const string EnterEventSearch = "Enter text to search for an event here";
+            public const string EventHasEnded = "This streaming event has ended.";
             public const string Events = "Events";
+            public const string EventNotFound = "Could not find the requested event.";
+            public const string EventNotStarted = "This streaming event has not started yet.";
             public const string Family = "Family";
             public const string Find = "Find";
             public const string FreeBookCode = "Free book code";
@@ -121,11 +129,14 @@
             public const string NoChallenges = "No Challenges";
             public const string NoEvents = "No Events";
             public const string NoMail = "You currently have no mail.";
+			public const string NotStreamingYet = "Not streaming yet";
             public const string PasswordChanged = "Your password has been changed.";
             public const string PointsYoullEarn = "Points you'll earn";
             public const string ProfileUpdated = "Profile updated.";
+            public const string ProgramIsOver = "Program is over";
             public const string Progress = "Progress";
             public const string Read = "Read";
+            public const string ReceiveEAudiobook = "Receive an e-audiobook";
             public const string RedeemCode = "Redeem code";
             public const string RedeemYourCode = "Redeem your code";
             public const string RelatedChallenge = "Related Challenge";
@@ -143,6 +154,12 @@
             public const string SentOn = "Sent to you on {0}";
             public const string Share = "Share";
             public const string SignedInAs = "You are now signed in as {0}.";
+            public const string SignInForStreams = "Sign in to access streaming programs!";
+            public const string SignInToStream = "Sign in to stream!";
+            public const string Stream = "Stream";
+            public const string StreamingEvents = "Streaming Events";
+            public const string StreamNow = "Stream Now!";
+            public const string StreamStarts = "Stream starts";
             public const string Subject = "Subject: {0}";
             public const string SwitchTo = "Switch To";
             public const string TotalPoints = "Total Points";
@@ -204,6 +221,7 @@
 
         public static class Validate
         {
+            public const string AuthorizationCodeWarning = "To activate an authorization code, please sign in or <a href=\"{0}\">join</a>.";
             public const string BookTitle = "When providing an author of a book, please also provide a title.";
             public const string Branch = "The branch you've selected is not valid, please select another branch.";
             public const string CodeAlready = "All selected participants already have that Secret Code.";

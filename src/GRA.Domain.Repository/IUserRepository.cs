@@ -55,5 +55,6 @@ namespace GRA.Domain.Repository
         Task<bool> HasReceivedBulkEmailAsync(int emailTemplateId, string emailAddress);
         Task AddBulkEmailLogAsync(int userId, int emailTemplateId, string emailAddress);
         Task<ICollection<User>> GetUsersByEmailAddressAsync(string email);
+        Task<bool> IsEmailSubscribedAsync(string email);
     }
 }

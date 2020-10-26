@@ -20,12 +20,14 @@ namespace GRA.Domain.Report
         private readonly IBranchRepository _branchRepository;
         private readonly ISystemRepository _systemRepository;
         private readonly IVendorCodeRepository _vendorCodeRepository;
+        private readonly IVendorCodeTypeRepository _vendorCodeTypeRepository;
 
         public VendorCodeReport(ILogger<TopScoresReport> logger,
             Domain.Report.ServiceFacade.Report serviceFacade,
             IBranchRepository branchRepository,
             ISystemRepository systemRepository,
-            IVendorCodeRepository vendorCodeRepository) : base(logger, serviceFacade)
+            IVendorCodeRepository vendorCodeRepository,
+            IVendorCodeTypeRepository vendorCodeTypeRepository) : base(logger, serviceFacade)
         {
             _branchRepository = branchRepository
                 ?? throw new ArgumentException(nameof(branchRepository));
@@ -33,6 +35,8 @@ namespace GRA.Domain.Report
                 ?? throw new ArgumentException(nameof(systemRepository));
             _vendorCodeRepository = vendorCodeRepository
                 ?? throw new ArgumentException(nameof(vendorCodeRepository));
+            _vendorCodeTypeRepository = vendorCodeTypeRepository
+                ?? throw new ArgumentNullException(nameof(vendorCodeTypeRepository));
         }
 
         public override async Task ExecuteAsync(ReportRequest request,
@@ -67,6 +71,8 @@ namespace GRA.Domain.Report
 
             var askIfFirstTime
                = await GetSiteSettingBoolAsync(criterion, SiteSettingKey.Users.AskIfFirstTime);
+            var reportEmailAwardData
+                = await _vendorCodeTypeRepository.SiteHasEmailAwards(criterion.SiteId.Value);
             #endregion Reporting initialization
 
             #region Collect data
@@ -85,10 +91,18 @@ namespace GRA.Domain.Report
             {
                 headerRow.Add("First Time # Earned");
                 headerRow.Add("First Time # Ordered");
+                if (reportEmailAwardData)
+                {
+                    headerRow.Add("First Time # Email Awarded");
+                }
             }
 
             headerRow.Add("# Earned");
             headerRow.Add("# Ordered");
+            if (reportEmailAwardData)
+            {
+                headerRow.Add("# Email Awarded");
+            }
 
             report.HeaderRow = headerRow.ToArray();
 
@@ -97,9 +111,11 @@ namespace GRA.Domain.Report
             // running totals
             int totalEarned = 0;
             int totalOrdered = 0;
+            int totalEmailAwarded = 0;
 
             int totalFirstEarned = 0;
             int totalFirstOrdered = 0;
+            int totalFirstEmailAwarded = 0;
 
             var branches = criterion.SystemId != null
                 ? await _branchRepository.GetBySystemAsync((int)criterion.SystemId)
@@ -147,6 +163,14 @@ namespace GRA.Domain.Report
 
                         totalFirstEarned += firstEarnedCodes;
                         totalFirstOrdered += firstUsedCodes;
+
+                        if (reportEmailAwardData)
+                        {
+                            int firstEmailAwardCodes = firstVendorCodes
+                                .Count(_ => _.EmailAwardSent.HasValue);
+                            row.Add(firstEmailAwardCodes);
+                            totalFirstEmailAwarded += firstEmailAwardCodes;
+                        }
                     }
 
                     var vendorCodes = await _vendorCodeRepository.GetEarnedCodesAsync(criterion);
@@ -158,6 +182,14 @@ namespace GRA.Domain.Report
 
                     row.Add(earnedCodes);
                     row.Add(usedCodes);
+
+                    if (reportEmailAwardData)
+                    {
+                        int emailAwardCodes = vendorCodes
+                            .Count(_ => _.EmailAwardSent.HasValue);
+                        totalEmailAwarded += emailAwardCodes;
+                        row.Add(emailAwardCodes);
+                    }
 
                     reportData.Add(row.ToArray());
 
@@ -181,10 +213,18 @@ namespace GRA.Domain.Report
             {
                 footerRow.Add(totalFirstEarned);
                 footerRow.Add(totalFirstOrdered);
+                if (reportEmailAwardData)
+                {
+                    footerRow.Add(totalFirstEmailAwarded);
+                }
             }
 
             footerRow.Add(totalEarned);
             footerRow.Add(totalOrdered);
+            if (reportEmailAwardData)
+            {
+                footerRow.Add(totalEmailAwarded);
+            }
 
             report.FooterRow = footerRow.ToArray();
 

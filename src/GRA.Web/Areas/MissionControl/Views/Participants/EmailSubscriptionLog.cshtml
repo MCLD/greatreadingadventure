@@ -30,7 +30,10 @@
                                     {
                                         @if (auditLog.CreatedBy != auditLog.UserId)
                                         {
-                                            <a asp-action="Detail" asp-route-id="@auditLog.CreatedBy" target="_blank">Token with same email</a>
+                                            <a aria-label="Token with same email (Opens new window)"
+                                               asp-action="Detail"
+                                               asp-route-id="@auditLog.CreatedBy"
+                                               target="_blank">Token with same email</a>
                                         }
                                         else
                                         {
@@ -39,7 +42,10 @@
                                     }
                                     else
                                     {
-                                        <a asp-action="Detail" asp-route-id="@auditLog.CreatedBy" target="_blank">@auditLog.CreatedByName</a>
+                                        <a aria-label="@auditLog.CreatedByName (Opens new window)"
+                                           asp-action="Detail"
+                                           asp-route-id="@auditLog.CreatedBy"
+                                           target="_blank">@auditLog.CreatedByName</a>
                                     }
                                 </td>
                             </tr>

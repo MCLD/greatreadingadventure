@@ -1,0 +1,21 @@
+﻿@model GRA.Controllers.ViewModel.Events.StreamViewModel
+
+<div class="row">
+    <div class="col-sm-12">
+        <h1>@Model.EventName</h1>
+    </div>
+</div>
+<div class="row row-spacing">
+    <div class="col-sm-12">
+        @Html.Raw(Model.Embed)
+    </div>
+</div>
+<div class="row row-spacing">
+    <div class="col-sm-12 text-center">
+        <a href="@Url.Action(nameof(EventsController.StreamingEvents))"
+           class="btn btn-default">
+            <span class="fa fa-calendar"></span>
+            @SharedLocalizer[GRA.Annotations.Interface.StreamingEvents]
+        </a>
+    </div>
+</div>

@@ -96,7 +96,13 @@
                                     @group.Description
                                 </td>
                                 <td>
-                                    <a asp-area="" asp-controller="Challenges" asp-action="List" asp-route-id="@group.Stub" target="_blank" class="on-top-nobg">@group.Stub</a>
+                                    <a aria-label="@group.Stub (Opens new window)"
+                                       asp-area=""
+                                       asp-controller="Challenges"
+                                       asp-action="List"
+                                       asp-route-id="@group.Stub"
+                                       target="_blank"
+                                       class="on-top-nobg">@group.Stub</a>
                                 </td>
                                 @if (Model.CanEditGroups)
                                 {

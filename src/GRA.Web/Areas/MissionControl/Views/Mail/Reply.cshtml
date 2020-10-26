@@ -12,7 +12,10 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <span class="lead">
-                        Replying to: <a target="_blank" href="@Model.ParticipantLink">@Model.ParticipantName</a>
+                        Replying to:
+                        <a aria-label="@Model.ParticipantName (Opens new window)"
+                           target="_blank"
+                           href="@Model.ParticipantLink">@Model.ParticipantName</a>
                     </span>
                 </div>
                 <div class="panel-body">

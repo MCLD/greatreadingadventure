@@ -26,11 +26,20 @@ else
                         <td>
                             @if (Model.CanEditChallenges)
                             {
-                                <a asp-controller="Challenges" asp-action="Edit" asp-route-id="@challenge.Id" target="_blank">@challenge.Name</a>
+                                <a aria-label="@challenge.Name (Opens new window)"
+                                   asp-controller="Challenges"
+                                   asp-action="Edit"
+                                   asp-route-id="@challenge.Id"
+                                   target="_blank">@challenge.Name</a>
                             }
                             else
                             {
-                                <a asp-area="" asp-controller="Challenges" asp-action="Details" asp-route-id="@challenge.Id"  target="_blank">@challenge.Name</a>
+                                <a aria-label="@challenge.Name (Opens new window)"
+                                   asp-area=""
+                                   asp-controller="Challenges"
+                                   asp-action="Details"
+                                   asp-route-id="@challenge.Id"
+                                   target="_blank">@challenge.Name</a>
 
                             }
 

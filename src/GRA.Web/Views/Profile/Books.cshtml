@@ -131,14 +131,14 @@
                             <table class="table table-condensed table-bordered table-striped">
                                 <thead>
                                     <tr>
-                                        <th><a sort 
-                                               asp-route-Sort="@Model.SortBooks.GetValue(0)" 
+                                        <th><a sort
+                                               asp-route-Sort="@Model.SortBooks.GetValue(0)"
                                                asp-route-Order="@(Model.Sort == Model.SortBooks.GetValue(0).ToString() && !Model.IsDescending ? "Descending" : "Ascending")">@SharedLocalizer[GRA.Annotations.Title.Date]</a></th>
-                                        <th><a sort 
-                                               asp-route-Sort="@Model.SortBooks.GetValue(1)" 
+                                        <th><a sort
+                                               asp-route-Sort="@Model.SortBooks.GetValue(1)"
                                                asp-route-Order="@(Model.Sort == Model.SortBooks.GetValue(1).ToString() && !Model.IsDescending ? "Descending" : "Ascending")">@SharedLocalizer[GRA.Domain.Model.DisplayNames.Title]</a></th>
                                         <th><a sort
-                                               asp-route-Sort="@Model.SortBooks.GetValue(2)" 
+                                               asp-route-Sort="@Model.SortBooks.GetValue(2)"
                                                asp-route-Order="@(Model.Sort == Model.SortBooks.GetValue(2).ToString() && !Model.IsDescending ? "Descending" : "Ascending")">@SharedLocalizer[GRA.Domain.Model.DisplayNames.Author]</a></th>
                                         @if (Model.CanEditBooks)
                                         {

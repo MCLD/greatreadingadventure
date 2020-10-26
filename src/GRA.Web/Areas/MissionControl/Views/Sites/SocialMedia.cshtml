@@ -9,14 +9,22 @@
         <div class="col-xs-12 col-sm-6">
             <label asp-for="FacebookAppId" class="control-label"></label>
             <span class="fa fa-question-circle-o wide-tooltip" title="Necessary for Open Graph sharing to work" data-toggle="tooltip" data-placement="top"></span>
-            <a href="https://developers.facebook.com/docs/opengraph/getting-started/" target="_blank"><span class="fa fa-info-circle wide-tooltip" title="Click for more info" data-toggle="tooltip" data-placement="top"></span></a>
+            <a aria-label="Click for more Info (Opens new window)"
+               href="https://developers.facebook.com/docs/opengraph/getting-started/"
+               target="_blank">
+                <span class="fa fa-info-circle wide-tooltip" title="Click for more info" data-toggle="tooltip" data-placement="top"></span>
+            </a>
             <input asp-for="FacebookAppId" type="text" class="form-control" />
             <span asp-validation-for="FacebookAppId" class="text-danger"></span>
         </div>
         <div class="col-xs-12 col-sm-6">
             <label asp-for="FacebookImageUrl" class="control-label"></label>
             <span class="fa fa-question-circle-o wide-tooltip" title="URL to an Open Graph image to be used when your site is shared" data-toggle="tooltip" data-placement="top"></span>
-            <a href="http://ogp.me/" target="_blank"><span class="fa fa-info-circle wide-tooltip" title="Click for more info" data-toggle="tooltip" data-placement="top"></span></a>
+            <a aria-label="Click for more info (Opens new window)"
+               href="http://ogp.me/"
+               target="_blank">
+                <span class="fa fa-info-circle wide-tooltip" title="Click for more info" data-toggle="tooltip" data-placement="top"></span>
+            </a>
             <input asp-for="FacebookImageUrl" type="text" class="form-control" />
             <span asp-validation-for="FacebookImageUrl" class="text-danger"></span>
         </div>
@@ -32,7 +40,11 @@
         <div class="col-xs-12 col-sm-6">
             <label asp-for="TwitterCardImageUrl" class="control-label"></label>
             <span class="fa fa-question-circle-o wide-tooltip" title="URL to a Twitter image to be used when your site is shared" data-toggle="tooltip" data-placement="top"></span>
-            <a href="https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/abouts-cards" target="_blank"><span class="fa fa-info-circle wide-tooltip" title="Click for more info" data-toggle="tooltip" data-placement="top"></span></a>
+            <a aria-label="Click for more info (Opens new window)"
+               href="https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/abouts-cards"
+               target="_blank">
+                <span class="fa fa-info-circle wide-tooltip" title="Click for more info" data-toggle="tooltip" data-placement="top"></span>
+            </a>
             <input asp-for="TwitterCardImageUrl" type="text" class="form-control" />
             <span asp-validation-for="TwitterCardImageUrl" class="text-danger"></span>
         </div>
@@ -42,7 +54,11 @@
         <div class="col-xs-12">
             <label asp-for="TwitterLargeCard" class="control-label"></label>
             <span class="fa fa-question-circle-o wide-tooltip" title="Whether to use a summary card or summary card with large image" data-toggle="tooltip" data-placement="top"></span>
-            <a href="https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/abouts-cards" target="_blank"><span class="fa fa-info-circle wide-tooltip" title="Click for more info" data-toggle="tooltip" data-placement="top"></span></a>
+            <a aria-label="Click for more info (Opens new window)"
+               href="https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/abouts-cards"
+               target="_blank">
+                <span class="fa fa-info-circle wide-tooltip" title="Click for more info" data-toggle="tooltip" data-placement="top"></span>
+            </a>
             <select asp-for="TwitterLargeCard" class="form-control">
                 <option></option>
                 <option value="false">No</option>

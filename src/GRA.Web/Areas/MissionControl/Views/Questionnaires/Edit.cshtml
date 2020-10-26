@@ -86,7 +86,10 @@
         </div>
     </div>
 
-    <a href="@Url.Action("Preview", new { id = Model.Questionnaire.Id })" target="_blank" class="btn btn-primary">Preview</a>
+    <a aria-label="Preview (Opens new window)"
+       href="@Url.Action("Preview", new { id = Model.Questionnaire.Id })"
+       target="_blank"
+       class="btn btn-primary">Preview</a>
 
     <h3>Questions</h3>
 

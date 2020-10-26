@@ -1,6 +1,6 @@
-﻿using GRA.Domain.Model;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using GRA.Domain.Model;
 
 namespace GRA.Domain.Repository
 {
@@ -11,5 +11,9 @@ namespace GRA.Domain.Repository
         Task<VendorCode> GetByCode(string code);
         Task<ICollection<VendorCode>> GetEarnedCodesAsync(ReportCriterion criterion);
         Task<ICollection<VendorCode>> GetPendingHouseholdCodes(int headOfHouseholdId);
+
+        Task<ICollection<VendorCodeEmailAward>> GetUnreportedEmailAwardCodes(int siteId,
+            int vendorCodeTypeId);
+        Task<VendorCodeStatus> GetStatusAsync();
     }
 }
