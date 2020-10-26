@@ -109,8 +109,6 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
-            var requireSecretCode = await GetSiteSettingBoolAsync(
-                    SiteSettingKey.Events.RequireBadge);
             foreach (var trigger in triggerList.Data)
             {
                 trigger.AwardBadgeFilename =
@@ -255,7 +253,7 @@ namespace GRA.Controllers.MissionControl
                     && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker))
             {
                 if (!ValidImageExtensions.Contains(
-                    Path.GetExtension(model.BadgeUploadImage.FileName).ToLower()))
+                    Path.GetExtension(model.BadgeUploadImage.FileName).ToLowerInvariant()))
                 {
                     ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                 }
@@ -301,12 +299,9 @@ namespace GRA.Controllers.MissionControl
                 ModelState.AddModelError("Trigger.SecretCode", "That Secret Code already exists.");
             }
 
-            if (model.AwardsPrize)
+            if (model.AwardsPrize && string.IsNullOrWhiteSpace(model.Trigger.AwardPrizeName))
             {
-                if (string.IsNullOrWhiteSpace(model.Trigger.AwardPrizeName))
-                {
-                    ModelState.AddModelError("Trigger.AwardPrizeName", "The Prize Name field is required.");
-                }
+                ModelState.AddModelError("Trigger.AwardPrizeName", "The Prize Name field is required.");
             }
             if (model.AwardsMail)
             {
@@ -331,7 +326,10 @@ namespace GRA.Controllers.MissionControl
                         model.Trigger.LimitToSystemId = null;
                         model.Trigger.LimitToBranchId = null;
                         model.Trigger.LimitToProgramId = null;
-                        model.Trigger.SecretCode = model.Trigger.SecretCode.Trim().ToLower();
+                        model.Trigger.SecretCode = model
+                            .Trigger.SecretCode
+                            .Trim()
+                            .ToLowerInvariant();
                         model.Trigger.BadgeIds = new List<int>();
                         model.Trigger.ChallengeIds = new List<int>();
                     }
@@ -537,7 +535,7 @@ namespace GRA.Controllers.MissionControl
                     && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker))
             {
                 if (!ValidImageExtensions.Contains(
-                    Path.GetExtension(model.BadgeUploadImage.FileName).ToLower()))
+                    Path.GetExtension(model.BadgeUploadImage.FileName).ToLowerInvariant()))
                 {
                     ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                 }
@@ -582,12 +580,9 @@ namespace GRA.Controllers.MissionControl
             {
                 ModelState.AddModelError("Trigger.SecretCode", "That Secret Code already exists.");
             }
-            if (model.AwardsPrize)
+            if (model.AwardsPrize && string.IsNullOrWhiteSpace(model.Trigger.AwardPrizeName))
             {
-                if (string.IsNullOrWhiteSpace(model.Trigger.AwardPrizeName))
-                {
-                    ModelState.AddModelError("Trigger.AwardPrizeName", "The Prize Name field is required.");
-                }
+                ModelState.AddModelError("Trigger.AwardPrizeName", "The Prize Name field is required.");
             }
             if (model.AwardsMail)
             {
@@ -611,7 +606,11 @@ namespace GRA.Controllers.MissionControl
                         model.Trigger.LimitToSystemId = null;
                         model.Trigger.LimitToBranchId = null;
                         model.Trigger.LimitToProgramId = null;
-                        model.Trigger.SecretCode = model.Trigger.SecretCode.Trim().ToLower();
+                        model.Trigger.SecretCode = model
+                            .Trigger
+                            .SecretCode
+                            .Trim()
+                            .ToLowerInvariant();
                         model.Trigger.BadgeIds = new List<int>();
                         model.Trigger.ChallengeIds = new List<int>();
                     }
@@ -634,13 +633,11 @@ namespace GRA.Controllers.MissionControl
                     if (model.BadgeUploadImage != null
                         || !string.IsNullOrWhiteSpace(model.BadgeMakerImage))
                     {
-                        string filename;
                         if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage)
                             && (model.BadgeUploadImage == null || model.UseBadgeMaker))
                         {
                             var badgeString = model.BadgeMakerImage.Split(',').Last();
                             badgeBytes = Convert.FromBase64String(badgeString);
-                            filename = "badge.png";
                         }
                         else
                         {
@@ -652,13 +649,14 @@ namespace GRA.Controllers.MissionControl
                                     badgeBytes = ms.ToArray();
                                 }
                             }
-                            filename = Path.GetFileName(model.BadgeUploadImage.FileName);
                         }
 
                         var existing = await _badgeService
                                     .GetByIdAsync(model.Trigger.AwardBadgeId);
                         existing.Filename = Path.GetFileName(model.BadgePath);
-                        await _badgeService.ReplaceBadgeFileAsync(existing, badgeBytes);
+                        await _badgeService.ReplaceBadgeFileAsync(existing,
+                            badgeBytes,
+                            model.BadgeUploadImage.FileName);
                     }
                     var savedtrigger = await _triggerService.UpdateAsync(model.Trigger);
                     ShowAlertSuccess($"Trigger '<strong>{savedtrigger.Name}</strong>' was successfully modified");

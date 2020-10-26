@@ -167,6 +167,14 @@ namespace GRA
                     Info = "Maximum file size of a badge in kilobytes allowed to be uploaded.",
                     Category = typeof(SiteSettingKey.Badges).Name,
                     Format = SiteSettingFormat.Integer
+                },
+                [SiteSettingKey.Badges.MaxDimension] =
+                new SiteSettingDefinition
+                {
+                    Name = "Max Dimension",
+                    Info = "Maximum size in pixels (width or height) allowed for a badge.",
+                    Category = typeof(SiteSettingKey.Badges).Name,
+                    Format = SiteSettingFormat.Integer
                 }
             };
     }

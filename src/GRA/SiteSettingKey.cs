@@ -5,6 +5,7 @@
         public struct Badges : System.IEquatable<Badges>
         {
             public static readonly string MaxFileSize = "Badges.MaxFileSize";
+            public static readonly string MaxDimension = "Badges.MaxDimension";
 
             public bool Equals(Badges other) { return true; }
         }

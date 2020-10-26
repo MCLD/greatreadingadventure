@@ -118,7 +118,7 @@ namespace GRA.Controllers.MissionControl
                     && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker))
                 {
                     if (!ValidImageExtensions.Contains(
-                        Path.GetExtension(model.BadgeUploadImage.FileName).ToLower()))
+                        Path.GetExtension(model.BadgeUploadImage.FileName).ToLowerInvariant()))
                     {
                         ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                     }
@@ -331,7 +331,9 @@ namespace GRA.Controllers.MissionControl
                             var existing = await _badgeService
                                         .GetByIdAsync(model.Program.JoinBadgeId.Value);
                             existing.Filename = Path.GetFileName(model.BadgePath);
-                            await _badgeService.ReplaceBadgeFileAsync(existing, badgeBytes);
+                            await _badgeService.ReplaceBadgeFileAsync(existing,
+                                badgeBytes,
+                                model.BadgeUploadImage.FileName);
                         }
                         else
                         {

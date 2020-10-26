@@ -299,13 +299,15 @@ namespace GRA.Controllers.MissionControl
                 double pointsPerChallenge = (double)model.Challenge.PointsAwarded / model.Challenge.TasksToComplete.Value;
                 if (pointsPerChallenge > site.MaxPointsPerChallengeTask)
                 {
-                    ModelState.AddModelError("Challenge.PointsAwarded", $"Too many points awarded.");
+                    ModelState.AddModelError("Challenge.PointsAwarded", "Too many points awarded.");
                 }
             }
             if (model.BadgeUploadImage != null
                 && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker))
             {
-                if (!ValidImageExtensions.Contains(Path.GetExtension(model.BadgeUploadImage.FileName).ToLower()))
+                if (!ValidImageExtensions.Contains(Path
+                    .GetExtension(model.BadgeUploadImage.FileName)
+                    .ToLowerInvariant()))
                 {
                     ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                 }
@@ -384,7 +386,7 @@ namespace GRA.Controllers.MissionControl
         {
             var site = await GetCurrentSiteAsync();
             var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
-            var challenge = new Challenge();
+            Challenge challenge;
             try
             {
                 challenge = await _challengeService.MCGetChallengeDetailsAsync(id);
@@ -503,13 +505,15 @@ namespace GRA.Controllers.MissionControl
                 double pointsPerChallenge = (double)model.Challenge.PointsAwarded / model.Challenge.TasksToComplete.Value;
                 if (pointsPerChallenge > site.MaxPointsPerChallengeTask)
                 {
-                    ModelState.AddModelError("Challenge.PointsAwarded", $"Too many points awarded.");
+                    ModelState.AddModelError("Challenge.PointsAwarded", "Too many points awarded.");
                 }
             }
             if (model.BadgeUploadImage != null
                 && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker))
             {
-                if (!ValidImageExtensions.Contains(Path.GetExtension(model.BadgeUploadImage.FileName).ToLower()))
+                if (!ValidImageExtensions.Contains(Path
+                    .GetExtension(model.BadgeUploadImage.FileName)
+                    .ToLowerInvariant()))
                 {
                     ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                 }
@@ -568,7 +572,9 @@ namespace GRA.Controllers.MissionControl
                         var existing = await _badgeService
                                     .GetByIdAsync((int)challenge.BadgeId);
                         existing.Filename = Path.GetFileName(model.BadgePath);
-                        await _badgeService.ReplaceBadgeFileAsync(existing, badgeBytes);
+                        await _badgeService.ReplaceBadgeFileAsync(existing,
+                            badgeBytes,
+                            model.BadgeUploadImage.FileName);
                     }
                 }
                 try
@@ -580,16 +586,17 @@ namespace GRA.Controllers.MissionControl
                         ShowAlertWarning(serviceResult.Message);
                     }
                     AlertSuccess = $"Challenge '<strong>{challenge.Name}</strong>' was successfully modified";
+
+                    var hasPermissions = UserHasPermission(Permission.ActivateAllChallenges)
+                            || UserHasPermission(Permission.ActivateSystemChallenges);
+
                     if (Submit == "Activate"
-                        && (UserHasPermission(Permission.ActivateAllChallenges)
-                            || (UserHasPermission(Permission.ActivateSystemChallenges)
-                                && challenge.RelatedSystemId == GetId(ClaimType.SystemId))))
+                        && hasPermissions
+                        && challenge.RelatedSystemId == GetId(ClaimType.SystemId)
+                        && serviceResult.Data.IsValid)
                     {
-                        if (serviceResult.Data.IsValid)
-                        {
-                            await _challengeService.ActivateChallengeAsync(serviceResult.Data);
-                            AlertSuccess = $"Challenge '<strong>{challenge.Name}</strong>' was successfully modified and activated";
-                        }
+                        await _challengeService.ActivateChallengeAsync(serviceResult.Data);
+                        AlertSuccess = $"Challenge '<strong>{challenge.Name}</strong>' was successfully modified and activated";
                     }
                 }
                 catch (GraException gex)
@@ -699,17 +706,19 @@ namespace GRA.Controllers.MissionControl
                 }
             }
 
-            foreach (string key in ModelState.Keys.Where(m => m.StartsWith("Challenge.")).ToList())
+            foreach (string key in ModelState
+                .Keys
+                .Where(m => m.StartsWith("Challenge.", StringComparison.OrdinalIgnoreCase))
+                .ToList())
             {
                 ModelState.Remove(key);
             }
 
-            if (viewModel.TaskUploadFile != null)
+            if (viewModel.TaskUploadFile != null && !ValidUploadExtensions.Contains(Path
+                    .GetExtension(viewModel.TaskUploadFile.FileName)
+                    .ToLowerInvariant()))
             {
-                if (!ValidUploadExtensions.Contains(Path.GetExtension(viewModel.TaskUploadFile.FileName).ToLower()))
-                {
-                    ModelState.AddModelError("BadgeUploadImage", $"File upload must be one of the following types: {string.Join(", ", ValidUploadExtensions)}");
-                }
+                ModelState.AddModelError("BadgeUploadImage", $"File upload must be one of the following types: {string.Join(", ", ValidUploadExtensions)}");
             }
 
             if (ModelState.IsValid)
@@ -774,17 +783,20 @@ namespace GRA.Controllers.MissionControl
                 }
             }
 
-            foreach (string key in ModelState.Keys.Where(m => m.StartsWith("Challenge.")).ToList())
+            foreach (string key in ModelState
+                .Keys
+                .Where(m => m.StartsWith("Challenge.", StringComparison.OrdinalIgnoreCase))
+                .ToList())
             {
                 ModelState.Remove(key);
             }
 
-            if (viewModel.TaskUploadFile != null)
+            if (viewModel.TaskUploadFile != null
+                && !ValidUploadExtensions.Contains(Path
+                    .GetExtension(viewModel.TaskUploadFile.FileName)
+                    .ToLowerInvariant()))
             {
-                if (!ValidUploadExtensions.Contains(Path.GetExtension(viewModel.TaskUploadFile.FileName).ToLower()))
-                {
-                    ModelState.AddModelError("BadgeUploadImage", $"File upload must be one of the following types: {string.Join(", ", ValidUploadExtensions)}");
-                }
+                ModelState.AddModelError("BadgeUploadImage", $"File upload must be one of the following types: {string.Join(", ", ValidUploadExtensions)}");
             }
 
             if (ModelState.IsValid)
