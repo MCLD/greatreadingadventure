@@ -70,12 +70,14 @@ namespace GRA.Domain.Service
                                 throw new GraException($"Unable to find branch named {record.BranchName} for system {record.SystemName} in branch list.");
                             }
 
+                            var badgeBytes = File.ReadAllBytes(record.BadgeFilePath);
+                            await _badgeService.ValidateBadgeImageAsync(badgeBytes);
+
                             var badge = new Badge
                             {
                                 Filename = "badge.png"
                             };
-                            var addedBadge = await _badgeService.AddBadgeAsync(badge,
-                                File.ReadAllBytes(record.BadgeFilePath));
+                            var addedBadge = await _badgeService.AddBadgeAsync(badge, badgeBytes);
 
                             if (record.Name.Length > 255)
                             {

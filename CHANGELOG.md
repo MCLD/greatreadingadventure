@@ -52,6 +52,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - User favoriting of events
 - User filtering challenges and events by completed/uncompleted
 - User badge gallery
+- Badge max file size site setting
 
 ### Changed
 - Script docker-build.bash to only build release images when branch starts with 'release/'
@@ -68,6 +69,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Add assemblies to AutoMapper service injection
 - Household import to use the job system
 - Reporting SQL IN clause error
+- Badge image dimension restrictions
 
 ### Fixed
 - Instance name enrichment for logging
