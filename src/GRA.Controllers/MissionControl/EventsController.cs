@@ -354,7 +354,7 @@ namespace GRA.Controllers.MissionControl
                 }
                 if (string.IsNullOrWhiteSpace(model.BadgeAltText))
                 {
-                    ModelState.AddModelError("BadgeAltText", "The Badge's Alt-Text is required.");
+                    ModelState.AddModelError("BadgeAltText", "The Badge's alternative text is required.");
                 }
             }
             else

@@ -1395,6 +1395,6 @@
   </data>
   <data name="This badge was awarded when you unlocked the avatar bundle: {0}" xml:space="preserve">
     <value>This badge was awarded when you unlocked the avatar bundle: {0}</value>
-    <comment>The alt-text description for unlocking an avatar bundle.</comment>
+    <comment>The alternative text description for unlocking an avatar bundle.</comment>
   </data>
 </root>

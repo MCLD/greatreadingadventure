@@ -21,7 +21,7 @@ namespace GRA.Domain.Model
         [MaxLength(255)]
         public string JoinBadgeName { get; set; }
 
-        [DisplayName("Badge Alt-Text")]
+        [DisplayName("Badge Alternative Text")]
         [MaxLength(255)]
         public string JoinBadgeAltText { get; set; }
 

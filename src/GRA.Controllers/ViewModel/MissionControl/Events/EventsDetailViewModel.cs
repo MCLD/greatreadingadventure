@@ -37,7 +37,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Events
         public string BadgeMakerImage { get; set; }
 
         [MaxLength(255)]
-        [DisplayName("Badge Alt-Text")]
+        [DisplayName("Badge Alternative Text")]
         public string BadgeAltText { get; set; }
 
         public bool CanAddSecretCode { get; set; }
