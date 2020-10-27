@@ -2025,16 +2025,14 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
-                const int take = 15;
-                int skip = take * (page - 1);
-                var history = await _userService
-                    .GetPaginatedUserHistoryAsync(id, skip, take);
+                var filter = new UserLogFilter(page);
+                var history = await _userService.GetPaginatedUserHistoryAsync(id, filter);
 
                 var paginateModel = new PaginateViewModel
                 {
                     ItemCount = history.Count,
                     CurrentPage = page,
-                    ItemsPerPage = take
+                    ItemsPerPage = filter.Take.Value
                 };
                 if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
                 {

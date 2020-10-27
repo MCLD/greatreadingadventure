@@ -557,20 +557,34 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<DataWithCount<IEnumerable<UserLog>>>
-            GetPaginatedUserHistoryAsync(int userId,
-            int skip,
-            int take)
+        public async Task<UserLog> GetUserLogByIdAsync(int id)
+        {
+            int requestedByUserId = GetActiveUserId();
+
+            var userLog = await _userLogRepository.GetByIdAsync(id);
+
+            if (requestedByUserId == userLog.UserId)
+            {
+                return userLog;
+            }
+            else
+            {
+                _logger.LogError("User {UserId} doesn't have permission to view user log {UserLogId}",
+                   requestedByUserId,
+                   id);
+                throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
+            }
+        }
+
+        public async Task<DataWithCount<ICollection<UserLog>>>
+            GetPaginatedUserHistoryAsync(int userId, UserLogFilter filter)
         {
             int requestedByUserId = GetActiveUserId();
             if (requestedByUserId == userId
                || HasPermission(Permission.ViewParticipantDetails))
             {
-                return new DataWithCount<IEnumerable<UserLog>>
-                {
-                    Data = await _userLogRepository.PageHistoryAsync(userId, skip, take),
-                    Count = await _userLogRepository.GetHistoryItemCountAsync(userId)
-                };
+                filter.UserIds = new List<int> { userId };
+                return await _userLogRepository.GetPaginatedHistoryAsync(filter);
             }
             else
             {
@@ -796,29 +810,6 @@ namespace GRA.Domain.Service
                 _logger.LogError("User {UserId} doesn't have permission to register family/group member {EditingUserId}",
                     authUserId,
                     memberToRegister.Id);
-                throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
-            }
-        }
-
-        public async Task<DataWithCount<IEnumerable<Badge>>>
-            GetPaginatedBadges(int userId, int skip, int take)
-        {
-            int activeUserId = GetActiveUserId();
-
-            if (userId == activeUserId
-                || HasPermission(Permission.ViewParticipantDetails))
-            {
-                return new DataWithCount<IEnumerable<Badge>>
-                {
-                    Data = await _badgeRepository.PageForUserAsync(userId, skip, take),
-                    Count = await _badgeRepository.GetCountForUserAsync(userId)
-                };
-            }
-            else
-            {
-                _logger.LogError("User {UserId} doesn't have permission to view details for {EditingUserId}",
-                    activeUserId,
-                    userId);
                 throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
             }
         }

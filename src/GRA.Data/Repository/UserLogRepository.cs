@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
+using GRA.Domain.Repository.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -17,19 +19,31 @@ namespace GRA.Data.Repository
         {
         }
 
-        public async Task<IEnumerable<UserLog>> PageHistoryAsync(int userId, int skip, int take)
+        public async Task<DataWithCount<ICollection<UserLog>>> GetPaginatedHistoryAsync(
+            UserLogFilter filter)
         {
-            var userLogs = await DbSet
-               .AsNoTracking()
-               .Where(_ => _.UserId == userId
-                      && !_.IsDeleted)
-               .OrderBy(_ => _.CreatedAt)
-               .Skip(skip)
-               .Take(take)
-               .ProjectTo<UserLog>(_mapper.ConfigurationProvider)
-               .ToListAsync();
+            var userLogs = DbSet
+                .AsNoTracking()
+                .Where(_ => !_.IsDeleted);
 
-            foreach (var userLog in userLogs)
+            if (filter.UserIds?.Any() == true)
+            {
+                userLogs = userLogs.Where(_ => filter.UserIds.Contains(_.UserId));
+            }
+
+            if (filter.HasBadge.HasValue)
+            {
+                userLogs = userLogs.Where(_ => _.BadgeId.HasValue == filter.HasBadge);
+            }
+
+            var count = await userLogs.CountAsync();
+            var data = await userLogs
+                .OrderByDescending(_ => _.CreatedAt)
+                .ApplyPagination(filter)
+                .ProjectTo<UserLog>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+
+            foreach (var userLog in data)
             {
                 if (userLog.ChallengeId != null)
                 {
@@ -81,16 +95,11 @@ namespace GRA.Data.Repository
                 }
             }
 
-            return userLogs;
-        }
-
-        public async Task<int> GetHistoryItemCountAsync(int userId)
-        {
-            return await DbSet
-                .AsNoTracking()
-                .Where(_ => _.UserId == userId
-                       && !_.IsDeleted)
-                .CountAsync();
+            return new DataWithCount<ICollection<UserLog>>
+            {
+                Count = count,
+                Data = data
+            };
         }
 
         public override async Task RemoveSaveAsync(int userId, int id)

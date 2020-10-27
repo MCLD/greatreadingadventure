@@ -444,6 +444,17 @@ namespace GRA.Data.Repository
                 .Where(_ => (_.LimitToSystemId == null || _.LimitToSystemId == user.SystemId)
                         && (_.LimitToBranchId == null || _.LimitToBranchId == user.BranchId));
 
+            if (filter.IsCompleted.HasValue)
+            {
+                var userCompletedChallenges = _context.UserLogs
+                    .AsNoTracking()
+                    .Where(_ => _.UserId == userId && _.ChallengeId.HasValue && !_.IsDeleted)
+                    .Select(_ => _.ChallengeId);
+
+                challengeList = challengeList
+                    .Where(_ => userCompletedChallenges.Contains(_.Id) == filter.IsCompleted.Value);
+            }
+
             var data = await challengeList
                 .OrderBy(_ => _.Name)
                 .ThenBy(_ => _.Id)

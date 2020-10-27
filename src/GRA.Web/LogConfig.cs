@@ -6,6 +6,7 @@ using Serilog;
 using Serilog.Events;
 using Serilog.Filters;
 using Serilog.Sinks.MSSqlServer;
+using Serilog.Sinks.MSSqlServer.Sinks.MSSqlServer.Options;
 
 namespace GRA.Web
 {
@@ -69,8 +70,11 @@ namespace GRA.Web
                     .WriteTo.Logger(_ => _
                     .Filter.ByExcluding(Matching.FromSource(ErrorControllerName))
                     .WriteTo.MSSqlServer(sqlLog,
-                        "Logs",
-                        autoCreateSqlTable: true,
+                        new SinkOptions
+                        {
+                            TableName = "Logs",
+                            AutoCreateSqlTable = true
+                        },
                         restrictedToMinimumLevel: LogEventLevel.Information,
                         columnOptions: new ColumnOptions
                         {

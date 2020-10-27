@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.Events;
@@ -9,13 +10,21 @@ using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
 using GRA.Domain.Service.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
 
 namespace GRA.Controllers
 {
     public class EventsController : Base.UserController
     {
+        public const string VisitedAll = "All";
+        public const string VisitedNo = "No";
+        public const string VisitedYes = "Yes";
+
+        private readonly ILogger<EventsController> _logger;
+        private readonly ActivityService _activityService;
         private readonly EventService _eventService;
         private readonly SiteService _siteService;
         private readonly SpatialService _spatialService;
@@ -23,13 +32,18 @@ namespace GRA.Controllers
 
         public static string Name { get { return "Events"; } }
 
-        public EventsController(ServiceFacade.Controller context,
+        public EventsController(ILogger<EventsController> logger,
+            ServiceFacade.Controller context,
+            ActivityService activityService,
             EventService eventService,
             SiteService siteService,
             SpatialService spatialService,
             UserService userService)
             : base(context)
         {
+            _logger = Require.IsNotNull(logger, nameof(logger));
+            _activityService = activityService
+                ?? throw new ArgumentNullException(nameof(activityService));
             _eventService = Require.IsNotNull(eventService, nameof(eventService));
             _siteService = Require.IsNotNull(siteService, nameof(SiteService));
             _spatialService = spatialService
@@ -47,7 +61,9 @@ namespace GRA.Controllers
             int? location = null,
             int? program = null,
             string StartDate = null,
-            string EndDate = null)
+            string EndDate = null,
+            bool Favorites = false,
+            string Status = null)
         {
             var site = await GetCurrentSiteAsync();
             if (!string.IsNullOrEmpty(site.ExternalEventListUrl))
@@ -66,6 +82,8 @@ namespace GRA.Controllers
                 program,
                 StartDate,
                 EndDate,
+                Favorites,
+                Status,
                 EventType.CommunityExperience);
         }
         public async Task<IActionResult> StreamingEvents(int page = 1,
@@ -77,7 +95,9 @@ namespace GRA.Controllers
             int? location = null,
             int? program = null,
             string StartDate = null,
-            string EndDate = null)
+            string EndDate = null,
+            bool Favorites = false,
+            string Status = null)
         {
             var site = await GetCurrentSiteAsync();
             if (!string.IsNullOrEmpty(site.ExternalEventListUrl))
@@ -85,7 +105,7 @@ namespace GRA.Controllers
                 return new RedirectResult(site.ExternalEventListUrl);
             }
 
-            PageTitle = _sharedLocalizer[Annotations.Title.CommunityExperiences];
+            PageTitle = _sharedLocalizer[Annotations.Title.StreamingEvents];
             return await Index(page,
                 sort,
                 search,
@@ -96,6 +116,8 @@ namespace GRA.Controllers
                 program,
                 StartDate,
                 EndDate,
+                Favorites,
+                Status,
                 EventType.StreamingEvent);
         }
 
@@ -109,6 +131,8 @@ namespace GRA.Controllers
             int? program = null,
             string StartDate = null,
             string EndDate = null,
+            bool Favorites = false,
+            string Visited = null,
             EventType eventType = EventType.Event,
             HttpStatusCode httpStatus = HttpStatusCode.OK)
         {
@@ -139,7 +163,19 @@ namespace GRA.Controllers
                     filter.SortBy = SortEventsBy.Distance;
                 }
             }
-
+            if (AuthUser.Identity.IsAuthenticated)
+            {
+                filter.Favorites = Favorites;
+                if (string.IsNullOrWhiteSpace(Visited)
+                    || string.Equals(Visited, VisitedNo, StringComparison.OrdinalIgnoreCase))
+                {
+                    filter.IsAttended = false;
+                }
+                else if (string.Equals(Visited, VisitedYes, StringComparison.OrdinalIgnoreCase))
+                {
+                    filter.IsAttended = true;
+                }
+            }
             if (nearSearchEnabled)
             {
                 if (!string.IsNullOrWhiteSpace(near))
@@ -193,7 +229,6 @@ namespace GRA.Controllers
             {
                 filter.EndDate = endDate.Date;
             }
-
             var eventList = await _eventService.GetPaginatedListAsync(filter);
 
             var paginateModel = new PaginateViewModel
@@ -215,12 +250,14 @@ namespace GRA.Controllers
             var viewModel = new EventsListViewModel
             {
                 IsAuthenticated = AuthUser.Identity.IsAuthenticated,
-                Events = eventList.Data,
+                Events = eventList.Data.ToList(),
                 PaginateModel = paginateModel,
                 Sort = filter.SortBy.ToString(),
                 Search = search,
                 StartDate = filter.StartDate,
                 EndDate = filter.EndDate,
+                Favorites = Favorites,
+                IsLoggedIn = AuthUser.Identity.IsAuthenticated,
                 ProgramId = program,
                 ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
                 EventType = eventType,
@@ -283,6 +320,15 @@ namespace GRA.Controllers
                 viewModel.CommunityExperienceDescription = communityExperienceDescription;
             }
 
+            if (eventType == EventType.StreamingEvent)
+            {
+                viewModel.Viewed = Visited;
+            }
+            else
+            {
+                viewModel.Visited = Visited;
+            }
+
             if (httpStatus != HttpStatusCode.OK)
             {
                 Response.StatusCode = (int)httpStatus;
@@ -292,10 +338,11 @@ namespace GRA.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(EventsListViewModel model)
+        public IActionResult Index(EventsListViewModel model, bool keepPage = false)
         {
             string startDate = "False";
             string endDate = null;
+            string visited = null;
 
             if (model.UseLocation == true)
             {
@@ -323,8 +370,24 @@ namespace GRA.Controllers
                 endDate = model.EndDate.Value.ToString("MM-dd-yyyy");
             }
 
+            if (model.EventType == EventType.StreamingEvent)
+            {
+                visited = model.Viewed;
+            }
+            else
+            {
+                visited = model.Visited;
+            }
+
+            int? page = null;
+            if (keepPage && model.PaginateModel?.CurrentPage > 1)
+            {
+                page = model.PaginateModel.CurrentPage;
+            }
+
             return RedirectToAction(nameof(Index), new
             {
+                page,
                 model.Sort,
                 model.Search,
                 model.Near,
@@ -334,8 +397,69 @@ namespace GRA.Controllers
                 Program = model.ProgramId,
                 StartDate = startDate,
                 EndDate = endDate,
+                model.Favorites,
+                visited,
                 model.EventType
             });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> UpdateSingleFavorite(int eventId, bool favorite)
+        {
+            var serviceResult = new ServiceResult();
+            var currEvent = await _eventService.GetDetails(eventId, true);
+            try
+            {
+                var eventList = new List<Event>
+                {
+                    new Event
+                    {
+                        Id = eventId,
+                        IsFavorited = favorite
+                    }
+                };
+                serviceResult = await _activityService.UpdateFavoriteEvents(eventList);
+            }
+            catch (Exception ex)
+            {
+                if (currEvent.IsCommunityExperience)
+                {
+                    _logger.LogError(ex,
+                        "Error updating user favorite community experience: {ErrorMessage}",
+                        ex.Message);
+                    serviceResult.Status = ServiceResultStatus.Error;
+                    serviceResult.Message = "An error occured while trying to update the community experience.";
+                }
+                else
+                {
+                    _logger.LogError(ex,
+                        "Error updating user favorite events: {ErrorMessage}",
+                        ex.Message);
+                    serviceResult.Status = ServiceResultStatus.Error;
+                    serviceResult.Message = "An error occured while trying to update the event.";
+                }
+            }
+            return Json(new
+            {
+                success = serviceResult.Status == ServiceResultStatus.Success,
+                message = serviceResult.Message,
+                favorite
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> UpdateFavorites(EventsListViewModel model)
+        {
+            var serviceResult = await _activityService.UpdateFavoriteEvents(model.Events);
+            if (serviceResult.Status == ServiceResultStatus.Warning
+                        && !string.IsNullOrWhiteSpace(serviceResult.Message))
+            {
+                ShowAlertWarning(serviceResult.Message);
+            }
+
+            return Index(model, true);
         }
 
         public async Task<IActionResult> Detail(int id)

@@ -38,7 +38,8 @@ namespace GRA.Domain.Service
             IEventRepository eventRepository,
             IPathResolver pathResolver,
             SiteLookupService siteLookupService,
-            ITriggerRepository triggerRepository) : base(logger, dateTimeProvider, userContextProvider)
+            ITriggerRepository triggerRepository) 
+            : base(logger, dateTimeProvider, userContextProvider)
         {
             _badgeRepository = Require.IsNotNull(badgeRepository, nameof(badgeRepository));
             _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));

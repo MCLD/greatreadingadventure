@@ -131,5 +131,14 @@ namespace GRA.Data.Repository
 
             return $"Badge id {badgeId}";
         }
+
+        public async Task<string> GetBadgeFileNameAsync(int badgeId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.Id == badgeId)
+                .Select(_ => _.Filename)
+                .SingleOrDefaultAsync();
+        }
     }
 }

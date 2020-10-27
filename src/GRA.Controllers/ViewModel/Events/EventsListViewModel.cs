@@ -9,7 +9,7 @@ namespace GRA.Controllers.ViewModel.Events
 {
     public class EventsListViewModel
     {
-        public IEnumerable<GRA.Domain.Model.Event> Events { get; set; }
+        public IList<GRA.Domain.Model.Event> Events { get; set; }
         public PaginateViewModel PaginateModel { get; set; }
         public string Sort { get; set; }
         public bool? UseLocation { get; set; }
@@ -41,10 +41,19 @@ namespace GRA.Controllers.ViewModel.Events
         [DisplayName(DisplayNames.EndDate)]
         public DateTime? EndDate { get; set; }
 
+        public bool? Favorites { get; set; }
+
+        [DisplayName(DisplayNames.Visited)]
+        public string Visited { get; set; }
+
+        [DisplayName(DisplayNames.Viewed)]
+        public string Viewed { get; set; }
+
         public SelectList SystemList { get; set; }
         public SelectList BranchList { get; set; }
         public SelectList LocationList { get; set; }
         public SelectList ProgramList { get; set; }
+        public bool IsLoggedIn { get; set; }
 
         public EventType EventType { get; set; }
 

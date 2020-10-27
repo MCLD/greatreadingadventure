@@ -18,6 +18,10 @@ namespace GRA.Controllers
 {
     public class ChallengesController : Base.UserController
     {
+        public const string StatusAll = "All";
+        public const string StatusCompleted = "Completed";
+        public const string StatusUncompleted = "Uncompleted";
+
         private readonly ILogger<ChallengesController> _logger;
         private readonly AutoMapper.IMapper _mapper;
         private readonly ActivityService _activityService;
@@ -44,11 +48,14 @@ namespace GRA.Controllers
             PageTitle = _sharedLocalizer[Annotations.Title.Challenges];
         }
 
+        public static string Name { get { return "Challenges"; } }
+
         public async Task<IActionResult> Index(string Search = null,
             int? Program = null,
             string Categories = null,
             string Group = null,
             bool Favorites = false,
+            string Status = null,
             int page = 1,
             System.Net.HttpStatusCode httpStatus = System.Net.HttpStatusCode.OK)
         {
@@ -73,9 +80,19 @@ namespace GRA.Controllers
                 }
                 filter.CategoryIds = categoryIds;
             }
-            if (Favorites && AuthUser.Identity.IsAuthenticated)
+            if (AuthUser.Identity.IsAuthenticated)
             {
-                filter.Favorites = true;
+                filter.Favorites = Favorites;
+                if (string.IsNullOrWhiteSpace(Status) 
+                    || string.Equals(Status, StatusUncompleted, StringComparison.OrdinalIgnoreCase))
+                {
+                    filter.IsCompleted = false;
+                }
+                else if (string.Equals(Status, StatusCompleted,
+                    StringComparison.OrdinalIgnoreCase)) 
+                {
+                    filter.IsCompleted = true;
+                }
             }
 
             ChallengeGroup challengeGroup = null;
@@ -136,13 +153,13 @@ namespace GRA.Controllers
                 Program = Program,
                 Categories = Categories,
                 Favorites = Favorites,
+                Status = Status,
                 IsActive = isActive,
                 IsLoggedIn = AuthUser.Identity.IsAuthenticated,
                 CategoryIds = filter.CategoryIds,
                 CategoryList = new SelectList(categoryList, "Id", "Name"),
                 ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name")
             };
-
             if (!string.IsNullOrWhiteSpace(Search))
             {
                 HttpContext.Session.SetString(SessionKey.ChallengeSearch, Search);
@@ -153,7 +170,7 @@ namespace GRA.Controllers
             }
             HttpContext.Session.SetInt32(SessionKey.ChallengePage, page);
 
-            if(httpStatus != System.Net.HttpStatusCode.OK)
+            if (httpStatus != System.Net.HttpStatusCode.OK)
             {
                 Response.StatusCode = (int)httpStatus;
             }
@@ -194,7 +211,7 @@ namespace GRA.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex,
-                    "Error updaing user favorite challenges: {Message}",
+                    "Error updating user favorite challenges: {Message}",
                     ex.Message);
                 serviceResult.Status = ServiceResultStatus.Error;
                 serviceResult.Message = "An error occured while trying to update the challenge.";
@@ -229,6 +246,7 @@ namespace GRA.Controllers
                 model.Program,
                 model.Categories,
                 model.Favorites,
+                model.Status,
                 Group = model.ChallengeGroup?.Stub
             });
         }
@@ -285,7 +303,7 @@ namespace GRA.Controllers
                     Title = task.Title,
                     Author = task.Author
                 };
-                if(taskModel.TaskType != "Book")
+                if (taskModel.TaskType != "Book")
                 {
                     taskModel.Description = CommonMark.CommonMarkConverter.Convert(task.Title);
                 }
