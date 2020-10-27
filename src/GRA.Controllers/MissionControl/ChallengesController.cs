@@ -302,7 +302,8 @@ namespace GRA.Controllers.MissionControl
                 double pointsPerChallenge = (double)model.Challenge.PointsAwarded / model.Challenge.TasksToComplete.Value;
                 if (pointsPerChallenge > maxPoints)
                 {
-                    ModelState.AddModelError("Challenge.PointsAwarded", "Too many points awarded.");
+                    ModelState.AddModelError("Challenge.PointsAwarded",
+                        $"A challenge with {model.Challenge.TasksToComplete} tasks may award a maximum of {maxPoints * model.Challenge.TasksToComplete} points.");
                 }
             }
             if (model.BadgeUploadImage != null
@@ -511,7 +512,8 @@ namespace GRA.Controllers.MissionControl
             model.MaxPointLimit =
                 await _challengeService.GetMaximumAllowedPointsAsync(GetCurrentSiteId());
             model.IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits);
-            if (model.MaxPointLimit.HasValue) {
+            if (model.MaxPointLimit.HasValue)
+            {
                 model.MaxPointsMessage = $"(Up to {model.MaxPointLimit.Value} points per required task)";
             }
 
@@ -524,13 +526,13 @@ namespace GRA.Controllers.MissionControl
                     (double)model.Challenge.PointsAwarded / model.Challenge.TasksToComplete.Value;
                 if (pointsPerChallenge > model.MaxPointLimit)
                 {
-                    ModelState.AddModelError("Challenge.PointsAwarded", "Too many points awarded.");
+                    ModelState.AddModelError("Challenge.PointsAwarded",
+                        $"A challenge with {model.Challenge.TasksToComplete} tasks may award a maximum of {model.MaxPointLimit.Value * model.Challenge.TasksToComplete} points.");
                 }
             }
             else if (model.Challenge.TasksToComplete.HasValue
                 && model.MaxPointLimit.HasValue
-                && model.Challenge.PointsAwarded / model.Challenge.TasksToComplete.Value
-                > model.MaxPointLimit)
+                && model.Challenge.PointsAwarded / model.Challenge.TasksToComplete.Value > model.MaxPointLimit)
             {
                 model.MaxPointsWarningMessage = $"This Challenge exceeds the maximum of {model.MaxPointLimit.Value} points per required task. Only Administrators can edit tasks and points.";
             }

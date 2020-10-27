@@ -438,7 +438,7 @@ namespace GRA.Controllers.MissionControl
                     && model.AwardPoints > model.MaxPointLimit)
                 {
                     ModelState.AddModelError("AwardPoints",
-                        $"The maximum points awarded is {model.MaxPointLimit}");
+                        $"You may award up to {model.MaxPointLimit} points.");
                 }
             }
             else

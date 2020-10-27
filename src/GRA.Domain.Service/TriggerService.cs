@@ -275,10 +275,11 @@ namespace GRA.Domain.Service
             var currentUser = GetAuthUser();
             var ignorePointLimit = _userContextProvider
                 .UserHasPermission(currentUser, nameof(Permission.IgnorePointLimits));
-            if (maxPointLimit.HasValue && !ignorePointLimit &&
-                    (trigger.AwardPoints > maxPointLimit))
+            if (maxPointLimit.HasValue
+                && !ignorePointLimit
+                && trigger.AwardPoints > maxPointLimit)
             {
-                throw new GraException("Too many points awarded.");
+                throw new GraException($"A trigger may award a maximum of {maxPointLimit} points.");
             }
         }
 

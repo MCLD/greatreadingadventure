@@ -38,7 +38,7 @@ namespace GRA.Domain.Service
             IEventRepository eventRepository,
             IPathResolver pathResolver,
             SiteLookupService siteLookupService,
-            ITriggerRepository triggerRepository) 
+            ITriggerRepository triggerRepository)
             : base(logger, dateTimeProvider, userContextProvider)
         {
             _badgeRepository = Require.IsNotNull(badgeRepository, nameof(badgeRepository));
@@ -178,10 +178,11 @@ namespace GRA.Domain.Service
                 var currentUser = GetAuthUser();
                 var ignorePointLimit = _userContextProvider
                     .UserHasPermission(currentUser, nameof(Permission.IgnorePointLimits));
-                if (maxPointLimit.HasValue && !ignorePointLimit &&
-                        (challenge.PointsAwarded > maxPointLimit))
+                if (maxPointLimit.HasValue
+                    && !ignorePointLimit
+                    && challenge.PointsAwarded > maxPointLimit)
                 {
-                    throw new GraException("Too many points awarded.");
+                    throw new GraException($"A challenge with {challenge.TasksToComplete} tasks may award a maximum of {maxPointLimit * challenge.TasksToComplete} points.");
                 }
                 if (challenge.LimitToSystemId.HasValue && challenge.LimitToBranchId.HasValue)
                 {
@@ -236,10 +237,11 @@ namespace GRA.Domain.Service
                 var currentUser = GetAuthUser();
                 var ignorePointLimit = _userContextProvider
                     .UserHasPermission(currentUser, nameof(Permission.IgnorePointLimits));
-                if (maxPointLimit.HasValue && !ignorePointLimit &&
-                        (challenge.PointsAwarded > maxPointLimit))
+                if (maxPointLimit.HasValue
+                    && !ignorePointLimit
+                    && challenge.PointsAwarded > maxPointLimit)
                 {
-                    throw new GraException("Too many points awarded.");
+                    throw new GraException($"A challenge with {challenge.TasksToComplete} tasks may award a maximum of {maxPointLimit * challenge.TasksToComplete} points.");
                 }
                 if (challenge.LimitToSystemId.HasValue && challenge.LimitToBranchId.HasValue)
                 {

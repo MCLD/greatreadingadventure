@@ -237,7 +237,7 @@ namespace GRA.Controllers.MissionControl
                 && model.Trigger.AwardPoints > model.MaxPointLimit)
             {
                 ModelState.AddModelError("Trigger.AwardPoints",
-                    $"The maximum points awarded is {model.MaxPointLimit}");
+                    $"You may award up to {model.MaxPointLimit} points.");
             }
             if (!string.IsNullOrWhiteSpace(model.BadgeRequiredList))
             {
@@ -541,7 +541,8 @@ namespace GRA.Controllers.MissionControl
                 && model.Trigger.AwardPoints > model.MaxPointLimit
                 && model.Trigger.AwardPoints != currentTrigger.AwardPoints)
             {
-                ModelState.AddModelError("Trigger.AwardPoints", $"The maximum points awarded is {model.MaxPointLimit}");
+                ModelState.AddModelError("Trigger.AwardPoints",
+                    $"You may award up to {model.MaxPointLimit} points.");
             }
             if (!string.IsNullOrWhiteSpace(model.BadgeRequiredList))
             {
