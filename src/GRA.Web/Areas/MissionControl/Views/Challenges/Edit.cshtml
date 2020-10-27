@@ -181,7 +181,7 @@
                                         {
                                             <label class="control-label">
                                                 Edit File &ndash;
-                                                <a aria-label="Link @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                                <a aria-label="Link (opens new window)"
                                                    href="@Model.TaskFilePath"
                                                    target="_blank">Link</a>
                                             </label>
@@ -382,7 +382,7 @@
                                 @if (Model.CanViewTriggers)
                                 {
                                     <li>
-                                        <a aria-label="@trigger.Name @SharedLocalizer[GRA.Annotations.Info.OpensNewWindow]"
+                                        <a aria-label="@trigger.Name (opens new window)"
                                            asp-controller="Triggers"
                                            asp-action="Edit"
                                            asp-route-id="@trigger.Id"
