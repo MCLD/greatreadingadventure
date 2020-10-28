@@ -19,6 +19,7 @@ namespace GRA.Domain.Service
         private readonly IBookRepository _bookRepository;
         private readonly IChallengeRepository _challengeRepository;
         private readonly IChallengeTaskRepository _challengeTaskRepository;
+        private readonly IEventRepository _eventRepository;
         private readonly INotificationRepository _notificationRepository;
         private readonly IPointTranslationRepository _pointTranslationRepository;
         private readonly IProgramRepository _programRepository;
@@ -43,6 +44,7 @@ namespace GRA.Domain.Service
             IBookRepository bookRepository,
             IChallengeRepository challengeRepository,
             IChallengeTaskRepository challengeTaskRepository,
+            IEventRepository eventRepository,
             INotificationRepository notificationRepository,
             IPointTranslationRepository pointTranslationRepository,
             IProgramRepository programRepository,
@@ -68,6 +70,8 @@ namespace GRA.Domain.Service
                 nameof(challengeRepository));
             _challengeTaskRepository = Require.IsNotNull(challengeTaskRepository,
                 nameof(challengeTaskRepository));
+            _eventRepository = Require.IsNotNull(eventRepository,
+                nameof(eventRepository));
             _notificationRepository = Require.IsNotNull(notificationRepository,
                 nameof(notificationRepository));
             _pointTranslationRepository = Require.IsNotNull(pointTranslationRepository,
@@ -373,7 +377,6 @@ namespace GRA.Domain.Service
             {
                 serviceResult.Status = ServiceResultStatus.Warning;
                 serviceResult.Message = $"The book <strong><em>{addedBook.Title}</em></strong> by <strong>{addedBook.Author}</strong> is already on the booklist.";
-
             }
             else
             {
@@ -859,6 +862,11 @@ namespace GRA.Domain.Service
                     BadgeFilename = badge.Filename
                 });
 
+                // find if the trigger is related to an event
+                var relatedEvents = await _eventRepository.GetRelatedEventsForTriggerAsync(
+                    trigger.Id);
+                var relatedEventId = relatedEvents.FirstOrDefault()?.Id;
+
                 // add the award to the user's history
                 await _userLogRepository.AddSaveAsync(userId, new UserLog
                 {
@@ -866,6 +874,8 @@ namespace GRA.Domain.Service
                     PointsEarned = pointsAwarded,
                     IsDeleted = false,
                     BadgeId = trigger.AwardBadgeId,
+                    EventId = relatedEventId,
+                    TriggerId = trigger.Id,
                     Description = trigger.AwardMessage
                 });
 
@@ -899,20 +909,20 @@ namespace GRA.Domain.Service
                 {
                     await _vendorCodeRepository.AssignCodeAsync((int)vendorCodeTypeId, userId);
 
-                    // if donation is not an option then send the email with the code
-                    if (string.IsNullOrEmpty(codeType.DonationMessage))
+                    // if there are no award options then send the email with the code
+                    if (string.IsNullOrEmpty(codeType.OptionSubject))
                     {
-                        await _vendorCodeService.ResolveDonationStatusAsync(userId, null);
+                        await _vendorCodeService.ResolveCodeStatusAsync(userId, false, false);
                     }
-                    else if (!string.IsNullOrEmpty(codeType.DonationOptionMail))
+                    else
                     {
-                        // donation is an option, let the user know
+                        // award has options, let the user know
                         await _mailService.SendSystemMailAsync(new Mail
                         {
                             ToUserId = userId,
                             CanParticipantDelete = false,
-                            Subject = codeType.DonationOptionSubject,
-                            Body = codeType.DonationOptionMail
+                            Subject = codeType.OptionSubject,
+                            Body = codeType.OptionMail
                         }, siteId);
                     }
                 }
@@ -1024,6 +1034,11 @@ namespace GRA.Domain.Service
                 BadgeId = trigger.AwardBadgeId,
                 BadgeFilename = badge.Filename
             });
+            
+            // find if the trigger is related to an event
+            var relatedEvents = await _eventRepository.GetRelatedEventsForTriggerAsync(
+                    trigger.Id);
+            var relatedEventId = relatedEvents.FirstOrDefault()?.Id;
 
             // add the award to the user's history
             var userLog = new UserLog
@@ -1032,6 +1047,8 @@ namespace GRA.Domain.Service
                 PointsEarned = pointsAwarded,
                 IsDeleted = false,
                 BadgeId = trigger.AwardBadgeId,
+                EventId = relatedEventId,
+                TriggerId = trigger.Id,
                 Description = trigger.AwardMessage
             };
 
@@ -1189,7 +1206,8 @@ namespace GRA.Domain.Service
             if (challengeIds.Count() != validChallengeIds.Count())
             {
                 serviceResult.Status = ServiceResultStatus.Warning;
-                serviceResult.Message = "One or more of the selected challenges could not favorited.";
+                serviceResult.Message = string.Format(
+                    Annotations.Validate.CouldNotFavorite, Annotations.Title.Challenges);
             }
 
             var userFavorites = await _challengeRepository.GetUserFavoriteChallenges(activeUserId,
@@ -1207,6 +1225,42 @@ namespace GRA.Domain.Service
                 .Select(_ => _.Id);
 
             await _challengeRepository.UpdateUserFavoritesAsync(authUserId, activeUserId,
+                favoritesToAdd, favoritesToRemove);
+
+            return serviceResult;
+        }
+
+        public async Task<ServiceResult> UpdateFavoriteEvents(IList<Event> events)
+        {
+            var authUserId = GetClaimId(ClaimType.UserId);
+            var activeUserId = GetActiveUserId();
+            var serviceResult = new ServiceResult();
+
+            var eventIds = events.Select(_ => _.Id);
+            var validEventIds = await _eventRepository.ValidateEventIdsAsync(
+                GetCurrentSiteId(), eventIds);
+            if (eventIds.Count() != validEventIds.Count())
+            {
+                serviceResult.Status = ServiceResultStatus.Warning;
+                serviceResult.Message = string.Format(
+                    Annotations.Validate.CouldNotFavorite,Annotations.Interface.Events);
+            }
+
+            var userFavorites = await _eventRepository.GetUserFavoriteEvents(activeUserId,
+                eventIds);
+
+            var validEvents = events.Where(_ => validEventIds.Contains(_.Id));
+
+            var favoritesToAdd = validEvents
+                .Where(_ => _.IsFavorited)
+                .Select(_ => _.Id)
+                .Except(userFavorites);
+
+            var favoritesToRemove = validEvents
+                .Where(_ => !_.IsFavorited && userFavorites.Contains(_.Id))
+                .Select(_ => _.Id);
+
+            await _eventRepository.UpdateUserFavoritesAsync(authUserId, activeUserId,
                 favoritesToAdd, favoritesToRemove);
 
             return serviceResult;

@@ -11,9 +11,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using SixLabors.Primitives;
 
 namespace GRA.Controllers
 {
@@ -150,10 +150,13 @@ namespace GRA.Controllers
                             foreach (var element in userAvatar)
                             {
                                 var file = _pathResolver.ResolveContentFilePath(element.Filename);
-                                image.Mutate(_ => _.DrawImage(Image.Load(file), 1, avatarPoint));
+                                image.Mutate(_ => _.DrawImage(Image.Load(file), avatarPoint, 1));
                             }
 
-                            image.Save(filePath);
+                            await image.SaveAsPngAsync(filePath, new PngEncoder
+                            {
+                                CompressionLevel = PngCompressionLevel.BestCompression
+                            });
                         }
                     }
                     var siteUrl = await _siteService.GetBaseUrl(Request.Scheme,
@@ -218,7 +221,7 @@ namespace GRA.Controllers
             await _avatarService.UpdateUserAvatarAsync(selection);
         }
 
-        public IActionResult InstagramImage(string id)
+        public async Task<IActionResult> InstagramImage(string id)
         {
             var siteId = GetCurrentSiteId();
 
@@ -242,7 +245,10 @@ namespace GRA.Controllers
                 {
                     image.Mutate(_ => _.Resize(1080, 567));
                     image.Mutate(_ => _.Crop(new Rectangle(0, 0, 1080, 566)));
-                    image.Save(igFilePath);
+                    await image.SaveAsPngAsync(igFilePath, new PngEncoder
+                    {
+                        CompressionLevel = PngCompressionLevel.BestCompression
+                    });
                 }
                 var imageBytes = System.IO.File.ReadAllBytes(igFilePath);
                 return File(imageBytes, "image/png");

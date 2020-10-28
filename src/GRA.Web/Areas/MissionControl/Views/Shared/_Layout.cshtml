@@ -15,7 +15,7 @@
     <meta name="msapplication-TileColor" content="#603cba">
     <meta name="msapplication-config" content="/content/browserconfig.xml">
     <meta name="theme-color" content="#ffffff">
-    <link rel="stylesheet" href="~/js/jquery-ui-1.12.1.custom/jquery-ui.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/jquery-ui.min.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/main.min.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/missioncontrol.min.css" asp-append-version="true" />
     @RenderSection("styles", required: false)
@@ -97,6 +97,7 @@
                                 {
                                     <li><a asp-controller="Events" asp-action="Locations">Locations</a></li>
                                 }
+                                <li><a asp-controller="Events" asp-action="StreamingEvents">Streaming Events</a></li>
                             </ul>
                         </li>
                     }
@@ -202,7 +203,7 @@
                                 }
                                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageVendorCodes.ToString()))
                                 {
-                                    <li><a asp-controller="VendorCodes" asp-action="ImportStatus">Vendor code management</a></li>
+                                    <li><a asp-controller="VendorCodes" asp-action="Index">Vendor code management</a></li>
                                 }
                                 <li>
                                     <a asp-controller="SystemInformation" asp-action="Index">
@@ -285,7 +286,7 @@
         </footer>
     </div>
     <script src="~/js/main.min.js" asp-append-version="true"></script>
-    <script src="~/js/jquery-ui-1.12.1.custom/jquery-ui.min.js" asp-append-version="true"></script>
+    <script src="~/js/jquery-ui.min.js" asp-append-version="true"></script>
     @RenderSection("scripts", required: false)
     <script>
         $(function () {

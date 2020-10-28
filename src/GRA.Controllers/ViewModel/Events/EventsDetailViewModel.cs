@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace GRA.Controllers.ViewModel.Events
+﻿namespace GRA.Controllers.ViewModel.Events
 {
     public class EventsDetailViewModel
     {
@@ -12,5 +7,6 @@ namespace GRA.Controllers.ViewModel.Events
         public bool ShowStructuredData { get; set; }
         public string EventStart { get; set; }
         public string EventEnd { get; set; }
+        public bool IsAuthenticated { get; set; }
     }
 }

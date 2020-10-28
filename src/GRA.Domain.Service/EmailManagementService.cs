@@ -14,6 +14,7 @@ namespace GRA.Domain.Service
     {
         private readonly IEmailSubscriptionAuditLogRepository _emailSubscriptionAuditLogRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IEmailReminderRepository _emailReminderRepository;
         private readonly IEmailTemplateRepository _emailTemplateRepository;
         private readonly IStringLocalizer<Resources.Shared> _sharedLocalizer;
 
@@ -22,10 +23,13 @@ namespace GRA.Domain.Service
             IUserContextProvider userContextProvider,
             IEmailSubscriptionAuditLogRepository emailSubscriptionAuditLogRepository,
             IEmailTemplateRepository emailTemplateRepository,
+            IEmailReminderRepository emailReminderRepository,
             IUserRepository userRepository,
             IStringLocalizer<Resources.Shared> sharedLocalizer)
             : base(logger, dateTimeProvider, userContextProvider)
         {
+            _emailReminderRepository = emailReminderRepository
+                ?? throw new ArgumentNullException(nameof(emailReminderRepository));
             _emailSubscriptionAuditLogRepository = emailSubscriptionAuditLogRepository
                 ?? throw new ArgumentNullException(nameof(emailSubscriptionAuditLogRepository));
             _emailTemplateRepository = emailTemplateRepository
@@ -119,7 +123,8 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError("User {UserId} doesn't have permission to view the email template list.", GetClaimId(ClaimType.UserId));
+                _logger.LogError("User {UserId} doesn't have permission to view the email template list.",
+                    GetClaimId(ClaimType.UserId));
                 throw new GraException("Permission denied.");
             }
         }
@@ -184,12 +189,16 @@ namespace GRA.Domain.Service
 
         public async Task<int> GetSubscriberCount()
         {
-            var subscribed = await _userRepository.GetCountAsync(new UserFilter
+            return await _userRepository.GetCountAsync(new UserFilter
             {
                 SiteId = GetCurrentSiteId(),
                 IsSubscribed = true
             });
-            return subscribed;
+        }
+
+        public async Task<ICollection<DataWithCount<string>>> GetEmailListsAsync()
+        {
+            return await _emailReminderRepository.GetEmailListsAsync();
         }
     }
 }

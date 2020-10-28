@@ -8,7 +8,7 @@
     <Company>Maricopa County Library District</Company>
     <Copyright>Copyright 2017 Maricopa County Library District</Copyright>
     <Description>The Great Reading Adventure is an open-source tool for managing dynamic library reading programs.</Description>
-    <FileVersion>4.1.2.68</FileVersion>
+    <FileVersion>4.1.2.95</FileVersion>
     <OutputType>Exe</OutputType>
     <PackageId>GRA.Web</PackageId>
     <PackageLicenseUrl>https://github.com/mcld/greatreadingadventure/blob/master/LICENSE</PackageLicenseUrl>
@@ -28,28 +28,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="bower.json" />
     <Content Remove="bundleconfig.json" />
-    <Content Remove="wwwroot\css\gra.css" />
-    <Content Remove="wwwroot\css\missioncontrol.css" />
-    <Content Remove="wwwroot\css\WMD.css" />
-    <Content Remove="wwwroot\js\gra.js" />
-    <Content Remove="wwwroot\js\jquery-ui-1.12.1.custom\AUTHORS.txt" />
-    <Content Remove="wwwroot\js\jquery-ui-1.12.1.custom\Components.txt" />
-    <Content Remove="wwwroot\js\jquery-ui-1.12.1.custom\external\**\*" />
-    <Content Remove="wwwroot\js\jquery-ui-1.12.1.custom\images\**\*" />
-    <Content Remove="wwwroot\js\jquery-ui-1.12.1.custom\index.html" />
-    <Content Remove="wwwroot\js\jquery-ui-1.12.1.custom\jquery-ui.css" />
-    <Content Remove="wwwroot\js\jquery-ui-1.12.1.custom\jquery-ui.js" />
-    <Content Remove="wwwroot\js\jquery-ui-1.12.1.custom\jquery-ui.structure.css" />
-    <Content Remove="wwwroot\js\jquery-ui-1.12.1.custom\jquery-ui.structure.min.css" />
-    <Content Remove="wwwroot\js\jquery-ui-1.12.1.custom\jquery-ui.theme.css" />
-    <Content Remove="wwwroot\js\jquery-ui-1.12.1.custom\jquery-ui.theme.min.css" />
-    <Content Remove="wwwroot\js\jquery-ui-1.12.1.custom\LICENSE.txt" />
-    <Content Remove="wwwroot\js\jquery-ui-1.12.1.custom\package.json" />
-    <Content Remove="wwwroot\js\slick-avatar.js" />
-    <Content Remove="wwwroot\js\WMD.js" />
-    <Content Remove="wwwroot\lib\**\*" />
   </ItemGroup>
 
   <ItemGroup>
@@ -75,9 +54,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="8.1.0" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.0" />
-    <PackageReference Include="BuildBundlerMinifier" Version="3.2.435" />
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="2.2.0" />
@@ -92,15 +71,19 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" PrivateAssets="All" />
-    <PackageReference Include="Serilog.AspNetCore" Version="3.2.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
     <PackageReference Include="Serilog.Filters.Expressions" Version="2.1.0" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.1.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
     <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
-    <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="5.1.3" />
+    <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="5.5.1" />
     <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
     <PackageReference Include="Serilog.Sinks.Seq" Version="4.0.0" />
     <PackageReference Include="Serilog.Sinks.Slack.Core" Version="0.1.5-beta" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="BundlerMinifier.Core" Version="3.2.449" />
   </ItemGroup>
 
   <Target Name="ChangeAliasesOfStrongNameAssemblies" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
@@ -112,35 +95,10 @@
   </Target>
 
   <ItemGroup>
-    <DotNetCliToolReference Include="BundlerMinifier.Core" Version="2.*" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="bower.json" />
     <None Include="bundleconfig.json" />
-    <None Include="wwwroot\css\gra.css" />
-    <None Include="wwwroot\css\missioncontrol.css" />
-    <None Include="wwwroot\css\WMD.css" />
     <None Include="wwwroot\images\great-reading-adventure-logo%401x.png" />
     <None Include="wwwroot\images\forest%402x.jpg" />
     <None Include="wwwroot\images\forest.jpg" />
-    <None Include="wwwroot\js\gra.js" />
-    <None Include="wwwroot\js\jquery-ui-1.12.1.custom\AUTHORS.txt" />
-    <None Include="wwwroot\js\jquery-ui-1.12.1.custom\Components.txt" />
-    <None Include="wwwroot\js\jquery-ui-1.12.1.custom\external\**\*" />
-    <None Include="wwwroot\js\jquery-ui-1.12.1.custom\images\**\*" />
-    <None Include="wwwroot\js\jquery-ui-1.12.1.custom\index.html" />
-    <None Include="wwwroot\js\jquery-ui-1.12.1.custom\jquery-ui.css" />
-    <None Include="wwwroot\js\jquery-ui-1.12.1.custom\jquery-ui.js" />
-    <None Include="wwwroot\js\jquery-ui-1.12.1.custom\jquery-ui.structure.css" />
-    <None Include="wwwroot\js\jquery-ui-1.12.1.custom\jquery-ui.structure.min.css" />
-    <None Include="wwwroot\js\jquery-ui-1.12.1.custom\jquery-ui.theme.css" />
-    <None Include="wwwroot\js\jquery-ui-1.12.1.custom\jquery-ui.theme.min.css" />
-    <None Include="wwwroot\js\jquery-ui-1.12.1.custom\LICENSE.txt" />
-    <None Include="wwwroot\js\jquery-ui-1.12.1.custom\package.json" />
-    <None Include="wwwroot\js\slick-avatar.js" />
-    <None Include="wwwroot\js\WMD.js" />
-    <None Include="wwwroot\lib\**\*" />
   </ItemGroup>
 
   <ItemGroup>
@@ -213,5 +171,9 @@
     <TypeScriptMapRoot />
     <TypeScriptSourceRoot />
   </PropertyGroup>
+
+  <Target Name="RemoveDirectories" BeforeTargets="Clean;Build">
+    <RemoveDir Directories="shared/templates" />
+  </Target>
 
 </Project>

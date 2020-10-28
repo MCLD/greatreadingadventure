@@ -47,6 +47,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Show associated system and branch on prize redemption screen
 - Display participant system and branch in Mission Control mail view
 - Vendor code generation through WebSocket job
+- Site setting to hide events until program open
+- Email award option for vendor codes
+- User favoriting of events
+- User filtering challenges and events by completed/uncompleted
+- User badge gallery
+- Badge max file size site setting
 
 ### Changed
 - Script docker-build.bash to only build release images when branch starts with 'release/'
@@ -63,6 +69,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Add assemblies to AutoMapper service injection
 - Household import to use the job system
 - Reporting SQL IN clause error
+- Badge image dimension restrictions
 
 ### Fixed
 - Instance name enrichment for logging
@@ -82,6 +89,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Badge requirements list using client-side evaluation
 - Community experience report using client-side evaluation
 - Return 404s for missing Mission Control files
+- Layer item selector not changing the initial slide when an items selected
+- Avatar items using the wrong layers initial color
+- Un-donate buttons using the wrong permission
+- Add book erroring when author field is empty
+- Viewing participants with schools without the edit permission
+- Profile school values disappearing after model error
 
 ### Removed
 - Recovery error logging at the controller level - it's logged in the

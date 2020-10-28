@@ -37,6 +37,8 @@ namespace GRA.Controllers
 
         private readonly ICodeSanitizer _codeSanitizer;
 
+        public static string Name { get { return "Join"; } }
+
         public JoinController(ILogger<JoinController> logger,
             ServiceFacade.Controller context,
             AuthenticationService authenticationService,
