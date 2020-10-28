@@ -4,7 +4,12 @@
 
 GRA code should successfully compile using the free [Visual Studio Community](https://www.visualstudio.com/vs/community/) edition. External dependencies are managed with NuGet and should be automatically downloaded upon the first build. The current `develop` branch requires [C# 7.1](https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-7-1) to compile, we are currently using Visual Studio 2019.
 
-Version 4.1.1 (the last major release) was developed with the ASP.NET Core v2.2 runtime; version 4.1.0 used ASP.NET Core 2.1 and version 4.0.0 used ASP.NET Core 1.1. The current development tree uses ASP.NET 5.0.
+Framework history:
+
+- Current work (version 4.2 and on) use [.NET 5.0](https://docs.microsoft.com/en-us/dotnet/core/dotnet-five)
+- Version 4.1.1 used ASP.NET Core v2.2
+- Version 4.1.0 used ASP.NET Core v2.1
+- Version 4.0.0 used ASP.NET Core v1.1
 
 By default, GRA is configured to use LocalDB as a database for development and testing. While not packaged with Visual Studio Community, it can easily be added by selecting the notification flag in the title bar of Visual Studio and choosing to install the "MS SQL Server Update for database tooling". Alternately, the [SQL Server Data Tools (SSDT)](https://msdn.microsoft.com/en-us/library/hh272686.aspx) package can be installed manually by downloading it from Microsoft.
 
