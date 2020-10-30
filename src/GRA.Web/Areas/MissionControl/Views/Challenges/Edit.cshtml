@@ -63,8 +63,7 @@
                     </span>
                 </div>
                 <div class="modal-footer">
-                    <button id="warningCancel"
-                            type="button"
+                    <button type="button"
                             class="btn btn-default"
                             data-dismiss="modal"
                             style="margin-right: 1em;">
@@ -465,7 +464,9 @@
     <div class="row row-spacing">
         <div class="col-xs-12">
             <label asp-for="Challenge.Name" class="control-label"></label>
-            <input asp-for="Challenge.Name" class="form-control ignore" />
+            <input asp-for="Challenge.Name"
+                   class="form-control ignore"
+                   readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)" />
             <span asp-validation-for="Challenge.Name" class="text-danger"></span>
         </div>
     </div>
@@ -473,7 +474,9 @@
     <div class="row row-spacing">
         <div class="col-xs-12">
             <label asp-for="Challenge.Description" class="control-label"></label>
-            <textarea asp-for="Challenge.Description" class="form-control ignore"> </textarea>
+            <textarea asp-for="Challenge.Description"
+                      class="form-control ignore"
+                      readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)"> </textarea>
             <span asp-validation-for="Challenge.Description" class="text-danger"></span>
         </div>
     </div>
@@ -485,13 +488,18 @@
             <input asp-for="Challenge.PointsAwarded"
                    type="number"
                    min="1"
-                   class="form-control ignore" />
+                   class="form-control ignore"
+                   readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)" />
             <span asp-validation-for="Challenge.PointsAwarded" class="text-danger"></span>
         </div>
 
         <div class="col-xs-12 col-sm-6 row-spacing">
             <label asp-for="Challenge.TasksToComplete" class="control-label"></label>
-            <input asp-for="Challenge.TasksToComplete" type="number" min="1" class="form-control ignore" />
+            <input asp-for="Challenge.TasksToComplete"
+                   type="number"
+                   min="1"
+                   class="form-control ignore"
+                   readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)" />
             <span asp-validation-for="Challenge.TasksToComplete" class="text-danger"></span>
         </div>
     </div>
@@ -500,7 +508,11 @@
         <div class="col-xs-12">
             <label asp-for="Challenge.CategoryIds" class="control-label"></label>
             <input asp-for="CategoryPlaceholder" class="form-control" />
-            <select asp-for="Challenge.CategoryIds" asp-items="Model.CategoryList" class="form-control hidden" multiple="multiple"></select>
+            <select asp-for="Challenge.CategoryIds"
+                    asp-items="Model.CategoryList"
+                    class="form-control hidden"
+                    multiple="multiple"
+                    disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "disabled" : null)"></select>
             <span asp-validation-for="Challenge.CategoryIds" class="text-danger"></span>
         </div>
     </div>
@@ -508,7 +520,10 @@
     <div class="row row-spacing">
         <div class="col-xs-12">
             <label asp-for="Challenge.LimitToSystemId" class="control-label"></label>
-            <select asp-for="Challenge.LimitToSystemId" asp-items="Model.SystemList" class="form-control">
+            <select asp-for="Challenge.LimitToSystemId"
+                    asp-items="Model.SystemList"
+                    class="form-control"
+                    disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "disabled" : null)">
                 <option value="">No</option>
             </select>
             <span asp-validation-for="Challenge.LimitToSystemId" class="text-danger"></span>
@@ -518,7 +533,10 @@
     <div class="row row-spacing">
         <div class="col-xs-12">
             <label asp-for="Challenge.LimitToBranchId" class="control-label"></label>
-            <select asp-for="Challenge.LimitToBranchId" asp-items="Model.BranchList" class="form-control">
+            <select asp-for="Challenge.LimitToBranchId"
+                    asp-items="Model.BranchList"
+                    class="form-control"
+                    disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "disabled" : null)">
                 <option value="">No</option>
             </select>
             <span asp-validation-for="Challenge.LimitToBranchId" class="text-danger"></span>
@@ -528,7 +546,10 @@
     <div class="row row-spacing">
         <div class="col-xs-12">
             <label asp-for="Challenge.AssociatedProgramId" class="control-label"></label>
-            <select asp-for="Challenge.AssociatedProgramId" asp-items="Model.ProgramList" class="form-control">
+            <select asp-for="Challenge.AssociatedProgramId"
+                    asp-items="Model.ProgramList"
+                    class="form-control"
+                    disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "disabled" : null)">
                 <option value="">No</option>
             </select>
             <span asp-validation-for="Challenge.AssociatedProgramId" class="text-danger"></span>
@@ -613,15 +634,16 @@
                 <span class="buttonText">Save Changes</span>
                 <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
             </button>
+            @if (Model.CanActivate)
+            {
+                <input asp-for="CanActivate" type="hidden" />
+                <button type="submit" asp-action="Edit" name="Submit" value="Activate" class="btn btn-success btn-spinner">
+                    <span class="buttonText">Save and Activate</span>
+                    <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                </button>
+            }
         }
-        @if (Model.CanActivate)
-        {
-            <input asp-for="CanActivate" type="hidden" />
-            <button type="submit" asp-action="Edit" name="Submit" value="Activate" class="btn btn-success btn-spinner">
-                <span class="buttonText">Save and Activate</span>
-                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-            </button>
-        }
+
     </div>
 
     <h3>
@@ -753,19 +775,6 @@
         });
 
         $(document).ready(function () {
-             @if(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
-             {
-                 <text>
-                     $("#Challenge_PointsAwarded").attr("readonly", "readonly");
-                     $("#Challenge_TasksToComplete").attr("readonly", "readonly");
-                     $("#Challenge_Name").attr("readonly", "readonly");
-                     $("#Challenge_Description").attr("readonly", "readonly");
-                     $("#Challenge_CategoryIds").multiselect("disable");
-                     $("#Challenge_LimitToSystemId").attr("disabled", "disabled");
-                     $("#Challenge_LimitToBranchId").attr("disabled", "disabled");
-                     $("#Challenge_AssociatedProgramId").attr("disabled", "disabled");
-                 </text>
-             }
             @if (Model.AddTask || Model.Task != null)
             {
                 <text>
@@ -824,6 +833,15 @@
                         $("#challengeForm").submit();
                     }
                 });
+
+                $("#warningSave").on("click", function () {
+                    $("#challengeForm").submit();
+                });
+
+                $("#warningModal").on("hide.bs.modal", function () {
+                    $("#saveChallenge").removeClass("disabled");
+                    $("#saveChallenge").find(".fa-spinner").addClass("hidden");
+                });
                 </text>
             }
 
@@ -866,19 +884,6 @@
                     input.trigger('fileselect', [numFiles, label]);
             });
         });
-
-        @if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
-        {
-            <text>
-            $("#warningSave").on("click", function() {
-                $("#challengeForm").submit();
-            });
-            $('#warningCancel').on('click', function () {
-                $("#saveChallenge").removeClass("disabled");
-                $("#saveChallenge").find(".fa-spinner").addClass("hidden");
-            });
-            </text>
-        }
 
         $(window).resize(function() {
             $('.td-class').each(function() {

@@ -304,7 +304,10 @@ namespace GRA.Controllers.MissionControl
                 IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits),
                 MaxPointLimit = await _triggerService.GetMaximumAllowedPointsAsync(GetCurrentSiteId())
             };
-            viewModel.MaxPointLimitMessage = $"(Up to {viewModel.MaxPointLimit.Value} points)";
+            if (viewModel.MaxPointLimit.HasValue)
+            {
+                viewModel.MaxPointLimitMessage = $"(Up to {viewModel.MaxPointLimit.Value} points)";
+            }
 
             if (!streamingEvent)
             {
@@ -433,7 +436,7 @@ namespace GRA.Controllers.MissionControl
                         ModelState.AddModelError("BadgeUploadImage", gex.Message);
                     }
                 }
-                if (!UserHasPermission(Permission.IgnorePointLimits)
+                if (!model.IgnorePointLimits
                     && model.MaxPointLimit.HasValue
                     && model.AwardPoints > model.MaxPointLimit)
                 {
@@ -586,6 +589,11 @@ namespace GRA.Controllers.MissionControl
                 GetCurrentSiteId(), SiteSettingKey.Events.GoogleMapsAPIKey);
             model.ShowGeolocation = IsSet;
             model.GoogleMapsAPIKey = SetValue;
+
+            if (model.MaxPointLimit.HasValue)
+            {
+                model.MaxPointLimitMessage = $"(Up to {model.MaxPointLimit.Value} points)";
+            }
 
             return View(model);
         }

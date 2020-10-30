@@ -41,8 +41,7 @@
                     </span>
                 </div>
                 <div class="modal-footer">
-                    <button id="warningCancel"
-                            type="button"
+                    <button type="button"
                             class="btn btn-default"
                             data-dismiss="modal"
                             style="margin-right: 1em;">
@@ -519,35 +518,31 @@
         $("#SecretCode").on("keypress", function () {
             $("#SecretCode-Icon").addClass("hide");
         });
-        $("#saveEvent").on("click", function (e) {
-            @if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
-            {
-                <text>
+
+        @if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
+        {
+            <text>
+            $("#saveEvent").on("click", function (e) {
                 e.preventDefault();
                 if ($("#AwardPoints").val() > @Model.MaxPointLimit
-                    && $("#AwardPoints").val() != @Model.MaxPointLimit) {
+                        && $("#AwardPoints").val() != @Model.MaxPointLimit) {
                     $('#warningModal').modal("show");
                 }
                 else {
                     $("#createForm").submit();
                 }
-                </text>
-            }
-        });
+            });
 
-        @if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
-        {
-            <text>
-            $("#warningSave").on("click", function() {
+            $("#warningSave").on("click", function () {
                 $("#createForm").submit();
             });
-            $('#warningCancel').on('click', function () {
+
+            $("#warningModal").on("hide.bs.modal", function () {
                 $("#saveEvent").removeClass("disabled");
                 $("#saveEvent").find(".fa-spinner").addClass("hidden");
             });
             </text>
         }
-
 
         $("#pickerEnd").datetimepicker({
             format: "@(Model.Event?.AllDay == true ? "MM/DD/YYYY" : "hh:mm A")",

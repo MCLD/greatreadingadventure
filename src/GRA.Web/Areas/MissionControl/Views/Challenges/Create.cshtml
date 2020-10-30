@@ -16,7 +16,6 @@
 
 @if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
 {
-
     <div class="modal fade"
          id="warningModal"
          tabindex="-1"
@@ -40,8 +39,7 @@
                     </span>
                 </div>
                 <div class="modal-footer">
-                    <button id="warningCancel"
-                            type="button"
+                    <button type="button"
                             class="btn btn-default"
                             data-dismiss="modal"
                             style="margin-right: 1em;">
@@ -68,7 +66,6 @@
       role="form"
       enctype="multipart/form-data">
 
-    <input asp-for="MaxPointsMessage" type="hidden" />
     <input asp-for="UseBadgeMaker" type="hidden" />
     <input asp-for="BadgeMakerUrl" type="hidden" />
     <input asp-for="BadgeMakerImage" type="hidden" />
@@ -265,6 +262,15 @@
                         $("#challengeForm").submit();
                     }
                 });
+
+                $("#warningSave").on("click", function () {
+                    $("#challengeForm").submit();
+                });
+
+                $("#warningModal").on("hide.bs.modal", function () {
+                    $("#saveChallenge").removeClass("disabled");
+                    $("#saveChallenge").find(".fa-spinner").addClass("hidden");
+                });
                 </text>
             }
 
@@ -322,18 +328,5 @@
                 $('#selectedFile').val('');
             });
         });
-
-        @if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
-        {
-            <text>
-            $("#warningSave").on("click", function() {
-                $("#challengeForm").submit();
-            });
-            $('#warningCancel').on('click', function () {
-                $("#saveChallenge").removeClass("disabled");
-                $("#saveChallenge").find(".fa-spinner").addClass("hidden");
-            });
-            </text>
-        }
     </script>
 }

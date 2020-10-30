@@ -294,16 +294,18 @@ namespace GRA.Controllers.MissionControl
         {
             byte[] badgeBytes = null;
 
-            var maxPoints = await _challengeService.GetMaximumAllowedPointsAsync(GetCurrentSiteId());
-            if (!UserHasPermission(Permission.IgnorePointLimits)
+            model.IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits);
+            model.MaxPointLimit = await _challengeService
+                .GetMaximumAllowedPointsAsync(GetCurrentSiteId());
+            if (!model.IgnorePointLimits
                 && model.Challenge.TasksToComplete.HasValue
                 && model.Challenge.TasksToComplete != 0)
             {
                 double pointsPerChallenge = (double)model.Challenge.PointsAwarded / model.Challenge.TasksToComplete.Value;
-                if (pointsPerChallenge > maxPoints)
+                if (pointsPerChallenge > model.MaxPointLimit)
                 {
                     ModelState.AddModelError("Challenge.PointsAwarded",
-                        $"A challenge with {model.Challenge.TasksToComplete} tasks may award a maximum of {maxPoints * model.Challenge.TasksToComplete} points.");
+                        $"A challenge with {model.Challenge.TasksToComplete} tasks may award a maximum of {model.MaxPointLimit * model.Challenge.TasksToComplete} points.");
                 }
             }
             if (model.BadgeUploadImage != null
@@ -379,8 +381,14 @@ namespace GRA.Controllers.MissionControl
                     ShowAlertWarning("Unable to add challenge: ", gex.Message);
                 }
             }
+
             PageTitle = "Create Challenge";
             model = await GetDetailLists(model);
+
+            if (model.MaxPointLimit.HasValue)
+            {
+                model.MaxPointsMessage = $"(Up to {model.MaxPointLimit.Value} points per required task)";
+            }
 
             return View(model);
         }
@@ -460,7 +468,10 @@ namespace GRA.Controllers.MissionControl
                 IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits),
                 MaxPointLimit = await _challengeService.GetMaximumAllowedPointsAsync(site.Id)
             };
-            viewModel.MaxPointsMessage = $"(Up to {viewModel.MaxPointLimit.Value} points per required task)";
+            if (viewModel.MaxPointLimit.HasValue)
+            {
+                viewModel.MaxPointsMessage = $"(Up to {viewModel.MaxPointLimit.Value} points per required task)";
+            }
             if (challenge.TasksToComplete.HasValue
                 && viewModel.MaxPointLimit.HasValue
                 && challenge.PointsAwarded / challenge.TasksToComplete.Value
@@ -507,16 +518,9 @@ namespace GRA.Controllers.MissionControl
         {
             byte[] badgeBytes = null;
 
-            var currentChallenge =
-                await _challengeService.MCGetChallengeDetailsAsync(model.Challenge.Id);
-            model.MaxPointLimit =
-                await _challengeService.GetMaximumAllowedPointsAsync(GetCurrentSiteId());
             model.IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits);
-            if (model.MaxPointLimit.HasValue)
-            {
-                model.MaxPointsMessage = $"(Up to {model.MaxPointLimit.Value} points per required task)";
-            }
-
+            model.MaxPointLimit = await _challengeService
+                .GetMaximumAllowedPointsAsync(GetCurrentSiteId());
             if (model.Challenge.TasksToComplete.HasValue
                 && model.Challenge.TasksToComplete != 0
                 && model.Challenge.PointsAwarded != 0
@@ -529,12 +533,6 @@ namespace GRA.Controllers.MissionControl
                     ModelState.AddModelError("Challenge.PointsAwarded",
                         $"A challenge with {model.Challenge.TasksToComplete} tasks may award a maximum of {model.MaxPointLimit.Value * model.Challenge.TasksToComplete} points.");
                 }
-            }
-            else if (model.Challenge.TasksToComplete.HasValue
-                && model.MaxPointLimit.HasValue
-                && model.Challenge.PointsAwarded / model.Challenge.TasksToComplete.Value > model.MaxPointLimit)
-            {
-                model.MaxPointsWarningMessage = $"This Challenge exceeds the maximum of {model.MaxPointLimit.Value} points per required task. Only Administrators can edit tasks and points.";
             }
 
             if (model.BadgeUploadImage != null
@@ -644,6 +642,24 @@ namespace GRA.Controllers.MissionControl
                     .GetDependentsAsync(model.Challenge.Id);
                 model.Groups = await _challengeService.GetGroupsByChallengeId(model.Challenge.Id);
                 model.RelatedEvents = await _eventService.GetByChallengeIdAsync(model.Challenge.Id);
+
+                if (model.MaxPointLimit.HasValue)
+                {
+                    model.MaxPointsMessage = $"(Up to {model.MaxPointLimit.Value} points per required task)";
+
+                    var currentChallenge = await _challengeService
+                        .MCGetChallengeDetailsAsync(model.Challenge.Id);
+                    if (currentChallenge.TasksToComplete.HasValue)
+                    {
+                        double pointsPerChallenge = (double)currentChallenge.PointsAwarded
+                            / currentChallenge.TasksToComplete.Value;
+                        if (pointsPerChallenge > model.MaxPointLimit.Value)
+                        {
+                            model.MaxPointsWarningMessage = $"This Challenge exceeds the maximum of {model.MaxPointLimit.Value} points per required task. Only Administrators can edit tasks and points.";
+                        }
+                    }
+                }
+
 
                 return View(model);
             }

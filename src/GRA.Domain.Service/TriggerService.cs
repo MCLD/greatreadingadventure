@@ -271,15 +271,19 @@ namespace GRA.Domain.Service
                     throw new GraException("Invalid Avatar Bundle selection.");
                 }
             }
+
             var maxPointLimit = await GetMaximumAllowedPointsAsync(GetCurrentSiteId());
-            var currentUser = GetAuthUser();
-            var ignorePointLimit = _userContextProvider
-                .UserHasPermission(currentUser, nameof(Permission.IgnorePointLimits));
-            if (maxPointLimit.HasValue
-                && !ignorePointLimit
-                && trigger.AwardPoints > maxPointLimit)
+            if (maxPointLimit.HasValue && !HasPermission(Permission.IgnorePointLimits))
             {
-                throw new GraException($"A trigger may award a maximum of {maxPointLimit} points.");
+                var currentTrigger = await _triggerRepository.GetByIdAsync(trigger.Id);
+                if (currentTrigger?.AwardPoints > maxPointLimit)
+                {
+                    throw new GraException("Permission denied.");
+                }
+                if (trigger.AwardPoints > maxPointLimit)
+                {
+                    throw new GraException($"A trigger may award a maximum of {maxPointLimit} points.");
+                }
             }
         }
 

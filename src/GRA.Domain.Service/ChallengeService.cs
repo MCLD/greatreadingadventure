@@ -175,12 +175,9 @@ namespace GRA.Domain.Service
             if (HasPermission(Permission.AddChallenges))
             {
                 var maxPointLimit = await GetMaximumAllowedPointsAsync(GetCurrentSiteId());
-                var currentUser = GetAuthUser();
-                var ignorePointLimit = _userContextProvider
-                    .UserHasPermission(currentUser, nameof(Permission.IgnorePointLimits));
                 if (maxPointLimit.HasValue
-                    && !ignorePointLimit
-                    && challenge.PointsAwarded > maxPointLimit)
+                    && !HasPermission(Permission.IgnorePointLimits)
+                    && challenge.PointsAwarded > maxPointLimit * challenge.TasksToComplete)
                 {
                     throw new GraException($"A challenge with {challenge.TasksToComplete} tasks may award a maximum of {maxPointLimit * challenge.TasksToComplete} points.");
                 }
@@ -233,15 +230,21 @@ namespace GRA.Domain.Service
             int authUserId = GetClaimId(ClaimType.UserId);
             if (HasPermission(Permission.EditChallenges))
             {
+                var currentChallenge = await _challengeRepository.GetByIdAsync(challenge.Id);
+
                 var maxPointLimit = await GetMaximumAllowedPointsAsync(GetCurrentSiteId());
-                var currentUser = GetAuthUser();
-                var ignorePointLimit = _userContextProvider
-                    .UserHasPermission(currentUser, nameof(Permission.IgnorePointLimits));
-                if (maxPointLimit.HasValue
-                    && !ignorePointLimit
-                    && challenge.PointsAwarded > maxPointLimit)
+                if (maxPointLimit.HasValue && !HasPermission(Permission.IgnorePointLimits))
                 {
-                    throw new GraException($"A challenge with {challenge.TasksToComplete} tasks may award a maximum of {maxPointLimit * challenge.TasksToComplete} points.");
+                    if (currentChallenge.PointsAwarded * currentChallenge.TasksToComplete
+                        > maxPointLimit)
+                    {
+                        throw new GraException("Permission denied.");
+                    }
+
+                    if (challenge.PointsAwarded * challenge.TasksToComplete > maxPointLimit)
+                    {
+                        throw new GraException($"A challenge with {challenge.TasksToComplete} tasks may award a maximum of {maxPointLimit * challenge.TasksToComplete} points.");
+                    }
                 }
                 if (challenge.LimitToSystemId.HasValue && challenge.LimitToBranchId.HasValue)
                 {
@@ -253,7 +256,6 @@ namespace GRA.Domain.Service
                         throw new GraException("Invalid branch limitation.");
                     }
                 }
-                var currentChallenge = await _challengeRepository.GetByIdAsync(challenge.Id);
                 var serviceResult = new ServiceResult<Challenge>();
 
                 challenge.SiteId = currentChallenge.SiteId;

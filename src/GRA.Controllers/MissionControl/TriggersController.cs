@@ -206,7 +206,10 @@ namespace GRA.Controllers.MissionControl
                 IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits),
                 MaxPointLimit = await _triggerService.GetMaximumAllowedPointsAsync(GetCurrentSiteId())
             };
-            viewModel.MaxPointsMessage = $"(Up to {viewModel.MaxPointLimit.Value} points)";
+            if (viewModel.MaxPointLimit.HasValue)
+            {
+                viewModel.MaxPointsMessage = $"(Up to {viewModel.MaxPointLimit.Value} points)";
+            }
 
             if (viewModel.EditVendorCode)
             {
@@ -230,9 +233,11 @@ namespace GRA.Controllers.MissionControl
 
             var badgeRequiredList = new List<int>();
             var challengeRequiredList = new List<int>();
-            model.MaxPointLimit =
-                await _triggerService.GetMaximumAllowedPointsAsync(GetCurrentSiteId());
-            if (!UserHasPermission(Permission.IgnorePointLimits)
+
+            model.IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits);
+            model.MaxPointLimit = await _triggerService
+                .GetMaximumAllowedPointsAsync(GetCurrentSiteId());
+            if (!model.IgnorePointLimits
                 && model.MaxPointLimit.HasValue
                 && model.Trigger.AwardPoints > model.MaxPointLimit)
             {
@@ -430,6 +435,11 @@ namespace GRA.Controllers.MissionControl
                     await _avatarService.GetAllBundlesAsync(true), "Id", "Name");
             }
 
+            if (model.MaxPointLimit.HasValue)
+            {
+                model.MaxPointsMessage = $"(Up to {model.MaxPointLimit.Value} points)";
+            }
+
             PageTitle = "Create Trigger";
             return View("Detail", model);
         }
@@ -533,13 +543,13 @@ namespace GRA.Controllers.MissionControl
 
             var badgeRequiredList = new List<int>();
             var challengeRequiredList = new List<int>();
-            var currentTrigger = await _triggerService.GetByIdAsync(model.Trigger.Id);
+
+            model.IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits);
             model.MaxPointLimit =
                 await _triggerService.GetMaximumAllowedPointsAsync(GetCurrentSiteId());
-            if (!UserHasPermission(Permission.IgnorePointLimits)
+            if (!model.IgnorePointLimits
                 && model.MaxPointLimit.HasValue
-                && model.Trigger.AwardPoints > model.MaxPointLimit
-                && model.Trigger.AwardPoints != currentTrigger.AwardPoints)
+                && model.Trigger.AwardPoints > model.MaxPointLimit)
             {
                 ModelState.AddModelError("Trigger.AwardPoints",
                     $"You may award up to {model.MaxPointLimit} points.");
@@ -739,6 +749,17 @@ namespace GRA.Controllers.MissionControl
             {
                 model.UnlockableAvatarBundle = (await _avatarService
                     .GetBundleByIdAsync(model.Trigger.AwardAvatarBundleId.Value)).Name;
+            }
+
+            if (model.MaxPointLimit.HasValue)
+            {
+                model.MaxPointsMessage = $"(Up to {model.MaxPointLimit.Value} points)";
+
+                var currentTrigger = await _triggerService.GetByIdAsync(model.Trigger.Id);
+                if (currentTrigger.AwardPoints > model.MaxPointLimit.Value)
+                {
+                    model.MaxPointsWarningMessage = $"This Trigger exceeds the maximum of {model.MaxPointLimit.Value} points per required task. Only Administrators can edit the points awarded.";
+                }
             }
 
             PageTitle = $"Edit Trigger - {model.Trigger.Name}";

@@ -257,7 +257,9 @@
     <div class="col-xs-12 form-group-lg" style="margin-top: 2rem; margin-bottom: 2rem;">
         <label asp-for="Trigger.Name" class="control-label col-sm-3"></label>
         <div class="col-sm-9">
-            <input asp-for="Trigger.Name" class="form-control trigger-name-field" />
+            <input asp-for="Trigger.Name"
+                   class="form-control trigger-name-field"
+                   readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)" />
             <span asp-validation-for="Trigger.Name" class="text-danger"></span>
         </div>
     </div>
@@ -290,7 +292,9 @@
                 <div class="col-sm-9">
                     <span id="SecretCode-Icon" style="float:left;margin-top:15px;" class="fa colored-icon hide"></span>
                     <div style="margin-left:20px;">
-                        <input asp-for="Trigger.SecretCode" class="form-control" />
+                        <input asp-for="Trigger.SecretCode"
+                               class="form-control"
+                               readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)" />
                         <span id="SecretCode-Validation" asp-validation-for="Trigger.SecretCode" class="text-success"></span>
                     </div>
                 </div>
@@ -315,7 +319,9 @@
             <div class="col-xs-12 form-group">
                 <label asp-for="Trigger.Points" class="control-label col-sm-4"></label>
                 <div class="col-sm-8">
-                    <input asp-for="Trigger.Points" class="form-control" />
+                    <input asp-for="Trigger.Points"
+                           class="form-control"
+                           readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)" />
                     <span asp-validation-for="Trigger.Points" class="text-danger"></span>
                 </div>
             </div>
@@ -329,7 +335,10 @@
 
                         <div class="form-inline" style="margin-bottom: 1em;">
                             <p class="form-control-static"><strong>Participant must have earned</strong></p>
-                            <input asp-for="Trigger.ItemsRequired" class="form-control" min="0" />
+                            <input asp-for="Trigger.ItemsRequired"
+                                   class="form-control"
+                                   min="0"
+                                   readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)" />
                             <p class="form-control-static"><strong>of the following:</strong></p>
                             <span asp-validation-for="Trigger.ItemsRequired" class="text-danger" />
                         </div>
@@ -388,7 +397,12 @@
                                 </tbody>
                             </table>
                         </div>
-                        <button type="button" id="addButton" class="btn btn-warning">Add Challenges or Triggers</button>
+                        <button type="button"
+                                id="addButton"
+                                class="btn btn-warning"
+                                disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "disabled" : null)">
+                            Add Challenges or Triggers
+                        </button>
                     </div>
                 </div>
             </div>
@@ -396,7 +410,10 @@
             <div class="col-xs-12 form-group">
                 <label asp-for="Trigger.LimitToSystemId" class="control-label col-sm-4"></label>
                 <div class="col-sm-8">
-                    <select asp-for="Trigger.LimitToSystemId" asp-items="Model.SystemList" class="form-control">
+                    <select asp-for="Trigger.LimitToSystemId"
+                            asp-items="Model.SystemList"
+                            class="form-control"
+                            disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "disabled" : null)">
                         <option value="">No</option>
                     </select>
                     <span asp-validation-for="Trigger.LimitToSystemId" class="text-danger"></span>
@@ -406,7 +423,10 @@
             <div class="col-xs-12 form-group">
                 <label asp-for="Trigger.LimitToBranchId" class="control-label col-sm-4"></label>
                 <div class="col-sm-8">
-                    <select asp-for="Trigger.LimitToBranchId" asp-items="Model.BranchList" class="form-control">
+                    <select asp-for="Trigger.LimitToBranchId"
+                            asp-items="Model.BranchList"
+                            class="form-control"
+                            disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "disabled" : null)">
                         <option value="">No</option>
                     </select>
                     <span asp-validation-for="Trigger.LimitToBranchId" class="text-danger"></span>
@@ -416,7 +436,10 @@
             <div class="col-xs-12 form-group">
                 <label asp-for="Trigger.LimitToProgramId" class="control-label col-sm-4"></label>
                 <div class="col-sm-8">
-                    <select asp-for="Trigger.LimitToProgramId" asp-items="Model.ProgramList" class="form-control">
+                    <select asp-for="Trigger.LimitToProgramId"
+                            asp-items="Model.ProgramList"
+                            class="form-control"
+                            disabled="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "disabled" : null)">
                         <option value="">No</option>
                     </select>
                     <span asp-validation-for="Trigger.LimitToProgramId" class="text-danger"></span>
@@ -433,7 +456,10 @@
                 <span class="input-group-addon">
                     <span class="fa fa-calendar"></span>
                 </span>
-                <input asp-for="Trigger.ActivationDate" type="text" class="form-control" />
+                <input asp-for="Trigger.ActivationDate"
+                       type="text"
+                       class="form-control"
+                       readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)" />
             </div>
             <span asp-validation-for="Trigger.ActivationDate" class="text-danger"></span>
         </div>
@@ -447,7 +473,9 @@
             <div class="col-xs-12 form-group">
                 <label asp-for="Trigger.AwardMessage" class="control-label col-sm-3"></label>
                 <div class="col-sm-9">
-                    <textarea asp-for="Trigger.AwardMessage" class="form-control"></textarea>
+                    <textarea asp-for="Trigger.AwardMessage"
+                              class="form-control"
+                              readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)"></textarea>
                     <span asp-validation-for="Trigger.AwardMessage" class="text-danger"></span>
                 </div>
             </div>
@@ -462,7 +490,11 @@
                     </div>
                 </div>
                 <div class="col-sm-9">
-                    <input asp-for="Trigger.AwardPoints" value="@(Model.Trigger?.AwardPoints ?? 0)" min="0" class="form-control" />
+                    <input asp-for="Trigger.AwardPoints"
+                           value="@(Model.Trigger?.AwardPoints ?? 0)"
+                           min="0"
+                           class="form-control"
+                           readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)" />
                     <span asp-validation-for="Trigger.AwardPoints" class="text-danger"></span>
                 </div>
             </div>
@@ -592,14 +624,18 @@
                     <div class="row row-spacing">
                         <div class="col-xs-12">
                             <label asp-for="Trigger.AwardPrizeName" class="control-label"></label>
-                            <input asp-for="Trigger.AwardPrizeName" class="form-control" />
+                            <input asp-for="Trigger.AwardPrizeName"
+                                   class="form-control"
+                                   readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)" />
                             <span asp-validation-for="Trigger.AwardPrizeName" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="row row-spacing">
                         <div class="col-xs-12">
                             <label asp-for="Trigger.AwardPrizeRedemptionInstructions" class="control-label"></label>
-                            <textarea asp-for="Trigger.AwardPrizeRedemptionInstructions" class="form-control"></textarea>
+                            <textarea asp-for="Trigger.AwardPrizeRedemptionInstructions"
+                                      class="form-control"
+                                      readonly="@(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage) ? "readonly" : null)"></textarea>
                             <span asp-validation-for="Trigger.AwardPrizeRedemptionInstructions" class="text-danger"></span>
                         </div>
                     </div>
@@ -632,14 +668,18 @@
                         <div class="row row-spacing">
                             <div class="col-xs-12">
                                 <label asp-for="Trigger.AwardMailSubject" class="control-label"></label>
-                                <input asp-for="Trigger.AwardMailSubject" class="form-control" asp-readonly="@(!Model.EditMail)" />
+                                <input asp-for="Trigger.AwardMailSubject"
+                                       class="form-control"
+                                       readonly="@(!Model.EditMail || (!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage)) ? "readonly" : null)" />
                                 <span asp-validation-for="Trigger.AwardMailSubject" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="row row-spacing">
                             <div class="col-xs-12">
                                 <label asp-for="Trigger.AwardMail" class="control-label"></label>
-                                <textarea asp-for="Trigger.AwardMail" class="form-control" asp-readonly="@(!Model.EditMail)"></textarea>
+                                <textarea asp-for="Trigger.AwardMail"
+                                          class="form-control"
+                                          readonly="@(!Model.EditMail || (!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage)) ? "readonly" : null)"></textarea>
                                 <span asp-validation-for="Trigger.AwardMail" class="text-danger"></span>
                             </div>
                         </div>
@@ -654,9 +694,8 @@
         <a asp-action="Index" class="btn btn-default">Return to List</a>
         @if (Model.IgnorePointLimits || string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
         {
-            <button type="submit" class="btn btn-primary">
-                <span id="saveButton"
-                      class="buttonText">
+            <button type="submit" id="saveButton" class="btn btn-primary btn-spinner">
+                <span class="buttonText">
                     @(Model.Action == "Edit" ? "Save" : Model.Action) Trigger
                 </span>
                 <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
@@ -694,7 +733,6 @@
             $("#listModal").modal("show");
             UpdateRequirementsList();
         });
-
 
         $(document).on("click", ".addRequirementButton", function () {
             if (!$(this).hasClass("disabled")) {
@@ -930,68 +968,43 @@
             if ($('.trigger-name-field').first().val() === "") {
                 $('.trigger-name-field').first().focus();
             }
-            @if(!Model.IgnorePointLimits && !string.IsNullOrEmpty(Model.MaxPointsWarningMessage))
-            {
-                <text>
-                    $("#Trigger_Name").attr("readonly", "readonly");
-                    $("#Trigger_AwardPoints").attr("readonly", "readonly");
-                    $("#Trigger_SecretCode").attr("readonly", "readonly");
-                    $("#Trigger_ActivationDate").attr("readonly", "readonly");
-                    $("#Trigger_Points").attr("readonly", "readonly");
-                    $("#Trigger_ItemsRequired").attr("readonly", "readonly");
-                    $("#addButton").attr("disabled", "disabled");
-                    $("#Trigger_LimitToSystemId").attr("disabled", "disabled");
-                    $("#Trigger_LimitToBranchId").attr("disabled", "disabled");
-                    $("#Trigger_LimitToProgramId").attr("disabled", "disabled");
-                    $("#Trigger_AwardMessage").attr("readonly", "readonly");
-                    $("#Trigger_AwardPrizeName").attr("readonly", "readonly");
-                    $("#Trigger_AwardPrizeRedemptionInstructions").attr("readonly", "readonly");
-                    $("#Trigger_AwardMailSubject").attr("readonly", "readonly");
-                    $("#Trigger_AwardMail").attr("readonly", "readonly");
-                </text>
-             }
-            @if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
-            {
-                <text>
-                $("#saveButton").on("click", function (e) {
-                    e.preventDefault();
-                    if ($("#Trigger_AwardPoints").val() > @Model.MaxPointLimit) {
-                        @if (Model.Trigger != null)
-                        {
-                            <text>
-                            if ($("#Trigger_AwardPoints").val() != @Model.Trigger.AwardPoints) {
-                                $('#warningModal').modal("show");
-                            }
-                            else {
-                                $("#triggerForm").submit();
-                            }
-                            </text>
-                        }
-                        else
-                        {
-                            @:$('#warningModal').modal("show");
-                        }
-                    }
-                    else {
-                        $("#triggerForm").submit();
-                    }
-                });
-                </text>
-            }
-            else
-            {
-            <text>
-                $("#saveButton").on("click", function (e) {
-                    $("#triggerForm").submit();
-                });
-            </text>
-            }
-            });
+
+        });
+
         @if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
         {
             <text>
-            $("#warningSave").on("click", function() {
+            $("#saveButton").on("click", function (e) {
+                e.preventDefault();
+                if ($("#Trigger_AwardPoints").val() > @Model.MaxPointLimit) {
+                    @if (Model.Trigger != null)
+                    {
+                        <text>
+                        if ($("#Trigger_AwardPoints").val() != @Model.Trigger.AwardPoints) {
+                            $('#warningModal').modal("show");
+                        }
+                        else {
+                            $("#triggerForm").submit();
+                        }
+                        </text>
+                    }
+                    else
+                    {
+                        @:$('#warningModal').modal("show");
+                    }
+                }
+                else {
+                    $("#triggerForm").submit();
+                }
+            });
+
+            $("#warningSave").on("click", function () {
                 $("#triggerForm").submit();
+            });
+
+            $("#warningModal").on("hide.bs.modal", function () {
+                $("#saveButton").removeClass("disabled");
+                $("#saveButton").find(".fa-spinner").addClass("hidden");
             });
             </text>
         }
