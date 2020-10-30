@@ -235,13 +235,13 @@ namespace GRA.Domain.Service
                 var maxPointLimit = await GetMaximumAllowedPointsAsync(GetCurrentSiteId());
                 if (maxPointLimit.HasValue && !HasPermission(Permission.IgnorePointLimits))
                 {
-                    if (currentChallenge.PointsAwarded * currentChallenge.TasksToComplete
-                        > maxPointLimit)
+                    if (currentChallenge.PointsAwarded >
+                        maxPointLimit * currentChallenge.TasksToComplete)
                     {
                         throw new GraException("Permission denied.");
                     }
 
-                    if (challenge.PointsAwarded * challenge.TasksToComplete > maxPointLimit)
+                    if (challenge.PointsAwarded > maxPointLimit * challenge.TasksToComplete)
                     {
                         throw new GraException($"A challenge with {challenge.TasksToComplete} tasks may award a maximum of {maxPointLimit * challenge.TasksToComplete} points.");
                     }
