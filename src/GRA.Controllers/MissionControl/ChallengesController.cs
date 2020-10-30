@@ -479,7 +479,7 @@ namespace GRA.Controllers.MissionControl
                     / viewModel.Challenge.TasksToComplete.Value;
                 if (pointsPerChallenge > viewModel.MaxPointLimit)
                 {
-                    viewModel.MaxPointsWarningMessage = $"This Challenge exceeds the maximum of {viewModel.MaxPointLimit.Value} points per required task. Only Administrators can edit tasks and points.";
+                    viewModel.MaxPointsWarningMessage = $"This Challenge exceeds the maximum of {viewModel.MaxPointLimit.Value} points per required task - only Administrators can edit it.";
                 }
             }
 
@@ -658,7 +658,7 @@ namespace GRA.Controllers.MissionControl
                             / currentChallenge.TasksToComplete.Value;
                         if (pointsPerChallenge > model.MaxPointLimit.Value)
                         {
-                            model.MaxPointsWarningMessage = $"This Challenge exceeds the maximum of {model.MaxPointLimit.Value} points per required task. Only Administrators can edit tasks and points.";
+                            model.MaxPointsWarningMessage = $"This Challenge exceeds the maximum of {model.MaxPointLimit.Value} points per required task - only Administrators can edit it.";
                         }
                     }
                 }
