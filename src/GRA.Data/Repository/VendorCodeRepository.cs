@@ -1,12 +1,12 @@
-﻿using AutoMapper.QueryableExtensions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GRA.Data.Repository
 {
@@ -93,9 +93,9 @@ namespace GRA.Data.Repository
             var validUsers = _context.Users.AsNoTracking()
                 .Where(_ => _.SiteId == criterion.SiteId);
 
-            if(criterion.IsFirstTimeParticipant == true)
+            if (criterion.IsFirstTimeParticipant)
             {
-                validUsers = validUsers.Where(_ => _.IsFirstTime == true);
+                validUsers = validUsers.Where(_ => _.IsFirstTime);
             }
 
             if (criterion.BranchId.HasValue)
@@ -123,13 +123,66 @@ namespace GRA.Data.Repository
                 .Where(_ => _.Id == headOfHouseholdId || _.HouseholdHeadUserId == headOfHouseholdId);
 
             return await DbSet.AsNoTracking()
-                .Where(_ => _.UserId.HasValue && _.IsDonated == null)
+                .Where(_ => _.UserId.HasValue && _.IsDonated == null && _.IsEmailAward == null)
                 .Join(householdUsers,
                     vendorCode => vendorCode.UserId,
                     user => user.Id,
                     (vendorCode, _) => vendorCode)
                 .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
                 .ToListAsync();
+        }
+
+        public async Task<ICollection<VendorCodeEmailAward>>
+            GetUnreportedEmailAwardCodes(int siteId, int vendorCodeTypeId)
+        {
+            return await _context.Users
+                .AsNoTracking()
+                .Join(DbSet.Where(_ => _.SiteId == siteId
+                        && _.VendorCodeTypeId == vendorCodeTypeId
+                        && _.IsEmailAward == true
+                        && !_.EmailAwardReported.HasValue),
+                    user => user.Id,
+                    vendorCode => vendorCode.UserId,
+                    (user, vendorcode) => new VendorCodeEmailAward
+                    {
+                        VendorCodeId = vendorcode.Id,
+                        UserId = user.Id,
+                        Name = user.FirstName + " " + user.LastName,
+                        Email = vendorcode.EmailAwardAddress
+                    })
+                .ToListAsync();
+        }
+
+        public async Task<VendorCodeStatus> GetStatusAsync()
+        {
+            var all = DbSet.AsNoTracking();
+
+            if (await all.CountAsync() == 0)
+            {
+                return new VendorCodeStatus();
+            }
+
+            var assigned = all.Where(_ => _.UserId != null);
+            var emailAwards = assigned.Where(_ => _.IsEmailAward == true && _.IsDonated != true);
+            var vendorAwards = assigned.Where(_ => _.IsEmailAward != true && _.IsDonated != true);
+
+            return new VendorCodeStatus
+            {
+                AssignedCodes = await assigned.CountAsync(),
+                Donated = await assigned.CountAsync(_ => _.IsDonated == true),
+                EmailAwardSelected = await emailAwards.CountAsync(),
+                EmailAwardDownloadedInReport = await emailAwards
+                    .CountAsync(_ => _.EmailAwardReported != null),
+                EmailAwardPendingDownload = await emailAwards
+                    .CountAsync(_ => _.EmailAwardReported == null),
+                EmailAwardSent = await emailAwards.CountAsync(_ => _.EmailAwardSent != null),
+                NoStatus = await vendorAwards.CountAsync(_ => _.ShipDate == null
+                    && _.OrderDate == null),
+                Ordered = await vendorAwards.CountAsync(_ => _.OrderDate != null),
+                Shipped = await vendorAwards.CountAsync(_ => _.ShipDate != null),
+                UnusedCodes = await all.CountAsync(_ => _.UserId == null),
+                VendorSelected = await vendorAwards.CountAsync()
+            };
         }
     }
 }

@@ -17,20 +17,21 @@ namespace GRA.Domain.Service
         private readonly IDistributedCache _cache;
         private readonly IOptions<RequestLocalizationOptions> _l10nOptions;
         private readonly ILanguageRepository _languageRepository;
-        private readonly UserService _userService;
+        private readonly SiteLookupService _siteLookupService;
 
         public LanguageService(ILogger<LanguageService> logger,
             IDateTimeProvider dateTimeProvider,
             IDistributedCache cache,
             IOptions<RequestLocalizationOptions> l10nOptions,
             ILanguageRepository languageRepository,
-            UserService userService) : base(logger, dateTimeProvider)
+            SiteLookupService siteLookupService) : base(logger, dateTimeProvider)
         {
             _cache = cache ?? throw new ArgumentNullException(nameof(cache));
             _l10nOptions = l10nOptions ?? throw new ArgumentNullException(nameof(l10nOptions));
             _languageRepository = languageRepository
                 ?? throw new ArgumentNullException(nameof(languageRepository));
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            _siteLookupService = siteLookupService
+                ?? throw new ArgumentNullException(nameof(siteLookupService));
         }
 
         public async Task SyncLanguagesAsync()
@@ -99,7 +100,7 @@ namespace GRA.Domain.Service
             {
                 if (systemUser == null)
                 {
-                    systemUser = await _userService.GetSystemUserId();
+                    systemUser = await _siteLookupService.GetSystemUserId();
                 }
                 var culture = siteCultures.Single(_ => _.Name == missingCultureName);
                 await _languageRepository.AddSaveNoAuditAsync(new Language

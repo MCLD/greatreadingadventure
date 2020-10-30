@@ -58,11 +58,24 @@ namespace GRA.Domain.Model
         public Challenge Challenge { get; set; }
         public int? ChallengeGroupId { get; set; }
         public ChallengeGroup ChallengeGroup { get; set; }
+        public bool IsFavorited { get; set; }
 
         public string EventLocationName { get; set; }
         public string EventLocationAddress { get; set; }
         public double EventLocationDistance { get; set; }
         public string EventLocationLink { get; set; }
         public string EventLocationTelephone { get; set; }
+
+        [DisplayName("Is this a streaming event?")]
+        public bool IsStreaming { get; set; }
+        [DisplayName("Embed stream?")]
+        public bool IsStreamingEmbed { get; set; }
+
+        [DisplayName("Access to stream ends")]
+        public DateTime? StreamingAccessEnds { get; set; }
+
+        [MaxLength(255)]
+        [DisplayName("Stream link/embed code")]
+        public string StreamingLinkData { get; set; }
     }
 }

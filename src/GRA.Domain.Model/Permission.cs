@@ -16,6 +16,7 @@ namespace GRA.Domain.Model
         EditChallengeGroups,
         EditParticipants,
         EditParticipantUsernames,
+        IgnorePointLimits,
         ImportHouseholdMembers,
         LogActivityForAny,
         MailParticipants,

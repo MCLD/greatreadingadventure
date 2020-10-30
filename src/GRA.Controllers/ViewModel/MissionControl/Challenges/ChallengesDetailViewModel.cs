@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Challenges
 {
@@ -20,7 +19,10 @@ namespace GRA.Controllers.ViewModel.MissionControl.Challenges
         public bool CanManageEvents { get; set; }
         public bool CanViewParticipants { get; set; }
         public bool CanViewTriggers { get; set; }
+        public bool IgnorePointLimits { get; set; }
+        public int? MaxPointLimit { get; set; }
         public string MaxPointsMessage { get; set; }
+        public string MaxPointsWarningMessage { get; set; }
         public string BadgeMakerUrl { get; set; }
         public bool UseBadgeMaker { get; set; }
         public string BadgeMakerImage { get; set; }

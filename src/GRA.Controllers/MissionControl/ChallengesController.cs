@@ -274,13 +274,15 @@ namespace GRA.Controllers.MissionControl
             var viewModel = new ChallengesDetailViewModel
             {
                 BadgeMakerUrl = GetBadgeMakerUrl(siteUrl, site.FromEmailAddress),
-                UseBadgeMaker = true
+                UseBadgeMaker = true,
+                IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits),
+                MaxPointLimit = await _challengeService.GetMaximumAllowedPointsAsync(site.Id)
             };
 
             viewModel = await GetDetailLists(viewModel);
-            if (site.MaxPointsPerChallengeTask.HasValue)
+            if (viewModel.MaxPointLimit.HasValue)
             {
-                viewModel.MaxPointsMessage = $"(Up to {site.MaxPointsPerChallengeTask.Value} points per required task)";
+                viewModel.MaxPointsMessage = $"(Up to {viewModel.MaxPointLimit.Value} points per required task)";
             }
 
             return View(viewModel);
@@ -290,15 +292,20 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Create(ChallengesDetailViewModel model)
         {
-            var site = await GetCurrentSiteAsync();
-            if (site.MaxPointsPerChallengeTask.HasValue && model.Challenge.TasksToComplete.HasValue
+            byte[] badgeBytes = null;
+
+            model.IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits);
+            model.MaxPointLimit = await _challengeService
+                .GetMaximumAllowedPointsAsync(GetCurrentSiteId());
+            if (!model.IgnorePointLimits
+                && model.Challenge.TasksToComplete.HasValue
                 && model.Challenge.TasksToComplete != 0)
             {
-                double pointsPerChallenge =
-                    (double)model.Challenge.PointsAwarded / model.Challenge.TasksToComplete.Value;
-                if (pointsPerChallenge > site.MaxPointsPerChallengeTask)
+                double pointsPerChallenge = (double)model.Challenge.PointsAwarded / model.Challenge.TasksToComplete.Value;
+                if (pointsPerChallenge > model.MaxPointLimit)
                 {
-                    ModelState.AddModelError("Challenge.PointsAwarded", "Too many points awarded.");
+                    ModelState.AddModelError("Challenge.PointsAwarded",
+                        $"A challenge with {model.Challenge.TasksToComplete} tasks may award a maximum of {model.MaxPointLimit * model.Challenge.TasksToComplete} points.");
                 }
             }
             if (string.IsNullOrWhiteSpace(model.BadgeAltText))
@@ -319,11 +326,25 @@ namespace GRA.Controllers.MissionControl
                 }
                 if (model.BadgeUploadImage != null
                     && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) && !model.UseBadgeMaker)
-                    && !ValidImageExtensions
-                        .Contains(Path.GetExtension(model.BadgeUploadImage.FileName)
-                        .ToLower()))
+                    && if (!ValidImageExtensions.Contains(Path
+                    .GetExtension(model.BadgeUploadImage.FileName)
+                    .ToLowerInvariant()))
                 {
                     ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
+                }
+
+                try
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        await model.BadgeUploadImage.CopyToAsync(ms);
+                        badgeBytes = ms.ToArray();
+                    }
+                    await _badgeService.ValidateBadgeImageAsync(badgeBytes);
+                }
+                catch (GraException gex)
+                {
+                    ModelState.AddModelError("BadgeUploadImage", gex.Message);
                 }
             }
             if (ModelState.IsValid)
@@ -334,10 +355,9 @@ namespace GRA.Controllers.MissionControl
                     if (model.BadgeUploadImage != null
                         || !string.IsNullOrWhiteSpace(model.BadgeMakerImage))
                     {
-                        byte[] badgeBytes;
                         string filename;
                         if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage)
-                            && (model.BadgeUploadImage != null || model.UseBadgeMaker))
+                            && (model.BadgeUploadImage == null || model.UseBadgeMaker))
                         {
                             var badgeString = model.BadgeMakerImage.Split(',').Last();
                             badgeBytes = Convert.FromBase64String(badgeString);
@@ -345,11 +365,11 @@ namespace GRA.Controllers.MissionControl
                         }
                         else
                         {
-                            using (var fileStream = model.BadgeUploadImage.OpenReadStream())
+                            if (badgeBytes == null)
                             {
                                 using (var ms = new MemoryStream())
                                 {
-                                    fileStream.CopyTo(ms);
+                                    await model.BadgeUploadImage.CopyToAsync(ms);
                                     badgeBytes = ms.ToArray();
                                 }
                             }
@@ -377,8 +397,14 @@ namespace GRA.Controllers.MissionControl
                     ShowAlertWarning("Unable to add challenge: ", gex.Message);
                 }
             }
+
             PageTitle = "Create Challenge";
             model = await GetDetailLists(model);
+
+            if (model.MaxPointLimit.HasValue)
+            {
+                model.MaxPointsMessage = $"(Up to {model.MaxPointLimit.Value} points per required task)";
+            }
 
             return View(model);
         }
@@ -388,7 +414,7 @@ namespace GRA.Controllers.MissionControl
         {
             var site = await GetCurrentSiteAsync();
             var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
-            var challenge = new Challenge();
+            Challenge challenge;
             try
             {
                 challenge = await _challengeService.MCGetChallengeDetailsAsync(id);
@@ -454,12 +480,23 @@ namespace GRA.Controllers.MissionControl
                 Groups = await _challengeService.GetGroupsByChallengeId(challenge.Id),
                 RelatedEvents = await _eventService.GetByChallengeIdAsync(challenge.Id),
                 BadgeMakerUrl = GetBadgeMakerUrl(siteUrl, site.FromEmailAddress),
-                UseBadgeMaker = true
+                UseBadgeMaker = true,
+                IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits),
+                MaxPointLimit = await _challengeService.GetMaximumAllowedPointsAsync(site.Id)
             };
-
-            if (site.MaxPointsPerChallengeTask.HasValue)
+            if (viewModel.MaxPointLimit.HasValue)
             {
-                viewModel.MaxPointsMessage = $"(Up to {site.MaxPointsPerChallengeTask.Value} points per required task)";
+                viewModel.MaxPointsMessage = $"(Up to {viewModel.MaxPointLimit.Value} points per required task)";
+            }
+            if (challenge.TasksToComplete.HasValue
+                && viewModel.MaxPointLimit.HasValue)
+            {
+                double pointsPerChallenge = (double)viewModel.Challenge.PointsAwarded
+                    / viewModel.Challenge.TasksToComplete.Value;
+                if (pointsPerChallenge > viewModel.MaxPointLimit)
+                {
+                    viewModel.MaxPointsWarningMessage = $"This Challenge exceeds the maximum of {viewModel.MaxPointLimit.Value} points per required task - only Administrators can edit it.";
+                }
             }
 
             if (challenge.BadgeId != null)
@@ -499,8 +536,25 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Edit(ChallengesDetailViewModel model, string Submit)
         {
-            var site = await GetCurrentSiteAsync();
-
+            byte[] badgeBytes = null;
+            
+            model.IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits);
+            model.MaxPointLimit = await _challengeService
+                .GetMaximumAllowedPointsAsync(GetCurrentSiteId());
+            if (model.Challenge.TasksToComplete.HasValue
+                && model.Challenge.TasksToComplete != 0
+                && model.Challenge.PointsAwarded != 0
+                && !model.IgnorePointLimits)
+            {
+                double pointsPerChallenge =
+                    (double)model.Challenge.PointsAwarded / model.Challenge.TasksToComplete.Value;
+                if (pointsPerChallenge > model.MaxPointLimit)
+                {
+                    ModelState.AddModelError("Challenge.PointsAwarded",
+                        $"A challenge with {model.Challenge.TasksToComplete} tasks may award a maximum of {model.MaxPointLimit.Value * model.Challenge.TasksToComplete} points.");
+                }
+            }
+            
             var existingBadge = model.Challenge.BadgeId.HasValue ?
                 await _badgeService.GetByIdAsync(model.Challenge.BadgeId.Value) : null;
             if (string.IsNullOrWhiteSpace(model.BadgeAltText))
@@ -524,21 +578,25 @@ namespace GRA.Controllers.MissionControl
                 }
                 if (model.BadgeUploadImage != null
                     && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker)
-                    && !ValidImageExtensions
-                        .Contains(Path.GetExtension(model.BadgeUploadImage.FileName)
-                        .ToLower()))
+                    && !ValidImageExtensions.Contains(Path
+                      .GetExtension(model.BadgeUploadImage.FileName)
+                      .ToLowerInvariant()))
                 {
                     ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                 }
-            }
-            if (site.MaxPointsPerChallengeTask.HasValue && model.Challenge.TasksToComplete.HasValue
-                && model.Challenge.TasksToComplete != 0)
-            {
-                double pointsPerChallenge =
-                    (double)model.Challenge.PointsAwarded / model.Challenge.TasksToComplete.Value;
-                if (pointsPerChallenge > site.MaxPointsPerChallengeTask)
+
+                try
                 {
-                    ModelState.AddModelError("Challenge.PointsAwarded", "Too many points awarded.");
+                    using (var ms = new MemoryStream())
+                    {
+                        await model.BadgeUploadImage.CopyToAsync(ms);
+                        badgeBytes = ms.ToArray();
+                    }
+                    await _badgeService.ValidateBadgeImageAsync(badgeBytes);
+                }
+                catch (GraException gex)
+                {
+                    ModelState.AddModelError("BadgeUploadImage", gex.Message);
                 }
             }
             if (ModelState.IsValid)
@@ -547,10 +605,9 @@ namespace GRA.Controllers.MissionControl
                 if (model.BadgeUploadImage != null
                         || !string.IsNullOrWhiteSpace(model.BadgeMakerImage))
                 {
-                    byte[] badgeBytes;
                     string filename;
                     if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage)
-                        && (model.BadgeUploadImage != null || model.UseBadgeMaker))
+                        && (model.BadgeUploadImage == null || model.UseBadgeMaker))
                     {
                         var badgeString = model.BadgeMakerImage.Split(',').Last();
                         badgeBytes = Convert.FromBase64String(badgeString);
@@ -558,11 +615,11 @@ namespace GRA.Controllers.MissionControl
                     }
                     else
                     {
-                        using (var fileStream = model.BadgeUploadImage.OpenReadStream())
+                        if (badgeBytes == null)
                         {
                             using (var ms = new MemoryStream())
                             {
-                                fileStream.CopyTo(ms);
+                                await model.BadgeUploadImage.CopyToAsync(ms);
                                 badgeBytes = ms.ToArray();
                             }
                         }
@@ -580,11 +637,13 @@ namespace GRA.Controllers.MissionControl
                     }
                     else if (existingBadge != null)
                     {
-                        existingBadge.Filename = Path.GetFileName(model.BadgePath);
-                        var newBadge = await _badgeService
-                            .ReplaceBadgeFileAsync(existingBadge, badgeBytes);
-                        newBadge.AltText = model.BadgeAltText;
-                        await _badgeService.UpdateBadgeAsync(newBadge);
+                        var existing = await _badgeService
+                                    .GetByIdAsync((int)challenge.BadgeId);
+                        existing.AltText = model.BadgeAltText;
+                        existing.Filename = Path.GetFileName(model.BadgePath);
+                        await _badgeService.ReplaceBadgeFileAsync(existing,
+                            badgeBytes,
+                            model.BadgeUploadImage.FileName);
                     }
                 }
                 else if (challenge.BadgeId != null && !string.IsNullOrEmpty(model.BadgeAltText)
@@ -602,16 +661,17 @@ namespace GRA.Controllers.MissionControl
                         ShowAlertWarning(serviceResult.Message);
                     }
                     AlertSuccess = $"Challenge '<strong>{challenge.Name}</strong>' was successfully modified";
+
+                    var hasPermissions = UserHasPermission(Permission.ActivateAllChallenges)
+                            || UserHasPermission(Permission.ActivateSystemChallenges);
+
                     if (Submit == "Activate"
-                        && (UserHasPermission(Permission.ActivateAllChallenges)
-                            || (UserHasPermission(Permission.ActivateSystemChallenges)
-                                && challenge.RelatedSystemId == GetId(ClaimType.SystemId))))
+                        && hasPermissions
+                        && challenge.RelatedSystemId == GetId(ClaimType.SystemId)
+                        && serviceResult.Data.IsValid)
                     {
-                        if (serviceResult.Data.IsValid)
-                        {
-                            await _challengeService.ActivateChallengeAsync(serviceResult.Data);
-                            AlertSuccess = $"Challenge '<strong>{challenge.Name}</strong>' was successfully modified and activated";
-                        }
+                        await _challengeService.ActivateChallengeAsync(serviceResult.Data);
+                        AlertSuccess = $"Challenge '<strong>{challenge.Name}</strong>' was successfully modified and activated";
                     }
                 }
                 catch (GraException gex)
@@ -630,6 +690,24 @@ namespace GRA.Controllers.MissionControl
                     .GetDependentsAsync(model.Challenge.Id);
                 model.Groups = await _challengeService.GetGroupsByChallengeId(model.Challenge.Id);
                 model.RelatedEvents = await _eventService.GetByChallengeIdAsync(model.Challenge.Id);
+
+                if (model.MaxPointLimit.HasValue)
+                {
+                    model.MaxPointsMessage = $"(Up to {model.MaxPointLimit.Value} points per required task)";
+
+                    var currentChallenge = await _challengeService
+                        .MCGetChallengeDetailsAsync(model.Challenge.Id);
+                    if (currentChallenge.TasksToComplete.HasValue)
+                    {
+                        double pointsPerChallenge = (double)currentChallenge.PointsAwarded
+                            / currentChallenge.TasksToComplete.Value;
+                        if (pointsPerChallenge > model.MaxPointLimit.Value)
+                        {
+                            model.MaxPointsWarningMessage = $"This Challenge exceeds the maximum of {model.MaxPointLimit.Value} points per required task - only Administrators can edit it.";
+                        }
+                    }
+                }
+
 
                 return View(model);
             }
@@ -721,17 +799,19 @@ namespace GRA.Controllers.MissionControl
                 }
             }
 
-            foreach (string key in ModelState.Keys.Where(m => m.StartsWith("Challenge.")).ToList())
+            foreach (string key in ModelState
+                .Keys
+                .Where(m => m.StartsWith("Challenge.", StringComparison.OrdinalIgnoreCase))
+                .ToList())
             {
                 ModelState.Remove(key);
             }
 
-            if (viewModel.TaskUploadFile != null)
+            if (viewModel.TaskUploadFile != null && !ValidUploadExtensions.Contains(Path
+                    .GetExtension(viewModel.TaskUploadFile.FileName)
+                    .ToLowerInvariant()))
             {
-                if (!ValidUploadExtensions.Contains(Path.GetExtension(viewModel.TaskUploadFile.FileName).ToLower()))
-                {
-                    ModelState.AddModelError("BadgeUploadImage", $"File upload must be one of the following types: {string.Join(", ", ValidUploadExtensions)}");
-                }
+                ModelState.AddModelError("BadgeUploadImage", $"File upload must be one of the following types: {string.Join(", ", ValidUploadExtensions)}");
             }
 
             if (ModelState.IsValid)
@@ -796,17 +876,20 @@ namespace GRA.Controllers.MissionControl
                 }
             }
 
-            foreach (string key in ModelState.Keys.Where(m => m.StartsWith("Challenge.")).ToList())
+            foreach (string key in ModelState
+                .Keys
+                .Where(m => m.StartsWith("Challenge.", StringComparison.OrdinalIgnoreCase))
+                .ToList())
             {
                 ModelState.Remove(key);
             }
 
-            if (viewModel.TaskUploadFile != null)
+            if (viewModel.TaskUploadFile != null
+                && !ValidUploadExtensions.Contains(Path
+                    .GetExtension(viewModel.TaskUploadFile.FileName)
+                    .ToLowerInvariant()))
             {
-                if (!ValidUploadExtensions.Contains(Path.GetExtension(viewModel.TaskUploadFile.FileName).ToLower()))
-                {
-                    ModelState.AddModelError("BadgeUploadImage", $"File upload must be one of the following types: {string.Join(", ", ValidUploadExtensions)}");
-                }
+                ModelState.AddModelError("BadgeUploadImage", $"File upload must be one of the following types: {string.Join(", ", ValidUploadExtensions)}");
             }
 
             if (ModelState.IsValid)

@@ -36,12 +36,15 @@ namespace GRA.Controllers.ViewModel.MissionControl.Triggers
         public bool EditAvatarBundle { get; set; }
         public bool EditMail { get; set; }
         public bool EditVendorCode { get; set; }
-
         public string UnlockableAvatarBundle { get; set; }
         public string VendorCodeType { get; set; }
 
         public bool AwardsMail { get; set; }
         public bool AwardsPrize { get; set; }
+        public bool IgnorePointLimits { get; set; }
+        public int? MaxPointLimit { get; set; }
+        public string MaxPointsWarningMessage { get; set; }
+        public string MaxPointsMessage { get; set; }
 
         public SelectList SystemList { get; set; }
         public SelectList BranchList { get; set; }

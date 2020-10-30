@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using GRA.Controllers.Attributes;
 using GRA.Controllers.ViewModel.Home;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +30,7 @@ namespace GRA.Controllers
         private readonly DashboardContentService _dashboardContentService;
         private readonly EmailManagementService _emailManagementService;
         private readonly EmailReminderService _emailReminderService;
+        private readonly EventService _eventService;
         private readonly PerformerSchedulingService _performerSchedulingService;
         private readonly SiteService _siteService;
         private readonly UserService _userService;
@@ -45,6 +47,7 @@ namespace GRA.Controllers
             DashboardContentService dashboardContentService,
             EmailManagementService emailManagementService,
             EmailReminderService emailReminderService,
+            EventService eventService,
             PerformerSchedulingService performerSchedulingService,
             SiteService siteService,
             UserService userService,
@@ -66,6 +69,8 @@ namespace GRA.Controllers
                 ?? throw new ArgumentNullException(nameof(emailManagementService));
             _emailReminderService = emailReminderService
                 ?? throw new ArgumentNullException(nameof(emailReminderService));
+            _eventService = eventService
+                ?? throw new ArgumentNullException(nameof(eventService));
             _performerSchedulingService = performerSchedulingService
                 ?? throw new ArgumentNullException(nameof(performerSchedulingService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
@@ -125,10 +130,16 @@ namespace GRA.Controllers
                     return RedirectToAction(nameof(SignOut));
                 }
 
-                var badges = await _userService.GetPaginatedBadges(user.Id, 0, BadgesToDisplay);
-                foreach (var badge in badges.Data)
+                var userLogs = await _userService.GetPaginatedUserHistoryAsync(user.Id,
+                    new UserLogFilter(take: BadgesToDisplay)
+                    {
+                        HasBadge = true
+                    });
+
+                foreach (var userLog in userLogs.Data)
                 {
-                    badge.Filename = _pathResolver.ResolveContentPath(badge.Filename);
+                    userLog.BadgeFilename
+                        = _pathResolver.ResolveContentPath(userLog.BadgeFilename);
                 }
 
                 var pointTranslation = await _activityService.GetUserPointTranslationAsync();
@@ -138,9 +149,10 @@ namespace GRA.Controllers
                     CurrentPointTotal = user.PointsEarned,
                     SingleEvent = pointTranslation.IsSingleEvent,
                     ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural,
-                    Badges = badges.Data,
+                    UserLogs = userLogs.Data,
                     DisableSecretCode
-                        = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable)
+                        = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable),
+                    UpcomingStreams = await _eventService.GetUpcomingStreamListAsync()
                 };
 
                 try
@@ -261,7 +273,7 @@ namespace GRA.Controllers
                     && (!userVendorCode.ExpirationDate.HasValue
                         || userVendorCode.ExpirationDate.Value > _dateTimeProvider.Now))
                 {
-                    viewModel.HasPendingDonationQuestion = true;
+                    viewModel.HasPendingVendorCodeQuestion = true;
                     viewModel.VendorCodeExpiration = userVendorCode.ExpirationDate;
                 }
 

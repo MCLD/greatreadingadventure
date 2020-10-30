@@ -68,6 +68,13 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(AuthorizationCode));
             }
 
+            // change user to default language
+            if (Culture.DefaultName != _userContextProvider.GetCurrentCulture().Name)
+            {
+                AlertInfo = $"Language changed to <strong>{Culture.DefaultCulture.DisplayName}</strong> for <strong>Mission Control</strong> <span class=\"fas fa-rocket\"></span>.";
+                return RedirectToAction(nameof(Index), new { culture = Culture.DefaultName });
+            }
+
             Site site = await GetCurrentSiteAsync();
 
             var viewModel = new AtAGlanceViewModel
@@ -122,7 +129,7 @@ namespace GRA.Controllers.MissionControl
                 viewModel.NewsCategories = await _newsService.GetAllCategoriesAsync();
                 foreach (var item in viewModel.NewsCategories)
                 {
-                   item.IsNew = _newsService.WithinTimeFrame(item.LastPostDate,7);
+                    item.IsNew = _newsService.WithinTimeFrame(item.LastPostDate, 7);
                 }
                 viewModel.PaginateModel = paginateModel;
                 viewModel.SiteAdministratorEmail = site.FromEmailAddress;
@@ -190,7 +197,20 @@ namespace GRA.Controllers.MissionControl
         {
             if (!AuthUser.Identity.IsAuthenticated)
             {
-                return RedirectToSignIn();
+                var siteStage = GetSiteStage();
+                if (siteStage == SiteStage.ProgramOpen || siteStage == SiteStage.RegistrationOpen)
+                {
+                    ShowAlertWarning(
+                        _sharedLocalizer[Annotations.Validate.AuthorizationCodeWarning,
+                        Url.Action(nameof(JoinController.AuthorizationCode),
+                            JoinController.Name)]);
+                    return RedirectToSignIn();
+                }
+                else
+                {
+                    return RedirectToAction(nameof(JoinController.AuthorizationCode),
+                        JoinController.Name);
+                }
             }
 
             return View();
