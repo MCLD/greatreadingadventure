@@ -271,6 +271,28 @@ namespace GRA.Domain.Service
                     throw new GraException("Invalid Avatar Bundle selection.");
                 }
             }
+
+            var maxPointLimit = await GetMaximumAllowedPointsAsync(GetCurrentSiteId());
+            if (maxPointLimit.HasValue && !HasPermission(Permission.IgnorePointLimits))
+            {
+                var currentTrigger = await _triggerRepository.GetByIdAsync(trigger.Id);
+                if (currentTrigger?.AwardPoints > maxPointLimit)
+                {
+                    throw new GraException("Permission denied.");
+                }
+                if (trigger.AwardPoints > maxPointLimit)
+                {
+                    throw new GraException($"A trigger may award a maximum of {maxPointLimit} points.");
+                }
+            }
+        }
+
+        public async Task<int?> GetMaximumAllowedPointsAsync(int siteId)
+        {
+            var (IsSet, SetValue) = await _siteLookupService.GetSiteSettingIntAsync(siteId,
+                SiteSettingKey.Triggers.MaxPointsPerTrigger);
+
+            return IsSet ? SetValue : (int?)null;
         }
     }
 }

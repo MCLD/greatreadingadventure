@@ -15,6 +15,9 @@
             public static readonly string HideUntilRegistrationOpen
                 = "Challenges.HideUntilRegistrationOpen";
 
+            public static readonly string MaxPointsPerChallengeTask
+                = "Challenges.MaxPointsPerChallengeTask";
+
             public bool Equals(Challenges other) { return true; }
         }
 
@@ -46,6 +49,12 @@
             // TODO make this truly disable secret codes for the site
             public static readonly string Disable = "SecretCode.Disable";
             public bool Equals(SecretCode other) { return true; }
+        }
+
+        public struct Triggers : System.IEquatable<Triggers>
+        {
+            public static readonly string MaxPointsPerTrigger = "Triggers.MaxPointsPerTrigger";
+            public bool Equals(Triggers other) { return true; }
         }
 
         public struct Users : System.IEquatable<Users>

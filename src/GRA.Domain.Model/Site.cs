@@ -63,9 +63,6 @@ namespace GRA.Domain.Model
         [DisplayName("Single Page Sign Up")]
         public bool SinglePageSignUp { get; set; }
 
-        [DisplayName("Max Points Per Challenge Task")]
-        public int? MaxPointsPerChallengeTask { get; set; }
-
         [DisplayName("From Email Name")]
         public string FromEmailName { get; set; }
         [DisplayName("From Email Address")]

@@ -300,8 +300,14 @@ namespace GRA.Controllers.MissionControl
                 CanRelateChallenge = UserHasPermission(Permission.ViewAllChallenges),
                 ProgramList = new SelectList(programList, "Id", "Name"),
                 IncludeSecretCode = requireSecretCode,
-                RequireSecretCode = requireSecretCode
+                RequireSecretCode = requireSecretCode,
+                IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits),
+                MaxPointLimit = await _triggerService.GetMaximumAllowedPointsAsync(GetCurrentSiteId())
             };
+            if (viewModel.MaxPointLimit.HasValue)
+            {
+                viewModel.MaxPointLimitMessage = $"(Up to {viewModel.MaxPointLimit.Value} points)";
+            }
 
             if (!streamingEvent)
             {
@@ -375,6 +381,9 @@ namespace GRA.Controllers.MissionControl
             var requireSecretCode = await GetSiteSettingBoolAsync(
                 SiteSettingKey.Events.RequireBadge);
 
+            model.IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits);
+            model.MaxPointLimit =
+                await _triggerService.GetMaximumAllowedPointsAsync(GetCurrentSiteId());
             if (model.Event.AllDay)
             {
                 if (model.Event.EndDate.HasValue && model.Event.StartDate > model.Event.EndDate)
@@ -426,6 +435,13 @@ namespace GRA.Controllers.MissionControl
                     {
                         ModelState.AddModelError("BadgeUploadImage", gex.Message);
                     }
+                }
+                if (!model.IgnorePointLimits
+                    && model.MaxPointLimit.HasValue
+                    && model.AwardPoints > model.MaxPointLimit)
+                {
+                    ModelState.AddModelError("AwardPoints",
+                        $"You may award up to {model.MaxPointLimit} points.");
                 }
             }
             else
@@ -573,6 +589,11 @@ namespace GRA.Controllers.MissionControl
                 GetCurrentSiteId(), SiteSettingKey.Events.GoogleMapsAPIKey);
             model.ShowGeolocation = IsSet;
             model.GoogleMapsAPIKey = SetValue;
+
+            if (model.MaxPointLimit.HasValue)
+            {
+                model.MaxPointLimitMessage = $"(Up to {model.MaxPointLimit.Value} points)";
+            }
 
             return View(model);
         }

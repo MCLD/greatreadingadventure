@@ -14,9 +14,58 @@
     </div>
 </div>
 
-<form asp-controller="Challenges" asp-action="Create" method="post" role="form" enctype="multipart/form-data">
+@if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
+{
+    <div class="modal fade"
+         id="warningModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="warningModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="deleteModalLabel">
+                        Warning: Award points exceed maximum
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                    <span id="modal-text">
+                        The awarded points for this trigger exceed the maximum of
+                        <strong>@Model.MaxPointLimit points per task</strong>. Do you wish to continue?
+                    </span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-default"
+                            data-dismiss="modal"
+                            style="margin-right: 1em;">
+                        Cancel
+                    </button>
+                    <button id="warningSave"
+                            type="button"
+                            class="btn btn-primary"
+                            data-dismiss="modal"
+                            style="margin-right: 1em;">
+                        Save Challenge
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <input asp-for="MaxPointsMessage" type="hidden" />
+}
+
+<form asp-controller="Challenges"
+      asp-action="Create"
+      id="challengeForm"
+      method="post"
+      role="form"
+      enctype="multipart/form-data">
+
     <input asp-for="UseBadgeMaker" type="hidden" />
     <input asp-for="BadgeMakerUrl" type="hidden" />
     <input asp-for="BadgeMakerImage" type="hidden" />
@@ -158,7 +207,11 @@
 
     <div class="form-group">
         <a asp-action="Index" class="btn btn-default">Return to List</a>
-        <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-primary btn-spinner">
+        <button type="submit"
+                id="saveChallenge"
+                name="Submit"
+                value="Submit"
+                class="btn btn-primary btn-spinner">
             <span class="buttonText">Create</span>
             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
         </button>
@@ -196,6 +249,30 @@
                     $('.btn-file').removeClass('btn-success');
                 }
             });
+
+            @if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
+            {
+                <text>
+                $("#saveChallenge").on("click",function(e) {
+                    e.preventDefault();
+                    if ($("#Challenge_PointsAwarded").val() / $("#Challenge_TasksToComplete").val() > @Model.MaxPointLimit) {
+                        $('#warningModal').modal("show");
+                    }
+                    else {
+                        $("#challengeForm").submit();
+                    }
+                });
+
+                $("#warningSave").on("click", function () {
+                    $("#challengeForm").submit();
+                });
+
+                $("#warningModal").on("hide.bs.modal", function () {
+                    $("#saveChallenge").removeClass("disabled");
+                    $("#saveChallenge").find(".fa-spinner").addClass("hidden");
+                });
+                </text>
+            }
 
             $('#clearFile').on("click", function() {
                 $('#BadgeUploadImage').val('');
