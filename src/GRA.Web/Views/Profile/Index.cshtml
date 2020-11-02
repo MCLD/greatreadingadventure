@@ -1,40 +1,5 @@
 ﻿@model GRA.Controllers.ViewModel.Profile.ProfileDetailViewModel
 
-@if (Model.User.NeedsToAnswerVendorCodeQuestion && Model.User.CanEmailAwardVendorCode)
-{
-    <div class="row">
-        <div class="modal fade"
-             id="emailAwardModal"
-             tabindex="-1"
-             role="dialog"
-             aria-labelledby="emailAwardLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <form asp-action="@nameof(ProfileController.EmailAward)" method="post" role="form" style="display:inline">
-                        <div class="modal-body">
-                            <p>@Html.Raw(Model.User.EmailAwardInstructions)</p>
-                            <div class="row row-spacing">
-                                <div class="col-xs-12">
-                                    <label asp-for="EmailAwardModel.Email" class="control-label"></label>
-                                    <input asp-for="EmailAwardModel.Email" class="form-control" value="@Model.User.Email" />
-                                    <span asp-validation-for="EmailAwardModel.Email" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">@SharedLocalizer[GRA.Annotations.Interface.Cancel]</button>
-                            <button type="submit" class="btn btn-warning btn-spinner pull-right" aria-label="Confirm">
-                                @SharedLocalizer[GRA.Annotations.Interface.Confirm]
-                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-}
-
 <div class="row">
     <div class="col-xs-12 col-sm-10 col-sm-offset-1">
         <div class="panel panel-default">

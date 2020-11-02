@@ -1,43 +1,5 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.MailDetailViewModel
 
-@if (Model.CanRemoveMail)
-{
-    <div class="row">
-        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button"
-                                class="close"
-                                data-dismiss="modal"
-                                aria-label="Close dialog">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <h1 class="modal-title h4" id="deleteModalLabel">Delete mail</h1>
-                    </div>
-                    <div class="modal-body">
-                        <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
-                        <span id="modal-text">
-                            Are you sure you wish to delete the mail "@Model.Mail.Subject" ?
-                        </span>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <form asp-controller="Participants" asp-action="DeleteMail" method="post" role="form" style="display:inline">
-                            <input id="Id" name="Id" value="@Model.Mail.Id" type="hidden" />
-                            <input id="userId" name="userId" value="@Model.Id" type="hidden" />
-                            <button type="submit" class="btn btn-danger pull-right" aria-label="Confirm">
-                                <span class="fa fa-remove" aria-hidden="true"></span>
-                                Delete
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-}
-
 <div class="row row-spacing">
     <div class="col-xs-12">
         <label class="control-label">Sent At</label>
@@ -48,7 +10,7 @@
 <div class="row row-spacing">
     <div class="col-xs-12">
         <label asp-for="Mail.Subject" class="control-label"></label>
-        <input asp-for="Mail.Subject" class="form-control" readonly/>
+        <input asp-for="Mail.Subject" class="form-control" readonly />
     </div>
 </div>
 
@@ -86,3 +48,41 @@
         </button>
     }
 </div>
+
+@if (Model.CanRemoveMail)
+{
+    <div class="row">
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-label="Close dialog">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h1 class="modal-title h4" id="deleteModalLabel">Delete mail</h1>
+                    </div>
+                    <div class="modal-body">
+                        <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                        <span id="modal-text">
+                            Are you sure you wish to delete the mail "@Model.Mail.Subject" ?
+                        </span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                        <form asp-controller="Participants" asp-action="DeleteMail" method="post" role="form" style="display:inline">
+                            <input id="Id" name="Id" value="@Model.Mail.Id" type="hidden" />
+                            <input id="userId" name="userId" value="@Model.Id" type="hidden" />
+                            <button type="submit" class="btn btn-danger pull-right" aria-label="Confirm">
+                                <span class="fa fa-remove" aria-hidden="true"></span>
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

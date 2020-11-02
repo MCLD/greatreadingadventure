@@ -23,62 +23,6 @@
     </style>
 }
 
-<div class="row">
-    <div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="saveModalLabel">
-        <div class="modal-dialog modal-lg" role="document">
-            <form id="saveModalForm" asp-controller="Questionnaires" asp-action="SaveQuestion" method="post" role="form" style="display:inline">
-                <input asp-for="Questionnaire.Id" type="hidden" />
-                <input asp-for="Question.Id" type="hidden" />
-                <input asp-for="AnswerSortOrder" type="hidden" />
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button"
-                                class="close"
-                                data-dismiss="modal"
-                                aria-label="Close dialog">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <h1 class="modal-title h4" id="saveModalLabel">Edit Question</h1>
-
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label asp-for="Question.Name" class="control-label"></label>
-                            <input asp-for="Question.Name" class="form-control" />
-                            <span asp-validation-for="Question.Name" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Question.Text" class="control-label"></label>
-                            <textarea asp-for="Question.Text" class="form-control"></textarea>
-                            <span asp-validation-for="Question.Text" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group">
-                            <h4>Answers</h4>
-                            <div id="answerList"></div>
-                        </div>
-                        @if (!Model.Questionnaire.IsLocked)
-                        {
-                            <button type="button" id="addAnswerButton" class="btn btn-default">Add Answer</button>
-                        }
-                    </div>
-                    <div class="modal-footer">
-                        <span id="modalUpdateText" style="display: none;font-size:large;">Question saved!</span>
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        @if (!Model.Questionnaire.IsLocked)
-                        {
-                            <button id="modalSaveButton" type="submit" class="btn btn-primary" aria-label="Confirm">
-                                Save
-                                <span id="modalSaveSpinner" class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                            </button>
-                        }
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
 <form asp-controller="Questionnaires" asp-action="Edit" method="post" role="form">
     <input asp-for="Questionnaire.Id" type="hidden" />
     <input asp-for="QuestionSortOrder" type="hidden" />
@@ -144,6 +88,62 @@
         }
     </div>
 </form>
+
+<div class="row">
+    <div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="saveModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <form id="saveModalForm" asp-controller="Questionnaires" asp-action="SaveQuestion" method="post" role="form" style="display:inline">
+                <input asp-for="Questionnaire.Id" type="hidden" />
+                <input asp-for="Question.Id" type="hidden" />
+                <input asp-for="AnswerSortOrder" type="hidden" />
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-label="Close dialog">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h1 class="modal-title h4" id="saveModalLabel">Edit Question</h1>
+
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label asp-for="Question.Name" class="control-label"></label>
+                            <input asp-for="Question.Name" class="form-control" />
+                            <span asp-validation-for="Question.Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Question.Text" class="control-label"></label>
+                            <textarea asp-for="Question.Text" class="form-control"></textarea>
+                            <span asp-validation-for="Question.Text" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <h4>Answers</h4>
+                            <div id="answerList"></div>
+                        </div>
+                        @if (!Model.Questionnaire.IsLocked)
+                        {
+                            <button type="button" id="addAnswerButton" class="btn btn-default">Add Answer</button>
+                        }
+                    </div>
+                    <div class="modal-footer">
+                        <span id="modalUpdateText" style="display: none;font-size:large;">Question saved!</span>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                        @if (!Model.Questionnaire.IsLocked)
+                        {
+                            <button id="modalSaveButton" type="submit" class="btn btn-primary" aria-label="Confirm">
+                                Save
+                                <span id="modalSaveSpinner" class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                            </button>
+                        }
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 @section scripts {
     <script>

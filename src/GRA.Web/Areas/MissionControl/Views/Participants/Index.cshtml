@@ -1,52 +1,5 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.ParticipantsListViewModel
 
-@if (Model.CanRemoveParticipant)
-{
-    <div class="row">
-        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button"
-                                class="close"
-                                data-dismiss="modal"
-                                aria-label="Close dialog">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <h1 class="modal-title h4" id="deleteModalLabel">Delete participant</h1>
-                    </div>
-                    <div class="modal-body">
-                        @if (Model.CanRemoveParticipant)
-                        {
-                            <div class="row" id="elevatedWarning">
-                                <div class="col-xs-12">
-                                    <div class="alert alert-warning">
-                                        <strong>
-                                            <span class="fa fa-exclamation-triangle"></span>
-                                            This user has an administrative role in this software.
-                                        </strong>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                        <strong id="modal-text"></strong>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <form asp-controller="Participants" asp-action="Delete" method="post" role="form" style="display:inline">
-                            <input id="Id" name="Id" type="hidden" />
-                            <button type="submit" class="btn btn-danger pull-right" aria-label="Confirm">
-                                <span class="fa fa-remove" aria-hidden="true"></span>
-                                Delete
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-}
-
 @if (Model.ShowGroupsButton)
 {
     <div class="row row-spacing">
@@ -233,6 +186,53 @@
         }
     </div>
 </div>
+
+@if (Model.CanRemoveParticipant)
+{
+    <div class="row">
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-label="Close dialog">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h1 class="modal-title h4" id="deleteModalLabel">Delete participant</h1>
+                    </div>
+                    <div class="modal-body">
+                        @if (Model.CanRemoveParticipant)
+                        {
+                            <div class="row" id="elevatedWarning">
+                                <div class="col-xs-12">
+                                    <div class="alert alert-warning">
+                                        <strong>
+                                            <span class="fa fa-exclamation-triangle"></span>
+                                            This user has an administrative role in this software.
+                                        </strong>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <strong id="modal-text"></strong>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                        <form asp-controller="Participants" asp-action="Delete" method="post" role="form" style="display:inline">
+                            <input id="Id" name="Id" type="hidden" />
+                            <button type="submit" class="btn btn-danger pull-right" aria-label="Confirm">
+                                <span class="fa fa-remove" aria-hidden="true"></span>
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 @section scripts
     {

@@ -1,42 +1,6 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Events.EventsListViewModel
 
 <div class="row">
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button"
-                            class="close"
-                            data-dismiss="modal"
-                            aria-label="Close dialog">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h1 class="modal-title h4"
-                         id="deleteModalLabel">
-                        Delete @(Model.CommunityExperience ? "community experience" : "event")
-                    </h1>
-                </div>
-                <div class="modal-body">
-                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
-                    <span id="modal-text"></span>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                    <form asp-controller="Events" asp-action="Delete" asp-route-communityExperience="@Model.CommunityExperience" method="post" role="form" style="display:inline">
-                        <input id="Id" name="Id" type="hidden" />
-                        <button type="submit" class="btn btn-danger pull-right" aria-label="Confirm">
-                            <span class="fa fa-remove" aria-hidden="true"></span>
-                            Delete
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<div class="row">
     <div class="col-xs-12">
         <ul class="nav nav-pills" style="padding: 10px 0;">
             <li ActiveBy routeKey="Action" value="Index"><a asp-action="Index">Events</a></li>
@@ -231,6 +195,41 @@
                 <paginate paginateModel="@Model.PaginateModel"></paginate>
             }
         }
+    </div>
+</div>
+
+<div class="row">
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close dialog">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h1 class="modal-title h4"
+                        id="deleteModalLabel">
+                        Delete @(Model.CommunityExperience ? "community experience" : "event")
+                    </h1>
+                </div>
+                <div class="modal-body">
+                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                    <span id="modal-text"></span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                    <form asp-controller="Events" asp-action="Delete" asp-route-communityExperience="@Model.CommunityExperience" method="post" role="form" style="display:inline">
+                        <input id="Id" name="Id" type="hidden" />
+                        <button type="submit" class="btn btn-danger pull-right" aria-label="Confirm">
+                            <span class="fa fa-remove" aria-hidden="true"></span>
+                            Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

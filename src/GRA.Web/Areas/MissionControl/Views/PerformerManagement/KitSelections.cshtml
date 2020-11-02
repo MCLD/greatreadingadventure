@@ -5,105 +5,6 @@
 }
 
 <div class="row">
-    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button"
-                            class="close"
-                            data-dismiss="modal"
-                            aria-label="Close dialog">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h1 class="modal-title h4" id="deleteModalLabel">Edit Kit Selection</h1>
-                </div>
-                <div class="modal-body">
-                    <div id="kitInformation" class="col-xs-12" style="font-size:larger;margin-bottom:10px;">
-                    </div>
-                    <form asp-action="@nameof(PerformerManagementController.EditBranchKitSelection)" id="editKitForm" class="form-horizontal col-xs-12" method="post" role="form">
-                        <input name="Id" asp-for="BranchSelection.Id" type="hidden" />
-                        <input id="branchId" type="hidden" />
-                        <div class="form-group">
-                            <label asp-for="BranchSelection.KitId" class="col-sm-3 control-label"></label>
-                            <div class="col-sm-9">
-                                <select name="KitId" asp-for="BranchSelection.KitId" asp-items="Model.KitList" class="form-control"></select>
-                            </div>
-                            <span id="KitValidationMessage" asp-validation-for="BranchSelection.KitId" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="BranchSelection.AgeGroupId" class="col-sm-3 control-label"></label>
-                            <div class="col-sm-9">
-                                <select name="AgeGroupId" asp-for="BranchSelection.AgeGroupId" asp-items="Model.AgeGroupList" class="form-control"></select>
-                            </div>
-                        </div>
-
-                        <div class="row" style="margin-top: 20px;">
-                            <div class="col-xs-12 col-sm-9 col-sm-offset-3">
-                                <div id="checkAlert" class="alert hidden"></div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-9 col-sm-offset-3">
-                                <button id="editKit" type="button" class="btn btn-success hidden">Save Selection</button>
-                            </div>
-                        </div>
-                    </form>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="modal fade"
-         id="deleteModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="deleteModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h1 class="modal-title h4" id="deleteModalLabel">Delete branch selection</h1>
-                </div>
-                <div class="modal-body">
-                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
-                    <span id="modal-text"></span>
-                </div>
-                <div class="modal-footer">
-                    <form asp-controller="@PerformerManagementController.Name"
-                          asp-action="@nameof(PerformerManagementController.DeleteKitSelection)"
-                          method="post"
-                          role="form"
-                          id="deleteKitForm">
-                        <input class="hidden" asp-for="Kit.Id" aria-hidden="true" />
-                        <input class="hidden" asp-for="BranchSelectionId" aria-hidden="true" />
-                        <button type="button"
-                                class="btn btn-default"
-                                data-dismiss="modal"
-                                style="margin-right: 1em;">
-                            Cancel
-                        </button>
-                        <button type="submit"
-                                id="buttonDelete"
-                                class="btn btn-danger pull-right"
-                                aria-label="Confirm">
-                            <span class="fa fa-remove" aria-hidden="true"></span>
-                            Delete
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="row">
     <div class="col-xs-12">
         <table style="margin:0 auto;">
             <tr>
@@ -207,6 +108,106 @@
                 </tbody>
             </table>
         }
+    </div>
+</div>
+
+<div class="row">
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close dialog">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h1 class="modal-title h4" id="deleteModalLabel">Edit Kit Selection</h1>
+                </div>
+                <div class="modal-body">
+                    <div id="kitInformation" class="col-xs-12" style="font-size:larger;margin-bottom:10px;">
+                    </div>
+                    <form asp-action="@nameof(PerformerManagementController.EditBranchKitSelection)" id="editKitForm" class="form-horizontal col-xs-12" method="post" role="form">
+                        <input name="Id" asp-for="BranchSelection.Id" type="hidden" />
+                        <input id="branchId" type="hidden" />
+                        <div class="form-group">
+                            <label asp-for="BranchSelection.KitId" class="col-sm-3 control-label"></label>
+                            <div class="col-sm-9">
+                                <select name="KitId" asp-for="BranchSelection.KitId" asp-items="Model.KitList" class="form-control"></select>
+                            </div>
+                            <span id="KitValidationMessage" asp-validation-for="BranchSelection.KitId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="BranchSelection.AgeGroupId" class="col-sm-3 control-label"></label>
+                            <div class="col-sm-9">
+                                <select name="AgeGroupId" asp-for="BranchSelection.AgeGroupId" asp-items="Model.AgeGroupList" class="form-control"></select>
+                            </div>
+                        </div>
+
+                        <div class="row" style="margin-top: 20px;">
+                            <div class="col-xs-12 col-sm-9 col-sm-offset-3">
+                                <div id="checkAlert" class="alert hidden"></div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-9 col-sm-offset-3">
+                                <button id="editKit" type="button" class="btn btn-success hidden">Save Selection</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="modal fade"
+         id="deleteModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="deleteModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h1 class="modal-title h4" id="deleteModalLabel">Delete branch selection</h1>
+                </div>
+                <div class="modal-body">
+                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                    <span id="modal-text"></span>
+                </div>
+                <div class="modal-footer">
+                    <form asp-controller="@PerformerManagementController.Name"
+                          asp-action="@nameof(PerformerManagementController.DeleteKitSelection)"
+                          method="post"
+                          role="form"
+                          id="deleteKitForm">
+                        <input class="hidden" asp-for="Kit.Id" aria-hidden="true" />
+                        <input class="hidden" asp-for="BranchSelectionId" aria-hidden="true" />
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                id="buttonDelete"
+                                class="btn btn-danger pull-right"
+                                aria-label="Confirm">
+                            <span class="fa fa-remove" aria-hidden="true"></span>
+                            Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

@@ -2,41 +2,6 @@
 
 @await Html.PartialAsync("_MailPartial")
 
-@if (Model.Upcoming)
-{
-    <div class="row">
-        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button"
-                                class="close"
-                                data-dismiss="modal"
-                                aria-label="Close dialog">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <h1 class="modal-title h4" id="deleteModalLabel">Delete Broadcast</h1>
-                    </div>
-                    <div class="modal-body">
-                        <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
-                        <span id="modal-text"></span>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <form asp-controller="Mail" asp-action="BroadcastDelete" method="post" role="form" style="display:inline">
-                            <input id="Id" name="Id" type="hidden" />
-                            <button type="submit" class="btn btn-danger pull-right" aria-label="Confirm">
-                                <span class="fa fa-remove" aria-hidden="true"></span>
-                                Delete
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-}
-
 <div class="row">
     <div class="col-xs-12">
         <ul class="nav nav-pills" style="padding: 10px 0;">
@@ -118,6 +83,41 @@
         }
     </div>
 </div>
+
+@if (Model.Upcoming)
+{
+    <div class="row">
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-label="Close dialog">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h1 class="modal-title h4" id="deleteModalLabel">Delete Broadcast</h1>
+                    </div>
+                    <div class="modal-body">
+                        <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                        <span id="modal-text"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                        <form asp-controller="Mail" asp-action="BroadcastDelete" method="post" role="form" style="display:inline">
+                            <input id="Id" name="Id" type="hidden" />
+                            <button type="submit" class="btn btn-danger pull-right" aria-label="Confirm">
+                                <span class="fa fa-remove" aria-hidden="true"></span>
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 @section scripts
 {
