@@ -3,17 +3,103 @@
 @inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
 @inject Microsoft.AspNetCore.Mvc.Localization.IHtmlLocalizer<GRA.Resources.Shared> SharedHtmlLocalizer
 
+@if (!string.IsNullOrWhiteSpace(Model.DailyImageMessage))
+{
+    <div class="row">
+        <div class="modal fade" id="dailyImageModal" style="text-align:center;" tabindex="-1" role="dialog" aria-labelledby="dailyImageModalLabel">
+            <div class="modal-dialog @(Model.DailyImageLarge ? "modal-lg" : "")" style="display: inline-block;" role="document">
+                <div class="modal-content">
+                    <span class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute" data-dismiss="modal">
+                        <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
+                        <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
+                    </span>
+                    <div style="padding: 25px;">
+                        <img class="img img-responsive daily-image" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (Model.Carousel != null)
+{
+    <div class="row">
+        <div class="modal gra-carousel-modal" id="graCarouselModal" tabindex="-1" role="dialog" aria-labelledby="graCarouselModal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <span class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute" data-dismiss="modal">
+                            <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
+                            <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
+                        </span>
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-3 ">
+                                <img id="graCarouselModalImage"
+                                     class="center-block gra-carousel-modal-image" />
+                            </div>
+                            <div class="col-xs-12 col-sm-9">
+                                <p style="font-size: 2rem; font-weight: bold;" id="graCarouselModalHeader"></p>
+                                <p id="graCarouselModalContent" class="gra-carousel-modal-content"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 @if (Model.HasPendingVendorCodeQuestion)
 {
     <div class="row">
         <div class="col-xs-12 text-center">
             <div class="alert alert-success" style="font-size:large">
-                You've earned a free book! Head over to <a asp-controller="Profile" asp-action="Index"><strong>My Profile</strong></a> page
                 @if (Model.VendorCodeExpiration.HasValue)
                 {
-                    <text>by @Model.VendorCodeExpiration.Value.AddMilliseconds(-1).ToString("MMMM dd")</text>
+                    @SharedHtmlLocalizer[GRA.Annotations.Info.FreeBookRedeemExpirationDashboard,
+                 Url.Action(nameof(ProfileController.Index), ProfileController.Name),
+                 Model.VendorCodeExpiration.Value.AddMilliseconds(-1).ToString("MMMM dd")]
                 }
-                to redeem or donate it!
+                else
+                {
+                    @SharedHtmlLocalizer[GRA.Annotations.Info.FreeBookRedeemDashboard,
+                 Url.Action(nameof(ProfileController.Index), ProfileController.Name)]
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@if (Model.UserLogs?.Count() > 0)
+{
+    <div class="modal fade"
+         id="badgeDetailsModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="badgeDetailsModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <span class="h4 modal-title">
+                        @SharedLocalizer[GRA.Annotations.Interface.BadgeDetails]
+                    </span>
+                </div>
+                <div class="modal-body" id="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-default"
+                            data-dismiss="modal">
+                        @SharedLocalizer[GRA.Annotations.Interface.Back]
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -224,25 +310,41 @@
         {
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <a asp-controller="Profile" asp-action="History" class="lead">@SharedLocalizer["Your badges"]</a>
+                    <a asp-controller="Profile"
+                       asp-action="Badges"
+                       class="lead">@SharedLocalizer["Your badges"]</a>
                 </div>
                 <div class="panel-body">
                     <div class="row">
-                        @if (Model.Badges.Count() > 0)
+                        @if (Model.UserLogs.Count() > 0)
                         {
                             int display = 0;
-                            foreach (var badge in Model.Badges)
+                            foreach (var userLog in Model.UserLogs)
                             {
                                 if (display < 3)
                                 {
                                     <div class="col-md-6 col-sm-12 col-xs-4 dashboard-badge">
-                                        <img class="img-thumbnail badge-sm" src="~/@badge.Filename" asp-append-version="true" />
+                                        <a href="#"
+                                           data-toggle="modal"
+                                           data-target="#badgeDetailsModal"
+                                           data-id="@userLog.Id">
+                                            <img class="img-thumbnail badge-sm"
+                                                 src="~/@userLog.BadgeFilename"
+                                                 asp-append-version="true" />
+                                        </a>
                                     </div>
                                 }
                                 else
                                 {
                                     <div class="col-md-6 col-sm-12 col-xs-4 visible-lg visible-md visible-xs dashboard-badge">
-                                        <img class="img-thumbnail badge-sm" src="~/@badge.Filename" asp-append-version="true" />
+                                        <a href="#"
+                                           data-toggle="modal"
+                                           data-target="#badgeDetailsModal"
+                                           data-id="@userLog.Id">
+                                            <img class="img-thumbnail badge-sm"
+                                                 src="~/@userLog.BadgeFilename"
+                                                 asp-append-version="true" />
+                                        </a>
                                     </div>
                                 }
                                 display++;
@@ -250,7 +352,9 @@
                                 if (display >= 6)
                                 {
                                     <div class="col-xs-12 visible-lg visible-md visible-xs">
-                                        <a asp-controller="Profile" asp-action="History" class="lead">@SharedLocalizer["See more of your badges in your history!"]</a>
+                                        <a asp-controller="Profile"
+                                           asp-action="Badges"
+                                           class="lead">@SharedLocalizer["See more of your badges"]</a>
                                     </div>
                                     break;
                                 }
@@ -258,7 +362,9 @@
                             if (display >= 3)
                             {
                                 <div class="col-xs-12 visible-sm">
-                                    <a asp-controller="Profile" asp-action="History" class="lead">@SharedLocalizer["See more of your badges in your history!"]</a>
+                                    <a asp-controller="Profile"
+                                       asp-action="Badges"
+                                       class="lead">@SharedLocalizer["See more of your badges"]</a>
                                 </div>
                             }
                         }
@@ -291,6 +397,31 @@
             @:&nbsp;
         }
     </div>
+
+    @if (Model.UpcomingStreams?.Count() > 0)
+    {
+        <div class="col-sm-3 text-center">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <a asp-controller="@EventsController.Name"
+                       asp-action="@nameof(EventsController.StreamingEvents)"
+                       class="lead">@SharedLocalizer[GRA.Annotations.Interface.StreamingEvents]</a>
+                </div>
+                <ul class="list-group">
+                    @foreach (var stream in Model.UpcomingStreams)
+                    {
+                        <li class="list-group-item">
+                            <a href="@Url.Action(nameof(EventsController.Stream),
+                                    EventsController.Name,
+                                    new { id = stream.Id })">
+                                @stream.Name
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    }
 </div>
 
 @if (!string.IsNullOrWhiteSpace(Model.DashboardPageContent))
@@ -439,5 +570,27 @@
         </script>
         <link rel="stylesheet" type="text/css" href="@Url.Content("~/css/slick.min.css")" />
         <script type="text/javascript" src="@Url.Content("~/js/slick.min.js")"></script>
+    }
+    @if (Model.UserLogs?.Count() > 0)
+    {
+        <script>
+        $("#badgeDetailsModal").on("show.bs.modal", function (event) {
+            var button = $(event.relatedTarget);
+            var id = button.data("id");
+            var modal = $(this);
+
+            var modalBody = modal.find(".modal-body");
+            modalBody.html("<div class=\"text-center\" style=\"width: 100%;\"><span class=\"fa fa-spinner fa-2x fa-pulse\"></span></div>");
+
+            $.get("@Url.Action(nameof(ProfileController.GetUserBadgeInfo), ProfileController.Name)",
+                { id },
+                function (response) {
+                    modalBody.html(response);
+                })
+                .fail(function () {
+                    modalBody.html("@SharedLocalizer[GRA.Annotations.Info.BadgeInfoError]");
+                });
+        });
+        </script>
     }
 }

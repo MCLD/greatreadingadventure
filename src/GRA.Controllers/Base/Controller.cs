@@ -323,8 +323,8 @@ namespace GRA.Controllers.Base
             return new SelectList(new Dictionary<string, string>
             {
                 {string.Empty, string.Empty},
-                {DropDownFalseValue, _sharedLocalizer["No"] },
-                {DropDownTrueValue, _sharedLocalizer["Yes"] }
+                {DropDownFalseValue, _sharedLocalizer[GRA.Annotations.Interface.No] },
+                {DropDownTrueValue, _sharedLocalizer[GRA.Annotations.Interface.Yes] }
             },
             "Key",
             "Value",

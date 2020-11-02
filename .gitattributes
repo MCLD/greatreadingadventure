@@ -4,7 +4,7 @@ src/GRA.Web/wwwroot/css/*.min.css -crlf
 src/GRA.Web/wwwroot/js/*.min.js -crlf
 
 # linguist overrides https://github.com/github/linguist#overrides
-src/GRA.Web/wwwroot/lib/* linguist-vendored
+src/GRA.Web/node_modules/* linguist-vendored
 dev/* linguist-documentation
 docs/* linguist-documentation
 re/* linguist-documentation

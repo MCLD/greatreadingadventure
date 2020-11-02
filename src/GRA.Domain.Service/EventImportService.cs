@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -34,7 +35,7 @@ namespace GRA.Domain.Service
         public async Task<(ImportStatus, string)> FromCsvAsync(StreamReader csvStream)
         {
             var notes = new List<string>();
-            using (var csv = new CsvHelper.CsvReader(csvStream))
+            using (var csv = new CsvHelper.CsvReader(csvStream, CultureInfo.InvariantCulture))
             {
                 try
                 {
@@ -69,12 +70,14 @@ namespace GRA.Domain.Service
                                 throw new GraException($"Unable to find branch named {record.BranchName} for system {record.SystemName} in branch list.");
                             }
 
+                            var badgeBytes = File.ReadAllBytes(record.BadgeFilePath);
+                            await _badgeService.ValidateBadgeImageAsync(badgeBytes);
+
                             var badge = new Badge
                             {
                                 Filename = "badge.png"
                             };
-                            var addedBadge = await _badgeService.AddBadgeAsync(badge,
-                                File.ReadAllBytes(record.BadgeFilePath));
+                            var addedBadge = await _badgeService.AddBadgeAsync(badge, badgeBytes);
 
                             if (record.Name.Length > 255)
                             {

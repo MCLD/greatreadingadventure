@@ -1,14 +1,14 @@
-﻿using GRA.Domain.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 
 namespace GRA.Domain.Repository
 {
     public interface IUserLogRepository : IRepository<Model.UserLog>
     {
-        Task<IEnumerable<Model.UserLog>> PageHistoryAsync(int userId, int skip, int take);
-        Task<int> GetHistoryItemCountAsync(int userId);
+        Task<DataWithCount<ICollection<UserLog>>> GetPaginatedHistoryAsync(UserLogFilter filter);
         Task<long> CompletedChallengeCountAsync(ReportCriterion request, int? challengeId = null);
         Task<long> PointsEarnedTotalAsync(ReportCriterion request);
         Task<Dictionary<string, long>> ActivityEarningsTotalAsync(ReportCriterion request);

@@ -117,6 +117,37 @@ namespace GRA.Domain.Service
             }
         }
 
+        public async Task SendBulkAsync(EmailReminder emailReminder,
+            int emailTemplateId,
+            int siteId)
+        {
+            var site = await _siteRepository.GetByIdAsync(siteId);
+
+            var template = await _emailTemplateRepository.GetByIdAsync(emailTemplateId);
+
+            var bodyText = template.BodyText
+                .Replace("{{Email}}", emailReminder.Email);
+            var bodyHtml = template.BodyHtml
+                .Replace("{{Email}}", emailReminder.Email);
+
+            if (!string.IsNullOrEmpty(emailReminder.Email))
+            {
+                await SendEmailAsync(site,
+                    emailReminder.Email,
+                    template.Subject,
+                    bodyText,
+                    bodyHtml,
+                    providedFromName: template.FromName,
+                    providedFromEmail: template.FromAddress);
+            }
+            else
+            {
+                _logger.LogError("Unable to send email to address {EmailAddress} for template id {TemplateId}: no email address configured.",
+                    emailReminder.Email,
+                    emailTemplateId);
+            }
+        }
+
         public async Task SendBulkTestAsync(string emailTo, int emailTemplateId)
         {
             if (string.IsNullOrEmpty(emailTo))
@@ -180,7 +211,7 @@ namespace GRA.Domain.Service
 
             if (!string.IsNullOrWhiteSpace(_config[ConfigurationKey.EmailOverride]))
             {
-                message.To.Add(new MailboxAddress(_config[ConfigurationKey.EmailOverride]));
+                message.To.Add(MailboxAddress.Parse(_config[ConfigurationKey.EmailOverride]));
             }
             else
             {
@@ -190,7 +221,7 @@ namespace GRA.Domain.Service
                 }
                 else
                 {
-                    message.To.Add(new MailboxAddress(emailAddress));
+                    message.To.Add(MailboxAddress.Parse(emailAddress));
                 }
             }
             message.Subject = subject;

@@ -22,10 +22,10 @@ namespace GRA.Data.Model
         [MaxLength(255)]
         public string MailSubject { get; set; }
 
-        public string DonationOptionSubject { get; set; }
+        public string OptionSubject { get; set; }
 
         [MaxLength(1250)]
-        public string DonationOptionMail { get; set; }
+        public string OptionMail { get; set; }
 
         [MaxLength(255)]
         public string DonationSubject { get; set; }
@@ -37,8 +37,18 @@ namespace GRA.Data.Model
         public string DonationMessage { get; set; }
 
         [MaxLength(255)]
+        public string EmailAwardSubject { get; set; }
+
+        [MaxLength(1250)]
+        public string EmailAwardMail { get; set; }
+
+        [MaxLength(255)]
+        public string EmailAwardMessage { get; set; }
+
+        [MaxLength(255)]
         public string Url { get; set; }
 
         public DateTime? ExpirationDate { get; set; }
+        public bool AwardPrizeOnShipDate { get; set; }
     }
 }

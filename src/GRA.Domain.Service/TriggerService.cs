@@ -115,9 +115,15 @@ namespace GRA.Domain.Service
         public async Task RemoveAsync(int triggerId)
         {
             VerifyManagementPermission();
-            if (await _triggerRepository.HasDependentsAsync(triggerId))
+            var dependentTriggers = await _triggerRepository.DependentTriggers(triggerId);
+            if (dependentTriggers?.Count > 0)
             {
-                throw new GraException("Trigger has dependents");
+                var ex = new GraException("Trigger has dependencies");
+                foreach (var dependentTrigger in dependentTriggers)
+                {
+                    ex.Data.Add(dependentTrigger.Key, dependentTrigger.Value);
+                }
+                throw ex;
             }
             var trigger = await _triggerRepository.GetByIdAsync(triggerId);
             trigger.IsDeleted = true;
@@ -265,6 +271,28 @@ namespace GRA.Domain.Service
                     throw new GraException("Invalid Avatar Bundle selection.");
                 }
             }
+
+            var maxPointLimit = await GetMaximumAllowedPointsAsync(GetCurrentSiteId());
+            if (maxPointLimit.HasValue && !HasPermission(Permission.IgnorePointLimits))
+            {
+                var currentTrigger = await _triggerRepository.GetByIdAsync(trigger.Id);
+                if (currentTrigger?.AwardPoints > maxPointLimit)
+                {
+                    throw new GraException("Permission denied.");
+                }
+                if (trigger.AwardPoints > maxPointLimit)
+                {
+                    throw new GraException($"A trigger may award a maximum of {maxPointLimit} points.");
+                }
+            }
+        }
+
+        public async Task<int?> GetMaximumAllowedPointsAsync(int siteId)
+        {
+            var (IsSet, SetValue) = await _siteLookupService.GetSiteSettingIntAsync(siteId,
+                SiteSettingKey.Triggers.MaxPointsPerTrigger);
+
+            return IsSet ? SetValue : (int?)null;
         }
     }
 }

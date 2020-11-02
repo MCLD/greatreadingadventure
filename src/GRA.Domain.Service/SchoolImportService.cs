@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -26,7 +27,7 @@ namespace GRA.Domain.Service
         public async Task<(ImportStatus, string)> FromCsvAsync(StreamReader csvStream)
         {
             var notes = new List<string>();
-            using (var csv = new CsvHelper.CsvReader(csvStream))
+            using (var csv = new CsvHelper.CsvReader(csvStream, CultureInfo.InvariantCulture))
             {
                 try
                 {

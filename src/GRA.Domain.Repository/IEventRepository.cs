@@ -1,7 +1,7 @@
-﻿using GRA.Domain.Model;
-using GRA.Domain.Model.Filters;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 
 namespace GRA.Domain.Repository
 {
@@ -18,5 +18,12 @@ namespace GRA.Domain.Repository
         Task DetachRelatedChallengeGroup(int userId, int challengeGroupId);
         Task<ICollection<DataWithCount<Event>>> GetCommunityExperienceAttendanceAsync(
             ReportCriterion criterion);
+        Task<IEnumerable<int>> GetUserFavoriteEvents(int userId,
+            IEnumerable<int> eventIds = null);
+        Task UpdateUserFavoritesAsync(int authUserId, int userId,
+            IEnumerable<int> favoritesToAdd, IEnumerable<int> favoritesToRemove);
+        Task<IEnumerable<int>> ValidateEventIdsAsync(int siteId,
+            IEnumerable<int> eventIds);
+        Task<ICollection<Event>> GetEventListAsync(EventFilter filter);
     }
 }

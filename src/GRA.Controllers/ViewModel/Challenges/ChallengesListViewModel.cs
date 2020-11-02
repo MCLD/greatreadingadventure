@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using GRA.Controllers.ViewModel.Shared;
+using GRA.Domain.Model;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GRA.Controllers.ViewModel.Challenges
@@ -14,6 +15,7 @@ namespace GRA.Controllers.ViewModel.Challenges
         public int? Program { get; set; }
         public string Categories { get; set; }
         public bool? Favorites { get; set; }
+        public string Status { get; set; }
         public bool IsActive { get; set; }
         public bool IsLoggedIn { get; set; }
 

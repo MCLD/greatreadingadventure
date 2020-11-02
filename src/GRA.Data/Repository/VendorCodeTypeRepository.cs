@@ -28,6 +28,15 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
+        public async Task<ICollection<VendorCodeType>> GetEmailAwardTypesAsync(int siteId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId && !string.IsNullOrWhiteSpace(_.EmailAwardSubject))
+                .ProjectTo<VendorCodeType>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
         // honors site id, skip, and take
         public async Task<int> CountAsync(BaseFilter filter)
         {
@@ -57,6 +66,23 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.SiteId == siteId)
                 .AnyAsync();
+        }
+
+        public async Task<bool> SiteHasEmailAwards(int siteId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .AnyAsync(_ => _.SiteId == siteId
+                    && !string.IsNullOrWhiteSpace(_.EmailAwardSubject));
+        }
+
+        public async Task<string> GetEmailAwardInstructionText(int typeId, int languageId)
+        {
+            return await _context.VendorCodeTypeTexts
+                .AsNoTracking()
+                .Where(_ => _.VendorCodeTypeId == typeId && _.LanguageId == languageId)
+                .Select(_ => _.EmailAwardInstructions)
+                .SingleOrDefaultAsync();
         }
     }
 }
