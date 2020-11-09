@@ -301,7 +301,8 @@ namespace GRA.Controllers.MissionControl
                 && model.Challenge.TasksToComplete.HasValue
                 && model.Challenge.TasksToComplete != 0)
             {
-                double pointsPerChallenge = (double)model.Challenge.PointsAwarded / model.Challenge.TasksToComplete.Value;
+                double pointsPerChallenge =
+                    (double)model.Challenge.PointsAwarded / model.Challenge.TasksToComplete.Value;
                 if (pointsPerChallenge > model.MaxPointLimit)
                 {
                     ModelState.AddModelError("Challenge.PointsAwarded",
@@ -326,9 +327,9 @@ namespace GRA.Controllers.MissionControl
                 }
                 if (model.BadgeUploadImage != null
                     && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) && !model.UseBadgeMaker)
-                    && if (!ValidImageExtensions.Contains(Path
-                    .GetExtension(model.BadgeUploadImage.FileName)
-                    .ToLowerInvariant()))
+                    && (!ValidImageExtensions.Contains(Path
+                        .GetExtension(model.BadgeUploadImage.FileName)
+                        .ToLowerInvariant())))
                 {
                     ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                 }
@@ -537,7 +538,7 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Edit(ChallengesDetailViewModel model, string Submit)
         {
             byte[] badgeBytes = null;
-            
+
             model.IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits);
             model.MaxPointLimit = await _challengeService
                 .GetMaximumAllowedPointsAsync(GetCurrentSiteId());
@@ -554,7 +555,7 @@ namespace GRA.Controllers.MissionControl
                         $"A challenge with {model.Challenge.TasksToComplete} tasks may award a maximum of {model.MaxPointLimit.Value * model.Challenge.TasksToComplete} points.");
                 }
             }
-            
+
             var existingBadge = model.Challenge.BadgeId.HasValue ?
                 await _badgeService.GetByIdAsync(model.Challenge.BadgeId.Value) : null;
             if (string.IsNullOrWhiteSpace(model.BadgeAltText))
@@ -566,21 +567,21 @@ namespace GRA.Controllers.MissionControl
                     ModelState.AddModelError("BadgeAltText", "The Badge's alternative text is required.");
                 }
             }
-            else
+            else if ((model.BadgeUploadImage == null)
+                && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker)
+                && ((!string.IsNullOrWhiteSpace(model.BadgeMakerImage) && !model.UseBadgeMaker)
+                    || existingBadge == null))
             {
-                if ((model.BadgeUploadImage == null)
-                    && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker)
-                    && ((!string.IsNullOrWhiteSpace(model.BadgeMakerImage) && !model.UseBadgeMaker)
-                        || existingBadge == null))
-                {
-                    ModelState.AddModelError("BadgeUploadImage", "A badge is required for the alternative text.");
-                    ModelState.AddModelError("BadgeMakerImage", "A badge is required for the alternative text.");
-                }
-                if (model.BadgeUploadImage != null
-                    && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker)
-                    && !ValidImageExtensions.Contains(Path
-                      .GetExtension(model.BadgeUploadImage.FileName)
-                      .ToLowerInvariant()))
+                ModelState.AddModelError("BadgeUploadImage", "Please upload or create a badge.");
+                ModelState.AddModelError("BadgeMakerImage", "Please upload or create a badge.");
+            }
+
+            if (model.BadgeUploadImage != null
+                && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker))
+            {
+                if (!ValidImageExtensions.Contains(Path
+                    .GetExtension(model.BadgeUploadImage.FileName)
+                    .ToLowerInvariant()))
                 {
                     ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                 }
@@ -603,7 +604,7 @@ namespace GRA.Controllers.MissionControl
             {
                 var challenge = model.Challenge;
                 if (model.BadgeUploadImage != null
-                        || !string.IsNullOrWhiteSpace(model.BadgeMakerImage))
+                    || !string.IsNullOrWhiteSpace(model.BadgeMakerImage))
                 {
                     string filename;
                     if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage)
@@ -635,22 +636,33 @@ namespace GRA.Controllers.MissionControl
                         var badge = await _badgeService.AddBadgeAsync(newBadge, badgeBytes);
                         challenge.BadgeId = badge.Id;
                     }
-                    else if (existingBadge != null)
+                    else
                     {
                         var existing = await _badgeService
                                     .GetByIdAsync((int)challenge.BadgeId);
-                        existing.AltText = model.BadgeAltText;
+                        if (!string.Equals(existing.AltText, model.BadgeAltText,
+                            StringComparison.OrdinalIgnoreCase))
+                        {
+                            existing.AltText = model.BadgeAltText;
+                            await _badgeService.ReplaceBadgeFileAsync(existing, null, null);
+                        }
                         existing.Filename = Path.GetFileName(model.BadgePath);
+                        existing.AltText = model.BadgeAltText;
                         await _badgeService.ReplaceBadgeFileAsync(existing,
                             badgeBytes,
-                            model.BadgeUploadImage.FileName);
+                            filename);
                     }
                 }
-                else if (challenge.BadgeId != null && !string.IsNullOrEmpty(model.BadgeAltText)
-                    && existingBadge?.AltText.Equals(model.BadgeAltText) == false)
+                else if (model.Challenge.BadgeId.HasValue)
                 {
-                    existingBadge.AltText = model.BadgeAltText;
-                    await _badgeService.UpdateBadgeAsync(existingBadge);
+                    var existing = await _badgeService
+                        .GetByIdAsync((int)challenge.BadgeId);
+                    if (!string.Equals(existing.AltText, model.BadgeAltText,
+                        StringComparison.OrdinalIgnoreCase))
+                    {
+                        existing.AltText = model.BadgeAltText;
+                        await _badgeService.ReplaceBadgeFileAsync(existing, null, null);
+                    }
                 }
                 try
                 {
@@ -707,8 +719,6 @@ namespace GRA.Controllers.MissionControl
                         }
                     }
                 }
-
-
                 return View(model);
             }
         }

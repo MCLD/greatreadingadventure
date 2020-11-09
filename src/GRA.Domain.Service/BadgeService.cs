@@ -138,30 +138,32 @@ namespace GRA.Domain.Service
         {
             var existingBadge = await _badgeRepository.GetByIdAsync(badge.Id);
 
-            if (File.Exists(existingBadge.Filename))
+            if (imageFile != null)
             {
-                File.Delete(existingBadge.Filename);
-            }
-
-            var imageType = ImageType.Png;
-
-            if (!string.IsNullOrEmpty(uploadFilename))
-            {
-                var uploadExtension = Path
-                    .GetExtension(uploadFilename)
-                    .ToLowerInvariant();
-
-                if (uploadExtension.EndsWith("jpg", StringComparison.OrdinalIgnoreCase)
-                    || uploadExtension.EndsWith("jpeg", StringComparison.OrdinalIgnoreCase))
+                if (File.Exists(existingBadge.Filename))
                 {
-                    imageType = ImageType.Jpg;
+                    File.Delete(existingBadge.Filename);
                 }
-            }
 
-            badge.Filename = await WriteBadgeFileAsync(existingBadge, imageFile, imageType);
+                var imageType = ImageType.Png;
+
+                if (!string.IsNullOrEmpty(uploadFilename))
+                {
+                    var uploadExtension = Path
+                        .GetExtension(uploadFilename)
+                        .ToLowerInvariant();
+
+                    if (uploadExtension.EndsWith("jpg", StringComparison.OrdinalIgnoreCase)
+                        || uploadExtension.EndsWith("jpeg", StringComparison.OrdinalIgnoreCase))
+                    {
+                        imageType = ImageType.Jpg;
+                    }
+                }
+
+                badge.Filename = await WriteBadgeFileAsync(existingBadge, imageFile, imageType);
+            }
             badge.AltText = badge.AltText?.Trim();
-            return await _badgeRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
-                badge);
+            return await _badgeRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), badge);
         }
 
         public async Task<Badge> GetByIdAsync(int badgeId)

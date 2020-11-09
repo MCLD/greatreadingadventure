@@ -680,6 +680,8 @@ namespace GRA.Controllers.MissionControl
                         model.Trigger.AwardMailSubject = "";
                         model.Trigger.AwardMail = "";
                     }
+                    var existing = await _badgeService
+                        .GetByIdAsync(model.Trigger.AwardBadgeId);
                     if (model.BadgeUploadImage != null
                         || !string.IsNullOrWhiteSpace(model.BadgeMakerImage))
                     {
@@ -701,13 +703,17 @@ namespace GRA.Controllers.MissionControl
                             }
                         }
 
-                        var existing = await _badgeService
-                                    .GetByIdAsync(model.Trigger.AwardBadgeId);
                         existing.Filename = Path.GetFileName(model.BadgePath);
                         existing.AltText = model.BadgeAltText;
                         await _badgeService.ReplaceBadgeFileAsync(existing,
                             badgeBytes,
                             model.BadgeUploadImage.FileName);
+                    }
+                    else if (!string.Equals(existing.AltText, model.BadgeAltText,
+                        StringComparison.OrdinalIgnoreCase))
+                    {
+                        existing.AltText = model.BadgeAltText;
+                        await _badgeService.ReplaceBadgeFileAsync(existing, null, null);
                     }
                     var savedtrigger = await _triggerService.UpdateAsync(model.Trigger);
                     ShowAlertSuccess($"Trigger '<strong>{savedtrigger.Name}</strong>' was successfully modified");
