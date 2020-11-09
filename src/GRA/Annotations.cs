@@ -26,7 +26,6 @@
 
         public static class Info
         {
-            public const string AltTextExplanation = "How should this {0} be described to those who can’t see it?";
             public const string BadgeInfoError = "Error retrieving badge information.";
             public const string BetterSuitedOption = "This program may be better-suited to your age:";
             public const string ChallengeBadgeEarned = "You earned this badge for completing the challenge: <a href=\"{0}\" target=\"_blank\">{1}</a>";
