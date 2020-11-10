@@ -1505,10 +1505,6 @@
     <value>Badge Details</value>
     <comment>Heading of a pop-up showing information about an earned badge</comment>
   </data>
-  <data name="Opens new window." xml:space="preserve">
-    <value>(Opens new window)</value>
-    <comment>Warning message for the screenreader to indicate the link will open a new window.</comment>
-  </data>
   <data name="This badge was awarded when you unlocked the avatar bundle: {0}" xml:space="preserve">
     <value>This badge was awarded when you unlocked the avatar bundle: {0}</value>
     <comment>The alternative text description for unlocking an avatar bundle.</comment>
