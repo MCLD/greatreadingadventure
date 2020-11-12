@@ -1320,6 +1320,9 @@ namespace GRA.Controllers
             try
             {
                 viewModel.UserLog = await _userService.GetUserLogByIdAsync(id);
+                var badge = await _badgeService
+                    .GetByIdAsync(viewModel.UserLog.BadgeId.Value);
+                viewModel.UserLog.BadgeAltText = badge.AltText;
 
                 if (viewModel.UserLog.ChallengeId.HasValue)
                 {
