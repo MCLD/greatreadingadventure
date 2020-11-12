@@ -314,7 +314,7 @@ namespace GRA.Controllers.MissionControl
                 if ((!string.IsNullOrWhiteSpace(model.BadgeMakerImage) && model.UseBadgeMaker) ||
                     (model.BadgeUploadImage != null && !model.UseBadgeMaker))
                 {
-                    ModelState.AddModelError("BadgeAltText", "The Badge's alternative text is required.");
+                    ModelState.AddModelError("BadgeAltText", "The badge's alternative text is required.");
                 }
             }
             else
@@ -564,7 +564,7 @@ namespace GRA.Controllers.MissionControl
                     || (!string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker)
                     || existingBadge != null)
                 {
-                    ModelState.AddModelError("BadgeAltText", "The Badge's alternative text is required.");
+                    ModelState.AddModelError("BadgeAltText", "The badge's alternative text is required.");
                 }
             }
             else if ((model.BadgeUploadImage == null)

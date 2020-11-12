@@ -291,7 +291,7 @@ namespace GRA.Controllers.MissionControl
             }
             if (string.IsNullOrWhiteSpace(model.BadgeAltText))
             {
-                ModelState.AddModelError("BadgeAltText", "The Badge's alternative text is required.");
+                ModelState.AddModelError("BadgeAltText", "The badge's alternative text is required.");
             }
 
             if (!model.IsSecretCode)
@@ -602,7 +602,7 @@ namespace GRA.Controllers.MissionControl
             }
             if (string.IsNullOrWhiteSpace(model.BadgeAltText))
             {
-                ModelState.AddModelError("BadgeAltText", "The Badge's alternative text is required.");
+                ModelState.AddModelError("BadgeAltText", "The badge's alternative text is required.");
             }
 
             if (!model.IsSecretCode)
