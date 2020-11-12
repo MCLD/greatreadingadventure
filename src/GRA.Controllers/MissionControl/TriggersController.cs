@@ -479,7 +479,10 @@ namespace GRA.Controllers.MissionControl
                 MaxPointLimit =
                     await _triggerService.GetMaximumAllowedPointsAsync(GetCurrentSiteId())
             };
-            viewModel.MaxPointsMessage = $"(Up to {viewModel.MaxPointLimit.Value} points)";
+            if (viewModel?.MaxPointLimit != null)
+            {
+                viewModel.MaxPointsMessage = $"(Up to {viewModel.MaxPointLimit.Value} points)";
+            }
             if (trigger.AwardPoints > viewModel.MaxPointLimit)
             {
                 viewModel.MaxPointsWarningMessage = $"This Trigger exceeds the maximum of {viewModel.MaxPointLimit.Value} points per required task. Only Administrators can edit the points awarded.";
