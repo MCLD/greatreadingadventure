@@ -98,11 +98,6 @@ namespace GRA.Controllers.MissionControl
             var site = await GetCurrentSiteAsync();
             settings.Add("Site created", site.CreatedAt.ToString());
 
-            if (!string.IsNullOrEmpty(_config[ConfigurationKey.SqlServer2008]))
-            {
-                settings.Add("SQL Server 2008", "Yes");
-            }
-
             var versions = new Dictionary<string, string>();
             var assemblies = Assembly.GetEntryAssembly()
                 .GetReferencedAssemblies()

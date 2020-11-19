@@ -48,7 +48,7 @@ namespace GRA.CommandLine.Commands
                     }
                     return 0;
                 });
-            }, throwOnUnexpectedArg: true);
+            });
         }
     }
 }

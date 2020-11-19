@@ -13,7 +13,7 @@
     <Product>Great Reading Adventure</Product>
     <RepositoryType>Git</RepositoryType>
     <RepositoryUrl>https://github.com/mcld/greatreadingadventure/</RepositoryUrl>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <Version>4.1.2</Version>
     <OutputType>Library</OutputType>
   </PropertyGroup>
@@ -25,9 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.3" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.3" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.0.3" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.10" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.10" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.10" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 

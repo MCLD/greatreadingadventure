@@ -20,7 +20,6 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -222,24 +221,12 @@ namespace GRA.Web
             switch (_config[ConfigurationKey.ConnectionStringName])
             {
                 case ConnectionStringNameSqlServer:
-                    if (!string.IsNullOrEmpty(_config[ConfigurationKey.SqlServer2008]))
-                    {
-                        services.AddDbContextPool<Data.Context, Data.SqlServer.SqlServerContext>(
-                            _ => _.UseSqlServer(cs, b => b.UseRowNumberForPaging())
-                            .ConfigureWarnings(w => w
-                                .Throw(throwEvents.ToArray())
-                                .Log(logEvents.ToArray())
-                                .Ignore(ignoreEvents.ToArray())));
-                    }
-                    else
-                    {
-                        services.AddDbContextPool<Data.Context, Data.SqlServer.SqlServerContext>(
-                            _ => _.UseSqlServer(cs)
-                            .ConfigureWarnings(w => w
-                                .Throw(throwEvents.ToArray())
-                                .Log(logEvents.ToArray())
-                                .Ignore(ignoreEvents.ToArray())));
-                    }
+                    services.AddDbContextPool<Data.Context, Data.SqlServer.SqlServerContext>(
+                        _ => _.UseSqlServer(cs)
+                        .ConfigureWarnings(w => w
+                            .Throw(throwEvents.ToArray())
+                            .Log(logEvents.ToArray())
+                            .Ignore(ignoreEvents.ToArray())));
                     break;
                 case ConnectionStringNameSQLite:
                     services.AddDbContextPool<Data.Context, Data.SQLite.SQLiteContext>(
@@ -571,6 +558,7 @@ namespace GRA.Web
             app.UseRouting();
 
             app.UseAuthentication();
+            app.UseAuthorization();
 
             // sitePath is also referenced in GRA.Controllers.Filter.SiteFilterAttribute
             app.UseEndpoints(_ =>

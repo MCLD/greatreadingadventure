@@ -32,7 +32,6 @@
         public static readonly string RuntimeCacheSqlConfiguration = "RuntimeCacheSqlConfiguration";
         public static readonly string SeqApiKey = "GraSeqAPIKey";
         public static readonly string SeqEndpoint = "GraSeqEndpoint";
-        public static readonly string SqlServer2008 = "GraSqlServer2008";
         public static readonly string SqlSessionSchemaName = "GraSqlSessionSchemaName";
         public static readonly string SqlSessionTable = "GraSqlSessionTable";
     }

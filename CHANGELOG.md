@@ -70,6 +70,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Household import to use the job system
 - Reporting SQL IN clause error
 - Badge image dimension restrictions
+- Upgrade from ASP.NET Core v2.2 to v3.1
 
 ### Fixed
 - Instance name enrichment for logging
@@ -99,6 +100,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Removed
 - Recovery error logging at the controller level - it's logged in the
 service
+- SQL Server 2008 support
 
 ## [4.1.1] - 2018-12-13
 ### Added
@@ -110,7 +112,6 @@ service
 - Move site.css for customizing site styles to shared folder
 - Only redirect to session expired if participant has authenticated in last 2 hours
 - Upgrade from ASP.NET Core v2.1 to v2.2
-- Upgrade from ASP.NET Core v2.2 to v3.0
 
 ### Fixed
 - Fix #377 Adding a challenge task causes an error

@@ -20,7 +20,7 @@
     <Product>Great Reading Adventure</Product>
     <RepositoryType>Git</RepositoryType>
     <RepositoryUrl>https://github.com/mcld/greatreadingadventure/</RepositoryUrl>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <Version>4.1.2</Version>
     <OutputType>Library</OutputType>
   </PropertyGroup>
@@ -35,17 +35,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CsvHelper" Version="15.0.8" />
+    <PackageReference Include="CsvHelper" Version="16.0.0" />
     <PackageReference Include="ExcelDataReader" Version="3.6.0" />
     <PackageReference Include="MailKit" Version="2.9.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.0.3" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.0.3" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.0.3" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.10" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.10" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.10" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.10" />
     <PackageReference Include="MimeKit" Version="2.9.2" />
     <PackageReference Include="Serilog" Version="2.10.0" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.1" />
-    <PackageReference Include="SmartFormat.NET" Version="2.5.2" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.2" />
+    <PackageReference Include="SmartFormat.NET" Version="2.5.3" />
     <PackageReference Include="System.Security.Claims" Version="4.3.0" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
