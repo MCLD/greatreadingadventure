@@ -25,19 +25,19 @@ namespace GRA.Controllers.MissionControl
         private readonly ILogger<AvatarsController> _logger;
         private readonly AvatarService _avatarService;
         private readonly JobService _jobService;
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
         public AvatarsController(ILogger<AvatarsController> logger,
             ServiceFacade.Controller context,
             AvatarService avatarService,
             JobService jobService,
-            IHostingEnvironment hostingEnvironment)
+            IWebHostEnvironment hostingEnvironment)
             : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _avatarService = avatarService ?? throw new ArgumentNullException(nameof(avatarService));
             _jobService = jobService ?? throw new ArgumentNullException(nameof(jobService));
-            _hostingEnvironment = hostingEnvironment ?? throw new ArgumentNullException(nameof(hostingEnvironment));
+            _webHostEnvironment = hostingEnvironment ?? throw new ArgumentNullException(nameof(hostingEnvironment));
             PageTitle = "Avatars";
         }
 
@@ -69,7 +69,7 @@ namespace GRA.Controllers.MissionControl
             }
 
             string assetPath = Path.Combine(
-                Directory.GetParent(_hostingEnvironment.WebRootPath).FullName, "assets");
+                Directory.GetParent(_webHostEnvironment.WebRootPath).FullName, "assets");
 
             if (!Directory.Exists(assetPath))
             {

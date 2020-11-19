@@ -25,6 +25,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using Serilog;
@@ -46,7 +47,7 @@ namespace GRA.Web
         private readonly bool _isDevelopment;
 
         public Startup(IConfiguration config,
-            IHostingEnvironment env)
+            IWebHostEnvironment env)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
 
@@ -130,7 +131,7 @@ namespace GRA.Web
                     {
                         redisInstance += ".";
                     }
-                    services.AddDistributedRedisCache(_ =>
+                    services.AddStackExchangeRedisCache(_ =>
                     {
                         _.Configuration = redisConfig;
                         _.InstanceName = redisInstance;
@@ -159,8 +160,8 @@ namespace GRA.Web
                 _.ConstraintMap.Add("cultureConstraint", typeof(CultureRouteConstraint)));
 
             // add MVC
-            services.AddMvc()
-                .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_2)
+            services.AddControllersWithViews()
+                .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_3_0)
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
                 .AddDataAnnotationsLocalization(_ =>
                 {
@@ -215,25 +216,6 @@ namespace GRA.Web
             var throwEvents = new List<EventId>();
             var logEvents = new List<EventId>();
             var ignoreEvents = new List<EventId>();
-
-            if (_isDevelopment)
-            {
-                logEvents.Add(RelationalEventId.QueryClientEvaluationWarning);
-                throwEvents.Add(CoreEventId.IncludeIgnoredWarning);
-            }
-            else
-            {
-                if (string.IsNullOrEmpty(_config[ConfigurationKey.DatabaseWarningLogging]))
-                {
-                    ignoreEvents.Add(RelationalEventId.QueryClientEvaluationWarning);
-                    ignoreEvents.Add(CoreEventId.IncludeIgnoredWarning);
-                }
-                else
-                {
-                    logEvents.Add(RelationalEventId.QueryClientEvaluationWarning);
-                    logEvents.Add(CoreEventId.IncludeIgnoredWarning);
-                }
-            }
 
             string cs = _config.GetConnectionString(csName)
                 ?? throw new GraFatalException($"A {csName} connection string must be provided.");
@@ -577,8 +559,6 @@ namespace GRA.Web
 
             app.UseSession();
 
-            app.UseAuthentication();
-
             app.Use(async (context, next) =>
             {
                 using (LogContext.PushProperty(LoggingEnrichment.UserId,
@@ -588,32 +568,36 @@ namespace GRA.Web
                 }
             });
 
+            app.UseRouting();
+
+            app.UseAuthentication();
+
             // sitePath is also referenced in GRA.Controllers.Filter.SiteFilterAttribute
-            app.UseMvc(routes =>
+            app.UseEndpoints(_ =>
             {
-                routes.MapRoute(
+                _.MapControllerRoute(
                     name: null,
-                    template: "{culture:cultureConstraint}/Info/{id}",
+                    pattern: "{culture:cultureConstraint}/Info/{id}",
                     defaults: new { controller = "Info", action = "Index" });
-                routes.MapRoute(
+                _.MapControllerRoute(
                     name: null,
-                    template: "Info/{id}",
+                    pattern: "Info/{id}",
                     defaults: new { controller = "Info", action = "Index" });
-                routes.MapRoute(
+                _.MapControllerRoute(
                     name: null,
-                    template: "{culture:cultureConstraint}/{area:exists}/{controller}/{action}/{id?}",
+                    pattern: "{culture:cultureConstraint}/{area:exists}/{controller}/{action}/{id?}",
                     defaults: new { controller = "Home", action = "Index" });
-                routes.MapRoute(
+                _.MapControllerRoute(
                     name: null,
-                    template: "{area:exists}/{controller}/{action}/{id?}",
+                    pattern: "{area:exists}/{controller}/{action}/{id?}",
                     defaults: new { controller = "Home", action = "Index" });
-                routes.MapRoute(
+                _.MapControllerRoute(
                     name: null,
-                    template: "{culture:cultureConstraint}/{controller}/{action}/{id?}",
+                    pattern: "{culture:cultureConstraint}/{controller}/{action}/{id?}",
                     defaults: new { controller = "Home", action = "Index" });
-                routes.MapRoute(
+                _.MapControllerRoute(
                     name: null,
-                    template: "{controller}/{action}/{id?}",
+                    pattern: "{controller}/{action}/{id?}",
                     defaults: new { controller = "Home", action = "Index" });
             });
 

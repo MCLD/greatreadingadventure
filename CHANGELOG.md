@@ -110,6 +110,7 @@ service
 - Move site.css for customizing site styles to shared folder
 - Only redirect to session expired if participant has authenticated in last 2 hours
 - Upgrade from ASP.NET Core v2.1 to v2.2
+- Upgrade from ASP.NET Core v2.2 to v3.0
 
 ### Fixed
 - Fix #377 Adding a challenge task causes an error

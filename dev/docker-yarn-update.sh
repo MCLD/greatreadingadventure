@@ -3,7 +3,7 @@
 # How to run this:
 # 1. Find a Linux system (Windows Docker path sharing is a mess)
 # 2. Clone the repository
-# 4. Run the following: docker run -it --rm -v `pwd`:/app mcr.microsoft.com/dotnet/core/sdk:2.2 bash /app/dev/docker-yarn-update.sh
+# 4. Run the following: docker run -it --rm -v `pwd`:/app mcr.microsoft.com/dotnet/core/sdk:3.0 bash /app/dev/docker-yarn-update.sh
 # 5. See what happened with git status
 
 curl -sL https://deb.nodesource.com/setup_12.x | bash -

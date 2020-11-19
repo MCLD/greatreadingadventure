@@ -1,5 +1,5 @@
 # Get build image
-FROM mcr.microsoft.com/dotnet/core/sdk:2.2 AS build-stage
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0 AS build-stage
 WORKDIR /app
 
 # Copy source
@@ -16,7 +16,7 @@ RUN dotnet publish -c Release -o "/app/publish/"
 RUN cp /app/release-publish.bash "/app/publish/"
 
 # Get runtime image
-FROM mcr.microsoft.com/dotnet/core/aspnet:2.2 AS publish-stage
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.0 AS publish-stage
 WORKDIR /app
 
 # Bring in metadata via --build-arg

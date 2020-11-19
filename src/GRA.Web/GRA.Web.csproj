@@ -20,7 +20,7 @@
     <RazorCompileOnPublish>false</RazorCompileOnPublish>
     <RepositoryType>Git</RepositoryType>
     <RepositoryUrl>https://github.com/mcld/greatreadingadventure/</RepositoryUrl>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <UserSecretsId>gra-e773e45a-3078-4b1b-842d-c7a8f7d310a6</UserSecretsId>
@@ -57,19 +57,16 @@
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
-    <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Caching.SqlServer" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="3.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Caching.SqlServer" Version="3.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="3.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="3.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.0.3" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" PrivateAssets="All" />
     <PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
     <PackageReference Include="Serilog.Filters.Expressions" Version="2.1.0" />
@@ -140,6 +137,10 @@
   <ItemGroup>
     <Folder Include="wwwroot\webfonts\" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+  </PropertyGroup>
 
   <ItemGroup>
     <Content Update="Areas\PerformerRegistration\Views\Shared\Error.cshtml">
