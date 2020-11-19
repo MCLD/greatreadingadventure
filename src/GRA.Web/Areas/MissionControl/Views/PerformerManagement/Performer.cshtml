@@ -278,7 +278,11 @@
 </div>
 
 <div class="row">
-    <div class="modal fade" id="branchModal" tabindex="-1" role="dialog" aria-labelledby="branchModalLabel">
+    <div class="modal fade"
+         id="branchModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="branchModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -300,7 +304,11 @@
                         {
                             <div>
                                 <span class="colored-icon fa fa-lg @(Model.BranchAvailability.Contains(branch.Id) || Model.Performer.AllBranches ? "fa-check" : "fa-times")"></span>
-                                <label data-toggle="tooltip" data-placement="top" title="@branch.Address">@branch.Name</label>
+                                <label data-toggle="tooltip"
+                                       data-placement="top"
+                                       title="@branch.Address">
+                                    @branch.Name
+                                </label>
                                 <a aria-label="Map (Opens new window)"
                                    href="https://www.google.com/maps/search/@branch.Address"
                                    target="_blank">
@@ -312,7 +320,12 @@
                     }
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Close</button>
+                    <button type="button"
+                            class="btn btn-default"
+                            data-dismiss="modal"
+                            style="margin-right: 1em;">
+                        Close
+                    </button>
                 </div>
             </div>
         </div>
@@ -320,7 +333,11 @@
 </div>
 
 <div class="row">
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+    <div class="modal fade"
+         id="deleteModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="deleteModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -337,12 +354,22 @@
                     <span id="modal-text"></span>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                    <form asp-action="ProgramDelete" method="post" role="form" style="display:inline">
+                    <button type="button"
+                            class="btn btn-default"
+                            data-dismiss="modal"
+                            style="margin-right: 1em;">
+                        Cancel
+                    </button>
+                    <form asp-action="ProgramDelete"
+                          method="post"
+                          role="form"
+                          style="display:inline">
                         <input asp-for="Performer.Id" type="hidden" />
                         <input asp-for="ProgramToDelete.Id" type="hidden" />
                         <input asp-for="ProgramToDelete.Title" type="hidden" />
-                        <button type="submit" class="btn btn-danger btn-spinner pull-right" aria-label="Confirm">
+                        <button type="submit"
+                                class="btn btn-danger btn-spinner pull-right"
+                                aria-label="Confirm">
                             <span class="fa fa-remove" aria-hidden="true"></span>
                             Delete
                             <span class="fa fa-spinner fa-pulse fa-fw hidden"></span>

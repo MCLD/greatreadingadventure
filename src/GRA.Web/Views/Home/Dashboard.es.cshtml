@@ -426,8 +426,15 @@
 @if (!string.IsNullOrWhiteSpace(Model.DailyImageMessage))
 {
     <div class="row">
-        <div class="modal fade" id="dailyImageModal" style="text-align:center;" tabindex="-1" role="dialog" aria-labelledby="dailyImageModalLabel">
-            <div class="modal-dialog @(Model.DailyImageLarge ? "modal-lg" : "")" style="display: inline-block;" role="document">
+        <div class="modal fade"
+             id="dailyImageModal"
+             style="text-align:center;"
+             tabindex="-1"
+             role="dialog"
+             aria-labelledby="dailyImageModalLabel">
+            <div class="modal-dialog @(Model.DailyImageLarge ? "modal-lg" : "")"
+                 style="display: inline-block;"
+                 role="document">
                 <div class="modal-content">
                     <button class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute"
                             data-dismiss="modal"
@@ -447,7 +454,11 @@
 @if (Model.Carousel != null)
 {
     <div class="row">
-        <div class="modal gra-carousel-modal" id="graCarouselModal" tabindex="-1" role="dialog" aria-labelledby="graCarouselModal">
+        <div class="modal gra-carousel-modal"
+             id="graCarouselModal"
+             tabindex="-1"
+             role="dialog"
+             aria-labelledby="graCarouselModal">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
@@ -463,8 +474,10 @@
                                      class="center-block gra-carousel-modal-image" />
                             </div>
                             <div class="col-xs-12 col-sm-9">
-                                <p style="font-size: 2rem; font-weight: bold;" id="graCarouselModalHeader"></p>
-                                <p id="graCarouselModalContent" class="gra-carousel-modal-content"></p>
+                                <p style="font-size: 2rem; font-weight: bold;"
+                                   id="graCarouselModalHeader"></p>
+                                <p id="graCarouselModalContent"
+                                   class="gra-carousel-modal-content"></p>
                             </div>
                         </div>
                     </div>

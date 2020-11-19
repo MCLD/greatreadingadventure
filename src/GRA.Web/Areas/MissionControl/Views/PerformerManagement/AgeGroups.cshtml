@@ -76,9 +76,17 @@
 </div>
 
 <div class="row">
-    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
+    <div class="modal fade"
+         id="addModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="addModalLabel">
         <div class="modal-dialog" role="document">
-            <form asp-controller="PerformerManagement" asp-action="AddAgeGroup" method="post" role="form" style="display:inline">
+            <form asp-controller="PerformerManagement"
+                  asp-action="AddAgeGroup"
+                  method="post"
+                  role="form"
+                  style="display:inline">
                 <input asp-for="PaginateModel.CurrentPage" type="hidden" />
                 <div class="modal-content">
                     <div class="modal-header">
@@ -100,12 +108,20 @@
                             <label asp-for="AgeGroup.IconColor" class="control-label"></label>
                             <description gra-description-for="AgeGroup.IconColor"></description>
                             <input asp-for="AgeGroup.IconColor" class="form-control" />
-                            <span asp-validation-for="AgeGroup.IconColor" class="text-danger"></span>
+                            <span asp-validation-for="AgeGroup.IconColor"
+                                  class="text-danger"></span>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <button type="submit" class="btn btn-primary btn-spinner pull-right" aria-label="Confirm">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="btn btn-primary btn-spinner pull-right"
+                                aria-label="Confirm">
                             Add
                             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                         </button>
@@ -117,9 +133,17 @@
 </div>
 
 <div class="row">
-    <div class="modal fade" id="updateBackToBackModal" tabindex="-1" role="dialog" aria-labelledby="updateBackToBackModalLabel">
+    <div class="modal fade"
+         id="updateBackToBackModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="updateBackToBackModalLabel">
         <div class="modal-dialog" role="document">
-            <form id="backToBackUpdateForm" asp-controller="PerformerManagement" asp-action="UpdateAgeGroupBackToBackBranches" method="post" role="form" style="display:inline">
+            <form id="backToBackUpdateForm"
+                  asp-controller="PerformerManagement"
+                  asp-action="UpdateAgeGroupBackToBackBranches"
+                  method="post"
+                  role="form" style="display:inline">
                 <input asp-for="PaginateModel.CurrentPage" type="hidden" />
                 <input asp-for="AgeGroup.Id" type="hidden" />
                 <input asp-for="BackToBackBranchesString" type="hidden" />
@@ -135,7 +159,8 @@
                             Update Back to Back Branches
                         </h1>
                     </div>
-                    <div class="modal-body" style="max-height: calc(100vh - 200px); overflow-y:auto;">
+                    <div class="modal-body"
+                         style="max-height: calc(100vh - 200px); overflow-y:auto;">
                         @foreach (var system in Model.Systems)
                         {
                             <div style="font-size:x-large;margin-bottom:10px;">
@@ -144,7 +169,9 @@
                             @foreach (var branch in system.Branches)
                             {
                                 <div>
-                                    <input id="@($"branch{branch.Id}")" class="branchSelector" data-id="@branch.Id" type="checkbox" />
+                                    <input id="@($"branch{branch.Id}")"
+                                           class="branchSelector"
+                                           data-id="@branch.Id" type="checkbox" />
                                     <label for="@($"branch{branch.Id}")">@branch.Name</label>
                                 </div>
                             }
@@ -152,8 +179,15 @@
                         }
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <button type="submit" class="btn btn-primary btn-spinner pull-right" aria-label="Confirm">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="btn btn-primary btn-spinner pull-right"
+                                aria-label="Confirm">
                             Save
                             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                         </button>
@@ -165,9 +199,17 @@
 </div>
 
 <div class="row">
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+    <div class="modal fade"
+         id="deleteModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="deleteModalLabel">
         <div class="modal-dialog" role="document">
-            <form asp-controller="PerformerManagement" asp-action="DeleteAgeGroup" method="post" role="form" style="display:inline">
+            <form asp-controller="PerformerManagement"
+                  asp-action="DeleteAgeGroup"
+                  method="post"
+                  role="form"
+                  style="display:inline">
                 <input asp-for="PaginateModel.CurrentPage" type="hidden" />
                 <input asp-for="AgeGroup.Id" type="hidden" />
                 <input asp-for="AgeGroup.Name" type="hidden" />
@@ -186,8 +228,15 @@
                         <span id="modal-text"></span>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <button type="submit" class="btn btn-danger btn-spinner pull-right" aria-label="Confirm">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="btn btn-danger btn-spinner pull-right"
+                                aria-label="Confirm">
                             <span class="fa fa-remove" aria-hidden="true"></span>
                             Delete
                             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>

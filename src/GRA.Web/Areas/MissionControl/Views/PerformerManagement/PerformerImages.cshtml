@@ -92,7 +92,11 @@
 </div>
 
 <div class="row">
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+    <div class="modal fade"
+         id="deleteModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="deleteModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -106,14 +110,26 @@
                 </div>
                 <div class="modal-body">
                     <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
-                    <span id="modal-text">Are you sure you want to delete the selected image(s)?</span>
+                    <span id="modal-text">
+                        Are you sure you want to delete the selected image(s)?
+                    </span>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                    <form asp-action="PerformerImagesDelete" method="post" role="form" style="display:inline">
+                    <button type="button"
+                            class="btn btn-default"
+                            data-dismiss="modal"
+                            style="margin-right: 1em;">
+                        Cancel
+                    </button>
+                    <form asp-action="PerformerImagesDelete"
+                          method="post"
+                          role="form"
+                          style="display:inline">
                         <input asp-for="PerformerId" type="hidden" />
                         <input asp-for="ImagesToDelete" type="hidden" />
-                        <button type="submit" class="btn btn-danger btn-spinner pull-right" aria-label="Confirm">
+                        <button type="submit"
+                                class="btn btn-danger btn-spinner pull-right"
+                                aria-label="Confirm">
                             <span class="fa fa-remove" aria-hidden="true"></span>
                             Delete
                             <span class="fa fa-spinner fa-pulse fa-fw hidden"></span>

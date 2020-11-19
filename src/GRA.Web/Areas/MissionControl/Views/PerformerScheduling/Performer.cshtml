@@ -222,7 +222,11 @@
 </div>
 
 <div class="row">
-    <div class="modal fade" id="branchModal" tabindex="-1" role="dialog" aria-labelledby="branchModalLabel">
+    <div class="modal fade"
+         id="branchModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="branchModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -242,7 +246,11 @@
                     {
                         <div>
                             <span class="colored-icon fa fa-lg @(Model.Performer.AllBranches || Model.BranchAvailability.Contains(branch.Id) ? "fa-check" : "fa-times")"></span>
-                            <label data-toggle="tooltip" data-placement="top" title="@branch.Address">@branch.Name</label>
+                            <label data-toggle="tooltip"
+                                   data-placement="top"
+                                   title="@branch.Address">
+                                @branch.Name
+                            </label>
                             <a aria-label="Map (Opens new window)"
                                href="https://www.google.com/maps/search/@branch.Address"
                                target="_blank">
@@ -252,7 +260,12 @@
                     }
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Close</button>
+                    <button type="button"
+                            class="btn btn-default"
+                            data-dismiss="modal"
+                            style="margin-right: 1em;">
+                        Close
+                    </button>
                 </div>
             </div>
         </div>

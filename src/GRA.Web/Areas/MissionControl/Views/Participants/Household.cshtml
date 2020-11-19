@@ -524,7 +524,10 @@
     }
 </div>
 
-<div class="modal fade pendingModal" tabindex="-1" role="dialog" aria-labelledby="pendingModalLabel">
+<div class="modal fade pendingModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="pendingModalLabel">
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
             <div class="modal-body">
@@ -544,7 +547,10 @@
 @if (Model.CanEditDetails)
 {
     <div class="row">
-        <div class="modal fade" id="listModal" tabindex="-1" role="dialog" aria-labelledby="listModalLabel">
+        <div class="modal fade" id="listModal"
+             tabindex="-1"
+             role="dialog"
+             aria-labelledby="listModalLabel">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="row">
                     <div class="col-xs-12 col-sm-10 col-sm-offset-1">
@@ -556,26 +562,48 @@
                                 <div class="row">
                                     <div class="col-xs-12">
                                         <ul class="nav nav-pills" style="padding: 10px 0;">
-                                            <li id="All" class="active participantScope"><a style="cursor:pointer">All</a></li>
+                                            <li id="All" class="active participantScope">
+                                                <a style="cursor:pointer">All</a>
+                                            </li>
                                             <li id="System" class="participantScope">
-                                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                                <a class="dropdown-toggle"
+                                                   data-toggle="dropdown"
+                                                   href="#"
+                                                   role="button"
+                                                   aria-haspopup="true"
+                                                   aria-expanded="false">
                                                     <span id="systemText">System</span> <span class="caret"></span>
                                                 </a>
                                                 <ul class="dropdown-menu">
                                                     @foreach (var system in Model.SystemList)
                                                     {
-                                                        <li><a class="system-selector" data-id="@system.Id">@system.Name</a></li>
+                                                        <li>
+                                                            <a class="system-selector"
+                                                               data-id="@system.Id">
+                                                                @system.Name
+                                                            </a>
+                                                        </li>
                                                     }
                                                 </ul>
                                             </li>
                                             <li id="Branch" class="participantScope">
-                                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                                <a class="dropdown-toggle"
+                                                   data-toggle="dropdown"
+                                                   href="#"
+                                                   role="button"
+                                                   aria-haspopup="true"
+                                                   aria-expanded="false">
                                                     <span id="branchText">Branch</span> <span class="caret"></span>
                                                 </a>
                                                 <ul id="branchDropdown" class="dropdown-menu">
                                                     @foreach (var branch in Model.BranchList)
                                                     {
-                                                        <li><a class="branch-selector" data-id="@branch.Id">@branch.Name</a></li>
+                                                        <li>
+                                                            <a class="branch-selector"
+                                                               data-id="@branch.Id">
+                                                                @branch.Name
+                                                            </a>
+                                                        </li>
                                                     }
                                                 </ul>
                                             </li>
@@ -590,20 +618,33 @@
                                     </div>
                                     <div class="col-xs-4">
                                         <div class="col-xs-6">
-                                            <button type="button" id="searchButton" class="btn btn-default btn-block" style="margin-right: 8px;">Search</button>
+                                            <button type="button"
+                                                    id="searchButton"
+                                                    class="btn btn-default btn-block"
+                                                    style="margin-right: 8px;">
+                                                Search
+                                            </button>
                                         </div>
                                         <div class="col-xs-6">
-                                            <button type="button" id="clearButton" class="btn btn-default btn-block">Clear</button>
+                                            <button type="button"
+                                                    id="clearButton"
+                                                    class="btn btn-default btn-block">
+                                                Clear
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                                 <div id="searchMessage" class="row hide">
                                     <div class="col-xs-12">
-                                        <p class="alert-sm alert-info">Searching for '<strong id="searchTerm"></strong>'</p>
+                                        <p class="alert-sm alert-info">
+                                            Searching for '<strong id="searchTerm"></strong>'
+                                        </p>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <form asp-action="AddExisitingParticipant" method="post" role="form">
+                                    <form asp-action="AddExisitingParticipant"
+                                          method="post"
+                                          role="form">
                                         <input name="Id" value="@Model.Id" type="hidden" />
                                         <div id="modalParticipantsList" class="col-xs-12">
                                         </div>
@@ -611,7 +652,12 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Close</button>
+                                <button type="button"
+                                        class="btn btn-default"
+                                        data-dismiss="modal"
+                                        style="margin-right: 1em;">
+                                    Close
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -621,7 +667,11 @@
     </div>
 
     <div class="row">
-        <div class="modal fade" id="promoteModal" tabindex="-1" role="dialog" aria-labelledby="promoteModalLabel">
+        <div class="modal fade"
+             id="promoteModal"
+             tabindex="-1"
+             role="dialog"
+             aria-labelledby="promoteModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -638,11 +688,22 @@
                         <span id="modal-text"></span>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <form asp-controller="Participants" asp-action="HouseholdPromote" method="post" role="form" style="display:inline">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <form asp-controller="Participants"
+                              asp-action="HouseholdPromote"
+                              method="post"
+                              role="form"
+                              style="display:inline">
                             <input asp-for="Id" type="hidden" />
                             <input id="PromoteId" name="PromoteId" type="hidden" />
-                            <button type="submit" class="btn btn-primary pull-right" aria-label="Confirm">
+                            <button type="submit"
+                                    class="btn btn-primary pull-right"
+                                    aria-label="Confirm">
                                 <span class="fa fa-level-up" aria-hidden="true"></span>
                                 Promote
                             </button>
@@ -654,7 +715,11 @@
     </div>
 
     <div class="row">
-        <div class="modal fade" id="removeModal" tabindex="-1" role="dialog" aria-labelledby="removeModalLabel">
+        <div class="modal fade"
+             id="removeModal"
+             tabindex="-1"
+             role="dialog"
+             aria-labelledby="removeModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -664,18 +729,31 @@
                                 aria-label="Close dialog">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        <h1 class="modal-title h4" id="deleteModalLabel">Remove from family/group</h1>
+                        <h1 class="modal-title h4" id="deleteModalLabel">
+                            Remove from family/group
+                        </h1>
                     </div>
                     <div class="modal-body">
                         <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
                         <span id="modal-text"></span>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <form asp-controller="Participants" asp-action="HouseholdRemove" method="post" role="form" style="display:inline">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <form asp-controller="Participants"
+                              asp-action="HouseholdRemove"
+                              method="post"
+                              role="form"
+                              style="display:inline">
                             <input asp-for="Id" type="hidden" />
                             <input id="RemoveId" name="RemoveId" type="hidden" />
-                            <button type="submit" class="btn btn-danger pull-right" aria-label="Confirm">
+                            <button type="submit"
+                                    class="btn btn-danger pull-right"
+                                    aria-label="Confirm">
                                 <span class="fa fa-minus" aria-hidden="true"></span>
                                 Remove
                             </button>
@@ -694,22 +772,36 @@
              aria-labelledby="emailAwardLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <form asp-action="@nameof(ParticipantsController.EmailAward)" method="post" role="form" style="display:inline">
+                    <form asp-action="@nameof(ParticipantsController.EmailAward)"
+                          method="post"
+                          role="form"
+                          style="display:inline">
                         <input asp-for="EmailAwardModel.UserId" type="hidden" />
-                        <input asp-for="EmailAwardModel.Action" value="@nameof(ParticipantsController.Household)" type="hidden" />
+                        <input asp-for="EmailAwardModel.Action"
+                               value="@nameof(ParticipantsController.Household)"
+                               type="hidden" />
                         <div class="modal-body">
                             <p>@Html.Raw(Model.Head.EmailAwardInstructions)</p>
                             <div class="row row-spacing">
                                 <div class="col-xs-12">
-                                    <label asp-for="EmailAwardModel.Email" class="control-label"></label>
+                                    <label asp-for="EmailAwardModel.Email"
+                                           class="control-label"></label>
                                     <input asp-for="EmailAwardModel.Email" class="form-control" />
-                                    <span asp-validation-for="EmailAwardModel.Email" class="text-danger"></span>
+                                    <span asp-validation-for="EmailAwardModel.Email"
+                                          class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">@GRA.Annotations.Interface.Cancel</button>
-                            <button type="submit" class="btn btn-warning btn-spinner pull-right" aria-label="Confirm">
+                            <button type="button"
+                                    class="btn btn-default"
+                                    data-dismiss="modal"
+                                    style="margin-right: 1em;">
+                                @GRA.Annotations.Interface.Cancel
+                            </button>
+                            <button type="submit"
+                                    class="btn btn-warning btn-spinner pull-right"
+                                    aria-label="Confirm">
                                 @GRA.Annotations.Interface.Confirm
                                 <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
@@ -724,10 +816,18 @@
 @if (Model.CanViewPrizes && Model.HouseholdPrizeList.Count > 0 && Model.Users.Any())
 {
     <div class="row">
-        <div class="modal fade" id="prizeModal" tabindex="-1" role="dialog" aria-labelledby="prizeModalLabel">
+        <div class="modal fade"
+             id="prizeModal"
+             tabindex="-1"
+             role="dialog"
+             aria-labelledby="prizeModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <form asp-controller="Participants" asp-action="@nameof(ParticipantsController.HouseholdPrize)" method="get" role="form" style="display:inline">
+                    <form asp-controller="Participants"
+                          asp-action="@nameof(ParticipantsController.HouseholdPrize)"
+                          method="get"
+                          role="form"
+                          style="display:inline">
                         <input asp-for="Id" type="hidden" />
 
                         <div class="modal-header">
@@ -743,15 +843,27 @@
                             </h1>
                         </div>
                         <div class="modal-body">
-                            <label asp-for="Prize" class="control-label">Select which prize to redeem:</label>
-                            <select asp-for="Prize" asp-items="Model.HouseholdPrizeList" class="form-control" required>
+                            <label asp-for="Prize" class="control-label">
+                                Select which prize to redeem:
+                            </label>
+                            <select asp-for="Prize"
+                                    asp-items="Model.HouseholdPrizeList"
+                                    class="form-control"
+                                    required>
                                 <option></option>
                             </select>
                             <span asp-validation-for="Prize" class="text-danger"></span>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                            <button type="submit" class="btn btn-primary pull-right" aria-label="Confirm">
+                            <button type="button"
+                                    class="btn btn-default"
+                                    data-dismiss="modal"
+                                    style="margin-right: 1em;">
+                                Cancel
+                            </button>
+                            <button type="submit"
+                                    class="btn btn-primary pull-right"
+                                    aria-label="Confirm">
                                 Select
                             </button>
                         </div>
@@ -765,10 +877,17 @@
 @if (Model.CanRedeemBulkVendorCodes)
 {
     <div class="row">
-        <div class="modal fade" id="bulkRedeemModal" tabindex="-1" role="dialog" aria-labelledby="bulkRedeemLabel">
+        <div class="modal fade"
+             id="bulkRedeemModal"
+             tabindex="-1"
+             role="dialog"
+             aria-labelledby="bulkRedeemLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <form asp-controller="Participants" asp-action="@nameof(ParticipantsController.HouseholdBulkRedeemCode)" method="post" role="form" style="display:inline">
+                    <form asp-controller="Participants"
+                          asp-action="@nameof(ParticipantsController.HouseholdBulkRedeemCode)"
+                          method="post"
+                          role="form" style="display:inline">
                         <input id="bulkRedeemId" asp-for="Id" type="hidden" />
 
                         <div class="modal-header">
@@ -783,12 +902,24 @@
                             </h1>
                         </div>
                         <div class="modal-body">
-                            <p>This will redeem codes for every member of this @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group"). Once codes are redeemed, they cannot be donated.</p>
-                            <p><strong>Mail will not be sent</strong> to members of this @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group") with redemption instructions.</p>
+                            <p>
+                                This will redeem codes for every member of this @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group"). Once codes are redeemed, they cannot be donated.
+                            </p>
+                            <p>
+                            <strong>Mail will not be sent</strong> to members of this @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group") with redemption instructions.
+                            </p>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;" id="bulkDoNotRedeem">Do not redeem</button>
-                            <button type="submit" class="btn btn-info btn-spinner pull-right" aria-label="Confirm"
+                            <button type="button"
+                                    class="btn btn-default"
+                                    data-dismiss="modal"
+                                    style="margin-right: 1em;"
+                                    id="bulkDoNotRedeem">
+                                Do not redeem
+                            </button>
+                            <button type="submit"
+                                    class="btn btn-info btn-spinner pull-right"
+                                    aria-label="Confirm"
                                     onclick="$('#bulkDoNotRedeem').prop('disabled', true).addClass('disabled')">
                                 Redeem all
                                 <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>

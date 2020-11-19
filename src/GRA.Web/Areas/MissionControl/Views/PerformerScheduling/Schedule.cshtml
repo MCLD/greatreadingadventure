@@ -84,7 +84,11 @@
     </div>
 }
 
-<div class="modal fade" id="emailPrograms" tabindex="-1" role="dialog" aria-labelledby="emailProgramsLabel">
+<div class="modal fade"
+     id="emailPrograms"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="emailProgramsLabel">
     <div class="modal-dialog" role="document">
         <form asp-action="EmailSchedule" method="post" role="form">
             <input asp-for="Branch.Id" type="hidden" />
@@ -100,13 +104,19 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label asp-for="Settings.ContactEmail" class="control-label">Email address:</label>
+                        <label asp-for="Settings.ContactEmail" class="control-label">
+                            Email address:
+                        </label>
                         <input asp-for="Settings.ContactEmail" class="form-control" />
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-success"><span class="fa fa-paper-plane"></span> Send email</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        Close
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        <span class="fa fa-paper-plane"></span> Send email
+                    </button>
                 </div>
             </div>
         </form>

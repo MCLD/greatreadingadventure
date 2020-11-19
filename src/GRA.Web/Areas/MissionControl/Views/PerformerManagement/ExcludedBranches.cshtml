@@ -61,9 +61,17 @@
 </div>
 
 <div class="row">
-    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
+    <div class="modal fade"
+         id="addModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="addModalLabel">
         <div class="modal-dialog" role="document">
-            <form asp-controller="PerformerManagement" asp-action="AddBranchExclusion" method="post" role="form" style="display:inline">
+            <form asp-controller="PerformerManagement"
+                  asp-action="AddBranchExclusion"
+                  method="post"
+                  role="form"
+                  style="display:inline">
                 <input asp-for="PaginateModel.CurrentPage" type="hidden" />
                 <div class="modal-content">
                     <div class="modal-header">
@@ -78,13 +86,22 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label asp-for="BranchId" class="control-label"></label>
-                            <select asp-for="BranchId" asp-items="Model.UnexcludedBranches" class="form-control"></select>
+                            <select asp-for="BranchId"
+                                    asp-items="Model.UnexcludedBranches"
+                                    class="form-control"></select>
                             <span asp-validation-for="BranchId" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <button type="submit" class="btn btn-primary btn-spinner pull-right" aria-label="Confirm">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="btn btn-primary btn-spinner pull-right"
+                                aria-label="Confirm">
                             Add
                             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                         </button>
@@ -96,9 +113,17 @@
 </div>
 
 <div class="row">
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+    <div class="modal fade"
+         id="deleteModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="deleteModalLabel">
         <div class="modal-dialog" role="document">
-            <form asp-controller="PerformerManagement" asp-action="DeleteBranchExclusion" method="post" role="form" style="display:inline">
+            <form asp-controller="PerformerManagement"
+                  asp-action="DeleteBranchExclusion"
+                  method="post"
+                  role="form"
+                  style="display:inline">
                 <input asp-for="PaginateModel.CurrentPage" type="hidden" />
                 <input asp-for="BranchId" type="hidden" />
                 <div class="modal-content">
@@ -109,15 +134,24 @@
                                 aria-label="Close dialog">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        <h1 class="modal-title h4" id="deleteModalLabel">Remove Branch Exclusion</h1>
+                        <h1 class="modal-title h4" id="deleteModalLabel">
+                            Remove Branch Exclusion
+                        </h1>
                     </div>
                     <div class="modal-body">
                         <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
                         <span id="modal-text"></span>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <button type="submit" class="btn btn-danger btn-spinner pull-right" aria-label="Confirm">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="btn btn-danger btn-spinner pull-right"
+                                aria-label="Confirm">
                             <span class="fa fa-remove" aria-hidden="true"></span>
                             Delete
                             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>

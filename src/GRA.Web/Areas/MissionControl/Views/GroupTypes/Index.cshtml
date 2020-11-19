@@ -123,7 +123,11 @@ else
 
 <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
     <div class="modal-dialog" role="document">
-        <form asp-controller="GroupTypes" asp-action="Add" method="post" role="form" style="display:inline">
+        <form asp-controller="GroupTypes"
+              asp-action="Add"
+              method="post"
+              role="form"
+              style="display:inline">
             <input type="hidden" asp-for="PaginateModel.CurrentPage" id="AddCurrentPage" />
             <div class="modal-content">
                 <div class="modal-header">
@@ -138,13 +142,22 @@ else
                 <div class="modal-body">
                     <div class="form-group">
                         <label asp-for="GroupType.Name" class="control-label"></label>
-                        <input asp-for="GroupType.Name" id="addGroupTypeName" class="form-control" />
+                        <input asp-for="GroupType.Name"
+                               id="addGroupTypeName"
+                               class="form-control" />
                         <span asp-validation-for="GroupType.Name" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                    <button type="submit" class="btn btn-primary btn-spinner pull-right" aria-label="Confirm">
+                    <button type="button"
+                            class="btn btn-default"
+                            data-dismiss="modal"
+                            style="margin-right: 1em;">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="btn btn-primary btn-spinner pull-right"
+                            aria-label="Confirm">
                         Add
                         <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                     </button>
@@ -154,7 +167,11 @@ else
     </div>
 </div>
 
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+<div class="modal fade"
+     id="deleteModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="deleteModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -171,12 +188,25 @@ else
                 <span id="deleteModalText"></span>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                <form asp-controller="GroupTypes" asp-action="Delete" method="post" role="form" style="display:inline">
-                    <input type="hidden" asp-for="PaginateModel.CurrentPage" id="DeleteCurrentPage" />
+                <button type="button"
+                        class="btn btn-default"
+                        data-dismiss="modal"
+                        style="margin-right: 1em;">
+                    Cancel
+                </button>
+                <form asp-controller="GroupTypes"
+                      asp-action="Delete"
+                      method="post"
+                      role="form"
+                      style="display:inline">
+                    <input type="hidden"
+                           asp-for="PaginateModel.CurrentPage"
+                           id="DeleteCurrentPage" />
                     <input asp-for="GroupType.Id" id="deleteGroupTypeId" type="hidden" />
                     <input asp-for="GroupType.Name" id="deleteGroupTypeName" type="hidden" />
-                    <button type="submit" class="btn btn-danger btn-spinner pull-right" aria-label="Confirm">
+                    <button type="submit"
+                            class="btn btn-danger btn-spinner pull-right"
+                            aria-label="Confirm">
                         <span class="fa fa-remove" aria-hidden="true"></span>
                         Delete
                         <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
@@ -188,9 +218,17 @@ else
 </div>
 
 <div class="row">
-    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+    <div class="modal fade"
+         id="editModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="editModalLabel">
         <div class="modal-dialog" role="document">
-            <form asp-controller="GroupTypes" asp-action="Edit" method="post" role="form" style="display:inline">
+            <form asp-controller="GroupTypes"
+                  asp-action="Edit"
+                  method="post"
+                  role="form"
+                  style="display:inline">
                 <input type="hidden" asp-for="PaginateModel.CurrentPage" id="EditCurrentPage" />
                 <input asp-for="GroupType.Id" id="editGroupTypeId" type="hidden" />
                 <div class="modal-content">
@@ -206,13 +244,22 @@ else
                     <div class="modal-body">
                         <div class="form-group">
                             <label asp-for="GroupType.Name" class="control-label"></label>
-                            <input asp-for="GroupType.Name" id="editGroupTypeName" class="form-control" />
+                            <input asp-for="GroupType.Name"
+                                   id="editGroupTypeName"
+                                   class="form-control" />
                             <span asp-validation-for="GroupType.Name" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <button type="submit" class="btn btn-primary btn-spinner pull-right" aria-label="Confirm">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="btn btn-primary btn-spinner pull-right"
+                                aria-label="Confirm">
                             Save
                             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                         </button>

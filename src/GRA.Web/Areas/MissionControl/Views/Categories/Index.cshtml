@@ -81,9 +81,17 @@
 </div>
 
 <div class="row">
-    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
+    <div class="modal fade"
+         id="addModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="addModalLabel">
         <div class="modal-dialog" role="document">
-            <form asp-controller="Categories" asp-action="Add" method="post" role="form" style="display:inline">
+            <form asp-controller="Categories"
+                  asp-action="Add"
+                  method="post"
+                  role="form"
+                  style="display:inline">
                 <input asp-for="PaginateModel.CurrentPage" type="hidden" />
                 <input asp-for="Search" type="hidden" />
                 <div class="modal-content">
@@ -105,12 +113,18 @@
                         <div class="form-group">
                             <label asp-for="Category.Description" class="control-label"></label>
                             <input asp-for="Category.Description" class="form-control" />
-                            <span asp-validation-for="Category.Description" class="text-danger"></span>
+                            <span asp-validation-for="Category.Description"
+                                  class="text-danger"></span>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <button type="submit" class="btn btn-primary btn-spinner pull-right" aria-label="Confirm">
+                        <button type="button" class="btn btn-default" data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="btn btn-primary btn-spinner pull-right"
+                                aria-label="Confirm">
                             Add
                             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                         </button>
@@ -122,9 +136,17 @@
 </div>
 
 <div class="row">
-    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+    <div class="modal fade"
+         id="editModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="editModalLabel">
         <div class="modal-dialog" role="document">
-            <form asp-controller="Categories" asp-action="Edit" method="post" role="form" style="display:inline">
+            <form asp-controller="Categories"
+                  asp-action="Edit"
+                  method="post"
+                  role="form"
+                  style="display:inline">
                 <input asp-for="PaginateModel.CurrentPage" type="hidden" />
                 <input asp-for="Search" type="hidden" />
                 <input asp-for="Category.Id" type="hidden" />
@@ -147,12 +169,20 @@
                         <div class="form-group">
                             <label asp-for="Category.Description" class="control-label"></label>
                             <input asp-for="Category.Description" class="form-control" />
-                            <span asp-validation-for="Category.Description" class="text-danger"></span>
+                            <span asp-validation-for="Category.Description"
+                                  class="text-danger"></span>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <button type="submit" class="btn btn-primary btn-spinner pull-right" aria-label="Confirm">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="btn btn-primary btn-spinner pull-right"
+                                aria-label="Confirm">
                             Save
                             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                         </button>
@@ -164,9 +194,17 @@
 </div>
 
 <div class="row">
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+    <div class="modal fade"
+         id="deleteModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="deleteModalLabel">
         <div class="modal-dialog" role="document">
-            <form asp-controller="Categories" asp-action="Delete" method="post" role="form" style="display:inline">
+            <form asp-controller="Categories"
+                  asp-action="Delete"
+                  method="post"
+                  role="form"
+                  style="display:inline">
                 <input asp-for="PaginateModel.CurrentPage" type="hidden" />
                 <input asp-for="Search" type="hidden" />
                 <input asp-for="Category.Id" type="hidden" />
@@ -186,8 +224,15 @@
                         <span id="modal-text"></span>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <button type="submit" class="btn btn-danger btn-spinner pull-right" aria-label="Confirm">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="btn btn-danger btn-spinner pull-right"
+                                aria-label="Confirm">
                             <span class="fa fa-remove" aria-hidden="true"></span>
                             Delete
                             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>

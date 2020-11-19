@@ -65,9 +65,17 @@
 </div>
 
 <div class="row">
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+    <div class="modal fade"
+         id="deleteModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="deleteModalLabel">
         <div class="modal-dialog" role="document">
-            <form asp-controller="Dashboard" asp-action="Delete" method="post" role="form" style="display:inline">
+            <form asp-controller="Dashboard"
+                  asp-action="Delete"
+                  method="post"
+                  role="form"
+                  style="display:inline">
                 <input asp-for="DashboardContentId" type="hidden" />
                 <input asp-for="PaginateModel.CurrentPage" type="hidden" />
                 <div class="modal-content">
@@ -78,15 +86,25 @@
                                 aria-label="Close dialog">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        <h1 class="modal-title h4" id="deleteModalLabel">Delete Dashboard Content</h1>
+                        <h1 class="modal-title h4"
+                            id="deleteModalLabel">
+                            Delete Dashboard Content
+                        </h1>
                     </div>
                     <div class="modal-body">
                         <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
                         <span id="modal-text"></span>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <button type="submit" class="btn btn-danger btn-spinner pull-right" aria-label="Confirm">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="btn btn-danger btn-spinner pull-right"
+                                aria-label="Confirm">
                             <span class="fa fa-remove" aria-hidden="true"></span>
                             Delete
                             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>

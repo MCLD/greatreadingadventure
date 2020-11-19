@@ -68,7 +68,11 @@
 </div>
 
 <div class="row">
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+    <div class="modal fade"
+         id="deleteModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="deleteModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -85,10 +89,22 @@
                     <span id="modal-text"></span>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                    <form asp-controller="Questionnaires" asp-action="Delete" method="post" role="form" style="display:inline">
+                    <button type="button"
+                            class="btn btn-default"
+                            data-dismiss="modal"
+                            style="margin-right: 1em;">
+                        Cancel
+                    </button>
+                    <form asp-controller="Questionnaires"
+                          asp-action="Delete"
+                          method="post"
+                          role="form"
+                          style="display:inline">
                         <input id="Id" name="Id" type="hidden" />
-                        <button id="modal-deleteButton" type="submit" class="btn btn-danger pull-right" aria-label="Confirm">
+                        <button id="modal-deleteButton"
+                                type="submit"
+                                class="btn btn-danger pull-right"
+                                aria-label="Confirm">
                             <span class="fa fa-remove" aria-hidden="true"></span>
                             Delete
                         </button>

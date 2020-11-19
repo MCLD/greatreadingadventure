@@ -260,22 +260,40 @@
              aria-labelledby="emailAwardLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <form asp-action="@nameof(ParticipantsController.EmailAward)" method="post" role="form" style="display:inline">
-                        <input asp-for="EmailAwardModel.UserId" value="@Model.User.Id" type="hidden" />
-                        <input asp-for="EmailAwardModel.Action" value="@nameof(ParticipantsController.Detail)" type="hidden" />
+                    <form asp-action="@nameof(ParticipantsController.EmailAward)"
+                          method="post"
+                          role="form"
+                          style="display:inline">
+                        <input asp-for="EmailAwardModel.UserId"
+                               value="@Model.User.Id"
+                               type="hidden" />
+                        <input asp-for="EmailAwardModel.Action"
+                               value="@nameof(ParticipantsController.Detail)"
+                               type="hidden" />
                         <div class="modal-body">
                             <p>@Html.Raw(Model.User.EmailAwardInstructions)</p>
                             <div class="row row-spacing">
                                 <div class="col-xs-12">
-                                    <label asp-for="EmailAwardModel.Email" class="control-label"></label>
-                                    <input asp-for="EmailAwardModel.Email" class="form-control" value="@Model.User.Email" />
-                                    <span asp-validation-for="EmailAwardModel.Email" class="text-danger"></span>
+                                    <label asp-for="EmailAwardModel.Email"
+                                           class="control-label"></label>
+                                    <input asp-for="EmailAwardModel.Email"
+                                           class="form-control"
+                                           value="@Model.User.Email" />
+                                    <span asp-validation-for="EmailAwardModel.Email"
+                                          class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">@GRA.Annotations.Interface.Cancel</button>
-                            <button type="submit" class="btn btn-warning btn-spinner pull-right" aria-label="Confirm">
+                            <button type="button"
+                                    class="btn btn-default"
+                                    data-dismiss="modal"
+                                    style="margin-right: 1em;">
+                                @GRA.Annotations.Interface.Cancel
+                            </button>
+                            <button type="submit"
+                                    class="btn btn-warning btn-spinner pull-right"
+                                    aria-label="Confirm">
                                 @GRA.Annotations.Interface.Confirm
                                 <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>

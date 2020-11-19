@@ -78,9 +78,17 @@
 </div>
 
 <div class="row">
-    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
+    <div class="modal fade"
+         id="addModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="addModalLabel">
         <div class="modal-dialog" role="document">
-            <form asp-controller="Pages" asp-action="@nameof(PagesController.Create)" method="post" role="form" style="display:inline">
+            <form asp-controller="Pages"
+                  asp-action="@nameof(PagesController.Create)"
+                  method="post"
+                  role="form"
+                  style="display:inline">
                 <input id="addCurrentPage" asp-for="PaginateModel.CurrentPage" type="hidden" />
 
                 <div class="modal-content">
@@ -96,8 +104,10 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label asp-for="PageHeader.PageName" class="control-label"></label>
-                            <input id="addName" asp-for="PageHeader.PageName" class="form-control" />
-                            <span asp-validation-for="PageHeader.PageName" class="text-danger"></span>
+                            <input id="addName" asp-for="PageHeader.PageName"
+                                   class="form-control" />
+                            <span asp-validation-for="PageHeader.PageName"
+                                  class="text-danger"></span>
                         </div>
                         <div class="form-group">
                             <label asp-for="PageHeader.Stub" class="control-label"></label>
@@ -106,8 +116,15 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <button type="submit" class="btn btn-primary btn-spinner pull-right" aria-label="Confirm">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="btn btn-primary btn-spinner pull-right"
+                                aria-label="Confirm">
                             Add
                             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                         </button>
@@ -119,9 +136,17 @@
 </div>
 
 <div class="row">
-    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+    <div class="modal fade"
+         id="editModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="editModalLabel">
         <div class="modal-dialog" role="document">
-            <form asp-controller="Pages" asp-action="@nameof(PagesController.Edit)" method="post" role="form" style="display:inline">
+            <form asp-controller="Pages"
+                  asp-action="@nameof(PagesController.Edit)"
+                  method="post"
+                  role="form"
+                  style="display:inline">
                 <input id="editId" asp-for="PageHeader.Id" type="hidden" />
                 <input id="editCurrentPage" asp-for="PaginateModel.CurrentPage" type="hidden" />
 
@@ -138,20 +163,33 @@
                     <div class="modal-body">
                         <div class="modal-body">
                             <div class="form-group">
-                                <label asp-for="PageHeader.PageName" class="control-label"></label>
-                                <input id="editName" asp-for="PageHeader.PageName" class="form-control" />
-                                <span asp-validation-for="PageHeader.PageName" class="text-danger"></span>
+                                <label asp-for="PageHeader.PageName"
+                                       class="control-label"></label>
+                                <input id="editName" asp-for="PageHeader.PageName"
+                                       class="form-control" />
+                                <span asp-validation-for="PageHeader.PageName"
+                                      class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="PageHeader.Stub" class="control-label"></label>
-                                <input id="editStub" asp-for="PageHeader.Stub" class="form-control" readonly />
-                                <span asp-validation-for="PageHeader.Stub" class="text-danger"></span>
+                                <input id="editStub" asp-for="PageHeader.Stub"
+                                       class="form-control"
+                                       readonly />
+                                <span asp-validation-for="PageHeader.Stub"
+                                      class="text-danger"></span>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <button type="submit" class="btn btn-primary btn-spinner pull-right" aria-label="Confirm">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="btn btn-primary btn-spinner pull-right"
+                                aria-label="Confirm">
                             Save
                             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                         </button>
@@ -163,16 +201,31 @@
 </div>
 
 <div class="row">
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+    <div class="modal fade"
+         id="deleteModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="deleteModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <form asp-controller="Pages" asp-action="@nameof(PagesController.Delete)" method="post" role="form" style="display:inline">
+                <form asp-controller="Pages"
+                      asp-action="@nameof(PagesController.Delete)"
+                      method="post"
+                      role="form"
+                      style="display:inline">
                     <input id="deleteId" asp-for="PageHeader.Id" type="hidden" />
                     <input id="deleteName" asp-for="PageHeader.PageName" type="hidden" />
-                    <input id="deleteCurrentPage" asp-for="PaginateModel.CurrentPage" type="hidden" />
+                    <input id="deleteCurrentPage"
+                           asp-for="PaginateModel.CurrentPage"
+                           type="hidden" />
 
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close dialog"><span aria-hidden="true">&times;</span></button>
+                        <button type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-label="Close dialog">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                         <h1 class="modal-title h4" id="deleteModalLabel">Delete page</h1>
                     </div>
                     <div class="modal-body">
@@ -180,8 +233,15 @@
                         <span id="modal-text"></span>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <button type="submit" class="btn btn-danger pull-right" aria-label="Confirm">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="btn btn-danger pull-right"
+                                aria-label="Confirm">
                             <span class="fa fa-remove" aria-hidden="true"></span>
                             Delete
                         </button>

@@ -422,8 +422,15 @@
 @if (!string.IsNullOrWhiteSpace(Model.DailyImageMessage))
 {
     <div class="row">
-        <div class="modal fade" id="dailyImageModal" style="text-align:center;" tabindex="-1" role="dialog" aria-labelledby="dailyImageModalLabel">
-            <div class="modal-dialog @(Model.DailyImageLarge ? "modal-lg" : "")" style="display: inline-block;" role="document">
+        <div class="modal fade"
+             id="dailyImageModal"
+             style="text-align:center;"
+             tabindex="-1"
+             role="dialog"
+             aria-labelledby="dailyImageModalLabel">
+            <div class="modal-dialog @(Model.DailyImageLarge ? "modal-lg" : "")"
+                 style="display: inline-block;"
+                 role="document">
                 <div class="modal-content">
                     <button class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute"
                             data-dismiss="modal"

@@ -23,9 +23,17 @@
 </form>
 
 <div class="row">
-    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
+    <div class="modal fade"
+         id="addModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="addModalLabel">
         <div class="modal-dialog" role="document">
-            <form asp-controller="Systems" asp-action="AddSystem" method="post" role="form" style="display:inline">
+            <form asp-controller="Systems"
+                  asp-action="AddSystem"
+                  method="post"
+                  role="form"
+                  style="display:inline">
                 <input asp-for="Search" type="hidden" />
                 <div class="modal-content">
                     <div class="modal-header">
@@ -44,8 +52,15 @@
                             <span asp-validation-for="System.Name" class="text-danger"></span>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-left: 1em;">Cancel</button>
-                            <button type="submit" class="btn btn-primary btn-spinner pull-right" aria-label="Confirm">
+                            <button type="button"
+                                    class="btn btn-default"
+                                    data-dismiss="modal"
+                                    style="margin-left: 1em;">
+                                Cancel
+                            </button>
+                            <button type="submit"
+                                    class="btn btn-primary btn-spinner pull-right"
+                                    aria-label="Confirm">
                                 Add
                                 <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
@@ -121,9 +136,17 @@
 </div>
 
 <div class="row">
-    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+    <div class="modal fade"
+         id="editModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="editModalLabel">
         <div class="modal-dialog" role="document">
-            <form asp-controller="Systems" asp-action="EditSystem" method="post" role="form" style="display:inline">
+            <form asp-controller="Systems"
+                  asp-action="EditSystem"
+                  method="post"
+                  role="form"
+                  style="display:inline">
                 <input asp-for="System.Id" type="hidden" />
                 <input asp-for="Search" type="hidden" />
                 <div class="modal-content">
@@ -144,8 +167,15 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <button type="submit" class="btn btn-primary btn-spinner pull-right" aria-label="Confirm">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="btn btn-primary btn-spinner pull-right"
+                                aria-label="Confirm">
                             Save
                             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                         </button>
@@ -157,7 +187,11 @@
 </div>
 
 <div class="row">
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+    <div class="modal fade"
+         id="deleteModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="deleteModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -174,11 +208,22 @@
                     <span id="modal-text"></span>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                    <form asp-controller="Systems" asp-action="DeleteSystem" method="post" role="form" style="display:inline">
+                    <button type="button"
+                            class="btn btn-default"
+                            data-dismiss="modal"
+                            style="margin-right: 1em;">
+                        Cancel
+                    </button>
+                    <form asp-controller="Systems"
+                          asp-action="DeleteSystem"
+                          method="post"
+                          role="form"
+                          style="display:inline">
                         <input asp-for="Search" type="hidden" />
                         <input id="Id" name="Id" type="hidden" />
-                        <button type="submit" class="btn btn-danger btn-spinner pull-right" aria-label="Confirm">
+                        <button type="submit"
+                                class="btn btn-danger btn-spinner pull-right"
+                                aria-label="Confirm">
                             <span class="fa fa-remove" aria-hidden="true"></span>
                             Delete
                             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>

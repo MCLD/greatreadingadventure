@@ -90,9 +90,18 @@
 </form>
 
 <div class="row">
-    <div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="saveModalLabel">
+    <div class="modal fade"
+         id="saveModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="saveModalLabel">
         <div class="modal-dialog modal-lg" role="document">
-            <form id="saveModalForm" asp-controller="Questionnaires" asp-action="SaveQuestion" method="post" role="form" style="display:inline">
+            <form id="saveModalForm"
+                  asp-controller="Questionnaires"
+                  asp-action="SaveQuestion"
+                  method="post"
+                  role="form"
+                  style="display:inline">
                 <input asp-for="Questionnaire.Id" type="hidden" />
                 <input asp-for="Question.Id" type="hidden" />
                 <input asp-for="AnswerSortOrder" type="hidden" />
@@ -125,17 +134,30 @@
                         </div>
                         @if (!Model.Questionnaire.IsLocked)
                         {
-                            <button type="button" id="addAnswerButton" class="btn btn-default">Add Answer</button>
+                            <button type="button" id="addAnswerButton" class="btn btn-default">
+                                Add Answer
+                        </button>
                         }
                     </div>
                     <div class="modal-footer">
-                        <span id="modalUpdateText" style="display: none;font-size:large;">Question saved!</span>
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                        <span id="modalUpdateText" style="display: none;font-size:large;">
+                            Question saved!
+                        </span>
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
                         @if (!Model.Questionnaire.IsLocked)
                         {
-                            <button id="modalSaveButton" type="submit" class="btn btn-primary" aria-label="Confirm">
+                            <button id="modalSaveButton"
+                                    type="submit"
+                                    class="btn btn-primary"
+                                    aria-label="Confirm">
                                 Save
-                                <span id="modalSaveSpinner" class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                <span id="modalSaveSpinner"
+                                      class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
                         }
                     </div>

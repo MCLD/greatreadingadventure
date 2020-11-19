@@ -85,15 +85,24 @@
 </div>
 
 <div class="row">
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+    <div class="modal fade"
+         id="deleteModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="deleteModalLabel">
         <div class="modal-dialog" role="document">
-            <form asp-action="@nameof(AvatarsController.DeleteItem)" method="post" role="form" style="display:inline">
+            <form asp-action="@nameof(AvatarsController.DeleteItem)"
+                  method="post"
+                  role="form"
+                  style="display:inline">
                 <input name="Id" value="@Model.Id" type="hidden" />
                 <input name="Search" value="@Model.Search" type="hidden" />
                 <input asp-for="Available" type="hidden" />
                 <input asp-for="Unavailable" type="hidden" />
                 <input asp-for="Unlockable" type="hidden" />
-                <input name="PaginateModel.CurrentPage" value="@Model.PaginateModel.CurrentPage" type="hidden" />
+                <input name="PaginateModel.CurrentPage"
+                       value="@Model.PaginateModel.CurrentPage"
+                       type="hidden" />
                 <input asp-for="ItemId" type="hidden" />
                 <div class="modal-content">
                     <div class="modal-header">
@@ -110,8 +119,15 @@
                         <span id="modal-text"></span>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <button type="submit" class="btn btn-danger btn-spinner pull-right" aria-label="Confirm">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="btn btn-danger btn-spinner pull-right"
+                                aria-label="Confirm">
                             <span class="fa fa-remove" aria-hidden="true"></span>
                             Delete
                             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>

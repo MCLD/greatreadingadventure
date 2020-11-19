@@ -594,7 +594,11 @@
 
 
 <div class="row">
-    <div class="modal fade frame-modal" id="badgeModal" tabindex="-1" role="dialog" aria-labelledby="badgeModalLabel">
+    <div class="modal fade frame-modal"
+         id="badgeModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="badgeModalLabel">
         <div class="modal-content">
             <div class="modal-body" style="padding: 30px;">
                 <button class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute"
@@ -612,16 +616,26 @@
 @if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
 {
 
-    <div class="modal fade" id="warningModal" tabindex="-1" role="dialog" aria-labelledby="warningModalLabel">
+    <div class="modal fade"
+         id="warningModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="warningModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h1 class="modal-title h4" id="deleteModalLabel">Warning: Award points exceed maximum</h1>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h1 class="modal-title h4" id="deleteModalLabel">
+                        Warning: Award points exceed maximum
+                    </h1>
                 </div>
                 <div class="modal-body">
                     <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
-                    <span id="modal-text">The awarded points for this trigger exceed the maximum of <strong>@Model.MaxPointLimit points</strong>. Do you wish to continue?</span>
+                    <span id="modal-text">
+                        The awarded points for this trigger exceed the maximum of <strong>@Model.MaxPointLimit points</strong>. Do you wish to continue?
+                    </span>
                 </div>
                 <div class="modal-footer">
                     <button type="button"
@@ -645,7 +659,11 @@
 }
 
 <div class="row">
-    <div class="modal fade" id="listModal" tabindex="-1" role="dialog" aria-labelledby="listModalLabel">
+    <div class="modal fade"
+         id="listModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="listModalLabel">
         <div class="modal-dialog modal-lg" role="document">
             <div class="row">
                 <div class="col-xs-12 col-sm-10 col-sm-offset-1">
@@ -680,16 +698,27 @@
                                 </div>
                                 <div class="col-xs-4">
                                     <div class="col-xs-6">
-                                        <button type="button" id="searchButton" class="btn btn-default btn-block" style="margin-right: 8px;">Search</button>
+                                        <button type="button"
+                                                id="searchButton"
+                                                class="btn btn-default btn-block"
+                                                style="margin-right: 8px;">
+                                            Search
+                                        </button>
                                     </div>
                                     <div class="col-xs-6">
-                                        <button type="button" id="clearButton" class="btn btn-default btn-block">Clear</button>
+                                        <button type="button"
+                                                id="clearButton"
+                                                class="btn btn-default btn-block">
+                                            Clear
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                             <div id="searchMessage" class="row hide">
                                 <div class="col-xs-12">
-                                    <p class="alert-sm alert-info">Searching for '<strong id="searchTerm"></strong>'</p>
+                                    <p class="alert-sm alert-info">
+                                        Searching for '<strong id="searchTerm"></strong>'
+                                    </p>
                                 </div>
                             </div>
                             <div class="row">
@@ -698,7 +727,12 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Close</button>
+                            <button type="button"
+                                    class="btn btn-default"
+                                    data-dismiss="modal"
+                                    style="margin-right: 1em;">
+                                Close
+                            </button>
                         </div>
                     </div>
                 </div>
