@@ -6,7 +6,7 @@
 # 4. Run the following: docker run -it --rm -v `pwd`:/app mcr.microsoft.com/dotnet/sdk:5.0 bash /app/dev/docker-yarn-update.sh
 # 5. See what happened with git status
 
-apt-get update && apt-get install -y apt-transport-https lsb-release
+apt-get update && apt-get install -y apt-transport-https lsb-release gnupg
 
 # Add Microsoft packages (for ASP.NET 2.2 later)
 wget https://packages.microsoft.com/config/debian/10/packages-microsoft-prod.deb -O /tmp/packages-microsoft-prod.deb && \
