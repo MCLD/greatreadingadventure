@@ -1,13 +1,12 @@
 # Get build image
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-stage
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build-stage
 WORKDIR /app
 
 # Copy source
 COPY . ./
 
 # Build project and run tests
-RUN dotnet build && \
-    find test -path "*/bin/*Test.dll" -type f -print0 |xargs -0 dotnet vstest --parallel
+RUN dotnet test
 
 # Publish release project
 RUN dotnet publish -c Release -o "/app/publish/"
@@ -16,7 +15,7 @@ RUN dotnet publish -c Release -o "/app/publish/"
 RUN cp /app/release-publish.bash "/app/publish/"
 
 # Get runtime image
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS publish-stage
+FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS publish-stage
 WORKDIR /app
 
 # Bring in metadata via --build-arg

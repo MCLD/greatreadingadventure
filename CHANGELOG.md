@@ -70,7 +70,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Household import to use the job system
 - Reporting SQL IN clause error
 - Badge image dimension restrictions
-- Upgrade from ASP.NET Core v2.2 to v3.1
+- Upgrade from ASP.NET Core v2.2 to v5.0
 
 ### Fixed
 - Instance name enrichment for logging
