@@ -1,14 +1,14 @@
-﻿using GRA.Domain.Model;
-using GRA.Domain.Model.Filters;
-using GRA.Domain.Repository;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GRA.Domain.Repository.Extensions;
 using AutoMapper.QueryableExtensions;
-using System;
+using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
+using GRA.Domain.Repository;
+using GRA.Domain.Repository.Extensions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace GRA.Data.Repository
 {

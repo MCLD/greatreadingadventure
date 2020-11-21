@@ -1,7 +1,7 @@
-﻿using GRA.Domain.Model;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 using System.Security.Claims;
-using System.Globalization;
+using System.Threading.Tasks;
+using GRA.Domain.Model;
 
 namespace GRA.Domain.Service.Abstract
 {

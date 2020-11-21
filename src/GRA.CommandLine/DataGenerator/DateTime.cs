@@ -5,7 +5,7 @@ using GRA.Domain.Model;
 
 namespace GRA.CommandLine.DataGenerator
 {
-    class DateTime
+    internal class DateTime
     {
         private readonly Faker _faker;
         private readonly SettableDateTimeProvider _dateTimeProvider;

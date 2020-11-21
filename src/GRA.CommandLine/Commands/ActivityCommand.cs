@@ -8,7 +8,7 @@ using McMaster.Extensions.CommandLineUtils;
 
 namespace GRA.CommandLine.Commands
 {
-    class ActivityCommand : BaseCommand
+    internal class ActivityCommand : BaseCommand
     {
         private readonly DataGenerator.Activity _activityDataGenerator;
         private readonly DataGenerator.DateTime _dateTimeDataGenerator;

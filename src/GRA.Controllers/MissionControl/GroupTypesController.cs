@@ -15,7 +15,7 @@ namespace GRA.Controllers.MissionControl
 
     public class GroupTypesController : Base.MCController
     {
-        const int PaginationTake = 15;
+        private const int PaginationTake = 15;
 
         private readonly ILogger<GroupTypesController> _logger;
         private readonly GroupTypeService _groupTypesService;

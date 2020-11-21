@@ -1,4 +1,6 @@
-﻿using CommonMark;
+﻿using System;
+using System.Threading.Tasks;
+using CommonMark;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
 using GRA.Domain.Service.Abstract;
@@ -7,8 +9,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using System;
-using System.Threading.Tasks;
 
 namespace GRA.Controllers.Helpers
 {
@@ -48,13 +48,13 @@ namespace GRA.Controllers.Helpers
             _siteLookupService = Require.IsNotNull(siteLookupService, nameof(siteLookupService));
         }
 
-        public async override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
+        public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
             IUrlHelper url = _urlHelperFactory.GetUrlHelper(ViewContext);
             var routeData = url.ActionContext.RouteData.Values;
             var userContext = _userContextProvider.GetContext();
             int siteId = userContext.SiteId;
-            Site site = await _siteLookupService.GetByIdAsync((int)siteId);
+            Site site = await _siteLookupService.GetByIdAsync(siteId);
             switch (property.ToLower())
             {
                 case "name":
@@ -121,8 +121,10 @@ namespace GRA.Controllers.Helpers
         }
         private TagBuilder MetaName(string name, string content)
         {
-            var metaTag = new TagBuilder("meta");
-            metaTag.TagRenderMode = TagRenderMode.SelfClosing;
+            var metaTag = new TagBuilder("meta")
+            {
+                TagRenderMode = TagRenderMode.SelfClosing
+            };
             metaTag.Attributes.Add("name", name);
             metaTag.Attributes.Add("content", content);
             return metaTag;
@@ -130,8 +132,10 @@ namespace GRA.Controllers.Helpers
 
         private TagBuilder MetaProperty(string property, string content)
         {
-            var metaTag = new TagBuilder("meta");
-            metaTag.TagRenderMode = TagRenderMode.SelfClosing;
+            var metaTag = new TagBuilder("meta")
+            {
+                TagRenderMode = TagRenderMode.SelfClosing
+            };
             metaTag.Attributes.Add("property", property);
             metaTag.Attributes.Add("content", content);
             return metaTag;

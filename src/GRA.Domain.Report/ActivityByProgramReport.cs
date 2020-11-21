@@ -43,7 +43,7 @@ namespace GRA.Domain.Report
                 ?? throw new ArgumentNullException(nameof(userLogRepository));
         }
 
-        public async override Task ExecuteAsync(ReportRequest request,
+        public override async Task ExecuteAsync(ReportRequest request,
             CancellationToken token,
             IProgress<JobStatus> progress = null)
         {

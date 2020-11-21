@@ -6,7 +6,7 @@ using McMaster.Extensions.CommandLineUtils;
 
 namespace GRA.CommandLine.Base
 {
-    abstract class BaseCommand : CommandLineApplication
+    internal abstract class BaseCommand : CommandLineApplication
     {
         protected readonly ServiceFacade _facade;
         protected readonly ConfigureUserSite _configureUserSite;

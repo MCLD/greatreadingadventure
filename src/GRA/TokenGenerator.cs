@@ -1,6 +1,6 @@
-﻿using GRA.Abstract;
-using System;
+﻿using System;
 using System.Security.Cryptography;
+using GRA.Abstract;
 
 namespace GRA
 {

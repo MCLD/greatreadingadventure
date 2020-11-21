@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GRA.CommandLine.FakeWeb;
+using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
-using GRA.Domain.Model;
 using Microsoft.Extensions.Logging;
-using GRA.CommandLine.FakeWeb;
 
 namespace GRA.CommandLine.DataGenerator
 {
