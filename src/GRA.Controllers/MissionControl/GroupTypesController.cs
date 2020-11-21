@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
-using GRA.Controllers.ServiceFacade;
 using GRA.Controllers.ViewModel.MissionControl.GroupTypes;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
@@ -57,7 +54,6 @@ namespace GRA.Controllers.MissionControl
 
             var (useGroups, maximumHousehold) =
                 await GetSiteSettingIntAsync(SiteSettingKey.Users.MaximumHouseholdSizeBeforeGroup);
-
 
             return View(new GroupTypesListViewModel
             {
@@ -143,6 +139,5 @@ namespace GRA.Controllers.MissionControl
             return RedirectToAction("Index",
                 new { page = viewModel?.PaginateModel?.CurrentPage ?? 1 });
         }
-
     }
 }

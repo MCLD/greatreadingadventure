@@ -34,7 +34,7 @@ namespace GRA
             Convert.ToBase64CharArray(bytes, 0, bytes.Length, stringArray, 0);
 
             // only keep letters and numbers
-            stringArray = Array.FindAll<char>(stringArray, (c => (char.IsLetterOrDigit(c))));
+            stringArray = Array.FindAll<char>(stringArray, c => (char.IsLetterOrDigit(c)));
 
             string result = new string(stringArray);
 

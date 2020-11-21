@@ -68,7 +68,7 @@ namespace GRA.Domain.Service
         {
             VerifyManagementPermission();
 
-            int usingThisType = 0;
+            int usingThisType;
             try
             {
                 usingThisType = await _groupInfoRepository.GetCountByTypeAsync(groupTypeId);

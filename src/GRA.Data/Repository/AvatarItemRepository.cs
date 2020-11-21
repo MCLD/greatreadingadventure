@@ -63,7 +63,7 @@ namespace GRA.Data.Repository
         {
             foreach (var itemId in itemIds)
             {
-                await _context.UserAvatarItems.AddAsync(new Model.UserAvatarItem()
+                await _context.UserAvatarItems.AddAsync(new Model.UserAvatarItem
                 {
                     UserId = userId,
                     AvatarItemId = itemId
@@ -130,7 +130,8 @@ namespace GRA.Data.Repository
 
             if (!string.IsNullOrEmpty(filter.Search))
             {
-                items = items.Where(_ => _.Name.Contains(filter.Search));
+                items = items.Where(_ =>
+                    _.Name.Contains(filter.Search, System.StringComparison.OrdinalIgnoreCase));
             }
 
             return items;
@@ -276,7 +277,7 @@ namespace GRA.Data.Repository
 
             var userElements = _context.UserAvatars
                 .Where(_ => elements.Contains(_.AvatarElementId));
-            if (await userElements.CountAsync() > 0)
+            if (await userElements.AnyAsync())
             {
                 _context.UserAvatars.RemoveRange(userElements);
 
@@ -297,7 +298,7 @@ namespace GRA.Data.Repository
                         .First();
 
                     var newUserElements = userElements
-                        .Select(_ => new Model.UserAvatar()
+                        .Select(_ => new Model.UserAvatar
                         {
                             AvatarElementId = firstElement,
                             UserId = _.UserId

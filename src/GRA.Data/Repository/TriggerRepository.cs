@@ -19,7 +19,6 @@ namespace GRA.Data.Repository
         private const string ProgramIcon = "fa-asterisk";
         private const string TriggerIcon = "fa-gears";
 
-        private const string AchieverDescription = "Achiever Badge";
         private const string ChallengeDescription = "Challenge";
         private const string JoinDescription = "Join Badge";
         private const string QuestionnaireDescription = "Questionnaire Badge";
@@ -84,7 +83,7 @@ namespace GRA.Data.Repository
             foreach (var trigger in triggerList)
             {
                 var dependents = await DependentTriggers(trigger.Id);
-                trigger.HasDependents = dependents?.Count() > 1;
+                trigger.HasDependents = dependents?.Count > 1;
             }
 
             return triggerList;
@@ -94,7 +93,7 @@ namespace GRA.Data.Repository
         {
             var triggerList = DbSet
                 .AsNoTracking()
-                .Where(_ => _.IsDeleted == false && _.SiteId == filter.SiteId);
+                .Where(_ => !_.IsDeleted && _.SiteId == filter.SiteId);
 
             if (filter.SystemIds?.Any() == true)
             {
@@ -133,16 +132,16 @@ namespace GRA.Data.Repository
 
         public async Task<Trigger> GetByCodeAsync(int siteId, string secretCode, bool mustBeActive)
         {
-            secretCode = secretCode.Trim().ToLower();
+            secretCode = secretCode?.Trim()?.ToLowerInvariant();
             var triggerQuery = DbSet
                 .AsNoTracking()
                 .Where(_ => _.SiteId == siteId
-                    && _.IsDeleted == false
+                    && !_.IsDeleted
                     && _.SecretCode == secretCode);
 
             if (mustBeActive)
             {
-                triggerQuery = triggerQuery.Where(_ => _.ActivationDate > DateTime.Now == false);
+                triggerQuery = triggerQuery.Where(_ => !(_.ActivationDate > DateTime.Now));
             }
 
             var codeTrigger = await triggerQuery.SingleOrDefaultAsync();
@@ -173,14 +172,14 @@ namespace GRA.Data.Repository
                 .Include(_ => _.RequiredBadges)
                 .Include(_ => _.RequiredChallenges)
                 .Where(_ => _.SiteId == user.SiteId
-                    && _.IsDeleted == false
+                    && !_.IsDeleted
                     && !alreadyEarnedTriggerIds.Contains(_.Id)
                     && (_.LimitToSystemId == null || _.LimitToSystemId == user.SystemId)
                     && (_.LimitToBranchId == null || _.LimitToBranchId == user.BranchId)
                     && (_.LimitToProgramId == null || _.LimitToProgramId == user.ProgramId)
                     && (_.Points == 0 || _.Points <= user.PointsEarned)
                     && string.IsNullOrEmpty(_.SecretCode)
-                    && _.ActivationDate > _dateTimeProvider.Now == false)
+                    && !(_.ActivationDate > _dateTimeProvider.Now))
                 .OrderBy(_ => _.Points)
                 .ThenBy(_ => _.AwardPoints)
                 .ToListAsync();
@@ -191,7 +190,7 @@ namespace GRA.Data.Repository
             // get a list of triggers that fire based on badge or challenge earnings
             var itemTriggers = triggers.Where(_ => _.ItemsRequired > 0);
 
-            if (itemTriggers.Count() > 0)
+            if (itemTriggers.Any())
             {
                 // get the user's badges
                 var userBadgeIds = _context.UserBadges
@@ -210,16 +209,14 @@ namespace GRA.Data.Repository
                     int itemsCompleted = 0;
 
                     // get the number of completed badges
-                    if (eligibleTrigger.RequiredBadges != null
-                        && eligibleTrigger.RequiredBadges.Count > 0)
+                    if (eligibleTrigger.RequiredBadges?.Count > 0)
                     {
                         itemsCompleted += eligibleTrigger.RequiredBadges
                             .Select(_ => _.BadgeId).Intersect(userBadgeIds).Count();
                     }
 
                     // get the number of completed challenges
-                    if (eligibleTrigger.RequiredChallenges != null
-                        && eligibleTrigger.RequiredChallenges.Count > 0)
+                    if (eligibleTrigger.RequiredChallenges?.Count > 0)
                     {
                         itemsCompleted += eligibleTrigger.RequiredChallenges
                             .Select(_ => _.ChallengeId).Intersect(userChallengeIds).Count();
@@ -254,7 +251,7 @@ namespace GRA.Data.Repository
                     .SingleOrDefaultAsync();
                 if (badgeTrigger != null)
                 {
-                    requirements.Add(new TriggerRequirement()
+                    requirements.Add(new TriggerRequirement
                     {
                         BadgeId = badgeId,
                         Name = badgeTrigger.Name,
@@ -271,7 +268,7 @@ namespace GRA.Data.Repository
 
                     if (programBadge != null)
                     {
-                        var requirement = new TriggerRequirement()
+                        var requirement = new TriggerRequirement
                         {
                             BadgeId = badgeId,
                             Icon = ProgramIcon,
@@ -396,8 +393,7 @@ namespace GRA.Data.Repository
         {
             var challengeRequirements = await (from challenges in _context.Challenges.AsNoTracking()
                                     .Where(_ => _.SiteId == filter.SiteId
-                                        && _.IsDeleted == false
-                                        && _.IsActive
+                                        && !_.IsDeleted && _.IsActive
                                         && _.Name.Contains(filter.Search ?? string.Empty)
                                         && (filter.SystemIds == null
                                             || filter.SystemIds.Contains(_.RelatedSystemId))
@@ -425,7 +421,7 @@ namespace GRA.Data.Repository
 
             var triggerRequirements = await (from triggers in _context.Triggers.AsNoTracking()
                                     .Where(_ => _.SiteId == filter.SiteId
-                                        && _.IsDeleted == false
+                                        && !_.IsDeleted
                                         && _.Name.Contains(filter.Search ?? string.Empty)
                                         && (filter.SystemIds == null
                                             || filter.SystemIds.Contains(_.RelatedSystemId))
@@ -451,7 +447,6 @@ namespace GRA.Data.Repository
                                     .ToListAsync();
 
             var requirements = challengeRequirements.Concat(triggerRequirements);
-
 
             // Program Join/Achiever and Questionnaire badges
             if (filter.SystemIds == null && filter.BranchIds == null && filter.UserIds == null)
@@ -515,7 +510,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.SiteId == siteId
-                    && _.IsDeleted == false
+                    && !_.IsDeleted
                     && _.Id != triggerId
                     && _.SecretCode == secretCode)
                 .AnyAsync();
@@ -531,7 +526,7 @@ namespace GRA.Data.Repository
                 {
                     foreach (var badgeId in trigger.BadgeIds)
                     {
-                        var triggerBadge = new GRA.Data.Model.TriggerBadge()
+                        var triggerBadge = new GRA.Data.Model.TriggerBadge
                         {
                             BadgeId = badgeId,
                             TriggerId = newTrigger.Id
@@ -544,7 +539,7 @@ namespace GRA.Data.Repository
                 {
                     foreach (var challengeId in trigger.ChallengeIds)
                     {
-                        var triggerChallenge = new GRA.Data.Model.TriggerChallenge()
+                        var triggerChallenge = new GRA.Data.Model.TriggerChallenge
                         {
                             ChallengeId = challengeId,
                             TriggerId = newTrigger.Id
@@ -610,7 +605,7 @@ namespace GRA.Data.Repository
                         t => t.AwardBadgeId,
                         (tb, _) => tb.TriggerId);
 
-            if (relatedTriggerIds.Count() > 0)
+            if (relatedTriggerIds.Any())
             {
                 return await DbSet
                     .AsNoTracking()
@@ -674,7 +669,7 @@ namespace GRA.Data.Repository
         public async Task<ICollection<Trigger>> GetTriggersAwardingBundleAsync(int bundleId)
         {
             return await DbSet.AsNoTracking()
-                .Where(_ => _.IsDeleted == false && _.AwardAvatarBundleId == bundleId)
+                .Where(_ => !_.IsDeleted && _.AwardAvatarBundleId == bundleId)
                 .ProjectTo<Trigger>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
@@ -682,7 +677,7 @@ namespace GRA.Data.Repository
         public async Task<bool> BundleIsInUseAsync(int bundleId)
         {
             return await DbSet.AsNoTracking()
-                .Where(_ => _.IsDeleted == false && _.AwardAvatarBundleId == bundleId)
+                .Where(_ => !_.IsDeleted && _.AwardAvatarBundleId == bundleId)
                 .ProjectTo<Trigger>(_mapper.ConfigurationProvider)
                 .AnyAsync();
         }

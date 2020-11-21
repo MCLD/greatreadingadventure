@@ -49,7 +49,7 @@ namespace GRA.Domain.Service
 
         private async Task<IEnumerable<Site>> GetSitesFromCacheAsync()
         {
-            IEnumerable<Site> sites = null;
+            IEnumerable<Site> sites;
             var cachedSites = _cache.GetString(CacheKey.Sites);
             if (cachedSites == null)
             {
@@ -281,12 +281,10 @@ namespace GRA.Domain.Service
                 .FirstOrDefault(_ => _.Key == key)?
                 .Value;
 
-            if (!string.IsNullOrEmpty(settingValueString))
+            if (!string.IsNullOrEmpty(settingValueString)
+                && int.TryParse(settingValueString, out int value))
             {
-                if (int.TryParse(settingValueString, out int value))
-                {
-                    return (IsSet: true, SetValue: value);
-                }
+                return (IsSet: true, SetValue: value);
             }
             return (IsSet: false, SetValue: default(int));
         }

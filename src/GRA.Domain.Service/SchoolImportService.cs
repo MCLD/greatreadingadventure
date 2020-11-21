@@ -81,7 +81,7 @@ namespace GRA.Domain.Service
                             else
                             {
                                 _logger.LogDebug($"Adding school district: {record.District.Trim()}");
-                                var district = await _schoolService.AddDistrict(new SchoolDistrict()
+                                var district = await _schoolService.AddDistrict(new SchoolDistrict
                                 {
                                     Name = record.District.Trim()
                                 });

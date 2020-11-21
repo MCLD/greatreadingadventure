@@ -36,14 +36,14 @@ namespace GRA.Controllers.MissionControl
             BaseFilter filter = new BaseFilter(page);
             var questionnaireList = await _questionnaireService.GetPaginatedListAsync(filter);
 
-            PaginateViewModel paginateModel = new PaginateViewModel()
+            PaginateViewModel paginateModel = new PaginateViewModel
             {
                 ItemCount = questionnaireList.Count,
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
 
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new
@@ -52,7 +52,7 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
-            QuestionnairesListViewModel viewModel = new QuestionnairesListViewModel()
+            QuestionnairesListViewModel viewModel = new QuestionnairesListViewModel
             {
                 Questionnaires = questionnaireList.Data,
                 PaginateModel = paginateModel
@@ -90,7 +90,7 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
-                QuestionnairesDetailViewModel viewModel = new QuestionnairesDetailViewModel()
+                QuestionnairesDetailViewModel viewModel = new QuestionnairesDetailViewModel
                 {
                     Questionnaire = await _questionnaireService.GetByIdAsync(id, true)
                 };
@@ -234,7 +234,7 @@ namespace GRA.Controllers.MissionControl
                     // Add new answers to the question
                     foreach (var newAnswer in newAnswersList)
                     {
-                        var answer = new Answer()
+                        var answer = new Answer
                         {
                             QuestionId = question.Id,
                             Text = newAnswer.Value,

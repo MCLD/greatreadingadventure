@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using GRA.Domain.Model;
-
-namespace GRA.Controllers.ViewModel.Home
+﻿namespace GRA.Controllers.ViewModel.Home
 {
     public class AccessClosedViewModel
     {

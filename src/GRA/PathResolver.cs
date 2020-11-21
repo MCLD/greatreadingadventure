@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using GRA.Abstract;
 using Microsoft.Extensions.Configuration;
 
@@ -33,7 +32,7 @@ namespace GRA
 
         public string ResolveContentFilePath(string filePath = default)
         {
-            string path = null;
+            string path;
             if (!string.IsNullOrEmpty(_config[ConfigurationKey.ContentDirectory]))
             {
                 path = _config[ConfigurationKey.ContentDirectory];
@@ -88,7 +87,7 @@ namespace GRA
         {
             var tempPath = ResolvePrivateFilePath("temp");
 
-            if(!Directory.Exists(tempPath))
+            if (!Directory.Exists(tempPath))
             {
                 Directory.CreateDirectory(tempPath);
             }

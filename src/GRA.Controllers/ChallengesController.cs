@@ -116,7 +116,7 @@ namespace GRA.Controllers
                 ItemsPerPage = filter.Take.Value
             };
 
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new
@@ -253,7 +253,7 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> Detail(int id)
         {
-            Challenge challenge = null;
+            Challenge challenge;
             try
             {
                 challenge = await _challengeService.GetChallengeDetailsAsync(id);

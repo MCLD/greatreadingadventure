@@ -33,7 +33,7 @@ namespace GRA.Controllers.Helpers
         public async override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
             var pages = await _pageService.GetAreaPagesAsync(navPages);
-            if (pages.Count() > 0)
+            if (pages.Any())
             {
                 IUrlHelper url = _urlHelperFactory.GetUrlHelper(ViewContext);
                 string activeStub = url.ActionContext.RouteData.Values["stub"] as string;
@@ -57,7 +57,6 @@ namespace GRA.Controllers.Helpers
                         if (page.PageStub == activeStub)
                         {
                             pageList.Add($"<a class=\"active\" href=\"{link}\">{page.FooterText}</a>");
-
                         }
                         else
                         {

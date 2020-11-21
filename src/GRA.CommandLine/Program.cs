@@ -36,7 +36,7 @@ namespace GRA.CommandLine
             var config = builder.Build();
 
             bool developMode = !string.IsNullOrEmpty(config["ASPNETCORE_ENVIRONMENT"])
-                && config["ASPNETCORE_ENVIRONMENT"].Equals("Development", StringComparison.CurrentCultureIgnoreCase);
+                && config["ASPNETCORE_ENVIRONMENT"].Equals("Development", StringComparison.OrdinalIgnoreCase);
 
             #region Initial setup of CommandLineApplication
             var app = new CommandLineApplication

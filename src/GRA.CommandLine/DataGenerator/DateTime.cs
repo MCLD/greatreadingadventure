@@ -33,7 +33,6 @@ namespace GRA.CommandLine.DataGenerator
                     .Date
                     .Between((System.DateTime)site.RegistrationOpens,
                         (System.DateTime)site.ProgramEnds);
-
             }
             else
             {
@@ -64,6 +63,5 @@ namespace GRA.CommandLine.DataGenerator
             _dateTimeProvider.SetDateTime(generated);
             return generated;
         }
-
     }
 }

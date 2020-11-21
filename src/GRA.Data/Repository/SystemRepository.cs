@@ -73,14 +73,11 @@ namespace GRA.Data.Repository
         public async Task UpdateCreatedByAsync(int userId, int systemId)
         {
             var system = DbSet.Where(_ => _.Id == systemId).SingleOrDefault();
-            if (system != null)
+            if (system != null && system.CreatedBy == Defaults.InitialInsertUserId)
             {
-                if (system.CreatedBy == Defaults.InitialInsertUserId)
-                {
-                    system.CreatedBy = userId;
-                    DbSet.Update(system);
-                    await _context.SaveChangesAsync();
-                }
+                system.CreatedBy = userId;
+                DbSet.Update(system);
+                await _context.SaveChangesAsync();
             }
         }
     }

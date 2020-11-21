@@ -11,6 +11,5 @@ namespace GRA.Controllers.ViewModel.Avatar
             public int Id { get; set; }
             public ICollection<int> Items { get; set; }
         }
-
     }
 }

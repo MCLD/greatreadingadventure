@@ -698,7 +698,6 @@ namespace GRA.Domain.Service
                     Status = "No participants are subscribed.",
                     Error = true
                 };
-
             }
         }
     }

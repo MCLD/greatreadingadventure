@@ -247,7 +247,7 @@ namespace GRA.Domain.Service
                 mail.IsNew = true;
                 mail.IsDeleted = false;
                 mail.SiteId = siteId;
-                if (inReplyToMail.IsRepliedTo == false)
+                if (!inReplyToMail.IsRepliedTo)
                 {
                     inReplyToMail.IsRepliedTo = true;
                     await _mailRepository.UpdateAsync(authId, inReplyToMail);
@@ -328,7 +328,7 @@ namespace GRA.Domain.Service
                 mail.SiteId = siteId;
 
                 _cache.Remove(UnreadMailCacheKey(siteId, (int)mail.ToUserId));
-                if (inReplyToMail.IsRepliedTo == false)
+                if (!inReplyToMail.IsRepliedTo)
                 {
                     await _mailRepository.MarkAdminReplied(inReplyToMail.Id);
                     _cache.Remove(UnhandledMailCount(siteId));
@@ -353,7 +353,6 @@ namespace GRA.Domain.Service
                     await _mailRepository.MarkAdminReplied(mailId);
                     var siteId = GetCurrentSiteId();
                     _cache.Remove(UnhandledMailCount(siteId));
-                    return;
                 }
                 else
                 {
@@ -541,12 +540,12 @@ namespace GRA.Domain.Service
             var user = await _userRepository.GetByIdAsync(userId);
             var newBroadcasts = await _broadcastRepository.GetNewBroadcastsAsync(user.SiteId,
                 user.LastBroadcast);
-            if (newBroadcasts.Count() > 0)
+            if (newBroadcasts.Any())
             {
                 var lastBroadcastDate = newBroadcasts.Last().SendAt;
-                if (newUser == true)
+                if (newUser)
                 {
-                    newBroadcasts = newBroadcasts.Where(_ => _.SendToNewUsers == true);
+                    newBroadcasts = newBroadcasts.Where(_ => _.SendToNewUsers);
                 }
                 foreach (var broadcast in newBroadcasts)
                 {

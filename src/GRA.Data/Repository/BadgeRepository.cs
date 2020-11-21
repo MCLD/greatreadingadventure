@@ -121,9 +121,9 @@ namespace GRA.Data.Repository
                 .Where(_ => _.BadgeId == badgeId)
                 .ToListAsync();
 
-            if (questionnaire.Count() > 0)
+            if (questionnaire.Count > 0)
             {
-                string completed = questionnaire.Count() == 1
+                string completed = questionnaire.Count == 1
                     ? "Completed questionnaire: "
                     : "Completed questionnaire(s): ";
                 return $"{completed} {string.Join(", ", questionnaire.Select(_ => _.Name))}";

@@ -22,12 +22,10 @@ namespace GRA.CommandLine.Commands
                 _.OnExecuteAsync(async cancellationToken =>
                 {
                     int supplementalSiteId = 0;
-                    if(!string.IsNullOrEmpty(siteIdOption.Value()))
+                    if (!string.IsNullOrEmpty(siteIdOption.Value()) 
+                        && !int.TryParse(siteIdOption.Value(), out supplementalSiteId))
                     {
-                        if(!int.TryParse(siteIdOption.Value(), out supplementalSiteId))
-                        {
-                            throw new ArgumentException("<siteid> must be a number!");
-                        }
+                        throw new ArgumentException("<siteid> must be a number!");
                     }
 
                     var defaultId = await _facade.SiteLookupService.GetDefaultSiteIdAsync();

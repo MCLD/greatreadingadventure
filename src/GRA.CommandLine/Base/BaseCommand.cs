@@ -56,12 +56,9 @@ namespace GRA.CommandLine.Base
 
         protected async Task EnsureUserAndSiteLoaded(bool force = false)
         {
-            if (!force)
+            if (!force && _site != null && _user != null)
             {
-                if (_site != null && _user != null)
-                {
-                    return;
-                }
+                return;
             }
             var userSite = await _configureUserSite.Lookup();
             User = userSite.User;

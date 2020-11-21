@@ -151,7 +151,7 @@ namespace GRA.Controllers.Helpers
 
         private void AddTwitterMetadata(TagHelperOutput output, Site site)
         {
-            if (site.TwitterLargeCard == true || twitterLargeCardOverride == true)
+            if (site.TwitterLargeCard == true || twitterLargeCardOverride)
             {
                 output.Content.AppendHtml(MetaName("twitter:card", "summary_large_image"));
             }
@@ -233,6 +233,5 @@ namespace GRA.Controllers.Helpers
             output.Content.AppendHtml(MetaName("description", 
                 $"A customized avatar for {site.Name}, join the site to make your own!"));
         }
-
     }
 }

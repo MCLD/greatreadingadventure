@@ -11,7 +11,7 @@ namespace GRA.Domain.Repository
         Task<ICollection<AvatarItem>> GetUserItemsByLayerAsync(int userId, int layerId);
         Task<bool> HasUserUnlockedItemAsync(int userId, int itemId);
         Task<ICollection<int>> GetUserUnlockedItemsAsync(int userId);
-        Task AddUserItemsAsync(int userId, List<int> itemId);
+        Task AddUserItemsAsync(int userId, List<int> itemIds);
         Task<int> CountAsync(AvatarFilter filter);
         Task<ICollection<AvatarItem>> PageAsync(AvatarFilter filter);
         Task<int> GetLayerAvailableItemCountAsync(int layerId);

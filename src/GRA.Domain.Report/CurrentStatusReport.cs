@@ -75,7 +75,7 @@ namespace GRA.Domain.Report
             UpdateProgress(progress, 1, "Starting report...", request.Name);
 
             // header row
-            var headerRow = new List<object>() {
+            var headerRow = new List<object> {
                 "System Name",
                 "Branch Name",
                 "Registered Users"
@@ -109,7 +109,7 @@ namespace GRA.Domain.Report
                         headerRow.Add(description[0]
                             .ToString()
                             .ToUpper(CultureInfo.InvariantCulture)
-                                + description.Substring(1));
+                                + description[1..]);
                     }
                     else
                     {
@@ -174,7 +174,7 @@ namespace GRA.Domain.Report
                     totalBadges += badge;
                     totalPoints += points;
 
-                    var row = new List<object>()
+                    var row = new List<object>
                     {
                         branch.SystemName,
                         branch.Name,
@@ -214,7 +214,7 @@ namespace GRA.Domain.Report
             report.Data = reportData.ToArray();
 
             // total row
-            var footerRow = new List<object>()
+            var footerRow = new List<object>
             {
                 "Total",
                 string.Empty,

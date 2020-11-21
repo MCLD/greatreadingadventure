@@ -75,7 +75,6 @@ namespace GRA.CommandLine.DataGenerator
                     };
                     if (challengePercent > 0 && rand.Int(1, 100) <= challengePercent)
                     {
-
                         bool isValid = false;
                         int challengeLookupCount = 0;
                         await _configureUserSite.Lookup(randomUser.Id);
@@ -161,6 +160,5 @@ namespace GRA.CommandLine.DataGenerator
             }
             return activities;
         }
-
     }
 }
