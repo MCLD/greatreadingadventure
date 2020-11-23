@@ -886,9 +886,9 @@ namespace GRA.Controllers.MissionControl
                 ShowAlertDanger($"Unable to select kit: ", gex);
             }
 
-            if (addedBranchSelection.KitId.HasValue)
+            if (branchSelection?.KitId != null)
             {
-                return RedirectToAction(nameof(Kit), new { id = addedBranchSelection.KitId });
+                return RedirectToAction(nameof(Kit), new { id = branchSelection.KitId });
             }
             else
             {
