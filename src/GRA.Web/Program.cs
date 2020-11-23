@@ -62,8 +62,17 @@ namespace GRA.Web
                     Log.Information("Cache: in-memory");
                     break;
             }
-
-            Task.Run(() => new Web(scope).InitalizeAsync()).Wait();
+            try
+            {
+                Task.Run(() => new Web(scope).InitalizeAsync()).Wait();
+            }
+            catch (StackExchange.Redis.RedisConnectionException ex)
+            {
+                Log.Fatal("Redis is configured for {RedisConfig} but failed: {ErrorMessage}",
+                    config[ConfigurationKey.RuntimeCacheRedisConfiguration],
+                    ex.Message);
+                throw;
+            }
 
             // output the version and revision
             try
