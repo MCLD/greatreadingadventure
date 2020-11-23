@@ -110,7 +110,7 @@ namespace GRA.Controllers.MissionControl
                 ? 100
                 : totalSelectedCount * 100 / totalBranchCount;
 
-            var performerStatus = await GetPerformerStatusAsync(schedulingStage);
+            var performerStatus = await GetPerformerStatus(schedulingStage);
 
             var viewModel = new StatusViewModel
             {
@@ -139,15 +139,15 @@ namespace GRA.Controllers.MissionControl
             public string SchedulingStage { get; set; }
         }
 
-        public async Task<JsonResult> GetPerformerStatusAsync()
+        public async Task<JsonResult> GetPerformerStatus()
         {
             var settings = await _performerSchedulingService.GetSettingsAsync();
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
-            var result = await GetPerformerStatusAsync(schedulingStage);
+            var result = await GetPerformerStatus(schedulingStage);
             return Json(result);
         }
 
-        private async Task<PerformerStatus> GetPerformerStatusAsync(PsSchedulingStage schedulingStage)
+        private async Task<PerformerStatus> GetPerformerStatus(PsSchedulingStage schedulingStage)
         {
             return new PerformerStatus
             {

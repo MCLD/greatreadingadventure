@@ -578,7 +578,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [Authorize(Policy = Policy.SchedulePerformers)]
-        public async Task<JsonResult> GetProgramAvailableAgeGroupsAsync(int branchId, int programId)
+        public async Task<JsonResult> GetProgramAvailableAgeGroups(int branchId, int programId)
         {
             PsProgram program;
             try
@@ -897,7 +897,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [Authorize(Policy = Policy.SchedulePerformers)]
-        public async Task<JsonResult> GetKitAvailableAgeGroupsAsync(int branchId, int kitId)
+        public async Task<JsonResult> GetKitAvailableAgeGroups(int branchId, int kitId)
         {
             PsKit kit;
             try

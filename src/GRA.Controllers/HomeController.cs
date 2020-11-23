@@ -312,7 +312,7 @@ namespace GRA.Controllers
         {
             var id = UserClaim(ClaimType.BranchId);
 
-            await LogoutUserAsync();
+            await LogoutUser();
 
             return RedirectToAction(nameof(Goodbye), new { id });
         }
