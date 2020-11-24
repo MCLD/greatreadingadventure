@@ -141,7 +141,7 @@ namespace GRA.Data.Repository
 
             if (mustBeActive)
             {
-                triggerQuery = triggerQuery.Where(_ => !_.ActivationDate.HasValue 
+                triggerQuery = triggerQuery.Where(_ => !_.ActivationDate.HasValue
                     || _.ActivationDate <= DateTime.Now);
             }
 

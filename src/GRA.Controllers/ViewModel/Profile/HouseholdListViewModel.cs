@@ -13,7 +13,7 @@ namespace GRA.Controllers.ViewModel.Profile
         public bool AuthUserIsHead { get; set; }
         public int ActiveUser { get; set; }
         public string UserSelection { get; set; }
-        public int ActivityAmount{ get; set; }
+        public int ActivityAmount { get; set; }
         public string ActivityMessage { get; set; }
         public bool DisableSecretCode { get; set; }
         public string SecretCode { get; set; }

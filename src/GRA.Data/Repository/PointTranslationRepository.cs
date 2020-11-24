@@ -88,7 +88,7 @@ namespace GRA.Data.Repository
         public async Task UpdateCreatedByAsync(int userId, int pointTranslationId)
         {
             var pointTranslation = DbSet.Where(_ => _.Id == pointTranslationId).SingleOrDefault();
-            if (pointTranslation != null 
+            if (pointTranslation != null
                 && pointTranslation.CreatedBy == Defaults.InitialInsertUserId)
             {
                 pointTranslation.CreatedBy = userId;

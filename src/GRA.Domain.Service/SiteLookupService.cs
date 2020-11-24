@@ -193,7 +193,7 @@ namespace GRA.Domain.Service
         public async Task<IEnumerable<Site>> ReloadSiteCacheAsync()
         {
             var sites = await _siteRepository.GetAllAsync();
-            foreach(var site in sites)
+            foreach (var site in sites)
             {
                 _cache.Remove($"s{site.Id}.{CacheKey.SiteSettings}");
                 _cache.Remove($"s{site.Id}.{CacheKey.SiteCss}");

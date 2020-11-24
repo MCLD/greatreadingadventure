@@ -16,7 +16,7 @@ namespace GRA.Domain.Service
         public DashboardContentService(ILogger<DashboardContentService> logger,
             IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
-            IDashboardContentRepository dashboardContentRepository) 
+            IDashboardContentRepository dashboardContentRepository)
             : base(logger, dateTimeProvider, userContextProvider)
         {
             SetManagementPermission(Permission.ManageDashboardContent);
@@ -28,14 +28,14 @@ namespace GRA.Domain.Service
             BaseFilter filter)
         {
             VerifyManagementPermission();
-            filter.SiteId =  GetClaimId(ClaimType.SiteId);
+            filter.SiteId = GetClaimId(ClaimType.SiteId);
             return new DataWithCount<IEnumerable<DashboardContent>>
             {
                 Data = await _dashboardContentRepository.PageAsync(filter),
                 Count = await _dashboardContentRepository.CountAsync(filter)
             };
         }
-        
+
         public async Task<DashboardContent> GetByIdAsync(int id)
         {
             return await _dashboardContentRepository.GetByIdAsync(id);
@@ -50,7 +50,7 @@ namespace GRA.Domain.Service
         {
             VerifyManagementPermission();
             dashboardContent.SiteId = GetCurrentSiteId();
-            return await _dashboardContentRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), 
+            return await _dashboardContentRepository.AddSaveAsync(GetClaimId(ClaimType.UserId),
                 dashboardContent);
         }
 
@@ -66,7 +66,7 @@ namespace GRA.Domain.Service
         public async Task RemoveAsync(int dashboardContentId)
         {
             VerifyManagementPermission();
-            await _dashboardContentRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), 
+            await _dashboardContentRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId),
                 dashboardContentId);
         }
     }

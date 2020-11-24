@@ -109,7 +109,7 @@ namespace GRA.Controllers.MissionControl
                 await _categoryService.RemoveAsync(model.Category.Id);
                 ShowAlertSuccess($"Category \"{model.Category.Name}\" removed!");
             }
-            catch(GraException gex)
+            catch (GraException gex)
             {
                 ShowAlertDanger("Unable to remove Category: ", gex);
             }

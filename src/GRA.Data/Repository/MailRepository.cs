@@ -41,9 +41,9 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => !_.IsDeleted 
-                    && _.SiteId == siteId 
-                    && _.ToUserId == null 
+                .Where(_ => !_.IsDeleted
+                    && _.SiteId == siteId
+                    && _.ToUserId == null
                     && !_.IsRepliedTo)
                 .CountAsync();
         }
@@ -52,7 +52,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => !_.IsDeleted 
+                .Where(_ => !_.IsDeleted
                     && _.SiteId == siteId
                     && _.ToUserId == null
                     && !_.IsRepliedTo)

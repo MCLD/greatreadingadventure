@@ -208,7 +208,7 @@ namespace GRA.Controllers.Helpers
             {
                 output.Content.AppendHtml(MetaProperty("og:description", site.MetaDescription));
             }
-            
+
             output.Content.AppendHtml(Environment.NewLine);
             if (!string.IsNullOrWhiteSpace(pageUrl))
             {
@@ -234,7 +234,7 @@ namespace GRA.Controllers.Helpers
 
         private void AddAvatarMetadata(TagHelperOutput output, Site site)
         {
-            output.Content.AppendHtml(MetaName("description", 
+            output.Content.AppendHtml(MetaName("description",
                 $"A customized avatar for {site.Name}, join the site to make your own!"));
         }
     }

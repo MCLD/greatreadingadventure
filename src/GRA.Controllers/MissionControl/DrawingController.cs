@@ -519,7 +519,7 @@ namespace GRA.Controllers.MissionControl
                     EligibleCount = await _drawingService.GetEligibleCountAsync(id),
                     ProgramPlaceholder = string.Join(", ", programs
                         .Where(_ => criterion.ProgramIds.Contains(_.Id))
-                        .Select(_ => _.Name)) 
+                        .Select(_ => _.Name))
                 };
 
                 if (viewModel.Criterion.SystemId.HasValue)

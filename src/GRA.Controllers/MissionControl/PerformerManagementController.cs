@@ -323,7 +323,7 @@ namespace GRA.Controllers.MissionControl
                     performer.Images[0].Filename);
             }
 
-            if (!string.IsNullOrWhiteSpace(performer.Website) 
+            if (!string.IsNullOrWhiteSpace(performer.Website)
                 && Uri.TryCreate(performer.Website, UriKind.Absolute, out Uri absoluteUri))
             {
                 viewModel.Uri = absoluteUri;

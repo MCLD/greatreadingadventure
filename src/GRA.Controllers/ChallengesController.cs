@@ -83,13 +83,13 @@ namespace GRA.Controllers
             if (AuthUser.Identity.IsAuthenticated)
             {
                 filter.Favorites = Favorites;
-                if (string.IsNullOrWhiteSpace(Status) 
+                if (string.IsNullOrWhiteSpace(Status)
                     || string.Equals(Status, StatusUncompleted, StringComparison.OrdinalIgnoreCase))
                 {
                     filter.IsCompleted = false;
                 }
                 else if (string.Equals(Status, StatusCompleted,
-                    StringComparison.OrdinalIgnoreCase)) 
+                    StringComparison.OrdinalIgnoreCase))
                 {
                     filter.IsCompleted = true;
                 }

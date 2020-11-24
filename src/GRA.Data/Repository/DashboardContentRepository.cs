@@ -16,7 +16,7 @@ namespace GRA.Data.Repository
         IDashboardContentRepository
     {
         public DashboardContentRepository(ServiceFacade.Repository repositoryFacade,
-            ILogger<DashboardContentRepository> logger): base(repositoryFacade, logger)
+            ILogger<DashboardContentRepository> logger) : base(repositoryFacade, logger)
         {
         }
 

@@ -65,7 +65,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.SiteId == filter.SiteId);
 
-            if(!string.IsNullOrWhiteSpace(filter.Search))
+            if (!string.IsNullOrWhiteSpace(filter.Search))
             {
                 categoryList = categoryList.Where(_ => _.Name.Contains(filter.Search));
             }

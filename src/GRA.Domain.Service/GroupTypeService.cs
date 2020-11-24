@@ -73,12 +73,12 @@ namespace GRA.Domain.Service
             {
                 usingThisType = await _groupInfoRepository.GetCountByTypeAsync(groupTypeId);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return $"Unable to remove group type - cannot tell if any group(s) are using it: {ex.Message}";
             }
 
-            if(usingThisType > 0)
+            if (usingThisType > 0)
             {
                 return $"Unable to remove group type - {usingThisType} group(s) currently have it selected.";
             }

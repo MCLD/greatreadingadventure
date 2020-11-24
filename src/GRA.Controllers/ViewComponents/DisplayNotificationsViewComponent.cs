@@ -92,7 +92,7 @@ namespace GRA.Controllers.ViewComponents
                         .AppendFormat(" <a href=\"{0}\">Check out your new avatar options!</a>",
                             Url.Action(nameof(AvatarController.Index),
                                 AvatarController.Name,
-                                new { bundle = notification.AvatarBundleId}))
+                                new { bundle = notification.AvatarBundleId }))
                         .ToString();
 
                     notificationDisplayList.Add(notification);

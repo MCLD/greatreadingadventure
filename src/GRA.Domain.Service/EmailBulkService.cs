@@ -513,12 +513,12 @@ namespace GRA.Domain.Service
 
                         bool clearToSend = true;
 
-                        if(!jobDetails.SendToParticipantsToo)
+                        if (!jobDetails.SendToParticipantsToo)
                         {
                             var isParticipant = await _userService
                                 .IsEmailSubscribedAsync(emailReminder.Email);
 
-                            if(isParticipant)
+                            if (isParticipant)
                             {
                                 clearToSend = false;
                             }

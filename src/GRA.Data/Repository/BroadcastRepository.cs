@@ -16,7 +16,7 @@ namespace GRA.Data.Repository
     {
         public BroadcastRepository(ServiceFacade.Repository repositoryFacade,
             ILogger<BroadcastRepository> logger) : base(repositoryFacade, logger)
-        {            
+        {
         }
 
         public async Task<ICollection<Broadcast>> PageAsync(BroadcastFilter filter)

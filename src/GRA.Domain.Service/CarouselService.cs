@@ -76,7 +76,7 @@ namespace GRA.Domain.Service
             VerifyManagementPermission();
             filter.SiteId = GetCurrentSiteId();
             var data = await _carouselRepository.PageAsync(filter);
-            foreach(var item in data)
+            foreach (var item in data)
             {
                 item.ItemCount = await _carouselItemRepository.GetCountByCarouselIdAsync(item.Id);
             }
