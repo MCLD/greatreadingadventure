@@ -207,7 +207,7 @@ namespace GRA.Domain.Service
                         .Select(_ => _.Id);
                     var invalidSelectedIds = challenge.CategoryIds.Except(validCategoryIds);
 
-                    if (invalidSelectedIds.Count() > 0)
+                    if (invalidSelectedIds.Any())
                     {
                         challenge.CategoryIds = challenge.CategoryIds.Except(invalidSelectedIds)
                             .ToList();
@@ -278,7 +278,7 @@ namespace GRA.Domain.Service
                         .Select(_ => _.Id);
                     var invalidSelectedIds = challenge.CategoryIds.Except(validCategoryIds);
 
-                    if (invalidSelectedIds.Count() > 0)
+                    if (invalidSelectedIds.Any())
                     {
                         challenge.CategoryIds = challenge.CategoryIds.Except(invalidSelectedIds)
                             .ToList();
@@ -584,7 +584,7 @@ namespace GRA.Domain.Service
             var siteId = GetCurrentSiteId();
             var stub = challengeGroup.Stub.Trim().ToLower();
             var existingStub = await _challengeGroupRepository.StubInUseAsync(siteId, stub);
-            if (existingStub == true)
+            if (existingStub)
             {
                 throw new GraException($"A challenge group with the link {stub} already exists.");
             }

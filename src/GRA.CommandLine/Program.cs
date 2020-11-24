@@ -1,20 +1,20 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Linq;
+using System.Reflection;
 using AutoMapper;
 using GRA.Abstract;
+using GRA.CommandLine.Base;
+using GRA.CommandLine.FakeWeb;
 using GRA.Domain.Service;
 using GRA.Domain.Service.Abstract;
+using McMaster.Extensions.CommandLineUtils;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using System.Diagnostics;
-using Microsoft.AspNetCore.Http;
-using GRA.CommandLine.FakeWeb;
-using GRA.CommandLine.Base;
-using McMaster.Extensions.CommandLineUtils;
 
 namespace GRA.CommandLine
 {
@@ -36,7 +36,7 @@ namespace GRA.CommandLine
             var config = builder.Build();
 
             bool developMode = !string.IsNullOrEmpty(config["ASPNETCORE_ENVIRONMENT"])
-                && config["ASPNETCORE_ENVIRONMENT"].Equals("Development", StringComparison.CurrentCultureIgnoreCase);
+                && config["ASPNETCORE_ENVIRONMENT"].Equals("Development", StringComparison.OrdinalIgnoreCase);
 
             #region Initial setup of CommandLineApplication
             var app = new CommandLineApplication

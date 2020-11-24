@@ -29,7 +29,7 @@ namespace GRA.Data.Repository
             {
                 var activeChallengeCategories = await _context.Challenges.
                     AsNoTracking()
-                    .Where(_ => _.IsActive && _.IsDeleted == false)
+                    .Where(_ => _.IsActive && !_.IsDeleted)
                     .SelectMany(_ => _.ChallengeCategories
                         .Select(c => c.CategoryId))
                     .Distinct()
@@ -65,7 +65,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.SiteId == filter.SiteId);
 
-            if(!string.IsNullOrWhiteSpace(filter.Search))
+            if (!string.IsNullOrWhiteSpace(filter.Search))
             {
                 categoryList = categoryList.Where(_ => _.Name.Contains(filter.Search));
             }

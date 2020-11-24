@@ -1,14 +1,14 @@
-﻿using GRA.Domain.Service.Abstract;
-using GRA.Domain.Service;
-using Microsoft.AspNetCore.Http;
-using GRA.Domain.Model;
-using System.Threading.Tasks;
-using System.Security.Claims;
-using System;
-using Microsoft.Extensions.Logging;
-using System.Linq;
+﻿using System;
 using System.Globalization;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using GRA.Domain.Model;
+using GRA.Domain.Service;
+using GRA.Domain.Service.Abstract;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.Extensions.Logging;
 
 namespace GRA.Controllers
 {

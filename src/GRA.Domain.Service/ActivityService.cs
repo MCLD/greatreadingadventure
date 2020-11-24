@@ -1034,7 +1034,7 @@ namespace GRA.Domain.Service
                 BadgeId = trigger.AwardBadgeId,
                 BadgeFilename = badge.Filename
             });
-            
+
             // find if the trigger is related to an event
             var relatedEvents = await _eventRepository.GetRelatedEventsForTriggerAsync(
                     trigger.Id);
@@ -1243,7 +1243,7 @@ namespace GRA.Domain.Service
             {
                 serviceResult.Status = ServiceResultStatus.Warning;
                 serviceResult.Message = string.Format(
-                    Annotations.Validate.CouldNotFavorite,Annotations.Interface.Events);
+                    Annotations.Validate.CouldNotFavorite, Annotations.Interface.Events);
             }
 
             var userFavorites = await _eventRepository.GetUserFavoriteEvents(activeUserId,

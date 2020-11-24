@@ -1,6 +1,6 @@
-﻿using GRA.Domain.Repository;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using GRA.Domain.Repository;
 
 namespace GRA.Data.Repository
 {

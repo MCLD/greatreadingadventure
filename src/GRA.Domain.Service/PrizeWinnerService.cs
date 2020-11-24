@@ -59,7 +59,7 @@ namespace GRA.Domain.Service
         public async Task<PrizeWinner> AddPrizeWinnerAsync(PrizeWinner prizeWinner,
             bool userIdIsCurrentUser = false)
         {
-            if (prizeWinner.DrawingId == null 
+            if (prizeWinner.DrawingId == null
                 && prizeWinner.TriggerId == null
                 && prizeWinner.VendorCodeId == null)
             {

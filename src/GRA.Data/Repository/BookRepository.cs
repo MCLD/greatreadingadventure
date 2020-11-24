@@ -131,7 +131,7 @@ namespace GRA.Data.Repository
                 .ProjectTo<Book>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
-            return new DataWithCount<ICollection<Book>>()
+            return new DataWithCount<ICollection<Book>>
             {
                 Data = data,
                 Count = count

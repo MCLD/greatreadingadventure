@@ -54,7 +54,7 @@ namespace GRA.Domain.Report
             UpdateProgress(progress, 1, "Starting report...", request.Name);
 
             // header row
-            var headerRow = new List<object>() {
+            var headerRow = new List<object> {
                 "Community experience",
                 "Participants"
             };
@@ -80,7 +80,7 @@ namespace GRA.Domain.Report
                         $"Tabulating {communityExperienceWithCount.Data.Name}...");
                 }
 
-                var row = new List<object>()
+                var row = new List<object>
                 {
                     communityExperienceWithCount.Data.Name,
                     communityExperienceWithCount.Count
@@ -94,7 +94,7 @@ namespace GRA.Domain.Report
             report.Data = reportData.ToArray();
 
             // total row
-            var footerRow = new List<object>()
+            var footerRow = new List<object>
             {
                 "Total",
                 totalParticipants

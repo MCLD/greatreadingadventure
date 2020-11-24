@@ -1756,7 +1756,7 @@ namespace GRA.Domain.Service
                 currentBranchSelection);
         }
 
-            public async Task<ICollection<PsBranchSelection>> GetSelectionsByBranchIdAsync(int branchId)
+        public async Task<ICollection<PsBranchSelection>> GetSelectionsByBranchIdAsync(int branchId)
         {
             if (!HasPermission(Permission.ManagePerformers)
                 && !HasPermission(Permission.ViewPerformerDetails))

@@ -20,7 +20,7 @@ namespace GRA.Data.Model
         public string Name { get; set; }
         [MaxLength(1000)]
         public string RedemptionInstructions { get; set; }
-        [Range(1, Int32.MaxValue)]
+        [Range(1, int.MaxValue)]
         public int WinnerCount { get; set; }
         [MaxLength(255)]
         public string NotificationSubject { get; set; }

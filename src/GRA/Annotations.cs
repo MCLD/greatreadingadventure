@@ -134,7 +134,7 @@
             public const string NoChallenges = "No Challenges";
             public const string NoEvents = "No Events";
             public const string NoMail = "You currently have no mail.";
-			public const string NotStreamingYet = "Not streaming yet";
+            public const string NotStreamingYet = "Not streaming yet";
             public const string PasswordChanged = "Your password has been changed.";
             public const string PointsYoullEarn = "Points you'll earn";
             public const string ProfileUpdated = "Profile updated.";

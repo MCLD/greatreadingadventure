@@ -140,7 +140,7 @@ namespace GRA.Controllers.MissionControl
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new
@@ -1872,7 +1872,7 @@ namespace GRA.Controllers.MissionControl
                     CurrentPage = page,
                     ItemsPerPage = filter.Take.Value
                 };
-                if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+                if (paginateModel.PastMaxPage)
                 {
                     return RedirectToRoute(
                         new
@@ -1947,7 +1947,6 @@ namespace GRA.Controllers.MissionControl
                     {
                         ShowAlertSuccess($"Added book '{model.Book.Title}'");
                     }
-
                 }
                 catch (GraException gex)
                 {
@@ -2034,7 +2033,7 @@ namespace GRA.Controllers.MissionControl
                     CurrentPage = page,
                     ItemsPerPage = filter.Take.Value
                 };
-                if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+                if (paginateModel.PastMaxPage)
                 {
                     return RedirectToRoute(
                         new
@@ -2340,7 +2339,7 @@ namespace GRA.Controllers.MissionControl
                     CurrentPage = page,
                     ItemsPerPage = take
                 };
-                if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+                if (paginateModel.PastMaxPage)
                 {
                     return RedirectToRoute(
                         new
@@ -2860,7 +2859,7 @@ namespace GRA.Controllers.MissionControl
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new

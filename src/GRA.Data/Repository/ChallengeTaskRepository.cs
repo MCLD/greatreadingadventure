@@ -1,10 +1,10 @@
-﻿using GRA.Domain.Model;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using GRA.Domain.Model;
 using GRA.Domain.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GRA.Data.Repository
 {
