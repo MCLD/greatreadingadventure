@@ -141,7 +141,8 @@ namespace GRA.Data.Repository
 
             if (mustBeActive)
             {
-                triggerQuery = triggerQuery.Where(_ => _.ActivationDate <= DateTime.Now);
+                triggerQuery = triggerQuery.Where(_ => !_.ActivationDate.HasValue 
+                    || _.ActivationDate <= DateTime.Now);
             }
 
             var codeTrigger = await triggerQuery.SingleOrDefaultAsync();
@@ -179,7 +180,7 @@ namespace GRA.Data.Repository
                     && (_.LimitToProgramId == null || _.LimitToProgramId == user.ProgramId)
                     && (_.Points == 0 || _.Points <= user.PointsEarned)
                     && string.IsNullOrEmpty(_.SecretCode)
-                    && _.ActivationDate <= _dateTimeProvider.Now)
+                    && (!_.ActivationDate.HasValue || _.ActivationDate <= _dateTimeProvider.Now))
                 .OrderBy(_ => _.Points)
                 .ThenBy(_ => _.AwardPoints)
                 .ToListAsync();
