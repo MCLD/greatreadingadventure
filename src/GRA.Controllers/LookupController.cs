@@ -18,6 +18,8 @@ namespace GRA.Controllers
         private readonly SiteService _siteService;
         private readonly UserService _userService;
 
+        public static string Name { get { return "Lookup"; } }
+
         public LookupController(ILogger<LookupController> logger,
              ServiceFacade.Controller context,
              AvatarService avatarService,
@@ -84,7 +86,7 @@ namespace GRA.Controllers
             return Json(await _userService.UsernameInUseAsync(username));
         }
 
-        public async Task<JsonResult> GetItemsInBundleAsync(int id)
+        public async Task<JsonResult> GetItemsInBundle(int id)
         {
             var bundle = await _avatarService.GetBundleByIdAsync(id, true);
             var thumbnailList = bundle.AvatarItems

@@ -96,7 +96,7 @@ namespace GRA.CommandLine.Commands
                         return 2;
                     }
                 });
-            }, throwOnUnexpectedArg: true);
+            });
 
             async Task<int> EnterActivity(int howMany,
                 int challengePercent,

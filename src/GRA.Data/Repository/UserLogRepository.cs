@@ -338,18 +338,12 @@ namespace GRA.Data.Repository
 
             if (request.MaximumAllowableActivity > 0)
             {
-                var pointGroupings = await eligibleUsers
-                    .GroupJoin(earnedFilter,
-                        u => u.Id,
-                        ul => ul.UserId,
-                        (u, ul) => ul.Select(_ => _.ActivityEarned.Value))
-                    .ToListAsync();
-
-                return pointGroupings
-                    .Select(_ => _.Sum(Convert.ToInt64))
+                return await earnedFilter
+                    .GroupBy(_ => _.UserId)
+                    .Select(_ => _.Sum(s => Convert.ToInt64(s.ActivityEarned.Value)))
                     .Where(_ => _ > 0)
                     .Select(_ => _ > request.MaximumAllowableActivity.Value ? request.MaximumAllowableActivity.Value : _)
-                    .Sum();
+                    .SumAsync();
             }
 
             // TODO Fix for reporting over a time period

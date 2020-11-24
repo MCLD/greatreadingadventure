@@ -106,7 +106,7 @@ namespace GRA.CommandLine.Commands
                         return 2;
                     }
                 });
-            }, throwOnUnexpectedArg: true);
+            });
         }
 
         private async Task<int> DisplayUserCount()

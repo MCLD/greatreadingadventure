@@ -143,7 +143,7 @@
 
 @section Scripts {
     <script>
-        var availableAgeGroupsUrl = "@Url.Action(nameof(PerformerSchedulingController.GetKitAvailableAgeGroupsAsync))";
+        var availableAgeGroupsUrl = "@Url.Action(nameof(PerformerSchedulingController.GetKitAvailableAgeGroups))";
         $("#BranchSelection_BranchId").on("change", function () {
             $("#BranchValidationMessage").addClass("field-validation-valid").removeClass("field-validation-error").text("");
             var branchId = $(this).val();

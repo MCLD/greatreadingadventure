@@ -152,7 +152,7 @@ namespace GRA.Controllers.Base
             }
         }
 
-        public async Task LogoutUserAsync()
+        public async Task LogoutUser()
         {
             int? siteId = HttpContext.Session.GetInt32(SessionKey.SiteId);
             HttpContext.Session.Clear();

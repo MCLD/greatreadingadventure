@@ -70,7 +70,7 @@ namespace GRA.Web
                     .WriteTo.Logger(_ => _
                     .Filter.ByExcluding(Matching.FromSource(ErrorControllerName))
                     .WriteTo.MSSqlServer(sqlLog,
-                        new SinkOptions
+                        new MSSqlServerSinkOptions
                         {
                             TableName = "Logs",
                             AutoCreateSqlTable = true
