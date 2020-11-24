@@ -5,10 +5,7 @@ WORKDIR /app
 # Copy source
 COPY . ./
 
-# Bring in metadata via --build-arg
-ARG BRANCH=unknown
-ARG IMAGE_CREATED=unknown
-ARG IMAGE_REVISION=unknown
+# Bring in metadata via --build-arg for build-stage
 ARG IMAGE_VERSION=unknown
 
 # Restore packages
@@ -31,6 +28,12 @@ RUN cp /app/release-publish.bash "/app/publish/"
 # Get runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS publish-stage
 WORKDIR /app
+
+# Bring in metadata via --build-arg to publish-stage
+ARG BRANCH=unknown
+ARG IMAGE_CREATED=unknown
+ARG IMAGE_REVISION=unknown
+ARG IMAGE_VERSION=unknown
 
 # Configure image labels
 LABEL branch=$branch \

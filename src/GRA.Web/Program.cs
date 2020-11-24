@@ -103,6 +103,7 @@ namespace GRA.Web
             Host.CreateDefaultBuilder(args)
             .ConfigureWebHostDefaults(webBuilder =>
             {
+                webBuilder.UseContentRoot(System.IO.Directory.GetCurrentDirectory());
                 webBuilder.ConfigureAppConfiguration((_, config) =>
                 {
                     config.AddJsonFile("shared/appsettings.json",
@@ -110,11 +111,7 @@ namespace GRA.Web
                         reloadOnChange: true)
                     .AddEnvironmentVariables();
                 });
-                webBuilder.ConfigureKestrel(serverOptions =>
-                {
-                    // Set properties and call methods on options
-                })
-                .UseStartup<Startup>();
+                webBuilder.ConfigureKestrel(_ => { }).UseStartup<Startup>();
             })
             .UseSerilog();
     }
