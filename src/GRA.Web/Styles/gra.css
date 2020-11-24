@@ -234,7 +234,7 @@ input.form-checkbox {
         cursor: not-allowed;
     }
 
-input:read-only {
+input:read-only:not([type=checkbox]):not([type=radio]) {
     cursor: not-allowed;
 }
 

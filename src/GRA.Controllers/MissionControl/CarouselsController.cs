@@ -66,7 +66,7 @@ namespace GRA.Controllers.MissionControl
         {
             var viewModel = new DetailViewModel
             {
-                PageAction = ViewModel.PageAction.New
+                PageAction = ViewModel.PageAction.Create
             };
             return View(DetailViewName, viewModel);
         }
@@ -189,7 +189,7 @@ namespace GRA.Controllers.MissionControl
             {
                 CarouselId = carousel.Id,
                 CarouselName = carousel.Name,
-                PageAction = ViewModel.PageAction.New
+                PageAction = ViewModel.PageAction.Create
             });
         }
 

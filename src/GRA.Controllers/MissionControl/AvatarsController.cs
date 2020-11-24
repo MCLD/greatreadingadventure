@@ -25,19 +25,19 @@ namespace GRA.Controllers.MissionControl
         private readonly ILogger<AvatarsController> _logger;
         private readonly AvatarService _avatarService;
         private readonly JobService _jobService;
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
         public AvatarsController(ILogger<AvatarsController> logger,
             ServiceFacade.Controller context,
             AvatarService avatarService,
             JobService jobService,
-            IHostingEnvironment hostingEnvironment)
+            IWebHostEnvironment webHostEnvironment)
             : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _avatarService = avatarService ?? throw new ArgumentNullException(nameof(avatarService));
             _jobService = jobService ?? throw new ArgumentNullException(nameof(jobService));
-            _hostingEnvironment = hostingEnvironment ?? throw new ArgumentNullException(nameof(hostingEnvironment));
+            _webHostEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
             PageTitle = "Avatars";
         }
 
@@ -57,7 +57,7 @@ namespace GRA.Controllers.MissionControl
             }
 
             var defaultAvatarPath = Path.Combine(
-                Directory.GetParent(_hostingEnvironment.WebRootPath).FullName,
+                Directory.GetParent(_webHostEnvironment.WebRootPath).FullName,
                 "assets",
                 "defaultavatars");
 
@@ -82,7 +82,7 @@ namespace GRA.Controllers.MissionControl
             }
 
             string assetPath = Path.Combine(
-                Directory.GetParent(_hostingEnvironment.WebRootPath).FullName, "assets");
+                Directory.GetParent(_webHostEnvironment.WebRootPath).FullName, "assets");
 
             if (!Directory.Exists(assetPath))
             {
@@ -513,7 +513,7 @@ namespace GRA.Controllers.MissionControl
             }
 
             string assetPath = Path.Combine(
-                Directory.GetParent(_hostingEnvironment.WebRootPath).FullName, "assets");
+                Directory.GetParent(_webHostEnvironment.WebRootPath).FullName, "assets");
 
             if (!Directory.Exists(assetPath))
             {
@@ -530,10 +530,8 @@ namespace GRA.Controllers.MissionControl
 
             try
             {
-                using (var archive = new ZipArchive(viewModel.UploadedFile.OpenReadStream()))
-                {
-                    archive.ExtractToDirectory(assetPath);
-                }
+                using var archive = new ZipArchive(viewModel.UploadedFile.OpenReadStream());
+                archive.ExtractToDirectory(assetPath);
             }
             catch (Exception ex)
             {
@@ -563,7 +561,7 @@ namespace GRA.Controllers.MissionControl
             }
 
             string assetPath = Path.Combine(
-                Directory.GetParent(_hostingEnvironment.WebRootPath).FullName, "assets");
+                Directory.GetParent(_webHostEnvironment.WebRootPath).FullName, "assets");
 
             if (!Directory.Exists(assetPath))
             {

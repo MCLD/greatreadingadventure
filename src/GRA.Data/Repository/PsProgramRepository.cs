@@ -162,8 +162,8 @@ namespace GRA.Data.Repository
                     .GroupJoin(_context.PsPerformerBranches,
                         program => program.PerformerId,
                         performerbranches => performerbranches.PsPerformerId,
-                        (program, performerbranches) => new { program, performerbranches })
-                    .SelectMany(_ => _.performerbranches)
+                        (program, performerbranches) => performerbranches)
+                    .SelectMany(_ => _)
                     .Where(_ => _.BranchId == branchId);
 
             return await DbSet.AsNoTracking()
