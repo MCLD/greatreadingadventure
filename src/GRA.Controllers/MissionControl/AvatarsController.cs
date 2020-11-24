@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl.Avatar;
@@ -25,19 +25,19 @@ namespace GRA.Controllers.MissionControl
         private readonly ILogger<AvatarsController> _logger;
         private readonly AvatarService _avatarService;
         private readonly JobService _jobService;
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
         public AvatarsController(ILogger<AvatarsController> logger,
             ServiceFacade.Controller context,
             AvatarService avatarService,
             JobService jobService,
-            IHostingEnvironment hostingEnvironment)
+            IWebHostEnvironment webHostEnvironment)
             : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _avatarService = avatarService ?? throw new ArgumentNullException(nameof(avatarService));
             _jobService = jobService ?? throw new ArgumentNullException(nameof(jobService));
-            _hostingEnvironment = hostingEnvironment ?? throw new ArgumentNullException(nameof(hostingEnvironment));
+            _webHostEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
             PageTitle = "Avatars";
         }
 
@@ -55,7 +55,20 @@ namespace GRA.Controllers.MissionControl
                 layer.UnlockableItems = await _avatarService.GetLayerUnlockableItemCountAsync(
                     layer.Id);
             }
-            return View(layers);
+
+            var defaultAvatarPath = Path.Combine(
+                Directory.GetParent(_webHostEnvironment.WebRootPath).FullName,
+                "assets",
+                "defaultavatars");
+
+            var avatarZip = _pathResolver.ResolvePrivateFilePath("avatars.zip");
+
+            return View(new AvatarIndexViewModel
+            {
+                Layers = layers,
+                DefaultAvatarsPresent = Directory.Exists(defaultAvatarPath),
+                AvatarZipPresent = System.IO.File.Exists(avatarZip)
+            });
         }
 
         [HttpPost]
@@ -64,12 +77,12 @@ namespace GRA.Controllers.MissionControl
             var layers = await _avatarService.GetLayersAsync();
             if (layers.Any())
             {
-                AlertDanger = $"Avatars have already been set up";
+                AlertDanger = "Avatars have already been set up";
                 return RedirectToAction(nameof(Index));
             }
 
             string assetPath = Path.Combine(
-                Directory.GetParent(_hostingEnvironment.WebRootPath).FullName, "assets");
+                Directory.GetParent(_webHostEnvironment.WebRootPath).FullName, "assets");
 
             if (!Directory.Exists(assetPath))
             {
@@ -84,25 +97,7 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(Index));
             }
 
-            var jobToken = await _jobService.CreateJobAsync(new Job
-            {
-                JobType = JobType.AvatarImport,
-                SerializedParameters = JsonConvert
-                    .SerializeObject(new JobDetailsAvatarImport
-                    {
-                        AssetPath = assetPath
-                    })
-            });
-
-            return View("Job", new ViewModel.MissionControl.Shared.JobViewModel
-            {
-                CancelUrl = Url.Action(nameof(Index)),
-                JobToken = jobToken.ToString(),
-                PingSeconds = 5,
-                SuccessRedirectUrl = "",
-                SuccessUrl = Url.Action(nameof(Index)),
-                Title = "Importing avatars..."
-            });
+            return await RunImportJob(assetPath);
         }
 
         public async Task<IActionResult> Layer(int id,
@@ -444,7 +439,7 @@ namespace GRA.Controllers.MissionControl
             try
             {
                 await _avatarService.RemoveBundleAsync(id);
-                ShowAlertSuccess($"Bundle successfully deleted!");
+                ShowAlertSuccess("Bundle successfully deleted!");
             }
             catch (GraException gex)
             {
@@ -497,6 +492,125 @@ namespace GRA.Controllers.MissionControl
             };
 
             return PartialView("_ItemsPartial", viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SetupAvatars(AvatarIndexViewModel viewModel)
+        {
+            var layers = await _avatarService.GetLayersAsync();
+            if (layers.Any())
+            {
+                AlertDanger = "Avatars have already been set up";
+                return RedirectToAction(nameof(Index));
+            }
+
+            if (viewModel?.UploadedFile == null)
+            {
+                ShowAlertDanger("You must upload an avatar .zip file.");
+                ModelState.AddModelError(nameof(viewModel.UploadedFile),
+                    "An avatar .zip file is required.");
+                return RedirectToAction(nameof(AvatarsController.Index));
+            }
+
+            string assetPath = Path.Combine(
+                Directory.GetParent(_webHostEnvironment.WebRootPath).FullName, "assets");
+
+            if (!Directory.Exists(assetPath))
+            {
+                Directory.CreateDirectory(assetPath);
+            }
+
+            assetPath = Path.Combine(assetPath, "uploadedavatars");
+            if (Directory.Exists(assetPath))
+            {
+                Directory.Delete(assetPath, true);
+            }
+
+            Directory.CreateDirectory(assetPath);
+
+            try
+            {
+                using var archive = new ZipArchive(viewModel.UploadedFile.OpenReadStream());
+                archive.ExtractToDirectory(assetPath);
+            }
+            catch (Exception ex)
+            {
+                ShowAlertDanger($"Error with avatar .zip file: {ex.Message}");
+                return RedirectToAction(nameof(AvatarsController.Index));
+            }
+
+            return await RunImportJob(assetPath);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SetupAvatarZip()
+        {
+            var layers = await _avatarService.GetLayersAsync();
+            if (layers.Any())
+            {
+                AlertDanger = "Avatars have already been set up";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var avatarZip = _pathResolver.ResolvePrivateFilePath("avatars.zip");
+
+            if (!System.IO.File.Exists(avatarZip))
+            {
+                AlertDanger = "The avatars.zip cannot be found in the shared/private folder.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            string assetPath = Path.Combine(
+                Directory.GetParent(_webHostEnvironment.WebRootPath).FullName, "assets");
+
+            if (!Directory.Exists(assetPath))
+            {
+                Directory.CreateDirectory(assetPath);
+            }
+
+            assetPath = Path.Combine(assetPath, "avatarzip");
+
+            if (Directory.Exists(assetPath))
+            {
+                Directory.Delete(assetPath, true);
+            }
+
+            Directory.CreateDirectory(assetPath);
+
+            try
+            {
+                ZipFile.ExtractToDirectory(avatarZip, assetPath);
+            }
+            catch (Exception ex)
+            {
+                ShowAlertDanger($"Error with avatar .zip file: {ex.Message}");
+                return RedirectToAction(nameof(AvatarsController.Index));
+            }
+
+            return await RunImportJob(assetPath);
+        }
+
+        private async Task<IActionResult> RunImportJob(string assetPath)
+        {
+            var jobToken = await _jobService.CreateJobAsync(new Job
+            {
+                JobType = JobType.AvatarImport,
+                SerializedParameters = JsonConvert
+                    .SerializeObject(new JobDetailsAvatarImport
+                    {
+                        AssetPath = assetPath
+                    })
+            });
+
+            return View("Job", new ViewModel.MissionControl.Shared.JobViewModel
+            {
+                CancelUrl = Url.Action(nameof(Index)),
+                JobToken = jobToken.ToString(),
+                PingSeconds = 5,
+                SuccessRedirectUrl = "",
+                SuccessUrl = Url.Action(nameof(Index)),
+                Title = "Importing avatars..."
+            });
         }
     }
 }

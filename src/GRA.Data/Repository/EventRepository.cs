@@ -415,21 +415,33 @@ namespace GRA.Data.Repository
                     .Where(_ => _.RelatedSystemId == criterion.SystemId);
             }
 
-            var experienceWithUserTriggers = await communityExperiences
-                .GroupJoin(_context.UserTriggers,
-                    experience => experience.RelatedTriggerId.Value,
-                    userTriggers => userTriggers.TriggerId,
-                    (experience, userTriggers) => new { experience, userTriggers })
-                .ToListAsync();
-
-            return experienceWithUserTriggers
+            var communityExperienceList = (await communityExperiences
+                .ToListAsync())
                 .Select(_ => new DataWithCount<Event>
                 {
-                    Data = _mapper.Map<Event>(_.experience),
-                    Count = _.userTriggers.Count()
+                    Data = _mapper.Map<Event>(_)
                 })
                 .OrderBy(_ => _.Data.Name)
                 .ToList();
+
+            var triggerCounts = await _context.UserTriggers
+                .AsNoTracking()
+                .Where(_ => communityExperiences
+                    .Select(e => e.RelatedTriggerId)
+                    .Contains(_.TriggerId))
+                .GroupBy(_ => _.TriggerId)
+                .Select(_ => new { _.Key, Count = _.Count() })
+                .ToListAsync();
+
+            foreach (var experience in communityExperienceList)
+            {
+                experience.Count = triggerCounts
+                    .Where(_ => _.Key == experience.Data.RelatedTriggerId)
+                    .Select(_ => _.Count)
+                    .FirstOrDefault();
+            }
+
+            return communityExperienceList;
         }
 
         public async Task<IEnumerable<int>> GetUserFavoriteEvents(int userId,

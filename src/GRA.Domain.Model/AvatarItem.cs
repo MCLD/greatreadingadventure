@@ -18,5 +18,6 @@ namespace GRA.Domain.Model
         public string Thumbnail { get; set; }
 
         public bool Unlockable { get; set; }
+        public string FileType { get; set; }
     }
 }

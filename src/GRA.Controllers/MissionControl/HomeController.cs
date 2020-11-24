@@ -264,7 +264,7 @@ namespace GRA.Controllers.MissionControl
         {
             if (AuthUser.Identity.IsAuthenticated)
             {
-                await LogoutUserAsync();
+                await LogoutUser();
             }
             return RedirectToRoute(new { area = string.Empty, action = nameof(HomeController.Index) });
         }
