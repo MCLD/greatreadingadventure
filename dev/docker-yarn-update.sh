@@ -38,4 +38,3 @@ apt-get install -y dotnet-runtime-2.2
 cd /app/src/GRA.Web && dotnet restore && dotnet bundle
 
 git status
-
