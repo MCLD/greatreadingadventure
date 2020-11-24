@@ -166,7 +166,7 @@
     <script>
         $(".bundle-link").on("click", function () {
             var id = $(this).data("id");
-            var url = "@Url.Action("GetItemsInBundleAsync", "Lookup", new { Area = string.Empty })";
+            var url = "@Url.Action(nameof(GRA.Controllers.LookupController.GetItemsInBundle), GRA.Controllers.LookupController.Name, new { Area = string.Empty })";
 
             $.getJSON(url, { id: id }, function(response) {
                 $("#bundleModalBody").html("");

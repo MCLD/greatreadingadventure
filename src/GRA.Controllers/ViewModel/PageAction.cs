@@ -2,7 +2,7 @@
 {
     public enum PageAction
     {
-        New,
+        Create,
         Edit
     }
 }

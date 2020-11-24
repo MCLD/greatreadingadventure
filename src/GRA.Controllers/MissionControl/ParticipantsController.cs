@@ -477,7 +477,7 @@ namespace GRA.Controllers.MissionControl
                 AlertSuccess = "Participant deleted";
                 if (id == GetId(ClaimType.UserId))
                 {
-                    await LogoutUserAsync();
+                    await LogoutUser();
                     return RedirectToAction("Index", "Home", new { area = string.Empty });
                 }
             }

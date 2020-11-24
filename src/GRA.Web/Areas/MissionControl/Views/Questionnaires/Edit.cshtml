@@ -279,7 +279,7 @@
                     if (form.valid()) {
                         var parameters = form.serialize();
                         if (parameters.indexOf("correctAnswer") >= 0
-                            || (parameters.indexOf("update_") < 0 && parameters.indexOf("new_") < 0)) {
+                            || (!parameters.includes("update_") && !parameters.includes("new_"))) {
                             saveProcessing = true;
                             $("#modalSaveButton").addClass("disabled");
                             $("#modalSaveSpinner").removeClass("hidden");

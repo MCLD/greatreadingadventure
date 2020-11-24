@@ -11,6 +11,7 @@ bash ./docker-build.bash
 ## Sample run command(s)
 
 ### Run a locally-built image
+
 ```sh
 docker run -d -p 80:80 \
   --name gra
@@ -20,6 +21,7 @@ docker run -d -p 80:80 \
 ```
 
 ### Download and run an image from Docker Hub (simple)
+
 ```sh
 docker run -d -p 80:80 \
   --name gra \

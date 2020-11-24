@@ -95,18 +95,8 @@ namespace GRA.Controllers.MissionControl
                     .Select(_ => $"{_.DisplayName} [{_.Name}]")));
             }
 
-            if (!string.IsNullOrEmpty(_config[ConfigurationKey.DatabaseWarningLogging]))
-            {
-                settings.Add("Database warning logging", "Yes");
-            }
-
             var site = await GetCurrentSiteAsync();
             settings.Add("Site created", site.CreatedAt.ToString());
-
-            if (!string.IsNullOrEmpty(_config[ConfigurationKey.SqlServer2008]))
-            {
-                settings.Add("SQL Server 2008", "Yes");
-            }
 
             var versions = new Dictionary<string, string>();
             var assemblies = Assembly.GetEntryAssembly()

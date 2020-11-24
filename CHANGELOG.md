@@ -1,10 +1,13 @@
 # Change Log
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## Unreleased
+
 ### Added
+
 - Ping analytics upon account login
 - Improve analytics for sign-ups to include if it's a first-time participant (fix #330)
 - Ability to add carousel to dashboard
@@ -17,7 +20,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - More information in Mission Control system information
 - Mission Control menu item for entering an Authorization Code
 - Improve Event and Community Experience discoverability with spatial proximity searching
-(requires Google Maps API key)
+  (requires Google Maps API key)
 - Ability to configure a maximum activity amount in Site Settings
 - Dashboard alert for pending vendor code redemption
 - Default "System Account" for system-created items
@@ -53,8 +56,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - User filtering challenges and events by completed/uncompleted
 - User badge gallery
 - Badge max file size site setting
+- Rudimentary health check
 
 ### Changed
+
 - Script docker-build.bash to only build release images when branch starts with 'release/'
 - From Google analytics.js to tag manager for analytics
 - Location of favicons from wwwroot to shared/content so they can be easily customized
@@ -70,8 +75,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Household import to use the job system
 - Reporting SQL IN clause error
 - Badge image dimension restrictions
+- Upgrade from ASP.NET Core v2.2 to v5.0
 
 ### Fixed
+
 - Instance name enrichment for logging
 - Error if account disappears while user is logged in
 - Avatar options now showing with single layer
@@ -97,14 +104,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Profile school values disappearing after model error
 
 ### Removed
+
 - Recovery error logging at the controller level - it's logged in the
-service
+  service
+- SQL Server 2008 support
 
 ## [4.1.1] - 2018-12-13
+
 ### Added
+
 - Add site.js to shared folder for customizing site scripting
 
 ### Changed
+
 - New mail icon in navigation is red and solid for new messages, else grey and wireframe
 - Upgrade ImageSharp from v1.0.0-beta0003 to v1.0.0-beta0005
 - Move site.css for customizing site styles to shared folder
@@ -112,6 +124,7 @@ service
 - Upgrade from ASP.NET Core v2.1 to v2.2
 
 ### Fixed
+
 - Fix #377 Adding a challenge task causes an error
 - Fix #382 Adding a drawing criterion fails if no or all programs are selected
 - Fix #383 Viewing a challenge group causes a timeout
@@ -122,10 +135,13 @@ service
 - Badge display on the dashboard to wrap properly
 
 ### Removed
+
 - Old prior-version FontAwesome files
 
 ## [4.1.0] - 2018-11-30
+
 ### Added
+
 - Logging prior to spin-up of Web server (Fix #241)
 - Logging when site managers authenticate and when test emails are sent
 - Ability for Serilog to output to a SQL Server table
@@ -136,19 +152,24 @@ service
 - Robots noindex and nofollow to Mission Control pages (to prevent search engine crawling)
 
 ### Changed
+
 - Upgrade from ASP.NET Core v1.1 to v2.1
 - Upgrade Font Awesome from v4.7.0 to v5.5.0
 
 ### Fixed
+
 - Docker builds with Travis CI
 - Allow maximum allowable activity to be configured without requiring code changes
 
 ### Removed
+
 - Hack to get around Antiforgery issue (Fix #357)
 - Structure for having a "no avatars" release build
 
 ## [4.0.0] - 2018-10-09
+
 ### Added
+
 - Mission Control location list shows a count of related events/community experiences (#322)
 - Add Google Analytics Event when participant joins (#324)
 - Survey linking for all participants and first time participants
@@ -161,12 +182,14 @@ service
 - Achiever count to the participant count and minutes by program report
 
 ### Changed
+
 - Mission Control events navbar icon is now a drop-down (#322)
 - Fix automated builds and pushing to Docker Hub
 - Developer ability to add minute cap to reporting
 - Whether or not to collect email addresses prior to registration is now a site setting
 
 ### Fixed
+
 - Set page title to "community experiences" when selected on the events page
 - Registrations and achievers by school report name (#320)
 - Issue showing list of badges for the Badge Top Scores Report
@@ -182,7 +205,9 @@ service
 - Issue displaying vendor code notes on household pages
 
 ## [4.0.0-beta2] - 2018-05-18
+
 ### Added
+
 - Group Vendor Code Report: group members and their assigned vendor codes
 - Admins with Edit Participant permission can upgrade any households to groups
 - Point translation management in Mission Control
@@ -201,6 +226,7 @@ service
 - Default culture so as to not show 24-hour time in event details
 
 ### Changed
+
 - Updated package dependencies to latest compatible versions
 - Improve descriptions on Site Management pages
 - Updated front-end packages to latest compatible versions
@@ -209,6 +235,7 @@ service
 - Improve avatar share pages
 
 ### Fixed
+
 - Broken household URLs in Mission Control (leading spaces)
 - Promoting member to household lead wasn't transferring the group
 - Ability to assign groups to household members (not just the lead)
@@ -223,13 +250,16 @@ service
 - Bug preventing deletion of challenge groups
 
 ### Removed
+
 - Comments from appsettings.json, see the
-[manual](http://manual.greatreadingadventure.com/en/latest/technical/appsettings/) for more
-information
+  [manual](http://manual.greatreadingadventure.com/en/latest/technical/appsettings/) for more
+  information
 - Activity earned from at a glance report
 
 ## [4.0.0-beta1] - 2018-04-13
+
 ### Added
+
 - Everything! First release of 4.0.
 
 [4.1.1]: https://github.com/mcld/greatreadingadventure/tree/v4.1.1

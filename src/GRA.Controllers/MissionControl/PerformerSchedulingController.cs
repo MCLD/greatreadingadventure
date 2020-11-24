@@ -578,7 +578,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [Authorize(Policy = Policy.SchedulePerformers)]
-        public async Task<JsonResult> GetProgramAvailableAgeGroupsAsync(int branchId, int programId)
+        public async Task<JsonResult> GetProgramAvailableAgeGroups(int branchId, int programId)
         {
             PsProgram program;
             try
@@ -886,9 +886,9 @@ namespace GRA.Controllers.MissionControl
                 ShowAlertDanger($"Unable to select kit: ", gex);
             }
 
-            if (addedBranchSelection.KitId.HasValue)
+            if (branchSelection?.KitId != null)
             {
-                return RedirectToAction(nameof(Kit), new { id = addedBranchSelection.KitId });
+                return RedirectToAction(nameof(Kit), new { id = branchSelection.KitId });
             }
             else
             {
@@ -897,7 +897,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [Authorize(Policy = Policy.SchedulePerformers)]
-        public async Task<JsonResult> GetKitAvailableAgeGroupsAsync(int branchId, int kitId)
+        public async Task<JsonResult> GetKitAvailableAgeGroups(int branchId, int kitId)
         {
             PsKit kit;
             try

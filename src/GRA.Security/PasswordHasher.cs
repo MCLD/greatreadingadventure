@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 namespace GRA.Security
 {
@@ -15,9 +15,10 @@ namespace GRA.Security
 
         public int Iterations { get; set; }
         private RandomNumberGenerator rng { get; set; }
-        public PasswordHasher(int iterations = 10000)
+        public PasswordHasher() : this(10000) { }
+        public PasswordHasher(int iterations)
         {
-            this.Iterations = iterations;
+            Iterations = iterations;
             rng = RandomNumberGenerator.Create();
         }
 

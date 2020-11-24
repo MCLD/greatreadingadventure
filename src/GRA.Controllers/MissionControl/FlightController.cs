@@ -80,7 +80,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateVendorCodesAsync(int numberOfCodes)
+        public async Task<IActionResult> CreateVendorCodes(int numberOfCodes)
         {
             var allCodes = await _vendorCodeService.GetTypeAllAsync();
             var code = allCodes.FirstOrDefault();
@@ -123,7 +123,7 @@ namespace GRA.Controllers.MissionControl
             });
         }
 
-        public async Task<IActionResult> RedeemSecretCodeAsync()
+        public async Task<IActionResult> RedeemSecretCode()
         {
             var userContext = _userContextProvider.GetContext();
             try
@@ -143,7 +143,7 @@ namespace GRA.Controllers.MissionControl
             });
         }
 
-        public async Task<IActionResult> AddQuestionnaireAsync()
+        public async Task<IActionResult> AddQuestionnaire()
         {
             var questionnaire = new Questionnaire
             {
@@ -181,7 +181,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public async Task<IActionResult> ReloadSiteCacheAsync()
+        public async Task<IActionResult> ReloadSiteCache()
         {
             var sw = Stopwatch.StartNew();
             await _siteLookupService.ReloadSiteCacheAsync();
