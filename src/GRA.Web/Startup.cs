@@ -229,6 +229,8 @@ namespace GRA.Web
                             .Throw(throwEvents.ToArray())
                             .Log(logEvents.ToArray())
                             .Ignore(ignoreEvents.ToArray())));
+                    services.AddHealthChecks()
+                        .AddSqlServer(cs);
                     break;
                 case ConnectionStringNameSQLite:
                     services.AddDbContextPool<Data.Context, Data.SQLite.SQLiteContext>(
@@ -237,6 +239,7 @@ namespace GRA.Web
                                 .Throw(throwEvents.ToArray())
                                 .Log(logEvents.ToArray())
                                 .Ignore(ignoreEvents.ToArray())));
+                    services.AddHealthChecks();
                     break;
                 default:
                     throw new GraFatalException($"Unknown GraConnectionStringName: {csName}");
@@ -589,6 +592,7 @@ namespace GRA.Web
                     name: null,
                     pattern: "{controller}/{action}/{id?}",
                     defaults: new { controller = "Home", action = "Index" });
+                _.MapHealthChecks("/health");
             });
 
             app.UseWebSockets(new WebSocketOptions
