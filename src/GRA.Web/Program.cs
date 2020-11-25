@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.PlatformAbstractions;
 using Serilog;
 
 namespace GRA.Web
@@ -103,7 +104,7 @@ namespace GRA.Web
             Host.CreateDefaultBuilder(args)
             .ConfigureWebHostDefaults(webBuilder =>
             {
-                webBuilder.UseContentRoot(System.IO.Directory.GetCurrentDirectory());
+                webBuilder.UseContentRoot(PlatformServices.Default.Application.ApplicationBasePath);
                 webBuilder.ConfigureAppConfiguration((_, config) =>
                 {
                     config.AddJsonFile("shared/appsettings.json",
