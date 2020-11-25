@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using GRA.Abstract;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.PlatformAbstractions;
 
 namespace GRA
 {
@@ -39,7 +40,9 @@ namespace GRA
             }
             else
             {
-                path = Path.Combine(Directory.GetCurrentDirectory(), "shared", "content");
+                path = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath,
+                    "shared",
+                    "content");
             }
             if (!string.IsNullOrEmpty(filePath))
             {
@@ -71,7 +74,9 @@ namespace GRA
 
         public string ResolvePrivateFilePath(string filePath = default)
         {
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "shared", "private");
+            string path = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath,
+                "shared",
+                "private");
 
             if (!string.IsNullOrEmpty(filePath))
             {
