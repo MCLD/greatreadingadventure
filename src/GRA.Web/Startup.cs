@@ -168,7 +168,8 @@ namespace GRA.Web
                 {
                     _.DataAnnotationLocalizerProvider = (__, factory)
                         => factory.Create(typeof(Resources.Shared));
-                });
+                })
+                .AddRazorRuntimeCompilation();
 
             // Add custom view directory
             services.Configure<RazorViewEngineOptions>(options =>
