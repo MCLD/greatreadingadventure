@@ -515,7 +515,7 @@ namespace GRA.Web
                 }
                 catch (Exception ex)
                 {
-                    throw new GraException($"Unable to create directory '{contentPath}' in {Directory.GetCurrentDirectory()}", ex);
+                    throw new GraException($"Unable to create directory '{contentPath}'", ex);
                 }
             }
 
