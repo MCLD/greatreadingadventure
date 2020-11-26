@@ -30,7 +30,9 @@ FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS publish-stage
 WORKDIR /app
 
 # Install curl for health monitoring
-RUN apt-get update && apt-get install --no-install-recommends -y curl && rm -rf /var/lib/apt/lists/*
+RUN apt-get update \
+	&& apt-get install --no-install-recommends -y curl=7.64.0-4+deb10u1 \
+	&& rm -rf /var/lib/apt/lists/*
 
 # Bring in metadata via --build-arg to publish-stage
 ARG BRANCH=unknown
