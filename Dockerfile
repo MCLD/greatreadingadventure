@@ -29,6 +29,11 @@ RUN cp /app/release-publish.bash "/app/publish/"
 FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS publish-stage
 WORKDIR /app
 
+# Install curl for health monitoring
+RUN apt-get update \
+	&& apt-get install --no-install-recommends -y curl=7.64.0-4+deb10u1 \
+	&& rm -rf /var/lib/apt/lists/*
+
 # Bring in metadata via --build-arg to publish-stage
 ARG BRANCH=unknown
 ARG IMAGE_CREATED=unknown
@@ -65,7 +70,7 @@ VOLUME ["/app/shared"]
 EXPOSE 80
 
 # Configure health check
-HEALTHCHECK CMD curl --fail http://localhost/health || exit
+HEALTHCHECK CMD curl --fail http://localhost/health/ || exit
 
 # Set entrypoint
 ENTRYPOINT ["dotnet", "GRA.Web.dll"]
