@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ using Serilog.Context;
 namespace GRA.Controllers.Filter
 {
     [AttributeUsage(AttributeTargets.All, AllowMultiple = false)]
-    public class SiteFilterAttribute : Attribute, IAsyncResourceFilter
+    public sealed class SiteFilterAttribute : Attribute, IAsyncResourceFilter
     {
         private readonly ILogger<SiteFilterAttribute> _logger;
         private readonly IDistributedCache _cache;
@@ -332,7 +333,9 @@ namespace GRA.Controllers.Filter
             var updatedLastModified = lastModified;
             if (string.IsNullOrEmpty(lastModified) && File.Exists(file))
             {
-                updatedLastModified = File.GetLastWriteTime(file).ToString("yyMMddHHmmss");
+                updatedLastModified = File
+                    .GetLastWriteTime(file)
+                    .ToString("yyMMddHHmmss", CultureInfo.InvariantCulture);
                 if (cacheMinutes > 0)
                 {
                     await _cache.SetStringAsync(cacheKey,

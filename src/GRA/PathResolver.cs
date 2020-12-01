@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using GRA.Abstract;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.PlatformAbstractions;
 
 namespace GRA
 {
@@ -22,7 +21,8 @@ namespace GRA
             }
             if (!string.IsNullOrEmpty(filePath))
             {
-                if (!path.EndsWith("/") && !filePath.StartsWith("/"))
+                if (!path.EndsWith("/", System.StringComparison.OrdinalIgnoreCase)
+                    && !filePath.StartsWith("/", System.StringComparison.OrdinalIgnoreCase))
                 {
                     path += "/";
                 }
@@ -40,18 +40,14 @@ namespace GRA
             }
             else
             {
-                path = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath,
+                path = Path.Combine(_config[ConfigurationKey.InternalContentPath],
                     "shared",
                     "content");
             }
-            if (!string.IsNullOrEmpty(filePath))
-            {
-                return Path.Combine(path, filePath);
-            }
-            else
-            {
-                return path;
-            }
+
+            return string.IsNullOrEmpty(filePath)
+                ? path
+                : Path.Combine(path, filePath);
         }
 
         public string ResolvePrivatePath(string filePath = default)
@@ -63,7 +59,8 @@ namespace GRA
             }
             if (!string.IsNullOrEmpty(filePath))
             {
-                if (!path.EndsWith("/") && !filePath.StartsWith("/"))
+                if (!path.EndsWith("/", System.StringComparison.OrdinalIgnoreCase)
+                    && !filePath.StartsWith("/", System.StringComparison.OrdinalIgnoreCase))
                 {
                     path += "/";
                 }
@@ -74,18 +71,13 @@ namespace GRA
 
         public string ResolvePrivateFilePath(string filePath = default)
         {
-            string path = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath,
+            string path = Path.Combine(_config[ConfigurationKey.InternalContentPath],
                 "shared",
                 "private");
 
-            if (!string.IsNullOrEmpty(filePath))
-            {
-                return Path.Combine(path, filePath);
-            }
-            else
-            {
-                return path;
-            }
+            return string.IsNullOrEmpty(filePath)
+                ? path
+                : Path.Combine(path, filePath);
         }
 
         public string ResolvePrivateTempFilePath(string filePath = default)
@@ -97,14 +89,9 @@ namespace GRA
                 Directory.CreateDirectory(tempPath);
             }
 
-            if (string.IsNullOrEmpty(filePath))
-            {
-                return Path.Combine(tempPath, Path.GetRandomFileName());
-            }
-            else
-            {
-                return Path.Combine(tempPath, filePath);
-            }
+            return string.IsNullOrEmpty(filePath)
+                ? Path.Combine(tempPath, Path.GetRandomFileName())
+                : Path.Combine(tempPath, filePath);
         }
     }
 }

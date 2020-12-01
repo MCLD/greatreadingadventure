@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Microsoft.Extensions.PlatformAbstractions;
 
 namespace GRA
 {
@@ -19,24 +18,14 @@ namespace GRA
         public static readonly string RegistrationOpen = "IndexRegistrationOpen";
         public static readonly string ExitRegistrationOpen = "ExitRegistrationOpen";
 
-        public static IEnumerable<string> CopyToShared()
+        public static IEnumerable<string> CopyToShared(string contentRoot)
         {
             var issues = new List<string>();
 
-            var viewsPath = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath,
-                "Views");
-            var sharedViewsPath
-                = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath,
-                    "shared",
-                    "views");
-            var templatePath
-                = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath,
-                    "shared",
-                    "templates");
-            var contentPath
-                = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath,
-                    "shared",
-                    "content");
+            var viewsPath = Path.Combine(contentRoot, "Views");
+            var sharedViewsPath = Path.Combine(contentRoot, "shared", "views");
+            var templatePath = Path.Combine(contentRoot, "shared", "templates");
+            var contentPath = Path.Combine(contentRoot, "shared", "content");
 
             Directory.CreateDirectory(sharedViewsPath);
             Directory.CreateDirectory(templatePath);
@@ -57,7 +46,8 @@ namespace GRA
                 }
             }
 
-            var viewPath = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath,
+
+            var viewPath = Path.Combine(contentRoot,
                 "Views",
                 "Home");
             templatePath = Path.Combine(templatePath, "Home");
@@ -79,7 +69,7 @@ namespace GRA
             }
 
             var defaultFaviconPath
-                = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath,
+                = Path.Combine(contentRoot,
                     "assets",
                     "defaultfavicon");
 
@@ -108,7 +98,7 @@ namespace GRA
             }
 
             var defaultImagesPath
-                = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath,
+                = Path.Combine(contentRoot,
                     "assets",
                     "defaultimages");
 

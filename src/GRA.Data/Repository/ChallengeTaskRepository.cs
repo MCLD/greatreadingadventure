@@ -36,25 +36,43 @@ namespace GRA.Data.Repository
 
         public override async Task AddAsync(int userId, ChallengeTask domainEntity)
         {
+            if (domainEntity == null)
+            {
+                throw new ArgumentNullException(nameof(domainEntity));
+            }
+
             await LookUpChallengeTaskTypeAsync(domainEntity);
-            domainEntity.Position = DbSet
+            domainEntity.Position = await DbSet
                 .Where(_ => _.ChallengeId == domainEntity.ChallengeId)
-                .DefaultIfEmpty()
-                .Max(_ => _.Position) + 1;
+                .OrderByDescending(_ => _.Position)
+                .Select(_ => _.Position)
+                .FirstOrDefaultAsync() + 1;
             await base.AddAsync(userId, domainEntity);
         }
 
         public override async Task<ChallengeTask> AddSaveAsync(int userId, ChallengeTask domainEntity)
         {
+            if (domainEntity == null)
+            {
+                throw new ArgumentNullException(nameof(domainEntity));
+            }
+
             await LookUpChallengeTaskTypeAsync(domainEntity);
-            domainEntity.Position = DbSet
+            domainEntity.Position = await DbSet
                 .Where(_ => _.ChallengeId == domainEntity.ChallengeId)
-                .DefaultIfEmpty()
-                .Max(_ => _.Position) + 1;
+                .OrderByDescending(_ => _.Position)
+                .Select(_ => _.Position)
+                .FirstOrDefaultAsync() + 1;
             return await base.AddSaveAsync(userId, domainEntity);
         }
+
         public override async Task UpdateAsync(int userId, ChallengeTask domainEntity)
         {
+            if (domainEntity == null)
+            {
+                throw new ArgumentNullException(nameof(domainEntity));
+            }
+
             await LookUpChallengeTaskTypeAsync(domainEntity);
             await base.UpdateAsync(userId, domainEntity);
         }
