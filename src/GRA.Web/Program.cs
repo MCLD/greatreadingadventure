@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -11,37 +12,39 @@ namespace GRA.Web
 {
     public static class Program
     {
+        private const string EnvRunningInContainer = "DOTNET_RUNNING_IN_CONTAINER";
+        private const string EnvAspNetCoreEnv = "ASPNETCORE_ENVIRONMENT";
+        private const string DevEnvironment = "Development";
+
         public static int Main(string[] args)
         {
-            var issues = ViewTemplates.CopyToShared();
-
-            // now that we have logging present in our config, we must create the webhost
             using var webhost = CreateHostBuilder(args).Build();
-            string instance = null;
-            string webRootPath = null;
 
-            // perform initialization
             using var scope = webhost.Services.CreateScope();
             var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
 
-            instance = config[ConfigurationKey.InstanceName] ?? "n/a";
+            var instance = config[ConfigurationKey.InstanceName] ?? "n/a";
 
-            webRootPath = scope.ServiceProvider
-                .GetRequiredService<IWebHostEnvironment>().WebRootPath;
+            var webHostEnvironment = scope.ServiceProvider
+                .GetRequiredService<IWebHostEnvironment>();
 
             Log.Logger = LogConfig.Build(config).CreateLogger();
-            Log.Information("GRA v{Version} instance {Instance} starting up in {WebRootPath}",
+            Log.Information("GRA v{Version} instance {Instance} environment {Environment} in {WebRootPath} with content root {ContentRoot}",
                 new Version().GetVersion(),
                 instance,
-                webRootPath);
+                config[EnvAspNetCoreEnv],
+                webHostEnvironment.WebRootPath,
+                config[ConfigurationKey.InternalContentPath]);
 
-            if (!string.IsNullOrEmpty(config["DOTNET_RUNNING_IN_CONTAINER"]))
+            if (!string.IsNullOrEmpty(config[EnvRunningInContainer]))
             {
                 Log.Information("Containerized: commit {ContainerCommit} created on {ContainerDate} image {ContainerImageVersion}",
                     config["org.opencontainers.image.revision"] ?? "unknown",
                     config["org.opencontainers.image.created"] ?? "unknown",
                     config["org.opencontainers.image.version"] ?? "unknown");
             }
+
+            var issues = ViewTemplates.CopyToShared(config[ConfigurationKey.InternalContentPath]);
 
             foreach (string issue in issues)
             {
@@ -100,20 +103,31 @@ namespace GRA.Web
             }
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-            .ConfigureWebHostDefaults(webBuilder =>
-            {
-                webBuilder.UseContentRoot(PlatformServices.Default.Application.ApplicationBasePath);
-                webBuilder.ConfigureAppConfiguration((_, config) =>
-                {
-                    config.AddJsonFile("shared/appsettings.json",
-                        optional: true,
-                        reloadOnChange: true)
-                    .AddEnvironmentVariables();
-                });
-                webBuilder.ConfigureKestrel(_ => { }).UseStartup<Startup>();
-            })
-            .UseSerilog();
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            var contentRoot
+                = Environment.GetEnvironmentVariable(EnvAspNetCoreEnv) == DevEnvironment
+                    ? System.IO.Directory.GetCurrentDirectory()
+                    : PlatformServices.Default.Application.ApplicationBasePath;
+
+            return Host.CreateDefaultBuilder(args)
+                       .ConfigureWebHostDefaults(webBuilder =>
+                       {
+                           webBuilder.UseContentRoot(contentRoot);
+                           webBuilder.ConfigureAppConfiguration((_, config) =>
+                           {
+                               config.AddJsonFile("shared/appsettings.json",
+                                   optional: true,
+                                   reloadOnChange: true)
+                               .AddInMemoryCollection(new Dictionary<string, string>
+                               {
+                                    { ConfigurationKey.InternalContentPath, contentRoot }
+                               })
+                               .AddEnvironmentVariables();
+                           });
+                           webBuilder.ConfigureKestrel(_ => { }).UseStartup<Startup>();
+                       })
+                       .UseSerilog();
+        }
     }
 }
