@@ -1,0 +1,12 @@
+name: Run dotnet outdated
+
+on: [pull_request]
+
+jobs:
+  dotnet-outdated:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: mcld/dotnet-outdated-action@v1
