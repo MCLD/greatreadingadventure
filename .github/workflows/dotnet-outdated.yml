@@ -1,6 +1,9 @@
 name: Run dotnet outdated
 
-on: [pull_request]
+on:
+  pull_request:
+  schedule:
+    - cron: '0 5 * * 5'
 
 jobs:
   dotnet-outdated:
