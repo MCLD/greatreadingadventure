@@ -439,7 +439,23 @@
 
 @if (Model.Carousel != null)
 {
-    <div class="row gra-js-required gra-carousel-container">
+    <div class="sr-only">
+    @if (!string.IsNullOrEmpty(Model.Carousel.Heading))
+        {
+            <h2>
+                @Model.Carousel.Heading
+            </h2>
+        }
+        <ul>
+            @foreach (var item in Model.Carousel.Items)
+            {
+                <li>
+                    @item.Title
+                </li>
+            }
+        </ul>
+    </div>
+    <div class="row gra-js-required gra-carousel-container" aria-hidden="true">
         <div class="col-xs-12">
             <div class="panel panel-default">
                 @if (!string.IsNullOrEmpty(Model.Carousel.Heading))
