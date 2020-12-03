@@ -43,7 +43,7 @@ namespace GRA.Controllers.MissionControl
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new
@@ -109,7 +109,7 @@ namespace GRA.Controllers.MissionControl
                 await _categoryService.RemoveAsync(model.Category.Id);
                 ShowAlertSuccess($"Category \"{model.Category.Name}\" removed!");
             }
-            catch(GraException gex)
+            catch (GraException gex)
             {
                 ShowAlertDanger("Unable to remove Category: ", gex);
             }

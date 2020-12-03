@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -32,7 +33,13 @@ namespace GRA.Domain.Report.Abstract
 
         protected async Task<ReportRequest> StartRequestAsync(ReportRequest request)
         {
-            (_timer ?? (_timer = new Stopwatch())).Start();
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            var stopwatch = _timer ??= new Stopwatch();
+            stopwatch.Start();
 
             request.Started = _serviceFacade.DateTimeProvider.Now;
             request.Finished = null;
@@ -45,7 +52,7 @@ namespace GRA.Domain.Report.Abstract
         protected string StopTimerOutputMs()
         {
             _timer.Stop();
-            string elapsed = _timer.ElapsedMilliseconds.ToString();
+            string elapsed = _timer.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture);
             _timer = null;
             return elapsed;
         }

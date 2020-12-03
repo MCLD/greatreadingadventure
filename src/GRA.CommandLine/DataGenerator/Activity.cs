@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GRA.CommandLine.FakeWeb;
+using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
-using GRA.Domain.Model;
 using Microsoft.Extensions.Logging;
-using GRA.CommandLine.FakeWeb;
 
 namespace GRA.CommandLine.DataGenerator
 {
@@ -75,7 +75,6 @@ namespace GRA.CommandLine.DataGenerator
                     };
                     if (challengePercent > 0 && rand.Int(1, 100) <= challengePercent)
                     {
-
                         bool isValid = false;
                         int challengeLookupCount = 0;
                         await _configureUserSite.Lookup(randomUser.Id);
@@ -161,6 +160,5 @@ namespace GRA.CommandLine.DataGenerator
             }
             return activities;
         }
-
     }
 }

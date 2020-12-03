@@ -65,19 +65,16 @@ namespace GRA.CommandLine.Commands
                 _.OnExecuteAsync(async cancellationToken =>
                 {
                     bool quiet = displayStatusOption.HasValue()
-                        && displayStatusOption.Value().Equals("on", StringComparison.CurrentCultureIgnoreCase);
+                        && displayStatusOption.Value().Equals("on", StringComparison.OrdinalIgnoreCase);
 
                     bool household = householdOption.HasValue()
-                        && householdOption.Value().Equals("on", StringComparison.CurrentCultureIgnoreCase);
+                        && householdOption.Value().Equals("on", StringComparison.OrdinalIgnoreCase);
 
                     int repeat = 1;
 
-                    if(repeatOption.HasValue())
+                    if (repeatOption.HasValue() && !int.TryParse(repeatOption.Value(), out repeat))
                     {
-                        if (!int.TryParse(repeatOption.Value(), out repeat))
-                        {
-                            throw new ArgumentException("Error: <count> must be a number of times to repeat.");
-                        }
+                        throw new ArgumentException("Error: <count> must be a number of times to repeat.");
                     }
 
                     if (createRandomOption.HasValue())
@@ -87,7 +84,7 @@ namespace GRA.CommandLine.Commands
                             throw new ArgumentException("Error: <count> must be a number of users to create.");
                         }
                         int result = 0;
-                        while(repeat >= 1)
+                        while (repeat >= 1)
                         {
                             var thisResult = await CreateUsers(howMany, household, quiet);
                             result = Math.Max(result, thisResult);

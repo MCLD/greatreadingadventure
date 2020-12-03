@@ -1,7 +1,7 @@
-﻿using GRA.Domain.Model;
-using GRA.Domain.Model.Filters;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 
 namespace GRA.Domain.Repository
 {
@@ -11,7 +11,7 @@ namespace GRA.Domain.Repository
         Task<ICollection<AvatarItem>> GetUserItemsByLayerAsync(int userId, int layerId);
         Task<bool> HasUserUnlockedItemAsync(int userId, int itemId);
         Task<ICollection<int>> GetUserUnlockedItemsAsync(int userId);
-        Task AddUserItemsAsync(int userId, List<int> itemId);
+        Task AddUserItemsAsync(int userId, List<int> itemIds);
         Task<int> CountAsync(AvatarFilter filter);
         Task<ICollection<AvatarItem>> PageAsync(AvatarFilter filter);
         Task<int> GetLayerAvailableItemCountAsync(int layerId);

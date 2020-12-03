@@ -5,7 +5,7 @@ namespace GRA.Domain.Repository.Extensions
 {
     public static class StringExtensions
     {
-        public static IEnumerable<String> SplitInParts(this string s, int partLength)
+        public static IEnumerable<string> SplitInParts(this string s, int partLength)
         {
             if (s == null)
             {

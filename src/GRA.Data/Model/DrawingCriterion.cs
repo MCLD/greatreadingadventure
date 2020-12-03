@@ -28,6 +28,6 @@ namespace GRA.Data.Model
         public bool IncludeAdmin { get; set; }
         public bool ExcludePreviousWinners { get; set; }
 
-        public ICollection<DrawingCriterionProgram> CriterionPrograms  { get; set; }
+        public ICollection<DrawingCriterionProgram> CriterionPrograms { get; set; }
     }
 }

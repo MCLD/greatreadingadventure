@@ -27,7 +27,7 @@ namespace GRA.Data
         protected readonly IEntitySerializer _entitySerializer;
 
         private DbSet<DbEntity> _dbSet;
-        private DbSet<AuditLog> _auditSet;
+        private readonly DbSet<AuditLog> _auditSet;
 
         internal AuditingRepository(ServiceFacade.Repository repositoryFacade,
             ILogger<IRepository<DomainEntity>> logger)
@@ -111,7 +111,7 @@ namespace GRA.Data
             }
         }
 
-        public async virtual Task<IEnumerable<DomainEntity>> PageAllAsync(int skip, int take)
+        public virtual async Task<IEnumerable<DomainEntity>> PageAllAsync(int skip, int take)
         {
             return await DbSet
                 .AsNoTracking()
@@ -122,7 +122,7 @@ namespace GRA.Data
                 .ToListAsync();
         }
 
-        public async virtual Task<DomainEntity> GetByIdAsync(int id)
+        public virtual async Task<DomainEntity> GetByIdAsync(int id)
         {
             var entity = await DbSet
                 .AsNoTracking()
@@ -166,7 +166,7 @@ namespace GRA.Data
             dbEntity.CreatedBy = userId;
             dbEntity.CreatedAt = _dateTimeProvider.Now;
             EntityEntry<DbEntity> dbEntityEntry = _context.Entry(dbEntity);
-            if (dbEntityEntry.State != (EntityState)EntityState.Detached)
+            if (dbEntityEntry.State != EntityState.Detached)
             {
                 dbEntityEntry.State = EntityState.Added;
             }

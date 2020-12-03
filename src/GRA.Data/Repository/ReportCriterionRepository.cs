@@ -7,7 +7,7 @@ namespace GRA.Data.Repository
         : AuditingRepository<Model.ReportCriterion, Domain.Model.ReportCriterion>,
         IReportCriterionRepository
     {
-        public ReportCriterionRepository(ServiceFacade.Repository repositoryFacade, 
+        public ReportCriterionRepository(ServiceFacade.Repository repositoryFacade,
             ILogger<ReportCriterionRepository> logger) : base(repositoryFacade, logger)
         {
         }

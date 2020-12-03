@@ -1,14 +1,14 @@
-﻿using AutoMapper.QueryableExtensions;
-using GRA.Domain.Model;
-using GRA.Domain.Repository;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper.QueryableExtensions;
+using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
+using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace GRA.Data.Repository
 {
@@ -63,7 +63,7 @@ namespace GRA.Data.Repository
             {
                 IQueryable<Model.Drawing> nullList = null;
                 IQueryable<Model.Drawing> valueList = null;
-                if (filter.ProgramIds.Any(_ => _.HasValue == false))
+                if (filter.ProgramIds.Any(_ => !_.HasValue))
                 {
                     nullList = drawingList.Where(_ => _.DrawingCriterion.ProgramId == null);
                 }
@@ -111,7 +111,7 @@ namespace GRA.Data.Repository
 
             drawing.Winners = await _context.PrizeWinners
                 .AsNoTracking()
-                .Where(_ => _.DrawingId == id && _.User.IsDeleted == false)
+                .Where(_ => _.DrawingId == id && !_.User.IsDeleted)
                 .OrderBy(_ => _.User.LastName)
                 .ThenBy(_ => _.User.FirstName)
                 .ThenBy(_ => _.UserId)

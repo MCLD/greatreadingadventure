@@ -73,13 +73,13 @@ namespace GRA.Domain.Service
                         dbCulture.IsDefault = dbCulture.Name == Culture.DefaultName;
                         doSave = true;
                     }
-                    if(dbCulture.IsDefault 
+                    if (dbCulture.IsDefault
                         && dbCulture.Description != Culture.DefaultCulture.DisplayName)
                     {
                         dbCulture.Description = Culture.DefaultCulture.DisplayName;
                         doSave = true;
                     }
-                    if(doSave)
+                    if (doSave)
                     {
                         await _languageRepository.UpdateSaveNoAuditAsync(dbCulture);
                     }

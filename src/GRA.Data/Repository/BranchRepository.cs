@@ -98,14 +98,12 @@ namespace GRA.Data.Repository
         public async Task UpdateCreatedByAsync(int userId, int branchId)
         {
             var branch = DbSet.Where(_ => _.Id == branchId).SingleOrDefault();
-            if (branch != null)
+            if (branch != null
+                && branch.CreatedBy == Defaults.InitialInsertUserId)
             {
-                if (branch.CreatedBy == Defaults.InitialInsertUserId)
-                {
-                    branch.CreatedBy = userId;
-                    DbSet.Update(branch);
-                    await _context.SaveChangesAsync();
-                }
+                branch.CreatedBy = userId;
+                DbSet.Update(branch);
+                await _context.SaveChangesAsync();
             }
         }
     }

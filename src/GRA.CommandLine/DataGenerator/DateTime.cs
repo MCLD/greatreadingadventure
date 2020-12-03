@@ -5,7 +5,7 @@ using GRA.Domain.Model;
 
 namespace GRA.CommandLine.DataGenerator
 {
-    class DateTime
+    internal class DateTime
     {
         private readonly Faker _faker;
         private readonly SettableDateTimeProvider _dateTimeProvider;
@@ -33,7 +33,6 @@ namespace GRA.CommandLine.DataGenerator
                     .Date
                     .Between((System.DateTime)site.RegistrationOpens,
                         (System.DateTime)site.ProgramEnds);
-
             }
             else
             {
@@ -64,6 +63,5 @@ namespace GRA.CommandLine.DataGenerator
             _dateTimeProvider.SetDateTime(generated);
             return generated;
         }
-
     }
 }

@@ -1,8 +1,8 @@
-﻿using GRA.Domain.Model;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using GRA.Domain.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Collections.Generic;
-using System.ComponentModel;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Triggers
 {

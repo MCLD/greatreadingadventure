@@ -195,7 +195,7 @@ namespace GRA.Security
             return ((uint)(buffer[offset + 0]) << 24)
                 | ((uint)(buffer[offset + 1]) << 16)
                 | ((uint)(buffer[offset + 2]) << 8)
-                | ((uint)(buffer[offset + 3]));
+                | buffer[offset + 3];
         }
 
         private static void WriteNetworkByteOrder(byte[] buffer, int offset, uint value)

@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel;
-using GRA.Domain.Model; 
+using GRA.Domain.Model;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GRA.Controllers.ViewModel.Shared

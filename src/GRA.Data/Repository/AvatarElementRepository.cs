@@ -47,7 +47,7 @@ namespace GRA.Data.Repository
             var elementsToAdd = elementIds.Except(userAvatar.Select(_ => _.AvatarElementId));
             foreach (var elementId in elementsToAdd)
             {
-               await _context.AddAsync(new Model.UserAvatar
+                await _context.AddAsync(new Model.UserAvatar
                 {
                     UserId = userId,
                     AvatarElementId = elementId

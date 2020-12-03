@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
-using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using AutoMapper.QueryableExtensions;
+using Microsoft.Extensions.Logging;
 
 namespace GRA.Data.Repository
 {
@@ -22,9 +21,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.IsDeleted == false
-                       && _.IsBroadcast == false
-                       && _.SiteId == siteId)
+                .Where(_ => !_.IsDeleted && !_.IsBroadcast && _.SiteId == siteId)
                 .OrderByDescending(_ => _.CreatedAt)
                 .Skip(skip)
                 .Take(take)
@@ -36,7 +33,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.IsDeleted == false && _.SiteId == siteId && _.IsBroadcast == false)
+                .Where(_ => !_.IsDeleted && _.SiteId == siteId && !_.IsBroadcast)
                 .CountAsync();
         }
 
@@ -44,10 +41,10 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.IsDeleted == false
+                .Where(_ => !_.IsDeleted
                     && _.SiteId == siteId
                     && _.ToUserId == null
-                    && _.IsRepliedTo == false)
+                    && !_.IsRepliedTo)
                 .CountAsync();
         }
 
@@ -55,10 +52,10 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.IsDeleted == false
+                .Where(_ => !_.IsDeleted
                     && _.SiteId == siteId
                     && _.ToUserId == null
-                    && _.IsRepliedTo == false)
+                    && !_.IsRepliedTo)
                 .OrderByDescending(_ => _.CreatedAt)
                 .Skip(skip)
                 .Take(take)
@@ -81,8 +78,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.IsDeleted == false
-                    && (_.ToUserId == userId || _.FromUserId == userId))
+                .Where(_ => !_.IsDeleted && (_.ToUserId == userId || _.FromUserId == userId))
                 .CountAsync();
         }
 
@@ -90,16 +86,14 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.IsDeleted == false
-                    && _.ToUserId == userId)
+                .Where(_ => !_.IsDeleted && _.ToUserId == userId)
                 .CountAsync();
         }
         public async Task<IEnumerable<Mail>> PageUserAsync(int userId, int skip, int take)
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.IsDeleted == false
-                    && (_.ToUserId == userId || _.FromUserId == userId))
+                .Where(_ => !_.IsDeleted && (_.ToUserId == userId || _.FromUserId == userId))
                 .OrderByDescending(_ => _.CreatedAt)
                 .Skip(skip)
                 .Take(take)
@@ -111,8 +105,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.IsDeleted == false
-                    && _.ToUserId == userId)
+                .Where(_ => !_.IsDeleted && _.ToUserId == userId)
                 .OrderByDescending(_ => _.CreatedAt)
                 .Skip(skip)
                 .Take(take)
@@ -124,9 +117,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.IsDeleted == false
-                    && _.ToUserId == userId
-                    && _.IsNew == true)
+                .Where(_ => !_.IsDeleted && _.ToUserId == userId && _.IsNew)
                 .CountAsync();
         }
 
@@ -148,7 +139,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.IsDeleted == false && _.Id == id)
+                .Where(_ => !_.IsDeleted && _.Id == id)
                 .ProjectTo<Mail>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
         }
@@ -156,7 +147,7 @@ namespace GRA.Data.Repository
         public override async Task RemoveSaveAsync(int userId, int id)
         {
             var entity = await DbSet
-                .Where(_ => _.IsDeleted == false && _.Id == id)
+                .Where(_ => !_.IsDeleted && _.Id == id)
                 .SingleAsync();
             entity.IsDeleted = true;
             await base.UpdateAsync(userId, entity, null);
@@ -166,7 +157,7 @@ namespace GRA.Data.Repository
         public async Task<bool> UserHasUnreadAsync(int userId)
         {
             return await DbSet.AsNoTracking()
-                .Where(_ => _.ToUserId == userId && _.IsNew == true && _.IsDeleted == false)
+                .Where(_ => _.ToUserId == userId && _.IsNew && !_.IsDeleted)
                 .AnyAsync();
         }
 

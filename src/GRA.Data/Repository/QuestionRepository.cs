@@ -20,7 +20,7 @@ namespace GRA.Data.Repository
         public async Task<IList<Question>> GetByQuestionnaireIdAsync(int questionnaireId, bool includeAnswer)
         {
             var questions = DbSet.AsNoTracking()
-                .Where(_ => _.QuestionnaireId == questionnaireId && _.IsDeleted == false)
+                .Where(_ => _.QuestionnaireId == questionnaireId && !_.IsDeleted)
                 .OrderBy(_ => _.SortOrder);
 
             if (includeAnswer)
@@ -40,7 +40,7 @@ namespace GRA.Data.Repository
         public override async Task RemoveSaveAsync(int userId, int id)
         {
             var entity = await DbSet
-                .Where(_ => _.IsDeleted == false && _.Id == id)
+                .Where(_ => !_.IsDeleted && _.Id == id)
                 .SingleAsync();
             entity.IsDeleted = true;
             await base.UpdateAsync(userId, entity, null);

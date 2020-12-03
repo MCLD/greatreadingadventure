@@ -1,13 +1,13 @@
-﻿using AutoMapper.QueryableExtensions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GRA.Data.Repository
 {
@@ -155,13 +155,13 @@ namespace GRA.Data.Repository
         {
             var users = _context.Users
                 .AsNoTracking()
-                .Where(_ => _.IsDeleted == false && _.SiteId == criterion.SiteId);
+                .Where(_ => !_.IsDeleted && _.SiteId == criterion.SiteId);
 
             if (criterion.ProgramId != null)
             {
                 users = users.Where(_ => _.ProgramId == criterion.ProgramId);
             }
-            else if (criterion.ProgramIds?.Count() > 0)
+            else if (criterion.ProgramIds?.Count > 0)
             {
                 users = users.Where(_ => criterion.ProgramIds.Contains(_.ProgramId));
             }
@@ -178,7 +178,7 @@ namespace GRA.Data.Repository
 
             if (!criterion.IncludeAdmin)
             {
-                users = users.Where(_ => _.IsAdmin == false);
+                users = users.Where(_ => !_.IsAdmin);
             }
 
             if (criterion.ExcludePreviousWinners)
@@ -199,8 +199,7 @@ namespace GRA.Data.Repository
             {
                 var userLog = _context.UserLogs
                     .AsNoTracking()
-                    .Where(_ => _.IsDeleted == false
-                        && _.ActivityEarned > 0
+                    .Where(_ => !_.IsDeleted && _.ActivityEarned > 0
                         && _.PointTranslationId.HasValue
                         && userIds.Contains(_.UserId));
 
@@ -224,8 +223,7 @@ namespace GRA.Data.Repository
 
                 var userLog = _context.UserLogs
                     .AsNoTracking()
-                    .Where(_ => _.IsDeleted == false
-                    && pointUserStart.Contains(_.UserId));
+                    .Where(_ => !_.IsDeleted && pointUserStart.Contains(_.UserId));
 
                 if (criterion.StartOfPeriod != null)
                 {

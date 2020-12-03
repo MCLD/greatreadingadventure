@@ -6,4 +6,3 @@
         public static readonly string SQLiteCS = "Filename=./shared/gra.db";
     }
 }
- 
