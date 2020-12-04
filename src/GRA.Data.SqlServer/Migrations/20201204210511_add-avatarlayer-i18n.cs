@@ -37,7 +37,7 @@ namespace GRA.Data.SqlServer.Migrations
                 table: "AvatarLayerTexts",
                 column: "LanguageId");
 
-            migrationBuilder.Sql("INSERT INTO [AvatarLayerTexts] SELECT [Id] [AvatarLayerId], 1 [LanguageId], [Name], 'Remove ' + [Name] [RemoveLabel] FROM [AvatarLayers] ORDER BY [Id];");
+            migrationBuilder.Sql("INSERT INTO [AvatarLayerTexts] SELECT [Id] [AvatarLayerId], 1 [LanguageId], [Name], 'No ' + [Name] [RemoveLabel] FROM [AvatarLayers] ORDER BY [Id];");
 
             migrationBuilder.DropColumn(
                 name: "Name",
