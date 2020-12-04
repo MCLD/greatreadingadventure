@@ -84,7 +84,8 @@ namespace GRA.Domain.Service
                 var filePath = _pathResolver.ResolveContentPath($"site{siteId}/avatars/");
                 foreach (var layer in layers)
                 {
-                    var layerText = _avatarLayerRepository.GetNameAndLabelByLanguageId(layer.Id, currentLanguageId);
+                    var layerText = _avatarLayerRepository
+                        .GetNameAndLabelByLanguageId(layer.Id, currentLanguageId);
                     layer.Name = layerText["Name"];
                     layer.RemoveLabel = layerText["RemoveLabel"];
                     layer.AvatarItems = await _avatarItemRepository
@@ -158,7 +159,8 @@ namespace GRA.Domain.Service
             {
                 foreach (var layer in layers.ToList())
                 {
-                    var layerText = _avatarLayerRepository.GetNameAndLabelByLanguageId(layer.Id, currentLanguageId);
+                    var layerText = _avatarLayerRepository
+                        .GetNameAndLabelByLanguageId(layer.Id, currentLanguageId);
                     layer.Name = layerText["Name"];
                     layer.RemoveLabel = layerText["RemoveLabel"];
                 }
@@ -417,7 +419,8 @@ namespace GRA.Domain.Service
             {
                 foreach (var layer in layers.ToList())
                 {
-                    var layerText = _avatarLayerRepository.GetNameAndLabelByLanguageId(layer.Id, currentLanguageId);
+                    var layerText = _avatarLayerRepository
+                        .GetNameAndLabelByLanguageId(layer.Id, currentLanguageId);
                     layer.Name = layerText["Name"];
                     layer.RemoveLabel = layerText["RemoveLabel"];
                 }
