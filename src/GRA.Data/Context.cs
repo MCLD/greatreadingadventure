@@ -150,7 +150,7 @@ namespace GRA.Data
         public DbSet<Model.AvatarElement> AvatarElements { get; set; }
         public DbSet<Model.AvatarItem> AvatarItems { get; set; }
         public DbSet<Model.AvatarLayer> AvatarLayers { get; set; }
-        public DbSet<Model.AvatarLayerText> AvatarLayerText { get; set; }
+        public DbSet<Model.AvatarLayerText> AvatarLayerTexts { get; set; }
         public DbSet<Model.Badge> Badges { get; set; }
         public DbSet<Model.Book> Books { get; set; }
         public DbSet<Model.Branch> Branches { get; set; }

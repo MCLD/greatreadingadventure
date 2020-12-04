@@ -8,7 +8,6 @@ namespace GRA.Data.Model
     {
         [Required]
         public int SiteId { get; set; }
-
         [Required]
         public int Position { get; set; }
         public bool CanBeEmpty { get; set; }

@@ -49,12 +49,12 @@ namespace GRA.Data.Repository
                 RemoveLabel = text.RemoveLabel
             };
 
-            await _context.AvatarLayerText
+            await _context.AvatarLayerTexts
                 .AddAsync(layerText);
         }
         public Dictionary<string, string> GetNameAndLabelByLanguageId(int layerId, int languageId)
         {
-            var layerText = _context.AvatarLayerText
+            var layerText = _context.AvatarLayerTexts
                    .AsNoTracking()
                    .Where(_ => _.AvatarLayerId == layerId && _.LanguageId == languageId)
                    .FirstOrDefault();
