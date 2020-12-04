@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -33,7 +34,7 @@ namespace GRA.Domain.Service
 
             var program = await _siteService.GetProgramByIdAsync(programId);
 
-            using (var csv = new CsvHelper.CsvReader(csvStream))
+            using (var csv = new CsvHelper.CsvReader(csvStream, CultureInfo.InvariantCulture))
             {
                 try
                 {

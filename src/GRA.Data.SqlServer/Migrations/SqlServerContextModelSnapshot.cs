@@ -1448,6 +1448,8 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<int>("UserId");
 
+                    b.Property<int?>("VendorCodeId");
+
                     b.HasKey("Id");
 
                     b.HasIndex("TriggerId");
@@ -1584,6 +1586,8 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<DateTime>("CreatedAt");
 
                     b.Property<int>("CreatedBy");
+
+                    b.Property<bool>("IsDeleted");
 
                     b.Property<int?>("KitId");
 
@@ -2263,8 +2267,6 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<bool>("IsHttpsForced");
 
-                    b.Property<int?>("MaxPointsPerChallengeTask");
-
                     b.Property<string>("MetaDescription")
                         .HasMaxLength(150);
 
@@ -2746,6 +2748,23 @@ namespace GRA.Data.SqlServer.Migrations
                     b.ToTable("UserFavoriteChallenges");
                 });
 
+            modelBuilder.Entity("GRA.Data.Model.UserFavoriteEvent", b =>
+                {
+                    b.Property<int>("UserId");
+
+                    b.Property<int>("EventId");
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("CreatedBy");
+
+                    b.HasKey("UserId", "EventId");
+
+                    b.HasIndex("EventId");
+
+                    b.ToTable("UserFavoriteEvents");
+                });
+
             modelBuilder.Entity("GRA.Data.Model.UserLog", b =>
                 {
                     b.Property<int>("Id")
@@ -2770,6 +2789,8 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<string>("Description");
 
+                    b.Property<int?>("EventId");
+
                     b.Property<bool?>("HasBeenViewed");
 
                     b.Property<bool>("IsDeleted");
@@ -2777,6 +2798,8 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<int?>("PointTranslationId");
 
                     b.Property<int>("PointsEarned");
+
+                    b.Property<int?>("TriggerId");
 
                     b.Property<int>("UserId");
 
@@ -2844,6 +2867,8 @@ namespace GRA.Data.SqlServer.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("BranchId");
+
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(255);
@@ -2893,6 +2918,8 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("AwardPrizeOnShipDate");
 
                     b.Property<DateTime>("CreatedAt");
 
@@ -3604,6 +3631,19 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.Challenge", "Challenge")
                         .WithMany()
                         .HasForeignKey("ChallengeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GRA.Data.Model.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.UserFavoriteEvent", b =>
+                {
+                    b.HasOne("GRA.Data.Model.Event", "Event")
+                        .WithMany()
+                        .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("GRA.Data.Model.User", "User")

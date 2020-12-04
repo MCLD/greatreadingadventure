@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
@@ -12,7 +11,7 @@ using Microsoft.Extensions.Logging;
 namespace GRA.Data.Repository
 {
     public class EmailTemplateRepository
-        : AuditingRepository<Model.EmailTemplate, Domain.Model.EmailTemplate>,
+        : AuditingRepository<Model.EmailTemplate, EmailTemplate>,
         IEmailTemplateRepository
     {
         public EmailTemplateRepository(ServiceFacade.Repository repositoryFacade,
@@ -29,8 +28,12 @@ namespace GRA.Data.Repository
             var templateList = await templates
                 .OrderBy(_ => _.Description)
                 .ApplyPagination(filter)
-                .Select(_=> new { _.Id, _.Description, _.EmailsSent})
-                .ProjectTo<EmailTemplate>(_mapper.ConfigurationProvider)
+                .Select(_ => new EmailTemplate
+                {
+                    Id = _.Id,
+                    Description = _.Description,
+                    EmailsSent = _.EmailsSent
+                })
                 .ToListAsync();
 
             return new DataWithCount<ICollection<EmailTemplate>>

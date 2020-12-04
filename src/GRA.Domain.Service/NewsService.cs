@@ -112,7 +112,7 @@ namespace GRA.Domain.Service
                 await SendSubscriptionEmailsAsync(addedPost, postUrl);
             }
 
-            if(publish)
+            if (publish)
             {
                 _cache.Remove($"s{GetClaimId(ClaimType.SiteId)}.{CacheKey.LatestNewsPostId}");
             }
@@ -233,7 +233,7 @@ namespace GRA.Domain.Service
 
             var subject = post.Title;
 
-            string mailBody 
+            string mailBody
                 = $"A new post has been made to {site.Name} in the {post.CategoryName} category."
                 + $"\r\n\r\nView it in Mission Control:\r\n\r\n  {postUrl}";
 

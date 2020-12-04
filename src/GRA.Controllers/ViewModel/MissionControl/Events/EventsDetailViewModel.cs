@@ -54,5 +54,10 @@ namespace GRA.Controllers.ViewModel.MissionControl.Events
         public SelectList ProgramList { get; set; }
 
         public bool Editing { get; set; }
+
+        public bool IgnorePointLimits { get; set; }
+        public int? MaxPointLimit { get; set; }
+        public string MaxPointLimitMessage { get; set; }
+        public string MaxPointLimitWarningMessage { get; set; }
     }
 }

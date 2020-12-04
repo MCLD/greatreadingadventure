@@ -1,6 +1,6 @@
-﻿using GRA.Domain.Model;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using GRA.Domain.Model;
 
 namespace GRA.Domain.Repository
 {
@@ -13,5 +13,6 @@ namespace GRA.Domain.Repository
         Task<bool> UserHasJoinBadgeAsync(int userId);
         Task RemoveUserBadgeAsync(int userId, int badgeId);
         Task<string> GetBadgeNameAsync(int badgeId);
+        Task<string> GetBadgeFileNameAsync(int badgeId);
     }
 }

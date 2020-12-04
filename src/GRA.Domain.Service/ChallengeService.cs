@@ -23,8 +23,8 @@ namespace GRA.Domain.Service
         private readonly IChallengeTaskRepository _challengeTaskRepository;
         private readonly IEventRepository _eventRepository;
         private readonly IPathResolver _pathResolver;
+        private readonly SiteLookupService _siteLookupService;
         private readonly ITriggerRepository _triggerRepository;
-        private readonly IUserRepository _userRepository;
 
         public ChallengeService(ILogger<ChallengeService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
@@ -37,8 +37,9 @@ namespace GRA.Domain.Service
             IChallengeTaskRepository challengeTaskRepository,
             IEventRepository eventRepository,
             IPathResolver pathResolver,
-            ITriggerRepository triggerRepository,
-            IUserRepository userRepository) : base(logger, dateTimeProvider, userContextProvider)
+            SiteLookupService siteLookupService,
+            ITriggerRepository triggerRepository)
+            : base(logger, dateTimeProvider, userContextProvider)
         {
             _badgeRepository = Require.IsNotNull(badgeRepository, nameof(badgeRepository));
             _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
@@ -51,8 +52,8 @@ namespace GRA.Domain.Service
                 nameof(challengeTaskRepository));
             _eventRepository = Require.IsNotNull(eventRepository, nameof(eventRepository));
             _pathResolver = Require.IsNotNull(pathResolver, nameof(pathResolver));
+            _siteLookupService = Require.IsNotNull(siteLookupService, nameof(siteLookupService));
             _triggerRepository = Require.IsNotNull(triggerRepository, nameof(triggerRepository));
-            _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
         }
 
         public async Task<DataWithCount<IEnumerable<Challenge>>>
@@ -173,6 +174,13 @@ namespace GRA.Domain.Service
             int authUserId = GetClaimId(ClaimType.UserId);
             if (HasPermission(Permission.AddChallenges))
             {
+                var maxPointLimit = await GetMaximumAllowedPointsAsync(GetCurrentSiteId());
+                if (maxPointLimit.HasValue
+                    && !HasPermission(Permission.IgnorePointLimits)
+                    && challenge.PointsAwarded > maxPointLimit * challenge.TasksToComplete)
+                {
+                    throw new GraException($"A challenge with {challenge.TasksToComplete} tasks may award a maximum of {maxPointLimit * challenge.TasksToComplete} points.");
+                }
                 if (challenge.LimitToSystemId.HasValue && challenge.LimitToBranchId.HasValue)
                 {
                     var branch = await _branchRepository
@@ -199,7 +207,7 @@ namespace GRA.Domain.Service
                         .Select(_ => _.Id);
                     var invalidSelectedIds = challenge.CategoryIds.Except(validCategoryIds);
 
-                    if (invalidSelectedIds.Count() > 0)
+                    if (invalidSelectedIds.Any())
                     {
                         challenge.CategoryIds = challenge.CategoryIds.Except(invalidSelectedIds)
                             .ToList();
@@ -222,6 +230,22 @@ namespace GRA.Domain.Service
             int authUserId = GetClaimId(ClaimType.UserId);
             if (HasPermission(Permission.EditChallenges))
             {
+                var currentChallenge = await _challengeRepository.GetByIdAsync(challenge.Id);
+
+                var maxPointLimit = await GetMaximumAllowedPointsAsync(GetCurrentSiteId());
+                if (maxPointLimit.HasValue && !HasPermission(Permission.IgnorePointLimits))
+                {
+                    if (currentChallenge.PointsAwarded >
+                        maxPointLimit * currentChallenge.TasksToComplete)
+                    {
+                        throw new GraException("Permission denied.");
+                    }
+
+                    if (challenge.PointsAwarded > maxPointLimit * challenge.TasksToComplete)
+                    {
+                        throw new GraException($"A challenge with {challenge.TasksToComplete} tasks may award a maximum of {maxPointLimit * challenge.TasksToComplete} points.");
+                    }
+                }
                 if (challenge.LimitToSystemId.HasValue && challenge.LimitToBranchId.HasValue)
                 {
                     var branch = await _branchRepository
@@ -232,7 +256,6 @@ namespace GRA.Domain.Service
                         throw new GraException("Invalid branch limitation.");
                     }
                 }
-                var currentChallenge = await _challengeRepository.GetByIdAsync(challenge.Id);
                 var serviceResult = new ServiceResult<Challenge>();
 
                 challenge.SiteId = currentChallenge.SiteId;
@@ -255,7 +278,7 @@ namespace GRA.Domain.Service
                         .Select(_ => _.Id);
                     var invalidSelectedIds = challenge.CategoryIds.Except(validCategoryIds);
 
-                    if (invalidSelectedIds.Count() > 0)
+                    if (invalidSelectedIds.Any())
                     {
                         challenge.CategoryIds = challenge.CategoryIds.Except(invalidSelectedIds)
                             .ToList();
@@ -371,7 +394,6 @@ namespace GRA.Domain.Service
                 {
                     RemoveTaskFile(originalTask);
                     task.Filename = null;
-
                 }
                 else
                 {
@@ -562,7 +584,7 @@ namespace GRA.Domain.Service
             var siteId = GetCurrentSiteId();
             var stub = challengeGroup.Stub.Trim().ToLower();
             var existingStub = await _challengeGroupRepository.StubInUseAsync(siteId, stub);
-            if (existingStub == true)
+            if (existingStub)
             {
                 throw new GraException($"A challenge group with the link {stub} already exists.");
             }
@@ -639,6 +661,14 @@ namespace GRA.Domain.Service
         {
             VerifyPermission(Permission.AddChallengeGroups);
             return await _challengeGroupRepository.StubInUseAsync(GetCurrentSiteId(), stub.ToLower());
+        }
+
+        public async Task<int?> GetMaximumAllowedPointsAsync(int siteId)
+        {
+            var (IsSet, SetValue) = await _siteLookupService.GetSiteSettingIntAsync(siteId,
+                SiteSettingKey.Challenges.MaxPointsPerChallengeTask);
+
+            return IsSet ? SetValue : (int?)null;
         }
     }
 }

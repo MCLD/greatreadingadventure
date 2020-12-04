@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace GRA.Data.Repository
 {
-    public class DailyLiteracyTipRepository 
+    public class DailyLiteracyTipRepository
         : AuditingRepository<Model.DailyLiteracyTip, DailyLiteracyTip>, IDailyLiteracyTipRepository
     {
         public DailyLiteracyTipRepository(ServiceFacade.Repository repositoryFacade,

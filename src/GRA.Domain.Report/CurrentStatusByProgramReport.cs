@@ -85,7 +85,7 @@ namespace GRA.Domain.Report
                 var reportData = new List<object[]>();
 
                 // header row
-                var headerRow = new List<object>() {
+                var headerRow = new List<object> {
                     "Library System",
                     "Library",
                     "Signups"
@@ -126,7 +126,7 @@ namespace GRA.Domain.Report
                         int users = await _userRepository.GetCountAsync(criterion);
                         int achievers = await _userRepository.GetAchieverCountAsync(criterion);
 
-                        var row = new List<object>() {
+                        var row = new List<object> {
                             branch.SystemName,
                             branch.Name,
                             users
@@ -161,7 +161,7 @@ namespace GRA.Domain.Report
 
                 report.Data = reportData.ToArray();
 
-                var footerRow = new List<object>()
+                var footerRow = new List<object>
                 {
                     "Total",
                     string.Empty,
@@ -189,8 +189,8 @@ namespace GRA.Domain.Report
 
                 report.FooterText = new string[]
                     {
-                        $"Completion rate: {completion.ToString("N2")}%",
-                        $"This report was run on {asof.ToString("g")} and contains data up to {endDate.ToString("g")}."
+                        $"Completion rate: {completion:N2}%",
+                        $"This report was run on {asof:g} and contains data up to {endDate:g}."
                     };
 
                 programReports.Add(report);
@@ -227,7 +227,7 @@ namespace GRA.Domain.Report
             {
                 var (users, firstTime, achievers) = programTotals[program.Id];
 
-                var summaryRow = new List<object>()
+                var summaryRow = new List<object>
                 {
                     program.Name,
                     users
@@ -273,7 +273,7 @@ namespace GRA.Domain.Report
             }
 
             summaryReport.FooterText = new string[] {
-                $"Completion rate: {totalCompletion.ToString("N2")}%"
+                $"Completion rate: {totalCompletion:N2}%"
             };
             #endregion Collect data
 

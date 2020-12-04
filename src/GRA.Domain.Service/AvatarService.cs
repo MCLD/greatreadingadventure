@@ -315,7 +315,7 @@ namespace GRA.Domain.Service
             if (!bundle.CanBeUnlocked
                 && items.GroupBy(_ => _.AvatarLayerId).Any(_ => _.Skip(1).Any()))
             {
-                throw new GraException($"Default bundles cannot have multiple items per layer.");
+                throw new GraException("Default bundles cannot have multiple items per layer.");
             }
 
             bundle.SiteId = GetCurrentSiteId();
@@ -335,7 +335,7 @@ namespace GRA.Domain.Service
             var currentBundle = await _avatarBundleRepository.GetByIdAsync(bundle.Id, false);
             if (currentBundle.HasBeenAwarded)
             {
-                throw new GraException($"This bundle has been awarded to a participant and can no longer be edited. ");
+                throw new GraException("This bundle has been awarded to a participant and can no longer be edited. ");
             }
 
             var items = await _avatarItemRepository.GetByIdsAsync(itemIds);
@@ -347,7 +347,7 @@ namespace GRA.Domain.Service
             if (!currentBundle.CanBeUnlocked
                 && items.GroupBy(_ => _.AvatarLayerId).Any(_ => _.Skip(1).Any()))
             {
-                throw new GraException($"Default bundles cannot have multiple items per layer.");
+                throw new GraException("Default bundles cannot have multiple items per layer.");
             }
 
             currentBundle.Name = bundle.Name;
@@ -524,19 +524,19 @@ namespace GRA.Domain.Service
 
                 string assetPath = jobDetails.AssetPath;
 
-                token.Register((Action)(() =>
+                token.Register(() =>
                 {
                     string duration = "";
                     if (sw?.Elapsed != null)
                     {
-                        duration = $" after {sw.Elapsed.ToString("c")}";
+                        duration = $" after {sw.Elapsed:c}";
                     }
                     _logger.LogWarning($"Import avatars for user {requestingUser} was cancelled{duration}.");
-                }));
+                });
 
                 IEnumerable<AvatarLayer> avatarList;
                 var jsonPath = Path.Combine(assetPath, "default avatars.json");
-                using (StreamReader file = System.IO.File.OpenText(jsonPath))
+                using (StreamReader file = File.OpenText(jsonPath))
                 {
                     var jsonString = await file.ReadToEndAsync();
                     avatarList = JsonConvert.DeserializeObject<IEnumerable<AvatarLayer>>(jsonString);
@@ -550,7 +550,7 @@ namespace GRA.Domain.Service
                 var processedCount = 0;
 
                 var bundleJsonPath = Path.Combine(assetPath, "default bundles.json");
-                var bundleJsonExists = System.IO.File.Exists(bundleJsonPath);
+                var bundleJsonExists = File.Exists(bundleJsonPath);
                 if (bundleJsonExists)
                 {
                     processingCount++;
@@ -562,7 +562,7 @@ namespace GRA.Domain.Service
 
                 foreach (var layer in avatarList)
                 {
-                    progress.Report(new JobStatus
+                    progress?.Report(new JobStatus
                     {
                         PercentComplete = processedCount * 100 / processingCount,
                         Status = $"Processing layer {layer.Name}",
@@ -586,7 +586,7 @@ namespace GRA.Domain.Service
                     }
 
                     addedLayer.Icon = Path.Combine(destinationRoot, "icon.png");
-                    System.IO.File.Copy(Path.Combine(layerAssetPath, "icon.png"),
+                    File.Copy(Path.Combine(layerAssetPath, "icon.png"),
                         Path.Combine(destinationPath, "icon.png"));
 
                     await UpdateLayerAsync(addedLayer);
@@ -594,7 +594,7 @@ namespace GRA.Domain.Service
                     int lastUpdateSent;
                     if (colors != null)
                     {
-                        progress.Report(new JobStatus
+                        progress?.Report(new JobStatus
                         {
                             PercentComplete = processedCount * 100 / processingCount,
                             Status = $"Processing layer {layer.Name}: Adding colors...",
@@ -631,7 +631,7 @@ namespace GRA.Domain.Service
                         colors = await GetColorsByLayerAsync(addedLayer.Id);
                     }
 
-                    progress.Report(new JobStatus
+                    progress?.Report(new JobStatus
                     {
                         PercentComplete = processedCount * 100 / processingCount,
                         Status = $"Processing layer {layer.Name}: Adding items...",
@@ -646,7 +646,7 @@ namespace GRA.Domain.Service
                         var secondsFromLastUpdate = (int)sw.Elapsed.TotalSeconds - lastUpdateSent;
                         if (secondsFromLastUpdate >= 5)
                         {
-                            progress.Report(new JobStatus
+                            progress?.Report(new JobStatus
                             {
                                 PercentComplete = processedCount * 100 / processingCount,
                                 Status = $"Processing layer {layer.Name}: Adding items ({currentItem}/{itemCount})...",
@@ -667,7 +667,7 @@ namespace GRA.Domain.Service
 
                     _logger.LogInformation($"Processing {items.Count} items in {layer.Name}...");
 
-                    progress.Report(new JobStatus
+                    progress?.Report(new JobStatus
                     {
                         PercentComplete = processedCount * 100 / processingCount,
                         Status = $"Processing layer {layer.Name}: Copying files...",
@@ -686,7 +686,7 @@ namespace GRA.Domain.Service
                         var secondsFromLastUpdate = (int)sw.Elapsed.TotalSeconds - lastUpdateSent;
                         if (secondsFromLastUpdate >= 5)
                         {
-                            progress.Report(new JobStatus
+                            progress?.Report(new JobStatus
                             {
                                 PercentComplete = processedCount * 100 / processingCount,
                                 Status = $"Processing layer {layer.Name}: Copying files ({currentElement}/{elementCount})...",
@@ -708,7 +708,7 @@ namespace GRA.Domain.Service
                             Directory.CreateDirectory(itemPath);
                         }
                         item.Thumbnail = Path.Combine(itemRoot, "thumbnail.jpg");
-                        System.IO.File.Copy(Path.Combine(itemAssetPath, "thumbnail.jpg"),
+                        File.Copy(Path.Combine(itemAssetPath, "thumbnail.jpg"),
                             Path.Combine(itemPath, "thumbnail.jpg"));
                         await _avatarItemRepository.UpdateAsync(requestingUser, item);
                         if (colors != null)
@@ -722,7 +722,7 @@ namespace GRA.Domain.Service
                                     Filename = Path.Combine(itemRoot, $"item_{color.Id}.png")
                                 };
                                 await _avatarElementRepository.AddAsync(requestingUser, element);
-                                System.IO.File.Copy(
+                                File.Copy(
                                     Path.Combine(itemAssetPath, $"{color.Color}.png"),
                                     Path.Combine(itemPath, $"item_{color.Id}.png"));
                                 currentElement++;
@@ -736,7 +736,7 @@ namespace GRA.Domain.Service
                                 Filename = Path.Combine(itemRoot, "item.png")
                             };
                             await _avatarElementRepository.AddAsync(requestingUser, element);
-                            System.IO.File.Copy(Path.Combine(itemAssetPath, "item.png"),
+                            File.Copy(Path.Combine(itemAssetPath, "item.png"),
                                 Path.Combine(itemPath, "item.png"));
                             currentElement++;
                         }
@@ -749,10 +749,10 @@ namespace GRA.Domain.Service
                     processedCount++;
                 }
 
-                progress.Report(new JobStatus
+                progress?.Report(new JobStatus
                 {
                     PercentComplete = processedCount * 100 / processingCount,
-                    Status = $"Finishing avatar import...",
+                    Status = "Finishing avatar import...",
                     Error = false
                 });
 
@@ -762,7 +762,7 @@ namespace GRA.Domain.Service
                 {
                     Directory.CreateDirectory(backgroundPath);
                 }
-                System.IO.File.Copy(Path.Combine(assetPath, "background.png"),
+                File.Copy(Path.Combine(assetPath, "background.png"),
                     Path.Combine(backgroundPath, "background.png"));
                 totalFilesCopied++;
 
@@ -772,10 +772,10 @@ namespace GRA.Domain.Service
                 {
                     Directory.CreateDirectory(bundlePath);
                 }
-                System.IO.File.Copy(Path.Combine(assetPath, "bundleicon.png"),
+                File.Copy(Path.Combine(assetPath, "bundleicon.png"),
                     Path.Combine(bundlePath, "icon.png"));
                 totalFilesCopied++;
-                System.IO.File.Copy(Path.Combine(assetPath, "bundlenotif.png"),
+                File.Copy(Path.Combine(assetPath, "bundlenotif.png"),
                     Path.Combine(bundlePath, "notif.png"));
                 totalFilesCopied++;
 
@@ -784,7 +784,7 @@ namespace GRA.Domain.Service
                 if (bundleJsonExists)
                 {
                     IEnumerable<AvatarBundle> bundleList;
-                    using (StreamReader file = System.IO.File.OpenText(bundleJsonPath))
+                    using (StreamReader file = File.OpenText(bundleJsonPath))
                     {
                         var jsonString = await file.ReadToEndAsync();
                         bundleList = JsonConvert

@@ -30,7 +30,10 @@ namespace GRA.Controllers
         private readonly ActivityService _activityService;
         private readonly AuthenticationService _authenticationService;
         private readonly AvatarService _avatarService;
+        private readonly BadgeService _badgeService;
+        private readonly ChallengeService _challengeService;
         private readonly DailyLiteracyTipService _dailyLiteracyTipService;
+        private readonly EventService _eventService;
         private readonly MailService _mailService;
         private readonly PointTranslationService _pointTranslationService;
         private readonly QuestionnaireService _questionnaireService;
@@ -48,7 +51,10 @@ namespace GRA.Controllers
             ActivityService activityService,
             AuthenticationService authenticationService,
             AvatarService avatarService,
+            BadgeService badgeService,
+            ChallengeService challengeService,
             DailyLiteracyTipService dailyLiteracyTipService,
+            EventService eventService,
             MailService mailService,
             PointTranslationService pointTranslationService,
             QuestionnaireService questionnaireService,
@@ -65,8 +71,14 @@ namespace GRA.Controllers
                 ?? throw new ArgumentNullException(nameof(authenticationService));
             _avatarService = avatarService
                 ?? throw new ArgumentNullException(nameof(avatarService));
+            _badgeService = badgeService
+                ?? throw new ArgumentNullException(nameof(badgeService));
+            _challengeService = challengeService
+                ?? throw new ArgumentNullException(nameof(challengeService));
             _dailyLiteracyTipService = dailyLiteracyTipService
                 ?? throw new ArgumentNullException(nameof(dailyLiteracyTipService));
+            _eventService = eventService
+                ?? throw new ArgumentNullException(nameof(eventService));
             _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
             _pointTranslationService = pointTranslationService
                 ?? throw new ArgumentNullException(nameof(pointTranslationService));
@@ -262,8 +274,21 @@ namespace GRA.Controllers
                 = new SelectList(await _schoolService.GetSchoolsAsync(), "Id", "Name");
             model.ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject);
             model.RequirePostalCode = site.RequirePostalCode;
+            model.RestrictChangingSystemBranch = await GetSiteSettingBoolAsync(SiteSettingKey
+                    .Users
+                    .RestrictChangingSystemBranch);
             model.ShowAge = program.AskAge;
             model.ShowSchool = program.AskSchool;
+
+            if (model.RestrictChangingSystemBranch)
+            {
+                model.SystemName = systemList
+                    .FirstOrDefault(_ => _.Id == model.User.SystemId)?
+                    .Name;
+                model.BranchName = branchList
+                    .FirstOrDefault(_ => _.Id == model.User.BranchId)?
+                    .Name;
+            }
 
             if (askEmailSubscription)
             {
@@ -1039,7 +1064,7 @@ namespace GRA.Controllers
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new
@@ -1167,18 +1192,18 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> History(int page = 1)
         {
-            const int take = 15;
-            int skip = take * (page - 1);
+            var filter = new UserLogFilter(page);
+
             var history = await _userService
-                .GetPaginatedUserHistoryAsync(GetActiveUserId(), skip, take);
+                .GetPaginatedUserHistoryAsync(GetActiveUserId(), filter);
 
             var paginateModel = new PaginateViewModel
             {
                 ItemCount = history.Count,
                 CurrentPage = page,
-                ItemsPerPage = take
+                ItemsPerPage = filter.Take.Value
             };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new
@@ -1240,6 +1265,97 @@ namespace GRA.Controllers
                 viewModel.Historys.Add(itemModel);
             }
             return View(viewModel);
+        }
+
+        public async Task<IActionResult> Badges(int page = 1)
+        {
+            User user = await _userService.GetDetails(GetActiveUserId());
+
+            var filter = new UserLogFilter(page)
+            {
+                HasBadge = true
+            };
+
+            var userLogs = await _userService.GetPaginatedUserHistoryAsync(user.Id, filter);
+
+            var paginateModel = new PaginateViewModel
+            {
+                ItemCount = userLogs.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
+            };
+
+            if (paginateModel.PastMaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
+            }
+
+            foreach (var userLog in userLogs.Data)
+            {
+                userLog.BadgeFilename = _pathResolver.ResolveContentPath(userLog.BadgeFilename);
+            }
+
+            var viewModel = new BadgeListViewModel
+            {
+                UserLogs = userLogs.Data,
+                PaginateModel = paginateModel,
+                HouseholdCount = await _userService
+                    .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? user.Id),
+                HasAccount = !string.IsNullOrWhiteSpace(user.Username)
+            };
+
+            return View(viewModel);
+        }
+
+        public async Task<IActionResult> GetUserBadgeInfo(int id)
+        {
+            var viewModel = new BadgeInfoViewModel();
+            try
+            {
+                viewModel.UserLog = await _userService.GetUserLogByIdAsync(id);
+
+                if (viewModel.UserLog.ChallengeId.HasValue)
+                {
+                    var challenge = await _challengeService
+                        .GetChallengeDetailsAsync(viewModel.UserLog.ChallengeId.Value);
+                    var url = Url.Action(nameof(ChallengesController.Detail),
+                        ChallengesController.Name,
+                        new { id = challenge.Id });
+
+                    viewModel.HtmlMessage = _sharedLocalizer[Annotations.Info.ChallengeBadgeEarned,
+                        url,
+                        challenge.Name];
+                }
+                else if (viewModel.UserLog.EventId.HasValue)
+                {
+                    var graEvent = await _eventService.GetDetails(viewModel.UserLog.EventId.Value);
+                    var url = Url.Action(nameof(EventsController.Detail),
+                        EventsController.Name,
+                        new { id = graEvent.Id });
+
+                    viewModel.HtmlMessage = _sharedLocalizer[Annotations.Info.EventBadgeEarned,
+                        url,
+                        graEvent.Name];
+                }
+                else
+                {
+                    viewModel.Message = viewModel.UserLog.Description;
+                }
+
+                var fileName = await _badgeService.GetBadgeFilenameAsync(
+                    viewModel.UserLog.BadgeId.Value);
+                viewModel.UserLog.BadgeFilename = _pathResolver.ResolveContentPath(fileName);
+            }
+            catch (GraException gex)
+            {
+                viewModel.Message = gex.Message;
+            }
+
+            return PartialView("_BadgeInfoPartial", viewModel);
         }
 
         public async Task<IActionResult> ChangePassword()

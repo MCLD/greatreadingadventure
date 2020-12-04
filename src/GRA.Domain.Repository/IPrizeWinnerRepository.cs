@@ -1,6 +1,6 @@
-﻿using GRA.Domain.Model;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using GRA.Domain.Model;
 
 namespace GRA.Domain.Repository
 {
@@ -15,5 +15,6 @@ namespace GRA.Domain.Repository
         Task<int> GetSystemPrizeRedemptionCountAsync(int systemId, IEnumerable<int> triggerIds);
         Task<int> GetBranchPrizeRedemptionCountAsync(int branchId, IEnumerable<int> triggerIds);
         Task<List<PrizeCount>> GetHouseholdUnredeemedPrizesAsync(int headId);
+        Task<ICollection<PrizeWinner>> GetVendorCodePrizesAsync(int userId);
     }
 }

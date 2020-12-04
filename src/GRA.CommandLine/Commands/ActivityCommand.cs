@@ -8,7 +8,7 @@ using McMaster.Extensions.CommandLineUtils;
 
 namespace GRA.CommandLine.Commands
 {
-    class ActivityCommand : BaseCommand
+    internal class ActivityCommand : BaseCommand
     {
         private readonly DataGenerator.Activity _activityDataGenerator;
         private readonly DataGenerator.DateTime _dateTimeDataGenerator;
@@ -55,31 +55,27 @@ namespace GRA.CommandLine.Commands
                 _.OnExecuteAsync(async cancellationToken =>
                 {
                     bool quiet = displayStatusOption.HasValue()
-                        && displayStatusOption.Value().Equals("on", StringComparison.CurrentCultureIgnoreCase);
+                        && displayStatusOption.Value().Equals("on", StringComparison.OrdinalIgnoreCase);
 
                     bool challenges = challengeStatusOption.HasValue()
-                        && challengeStatusOption.Value().Equals("on", StringComparison.CurrentCultureIgnoreCase);
+                        && challengeStatusOption.Value().Equals("on", StringComparison.OrdinalIgnoreCase);
 
                     int challengePercent = challenges ? 30 : 0;
-                    if (challenges && challengePercentOption.HasValue())
+                    if (challenges && challengePercentOption.HasValue()
+                        && !(int.TryParse(challengePercentOption.Value(), out challengePercent)
+                        && challengePercent >= 0
+                        && challengePercent < 101))
                     {
-                        if (!(int.TryParse(challengePercentOption.Value(), out challengePercent)
-                            && challengePercent >= 0
-                            && challengePercent < 101))
-                        {
-                            throw new ArgumentException("Error: <percentage> must be a number between 0 and 100.");
-                        }
+                        throw new ArgumentException("Error: <percentage> must be a number between 0 and 100.");
                     }
 
                     int codePercent = 30;
-                    if (codePercentOption.HasValue())
+                    if (codePercentOption.HasValue()
+                        && !(int.TryParse(codePercentOption.Value(), out codePercent)
+                        && codePercent >= 0
+                        && codePercent < 101))
                     {
-                        if (!(int.TryParse(codePercentOption.Value(), out codePercent)
-                            && codePercent >= 0
-                            && codePercent < 101))
-                        {
-                            throw new ArgumentException("Error: <percentage> must be a number between 0 and 100.");
-                        }
+                        throw new ArgumentException("Error: <percentage> must be a number between 0 and 100.");
                     }
 
                     if (createRandomOption.HasValue())
@@ -96,7 +92,7 @@ namespace GRA.CommandLine.Commands
                         return 2;
                     }
                 });
-            }, throwOnUnexpectedArg: true);
+            });
 
             async Task<int> EnterActivity(int howMany,
                 int challengePercent,
@@ -137,7 +133,6 @@ namespace GRA.CommandLine.Commands
                                     break;
 
                                 default:
-                                case DataGenerator.ActivityType.Default:
                                     await _activityService
                                         .LogActivityAsync(activity.User.Id, activity.ActivityAmount);
                                     break;
@@ -155,7 +150,6 @@ namespace GRA.CommandLine.Commands
                                     issues.Add($"Problem logging code {activity.SecretCode} for {activity.User.Id}: {gex.Message}");
                                     break;
                                 default:
-                                case DataGenerator.ActivityType.Default:
                                     issues.Add($"Problem logging {activity.ActivityAmount} for {activity.User.Id}: {gex.Message}");
                                     break;
                             }

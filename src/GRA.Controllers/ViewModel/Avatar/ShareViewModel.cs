@@ -1,5 +1,4 @@
-﻿
-namespace GRA.Controllers.ViewModel.Avatar
+﻿namespace GRA.Controllers.ViewModel.Avatar
 {
     public class ShareViewModel
     {

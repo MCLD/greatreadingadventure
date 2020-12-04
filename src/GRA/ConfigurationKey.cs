@@ -8,7 +8,6 @@
         public static readonly string ConnectionStringName = "GraConnectionStringName";
         public static readonly string ContentDirectory = "GraContentDirectory";
         public static readonly string ContentPath = "GraContentPath";
-        public static readonly string DatabaseWarningLogging = "GraDatabaseWarningLogging";
         public static readonly string DefaultFooter = "GraDefaultFooter";
         public static readonly string DefaultOutgoingMailHost = "GraDefaultOutgoingMailHost";
         public static readonly string DefaultOutgoingMailLogin = "GraDefaultOutgoingMailLogin";
@@ -24,6 +23,7 @@
         public static readonly string InitialAuthorizationCode = "GraInitialAuthCode";
         public static readonly string InitialProgramSetup = "GraInitialProgramSetup";
         public static readonly string InstanceName = "GraInstanceName";
+        public static readonly string InternalContentPath = "GraInternalContentPath";
         public static readonly string RedisConfiguration = "GraRedisConfiguration";
         public static readonly string ReverseProxyAddress = "GraReverseProxyAddress";
         public static readonly string RollingLogHttp = "GraRollingLogHttp";
@@ -33,7 +33,6 @@
         public static readonly string RuntimeCacheSqlConfiguration = "RuntimeCacheSqlConfiguration";
         public static readonly string SeqApiKey = "GraSeqAPIKey";
         public static readonly string SeqEndpoint = "GraSeqEndpoint";
-        public static readonly string SqlServer2008 = "GraSqlServer2008";
         public static readonly string SqlSessionSchemaName = "GraSqlSessionSchemaName";
         public static readonly string SqlSessionTable = "GraSqlSessionTable";
     }

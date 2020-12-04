@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 namespace GRA.Security
 {
@@ -15,9 +15,10 @@ namespace GRA.Security
 
         public int Iterations { get; set; }
         private RandomNumberGenerator rng { get; set; }
-        public PasswordHasher(int iterations = 10000)
+        public PasswordHasher() : this(10000) { }
+        public PasswordHasher(int iterations)
         {
-            this.Iterations = iterations;
+            Iterations = iterations;
             rng = RandomNumberGenerator.Create();
         }
 
@@ -194,7 +195,7 @@ namespace GRA.Security
             return ((uint)(buffer[offset + 0]) << 24)
                 | ((uint)(buffer[offset + 1]) << 16)
                 | ((uint)(buffer[offset + 2]) << 8)
-                | ((uint)(buffer[offset + 3]));
+                | buffer[offset + 3];
         }
 
         private static void WriteNetworkByteOrder(byte[] buffer, int offset, uint value)

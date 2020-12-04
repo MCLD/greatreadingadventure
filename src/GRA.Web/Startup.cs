@@ -15,16 +15,18 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Localization.Routing;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using Serilog;
@@ -46,7 +48,7 @@ namespace GRA.Web
         private readonly bool _isDevelopment;
 
         public Startup(IConfiguration config,
-            IHostingEnvironment env)
+            IWebHostEnvironment env)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
 
@@ -130,7 +132,7 @@ namespace GRA.Web
                     {
                         redisInstance += ".";
                     }
-                    services.AddDistributedRedisCache(_ =>
+                    services.AddStackExchangeRedisCache(_ =>
                     {
                         _.Configuration = redisConfig;
                         _.InstanceName = redisInstance;
@@ -159,14 +161,15 @@ namespace GRA.Web
                 _.ConstraintMap.Add("cultureConstraint", typeof(CultureRouteConstraint)));
 
             // add MVC
-            services.AddMvc()
-                .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_2)
+            services.AddControllersWithViews(_ =>
+                    _.ModelBinderProviders.RemoveType<DateTimeModelBinderProvider>())
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
                 .AddDataAnnotationsLocalization(_ =>
                 {
                     _.DataAnnotationLocalizerProvider = (__, factory)
                         => factory.Create(typeof(Resources.Shared));
-                });
+                })
+                .AddRazorRuntimeCompilation();
 
             // Add custom view directory
             services.Configure<RazorViewEngineOptions>(options =>
@@ -216,48 +219,19 @@ namespace GRA.Web
             var logEvents = new List<EventId>();
             var ignoreEvents = new List<EventId>();
 
-            if (_isDevelopment)
-            {
-                logEvents.Add(RelationalEventId.QueryClientEvaluationWarning);
-                throwEvents.Add(CoreEventId.IncludeIgnoredWarning);
-            }
-            else
-            {
-                if (string.IsNullOrEmpty(_config[ConfigurationKey.DatabaseWarningLogging]))
-                {
-                    ignoreEvents.Add(RelationalEventId.QueryClientEvaluationWarning);
-                    ignoreEvents.Add(CoreEventId.IncludeIgnoredWarning);
-                }
-                else
-                {
-                    logEvents.Add(RelationalEventId.QueryClientEvaluationWarning);
-                    logEvents.Add(CoreEventId.IncludeIgnoredWarning);
-                }
-            }
-
             string cs = _config.GetConnectionString(csName)
                 ?? throw new GraFatalException($"A {csName} connection string must be provided.");
             switch (_config[ConfigurationKey.ConnectionStringName])
             {
                 case ConnectionStringNameSqlServer:
-                    if (!string.IsNullOrEmpty(_config[ConfigurationKey.SqlServer2008]))
-                    {
-                        services.AddDbContextPool<Data.Context, Data.SqlServer.SqlServerContext>(
-                            _ => _.UseSqlServer(cs, b => b.UseRowNumberForPaging())
-                            .ConfigureWarnings(w => w
-                                .Throw(throwEvents.ToArray())
-                                .Log(logEvents.ToArray())
-                                .Ignore(ignoreEvents.ToArray())));
-                    }
-                    else
-                    {
-                        services.AddDbContextPool<Data.Context, Data.SqlServer.SqlServerContext>(
-                            _ => _.UseSqlServer(cs)
-                            .ConfigureWarnings(w => w
-                                .Throw(throwEvents.ToArray())
-                                .Log(logEvents.ToArray())
-                                .Ignore(ignoreEvents.ToArray())));
-                    }
+                    services.AddDbContextPool<Data.Context, Data.SqlServer.SqlServerContext>(
+                        _ => _.UseSqlServer(cs)
+                        .ConfigureWarnings(w => w
+                            .Throw(throwEvents.ToArray())
+                            .Log(logEvents.ToArray())
+                            .Ignore(ignoreEvents.ToArray())));
+                    services.AddHealthChecks()
+                        .AddSqlServer(cs);
                     break;
                 case ConnectionStringNameSQLite:
                     services.AddDbContextPool<Data.Context, Data.SQLite.SQLiteContext>(
@@ -266,6 +240,7 @@ namespace GRA.Web
                                 .Throw(throwEvents.ToArray())
                                 .Log(logEvents.ToArray())
                                 .Ignore(ignoreEvents.ToArray())));
+                    services.AddHealthChecks();
                     break;
                 default:
                     throw new GraFatalException($"Unknown GraConnectionStringName: {csName}");
@@ -540,7 +515,7 @@ namespace GRA.Web
                 }
                 catch (Exception ex)
                 {
-                    throw new GraException($"Unable to create directory '{contentPath}' in {Directory.GetCurrentDirectory()}", ex);
+                    throw new GraException($"Unable to create directory '{contentPath}'", ex);
                 }
             }
 
@@ -577,8 +552,6 @@ namespace GRA.Web
 
             app.UseSession();
 
-            app.UseAuthentication();
-
             app.Use(async (context, next) =>
             {
                 using (LogContext.PushProperty(LoggingEnrichment.UserId,
@@ -588,29 +561,39 @@ namespace GRA.Web
                 }
             });
 
+            app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             // sitePath is also referenced in GRA.Controllers.Filter.SiteFilterAttribute
-            app.UseMvc(routes =>
+            app.UseEndpoints(_ =>
             {
-                routes.MapRoute(
+                _.MapControllerRoute(
                     name: null,
-                    template: "{culture:cultureConstraint}/Info/{id}",
+                    pattern: "{culture:cultureConstraint}/Info/{id}",
                     defaults: new { controller = "Info", action = "Index" });
-                routes.MapRoute(
+                _.MapControllerRoute(
                     name: null,
-                    template: "Info/{id}",
+                    pattern: "Info/{id}",
                     defaults: new { controller = "Info", action = "Index" });
-                routes.MapRoute(
+                _.MapControllerRoute(
                     name: null,
-                    template: "{area:exists}/{controller}/{action}/{id?}",
+                    pattern: "{culture:cultureConstraint}/{area:exists}/{controller}/{action}/{id?}",
                     defaults: new { controller = "Home", action = "Index" });
-                routes.MapRoute(
+                _.MapControllerRoute(
                     name: null,
-                    template: "{culture:cultureConstraint}/{controller}/{action}/{id?}",
+                    pattern: "{area:exists}/{controller}/{action}/{id?}",
                     defaults: new { controller = "Home", action = "Index" });
-                routes.MapRoute(
+                _.MapControllerRoute(
                     name: null,
-                    template: "{controller}/{action}/{id?}",
+                    pattern: "{culture:cultureConstraint}/{controller}/{action}/{id?}",
                     defaults: new { controller = "Home", action = "Index" });
+                _.MapControllerRoute(
+                    name: null,
+                    pattern: "{controller}/{action}/{id?}",
+                    defaults: new { controller = "Home", action = "Index" });
+                _.MapHealthChecks("/health");
             });
 
             app.UseWebSockets(new WebSocketOptions

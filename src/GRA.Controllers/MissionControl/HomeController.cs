@@ -68,6 +68,13 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(AuthorizationCode));
             }
 
+            // change user to default language
+            if (Culture.DefaultName != _userContextProvider.GetCurrentCulture().Name)
+            {
+                AlertInfo = $"Language changed to <strong>{Culture.DefaultCulture.DisplayName}</strong> for <strong>Mission Control</strong> <span class=\"fas fa-rocket\"></span>.";
+                return RedirectToAction(nameof(Index), new { culture = Culture.DefaultName });
+            }
+
             Site site = await GetCurrentSiteAsync();
 
             var viewModel = new AtAGlanceViewModel
@@ -100,7 +107,7 @@ namespace GRA.Controllers.MissionControl
                     CurrentPage = page,
                     ItemsPerPage = filter.Take.Value
                 };
-                if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+                if (paginateModel.PastMaxPage)
                 {
                     return RedirectToRoute(
                         new
@@ -257,7 +264,7 @@ namespace GRA.Controllers.MissionControl
         {
             if (AuthUser.Identity.IsAuthenticated)
             {
-                await LogoutUserAsync();
+                await LogoutUser();
             }
             return RedirectToRoute(new { area = string.Empty, action = nameof(HomeController.Index) });
         }

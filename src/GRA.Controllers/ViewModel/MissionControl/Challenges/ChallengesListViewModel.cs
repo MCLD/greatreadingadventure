@@ -1,5 +1,5 @@
-﻿using GRA.Controllers.ViewModel.Shared;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using GRA.Controllers.ViewModel.Shared;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Challenges

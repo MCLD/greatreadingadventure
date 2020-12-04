@@ -1,0 +1,19 @@
+{
+  "name": "GreatReadingAdventure",
+  "version": "4.1.2",
+  "license": "MIT",
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.1",
+    "bootstrap": "^3.3.7",
+    "bootstrap-multiselect": "^0.9.15",
+    "bootstrap-select": "^1.13.18",
+    "commonmark": "^0.29.2",
+    "jquery": "^3.5.1",
+    "jquery-validation": "^1.19.2",
+    "jquery-validation-unobtrusive": "^3.2.11",
+    "moment": "^2.29.1",
+    "moment-timezone": "^0.5.32",
+    "slick-carousel": "^1.8.1",
+    "eonasdan-bootstrap-datetimepicker": "^4.17.47"
+  }
+}

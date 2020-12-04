@@ -24,6 +24,14 @@ namespace GRA
                     Category = typeof(SiteSettingKey.Challenges).Name,
                     Format = SiteSettingFormat.Boolean
                 },
+                [SiteSettingKey.Challenges.MaxPointsPerChallengeTask] =
+                new SiteSettingDefinition
+                {
+                    Name = "Maximum points per challenge task",
+                    Info = "A number representing the maximum amount of points permitted per challenge task (it may be able to be overidden from Mission Control).",
+                    Category = typeof(SiteSettingKey.Challenges).Name,
+                    Format = SiteSettingFormat.Integer
+                },
                 [SiteSettingKey.Events.CommunityExperienceDescription] =
                 new SiteSettingDefinition
                 {
@@ -79,6 +87,14 @@ namespace GRA
                     Info = "Put any text here to forbid participants from changing their system/branch after joining",
                     Category = typeof(SiteSettingKey.Users).Name,
                     Format = SiteSettingFormat.Boolean,
+                },
+                [SiteSettingKey.Triggers.MaxPointsPerTrigger] =
+                new SiteSettingDefinition
+                {
+                    Name = "Maximum points per trigger",
+                    Info = "A number representing the maximum amount of points permitted for a trigger (it may be able to be overidden from Mission Control).",
+                    Category = typeof(SiteSettingKey.Triggers).Name,
+                    Format = SiteSettingFormat.Integer
                 },
                 [SiteSettingKey.Users.MaximumHouseholdSizeBeforeGroup] =
                 new SiteSettingDefinition
@@ -158,6 +174,22 @@ namespace GRA
                     Name = "Check for site.css and site.js changes on disk",
                     Info = "How often (in minutes) To check if site.css and site.js have changed on disk. Set to 0 when working on the files so that they will reload on each page load, set to a higher number when you are editing them infrequently. An empty setting will default to 60 minutes",
                     Category = typeof(SiteSettingKey.Web).Name,
+                    Format = SiteSettingFormat.Integer
+                },
+                [SiteSettingKey.Badges.MaxFileSize] =
+                new SiteSettingDefinition
+                {
+                    Name = "Max File Size (KB)",
+                    Info = "Maximum file size of a badge in kilobytes allowed to be uploaded.",
+                    Category = typeof(SiteSettingKey.Badges).Name,
+                    Format = SiteSettingFormat.Integer
+                },
+                [SiteSettingKey.Badges.MaxDimension] =
+                new SiteSettingDefinition
+                {
+                    Name = "Max Dimension",
+                    Info = "Maximum size in pixels (width or height) allowed for a badge.",
+                    Category = typeof(SiteSettingKey.Badges).Name,
                     Format = SiteSettingFormat.Integer
                 }
             };

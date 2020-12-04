@@ -35,7 +35,7 @@ namespace GRA.Data.Repository
                 .Select(_ => new DataWithCount<string>
                 {
                     Data = _.Key,
-                    Count = _.Distinct().Count()
+                    Count = _.Count()
                 })
                 .ToListAsync();
         }

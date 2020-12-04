@@ -360,9 +360,9 @@
     <value>Código Secreto</value>
     <comment>Dashboard prompt for entering a secret code</comment>
   </data>
-  <data name="See more of your badges in your history!" xml:space="preserve">
-    <value>¡Vea más de sus medallas en su historial!</value>
-    <comment>Dashboard link to view participant's history, displayed underneath their badges</comment>
+  <data name="See more of your badges" xml:space="preserve">
+    <value>Vea más de sus medallas</value>
+    <comment>Dashboard link to view participant's badge gallery, displayed underneath their badges</comment>
   </data>
   <data name="See your activity history." xml:space="preserve">
     <value>Vea su historial de actividad.</value>
@@ -1418,5 +1418,44 @@
   <data name="This streaming event has not started yet." xml:space="preserve">
     <value>Este evento de transmisión aun no ha comenzado.</value>
     <comment>Message indicating that a streaming event is not yet available.</comment>
+  </data>
+  <data name="Badge Details" xml:space="preserve">
+    <value>Detalles de la Insignia</value>
+  </data>
+  <data name="Badges" xml:space="preserve">
+    <value>Insignias</value>
+  </data>
+  <data name="Earned on {0}" xml:space="preserve">
+    <value>Obtenido en {0}</value>
+  </data>
+  <data name="Error retrieving badge information." xml:space="preserve">
+    <value>Error al recuperar la información de la insignia.</value>
+  </data>
+  <data name="One or more of the selected {0} could not be favorited." xml:space="preserve">
+    <value>Uno o más de los {0} seleccionados no pudieron ser elegidos.</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Estatus</value>
+  </data>
+  <data name="View All" xml:space="preserve">
+    <value>Ver Todo</value>
+  </data>
+  <data name="View Completed" xml:space="preserve">
+    <value>Ver Completado</value>
+  </data>
+  <data name="View Uncompleted" xml:space="preserve">
+    <value>Ver Sin Completar</value>
+  </data>
+  <data name="Viewed" xml:space="preserve">
+    <value>Visto</value>
+  </data>
+  <data name="Visited" xml:space="preserve">
+    <value>Visitó</value>
+  </data>
+  <data name="You earned this badge for attending the event: &lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;" xml:space="preserve">
+    <value>Obtuvo esta insignia por asistir al evento: &lt;a href="{0}" target="_blank"&gt;{1}&lt;/a&gt;</value>
+  </data>
+  <data name="You earned this badge for completing the challenge: &lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;{1}&lt;/a&gt;" xml:space="preserve">
+    <value>Obtuvo esta insignia por completar el desafío: &lt;a href="{0}" target="_blank"&gt;{1}&lt;/a&gt;</value>
   </data>
 </root>

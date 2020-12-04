@@ -79,7 +79,7 @@ namespace GRA.Domain.Service
 
             var hasBeenUsed = await HasBeenUsedAsync(pointTranslation.Id);
 
-            if (hasBeenUsed == false)
+            if (!hasBeenUsed)
             {
                 currentPointTranslation.ActivityAmount = pointTranslation.ActivityAmount;
                 currentPointTranslation.IsSingleEvent = pointTranslation.IsSingleEvent;

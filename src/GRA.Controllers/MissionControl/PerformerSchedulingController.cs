@@ -138,7 +138,7 @@ namespace GRA.Controllers.MissionControl
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new
@@ -214,12 +214,10 @@ namespace GRA.Controllers.MissionControl
                     performer.Images[0].Filename);
             }
 
-            if (!string.IsNullOrWhiteSpace(performer.Website))
+            if (!string.IsNullOrWhiteSpace(performer.Website)
+                && Uri.TryCreate(performer.Website, UriKind.Absolute, out Uri absoluteUri))
             {
-                if (Uri.TryCreate(performer.Website, UriKind.Absolute, out Uri absoluteUri))
-                {
-                    viewModel.Uri = absoluteUri;
-                }
+                viewModel.Uri = absoluteUri;
             }
 
             var performerIndexList = await _performerSchedulingService
@@ -290,7 +288,7 @@ namespace GRA.Controllers.MissionControl
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new
@@ -578,7 +576,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [Authorize(Policy = Policy.SchedulePerformers)]
-        public async Task<JsonResult> GetProgramAvailableAgeGroupsAsync(int branchId, int programId)
+        public async Task<JsonResult> GetProgramAvailableAgeGroups(int branchId, int programId)
         {
             PsProgram program;
             try
@@ -723,7 +721,7 @@ namespace GRA.Controllers.MissionControl
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new
@@ -775,12 +773,10 @@ namespace GRA.Controllers.MissionControl
                     kit.Images[0].Filename);
             }
 
-            if (!string.IsNullOrWhiteSpace(kit.Website))
+            if (!string.IsNullOrWhiteSpace(kit.Website)
+                && Uri.TryCreate(kit.Website, UriKind.Absolute, out Uri absoluteUri))
             {
-                if (Uri.TryCreate(kit.Website, UriKind.Absolute, out Uri absoluteUri))
-                {
-                    viewModel.Uri = absoluteUri;
-                }
+                viewModel.Uri = absoluteUri;
             }
 
             if (viewModel.SchedulingOpen)
@@ -886,9 +882,9 @@ namespace GRA.Controllers.MissionControl
                 ShowAlertDanger($"Unable to select kit: ", gex);
             }
 
-            if (addedBranchSelection.KitId.HasValue)
+            if (branchSelection?.KitId != null)
             {
-                return RedirectToAction(nameof(Kit), new { id = addedBranchSelection.KitId });
+                return RedirectToAction(nameof(Kit), new { id = branchSelection.KitId });
             }
             else
             {
@@ -897,7 +893,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [Authorize(Policy = Policy.SchedulePerformers)]
-        public async Task<JsonResult> GetKitAvailableAgeGroupsAsync(int branchId, int kitId)
+        public async Task<JsonResult> GetKitAvailableAgeGroups(int branchId, int kitId)
         {
             PsKit kit;
             try

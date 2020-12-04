@@ -33,9 +33,9 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.Id == id 
-                    && _.ChallengeGroupChallenges.Any(c => c.Challenge.IsActive == true
-                       && c.Challenge.IsDeleted == false))
+                .Where(_ => _.Id == id
+                    && _.ChallengeGroupChallenges.Any(c => c.Challenge.IsActive
+                       && !c.Challenge.IsDeleted))
                 .ProjectTo<ChallengeGroup>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
         }
@@ -45,8 +45,8 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.SiteId == siteId && _.Stub == stub
-                    && _.ChallengeGroupChallenges.Any(c => c.Challenge.IsActive == true 
-                        && c.Challenge.IsDeleted == false))
+                    && _.ChallengeGroupChallenges.Any(c => c.Challenge.IsActive
+                        && !c.Challenge.IsDeleted))
                 .ProjectTo<ChallengeGroup>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
         }
@@ -85,20 +85,20 @@ namespace GRA.Data.Repository
             if (filter.ChallengeGroupIds?.Count > 0)
             {
                 challengeGroupList = challengeGroupList
-                    .Where(_ => filter.ChallengeGroupIds.Contains(_.Id) == false);
+                    .Where(_ => !filter.ChallengeGroupIds.Contains(_.Id));
             }
 
             if (filter.ActiveGroups.HasValue)
             {
                 var inactiveChallengeIds = _context.Challenges
                     .AsNoTracking()
-                    .Where(_ => _.IsActive == false || _.IsDeleted == true)
+                    .Where(_ => !_.IsActive || _.IsDeleted)
                     .Select(_ => _.Id);
 
                 challengeGroupList = challengeGroupList
-                    .Where(_ => 
+                    .Where(_ =>
                         _.ChallengeGroupChallenges
-                            .Where(c => inactiveChallengeIds.Contains(c.ChallengeId) == false)
+                            .Where(c => !inactiveChallengeIds.Contains(c.ChallengeId))
                             .Select(c => c.ChallengeGroupId)
                         .Contains(_.Id) == filter.ActiveGroups.Value);
             }
@@ -115,7 +115,7 @@ namespace GRA.Data.Repository
             ChallengeGroup challengeGroup, IEnumerable<int> challengeIds)
         {
             var newChallengeGroup = await base.AddSaveAsync(userId, challengeGroup);
-            if (challengeIds.Count() > 0)
+            if (challengeIds.Any())
             {
                 var time = _dateTimeProvider.Now;
                 var challengeGroupChallengeList = new List<Model.ChallengeGroupChallenge>();
@@ -141,7 +141,7 @@ namespace GRA.Data.Repository
         {
             await base.UpdateAsync(userId, challengeGroup);
 
-            if (challengesToAdd != null && challengesToAdd.Count() > 0)
+            if (challengesToAdd?.Any() == true)
             {
                 var time = _dateTimeProvider.Now;
                 var challengeGroupChallengeList = new List<Model.ChallengeGroupChallenge>();

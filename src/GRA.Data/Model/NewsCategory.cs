@@ -17,6 +17,5 @@ namespace GRA.Data.Model
         public ICollection<NewsPost> Posts { get; set; }
 
         public DateTime? LastPostDate { get; set; }
-
     }
 }

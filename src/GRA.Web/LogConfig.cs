@@ -69,8 +69,11 @@ namespace GRA.Web
                     .WriteTo.Logger(_ => _
                     .Filter.ByExcluding(Matching.FromSource(ErrorControllerName))
                     .WriteTo.MSSqlServer(sqlLog,
-                        "Logs",
-                        autoCreateSqlTable: true,
+                        new MSSqlServerSinkOptions
+                        {
+                            TableName = "Logs",
+                            AutoCreateSqlTable = true
+                        },
                         restrictedToMinimumLevel: LogEventLevel.Information,
                         columnOptions: new ColumnOptions
                         {

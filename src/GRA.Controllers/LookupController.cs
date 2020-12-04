@@ -1,12 +1,12 @@
-﻿using GRA.Domain.Model;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using GRA.Domain.Model;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GRA.Controllers
 {
@@ -17,6 +17,8 @@ namespace GRA.Controllers
         private readonly SchoolService _schoolService;
         private readonly SiteService _siteService;
         private readonly UserService _userService;
+
+        public static string Name { get { return "Lookup"; } }
 
         public LookupController(ILogger<LookupController> logger,
              ServiceFacade.Controller context,
@@ -84,7 +86,7 @@ namespace GRA.Controllers
             return Json(await _userService.UsernameInUseAsync(username));
         }
 
-        public async Task<JsonResult> GetItemsInBundleAsync(int id)
+        public async Task<JsonResult> GetItemsInBundle(int id)
         {
             var bundle = await _avatarService.GetBundleByIdAsync(id, true);
             var thumbnailList = bundle.AvatarItems

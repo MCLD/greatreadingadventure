@@ -15,6 +15,50 @@
         }
     </style>
 }
+@if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
+{
+
+    <div class="modal fade"
+         id="warningModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="warningModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="deleteModalLabel">
+                        Warning: Award points exceed maximum
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                    <span id="modal-text">
+                        The awarded points for this trigger exceed the maximum of
+                        <strong>@Model.MaxPointLimit points per task</strong>. Do you wish to continue?
+                    </span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-default"
+                            data-dismiss="modal"
+                            style="margin-right: 1em;">
+                        Cancel
+                    </button>
+                    <button id="warningSave"
+                            type="button"
+                            class="btn btn-primary"
+                            data-dismiss="modal"
+                            style="margin-right: 1em;">
+                        Save Challenge
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 @if (Model.CanRelateChallenge)
 {
@@ -189,7 +233,7 @@
     </div>
 }
 
-<form asp-controller="Events" asp-action="Create" method="post" role="form" enctype="multipart/form-data">
+<form asp-controller="Events" asp-action="Create" id="createForm" method="post" role="form" enctype="multipart/form-data">
     <input asp-for="UseLocation" type="hidden" />
     <input asp-for="Event.ParentEventId" type="hidden" />
     <input name="Event.IsCommunityExperience" value="@Model.NewCommunityExperience.ToString()" type="hidden" />
@@ -388,6 +432,7 @@
                         <div class="row row-spacing">
                             <div class="col-xs-12">
                                 <label asp-for="AwardPoints" class="control-label"></label>
+                                <label style="font-size: 12px;">@Model.MaxPointLimitMessage</label>
                                 <input asp-for="AwardPoints" min="0" class="form-control secretCodeField @(Model.IncludeSecretCode ? "" : "ignore")" />
                                 <span asp-validation-for="AwardPoints" class="text-danger"></span>
                             </div>
@@ -420,6 +465,7 @@
                                         </button>
                                     </div>
                                     <div role="tabpanel" class="tab-pane @(Model.UseBadgeMaker ? "" : "active")" id="upload">
+                                        <p>Upload a badge image. Badge images must be square.</p>
                                         <div class="input-group">
                                             <label class="input-group-btn">
                                                 <span class="btn btn-default btn-file">
@@ -444,7 +490,7 @@
 
     <div class="form-group">
         <a asp-action="Index" class="btn btn-default">Return to List</a>
-        <button type="submit" class="btn btn-primary">
+        <button type="submit" class="btn btn-primary" id="saveEvent">
             <span class="buttonText">Create @(Model.NewCommunityExperience ? "Community Experience" : "Event")</span>
             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
         </button>
@@ -469,6 +515,34 @@
                 next: "fa fa-arrow-right"
             }
         });
+        $("#SecretCode").on("keypress", function () {
+            $("#SecretCode-Icon").addClass("hide");
+        });
+
+        @if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
+        {
+            <text>
+            $("#saveEvent").on("click", function (e) {
+                e.preventDefault();
+                if ($("#AwardPoints").val() > @Model.MaxPointLimit
+                        && $("#AwardPoints").val() != @Model.MaxPointLimit) {
+                    $('#warningModal').modal("show");
+                }
+                else {
+                    $("#createForm").submit();
+                }
+            });
+
+            $("#warningSave").on("click", function () {
+                $("#createForm").submit();
+            });
+
+            $("#warningModal").on("hide.bs.modal", function () {
+                $("#saveEvent").removeClass("disabled");
+                $("#saveEvent").find(".fa-spinner").addClass("hidden");
+            });
+            </text>
+        }
 
         $("#pickerEnd").datetimepicker({
             format: "@(Model.Event?.AllDay == true ? "MM/DD/YYYY" : "hh:mm A")",

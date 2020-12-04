@@ -27,7 +27,8 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task<DataWithCount<IEnumerable<Site>>> PageAsync(BaseFilter filter) {
+        public async Task<DataWithCount<IEnumerable<Site>>> PageAsync(BaseFilter filter)
+        {
             var sites = DbSet.AsNoTracking();
             var count = await sites.CountAsync();
             var data = await sites
@@ -36,7 +37,7 @@ namespace GRA.Data.Repository
                 .ProjectTo<Site>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
-            return new DataWithCount<IEnumerable<Site>>()
+            return new DataWithCount<IEnumerable<Site>>
             {
                 Data = data,
                 Count = count

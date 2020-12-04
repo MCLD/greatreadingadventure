@@ -74,7 +74,7 @@ namespace GRA.Web
             catch (Exception ex)
             {
                 bool critical = false;
-                string errorText = null;
+                string errorText;
                 switch (stage)
                 {
                     case 10:

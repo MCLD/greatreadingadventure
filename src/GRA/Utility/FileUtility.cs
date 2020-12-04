@@ -7,7 +7,7 @@ namespace GRA.Utility
     // see https://stackoverflow.com/a/25223884
     public static class FileUtility
     {
-        static char[] _invalids;
+        private static char[] _invalids;
 
         /// <summary>Replaces characters in <c>text</c> that are not allowed in file names with 
         /// the specified replacement character.</summary>

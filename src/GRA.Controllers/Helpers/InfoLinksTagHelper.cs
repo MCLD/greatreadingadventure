@@ -1,12 +1,12 @@
-﻿using GRA.Domain.Service;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using GRA.Domain.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GRA.Controllers.Helpers
 {
@@ -30,10 +30,10 @@ namespace GRA.Controllers.Helpers
             _pageService = Require.IsNotNull(pageService, nameof(pageService));
         }
 
-        public async override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
+        public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
             var pages = await _pageService.GetAreaPagesAsync(navPages);
-            if (pages.Count() > 0)
+            if (pages.Any())
             {
                 IUrlHelper url = _urlHelperFactory.GetUrlHelper(ViewContext);
                 string activeStub = url.ActionContext.RouteData.Values["stub"] as string;
@@ -57,7 +57,6 @@ namespace GRA.Controllers.Helpers
                         if (page.PageStub == activeStub)
                         {
                             pageList.Add($"<a class=\"active\" href=\"{link}\">{page.FooterText}</a>");
-
                         }
                         else
                         {

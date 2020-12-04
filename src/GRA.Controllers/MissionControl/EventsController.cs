@@ -187,11 +187,11 @@ namespace GRA.Controllers.MissionControl
             {
                 if (programId.Value > 0)
                 {
-                    filter.ProgramIds = new List<int?>() { programId.Value };
+                    filter.ProgramIds = new List<int?> { programId.Value };
                 }
                 else
                 {
-                    filter.ProgramIds = new List<int?>() { null };
+                    filter.ProgramIds = new List<int?> { null };
                 }
             }
 
@@ -300,8 +300,14 @@ namespace GRA.Controllers.MissionControl
                 CanRelateChallenge = UserHasPermission(Permission.ViewAllChallenges),
                 ProgramList = new SelectList(programList, "Id", "Name"),
                 IncludeSecretCode = requireSecretCode,
-                RequireSecretCode = requireSecretCode
+                RequireSecretCode = requireSecretCode,
+                IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits),
+                MaxPointLimit = await _triggerService.GetMaximumAllowedPointsAsync(GetCurrentSiteId())
             };
+            if (viewModel.MaxPointLimit.HasValue)
+            {
+                viewModel.MaxPointLimitMessage = $"(Up to {viewModel.MaxPointLimit.Value} points)";
+            }
 
             if (!streamingEvent)
             {
@@ -370,9 +376,14 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Create(EventsDetailViewModel model)
         {
+            byte[] badgeBytes = null;
+
             var requireSecretCode = await GetSiteSettingBoolAsync(
                 SiteSettingKey.Events.RequireBadge);
 
+            model.IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits);
+            model.MaxPointLimit =
+                await _triggerService.GetMaximumAllowedPointsAsync(GetCurrentSiteId());
             if (model.Event.AllDay)
             {
                 if (model.Event.EndDate.HasValue && model.Event.StartDate > model.Event.EndDate)
@@ -403,10 +414,34 @@ namespace GRA.Controllers.MissionControl
                     ModelState.AddModelError("BadgemakerImage", "A badge is required.");
                 }
                 else if (model.BadgeUploadImage != null
-                    && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker)
-                    && (!ValidImageExtensions.Contains(Path.GetExtension(model.BadgeUploadImage.FileName).ToLower())))
+                    && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker))
                 {
-                    ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
+                    if (!ValidImageExtensions.Contains(
+                        Path.GetExtension(model.BadgeUploadImage.FileName).ToLowerInvariant()))
+                    {
+                        ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
+                    }
+
+                    try
+                    {
+                        using (var ms = new MemoryStream())
+                        {
+                            await model.BadgeUploadImage.CopyToAsync(ms);
+                            badgeBytes = ms.ToArray();
+                        }
+                        await _badgeService.ValidateBadgeImageAsync(badgeBytes);
+                    }
+                    catch (GraException gex)
+                    {
+                        ModelState.AddModelError("BadgeUploadImage", gex.Message);
+                    }
+                }
+                if (!model.IgnorePointLimits
+                    && model.MaxPointLimit.HasValue
+                    && model.AwardPoints > model.MaxPointLimit)
+                {
+                    ModelState.AddModelError("AwardPoints",
+                        $"You may award up to {model.MaxPointLimit} points.");
                 }
             }
             else
@@ -471,7 +506,6 @@ namespace GRA.Controllers.MissionControl
                     int? triggerId = null;
                     if (model.IncludeSecretCode)
                     {
-                        byte[] badgeBytes;
                         string filename;
                         if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage)
                             && (model.BadgeUploadImage == null || model.UseBadgeMaker))
@@ -482,13 +516,11 @@ namespace GRA.Controllers.MissionControl
                         }
                         else
                         {
-                            using (var fileStream = model.BadgeUploadImage.OpenReadStream())
+                            if (badgeBytes == null)
                             {
-                                using (var ms = new MemoryStream())
-                                {
-                                    fileStream.CopyTo(ms);
-                                    badgeBytes = ms.ToArray();
-                                }
+                                using var ms = new MemoryStream();
+                                await model.BadgeUploadImage.CopyToAsync(ms);
+                                badgeBytes = ms.ToArray();
                             }
                             filename = Path.GetFileName(model.BadgeUploadImage.FileName);
                         }
@@ -556,12 +588,19 @@ namespace GRA.Controllers.MissionControl
             model.ShowGeolocation = IsSet;
             model.GoogleMapsAPIKey = SetValue;
 
+            if (model.MaxPointLimit.HasValue)
+            {
+                model.MaxPointLimitMessage = $"(Up to {model.MaxPointLimit.Value} points)";
+            }
+
             return View(model);
         }
 
         [HttpPost]
         public async Task<IActionResult> AddEditStreaming(EventsDetailViewModel model)
         {
+            byte[] badgeBytes = null;
+
             var requireSecretCode = await GetSiteSettingBoolAsync(
                 SiteSettingKey.Events.RequireBadge);
 
@@ -577,10 +616,27 @@ namespace GRA.Controllers.MissionControl
                     ModelState.AddModelError("BadgemakerImage", "A badge is required.");
                 }
                 else if (model.BadgeUploadImage != null
-                    && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker)
-                    && (!ValidImageExtensions.Contains(Path.GetExtension(model.BadgeUploadImage.FileName).ToLower())))
+                    && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker))
                 {
-                    ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
+                    if (!ValidImageExtensions.Contains(
+                        Path.GetExtension(model.BadgeUploadImage.FileName).ToLowerInvariant()))
+                    {
+                        ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
+                    }
+
+                    try
+                    {
+                        using (var ms = new MemoryStream())
+                        {
+                            await model.BadgeUploadImage.CopyToAsync(ms);
+                            badgeBytes = ms.ToArray();
+                        }
+                        await _badgeService.ValidateBadgeImageAsync(badgeBytes);
+                    }
+                    catch (GraException gex)
+                    {
+                        ModelState.AddModelError("BadgeUploadImage", gex.Message);
+                    }
                 }
             }
             else
@@ -602,7 +658,6 @@ namespace GRA.Controllers.MissionControl
                     int? triggerId = null;
                     if (model.IncludeSecretCode && !model.Editing)
                     {
-                        byte[] badgeBytes;
                         string filename;
                         if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage)
                             && (model.BadgeUploadImage == null || model.UseBadgeMaker))
@@ -613,13 +668,11 @@ namespace GRA.Controllers.MissionControl
                         }
                         else
                         {
-                            using (var fileStream = model.BadgeUploadImage.OpenReadStream())
+                            if (badgeBytes == null)
                             {
-                                using (var ms = new MemoryStream())
-                                {
-                                    fileStream.CopyTo(ms);
-                                    badgeBytes = ms.ToArray();
-                                }
+                                using var ms = new MemoryStream();
+                                await model.BadgeUploadImage.CopyToAsync(ms);
+                                badgeBytes = ms.ToArray();
                             }
                             filename = Path.GetFileName(model.BadgeUploadImage.FileName);
                         }
@@ -1270,7 +1323,8 @@ namespace GRA.Controllers.MissionControl
         {
             PageTitle = "Import Events";
             if (eventFileCsv == null
-                || !ValidCsvExtensions.Contains(Path.GetExtension(eventFileCsv.FileName).ToLower()))
+                || !ValidCsvExtensions
+                    .Contains(Path.GetExtension(eventFileCsv.FileName).ToLowerInvariant()))
             {
                 AlertDanger = "You must select a .csv file.";
                 ModelState.AddModelError("eventFileCsv", "You must select a .csv file.");
@@ -1278,26 +1332,24 @@ namespace GRA.Controllers.MissionControl
 
             if (ModelState.ErrorCount == 0)
             {
-                using (var streamReader = new StreamReader(eventFileCsv.OpenReadStream()))
-                {
-                    (ImportStatus status, string message)
-                        = await _eventImportService.FromCsvAsync(streamReader);
+                using var streamReader = new StreamReader(eventFileCsv.OpenReadStream());
+                (ImportStatus status, string message)
+                    = await _eventImportService.FromCsvAsync(streamReader);
 
-                    switch (status)
-                    {
-                        case ImportStatus.Success:
-                            AlertSuccess = message;
-                            break;
-                        case ImportStatus.Warning:
-                            AlertWarning = message;
-                            break;
-                        case ImportStatus.Danger:
-                            AlertDanger = message;
-                            break;
-                        default:
-                            AlertInfo = message;
-                            break;
-                    }
+                switch (status)
+                {
+                    case ImportStatus.Success:
+                        AlertSuccess = message;
+                        break;
+                    case ImportStatus.Warning:
+                        AlertWarning = message;
+                        break;
+                    case ImportStatus.Danger:
+                        AlertDanger = message;
+                        break;
+                    default:
+                        AlertInfo = message;
+                        break;
                 }
             }
 

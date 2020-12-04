@@ -24,6 +24,8 @@ namespace GRA.Data.Model
         public int? DeletedBy { get; set; }
         public int? ChallengeId { get; set; }
         public int? BadgeId { get; set; }
+        public int? EventId { get; set; }
+        public int? TriggerId { get; set; }
         public string Description { get; set; }
 
         public int? AvatarBundleId { get; set; }

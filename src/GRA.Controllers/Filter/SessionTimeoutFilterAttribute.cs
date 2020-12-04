@@ -51,7 +51,7 @@ namespace GRA.Controllers.Filter
                         = _sharedLocalizer[Annotations.Validate.SessionExpired].ToString();
                 }
 
-                await controller.LogoutUserAsync();
+                await controller.LogoutUser();
 
                 var controllerActionDescriptor
                     = context.ActionDescriptor as ControllerActionDescriptor;

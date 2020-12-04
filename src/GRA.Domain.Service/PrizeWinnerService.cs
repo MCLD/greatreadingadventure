@@ -1,51 +1,69 @@
-﻿using GRA.Domain.Model;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace GRA.Domain.Service
 {
     public class PrizeWinnerService : Abstract.BaseUserService<PrizeWinnerService>
     {
+        private readonly IBranchRepository _branchRepository;
         private readonly IDrawingCriterionRepository _drawingCriterionRepository;
         private readonly IDrawingRepository _drawingRepository;
         private readonly IPrizeWinnerRepository _prizeWinnerRepository;
+        private readonly ISystemRepository _systemRepository;
         private readonly ITriggerRepository _triggerRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IVendorCodeRepository _vendorCodeRepository;
+        private readonly IVendorCodeTypeRepository _vendorCodeTypeRepository;
 
         public PrizeWinnerService(ILogger<PrizeWinnerService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
+            IBranchRepository branchRepository,
             IDrawingCriterionRepository drawingCriterionRepository,
             IDrawingRepository drawingRepository,
             IPrizeWinnerRepository prizeWinnerRepository,
+            ISystemRepository systemRepository,
             ITriggerRepository triggerRepository,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            IVendorCodeRepository vendorCodeRepository,
+            IVendorCodeTypeRepository vendorCodeTypeRepository)
             : base(logger, dateTimeProvider, userContextProvider)
         {
+            _branchRepository = branchRepository
+                ?? throw new ArgumentNullException(nameof(branchRepository));
             _drawingCriterionRepository = drawingCriterionRepository
                 ?? throw new ArgumentNullException(nameof(drawingCriterionRepository));
             _drawingRepository = drawingRepository
                 ?? throw new ArgumentNullException(nameof(drawingRepository));
             _prizeWinnerRepository = prizeWinnerRepository
                 ?? throw new ArgumentNullException(nameof(prizeWinnerRepository));
+            _systemRepository = systemRepository
+                ?? throw new ArgumentNullException(nameof(systemRepository));
             _triggerRepository = triggerRepository
                 ?? throw new ArgumentNullException(nameof(triggerRepository));
             _userRepository = userRepository
                 ?? throw new ArgumentNullException(nameof(userRepository));
+            _vendorCodeRepository = vendorCodeRepository
+                ?? throw new ArgumentNullException(nameof(vendorCodeRepository));
+            _vendorCodeTypeRepository = vendorCodeTypeRepository
+                ?? throw new ArgumentNullException(nameof(vendorCodeTypeRepository));
             SetManagementPermission(Permission.ViewUserPrizes);
         }
 
         public async Task<PrizeWinner> AddPrizeWinnerAsync(PrizeWinner prizeWinner,
             bool userIdIsCurrentUser = false)
         {
-            if (prizeWinner.DrawingId == null && prizeWinner.TriggerId == null)
+            if (prizeWinner.DrawingId == null
+                && prizeWinner.TriggerId == null
+                && prizeWinner.VendorCodeId == null)
             {
-                throw new GraException("Prizes must be awarded through a drawing or a trigger.");
+                throw new GraException("Prizes must be awarded through a drawing, a trigger, or a vendor code.");
             }
             prizeWinner.SiteId = GetCurrentSiteId();
             prizeWinner.CreatedAt = _dateTimeProvider.Now;
@@ -136,6 +154,11 @@ namespace GRA.Domain.Service
             }
         }
 
+        public async Task<ICollection<PrizeWinner>> GetVendorCodePrizes(int userId)
+        {
+            return await _prizeWinnerRepository.GetVendorCodePrizesAsync(userId);
+        }
+
         public async Task<DataWithCount<ICollection<PrizeWinner>>>
             PageUserPrizes(int userId, BaseFilter filter = default(BaseFilter))
         {
@@ -171,6 +194,20 @@ namespace GRA.Domain.Service
                     prize.PrizeName = trigger.AwardPrizeName;
                     prize.PrizeRedemptionInstructions = trigger.AwardPrizeRedemptionInstructions;
                 }
+                else if (prize.VendorCodeId != null)
+                {
+                    var vendorCode = await _vendorCodeRepository
+                        .GetByIdAsync((int)prize.VendorCodeId);
+                    var vendorCodeType = await _vendorCodeTypeRepository
+                        .GetByIdAsync(vendorCode.VendorCodeTypeId);
+                    var branch = await _branchRepository.GetByIdAsync((int)vendorCode.BranchId);
+                    var system = await _systemRepository.GetByIdAsync(branch.SystemId);
+
+                    prize.PrizeName = $"{vendorCodeType.Description}: {vendorCode.Details}";
+                    prize.PrizeRedemptionInstructions = $"Give customer {vendorCode.Details} and click the green redemption button.";
+                    prize.AvailableAtBranch = branch.Name;
+                    prize.AvailableAtSystem = system.Name;
+                }
             }
 
             return new DataWithCount<ICollection<PrizeWinner>>
@@ -203,7 +240,5 @@ namespace GRA.Domain.Service
 
             return await _prizeWinnerRepository.GetHouseholdUnredeemedPrizesAsync(headId);
         }
-
-        
     }
 }

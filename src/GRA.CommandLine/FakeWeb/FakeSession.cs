@@ -23,7 +23,8 @@ namespace GRA.CommandLine.FakeWeb
             }
         }
 
-        public string Id {
+        public string Id
+        {
             get
             {
                 return _id;

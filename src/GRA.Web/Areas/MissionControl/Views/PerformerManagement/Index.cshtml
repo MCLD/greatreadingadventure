@@ -233,7 +233,7 @@
             $("#psPerformerCount").html("<span class=\"fas fa-spinner fa-spin\"></span>");
             $("#psKitCount").html("<span class=\"fas fa-spinner fa-spin\"></span>");
             $("#psSchedulingStage").html("<span class=\"fas fa-spinner fa-spin\"></span>");
-            $.ajax("@Url.Action("GetPerformerStatusAsync")")
+            $.ajax("@Url.Action(nameof(PerformerManagementController.GetPerformerStatus))")
                 .done(function (performerStatus) {
                     $("#psProgramCount").text(performerStatus.programCount);
                     $("#psPerformerCount").text(performerStatus.performerCount);

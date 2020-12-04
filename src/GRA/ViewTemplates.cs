@@ -18,17 +18,14 @@ namespace GRA
         public static readonly string RegistrationOpen = "IndexRegistrationOpen";
         public static readonly string ExitRegistrationOpen = "ExitRegistrationOpen";
 
-        public static IEnumerable<string> CopyToShared()
+        public static IEnumerable<string> CopyToShared(string contentRoot)
         {
             var issues = new List<string>();
 
-            var viewsPath = Path.Combine(Directory.GetCurrentDirectory(), "Views");
-            var sharedViewsPath
-                = Path.Combine(Directory.GetCurrentDirectory(), "shared", "views");
-            var templatePath
-                = Path.Combine(Directory.GetCurrentDirectory(), "shared", "templates");
-            var contentPath
-                = Path.Combine(Directory.GetCurrentDirectory(), "shared", "content");
+            var viewsPath = Path.Combine(contentRoot, "Views");
+            var sharedViewsPath = Path.Combine(contentRoot, "shared", "views");
+            var templatePath = Path.Combine(contentRoot, "shared", "templates");
+            var contentPath = Path.Combine(contentRoot, "shared", "content");
 
             Directory.CreateDirectory(sharedViewsPath);
             Directory.CreateDirectory(templatePath);
@@ -49,7 +46,10 @@ namespace GRA
                 }
             }
 
-            var viewPath = Path.Combine(Directory.GetCurrentDirectory(), "Views", "Home");
+
+            var viewPath = Path.Combine(contentRoot,
+                "Views",
+                "Home");
             templatePath = Path.Combine(templatePath, "Home");
 
             Directory.CreateDirectory(templatePath);
@@ -68,9 +68,10 @@ namespace GRA
                 }
             }
 
-            var defaultFaviconPath = Path.Combine(Directory.GetCurrentDirectory(),
-                "assets",
-                "defaultfavicon");
+            var defaultFaviconPath
+                = Path.Combine(contentRoot,
+                    "assets",
+                    "defaultfavicon");
 
             if (!Directory.Exists(defaultFaviconPath))
             {
@@ -96,9 +97,10 @@ namespace GRA
                 }
             }
 
-            var defaultImagesPath = Path.Combine(Directory.GetCurrentDirectory(),
-                "assets",
-                "defaultimages");
+            var defaultImagesPath
+                = Path.Combine(contentRoot,
+                    "assets",
+                    "defaultimages");
 
             if (!Directory.Exists(defaultImagesPath))
             {

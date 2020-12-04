@@ -140,7 +140,7 @@ namespace GRA.Controllers.MissionControl
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new
@@ -477,7 +477,7 @@ namespace GRA.Controllers.MissionControl
                 AlertSuccess = "Participant deleted";
                 if (id == GetId(ClaimType.UserId))
                 {
-                    await LogoutUserAsync();
+                    await LogoutUser();
                     return RedirectToAction("Index", "Home", new { area = string.Empty });
                 }
             }
@@ -534,6 +534,11 @@ namespace GRA.Controllers.MissionControl
                     EmailSubscriptionEnabled = await IsSiteSettingSetAsync(
                         SiteSettingKey.Users.AskEmailSubPermission)
                 };
+
+                if (viewModel.SchoolId.HasValue)
+                {
+                    viewModel.School = await _schoolService.GetByIdAsync(viewModel.SchoolId.Value);
+                }
 
                 if (UserHasPermission(Permission.ViewUserPrizes))
                 {
@@ -1867,7 +1872,7 @@ namespace GRA.Controllers.MissionControl
                     CurrentPage = page,
                     ItemsPerPage = filter.Take.Value
                 };
-                if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+                if (paginateModel.PastMaxPage)
                 {
                     return RedirectToRoute(
                         new
@@ -1942,7 +1947,6 @@ namespace GRA.Controllers.MissionControl
                     {
                         ShowAlertSuccess($"Added book '{model.Book.Title}'");
                     }
-
                 }
                 catch (GraException gex)
                 {
@@ -2020,18 +2024,16 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
-                const int take = 15;
-                int skip = take * (page - 1);
-                var history = await _userService
-                    .GetPaginatedUserHistoryAsync(id, skip, take);
+                var filter = new UserLogFilter(page);
+                var history = await _userService.GetPaginatedUserHistoryAsync(id, filter);
 
                 var paginateModel = new PaginateViewModel
                 {
                     ItemCount = history.Count,
                     CurrentPage = page,
-                    ItemsPerPage = take
+                    ItemsPerPage = filter.Take.Value
                 };
-                if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+                if (paginateModel.PastMaxPage)
                 {
                     return RedirectToRoute(
                         new
@@ -2206,8 +2208,6 @@ namespace GRA.Controllers.MissionControl
 
                 await _vendorCodeService.PopulateVendorCodeStatusAsync(user);
 
-
-
                 var viewModel = new PrizeListViewModel
                 {
                     PrizeWinners = prizeList.Data,
@@ -2339,7 +2339,7 @@ namespace GRA.Controllers.MissionControl
                     CurrentPage = page,
                     ItemsPerPage = take
                 };
-                if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+                if (paginateModel.PastMaxPage)
                 {
                     return RedirectToRoute(
                         new
@@ -2859,7 +2859,7 @@ namespace GRA.Controllers.MissionControl
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new

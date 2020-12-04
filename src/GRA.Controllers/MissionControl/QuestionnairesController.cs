@@ -1,4 +1,8 @@
-﻿using GRA.Controllers.ViewModel.MissionControl.Questionnaires;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
+using GRA.Controllers.ViewModel.MissionControl.Questionnaires;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
@@ -6,11 +10,6 @@ using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -36,14 +35,14 @@ namespace GRA.Controllers.MissionControl
             BaseFilter filter = new BaseFilter(page);
             var questionnaireList = await _questionnaireService.GetPaginatedListAsync(filter);
 
-            PaginateViewModel paginateModel = new PaginateViewModel()
+            PaginateViewModel paginateModel = new PaginateViewModel
             {
                 ItemCount = questionnaireList.Count,
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
 
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new
@@ -52,7 +51,7 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
-            QuestionnairesListViewModel viewModel = new QuestionnairesListViewModel()
+            QuestionnairesListViewModel viewModel = new QuestionnairesListViewModel
             {
                 Questionnaires = questionnaireList.Data,
                 PaginateModel = paginateModel
@@ -90,7 +89,7 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
-                QuestionnairesDetailViewModel viewModel = new QuestionnairesDetailViewModel()
+                QuestionnairesDetailViewModel viewModel = new QuestionnairesDetailViewModel
                 {
                     Questionnaire = await _questionnaireService.GetByIdAsync(id, true)
                 };
@@ -117,7 +116,7 @@ namespace GRA.Controllers.MissionControl
                             .Replace("question[]=", "")
                             .Split('&')
                             .Where(_ => !string.IsNullOrWhiteSpace(_))
-                            .Select(Int32.Parse)
+                            .Select(int.Parse)
                             .Distinct()
                             .ToList();
 
@@ -166,10 +165,10 @@ namespace GRA.Controllers.MissionControl
                     // Create dictionary from parameter string
                     var parameterDictionary =
                         Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(parameters);
-                    var questionId = Int32.Parse(parameterDictionary["Question.Id"]);
+                    var questionId = int.Parse(parameterDictionary["Question.Id"]);
 
                     // Ensure the questionnaire isn't locked
-                    var questionnaireId = Int32.Parse(parameterDictionary["Questionnaire.Id"]);
+                    var questionnaireId = int.Parse(parameterDictionary["Questionnaire.Id"]);
                     var questionnaire = await _questionnaireService
                         .GetByIdAsync(questionnaireId, false);
                     if (questionnaire.IsLocked)
@@ -185,7 +184,7 @@ namespace GRA.Controllers.MissionControl
 
                     var updateAnswersList = parameterDictionary
                         .Where(_ => _.Key.StartsWith("update_"))
-                        .ToDictionary(_ => Int32.Parse(_.Key.Replace("update_", "")), _ => _.Value);
+                        .ToDictionary(_ => int.Parse(_.Key.Replace("update_", "")), _ => _.Value);
 
                     List<string> answerOrderList = parameterDictionary["AnswerSortOrder"].ToString()
                                .Replace("answer[]=", "")
@@ -234,7 +233,7 @@ namespace GRA.Controllers.MissionControl
                     // Add new answers to the question
                     foreach (var newAnswer in newAnswersList)
                     {
-                        var answer = new Answer()
+                        var answer = new Answer
                         {
                             QuestionId = question.Id,
                             Text = newAnswer.Value,
@@ -250,7 +249,7 @@ namespace GRA.Controllers.MissionControl
                     // Update the question
                     if (parameterDictionary.ContainsKey($"update_{correctAnswerId}"))
                     {
-                        question.CorrectAnswerId = Int32.Parse(correctAnswerId);
+                        question.CorrectAnswerId = int.Parse(correctAnswerId);
                     }
                     question = await _questionnaireService.UpdateQuestionAsync(question);
 

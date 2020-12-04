@@ -1,7 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Mvc.Localization;
-
-namespace GRA.Controllers.ViewModel.Challenges
+﻿namespace GRA.Controllers.ViewModel.Challenges
 {
     public class TaskDetailViewModel
     {
