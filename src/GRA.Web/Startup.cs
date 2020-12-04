@@ -168,7 +168,8 @@ namespace GRA.Web
                 {
                     _.DataAnnotationLocalizerProvider = (__, factory)
                         => factory.Create(typeof(Resources.Shared));
-                });
+                })
+                .AddRazorRuntimeCompilation();
 
             // Add custom view directory
             services.Configure<RazorViewEngineOptions>(options =>
@@ -514,7 +515,7 @@ namespace GRA.Web
                 }
                 catch (Exception ex)
                 {
-                    throw new GraException($"Unable to create directory '{contentPath}' in {Directory.GetCurrentDirectory()}", ex);
+                    throw new GraException($"Unable to create directory '{contentPath}'", ex);
                 }
             }
 

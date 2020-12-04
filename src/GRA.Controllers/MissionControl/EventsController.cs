@@ -187,11 +187,11 @@ namespace GRA.Controllers.MissionControl
             {
                 if (programId.Value > 0)
                 {
-                    filter.ProgramIds = new List<int?>() { programId.Value };
+                    filter.ProgramIds = new List<int?> { programId.Value };
                 }
                 else
                 {
-                    filter.ProgramIds = new List<int?>() { null };
+                    filter.ProgramIds = new List<int?> { null };
                 }
             }
 
@@ -522,11 +522,9 @@ namespace GRA.Controllers.MissionControl
                         {
                             if (badgeBytes == null)
                             {
-                                using (var ms = new MemoryStream())
-                                {
-                                    await model.BadgeUploadImage.CopyToAsync(ms);
-                                    badgeBytes = ms.ToArray();
-                                }
+                                using var ms = new MemoryStream();
+                                await model.BadgeUploadImage.CopyToAsync(ms);
+                                badgeBytes = ms.ToArray();
                             }
                             filename = Path.GetFileName(model.BadgeUploadImage.FileName);
                         }
@@ -677,11 +675,9 @@ namespace GRA.Controllers.MissionControl
                         {
                             if (badgeBytes == null)
                             {
-                                using (var ms = new MemoryStream())
-                                {
-                                    await model.BadgeUploadImage.CopyToAsync(ms);
-                                    badgeBytes = ms.ToArray();
-                                }
+                                using var ms = new MemoryStream();
+                                await model.BadgeUploadImage.CopyToAsync(ms);
+                                badgeBytes = ms.ToArray();
                             }
                             filename = Path.GetFileName(model.BadgeUploadImage.FileName);
                         }
@@ -1341,26 +1337,24 @@ namespace GRA.Controllers.MissionControl
 
             if (ModelState.ErrorCount == 0)
             {
-                using (var streamReader = new StreamReader(eventFileCsv.OpenReadStream()))
-                {
-                    (ImportStatus status, string message)
-                        = await _eventImportService.FromCsvAsync(streamReader);
+                using var streamReader = new StreamReader(eventFileCsv.OpenReadStream());
+                (ImportStatus status, string message)
+                    = await _eventImportService.FromCsvAsync(streamReader);
 
-                    switch (status)
-                    {
-                        case ImportStatus.Success:
-                            AlertSuccess = message;
-                            break;
-                        case ImportStatus.Warning:
-                            AlertWarning = message;
-                            break;
-                        case ImportStatus.Danger:
-                            AlertDanger = message;
-                            break;
-                        default:
-                            AlertInfo = message;
-                            break;
-                    }
+                switch (status)
+                {
+                    case ImportStatus.Success:
+                        AlertSuccess = message;
+                        break;
+                    case ImportStatus.Warning:
+                        AlertWarning = message;
+                        break;
+                    case ImportStatus.Danger:
+                        AlertDanger = message;
+                        break;
+                    default:
+                        AlertInfo = message;
+                        break;
                 }
             }
 

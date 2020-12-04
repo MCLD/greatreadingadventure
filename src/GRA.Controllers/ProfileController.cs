@@ -1064,7 +1064,7 @@ namespace GRA.Controllers
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new
@@ -1203,7 +1203,7 @@ namespace GRA.Controllers
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new

@@ -54,7 +54,6 @@ namespace GRA.CommandLine.DataGenerator
                         var school = f.PickRandom(schools);
                         u.SchoolId = school.Id;
                     }
-
                 });
 
             var rand = new Bogus.Randomizer();

@@ -5,6 +5,17 @@ WORKDIR /app
 # Copy source
 COPY . ./
 
+# Bring in metadata via --build-arg for build-stage
+ARG IMAGE_VERSION=unknown
+
+# Restore packages
+RUN dotnet restore
+
+# Add SQLite migration
+RUN export PATH="$PATH:/root/.dotnet/tools" && \
+    dotnet tool install --global dotnet-ef && \
+    dotnet ef migrations add ${IMAGE_VERSION} --project src/GRA.Data.SQLite/GRA.Data.SQLite.csproj
+
 # Build project and run tests
 RUN dotnet test
 
@@ -18,7 +29,12 @@ RUN cp /app/release-publish.bash "/app/publish/"
 FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS publish-stage
 WORKDIR /app
 
-# Bring in metadata via --build-arg
+# Install curl for health monitoring
+RUN apt-get update \
+	&& apt-get install --no-install-recommends -y curl=7.64.0-4+deb10u1 \
+	&& rm -rf /var/lib/apt/lists/*
+
+# Bring in metadata via --build-arg to publish-stage
 ARG BRANCH=unknown
 ARG IMAGE_CREATED=unknown
 ARG IMAGE_REVISION=unknown
@@ -54,7 +70,7 @@ VOLUME ["/app/shared"]
 EXPOSE 80
 
 # Configure health check
-HEALTHCHECK CMD curl --fail http://localhost/health || exit
+HEALTHCHECK CMD curl --fail http://localhost/health/ || exit
 
 # Set entrypoint
 ENTRYPOINT ["dotnet", "GRA.Web.dll"]

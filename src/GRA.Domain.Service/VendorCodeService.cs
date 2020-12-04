@@ -600,7 +600,6 @@ namespace GRA.Domain.Service
             }
 
             await _vendorCodeRepository.UpdateSaveNoAuditAsync(code);
-
         }
 
         public async Task<bool> SiteHasCodesAsync()

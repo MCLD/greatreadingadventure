@@ -1,12 +1,12 @@
-﻿using GRA.Domain.Model;
-using GRA.Domain.Repository;
-using GRA.Domain.Service.Abstract;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
+using GRA.Domain.Repository;
+using GRA.Domain.Service.Abstract;
+using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Service
 {
@@ -221,9 +221,9 @@ namespace GRA.Domain.Service
                     = await _drawingCriterionRepository.GetEligibleUserIdsAsync(drawing.DrawingCriterionId);
 
                 // ensure there are enough eligible users to do the drawing
-                if (drawing.WinnerCount > eligibleUserIds.Count())
+                if (drawing.WinnerCount > eligibleUserIds.Count)
                 {
-                    throw new GraException($"Cannot draw {drawing.WinnerCount} from an eligible pool of {eligibleUserIds.Count()} participants.");
+                    throw new GraException($"Cannot draw {drawing.WinnerCount} from an eligible pool of {eligibleUserIds.Count} participants.");
                 }
 
                 // prepare and perform the drawing
@@ -235,7 +235,7 @@ namespace GRA.Domain.Service
                 {
                     rng.GetBytes(randomBytes);
                     int random = System.Math.Abs(System.BitConverter.ToInt32(randomBytes, 0));
-                    int randomUserId = remainingUsers.ElementAt(random % remainingUsers.Count());
+                    int randomUserId = remainingUsers.ElementAt(random % remainingUsers.Count);
 
                     var winner = new PrizeWinner
                     {
@@ -298,31 +298,22 @@ namespace GRA.Domain.Service
                 {
                     throw new GraException("Invalid System selection.");
                 }
-                if (criterion.BranchId.HasValue)
-                {
-                    if (!(await _branchRepository.ValidateAsync(
+                if (criterion.BranchId.HasValue && !(await _branchRepository.ValidateAsync(
                         criterion.BranchId.Value, criterion.SystemId.Value)))
-                    {
-                        throw new GraException("Invalid Branch selection.");
-                    }
-                }
-            }
-            else if (criterion.BranchId.HasValue)
-            {
-                if (!(await _branchRepository.ValidateBySiteAsync(
-                    criterion.BranchId.Value, criterion.SiteId)))
                 {
                     throw new GraException("Invalid Branch selection.");
                 }
             }
-
-            if (criterion.ProgramId.HasValue)
+            else if (criterion.BranchId.HasValue && !(await _branchRepository.ValidateBySiteAsync(
+                    criterion.BranchId.Value, criterion.SiteId)))
             {
-                if (!(await _programRepository.ValidateAsync(
+                throw new GraException("Invalid Branch selection.");
+            }
+
+            if (criterion.ProgramId.HasValue && !(await _programRepository.ValidateAsync(
                     criterion.ProgramId.Value, criterion.SiteId)))
-                {
-                    throw new GraException("Invalid Program selection.");
-                }
+            {
+                throw new GraException("Invalid Program selection.");
             }
         }
     }

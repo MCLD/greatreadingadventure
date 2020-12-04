@@ -27,7 +27,7 @@ namespace GRA.CommandLine
             Config = config ?? throw new ArgumentNullException(nameof(config));
             HttpContextAccessor = httpContextAccessor
                 ?? throw new ArgumentNullException(nameof(httpContextAccessor));
-            AuthenticationService = authenticationService 
+            AuthenticationService = authenticationService
                 ?? throw new ArgumentNullException(nameof(authenticationService));
             SiteLookupService = siteLookupService
                 ?? throw new ArgumentNullException(nameof(siteLookupService));

@@ -28,7 +28,7 @@ namespace GRA.Web
 
         public async Task Handle(HttpContext context)
         {
-            if(context == null)
+            if (context == null)
             {
                 throw new ArgumentNullException(nameof(context));
             }
@@ -56,7 +56,7 @@ namespace GRA.Web
                     return;
                 }
 
-                if (context.Request.Path.Value.Contains("runjob", 
+                if (context.Request.Path.Value.Contains("runjob",
                     StringComparison.OrdinalIgnoreCase))
                 {
                     var jobService = context.RequestServices.GetRequiredService<JobService>();

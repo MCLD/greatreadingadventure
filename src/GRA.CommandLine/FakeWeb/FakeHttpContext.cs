@@ -2,7 +2,7 @@
 
 namespace GRA.CommandLine.FakeWeb
 {
-    class FakeHttpContext : IHttpContextAccessor
+    internal class FakeHttpContext : IHttpContextAccessor
     {
         private HttpContext _httpContext;
         public FakeHttpContext()

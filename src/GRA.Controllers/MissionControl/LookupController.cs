@@ -1,4 +1,7 @@
-﻿using GRA.Controllers.ViewModel.MissionControl.Lookup;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using GRA.Controllers.ViewModel.MissionControl.Lookup;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
@@ -6,9 +9,6 @@ using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GRA.Controllers.MissionControl
 {

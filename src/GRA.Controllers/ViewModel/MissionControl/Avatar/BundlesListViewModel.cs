@@ -1,5 +1,5 @@
-﻿using GRA.Controllers.ViewModel.Shared;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using GRA.Controllers.ViewModel.Shared;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Avatar
 {

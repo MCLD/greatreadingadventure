@@ -354,29 +354,20 @@ namespace GRA.Domain.Service
 
         private async Task ValidateEvent(Event graEvent)
         {
-            if (graEvent.AtBranchId.HasValue)
-            {
-                if (!(await _branchRepository.ValidateBySiteAsync(
+            if (graEvent.AtBranchId.HasValue && !(await _branchRepository.ValidateBySiteAsync(
                     graEvent.AtBranchId.Value, graEvent.SiteId)))
-                {
-                    throw new GraException("Invalid Branch selection.");
-                }
-            }
-            if (graEvent.AtLocationId.HasValue)
             {
-                if (!(await _locationRepository.ValidateAsync(
+                throw new GraException("Invalid Branch selection.");
+            }
+            if (graEvent.AtLocationId.HasValue && !(await _locationRepository.ValidateAsync(
                     graEvent.AtLocationId.Value, graEvent.SiteId)))
-                {
-                    throw new GraException("Invalid Location selection.");
-                }
-            }
-            if (graEvent.ProgramId.HasValue)
             {
-                if (!(await _programRepository.ValidateAsync(
+                throw new GraException("Invalid Location selection.");
+            }
+            if (graEvent.ProgramId.HasValue && !(await _programRepository.ValidateAsync(
                     graEvent.ProgramId.Value, graEvent.SiteId)))
-                {
-                    throw new GraException("Invalid Program selection.");
-                }
+            {
+                throw new GraException("Invalid Program selection.");
             }
         }
 

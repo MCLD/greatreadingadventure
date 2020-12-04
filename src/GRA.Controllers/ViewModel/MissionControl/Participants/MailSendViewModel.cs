@@ -5,7 +5,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
 {
     public class MailSendViewModel
     {
-        [Range(1, Int32.MaxValue)]
+        [Range(1, int.MaxValue)]
         public int Id { get; set; }
         [Required]
         public string Subject { get; set; }

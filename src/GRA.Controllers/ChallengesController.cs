@@ -83,13 +83,13 @@ namespace GRA.Controllers
             if (AuthUser.Identity.IsAuthenticated)
             {
                 filter.Favorites = Favorites;
-                if (string.IsNullOrWhiteSpace(Status) 
+                if (string.IsNullOrWhiteSpace(Status)
                     || string.Equals(Status, StatusUncompleted, StringComparison.OrdinalIgnoreCase))
                 {
                     filter.IsCompleted = false;
                 }
                 else if (string.Equals(Status, StatusCompleted,
-                    StringComparison.OrdinalIgnoreCase)) 
+                    StringComparison.OrdinalIgnoreCase))
                 {
                     filter.IsCompleted = true;
                 }
@@ -116,7 +116,7 @@ namespace GRA.Controllers
                 ItemsPerPage = filter.Take.Value
             };
 
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new
@@ -253,7 +253,7 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> Detail(int id)
         {
-            Challenge challenge = null;
+            Challenge challenge;
             try
             {
                 challenge = await _challengeService.GetChallengeDetailsAsync(id);

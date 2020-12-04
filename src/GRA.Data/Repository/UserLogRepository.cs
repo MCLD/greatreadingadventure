@@ -146,7 +146,6 @@ namespace GRA.Data.Repository
                     && !_.IsDeleted
                     && eligibleUsers.Contains(_.User));
 
-
             if (request.StartDate != null)
             {
                 challengeCount = challengeCount

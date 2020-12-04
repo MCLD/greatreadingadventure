@@ -1,6 +1,6 @@
-﻿using GRA.Controllers.ViewModel.Shared;
+﻿using System.Collections.Generic;
+using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
-using System.Collections.Generic;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Pages
 {

@@ -1,10 +1,10 @@
-﻿using GRA.Domain.Model;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace GRA.Domain.Service
 {

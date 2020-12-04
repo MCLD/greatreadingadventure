@@ -179,7 +179,7 @@ namespace GRA.Controllers.MissionControl
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new
@@ -323,12 +323,10 @@ namespace GRA.Controllers.MissionControl
                     performer.Images[0].Filename);
             }
 
-            if (!string.IsNullOrWhiteSpace(performer.Website))
+            if (!string.IsNullOrWhiteSpace(performer.Website)
+                && Uri.TryCreate(performer.Website, UriKind.Absolute, out Uri absoluteUri))
             {
-                if (Uri.TryCreate(performer.Website, UriKind.Absolute, out Uri absoluteUri))
-                {
-                    viewModel.Uri = absoluteUri;
-                }
+                viewModel.Uri = absoluteUri;
             }
 
             var performerIndexList = await _performerSchedulingService.GetPerformerIndexListAsync();
@@ -1303,7 +1301,7 @@ namespace GRA.Controllers.MissionControl
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new
@@ -1396,12 +1394,10 @@ namespace GRA.Controllers.MissionControl
                     kit.Images[0].Filename);
             }
 
-            if (!string.IsNullOrWhiteSpace(kit.Website))
+            if (!string.IsNullOrWhiteSpace(kit.Website)
+                && Uri.TryCreate(kit.Website, UriKind.Absolute, out Uri absoluteUri))
             {
-                if (Uri.TryCreate(kit.Website, UriKind.Absolute, out Uri absoluteUri))
-                {
-                    viewModel.Uri = absoluteUri;
-                }
+                viewModel.Uri = absoluteUri;
             }
 
             var kitIndexList = await _performerSchedulingService.GetKitIndexListAsync();
@@ -1581,7 +1577,7 @@ namespace GRA.Controllers.MissionControl
                 ShowAlertDanger("Unable to delete selection: ", gex);
                 _logger.LogError(gex,
                     "Error deleting branch selection Id {BranchSelectionId} by user {GetActiveUserId}: {ErrorMessage}",
-                    model.BranchSelectionId, GetActiveUserId(),gex.Message);
+                    model.BranchSelectionId, GetActiveUserId(), gex.Message);
             }
             return RedirectToAction(nameof(PerformerManagementController.KitSelections),
                 new { id = model.Kit.Id });
@@ -1759,7 +1755,7 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<JsonResult> GetKitAgeGroups(int kitId)
         {
-            var kit = new PsKit();
+            PsKit kit;
             try
             {
                 kit = await _performerSchedulingService.GetKitByIdAsync(kitId,
@@ -1869,7 +1865,7 @@ namespace GRA.Controllers.MissionControl
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new
@@ -2010,7 +2006,7 @@ namespace GRA.Controllers.MissionControl
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new
@@ -2107,7 +2103,7 @@ namespace GRA.Controllers.MissionControl
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new

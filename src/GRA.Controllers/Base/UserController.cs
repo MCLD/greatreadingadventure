@@ -1,11 +1,5 @@
 ﻿using GRA.Controllers.Filter;
-using GRA.Domain.Repository.Extensions;
-using GRA.Domain.Service;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GRA.Controllers.Base
 {

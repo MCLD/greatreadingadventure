@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.AspNetCore.Razor.TagHelpers;
+﻿using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace GRA.Controllers.Helpers
 {
@@ -13,7 +10,7 @@ namespace GRA.Controllers.Helpers
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            if(IsDisabled)
+            if (IsDisabled)
             {
                 var disabledAttribute = new TagHelperAttribute("disabled", "disabled");
                 output.Attributes.Add(disabledAttribute);

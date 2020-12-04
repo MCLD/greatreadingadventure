@@ -138,7 +138,7 @@ namespace GRA.Controllers.MissionControl
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new
@@ -214,12 +214,10 @@ namespace GRA.Controllers.MissionControl
                     performer.Images[0].Filename);
             }
 
-            if (!string.IsNullOrWhiteSpace(performer.Website))
+            if (!string.IsNullOrWhiteSpace(performer.Website)
+                && Uri.TryCreate(performer.Website, UriKind.Absolute, out Uri absoluteUri))
             {
-                if (Uri.TryCreate(performer.Website, UriKind.Absolute, out Uri absoluteUri))
-                {
-                    viewModel.Uri = absoluteUri;
-                }
+                viewModel.Uri = absoluteUri;
             }
 
             var performerIndexList = await _performerSchedulingService
@@ -290,7 +288,7 @@ namespace GRA.Controllers.MissionControl
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new
@@ -723,7 +721,7 @@ namespace GRA.Controllers.MissionControl
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new
@@ -775,12 +773,10 @@ namespace GRA.Controllers.MissionControl
                     kit.Images[0].Filename);
             }
 
-            if (!string.IsNullOrWhiteSpace(kit.Website))
+            if (!string.IsNullOrWhiteSpace(kit.Website)
+                && Uri.TryCreate(kit.Website, UriKind.Absolute, out Uri absoluteUri))
             {
-                if (Uri.TryCreate(kit.Website, UriKind.Absolute, out Uri absoluteUri))
-                {
-                    viewModel.Uri = absoluteUri;
-                }
+                viewModel.Uri = absoluteUri;
             }
 
             if (viewModel.SchedulingOpen)
