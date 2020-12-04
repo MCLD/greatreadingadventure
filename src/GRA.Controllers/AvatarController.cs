@@ -210,28 +210,29 @@ namespace GRA.Controllers
                 {
                     ItemPath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/")
                 };
-                if (type == "Item")
+                switch (type?.ToUpperInvariant())
                 {
-                    model.LayerItems = layeritems;
-                    model.SelectedItemId = selectedItemId;
-                    model.ItemPath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/");
-                    model.LayerId = layerId;
+                    case "ITEM":
+                        model.LayerItems = layeritems;
+                        model.SelectedItemId = selectedItemId;
+                        model.ItemPath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/");
+                        model.LayerId = layerId;
+                        break;
+                    case "COLOR":
+                        model.LayerColors = await _avatarService.GetColorsByLayerAsync(layerId);
+                        model.SelectedItemId = selectedItemId;
+                        model.LayerId = layerId;
+                        break;
+                    default:
+                        model.Bundle = await _avatarService.GetBundleByIdAsync(bundleId);
+                        model.SelectedItemIds = selectedItemIds;
+                        break;
                 }
-                else if(type == "Color")
-                {
-                    model.LayerColors = await _avatarService.GetColorsByLayerAsync(layerId);
-                    model.SelectedItemId = selectedItemId;
-                    model.LayerId = layerId;
-                }
-                else
-                {
-                    model.Bundle = await _avatarService.GetBundleByIdAsync(bundleId);
-                    model.SelectedItemIds = selectedItemIds;
-                }
+
                 Response.StatusCode = StatusCodes.Status200OK;
                 return PartialView("_SlickPartial", model);
             }
-            catch(GraException gex)
+            catch (GraException gex)
             {
                 _logger.LogError(gex,
                     "Could not retrieve layer items for layer id {layerId}: {Message}",

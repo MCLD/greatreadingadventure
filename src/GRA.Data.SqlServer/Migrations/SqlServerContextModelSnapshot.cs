@@ -245,6 +245,10 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<string>("Icon")
                         .HasMaxLength(255);
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255);
+
                     b.Property<int>("Position");
 
                     b.Property<bool>("ShowColorSelector");
@@ -263,25 +267,6 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AvatarLayers");
-                });
-
-            modelBuilder.Entity("GRA.Data.Model.AvatarLayerText", b =>
-                {
-                    b.Property<int>("AvatarLayerId");
-
-                    b.Property<int>("LanguageId");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255);
-
-                    b.Property<string>("RemoveLabel");
-
-                    b.HasKey("AvatarLayerId", "LanguageId");
-
-                    b.HasIndex("LanguageId");
-
-                    b.ToTable("AvatarLayerText");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Badge", b =>
@@ -3060,19 +3045,6 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.AvatarLayer", "AvatarLayer")
                         .WithMany("AvatarItems")
                         .HasForeignKey("AvatarLayerId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("GRA.Data.Model.AvatarLayerText", b =>
-                {
-                    b.HasOne("GRA.Data.Model.AvatarLayer", "AvatarLayer")
-                        .WithMany()
-                        .HasForeignKey("AvatarLayerId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GRA.Data.Model.Language", "Language")
-                        .WithMany()
-                        .HasForeignKey("LanguageId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 

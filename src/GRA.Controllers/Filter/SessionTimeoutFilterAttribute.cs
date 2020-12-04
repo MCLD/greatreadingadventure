@@ -56,9 +56,9 @@ namespace GRA.Controllers.Filter
                 var controllerActionDescriptor
                     = context.ActionDescriptor as ControllerActionDescriptor;
                 if (controllerActionDescriptor.ControllerTypeInfo
-                        .IsDefined(typeof(Attributes.PreventAjaxRedirect))
+                        .IsDefined(typeof(Attributes.PreventAjaxRedirectAttribute))
                     || controllerActionDescriptor.MethodInfo
-                        .IsDefined(typeof(Attributes.PreventAjaxRedirect)))
+                        .IsDefined(typeof(Attributes.PreventAjaxRedirectAttribute)))
                 {
                     context.Result = controller.StatusCode(StatusCodes.Status401Unauthorized);
                 }

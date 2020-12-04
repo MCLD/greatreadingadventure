@@ -32,6 +32,7 @@ namespace GRA.Domain.Model
 
         public int? SelectedItem { get; set; }
         public int? SelectedColor { get; set; }
+        [MaxLength(255)]
         public string FilePath { get; set; }
 
         public int AvailableItems { get; set; }

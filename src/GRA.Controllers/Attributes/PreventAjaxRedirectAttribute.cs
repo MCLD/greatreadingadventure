@@ -2,7 +2,7 @@
 
 namespace GRA.Controllers.Attributes
 {
-    public class PreventAjaxRedirect : Attribute
+    public sealed class PreventAjaxRedirectAttribute : Attribute
     {
     }
 }

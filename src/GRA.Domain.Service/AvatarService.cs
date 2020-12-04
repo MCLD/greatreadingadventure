@@ -154,7 +154,7 @@ namespace GRA.Domain.Service
                 await _languageService.GetLanguageIdAsync(currentCultureName) :
                 await _languageService.GetDefaultLanguageIdAsync();
             VerifyManagementPermission();
-            var layers =  await _avatarLayerRepository.GetAllAsync(GetCurrentSiteId());
+            var layers = await _avatarLayerRepository.GetAllAsync(GetCurrentSiteId());
             if (layers.Count > 0)
             {
                 foreach (var layer in layers.ToList())

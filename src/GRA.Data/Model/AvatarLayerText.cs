@@ -6,7 +6,7 @@ namespace GRA.Data.Model
     {
         [Required]
         public int AvatarLayerId { get; set; }
-        public AvatarLayer AvatarLayer{get;set;}
+        public AvatarLayer AvatarLayer { get; set; }
 
         [Required]
         public int LanguageId { get; set; }
