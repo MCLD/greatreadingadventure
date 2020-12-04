@@ -14,6 +14,7 @@ namespace GRA.Controllers.ViewModel.Avatar
         public ICollection<AvatarItem> LayerItems { get; set; }
         public ICollection<AvatarColor> LayerColors { get; set; }
         public int SelectedItemId { get; set; }
+        public int SelectedItemIndex { get; set; }
         public int[] SelectedItemIds { get; set; }
         public string ItemPath { get; set; }
         public int LayerId { get; set; }

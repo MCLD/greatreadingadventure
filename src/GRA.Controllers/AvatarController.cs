@@ -228,8 +228,26 @@ namespace GRA.Controllers
                         model.SelectedItemIds = selectedItemIds;
                         break;
                 }
-
-                Response.StatusCode = StatusCodes.Status200OK;
+                if(model.Bundle != null)
+{
+                    try
+                    {
+                        model.SelectedItemIndex = model.SelectedItemIds
+                            .Select(_ => model.Bundle.AvatarItems.ToList()
+                                .Select(__ => __.Id)
+                                .ToList()
+                                .IndexOf(_)
+                                )
+                            .ToList()
+                            .Where(_ => _ != -1)
+                            .Min();
+                    }
+                    catch (ArgumentNullException)
+                    {
+                        model.SelectedItemIndex = 0;
+                    }
+                }
+                    Response.StatusCode = StatusCodes.Status200OK;
                 return PartialView("_SlickPartial", model);
             }
             catch (GraException gex)
