@@ -228,26 +228,17 @@ namespace GRA.Controllers
                         model.SelectedItemIds = selectedItemIds;
                         break;
                 }
-                if(model.Bundle != null)
-{
-                    try
-                    {
-                        model.SelectedItemIndex = model.SelectedItemIds
-                            .Select(_ => model.Bundle.AvatarItems.ToList()
-                                .Select(__ => __.Id)
-                                .ToList()
-                                .IndexOf(_)
-                                )
+                if (model.Bundle != null)
+                {
+                    var lookupIndex = model.SelectedItemIds
+                        .Select(_ => model.SelectedItemIds
                             .ToList()
-                            .Where(_ => _ != -1)
-                            .Min();
-                    }
-                    catch (ArgumentNullException)
-                    {
-                        model.SelectedItemIndex = 0;
-                    }
+                            .IndexOf(_)
+                            )
+                        .FirstOrDefault(_ => _ != -1);
+                    model.SelectedItemIndex = lookupIndex == -1 ? 0 : lookupIndex;
                 }
-                    Response.StatusCode = StatusCodes.Status200OK;
+                Response.StatusCode = StatusCodes.Status200OK;
                 return PartialView("_SlickPartial", model);
             }
             catch (GraException gex)
