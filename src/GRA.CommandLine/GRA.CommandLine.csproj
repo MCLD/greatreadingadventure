@@ -9,7 +9,7 @@
     <Description>The Great Reading Adventure is an open-source tool for managing dynamic library reading programs.</Description>
     <OutputType>Exe</OutputType>
     <PackageLicenseUrl>https://github.com/mcld/greatreadingadventure/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>http://www.greatreadingadventure.com/</PackageProjectUrl>
+    <PackageProjectUrl>https://www.greatreadingadventure.com/</PackageProjectUrl>
     <PackageReleaseNotes>See https://github.com/MCLD/greatreadingadventure/releases/latest</PackageReleaseNotes>
     <Product>The Great Reading Adventure</Product>
     <RepositoryType>Git</RepositoryType>

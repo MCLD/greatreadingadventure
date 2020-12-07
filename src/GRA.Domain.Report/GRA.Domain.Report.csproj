@@ -7,7 +7,7 @@
     <Copyright>Copyright 2017 Maricopa County Library District</Copyright>
     <Description>The Great Reading Adventure is an open-source tool for managing dynamic library reading programs.</Description>
     <PackageLicenseUrl>https://github.com/mcld/greatreadingadventure/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>http://www.greatreadingadventure.com/</PackageProjectUrl>
+    <PackageProjectUrl>https://www.greatreadingadventure.com/</PackageProjectUrl>
     <PackageReleaseNotes>See https://github.com/MCLD/greatreadingadventure/releases/latest</PackageReleaseNotes>
     <PackageTags>public-library reading-program literacy gra</PackageTags>
     <Product>Great Reading Adventure</Product>

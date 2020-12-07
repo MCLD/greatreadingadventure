@@ -14,7 +14,7 @@
     <NetStandardImplicitPackageVersion>2.0</NetStandardImplicitPackageVersion>
     <PackageId>GRA.Domain.Service</PackageId>
     <PackageLicenseUrl>https://github.com/mcld/greatreadingadventure/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>http://www.greatreadingadventure.com/</PackageProjectUrl>
+    <PackageProjectUrl>https://www.greatreadingadventure.com/</PackageProjectUrl>
     <PackageReleaseNotes>See https://github.com/MCLD/greatreadingadventure/releases/latest</PackageReleaseNotes>
     <PackageTags>public-library reading-program literacy gra</PackageTags>
     <Product>Great Reading Adventure</Product>
