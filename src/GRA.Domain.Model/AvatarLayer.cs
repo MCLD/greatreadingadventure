@@ -11,6 +11,9 @@ namespace GRA.Domain.Model
         [MaxLength(255)]
         public string Name { get; set; }
 
+        [MaxLength(255)]
+        public string RemoveLabel { get; set; }
+
         [Required]
         public int Position { get; set; }
 
@@ -29,6 +32,7 @@ namespace GRA.Domain.Model
 
         public int? SelectedItem { get; set; }
         public int? SelectedColor { get; set; }
+        [MaxLength(255)]
         public string FilePath { get; set; }
 
         public int AvailableItems { get; set; }
@@ -37,5 +41,7 @@ namespace GRA.Domain.Model
 
         public ICollection<AvatarColor> AvatarColors { get; set; }
         public ICollection<AvatarItem> AvatarItems { get; set; }
+
+        public ICollection<AvatarLayerText> Texts { get; set; }
     }
 }

@@ -54,6 +54,7 @@
             public const string MailForHelp = "If you can't find something, please <a href=\"{0}\">send us a mail</a> and let us know what you were looking for, we'll do our best to help.";
             public const string NoBooksLogged = "No books logged.";
             public const string NoHistory = "No history to display.";
+            public const string NoUnlockedBundles = "No unlocked bundles";
             public const string PasswordRecoverySent = "A password recovery email has been sent to the email for username '{0}'.";
             public const string PasswordResetFor = "Password reset for: {0}";
             public const string PointSingular = "{0} point";
@@ -84,6 +85,7 @@
             public const string Apply = "Apply";
             public const string AvatarBundleAltText = "This badge was awarded when you unlocked the avatar bundle: {0}";
             public const string AvatarSaved = "Avatar saved.";
+            public const string Bundle = "Bundle";
             public const string Back = "Back";
             public const string BackTo = "Back to {0}";
             public const string BackToChallenges = "Back to Challenges";
@@ -155,6 +157,7 @@
             public const string SaveMyFavorites = "Save My Favorites";
             public const string SecretCodeApplied = "Secret code applied!";
             public const string SeeItemsUnlocked = "See the items you unlocked.";
+            public const string SelectABundle = "Select a Bundle";
             public const string SendMail = "Send Mail";
             public const string SendReply = "Send Reply";
             public const string SentOn = "Sent to you on {0}";

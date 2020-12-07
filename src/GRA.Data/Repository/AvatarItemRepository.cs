@@ -173,6 +173,16 @@ namespace GRA.Data.Repository
                 .CountAsync();
         }
 
+        public async Task<List<AvatarItem>> GetBundleItemsAsync(int bundleId)
+        {
+            return await _context.AvatarBundleItems
+                .AsNoTracking()
+                .Where(_ => _.AvatarBundleId == bundleId)
+                .Select(_ => _.AvatarItem)
+                .ProjectTo<AvatarItem>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
         public async Task<ICollection<AvatarItem>> GetByIdsAsync(List<int> ids)
         {
             return await DbSet.AsNoTracking()
@@ -228,7 +238,11 @@ namespace GRA.Data.Repository
 
         public async Task<bool> IsLastInRequiredLayer(int itemId)
         {
-            var layer = await DbSet.AsNoTracking().Where(_ => _.Id == itemId).Select(_ => _.AvatarLayer).SingleAsync();
+            var layer = await DbSet
+                .AsNoTracking()
+                .Where(_ => _.Id == itemId)
+                .Select(_ => _.AvatarLayer)
+                .SingleAsync();
             if (!layer.CanBeEmpty)
             {
                 var availableItems = await DbSet.AsNoTracking()

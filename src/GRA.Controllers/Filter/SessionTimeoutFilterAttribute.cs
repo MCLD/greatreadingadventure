@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Localization;
 
@@ -51,14 +53,26 @@ namespace GRA.Controllers.Filter
 
                 await controller.LogoutUser();
 
-                context.Result = controller.RedirectToRoute(new
+                var controllerActionDescriptor
+                    = context.ActionDescriptor as ControllerActionDescriptor;
+                if (controllerActionDescriptor.ControllerTypeInfo
+                        .IsDefined(typeof(Attributes.PreventAjaxRedirectAttribute))
+                    || controllerActionDescriptor.MethodInfo
+                        .IsDefined(typeof(Attributes.PreventAjaxRedirectAttribute)))
                 {
-                    area = string.Empty,
-                    controller = redirectController,
-                    action = redirectController == HomeController.Name
-                        ? nameof(HomeController.Index)
-                        : nameof(SignInController.Index)
-                });
+                    context.Result = controller.StatusCode(StatusCodes.Status401Unauthorized);
+                }
+                else
+                {
+                    context.Result = controller.RedirectToRoute(new
+                    {
+                        area = string.Empty,
+                        controller = redirectController,
+                        action = redirectController == HomeController.Name
+                            ? nameof(HomeController.Index)
+                            : nameof(SignInController.Index)
+                    });
+                }
             }
             else
             {
