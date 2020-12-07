@@ -56,7 +56,7 @@ namespace GRA.Data.Repository
             await _context.SaveChangesAsync();
         }
 
-        public void RemoveByItemIdAsync(int id)
+        public void RemoveByItemId(int id)
         {
             var elements = DbSet.Where(_ => _.AvatarItemId == id);
             DbSet.RemoveRange(elements);

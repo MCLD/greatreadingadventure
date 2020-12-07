@@ -23,6 +23,7 @@ namespace GRA.Domain.Service
         private readonly IAvatarItemRepository _avatarItemRepository;
         private readonly IAvatarLayerRepository _avatarLayerRepository;
         private readonly IJobRepository _jobRepository;
+        private readonly LanguageService _languageService;
         private readonly ITriggerRepository _triggerRepository;
         private readonly IPathResolver _pathResolver;
 
@@ -35,6 +36,7 @@ namespace GRA.Domain.Service
             IAvatarItemRepository avatarItemRepository,
             IAvatarLayerRepository avatarLayerRepository,
             IJobRepository jobRepository,
+            LanguageService languageService,
             ITriggerRepository triggerRepository,
             IPathResolver pathResolver)
             : base(logger, dateTimeProvider, userContextProvider)
@@ -51,6 +53,8 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(avatarLayerRepository));
             _jobRepository = jobRepository
                 ?? throw new ArgumentNullException(nameof(jobRepository));
+            _languageService = languageService
+                ?? throw new ArgumentNullException(nameof(languageService));
             _triggerRepository = triggerRepository
                 ?? throw new ArgumentNullException(nameof(triggerRepository));
             _pathResolver = pathResolver
@@ -63,8 +67,11 @@ namespace GRA.Domain.Service
         {
             var activeUserId = GetActiveUserId();
             var siteId = GetCurrentSiteId();
-            var layers = await _avatarLayerRepository.GetAllWithColorsAsync(
-                siteId, activeUserId);
+            var currentCultureName = _userContextProvider.GetCurrentCulture()?.Name;
+            var currentLanguageId = currentCultureName != null ?
+                await _languageService.GetLanguageIdAsync(currentCultureName) :
+                await _languageService.GetDefaultLanguageIdAsync();
+            var layers = await _avatarLayerRepository.GetAllWithColorsAsync(siteId);
 
             if (layers.Count > 0)
             {
@@ -77,6 +84,10 @@ namespace GRA.Domain.Service
                 var filePath = _pathResolver.ResolveContentPath($"site{siteId}/avatars/");
                 foreach (var layer in layers)
                 {
+                    var layerText = _avatarLayerRepository
+                        .GetNameAndLabelByLanguageId(layer.Id, currentLanguageId);
+                    layer.Name = layerText["Name"];
+                    layer.RemoveLabel = layerText["RemoveLabel"];
                     layer.AvatarItems = await _avatarItemRepository
                                .GetUserItemsByLayerAsync(activeUserId, layer.Id);
                     layer.Icon = _pathResolver.ResolveContentPath(layer.Icon);
@@ -138,8 +149,23 @@ namespace GRA.Domain.Service
 
         public async Task<IEnumerable<AvatarLayer>> GetLayersAsync()
         {
+            var currentCultureName = _userContextProvider.GetCurrentCulture()?.Name;
+            var currentLanguageId = currentCultureName != null ?
+                await _languageService.GetLanguageIdAsync(currentCultureName) :
+                await _languageService.GetDefaultLanguageIdAsync();
             VerifyManagementPermission();
-            return await _avatarLayerRepository.GetAllAsync(GetCurrentSiteId());
+            var layers = await _avatarLayerRepository.GetAllAsync(GetCurrentSiteId());
+            if (layers.Count > 0)
+            {
+                foreach (var layer in layers.ToList())
+                {
+                    var layerText = _avatarLayerRepository
+                        .GetNameAndLabelByLanguageId(layer.Id, currentLanguageId);
+                    layer.Name = layerText["Name"];
+                    layer.RemoveLabel = layerText["RemoveLabel"];
+                }
+            }
+            return layers;
         }
 
         public async Task<int> GetLayerAvailableItemCountAsync(int layerId)
@@ -164,8 +190,25 @@ namespace GRA.Domain.Service
         {
             VerifyManagementPermission();
             layer.SiteId = GetCurrentSiteId();
-            return await _avatarLayerRepository.AddSaveAsync(
+            var currentLayer = await _avatarLayerRepository.AddSaveAsync(
                 GetClaimId(ClaimType.UserId), layer);
+
+            foreach (var text in layer.Texts)
+            {
+                var languageId = await _languageService.GetLanguageIdAsync(text.Language);
+                if (languageId != default)
+                {
+                    await _avatarLayerRepository.AddAvatarLayerTextAsync(currentLayer.Id,
+                        languageId,
+                        text);
+                }
+            }
+            await _avatarLayerRepository.SaveAsync();
+
+            var layerData = _avatarLayerRepository.GetNameAndLabelByLanguageId(currentLayer.Id,
+                await _languageService.GetDefaultLanguageIdAsync());
+            currentLayer.Name = layerData["Name"];
+            return currentLayer;
         }
 
         public async Task<AvatarLayer> UpdateLayerAsync(AvatarLayer layer)
@@ -181,48 +224,18 @@ namespace GRA.Domain.Service
             return await _avatarItemRepository.GetByLayerAsync(layerId);
         }
 
+        public async Task<ICollection<AvatarItem>> GetUsersItemsByLayerAsync(int layerId)
+        {
+            var userId = GetClaimId(ClaimType.UserId);
+            return await _avatarItemRepository.GetUserItemsByLayerAsync(userId, layerId);
+        }
+
         public async Task<AvatarItem> GetItemByLayerPositionSortOrderAsync(int layerPosition,
             int sortOrder)
         {
             VerifyManagementPermission();
             return await _avatarItemRepository.GetByLayerPositionSortOrderAsync(layerPosition,
                 sortOrder);
-        }
-
-        public async Task<AvatarItem> AddItemAsync(AvatarItem item)
-        {
-            VerifyManagementPermission();
-            return await _avatarItemRepository.AddSaveAsync(
-                GetClaimId(ClaimType.UserId), item);
-        }
-
-        public async Task AddItemListAsync(ICollection<AvatarItem> itemList)
-        {
-            VerifyManagementPermission();
-            var userId = GetClaimId(ClaimType.UserId);
-            foreach (var item in itemList)
-            {
-                await _avatarItemRepository.AddAsync(userId, item);
-            }
-            await _avatarItemRepository.SaveAsync();
-        }
-
-        public async Task<AvatarItem> UpdateItemAsync(AvatarItem item)
-        {
-            VerifyManagementPermission();
-            return await _avatarItemRepository.UpdateSaveAsync(
-                GetClaimId(ClaimType.UserId), item);
-        }
-
-        public async Task UpdateItemListAsync(ICollection<AvatarItem> itemList)
-        {
-            VerifyManagementPermission();
-            var userId = GetClaimId(ClaimType.UserId);
-            foreach (var item in itemList)
-            {
-                await _avatarItemRepository.UpdateAsync(userId, item);
-            }
-            await _avatarItemRepository.SaveAsync();
         }
 
         public async Task DescreaseItemSortAsync(int id)
@@ -280,7 +293,7 @@ namespace GRA.Domain.Service
             }
             await _avatarItemRepository.RemoveUserItemAsync(id);
             _avatarItemRepository.RemoveUserUnlockedItem(id);
-            _avatarElementRepository.RemoveByItemIdAsync(id);
+            _avatarElementRepository.RemoveByItemId(id);
             _avatarBundleRepository.RemoveItemFromBundles(id);
             await _avatarItemRepository.RemoveAsync(GetClaimId(ClaimType.UserId), id);
             await _avatarItemRepository.SaveAsync();
@@ -289,65 +302,6 @@ namespace GRA.Domain.Service
         public async Task<ICollection<AvatarColor>> GetColorsByLayerAsync(int layerId)
         {
             return await _avatarColorRepository.GetByLayerAsync(layerId);
-        }
-
-        public async Task<AvatarColor> AddColorAsync(AvatarColor color)
-        {
-            VerifyManagementPermission();
-            return await _avatarColorRepository.AddSaveAsync(
-                GetClaimId(ClaimType.UserId), color);
-        }
-
-        public async Task AddColorListAsync(ICollection<AvatarColor> colorList)
-        {
-            VerifyManagementPermission();
-            var userId = GetClaimId(ClaimType.UserId);
-            foreach (var color in colorList)
-            {
-                await _avatarColorRepository.AddAsync(userId, color);
-            }
-            await _avatarColorRepository.SaveAsync();
-        }
-
-        public async Task<AvatarColor> UpdateColorAsync(AvatarColor color)
-        {
-            VerifyManagementPermission();
-            return await _avatarColorRepository.UpdateSaveAsync(
-                GetClaimId(ClaimType.UserId), color);
-        }
-
-        public async Task<AvatarElement> AddElementAsync(AvatarElement element)
-        {
-            VerifyManagementPermission();
-            return await _avatarElementRepository.AddSaveAsync(
-                GetClaimId(ClaimType.UserId), element);
-        }
-
-        public async Task AddElementListAsync(List<AvatarElement> elementList)
-        {
-            VerifyManagementPermission();
-            var userId = GetClaimId(ClaimType.UserId);
-            var count = 0;
-            foreach (var element in elementList)
-            {
-                await _avatarElementRepository.AddAsync(userId, element);
-                count++;
-                if (count % 500 == 0)
-                {
-                    await _avatarElementRepository.SaveAsync();
-                }
-            }
-            if (count % 500 != 0)
-            {
-                await _avatarElementRepository.SaveAsync();
-            }
-        }
-
-        public async Task<AvatarElement> UpdateElementAsync(AvatarElement element)
-        {
-            VerifyManagementPermission();
-            return await _avatarElementRepository.UpdateSaveAsync(
-                GetClaimId(ClaimType.UserId), element);
         }
 
         public async Task<AvatarBundle> AddBundleAsync(AvatarBundle bundle,
@@ -431,34 +385,46 @@ namespace GRA.Domain.Service
             return await _avatarElementRepository.GetUserAvatarAsync(GetActiveUserId());
         }
 
-        public async Task<Dictionary<AvatarBundle, bool>> GetUserUnlockBundlesAsync()
+        public async Task<List<AvatarBundle>> GetUserUnlockBundlesAsync()
         {
             var userHistory = await _avatarBundleRepository.UserHistoryAsync(GetActiveUserId());
-            var bundles = new Dictionary<AvatarBundle, bool>();
+            var bundles = new List<AvatarBundle>();
             foreach (var historyItem in userHistory.Where(_ => _.AvatarBundleId.HasValue))
             {
-                if (!bundles.Keys.Any(bundle => bundle.Id == historyItem.AvatarBundleId))
+                if (!bundles.Any(bundle => bundle.Id == historyItem.AvatarBundleId))
                 {
-                    bundles.Add(await GetBundleByIdAsync(historyItem.AvatarBundleId.Value),
-                        historyItem.HasBeenViewed ?? false);
+                    var bundle = await GetBundleByIdAsync(historyItem.AvatarBundleId.Value);
+                    bundle.HasBeenViewed = historyItem.HasBeenViewed ?? false;
+                    bundles.Add(bundle);
                 }
             }
             return bundles;
         }
 
-        public async Task UpdateUserLogsAsync(List<UserLog> userLog)
+        public async Task UpdateBundleHasBeenViewedAsync(int bundleId)
         {
-            foreach (var bundle in userLog)
-            {
-                await _avatarBundleRepository.UpdateHasBeenViewedAsync(GetActiveUserId(),
-                    bundle.AvatarBundleId.Value);
-            }
+            await _avatarBundleRepository.UpdateHasBeenViewedAsync(GetActiveUserId(),
+                bundleId);
         }
 
         public async Task UpdateUserAvatarAsync(ICollection<AvatarLayer> selectionLayers)
         {
             var activeUserId = GetActiveUserId();
+            var currentCultureName = _userContextProvider.GetCurrentCulture()?.Name;
+            var currentLanguageId = currentCultureName != null ?
+                await _languageService.GetLanguageIdAsync(currentCultureName) :
+                await _languageService.GetDefaultLanguageIdAsync();
             var layers = await _avatarLayerRepository.GetAllAsync(GetCurrentSiteId());
+            if (layers.Count > 0)
+            {
+                foreach (var layer in layers.ToList())
+                {
+                    var layerText = _avatarLayerRepository
+                        .GetNameAndLabelByLanguageId(layer.Id, currentLanguageId);
+                    layer.Name = layerText["Name"];
+                    layer.RemoveLabel = layerText["RemoveLabel"];
+                }
+            }
             var elementList = new List<int>();
             foreach (var layer in layers)
             {
@@ -613,8 +579,9 @@ namespace GRA.Domain.Service
 
                     var addedLayer = await AddLayerAsync(layer);
 
-                    var layerAssetPath = Path.Combine(assetPath, addedLayer.Name);
-                    var destinationRoot = Path.Combine($"site{siteId}", "avatars", $"layer{addedLayer.Id}");
+                    var layerAssetPath = Path.Combine(assetPath, layer.Name);
+                    var destinationRoot = Path.Combine($"site{siteId}",
+                        "avatars", $"layer{addedLayer.Id}");
                     var destinationPath = _pathResolver.ResolveContentFilePath(destinationRoot);
                     if (!Directory.Exists(destinationPath))
                     {
@@ -642,7 +609,8 @@ namespace GRA.Domain.Service
                         var currentColor = 1;
                         foreach (var color in colors)
                         {
-                            var secondsFromLastUpdate = (int)sw.Elapsed.TotalSeconds - lastUpdateSent;
+                            var secondsFromLastUpdate =
+                                (int)sw.Elapsed.TotalSeconds - lastUpdateSent;
                             if (secondsFromLastUpdate >= 5)
                             {
                                 progress.Report(new JobStatus
@@ -700,7 +668,7 @@ namespace GRA.Domain.Service
                     await _avatarItemRepository.SaveAsync();
                     items = await GetItemsByLayerAsync(addedLayer.Id);
 
-                    _logger.LogInformation($"Processing {items.Count} items in {addedLayer.Name}...");
+                    _logger.LogInformation($"Processing {items.Count} items in {layer.Name}...");
 
                     progress?.Report(new JobStatus
                     {
@@ -822,7 +790,8 @@ namespace GRA.Domain.Service
                     using (StreamReader file = File.OpenText(bundleJsonPath))
                     {
                         var jsonString = await file.ReadToEndAsync();
-                        bundleList = JsonConvert.DeserializeObject<IEnumerable<AvatarBundle>>(jsonString);
+                        bundleList = JsonConvert
+                            .DeserializeObject<IEnumerable<AvatarBundle>>(jsonString);
                     }
 
                     foreach (var bundle in bundleList)

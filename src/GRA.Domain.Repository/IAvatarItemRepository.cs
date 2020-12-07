@@ -25,5 +25,6 @@ namespace GRA.Domain.Repository
         Task<bool> IsInUse(int itemId, bool ignoreUnlockedUsers = false);
         Task RemoveUserItemAsync(int id);
         void RemoveUserUnlockedItem(int id);
+        Task<List<AvatarItem>> GetBundleItemsAsync(int bundleId);
     }
 }
