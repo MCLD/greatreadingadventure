@@ -8,11 +8,11 @@
     <Company>Maricopa County Library District</Company>
     <Copyright>Copyright 2017 Maricopa County Library District</Copyright>
     <Description>The Great Reading Adventure is an open-source tool for managing dynamic library reading programs.</Description>
-    <FileVersion>4.1.2.109</FileVersion>
+    <FileVersion>4.1.2.110</FileVersion>
     <OutputType>Exe</OutputType>
     <PackageId>GRA.Web</PackageId>
     <PackageLicenseUrl>https://github.com/mcld/greatreadingadventure/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>http://www.greatreadingadventure.com/</PackageProjectUrl>
+    <PackageProjectUrl>https://www.greatreadingadventure.com/</PackageProjectUrl>
     <PackageReleaseNotes>See https://github.com/MCLD/greatreadingadventure/releases/latest</PackageReleaseNotes>
     <PackageTags>public-library reading-program literacy gra</PackageTags>
     <PreserveCompilationContext>true</PreserveCompilationContext>
@@ -55,8 +55,8 @@
 
   <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.SqlServer" Version="3.2.0" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
-    <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.0" />
