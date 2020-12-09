@@ -153,7 +153,12 @@ if [[ $BLD_PUSH = true ]]; then
     fi
   fi
 else
-  docker build -f "$BLD_DOCKERFILE" -t "$BLD_FULL_DOCKER_IMAGE" --target build-stage .
+  docker build -f "$BLD_DOCKERFILE" -t "$BLD_FULL_DOCKER_IMAGE" \
+    --build-arg BRANCH="$BLD_BRANCH" \
+    --build-arg IMAGE_CREATED="$BLD_DATE" \
+    --build-arg IMAGE_REVISION="$BLD_COMMIT" \
+    --build-arg IMAGE_VERSION="$BLD_VERSION" \
+    --target build-stage .
   echo '=== Not pushing Docker image: branch is not master, develop, or versioned release'
 fi
 

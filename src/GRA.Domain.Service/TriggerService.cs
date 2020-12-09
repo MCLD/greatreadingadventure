@@ -217,31 +217,23 @@ namespace GRA.Domain.Service
                 {
                     throw new GraException("Invalid System selection.");
                 }
-                if (trigger.LimitToBranchId.HasValue)
-                {
-                    if (!(await _branchRepository.ValidateAsync(
+                if (trigger.LimitToBranchId.HasValue && !(await _branchRepository.ValidateAsync(
                         trigger.LimitToBranchId.Value, trigger.LimitToSystemId.Value)))
-                    {
-                        throw new GraException("Invalid Branch selection.");
-                    }
-                }
-            }
-            else if (trigger.LimitToBranchId.HasValue)
-            {
-                if (!(await _branchRepository.ValidateBySiteAsync(
-                    trigger.LimitToBranchId.Value, trigger.SiteId)))
                 {
                     throw new GraException("Invalid Branch selection.");
                 }
             }
-
-            if (trigger.LimitToProgramId.HasValue)
+            else if (trigger.LimitToBranchId.HasValue
+                && !await _branchRepository.ValidateBySiteAsync(
+                    trigger.LimitToBranchId.Value, trigger.SiteId))
             {
-                if (!(await _programRepository.ValidateAsync(
+                throw new GraException("Invalid Branch selection.");
+            }
+
+            if (trigger.LimitToProgramId.HasValue && !(await _programRepository.ValidateAsync(
                     trigger.LimitToProgramId.Value, trigger.SiteId)))
-                {
-                    throw new GraException("Invalid Program selection.");
-                }
+            {
+                throw new GraException("Invalid Program selection.");
             }
 
             if (!string.IsNullOrWhiteSpace(trigger.SecretCode))

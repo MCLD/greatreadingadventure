@@ -1,5 +1,5 @@
-﻿using GRA.Domain.Model;
-using System.Security.Claims;
+﻿using System.Security.Claims;
+using GRA.Domain.Model;
 
 namespace GRA.Domain.Service
 {

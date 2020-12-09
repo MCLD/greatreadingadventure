@@ -48,11 +48,11 @@ namespace GRA.Data.Repository
         }
         public async Task SetLastPostDate(int categoryId, DateTime? date)
         {
-            var category =  await DbSet
+            var category = await DbSet
                 .Where(_ => _.Id == categoryId)
                 .SingleOrDefaultAsync();
-                category.LastPostDate = date;
-                DbSet.Update(category);
+            category.LastPostDate = date;
+            DbSet.Update(category);
         }
 
         public async Task<DataWithCount<IEnumerable<NewsCategory>>> PageAsync(BaseFilter filter)

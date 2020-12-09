@@ -1,16 +1,16 @@
-﻿using GRA.Controllers.ViewModel.MissionControl.Drawing;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using GRA.Controllers.ViewModel.MissionControl.Drawing;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using GRA.Domain.Model.Filters;
-using System.Collections.Generic;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -88,7 +88,7 @@ namespace GRA.Controllers.MissionControl
                 ItemsPerPage = filter.Take.Value
             };
 
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new
@@ -180,7 +180,7 @@ namespace GRA.Controllers.MissionControl
                     ItemsPerPage = take
                 };
 
-                if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+                if (paginateModel.PastMaxPage)
                 {
                     return RedirectToRoute(
                         new
@@ -365,7 +365,7 @@ namespace GRA.Controllers.MissionControl
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new
@@ -445,9 +445,9 @@ namespace GRA.Controllers.MissionControl
 
             CriterionDetailViewModel viewModel = new CriterionDetailViewModel()
             {
-                SystemList = new SelectList((await _siteService.GetSystemList()), "Id", "Name"),
-                BranchList = new SelectList((await _siteService.GetAllBranches()), "Id", "Name"),
-                ProgramList = new SelectList((await _siteService.GetProgramList()), "Id", "Name"),
+                SystemList = new SelectList(await _siteService.GetSystemList(), "Id", "Name"),
+                BranchList = new SelectList(await _siteService.GetAllBranches(), "Id", "Name"),
+                ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
             };
             return View(viewModel);
         }
@@ -458,7 +458,7 @@ namespace GRA.Controllers.MissionControl
         {
             if (ModelState.IsValid)
             {
-                if (model.Criterion.ProgramIds?.Count() == 1)
+                if (model.Criterion.ProgramIds?.Count == 1)
                 {
                     model.Criterion.ProgramId = model.Criterion.ProgramIds.First();
                     model.Criterion.ProgramIds = null;
@@ -482,17 +482,17 @@ namespace GRA.Controllers.MissionControl
             else
             {
                 PageTitle = "Drawing Criteria";
-                model.SystemList = new SelectList((await _siteService.GetSystemList()), "Id", "Name");
+                model.SystemList = new SelectList(await _siteService.GetSystemList(), "Id", "Name");
                 if (model.Criterion.SystemId.HasValue)
                 {
                     model.BranchList = new SelectList(
-                        (await _siteService.GetBranches(model.Criterion.SystemId.Value)), "Id", "Name");
+                        await _siteService.GetBranches(model.Criterion.SystemId.Value), "Id", "Name");
                 }
                 else
                 {
-                    model.BranchList = new SelectList((await _siteService.GetAllBranches()), "Id", "Name");
+                    model.BranchList = new SelectList(await _siteService.GetAllBranches(), "Id", "Name");
                 }
-                model.ProgramList = new SelectList((await _siteService.GetProgramList()), "Id", "Name");
+                model.ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name");
                 return View(model);
             }
         }
@@ -514,22 +514,22 @@ namespace GRA.Controllers.MissionControl
                     Criterion = criterion,
                     CreatedByName = await _userService.GetUsersNameByIdAsync(criterion.CreatedBy),
                     CanViewParticipants = UserHasPermission(Permission.ViewParticipantDetails),
-                    SystemList = new SelectList((await _siteService.GetSystemList()), "Id", "Name"),
+                    SystemList = new SelectList(await _siteService.GetSystemList(), "Id", "Name"),
                     ProgramList = new SelectList(programs, "Id", "Name"),
                     EligibleCount = await _drawingService.GetEligibleCountAsync(id),
                     ProgramPlaceholder = string.Join(", ", programs
                         .Where(_ => criterion.ProgramIds.Contains(_.Id))
-                        .Select(_ => _.Name)) 
+                        .Select(_ => _.Name))
                 };
 
                 if (viewModel.Criterion.SystemId.HasValue)
                 {
                     viewModel.BranchList = new SelectList(
-                        (await _siteService.GetBranches(viewModel.Criterion.SystemId.Value)), "Id", "Name");
+                        await _siteService.GetBranches(viewModel.Criterion.SystemId.Value), "Id", "Name");
                 }
                 else
                 {
-                    viewModel.BranchList = new SelectList((await _siteService.GetAllBranches()), "Id", "Name");
+                    viewModel.BranchList = new SelectList(await _siteService.GetAllBranches(), "Id", "Name");
                 }
                 return View(viewModel);
             }
@@ -546,7 +546,7 @@ namespace GRA.Controllers.MissionControl
         {
             if (ModelState.IsValid)
             {
-                if (model.Criterion.ProgramIds?.Count() == 1)
+                if (model.Criterion.ProgramIds?.Count == 1)
                 {
                     model.Criterion.ProgramId = model.Criterion.ProgramIds.First();
                     model.Criterion.ProgramIds = null;
@@ -570,17 +570,17 @@ namespace GRA.Controllers.MissionControl
             else
             {
                 PageTitle = "Drawing Criteria";
-                model.SystemList = new SelectList((await _siteService.GetSystemList()), "Id", "Name");
+                model.SystemList = new SelectList(await _siteService.GetSystemList(), "Id", "Name");
                 if (model.Criterion.SystemId.HasValue)
                 {
                     model.BranchList = new SelectList(
-                        (await _siteService.GetBranches(model.Criterion.SystemId.Value)), "Id", "Name");
+                        await _siteService.GetBranches(model.Criterion.SystemId.Value), "Id", "Name");
                 }
                 else
                 {
-                    model.BranchList = new SelectList((await _siteService.GetAllBranches()), "Id", "Name");
+                    model.BranchList = new SelectList(await _siteService.GetAllBranches(), "Id", "Name");
                 }
-                model.ProgramList = new SelectList((await _siteService.GetProgramList()), "Id", "Name");
+                model.ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name");
                 return View(model);
             }
         }

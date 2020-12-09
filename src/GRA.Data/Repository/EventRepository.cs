@@ -331,7 +331,7 @@ namespace GRA.Data.Repository
                 }
             }
         }
-        
+
         public async Task<ICollection<Event>> GetEventListAsync(EventFilter filter)
         {
             if (filter == null)

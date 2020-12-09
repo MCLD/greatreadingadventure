@@ -1,13 +1,12 @@
-﻿using GRA.Controllers.ViewModel.MissionControl.Mail;
+﻿using System.Threading.Tasks;
+using GRA.Controllers.ViewModel.MissionControl.Mail;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Text;
-using System.Threading.Tasks;
-using GRA.Domain.Model.Filters;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -32,17 +31,18 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> Index(int page = 1)
         {
-            int take = 15;
+            const int take = 15;
             int skip = take * (page - 1);
             var mailList = await _mailService.GetAllUnrepliedPaginatedAsync(skip, take);
 
-            PaginateViewModel paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel
             {
                 ItemCount = mailList.Count,
                 CurrentPage = page,
                 ItemsPerPage = take
             };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new
@@ -51,7 +51,7 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
-            MailListViewModel viewModel = new MailListViewModel()
+            var viewModel = new MailListViewModel
             {
                 Mail = mailList.Data,
                 PaginateModel = paginateModel,
@@ -63,17 +63,18 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> ViewAll(int page = 1)
         {
-            int take = 15;
+            const int take = 15;
             int skip = take * (page - 1);
             var mailList = await _mailService.GetAllPaginatedAsync(skip, take);
 
-            PaginateViewModel paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel
             {
                 ItemCount = mailList.Count,
                 CurrentPage = page,
                 ItemsPerPage = take
             };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new
@@ -82,7 +83,7 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
-            MailListViewModel viewModel = new MailListViewModel()
+            var viewModel = new MailListViewModel
             {
                 Mail = mailList.Data,
                 PaginateModel = paginateModel,
@@ -111,7 +112,7 @@ namespace GRA.Controllers.MissionControl
 
                 var thread = await _mailService.GetThreadAsync(mail.ThreadId ?? mail.Id);
 
-                MailDetailViewModel viewModel = new MailDetailViewModel()
+                var viewModel = new MailDetailViewModel
                 {
                     Mail = mail,
                     MailThread = thread,
@@ -147,7 +148,7 @@ namespace GRA.Controllers.MissionControl
             catch (GraException gex)
             {
                 AlertInfo = gex.Message;
-                return RedirectToAction("Detail", new { id = id });
+                return RedirectToAction("Detail", new { id });
             }
         }
 
@@ -168,7 +169,7 @@ namespace GRA.Controllers.MissionControl
                         participantName += $" ({participant.Username})";
                     }
 
-                    MailReplyViewModel viewModel = new MailReplyViewModel()
+                    var viewModel = new MailReplyViewModel
                     {
                         Subject = $"Re: {mail.Subject}",
                         InReplyToId = mail.Id,
@@ -182,7 +183,7 @@ namespace GRA.Controllers.MissionControl
                 }
                 else
                 {
-                    return RedirectToAction("Detail", new { id = id });
+                    return RedirectToAction("Detail", new { id });
                 }
             }
             catch (GraException gex)
@@ -196,13 +197,18 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Reply(MailReplyViewModel model)
         {
+            if (model == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             if (model.InReplyToId == null)
             {
                 return RedirectToAction("Index");
             }
             if (ModelState.IsValid)
             {
-                Mail mail = new Mail()
+                var mail = new Mail
                 {
                     Subject = model.Subject,
                     Body = model.Body,
@@ -236,13 +242,14 @@ namespace GRA.Controllers.MissionControl
 
             var broadcastList = await _mailService.PageBroadcastsAsync(filter);
 
-            var paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel
             {
                 ItemCount = broadcastList.Count,
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+
+            if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new
@@ -251,7 +258,7 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
-            var viewModel = new BroadcastListViewModel()
+            var viewModel = new BroadcastListViewModel
             {
                 Broadcasts = broadcastList.Data,
                 PaginateModel = paginateModel,
@@ -264,7 +271,7 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy.SendBroadcastMail)]
         public IActionResult BroadcastCreate()
         {
-            var viewModel = new BroadcastDetailViewModel()
+            var viewModel = new BroadcastDetailViewModel
             {
                 Action = "Create"
             };
@@ -277,6 +284,11 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> BroadcastCreate(BroadcastDetailViewModel model)
         {
+            if (model == null)
+            {
+                return RedirectToAction(nameof(BroadcastCreate));
+            }
+
             if (!model.SendNow)
             {
                 if (model.Broadcast.SendAt == null)
@@ -288,6 +300,7 @@ namespace GRA.Controllers.MissionControl
                     ModelState.AddModelError("Broadcast.SendAt", "Please select a date not in the past.");
                 }
             }
+
             if (ModelState.IsValid)
             {
                 try
@@ -314,11 +327,12 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy.SendBroadcastMail)]
         public async Task<IActionResult> BroadcastEdit(int id)
         {
-            var viewModel = new BroadcastDetailViewModel()
+            var viewModel = new BroadcastDetailViewModel
             {
                 Broadcast = await _mailService.GetBroadcastByIdAsync(id),
                 Action = "Edit"
             };
+
             if (viewModel.Broadcast.SendAt <= _dateTimeProvider.Now)
             {
                 viewModel.Sent = true;
@@ -336,6 +350,11 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> BroadcastEdit(BroadcastDetailViewModel model)
         {
+            if (model == null)
+            {
+                return RedirectToAction(nameof(Broadcasts));
+            }
+
             if (!model.SendNow)
             {
                 if (model.Broadcast.SendAt == null)
@@ -377,7 +396,7 @@ namespace GRA.Controllers.MissionControl
             try
             {
                 await _mailService.RemoveBroadcastAsync(id);
-                ShowAlertSuccess($"Broadcast successfully deleted!");
+                ShowAlertSuccess("Broadcast successfully deleted!");
             }
             catch (GraException gex)
             {

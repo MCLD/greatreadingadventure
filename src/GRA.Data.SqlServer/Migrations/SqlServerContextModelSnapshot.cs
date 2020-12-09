@@ -15,27 +15,33 @@ namespace GRA.Data.SqlServer.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
+                .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "5.0.0");
 
             modelBuilder.Entity("GRA.Data.Model.Answer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<int>("QuestionId");
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("SortOrder");
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
 
                     b.Property<string>("Text")
                         .IsRequired()
-                        .HasMaxLength(1500);
+                        .HasMaxLength(1500)
+                        .HasColumnType("nvarchar(1500)");
 
                     b.HasKey("Id");
 
@@ -48,25 +54,34 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<string>("CurrentValue");
+                    b.Property<string>("CurrentValue")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("EntityId");
+                    b.Property<int>("EntityId")
+                        .HasColumnType("int");
 
                     b.Property<string>("EntityType")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<string>("PreviousValue");
+                    b.Property<string>("PreviousValue")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("UpdatedAt");
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("UpdatedBy");
+                    b.Property<int>("UpdatedBy")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -77,25 +92,34 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsSingleUse");
+                    b.Property<bool>("IsSingleUse")
+                        .HasColumnType("bit");
 
-                    b.Property<int>("RoleId");
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("Uses");
+                    b.Property<int>("Uses")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -108,23 +132,31 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<bool>("CanBeUnlocked");
+                    b.Property<bool>("CanBeUnlocked")
+                        .HasColumnType("bit");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("HasBeenAwarded");
+                    b.Property<bool>("HasBeenAwarded")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("IsDeleted");
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -133,9 +165,11 @@ namespace GRA.Data.SqlServer.Migrations
 
             modelBuilder.Entity("GRA.Data.Model.AvatarBundleItem", b =>
                 {
-                    b.Property<int>("AvatarBundleId");
+                    b.Property<int>("AvatarBundleId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("AvatarItemId");
+                    b.Property<int>("AvatarItemId")
+                        .HasColumnType("int");
 
                     b.HasKey("AvatarBundleId", "AvatarItemId");
 
@@ -148,19 +182,25 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<int>("AvatarLayerId");
+                    b.Property<int>("AvatarLayerId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Color")
                         .IsRequired()
-                        .HasMaxLength(15);
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<int>("SortOrder");
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -173,19 +213,25 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<int?>("AvatarColorId");
+                    b.Property<int?>("AvatarColorId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("AvatarItemId");
+                    b.Property<int>("AvatarItemId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Filename")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
@@ -200,24 +246,32 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<int>("AvatarLayerId");
+                    b.Property<int>("AvatarLayerId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("SortOrder");
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
 
                     b.Property<string>("Thumbnail")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<bool>("Unlockable");
+                    b.Property<bool>("Unlockable")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -230,58 +284,101 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<bool>("CanBeEmpty");
+                    b.Property<bool>("CanBeEmpty")
+                        .HasColumnType("bit");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("DefaultLayer");
+                    b.Property<bool>("DefaultLayer")
+                        .HasColumnType("bit");
 
-                    b.Property<int>("GroupId");
+                    b.Property<int>("GroupId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Icon")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("Position");
+                    b.Property<int>("Position")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("ShowColorSelector");
+                    b.Property<bool>("ShowColorSelector")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("ShowItemSelector");
+                    b.Property<bool>("ShowItemSelector")
+                        .HasColumnType("bit");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("SortOrder");
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("ZoomScale")
                         .HasColumnType("decimal(4,2)");
 
-                    b.Property<int>("ZoomYOffset");
+                    b.Property<int>("ZoomYOffset")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.ToTable("AvatarLayers");
                 });
 
+            modelBuilder.Entity("GRA.Data.Model.AvatarLayerText", b =>
+                {
+                    b.Property<int>("AvatarLayerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LanguageId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("RemoveLabel")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.HasKey("AvatarLayerId", "LanguageId");
+
+                    b.HasIndex("LanguageId");
+
+                    b.ToTable("AvatarLayerTexts");
+                });
+
             modelBuilder.Entity("GRA.Data.Model.Badge", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Filename");
+                    b.Property<string>("Filename")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -292,26 +389,34 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
                     b.Property<string>("Author")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int?>("ChallengeId");
+                    b.Property<int?>("ChallengeId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Isbn")
-                        .HasMaxLength(30);
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(500);
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Url")
-                        .HasMaxLength(500);
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.HasKey("Id");
 
@@ -322,30 +427,39 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Geolocation")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("SystemId");
+                    b.Property<int>("SystemId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Telephone")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Url")
-                        .HasMaxLength(500);
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.HasKey("Id");
 
@@ -358,25 +472,33 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
                     b.Property<string>("Body")
                         .IsRequired()
-                        .HasMaxLength(1000);
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("SendAt");
+                    b.Property<DateTime>("SendAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<bool>("SendToNewUsers");
+                    b.Property<bool>("SendToNewUsers")
+                        .HasColumnType("bit");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Subject")
                         .IsRequired()
-                        .HasMaxLength(500);
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.HasKey("Id");
 
@@ -387,24 +509,32 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Heading")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<bool>("IsForDashboard");
+                    b.Property<bool>("IsForDashboard")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("StartTime");
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -415,26 +545,34 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<int>("CarouselId");
+                    b.Property<int>("CarouselId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()
-                        .HasMaxLength(500);
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
-                    b.Property<int>("SortOrder");
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
@@ -445,23 +583,30 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
                     b.Property<string>("Color")
-                        .HasMaxLength(10);
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(500);
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -472,42 +617,59 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<int?>("AssociatedProgramId");
+                    b.Property<int?>("AssociatedProgramId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("BadgeId");
+                    b.Property<int?>("BadgeId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(500);
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
-                    b.Property<bool>("IsActive");
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("IsDeleted");
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("IsValid");
+                    b.Property<bool>("IsValid")
+                        .HasColumnType("bit");
 
-                    b.Property<int?>("LimitToBranchId");
+                    b.Property<int?>("LimitToBranchId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("LimitToSystemId");
+                    b.Property<int?>("LimitToSystemId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("PointsAwarded");
+                    b.Property<int>("PointsAwarded")
+                        .HasColumnType("int");
 
-                    b.Property<int>("RelatedBranchId");
+                    b.Property<int>("RelatedBranchId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("RelatedSystemId");
+                    b.Property<int>("RelatedSystemId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("TasksToComplete");
+                    b.Property<int>("TasksToComplete")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -518,13 +680,17 @@ namespace GRA.Data.SqlServer.Migrations
 
             modelBuilder.Entity("GRA.Data.Model.ChallengeCategory", b =>
                 {
-                    b.Property<int>("ChallengeId");
+                    b.Property<int>("ChallengeId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("CategoryId");
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.HasKey("ChallengeId", "CategoryId");
 
@@ -537,25 +703,32 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(1000);
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Stub")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
@@ -564,13 +737,17 @@ namespace GRA.Data.SqlServer.Migrations
 
             modelBuilder.Entity("GRA.Data.Model.ChallengeGroupChallenge", b =>
                 {
-                    b.Property<int>("ChallengeGroupId");
+                    b.Property<int>("ChallengeGroupId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("ChallengeId");
+                    b.Property<int>("ChallengeId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.HasKey("ChallengeGroupId", "ChallengeId");
 
@@ -583,32 +760,43 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
                     b.Property<string>("Author")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("ChallengeId");
+                    b.Property<int>("ChallengeId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("ChallengeTaskTypeId");
+                    b.Property<int>("ChallengeTaskTypeId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Filename")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Isbn")
-                        .HasMaxLength(30);
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
-                    b.Property<int>("Position");
+                    b.Property<int>("Position")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Url")
-                        .HasMaxLength(500);
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.HasKey("Id");
 
@@ -621,19 +809,25 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<int?>("ActivityCount");
+                    b.Property<int?>("ActivityCount")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int?>("PointTranslationId");
+                    b.Property<int?>("PointTranslationId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -644,23 +838,30 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("IsLarge");
+                    b.Property<bool>("IsLarge")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Message")
                         .IsRequired()
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -671,23 +872,30 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<int>("DailyLiteracyTipId");
+                    b.Property<int>("DailyLiteracyTipId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("Day");
+                    b.Property<int>("Day")
+                        .HasColumnType("int");
 
                     b.Property<string>("Extension")
                         .IsRequired()
-                        .HasMaxLength(10);
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
@@ -700,17 +908,23 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<string>("Content");
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("StartTime");
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -721,34 +935,46 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<int>("DrawingCriterionId");
+                    b.Property<int>("DrawingCriterionId")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("IsArchived");
+                    b.Property<bool>("IsArchived")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("NotificationMessage")
-                        .HasMaxLength(2000);
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
 
                     b.Property<string>("NotificationSubject")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("RedemptionInstructions")
-                        .HasMaxLength(1000);
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
-                    b.Property<int>("RelatedBranchId");
+                    b.Property<int>("RelatedBranchId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("RelatedSystemId");
+                    b.Property<int>("RelatedSystemId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("WinnerCount");
+                    b.Property<int>("WinnerCount")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -761,41 +987,58 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<int?>("BranchId");
+                    b.Property<int?>("BranchId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime?>("EndOfPeriod");
+                    b.Property<DateTime?>("EndOfPeriod")
+                        .HasColumnType("datetime2");
 
-                    b.Property<bool>("ExcludePreviousWinners");
+                    b.Property<bool>("ExcludePreviousWinners")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("IncludeAdmin");
+                    b.Property<bool>("IncludeAdmin")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int?>("PointsMaximum");
+                    b.Property<int?>("PointsMaximum")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("PointsMinimum");
+                    b.Property<int?>("PointsMinimum")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("ProgramId");
+                    b.Property<int?>("ProgramId")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("ReadABook");
+                    b.Property<bool>("ReadABook")
+                        .HasColumnType("bit");
 
-                    b.Property<int>("RelatedBranchId");
+                    b.Property<int>("RelatedBranchId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("RelatedSystemId");
+                    b.Property<int>("RelatedSystemId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime?>("StartOfPeriod");
+                    b.Property<DateTime?>("StartOfPeriod")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int?>("SystemId");
+                    b.Property<int?>("SystemId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -808,9 +1051,11 @@ namespace GRA.Data.SqlServer.Migrations
 
             modelBuilder.Entity("GRA.Data.Model.DrawingCriterionProgram", b =>
                 {
-                    b.Property<int>("DrawingCriterionId");
+                    b.Property<int>("DrawingCriterionId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("ProgramId");
+                    b.Property<int>("ProgramId")
+                        .HasColumnType("int");
 
                     b.HasKey("DrawingCriterionId", "ProgramId");
 
@@ -821,19 +1066,25 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime?>("SentAt");
+                    b.Property<DateTime?>("SentAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("SignUpSource")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -847,17 +1098,23 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("Subscribed");
+                    b.Property<bool>("Subscribed")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("TokenUsed");
+                    b.Property<bool>("TokenUsed")
+                        .HasColumnType("bit");
 
-                    b.Property<int>("UserId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -870,35 +1127,46 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<string>("BodyHtml");
+                    b.Property<string>("BodyHtml")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("BodyText");
+                    b.Property<string>("BodyText")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("EmailsSent");
+                    b.Property<int>("EmailsSent")
+                        .HasColumnType("int");
 
                     b.Property<string>("FromAddress")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("FromName")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Subject")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
@@ -907,14 +1175,18 @@ namespace GRA.Data.SqlServer.Migrations
 
             modelBuilder.Entity("GRA.Data.Model.EmailUserLog", b =>
                 {
-                    b.Property<int>("UserId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("EmailTemplateId");
+                    b.Property<int>("EmailTemplateId")
+                        .HasColumnType("int");
 
                     b.Property<string>("EmailAddress")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("SentAt");
+                    b.Property<DateTime>("SentAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("UserId", "EmailTemplateId");
 
@@ -928,63 +1200,89 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<bool>("AllDay");
+                    b.Property<bool>("AllDay")
+                        .HasColumnType("bit");
 
-                    b.Property<int?>("AtBranchId");
+                    b.Property<int?>("AtBranchId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("AtLocationId");
+                    b.Property<int?>("AtLocationId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("ChallengeGroupId");
+                    b.Property<int?>("ChallengeGroupId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("ChallengeId");
+                    b.Property<int?>("ChallengeId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(1500);
+                        .HasMaxLength(1500)
+                        .HasColumnType("nvarchar(1500)");
 
-                    b.Property<DateTime?>("EndDate");
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ExternalLink")
-                        .HasMaxLength(300);
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
-                    b.Property<bool>("IsActive");
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("IsCommunityExperience");
+                    b.Property<bool>("IsCommunityExperience")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("IsStreaming");
+                    b.Property<bool>("IsStreaming")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("IsStreamingEmbed");
+                    b.Property<bool>("IsStreamingEmbed")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("IsValid");
+                    b.Property<bool>("IsValid")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int?>("ParentEventId");
+                    b.Property<int?>("ParentEventId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("ProgramId");
+                    b.Property<int?>("ProgramId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("RelatedBranchId");
+                    b.Property<int>("RelatedBranchId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("RelatedSystemId");
+                    b.Property<int>("RelatedSystemId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("RelatedTriggerId");
+                    b.Property<int?>("RelatedTriggerId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("StartDate");
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("StreamingAccessEnds");
+                    b.Property<DateTime?>("StreamingAccessEnds")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("StreamingLinkData")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
@@ -999,19 +1297,25 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<int>("GroupTypeId");
+                    b.Property<int>("GroupTypeId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("UserId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -1026,17 +1330,22 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -1047,30 +1356,42 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime?>("Cancelled");
+                    b.Property<DateTime?>("Cancelled")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("Completed");
+                    b.Property<DateTime?>("Completed")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("JobToken");
+                    b.Property<Guid>("JobToken")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("JobType");
+                    b.Property<int>("JobType")
+                        .HasColumnType("int");
 
-                    b.Property<string>("SerializedParameters");
+                    b.Property<string>("SerializedParameters")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime?>("Started");
+                    b.Property<DateTime?>("Started")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Status")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<DateTime?>("StatusAsOf");
+                    b.Property<DateTime?>("StatusAsOf")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -1084,21 +1405,28 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<bool>("IsActive");
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("IsDefault");
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
@@ -1109,30 +1437,39 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Geolocation")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Telephone")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Url")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
@@ -1143,43 +1480,60 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
                     b.Property<string>("Body")
                         .IsRequired()
-                        .HasMaxLength(2000);
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
 
-                    b.Property<bool>("CanParticipantDelete");
+                    b.Property<bool>("CanParticipantDelete")
+                        .HasColumnType("bit");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("DrawingId");
+                    b.Property<int?>("DrawingId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("FromUserId");
+                    b.Property<int>("FromUserId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("InReplyToId");
+                    b.Property<int?>("InReplyToId")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("IsBroadcast");
+                    b.Property<bool>("IsBroadcast")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("IsDeleted");
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("IsNew");
+                    b.Property<bool>("IsNew")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("IsRepliedTo");
+                    b.Property<bool>("IsRepliedTo")
+                        .HasColumnType("bit");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Subject")
                         .IsRequired()
-                        .HasMaxLength(500);
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
-                    b.Property<int?>("ThreadId");
+                    b.Property<int?>("ThreadId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("ToUserId");
+                    b.Property<int?>("ToUserId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("TriggerId");
+                    b.Property<int?>("TriggerId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -1192,21 +1546,28 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("IsDefault");
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("bit");
 
-                    b.Property<DateTime?>("LastPostDate");
+                    b.Property<DateTime?>("LastPostDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -1217,22 +1578,29 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<int>("CategoryId");
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Content")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime?>("PublishedAt");
+                    b.Property<DateTime?>("PublishedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
@@ -1245,30 +1613,42 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<int?>("AvatarBundleId");
+                    b.Property<int?>("AvatarBundleId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("BadgeFilename");
+                    b.Property<string>("BadgeFilename")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("BadgeId");
+                    b.Property<int?>("BadgeId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("ChallengeId");
+                    b.Property<int?>("ChallengeId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("IsAchiever");
+                    b.Property<bool>("IsAchiever")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("IsJoiner");
+                    b.Property<bool>("IsJoiner")
+                        .HasColumnType("bit");
 
-                    b.Property<int?>("PointsEarned");
+                    b.Property<int?>("PointsEarned")
+                        .HasColumnType("int");
 
                     b.Property<string>("Text")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -1281,33 +1661,44 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
                     b.Property<string>("Content")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("FooterText")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<bool>("IsPublished");
+                    b.Property<bool>("IsPublished")
+                        .HasColumnType("bit");
 
-                    b.Property<int>("LanguageId");
+                    b.Property<int>("LanguageId")
+                        .HasColumnType("int");
 
                     b.Property<string>("MetaDescription")
-                        .HasMaxLength(150);
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("NavText")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("PageHeaderId");
+                    b.Property<int>("PageHeaderId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
@@ -1322,20 +1713,26 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("PageName")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Stub")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
@@ -1349,15 +1746,19 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
@@ -1368,37 +1769,49 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<int>("ActivityAmount");
+                    b.Property<int>("ActivityAmount")
+                        .HasColumnType("int");
 
                     b.Property<string>("ActivityDescription")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("ActivityDescriptionPlural")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("IsSingleEvent");
+                    b.Property<bool>("IsSingleEvent")
+                        .HasColumnType("bit");
 
-                    b.Property<int>("PointsEarned");
+                    b.Property<int>("PointsEarned")
+                        .HasColumnType("int");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
                     b.Property<string>("TranslationDescriptionPastTense")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TranslationDescriptionPresentTense")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TranslationName")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
@@ -1409,31 +1822,44 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("DrawingId");
+                    b.Property<int?>("DrawingId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("MailId");
+                    b.Property<int?>("MailId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime?>("RedeemedAt");
+                    b.Property<DateTime?>("RedeemedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int?>("RedeemedBy");
+                    b.Property<int?>("RedeemedBy")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("RedeemedByBranch");
+                    b.Property<int?>("RedeemedByBranch")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("RedeemedBySystem");
+                    b.Property<int?>("RedeemedBySystem")
+                        .HasColumnType("int");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("TriggerId");
+                    b.Property<int?>("TriggerId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("UserId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("VendorCodeId");
+                    b.Property<int?>("VendorCodeId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -1452,42 +1878,59 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<int>("AchieverPointAmount");
+                    b.Property<int>("AchieverPointAmount")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("AgeMaximum");
+                    b.Property<int?>("AgeMaximum")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("AgeMinimum");
+                    b.Property<int?>("AgeMinimum")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("AgeRequired");
+                    b.Property<bool>("AgeRequired")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("AskAge");
+                    b.Property<bool>("AskAge")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("AskSchool");
+                    b.Property<bool>("AskSchool")
+                        .HasColumnType("bit");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("DailyLiteracyTipId");
+                    b.Property<int?>("DailyLiteracyTipId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("JoinBadgeId");
+                    b.Property<int?>("JoinBadgeId")
+                        .HasColumnType("int");
 
                     b.Property<string>("JoinBadgeName")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("PointTranslationId");
+                    b.Property<int>("PointTranslationId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("Position");
+                    b.Property<int>("Position")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("SchoolRequired");
+                    b.Property<bool>("SchoolRequired")
+                        .HasColumnType("bit");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -1504,19 +1947,24 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("IconColor")
                         .IsRequired()
-                        .HasMaxLength(32);
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
@@ -1525,9 +1973,11 @@ namespace GRA.Data.SqlServer.Migrations
 
             modelBuilder.Entity("GRA.Data.Model.PsBackToBack", b =>
                 {
-                    b.Property<int>("PsAgeGroupId");
+                    b.Property<int>("PsAgeGroupId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("BranchId");
+                    b.Property<int>("BranchId")
+                        .HasColumnType("int");
 
                     b.HasKey("PsAgeGroupId", "BranchId");
 
@@ -1540,16 +1990,21 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("Date");
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Reason")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
@@ -1560,36 +2015,51 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<int>("AgeGroupId");
+                    b.Property<int>("AgeGroupId")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("BackToBackProgram");
+                    b.Property<bool>("BackToBackProgram")
+                        .HasColumnType("bit");
 
-                    b.Property<int>("BranchId");
+                    b.Property<int>("BranchId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("IsDeleted");
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
-                    b.Property<int?>("KitId");
+                    b.Property<int?>("KitId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("ProgramId");
+                    b.Property<int?>("ProgramId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("RequestedStartTime");
+                    b.Property<DateTime>("RequestedStartTime")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("ScheduleDuration");
+                    b.Property<int>("ScheduleDuration")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("ScheduleStartTime");
+                    b.Property<DateTime>("ScheduleStartTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("SecretCode")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
-                    b.Property<DateTime>("SelectedAt");
+                    b.Property<DateTime>("SelectedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -1608,7 +2078,8 @@ namespace GRA.Data.SqlServer.Migrations
 
             modelBuilder.Entity("GRA.Data.Model.PsExcludeBranch", b =>
                 {
-                    b.Property<int>("BranchId");
+                    b.Property<int>("BranchId")
+                        .HasColumnType("int");
 
                     b.HasKey("BranchId");
 
@@ -1619,22 +2090,28 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(2000);
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Website")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
@@ -1643,9 +2120,11 @@ namespace GRA.Data.SqlServer.Migrations
 
             modelBuilder.Entity("GRA.Data.Model.PsKitAgeGroup", b =>
                 {
-                    b.Property<int>("KitId");
+                    b.Property<int>("KitId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("AgeGroupId");
+                    b.Property<int>("AgeGroupId")
+                        .HasColumnType("int");
 
                     b.HasKey("KitId", "AgeGroupId");
 
@@ -1658,16 +2137,21 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Filename")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("KitId");
+                    b.Property<int>("KitId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -1680,51 +2164,68 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<bool>("AllBranches");
+                    b.Property<bool>("AllBranches")
+                        .HasColumnType("bit");
 
                     b.Property<string>("BillingAddress")
                         .IsRequired()
-                        .HasMaxLength(500);
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<bool>("HasFingerprintCard");
+                    b.Property<bool>("HasFingerprintCard")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("IsApproved");
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Phone")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<bool>("PhonePreferred");
+                    b.Property<bool>("PhonePreferred")
+                        .HasColumnType("bit");
 
                     b.Property<string>("ReferencesFilename")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<bool>("RegistrationCompleted");
+                    b.Property<bool>("RegistrationCompleted")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("SetSchedule");
+                    b.Property<bool>("SetSchedule")
+                        .HasColumnType("bit");
 
-                    b.Property<int>("UserId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.Property<string>("VendorId")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Website")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
@@ -1735,9 +2236,11 @@ namespace GRA.Data.SqlServer.Migrations
 
             modelBuilder.Entity("GRA.Data.Model.PsPerformerBranch", b =>
                 {
-                    b.Property<int>("PsPerformerId");
+                    b.Property<int>("PsPerformerId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("BranchId");
+                    b.Property<int>("BranchId")
+                        .HasColumnType("int");
 
                     b.HasKey("PsPerformerId", "BranchId");
 
@@ -1750,16 +2253,21 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Filename")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("PerformerId");
+                    b.Property<int>("PerformerId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -1772,19 +2280,26 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("Date");
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("EndTime");
+                    b.Property<DateTime?>("EndTime")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("PerformerId");
+                    b.Property<int>("PerformerId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime?>("StartTime");
+                    b.Property<DateTime?>("StartTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -1797,43 +2312,58 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<bool>("AllowArchiving");
+                    b.Property<bool>("AllowArchiving")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("AllowStreaming");
+                    b.Property<bool>("AllowStreaming")
+                        .HasColumnType("bit");
 
-                    b.Property<int>("BackToBackMinutes");
+                    b.Property<int>("BackToBackMinutes")
+                        .HasColumnType("int");
 
-                    b.Property<int>("BreakdownTimeMinutes");
+                    b.Property<int>("BreakdownTimeMinutes")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("Cost")
                         .HasColumnType("decimal(19,4)");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(375);
+                        .HasMaxLength(375)
+                        .HasColumnType("nvarchar(375)");
 
-                    b.Property<int>("MaximumCapacity");
+                    b.Property<int>("MaximumCapacity")
+                        .HasColumnType("int");
 
-                    b.Property<int>("MinimumCapacity");
+                    b.Property<int>("MinimumCapacity")
+                        .HasColumnType("int");
 
-                    b.Property<int>("PerformerId");
+                    b.Property<int>("PerformerId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("ProgramLengthMinutes");
+                    b.Property<int>("ProgramLengthMinutes")
+                        .HasColumnType("int");
 
                     b.Property<string>("Setup")
-                        .HasMaxLength(1000);
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
-                    b.Property<int>("SetupTimeMinutes");
+                    b.Property<int>("SetupTimeMinutes")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -1844,9 +2374,11 @@ namespace GRA.Data.SqlServer.Migrations
 
             modelBuilder.Entity("GRA.Data.Model.PsProgramAgeGroup", b =>
                 {
-                    b.Property<int>("ProgramId");
+                    b.Property<int>("ProgramId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("AgeGroupId");
+                    b.Property<int>("AgeGroupId")
+                        .HasColumnType("int");
 
                     b.HasKey("ProgramId", "AgeGroupId");
 
@@ -1859,16 +2391,21 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Filename")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("ProgramId");
+                    b.Property<int>("ProgramId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -1881,43 +2418,60 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
                     b.Property<string>("BranchAvailabilitySupplementalText")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("ContactEmail")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime?>("RegistrationClosed");
+                    b.Property<DateTime?>("RegistrationClosed")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("RegistrationOpen");
+                    b.Property<DateTime?>("RegistrationOpen")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("ScheduleEndDate");
+                    b.Property<DateTime?>("ScheduleEndDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("SchedulePosted");
+                    b.Property<DateTime?>("SchedulePosted")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("ScheduleStartDate");
+                    b.Property<DateTime?>("ScheduleStartDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("SchedulingClosed");
+                    b.Property<DateTime?>("SchedulingClosed")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("SchedulingOpen");
+                    b.Property<DateTime?>("SchedulingOpen")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("SchedulingPreview");
+                    b.Property<DateTime?>("SchedulingPreview")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int?>("SelectionsPerBranch");
+                    b.Property<int?>("SelectionsPerBranch")
+                        .HasColumnType("int");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
                     b.Property<string>("VendorCodeFormat")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("VendorIdPrompt")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
@@ -1930,26 +2484,35 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<int>("CorrectAnswerId");
+                    b.Property<int>("CorrectAnswerId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("IsDeleted");
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("QuestionnaireId");
+                    b.Property<int>("QuestionnaireId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("SortOrder");
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
 
                     b.Property<string>("Text")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -1962,33 +2525,45 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<int?>("BadgeId");
+                    b.Property<int?>("BadgeId")
+                        .HasColumnType("int");
 
                     b.Property<string>("BadgeName")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("BadgeNotificationMessage")
-                        .HasMaxLength(1000);
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("IsDeleted");
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("IsLocked");
+                    b.Property<bool>("IsLocked")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("RelatedBranchId");
+                    b.Property<int>("RelatedBranchId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("RelatedSystemId");
+                    b.Property<int>("RelatedSystemId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -1999,17 +2574,22 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Token")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("UserId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -2020,44 +2600,63 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<string>("BadgeRequiredList");
+                    b.Property<string>("BadgeRequiredList")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("BranchId");
+                    b.Property<int?>("BranchId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("ChallengeRequiredList");
+                    b.Property<string>("ChallengeRequiredList")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime?>("EndDate");
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<bool>("Favorite");
+                    b.Property<bool>("Favorite")
+                        .HasColumnType("bit");
 
-                    b.Property<int?>("GroupInfoId");
+                    b.Property<int?>("GroupInfoId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("MaximumAllowableActivity");
+                    b.Property<int?>("MaximumAllowableActivity")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int?>("ProgramId");
+                    b.Property<int?>("ProgramId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("SchoolDistrictId");
+                    b.Property<int?>("SchoolDistrictId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("SchoolId");
+                    b.Property<int?>("SchoolId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime?>("StartDate");
+                    b.Property<DateTime?>("StartDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int?>("SystemId");
+                    b.Property<int?>("SystemId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("TriggerList");
+                    b.Property<string>("TriggerList")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("VendorCodeTypeId");
+                    b.Property<int?>("VendorCodeTypeId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -2068,31 +2667,43 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("Favorite");
+                    b.Property<bool>("Favorite")
+                        .HasColumnType("bit");
 
-                    b.Property<DateTime?>("Finished");
+                    b.Property<DateTime?>("Finished")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("InstanceName")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("ReportCriteriaId");
+                    b.Property<int>("ReportCriteriaId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("ReportId");
+                    b.Property<int>("ReportId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("ResultJson");
+                    b.Property<string>("ResultJson")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("Started");
+                    b.Property<DateTime?>("Started")
+                        .HasColumnType("datetime2");
 
-                    b.Property<bool?>("Success");
+                    b.Property<bool?>("Success")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -2103,23 +2714,32 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<int?>("AgeMaximum");
+                    b.Property<int?>("AgeMaximum")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("AgeMinimum");
+                    b.Property<int?>("AgeMinimum")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime?>("EndDate");
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("QuestionnaireId");
+                    b.Property<int>("QuestionnaireId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime?>("StartDate");
+                    b.Property<DateTime?>("StartDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -2130,17 +2750,22 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("IsAdmin");
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
@@ -2149,13 +2774,17 @@ namespace GRA.Data.SqlServer.Migrations
 
             modelBuilder.Entity("GRA.Data.Model.RolePermission", b =>
                 {
-                    b.Property<int>("RoleId");
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("PermissionId");
+                    b.Property<int>("PermissionId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.HasKey("RoleId", "PermissionId");
 
@@ -2168,19 +2797,25 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("SchoolDistrictId");
+                    b.Property<int>("SchoolDistrictId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -2193,17 +2828,22 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -2214,99 +2854,138 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime?>("AccessClosed");
+                    b.Property<DateTime?>("AccessClosed")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int?>("AccessClosedPage");
+                    b.Property<int?>("AccessClosedPage")
+                        .HasColumnType("int");
 
                     b.Property<string>("AvatarCardDescription")
-                        .HasMaxLength(150);
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
-                    b.Property<int?>("BeforeRegistrationPage");
+                    b.Property<int?>("BeforeRegistrationPage")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Domain")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<string>("ExternalEventListUrl");
+                    b.Property<string>("ExternalEventListUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FacebookAppId")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("FacebookImageUrl")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<string>("Footer");
+                    b.Property<string>("Footer")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FromEmailAddress");
+                    b.Property<string>("FromEmailAddress")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FromEmailName");
+                    b.Property<string>("FromEmailName")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("GoogleAnalyticsTrackingId");
+                    b.Property<string>("GoogleAnalyticsTrackingId")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsDefault");
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("IsHttpsForced");
+                    b.Property<bool>("IsHttpsForced")
+                        .HasColumnType("bit");
 
                     b.Property<string>("MetaDescription")
-                        .HasMaxLength(150);
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<string>("OutgoingMailHost");
+                    b.Property<string>("OutgoingMailHost")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("OutgoingMailLogin");
+                    b.Property<string>("OutgoingMailLogin")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("OutgoingMailPassword");
+                    b.Property<string>("OutgoingMailPassword")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("OutgoingMailPort");
+                    b.Property<int?>("OutgoingMailPort")
+                        .HasColumnType("int");
 
                     b.Property<string>("PageTitle")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Path")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int?>("ProgramEndedPage");
+                    b.Property<int?>("ProgramEndedPage")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime?>("ProgramEnds");
+                    b.Property<DateTime?>("ProgramEnds")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int?>("ProgramOpenPage");
+                    b.Property<int?>("ProgramOpenPage")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime?>("ProgramStarts");
+                    b.Property<DateTime?>("ProgramStarts")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int?>("RegistrationOpenPage");
+                    b.Property<int?>("RegistrationOpenPage")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime?>("RegistrationOpens");
+                    b.Property<DateTime?>("RegistrationOpens")
+                        .HasColumnType("datetime2");
 
-                    b.Property<bool>("RequirePostalCode");
+                    b.Property<bool>("RequirePostalCode")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("SinglePageSignUp");
+                    b.Property<bool>("SinglePageSignUp")
+                        .HasColumnType("bit");
 
                     b.Property<string>("SiteLogoUrl")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("TwitterAvatarHashtags")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("TwitterAvatarMessage")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("TwitterCardImageUrl")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<bool?>("TwitterLargeCard");
+                    b.Property<bool?>("TwitterLargeCard")
+                        .HasColumnType("bit");
 
                     b.Property<string>("TwitterUsername")
-                        .HasMaxLength(15);
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
 
                     b.HasKey("Id");
 
@@ -2317,20 +2996,26 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Key")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Value")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
@@ -2341,15 +3026,20 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<int?>("BranchId");
+                    b.Property<int?>("BranchId")
+                        .HasColumnType("int");
 
-                    b.Property<double>("Distance");
+                    b.Property<double>("Distance")
+                        .HasColumnType("float");
 
-                    b.Property<int?>("LocationId");
+                    b.Property<int?>("LocationId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("SpatialDistanceHeaderId");
+                    b.Property<int>("SpatialDistanceHeaderId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -2366,18 +3056,24 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Geolocation")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
-                    b.Property<bool>("IsValid");
+                    b.Property<bool>("IsValid")
+                        .HasColumnType("bit");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -2388,17 +3084,22 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -2411,62 +3112,86 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime?>("ActivationDate");
+                    b.Property<DateTime?>("ActivationDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int?>("AwardAvatarBundleId");
+                    b.Property<int?>("AwardAvatarBundleId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("AwardBadgeId");
+                    b.Property<int>("AwardBadgeId")
+                        .HasColumnType("int");
 
                     b.Property<string>("AwardMail")
-                        .HasMaxLength(2000);
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
 
                     b.Property<string>("AwardMailSubject")
-                        .HasMaxLength(500);
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("AwardMessage")
                         .IsRequired()
-                        .HasMaxLength(1000);
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
-                    b.Property<int>("AwardPoints");
+                    b.Property<int>("AwardPoints")
+                        .HasColumnType("int");
 
                     b.Property<string>("AwardPrizeName")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("AwardPrizeRedemptionInstructions")
-                        .HasMaxLength(1000);
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
-                    b.Property<int?>("AwardVendorCodeTypeId");
+                    b.Property<int?>("AwardVendorCodeTypeId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("IsDeleted");
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
-                    b.Property<int>("ItemsRequired");
+                    b.Property<int>("ItemsRequired")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("LimitToBranchId");
+                    b.Property<int?>("LimitToBranchId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("LimitToProgramId");
+                    b.Property<int?>("LimitToProgramId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("LimitToSystemId");
+                    b.Property<int?>("LimitToSystemId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("Points");
+                    b.Property<int>("Points")
+                        .HasColumnType("int");
 
-                    b.Property<int>("RelatedBranchId");
+                    b.Property<int>("RelatedBranchId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("RelatedSystemId");
+                    b.Property<int>("RelatedSystemId")
+                        .HasColumnType("int");
 
                     b.Property<string>("SecretCode")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -2487,9 +3212,11 @@ namespace GRA.Data.SqlServer.Migrations
 
             modelBuilder.Entity("GRA.Data.Model.TriggerBadge", b =>
                 {
-                    b.Property<int>("TriggerId");
+                    b.Property<int>("TriggerId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("BadgeId");
+                    b.Property<int>("BadgeId")
+                        .HasColumnType("int");
 
                     b.HasKey("TriggerId", "BadgeId");
 
@@ -2500,9 +3227,11 @@ namespace GRA.Data.SqlServer.Migrations
 
             modelBuilder.Entity("GRA.Data.Model.TriggerChallenge", b =>
                 {
-                    b.Property<int>("TriggerId");
+                    b.Property<int>("TriggerId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("ChallengeId");
+                    b.Property<int>("ChallengeId")
+                        .HasColumnType("int");
 
                     b.HasKey("TriggerId", "ChallengeId");
 
@@ -2515,93 +3244,132 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<DateTime?>("AchievedAt");
+                    b.Property<DateTime?>("AchievedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int?>("Age");
+                    b.Property<int?>("Age")
+                        .HasColumnType("int");
 
-                    b.Property<int>("BranchId");
+                    b.Property<int>("BranchId")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("CanBeDeleted");
+                    b.Property<bool>("CanBeDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("CardNumber")
-                        .HasMaxLength(64);
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Culture")
-                        .HasMaxLength(8);
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
 
-                    b.Property<int?>("DailyPersonalGoal");
+                    b.Property<int?>("DailyPersonalGoal")
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
-                        .HasMaxLength(254);
+                        .HasMaxLength(254)
+                        .HasColumnType("nvarchar(254)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<int?>("HouseholdHeadUserId");
+                    b.Property<int?>("HouseholdHeadUserId")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("IsActive");
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("IsAdmin");
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("IsDeleted");
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("IsEmailSubscribed");
+                    b.Property<bool>("IsEmailSubscribed")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("IsFirstTime");
+                    b.Property<bool>("IsFirstTime")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("IsHomeschooled");
+                    b.Property<bool>("IsHomeschooled")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("IsLockedOut");
+                    b.Property<bool>("IsLockedOut")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("IsNewsSubscribed");
+                    b.Property<bool>("IsNewsSubscribed")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("IsSystemUser");
+                    b.Property<bool>("IsSystemUser")
+                        .HasColumnType("bit");
 
-                    b.Property<DateTime?>("LastAccess");
+                    b.Property<DateTime?>("LastAccess")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("LastActivityDate");
+                    b.Property<DateTime?>("LastActivityDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("LastBroadcast");
+                    b.Property<DateTime?>("LastBroadcast")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("LastName")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<DateTime>("LockedOutAt");
+                    b.Property<DateTime>("LockedOutAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("LockedOutFor");
+                    b.Property<string>("LockedOutFor")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PasswordHash");
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasMaxLength(15);
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
 
-                    b.Property<int>("PointsEarned");
+                    b.Property<int>("PointsEarned")
+                        .HasColumnType("int");
 
                     b.Property<string>("PostalCode")
-                        .HasMaxLength(32);
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
 
-                    b.Property<int>("ProgramId");
+                    b.Property<int>("ProgramId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("SchoolId");
+                    b.Property<int?>("SchoolId")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("SchoolNotListed");
+                    b.Property<bool>("SchoolNotListed")
+                        .HasColumnType("bit");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("SystemId");
+                    b.Property<int>("SystemId")
+                        .HasColumnType("int");
 
                     b.Property<string>("UnsubscribeToken")
-                        .HasMaxLength(16);
+                        .HasMaxLength(16)
+                        .HasColumnType("nvarchar(16)");
 
                     b.Property<string>("Username")
-                        .HasMaxLength(36);
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar(36)");
 
                     b.HasKey("Id");
 
@@ -2624,11 +3392,14 @@ namespace GRA.Data.SqlServer.Migrations
 
             modelBuilder.Entity("GRA.Data.Model.UserAnswer", b =>
                 {
-                    b.Property<int>("UserId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("AnswerId");
+                    b.Property<int>("AnswerId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("UserId", "AnswerId");
 
@@ -2639,9 +3410,11 @@ namespace GRA.Data.SqlServer.Migrations
 
             modelBuilder.Entity("GRA.Data.Model.UserAvatar", b =>
                 {
-                    b.Property<int>("UserId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("AvatarElementId");
+                    b.Property<int>("AvatarElementId")
+                        .HasColumnType("int");
 
                     b.HasKey("UserId", "AvatarElementId");
 
@@ -2652,9 +3425,11 @@ namespace GRA.Data.SqlServer.Migrations
 
             modelBuilder.Entity("GRA.Data.Model.UserAvatarItem", b =>
                 {
-                    b.Property<int>("UserId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("AvatarItemId");
+                    b.Property<int>("AvatarItemId")
+                        .HasColumnType("int");
 
                     b.HasKey("UserId", "AvatarItemId");
 
@@ -2665,11 +3440,14 @@ namespace GRA.Data.SqlServer.Migrations
 
             modelBuilder.Entity("GRA.Data.Model.UserBadge", b =>
                 {
-                    b.Property<int>("UserId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("BadgeId");
+                    b.Property<int>("BadgeId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("UserId", "BadgeId");
 
@@ -2680,13 +3458,17 @@ namespace GRA.Data.SqlServer.Migrations
 
             modelBuilder.Entity("GRA.Data.Model.UserBook", b =>
                 {
-                    b.Property<int>("UserId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("BookId");
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.HasKey("UserId", "BookId");
 
@@ -2697,17 +3479,23 @@ namespace GRA.Data.SqlServer.Migrations
 
             modelBuilder.Entity("GRA.Data.Model.UserChallengeTask", b =>
                 {
-                    b.Property<int>("UserId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("ChallengeTaskId");
+                    b.Property<int>("ChallengeTaskId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("BookId");
+                    b.Property<int?>("BookId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsCompleted");
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit");
 
-                    b.Property<int?>("UserLogId");
+                    b.Property<int?>("UserLogId")
+                        .HasColumnType("int");
 
                     b.HasKey("UserId", "ChallengeTaskId");
 
@@ -2718,13 +3506,17 @@ namespace GRA.Data.SqlServer.Migrations
 
             modelBuilder.Entity("GRA.Data.Model.UserFavoriteChallenge", b =>
                 {
-                    b.Property<int>("UserId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("ChallengeId");
+                    b.Property<int>("ChallengeId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.HasKey("UserId", "ChallengeId");
 
@@ -2735,13 +3527,17 @@ namespace GRA.Data.SqlServer.Migrations
 
             modelBuilder.Entity("GRA.Data.Model.UserFavoriteEvent", b =>
                 {
-                    b.Property<int>("UserId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("EventId");
+                    b.Property<int>("EventId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.HasKey("UserId", "EventId");
 
@@ -2754,39 +3550,56 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<int?>("ActivityEarned");
+                    b.Property<int?>("ActivityEarned")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("AvatarBundleId");
+                    b.Property<int?>("AvatarBundleId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("AwardedBy");
+                    b.Property<int?>("AwardedBy")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("BadgeId");
+                    b.Property<int?>("BadgeId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("ChallengeId");
+                    b.Property<int?>("ChallengeId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("DeletedBy");
+                    b.Property<int?>("DeletedBy")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("EventId");
+                    b.Property<int?>("EventId")
+                        .HasColumnType("int");
 
-                    b.Property<bool?>("HasBeenViewed");
+                    b.Property<bool?>("HasBeenViewed")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("IsDeleted");
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
-                    b.Property<int?>("PointTranslationId");
+                    b.Property<int?>("PointTranslationId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("PointsEarned");
+                    b.Property<int>("PointsEarned")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("TriggerId");
+                    b.Property<int?>("TriggerId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("UserId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -2801,11 +3614,14 @@ namespace GRA.Data.SqlServer.Migrations
 
             modelBuilder.Entity("GRA.Data.Model.UserQuestionnaire", b =>
                 {
-                    b.Property<int>("UserId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("QuestionnaireId");
+                    b.Property<int>("QuestionnaireId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("UserId", "QuestionnaireId");
 
@@ -2816,13 +3632,17 @@ namespace GRA.Data.SqlServer.Migrations
 
             modelBuilder.Entity("GRA.Data.Model.UserRole", b =>
                 {
-                    b.Property<int>("UserId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("RoleId");
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -2833,11 +3653,14 @@ namespace GRA.Data.SqlServer.Migrations
 
             modelBuilder.Entity("GRA.Data.Model.UserTrigger", b =>
                 {
-                    b.Property<int>("UserId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("TriggerId");
+                    b.Property<int>("TriggerId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("UserId", "TriggerId");
 
@@ -2850,46 +3673,64 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<int?>("BranchId");
+                    b.Property<int?>("BranchId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("DateUsed");
+                    b.Property<DateTime>("DateUsed")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Details")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("EmailAwardAddress")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<DateTime?>("EmailAwardReported");
+                    b.Property<DateTime?>("EmailAwardReported")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("EmailAwardSent");
+                    b.Property<DateTime?>("EmailAwardSent")
+                        .HasColumnType("datetime2");
 
-                    b.Property<bool?>("IsDonated");
+                    b.Property<bool?>("IsDonated")
+                        .HasColumnType("bit");
 
-                    b.Property<bool?>("IsEmailAward");
+                    b.Property<bool?>("IsEmailAward")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("IsUsed");
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
 
-                    b.Property<DateTime?>("OrderDate");
+                    b.Property<DateTime?>("OrderDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("ShipDate");
+                    b.Property<DateTime?>("ShipDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("UserId")
-                        .IsConcurrencyToken();
+                        .IsConcurrencyToken()
+                        .HasColumnType("int");
 
-                    b.Property<int>("VendorCodeTypeId");
+                    b.Property<int>("VendorCodeTypeId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -2902,55 +3743,73 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<bool>("AwardPrizeOnShipDate");
+                    b.Property<bool>("AwardPrizeOnShipDate")
+                        .HasColumnType("bit");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedBy");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("DonationMail")
-                        .HasMaxLength(1250);
+                        .HasMaxLength(1250)
+                        .HasColumnType("nvarchar(1250)");
 
                     b.Property<string>("DonationMessage")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("DonationSubject")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("EmailAwardMail")
-                        .HasMaxLength(1250);
+                        .HasMaxLength(1250)
+                        .HasColumnType("nvarchar(1250)");
 
                     b.Property<string>("EmailAwardMessage")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("EmailAwardSubject")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<DateTime?>("ExpirationDate");
+                    b.Property<DateTime?>("ExpirationDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Mail")
                         .IsRequired()
-                        .HasMaxLength(1250);
+                        .HasMaxLength(1250)
+                        .HasColumnType("nvarchar(1250)");
 
                     b.Property<string>("MailSubject")
                         .IsRequired()
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("OptionMail")
-                        .HasMaxLength(1250);
+                        .HasMaxLength(1250)
+                        .HasColumnType("nvarchar(1250)");
 
-                    b.Property<string>("OptionSubject");
+                    b.Property<string>("OptionSubject")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SiteId");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Url")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
@@ -2961,12 +3820,15 @@ namespace GRA.Data.SqlServer.Migrations
 
             modelBuilder.Entity("GRA.Data.Model.VendorCodeTypeText", b =>
                 {
-                    b.Property<int>("LanguageId");
+                    b.Property<int>("LanguageId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("VendorCodeTypeId");
+                    b.Property<int>("VendorCodeTypeId")
+                        .HasColumnType("int");
 
                     b.Property<string>("EmailAwardInstructions")
-                        .HasMaxLength(1000);
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.HasKey("LanguageId", "VendorCodeTypeId");
 
@@ -2979,11 +3841,14 @@ namespace GRA.Data.SqlServer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
-                    b.Property<string>("FriendlyName");
+                    b.Property<string>("FriendlyName")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Xml");
+                    b.Property<string>("Xml")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -2995,7 +3860,10 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.Question", "Question")
                         .WithMany("Answers")
                         .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Question");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.AuthorizationCode", b =>
@@ -3003,7 +3871,10 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.Role", "Role")
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.AvatarBundleItem", b =>
@@ -3011,12 +3882,18 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.AvatarBundle", "AvatarBundle")
                         .WithMany("AvatarBundleItems")
                         .HasForeignKey("AvatarBundleId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("GRA.Data.Model.AvatarItem", "AvatarItem")
                         .WithMany()
                         .HasForeignKey("AvatarItemId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("AvatarBundle");
+
+                    b.Navigation("AvatarItem");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.AvatarColor", b =>
@@ -3024,7 +3901,10 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.AvatarLayer", "AvatarLayer")
                         .WithMany("AvatarColors")
                         .HasForeignKey("AvatarLayerId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("AvatarLayer");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.AvatarElement", b =>
@@ -3037,7 +3917,12 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.AvatarItem", "AvatarItem")
                         .WithMany()
                         .HasForeignKey("AvatarItemId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("AvatarColor");
+
+                    b.Navigation("AvatarItem");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.AvatarItem", b =>
@@ -3045,7 +3930,29 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.AvatarLayer", "AvatarLayer")
                         .WithMany("AvatarItems")
                         .HasForeignKey("AvatarLayerId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("AvatarLayer");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.AvatarLayerText", b =>
+                {
+                    b.HasOne("GRA.Data.Model.AvatarLayer", "AvatarLayer")
+                        .WithMany()
+                        .HasForeignKey("AvatarLayerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("GRA.Data.Model.Language", "Language")
+                        .WithMany()
+                        .HasForeignKey("LanguageId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("AvatarLayer");
+
+                    b.Navigation("Language");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Branch", b =>
@@ -3053,15 +3960,19 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.System", "System")
                         .WithMany("Branches")
                         .HasForeignKey("SystemId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("System");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Challenge", b =>
                 {
-                    b.HasOne("GRA.Data.Model.Site")
+                    b.HasOne("GRA.Data.Model.Site", null)
                         .WithMany("Challenges")
                         .HasForeignKey("SiteId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("GRA.Data.Model.ChallengeCategory", b =>
@@ -3069,12 +3980,18 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("GRA.Data.Model.Challenge", "Challenge")
                         .WithMany("ChallengeCategories")
                         .HasForeignKey("ChallengeId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Challenge");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.ChallengeGroupChallenge", b =>
@@ -3082,20 +3999,27 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.ChallengeGroup", "ChallengeGroup")
                         .WithMany("ChallengeGroupChallenges")
                         .HasForeignKey("ChallengeGroupId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("GRA.Data.Model.Challenge", "Challenge")
                         .WithMany("ChallengeGroupChallenges")
                         .HasForeignKey("ChallengeId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Challenge");
+
+                    b.Navigation("ChallengeGroup");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.ChallengeTask", b =>
                 {
-                    b.HasOne("GRA.Data.Model.Challenge")
+                    b.HasOne("GRA.Data.Model.Challenge", null)
                         .WithMany("Tasks")
                         .HasForeignKey("ChallengeId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("GRA.Data.Model.DailyLiteracyTipImage", b =>
@@ -3103,7 +4027,10 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.DailyLiteracyTip", "DailyLiteracyTip")
                         .WithMany("DailyLiteracyTipImages")
                         .HasForeignKey("DailyLiteracyTipId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("DailyLiteracyTip");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Drawing", b =>
@@ -3111,7 +4038,10 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.DrawingCriterion", "DrawingCriterion")
                         .WithMany()
                         .HasForeignKey("DrawingCriterionId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("DrawingCriterion");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.DrawingCriterion", b =>
@@ -3125,14 +4055,19 @@ namespace GRA.Data.SqlServer.Migrations
                         .WithMany()
                         .HasForeignKey("SystemId")
                         .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Branch");
+
+                    b.Navigation("System");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.DrawingCriterionProgram", b =>
                 {
-                    b.HasOne("GRA.Data.Model.DrawingCriterion")
+                    b.HasOne("GRA.Data.Model.DrawingCriterion", null)
                         .WithMany("CriterionPrograms")
                         .HasForeignKey("DrawingCriterionId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("GRA.Data.Model.EmailSubscriptionAuditLog", b =>
@@ -3140,7 +4075,10 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.User", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedBy")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("CreatedByUser");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.EmailUserLog", b =>
@@ -3148,12 +4086,18 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.EmailTemplate", "EmailTemplate")
                         .WithMany()
                         .HasForeignKey("EmailTemplateId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("GRA.Data.Model.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("EmailTemplate");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Event", b =>
@@ -3167,6 +4111,10 @@ namespace GRA.Data.SqlServer.Migrations
                         .WithMany()
                         .HasForeignKey("ChallengeId")
                         .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Challenge");
+
+                    b.Navigation("ChallengeGroup");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.GroupInfo", b =>
@@ -3174,12 +4122,18 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.GroupType", "GroupType")
                         .WithMany()
                         .HasForeignKey("GroupTypeId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("GRA.Data.Model.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("GroupType");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.NewsPost", b =>
@@ -3187,7 +4141,10 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.NewsCategory", "Category")
                         .WithMany("Posts")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Page", b =>
@@ -3195,12 +4152,18 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.Language", "Language")
                         .WithMany()
                         .HasForeignKey("LanguageId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("GRA.Data.Model.PageHeader", "PageHeader")
                         .WithMany("Pages")
                         .HasForeignKey("PageHeaderId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Language");
+
+                    b.Navigation("PageHeader");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PrizeWinner", b =>
@@ -3218,7 +4181,14 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Drawing");
+
+                    b.Navigation("Trigger");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Program", b =>
@@ -3231,12 +4201,18 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.PointTranslation", "PointTranslation")
                         .WithMany()
                         .HasForeignKey("PointTranslationId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
-                    b.HasOne("GRA.Data.Model.Site")
+                    b.HasOne("GRA.Data.Model.Site", null)
                         .WithMany("Programs")
                         .HasForeignKey("SiteId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("DailyLiteracy");
+
+                    b.Navigation("PointTranslation");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PsBackToBack", b =>
@@ -3244,12 +4220,18 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.Branch", "Branch")
                         .WithMany()
                         .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("GRA.Data.Model.PsAgeGroup", "PsAgeGroup")
                         .WithMany()
                         .HasForeignKey("PsAgeGroupId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Branch");
+
+                    b.Navigation("PsAgeGroup");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PsBranchSelection", b =>
@@ -3257,12 +4239,14 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.PsAgeGroup", "AgeGroup")
                         .WithMany()
                         .HasForeignKey("AgeGroupId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("GRA.Data.Model.Branch", "Branch")
                         .WithMany()
                         .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("GRA.Data.Model.PsKit", "Kit")
                         .WithMany()
@@ -3277,7 +4261,18 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("AgeGroup");
+
+                    b.Navigation("Branch");
+
+                    b.Navigation("Kit");
+
+                    b.Navigation("Program");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PsExcludeBranch", b =>
@@ -3285,7 +4280,10 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.Branch", "Branch")
                         .WithMany()
                         .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Branch");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PsKitAgeGroup", b =>
@@ -3293,12 +4291,18 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.PsAgeGroup", "AgeGroup")
                         .WithMany()
                         .HasForeignKey("AgeGroupId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("GRA.Data.Model.PsKit", "Kit")
                         .WithMany()
                         .HasForeignKey("KitId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("AgeGroup");
+
+                    b.Navigation("Kit");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PsKitImage", b =>
@@ -3306,7 +4310,10 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.PsKit", "Kit")
                         .WithMany()
                         .HasForeignKey("KitId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Kit");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PsPerformer", b =>
@@ -3314,7 +4321,10 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PsPerformerBranch", b =>
@@ -3322,12 +4332,18 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.Branch", "Branch")
                         .WithMany()
                         .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("GRA.Data.Model.PsPerformer", "PsPerformer")
                         .WithMany()
                         .HasForeignKey("PsPerformerId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Branch");
+
+                    b.Navigation("PsPerformer");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PsPerformerImage", b =>
@@ -3335,7 +4351,10 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.PsPerformer", "Performer")
                         .WithMany()
                         .HasForeignKey("PerformerId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Performer");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PsPerformerSchedule", b =>
@@ -3343,7 +4362,10 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.PsPerformer", "Performer")
                         .WithMany()
                         .HasForeignKey("PerformerId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Performer");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PsProgram", b =>
@@ -3351,7 +4373,10 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.PsPerformer", "Performer")
                         .WithMany()
                         .HasForeignKey("PerformerId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Performer");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PsProgramAgeGroup", b =>
@@ -3359,12 +4384,18 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.PsAgeGroup", "AgeGroup")
                         .WithMany()
                         .HasForeignKey("AgeGroupId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("GRA.Data.Model.PsProgram", "Program")
                         .WithMany()
                         .HasForeignKey("ProgramId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("AgeGroup");
+
+                    b.Navigation("Program");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PsProgramImage", b =>
@@ -3372,7 +4403,10 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.PsProgram", "Program")
                         .WithMany()
                         .HasForeignKey("ProgramId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Program");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.PsSettings", b =>
@@ -3380,7 +4414,10 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.Site", "Site")
                         .WithMany()
                         .HasForeignKey("SiteId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Site");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Question", b =>
@@ -3388,7 +4425,10 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.Questionnaire", "Questionnaire")
                         .WithMany("Questions")
                         .HasForeignKey("QuestionnaireId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Questionnaire");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.RolePermission", b =>
@@ -3396,12 +4436,18 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.Permission", "Permission")
                         .WithMany()
                         .HasForeignKey("PermissionId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("GRA.Data.Model.Role", "Role")
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Permission");
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.School", b =>
@@ -3409,7 +4455,10 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.SchoolDistrict", "SchoolDistrict")
                         .WithMany("Schools")
                         .HasForeignKey("SchoolDistrictId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("SchoolDistrict");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.SpatialDistanceDetail", b =>
@@ -3427,15 +4476,23 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.SpatialDistanceHeader", "SpatialDistanceHeader")
                         .WithMany()
                         .HasForeignKey("SpatialDistanceHeaderId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Branch");
+
+                    b.Navigation("Location");
+
+                    b.Navigation("SpatialDistanceHeader");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.System", b =>
                 {
-                    b.HasOne("GRA.Data.Model.Site")
+                    b.HasOne("GRA.Data.Model.Site", null)
                         .WithMany("Systems")
                         .HasForeignKey("SiteId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Trigger", b =>
@@ -3448,7 +4505,8 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.Badge", "AwardBadge")
                         .WithMany()
                         .HasForeignKey("AwardBadgeId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("GRA.Data.Model.VendorCodeType", "AwardVendorCodeType")
                         .WithMany()
@@ -3469,6 +4527,18 @@ namespace GRA.Data.SqlServer.Migrations
                         .WithMany()
                         .HasForeignKey("LimitToSystemId")
                         .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("AwardAvatarBundle");
+
+                    b.Navigation("AwardBadge");
+
+                    b.Navigation("AwardVendorCodeType");
+
+                    b.Navigation("LimitToBranch");
+
+                    b.Navigation("LimitToProgram");
+
+                    b.Navigation("LimitToSystem");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.TriggerBadge", b =>
@@ -3476,12 +4546,18 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.Badge", "Badge")
                         .WithMany()
                         .HasForeignKey("BadgeId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("GRA.Data.Model.Trigger", "Trigger")
                         .WithMany("RequiredBadges")
                         .HasForeignKey("TriggerId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Badge");
+
+                    b.Navigation("Trigger");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.TriggerChallenge", b =>
@@ -3489,12 +4565,18 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.Challenge", "Challenge")
                         .WithMany()
                         .HasForeignKey("ChallengeId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("GRA.Data.Model.Trigger", "Trigger")
                         .WithMany("RequiredChallenges")
                         .HasForeignKey("TriggerId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Challenge");
+
+                    b.Navigation("Trigger");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.User", b =>
@@ -3502,22 +4584,34 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.Branch", "Branch")
                         .WithMany("Users")
                         .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("GRA.Data.Model.Program", "Program")
                         .WithMany()
                         .HasForeignKey("ProgramId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("GRA.Data.Model.Site", "Site")
                         .WithMany()
                         .HasForeignKey("SiteId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("GRA.Data.Model.System", "System")
                         .WithMany()
                         .HasForeignKey("SystemId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Branch");
+
+                    b.Navigation("Program");
+
+                    b.Navigation("Site");
+
+                    b.Navigation("System");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserAnswer", b =>
@@ -3525,12 +4619,18 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.Answer", "Answer")
                         .WithMany()
                         .HasForeignKey("AnswerId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("GRA.Data.Model.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Answer");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserAvatar", b =>
@@ -3538,12 +4638,18 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.AvatarElement", "AvatarElement")
                         .WithMany()
                         .HasForeignKey("AvatarElementId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("GRA.Data.Model.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("AvatarElement");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserAvatarItem", b =>
@@ -3551,12 +4657,18 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.AvatarItem", "AvatarItem")
                         .WithMany()
                         .HasForeignKey("AvatarItemId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("GRA.Data.Model.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("AvatarItem");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserBadge", b =>
@@ -3564,12 +4676,18 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.Badge", "Badge")
                         .WithMany()
                         .HasForeignKey("BadgeId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("GRA.Data.Model.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Badge");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserBook", b =>
@@ -3577,12 +4695,18 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.Book", "Book")
                         .WithMany()
                         .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("GRA.Data.Model.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserChallengeTask", b =>
@@ -3590,12 +4714,18 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.ChallengeTask", "ChallengeTask")
                         .WithMany()
                         .HasForeignKey("ChallengeTaskId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("GRA.Data.Model.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ChallengeTask");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserFavoriteChallenge", b =>
@@ -3603,12 +4733,18 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.Challenge", "Challenge")
                         .WithMany()
                         .HasForeignKey("ChallengeId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("GRA.Data.Model.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Challenge");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserFavoriteEvent", b =>
@@ -3616,12 +4752,18 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.Event", "Event")
                         .WithMany()
                         .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("GRA.Data.Model.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Event");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserLog", b =>
@@ -3629,7 +4771,10 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserQuestionnaire", b =>
@@ -3637,12 +4782,18 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.Questionnaire", "Questionnaire")
                         .WithMany()
                         .HasForeignKey("QuestionnaireId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("GRA.Data.Model.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Questionnaire");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserRole", b =>
@@ -3650,12 +4801,18 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.Role", "Role")
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("GRA.Data.Model.User", "User")
                         .WithMany("UserRoles")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.UserTrigger", b =>
@@ -3663,12 +4820,18 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.Trigger", "Trigger")
                         .WithMany()
                         .HasForeignKey("TriggerId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("GRA.Data.Model.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Trigger");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.VendorCode", b =>
@@ -3676,7 +4839,10 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.VendorCodeType", "VendorCodeType")
                         .WithMany()
                         .HasForeignKey("VendorCodeTypeId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("VendorCodeType");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.VendorCodeType", b =>
@@ -3684,7 +4850,10 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.Site", "Site")
                         .WithMany()
                         .HasForeignKey("SiteId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Site");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.VendorCodeTypeText", b =>
@@ -3692,12 +4861,115 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasOne("GRA.Data.Model.Language", "Language")
                         .WithMany()
                         .HasForeignKey("LanguageId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("GRA.Data.Model.VendorCodeType", "VendorCodeType")
                         .WithMany()
                         .HasForeignKey("VendorCodeTypeId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Language");
+
+                    b.Navigation("VendorCodeType");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.AvatarBundle", b =>
+                {
+                    b.Navigation("AvatarBundleItems");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.AvatarLayer", b =>
+                {
+                    b.Navigation("AvatarColors");
+
+                    b.Navigation("AvatarItems");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.Branch", b =>
+                {
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.Challenge", b =>
+                {
+                    b.Navigation("ChallengeCategories");
+
+                    b.Navigation("ChallengeGroupChallenges");
+
+                    b.Navigation("Tasks");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.ChallengeGroup", b =>
+                {
+                    b.Navigation("ChallengeGroupChallenges");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.DailyLiteracyTip", b =>
+                {
+                    b.Navigation("DailyLiteracyTipImages");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.Drawing", b =>
+                {
+                    b.Navigation("Winners");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.DrawingCriterion", b =>
+                {
+                    b.Navigation("CriterionPrograms");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.NewsCategory", b =>
+                {
+                    b.Navigation("Posts");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.PageHeader", b =>
+                {
+                    b.Navigation("Pages");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.Question", b =>
+                {
+                    b.Navigation("Answers");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.Questionnaire", b =>
+                {
+                    b.Navigation("Questions");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.SchoolDistrict", b =>
+                {
+                    b.Navigation("Schools");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.Site", b =>
+                {
+                    b.Navigation("Challenges");
+
+                    b.Navigation("Programs");
+
+                    b.Navigation("Systems");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.System", b =>
+                {
+                    b.Navigation("Branches");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.Trigger", b =>
+                {
+                    b.Navigation("RequiredBadges");
+
+                    b.Navigation("RequiredChallenges");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.User", b =>
+                {
+                    b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
         }

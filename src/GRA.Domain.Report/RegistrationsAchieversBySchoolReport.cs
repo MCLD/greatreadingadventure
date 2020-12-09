@@ -61,7 +61,7 @@ namespace GRA.Domain.Report
             UpdateProgress(progress, 1, "Starting report...", request.Name);
 
             // header row
-            var headerRow = new List<object>() {
+            var headerRow = new List<object> {
                 "School Name",
                 "Registered Users"
             };
@@ -122,7 +122,7 @@ namespace GRA.Domain.Report
                 totalRegistered += users;
                 totalAchiever += achievers;
 
-                var row = new List<object>()
+                var row = new List<object>
                 {
                     school.Name,
                     users
@@ -144,7 +144,7 @@ namespace GRA.Domain.Report
             report.Data = reportData.ToArray();
 
             // total row
-            var footerRow = new List<object>()
+            var footerRow = new List<object>
             {
                 "Total",
                 totalRegistered

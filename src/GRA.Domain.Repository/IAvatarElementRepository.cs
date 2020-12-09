@@ -1,6 +1,6 @@
-﻿using GRA.Domain.Model;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Collections.Generic;
+using GRA.Domain.Model;
 
 namespace GRA.Domain.Repository
 {
@@ -9,6 +9,6 @@ namespace GRA.Domain.Repository
         Task<AvatarElement> GetByItemAndColorAsync(int item, int? color);
         Task<ICollection<AvatarElement>> GetUserAvatarAsync(int userId);
         Task SetUserAvatarAsync(int userId, List<int> elementIds);
-        void RemoveByItemIdAsync(int id);
+        void RemoveByItemId(int id);
     }
 }

@@ -4,10 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using GRA.Controllers.Attributes;
 using GRA.Controllers.ViewModel.Avatar;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SixLabors.ImageSharp;
@@ -21,7 +23,6 @@ namespace GRA.Controllers
     public class AvatarController : Base.UserController
     {
         private readonly ILogger<AvatarController> _logger;
-        private readonly AutoMapper.IMapper _mapper;
         private readonly AvatarService _avatarService;
         private readonly SiteService _siteService;
 
@@ -34,7 +35,6 @@ namespace GRA.Controllers
             : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _mapper = context.Mapper;
             _avatarService = avatarService
                 ?? throw new ArgumentNullException(nameof(avatarService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
@@ -52,30 +52,18 @@ namespace GRA.Controllers
                 return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
             }
 
-            var model = new AvatarJsonModel
-            {
-                Layers = _mapper
-                .Map<ICollection<AvatarJsonModel.AvatarLayer>>(userWardrobe)
-            };
             var layerGroupings = userWardrobe
                 .GroupBy(_ => _.GroupId)
                 .Select(_ => _.ToList())
                 .ToList();
+
             var usersresult = await _avatarService.GetUserUnlockBundlesAsync();
-            var bundles = new AvatarBundleJsonModel
-            {
-                Bundles = _mapper
-                .Map<List<AvatarBundleJsonModel.AvatarBundle>>(usersresult.Keys.ToList())
-            };
             var viewModel = new AvatarViewModel
             {
                 LayerGroupings = layerGroupings,
-                Bundles = usersresult.Keys.ToList(),
-                ViewedBundles = usersresult.Values.ToList(),
+                Bundles = usersresult,
                 DefaultLayer = userWardrobe.First(_ => _.DefaultLayer).Id,
-                ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/"),
-                AvatarPiecesJson = Newtonsoft.Json.JsonConvert.SerializeObject(model),
-                AvatarBundlesJson = Newtonsoft.Json.JsonConvert.SerializeObject(bundles)
+                ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/")
             };
             var userAvatar = await _avatarService.GetUserAvatarAsync();
             viewModel.NewAvatar = userAvatar.Count == 0;
@@ -97,13 +85,11 @@ namespace GRA.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> UpdateUserLogs(string selectionJson)
+        public async Task<JsonResult> UpdateBundleHasBeenViewed(int bundleId)
         {
             try
             {
-                var selection = Newtonsoft.Json.JsonConvert
-                    .DeserializeObject<List<UserLog>>(selectionJson);
-                await _avatarService.UpdateUserLogsAsync(selection);
+                await _avatarService.UpdateBundleHasBeenViewedAsync(bundleId);
                 return Json(new { success = true });
             }
             catch (GraException gex)
@@ -211,6 +197,62 @@ namespace GRA.Controllers
                 }
             }
             return RedirectToAction(nameof(Share));
+        }
+
+        [PreventAjaxRedirect]
+        public async Task<IActionResult> GetLayersItems(
+            string type, int layerId, int selectedItemId, int bundleId, int[] selectedItemIds)
+        {
+            try
+            {
+                var layeritems = await _avatarService.GetUsersItemsByLayerAsync(layerId);
+                var model = new AvatarViewModel
+                {
+                    ItemPath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/")
+                };
+                switch (type?.ToUpperInvariant())
+                {
+                    case "ITEM":
+                        model.LayerItems = layeritems;
+                        model.SelectedItemId = selectedItemId;
+                        model.ItemPath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/");
+                        model.LayerId = layerId;
+                        break;
+                    case "COLOR":
+                        model.LayerColors = await _avatarService.GetColorsByLayerAsync(layerId);
+                        model.SelectedItemId = selectedItemId;
+                        model.LayerId = layerId;
+                        break;
+                    default:
+                        model.Bundle = await _avatarService.GetBundleByIdAsync(bundleId);
+                        model.SelectedItemIds = selectedItemIds;
+                        break;
+                }
+                if (model.Bundle != null)
+                {
+                    var lookupIndex = model.SelectedItemIds
+                        .Select(_ => model.SelectedItemIds
+                            .ToList()
+                            .IndexOf(_)
+                            )
+                        .FirstOrDefault(_ => _ != -1);
+                    model.SelectedItemIndex = lookupIndex == -1 ? 0 : lookupIndex;
+                }
+                Response.StatusCode = StatusCodes.Status200OK;
+                return PartialView("_SlickPartial", model);
+            }
+            catch (GraException gex)
+            {
+                _logger.LogError(gex,
+                    "Could not retrieve layer items for layer id {layerId}: {Message}",
+                    layerId,
+                    gex.Message);
+                Response.StatusCode = StatusCodes.Status400BadRequest;
+                return Json(new
+                {
+                    success = false
+                });
+            }
         }
 
         private async Task UpdateAvatarAsync(string selectionJson)

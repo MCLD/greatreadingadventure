@@ -12,7 +12,6 @@ namespace GRA.Data.Repository
         : AuditingRepository<Model.SpatialDistanceHeader, SpatialDistanceHeader>,
         ISpatialDistanceRepository
     {
-
         public SpatialDistanceRepository(ServiceFacade.Repository repositoryFacade,
             ILogger<SpatialDistanceRepository> logger)
             : base(repositoryFacade, logger) { }
@@ -32,7 +31,6 @@ namespace GRA.Data.Repository
             var dbHeader = _mapper
                 .Map<SpatialDistanceHeader, Model.SpatialDistanceHeader>(spatialHeader);
             await DbSet.AddAsync(dbHeader);
-
 
             var dbDetailList = _mapper
                 .Map<List<SpatialDistanceDetail>, List<Model.SpatialDistanceDetail>>(detailList);

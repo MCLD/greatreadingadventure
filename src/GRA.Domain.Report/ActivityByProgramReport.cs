@@ -43,7 +43,7 @@ namespace GRA.Domain.Report
                 ?? throw new ArgumentNullException(nameof(userLogRepository));
         }
 
-        public async override Task ExecuteAsync(ReportRequest request,
+        public override async Task ExecuteAsync(ReportRequest request,
             CancellationToken token,
             IProgress<JobStatus> progress = null)
         {
@@ -67,7 +67,7 @@ namespace GRA.Domain.Report
             UpdateProgress(progress, 1, "Starting report...", request.Name);
 
             // header row
-            var headerRow = new List<object>() {
+            var headerRow = new List<object> {
                 "System Name",
                 "Branch Name",
                 "Program Name",
@@ -101,7 +101,7 @@ namespace GRA.Domain.Report
                         headerRow.Add(description[0]
                             .ToString()
                             .ToUpper(System.Globalization.CultureInfo.InvariantCulture)
-                                + description.Substring(1));
+                                + description[1..]);
                     }
                     else
                     {
@@ -161,7 +161,7 @@ namespace GRA.Domain.Report
 
                         totalRegistered += users;
 
-                        var row = new List<object>() {
+                        var row = new List<object> {
                             branch.SystemName,
                             branch.Name,
                             programDictionary[programId],
@@ -197,8 +197,7 @@ namespace GRA.Domain.Report
             report.Data = reportData.ToArray();
 
             // total row
-            var footerRow = new List<object>()
-            {
+            var footerRow = new List<object> {
                 "Total",
                 string.Empty,
                 string.Empty,

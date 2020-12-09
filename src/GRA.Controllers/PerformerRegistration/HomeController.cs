@@ -164,7 +164,7 @@ namespace GRA.Controllers.PerformerRegistration
             var systems = await _performerSchedulingService
                 .GetSystemListWithoutExcludedBranchesAsync();
 
-            if(string.IsNullOrEmpty(settings.VendorIdPrompt))
+            if (string.IsNullOrEmpty(settings.VendorIdPrompt))
             {
                 settings.VendorIdPrompt = "Vendor ID";
             }

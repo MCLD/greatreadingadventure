@@ -63,7 +63,7 @@ namespace GRA.Data.Repository
         {
             foreach (var itemId in itemIds)
             {
-                await _context.UserAvatarItems.AddAsync(new Model.UserAvatarItem()
+                await _context.UserAvatarItems.AddAsync(new Model.UserAvatarItem
                 {
                     UserId = userId,
                     AvatarItemId = itemId
@@ -130,7 +130,8 @@ namespace GRA.Data.Repository
 
             if (!string.IsNullOrEmpty(filter.Search))
             {
-                items = items.Where(_ => _.Name.Contains(filter.Search));
+                items = items.Where(_ =>
+                    _.Name.Contains(filter.Search, System.StringComparison.OrdinalIgnoreCase));
             }
 
             return items;
@@ -170,6 +171,16 @@ namespace GRA.Data.Repository
                 .Where(_ => _.AvatarLayerId == layerId && _.Unlockable
                     && unlockableItems.Contains(_.Id))
                 .CountAsync();
+        }
+
+        public async Task<List<AvatarItem>> GetBundleItemsAsync(int bundleId)
+        {
+            return await _context.AvatarBundleItems
+                .AsNoTracking()
+                .Where(_ => _.AvatarBundleId == bundleId)
+                .Select(_ => _.AvatarItem)
+                .ProjectTo<AvatarItem>(_mapper.ConfigurationProvider)
+                .ToListAsync();
         }
 
         public async Task<ICollection<AvatarItem>> GetByIdsAsync(List<int> ids)
@@ -227,7 +238,11 @@ namespace GRA.Data.Repository
 
         public async Task<bool> IsLastInRequiredLayer(int itemId)
         {
-            var layer = await DbSet.AsNoTracking().Where(_ => _.Id == itemId).Select(_ => _.AvatarLayer).SingleAsync();
+            var layer = await DbSet
+                .AsNoTracking()
+                .Where(_ => _.Id == itemId)
+                .Select(_ => _.AvatarLayer)
+                .SingleAsync();
             if (!layer.CanBeEmpty)
             {
                 var availableItems = await DbSet.AsNoTracking()
@@ -276,7 +291,7 @@ namespace GRA.Data.Repository
 
             var userElements = _context.UserAvatars
                 .Where(_ => elements.Contains(_.AvatarElementId));
-            if (await userElements.CountAsync() > 0)
+            if (await userElements.AnyAsync())
             {
                 _context.UserAvatars.RemoveRange(userElements);
 
@@ -297,7 +312,7 @@ namespace GRA.Data.Repository
                         .First();
 
                     var newUserElements = userElements
-                        .Select(_ => new Model.UserAvatar()
+                        .Select(_ => new Model.UserAvatar
                         {
                             AvatarElementId = firstElement,
                             UserId = _.UserId

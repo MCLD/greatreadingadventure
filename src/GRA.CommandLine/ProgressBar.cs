@@ -105,5 +105,4 @@ public class ProgressBar : IDisposable, IProgress<double>
             UpdateText(string.Empty);
         }
     }
-
 }

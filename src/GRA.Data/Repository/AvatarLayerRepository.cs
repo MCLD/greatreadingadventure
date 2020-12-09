@@ -28,7 +28,7 @@ namespace GRA.Data.Repository
                .ToListAsync();
         }
 
-        public async Task<ICollection<AvatarLayer>> GetAllWithColorsAsync(int siteId, int userId)
+        public async Task<ICollection<AvatarLayer>> GetAllWithColorsAsync(int siteId)
         {
             return await DbSet.AsNoTracking()
                 .Where(_ => _.SiteId == siteId)
@@ -36,6 +36,33 @@ namespace GRA.Data.Repository
                 .ThenBy(_ => _.SortOrder)
                 .ProjectTo<AvatarLayer>(_mapper.ConfigurationProvider, _ => _.AvatarColors)
                 .ToListAsync();
+        }
+
+        public async Task AddAvatarLayerTextAsync(int layerId,
+            int languageId, AvatarLayerText text)
+        {
+            var layerText = new Model.AvatarLayerText
+            {
+                AvatarLayerId = layerId,
+                LanguageId = languageId,
+                Name = text.Name,
+                RemoveLabel = text.RemoveLabel
+            };
+
+            await _context.AvatarLayerTexts
+                .AddAsync(layerText);
+        }
+        public Dictionary<string, string> GetNameAndLabelByLanguageId(int layerId, int languageId)
+        {
+            var layerText = _context.AvatarLayerTexts
+                   .AsNoTracking()
+                   .Where(_ => _.AvatarLayerId == layerId && _.LanguageId == languageId)
+                   .FirstOrDefault();
+            return new Dictionary<string, string>
+            {
+                { "Name", layerText.Name },
+                { "RemoveLabel", layerText.RemoveLabel }
+            };
         }
     }
 }

@@ -18,8 +18,8 @@ namespace GRA.CommandLine.FakeWeb
         }
         public async Task<(User User, Site Site)> Lookup(int? emulateUserId = null)
         {
-            User user = null;
-            Site site = null;
+            User user;
+            Site site;
             int userId;
             if (!string.IsNullOrEmpty(_facade.Config["GRACL.UserId"]))
             {
@@ -105,7 +105,7 @@ namespace GRA.CommandLine.FakeWeb
                 throw new ArgumentNullException(nameof(authenticationResult));
             }
             var claims = new HashSet<Claim>();
-            foreach(var permission in authenticationResult.PermissionNames)
+            foreach (var permission in authenticationResult.PermissionNames)
             {
                 claims.Add(new Claim(ClaimType.Permission, permission));
             }
@@ -118,6 +118,5 @@ namespace GRA.CommandLine.FakeWeb
 
             return new GenericPrincipal(identity, null);
         }
-
     }
 }

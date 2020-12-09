@@ -38,14 +38,14 @@ namespace GRA.Data.Repository
         {
             return DbSet
                 .AsNoTracking()
-                .Where(_ => _.IsDeleted == false && _.SiteId == filter.SiteId);
+                .Where(_ => !_.IsDeleted && _.SiteId == filter.SiteId);
         }
 
         public async Task<Questionnaire> GetByIdAsync(int id, bool includeAnswers)
         {
             var questionnaire = DbSet
                 .AsNoTracking()
-                .Where(_ => _.Id == id && _.IsDeleted == false);
+                .Where(_ => _.Id == id && !_.IsDeleted);
 
             if (includeAnswers)
             {
@@ -67,7 +67,7 @@ namespace GRA.Data.Repository
         public override async Task RemoveSaveAsync(int userId, int id)
         {
             var entity = await DbSet
-                .Where(_ => _.IsDeleted == false && _.Id == id)
+                .Where(_ => !_.IsDeleted && _.Id == id)
                 .SingleAsync();
             entity.IsDeleted = true;
             await base.UpdateAsync(userId, entity, null);
