@@ -267,8 +267,7 @@ namespace GRA.Controllers.MissionControl
             }
             if (string.IsNullOrWhiteSpace(model.BadgeMakerImage) && model.BadgeUploadImage == null)
             {
-                ModelState.AddModelError("BadgeUploadImage", "A badge is required.");
-                ModelState.AddModelError("BadgeMakerImage", "A badge is required.");
+                ModelState.AddModelError("BadgePath", "A badge is required.");
             }
             else if (model.BadgeUploadImage != null
                     && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker))

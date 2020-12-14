@@ -322,8 +322,7 @@ namespace GRA.Controllers.MissionControl
                 if ((model.BadgeUploadImage == null && !model.UseBadgeMaker)
                     || (string.IsNullOrWhiteSpace(model.BadgeMakerImage) && model.UseBadgeMaker))
                 {
-                    ModelState.AddModelError("BadgeUploadImage", "A badge is required.");
-                    ModelState.AddModelError("BadgeMakerImage", "A badge is required.");
+                    ModelState.AddModelError("BadgePath", "A badge is required.");
                 }
                 if (model.BadgeUploadImage != null
                     && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) && !model.UseBadgeMaker))
@@ -573,8 +572,7 @@ namespace GRA.Controllers.MissionControl
                 && ((!string.IsNullOrWhiteSpace(model.BadgeMakerImage) && !model.UseBadgeMaker)
                     || existingBadge == null))
             {
-                ModelState.AddModelError("BadgeUploadImage", "A badge is required.");
-                ModelState.AddModelError("BadgeMakerImage", "A badge is required.");
+                ModelState.AddModelError("BadgePath", "A badge is required.");
             }
 
             if (model.BadgeUploadImage != null

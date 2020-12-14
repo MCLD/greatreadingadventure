@@ -587,12 +587,12 @@
                 <img id="badgeImage" class="img-thumbnail badge-lg"
                      src="~/@Model.BadgePath?@DateTime.Now.ToString(" yyMMddHHmmss")"
                      asp-append-version="true" />
-                <span asp-validation-for="BadgeMakerImage" class="text-danger"></span>
             }
             else
             {
                 <img id="badgeImage" class="img-thumbnail badge-lg" src="@Model.BadgeMakerImage" style="height:210px;" />
             }
+            <span asp-validation-for="BadgePath" class="text-danger" style="display:block;"></span>
         </div>
 
         <div class="col-xs-12 col-sm-8 col-md-9">
@@ -610,9 +610,6 @@
                     <button id="openMaker" type="button" class="btn btn-default">
                         <span class="fa fa-certificate"></span> Create a Badge
                     </button>
-                    <div>
-                        <span class="text-danger" asp-validation-for="BadgeMakerImage"></span>
-                    </div>
                 </div>
 
                 <div role="tabpanel" class="tab-pane gra-tab-pane @(Model.UseBadgeMaker ? " " : " active")" id="upload">
