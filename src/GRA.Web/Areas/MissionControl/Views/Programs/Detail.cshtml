@@ -155,6 +155,7 @@
                             <div>
                                 <span asp-validation-for="BadgeUploadImage" class="text-danger"></span>
                             </div>
+                            <button id="clearFile" class="btn btn-default" type="button" style="margin-top: 0.5em;"><span class="fa fa-ban"></span> Clear file selection</button>
                         </div>
                     </div>
                 </div>
@@ -226,6 +227,13 @@
         $("#openMaker").on("click", function() {
             $("#badgeMaker").attr("src", "@Html.Raw(@Model.BadgeMakerUrl)");
             $("#badgeModal").modal("show");
+        });
+
+        $('#clearFile').on("click", function () {
+            $('#BadgeUploadImage').val('');
+            $('.btn-file').addClass('btn-default');
+            $('.btn-file').removeClass('btn-success');
+            $('#selectedFile').val('');
         });
 
         $(window).on("message", function(e) {

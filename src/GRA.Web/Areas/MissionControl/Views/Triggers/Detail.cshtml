@@ -556,6 +556,7 @@
                             <div>
                                 <span asp-validation-for="BadgeUploadImage" class="text-danger"></span>
                             </div>
+                            <button id="clearFile" class="btn btn-default" type="button" style="margin-top: 0.5em;"><span class="fa fa-ban"></span> Clear file selection</button>
                         </div>
                     </div>
                     <div class="row row-spacing">
@@ -820,13 +821,20 @@
             UpdateRequirementsList();
         })
 
-        $("#clearButton").on("click", function() {
+        $("#clearButton").on("click", function () {
             $("#searchText").val("");
             search = "";
             $("#searchMessage").addClass("hide");
             page = 1;
             UpdateRequirementsList();
-        })
+        });
+
+        $('#clearFile').on("click", function () {
+            $('#BadgeUploadImage').val('');
+            $('.btn-file').addClass('btn-default');
+            $('.btn-file').removeClass('btn-success');
+            $('#selectedFile').val('');
+        });
 
         $(document).on("click", ".page-button", function() {
             if (!$(this).hasClass("disabled"))
