@@ -322,30 +322,31 @@ namespace GRA.Controllers.MissionControl
                 if ((model.BadgeUploadImage == null && !model.UseBadgeMaker)
                     || (string.IsNullOrWhiteSpace(model.BadgeMakerImage) && model.UseBadgeMaker))
                 {
-                    ModelState.AddModelError("BadgeUploadImage", "A badge is required for the alternative text.");
-                    ModelState.AddModelError("BadgeMakerImage", "A badge is required for the alternative text.");
+                    ModelState.AddModelError("BadgeUploadImage", "A badge is required.");
+                    ModelState.AddModelError("BadgeMakerImage", "A badge is required.");
                 }
                 if (model.BadgeUploadImage != null
-                    && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) && !model.UseBadgeMaker)
-                    && (!ValidImageExtensions.Contains(Path
-                        .GetExtension(model.BadgeUploadImage.FileName)
-                        .ToLowerInvariant())))
+                    && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) && !model.UseBadgeMaker))
                 {
-                    ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
-                }
-
-                try
-                {
-                    using (var ms = new MemoryStream())
+                    if (!ValidImageExtensions.Contains(Path.GetExtension(model.BadgeUploadImage.FileName).ToLower()))
                     {
-                        await model.BadgeUploadImage.CopyToAsync(ms);
-                        badgeBytes = ms.ToArray();
+                        ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                     }
-                    await _badgeService.ValidateBadgeImageAsync(badgeBytes);
                 }
-                catch (GraException gex)
-                {
-                    ModelState.AddModelError("BadgeUploadImage", gex.Message);
+                if (model.BadgeUploadImage != null) {
+                    try
+                    {
+                        using (var ms = new MemoryStream())
+                        {
+                            await model.BadgeUploadImage.CopyToAsync(ms);
+                            badgeBytes = ms.ToArray();
+                        }
+                        await _badgeService.ValidateBadgeImageAsync(badgeBytes);
+                    }
+                    catch (GraException gex)
+                    {
+                        ModelState.AddModelError("BadgeUploadImage", gex.Message);
+                    }
                 }
             }
             if (ModelState.IsValid)
@@ -572,8 +573,8 @@ namespace GRA.Controllers.MissionControl
                 && ((!string.IsNullOrWhiteSpace(model.BadgeMakerImage) && !model.UseBadgeMaker)
                     || existingBadge == null))
             {
-                ModelState.AddModelError("BadgeUploadImage", "Please upload or create a badge.");
-                ModelState.AddModelError("BadgeMakerImage", "Please upload or create a badge.");
+                ModelState.AddModelError("BadgeUploadImage", "A badge is required.");
+                ModelState.AddModelError("BadgeMakerImage", "A badge is required.");
             }
 
             if (model.BadgeUploadImage != null
@@ -585,19 +586,21 @@ namespace GRA.Controllers.MissionControl
                 {
                     ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                 }
-
-                try
+                if (model.BadgeUploadImage != null)
                 {
-                    using (var ms = new MemoryStream())
+                    try
                     {
-                        await model.BadgeUploadImage.CopyToAsync(ms);
-                        badgeBytes = ms.ToArray();
+                        using (var ms = new MemoryStream())
+                        {
+                            await model.BadgeUploadImage.CopyToAsync(ms);
+                            badgeBytes = ms.ToArray();
+                        }
+                        await _badgeService.ValidateBadgeImageAsync(badgeBytes);
                     }
-                    await _badgeService.ValidateBadgeImageAsync(badgeBytes);
-                }
-                catch (GraException gex)
-                {
-                    ModelState.AddModelError("BadgeUploadImage", gex.Message);
+                    catch (GraException gex)
+                    {
+                        ModelState.AddModelError("BadgeUploadImage", gex.Message);
+                    }
                 }
             }
             if (ModelState.IsValid)
