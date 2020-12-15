@@ -14,7 +14,7 @@
     <NetStandardImplicitPackageVersion>2.0</NetStandardImplicitPackageVersion>
     <PackageId>GRA</PackageId>
     <PackageLicenseUrl>https://github.com/mcld/greatreadingadventure/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>http://www.greatreadingadventure.com/</PackageProjectUrl>
+    <PackageProjectUrl>https://www.greatreadingadventure.com/</PackageProjectUrl>
     <PackageReleaseNotes>See https://github.com/MCLD/greatreadingadventure/releases/latest</PackageReleaseNotes>
     <Product>The Great Reading Adventure</Product>
     <RepositoryType>Git</RepositoryType>
@@ -28,7 +28,7 @@
     <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="System.Security.Claims" Version="4.3.0" />
-    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="5.0.1" />
   </ItemGroup>
 
   <ItemGroup>

@@ -9,7 +9,7 @@
     <Description>The Great Reading Adventure is an open-source tool for managing dynamic library reading programs.</Description>
     <OutputType>Exe</OutputType>
     <PackageLicenseUrl>https://github.com/mcld/greatreadingadventure/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>http://www.greatreadingadventure.com/</PackageProjectUrl>
+    <PackageProjectUrl>https://www.greatreadingadventure.com/</PackageProjectUrl>
     <PackageReleaseNotes>See https://github.com/MCLD/greatreadingadventure/releases/latest</PackageReleaseNotes>
     <Product>The Great Reading Adventure</Product>
     <RepositoryType>Git</RepositoryType>
@@ -19,14 +19,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="9.0.0" />
-    <PackageReference Include="Bogus" Version="31.0.3" />
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="Bogus" Version="32.0.1" />
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.1" />
     <PackageReference Include="Serilog.Extensions.Logging.File" Version="2.0.0" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.1.0" />
