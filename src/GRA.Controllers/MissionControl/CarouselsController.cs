@@ -62,17 +62,17 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult Add()
         {
             var viewModel = new DetailViewModel
             {
-                PageAction = ViewModel.PageAction.Create
+                PageAction = ViewModel.PageAction.Add
             };
             return View(DetailViewName, viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(DetailViewModel viewModel)
+        public async Task<IActionResult> Add(DetailViewModel viewModel)
         {
             viewModel.Carousel.IsForDashboard = true;
             viewModel.Carousel.SiteId = GetCurrentSiteId();
@@ -189,7 +189,7 @@ namespace GRA.Controllers.MissionControl
             {
                 CarouselId = carousel.Id,
                 CarouselName = carousel.Name,
-                PageAction = ViewModel.PageAction.Create
+                PageAction = ViewModel.PageAction.Add
             });
         }
 
