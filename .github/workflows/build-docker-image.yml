@@ -1,9 +1,10 @@
-name: Build Docker image
+name: "Build - action"
 
 on: [push, pull_request]
 
 jobs:
   build-docker-image:
+    name: "GRA Docker"
     runs-on: ubuntu-latest
 
     steps:
