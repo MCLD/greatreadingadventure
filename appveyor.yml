@@ -4,4 +4,4 @@ test: off
 version: 4.1.2-{build}
 
 build_script:
-- bash docker-build.bash
+- bash build.bash
