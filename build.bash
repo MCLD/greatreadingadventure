@@ -35,6 +35,7 @@ Environment variables:
 - CR_PASSWORD - optional - password to log into the container registry
 - CR_USER - optional - username to log in to the container registry
 - GHCR_OWNER - optional - owner of the GitHub Container Registry (defaults to GHCR_USER)
+- GHCR_PAT - optional - GitHub Container Registry Personal Access Token
 - GHCR_USER - optional - username to log in to the GitHub Container Registry
 
 EOF
