@@ -11,4 +11,4 @@ git:
 services:
   - docker
 
-script: bash docker-build.bash
+script: bash build.bash

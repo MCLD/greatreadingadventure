@@ -8,19 +8,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Set Docker image name
-      run: echo "BLD_DOCKER_IMAGE=$(echo $GITHUB_REPOSITORY/${PWD##*/}
-        | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
-
-    - name: Extract Docker username
-      run: echo "BLD_DOCKER_USERNAME=$(echo $GITHUB_REPOSITORY 
-        | cut -d/ -f1
-        | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
-
-    - name: Run docker-build.bash
-      env:
-        BLD_DOCKER_HOST: docker.pkg.github.com
-        BLD_DOCKER_PASSWORD: ${{secrets.GITHUB_TOKEN}}
-      run: ./docker-build.bash
+      - name: Run build.bash
+        env:
+          BLD_DOCKER_IMAGE: gra
+          CR_OWNER: mcld
+          CR_PASSWORD: ${{secrets.CR_PASSWORD}}
+          CR_USER: ${{secrets.CR_USER}}
+          GHCR_PAT: ${{secrets.GHCR_PAT}}
+          GHCR_USER: ${{secrets.GHCR_USER}}
+        run: ./build.bash
