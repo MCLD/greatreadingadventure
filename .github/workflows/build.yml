@@ -13,6 +13,7 @@ jobs:
       - name: Run build.bash
         env:
           BLD_DOCKER_IMAGE: gra
+          CR_OWNER: ${{secrets.CR_OWNER}}
           CR_PASSWORD: ${{secrets.CR_PASSWORD}}
           CR_USER: ${{secrets.CR_USER}}
           GHCR_PAT: ${{secrets.GHCR_PAT}}
