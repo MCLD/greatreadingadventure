@@ -17,5 +17,6 @@ jobs:
           CR_PASSWORD: ${{secrets.CR_PASSWORD}}
           CR_USER: ${{secrets.CR_USER}}
           GHCR_PAT: ${{secrets.GHCR_PAT}}
+          GHCR_OWNER: ${{secrets.GHCR_OWNER}}
           GHCR_USER: ${{secrets.GHCR_USER}}
         run: ./build.bash
