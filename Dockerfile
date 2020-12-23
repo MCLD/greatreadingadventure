@@ -1,11 +1,11 @@
 # Get build image
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build-stage
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /app
 
 # Copy source
 COPY . ./
 
-# Bring in metadata via --build-arg for build-stage
+# Bring in metadata via --build-arg for build
 ARG IMAGE_VERSION=unknown
 
 # Restore packages
@@ -26,7 +26,7 @@ RUN dotnet publish -c Release -o "/app/publish/"
 RUN cp /app/release-publish.bash "/app/publish/"
 
 # Get runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS publish-stage
+FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS publish
 WORKDIR /app
 
 # Install curl for health monitoring
@@ -34,7 +34,7 @@ RUN apt-get update \
 	&& apt-get install --no-install-recommends -y curl=7.64.0-4+deb10u1 \
 	&& rm -rf /var/lib/apt/lists/*
 
-# Bring in metadata via --build-arg to publish-stage
+# Bring in metadata via --build-arg to publish
 ARG BRANCH=unknown
 ARG IMAGE_CREATED=unknown
 ARG IMAGE_REVISION=unknown
@@ -61,7 +61,7 @@ ENV org.opencontainers.image.created=$IMAGE_CREATED \
     org.opencontainers.image.version=$IMAGE_VERSION
 
 # Copy source
-COPY --from=build-stage "/app/publish/" .
+COPY --from=build "/app/publish/" .
 
 # Persist shared directory
 VOLUME ["/app/shared"]
