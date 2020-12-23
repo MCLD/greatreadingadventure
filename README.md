@@ -8,16 +8,16 @@ You can view the latest [release notes](https://github.com/MCLD/greatreadingadve
 
 ## Stuck? Need help?
 
-You can visit the [Great Reading Adventure Forum](http://forum.greatreadingadventure.com/) for the following:
+YOu can visit the [Great Reading Adventure discussions](https://github.com/MCLD/greatreadingadventure/discussions) for the following:
 
-- [Help with installation](http://forum.greatreadingadventure.com/c/install-issues)
-- [Assistance with configuration and using the GRA](http://forum.greatreadingadventure.com/c/help)
-- [Reporting errors](http://forum.greatreadingadventure.com/c/errors)
-- [Suggesting new features](http://forum.greatreadingadventure.com/c/feature-requests)
+- [Announcements/General](https://github.com/MCLD/greatreadingadventure/discussions/categories/announcements-general) to see what's going on with the project
+- [Development](https://github.com/MCLD/greatreadingadventure/discussions/categories/development) discussion if you want to contribute code or documentation
+- [Help](https://github.com/MCLD/greatreadingadventure/discussions/categories/help) with installation, use, errors, or upgrading of the software
+- Share your [ideas](https://github.com/MCLD/greatreadingadventure/discussions/categories/ideas) for enhancements and improvements to the software
 
 ## Development
 
-The [`master`](https://github.com/mcld/greatreadingadventure/tree/master) branch contains the latest release, active development occurs on the [`develop`](https://github.com/mcld/greatreadingadventure/tree/develop) branch. Developer documentation can be found [in the project](dev/); developers can be reached [on the forums](http://forum.greatreadingadventure.com/).
+The [`master`](https://github.com/mcld/greatreadingadventure/tree/master) branch contains the latest release, active development occurs on the [`develop`](https://github.com/mcld/greatreadingadventure/tree/develop) branch. Developer documentation can be found [in the project](dev/); developers can be reached via [development discussions](https://github.com/MCLD/greatreadingadventure/discussions/categories/development).
 
 | Windows build                                                                                                                                                                        | Linux build                                                                                                                                                                                   | Codacy                                                                                                                                                                                                                                                                   | Documentation                                                                                                                                                        |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
