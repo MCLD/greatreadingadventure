@@ -13,6 +13,7 @@ There are two options when creating the database: you can execute a script or ma
 ### From the user interface
 
 #### Create the database
+
 1. Launch SQL Server Management Studio and connect to the database server.
 2. Double-click the server name to show the **Databases** folder.
 3. Right-click on the **Databases** folder and select the **New Database...** option.
@@ -30,7 +31,7 @@ There are two options when creating the database: you can execute a script or ma
 4. Enter a secure password for this user in the **Password** and **Confirm password** fields. Make a note of this password.
 5. You can uncheck `Enforce password policy` so that the password for this account will not expire.
 6. Select `User mapping` from the **Select a page** list on the left.
-7. Locate the name of the database (this tutorial used `SRP` in *Create the database* step 4 above) in the **Users mapped to this login** list on the left.
+7. Locate the name of the database (this tutorial used `SRP` in _Create the database_ step 4 above) in the **Users mapped to this login** list on the left.
 8. Check the appropriate box in the `Map` column to map this login to a user in the database.
 9. In the **Database role membership for:** list, select `db_owner`.
 10. Select **OK** to create the login and user.

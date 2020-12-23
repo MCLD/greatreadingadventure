@@ -3,12 +3,14 @@
 ## Configuration information you'll need
 
 ### Configuration step 1: database configuration
+
 - Database server name or IP address
 - Database/catalog name
 - Database owner user login (the user in the `db_owner` role)
 - Database owner user password
 
 ### Configuration step 2: mail server configuration
+
 - The administrator's email address - you may want to set up a role address ahead of time so that system emails don't appear to come from your personal address
 - Mail server - SMTP server to handle emails
 - Mail server port (optional) - by default 25 will be used

@@ -9,11 +9,11 @@ The GRA has two operating modes, either without schedule or with scheduled dates
 1. The default operation of the GRA means that as soon as you install the software the program is open and running for registration and for participants to log activities. In this instance the software considers the program to always be in the "open" state and uses that template for the landing page.
 
 2. Through "Site management" in Mission Control a schedule can be configured dividing the program up into the following stages:
-    1. Before registration opens
-    2. Registration open
-    3. Program starts
-    4. Program ends (but accounts are still accessible)
-    5. Access closed
+   1. Before registration opens
+   2. Registration open
+   3. Program starts
+   4. Program ends (but accounts are still accessible)
+   5. Access closed
 
 ### Templates
 
@@ -35,7 +35,9 @@ Starting with version 4.1.1, custom styles and scripts can be configured which w
 Additional CSS styling can be added in the `shared` directory: create a subdirectory called `styles` and place a `site.css` file in it. This CSS file is loaded last so any changes provided in it should take precedence over built-in CSS styles. As an example: if you'd like to make the background of the navigation bar light blue, place the following in `shared/styles/site.css`:
 
 ```css
-.gra-navbar { background-color: Azure; }
+.gra-navbar {
+  background-color: Azure;
+}
 ```
 
 ### Scripts

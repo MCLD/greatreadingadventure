@@ -16,18 +16,18 @@ One connection string is required (either `SqlServer` or `SQLite`).
 
 - `SqlServer` - A SQL Server connection string
 - `SQLite` - SQLite connection information (typically the path to the SQLite database file)
-- `SqlServerSessions` - *optional* - A SQL Server connection string for [storing session data in a SQL Server database](https://docs.microsoft.com/en-us/aspnet/core/performance/caching/distributed?view=aspnetcore-2.2#using-a-sql-server-distributed-cache) (necessary for multiple Web servers answering requests for the same site)
-- `SqlServerSerilog` - *optional* - A SQL Server connection string used for [storing SQL Server application logs](https://github.com/serilog/serilog-sinks-mssqlserver); the user should have database owner access (at least initially) so that it can create the proper table for logging
+- `SqlServerSessions` - _optional_ - A SQL Server connection string for [storing session data in a SQL Server database](https://docs.microsoft.com/en-us/aspnet/core/performance/caching/distributed?view=aspnetcore-2.2#using-a-sql-server-distributed-cache) (necessary for multiple Web servers answering requests for the same site)
+- `SqlServerSerilog` - _optional_ - A SQL Server connection string used for [storing SQL Server application logs](https://github.com/serilog/serilog-sinks-mssqlserver); the user should have database owner access (at least initially) so that it can create the proper table for logging
 
 ## General settings
 
 - `GraConnectionStringName` - which connection string to use (either `SqlServer` or `SQLite`)
 - `GraInitialAuthCode` - the Authorization Code entered to grant users full access to the site - **it's important that you change this!**
-- `GraInitialProgramSetup` - *optional* - defaults to "multiple" which creates four age-based programs and sets up a point translation of one minute read equals one point, can also be set to "single" which creates one program and sets up a point translation of one book read equals one point
-- `GraReverseProxyAddress` - *optional* - if provided, internally the software will disregard proxy IP addresses
-- `GraRollingLogPath` - *optional* - a path to save a daily-rotating log file inside the "shared" directory, typical would be "logs" - if `GraInstanceName` is specified in `appsettings.json` it will be included in the log file name
-- `GraRollingLogHttp` - *optional* - prefix for a filename of a rolling log of 404 errors
-- `GraSqlServer2008` - *optional* - if you are using SQL Server 2008, put text into this setting (any text will do)
+- `GraInitialProgramSetup` - _optional_ - defaults to "multiple" which creates four age-based programs and sets up a point translation of one minute read equals one point, can also be set to "single" which creates one program and sets up a point translation of one book read equals one point
+- `GraReverseProxyAddress` - _optional_ - if provided, internally the software will disregard proxy IP addresses
+- `GraRollingLogPath` - _optional_ - a path to save a daily-rotating log file inside the "shared" directory, typical would be "logs" - if `GraInstanceName` is specified in `appsettings.json` it will be included in the log file name
+- `GraRollingLogHttp` - _optional_ - prefix for a filename of a rolling log of 404 errors
+- `GraSqlServer2008` - _optional_ - if you are using SQL Server 2008, put text into this setting (any text will do)
 
 ## Default settings
 
@@ -52,19 +52,19 @@ These settings are used when the program runs for the first time to insert some 
 When operating in a load-balanced environment these settings are used to configure instances to keep settings and data shared or unique as necessary.
 
 - `GraApplicationDescriminator` - defaults to "gra", application discriminator to use for caching
-- `GraDistributedCache` - *optional* - select a system to use for distributed cache: "Redis" or "SqlServer", anything else uses an in-memory distributed cache
+- `GraDistributedCache` - _optional_ - select a system to use for distributed cache: "Redis" or "SqlServer", anything else uses an in-memory distributed cache
 - `GraInstanceName` - the name of this deployed instance
-- `GraRedisConfiguration` - *optional* - address of a Redis server for distributed cache, only used if `GraDistributedCache` is set to "Redis"
-- `GraSiteIdentifier` - *optional* - defaults to "gra", a name to indicate this deployment of the application in logs, with the concept that this 'site' might have multiple instances
-- `GraSqlSessionSchemaName` - *optional* - the schema to use for the SQL Server distributed cache table, defaults to "dbo"
-- `GraSqlSessionTable` - *optional* - the table to use for the SQL Server distributed cache, defaults to "Sessions"
+- `GraRedisConfiguration` - _optional_ - address of a Redis server for distributed cache, only used if `GraDistributedCache` is set to "Redis"
+- `GraSiteIdentifier` - _optional_ - defaults to "gra", a name to indicate this deployment of the application in logs, with the concept that this 'site' might have multiple instances
+- `GraSqlSessionSchemaName` - _optional_ - the schema to use for the SQL Server distributed cache table, defaults to "dbo"
+- `GraSqlSessionTable` - _optional_ - the table to use for the SQL Server distributed cache, defaults to "Sessions"
 
 ## Developer settings
 
 These settings are primarily of interest to developers working on The Great Reading Adventure source code.
 
-- `GraDatabaseWarningLogging` (v4.1.1) - *optional* - when set to any value write relational database warnings to the log
-- `GraEmailOverride` - *optional* - override any emails and send them to this address
+- `GraDatabaseWarningLogging` (v4.1.1) - _optional_ - when set to any value write relational database warnings to the log
+- `GraEmailOverride` - _optional_ - override any emails and send them to this address
 
 ## Logging with Serilog
 

@@ -70,6 +70,6 @@ Ensure you click **Save** after making changes on this page!
 The software is configured by default to push two additional dimensions back into Google Analytics. While you can perform reports in the software to view this information, Google Analytics will allow you to discern more information about the source of those users (i.e. what links/sites lead them to your program).
 
 1. The first dimension is named "Program Name" and will push the program name into analytics.
-2. The second dimension is named "First Time Participant" and will push that information into analytics if the **Ask if first time** setting is turned on (see the *Settings* section above).
+2. The second dimension is named "First Time Participant" and will push that information into analytics if the **Ask if first time** setting is turned on (see the _Settings_ section above).
 
 To be able to report on these dimensions please examine the Google support document [Create and edit custom dimensions and metrics](https://support.google.com/analytics/answer/2709829) to add these two items to teh "Custom Dimensions" area. They should be added in the order presented above with a scope of "User" selected.

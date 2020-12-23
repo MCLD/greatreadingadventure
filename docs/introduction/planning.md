@@ -1,15 +1,19 @@
 # Planning for initial configuration
 
 ## Hosting
+
 As a Web application, the first decision that will need to be made is about hosting. Hosting requirements can be found in the [system requirements](../../installation/system-requirements) section of this manual.
 
 ### Self-hosting
+
 If your organization has the proper Linux, macOS, or Windows server environment that is accessible from the Internet, hosting on your own systems can be an option. You can host the application on an existing Web server or host the application in a container using Docker.
 
 ### Paid hosting
+
 Various providers are available which can host the GRA for a monthly fee.
 
 ## Application configuration
+
 ### Programs
 
 Setting up multiple programs gives the flexibility to deliver targeted content to varying audiences keeping key elements unified for reporting and statistics. You have the freedom to customize the content of each program so that participants can access audience-appropriate activities, badges, and events. Users can self-select which program to enroll in or the system can automatically place them into an age-appropriate program, based on age or school grade.
