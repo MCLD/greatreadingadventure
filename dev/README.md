@@ -6,7 +6,7 @@ GRA code should successfully compile using the free [Visual Studio Community](ht
 
 Framework history:
 
-- Current work (version 4.2 and on) use [.NET 5.0](https://docs.microsoft.com/en-us/dotnet/core/dotnet-five)
+- Current work (version 4.2.0 and on) use [.NET 5.0](https://docs.microsoft.com/en-us/dotnet/core/dotnet-five)
 - Version 4.1.1 used ASP.NET Core v2.2
 - Version 4.1.0 used ASP.NET Core v2.1
 - Version 4.0.0 used ASP.NET Core v1.1

@@ -4,11 +4,11 @@
      alt="Great Reading Adventure logo"
      align="right">
 
-The Great Reading Adventure is a robust, open source software designed to manage library reading programs online. The GRA is free to use, modify, and share. Check out [www.greatreadingadventure.com](http://www.greatreadingadventure.com/) for an overview of its functionality and capabilities and [manual.greatreadingadventure.com]() for information about installing and using it.
+The Great Reading Adventure is a robust, open source software designed to manage library reading programs online. The GRA is free to use, modify, and share. Check out [www.greatreadingadventure.com](https://www.greatreadingadventure.com/) for an overview of its functionality and capabilities and [the manual](http://manual.greatreadingadventure.com/) for information about installing and using it.
 
-You can view the latest [release notes](https://github.com/MCLD/greatreadingadventure/releases/latest) or **[download the latest version (4.2)](https://github.com/MCLD/greatreadingadventure/releases/download/v4.2/GreatReadingAdventure-4.2.zip)**.
+You can view the latest [release notes](https://github.com/MCLD/greatreadingadventure/releases/latest) or **[download the latest version (4.2.0)](https://github.com/MCLD/greatreadingadventure/releases/download/v4.2.0/GreatReadingAdventure-4.2.0.zip)**.
 
-Version 4 and on of The Great Reading Adventure was created using the [Microsoft .NET Core framework](https://en.wikipedia.org/wiki/.NET_Framework#.NET_Core). It's cross-platform (working in Linux, macOS, and Windows). For information on installing this version please review the [System requirements](http://manual.greatreadingadventure.com/en/latest/installation/system-requirements/) in the manual.
+Version 4 of The Great Reading Adventure was created using the [Microsoft .NET Core framework](https://en.wikipedia.org/wiki/.NET_Framework#.NET_Core). It's cross-platform (working in Linux, macOS, and Windows). For information on installing this version please review the [System requirements](http://manual.greatreadingadventure.com/en/latest/installation/system-requirements/) in the manual.
 
 ## Stuck? Need help?
 

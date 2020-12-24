@@ -8,7 +8,7 @@
 
 ## Initial developer setup
 
-The project ships with the Microsoft SQL Server data provider configured. If you are running in a Windows environment this will automatically use a [LocalDB](https://msdn.microsoft.com/en-us/library/hh510202.aspx) instance under `(localdb)\mssqllocaldb`. **In a Linux/macOS environment you should switch to the SQLite provider (in `appsettings.json` change the `GraConnectionStringName` to "SQLite"). You may need to eliminate all migrations and create one master migration, the SQLite provider does not support all of the operations necessary to support our incremental migrations.**
+The project ships with the Microsoft SQL Server data provider configured. If you are running in a Windows environment this will automatically use a [LocalDB](https://msdn.microsoft.com/en-us/library/hh510202.aspx) instance under `(localdb)\mssqllocaldb`. **In a Linux/macOS environment you should switch to the SQLite provider (in `appsettings.json` change the `GraConnectionStringName` to "SQLite"). You will need to create one master migration, the SQLite provider does not support all of the operations necessary to support incremental migrations.**
 
 ### Database migration
 
@@ -21,18 +21,15 @@ Here are steps for using `dotnet ef`:
 1. Navigate to the appropriate project directory for your database provider (e.g. `src/GRA.Data.SqlServer` or `src/GRA.Data.SQLite`).
 2. See a list of existing migrations:
 
-
-    dotnet ef -s ../GRA.Web migrations list
+   `dotnet ef -s ../GRA.Web migrations list`
 
 3. Add a new migration for development:
 
-
-    dotnet ef -s ../GRA.Web migrations add develop
+   `dotnet ef -s ../GRA.Web migrations add develop`
 
 4. Create or update the database to the migration (necessary for SQLite, possibly not for SQL Server but won't hurt):
 
-
-    dotnet ef -s ../GRA.Web database update
+   `dotnet ef -s ../GRA.Web database update`
 
 Here are steps for using the Package Manager Console:
 
@@ -40,11 +37,11 @@ Here are steps for using the Package Manager Console:
 2. Check if a database migration exists by looking for a folder named "Migrations" in the appropriate GRA.Data project.
 3. Add a new migration for development:
 
-   Add-Migration develop
+   `Add-Migration develop`
 
 4. Create or update the database to the migration (necessary for SQLite, possibly not for SQL Server but won't hurt):
 
-   Update-Database
+   `Update-Database`
 
 Please remove any non-release migrations when contributing code back to the project.
 
