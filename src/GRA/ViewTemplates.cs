@@ -46,7 +46,6 @@ namespace GRA
                 }
             }
 
-
             var viewPath = Path.Combine(contentRoot,
                 "Views",
                 "Home");
@@ -68,31 +67,20 @@ namespace GRA
                 }
             }
 
-            var defaultFaviconPath
-                = Path.Combine(contentRoot,
-                    "assets",
-                    "defaultfavicon");
+            var customWwwroot = Path.Combine(contentPath, "wwwroot");
 
-            if (!Directory.Exists(defaultFaviconPath))
+            if (Directory.Exists(customWwwroot))
             {
-                issues.Add($"Can't copy social images: {defaultFaviconPath} doesn't exist.");
-            }
-            else
-            {
-                foreach (var filePath in Directory.EnumerateFiles(defaultFaviconPath, "*.*"))
+                foreach (var filePath in Directory.EnumerateFiles(customWwwroot, "*.*"))
                 {
-                    var contentPathFile = Path.Combine(contentPath,
-                        Path.GetFileName(filePath));
-                    if (!File.Exists(contentPathFile))
+                    var wwwrootPath = Path.Combine(contentRoot, "wwwroot", filePath);
+                    try
                     {
-                        try
-                        {
-                            File.Copy(filePath, contentPathFile);
-                        }
-                        catch (Exception ex)
-                        {
-                            issues.Add($"Can't copy social file {filePath} to content path: {ex.Message}");
-                        }
+                        File.Copy(filePath, wwwrootPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        issues.Add($"Can't copy social file {filePath} to content path: {ex.Message}");
                     }
                 }
             }

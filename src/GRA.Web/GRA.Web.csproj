@@ -96,41 +96,15 @@
 
   <ItemGroup>
     <None Include="bundleconfig.json" />
+    <None Include="wwwroot\192.png" />
+    <None Include="wwwroot\512.png" />
+    <None Include="wwwroot\apple-touch-icon.png" />
+    <None Include="wwwroot\favicon.ico" />
+    <None Include="wwwroot\icon.svg" />
     <None Include="wwwroot\images\great-reading-adventure-logo%401x.png" />
     <None Include="wwwroot\images\forest%402x.jpg" />
     <None Include="wwwroot\images\forest.jpg" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ContentWithTargetPath Remove="assets\defaultfavicon\android-chrome-192x192.png" />
-    <ContentWithTargetPath Remove="assets\defaultfavicon\android-chrome-384x384.png" />
-    <ContentWithTargetPath Remove="assets\defaultfavicon\apple-touch-icon.png" />
-    <ContentWithTargetPath Remove="assets\defaultfavicon\browserconfig.xml" />
-    <ContentWithTargetPath Remove="assets\defaultfavicon\favicon-16x16.png" />
-    <ContentWithTargetPath Remove="assets\defaultfavicon\favicon-32x32.png" />
-    <ContentWithTargetPath Remove="assets\defaultfavicon\favicon-96x96.png" />
-    <ContentWithTargetPath Remove="assets\defaultfavicon\favicon.ico" />
-    <ContentWithTargetPath Remove="assets\defaultfavicon\mstile-150x150.png" />
-    <ContentWithTargetPath Remove="assets\defaultfavicon\safari-pinned-tab.svg" />
-    <ContentWithTargetPath Remove="assets\defaultfavicon\site.webmanifest" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="assets\defaultfavicon\android-chrome-192x192.png" />
-    <None Remove="assets\defaultfavicon\android-chrome-384x384.png" />
-    <None Remove="assets\defaultfavicon\apple-touch-icon.png" />
-    <None Remove="assets\defaultfavicon\browserconfig.xml" />
-    <None Remove="assets\defaultfavicon\favicon-16x16.png" />
-    <None Remove="assets\defaultfavicon\favicon-32x32.png" />
-    <None Remove="assets\defaultfavicon\favicon-96x96.png" />
-    <None Remove="assets\defaultfavicon\favicon.ico" />
-    <None Remove="assets\defaultfavicon\mstile-150x150.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="assets\defaultfavicon\*.*">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <None Include="wwwroot\manifest.webmanifest" />
   </ItemGroup>
 
   <ItemGroup>
