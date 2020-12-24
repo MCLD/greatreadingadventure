@@ -1,14 +1,18 @@
 # The Great Reading Adventure
 
-The Great Reading Adventure is a robust, open source software designed to manage library reading programs. The GRA is free to use, modify, and share. Check out [www.greatreadingadventure.com](http://www.greatreadingadventure.com/) for an overview of its functionality and capabilities.
+<img src="https://raw.githubusercontent.com/mcld/greatreadingadventure/develop/src/GRA.Web/wwwroot/images/great-reading-adventure-logo%401x.png"
+     alt="Great Reading Adventure logo"
+     align="right">
+
+The Great Reading Adventure is a robust, open source software designed to manage library reading programs online. The GRA is free to use, modify, and share. Check out [www.greatreadingadventure.com](http://www.greatreadingadventure.com/) for an overview of its functionality and capabilities and [manual.greatreadingadventure.com]() for information about installing and using it.
 
 You can view the latest [release notes](https://github.com/MCLD/greatreadingadventure/releases/latest) or **[download the latest version (4.2)](https://github.com/MCLD/greatreadingadventure/releases/download/v4.2/GreatReadingAdventure-4.2.zip)**.
 
-**Version 4 of The Great Reading Adventure has been rewritten using the [Microsoft .NET Core framework](https://en.wikipedia.org/wiki/.NET_Framework#.NET_Core).** This version of the GRA is cross-platform (working in Linux, macOS, and Windows). For information on installing this version please review the [System requirements](http://manual.greatreadingadventure.com/en/latest/installation/system-requirements/) in the manual. If you do not wish to use the .NET Core runtime, you can use a prior release: [The Great Reading Adventure v3.1.0](https://github.com/MCLD/greatreadingadventure/releases/tag/v3.1.0).
+Version 4 and on of The Great Reading Adventure was created using the [Microsoft .NET Core framework](https://en.wikipedia.org/wiki/.NET_Framework#.NET_Core). It's cross-platform (working in Linux, macOS, and Windows). For information on installing this version please review the [System requirements](http://manual.greatreadingadventure.com/en/latest/installation/system-requirements/) in the manual.
 
 ## Stuck? Need help?
 
-YOu can visit the [Great Reading Adventure discussions](https://github.com/MCLD/greatreadingadventure/discussions) for the following:
+You can visit the [Great Reading Adventure discussions](https://github.com/MCLD/greatreadingadventure/discussions) for the following:
 
 - [Announcements/General](https://github.com/MCLD/greatreadingadventure/discussions/categories/announcements-general) to see what's going on with the project
 - [Development](https://github.com/MCLD/greatreadingadventure/discussions/categories/development) discussion if you want to contribute code or documentation
