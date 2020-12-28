@@ -25,6 +25,10 @@ Digital badges are an easy way to enhance your reading program. They can be used
 - The participant receives the badge.
   The integrated badge wizard makes the process simple: create an event, upload or design a badge, and assign a secret code. It’s a great new way to tie the online summer reading program to the events in your bricks-and-mortar locations.
 
+## Carousels
+
+Create carousels of materials or electronic resources which are shown when participants log in. Carousels can be scheduled so the items shown can change as frequntly as you like.
+
 ## Challenges
 
 Participants can perform a number of tasks in order to complete challenges. Tasks are very flexible and participants can complete them away from the computer, by completing activities online, or by reading books. The system awards points and a badge when they complete a number of tasks in a challenge.
@@ -33,17 +37,33 @@ Participants can perform a number of tasks in order to complete challenges. Task
 
 Prize drawings can occur from a pool of all participants or from a specific set of participants based on drawing criteria (such as everyone who earned a certain amount of points over a certain date range or participants registered at a specific location). The system saves criteria for easy reuse.
 
+## E-mail
+
+Send periodic emails to participants who have opted in or interested parties who have provided an email address during your "pre-open" or "post-close" periods. You can send email directly from Mission Control and participants can unsubscribe from their profile or with a single click in any email. Email addresses can be imported and exported to streamline transitioning from last year's program to this year's program.
+
 ## Events
 
 The built-in event system allows entering all events that occur during the program that helps publicize your events and possibly supplement an existing event management system. Events easily link to challenges or secret codes to relate them back to earning points and badges.
+
+## Families and Groups
+
+Groups of participants can represent families, communities, or local organizations who are working with the program. Codes and activities can be entered in bulk for groups. Groups can be imported from a spreadsheet to simplify initial setup.
 
 ## Mail
 
 The GRA’s built-in mail facilities allows direct engagement with participants without requiring them to provide an email address or leave the system. Any number of back-office staff can handle incoming messages from the threaded administration interface. The system also sends broadcast messages to all participants if desired.
 
+## Pages
+
+Create as many informational pages as necessary to add to the site. Pages are edited in Mission Control using CommonMark mark-up or HTML.
+
 ## Participant management
 
 Participant management has different configurable permissions so that volunteers access a subset of features and access is restricted from personally identifiable information (if desired).
+
+## Performer management
+
+The built-in performer scheduling system allows performers to register themselves along with their availbility (indicating calendar dates and times throughout the program when they are or are not available). Staff can then go and select specific performers and schedule them during their availability.
 
 ## Triggers
 
