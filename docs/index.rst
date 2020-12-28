@@ -13,9 +13,9 @@ The code is open source, and is `available on GitHub`_.
 
 .. note::
 	This documentation is currently very incomplete. If you need help, please don't hesitate to
-	contact developers and users on `The Great Reading Adventure Forum`_.
+	contact developers and users in `The Great Reading Adventure discussions`_.
 
-.. _The Great Reading Adventure Forum: http://forum.greatreadingadventure.com/
+.. _The Great Reading Adventure discussions: https://github.com/MCLD/greatreadingadventure/discussions
 
 This manual is split into several main sections:
 
