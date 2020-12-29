@@ -78,22 +78,24 @@ namespace GRA
 
             var customwwwroot = Path.Combine(contentPath, "wwwroot");
             var customFiles = new List<string>();
-
-            foreach (var customFile in Directory.EnumerateFiles(customwwwroot, "*.*"))
+            if (Directory.Exists(customwwwroot))
             {
-                var fileName = Path.GetFileName(customFile);
-                var wwwrootPath = Path.Combine(contentRoot, "wwwroot", fileName);
-                try
+                foreach (var customFile in Directory.EnumerateFiles(customwwwroot, "*.*"))
                 {
-                    File.Copy(customFile, wwwrootPath, true);
-                    customFiles.Add(fileName);
-                }
-                catch (IOException ioex)
-                {
-                    logger.Error("Could not copy {SourceFile} to {DestinationPath}: {ErrorMessage}",
-                        customFile,
-                        wwwrootPath,
-                        ioex.Message);
+                    var fileName = Path.GetFileName(customFile);
+                    var wwwrootPath = Path.Combine(contentRoot, "wwwroot", fileName);
+                    try
+                    {
+                        File.Copy(customFile, wwwrootPath, true);
+                        customFiles.Add(fileName);
+                    }
+                    catch (IOException ioex)
+                    {
+                        logger.Error("Could not copy {SourceFile} to {DestinationPath}: {ErrorMessage}",
+                            customFile,
+                            wwwrootPath,
+                            ioex.Message);
+                    }
                 }
             }
             if (customFiles.Count > 0)
