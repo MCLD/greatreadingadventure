@@ -68,7 +68,7 @@ namespace GRA.Web
             }
             try
             {
-                Task.Run(() => new Web(scope).InitalizeAsync()).Wait();
+                Task.Run(() => new WebStartup(scope).InitalizeAsync()).Wait();
             }
             catch (StackExchange.Redis.RedisConnectionException ex)
             {

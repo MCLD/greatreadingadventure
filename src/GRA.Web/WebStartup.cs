@@ -8,15 +8,15 @@ using Microsoft.Extensions.Logging;
 
 namespace GRA.Web
 {
-    public class Web
+    public class WebStartup
     {
-        private readonly ILogger<Web> _log;
+        private readonly ILogger<WebStartup> _log;
         private readonly IServiceScope _scope;
 
-        public Web(IServiceScope scope)
+        public WebStartup(IServiceScope scope)
         {
             _scope = scope ?? throw new ArgumentNullException(nameof(scope));
-            _log = scope.ServiceProvider.GetRequiredService<ILogger<Web>>();
+            _log = scope.ServiceProvider.GetRequiredService<ILogger<WebStartup>>();
         }
 
         public async Task InitalizeAsync()
