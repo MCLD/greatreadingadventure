@@ -76,41 +76,36 @@ namespace GRA
                 }
             }
 
-            var customWwwroot = Path.Combine(contentPath, "wwwroot");
+            var customwwwroot = Path.Combine(contentPath, "wwwroot");
+            var customFiles = new List<string>();
 
-            if (Directory.Exists(customWwwroot))
+            foreach (var customFile in Directory.EnumerateFiles(customwwwroot, "*.*"))
             {
-                var copied = new List<string>();
-                foreach (var filePath in Directory.EnumerateFiles(customWwwroot, "*.*"))
+                var fileName = Path.GetFileName(customFile);
+                var wwwrootPath = Path.Combine(contentRoot, "wwwroot", fileName);
+                try
                 {
-                    var wwwrootPath = Path.Combine(contentRoot, "wwwroot", filePath);
-                    try
-                    {
-                        File.Copy(filePath, wwwrootPath);
-                        copied.Add(filePath);
-                    }
-                    catch (IOException ioex)
-                    {
-                        logger.Error("Could not copy {SourceFile} to {DestinationPath}: {ErrorMessage}",
-                            filePath,
-                            wwwrootPath,
-                            ioex.Message);
-                    }
+                    File.Copy(customFile, wwwrootPath, true);
+                    customFiles.Add(fileName);
                 }
-                if (copied.Count > 0)
+                catch (IOException ioex)
                 {
-                    logger.Information("Copied {Count} files from {SourcePath} to {DestinationPath}: {Files}",
-                        copied.Count,
-                        customWwwroot,
-                        Path.Combine(contentRoot, "wwwroot"),
-                        string.Join(", ", copied));
+                    logger.Error("Could not copy {SourceFile} to {DestinationPath}: {ErrorMessage}",
+                        customFile,
+                        wwwrootPath,
+                        ioex.Message);
                 }
             }
+            if (customFiles.Count > 0)
+            {
+                logger.Information("Copied {Count} custom files from {SourcePath} to {DestinationPath}: {Files}",
+                    customFiles.Count,
+                    customwwwroot,
+                    Path.Combine(contentRoot, "wwwroot"),
+                    string.Join(", ", customFiles));
+            }
 
-            var defaultImagesPath
-                = Path.Combine(contentRoot,
-                    "assets",
-                    "defaultimages");
+            var defaultImagesPath = Path.Combine(contentRoot, "assets", "defaultimages");
 
             if (!Directory.Exists(defaultImagesPath))
             {

@@ -46,4 +46,16 @@ Custom JavaScript that you'd like injected into the site can be added in the fil
 
 ## Home screen icons and favicon.ico
 
-When accessing your site, participants will see the Great Reading Adventure logo in their URL bar (often referred to as a 'favicon'). They'll also see the GRA logo if they add your site to their home screen. If you'd like to customize this, you can replace the icons and images in `shared/content/` with ones of your choosing. Performing an Internet search for terms like "favicon generator" will lead you to tools which will help you resize your image or logo to the appropriate size(s) to replace the images in `shared/content/`.
+When accessing your site, participants will see the Great Reading Adventure logo in their URL bar (often referred to as a 'favicon'). They'll also see the GRA logo if they add your site to their home screen. If you'd like to customize this, you can place files in `shared/content/wwwroot/` to replace the default images. Files which are [present in the GRA](https://github.com/MCLD/greatreadingadventure/tree/develop/src/GRA.Web/wwwroot) that you can replace:
+
+- 192.png
+- 512.png
+- apple-touch-icon.png
+- favicon.ico
+- icon.svg
+- manifest.webmanifest
+
+Any files in `shared/content/wwwroot/` will be copied into the Web root directory upon application startup.
+
+For more information on creating these files, see [How to Favicon in 2021:
+Six files that fit most needs](https://evilmartians.com/chronicles/how-to-favicon-in-2021-six-files-that-fit-most-needs).
