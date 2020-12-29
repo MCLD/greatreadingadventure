@@ -18,9 +18,12 @@ namespace GRA
         public static readonly string RegistrationOpen = "IndexRegistrationOpen";
         public static readonly string ExitRegistrationOpen = "ExitRegistrationOpen";
 
-        public static IEnumerable<string> CopyToShared(string contentRoot)
+        public static void CopyToShared(string contentRoot, Serilog.ILogger logger)
         {
-            var issues = new List<string>();
+            if (logger == null)
+            {
+                throw new ArgumentNullException(nameof(logger));
+            }
 
             var viewsPath = Path.Combine(contentRoot, "Views");
             var sharedViewsPath = Path.Combine(contentRoot, "shared", "views");
@@ -40,9 +43,12 @@ namespace GRA
                     File.Copy(supportFile, Path.Combine(sharedViewsPath, filename), true);
                     File.Copy(supportFile, Path.Combine(templatePath, filename), true);
                 }
-                catch (Exception ex)
+                catch (IOException ioex)
                 {
-                    issues.Add($"Could not copy {supportFile} to {sharedViewsPath}: {ex.Message}");
+                    logger.Error("Could not copy {SourceFile} to {DestinationPath}: {ErrorMessage}",
+                        supportFile,
+                        sharedViewsPath,
+                        ioex.Message);
                 }
             }
 
@@ -61,9 +67,12 @@ namespace GRA
                 {
                     File.Copy(file, destinationPath, true);
                 }
-                catch (Exception ex)
+                catch (IOException ioex)
                 {
-                    issues.Add($"Problem copying {file} to {destinationPath}: {ex.Message}");
+                    logger.Error("Could not copy {SourceFile} to {DestinationPath}: {ErrorMessage}",
+                        file,
+                        destinationPath,
+                        ioex.Message);
                 }
             }
 
@@ -71,17 +80,30 @@ namespace GRA
 
             if (Directory.Exists(customWwwroot))
             {
+                var copied = new List<string>();
                 foreach (var filePath in Directory.EnumerateFiles(customWwwroot, "*.*"))
                 {
                     var wwwrootPath = Path.Combine(contentRoot, "wwwroot", filePath);
                     try
                     {
                         File.Copy(filePath, wwwrootPath);
+                        copied.Add(filePath);
                     }
-                    catch (Exception ex)
+                    catch (IOException ioex)
                     {
-                        issues.Add($"Can't copy social file {filePath} to content path: {ex.Message}");
+                        logger.Error("Could not copy {SourceFile} to {DestinationPath}: {ErrorMessage}",
+                            filePath,
+                            wwwrootPath,
+                            ioex.Message);
                     }
+                }
+                if (copied.Count > 0)
+                {
+                    logger.Information("Copied {Count} files from {SourcePath} to {DestinationPath}: {Files}",
+                        copied.Count,
+                        customWwwroot,
+                        Path.Combine(contentRoot, "wwwroot"),
+                        string.Join(", ", copied));
                 }
             }
 
@@ -92,7 +114,8 @@ namespace GRA
 
             if (!Directory.Exists(defaultImagesPath))
             {
-                issues.Add($"Can't copy images: {defaultImagesPath} doesn't exist.");
+                logger.Error("Could not copy images: {SourcePath} does not exist",
+                    defaultImagesPath);
             }
             else
             {
@@ -106,15 +129,16 @@ namespace GRA
                         {
                             File.Copy(filePath, contentPathFile);
                         }
-                        catch (Exception ex)
+                        catch (IOException ioex)
                         {
-                            issues.Add($"Can't copy image file {filePath} to content path: {ex.Message}");
+                            logger.Error("Could not copy {SourceFile} to {DestinationPath}: {ErrorMessage}",
+                                filePath,
+                                contentPath,
+                                ioex.Message);
                         }
                     }
                 }
             }
-
-            return issues;
         }
     }
 }

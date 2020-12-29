@@ -19,20 +19,42 @@ namespace GRA.Web
             _log = scope.ServiceProvider.GetRequiredService<ILogger<WebStartup>>();
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
+            "CA1031:Do not catch general exception types",
+            Justification = "Many startup exception possibilities")]
         public async Task InitalizeAsync()
         {
-            int stage = 10;
             try
             {
                 var cache = _scope.ServiceProvider.GetRequiredService<IDistributedCache>();
                 var options = new DistributedCacheEntryOptions()
                     .SetAbsoluteExpiration(TimeSpan.FromSeconds(10));
-                await cache.SetStringAsync("Startup", DateTime.Now.ToString(), options);
+                await cache.SetStringAsync("Startup",
+                    DateTime.Now.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                    options);
+            }
+            catch (Exception ex)
+            {
+                _log.LogCritical("Startup error utilizing distributed cache: {ErrorMessage}",
+                    ex.Message);
+                throw;
+            }
 
-                stage = 15;
-                var dbContext = _scope.ServiceProvider.GetRequiredService<Data.Context>();
+            Data.Context dbContext;
 
-                stage = 20;
+            try
+            {
+                dbContext = _scope.ServiceProvider.GetRequiredService<Data.Context>();
+            }
+            catch (Exception ex)
+            {
+                _log.LogCritical("Startup error accessing data context: {ErrorMessage}",
+                    ex.Message);
+                throw;
+            }
+
+            try
+            {
                 var pending = dbContext.GetPendingMigrations();
                 if (pending?.Count() > 0)
                 {
@@ -40,89 +62,82 @@ namespace GRA.Web
                         pending.Count(),
                         pending.Last());
                 }
-
-                stage = 30;
-                dbContext.Migrate();
-
-                stage = 40;
-                var siteLookupService = _scope.ServiceProvider
-                    .GetRequiredService<SiteLookupService>();
-                await siteLookupService.ReloadSiteCacheAsync();
-
-                stage = 50;
-                await siteLookupService.GetDefaultSiteIdAsync();
-
-                stage = 55;
-                var languageService = _scope.ServiceProvider.GetRequiredService<LanguageService>();
-                await languageService.SyncLanguagesAsync();
-
-                stage = 60;
-                await _scope
-                    .ServiceProvider
-                    .GetRequiredService<RoleService>().SyncPermissionsAsync();
-
-                stage = 65;
-                await _scope
-                    .ServiceProvider.GetRequiredService<NewsService>()
-                    .EnsureDefaultCategoryAsync();
-
-                stage = 70;
-                await _scope
-                    .ServiceProvider.GetRequiredService<UserService>()
-                    .EnsureUserUnsubscribeTokensAsync();
             }
             catch (Exception ex)
             {
-                bool critical = false;
-                string errorText;
-                switch (stage)
-                {
-                    case 10:
-                        critical = true;
-                        errorText = "Error utilizing distributed cache: {Message}";
-                        break;
-                    case 15:
-                        critical = true;
-                        errorText = "Error accessing data context: {Message}";
-                        break;
-                    case 20:
-                        errorText = "Error looking up migrations to perform: {Message}";
-                        break;
-                    case 30:
-                        errorText = "Error performing database migrations: {Message}";
-                        break;
-                    case 40:
-                        errorText = "Error clearing sites from cache: {Message}";
-                        break;
-                    case 50:
-                        errorText = "Error loading sites into cache: {Message}";
-                        break;
-                    case 55:
-                        errorText = "Error syncing available languages with database: {Message}";
-                        break;
-                    case 60:
-                        errorText = "Error synchronizing permissions: {Message}";
-                        break;
-                    case 65:
-                        errorText = "Error ensuring default news category: {Message}";
-                        break;
-                    case 70:
-                        errorText = "Error insuring all users have unsubscribe tokens: {Message}";
-                        break;
-                    default:
-                        errorText = "Unknown error during application startup: {Message}";
-                        break;
-                }
+                _log.LogCritical("Startup error getting list of pending database migrations: {ErrorMessage}",
+                    ex.Message);
+                throw;
+            }
 
-                if (critical)
-                {
-                    _log.LogCritical(ex, errorText, ex.Message);
-                    throw;
-                }
-                else
-                {
-                    _log.LogCritical(ex, errorText, ex.Message);
-                }
+            try
+            {
+                dbContext.Migrate();
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("Startup error applying database migrations: {ErrorMessage}",
+                    ex.Message);
+            }
+
+            try
+            {
+                var siteLookupService = _scope.ServiceProvider
+                    .GetRequiredService<SiteLookupService>();
+                await siteLookupService.ReloadSiteCacheAsync();
+                await siteLookupService.GetDefaultSiteIdAsync();
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("Startup error loading sites: {ErrorMessage}",
+                    ex.Message);
+            }
+
+            try
+            {
+                var languageService = _scope.ServiceProvider.GetRequiredService<LanguageService>();
+                await languageService.SyncLanguagesAsync();
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("Startup error loading languages: {ErrorMessage}",
+                    ex.Message);
+            }
+
+            try
+            {
+                await _scope
+                    .ServiceProvider
+                    .GetRequiredService<RoleService>().SyncPermissionsAsync();
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("Startup error synchronizing permissions: {ErrorMessage}",
+                    ex.Message);
+            }
+
+            try
+            {
+                await _scope
+               .ServiceProvider.GetRequiredService<NewsService>()
+               .EnsureDefaultCategoryAsync();
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("Startup error ensuring default news category: {ErrorMessage}",
+                    ex.Message);
+            }
+
+            try
+            {
+                await _scope
+                .ServiceProvider.GetRequiredService<UserService>()
+                .EnsureUserUnsubscribeTokensAsync();
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("Startup error ensuring users have unsubscribe tokens: {ErrorMessage}",
+                    ex.Message);
             }
         }
     }

@@ -52,6 +52,7 @@
             public const string GroupRegister = "Register new {0} Member";
             public const string LetYouKnowWhen = "Thanks! We'll let you know when you can join the program.";
             public const string MailForHelp = "If you can't find something, please <a href=\"{0}\">send us a mail</a> and let us know what you were looking for, we'll do our best to help.";
+            public const string NoBadges = "You have not earned any badges yet.";
             public const string NoBooksLogged = "No books logged.";
             public const string NoHistory = "No history to display.";
             public const string NoUnlockedBundles = "No unlocked bundles";
