@@ -1517,4 +1517,8 @@
     <value>You have not earned any badges yet.</value>
     <comment>Displayed in the participant profile if they view the badges tab but have not earned any badges yet.</comment>
   </data>
+  <data name="Need to change your {0}? Use the mail icon at the top of the screen to contact us." xml:space="preserve">
+    <value>Need to change your {0}? Use the mail icon at the top of the screen to contact us.</value>
+    <comment>Tooltip for editing protected fields imploring the user to use the mail facility to ask for the item to be changed.</comment>
+  </data>
 </root>

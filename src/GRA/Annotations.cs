@@ -132,6 +132,7 @@
             public const string MoreInformation = "More information";
             public const string MyFavorites = "My Favorites";
             public const string Name = "Name";
+            public const string NeedToChange = "Need to change your {0}? Use the mail icon at the top of the screen to contact us.";
             public const string NewMail = "New Mail!";
             public const string No = "No";
             public const string NoChallenges = "No Challenges";
