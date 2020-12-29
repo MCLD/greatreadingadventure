@@ -1385,8 +1385,8 @@
     <value>Illustration of a forest.</value>
     <comment>The alt tag on the front page banner image for those who cannot see the image; the image is an illustration of a forest.</comment>
   </data>
-  <data name="The unsubscribe token could not be found, please log in to change your preferences." xml:space="preserve">
-    <value>The unsubscribe token could not be found, please log in to change your preferences.</value>
+  <data name="An error occurred, please log in to change your email subscription preferences." xml:space="preserve">
+    <value>An error occurred, please log in to change your email subscription preferences.</value>
     <comment>Message shown to a participant if they've clicked an unsubscribe link but there has been an issue looking their record up.</comment>
   </data>
   <data name="You are already unsubscribed from emails." xml:space="preserve">
@@ -1512,5 +1512,9 @@
   <data name="Badge Details" xml:space="preserve">
     <value>Badge Details</value>
     <comment>Heading of a pop-up showing information about an earned badge</comment>
+  </data>
+  <data name="You have not earned any badges yet." xml:space="preserve">
+    <value>You have not earned any badges yet.</value>
+    <comment>Displayed in the participant profile if they view the badges tab but have not earned any badges yet.</comment>
   </data>
 </root>

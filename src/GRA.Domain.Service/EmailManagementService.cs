@@ -85,7 +85,7 @@ namespace GRA.Domain.Service
 
             if (tokenUser == null)
             {
-                throw new GraException(_sharedLocalizer["The unsubscribe token could not be found, please log in to change your preferences."]);
+                throw new GraException(_sharedLocalizer["An error occurred, please log in to change your email subscription preferences."]);
             }
             else if (!tokenUser.IsEmailSubscribed)
             {
