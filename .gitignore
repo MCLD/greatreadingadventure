@@ -266,6 +266,7 @@ src/GRA.CommandLine/Properties/PublishProfiles/
 # include developer build scripts
 !dev/bin
 
-# exclude vscode settings on the docs directory
+# exclude vscode settings
 docs/.vscode/settings.json
+.vscode/settings.json
 

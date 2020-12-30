@@ -12,11 +12,13 @@ The project ships with the Microsoft SQL Server data provider configured. If you
 
 ### Database migration
 
-Initial database setup and configuration can be done utilizing the [`dotnet ef`](https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/dotnet) command line tool or the [Package Manager Console](https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/powershell).
+Database migrations are included with feature commits so in the case of using SQL Server you shouldn't need to add a migration to start using the software. If you wish to use SQLite or make changes to the data model, you must add database migrations to the project. The GRA applies all pending database migrations upon startup.
+
+Migrations can be managed with the [`dotnet ef`](https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/dotnet) command line tool or the [Package Manager Console](https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/powershell).
 
 Connection strings for creating migrations are located in the `GRA.Development` namespace and mirror the definitions in the default `appsettings.json` file.
 
-Here are steps for using `dotnet ef`:
+#### Using dotnet ef
 
 1. Navigate to the appropriate project directory for your database provider (e.g. `src/GRA.Data.SqlServer` or `src/GRA.Data.SQLite`).
 2. See a list of existing migrations:
@@ -31,7 +33,7 @@ Here are steps for using `dotnet ef`:
 
    `dotnet ef -s ../GRA.Web database update`
 
-Here are steps for using the Package Manager Console:
+#### Using the Package Manager Console
 
 1. Choose the appropriate project from the "Default project" drop-down (e.g. `src/GRA.Data.SqlServer` or `src/GRA.Data.SQLite`).
 2. Check if a database migration exists by looking for a folder named "Migrations" in the appropriate GRA.Data project.
