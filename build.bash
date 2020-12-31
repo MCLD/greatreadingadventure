@@ -262,18 +262,21 @@ if [[ $BLD_PUSH = true ]]; then
 
   if [[ $BLD_RELEASE = "true" && -f "release-publish.bash" && publish -eq 1 ]]; then
     msg "${BLUE}===${NOFORMAT} Publishing release package for $BLD_RELEASE_VERSION"
+    mkdir -p publish
     if [[ -f "release.env" ]]; then
-      docker run -it \
+      docker run -i \
       --rm \
       --entrypoint "/app/release-publish.bash" \
       --env-file release.env \
       -e BLD_RELEASE_VERSION="$BLD_RELEASE_VERSION" \
+      -v "${PWD}/package:/package" \
       "$BLD_FULL_DOCKER_IMAGE"
     else
-      docker run -it \
+      docker run -i \
       --rm \
       --entrypoint "/app/release-publish.bash" \
       -e BLD_RELEASE_VERSION="$BLD_RELEASE_VERSION" \
+      -v "${PWD}/package:/package" \
       "$BLD_FULL_DOCKER_IMAGE"
     fi
     msg "${GREEN}===${NOFORMAT} Publish script complete"
