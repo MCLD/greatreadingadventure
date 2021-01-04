@@ -12,7 +12,7 @@ Version 4 of the GRA runs in the [Microsoft .NET 5.0](https://dotnet.microsoft.c
 - Linux
 - Windows
 
-To host in a Windows environment you'll need the [Runtime & Hosting Bundle](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/?view=aspnetcore-5.0), for other environments you will need to install the appropriate runtime.
+To host in a Windows environment you'll need the [ASP.NET Core Hosting Bundle](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/?view=aspnetcore-5.0), for other environments you will need to install the appropriate runtime.
 
 ASP.NET Core applications can be run behind a reverse proxy or directly connected to the Internet using the built-in ASP.NET Core [Kestrel Web server](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel?view=aspnetcore-5.0).
 

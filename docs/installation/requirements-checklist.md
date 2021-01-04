@@ -44,7 +44,7 @@ Setting up to run the Web site using Docker is much simpler as the environment i
 
 - Ensure you have a Windows server running **Windows Server 2012 or newer**
 - Note that for reporting to work you must be running **Windows Server 2012/IIS 8 or later with Web Sockets enabled**
-- Ensure your server has the **.NET Core Runtime 5.x Hosting Bundle** installed
+- Ensure your server has the **ASP.NET Core Hosting Bundle** installed
 - Confirm that you can **create a new Web site in IIS** on this server
 - Confirm that you will be permitted to configure it so that **Web site files can be writable by the Windows user who owns the IIS process (typically the `IIS_IUSRS` group or `DefaultAppPool` user)**.
 - Ensure you have access to a **Microsoft SQL Server version 2012 or newer**

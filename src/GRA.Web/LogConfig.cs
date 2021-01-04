@@ -54,7 +54,7 @@ namespace GRA.Web
                 {
                     string httpLogFile = !string.IsNullOrEmpty(instance)
                         ? Path.Combine(rollingLogLocation, $"{httpErrorFileTag}-{instance}-{{Date}}.txt")
-                        : Path.Combine(rollingLogLocation + $"{httpErrorFileTag}-{{Date}}.txt");
+                        : Path.Combine(rollingLogLocation, $"{httpErrorFileTag}-{{Date}}.txt");
 
                     loggerConfig.WriteTo.Logger(_ => _
                         .Filter.ByIncludingOnly(Matching.FromSource(ErrorControllerName))
