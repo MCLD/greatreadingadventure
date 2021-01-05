@@ -9,11 +9,11 @@ The GRA has two operating modes, either without schedule or with scheduled dates
 1. The default operation of the GRA means that as soon as you install the software the program is open and running for registration and for participants to log activities. In this instance the software considers the program to always be in the "open" state and uses that template for the landing page.
 
 2. Through "Site management" in Mission Control a schedule can be configured dividing the program up into the following stages:
-    1. Before registration opens
-    2. Registration open
-    3. Program starts
-    4. Program ends (but accounts are still accessible)
-    5. Access closed
+   1. Before registration opens
+   2. Registration open
+   3. Program starts
+   4. Program ends (but accounts are still accessible)
+   5. Access closed
 
 ### Templates
 
@@ -35,7 +35,9 @@ Starting with version 4.1.1, custom styles and scripts can be configured which w
 Additional CSS styling can be added in the `shared` directory: create a subdirectory called `styles` and place a `site.css` file in it. This CSS file is loaded last so any changes provided in it should take precedence over built-in CSS styles. As an example: if you'd like to make the background of the navigation bar light blue, place the following in `shared/styles/site.css`:
 
 ```css
-.gra-navbar { background-color: Azure; }
+.gra-navbar {
+  background-color: Azure;
+}
 ```
 
 ### Scripts
@@ -44,4 +46,16 @@ Custom JavaScript that you'd like injected into the site can be added in the fil
 
 ## Home screen icons and favicon.ico
 
-When accessing your site, participants will see the Great Reading Adventure logo in their URL bar (often referred to as a 'favicon'). They'll also see the GRA logo if they add your site to their home screen. If you'd like to customize this, you can replace the icons and images in `shared/content/` with ones of your choosing. Performing an Internet search for terms like "favicon generator" will lead you to tools which will help you resize your image or logo to the appropriate size(s) to replace the images in `shared/content/`.
+When accessing your site, participants will see the Great Reading Adventure logo in their URL bar (often referred to as a 'favicon'). They'll also see the GRA logo if they add your site to their home screen. If you'd like to customize this, you can place files in `shared/content/wwwroot/` to replace the default images. Files which are [present in the GRA](https://github.com/MCLD/greatreadingadventure/tree/develop/src/GRA.Web/wwwroot) that you can replace:
+
+- 192.png
+- 512.png
+- apple-touch-icon.png
+- favicon.ico
+- icon.svg
+- manifest.webmanifest
+
+Any files in `shared/content/wwwroot/` will be copied into the Web root directory upon application startup.
+
+For more information on creating these files, see [How to Favicon in 2021:
+Six files that fit most needs](https://evilmartians.com/chronicles/how-to-favicon-in-2021-six-files-that-fit-most-needs).

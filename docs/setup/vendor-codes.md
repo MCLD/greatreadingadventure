@@ -10,7 +10,7 @@ for redemption. The typical vendor code approach would look something like this:
 5. When a participant activates the trigger they are given their unique vendor code.
 6. The participant can redeem that vendor code through the outside vendor.
 7. Optionally, the vendor can send back status reports containing an Order Date, a Ship
-Date, and an item description which can be uploaded into the software.
+   Date, and an item description which can be uploaded into the software.
 
 ## Vendor interface
 
@@ -59,7 +59,7 @@ There can be as many columns as needed in the spreadsheet, the software looks fo
 following:
 
 - "Coupon" (required) - used to map to a participant (this is referred to as "code" above,
-e.g. `X123X-456YY-ZZ789`)
+  e.g. `X123X-456YY-ZZ789`)
 - "Order Date" (optional) - the date that the outside item was placed in an "ordered" status
 - "Ship Date" (optional) - the date that the outside item was placed in a "shipped" status
 - "Details" (optional) - details about the item that was selected
@@ -79,26 +79,29 @@ The GRA can be configured to allow for the reward to be donated or
 delivered via email.
 
 To enable either of these options the following fields on VendorCodeType must be set:
+
 - **OptionSubject** - The subject of the in-game mail sent letting the participant know they
-need to choose an option for the code
+  need to choose an option for the code
 - **OptionMail** - The message of the in-game mail sent letting the participant know they
-need to choose an option for the code
+  need to choose an option for the code
 
 To enable donations the additional fields on VendorCodeType need to be set:
+
 - **DonationSubject** - The subject of the in-game mail sent letting the participant know
-their reward has been donated.
+  their reward has been donated.
 - **DonationMail** - The message of the in-game mail sent letting the participant know their
-reward has been donated.
+  reward has been donated.
 - **DonationMessage** - A short message shown on the users profile letting them know the
-reward has been donated.
+  reward has been donated.
 
 To enable email delivery the additional fields on VendorCodeType need to be set:
+
 - **EmailAwardSubject** - The subject of the in-game mail sent letting the participant know
-their reward will arrive via email.
+  their reward will arrive via email.
 - **EmailAwardMail** - The message of the in-game mail sent letting the participant know
-their reward will arrive via email.
+  their reward will arrive via email.
 - **EmailAwardMessage** - A short message shown on the users profile letting the participant
-know their reward will arrive via email.
+  know their reward will arrive via email.
 
 Addtionally for email delivery a **VendorCodeTypeText** record for each
 language needs to be added. The **EmailAwardInstructions** field is a

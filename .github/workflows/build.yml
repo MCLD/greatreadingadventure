@@ -16,7 +16,13 @@ jobs:
           CR_OWNER: ${{secrets.CR_OWNER}}
           CR_PASSWORD: ${{secrets.CR_PASSWORD}}
           CR_USER: ${{secrets.CR_USER}}
-          GHCR_PAT: ${{secrets.GHCR_PAT}}
           GHCR_OWNER: ${{secrets.GHCR_OWNER}}
+          GHCR_PAT: ${{secrets.GHCR_PAT}}
           GHCR_USER: ${{secrets.GHCR_USER}}
-        run: ./build.bash
+        run: ./build.bash -p
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Great Reading Adventure
+          path: package/GreatReadingAdventure-*.zip
+          if-no-files-found: ignore

@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## Unreleased
 
+## [4.2.0] - 2021-01-04
+
 ### Added
 
 - Ping analytics upon account login
@@ -262,6 +264,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - Everything! First release of 4.0.
 
+[4.2.0]: https://github.com/mcld/greatreadingadventure/tree/v4.2.0
 [4.1.1]: https://github.com/mcld/greatreadingadventure/tree/v4.1.1
 [4.1.0]: https://github.com/mcld/greatreadingadventure/tree/v4.1.0
 [4.0.0]: https://github.com/mcld/greatreadingadventure/tree/v4.0.0

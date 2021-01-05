@@ -8,7 +8,7 @@
     <Company>Maricopa County Library District</Company>
     <Copyright>Copyright 2017 Maricopa County Library District</Copyright>
     <Description>The Great Reading Adventure is an open-source tool for managing dynamic library reading programs.</Description>
-    <FileVersion>4.1.2.112</FileVersion>
+    <FileVersion>4.2.0</FileVersion>
     <OutputType>Exe</OutputType>
     <PackageId>GRA.Web</PackageId>
     <PackageLicenseUrl>https://github.com/mcld/greatreadingadventure/blob/master/LICENSE</PackageLicenseUrl>
@@ -24,7 +24,7 @@
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <UserSecretsId>gra-e773e45a-3078-4b1b-842d-c7a8f7d310a6</UserSecretsId>
-    <Version>4.1.2</Version>
+    <Version>4.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -54,12 +54,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspNetCore.HealthChecks.SqlServer" Version="3.2.0" />
+    <PackageReference Include="AspNetCore.HealthChecks.SqlServer" Version="5.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.SqlServer" Version="5.0.1" />
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="5.0.1" />
@@ -96,41 +100,15 @@
 
   <ItemGroup>
     <None Include="bundleconfig.json" />
+    <None Include="wwwroot\192.png" />
+    <None Include="wwwroot\512.png" />
+    <None Include="wwwroot\apple-touch-icon.png" />
+    <None Include="wwwroot\favicon.ico" />
+    <None Include="wwwroot\icon.svg" />
     <None Include="wwwroot\images\great-reading-adventure-logo%401x.png" />
     <None Include="wwwroot\images\forest%402x.jpg" />
     <None Include="wwwroot\images\forest.jpg" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ContentWithTargetPath Remove="assets\defaultfavicon\android-chrome-192x192.png" />
-    <ContentWithTargetPath Remove="assets\defaultfavicon\android-chrome-384x384.png" />
-    <ContentWithTargetPath Remove="assets\defaultfavicon\apple-touch-icon.png" />
-    <ContentWithTargetPath Remove="assets\defaultfavicon\browserconfig.xml" />
-    <ContentWithTargetPath Remove="assets\defaultfavicon\favicon-16x16.png" />
-    <ContentWithTargetPath Remove="assets\defaultfavicon\favicon-32x32.png" />
-    <ContentWithTargetPath Remove="assets\defaultfavicon\favicon-96x96.png" />
-    <ContentWithTargetPath Remove="assets\defaultfavicon\favicon.ico" />
-    <ContentWithTargetPath Remove="assets\defaultfavicon\mstile-150x150.png" />
-    <ContentWithTargetPath Remove="assets\defaultfavicon\safari-pinned-tab.svg" />
-    <ContentWithTargetPath Remove="assets\defaultfavicon\site.webmanifest" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="assets\defaultfavicon\android-chrome-192x192.png" />
-    <None Remove="assets\defaultfavicon\android-chrome-384x384.png" />
-    <None Remove="assets\defaultfavicon\apple-touch-icon.png" />
-    <None Remove="assets\defaultfavicon\browserconfig.xml" />
-    <None Remove="assets\defaultfavicon\favicon-16x16.png" />
-    <None Remove="assets\defaultfavicon\favicon-32x32.png" />
-    <None Remove="assets\defaultfavicon\favicon-96x96.png" />
-    <None Remove="assets\defaultfavicon\favicon.ico" />
-    <None Remove="assets\defaultfavicon\mstile-150x150.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="assets\defaultfavicon\*.*">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <None Include="wwwroot\manifest.webmanifest" />
   </ItemGroup>
 
   <ItemGroup>

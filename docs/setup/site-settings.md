@@ -8,7 +8,7 @@ Please customize these public-facing details to be relevant to your program.
 
 - **Name** - How the site will be referred to when it's referenced in text in the templates. For example "Authorization code for `name`" or "Thanks for participating in `name`".
 - **Path** - Planned for use with multitenancy. Isn't displayed and doesn't need to be changed.
-- **Page Title** - Used throughout teh site in the `<title>` tag of the page which is seen by both participants and search engines.
+- **Page Title** - Used throughout the site in the `<title>` tag of the page which is seen by both participants and search engines.
 - **Meta Description** - The contents of the `<meta description="...">` tag on the front page of the site for users who are not logged in. This often what is displayed as a description for your site on search engines.
 - **Footer** - Footer shown on every page of the site. Unlike the other options on this page you can enter the footer using the [CommonMark text markup language](https://commonmark.org/) (which the editor buttons above the field can assist with if you're not familiar with CommonMark). If you need more flexability you can enter HTML directly into this field. The CommonMark and/or HTML will be rendered below the box in the **Footer Preview** area in real time with the selected paragraph highlighted with a light grey background.
 
@@ -70,6 +70,6 @@ Ensure you click **Save** after making changes on this page!
 The software is configured by default to push two additional dimensions back into Google Analytics. While you can perform reports in the software to view this information, Google Analytics will allow you to discern more information about the source of those users (i.e. what links/sites lead them to your program).
 
 1. The first dimension is named "Program Name" and will push the program name into analytics.
-2. The second dimension is named "First Time Participant" and will push that information into analytics if the **Ask if first time** setting is turned on (see the *Settings* section above).
+2. The second dimension is named "First Time Participant" and will push that information into analytics if the **Ask if first time** setting is turned on (see the _Settings_ section above).
 
-To be able to report on these dimensions please examine the Google support document [Create and edit custom dimensions and metrics](https://support.google.com/analytics/answer/2709829) to add these two items to teh "Custom Dimensions" area. They should be added in the order presented above with a scope of "User" selected.
+To be able to report on these dimensions please examine the Google support document [Create and edit custom dimensions and metrics](https://support.google.com/analytics/answer/2709829) to add these two items to the "Custom Dimensions" area. They should be added in the order presented above with a scope of "User" selected.

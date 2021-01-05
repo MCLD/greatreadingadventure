@@ -4,7 +4,7 @@ set -o errexit
 set -o pipefail
 
 echo "=== Downloading and decompressing avatar package"
-curl -L -o defaultavatars.zip https://github.com/MCLD/greatreadingadventure/releases/download/v4.0.0/defaultavatars-4.0.0.zip
-mkdir -p src/GRA.Web/assets
-unzip -q defaultavatars.zip -d src/GRA.Web/assets
-rm defaultavatars.zip
+curl -Lo defaultavatars.tgz https://github.com/MCLD/gra-avatars/archive/v4.2.0.tar.gz
+mkdir -p src/GRA.Web/assets/defaultavatars
+tar -xzf defaultavatars.tgz --strip-components=1 -C src/GRA.Web/assets/defaultavatars
+rm defaultavatars.tgz
