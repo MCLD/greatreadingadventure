@@ -25,7 +25,7 @@ namespace GRA.Web
                 .Enrich.WithProperty(LoggingEnrichment.Application,
                     Assembly.GetExecutingAssembly().GetName().Name)
                 .Enrich.WithProperty(LoggingEnrichment.Version,
-                    new Version().GetShortVersion());
+                    Version.GetShortVersion());
 
             string instance = config[ConfigurationKey.InstanceName];
 
