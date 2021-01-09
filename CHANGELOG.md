@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## Unreleased
 
+### Fixed
+
+- Avatar imports now work if the avatars aren't in the root of the ZIP file
+
 ## [4.2.0] - 2021-01-04
 
 ### Added

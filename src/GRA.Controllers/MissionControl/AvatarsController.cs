@@ -22,6 +22,8 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.ManageAvatars)]
     public class AvatarsController : Base.MCController
     {
+        private const string AvatarIndex = "default avatars.json";
+
         private readonly ILogger<AvatarsController> _logger;
         private readonly AvatarService _avatarService;
         private readonly JobService _jobService;
@@ -532,6 +534,12 @@ namespace GRA.Controllers.MissionControl
             {
                 using var archive = new ZipArchive(viewModel.UploadedFile.OpenReadStream());
                 archive.ExtractToDirectory(assetPath);
+                assetPath = LocateAvatarIndexPath(assetPath);
+            }
+            catch (FileNotFoundException ex)
+            {
+                ShowAlertDanger($"{ex.Message}: {ex.FileName} in ZIP file.");
+                return RedirectToAction(nameof(AvatarsController.Index));
             }
             catch (Exception ex)
             {
@@ -580,6 +588,12 @@ namespace GRA.Controllers.MissionControl
             try
             {
                 ZipFile.ExtractToDirectory(avatarZip, assetPath);
+                assetPath = LocateAvatarIndexPath(assetPath);
+            }
+            catch (FileNotFoundException ex)
+            {
+                ShowAlertDanger($"{ex.Message}: {ex.FileName} in ZIP file.");
+                return RedirectToAction(nameof(AvatarsController.Index));
             }
             catch (Exception ex)
             {
@@ -588,6 +602,28 @@ namespace GRA.Controllers.MissionControl
             }
 
             return await RunImportJob(assetPath);
+        }
+
+        private string LocateAvatarIndexPath(string assetPath)
+        {
+            if (!System.IO.File.Exists(Path.Combine(assetPath, AvatarIndex)))
+            {
+                foreach (var directory in Directory.GetDirectories(assetPath))
+                {
+                    if (System.IO.File.Exists(Path.Combine(directory, AvatarIndex)))
+                    {
+                        return directory;
+                    }
+                }
+            }
+
+            if (!System.IO.File.Exists(Path.Combine(assetPath, AvatarIndex)))
+            {
+                throw new FileNotFoundException("Not able to find avatar index file",
+                    AvatarIndex);
+            }
+
+            return assetPath;
         }
 
         private async Task<IActionResult> RunImportJob(string assetPath)

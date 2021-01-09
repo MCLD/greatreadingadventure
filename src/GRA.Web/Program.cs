@@ -30,7 +30,7 @@ namespace GRA.Web
 
             Log.Logger = LogConfig.Build(config).CreateLogger();
             Log.Information("GRA v{Version} instance {Instance} environment {Environment} in {WebRootPath} with content root {ContentRoot}",
-                new Version().GetVersion(),
+                Version.GetVersion(),
                 instance,
                 config[EnvAspNetCoreEnv] ?? "Production",
                 webHostEnvironment.WebRootPath,
@@ -83,7 +83,7 @@ namespace GRA.Web
             catch (Exception ex)
             {
                 Log.Warning("GRA v{Version} {Instance} exited unexpectedly: {Message}",
-                    new Version().GetVersion(),
+                    Version.GetVersion(),
                     instance,
                     ex.Message);
                 return 1;
@@ -92,7 +92,7 @@ namespace GRA.Web
             finally
             {
                 Log.Warning("GRA v{Version} {Instance} shutting down.",
-                    new Version().GetVersion(),
+                    Version.GetVersion(),
                     instance);
                 Log.CloseAndFlush();
             }

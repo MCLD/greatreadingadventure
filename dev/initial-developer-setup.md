@@ -62,3 +62,7 @@ This will ensure that no errant emails are sent out during development. There ar
 ### Run the application!
 
 At this point you should be able to run the application in the debugger.
+
+## Adding avatars
+
+Avatars do not ship in the development tree, they live in a separate project on GitHub: [MCLD/gra-avatars](https://github.com/MCLD/gra-avatars). If you wish to import them, create a directory in the `shared` directory called `private` and place the latest avatar release ZIP there. With that file in place, the avatar import button will be displayed in Mission Control (/MissionControl/Avatars).

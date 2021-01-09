@@ -49,7 +49,7 @@ namespace GRA.Controllers.MissionControl
             try
             {
                 thisAssemblyName = Assembly.GetEntryAssembly().GetName().Name;
-                thisAssemblyVersion = new Version().GetVersion();
+                thisAssemblyVersion = Version.GetVersion();
             }
             catch (Exception ex)
             {
