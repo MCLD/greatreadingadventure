@@ -55,6 +55,8 @@ namespace GRA.Domain.Service
             await csv.WriteRecordsAsync(branches.OrderBy(_ => _.SystemName).ThenBy(_ => _.Name));
 
             await csv.FlushAsync();
+            await writer.FlushAsync();
+            await memoryStream.FlushAsync();
 
             return memoryStream.ToArray();
         }
