@@ -59,6 +59,12 @@ namespace GRA.Domain.Service
                             {
                                 switch (jobInfo.JobType)
                                 {
+                                    case JobType.SendBulkEmails:
+                                        status = await SendBulkEmails(userId,
+                                            jobInfo.Id,
+                                            token,
+                                            progress);
+                                        break;
                                     case JobType.AvatarImport:
                                         status = await ImportAvatarsAsync(jobInfo.Id,
                                             token,
@@ -92,18 +98,22 @@ namespace GRA.Domain.Service
                                                 token,
                                                 progress);
                                         break;
-                                    default: // case JobType.SendBulkEmails:
-                                        status = await SendBulkEmails(userId,
+                                    case JobType.BranchImport:
+                                        status = await ImportBranches(
                                             jobInfo.Id,
                                             token,
                                             progress);
                                         break;
+                                    default:
+                                        throw new GraException($"Undefined job type: {jobInfo.JobType}");
                                 }
 
                                 await _jobRepository.UpdateFinishAsync(jobInfo.Id,
                                     token.IsCancellationRequested);
                             }
+#pragma warning disable CA1031 // Do not catch general exception types
                             catch (Exception ex)
+#pragma warning restore CA1031 // Do not catch general exception types
                             {
                                 _logger.LogError(ex,
                                     "Error executing job id {JobId} ({JobToken}): {Message}",
@@ -146,7 +156,7 @@ namespace GRA.Domain.Service
             }
         }
 
-        private JobStatus ErrorStatus(string description)
+        private static JobStatus ErrorStatus(string description)
         {
             return new JobStatus
             {
@@ -159,6 +169,10 @@ namespace GRA.Domain.Service
 
         public async Task<Guid> CreateJobAsync(Job job)
         {
+            if (job == null)
+            {
+                throw new ArgumentNullException(nameof(job));
+            }
             job.SiteId = GetCurrentSiteId();
             job.CreatedAt = _dateTimeProvider.Now;
             job.CreatedBy = GetActiveUserId();
@@ -246,6 +260,17 @@ namespace GRA.Domain.Service
                 .RequestServices
                 .GetService(typeof(EmailBulkService)) as EmailBulkService;
             return await emailBulkService.RunJobAsync(userId, jobId, token, progress);
+        }
+
+        private async Task<JobStatus> ImportBranches(int jobId,
+            CancellationToken token,
+            IProgress<JobStatus> progress = null)
+        {
+            var branchImportExportService = _httpContextAccessor
+                .HttpContext
+                .RequestServices
+                .GetService(typeof(BranchImportExportService)) as BranchImportExportService;
+            return await branchImportExportService.RunImportJobAsync(jobId, token, progress);
         }
     }
 }

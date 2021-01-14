@@ -9,7 +9,7 @@ namespace GRA.Controllers.Base
         protected static readonly string[] ValidUploadExtensions
             = { ".jpeg", ".jpg", ".pdf", ".png" };
 
-        protected static readonly string[] ValidCsvExtensions = { ".csv" };
+        protected static readonly string[] ValidCsvExtensions = { ".CSV" };
 
         protected static readonly string[] ValidExcelExtensions = { ".xls", ".xlsx" };
 
@@ -17,7 +17,7 @@ namespace GRA.Controllers.Base
         {
         }
 
-        protected string GetBadgeMakerUrl(string origin, string email)
+        protected static string GetBadgeMakerUrl(string origin, string email)
         {
             return $"https://www.openbadges.me/designer.html?origin={origin}&email={email}";
         }

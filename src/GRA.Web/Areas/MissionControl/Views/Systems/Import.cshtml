@@ -1,0 +1,86 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Systems.ImportViewModel
+
+    <div class="row" style="margin-top: 1.5rem;">
+        <div class="col-sm-8 col-sm-offset-2">
+            <div class="alert alert-warning">
+                <p>
+                    You can import Systems and Branches from a properly-formatted CSV file.
+                    <strong>
+                        If the software has one system and one branch (e.g. how it is configured by
+                        default) this process will overwrite that single system and single branch
+                        with ones in the provided CSV file!
+                    </strong>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <form asp-controller="@SystemsController.Name"
+          asp-action="@nameof(SystemsController.Import)"
+          method="post"
+          role="form"
+          enctype="multipart/form-data">
+        <div class="row row-spacing">
+            <div class="col-sm-8 col-sm-offset-2">
+                <label for="selectedFile">Select CSV file:</label>
+                <div class="input-group">
+                    <label class="input-group-btn">
+                        <span class="btn btn-default btn-file">
+                            <span class="fa fa-file-image-o"></span>
+                            Select a CSV file<input type="file" asp-for="FileUpload" accept=".csv" />
+                        </span>
+                    </label>
+                    <input type="text" class="form-control" readonly id="selectedFile">
+                </div>
+                <div>
+                    <span asp-validation-for="FileUpload" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row row-spacing">
+            <div class="col-sm-8 col-sm-offset-2">
+                <select class="form-control" asp-for="DoImport">
+                    <option value="false">Test run - read the CSV file and analyze import</option>
+                    <option value="true">Perform import</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row" style="margin-bottom: 2rem;">
+            <div class="col-sm-8 col-sm-offset-2">
+                <a asp-action="Index" class="btn btn-default">Return to Systems/Branches</a>
+                <button type="submit" class="btn btn-primary btn-spinner">
+                    <span class="buttonText">Upload</span>
+                    <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                </button>
+            </div>
+        </div>
+    </form>
+
+    @section scripts {
+        <script>
+            $(':file').on('fileselect', function (event, numFiles, label) {
+                var input = $(this).parents('.input-group').find(':text'),
+                    log = numFiles > 1 ? numFiles = ' files selected' : label;
+
+                if (input.length) {
+                    input.val(log);
+                    $('.btn-file').removeClass('btn-default');
+                    $('.btn-file').addClass('btn-success');
+                }
+                else {
+                    input.val('');
+                    $('.btn-file').addClass('btn-default');
+                    $('.btn-file').removeClass('btn-success');
+                }
+            });
+
+            $(document).on('change', ':file', function () {
+                var input = $(this),
+                    numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                    label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+                input.trigger('fileselect', [numFiles, label]);
+            });
+        </script>
+    }
