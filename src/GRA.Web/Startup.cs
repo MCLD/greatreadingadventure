@@ -274,6 +274,7 @@ namespace GRA.Web
             services.AddScoped<AuthorizationCodeService>();
             services.AddScoped<AvatarService>();
             services.AddScoped<BadgeService>();
+            services.AddScoped<BranchImportExportService>();
             services.AddScoped<CarouselService>();
             services.AddScoped<CategoryService>();
             services.AddScoped<ChallengeService>();

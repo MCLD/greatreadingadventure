@@ -2,12 +2,14 @@
 {
     public enum JobType
     {
-        SendBulkEmails = 1,
+        None = 0,
+        SendBulkEmails,
         RunReport,
         UpdateVendorStatus,
         AvatarImport,
         HouseholdImport,
         GenerateVendorCodes,
-        UpdateEmailAwardStatus
+        UpdateEmailAwardStatus,
+        BranchImport
     }
 }

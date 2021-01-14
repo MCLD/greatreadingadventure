@@ -1324,7 +1324,7 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Import Events";
             if (eventFileCsv == null
                 || !ValidCsvExtensions
-                    .Contains(Path.GetExtension(eventFileCsv.FileName).ToLowerInvariant()))
+                    .Contains(Path.GetExtension(eventFileCsv.FileName).ToUpperInvariant()))
             {
                 AlertDanger = "You must select a .csv file.";
                 ModelState.AddModelError("eventFileCsv", "You must select a .csv file.");
