@@ -101,8 +101,7 @@ namespace GRA.Domain.Service
             IProgress<JobStatus> progress,
             JobDetailsSendBulkEmails jobDetails)
         {
-            var sw = new System.Diagnostics.Stopwatch();
-            sw.Start();
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             try
             {
                 string[] toArray = jobDetails.To.Contains(',')
@@ -149,14 +148,14 @@ namespace GRA.Domain.Service
 
                 string outcome = cancelled ? "cancelled" : "completed";
 
-                _logger.LogInformation("Email job {JobId}: " + outcome + ", {EmailsSent} test emails sent in {Elapsed} ms",
+                _logger.LogInformation("Email job {JobId}: " + outcome + ", {EmailsSent} test email(s) sent in {Elapsed} ms",
                     jobId,
                     toArray.Length,
                     sw.Elapsed.TotalMilliseconds);
 
                 string status = cancelled
-                    ? $"Sent {toArray.Length} test emails in {sw.Elapsed.ToString(SpanFormat, CultureInfo.InvariantCulture)} s."
-                    : $"Cancelled after sending {toArray.Length} test emails in {sw.Elapsed.ToString(SpanFormat, CultureInfo.InvariantCulture)} s.";
+                    ? $"Cancelled after sending {toArray.Length} test email(s) in {sw.Elapsed.ToString(SpanFormat, CultureInfo.InvariantCulture)} s."
+                    : $"Sent {toArray.Length} test email(s) in {sw.Elapsed.ToString(SpanFormat, CultureInfo.InvariantCulture)} s.";
 
                 await _jobRepository.UpdateStatusAsync(jobId,
                     status.Substring(0, Math.Min(status.Length, 255)));
