@@ -171,6 +171,9 @@ namespace GRA.Domain.Service
                     importSystems?.Count,
                     importBranches?.Count);
 
+                await _jobRepository.UpdateStatusAsync(jobId,
+                    $"Found {importSystems?.Count} systems and {importBranches?.Count} branches in the CSV file");
+
                 progress?.Report(new JobStatus
                 {
                     Status = $"Found {importSystems?.Count} systems and {importBranches?.Count} branches in the uploaded file..."
@@ -411,6 +414,9 @@ namespace GRA.Domain.Service
                     Status = $"Import cancelled after {importedCount} records and {sw.Elapsed:c} seconds."
                 };
             }
+
+            await _jobRepository.UpdateStatusAsync(jobId,
+                $"Imported {systemAdd + systemEdit} systems and {branchAdd + branchEdit} branches.");
 
             _logger.LogInformation("Job {JobId}: {ImportType} added {SystemsAdded}, edited {SystemsEdited} systems; added {BranchesAdded}, edited {BranchesEdited} branches; {GeocodingIssues} geocoding issues",
                 job.Id,
