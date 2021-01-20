@@ -41,7 +41,7 @@ namespace GRA.Data
             _config = repositoryFacade.config;
             _dateTimeProvider = repositoryFacade.dateTimeProvider;
             _entitySerializer = repositoryFacade.entitySerializer;
-            _logger = Require.IsNotNull(logger, nameof(logger));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             if (string.IsNullOrWhiteSpace(_config["SuppressAuditLog"]))
             {

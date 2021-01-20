@@ -30,17 +30,20 @@ namespace GRA.Domain.Service
             IPointTranslationRepository pointTranslationRepository,
             IUserRepository userRepository) : base(logger, dateTimeProvider)
         {
-            _authorizationCodeRepository = Require.IsNotNull(authorizationCodeRepository,
-                nameof(authorizationCodeRepository));
-            _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
-            _challengeTaskRepository = Require.IsNotNull(challengeTaskRepository,
-                nameof(challengeTaskRepository));
-            _programRepository = Require.IsNotNull(programRepository,
-                nameof(programRepository));
-            _roleRepository = Require.IsNotNull(roleRepository, nameof(roleRepository));
-            _systemRepository = Require.IsNotNull(systemRepository, nameof(systemRepository));
-            _pointTranslationRepository = Require.IsNotNull(pointTranslationRepository,
-                nameof(pointTranslationRepository));
+            _authorizationCodeRepository = authorizationCodeRepository
+                ?? throw new ArgumentNullException(nameof(authorizationCodeRepository));
+            _branchRepository = branchRepository
+                ?? throw new ArgumentNullException(nameof(branchRepository));
+            _challengeTaskRepository = challengeTaskRepository
+                ?? throw new ArgumentNullException(nameof(challengeTaskRepository));
+            _programRepository = programRepository
+                ?? throw new ArgumentNullException(nameof(programRepository));
+            _roleRepository = roleRepository
+                ?? throw new ArgumentNullException(nameof(roleRepository));
+            _systemRepository = systemRepository
+                ?? throw new ArgumentNullException(nameof(systemRepository));
+            _pointTranslationRepository = pointTranslationRepository
+                ?? throw new ArgumentNullException(nameof(pointTranslationRepository));
             _userRepository = userRepository
                 ?? throw new ArgumentNullException(nameof(userRepository));
         }

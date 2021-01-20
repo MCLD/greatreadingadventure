@@ -30,10 +30,12 @@ namespace GRA.Controllers.MissionControl
             SiteService siteService,
             UserService userService) : base(context)
         {
-            _logger = Require.IsNotNull(logger, nameof(logger));
-            _drawingService = Require.IsNotNull(drawingService, nameof(drawingService));
-            _prizeWinnerService = Require.IsNotNull(prizeWinnerService, nameof(prizeWinnerService));
-            _siteService = Require.IsNotNull(siteService, nameof(siteService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _drawingService = drawingService 
+                ?? throw new ArgumentNullException(nameof(drawingService));
+            _prizeWinnerService = prizeWinnerService 
+                ?? throw new ArgumentNullException(nameof(prizeWinnerService));
+            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             PageTitle = "Drawing";
         }

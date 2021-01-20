@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GRA.Domain.Service;
@@ -26,8 +27,10 @@ namespace GRA.Controllers.Helpers
         public InfoLinksTagHelper(IUrlHelperFactory urlHelperFactory,
             PageService pageService)
         {
-            _urlHelperFactory = Require.IsNotNull(urlHelperFactory, nameof(urlHelperFactory));
-            _pageService = Require.IsNotNull(pageService, nameof(pageService));
+            _urlHelperFactory = urlHelperFactory 
+                ?? throw new ArgumentNullException(nameof(urlHelperFactory));
+            _pageService = pageService 
+                ?? throw new ArgumentNullException(nameof(pageService));
         }
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)

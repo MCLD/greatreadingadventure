@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using GRA.Domain.Repository;
 
@@ -9,7 +10,7 @@ namespace GRA.Data.Repository
         private readonly Context _context;
         public SystemInformationRepository(Context context)
         {
-            _context = Require.IsNotNull(context, nameof(context));
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
         public async Task<string> GetCurrentMigrationAsync()
         {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
@@ -31,17 +32,20 @@ namespace GRA.Domain.Service
             : base(logger, dateTimeProvider, userContextProvider)
         {
             SetManagementPermission(Permission.ManageQuestionnaires);
-            _answerRepository = Require.IsNotNull(answerRepository, nameof(answerRepository));
-            _badgeRepository = Require.IsNotNull(badgeRepository, nameof(badgeRepository));
-            _notificationRepository = Require.IsNotNull(notificationRepository,
-                nameof(notificationRepository));
-            _questionRepository = Require.IsNotNull(questionRepository,
-                nameof(questionRepository));
-            _questionnaireRepository = Require.IsNotNull(questionnaireRepository,
-                nameof(questionnaireRepository));
-            _requiredQuestionnaireRepository = Require.IsNotNull(requiredQuestionnaireRepository,
-                nameof(requiredQuestionnaireRepository));
-            _userLogRepository = Require.IsNotNull(userLogRepository, nameof(userLogRepository));
+            _answerRepository = answerRepository 
+                ?? throw new ArgumentNullException(nameof(answerRepository));
+            _badgeRepository = badgeRepository 
+                ?? throw new ArgumentNullException(nameof(badgeRepository));
+            _notificationRepository = notificationRepository 
+                ?? throw new ArgumentNullException(nameof(notificationRepository));
+            _questionRepository = questionRepository 
+                ?? throw new ArgumentNullException(nameof(questionRepository));
+            _questionnaireRepository = questionnaireRepository 
+                ?? throw new ArgumentNullException(nameof(questionnaireRepository));
+            _requiredQuestionnaireRepository = requiredQuestionnaireRepository 
+                ?? throw new ArgumentNullException(nameof(requiredQuestionnaireRepository));
+            _userLogRepository = userLogRepository 
+                ?? throw new ArgumentNullException(nameof(userLogRepository));
         }
 
         public async Task<DataWithCount<ICollection<Questionnaire>>> GetPaginatedListAsync(

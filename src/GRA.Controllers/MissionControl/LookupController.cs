@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl.Lookup;
@@ -25,9 +26,11 @@ namespace GRA.Controllers.MissionControl
              ChallengeService challengeService,
              TriggerService triggerService) : base(context)
         {
-            _logger = Require.IsNotNull(logger, nameof(logger));
-            _challengeService = Require.IsNotNull(challengeService, nameof(challengeService));
-            _triggerService = Require.IsNotNull(triggerService, nameof(triggerService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _challengeService = challengeService 
+                ?? throw new ArgumentNullException(nameof(challengeService));
+            _triggerService = triggerService 
+                ?? throw new ArgumentNullException(nameof(triggerService));
         }
 
         [HttpPost]

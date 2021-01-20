@@ -26,7 +26,7 @@ namespace GRA.Domain.Service
             ISiteRepository siteRepository,
             IUserRepository userRepository) : base(logger, dateTimeProvider)
         {
-            _config = Require.IsNotNull(config, nameof(config));
+            _config = config ?? throw new ArgumentNullException(nameof(config));
             _emailTemplateRepository = emailTemplateRepository
                 ?? throw new ArgumentNullException(nameof(emailTemplateRepository));
             _siteRepository = siteRepository

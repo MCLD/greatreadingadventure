@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,9 +25,9 @@ namespace GRA.Controllers.MissionControl
            QuestionnaireService questionnaireService)
             : base(context)
         {
-            _logger = Require.IsNotNull(logger, nameof(logger));
-            _questionnaireService = Require.IsNotNull(questionnaireService,
-                nameof(questionnaireService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _questionnaireService = questionnaireService
+                ?? throw new ArgumentNullException(nameof(questionnaireService));
             PageTitle = "Questionnaire management";
         }
 

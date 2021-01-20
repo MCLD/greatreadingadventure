@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
@@ -20,10 +21,10 @@ namespace GRA.Domain.Service
             : base(logger, dateTimeProvider, userContextProvider)
         {
             SetManagementPermission(Permission.ManageDailyLiteracyTips);
-            _dailyLiteracyTipImageRepository = Require.IsNotNull(dailyLiteracyTipImageRepository,
-                nameof(dailyLiteracyTipImageRepository));
-            _dailyLiteracyTipRepository = Require.IsNotNull(dailyLiteracyTipRepository,
-                nameof(dailyLiteracyTipRepository));
+            _dailyLiteracyTipImageRepository = dailyLiteracyTipImageRepository 
+                ?? throw new ArgumentNullException(nameof(dailyLiteracyTipImageRepository));
+            _dailyLiteracyTipRepository = dailyLiteracyTipRepository 
+                ?? throw new ArgumentNullException(nameof(dailyLiteracyTipRepository));
         }
 
         public async Task<IEnumerable<DailyLiteracyTip>> GetListAsync()

@@ -42,10 +42,12 @@ namespace GRA.Controllers.Helpers
             IUserContextProvider userContextProvider,
             SiteLookupService siteLookupService)
         {
-            _urlHelperFactory = Require.IsNotNull(urlHelperFactory, nameof(urlHelperFactory));
-            _userContextProvider = Require.IsNotNull(userContextProvider,
-                nameof(userContextProvider));
-            _siteLookupService = Require.IsNotNull(siteLookupService, nameof(siteLookupService));
+            _urlHelperFactory = urlHelperFactory 
+                ?? throw new ArgumentNullException(nameof(urlHelperFactory));
+            _userContextProvider = userContextProvider 
+                ?? throw new ArgumentNullException(nameof(userContextProvider));
+            _siteLookupService = siteLookupService 
+                ?? throw new ArgumentNullException(nameof(siteLookupService));
         }
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)

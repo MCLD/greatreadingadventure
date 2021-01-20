@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Logging;
@@ -14,8 +15,8 @@ namespace GRA.Domain.Service
             ISystemInformationRepository systemInformationRepository)
             : base(logger, dateTimeProvider, userContextProvider)
         {
-            _systemInformationRepository = Require.IsNotNull(systemInformationRepository,
-                nameof(systemInformationRepository));
+            _systemInformationRepository = systemInformationRepository 
+                ?? throw new ArgumentNullException(nameof(systemInformationRepository));
         }
 
         public async Task<string> GetCurrentMigrationAsync()

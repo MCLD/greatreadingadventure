@@ -17,7 +17,7 @@ namespace GRA.Controllers
             : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _userService = Require.IsNotNull(userService, nameof(userService));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 
         [Authorize]

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
@@ -30,16 +31,22 @@ namespace GRA.Domain.Service
             ActivityService activityService,
             SchoolService schoolService) : base(logger, dateTimeProvider, userContextProvider)
         {
-            _challengeRepository = Require.IsNotNull(challengeRepository,
-                nameof(challengeRepository));
-            _challengeTaskRepository = Require.IsNotNull(challengeTaskRepository,
-                nameof(challengeTaskRepository));
-            _mailRepository = Require.IsNotNull(mailRepository, nameof(mailRepository));
-            _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));
-            _siteRepository = Require.IsNotNull(siteRepository, nameof(siteRepository));
-            _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
-            _activityService = Require.IsNotNull(activityService, nameof(activityService));
-            _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
+            _challengeRepository = challengeRepository
+                ?? throw new ArgumentNullException(nameof(challengeRepository));
+            _challengeTaskRepository = challengeTaskRepository
+                ?? throw new ArgumentNullException(nameof(challengeTaskRepository));
+            _mailRepository = mailRepository
+                ?? throw new ArgumentNullException(nameof(mailRepository));
+            _programRepository = programRepository
+                ?? throw new ArgumentNullException(nameof(programRepository));
+            _siteRepository = siteRepository
+                ?? throw new ArgumentNullException(nameof(siteRepository));
+            _userRepository = userRepository
+                ?? throw new ArgumentNullException(nameof(userRepository));
+            _activityService = activityService
+                ?? throw new ArgumentNullException(nameof(activityService));
+            _schoolService = schoolService
+                ?? throw new ArgumentNullException(nameof(schoolService));
         }
 
         private int ProgramIdSearch(IEnumerable<Program> programs, string nameContains)

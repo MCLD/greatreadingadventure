@@ -1,4 +1,5 @@
-﻿using GRA.Abstract;
+﻿using System;
+using GRA.Abstract;
 using Microsoft.Extensions.Configuration;
 
 namespace GRA.Data.ServiceFacade
@@ -16,11 +17,13 @@ namespace GRA.Data.ServiceFacade
             IDateTimeProvider dateTimeProvider,
             IEntitySerializer entitySerializer)
         {
-            this.context = Require.IsNotNull(context, nameof(context));
-            this.mapper = Require.IsNotNull(mapper, nameof(mapper));
-            this.config = Require.IsNotNull(config, nameof(config));
-            this.dateTimeProvider = Require.IsNotNull(dateTimeProvider, nameof(dateTimeProvider));
-            this.entitySerializer = Require.IsNotNull(entitySerializer, nameof(entitySerializer));
+            this.context = context ?? throw new ArgumentNullException(nameof(context));
+            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            this.config = config ?? throw new ArgumentNullException(nameof(config));
+            this.dateTimeProvider = dateTimeProvider 
+                ?? throw new ArgumentNullException(nameof(dateTimeProvider));
+            this.entitySerializer = entitySerializer 
+                ?? throw new ArgumentNullException(nameof(entitySerializer));
         }
     }
 }
