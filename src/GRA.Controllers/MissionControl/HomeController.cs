@@ -28,6 +28,8 @@ namespace GRA.Controllers.MissionControl
 
         private readonly ICodeSanitizer _codeSanitizer;
 
+        public const string Name = "Home";
+
         public HomeController(ILogger<HomeController> logger,
             AuthenticationService authenticationService,
             MailService mailService,
@@ -224,7 +226,7 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToSignIn();
             }
 
-            if (ModelState.IsValid)
+            if (viewmodel != null && ModelState.IsValid)
             {
                 string sanitized = _codeSanitizer.Sanitize(viewmodel.AuthorizationCode, 255);
 

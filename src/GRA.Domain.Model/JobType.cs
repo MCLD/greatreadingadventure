@@ -10,6 +10,7 @@
         HouseholdImport,
         GenerateVendorCodes,
         UpdateEmailAwardStatus,
-        BranchImport
+        BranchImport,
+        SendNewsEmails
     }
 }

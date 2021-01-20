@@ -81,7 +81,8 @@ namespace GRA.Domain.Service
 
             token.Register(() =>
             {
-                _logger.LogWarning("{ImportType} of {Filename} was cancelled after {Elapsed} ms.",
+                _logger.LogWarning("Job {JobId}: {ImportType} of {Filename} was cancelled after {Elapsed} ms.",
+                    job.Id,
                     jobDetails.DoImport ? "Import" : "Test run",
                     jobDetails.Filename,
                     sw?.Elapsed.TotalMilliseconds);
@@ -403,7 +404,7 @@ namespace GRA.Domain.Service
             // get result, return new JobStatus (percent = 100, complete = tru, status = whatever, error = true/false
             if (token.IsCancellationRequested)
             {
-                _logger.LogWarning("Job {JobId}: Cacncelled after importing {ImportedCount} records and {Elapsed} ms",
+                _logger.LogWarning("Job {JobId}: Cancelled after importing {ImportedCount} records and {Elapsed} ms",
                     job.Id,
                     importedCount,
                     sw.ElapsedMilliseconds);

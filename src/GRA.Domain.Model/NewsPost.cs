@@ -21,5 +21,9 @@ namespace GRA.Domain.Model
         public DateTime? PublishedAt { get; set; }
 
         public string CreatedByName { get; set; }
+
+        [DisplayName("Brief summary of this post to include in emails")]
+        [MaxLength(255)]
+        public string EmailSummary { get; set; }
     }
 }
