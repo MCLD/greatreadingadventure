@@ -50,7 +50,7 @@ namespace GRA.Domain.Service
             using var writer = new System.IO.StreamWriter(memoryStream);
             using var csv = new CsvHelper.CsvWriter(writer,
                 new CsvConfiguration(CultureInfo.InvariantCulture));
-            csv.Configuration.RegisterClassMap<Maps.BranchMap>();
+            csv.Context.RegisterClassMap<Maps.BranchMap>();
 
             await csv.WriteRecordsAsync(branches.OrderBy(_ => _.SystemName).ThenBy(_ => _.Name));
 
@@ -453,7 +453,7 @@ namespace GRA.Domain.Service
                 MissingFieldFound = null
             };
             using var csv = new CsvHelper.CsvReader(reader, config);
-            csv.Configuration.RegisterClassMap<Maps.BranchMap>();
+            csv.Context.RegisterClassMap<Maps.BranchMap>();
 
             await foreach (var branch in csv.GetRecordsAsync<Branch>())
             {
