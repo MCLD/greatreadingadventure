@@ -57,56 +57,7 @@ namespace GRA.Domain.Service
                             JobStatus status;
                             try
                             {
-                                switch (jobInfo.JobType)
-                                {
-                                    case JobType.SendBulkEmails:
-                                        status = await SendBulkEmails(userId,
-                                            jobInfo.Id,
-                                            token,
-                                            progress);
-                                        break;
-                                    case JobType.AvatarImport:
-                                        status = await ImportAvatarsAsync(jobInfo.Id,
-                                            token,
-                                            progress);
-                                        break;
-                                    case JobType.HouseholdImport:
-                                        status = await ImportHouseholdMembersAsync(jobInfo.Id,
-                                            token,
-                                            progress);
-                                        break;
-                                    case JobType.RunReport:
-                                        status = await RunReportJobAsync(jobInfo.Id,
-                                            token,
-                                            progress);
-                                        break;
-                                    case JobType.UpdateVendorStatus:
-                                        status = await UpdateStatusFromExcelAsync(
-                                            jobInfo.Id,
-                                            token,
-                                            progress);
-                                        break;
-                                    case JobType.GenerateVendorCodes:
-                                        status = await GenerateVendorCodesAsync(
-                                            jobInfo.Id,
-                                            token,
-                                            progress);
-                                        break;
-                                    case JobType.UpdateEmailAwardStatus:
-                                        status = await UpdateEmailAwardStatusFromExcelAsync(
-                                                jobInfo.Id,
-                                                token,
-                                                progress);
-                                        break;
-                                    case JobType.BranchImport:
-                                        status = await ImportBranches(
-                                            jobInfo.Id,
-                                            token,
-                                            progress);
-                                        break;
-                                    default:
-                                        throw new GraException($"Undefined job type: {jobInfo.JobType}");
-                                }
+                                status = await ExecuteJobAsync(userId, jobInfo, token, progress);
 
                                 await _jobRepository.UpdateFinishAsync(jobInfo.Id,
                                     token.IsCancellationRequested);
@@ -128,6 +79,7 @@ namespace GRA.Domain.Service
                                     SuccessRedirect = false
                                 };
                                 progress?.Report(status);
+                                await _jobRepository.UpdateStatusAsync(jobInfo.Id, status.Status);
                             }
                             return status;
                         }
@@ -167,12 +119,18 @@ namespace GRA.Domain.Service
             };
         }
 
-        public async Task<Guid> CreateJobAsync(Job job)
+        public Task<Guid> CreateJobAsync(Job job)
         {
             if (job == null)
             {
                 throw new ArgumentNullException(nameof(job));
             }
+
+            return CreateJobInternalAsync(job);
+        }
+
+        private async Task<Guid> CreateJobInternalAsync(Job job)
+        {
             job.SiteId = GetCurrentSiteId();
             job.CreatedAt = _dateTimeProvider.Now;
             job.CreatedBy = GetActiveUserId();
@@ -181,6 +139,50 @@ namespace GRA.Domain.Service
             var insertedJob = await _jobRepository.AddSaveNoAuditAsync(job);
 
             return insertedJob.JobToken;
+        }
+
+        private async Task<JobStatus> ExecuteJobAsync(int userId,
+            Job jobInfo,
+            CancellationToken token,
+            IProgress<JobStatus> progress)
+        {
+            return jobInfo.JobType switch
+            {
+                JobType.SendBulkEmails => await SendBulkEmails(userId,
+                    jobInfo.Id,
+                    token,
+                    progress),
+                JobType.AvatarImport => await ImportAvatarsAsync(jobInfo.Id,
+                    token,
+                    progress),
+                JobType.HouseholdImport => await ImportHouseholdMembersAsync(jobInfo.Id,
+                    token,
+                    progress),
+                JobType.RunReport => await RunReportJobAsync(jobInfo.Id,
+                    token,
+                    progress),
+                JobType.UpdateVendorStatus => await UpdateStatusFromExcelAsync(
+                    jobInfo.Id,
+                    token,
+                    progress),
+                JobType.GenerateVendorCodes => await GenerateVendorCodesAsync(
+                    jobInfo.Id,
+                    token,
+                    progress),
+                JobType.UpdateEmailAwardStatus => await UpdateEmailAwardStatusFromExcelAsync(
+                    jobInfo.Id,
+                    token,
+                    progress),
+                JobType.BranchImport => await ImportBranches(
+                    jobInfo.Id,
+                    token,
+                    progress),
+                JobType.SendNewsEmails => await SendNewsEmails(
+                    jobInfo.Id,
+                    token,
+                    progress),
+                _ => throw new GraException($"Undefined job type: {jobInfo.JobType}"),
+            };
         }
 
         private async Task<JobStatus> ImportAvatarsAsync(int jobId,
@@ -271,6 +273,17 @@ namespace GRA.Domain.Service
                 .RequestServices
                 .GetService(typeof(BranchImportExportService)) as BranchImportExportService;
             return await branchImportExportService.RunImportJobAsync(jobId, token, progress);
+        }
+
+        private async Task<JobStatus> SendNewsEmails(int jobId,
+            CancellationToken token,
+            IProgress<JobStatus> progress = null)
+        {
+            var newsService = _httpContextAccessor
+                .HttpContext
+                .RequestServices
+                .GetService(typeof(NewsService)) as NewsService;
+            return await newsService.RunSendNewsEmailsJob(jobId, token, progress);
         }
     }
 }

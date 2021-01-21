@@ -15,7 +15,8 @@ namespace GRA.Controllers.Helper
 
         public ActiveTagHelper(IUrlHelperFactory urlHelperFactory)
         {
-            _urlHelperFactory = Require.IsNotNull(urlHelperFactory, nameof(urlHelperFactory));
+            _urlHelperFactory = urlHelperFactory
+                ?? throw new ArgumentNullException(nameof(urlHelperFactory));
         }
 
         [ViewContext]

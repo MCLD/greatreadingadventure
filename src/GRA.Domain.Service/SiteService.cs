@@ -36,14 +36,18 @@ namespace GRA.Domain.Service
             : base(logger, dateTimeProvider, userContextProvider)
         {
             SetManagementPermission(Permission.ManageSites);
-            _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
-            _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));
-            _siteRepository = Require.IsNotNull(siteRepository, nameof(siteRepository));
+            _branchRepository = branchRepository 
+                ?? throw new ArgumentNullException(nameof(branchRepository));
+            _programRepository = programRepository 
+                ?? throw new ArgumentNullException(nameof(programRepository));
+            _siteRepository = siteRepository 
+                ?? throw new ArgumentNullException(nameof(siteRepository));
             _siteSettingRepository = siteSettingRepository
                 ?? throw new ArgumentNullException(nameof(siteSettingRepository));
             _spatialDistanceRepository = spatialDistanceRepository
                 ?? throw new ArgumentNullException(nameof(spatialDistanceRepository));
-            _systemRepository = Require.IsNotNull(systemRepository, nameof(systemRepository));
+            _systemRepository = systemRepository 
+                ?? throw new ArgumentNullException(nameof(systemRepository));
             _siteLookupService = siteLookupService
                 ?? throw new ArgumentException(nameof(siteLookupService));
             _userRepository = userRepository

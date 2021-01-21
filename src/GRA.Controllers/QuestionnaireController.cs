@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using GRA.Controllers.Attributes;
 using GRA.Controllers.ViewModel.Questionnaire;
@@ -23,10 +24,10 @@ namespace GRA.Controllers
             QuestionnaireService questionnaireService,
             UserService userService) : base(context)
         {
-            _logger = Require.IsNotNull(logger, nameof(logger));
-            _questionnaireService = Require.IsNotNull(questionnaireService,
-                nameof(questionnaireService));
-            _userService = Require.IsNotNull(userService, nameof(userService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _questionnaireService = questionnaireService 
+                ?? throw new ArgumentNullException(nameof(questionnaireService));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             PageTitle = "Questionnaire";
         }
 

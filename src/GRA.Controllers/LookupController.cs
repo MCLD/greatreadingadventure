@@ -27,11 +27,15 @@ namespace GRA.Controllers
             SiteService siteService,
             UserService userService) : base(context)
         {
-            _logger = Require.IsNotNull(logger, nameof(logger));
-            _avatarService = Require.IsNotNull(avatarService, nameof(avatarService));
-            _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
-            _siteService = Require.IsNotNull(siteService, nameof(siteService));
-            _userService = Require.IsNotNull(userService, nameof(userService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _avatarService = avatarService 
+                ?? throw new ArgumentNullException(nameof(avatarService));
+            _schoolService = schoolService 
+                ?? throw new ArgumentNullException(nameof(schoolService));
+            _siteService = siteService 
+                ?? throw new ArgumentNullException(nameof(siteService));
+            _userService = userService 
+                ?? throw new ArgumentNullException(nameof(userService));
         }
 
         public async Task<JsonResult> GetBranches(int? systemId,

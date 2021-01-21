@@ -50,7 +50,7 @@ namespace GRA.Domain.Service
             using var writer = new System.IO.StreamWriter(memoryStream);
             using var csv = new CsvHelper.CsvWriter(writer,
                 new CsvConfiguration(CultureInfo.InvariantCulture));
-            csv.Configuration.RegisterClassMap<Maps.BranchMap>();
+            csv.Context.RegisterClassMap<Maps.BranchMap>();
 
             await csv.WriteRecordsAsync(branches.OrderBy(_ => _.SystemName).ThenBy(_ => _.Name));
 
@@ -81,7 +81,8 @@ namespace GRA.Domain.Service
 
             token.Register(() =>
             {
-                _logger.LogWarning("{ImportType} of {Filename} was cancelled after {Elapsed} ms.",
+                _logger.LogWarning("Job {JobId}: {ImportType} of {Filename} was cancelled after {Elapsed} ms.",
+                    job.Id,
                     jobDetails.DoImport ? "Import" : "Test run",
                     jobDetails.Filename,
                     sw?.Elapsed.TotalMilliseconds);
@@ -170,6 +171,9 @@ namespace GRA.Domain.Service
                     jobDetails.DoImport ? "Import" : "Test run",
                     importSystems?.Count,
                     importBranches?.Count);
+
+                await _jobRepository.UpdateStatusAsync(jobId,
+                    $"Found {importSystems?.Count} systems and {importBranches?.Count} branches in the CSV file");
 
                 progress?.Report(new JobStatus
                 {
@@ -400,7 +404,7 @@ namespace GRA.Domain.Service
             // get result, return new JobStatus (percent = 100, complete = tru, status = whatever, error = true/false
             if (token.IsCancellationRequested)
             {
-                _logger.LogWarning("Job {JobId}: Cacncelled after importing {ImportedCount} records and {Elapsed} ms",
+                _logger.LogWarning("Job {JobId}: Cancelled after importing {ImportedCount} records and {Elapsed} ms",
                     job.Id,
                     importedCount,
                     sw.ElapsedMilliseconds);
@@ -411,6 +415,9 @@ namespace GRA.Domain.Service
                     Status = $"Import cancelled after {importedCount} records and {sw.Elapsed:c} seconds."
                 };
             }
+
+            await _jobRepository.UpdateStatusAsync(jobId,
+                $"Imported {systemAdd + systemEdit} systems and {branchAdd + branchEdit} branches.");
 
             _logger.LogInformation("Job {JobId}: {ImportType} added {SystemsAdded}, edited {SystemsEdited} systems; added {BranchesAdded}, edited {BranchesEdited} branches; {GeocodingIssues} geocoding issues",
                 job.Id,
@@ -446,7 +453,7 @@ namespace GRA.Domain.Service
                 MissingFieldFound = null
             };
             using var csv = new CsvHelper.CsvReader(reader, config);
-            csv.Configuration.RegisterClassMap<Maps.BranchMap>();
+            csv.Context.RegisterClassMap<Maps.BranchMap>();
 
             await foreach (var branch in csv.GetRecordsAsync<Branch>())
             {

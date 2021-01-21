@@ -17,8 +17,8 @@ namespace GRA.Domain.Service
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IEmailReminderRepository emailReminderRepository) : base(logger, dateTimeProvider)
         {
-            _emailReminderRepository = Require.IsNotNull(emailReminderRepository,
-                nameof(emailReminderRepository));
+            _emailReminderRepository = emailReminderRepository 
+                ?? throw new ArgumentNullException(nameof(emailReminderRepository));
         }
 
         public async Task AddEmailReminderAsync(string email, string signUpSource)

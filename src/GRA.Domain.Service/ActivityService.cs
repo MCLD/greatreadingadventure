@@ -60,37 +60,43 @@ namespace GRA.Domain.Service
             SiteLookupService siteLookupService,
             VendorCodeService vendorCodeService) : base(logger, dateTimeProvider, userContext)
         {
-            _avatarBundleRepository = Require.IsNotNull(avatarBundleRepository,
-                nameof(avatarBundleRepository));
-            _avatarItemRepository = Require.IsNotNull(avatarItemRepository,
-                nameof(avatarItemRepository));
-            _badgeRepository = Require.IsNotNull(badgeRepository, nameof(badgeRepository));
-            _bookRepository = Require.IsNotNull(bookRepository, nameof(bookRepository));
-            _challengeRepository = Require.IsNotNull(challengeRepository,
-                nameof(challengeRepository));
-            _challengeTaskRepository = Require.IsNotNull(challengeTaskRepository,
-                nameof(challengeTaskRepository));
-            _eventRepository = Require.IsNotNull(eventRepository,
-                nameof(eventRepository));
-            _notificationRepository = Require.IsNotNull(notificationRepository,
-                nameof(notificationRepository));
-            _pointTranslationRepository = Require.IsNotNull(pointTranslationRepository,
-                nameof(pointTranslationRepository));
-            _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));
-            _requiredQuestionnaireRepository = Require.IsNotNull(requiredQuestionnaireRepository,
-                nameof(requiredQuestionnaireRepository));
-            _triggerRepository = Require.IsNotNull(triggerRepository, nameof(triggerRepository));
-            _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
-            _userLogRepository = Require.IsNotNull(userLogRepository,
-                nameof(userLogRepository));
-            _vendorCodeRepository = Require.IsNotNull(vendorCodeRepository,
-                nameof(vendorCodeRepository));
-            _vendorCodeTypeRepository = Require.IsNotNull(vendorCodeTypeRepository,
-                nameof(vendorCodeTypeRepository));
-            _codeSanitizer = Require.IsNotNull(codeSanitizer, nameof(codeSanitizer));
-            _mailService = Require.IsNotNull(mailService, nameof(mailService));
-            _prizeWinnerService = Require.IsNotNull(prizeWinnerService,
-                nameof(prizeWinnerService));
+            _avatarBundleRepository = avatarBundleRepository
+                ?? throw new ArgumentNullException(nameof(avatarBundleRepository));
+            _avatarItemRepository = avatarItemRepository
+                ?? throw new ArgumentNullException(nameof(avatarItemRepository));
+            _badgeRepository = badgeRepository
+                ?? throw new ArgumentNullException(nameof(badgeRepository));
+            _bookRepository = bookRepository
+                ?? throw new ArgumentNullException(nameof(bookRepository));
+            _challengeRepository = challengeRepository
+                ?? throw new ArgumentNullException(nameof(challengeRepository));
+            _challengeTaskRepository = challengeTaskRepository
+                ?? throw new ArgumentNullException(nameof(challengeTaskRepository));
+            _eventRepository = eventRepository
+                ?? throw new ArgumentNullException(nameof(eventRepository));
+            _notificationRepository = notificationRepository
+                ?? throw new ArgumentNullException(nameof(notificationRepository));
+            _pointTranslationRepository = pointTranslationRepository
+                ?? throw new ArgumentNullException(nameof(pointTranslationRepository));
+            _programRepository = programRepository
+                ?? throw new ArgumentNullException(nameof(programRepository));
+            _requiredQuestionnaireRepository = requiredQuestionnaireRepository
+                ?? throw new ArgumentNullException(nameof(requiredQuestionnaireRepository));
+            _triggerRepository = triggerRepository
+                ?? throw new ArgumentNullException(nameof(triggerRepository));
+            _userRepository = userRepository
+                ?? throw new ArgumentNullException(nameof(userRepository));
+            _userLogRepository = userLogRepository
+                ?? throw new ArgumentNullException(nameof(userLogRepository));
+            _vendorCodeRepository = vendorCodeRepository
+                ?? throw new ArgumentNullException(nameof(vendorCodeRepository));
+            _vendorCodeTypeRepository = vendorCodeTypeRepository
+                ?? throw new ArgumentNullException(nameof(vendorCodeTypeRepository));
+            _codeSanitizer = codeSanitizer
+                ?? throw new ArgumentNullException(nameof(codeSanitizer));
+            _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
+            _prizeWinnerService = prizeWinnerService
+                ?? throw new ArgumentNullException(nameof(prizeWinnerService));
             _siteLookupService = siteLookupService
                 ?? throw new ArgumentNullException(nameof(siteLookupService));
             _vendorCodeService = vendorCodeService

@@ -37,7 +37,7 @@ namespace GRA.Controllers.MissionControl
             SiteService siteService,
             SpatialService spatialService) : base(context)
         {
-            _logger = Require.IsNotNull(logger, nameof(logger));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _branchImportExportService = branchImportExportService
                 ?? throw new ArgumentNullException(nameof(branchImportExportService));
             _jobService = jobService ?? throw new ArgumentNullException(nameof(jobService));
