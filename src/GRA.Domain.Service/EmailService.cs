@@ -42,11 +42,19 @@ namespace GRA.Domain.Service
                 && !string.IsNullOrEmpty(site.OutgoingMailHost);
         }
 
+        public Task<bool> Send(int userId,
+            string subject,
+            string body,
+            string htmlBody)
+        {
+            return Send(userId, subject, body, htmlBody, null);
+        }
+
         public async Task<bool> Send(int userId,
             string subject,
             string body,
-            string htmlBody = null,
-            IDictionary<string, string> tags = null)
+            string htmlBody,
+            IDictionary<string, string> tags)
         {
             var user = await _userRepository.GetByIdAsync(userId);
             var site = await _siteRepository.GetByIdAsync(user.SiteId);

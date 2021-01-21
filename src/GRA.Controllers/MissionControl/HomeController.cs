@@ -27,8 +27,7 @@ namespace GRA.Controllers.MissionControl
         private readonly SiteService _siteService;
 
         private readonly ICodeSanitizer _codeSanitizer;
-
-        public const string Name = "Home";
+        public static string Name { get { return "Home"; } }
 
         public HomeController(ILogger<HomeController> logger,
             AuthenticationService authenticationService,

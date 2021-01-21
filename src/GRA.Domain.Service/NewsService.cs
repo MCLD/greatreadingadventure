@@ -101,7 +101,7 @@ namespace GRA.Domain.Service
             return await _newsPostRepository.GetByIdAsync(id);
         }
 
-        public async Task<NewsPost> CreatePostAsync(NewsPost post, bool publish = false)
+        public async Task<NewsPost> CreatePostAsync(NewsPost post, bool publish)
         {
             VerifyManagementPermission();
 
@@ -134,7 +134,7 @@ namespace GRA.Domain.Service
             return addedPost;
         }
 
-        public async Task<NewsPost> EditPostAsync(NewsPost post, bool publish = false)
+        public async Task<NewsPost> EditPostAsync(NewsPost post, bool publish)
         {
             VerifyManagementPermission();
 
@@ -284,7 +284,7 @@ namespace GRA.Domain.Service
 
         public async Task<JobStatus> RunSendNewsEmailsJob(int jobId,
             System.Threading.CancellationToken token,
-            IProgress<JobStatus> progress = null)
+            IProgress<JobStatus> progress)
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
 
