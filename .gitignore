@@ -270,3 +270,8 @@ src/GRA.CommandLine/Properties/PublishProfiles/
 docs/.vscode/settings.json
 .vscode/settings.json
 
+# Web site/Jekyll/GitHub Pages files
+_site
+.sass-cache
+.jekyll-metadata
+Gemfile.lock
