@@ -41,11 +41,11 @@ namespace GRA.Controllers
             UserService userService)
             : base(context)
         {
-            _logger = Require.IsNotNull(logger, nameof(logger));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _activityService = activityService
                 ?? throw new ArgumentNullException(nameof(activityService));
-            _eventService = Require.IsNotNull(eventService, nameof(eventService));
-            _siteService = Require.IsNotNull(siteService, nameof(SiteService));
+            _eventService = eventService ?? throw new ArgumentNullException(nameof(eventService));
+            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             _spatialService = spatialService
                 ?? throw new ArgumentNullException(nameof(spatialService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));

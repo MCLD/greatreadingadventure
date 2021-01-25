@@ -33,7 +33,7 @@ namespace GRA.Data.Repository
             _config = repositoryFacade.config;
             _dateTimeProvider = repositoryFacade.dateTimeProvider;
             _entitySerializer = repositoryFacade.entitySerializer;
-            _logger = Require.IsNotNull(logger, nameof(logger));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<ICollection<EmailSubscriptionAuditLog>> GetUserAuditLogAsync(int userId)

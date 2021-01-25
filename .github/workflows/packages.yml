@@ -1,0 +1,16 @@
+name: "Packages - action"
+
+on:
+  pull_request:
+  schedule:
+    - cron: '0 5 * * 5'
+
+jobs:
+  dotnet-outdated:
+    name: "dotnet outdated"
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: mcld/dotnet-outdated-action@v1

@@ -32,13 +32,19 @@ namespace GRA.Domain.Service
             : base(logger, dateTimeProvider, userContextProvider)
         {
             SetManagementPermission(Permission.ManageTriggers);
-            _avatarBundleRepository = Require.IsNotNull(avatarBundleRepository,
+            _avatarBundleRepository = avatarBundleRepository 
+                ?? throw new ArgumentNullException(
                 nameof(avatarBundleRepository));
-            _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
-            _eventRepository = Require.IsNotNull(eventRepository, nameof(eventRepository));
-            _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));
-            _systemRepository = Require.IsNotNull(systemRepository, nameof(systemRepository));
-            _triggerRepository = Require.IsNotNull(triggerRepository, nameof(triggerRepository));
+            _branchRepository = branchRepository 
+                ?? throw new ArgumentNullException(nameof(branchRepository));
+            _eventRepository = eventRepository 
+                ?? throw new ArgumentNullException(nameof(eventRepository));
+            _programRepository = programRepository 
+                ?? throw new ArgumentNullException(nameof(programRepository));
+            _systemRepository = systemRepository 
+                ?? throw new ArgumentNullException(nameof(systemRepository));
+            _triggerRepository = triggerRepository 
+                ?? throw new ArgumentNullException(nameof(triggerRepository));
             _siteLookupService = siteLookupService
                 ?? throw new ArgumentNullException(nameof(siteLookupService));
         }

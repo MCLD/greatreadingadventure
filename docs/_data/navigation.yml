@@ -1,0 +1,7 @@
+main:
+  - title: "Demo"
+    url: http://demo.greatreadingadventure.com/
+  - title: "Download"
+    url: https://github.com/MCLD/greatreadingadventure/releases/latest
+  - title: "Posts"
+    url: /posts/

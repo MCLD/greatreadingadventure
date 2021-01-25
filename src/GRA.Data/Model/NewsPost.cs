@@ -16,5 +16,8 @@ namespace GRA.Data.Model
         public string Content { get; set; }
 
         public DateTime? PublishedAt { get; set; }
+
+        [MaxLength(255)]
+        public string EmailSummary { get; set; }
     }
 }

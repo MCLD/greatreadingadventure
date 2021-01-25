@@ -30,9 +30,9 @@ namespace GRA.Web
 
             Log.Logger = LogConfig.Build(config).CreateLogger();
             Log.Information("GRA v{Version} instance {Instance} environment {Environment} in {WebRootPath} with content root {ContentRoot}",
-                new Version().GetVersion(),
+                Version.GetVersion(),
                 instance,
-                config[EnvAspNetCoreEnv],
+                config[EnvAspNetCoreEnv] ?? "Production",
                 webHostEnvironment.WebRootPath,
                 config[ConfigurationKey.InternalContentPath]);
 
@@ -44,12 +44,7 @@ namespace GRA.Web
                     config["org.opencontainers.image.version"] ?? "unknown");
             }
 
-            var issues = ViewTemplates.CopyToShared(config[ConfigurationKey.InternalContentPath]);
-
-            foreach (string issue in issues)
-            {
-                Log.Error(issue);
-            }
+            ViewTemplates.CopyToShared(config[ConfigurationKey.InternalContentPath], Log.Logger);
 
             switch (config[ConfigurationKey.DistributedCache]?.ToLower(Culture.DefaultCulture))
             {
@@ -68,7 +63,7 @@ namespace GRA.Web
             }
             try
             {
-                Task.Run(() => new Web(scope).InitalizeAsync()).Wait();
+                Task.Run(() => new WebStartup(scope).InitalizeAsync()).Wait();
             }
             catch (StackExchange.Redis.RedisConnectionException ex)
             {
@@ -88,7 +83,7 @@ namespace GRA.Web
             catch (Exception ex)
             {
                 Log.Warning("GRA v{Version} {Instance} exited unexpectedly: {Message}",
-                    new Version().GetVersion(),
+                    Version.GetVersion(),
                     instance,
                     ex.Message);
                 return 1;
@@ -97,7 +92,7 @@ namespace GRA.Web
             finally
             {
                 Log.Warning("GRA v{Version} {Instance} shutting down.",
-                    new Version().GetVersion(),
+                    Version.GetVersion(),
                     instance);
                 Log.CloseAndFlush();
             }

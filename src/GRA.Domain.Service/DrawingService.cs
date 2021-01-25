@@ -31,15 +31,21 @@ namespace GRA.Domain.Service
             ISystemRepository systemRepository)
             : base(logger, dateTimeProvider, userContextProvider)
         {
-            _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
-            _drawingRepository = Require.IsNotNull(drawingRepository, nameof(drawingRepository));
-            _drawingCriterionRepository = Require.IsNotNull(drawingCriterionRepository,
+            _branchRepository = branchRepository 
+                ?? throw new ArgumentNullException(nameof(branchRepository));
+            _drawingRepository = drawingRepository 
+                ?? throw new ArgumentNullException(nameof(drawingRepository));
+            _drawingCriterionRepository = drawingCriterionRepository 
+                ?? throw new ArgumentNullException(
                 nameof(drawingCriterionRepository));
-            _mailRepository = Require.IsNotNull(mailRepository, nameof(mailRepository));
-            _prizeWinnerRepository = Require.IsNotNull(prizeWinnerRepository,
-                nameof(prizeWinnerRepository));
-            _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));
-            _systemRepository = Require.IsNotNull(systemRepository, nameof(systemRepository));
+            _mailRepository = mailRepository 
+                ?? throw new ArgumentNullException(nameof(mailRepository));
+            _prizeWinnerRepository = prizeWinnerRepository 
+                ?? throw new ArgumentNullException(nameof(prizeWinnerRepository));
+            _programRepository = programRepository 
+                ?? throw new ArgumentNullException(nameof(programRepository));
+            _systemRepository = systemRepository 
+                ?? throw new ArgumentNullException(nameof(systemRepository));
         }
 
         public async Task<DataWithCount<IEnumerable<Drawing>>>

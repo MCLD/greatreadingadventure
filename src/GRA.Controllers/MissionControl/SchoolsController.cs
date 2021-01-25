@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl.Schools;
@@ -26,10 +27,11 @@ namespace GRA.Controllers.MissionControl
             SchoolService schoolService)
             : base(context)
         {
-            _logger = Require.IsNotNull(logger, nameof(logger));
-            _schoolImportService = Require.IsNotNull(schoolImportService,
-                nameof(schoolImportService));
-            _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _schoolImportService = schoolImportService 
+                ?? throw new ArgumentNullException(nameof(schoolImportService));
+            _schoolService = schoolService 
+                ?? throw new ArgumentNullException(nameof(schoolService));
             PageTitle = "School management";
         }
 

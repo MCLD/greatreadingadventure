@@ -52,21 +52,23 @@ namespace GRA.Controllers
             ICodeSanitizer codeSanitizer)
                 : base(context)
         {
-            _logger = Require.IsNotNull(logger, nameof(logger));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = context.Mapper;
-            _authenticationService = Require.IsNotNull(authenticationService,
-                nameof(authenticationService));
+            _authenticationService = authenticationService
+                ?? throw new ArgumentNullException(nameof(authenticationService));
             _authorizationCodeService = authorizationCodeService
                 ?? throw new ArgumentNullException(nameof(authorizationCodeService));
-            _mailService = Require.IsNotNull(mailService, nameof(mailService));
-            _pointTranslationService = Require.IsNotNull(pointTranslationService,
-                nameof(pointTranslationService));
-            _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
-            _siteService = Require.IsNotNull(siteService, nameof(siteService));
-            _questionnaireService = Require.IsNotNull(questionnaireService,
-                nameof(questionnaireService));
-            _userService = Require.IsNotNull(userService, nameof(userService));
-            _codeSanitizer = Require.IsNotNull(codeSanitizer, nameof(codeSanitizer));
+            _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
+            _pointTranslationService = pointTranslationService
+                ?? throw new ArgumentNullException(nameof(pointTranslationService));
+            _schoolService = schoolService
+                ?? throw new ArgumentNullException(nameof(schoolService));
+            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
+            _questionnaireService = questionnaireService
+                ?? throw new ArgumentNullException(nameof(questionnaireService));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            _codeSanitizer = codeSanitizer
+                ?? throw new ArgumentNullException(nameof(codeSanitizer));
             PageTitle = _sharedLocalizer[Annotations.Title.Join];
         }
 

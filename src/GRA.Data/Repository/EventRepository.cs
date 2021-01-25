@@ -49,7 +49,9 @@ namespace GRA.Data.Repository
                                  Name = eventInfo.Name,
                                  StartDate = eventInfo.StartDate,
                                  EventLocationName = spatial.BranchId.HasValue ? spatial.Branch.Name : spatial.Location.Name,
-                                 EventLocationDistance = spatial.Distance
+                                 EventLocationDistance = spatial.Distance,
+                                 AllDay = eventInfo.AllDay,
+                                 EndDate = eventInfo.EndDate
                              };
             }
             else
@@ -67,6 +69,8 @@ namespace GRA.Data.Repository
                                  StartDate = eventInfo.StartDate,
                                  StreamingAccessEnds = eventInfo.StreamingAccessEnds,
                                  EventLocationName = eventInfo.AtBranchId.HasValue ? branch.Name : location.Name,
+                                 AllDay = eventInfo.AllDay,
+                                 EndDate = eventInfo.EndDate
                              };
             }
 

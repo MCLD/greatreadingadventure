@@ -25,7 +25,7 @@ namespace GRA.Web
                 .Enrich.WithProperty(LoggingEnrichment.Application,
                     Assembly.GetExecutingAssembly().GetName().Name)
                 .Enrich.WithProperty(LoggingEnrichment.Version,
-                    new Version().GetShortVersion());
+                    Version.GetShortVersion());
 
             string instance = config[ConfigurationKey.InstanceName];
 
@@ -54,7 +54,7 @@ namespace GRA.Web
                 {
                     string httpLogFile = !string.IsNullOrEmpty(instance)
                         ? Path.Combine(rollingLogLocation, $"{httpErrorFileTag}-{instance}-{{Date}}.txt")
-                        : Path.Combine(rollingLogLocation + $"{httpErrorFileTag}-{{Date}}.txt");
+                        : Path.Combine(rollingLogLocation, $"{httpErrorFileTag}-{{Date}}.txt");
 
                     loggerConfig.WriteTo.Logger(_ => _
                         .Filter.ByIncludingOnly(Matching.FromSource(ErrorControllerName))

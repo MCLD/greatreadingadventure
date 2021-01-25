@@ -44,19 +44,15 @@ The Great Reading Adventure is open source software developed with the help of [
 - [AppHarbor](https://appharbor.com/) - free hosting tier that will run the GRA for testing
 - [AppVeyor](http://www.appveyor.com/) - continuous integration, ensuring code check-ins don't break Windows builds
 - [Codacy](https://www.codacy.com/) - automated code reviews and code analytics
-- [Discourse](https://www.discourse.org/) - powers [forum.greatreadingadventure.com](http://forums.greatreadingadventure.com)
 - [Docker](https://www.docker.com/) - containerized builds and deployment
 - [Eleven Giants](http://www.elevengiants.com/) - helped with extraction of avatars from the Glitch public domain game art
-- [Favicon Generator. For real.](https://realfavicongenerator.net/) - generate icons for many platforms
-- [GitHub](https://github.com/) - hosts the source code, issue tracker, Wiki, [www.greatreadingadventure.com](http://www.greatreadingadventure.com/) and more
+- [GitHub](https://github.com/) - hosts the source code, discussions, issue tracker, continuous integration, Wiki, [www.greatreadingadventure.com](http://www.greatreadingadventure.com/) and more
 - [GitMagic](https://gitmagic.io/) - enforces revision control guidelines
 - [Glitch public domain game art](https://www.glitchthegame.com/public-domain-game-art/) - free fantastic art provided by [Tiny Speck](https://tinyspeck.com/) which can be seen in the default banner and avatars
 - [Mailtrap](https://mailtrap.io/) - painless email testing during development
 - [MyKnowledgeMap](https://www.myknowledgemap.com/) - creators and maintainers of [OpenBadges.me](https://www.openbadges.me/), our integrated badge maker
 - [Open Library](https://openlibrary.org/) - book cover images, title, and author lookups for challenges
 - [Read The Docs](https://readthedocs.org/) - powers [the online manual](http://manual.greatreadingadventure.com)
-- [Slack](https://slack.com/) - team communications
-- [Travis CI](https://travis-ci.org/) - continuous integration, ensuring code check-ins don't break Linux and macOS builds
 
 ## <a name="source"></a>Open-source software and components
 
