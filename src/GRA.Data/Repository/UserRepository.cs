@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
@@ -20,7 +21,8 @@ namespace GRA.Data.Repository
             ILogger<UserRepository> logger,
             Security.Abstract.IPasswordHasher passwordHasher) : base(repositoryFacade, logger)
         {
-            _passwordHasher = Require.IsNotNull(passwordHasher, nameof(passwordHasher));
+            _passwordHasher = passwordHasher 
+                ?? throw new ArgumentNullException(nameof(passwordHasher));
         }
 
         public async Task AddRoleAsync(int currentUserId, int userId, int roleId)

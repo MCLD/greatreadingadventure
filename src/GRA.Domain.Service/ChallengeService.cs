@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Service
 {
-    public class ChallengeService : Abstract.BaseUserService<ChallengeService>
+    public class ChallengeService : BaseUserService<ChallengeService>
     {
         private const string TaskFilesPath = "tasks";
         private readonly IBadgeRepository _badgeRepository;
@@ -41,19 +41,25 @@ namespace GRA.Domain.Service
             ITriggerRepository triggerRepository)
             : base(logger, dateTimeProvider, userContextProvider)
         {
-            _badgeRepository = Require.IsNotNull(badgeRepository, nameof(badgeRepository));
-            _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
-            _categoryRepository = Require.IsNotNull(categoryRepository, nameof(categoryRepository));
-            _challengeRepository = Require.IsNotNull(challengeRepository,
-                nameof(challengeRepository));
-            _challengeGroupRepository = Require.IsNotNull(challengeGroupRepository,
-                nameof(challengeGroupRepository));
-            _challengeTaskRepository = Require.IsNotNull(challengeTaskRepository,
-                nameof(challengeTaskRepository));
-            _eventRepository = Require.IsNotNull(eventRepository, nameof(eventRepository));
-            _pathResolver = Require.IsNotNull(pathResolver, nameof(pathResolver));
-            _siteLookupService = Require.IsNotNull(siteLookupService, nameof(siteLookupService));
-            _triggerRepository = Require.IsNotNull(triggerRepository, nameof(triggerRepository));
+            _badgeRepository = badgeRepository 
+                ?? throw new ArgumentNullException(nameof(badgeRepository));
+            _branchRepository = branchRepository 
+                ?? throw new ArgumentNullException(nameof(branchRepository));
+            _categoryRepository = categoryRepository 
+                ?? throw new ArgumentNullException(nameof(categoryRepository));
+            _challengeRepository = challengeRepository 
+                ?? throw new ArgumentNullException(nameof(challengeRepository));
+            _challengeGroupRepository = challengeGroupRepository 
+                ?? throw new ArgumentNullException(nameof(challengeGroupRepository));
+            _challengeTaskRepository = challengeTaskRepository 
+                ?? throw new ArgumentNullException(nameof(challengeTaskRepository));
+            _eventRepository = eventRepository 
+                ?? throw new ArgumentNullException(nameof(eventRepository));
+            _pathResolver = pathResolver ?? throw new ArgumentNullException(nameof(pathResolver));
+            _siteLookupService = siteLookupService 
+                ?? throw new ArgumentNullException(nameof(siteLookupService));
+            _triggerRepository = triggerRepository 
+                ?? throw new ArgumentNullException(nameof(triggerRepository));
         }
 
         public async Task<DataWithCount<IEnumerable<Challenge>>>

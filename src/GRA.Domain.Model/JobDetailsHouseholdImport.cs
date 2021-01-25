@@ -4,7 +4,7 @@
     {
         public string Filename { get; set; }
         public int HeadOfHouseholdId { get; set; }
-        public int ProgmamId { get; set; }
+        public int ProgramId { get; set; }
         public int? SchoolId { get; set; }
         public bool IsHomeSchooled { get; set; }
         public bool SchoolNotListed { get; set; }

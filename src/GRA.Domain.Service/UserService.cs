@@ -1632,7 +1632,7 @@ namespace GRA.Domain.Service
                 try
                 {
                     userImportResult = await _userImportService.GetFromExcelAsync(fullPath,
-                            jobDetails.ProgmamId);
+                            jobDetails.ProgramId);
                 }
                 finally
                 {
@@ -1751,7 +1751,7 @@ namespace GRA.Domain.Service
                         IsHomeschooled = jobDetails.IsHomeSchooled,
                         LastName = importUser.LastName?.Trim(),
                         PostalCode = householdHead.PostalCode,
-                        ProgramId = jobDetails.ProgmamId,
+                        ProgramId = jobDetails.ProgramId,
                         SchoolId = jobDetails.SchoolId,
                         SchoolNotListed = jobDetails.SchoolNotListed,
                         SystemId = householdHead.SystemId

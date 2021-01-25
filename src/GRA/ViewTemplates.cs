@@ -18,9 +18,12 @@ namespace GRA
         public static readonly string RegistrationOpen = "IndexRegistrationOpen";
         public static readonly string ExitRegistrationOpen = "ExitRegistrationOpen";
 
-        public static IEnumerable<string> CopyToShared(string contentRoot)
+        public static void CopyToShared(string contentRoot, Serilog.ILogger logger)
         {
-            var issues = new List<string>();
+            if (logger == null)
+            {
+                throw new ArgumentNullException(nameof(logger));
+            }
 
             var viewsPath = Path.Combine(contentRoot, "Views");
             var sharedViewsPath = Path.Combine(contentRoot, "shared", "views");
@@ -40,12 +43,14 @@ namespace GRA
                     File.Copy(supportFile, Path.Combine(sharedViewsPath, filename), true);
                     File.Copy(supportFile, Path.Combine(templatePath, filename), true);
                 }
-                catch (Exception ex)
+                catch (IOException ioex)
                 {
-                    issues.Add($"Could not copy {supportFile} to {sharedViewsPath}: {ex.Message}");
+                    logger.Error("Could not copy {SourceFile} to {DestinationPath}: {ErrorMessage}",
+                        supportFile,
+                        sharedViewsPath,
+                        ioex.Message);
                 }
             }
-
 
             var viewPath = Path.Combine(contentRoot,
                 "Views",
@@ -62,49 +67,52 @@ namespace GRA
                 {
                     File.Copy(file, destinationPath, true);
                 }
-                catch (Exception ex)
+                catch (IOException ioex)
                 {
-                    issues.Add($"Problem copying {file} to {destinationPath}: {ex.Message}");
+                    logger.Error("Could not copy {SourceFile} to {DestinationPath}: {ErrorMessage}",
+                        file,
+                        destinationPath,
+                        ioex.Message);
                 }
             }
 
-            var defaultFaviconPath
-                = Path.Combine(contentRoot,
-                    "assets",
-                    "defaultfavicon");
-
-            if (!Directory.Exists(defaultFaviconPath))
+            var customwwwroot = Path.Combine(contentPath, "wwwroot");
+            var customFiles = new List<string>();
+            if (Directory.Exists(customwwwroot))
             {
-                issues.Add($"Can't copy social images: {defaultFaviconPath} doesn't exist.");
-            }
-            else
-            {
-                foreach (var filePath in Directory.EnumerateFiles(defaultFaviconPath, "*.*"))
+                foreach (var customFile in Directory.EnumerateFiles(customwwwroot, "*.*"))
                 {
-                    var contentPathFile = Path.Combine(contentPath,
-                        Path.GetFileName(filePath));
-                    if (!File.Exists(contentPathFile))
+                    var fileName = Path.GetFileName(customFile);
+                    var wwwrootPath = Path.Combine(contentRoot, "wwwroot", fileName);
+                    try
                     {
-                        try
-                        {
-                            File.Copy(filePath, contentPathFile);
-                        }
-                        catch (Exception ex)
-                        {
-                            issues.Add($"Can't copy social file {filePath} to content path: {ex.Message}");
-                        }
+                        File.Copy(customFile, wwwrootPath, true);
+                        customFiles.Add(fileName);
+                    }
+                    catch (IOException ioex)
+                    {
+                        logger.Error("Could not copy {SourceFile} to {DestinationPath}: {ErrorMessage}",
+                            customFile,
+                            wwwrootPath,
+                            ioex.Message);
                     }
                 }
             }
+            if (customFiles.Count > 0)
+            {
+                logger.Information("Copied {Count} custom files from {SourcePath} to {DestinationPath}: {Files}",
+                    customFiles.Count,
+                    customwwwroot,
+                    Path.Combine(contentRoot, "wwwroot"),
+                    string.Join(", ", customFiles));
+            }
 
-            var defaultImagesPath
-                = Path.Combine(contentRoot,
-                    "assets",
-                    "defaultimages");
+            var defaultImagesPath = Path.Combine(contentRoot, "assets", "defaultimages");
 
             if (!Directory.Exists(defaultImagesPath))
             {
-                issues.Add($"Can't copy images: {defaultImagesPath} doesn't exist.");
+                logger.Error("Could not copy images: {SourcePath} does not exist",
+                    defaultImagesPath);
             }
             else
             {
@@ -118,15 +126,16 @@ namespace GRA
                         {
                             File.Copy(filePath, contentPathFile);
                         }
-                        catch (Exception ex)
+                        catch (IOException ioex)
                         {
-                            issues.Add($"Can't copy image file {filePath} to content path: {ex.Message}");
+                            logger.Error("Could not copy {SourceFile} to {DestinationPath}: {ErrorMessage}",
+                                filePath,
+                                contentPath,
+                                ioex.Message);
                         }
                     }
                 }
             }
-
-            return issues;
         }
     }
 }

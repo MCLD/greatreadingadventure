@@ -17,7 +17,7 @@ namespace GRA.Data.SqlServer.Migrations
             modelBuilder
                 .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.0");
+                .HasAnnotation("ProductVersion", "5.0.2");
 
             modelBuilder.Entity("GRA.Data.Model.Answer", b =>
                 {
@@ -303,11 +303,6 @@ namespace GRA.Data.SqlServer.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Icon")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
@@ -1597,6 +1592,10 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<int>("CreatedBy")
                         .HasColumnType("int");
+
+                    b.Property<string>("EmailSummary")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<DateTime?>("PublishedAt")
                         .HasColumnType("datetime2");

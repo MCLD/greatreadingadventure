@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
@@ -29,14 +30,19 @@ namespace GRA.Domain.Service
             ISiteRepository siteRepository,
             EmailService emailService) : base(logger, dateTimeProvider, userContextProvider)
         {
-            _tokenGenerator = Require.IsNotNull(tokenGenerator, nameof(tokenGenerator));
-            _passwordValidator = Require.IsNotNull(passwordValidator, nameof(passwordValidator));
-            _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
-            _recoveryTokenRepository = Require.IsNotNull(recoveryTokenRepository,
-                nameof(recoveryTokenRepository));
-            _roleRepository = Require.IsNotNull(roleRepository, nameof(roleRepository));
-            _siteRepository = Require.IsNotNull(siteRepository, nameof(siteRepository));
-            _emailService = Require.IsNotNull(emailService, nameof(emailService));
+            _tokenGenerator = tokenGenerator 
+                ?? throw new ArgumentNullException(nameof(tokenGenerator));
+            _passwordValidator = passwordValidator 
+                ?? throw new ArgumentNullException(nameof(passwordValidator));
+            _userRepository = userRepository 
+                ?? throw new ArgumentNullException(nameof(userRepository));
+            _recoveryTokenRepository = recoveryTokenRepository 
+                ?? throw new ArgumentNullException(nameof(recoveryTokenRepository));
+            _roleRepository = roleRepository 
+                ?? throw new ArgumentNullException(nameof(roleRepository));
+            _siteRepository = siteRepository 
+                ?? throw new ArgumentNullException(nameof(siteRepository));
+            _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
         }
 
         public async Task<AuthenticationResult> AuthenticateUserAsync(string username,

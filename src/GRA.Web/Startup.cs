@@ -57,7 +57,7 @@ namespace GRA.Web
                 { ConfigurationKey.DefaultSiteName, "The Great Reading Adventure" },
                 { ConfigurationKey.DefaultPageTitle, "Great Reading Adventure" },
                 { ConfigurationKey.DefaultSitePath, "gra" },
-                { ConfigurationKey.DefaultFooter, "This site is running the open source <a href=\"http://www.greatreadingadventure.com/\">Great Reading Adventure</a> software developed by the <a href=\"https://mcldaz.org/\">Maricopa County Library District</a> with support by the <a href=\"http://www.azlibrary.gov/\">Arizona State Library, Archives and Public Records</a>, a division of the Secretary of State, and with federal funds from the <a href=\"http://www.imls.gov/\">Institute of Museum and Library Services</a>." },
+                { ConfigurationKey.DefaultFooter, "This site is running the open source <a href=\"https://www.greatreadingadventure.com/\">Great Reading Adventure</a> software developed by the <a href=\"https://mcldaz.org/\">Maricopa County Library District</a> with support by the <a href=\"https://azlibrary.gov/\">Arizona State Library, Archives and Public Records</a>, a division of the Secretary of State, and with federal funds from the <a href=\"https://imls.gov/\">Institute of Museum and Library Services</a>." },
                 { ConfigurationKey.InitialAuthorizationCode, "gra4adminmagic" },
                 { ConfigurationKey.ContentPath, "content" }
             };
@@ -274,6 +274,7 @@ namespace GRA.Web
             services.AddScoped<AuthorizationCodeService>();
             services.AddScoped<AvatarService>();
             services.AddScoped<BadgeService>();
+            services.AddScoped<BranchImportExportService>();
             services.AddScoped<CarouselService>();
             services.AddScoped<CategoryService>();
             services.AddScoped<ChallengeService>();

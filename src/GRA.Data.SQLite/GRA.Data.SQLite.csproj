@@ -20,7 +20,7 @@
     <RepositoryType>Git</RepositoryType>
     <RepositoryUrl>https://github.com/mcld/greatreadingadventure/</RepositoryUrl>
     <TargetFramework>net5.0</TargetFramework>
-    <Version>4.1.2</Version>
+    <Version>4.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,11 +29,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.1">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.2">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.2" />
   </ItemGroup>
 
   <ItemGroup>

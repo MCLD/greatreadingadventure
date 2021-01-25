@@ -210,320 +210,326 @@ namespace GRA.Domain.Service
 
                 try
                 {
-                    using (var stream = new FileStream(fullPath, FileMode.Open))
+                    using var stream = new FileStream(fullPath, FileMode.Open);
+                    int branchColumnId = 0;
+                    int couponColumnId = 0;
+                    int detailsColumnId = 0;
+                    int orderDateColumnId = 0;
+                    int shipDateColumnId = 0;
+                    var issues = new List<string>();
+                    int row = 0;
+                    int totalRows = 0;
+                    int updated = 0;
+                    int alreadyCurrent = 0;
+                    VendorCodeType vendorCodeType = null;
+                    using (var excelReader = ExcelReaderFactory.CreateBinaryReader(stream))
                     {
-                        int branchColumnId = 0;
-                        int couponColumnId = 0;
-                        int detailsColumnId = 0;
-                        int orderDateColumnId = 0;
-                        int shipDateColumnId = 0;
-                        var issues = new List<string>();
-                        int row = 0;
-                        int totalRows = 0;
-                        int updated = 0;
-                        int alreadyCurrent = 0;
-                        VendorCodeType vendorCodeType = null;
-                        using (var excelReader = ExcelReaderFactory.CreateBinaryReader(stream))
+                        while (excelReader.Read())
                         {
-                            while (excelReader.Read())
-                            {
-                                row++;
-                            }
-                            totalRows = row;
-                            row = 0;
+                            row++;
+                        }
+                        totalRows = row;
+                        row = 0;
 
-                            excelReader.Reset();
-                            while (excelReader.Read())
+                        excelReader.Reset();
+                        while (excelReader.Read())
+                        {
+                            row++;
+                            if (row % 10 == 0)
                             {
-                                row++;
-                                if (row % 10 == 0)
+                                await _jobRepository.UpdateStatusAsync(jobId,
+                                    $"Processing row {row}/{totalRows}...");
+
+                                progress?.Report(new JobStatus
                                 {
-                                    progress.Report(new JobStatus
-                                    {
-                                        PercentComplete = row * 100 / totalRows,
-                                        Status = $"Processing row {row}/{totalRows}...",
-                                        Error = false
-                                    });
-                                }
-                                if (row == 1)
+                                    PercentComplete = row * 100 / totalRows,
+                                    Status = $"Processing row {row}/{totalRows}...",
+                                    Error = false
+                                });
+                            }
+                            if (row == 1)
+                            {
+                                progress?.Report(new JobStatus
                                 {
-                                    progress.Report(new JobStatus
+                                    PercentComplete = 1,
+                                    Status = $"Processing row {row}/{totalRows}...",
+                                    Error = false
+                                });
+                                for (int i = 0; i < excelReader.FieldCount; i++)
+                                {
+                                    switch (excelReader.GetString(i)?.Trim() ?? $"Column{i}")
                                     {
-                                        PercentComplete = 1,
-                                        Status = $"Processing row {row}/{totalRows}...",
-                                        Error = false
-                                    });
-                                    for (int i = 0; i < excelReader.FieldCount; i++)
-                                    {
-                                        switch (excelReader.GetString(i)?.Trim() ?? $"Column{i}")
-                                        {
-                                            case BranchIdRowHeading:
-                                                branchColumnId = i;
-                                                break;
-                                            case CouponRowHeading:
-                                                couponColumnId = i;
-                                                break;
-                                            case DetailsRowHeading:
-                                                detailsColumnId = i;
-                                                break;
-                                            case OrderDateRowHeading:
-                                                orderDateColumnId = i;
-                                                break;
-                                            case ShipDateRowHeading:
-                                                shipDateColumnId = i;
-                                                break;
-                                        }
+                                        case BranchIdRowHeading:
+                                            branchColumnId = i;
+                                            break;
+                                        case CouponRowHeading:
+                                            couponColumnId = i;
+                                            break;
+                                        case DetailsRowHeading:
+                                            detailsColumnId = i;
+                                            break;
+                                        case OrderDateRowHeading:
+                                            orderDateColumnId = i;
+                                            break;
+                                        case ShipDateRowHeading:
+                                            shipDateColumnId = i;
+                                            break;
                                     }
                                 }
-                                else
+                            }
+                            else
+                            {
+                                if (excelReader.GetValue(couponColumnId) != null
+                                    && (excelReader.GetValue(orderDateColumnId) != null
+                                        || excelReader.GetValue(shipDateColumnId) != null
+                                        || excelReader.GetValue(detailsColumnId) != null
+                                        || excelReader.GetValue(branchColumnId) != null))
                                 {
-                                    if (excelReader.GetValue(couponColumnId) != null
-                                        && (excelReader.GetValue(orderDateColumnId) != null
-                                            || excelReader.GetValue(shipDateColumnId) != null
-                                            || excelReader.GetValue(detailsColumnId) != null
-                                            || excelReader.GetValue(branchColumnId) != null))
+                                    string coupon = null;
+                                    DateTime? orderDate = null;
+                                    DateTime? shipDate = null;
+                                    string details = null;
+                                    int? branchId = null;
+
+                                    try
                                     {
-                                        string coupon = null;
-                                        DateTime? orderDate = null;
-                                        DateTime? shipDate = null;
-                                        string details = null;
-                                        int? branchId = null;
+                                        coupon = excelReader.GetString(couponColumnId);
+                                    }
+                                    catch (IndexOutOfRangeException ex)
+                                    {
+                                        _logger.LogError("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
+                                            "code",
+                                            row,
+                                            ex.Message);
+                                        issues.Add($"Issue reading code on line {row}: {ex.Message}");
+                                    }
 
+                                    try
+                                    {
                                         try
                                         {
-                                            coupon = excelReader.GetString(couponColumnId);
+                                            orderDate = excelReader.GetDateTime(orderDateColumnId);
                                         }
-                                        catch (IndexOutOfRangeException ex)
+                                        catch (NullReferenceException)
+                                        { }
+                                        catch (InvalidCastException)
                                         {
-                                            _logger.LogError("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
-                                                "code",
-                                                row,
-                                                ex.Message);
-                                            issues.Add($"Issue reading code on line {row}: {ex.Message}");
-                                        }
-
-                                        try
-                                        {
-                                            try
+                                            string orderDateString
+                                                = excelReader.GetString(orderDateColumnId);
+                                            if (DateTime.TryParse(
+                                                orderDateString,
+                                                out var orderDateConversion))
                                             {
-                                                orderDate = excelReader.GetDateTime(orderDateColumnId);
+                                                orderDate = orderDateConversion;
                                             }
-                                            catch (NullReferenceException)
-                                            { }
-                                            catch (InvalidCastException)
+                                            else
                                             {
-                                                string orderDateString
-                                                    = excelReader.GetString(orderDateColumnId);
-                                                if (DateTime.TryParse(
-                                                    orderDateString,
-                                                    out var orderDateConversion))
-                                                {
-                                                    orderDate = orderDateConversion;
-                                                }
-                                                else
-                                                {
-                                                    _logger.LogError("Unable to parse {Field}, row {SpreadsheetRow}: {Value}",
-                                                        "order date",
-                                                        row,
-                                                        orderDateString);
-                                                    issues.Add($"Issue reading order date on row {row}: {orderDateString}");
-                                                }
-                                            }
-                                        }
-                                        catch (IndexOutOfRangeException ex)
-                                        {
-                                            _logger.LogError("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
-                                                "order date",
-                                                row,
-                                                ex.Message);
-                                            issues.Add($"Issue reading order date on row {row}: {ex.Message}");
-                                        }
-
-                                        try
-                                        {
-                                            try
-                                            {
-                                                shipDate = excelReader.GetDateTime(shipDateColumnId);
-                                            }
-                                            catch (NullReferenceException)
-                                            { }
-                                            catch (InvalidCastException)
-                                            {
-                                                string shipDateString
-                                                    = excelReader.GetString(shipDateColumnId);
-                                                if (DateTime.TryParse(
-                                                    shipDateString,
-                                                    out var shipDateConversion))
-                                                {
-                                                    shipDate = shipDateConversion;
-                                                }
-                                                else
-                                                {
-                                                    _logger.LogError("Unable to parse {Field}, row {SpreadsheetRow}: {Value}",
-                                                        "ship date",
-                                                        row,
-                                                        shipDateString);
-                                                    issues.Add($"Issue reading order date on row {row}: {shipDateString}");
-                                                }
-                                            }
-                                        }
-                                        catch (IndexOutOfRangeException ex)
-                                        {
-                                            _logger.LogError("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
-                                                "ship date",
-                                                row,
-                                                ex.Message);
-                                            issues.Add($"Issue reading ship date on row {row}: {ex.Message}");
-                                        }
-
-                                        if (excelReader.GetValue(detailsColumnId) != null)
-                                        {
-                                            try
-                                            {
-                                                details = excelReader.GetString(detailsColumnId);
-                                            }
-                                            catch (IndexOutOfRangeException ex)
-                                            {
-                                                _logger.LogWarning("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
-                                                    "details",
+                                                _logger.LogError("Unable to parse {Field}, row {SpreadsheetRow}: {Value}",
+                                                    "order date",
                                                     row,
-                                                    ex.Message);
-                                                issues.Add($"Issue reading details on row {row}: {ex.Message}");
+                                                    orderDateString);
+                                                issues.Add($"Issue reading order date on row {row}: {orderDateString}");
                                             }
                                         }
+                                    }
+                                    catch (IndexOutOfRangeException ex)
+                                    {
+                                        _logger.LogError("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
+                                            "order date",
+                                            row,
+                                            ex.Message);
+                                        issues.Add($"Issue reading order date on row {row}: {ex.Message}");
+                                    }
 
-                                        if (excelReader.GetValue(branchColumnId) != null)
+                                    try
+                                    {
+                                        try
                                         {
-                                            try
+                                            shipDate = excelReader.GetDateTime(shipDateColumnId);
+                                        }
+                                        catch (NullReferenceException)
+                                        { }
+                                        catch (InvalidCastException)
+                                        {
+                                            string shipDateString
+                                                = excelReader.GetString(shipDateColumnId);
+                                            if (DateTime.TryParse(
+                                                shipDateString,
+                                                out var shipDateConversion))
                                             {
-                                                string branch
-                                                    = excelReader.GetString(branchColumnId);
-                                                if (int.TryParse(branch, out int branchIdNum))
-                                                {
-                                                    branchId = branchIdNum;
-                                                }
-                                                else
-                                                {
-                                                    _logger.LogWarning("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
-                                                        "branch id",
-                                                        row,
-                                                        "Couldn't convert to a number");
-                                                    issues.Add($"Issue reading details on row {row}: Couldn't convert to a number");
-                                                }
+                                                shipDate = shipDateConversion;
                                             }
-                                            catch (IndexOutOfRangeException ex)
+                                            else
+                                            {
+                                                _logger.LogError("Unable to parse {Field}, row {SpreadsheetRow}: {Value}",
+                                                    "ship date",
+                                                    row,
+                                                    shipDateString);
+                                                issues.Add($"Issue reading order date on row {row}: {shipDateString}");
+                                            }
+                                        }
+                                    }
+                                    catch (IndexOutOfRangeException ex)
+                                    {
+                                        _logger.LogError("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
+                                            "ship date",
+                                            row,
+                                            ex.Message);
+                                        issues.Add($"Issue reading ship date on row {row}: {ex.Message}");
+                                    }
+
+                                    if (excelReader.GetValue(detailsColumnId) != null)
+                                    {
+                                        try
+                                        {
+                                            details = excelReader.GetString(detailsColumnId);
+                                        }
+                                        catch (IndexOutOfRangeException ex)
+                                        {
+                                            _logger.LogWarning("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
+                                                "details",
+                                                row,
+                                                ex.Message);
+                                            issues.Add($"Issue reading details on row {row}: {ex.Message}");
+                                        }
+                                    }
+
+                                    if (excelReader.GetValue(branchColumnId) != null)
+                                    {
+                                        try
+                                        {
+                                            string branch
+                                                = excelReader.GetString(branchColumnId);
+                                            if (int.TryParse(branch, out int branchIdNum))
+                                            {
+                                                branchId = branchIdNum;
+                                            }
+                                            else
                                             {
                                                 _logger.LogWarning("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
                                                     "branch id",
                                                     row,
-                                                    ex.Message);
-                                                issues.Add($"Issue reading details on row {row}: {ex.Message}");
+                                                    "Couldn't convert to a number");
+                                                issues.Add($"Issue reading details on row {row}: Couldn't convert to a number");
                                             }
                                         }
-
-                                        if (!string.IsNullOrEmpty(coupon)
-                                            && (orderDate != null
-                                                || shipDate != null
-                                                || !string.IsNullOrEmpty(details)
-                                                || branchId != null))
+                                        catch (IndexOutOfRangeException ex)
                                         {
-                                            var code = await _vendorCodeRepository.GetByCode(coupon);
-                                            if (code == null)
+                                            _logger.LogWarning("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
+                                                "branch id",
+                                                row,
+                                                ex.Message);
+                                            issues.Add($"Issue reading details on row {row}: {ex.Message}");
+                                        }
+                                    }
+
+                                    if (!string.IsNullOrEmpty(coupon)
+                                        && (orderDate != null
+                                            || shipDate != null
+                                            || !string.IsNullOrEmpty(details)
+                                            || branchId != null))
+                                    {
+                                        var code = await _vendorCodeRepository.GetByCode(coupon);
+                                        if (code == null)
+                                        {
+                                            _logger.LogError("File contained code {Code} which was not found in the database",
+                                                coupon);
+                                            issues.Add($"Uploaded file contained code <code>{coupon}</code> which couldn't be found in the database.");
+                                        }
+                                        else
+                                        {
+                                            if (orderDate == code.OrderDate
+                                                && shipDate == code.ShipDate
+                                                && details == code.Details
+                                                && branchId == code.BranchId)
                                             {
-                                                _logger.LogError("File contained code {Code} which was not found in the database",
-                                                    coupon);
-                                                issues.Add($"Uploaded file contained code <code>{coupon}</code> which couldn't be found in the database.");
+                                                alreadyCurrent++;
                                             }
                                             else
                                             {
-                                                if (orderDate == code.OrderDate
-                                                    && shipDate == code.ShipDate
-                                                    && details == code.Details
-                                                    && branchId == code.BranchId)
-                                                {
-                                                    alreadyCurrent++;
-                                                }
-                                                else
-                                                {
-                                                    await UpdateVendorCodeAsync(code,
-                                                        orderDate,
-                                                        shipDate,
-                                                        details,
-                                                        branchId,
-                                                        vendorCodeType);
-                                                    updated++;
-                                                }
+                                                await UpdateVendorCodeAsync(code,
+                                                    orderDate,
+                                                    shipDate,
+                                                    details,
+                                                    branchId,
+                                                    vendorCodeType);
+                                                updated++;
                                             }
                                         }
                                     }
                                 }
-                                if (token.IsCancellationRequested)
-                                {
-                                    break;
-                                }
+                            }
+                            if (token.IsCancellationRequested)
+                            {
+                                break;
                             }
                         }
+                    }
 
-                        if (token.IsCancellationRequested)
+                    if (token.IsCancellationRequested)
+                    {
+                        await _jobRepository.UpdateStatusAsync(jobId,
+                            $"Import cancelled at row {row}/{totalRows}.");
+
+                        return new JobStatus
                         {
-                            return new JobStatus
-                            {
-                                PercentComplete = 100,
-                                Status = $"Operation cancelled at row {row}."
-                            };
-                        }
+                            Status = $"Operation cancelled at row {row}."
+                        };
+                    }
 
-                        _logger.LogInformation("Import of {FileName} completed: {UpdatedRecords} updates, {CurrentRecords} already current, {IssueCount} issues in {Elapsed} ms",
-                            filename,
-                            updated,
-                            alreadyCurrent,
-                            issues?.Count ?? 0,
-                            sw?.ElapsedMilliseconds ?? 0);
+                    await _jobRepository.UpdateStatusAsync(jobId,
+                        $"Updated {updated} records, {alreadyCurrent} already current, {issues?.Count ?? 0} issues.");
 
-                        var sb = new StringBuilder("<strong>Import complete</strong>");
+                    _logger.LogInformation("Import of {FileName} completed: {UpdatedRecords} updates, {CurrentRecords} already current, {IssueCount} issues in {Elapsed} ms",
+                        filename,
+                        updated,
+                        alreadyCurrent,
+                        issues?.Count ?? 0,
+                        sw?.ElapsedMilliseconds ?? 0);
+
+                    var sb = new StringBuilder("<strong>Import complete</strong>");
+                    if (updated > 0)
+                    {
+                        sb.Append(": ").Append(updated).Append(" records were updated");
+                    }
+                    if (alreadyCurrent > 0)
+                    {
                         if (updated > 0)
                         {
-                            sb.Append(": ").Append(updated).Append(" records were updated");
-                        }
-                        if (alreadyCurrent > 0)
-                        {
-                            if (updated > 0)
-                            {
-                                sb.Append(", ");
-                            }
-                            else
-                            {
-                                sb.Append(": ");
-                            }
-                            sb.Append(alreadyCurrent).Append(" records were already current");
-                        }
-                        sb.Append(".");
-
-                        if (issues.Count > 0)
-                        {
-                            sb.Append(" Issues detected:<ul>");
-                            foreach (string issue in issues)
-                            {
-                                sb.Append("<li>").Append(issue).Append("</li>");
-                            }
-                            sb.Append("</ul>");
-                            return new JobStatus
-                            {
-                                PercentComplete = 100,
-                                Complete = true,
-                                Status = sb.ToString(),
-                                Error = true
-                            };
+                            sb.Append(", ");
                         }
                         else
                         {
-                            return new JobStatus
-                            {
-                                PercentComplete = 100,
-                                Complete = true,
-                                Status = sb.ToString(),
-                            };
+                            sb.Append(": ");
                         }
+                        sb.Append(alreadyCurrent).Append(" records were already current");
+                    }
+                    sb.Append('.');
+
+                    if (issues.Count > 0)
+                    {
+                        sb.Append(" Issues detected:<ul>");
+                        foreach (string issue in issues)
+                        {
+                            sb.Append("<li>").Append(issue).Append("</li>");
+                        }
+                        sb.Append("</ul>");
+                        return new JobStatus
+                        {
+                            PercentComplete = 100,
+                            Complete = true,
+                            Status = sb.ToString(),
+                            Error = true
+                        };
+                    }
+                    else
+                    {
+                        return new JobStatus
+                        {
+                            PercentComplete = 100,
+                            Complete = true,
+                            Status = sb.ToString(),
+                        };
                     }
                 }
                 finally
@@ -923,13 +929,15 @@ namespace GRA.Domain.Service
                     {
                         return new JobStatus
                         {
-                            PercentComplete = 0,
                             Complete = true,
                             Error = true,
                             Status = $"Vendor code type id {jobDetails.VendorCodeTypeId} is not attached to site {GetCurrentSiteId()}"
                         };
                     }
                 }
+
+                await _jobRepository.UpdateStatusAsync(jobId,
+                    $"Generating {jobDetails.NumberOfCodes} for Vendor Code Type Id {jobDetails.VendorCodeTypeId}");
 
                 _logger.LogInformation("User {RequestingUser} requested {NumberOfCodes} codes for Vendor Code Type Id {VendorCodeTypeId}",
                     requestingUser,
@@ -947,6 +955,8 @@ namespace GRA.Domain.Service
                 {
                     if (token.IsCancellationRequested)
                     {
+                        await _jobRepository.UpdateStatusAsync(jobId,
+                            $"Cancelled after generating {count} codes for {requestingUser} in {stopwatch.ElapsedMilliseconds} ms.");
                         break;
                     }
 
@@ -956,6 +966,10 @@ namespace GRA.Domain.Service
                     if (count - lastSave > 1000)
                     {
                         await _vendorCodeRepository.SaveAsync();
+
+                        await _jobRepository.UpdateStatusAsync(jobId,
+                            $"Generated {count}/{jobDetails.NumberOfCodes}");
+
                         lastSave = count;
                     }
 
@@ -1017,6 +1031,9 @@ namespace GRA.Domain.Service
                     .ToString(@"mm\:ss",
                         System.Globalization.DateTimeFormatInfo.InvariantInfo);
 
+                await _jobRepository.UpdateStatusAsync(jobId,
+                    $"Inserted {count} vendor codes in {timeElapsed}.");
+
                 return new JobStatus
                 {
                     PercentComplete = token.IsCancellationRequested
@@ -1030,7 +1047,6 @@ namespace GRA.Domain.Service
             {
                 return new JobStatus
                 {
-                    PercentComplete = 0,
                     Complete = true,
                     Error = true,
                     Status = "You do not have permission to insert vendor codes."
@@ -1109,6 +1125,7 @@ namespace GRA.Domain.Service
                     {
                         duration = $" after {sw.Elapsed:c}";
                     }
+
                     _logger.LogWarning($"Import of {filename} for user {requestingUser} was cancelled{duration}.");
                 });
 
@@ -1128,193 +1145,197 @@ namespace GRA.Domain.Service
 
                 try
                 {
-                    using (var stream = new FileStream(fullPath, FileMode.Open))
+                    using var stream = new FileStream(fullPath, FileMode.Open);
+                    int emailAddressColumnId = 0;
+                    int sentDateColumnId = 0;
+                    int userIdColumnId = 0;
+                    var issues = new List<string>();
+                    int row = 0;
+                    int totalRows = 0;
+                    int updated = 0;
+                    int alreadyCurrent = 0;
+                    using (var excelReader = ExcelReaderFactory.CreateBinaryReader(stream))
                     {
-                        int emailAddressColumnId = 0;
-                        int sentDateColumnId = 0;
-                        int userIdColumnId = 0;
-                        var issues = new List<string>();
-                        int row = 0;
-                        int totalRows = 0;
-                        int updated = 0;
-                        int alreadyCurrent = 0;
-                        using (var excelReader = ExcelReaderFactory.CreateBinaryReader(stream))
+                        while (excelReader.Read())
                         {
-                            while (excelReader.Read())
-                            {
-                                row++;
-                            }
-                            totalRows = row;
-                            row = 0;
+                            row++;
+                        }
+                        totalRows = row;
+                        row = 0;
 
-                            excelReader.Reset();
-                            while (excelReader.Read())
+                        excelReader.Reset();
+                        while (excelReader.Read())
+                        {
+                            row++;
+                            if (row % 10 == 0)
                             {
-                                row++;
-                                if (row % 10 == 0)
+                                progress?.Report(new JobStatus
                                 {
-                                    progress.Report(new JobStatus
-                                    {
-                                        PercentComplete = row * 100 / totalRows,
-                                        Status = $"Processing row {row}/{totalRows}...",
-                                        Error = false
-                                    });
-                                }
-                                if (row == 1)
+                                    PercentComplete = row * 100 / totalRows,
+                                    Status = $"Processing row {row}/{totalRows}...",
+                                    Error = false
+                                });
+                            }
+                            if (row == 1)
+                            {
+                                progress?.Report(new JobStatus
                                 {
-                                    progress.Report(new JobStatus
+                                    PercentComplete = 1,
+                                    Status = $"Processing row {row}/{totalRows}...",
+                                    Error = false
+                                });
+                                for (int i = 0; i < excelReader.FieldCount; i++)
+                                {
+                                    switch (excelReader.GetString(i)?.Trim() ?? $"Column{i}")
                                     {
-                                        PercentComplete = 1,
-                                        Status = $"Processing row {row}/{totalRows}...",
-                                        Error = false
-                                    });
-                                    for (int i = 0; i < excelReader.FieldCount; i++)
-                                    {
-                                        switch (excelReader.GetString(i)?.Trim() ?? $"Column{i}")
-                                        {
-                                            case EmailAddressRowHeading:
-                                                emailAddressColumnId = i;
-                                                break;
-                                            case SentDateRowHeading:
-                                                sentDateColumnId = i;
-                                                break;
-                                            case UserIdRowHeading:
-                                                userIdColumnId = i;
-                                                break;
-                                            default:
-                                                break;
-                                        }
+                                        case EmailAddressRowHeading:
+                                            emailAddressColumnId = i;
+                                            break;
+                                        case SentDateRowHeading:
+                                            sentDateColumnId = i;
+                                            break;
+                                        case UserIdRowHeading:
+                                            userIdColumnId = i;
+                                            break;
+                                        default:
+                                            break;
                                     }
                                 }
-                                else
-                                {
-                                    if (excelReader.GetValue(emailAddressColumnId) != null
-                                        && excelReader.GetValue(sentDateColumnId) != null
-                                        && excelReader.GetValue(userIdColumnId) != null)
-                                    {
-                                        string emailAddress = null;
-                                        DateTime? sentDate = null;
-                                        int? userId = null;
-                                        try
-                                        {
-                                            emailAddress = excelReader
-                                                .GetString(emailAddressColumnId);
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            _logger.LogError($"Parse error on code, row {row}: {ex.Message}");
-                                            issues.Add($"Issue reading code on line {row}: {ex.Message}");
-                                        }
-                                        try
-                                        {
-                                            sentDate = excelReader.GetDateTime(sentDateColumnId);
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            _logger.LogError($"Parse error on order date, row {row}: {ex.Message}");
-                                            issues.Add($"Issue reading order date on row {row}: {ex.Message}");
-                                        }
-                                        try
-                                        {
-                                            userId = int.Parse(excelReader.GetValue(
-                                                userIdColumnId).ToString());
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            _logger.LogError($"Parse error on ship date, row {row}: {ex.Message}");
-                                            issues.Add($"Issue reading ship date on row {row}: {ex.Message}");
-                                        }
-                                        if (!string.IsNullOrEmpty(emailAddress)
-                                            && sentDate.HasValue && userId.HasValue)
-                                        {
-                                            var code = await _vendorCodeRepository
-                                                .GetUserVendorCode(userId.Value);
-                                            if (code == null)
-                                            {
-                                                _logger.LogError($"File contained code for user {userId} which was not found in the database");
-                                                issues.Add($"Uploaded file contained code for user <code>{userId}</code> which couldn't be found in the database.");
-                                            }
-                                            else
-                                            {
-                                                if (sentDate == code.EmailAwardSent)
-                                                {
-                                                    alreadyCurrent++;
-                                                }
-                                                else
-                                                {
-                                                    if (sentDate != null)
-                                                    {
-                                                        code.EmailAwardSent = sentDate;
-                                                    }
-                                                    await _vendorCodeRepository.UpdateSaveNoAuditAsync(code);
-                                                    updated++;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                if (token.IsCancellationRequested)
-                                {
-                                    break;
-                                }
-                            }
-                        }
-
-                        if (token.IsCancellationRequested)
-                        {
-                            return new JobStatus
-                            {
-                                PercentComplete = 100,
-                                Status = $"Operation cancelled at row {row}."
-                            };
-                        }
-
-                        var sb = new StringBuilder("<strong>Import complete</strong>");
-                        if (updated > 0)
-                        {
-                            sb.Append(": ").Append(updated).Append(" records were updated");
-                        }
-                        if (alreadyCurrent > 0)
-                        {
-                            if (updated > 0)
-                            {
-                                sb.Append(", ");
                             }
                             else
                             {
-                                sb.Append(": ");
+                                if (excelReader.GetValue(emailAddressColumnId) != null
+                                    && excelReader.GetValue(sentDateColumnId) != null
+                                    && excelReader.GetValue(userIdColumnId) != null)
+                                {
+                                    string emailAddress = null;
+                                    DateTime? sentDate = null;
+                                    int? userId = null;
+                                    try
+                                    {
+                                        emailAddress = excelReader
+                                            .GetString(emailAddressColumnId);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        _logger.LogError($"Parse error on code, row {row}: {ex.Message}");
+                                        issues.Add($"Issue reading code on line {row}: {ex.Message}");
+                                    }
+                                    try
+                                    {
+                                        sentDate = excelReader.GetDateTime(sentDateColumnId);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        _logger.LogError($"Parse error on order date, row {row}: {ex.Message}");
+                                        issues.Add($"Issue reading order date on row {row}: {ex.Message}");
+                                    }
+                                    try
+                                    {
+                                        userId = int.Parse(excelReader.GetValue(
+                                            userIdColumnId).ToString());
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        _logger.LogError($"Parse error on ship date, row {row}: {ex.Message}");
+                                        issues.Add($"Issue reading ship date on row {row}: {ex.Message}");
+                                    }
+                                    if (!string.IsNullOrEmpty(emailAddress)
+                                        && sentDate.HasValue && userId.HasValue)
+                                    {
+                                        var code = await _vendorCodeRepository
+                                            .GetUserVendorCode(userId.Value);
+                                        if (code == null)
+                                        {
+                                            _logger.LogError($"File contained code for user {userId} which was not found in the database");
+                                            issues.Add($"Uploaded file contained code for user <code>{userId}</code> which couldn't be found in the database.");
+                                        }
+                                        else
+                                        {
+                                            if (sentDate == code.EmailAwardSent)
+                                            {
+                                                alreadyCurrent++;
+                                            }
+                                            else
+                                            {
+                                                if (sentDate != null)
+                                                {
+                                                    code.EmailAwardSent = sentDate;
+                                                }
+                                                await _vendorCodeRepository.UpdateSaveNoAuditAsync(code);
+                                                updated++;
+                                            }
+                                        }
+                                    }
+                                }
                             }
-                            sb.Append(alreadyCurrent).Append(" records were already current");
+                            if (token.IsCancellationRequested)
+                            {
+                                break;
+                            }
                         }
-                        sb.Append(".");
+                    }
 
-                        if (issues.Count > 0)
+                    if (token.IsCancellationRequested)
+                    {
+                        await _jobRepository.UpdateStatusAsync(jobId,
+                            $"Cancelled importing at row {row}.");
+
+                        return new JobStatus
                         {
-                            _logger.LogInformation($"Import complete with issues: {sb}");
-                            sb.Append(" Issues detected:<ul>");
-                            foreach (string issue in issues)
-                            {
-                                sb.Append("<li>").Append(issue).Append("</li>");
-                            }
-                            sb.Append("</ul>");
-                            return new JobStatus
-                            {
-                                PercentComplete = 100,
-                                Complete = true,
-                                Status = sb.ToString(),
-                                Error = true
-                            };
+                            Status = $"Operation cancelled at row {row}."
+                        };
+                    }
+
+                    var sb = new StringBuilder("<strong>Import complete</strong>");
+                    if (updated > 0)
+                    {
+                        sb.Append(": ").Append(updated).Append(" records were updated");
+                    }
+                    if (alreadyCurrent > 0)
+                    {
+                        if (updated > 0)
+                        {
+                            sb.Append(", ");
                         }
                         else
                         {
-                            _logger.LogInformation(sb.ToString());
-                            return new JobStatus
-                            {
-                                PercentComplete = 100,
-                                Complete = true,
-                                Status = sb.ToString(),
-                            };
+                            sb.Append(": ");
                         }
+                        sb.Append(alreadyCurrent).Append(" records were already current");
+                    }
+                    sb.Append('.');
+
+                    await _jobRepository.UpdateStatusAsync(jobId,
+                         $"Import complete with {issues.Count} issues in {sw.ElapsedMilliseconds} ms");
+
+                    if (issues.Count > 0)
+                    {
+                        _logger.LogInformation($"Import complete with issues: {sb}");
+                        sb.Append(" Issues detected:<ul>");
+                        foreach (string issue in issues)
+                        {
+                            sb.Append("<li>").Append(issue).Append("</li>");
+                        }
+                        sb.Append("</ul>");
+
+                        return new JobStatus
+                        {
+                            PercentComplete = 100,
+                            Complete = true,
+                            Status = sb.ToString(),
+                            Error = true
+                        };
+                    }
+                    else
+                    {
+                        _logger.LogInformation(sb.ToString());
+                        return new JobStatus
+                        {
+                            PercentComplete = 100,
+                            Complete = true,
+                            Status = sb.ToString(),
+                        };
                     }
                 }
                 finally

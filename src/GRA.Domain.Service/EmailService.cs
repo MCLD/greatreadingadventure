@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
@@ -7,6 +8,7 @@ using MailKit.Net.Smtp;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MimeKit;
+using Stubble.Core.Builders;
 
 namespace GRA.Domain.Service
 {
@@ -24,7 +26,7 @@ namespace GRA.Domain.Service
             ISiteRepository siteRepository,
             IUserRepository userRepository) : base(logger, dateTimeProvider)
         {
-            _config = Require.IsNotNull(config, nameof(config));
+            _config = config ?? throw new ArgumentNullException(nameof(config));
             _emailTemplateRepository = emailTemplateRepository
                 ?? throw new ArgumentNullException(nameof(emailTemplateRepository));
             _siteRepository = siteRepository
@@ -40,25 +42,57 @@ namespace GRA.Domain.Service
                 && !string.IsNullOrEmpty(site.OutgoingMailHost);
         }
 
-        public async Task Send(int userId, string subject, string body, string htmlBody = null)
+        public Task<bool> Send(int userId,
+            string subject,
+            string body,
+            string htmlBody)
+        {
+            return Send(userId, subject, body, htmlBody, null);
+        }
+
+        public async Task<bool> Send(int userId,
+            string subject,
+            string body,
+            string htmlBody,
+            IDictionary<string, string> tags)
         {
             var user = await _userRepository.GetByIdAsync(userId);
             var site = await _siteRepository.GetByIdAsync(user.SiteId);
 
             if (!string.IsNullOrEmpty(user.Email))
             {
+                string processedSubject;
+                string processedBody;
+                string processedHtml;
+
+                if (tags?.Count > 0)
+                {
+                    var stubble = new StubbleBuilder().Build();
+                    processedSubject = await stubble.RenderAsync(subject, tags);
+                    processedBody = await stubble.RenderAsync(body, tags);
+                    processedHtml = await stubble.RenderAsync(htmlBody, tags);
+                }
+                else
+                {
+                    processedSubject = subject;
+                    processedBody = body;
+                    processedHtml = htmlBody;
+                }
+
                 await SendEmailAsync(site,
                     user.Email,
-                    subject,
-                    body,
-                    htmlBody,
+                    processedSubject,
+                    processedBody,
+                    processedHtml,
                     user.FullName);
+                return true;
             }
             else
             {
                 _logger.LogError("Unable to send email to user {UserId} with subject {Subject}: no email address configured.",
                     userId,
                     subject);
+                return false;
             }
         }
 
@@ -76,10 +110,17 @@ namespace GRA.Domain.Service
 
         public async Task SendBulkAsync(User user, int emailTemplateId)
         {
+            if (user == null)
+            {
+                _logger.LogError("Unable to send email empty user for template id {TemplateId}.",
+                    emailTemplateId);
+                return;
+            }
+
             var site = await _siteRepository.GetByIdAsync(user.SiteId);
             var template = await _emailTemplateRepository.GetByIdAsync(emailTemplateId);
 
-            if (user.SiteId != template.SiteId)
+            if (user?.SiteId != template.SiteId)
             {
                 _logger.LogError("Site ID mismatch: user {UserId} is in site {UserSiteId} and template {TemplateId} is in site {TemplateSiteId}",
                     user.Id,
@@ -89,14 +130,14 @@ namespace GRA.Domain.Service
                 return;
             }
 
-            var bodyText = template.BodyText
-                .Replace("{{UnsubToken}}", user.UnsubscribeToken)
-                .Replace("{{Email}}", user.Email)
-                .Replace("{{Name}}", user.FullName);
-            var bodyHtml = template.BodyHtml
-                .Replace("{{UnsubToken}}", user.UnsubscribeToken)
-                .Replace("{{Email}}", user.Email)
-                .Replace("{{Name}}", user.FullName);
+            var bodyText = template.BodyText.Replace("{{UnsubToken}}",
+                    user.UnsubscribeToken, StringComparison.InvariantCultureIgnoreCase)
+                .Replace("{{Email}}", user.Email, StringComparison.InvariantCultureIgnoreCase)
+                .Replace("{{Name}}", user.FullName, StringComparison.InvariantCultureIgnoreCase);
+            var bodyHtml = template.BodyHtml.Replace("{{UnsubToken}}",
+                    user.UnsubscribeToken, StringComparison.InvariantCultureIgnoreCase)
+                .Replace("{{Email}}", user.Email, StringComparison.InvariantCultureIgnoreCase)
+                .Replace("{{Name}}", user.FullName, StringComparison.InvariantCultureIgnoreCase);
 
             if (!string.IsNullOrEmpty(user.Email))
             {
@@ -121,14 +162,23 @@ namespace GRA.Domain.Service
             int emailTemplateId,
             int siteId)
         {
+            if (emailReminder == null)
+            {
+                _logger.LogError("Unable to send email due to blank configuration for template id {TemplateId}: no email address configured.",
+                    emailTemplateId);
+                return;
+            }
+
             var site = await _siteRepository.GetByIdAsync(siteId);
 
             var template = await _emailTemplateRepository.GetByIdAsync(emailTemplateId);
 
-            var bodyText = template.BodyText
-                .Replace("{{Email}}", emailReminder.Email);
-            var bodyHtml = template.BodyHtml
-                .Replace("{{Email}}", emailReminder.Email);
+            var bodyText = template.BodyText.Replace("{{Email}}",
+                emailReminder.Email,
+                StringComparison.InvariantCultureIgnoreCase);
+            var bodyHtml = template.BodyHtml.Replace("{{Email}}",
+                emailReminder.Email,
+                StringComparison.InvariantCultureIgnoreCase);
 
             if (!string.IsNullOrEmpty(emailReminder.Email))
             {
@@ -148,19 +198,26 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task SendBulkTestAsync(string emailTo, int emailTemplateId)
+        public Task SendBulkTestAsync(string emailTo, int emailTemplateId)
         {
             if (string.IsNullOrEmpty(emailTo))
             {
                 throw new ArgumentNullException(nameof(emailTo));
             }
 
+            return SendBulkTestInternalAsync(emailTo, emailTemplateId);
+        }
+
+        private async Task SendBulkTestInternalAsync(string emailTo, int emailTemplateId)
+        {
             var template = await _emailTemplateRepository.GetByIdAsync(emailTemplateId);
 
-            var bodyText = template.BodyText
-                .Replace("{{Email}}", emailTo);
-            var bodyHtml = template.BodyHtml
-                .Replace("{{Email}}", emailTo);
+            var bodyText = template.BodyText.Replace("{{Email}}",
+                emailTo,
+                StringComparison.InvariantCultureIgnoreCase);
+            var bodyHtml = template.BodyHtml.Replace("{{Email}}",
+                emailTo,
+                StringComparison.InvariantCultureIgnoreCase);
 
             var site = await _siteRepository.GetByIdAsync(template.SiteId);
 
@@ -238,37 +295,39 @@ namespace GRA.Domain.Service
 
             message.Body = builder.ToMessageBody();
 
-            using (var client = new SmtpClient())
+            using var client = new SmtpClient
             {
                 // accept any STARTTLS certificate
-                client.ServerCertificateValidationCallback = (_, __, ___, ____) => true;
+#pragma warning disable S4830 // Server certificates should be verified during SSL/TLS connections
+                ServerCertificateValidationCallback = (_, __, ___, ____) => true
+#pragma warning restore S4830 // Server certificates should be verified during SSL/TLS connections
+            };
 
-                await client.ConnectAsync(site.OutgoingMailHost,
-                    site.OutgoingMailPort ?? 25,
-                    false);
+            await client.ConnectAsync(site.OutgoingMailHost,
+                site.OutgoingMailPort ?? 25,
+                false);
 
-                client.AuthenticationMechanisms.Remove("XOAUTH2");
-                if (!string.IsNullOrEmpty(site.OutgoingMailLogin)
-                    && !string.IsNullOrEmpty(site.OutgoingMailPassword))
-                {
-                    client.Authenticate(site.OutgoingMailLogin, site.OutgoingMailPassword);
-                }
-
-                try
-                {
-                    await client.SendAsync(message);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex,
-                        "Unable to send email to {EmailAddress} with subject {Subject}: {ErrorMessage}",
-                        emailAddress,
-                        subject,
-                        ex.Message);
-                    throw new GraException("Unable to send email.", ex);
-                }
-                await client.DisconnectAsync(true);
+            client.AuthenticationMechanisms.Remove("XOAUTH2");
+            if (!string.IsNullOrEmpty(site.OutgoingMailLogin)
+                && !string.IsNullOrEmpty(site.OutgoingMailPassword))
+            {
+                client.Authenticate(site.OutgoingMailLogin, site.OutgoingMailPassword);
             }
+
+            try
+            {
+                await client.SendAsync(message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex,
+                    "Unable to send email to {EmailAddress} with subject {Subject}: {ErrorMessage}",
+                    emailAddress,
+                    subject,
+                    ex.Message);
+                throw new GraException("Unable to send email.", ex);
+            }
+            await client.DisconnectAsync(true);
         }
     }
 }

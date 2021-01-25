@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl.Mail;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
@@ -23,9 +24,9 @@ namespace GRA.Controllers.MissionControl
             UserService userService)
             : base(context)
         {
-            _logger = Require.IsNotNull(logger, nameof(logger));
-            _mailService = Require.IsNotNull(mailService, nameof(mailService));
-            _userService = Require.IsNotNull(userService, nameof(userService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             PageTitle = "Mail";
         }
 

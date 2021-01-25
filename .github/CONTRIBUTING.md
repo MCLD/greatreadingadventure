@@ -7,8 +7,8 @@ Everyone is invited to contribute.
 ## If you use the software
 
 - Help keep the [manual](http://manual.greatreadingadventure.com/en/latest/) up to date and accurate.
-  - Not familiar with [Read the Docs](https://readthedocs.org/) or [reStructuredText](http://docutils.sourceforge.net/rst.html)? Contribute whatever you can via the [forum](http://forum.greatreadingadventure.com/) and we'll get it reformatted and added to the manual.
-- Post helpful tips and resources to the [forum](http://forum.greatreadingadventure.com/).
+  - Not familiar with [Read the Docs](https://readthedocs.org/) or [reStructuredText](http://docutils.sourceforge.net/rst.html)? Contribute whatever you can in [discussions](https://github.com/MCLD/greatreadingadventure/discussions) and we'll get it reformatted and added to the manual.
+- Post helpful tips and resources in [discussions]https://github.com/MCLD/greatreadingadventure/discussions).
 
 ## If you develop software
 

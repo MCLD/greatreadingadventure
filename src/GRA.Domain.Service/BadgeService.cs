@@ -28,10 +28,12 @@ namespace GRA.Domain.Service
             IUserContextProvider userContextProvider,
             IBadgeRepository badgeRepository,
             IPathResolver pathResolver,
-            SiteLookupService siteLookupService) : base(logger, dateTimeProvider, userContextProvider)
+            SiteLookupService siteLookupService) 
+            : base(logger, dateTimeProvider, userContextProvider)
         {
-            _badgeRepository = Require.IsNotNull(badgeRepository, nameof(badgeRepository));
-            _pathResolver = Require.IsNotNull(pathResolver, nameof(pathResolver));
+            _badgeRepository = badgeRepository 
+                ?? throw new ArgumentNullException(nameof(badgeRepository));
+            _pathResolver = pathResolver ?? throw new ArgumentNullException(nameof(pathResolver));
             _siteLookupService = siteLookupService
                 ?? throw new ArgumentNullException(nameof(siteLookupService));
         }

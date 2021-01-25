@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
@@ -21,10 +22,12 @@ namespace GRA.Domain.Service
             ISchoolRepository schoolRepository,
             IUserRepository userRepository) : base(logger, dateTimeProvider, userContextProvider)
         {
-            _schoolDistrictRepository = Require.IsNotNull(schoolDistrictRepository,
-                nameof(schoolDistrictRepository));
-            _schoolRepository = Require.IsNotNull(schoolRepository, nameof(schoolRepository));
-            _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
+            _schoolDistrictRepository = schoolDistrictRepository 
+                ?? throw new ArgumentNullException(nameof(schoolDistrictRepository));
+            _schoolRepository = schoolRepository 
+                ?? throw new ArgumentNullException(nameof(schoolRepository));
+            _userRepository = userRepository 
+                ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
         public async Task<ICollection<SchoolDistrict>> GetDistrictsAsync()

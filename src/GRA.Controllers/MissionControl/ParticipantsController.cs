@@ -1597,7 +1597,7 @@ namespace GRA.Controllers.MissionControl
                 {
                     Filename = file,
                     HeadOfHouseholdId = headOfHousehold.Id,
-                    ProgmamId = program.Id,
+                    ProgramId = program.Id,
                     FirstTimeParticipating = askIfFirstTime && model.IsFirstTime?
                         .Equals(DropDownTrueValue, StringComparison.OrdinalIgnoreCase) == true
                 };

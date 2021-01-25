@@ -8,6 +8,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### Added
 
+- Import and export of Systems and Branches
+
+### Fixed
+
+- News posts now send emails via the job system to avoid timeouts
+- Avatar imports now work if the avatars aren't in the root of the ZIP file
+
+## [4.2.0] - 2021-01-04
+
+### Added
+
 - Ping analytics upon account login
 - Improve analytics for sign-ups to include if it's a first-time participant (fix #330)
 - Ability to add carousel to dashboard
@@ -262,6 +273,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - Everything! First release of 4.0.
 
+[4.2.0]: https://github.com/mcld/greatreadingadventure/tree/v4.2.0
 [4.1.1]: https://github.com/mcld/greatreadingadventure/tree/v4.1.1
 [4.1.0]: https://github.com/mcld/greatreadingadventure/tree/v4.1.0
 [4.0.0]: https://github.com/mcld/greatreadingadventure/tree/v4.0.0
