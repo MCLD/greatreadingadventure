@@ -181,7 +181,14 @@
                                         }
                                         else
                                         {
-                                            <label class="control-label">Edit File &ndash; <a href="@Model.TaskFilePath" target="_blank">Link</a></label>
+                                            <label class="control-label">
+                                                Edit File &ndash;
+                                                <a aria-label="Link (opens new window)"
+                                                   href="@Model.TaskFilePath"
+                                                   target="_blank">
+                                                    Link
+                                                </a>
+                                            </label>
                                         }
                                         <div class="input-group">
                                             <label class="input-group-btn">
@@ -395,7 +402,13 @@
                                 @if (Model.CanViewTriggers)
                                 {
                                     <li>
-                                        <a asp-controller="Triggers" asp-action="Edit" asp-route-id="@trigger.Id" target="_blank">@trigger.Name</a>
+                                        <a aria-label="@trigger.Name (opens new window)"
+                                           asp-controller="Triggers"
+                                           asp-action="Edit"
+                                           asp-route-id="@trigger.Id"
+                                           target="_blank">
+                                            @trigger.Name
+                                        </a>
                                     </li>
                                 }
                                 else
