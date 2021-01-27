@@ -363,10 +363,6 @@ namespace GRA.Data.SqlServer.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<string>("AltText")
-                        .IsRequired()
-                        .HasMaxLength(255);
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
