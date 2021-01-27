@@ -1,132 +1,6 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Events.LocationsListViewModel
 
 <div class="row">
-    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
-        <div class="modal-dialog" role="document">
-            <form asp-controller="Events" asp-action="AddLocation" method="post" role="form" style="display:inline">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="addModalLabel">Add location</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label asp-for="Location.Name" class="control-label"></label>
-                            <input asp-for="Location.Name" class="form-control" />
-                            <span asp-validation-for="Location.Name" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Location.Address" class="control-label">Address (include city, state and zip)</label>
-                            <input asp-for="Location.Address" class="form-control addressInput" />
-                            <span asp-validation-for="Location.Address" class="text-danger"></span>
-                        </div>
-                        @if (Model.ShowGeolocation)
-                        {
-                            <div class="form-group hide mapContainer">
-                                <iframe height="180" width="400" frameborder="0" style="border:0"></iframe>
-                            </div>
-                        }
-                        <div class="form-group">
-                            <label asp-for="Location.Url" class="control-label"></label>
-                            <input asp-for="Location.Url" class="form-control" />
-                            <span asp-validation-for="Location.Url" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Location.Telephone" class="control-label"></label>
-                            <input asp-for="Location.Telephone" class="form-control" />
-                            <span asp-validation-for="Location.Telephone" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <button type="submit" class="btn btn-primary pull-right" aria-label="Confirm">
-                            Add
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
-        <div class="modal-dialog" role="document">
-            <form asp-controller="Events" asp-action="EditLocation" method="post" role="form" style="display:inline">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="editModalLabel">Edit location</h4>
-                    </div>
-                    <div class="modal-body">
-                        <input id="Location_Id" name="Location.Id" type="hidden" />
-                        <div class="form-group">
-                            <label asp-for="Location.Name" class="control-label"></label>
-                            <input asp-for="Location.Name" class="form-control" />
-                            <span asp-validation-for="Location.Name" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Location.Address" class="control-label">Address (include city, state and zip)</label>
-                            <input asp-for="Location.Address" class="form-control addressInput" />
-                            <span asp-validation-for="Location.Address" class="text-danger"></span>
-                        </div>
-                        @if (Model.ShowGeolocation)
-                        {
-                            <div class="form-group hide mapContainer">
-                                <iframe frameborder="0" style="border:0"></iframe>
-                            </div>
-                        }
-                        <div class="form-group">
-                            <label asp-for="Location.Url" class="control-label"></label>
-                            <input asp-for="Location.Url" class="form-control" />
-                            <span asp-validation-for="Location.Url" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Location.Telephone" class="control-label"></label>
-                            <input asp-for="Location.Telephone" class="form-control" />
-                            <span asp-validation-for="Location.Telephone" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <button type="submit" class="btn btn-primary pull-right" aria-label="Confirm">
-                            Save
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="deleteModalLabel">Delete location</h4>
-                </div>
-                <div class="modal-body">
-                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
-                    <span id="modal-text"></span>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                    <form asp-controller="Events" asp-action="DeleteLocation" method="post" role="form" style="display:inline">
-                        <input id="Id" name="Id" type="hidden" />
-                        <button type="submit" class="btn btn-danger pull-right" aria-label="Confirm">
-                            <span class="fa fa-remove" aria-hidden="true"></span>
-                            Delete
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row">
     <div class="col-xs-12">
         <ul class="nav nav-pills" style="padding: 10px 0;">
             <li ActiveBy routeKey="Action" value="Index"><a asp-action="Index">Events</a></li>
@@ -229,6 +103,182 @@
                 <paginate paginateModel="@Model.PaginateModel"></paginate>
             }
         }
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
+        <div class="modal-dialog" role="document">
+            <form asp-controller="Events" asp-action="AddLocation" method="post" role="form" style="display:inline">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-label="Close dialog">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h1 class="modal-title h4" id="addModalLabel">Add location</h1>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label asp-for="Location.Name" class="control-label"></label>
+                            <input asp-for="Location.Name" class="form-control" />
+                            <span asp-validation-for="Location.Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Location.Address" class="control-label">Address (include city, state and zip)</label>
+                            <input asp-for="Location.Address" class="form-control addressInput" />
+                            <span asp-validation-for="Location.Address" class="text-danger"></span>
+                        </div>
+                        @if (Model.ShowGeolocation)
+                        {
+                            <div class="form-group hide mapContainer">
+                                <iframe height="180" width="400" frameborder="0" style="border:0"></iframe>
+                            </div>
+                        }
+                        <div class="form-group">
+                            <label asp-for="Location.Url" class="control-label"></label>
+                            <input asp-for="Location.Url" class="form-control" />
+                            <span asp-validation-for="Location.Url" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Location.Telephone" class="control-label"></label>
+                            <input asp-for="Location.Telephone" class="form-control" />
+                            <span asp-validation-for="Location.Telephone" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                        <button type="submit" class="btn btn-primary pull-right" aria-label="Confirm">
+                            Add
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="modal fade"
+         id="editModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="editModalLabel">
+        <div class="modal-dialog" role="document">
+            <form asp-controller="Events"
+                  asp-action="EditLocation"
+                  method="post"
+                  role="form"
+                  style="display:inline">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-label="Close dialog">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h1 class="modal-title h4" id="editModalLabel">Edit location</h1>
+                    </div>
+                    <div class="modal-body">
+                        <input id="Location_Id" name="Location.Id" type="hidden" />
+                        <div class="form-group">
+                            <label asp-for="Location.Name" class="control-label"></label>
+                            <input asp-for="Location.Name" class="form-control" />
+                            <span asp-validation-for="Location.Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Location.Address"
+                                   class="control-label">
+                                Address (include city, state and zip)
+                            </label>
+                            <input asp-for="Location.Address" class="form-control addressInput" />
+                            <span asp-validation-for="Location.Address" class="text-danger"></span>
+                        </div>
+                        @if (Model.ShowGeolocation)
+                        {
+                            <div class="form-group hide mapContainer">
+                                <iframe frameborder="0" style="border:0"></iframe>
+                            </div>
+                        }
+                        <div class="form-group">
+                            <label asp-for="Location.Url" class="control-label"></label>
+                            <input asp-for="Location.Url" class="form-control" />
+                            <span asp-validation-for="Location.Url" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Location.Telephone" class="control-label"></label>
+                            <input asp-for="Location.Telephone" class="form-control" />
+                            <span asp-validation-for="Location.Telephone"
+                                  class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="btn btn-primary pull-right"
+                                aria-label="Confirm">
+                            Save
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="modal fade"
+         id="deleteModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="deleteModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close dialog">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h1 class="modal-title h4" id="deleteModalLabel">Delete location</h1>
+                </div>
+                <div class="modal-body">
+                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                    <span id="modal-text"></span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-default"
+                            data-dismiss="modal"
+                            style="margin-right: 1em;">
+                        Cancel
+                    </button>
+                    <form asp-controller="Events"
+                          asp-action="DeleteLocation"
+                          method="post"
+                          role="form"
+                          style="display:inline">
+                        <input id="Id" name="Id" type="hidden" />
+                        <button type="submit"
+                                class="btn btn-danger pull-right"
+                                aria-label="Confirm">
+                            <span class="fa fa-remove" aria-hidden="true"></span>
+                            Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

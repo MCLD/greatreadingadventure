@@ -1,61 +1,5 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Avatar.BundlesDetailViewModel
 
-@if (Model.Bundle?.HasBeenAwarded != true)
-{
-    <div class="row">
-        <div class="modal fade" id="listModal" tabindex="-1" role="dialog" aria-labelledby="listModalLabel">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-10 col-sm-offset-1">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <span class="lead">Add item</span>
-                            </div>
-                            <div class="panel-body">
-                                <div class="row row-spacing">
-                                    <div class="col-xs-12">
-                                        <label asp-for="Layers" class="control-label">Layer</label>
-                                        <select id="layerId" asp-items="Model.Layers" class="form-control">
-                                            <option value="">All Layers</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="row row-spacing">
-                                    <div class="col-xs-8">
-                                        <input id="searchText" class="form-control"
-                                               placeholder="Enter text to search for an event here" />
-                                    </div>
-                                    <div class="col-xs-4">
-                                        <div class="col-xs-6">
-                                            <button type="button" id="searchButton" class="btn btn-default btn-block" style="margin-right: 8px;">Search</button>
-                                        </div>
-                                        <div class="col-xs-6">
-                                            <button type="button" id="clearButton" class="btn btn-default btn-block">Clear</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="searchMessage" class="row hide">
-                                    <div class="col-xs-12">
-                                        <p class="alert-sm alert-info">Searching for '<strong id="searchTerm"></strong>'</p>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div id="modalItemList" class="col-xs-12">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-}
-
 <form asp-controller="Avatars" asp-action="@($"Bundle{Model.Action}")" method="post" role="form">
     <input asp-for="Action" type="hidden" />
     <input asp-for="ItemsList" type="hidden" />
@@ -203,6 +147,90 @@
         }
     </div>
 </form>
+
+@if (Model.Bundle?.HasBeenAwarded != true)
+{
+    <div class="row">
+        <div class="modal fade"
+             id="listModal"
+             tabindex="-1"
+             role="dialog"
+             aria-labelledby="listModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-10 col-sm-offset-1">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <button type="button"
+                                        class="close"
+                                        data-dismiss="modal"
+                                        aria-label="Close dialog.">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <h1 class="modal-title h4">Add item</h1>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row row-spacing">
+                                    <div class="col-xs-12">
+                                        <label asp-for="Layers" class="control-label">Layer</label>
+                                        <select id="layerId"
+                                                asp-items="Model.Layers"
+                                                class="form-control">
+                                            <option value="">All Layers</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row row-spacing">
+                                    <div class="col-xs-8">
+                                        <input id="searchText" class="form-control"
+                                               placeholder="Enter text to search for an event here" />
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <div class="col-xs-6">
+                                            <button type="button"
+                                                    id="searchButton"
+                                                    class="btn btn-default btn-block"
+                                                    style="margin-right: 8px;">
+                                                Search
+                                            </button>
+                                        </div>
+                                        <div class="col-xs-6">
+                                            <button type="button"
+                                                    id="clearButton"
+                                                    class="btn btn-default btn-block">
+                                                Clear
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="searchMessage" class="row hide">
+                                    <div class="col-xs-12">
+                                        <p class="alert-sm alert-info">
+                                            Searching for '<strong id="searchTerm"></strong>'
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div id="modalItemList" class="col-xs-12">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button"
+                                        class="btn btn-default"
+                                        data-dismiss="modal"
+                                        style="margin-right: 1em;">
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 @section scripts
 {

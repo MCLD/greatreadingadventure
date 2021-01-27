@@ -1,68 +1,5 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Challenges.ChallengeGroupDetailViewModel
 
-<div class="row">
-    <div class="modal fade" id="listModal" tabindex="-1" role="dialog" aria-labelledby="listModalLabel">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="row">
-                <div class="col-xs-12 col-sm-10 col-sm-offset-1">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <span class="lead">Add challenge</span>
-                        </div>
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <ul class="nav nav-pills" style="padding: 10px 0;">
-                                        <li id="All" class="active challengeScope">
-                                            <a>All</a>
-                                        </li>
-                                        <li id="System" class="challengeScope">
-                                            <a>My System</a>
-                                        </li>
-                                        <li id="Branch" class="challengeScope">
-                                            <a>My Branch</a>
-                                        </li>
-                                        <li id="Mine" class="challengeScope">
-                                            <a>Mine</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <div class="row row-spacing">
-                                <div class="col-xs-8">
-                                    <input id="searchText" class="form-control"
-                                           placeholder="Enter text to search for an challenge here" />
-                                </div>
-                                <div class="col-xs-4">
-                                    <div class="col-xs-6">
-                                        <button type="button" id="searchButton" class="btn btn-default btn-block" style="margin-right: 8px;">Search</button>
-                                    </div>
-                                    <div class="col-xs-6">
-                                        <button type="button" id="clearButton" class="btn btn-default btn-block">Clear</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="searchMessage" class="row hide">
-                                <div class="col-xs-12">
-                                    <p class="alert-sm alert-info">Searching for '<strong id="searchTerm"></strong>'</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div id="modalChallengeList" class="col-xs-12">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <form asp-controller="Challenges" asp-action="@Model.Action" method="post" role="form" style="padding-top:10px;">
     <input asp-for="Action" type="hidden" />
     <input asp-for="ChallengeIds" type="hidden" />
@@ -215,6 +152,90 @@
         </div>
     </div>
 </form>
+
+<div class="row">
+    <div class="modal fade"
+         id="listModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="listModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="row">
+                <div class="col-xs-12 col-sm-10 col-sm-offset-1">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h1 class="h4 modal-title lead">Add challenge</h1>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <ul class="nav nav-pills" style="padding: 10px 0;">
+                                        <li id="All" class="active challengeScope">
+                                            <a>All</a>
+                                        </li>
+                                        <li id="System" class="challengeScope">
+                                            <a>My System</a>
+                                        </li>
+                                        <li id="Branch" class="challengeScope">
+                                            <a>My Branch</a>
+                                        </li>
+                                        <li id="Mine" class="challengeScope">
+                                            <a>Mine</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="row row-spacing">
+                                <div class="col-xs-8">
+                                    <input id="searchText"
+                                           class="form-control"
+                                           placeholder="Enter text to search for an challenge here" />
+                                </div>
+                                <div class="col-xs-4">
+                                    <div class="col-xs-6">
+                                        <button type="button"
+                                                id="searchButton"
+                                                class="btn btn-default btn-block"
+                                                style="margin-right: 8px;">
+                                            Search
+                                        </button>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <button type="button"
+                                                id="clearButton"
+                                                class="btn btn-default btn-block">
+                                            Clear
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="searchMessage" class="row hide">
+                                <div class="col-xs-12">
+                                    <p class="alert-sm alert-info">
+                                        Searching for '<strong id="searchTerm"></strong>'
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div id="modalChallengeList" class="col-xs-12">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button"
+                                    class="btn btn-default"
+                                    data-dismiss="modal"
+                                    style="margin-right: 1em;">
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section scripts {
     <script>

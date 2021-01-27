@@ -16,7 +16,8 @@
         Created By:
         @if (Model.CanViewParticipants)
         {
-            <a asp-controller="Participants"
+            <a aria-label="@Model.CreatedByName (Opens new window)"
+               asp-controller="Participants"
                asp-action="@nameof(ParticipantsController.Detail)"
                asp-route-id="@Model.Challenge.CreatedBy"
                target="_blank">@Model.CreatedByName</a>
@@ -36,66 +37,6 @@
         </div>
     </div>
 }
-
-@if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
-{
-
-    <div class="modal fade"
-         id="warningModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="warningModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h4 class="modal-title" id="deleteModalLabel">
-                        Warning: Award points exceed maximum
-                    </h4>
-                </div>
-                <div class="modal-body">
-                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
-                    <span id="modal-text">
-                        The awarded points for this trigger exceed the maximum of
-                        <strong>@Model.MaxPointLimit points per task</strong>. Do you wish to continue?
-                    </span>
-                </div>
-                <div class="modal-footer">
-                    <button type="button"
-                            class="btn btn-default"
-                            data-dismiss="modal"
-                            style="margin-right: 1em;">
-                        Cancel
-                    </button>
-                    <button id="warningSave"
-                            type="button"
-                            class="btn btn-primary"
-                            data-dismiss="modal"
-                            style="margin-right: 1em;">
-                        Save Challenge
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-}
-
-<div class="row">
-    <div class="modal fade frame-modal" id="badgeModal" tabindex="-1" role="dialog" aria-labelledby="badgeModalLabel">
-        <div class="modal-content">
-            <div class="modal-body">
-                <span class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute" data-dismiss="modal">
-                    <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
-                    <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
-                </span>
-                <iframe id="badgeMaker" class="badge-maker"></iframe>
-            </div>
-        </div>
-    </div>
-</div>
 
 <form asp-controller="Challenges"
       id="challengeForm"
@@ -240,12 +181,7 @@
                                         }
                                         else
                                         {
-                                            <label class="control-label">
-                                                Edit File &ndash;
-                                                <a aria-label="Link (opens new window)"
-                                                   href="@Model.TaskFilePath"
-                                                   target="_blank">Link</a>
-                                            </label>
+                                            <label class="control-label">Edit File &ndash; <a href="@Model.TaskFilePath" target="_blank">Link</a></label>
                                         }
                                         <div class="input-group">
                                             <label class="input-group-btn">
@@ -368,13 +304,21 @@
                                 @if (Model.CanEditGroups)
                                 {
                                     <li>
-                                        <a asp-action="EditGroup" asp-route-id="@group.Id" target="_blank">@group.Name</a>
+                                        <a aria-label="@group.Name (Opens new window)"
+                                           asp-action="EditGroup"
+                                           asp-route-id="@group.Id"
+                                           target="_blank">@group.Name</a>
                                     </li>
                                 }
                                 else
                                 {
                                     <li>
-                                        <a asp-area="" asp-controller="Challenges" asp-action="List" asp-route-id="@group.Stub" target="_blank">@group.Name</a>
+                                        <a aria-label="@group.Name (Opens new window)"
+                                           asp-area=""
+                                           asp-controller="Challenges"
+                                           asp-action="List"
+                                           asp-route-id="@group.Stub"
+                                           target="_blank">@group.Name</a>
                                     </li>
                                 }
                             }
@@ -405,13 +349,22 @@
                                 @if (Model.CanManageEvents)
                                 {
                                     <li>
-                                        <a asp-controller="Events" asp-action="Edit" asp-route-id="@graEvent.Id" target="_blank">@graEvent.Name</a>
+                                        <a aria-label="@graEvent.Name (Opens new window)"
+                                           asp-controller="Events"
+                                           asp-action="Edit"
+                                           asp-route-id="@graEvent.Id"
+                                           target="_blank">@graEvent.Name</a>
                                     </li>
                                 }
                                 else
                                 {
                                     <li>
-                                        <a asp-area="" asp-controller="Events" asp-action="Detail" asp-route-id="@graEvent.Id" target="_blank">@graEvent.Id</a>
+                                        <a aria-label="@graEvent.Id (Opens new window)"
+                                           asp-area=""
+                                           asp-controller="Events"
+                                           asp-action="Detail"
+                                           asp-route-id="@graEvent.Id"
+                                           target="_blank">@graEvent.Id</a>
                                     </li>
                                 }
                             }
@@ -442,13 +395,7 @@
                                 @if (Model.CanViewTriggers)
                                 {
                                     <li>
-                                        <a aria-label="@trigger.Name (opens new window)"
-                                           asp-controller="Triggers"
-                                           asp-action="Edit"
-                                           asp-route-id="@trigger.Id"
-                                           target="_blank">
-                                            @trigger.Name
-                                        </a>
+                                        <a asp-controller="Triggers" asp-action="Edit" asp-route-id="@trigger.Id" target="_blank">@trigger.Name</a>
                                     </li>
                                 }
                                 else
@@ -587,6 +534,7 @@
                 <img id="badgeImage" class="img-thumbnail badge-lg"
                      src="~/@Model.BadgePath?@DateTime.Now.ToString(" yyMMddHHmmss")"
                      asp-append-version="true" />
+                <span asp-validation-for="BadgeMakerImage" class="text-danger"></span>
             }
             else
             {
@@ -610,6 +558,9 @@
                     <button id="openMaker" type="button" class="btn btn-default">
                         <span class="fa fa-certificate"></span> Create a Badge
                     </button>
+                    <div>
+                        <span class="text-danger" asp-validation-for="BadgeMakerImage"></span>
+                    </div>
                 </div>
 
                 <div role="tabpanel" class="tab-pane gra-tab-pane @(Model.UseBadgeMaker ? " " : " active")" id="upload">
@@ -706,7 +657,11 @@
                                 @Html.Raw(task.Description)
                                 @if (!string.IsNullOrWhiteSpace(task.Filename))
                                 {
-                                    <a href="@task.Filename" target="_blank" class="btn btn-xs btn-default on-top" style="margin-top:5px;">
+                                    <a aria-label="View Attachment (Opens new window)"
+                                       href="@task.Filename"
+                                       target="_blank"
+                                       class="btn btn-xs btn-default on-top"
+                                       style="margin-top:5px;">
                                         <span class="fa fa-file-o"></span>
                                         View Attachment
                                     </a>
@@ -737,7 +692,11 @@
                                 </div>
                                 @if (!string.IsNullOrWhiteSpace(task.Filename))
                                 {
-                                    <a href="@task.Filename" target="_blank" class="btn btn-xs btn-default on-top" style="margin-top:5px;">
+                                    <a aria-label="View Attachment (Opens new window)"
+                                       href="@task.Filename"
+                                       target="_blank"
+                                       class="btn btn-xs btn-default on-top"
+                                       style="margin-top:5px;">
                                         <span class="fa fa-file-o"></span>
                                         View Attachment
                                     </a>
@@ -776,7 +735,449 @@
             <span class="buttonText">Add Task</span>
         </button>
     }
+
+    @if (Model.AddTask)
+    {
+        <div class="row">
+            <div class="modal fade"
+                 id="addModal"
+                 tabindex="-1"
+                 role="dialog"
+                 aria-labelledby="addModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button"
+                                    class="close"
+                                    data-dismiss="modal"
+                                    aria-label="Close dialog">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h1 class="modal-title h4" id="addModalLabel">Add task</h1>
+                        </div>
+                        <div class="modal-body">
+                            <input asp-for="Task.ChallengeTaskType"
+                                   value="@ChallengeTaskType.Action"
+                                   type="hidden" />
+                            <input asp-for="TaskUploadFile"
+                                   type="file"
+                                   accept=".png,.jpg,.jpeg,.png"
+                                   style="display:none;" />
+                            <ul class="nav nav-tabs gra-nav-tabs" role="tablist">
+                                <li role="presentation" class="active">
+                                    <a id="actionTab"
+                                       href="#action"
+                                       aria-controls="action"
+                                       role="tab"
+                                       data-toggle="tab">
+                                        Action
+                                    </a>
+                                </li>
+                                <li role="presentation">
+                                    <a id="bookTab"
+                                       href="#book"
+                                       aria-controls="book"
+                                       role="tab"
+                                       data-toggle="tab">
+                                        Book
+                                    </a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div role="tabpanel"
+                                     class="tab-pane gra-tab-pane active"
+                                     id="action">
+                                    <div class="form-group">
+                                        <label asp-for="Task.Title"
+                                               class="control-label">
+                                            Description
+                                        </label>
+                                        <div id="wmd-button-bar"></div>
+                                        <textarea asp-for="Task.Title"
+                                                  id="wmd-input"
+                                                  class="form-control wmd-input actionTitle"
+                                                  data-val-required="The Description field is required."></textarea>
+                                        <br /><label class="control-label">Preview</label>
+                                        <div id="preview"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Add a file</label>
+                                        <div class="input-group">
+                                            <label class="input-group-btn">
+                                                <button type="button"
+                                                        class="btn btn-default btn-file taskFileButton">
+                                                    <span class="fa fa-file-o"></span> Select a file
+                                                </button>
+                                            </label>
+                                            <input type="text"
+                                                   class="form-control selectedTaskFile"
+                                                   readonly>
+                                        </div>
+                                        <span asp-validation-for="TaskUploadFile"
+                                              class="text-danger"></span>
+                                        <button class="btn btn-default clearTaskFile"
+                                                type="button"
+                                                style="margin-top: 0.5em;">
+                                            <span class="fa fa-ban"></span> Clear file selection
+                                        </button>
+                                    </div>
+                                </div>
+                                <div role="tabpanel" class="tab-pane gra-tab-pane" id="book">
+                                    <div class="form-group">
+                                        <label asp-for="Task.Title" class="control-label"></label>
+                                        <input asp-for="Task.Title"
+                                               id="bookTitle"
+                                               class="form-control" disabled />
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="Task.Author" class="control-label"></label>
+                                        <input asp-for="Task.Author" class="form-control" />
+                                        <span asp-validation-for="Task.Author"
+                                              class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="Task.Isbn" class="control-label"></label>
+                                        <input asp-for="Task.Isbn" class="form-control" />
+                                        <span asp-validation-for="Task.Isbn"
+                                              class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="Task.Url" class="control-label"></label>
+                                        <input asp-for="Task.Url" class="form-control" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Add a file</label>
+                                        <div class="input-group">
+                                            <label class="input-group-btn">
+                                                <button type="button"
+                                                        class="btn btn-default btn-file taskFileButton">
+                                                    <span class="fa fa-file-o"></span> Select a file
+                                                </button>
+                                            </label>
+                                            <input type="text"
+                                                   class="form-control selectedTaskFile"
+                                                   readonly>
+                                        </div>
+                                        <span asp-validation-for="TaskUploadFile"
+                                              class="text-danger"></span>
+                                        <button class="btn btn-default clearTaskFile"
+                                                type="button"
+                                                style="margin-top: 0.5em;">
+                                            <span class="fa fa-ban"></span> Clear file selection
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button"
+                                    class="btn btn-default"
+                                    data-dismiss="modal"
+                                    style="margin-right: 1em;">
+                                Cancel
+                            </button>
+                            <button type="submit"
+                                    asp-action="AddTask"
+                                    class="btn btn-primary pull-right btn-spinner"
+                                    aria-label="Confirm">
+                                <span class="buttonText">Add</span>
+                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (Model.Task != null)
+    {
+        <div class="row">
+            <div class="modal fade"
+                 id="editModal"
+                 tabindex="-1"
+                 role="dialog"
+                 aria-labelledby="editModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button"
+                                    class="close"
+                                    data-dismiss="modal"
+                                    aria-label="Close dialog">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h1 class="modal-title h4" id="editModalLabel">Edit task</h1>
+                        </div>
+                        <div class="modal-body">
+                            <input asp-for="Task.Id" type="hidden" />
+                            <input asp-for="Task.Position" type="hidden" />
+                            <input asp-for="Task.ChallengeId" type="hidden" />
+                            <input asp-for="Task.ChallengeTaskType" type="hidden" />
+                            <input asp-for="Task.Filename" type="hidden" />
+                            <input asp-for="TaskUploadFile"
+                                   type="file"
+                                   accept=".png,.jpg,.jpeg,.png"
+                                   style="display:none;" />
+
+                            <ul class="nav nav-tabs gra-nav-tabs" role="tablist">
+                                <li role="presentation"
+                                    class="@(Model.Task.ChallengeTaskType == ChallengeTaskType.Action ? " active" : "" )">
+                                    <a id="actionTab"
+                                       href="#action"
+                                       aria-controls="action"
+                                       role="tab"
+                                       data-toggle="tab">Action</a>
+                                </li>
+                                <li role="presentation"
+                                    class="@(Model.Task.ChallengeTaskType == ChallengeTaskType.Book ? " active" : "" )">
+                                    <a id="bookTab"
+                                       href="#book"
+                                       aria-controls="book"
+                                       role="tab"
+                                       data-toggle="tab">
+                                        Book
+                                    </a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div role="tabpanel"
+                                     class="tab-pane gra-tab-pane @(Model.Task.ChallengeTaskType == ChallengeTaskType.Action ? " active" : "" )"
+                                     id="action">
+                                    <div class="form-group">
+                                        <label asp-for="Task.Title" class="control-label">Description</label>
+                                        <div id="wmd-button-bar"></div>
+                                        <textarea asp-for="Task.Title"
+                                                  id="wmd-input"
+                                                  class="form-control wmd-input actionTitle"
+                                                  data-val-required="The Description field is required."
+                                                  disabled="@(Model.Task.ChallengeTaskType == ChallengeTaskType.Action ? null : "disabled")"></textarea>
+                                        <br /><label class="control-label">Preview</label>
+                                        <div id="preview"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        @if (string.IsNullOrWhiteSpace(Model.Task.Filename))
+                                        {
+                                            <label class="control-label">Add a file</label>
+                                        }
+                                        else
+                                        {
+                                            <label class="control-label">
+                                                Edit File &ndash;
+                                                <a aria-label="Link (Opens new window)"
+                                                   href="@Model.TaskFilePath"
+                                                   target="_blank">Link</a>
+                                            </label>
+                                        }
+                                        <div class="input-group">
+                                            <label class="input-group-btn">
+                                                <button type="button"
+                                                        class="btn btn-default btn-file taskFileButton">
+                                                    <span class="fa fa-file-o"></span> Select a file
+                                                </button>
+                                            </label>
+                                            <input type="text"
+                                                   value="@Model.Task.Filename"
+                                                   class="form-control selectedTaskFile"
+                                                   readonly>
+                                        </div>
+                                        <span asp-validation-for="TaskUploadFile"
+                                              class="text-danger"></span>
+                                        <button class="btn btn-default clearTaskFile"
+                                                type="button"
+                                                style="margin-top: 0.5em;">
+                                            <span class="fa fa-ban"></span> Clear file selection
+                                        </button>
+                                    </div>
+                                </div>
+                                <div role="tabpanel"
+                                     class="tab-pane gra-tab-pane @(Model.Task.ChallengeTaskType == ChallengeTaskType.Book ? " active" : "" )"
+                                     id="book">
+                                    <div class="form-group">
+                                        <label asp-for="Task.Title" class="control-label"></label>
+                                        <input asp-for="Task.Title"
+                                               id="bookTitle"
+                                               class="form-control"
+                                               disabled="@(Model.Task.ChallengeTaskType == ChallengeTaskType.Book ? null : " disabled")" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="Task.Author" class="control-label"></label>
+                                        <input asp-for="Task.Author" class="form-control" />
+                                        <span asp-validation-for="Task.Author"
+                                              class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="Task.Isbn" class="control-label"></label>
+                                        <input asp-for="Task.Isbn" class="form-control" />
+                                        <span asp-validation-for="Task.Isbn"
+                                              class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="Task.Url" class="control-label"></label>
+                                        <input asp-for="Task.Url" class="form-control" />
+                                    </div>
+                                    <div class="form-group">
+                                        @if (string.IsNullOrWhiteSpace(Model.Task.Filename))
+                                        {
+                                            <label class="control-label">Add a file</label>
+                                        }
+                                        else
+                                        {
+                                            <label class="control-label">Edit file</label>
+                                        }
+                                        <div class="input-group">
+                                            <label class="input-group-btn">
+                                                <button type="button"
+                                                        class="btn btn-default btn-file taskFileButton">
+                                                    <span class="fa fa-file-o"></span> Select a file
+                                                </button>
+                                            </label>
+                                            <input type="text"
+                                                   value="@Model.Task.Filename"
+                                                   class="form-control selectedTaskFile"
+                                                   readonly>
+                                        </div>
+                                        <span asp-validation-for="TaskUploadFile"
+                                              class="text-danger"></span>
+                                        <button class="btn btn-default clearTaskFile"
+                                                type="button"
+                                                style="margin-top: 0.5em;">
+                                            <span class="fa fa-ban"></span> Clear file selection
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default"
+                                    data-dismiss="modal"
+                                    style="margin-right: 1em;">
+                                Cancel
+                            </button>
+                            <button type="submit"
+                                    asp-action="ModifyTask"
+                                    class="btn btn-primary pull-right btn-spinner"
+                                    aria-label="Confirm">
+                                <span class="buttonText">Save</span>
+                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="row">
+        <div class="modal fade"
+             id="deleteModal"
+             tabindex="-1"
+             role="dialog"
+             aria-labelledby="deleteModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close"
+                                data-dismiss="modal"
+                                aria-label="Close dialog">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h1 class="modal-title h4" id="deleteModalLabel">Delete task</h1>
+                    </div>
+                    <div class="modal-body">
+                        <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                        <span id="modal-text"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                id="DeleteTask"
+                                asp-action="DeleteTask"
+                                class="btn btn-danger pull-right btn-spinner"
+                                aria-label="Confirm">
+                            <span class="fa fa-remove" aria-hidden="true"></span>
+                            Delete
+                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </form>
+
+@if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
+{
+
+    <div class="modal fade"
+         id="warningModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="warningModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h1 class="h4 modal-title" id="deleteModalLabel">
+                        Warning: Award points exceed maximum
+                    </h1>
+                </div>
+                <div class="modal-body">
+                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                    <span id="modal-text">
+                        The awarded points for this trigger exceed the maximum of
+                        <strong>@Model.MaxPointLimit points per task</strong>. Do you wish to continue?
+                    </span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-default"
+                            data-dismiss="modal"
+                            style="margin-right: 1em;">
+                        Cancel
+                    </button>
+                    <button id="warningSave"
+                            type="button"
+                            class="btn btn-primary"
+                            data-dismiss="modal"
+                            style="margin-right: 1em;">
+                        Save Challenge
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+<div class="row">
+    <div class="modal fade frame-modal"
+         id="badgeModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="badgeModalLabel">
+        <div class="modal-content">
+            <div class="modal-body" style="padding: 30px;">
+                <button class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute"
+                        data-dismiss="modal"
+                        alt="Close dialog.">
+                    <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
+                    <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
+                </button>
+                <iframe id="badgeMaker" class="badge-maker"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section scripts {
     @if (Model.AddTask || Model.Task != null)

@@ -1,19 +1,5 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Programs.ProgramDetailViewModel
 
-<div class="row">
-    <div class="modal fade frame-modal" id="badgeModal" tabindex="-1" role="dialog" aria-labelledby="badgeModalLabel">
-        <div class="modal-content">
-            <div class="modal-body">
-                <span class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute" data-dismiss="modal">
-                    <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
-                    <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
-                </span>
-                <iframe id="badgeMaker" class="badge-maker"></iframe>
-            </div>
-        </div>
-    </div>
-</div>
-
 <form asp-action="@Model.Action" method="post" role="form" enctype="multipart/form-data" style="padding-top:10px;">
     <input asp-for="Action" type="hidden" />
     <input asp-for="BadgeMakerImage" type="hidden" />
@@ -187,6 +173,26 @@
         </div>
     </div>
 </form>
+
+<div class="row">
+    <div class="modal fade frame-modal"
+         id="badgeModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="badgeModalLabel">
+        <div class="modal-content">
+            <div class="modal-body" style="padding: 30px;">
+                <button class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute"
+                        data-dismiss="modal"
+                        alt="Close dialog.">
+                    <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
+                    <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
+                </button>
+                <iframe id="badgeMaker" class="badge-maker"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section scripts {
     <script>

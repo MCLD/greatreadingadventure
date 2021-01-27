@@ -1,88 +1,5 @@
 ﻿@model GRA.Controllers.ViewModel.Profile.HouseholdListViewModel
 
-@if (Model.AuthUserIsHead)
-{
-    <div class="row">
-        <div class="modal fade"
-             id="dailyImageModal"
-             style="text-align:center;"
-             tabindex="-1" role="dialog"
-             aria-labelledby="dailyImageModalLabel">
-            <div id="dailyImageModalDialog"
-                 class="modal-dialog"
-                 style="display: inline-block;"
-                 role="document">
-                <div class="modal-content">
-                    <span class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute"
-                          data-dismiss="modal">
-                        <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
-                        <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
-                    </span>
-                    <div style="padding: 25px;">
-                        <img class="img img-responsive daily-image" />
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-}
-
-@if (Model.ShowVendorCodes)
-{
-    <div class="row">
-        <div class="modal fade"
-             id="emailAwardModal"
-             tabindex="-1"
-             role="dialog"
-             aria-labelledby="emailAwardLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <form asp-action="@nameof(ProfileController.EmailAward)" method="post" role="form" style="display:inline">
-                        <input asp-for="EmailAwardModel.UserId" type="hidden" />
-                        <div class="modal-body">
-                            <p>@Html.Raw(Model.Head.EmailAwardInstructions)</p>
-                            <div class="row row-spacing">
-                                <div class="col-xs-12">
-                                    <label asp-for="EmailAwardModel.Email" class="control-label"></label>
-                                    <input asp-for="EmailAwardModel.Email" class="form-control" />
-                                    <span asp-validation-for="EmailAwardModel.Email" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">@SharedLocalizer[GRA.Annotations.Interface.Cancel]</button>
-                            <button type="submit" class="btn btn-warning btn-spinner pull-right" aria-label="Confirm">
-                                @SharedLocalizer[GRA.Annotations.Interface.Confirm]
-                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-}
-
-<div class="modal fade pendingModal"
-     tabindex="-1"
-     role="dialog"
-     aria-labelledby="pendingModalLabel">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content">
-            <div class="modal-body">
-                <button type="button"
-                        class="close"
-                        data-dismiss="modal"
-                        aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <br />
-                @SharedLocalizer[GRA.Annotations.Validate.ParticipantQuestionnaire]
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="row">
     <div class="col-xs-12 col-sm-10 col-sm-offset-1">
         <div class="panel panel-default">
@@ -552,6 +469,104 @@
         </div>
     </div>
 </div>
+
+@if (Model.AuthUserIsHead)
+{
+    <div class="row">
+        <div class="modal fade"
+             id="dailyImageModal"
+             style="text-align:center;"
+             tabindex="-1" role="dialog"
+             aria-labelledby="dailyImageModalLabel">
+            <div id="dailyImageModalDialog"
+                 class="modal-dialog"
+                 style="display: inline-block;"
+                 role="document">
+                <div class="modal-content">
+                    <button class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute"
+                          data-dismiss="modal"
+                          alt="@SharedLocalizer[GRA.Annotations.Interface.CloseDialog]">
+                        <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
+                        <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
+                    </button>
+                    <div style="padding: 25px;">
+                        <img class="img img-responsive daily-image" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (Model.ShowVendorCodes)
+{
+    <div class="row">
+        <div class="modal fade"
+             id="emailAwardModal"
+             tabindex="-1"
+             role="dialog"
+             aria-labelledby="emailAwardLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form asp-action="@nameof(ProfileController.EmailAward)"
+                          method="post"
+                          role="form"
+                          style="display:inline">
+                        <input asp-for="EmailAwardModel.UserId" type="hidden" />
+                        <div class="modal-body">
+                            <p>@Html.Raw(Model.Head.EmailAwardInstructions)</p>
+                            <div class="row row-spacing">
+                                <div class="col-xs-12">
+                                    <label asp-for="EmailAwardModel.Email"
+                                           class="control-label"></label>
+                                    <input asp-for="EmailAwardModel.Email"
+                                           class="form-control" />
+                                    <span asp-validation-for="EmailAwardModel.Email"
+                                          class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button"
+                                    class="btn btn-default"
+                                    data-dismiss="modal"
+                                    style="margin-right: 1em;">
+                                @SharedLocalizer[GRA.Annotations.Interface.Cancel]
+                            </button>
+                            <button type="submit"
+                                    class="btn btn-warning btn-spinner pull-right"
+                                    aria-label="Confirm">
+                                @SharedLocalizer[GRA.Annotations.Interface.Confirm]
+                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="modal fade pendingModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="pendingModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <button type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="@SharedLocalizer[GRA.Annotations.Interface.CloseDialog]">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <br />
+                @SharedLocalizer[GRA.Annotations.Validate.ParticipantQuestionnaire]
+            </div>
+        </div>
+    </div>
+</div>
+
 @section scripts {
     <script>
         var submitting = false;

@@ -1,64 +1,5 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Challenges.ChallengesDetailViewModel
 
-<div class="row">
-    <div class="modal fade frame-modal" id="badgeModal" tabindex="-1" role="dialog" aria-labelledby="badgeModalLabel">
-        <div class="modal-content">
-            <div class="modal-body">
-                <span class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute" data-dismiss="modal">
-                    <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
-                    <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
-                </span>
-                <iframe id="badgeMaker" class="badge-maker"></iframe>
-            </div>
-        </div>
-    </div>
-</div>
-
-@if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
-{
-    <div class="modal fade"
-         id="warningModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="warningModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h4 class="modal-title" id="deleteModalLabel">
-                        Warning: Award points exceed maximum
-                    </h4>
-                </div>
-                <div class="modal-body">
-                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
-                    <span id="modal-text">
-                        The awarded points for this trigger exceed the maximum of
-                        <strong>@Model.MaxPointLimit points per task</strong>. Do you wish to continue?
-                    </span>
-                </div>
-                <div class="modal-footer">
-                    <button type="button"
-                            class="btn btn-default"
-                            data-dismiss="modal"
-                            style="margin-right: 1em;">
-                        Cancel
-                    </button>
-                    <button id="warningSave"
-                            type="button"
-                            class="btn btn-primary"
-                            data-dismiss="modal"
-                            style="margin-right: 1em;">
-                        Save Challenge
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-}
-
 <form asp-controller="Challenges"
       asp-action="Create"
       id="challengeForm"
@@ -228,6 +169,70 @@
         </button>
     </div>
 </form>
+
+<div class="row">
+    <div class="modal fade frame-modal"
+         id="badgeModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="badgeModalLabel">
+        <div class="modal-content">
+            <div class="modal-body" style="padding: 30px;">
+                <button class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute"
+                        data-dismiss="modal"
+                        alt="Close dialog.">
+                    <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
+                    <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
+                </button>
+                <iframe id="badgeMaker" class="badge-maker"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
+{
+    <div class="modal fade"
+         id="warningModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="warningModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h1 class="h4 modal-title" id="deleteModalLabel">
+                        Warning: Award points exceed maximum
+                    </h1>
+                </div>
+                <div class="modal-body">
+                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                    <span id="modal-text">
+                        The awarded points for this trigger exceed the maximum of
+                        <strong>@Model.MaxPointLimit points per task</strong>. Do you wish to continue?
+                    </span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-default"
+                            data-dismiss="modal"
+                            style="margin-right: 1em;">
+                        Cancel
+                    </button>
+                    <button id="warningSave"
+                            type="button"
+                            class="btn btn-primary"
+                            data-dismiss="modal"
+                            style="margin-right: 1em;">
+                        Save Challenge
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 @section scripts {
     <script>

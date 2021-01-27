@@ -40,41 +40,32 @@
                                         {
                                             <img class="img-thumbnail badge-sm pull-right" 
                                                  src="~/@notification.BadgeFilename"
-                                                 alt="@notification.AltText"
                                                  asp-append-version="true" />
                                         }
                                     </div>
                                 </td>
                             </tr>
 
-                        }
-                        <tr><td><div class="col-xs-12">@Html.Raw(Model.SummaryText)</div></td></tr>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" 
-                            class="btn btn-default" 
-                            data-dismiss="modal" 
-                            style="margin-right: 1em;">Close</button>
+                            }
+                            <tr>
+                                <td>
+                                    <div class="col-xs-12">@Html.Raw(Model.SummaryText)</div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Close
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <div id="notificationsAlert" class="col-xs-12 col-sm-6 col-sm-offset-3">
-        <div class="alert alert-success">
-            @foreach (var notification in Model.Notifications)
-            {
-                @Html.Raw(notification.Text.Replace("and a badge", $"<a href=\"{Url.Action("History", "Profile")}\">and a badge</a>"))
-                <br />
-            }
-            @if (!string.IsNullOrWhiteSpace(Model.SummaryText))
-            {
-                <span>@Html.Raw(Model.SummaryText)</span>
-            }
-        </div>
-    </div>
-</div>
 
 <script>
     document.getElementById("notificationsAlert").style.display = "none";
