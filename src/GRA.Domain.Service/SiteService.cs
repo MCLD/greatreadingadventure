@@ -325,6 +325,7 @@ namespace GRA.Domain.Service
             currentProgram.DailyLiteracyTipId = program.DailyLiteracyTipId;
             currentProgram.JoinBadgeId = currentProgram.JoinBadgeId ?? program.JoinBadgeId;
             currentProgram.JoinBadgeName = program.JoinBadgeName;
+            currentProgram.JoinBadgeAltText = program.JoinBadgeAltText?.Trim();
             currentProgram.Name = program.Name;
             currentProgram.PointTranslationId = program.PointTranslationId;
             currentProgram.SchoolRequired = program.SchoolRequired;

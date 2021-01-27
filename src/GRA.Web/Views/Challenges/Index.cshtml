@@ -224,7 +224,10 @@
                                                         @if (!string.IsNullOrEmpty(Model.Challenges[i].BadgeFilename))
                                                         {
                                                             <div style="text-align:center;">
-                                                                <img class="img-thumbnail badge-sm" src="~/@Model.Challenges[i].BadgeFilename" asp-append-version="true" />
+                                                                <img class="img-thumbnail badge-sm"
+                                                                     src="~/@Model.Challenges[i].BadgeFilename"
+                                                                     alt="@Model.Challenges[i].BadgeAltText"
+                                                                     asp-append-version="true" />
                                                             </div>
                                                         }
                                                         else

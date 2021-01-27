@@ -110,6 +110,10 @@ namespace GRA.Controllers.MissionControl
                 {
                     ModelState.AddModelError("Program.JoinBadgeName", "Please provide a name for the badge");
                 }
+                if (string.IsNullOrWhiteSpace(model.BadgeAltText))
+                {
+                    ModelState.AddModelError("BadgeAltText", "The badge's alternative text is required.");
+                }
                 if (string.IsNullOrWhiteSpace(model.BadgeMakerImage) && model.BadgeUploadImage == null)
                 {
                     ModelState.AddModelError("BadgePath", "Please provide an image for the badge.");
@@ -137,6 +141,13 @@ namespace GRA.Controllers.MissionControl
                         ModelState.AddModelError("BadgeUploadImage", gex.Message);
                     }
                 }
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.BadgeAltText) &&
+                (string.IsNullOrWhiteSpace(model.BadgeMakerImage)
+                && model.BadgeUploadImage == null && string.IsNullOrWhiteSpace(model.BadgePath)))
+            {
+                ModelState.AddModelError("BadgePath", "Please provide an image for the badge.");
             }
 
             if (model.Program.AgeMaximum < model.Program.AgeMinimum)
@@ -173,7 +184,8 @@ namespace GRA.Controllers.MissionControl
                         }
                         var newBadge = new Badge
                         {
-                            Filename = filename
+                            Filename = filename,
+                            AltText = model.BadgeAltText
                         };
                         var badge = await _badgeService.AddBadgeAsync(newBadge, badgeBytes);
                         model.Program.JoinBadgeId = badge.Id;
@@ -236,6 +248,7 @@ namespace GRA.Controllers.MissionControl
                     if (badge != null)
                     {
                         viewModel.BadgePath = _pathResolver.ResolveContentPath(badge.Filename);
+                        viewModel.BadgeAltText = badge.AltText;
                     }
                 }
 
@@ -260,6 +273,10 @@ namespace GRA.Controllers.MissionControl
                     || currentProgram.JoinBadgeId.HasValue))
             {
                 ModelState.AddModelError("Program.JoinBadgeName", "Please provide a name for the badge");
+                if (string.IsNullOrWhiteSpace(model.BadgeAltText))
+                {
+                    ModelState.AddModelError("BadgeAltText", "The badge's alternative text is required.");
+                }
             }
 
             if (!string.IsNullOrWhiteSpace(model.Program.JoinBadgeName)
@@ -268,6 +285,23 @@ namespace GRA.Controllers.MissionControl
                 && !currentProgram.JoinBadgeId.HasValue)
             {
                 ModelState.AddModelError("BadgemakerImage", "Please provide an image for the badge.");
+                if (string.IsNullOrWhiteSpace(model.BadgeAltText))
+                {
+                    ModelState.AddModelError("BadgeAltText", "The badge's alternative text is required.");
+                }
+            }
+
+            if ((!string.IsNullOrWhiteSpace(model.BadgePath) || (!string.IsNullOrWhiteSpace(model.BadgeMakerImage)
+                || model.BadgeUploadImage != null)) && string.IsNullOrWhiteSpace(model.BadgeAltText))
+            {
+                ModelState.AddModelError("BadgeAltText", "The badge's alternative text is required.");
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.BadgeAltText) &&
+                (string.IsNullOrWhiteSpace(model.BadgeMakerImage)
+                && model.BadgeUploadImage == null && string.IsNullOrWhiteSpace(model.BadgePath)))
+            {
+                ModelState.AddModelError("BadgePath", "Please provide an image for the badge.");
             }
 
             if (model.BadgeUploadImage != null
@@ -339,10 +373,22 @@ namespace GRA.Controllers.MissionControl
                         {
                             var newBadge = new Badge
                             {
-                                Filename = filename
+                                Filename = filename,
+                                AltText = model.BadgeAltText
                             };
                             var badge = await _badgeService.AddBadgeAsync(newBadge, badgeBytes);
                             model.Program.JoinBadgeId = badge.Id;
+                        }
+                    }
+                    if (model.Program.JoinBadgeId.HasValue)
+                    {
+                        var existing = await _badgeService
+                            .GetByIdAsync(model.Program.JoinBadgeId.Value);
+                        if (!string.Equals(existing.AltText, model.BadgeAltText,
+                            StringComparison.OrdinalIgnoreCase))
+                        {
+                            existing.AltText = model.BadgeAltText;
+                            await _badgeService.ReplaceBadgeFileAsync(existing,null,null);
                         }
                     }
                     if (!string.IsNullOrWhiteSpace(model.Program.JoinBadgeName))

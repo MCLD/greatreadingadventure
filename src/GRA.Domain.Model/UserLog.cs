@@ -27,6 +27,9 @@ namespace GRA.Domain.Model
         public int? EventId { get; set; }
         public int? TriggerId { get; set; }
         public string BadgeFilename { get; set; }
+
+        [MaxLength(255)]
+        public string BadgeAltText { get; set; }
         public string Description { get; set; }
 
         public int? AvatarBundleId { get; set; }

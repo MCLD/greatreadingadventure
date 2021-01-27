@@ -261,7 +261,10 @@ namespace GRA.Controllers.MissionControl
                 .ToList();
             }
             var requirementCount = badgeRequiredList.Count + challengeRequiredList.Count;
-
+            if (string.IsNullOrWhiteSpace(model.BadgeAltText))
+            {
+                ModelState.AddModelError("BadgeAltText", "The badge's alternative text is required.");
+            }
             if (string.IsNullOrWhiteSpace(model.BadgeMakerImage) && model.BadgeUploadImage == null)
             {
                 ModelState.AddModelError("BadgePath", "A badge is required.");
@@ -274,22 +277,23 @@ namespace GRA.Controllers.MissionControl
                 {
                     ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                 }
-
-                try
+                if (model.BadgeUploadImage != null)
                 {
-                    using (var ms = new MemoryStream())
+                    try
                     {
-                        await model.BadgeUploadImage.CopyToAsync(ms);
-                        badgeBytes = ms.ToArray();
+                        using (var ms = new MemoryStream())
+                        {
+                            await model.BadgeUploadImage.CopyToAsync(ms);
+                            badgeBytes = ms.ToArray();
+                        }
+                        await _badgeService.ValidateBadgeImageAsync(badgeBytes);
                     }
-                    await _badgeService.ValidateBadgeImageAsync(badgeBytes);
-                }
-                catch (GraException gex)
-                {
-                    ModelState.AddModelError("BadgeUploadImage", gex.Message);
+                    catch (GraException gex)
+                    {
+                        ModelState.AddModelError("BadgeUploadImage", gex.Message);
+                    }
                 }
             }
-
             if (!model.IsSecretCode)
             {
                 if ((!model.Trigger.Points.HasValue || model.Trigger.Points < 1)
@@ -392,7 +396,8 @@ namespace GRA.Controllers.MissionControl
                         }
                         var newBadge = new Badge
                         {
-                            Filename = filename
+                            Filename = filename,
+                            AltText = model.BadgeAltText
                         };
                         var badge = await _badgeService.AddBadgeAsync(newBadge, badgeBytes);
                         model.Trigger.AwardBadgeId = badge.Id;
@@ -455,6 +460,7 @@ namespace GRA.Controllers.MissionControl
             }
             var site = await GetCurrentSiteAsync();
             var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
+            var badge = await _badgeService.GetByIdAsync(trigger.AwardBadgeId);
             var viewModel = new TriggersDetailViewModel
             {
                 Trigger = trigger,
@@ -477,7 +483,8 @@ namespace GRA.Controllers.MissionControl
                 ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
                 IgnorePointLimits = UserHasPermission(Permission.IgnorePointLimits),
                 MaxPointLimit =
-                    await _triggerService.GetMaximumAllowedPointsAsync(GetCurrentSiteId())
+                    await _triggerService.GetMaximumAllowedPointsAsync(GetCurrentSiteId()),
+                BadgeAltText = badge.AltText
             };
             if (viewModel?.MaxPointLimit != null)
             {
@@ -487,7 +494,6 @@ namespace GRA.Controllers.MissionControl
             {
                 viewModel.MaxPointsWarningMessage = $"This Trigger exceeds the maximum of {viewModel.MaxPointLimit.Value} points per required task. Only Administrators can edit the points awarded.";
             }
-
             if (viewModel.EditVendorCode)
             {
                 viewModel.VendorCodeTypeList = new SelectList(
@@ -530,7 +536,6 @@ namespace GRA.Controllers.MissionControl
             {
                 viewModel.BadgePath = _pathResolver.ResolveContentPath(viewModel.Trigger.AwardBadgeFilename);
             }
-
             if (UserHasPermission(Permission.ManageEvents))
             {
                 viewModel.RelatedEvents = await _eventService.GetRelatedEventsForTriggerAsync(id);
@@ -583,20 +588,26 @@ namespace GRA.Controllers.MissionControl
                 {
                     ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                 }
-
-                try
+                if (model.BadgeUploadImage != null)
                 {
-                    using (var ms = new MemoryStream())
+                    try
                     {
-                        await model.BadgeUploadImage.CopyToAsync(ms);
-                        badgeBytes = ms.ToArray();
+                        using (var ms = new MemoryStream())
+                        {
+                            await model.BadgeUploadImage.CopyToAsync(ms);
+                            badgeBytes = ms.ToArray();
+                        }
+                        await _badgeService.ValidateBadgeImageAsync(badgeBytes);
                     }
-                    await _badgeService.ValidateBadgeImageAsync(badgeBytes);
+                    catch (GraException gex)
+                    {
+                        ModelState.AddModelError("BadgeUploadImage", gex.Message);
+                    }
                 }
-                catch (GraException gex)
-                {
-                    ModelState.AddModelError("BadgeUploadImage", gex.Message);
-                }
+            }
+            if (string.IsNullOrWhiteSpace(model.BadgeAltText))
+            {
+                ModelState.AddModelError("BadgeAltText", "The badge's alternative text is required.");
             }
 
             if (!model.IsSecretCode)
@@ -674,6 +685,9 @@ namespace GRA.Controllers.MissionControl
                         model.Trigger.AwardMailSubject = "";
                         model.Trigger.AwardMail = "";
                     }
+                    var existing = await _badgeService
+                        .GetByIdAsync(model.Trigger.AwardBadgeId);
+                    string fileName;
                     if (model.BadgeUploadImage != null
                         || !string.IsNullOrWhiteSpace(model.BadgeMakerImage))
                     {
@@ -682,6 +696,7 @@ namespace GRA.Controllers.MissionControl
                         {
                             var badgeString = model.BadgeMakerImage.Split(',').Last();
                             badgeBytes = Convert.FromBase64String(badgeString);
+                            fileName = "badge.png";
                         }
                         else
                         {
@@ -693,14 +708,38 @@ namespace GRA.Controllers.MissionControl
                                     badgeBytes = ms.ToArray();
                                 }
                             }
+                            fileName = Path.GetFileName(model.BadgeUploadImage.FileName);
                         }
-
-                        var existing = await _badgeService
-                                    .GetByIdAsync(model.Trigger.AwardBadgeId);
-                        existing.Filename = Path.GetFileName(model.BadgePath);
-                        await _badgeService.ReplaceBadgeFileAsync(existing,
-                            badgeBytes,
-                            model.BadgeUploadImage.FileName);
+                        if (model.Trigger.AwardBadgeId == null)
+                        {
+                            var newBadge = new Badge
+                            {
+                                Filename = fileName,
+                                AltText = model.BadgeAltText
+                            };
+                            var badge = await _badgeService.AddBadgeAsync(newBadge, badgeBytes);
+                            model.Trigger.AwardBadgeId = badge.Id;
+                        }
+                        else
+                        {
+                            if (!string.Equals(existing.AltText, model.BadgeAltText,
+                                StringComparison.OrdinalIgnoreCase))
+                            {
+                                existing.AltText = model.BadgeAltText;
+                                await _badgeService.ReplaceBadgeFileAsync(existing, null, null);
+                            }
+                            existing.Filename = Path.GetFileName(model.BadgePath);
+                            existing.AltText = model.BadgeAltText;
+                            await _badgeService.ReplaceBadgeFileAsync(existing,
+                                badgeBytes,
+                                fileName);
+                        }
+                    }
+                    else if (!string.Equals(existing.AltText, model.BadgeAltText,
+                        StringComparison.OrdinalIgnoreCase))
+                    {
+                        existing.AltText = model.BadgeAltText;
+                        await _badgeService.ReplaceBadgeFileAsync(existing, null, null);
                     }
                     var savedtrigger = await _triggerService.UpdateAsync(model.Trigger);
                     ShowAlertSuccess($"Trigger '<strong>{savedtrigger.Name}</strong>' was successfully modified");

@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
 using GRA.Domain.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Challenges
 {
@@ -26,6 +27,10 @@ namespace GRA.Controllers.ViewModel.MissionControl.Challenges
         public string BadgeMakerUrl { get; set; }
         public bool UseBadgeMaker { get; set; }
         public string BadgeMakerImage { get; set; }
+
+        [DisplayName("Badge Alternative Text")]
+        [MaxLength(255)]
+        public string BadgeAltText { get; set; }
         public ICollection<Trigger> DependentTriggers { get; set; }
         public List<ChallengeGroup> Groups { get; set; }
         public List<Event> RelatedEvents { get; set; }

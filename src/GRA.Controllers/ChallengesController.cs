@@ -278,6 +278,7 @@ namespace GRA.Controllers
             {
                 Challenge = challenge,
                 BadgePath = challenge.BadgeFilename,
+                BadgeAltText = challenge.BadgeAltText,
                 IsActive = isActive,
                 IsLoggedIn = AuthUser.Identity.IsAuthenticated,
                 ShowCompleted = showCompleted,

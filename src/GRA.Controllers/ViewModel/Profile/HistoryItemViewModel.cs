@@ -1,4 +1,6 @@
 ﻿
+using System.ComponentModel.DataAnnotations;
+
 namespace GRA.Controllers.ViewModel.Profile
 {
     public class HistoryItemViewModel
@@ -7,5 +9,8 @@ namespace GRA.Controllers.ViewModel.Profile
         public string Description { get; set; }
         public int PointsEarned { get; set; }
         public string BadgeFilename { get; set; }
+
+        [MaxLength(255)]
+        public string BadgeAltText { get; set; }
     }
 }

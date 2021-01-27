@@ -444,6 +444,18 @@
                             <div>
                                 <span asp-validation-for="BadgeUploadImage" class="text-danger"></span>
                             </div>
+                            <button id="clearFile" class="btn btn-default" type="button" style="margin-top: 0.5em;"><span class="fa fa-ban"></span> Clear file selection</button>
+                        </div>
+                    </div>
+                    <div class="row row-spacing">
+                        <div class="col-xs-12">
+                            <label asp-for="BadgeAltText" class="control-label"></label>
+                            <span class="fa fa-info-circle wide-tooltip"
+                                  title="How should this badge be described to someone who can't see it?"
+                                  data-toggle="tooltip"
+                                  data-placement="top"></span>
+                            <textarea asp-for="BadgeAltText" class="form-control">@Model.BadgeAltText</textarea>
+                            <span asp-validation-for="BadgeAltText" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
@@ -846,13 +858,20 @@
             UpdateRequirementsList();
         })
 
-        $("#clearButton").on("click", function() {
+        $("#clearButton").on("click", function () {
             $("#searchText").val("");
             search = "";
             $("#searchMessage").addClass("hide");
             page = 1;
             UpdateRequirementsList();
-        })
+        });
+
+        $('#clearFile').on("click", function () {
+            $('#BadgeUploadImage').val('');
+            $('.btn-file').addClass('btn-default');
+            $('.btn-file').removeClass('btn-success');
+            $('#selectedFile').val('');
+        });
 
         $(document).on("click", ".page-button", function() {
             if (!$(this).hasClass("disabled"))

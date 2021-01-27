@@ -1474,4 +1474,8 @@
     <value>Cerrar dialogo.</value>
     <comment>What is read when a screen reader goes over a close modal button.</comment>
   </data>
+  <data name="This badge was awarded when you unlocked the avatar bundle: {0}" xml:space="preserve">
+    <value>Esta insignia se otorgo cuando desbloqueaste el paquete de avatar: {0}</value>
+    <comment>The alternative text description for unlocking an avatar bundle.</comment>
+  </data>
 </root>

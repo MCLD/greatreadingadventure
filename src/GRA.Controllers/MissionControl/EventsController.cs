@@ -443,6 +443,10 @@ namespace GRA.Controllers.MissionControl
                     ModelState.AddModelError("AwardPoints",
                         $"You may award up to {model.MaxPointLimit} points.");
                 }
+                if (string.IsNullOrWhiteSpace(model.BadgeAltText))
+                {
+                    ModelState.AddModelError("BadgeAltText", "The badge's alternative text is required.");
+                }
             }
             else
             {
@@ -526,7 +530,8 @@ namespace GRA.Controllers.MissionControl
                         }
                         var newBadge = new Badge
                         {
-                            Filename = filename
+                            Filename = filename,
+                            AltText = model.BadgeAltText
                         };
                         var badge = await _badgeService.AddBadgeAsync(newBadge, badgeBytes);
                         var trigger = new Trigger

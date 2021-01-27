@@ -20,7 +20,6 @@ namespace GRA.Domain.Model
         [Required]
         public bool IsValid { get; set; }
 
-
         [Required]
         [MaxLength(255)]
         public string Name { get; set; }
@@ -54,6 +53,9 @@ namespace GRA.Domain.Model
         public int? CompletedTasks { get; set; }
         public int? BadgeId { get; set; }
         public string BadgeFilename { get; set; }
+
+        [MaxLength(255)]
+        public string BadgeAltText { get; set; }
         public bool HasDependents { get; set; }
         public bool IsFavorited { get; set; }
 

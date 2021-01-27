@@ -264,6 +264,17 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row row-spacing">
+                            <div class="col-xs-12">
+                                <label asp-for="BadgeAltText" class="control-label"></label>
+                                <span class="fa fa-info-circle wide-tooltip"
+                                      title="How should this badge be described to someone who can't see it?"
+                                      data-toggle="tooltip"
+                                      data-placement="top"></span>
+                                <textarea asp-for="BadgeAltText" class="form-control"></textarea>
+                                <span asp-validation-for="BadgeAltText" class="text-danger"></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

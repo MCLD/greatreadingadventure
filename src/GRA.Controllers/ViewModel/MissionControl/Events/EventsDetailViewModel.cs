@@ -36,6 +36,10 @@ namespace GRA.Controllers.ViewModel.MissionControl.Events
         public bool UseBadgeMaker { get; set; }
         public string BadgeMakerImage { get; set; }
 
+        [MaxLength(255)]
+        [DisplayName("Badge Alternative Text")]
+        public string BadgeAltText { get; set; }
+
         public bool CanAddSecretCode { get; set; }
         public bool CanEditGroups { get; set; }
         public bool CanManageLocations { get; set; }
