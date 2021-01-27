@@ -4,50 +4,6 @@
     var invalid = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid;
 }
 
-<div class="row">
-    <div class="modal fade" id="branchModal" tabindex="-1" role="dialog" aria-labelledby="branchModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="branchModalLabel">Branch Selection</h4>
-                </div>
-                <div class="modal-body" style="max-height: calc(100vh - 200px); overflow-y:auto;">
-                    <p>
-                        @if (!string.IsNullOrWhiteSpace(Model.Settings.BranchAvailabilitySupplementalText))
-                        {
-                            <strong>@Model.Settings.BranchAvailabilitySupplementalText</strong>
-                        }
-                        Please select the locations where you are willing
-                        to perform for the contracted rate. If you are unsure where the library is
-                        located, click the map icon to see it on a map.
-                    </p>
-                    <button id="selectAllButton" class="btn btn-primary" style="margin-bottom:10px;">Select All @Model.BranchCount Libraries</button>
-
-                    @foreach (var system in Model.Systems)
-                    {
-                        <div style="font-size:x-large;margin-bottom:10px;">
-                            <strong>@system.Name</strong>
-                        </div>
-                        @foreach (var branch in system.Branches)
-                        {
-                            <div>
-                                <input id="@($"branch{branch.Id}")" class="branchSelector" data-id="@branch.Id" type="checkbox" asp-checked="@(Model.BranchAvailability?.Contains(branch.Id) == true)" />
-                                <label for="@($"branch{branch.Id}")" data-toggle="tooltip" data-placement="top" title="@branch.Address">@branch.Name</label>
-                                <a href="https://www.google.com/maps/search/@branch.Address" target="_blank"><span class="fa fa-map-o"></span></a>
-                            </div>
-                        }
-                        <br />
-                    }
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Confirm</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 @if (Model.Performer?.RegistrationCompleted != true)
 {
     @section nav {
@@ -286,6 +242,76 @@ else
         </div>
     </div>
 </form>
+
+<div class="row">
+    <div class="modal fade"
+         id="branchModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="branchModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h1 class="modal-title h4" id="branchModalLabel">Branch Selection</h1>
+                </div>
+                <div class="modal-body" style="max-height: calc(100vh - 200px); overflow-y:auto;">
+                    <p>
+                        @if (!string.IsNullOrWhiteSpace(Model.Settings.BranchAvailabilitySupplementalText))
+                        {
+                            <strong>@Model.Settings.BranchAvailabilitySupplementalText</strong>
+                        }
+                        Please select the locations where you are willing
+                        to perform for the contracted rate. If you are unsure where the library is
+                        located, click the map icon to see it on a map.
+                    </p>
+                    <button id="selectAllButton"
+                            class="btn btn-primary"
+                            style="margin-bottom:10px;">
+                        Select All @Model.BranchCount Libraries
+                    </button>
+
+                    @foreach (var system in Model.Systems)
+                    {
+                        <div style="font-size:x-large;margin-bottom:10px;">
+                            <strong>@system.Name</strong>
+                        </div>
+                        @foreach (var branch in system.Branches)
+                        {
+                            <div>
+                                <input id="@($"branch{branch.Id}")"
+                                       class="branchSelector"
+                                       data-id="@branch.Id"
+                                       type="checkbox"
+                                       asp-checked="@(Model.BranchAvailability?.Contains(branch.Id) == true)" />
+                                <label for="@($"branch{branch.Id}")"
+                                       data-toggle="tooltip"
+                                       data-placement="top"
+                                       title="@branch.Address">
+                                    @branch.Name
+                                </label>
+                                <a aria-label="Map (Opens new window)"
+                                   href="https://www.google.com/maps/search/@branch.Address"
+                                   target="_blank"><span class="fa fa-map-o"></span></a>
+                            </div>
+                        }
+                        <br />
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-default"
+                            data-dismiss="modal"
+                            style="margin-right: 1em;">
+                        Confirm
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section scripts {
     <script>

@@ -34,118 +34,6 @@
     </style>
 }
 
-<div class="row">
-    <div class="modal fade frame-modal" id="badgeModal" tabindex="-1" role="dialog" aria-labelledby="badgeModalLabel">
-        <div class="modal-content">
-            <div class="modal-body">
-                <span class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute" data-dismiss="modal">
-                    <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
-                    <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
-                </span>
-                <iframe id="badgeMaker" class="badge-maker"></iframe>
-            </div>
-        </div>
-    </div>
-</div>
-
-@if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
-{
-
-    <div class="modal fade" id="warningModal" tabindex="-1" role="dialog" aria-labelledby="warningModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="deleteModalLabel">Warning: Award points exceed maximum</h4>
-                </div>
-                <div class="modal-body">
-                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
-                    <span id="modal-text">The awarded points for this trigger exceed the maximum of <strong>@Model.MaxPointLimit points</strong>. Do you wish to continue?</span>
-                </div>
-                <div class="modal-footer">
-                    <button type="button"
-                            class="btn btn-default"
-                            data-dismiss="modal"
-                            style="margin-right: 1em;">
-                        Cancel
-                    </button>
-                    <button id="warningSave"
-                            type="button"
-                            class="btn btn-primary"
-                            data-dismiss="modal"
-                            style="margin-right: 1em;">
-                        Save Trigger
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-}
-
-<div class="row">
-    <div class="modal fade" id="listModal" tabindex="-1" role="dialog" aria-labelledby="listModalLabel">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="row">
-                <div class="col-xs-12 col-sm-10 col-sm-offset-1">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <span class="lead">Add requirement</span>
-                        </div>
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <ul class="nav nav-pills" style="padding: 10px 0;">
-                                        <li id="All" class="active requirementScope">
-                                            <a>All</a>
-                                        </li>
-                                        <li id="System" class="requirementScope">
-                                            <a>My System</a>
-                                        </li>
-                                        <li id="Branch" class="requirementScope">
-                                            <a>My Branch</a>
-                                        </li>
-                                        <li id="Mine" class="requirementScope">
-                                            <a>Mine</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <div class="row row-spacing">
-                                <div class="col-xs-8">
-                                    <input id="searchText" class="form-control"
-                                           placeholder="Enter text to search for an event here" />
-                                </div>
-                                <div class="col-xs-4">
-                                    <div class="col-xs-6">
-                                        <button type="button" id="searchButton" class="btn btn-default btn-block" style="margin-right: 8px;">Search</button>
-                                    </div>
-                                    <div class="col-xs-6">
-                                        <button type="button" id="clearButton" class="btn btn-default btn-block">Clear</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="searchMessage" class="row hide">
-                                <div class="col-xs-12">
-                                    <p class="alert-sm alert-info">Searching for '<strong id="searchTerm"></strong>'</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div id="modalRequirementList" class="col-xs-12">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <form asp-controller="Triggers"
       asp-action="@Model.Action"
       method="post"
@@ -703,6 +591,155 @@
         }
     </div>
 </form>
+
+
+<div class="row">
+    <div class="modal fade frame-modal"
+         id="badgeModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="badgeModalLabel">
+        <div class="modal-content">
+            <div class="modal-body" style="padding: 30px;">
+                <button class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute"
+                        data-dismiss="modal"
+                        alt="Close dialog.">
+                    <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
+                    <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
+                </button>
+                <iframe id="badgeMaker" class="badge-maker"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.IgnorePointLimits && Model.MaxPointLimit != null)
+{
+
+    <div class="modal fade"
+         id="warningModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="warningModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h1 class="modal-title h4" id="deleteModalLabel">
+                        Warning: Award points exceed maximum
+                    </h1>
+                </div>
+                <div class="modal-body">
+                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                    <span id="modal-text">
+                        The awarded points for this trigger exceed the maximum of <strong>@Model.MaxPointLimit points</strong>. Do you wish to continue?
+                    </span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-default"
+                            data-dismiss="modal"
+                            style="margin-right: 1em;">
+                        Cancel
+                    </button>
+                    <button id="warningSave"
+                            type="button"
+                            class="btn btn-primary"
+                            data-dismiss="modal"
+                            style="margin-right: 1em;">
+                        Save Trigger
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+<div class="row">
+    <div class="modal fade"
+         id="listModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="listModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="row">
+                <div class="col-xs-12 col-sm-10 col-sm-offset-1">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h1 class="h4 modal-title lead">Add requirement</h1>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <ul class="nav nav-pills" style="padding: 10px 0;">
+                                        <li id="All" class="active requirementScope">
+                                            <a>All</a>
+                                        </li>
+                                        <li id="System" class="requirementScope">
+                                            <a>My System</a>
+                                        </li>
+                                        <li id="Branch" class="requirementScope">
+                                            <a>My Branch</a>
+                                        </li>
+                                        <li id="Mine" class="requirementScope">
+                                            <a>Mine</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="row row-spacing">
+                                <div class="col-xs-8">
+                                    <input id="searchText" class="form-control"
+                                           placeholder="Enter text to search for an event here" />
+                                </div>
+                                <div class="col-xs-4">
+                                    <div class="col-xs-6">
+                                        <button type="button"
+                                                id="searchButton"
+                                                class="btn btn-default btn-block"
+                                                style="margin-right: 8px;">
+                                            Search
+                                        </button>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <button type="button"
+                                                id="clearButton"
+                                                class="btn btn-default btn-block">
+                                            Clear
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="searchMessage" class="row hide">
+                                <div class="col-xs-12">
+                                    <p class="alert-sm alert-info">
+                                        Searching for '<strong id="searchTerm"></strong>'
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div id="modalRequirementList" class="col-xs-12">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button"
+                                    class="btn btn-default"
+                                    data-dismiss="modal"
+                                    style="margin-right: 1em;">
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section scripts
     {

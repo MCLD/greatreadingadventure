@@ -21,145 +21,6 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
-        <div class="modal-dialog" role="document">
-            <form asp-controller="Systems" asp-action="AddBranch" method="post" role="form" style="display:inline">
-                <input asp-for="Search" type="hidden" />
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="addModalLabel">Add Branch</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label asp-for="Branch.Name" class="control-label"></label>
-                            <input asp-for="Branch.Name" class="form-control" />
-                            <span asp-validation-for="Branch.Name" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Branch.SystemId" class="control-label"></label>
-                            <select asp-for="Branch.SystemId" asp-items="Model.SystemList" class="form-control">
-                                <option></option>
-                            </select>
-                            <span asp-validation-for="Branch.SystemId" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Branch.Address" class="control-label">Address (include city, state and zip)</label>
-                            <input asp-for="Branch.Address" class="form-control addressInput" />
-                            <span asp-validation-for="Branch.Address" class="text-danger"></span>
-                        </div>
-                        @if (Model.ShowGeolocation)
-                        {
-                            <div class="form-group hide mapContainer">
-                                <iframe height="180" width="400" frameborder="0" style="border:0"></iframe>
-                            </div>
-                        }
-                        <div class="form-group">
-                            <label asp-for="Branch.Url" class="control-label"></label>
-                            <input asp-for="Branch.Url" class="form-control" />
-                            <span asp-validation-for="Branch.Url" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Branch.Telephone" class="control-label"></label>
-                            <input asp-for="Branch.Telephone" class="form-control" />
-                            <span asp-validation-for="Branch.Telephone" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <button type="submit" class="btn btn-primary btn-spinner pull-right" aria-label="Confirm">
-                            Add
-                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
-        <div class="modal-dialog" role="document">
-            <form asp-controller="Systems" asp-action="EditBranch" method="post" role="form" style="display:inline">
-                <input asp-for="Branch.Id" type="hidden" />
-                <input asp-for="Search" type="hidden" />
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="editModalLabel">Edit branch</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label asp-for="Branch.Name" class="control-label"></label>
-                            <input asp-for="Branch.Name" class="form-control" />
-                            <span asp-validation-for="Branch.Name" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Branch.Address" class="control-label">Address (include city, state and zip)</label>
-                            <input asp-for="Branch.Address" class="form-control addressInput" />
-                            <span asp-validation-for="Branch.Address" class="text-danger"></span>
-                        </div>
-                        @if (Model.ShowGeolocation)
-                        {
-                            <div class="form-group hide mapContainer">
-                                <iframe height="180" width="400" frameborder="0" style="border:0"></iframe>
-                            </div>
-                        }
-                        <div class="form-group">
-                            <label asp-for="Branch.Url" class="control-label"></label>
-                            <input asp-for="Branch.Url" class="form-control" />
-                            <span asp-validation-for="Branch.Url" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Branch.Telephone" class="control-label"></label>
-                            <input asp-for="Branch.Telephone" class="form-control" />
-                            <span asp-validation-for="Branch.Telephone" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <button type="submit" class="btn btn-primary btn-spinner pull-right" aria-label="Confirm">
-                            Save
-                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="deleteModalLabel">Delete Branch</h4>
-                </div>
-                <div class="modal-body">
-                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
-                    <span id="modal-text"></span>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                    <form asp-controller="Systems" asp-action="DeleteBranch" method="post" role="form" style="display:inline">
-                        <input asp-for="Search" type="hidden" />
-                        <input id="Id" name="Id" type="hidden" />
-                        <button type="submit" class="btn btn-danger btn-spinner pull-right" aria-label="Confirm">
-                            <span class="fa fa-remove" aria-hidden="true"></span>
-                            Delete
-                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <form asp-controller="Systems" asp-action="Branches" method="get" role="form">
     <div class="row row-spacing">
         <div class="col-xs-8">
@@ -259,6 +120,217 @@
                 <paginate paginateModel="@Model.PaginateModel"></paginate>
             }
         }
+    </div>
+</div>
+
+<div class="row">
+    <div class="modal fade"
+         id="addModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="addModalLabel">
+        <div class="modal-dialog" role="document">
+            <form asp-controller="Systems"
+                  asp-action="AddBranch"
+                  method="post"
+                  role="form"
+                  style="display:inline">
+                <input asp-for="Search" type="hidden" />
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-label="Close dialog">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h1 class="modal-title h4" id="addModalLabel">Add Branch</h1>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label asp-for="Branch.Name" class="control-label"></label>
+                            <input asp-for="Branch.Name" class="form-control" />
+                            <span asp-validation-for="Branch.Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Branch.SystemId" class="control-label"></label>
+                            <select asp-for="Branch.SystemId"
+                                    asp-items="Model.SystemList"
+                                    class="form-control">
+                                <option></option>
+                            </select>
+                            <span asp-validation-for="Branch.SystemId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Branch.Address" class="control-label">
+                                Address (include city, state and zip)
+                            </label>
+                            <input asp-for="Branch.Address" class="form-control addressInput" />
+                            <span asp-validation-for="Branch.Address" class="text-danger"></span>
+                        </div>
+                        @if (Model.ShowGeolocation)
+                        {
+                            <div class="form-group hide mapContainer">
+                                <iframe height="180"
+                                        width="400"
+                                        frameborder="0"
+                                        style="border:0"></iframe>
+                            </div>
+                        }
+                        <div class="form-group">
+                            <label asp-for="Branch.Url" class="control-label"></label>
+                            <input asp-for="Branch.Url" class="form-control" />
+                            <span asp-validation-for="Branch.Url" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Branch.Telephone" class="control-label"></label>
+                            <input asp-for="Branch.Telephone" class="form-control" />
+                            <span asp-validation-for="Branch.Telephone" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="btn btn-primary btn-spinner pull-right"
+                                aria-label="Confirm">
+                            Add
+                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="modal fade"
+         id="editModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="editModalLabel">
+        <div class="modal-dialog" role="document">
+            <form asp-controller="Systems"
+                  asp-action="EditBranch"
+                  method="post"
+                  role="form"
+                  style="display:inline">
+                <input asp-for="Branch.Id" type="hidden" />
+                <input asp-for="Search" type="hidden" />
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-label="Close dialog">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h1 class="modal-title h4" id="editModalLabel">Edit branch</h1>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label asp-for="Branch.Name" class="control-label"></label>
+                            <input asp-for="Branch.Name" class="form-control" />
+                            <span asp-validation-for="Branch.Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Branch.Address" class="control-label">
+                                Address (include city, state and zip)
+                            </label>
+                            <input asp-for="Branch.Address" class="form-control addressInput" />
+                            <span asp-validation-for="Branch.Address" class="text-danger"></span>
+                        </div>
+                        @if (Model.ShowGeolocation)
+                        {
+                            <div class="form-group hide mapContainer">
+                                <iframe height="180"
+                                        width="400"
+                                        frameborder="0"
+                                        style="border:0"></iframe>
+                            </div>
+                        }
+                        <div class="form-group">
+                            <label asp-for="Branch.Url" class="control-label"></label>
+                            <input asp-for="Branch.Url" class="form-control" />
+                            <span asp-validation-for="Branch.Url" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Branch.Telephone" class="control-label"></label>
+                            <input asp-for="Branch.Telephone" class="form-control" />
+                            <span asp-validation-for="Branch.Telephone" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="btn btn-primary btn-spinner pull-right"
+                                aria-label="Confirm">
+                            Save
+                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="modal fade"
+         id="deleteModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="deleteModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close dialog">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h1 class="modal-title h4" id="deleteModalLabel">Delete Branch</h1>
+                </div>
+                <div class="modal-body">
+                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                    <span id="modal-text"></span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-default"
+                            data-dismiss="modal"
+                            style="margin-right: 1em;">
+                        Cancel
+                    </button>
+                    <form asp-controller="Systems"
+                          asp-action="DeleteBranch"
+                          method="post"
+                          role="form"
+                          style="display:inline">
+                        <input asp-for="Search" type="hidden" />
+                        <input id="Id" name="Id" type="hidden" />
+                        <button type="submit"
+                                class="btn btn-danger btn-spinner pull-right"
+                                aria-label="Confirm">
+                            <span class="fa fa-remove" aria-hidden="true"></span>
+                            Delete
+                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

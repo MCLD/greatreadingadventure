@@ -2,113 +2,6 @@
 
 @await Html.PartialAsync("_PerformerManagementPartial")
 
-<div class="row">
-    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
-        <div class="modal-dialog" role="document">
-            <form asp-controller="PerformerManagement" asp-action="AddAgeGroup" method="post" role="form" style="display:inline">
-                <input asp-for="PaginateModel.CurrentPage" type="hidden" />
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="addModalLabel">Add Age Group</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label asp-for="AgeGroup.Name" class="control-label"></label>
-                            <input asp-for="AgeGroup.Name" class="form-control" />
-                            <span asp-validation-for="AgeGroup.Name" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="AgeGroup.IconColor" class="control-label"></label>
-                            <description gra-description-for="AgeGroup.IconColor"></description>
-                            <input asp-for="AgeGroup.IconColor" class="form-control" />
-                            <span asp-validation-for="AgeGroup.IconColor" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <button type="submit" class="btn btn-primary btn-spinner pull-right" aria-label="Confirm">
-                            Add
-                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="modal fade" id="updateBackToBackModal" tabindex="-1" role="dialog" aria-labelledby="updateBackToBackModalLabel">
-        <div class="modal-dialog" role="document">
-            <form id="backToBackUpdateForm" asp-controller="PerformerManagement" asp-action="UpdateAgeGroupBackToBackBranches" method="post" role="form" style="display:inline">
-                <input asp-for="PaginateModel.CurrentPage" type="hidden" />
-                <input asp-for="AgeGroup.Id" type="hidden" />
-                <input asp-for="BackToBackBranchesString" type="hidden" />
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="updateBackToBackModalLabel">Update Back to Back Branches</h4>
-                    </div>
-                    <div class="modal-body" style="max-height: calc(100vh - 200px); overflow-y:auto;">
-                        @foreach (var system in Model.Systems)
-                        {
-                            <div style="font-size:x-large;margin-bottom:10px;">
-                                <strong>@system.Name</strong>
-                            </div>
-                            @foreach (var branch in system.Branches)
-                            {
-                                <div>
-                                    <input id="@($"branch{branch.Id}")" class="branchSelector" data-id="@branch.Id" type="checkbox" />
-                                    <label for="@($"branch{branch.Id}")">@branch.Name</label>
-                                </div>
-                            }
-                            <br />
-                        }
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <button type="submit" class="btn btn-primary btn-spinner pull-right" aria-label="Confirm">
-                            Save
-                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
-        <div class="modal-dialog" role="document">
-            <form asp-controller="PerformerManagement" asp-action="DeleteAgeGroup" method="post" role="form" style="display:inline">
-                <input asp-for="PaginateModel.CurrentPage" type="hidden" />
-                <input asp-for="AgeGroup.Id" type="hidden" />
-                <input asp-for="AgeGroup.Name" type="hidden" />
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="deleteModalLabel">Delete Age Group</h4>
-                    </div>
-                    <div class="modal-body">
-                        <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
-                        <span id="modal-text"></span>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <button type="submit" class="btn btn-danger btn-spinner pull-right" aria-label="Confirm">
-                            <span class="fa fa-remove" aria-hidden="true"></span>
-                            Delete
-                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
 <div class="row" style="padding: 10px 0;">
     <div class="col-xs-12">
         <a class="btn btn-default"
@@ -182,19 +75,192 @@
     </div>
 </div>
 
+<div class="row">
+    <div class="modal fade"
+         id="addModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="addModalLabel">
+        <div class="modal-dialog" role="document">
+            <form asp-controller="PerformerManagement"
+                  asp-action="AddAgeGroup"
+                  method="post"
+                  role="form"
+                  style="display:inline">
+                <input asp-for="PaginateModel.CurrentPage" type="hidden" />
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-label="Close dialog">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h1 class="modal-title h4" id="addModalLabel">Add Age Group</h1>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label asp-for="AgeGroup.Name" class="control-label"></label>
+                            <input asp-for="AgeGroup.Name" class="form-control" />
+                            <span asp-validation-for="AgeGroup.Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="AgeGroup.IconColor" class="control-label"></label>
+                            <description gra-description-for="AgeGroup.IconColor"></description>
+                            <input asp-for="AgeGroup.IconColor" class="form-control" />
+                            <span asp-validation-for="AgeGroup.IconColor"
+                                  class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="btn btn-primary btn-spinner pull-right"
+                                aria-label="Confirm">
+                            Add
+                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="modal fade"
+         id="updateBackToBackModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="updateBackToBackModalLabel">
+        <div class="modal-dialog" role="document">
+            <form id="backToBackUpdateForm"
+                  asp-controller="PerformerManagement"
+                  asp-action="UpdateAgeGroupBackToBackBranches"
+                  method="post"
+                  role="form" style="display:inline">
+                <input asp-for="PaginateModel.CurrentPage" type="hidden" />
+                <input asp-for="AgeGroup.Id" type="hidden" />
+                <input asp-for="BackToBackBranchesString" type="hidden" />
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-label="Close dialog">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h1 class="modal-title h4" id="updateBackToBackModalLabel">
+                            Update Back to Back Branches
+                        </h1>
+                    </div>
+                    <div class="modal-body"
+                         style="max-height: calc(100vh - 200px); overflow-y:auto;">
+                        @foreach (var system in Model.Systems)
+                        {
+                            <div style="font-size:x-large;margin-bottom:10px;">
+                                <strong>@system.Name</strong>
+                            </div>
+                            @foreach (var branch in system.Branches)
+                            {
+                                <div>
+                                    <input id="@($"branch{branch.Id}")"
+                                           class="branchSelector"
+                                           data-id="@branch.Id" type="checkbox" />
+                                    <label for="@($"branch{branch.Id}")">@branch.Name</label>
+                                </div>
+                            }
+                            <br />
+                        }
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="btn btn-primary btn-spinner pull-right"
+                                aria-label="Confirm">
+                            Save
+                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="modal fade"
+         id="deleteModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="deleteModalLabel">
+        <div class="modal-dialog" role="document">
+            <form asp-controller="PerformerManagement"
+                  asp-action="DeleteAgeGroup"
+                  method="post"
+                  role="form"
+                  style="display:inline">
+                <input asp-for="PaginateModel.CurrentPage" type="hidden" />
+                <input asp-for="AgeGroup.Id" type="hidden" />
+                <input asp-for="AgeGroup.Name" type="hidden" />
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-label="Close dialog">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h1 class="modal-title h4" id="deleteModalLabel">Delete Age Group</h1>
+                    </div>
+                    <div class="modal-body">
+                        <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                        <span id="modal-text"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="btn btn-danger btn-spinner pull-right"
+                                aria-label="Confirm">
+                            <span class="fa fa-remove" aria-hidden="true"></span>
+                            Delete
+                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @section scripts {
     <script>
         $("#updateBackToBackModal").on("show.bs.modal", function (e) {
             var button = $(e.relatedTarget);
             var id = button.data("id");
             var name = button.data("name");
-            var branchIds = button.data("branchids"); 
+            var branchIds = button.data("branchids");
             var modal = $(this);
             modal.find("#AgeGroup_Id").val(id);
             modal.find("#AgeGroup_Name").val(name);
-            
+
             modal.find(".branchSelector").prop("checked", false);
-            $.each(branchIds.split(","), function(index, value) {
+            $.each(branchIds.split(","), function (index, value) {
                 modal.find("#branch" + value).prop("checked", true);
             });
         });

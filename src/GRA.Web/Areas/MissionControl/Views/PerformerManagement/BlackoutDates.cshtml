@@ -2,78 +2,6 @@
 
 @await Html.PartialAsync("_PerformerManagementPartial")
 
-<div class="row">
-    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
-        <div class="modal-dialog" role="document">
-            <form asp-controller="PerformerManagement" asp-action="AddBlackoutDate" method="post" role="form" style="display:inline">
-                <input asp-for="PaginateModel.CurrentPage" type="hidden" />
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="addModalLabel">Add Blackout Date</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row form-group">
-                            <div class="col-xs-12">
-                                <label asp-for="BlackoutDate.Date" class="control-label"></label>
-                                <div class="input-group date datepicker">
-                                    <span class="input-group-addon">
-                                        <span class="fa fa-calendar"></span>
-                                    </span>
-                                    <input asp-for="BlackoutDate.Date" type="text" class="form-control" />
-                                </div>
-                                <span asp-validation-for="BlackoutDate.Date" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="BlackoutDate.Reason" class="control-label"></label>
-                            <input asp-for="BlackoutDate.Reason" class="form-control" />
-                            <span asp-validation-for="BlackoutDate.Reason" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <button type="submit" class="btn btn-primary btn-spinner pull-right" aria-label="Confirm">
-                            Add
-                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
-        <div class="modal-dialog" role="document">
-            <form asp-controller="PerformerManagement" asp-action="DeleteBlackoutDate" method="post" role="form" style="display:inline">
-                <input asp-for="PaginateModel.CurrentPage" type="hidden" />
-                <input asp-for="BlackoutDate.Id" type="hidden" />
-                <input asp-for="BlackoutDate.Reason" type="hidden" />
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="deleteModalLabel">Delete Blackout Date</h4>
-                    </div>
-                    <div class="modal-body">
-                        <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
-                        <span id="modal-text"></span>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <button type="submit" class="btn btn-danger btn-spinner pull-right" aria-label="Confirm">
-                            <span class="fa fa-remove" aria-hidden="true"></span>
-                            Delete
-                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
 <div class="row" style="padding: 10px 0;">
     <div class="col-xs-12">
         <a class="btn btn-default"
@@ -129,6 +57,125 @@
                 <paginate paginateModel="@Model.PaginateModel"></paginate>
             }
         }
+    </div>
+</div>
+
+<div class="row">
+    <div class="modal fade"
+         id="addModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="addModalLabel">
+        <div class="modal-dialog" role="document">
+            <form asp-controller="PerformerManagement"
+                  asp-action="AddBlackoutDate"
+                  method="post"
+                  role="form"
+                  style="display:inline">
+                <input asp-for="PaginateModel.CurrentPage" type="hidden" />
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-label="Close dialog">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h1 class="modal-title h4" id="addModalLabel">Add Blackout Date</h1>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row form-group">
+                            <div class="col-xs-12">
+                                <label asp-for="BlackoutDate.Date" class="control-label"></label>
+                                <div class="input-group date datepicker">
+                                    <span class="input-group-addon">
+                                        <span class="fa fa-calendar"></span>
+                                    </span>
+                                    <input asp-for="BlackoutDate.Date"
+                                           type="text"
+                                           class="form-control" />
+                                </div>
+                                <span asp-validation-for="BlackoutDate.Date"
+                                      class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="BlackoutDate.Reason" class="control-label"></label>
+                            <input asp-for="BlackoutDate.Reason" class="form-control" />
+                            <span asp-validation-for="BlackoutDate.Reason"
+                                  class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="btn btn-primary btn-spinner pull-right"
+                                aria-label="Confirm">
+                            Add
+                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="modal fade"
+         id="deleteModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="deleteModalLabel">
+        <div class="modal-dialog" role="document">
+            <form asp-controller="PerformerManagement"
+                  asp-action="DeleteBlackoutDate"
+                  method="post"
+                  role="form"
+                  style="display:inline">
+                <input asp-for="PaginateModel.CurrentPage" type="hidden" />
+                <input asp-for="BlackoutDate.Id" type="hidden" />
+                <input asp-for="BlackoutDate.Reason" type="hidden" />
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-label="Close dialog">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h1 class="modal-title h4"
+                            id="deleteModalLabel">
+                            Delete Blackout Date
+                        </h1>
+                    </div>
+                    <div class="modal-body">
+                        <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                        <span id="modal-text"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="btn btn-danger btn-spinner pull-right"
+                                aria-label="Confirm">
+                            <span class="fa fa-remove" aria-hidden="true"></span>
+                            Delete
+                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 

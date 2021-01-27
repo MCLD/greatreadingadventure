@@ -2,117 +2,6 @@
 
 @await Html.PartialAsync("_SchoolsPartial")
 
-<div class="row">
-    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
-        <div class="modal-dialog" role="document">
-            <form id="addForm" asp-controller="Schools" asp-action="AddSchool" method="post" role="form" style="display:inline">
-                <input asp-for="Search" type="hidden" />
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="addModalLabel">Add school</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label asp-for="School.Name" class="control-label"></label>
-                            <input id="addName" asp-for="School.Name" class="form-control" />
-                            <span asp-validation-for="School.Name" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="School.SchoolDistrictId" class="control-label"></label>
-                            <select id="addDistrict" asp-for="School.SchoolDistrictId" class="form-control schoolDistrict">
-                                <option></option>
-                                @foreach (var district in Model.DistrictList)
-                                {
-                                    <option value="@district.Id">@district.Name</option>
-                                }
-                            </select>
-                            <span asp-validation-for="School.SchoolDistrictId" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <button type="submit" class="btn btn-primary btn-spinner pull-right" aria-label="Confirm">
-                            Add
-                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
-        <div class="modal-dialog" role="document">
-            <form asp-controller="Schools" asp-action="EditSchool" method="post" role="form" style="display:inline">
-                <input asp-for="Search" type="hidden" />
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="editModalLabel">Edit school</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <input id="School_Id" name="School.Id" type="hidden" />
-                            <label asp-for="School.Name" class="control-label"></label>
-                            <input id="editName" asp-for="School.Name" class="form-control" />
-                            <span asp-validation-for="School.Name" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="School.SchoolDistrictId" class="control-label"></label>
-                            <select id="editDistrict" asp-for="School.SchoolDistrictId" class="form-control schoolDistrict">
-                                @foreach (var district in Model.DistrictList)
-                                {
-                                    <option value="@district.Id">@district.Name</option>
-                                }
-                            </select>
-                            <span asp-validation-for="School.SchoolDistrictId" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <button type="submit" class="btn btn-primary btn-spinner pull-right" aria-label="Confirm">
-                            Save
-                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="deleteModalLabel">Delete school</h4>
-                </div>
-                <div class="modal-body">
-                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
-                    <span id="modal-text"></span>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                    <form asp-controller="Schools" asp-action="DeleteSchool" method="post" role="form" style="display:inline">
-                        <input asp-for="Search" type="hidden" />
-                        <input id="Id" name="Id" type="hidden" />
-                        <button type="submit" class="btn btn-danger btn-spinner pull-right" aria-label="Confirm">
-                            <span class="fa fa-remove" aria-hidden="true"></span>
-                            Delete
-                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <form asp-controller="Schools" asp-action="Index" method="get" role="form">
     <div class="row row-spacing">
         <div class="col-xs-8">
@@ -190,6 +79,184 @@
                 <paginate paginateModel="@Model.PaginateModel"></paginate>
             }
         }
+    </div>
+</div>
+
+<div class="row">
+    <div class="modal fade"
+         id="addModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="addModalLabel">
+        <div class="modal-dialog" role="document">
+            <form id="addForm"
+                  asp-controller="Schools"
+                  asp-action="AddSchool"
+                  method="post"
+                  role="form"
+                  style="display:inline">
+                <input asp-for="Search" type="hidden" />
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-label="Close dialog">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h1 class="modal-title h4" id="addModalLabel">Add school</h1>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label asp-for="School.Name" class="control-label"></label>
+                            <input id="addName" asp-for="School.Name" class="form-control" />
+                            <span asp-validation-for="School.Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="School.SchoolDistrictId" class="control-label"></label>
+                            <select id="addDistrict"
+                                    asp-for="School.SchoolDistrictId"
+                                    class="form-control schoolDistrict">
+                                <option></option>
+                                @foreach (var district in Model.DistrictList)
+                                {
+                                    <option value="@district.Id">@district.Name</option>
+                                }
+                            </select>
+                            <span asp-validation-for="School.SchoolDistrictId"
+                                  class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="btn btn-primary btn-spinner pull-right"
+                                aria-label="Confirm">
+                            Add
+                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="modal fade"
+         id="editModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="editModalLabel">
+        <div class="modal-dialog" role="document">
+            <form asp-controller="Schools"
+                  asp-action="EditSchool"
+                  method="post"
+                  role="form"
+                  style="display:inline">
+                <input asp-for="Search" type="hidden" />
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-label="Close dialog">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h1 class="modal-title h4" id="editModalLabel">Edit school</h1>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input id="School_Id" name="School.Id" type="hidden" />
+                            <label asp-for="School.Name" class="control-label"></label>
+                            <input id="editName" asp-for="School.Name" class="form-control" />
+                            <span asp-validation-for="School.Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="School.SchoolDistrictId" class="control-label"></label>
+                            <select id="editDistrict"
+                                    asp-for="School.SchoolDistrictId"
+                                    class="form-control schoolDistrict">
+                                @foreach (var district in Model.DistrictList)
+                                {
+                                    <option value="@district.Id">@district.Name</option>
+                                }
+                            </select>
+                            <span asp-validation-for="School.SchoolDistrictId"
+                                  class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="btn btn-primary btn-spinner pull-right"
+                                aria-label="Confirm">
+                            Save
+                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="modal fade"
+         id="deleteModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="deleteModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close dialog">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h1 class="modal-title h4" id="deleteModalLabel">Delete school</h1>
+                </div>
+                <div class="modal-body">
+                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                    <span id="modal-text"></span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-default"
+                            data-dismiss="modal"
+                            style="margin-right: 1em;">
+                        Cancel
+                    </button>
+                    <form asp-controller="Schools"
+                          asp-action="DeleteSchool"
+                          method="post"
+                          role="form"
+                          style="display:inline">
+                        <input asp-for="Search" type="hidden" />
+                        <input id="Id" name="Id" type="hidden" />
+                        <button type="submit"
+                                class="btn btn-danger btn-spinner pull-right"
+                                aria-label="Confirm">
+                            <span class="fa fa-remove" aria-hidden="true"></span>
+                            Delete
+                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

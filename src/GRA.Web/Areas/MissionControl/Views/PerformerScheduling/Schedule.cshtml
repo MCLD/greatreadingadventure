@@ -11,30 +11,6 @@
     </style>
 }
 
-<div class="modal fade" id="emailPrograms" tabindex="-1" role="dialog" aria-labelledby="emailProgramsLabel">
-    <div class="modal-dialog" role="document">
-        <form asp-action="EmailSchedule" method="post" role="form">
-            <input asp-for="Branch.Id" type="hidden" />
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="emailProgramsLabel">Email My Schedule</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label asp-for="Settings.ContactEmail" class="control-label">Email address:</label>
-                        <input asp-for="Settings.ContactEmail" class="form-control" />
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-success"><span class="fa fa-paper-plane"></span> Send email</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
 
 <div class="row hidden-print">
     <div class="col-xs-12 col-sm-8 col-sm-offset-2" style="margin-top:20px;">
@@ -107,3 +83,42 @@
         </div>
     </div>
 }
+
+<div class="modal fade"
+     id="emailPrograms"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="emailProgramsLabel">
+    <div class="modal-dialog" role="document">
+        <form asp-action="EmailSchedule" method="post" role="form">
+            <input asp-for="Branch.Id" type="hidden" />
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close dialog">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h1 class="modal-title h4" id="emailProgramsLabel">Email My Schedule</h1>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label asp-for="Settings.ContactEmail" class="control-label">
+                            Email address:
+                        </label>
+                        <input asp-for="Settings.ContactEmail" class="form-control" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        Close
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        <span class="fa fa-paper-plane"></span> Send email
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

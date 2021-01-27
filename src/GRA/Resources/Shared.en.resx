@@ -1521,4 +1521,8 @@
     <value>Need to change your {0}? Use the mail icon at the top of the screen to contact us.</value>
     <comment>Tooltip for editing protected fields imploring the user to use the mail facility to ask for the item to be changed.</comment>
   </data>
+  <data name="Close dialog." xml:space="preserve">
+    <value>Close dialog.</value>
+    <comment>What is read when a screen reader goes over a close modal button.</comment>
+  </data>
 </root>
