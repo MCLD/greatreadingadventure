@@ -31,7 +31,12 @@ namespace GRA.Domain.Service
             return await _schoolDistrictRepository.GetAllAsync(GetCurrentSiteId());
         }
 
-        public async Task<ICollection<School>> GetSchoolsAsync(int? districtId = default)
+        public async Task<ICollection<School>> GetSchoolsAsync()
+        {
+            return await GetSchoolsAsync(null);
+        }
+
+        public async Task<ICollection<School>> GetSchoolsAsync(int? districtId)
         {
             return await _schoolRepository.GetAllAsync(GetCurrentSiteId(), districtId);
         }

@@ -18,9 +18,13 @@ namespace GRA.Data.Repository
             ILogger<SchoolRepository> logger) : base(repositoryFacade, logger)
         {
         }
+        public async Task<ICollection<School>> GetAllAsync(int siteId)
+        {
+            return await GetAllAsync(siteId, null);
+        }
 
         public async Task<ICollection<School>> GetAllAsync(int siteId,
-            int? districtId = default)
+            int? districtId)
         {
             var schoolList = DbSet
                 .AsNoTracking()
