@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,7 +10,6 @@ using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -17,20 +17,17 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.ManageSchools)]
     public class SchoolsController : Base.MCController
     {
-        private readonly ILogger<SchoolsController> _logger;
-        private readonly SchoolImportService _schoolImportService;
+        private readonly SchoolImportExportService _schoolImportService;
         private readonly SchoolService _schoolService;
 
-        public SchoolsController(ILogger<SchoolsController> logger,
-            ServiceFacade.Controller context,
-            SchoolImportService schoolImportService,
+        public SchoolsController(ServiceFacade.Controller context,
+            SchoolImportExportService schoolImportService,
             SchoolService schoolService)
             : base(context)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _schoolImportService = schoolImportService 
+            _schoolImportService = schoolImportService
                 ?? throw new ArgumentNullException(nameof(schoolImportService));
-            _schoolService = schoolService 
+            _schoolService = schoolService
                 ?? throw new ArgumentNullException(nameof(schoolService));
             PageTitle = "School management";
         }
@@ -212,7 +209,7 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Import Schools";
             if (schoolFileCsv == null
                 || !string.Equals(Path.GetExtension(schoolFileCsv.FileName), ".csv",
-                    System.StringComparison.OrdinalIgnoreCase))
+                    StringComparison.OrdinalIgnoreCase))
             {
                 AlertDanger = "You must select a .csv file.";
                 ModelState.AddModelError("schoolFileCsv", "You must select a .csv file.");
@@ -220,29 +217,38 @@ namespace GRA.Controllers.MissionControl
 
             if (ModelState.ErrorCount == 0)
             {
-                using (var streamReader = new StreamReader(schoolFileCsv.OpenReadStream()))
-                {
-                    (ImportStatus status, string message)
-                        = await _schoolImportService.FromCsvAsync(streamReader);
+                using var streamReader = new StreamReader(schoolFileCsv?.OpenReadStream());
+                (ImportStatus status, string message)
+                    = await _schoolImportService.FromCsvAsync(streamReader);
 
-                    switch (status)
-                    {
-                        case ImportStatus.Success:
-                            AlertSuccess = message;
-                            break;
-                        default:
-                            AlertInfo = message;
-                            break;
-                        case ImportStatus.Warning:
-                            AlertWarning = message;
-                            break;
-                        case ImportStatus.Danger:
-                            AlertDanger = message;
-                            break;
-                    }
+                switch (status)
+                {
+                    case ImportStatus.Success:
+                        AlertSuccess = message;
+                        break;
+                    case ImportStatus.Warning:
+                        AlertWarning = message;
+                        break;
+                    case ImportStatus.Danger:
+                        AlertDanger = message;
+                        break;
+                    default:
+                        AlertInfo = message;
+                        break;
                 }
             }
             return RedirectToAction("Import");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Export()
+        {
+            PageTitle = "Export Schools";
+
+            string date = _dateTimeProvider.Now.ToString("yyyyMMdd", CultureInfo.InvariantCulture);
+            return File(await _schoolImportService.ToCsvAsync(),
+                "text/csv",
+                Utility.FileUtility.EnsureValidFilename($"{date}-SchoolsDistricts.csv"));
         }
     }
 }

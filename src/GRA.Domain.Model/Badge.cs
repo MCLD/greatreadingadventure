@@ -1,5 +1,5 @@
-﻿using GRA.Domain.Model.Abstract;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using GRA.Domain.Model.Abstract;
 
 namespace GRA.Domain.Model
 {

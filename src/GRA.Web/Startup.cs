@@ -301,7 +301,7 @@ namespace GRA.Web
             services.AddScoped<ReportService>();
             services.AddScoped<RoleService>();
             services.AddScoped<SampleDataService>();
-            services.AddScoped<SchoolImportService>();
+            services.AddScoped<SchoolImportExportService>();
             services.AddScoped<SchoolService>();
             services.AddScoped<SiteLookupService>();
             services.AddScoped<SiteService>();

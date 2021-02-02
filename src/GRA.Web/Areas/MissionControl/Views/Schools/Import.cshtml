@@ -1,9 +1,34 @@
-﻿<div class="row">
+﻿@await Html.PartialAsync("_SchoolsPartial")
+
+<div class="row" style="margin-top: 1rem; margin-bottom: 1rem;">
     <div class="col-xs-12">
-        <p>Import schools from a properly-formatted CSV file.</p>
+        <p>Import schools from a properly-formatted <code>.csv</code> file.</p>
+        <ul>
+            <li>
+                Imports and exports happen via
+                <a href="https://en.wikipedia.org/wiki/Comma-separated_values"
+                   target="_blank">comma-separated value</a> (<code>.csv</code>) files.
+            </li>
+            <li>
+                Each district will be inserted only once and related to all schools that it is
+                listed with.
+            </li>
+            <li>
+                Each school in the file will be inserted,
+                <strong>even if it's already in the system</strong>.
+            </li>
+            <li>
+                If you need to see the file format, please perform an
+                <strong><a asp-action="Export">Export</a></strong> and review the downloaded file.
+            </li>
+            <li>
+                The easiest way to edit <code>.csv</code> files is in a spreadsheet application,
+                however you can edit them in a text editor as well.
+            </li>
+        </ul>
     </div>
 </div>
-<div class="row">
+<div class="row" style="margin-bottom: 1rem;">
     <div class="col-xs-12">
         <form asp-controller="Schools"
               asp-action="Import"
@@ -14,7 +39,7 @@
                 <label class="input-group-btn">
                     <span class="btn btn-default btn-file">
                         <span class="fa fa-file-image-o"></span>
-                        Select a CSV file<input type="file" name="schoolFileCsv" accept=".csv" />
+                        Select a csv file to upload<input type="file" name="schoolFileCsv" accept=".csv" />
                     </span>
                 </label>
                 <input type="text" class="form-control" readonly id="selectedFile">
@@ -79,3 +104,8 @@
 
     </script>
 }
+<style type="text/css">
+    li {
+        line-height: 2rem;
+    }
+</style>

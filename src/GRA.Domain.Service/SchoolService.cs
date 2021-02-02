@@ -13,21 +13,17 @@ namespace GRA.Domain.Service
     {
         private readonly ISchoolRepository _schoolRepository;
         private readonly ISchoolDistrictRepository _schoolDistrictRepository;
-        private readonly IUserRepository _userRepository;
 
         public SchoolService(ILogger<SchoolService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             ISchoolDistrictRepository schoolDistrictRepository,
-            ISchoolRepository schoolRepository,
-            IUserRepository userRepository) : base(logger, dateTimeProvider, userContextProvider)
+            ISchoolRepository schoolRepository) : base(logger, dateTimeProvider, userContextProvider)
         {
-            _schoolDistrictRepository = schoolDistrictRepository 
+            _schoolDistrictRepository = schoolDistrictRepository
                 ?? throw new ArgumentNullException(nameof(schoolDistrictRepository));
-            _schoolRepository = schoolRepository 
+            _schoolRepository = schoolRepository
                 ?? throw new ArgumentNullException(nameof(schoolRepository));
-            _userRepository = userRepository 
-                ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
         public async Task<ICollection<SchoolDistrict>> GetDistrictsAsync()
@@ -35,7 +31,7 @@ namespace GRA.Domain.Service
             return await _schoolDistrictRepository.GetAllAsync(GetCurrentSiteId());
         }
 
-        public async Task<ICollection<School>> GetSchoolsAsync(int? districtId = default(int?))
+        public async Task<ICollection<School>> GetSchoolsAsync(int? districtId = default)
         {
             return await _schoolRepository.GetAllAsync(GetCurrentSiteId(), districtId);
         }
@@ -55,6 +51,10 @@ namespace GRA.Domain.Service
         public async Task<SchoolDistrict> AddDistrict(SchoolDistrict district)
         {
             VerifyPermission(Permission.ManageSchools);
+            if (district == null)
+            {
+                throw new GraException("Cannot add empty district.");
+            }
             district.Name = district.Name.Trim();
             district.SiteId = GetCurrentSiteId();
             return await _schoolDistrictRepository.AddSaveAsync(GetClaimId(ClaimType.UserId),
@@ -114,6 +114,10 @@ namespace GRA.Domain.Service
             BaseFilter filter)
         {
             VerifyPermission(Permission.ManageSchools);
+            if (filter == null)
+            {
+                filter = new BaseFilter();
+            }
             filter.SiteId = GetCurrentSiteId();
             return new DataWithCount<ICollection<School>>
             {
@@ -125,6 +129,10 @@ namespace GRA.Domain.Service
         public async Task UpdateSchoolAsync(School school)
         {
             VerifyPermission(Permission.ManageSchools);
+            if (school == null)
+            {
+                throw new GraException("Cannot update empty school.");
+            }
             var currentSchool = await _schoolRepository.GetByIdAsync(school.Id);
             if (currentSchool.SiteId != GetCurrentSiteId())
             {
@@ -140,6 +148,10 @@ namespace GRA.Domain.Service
             BaseFilter filter)
         {
             VerifyPermission(Permission.ManageSchools);
+            if (filter == null)
+            {
+                filter = new BaseFilter();
+            }
             filter.SiteId = GetCurrentSiteId();
             return new DataWithCount<ICollection<SchoolDistrict>>
             {
@@ -150,6 +162,10 @@ namespace GRA.Domain.Service
 
         public async Task UpdateDistrictAsync(SchoolDistrict district)
         {
+            if (district == null)
+            {
+                throw new GraException("Cannot update empty district.");
+            }
             VerifyPermission(Permission.ManageSchools);
             var currentDistrict = await _schoolDistrictRepository.GetByIdAsync(district.Id);
             if (currentDistrict.SiteId != GetCurrentSiteId())
@@ -165,6 +181,11 @@ namespace GRA.Domain.Service
         public async Task<SchoolDistrict> GetDistrictByIdAsync(int schoolDistrictId)
         {
             return await _schoolDistrictRepository.GetByIdAsync(schoolDistrictId);
+        }
+
+        public async Task<IList<SchoolImportExport>> GetForExportAsync()
+        {
+            return await _schoolRepository.GetForExportAsync();
         }
     }
 }

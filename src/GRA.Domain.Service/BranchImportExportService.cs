@@ -42,7 +42,7 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(spatialService));
         }
 
-        public async Task<byte[]> ExportAsync()
+        public async Task<byte[]> ToCsvAsync()
         {
             var branches = await _siteService.GetAllBranches();
 
@@ -116,12 +116,6 @@ namespace GRA.Domain.Service
 
             try
             {
-                // loop, watch for token.IsCancellationRequested
-                // open csv file
-                // look at current systems/branches
-                // replace currents
-                // import news
-                // return result
                 _logger.LogInformation("Job {JobId}: {ImportType} reading in CSV file: {Filename}",
                     job.Id,
                     jobDetails.DoImport ? "Import" : "Test run",

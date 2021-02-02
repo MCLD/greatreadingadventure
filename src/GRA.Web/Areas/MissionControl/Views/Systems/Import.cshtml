@@ -1,63 +1,98 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Systems.ImportViewModel
 
-    <div class="row" style="margin-top: 1.5rem;">
-        <div class="col-sm-8 col-sm-offset-2">
-            <div class="alert alert-warning">
-                <p>
-                    You can import Systems and Branches from a properly-formatted CSV file.
-                    <strong>
-                        If the software has one system and one branch (e.g. how it is configured by
-                        default) this process will overwrite that single system and single branch
-                        with ones in the provided CSV file!
-                    </strong>
-                </p>
-            </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <ul class="nav nav-pills" style="padding: 10px 0;">
+                <li ActiveBy routeKey="Action" value="Index"><a asp-action="Index">Systems</a></li>
+                <li ActiveBy routeKey="Action" value="Branches"><a asp-action="Branches">Branches</a></li>
+                <li class="pull-right">
+                    <div>
+                        <a asp-action="Import" class="btn btn-sm btn-default active">
+                            <span class="fas fa-file-upload"></span>
+                            Import
+                        </a>
+                        <a asp-action="Export" class="btn btn-sm btn-default">
+                            <span class="fas fa-file-download"></span>
+                            Export
+                        </a>
+                    </div>
+                </li>
+            </ul>
         </div>
     </div>
 
-    <form asp-controller="@SystemsController.Name"
-          asp-action="@nameof(SystemsController.Import)"
-          method="post"
-          role="form"
-          enctype="multipart/form-data">
-        <div class="row row-spacing">
-            <div class="col-sm-8 col-sm-offset-2">
-                <label for="selectedFile">Select CSV file:</label>
-                <div class="input-group">
-                    <label class="input-group-btn">
-                        <span class="btn btn-default btn-file">
-                            <span class="fa fa-file-image-o"></span>
-                            Select a CSV file<input type="file" asp-for="FileUpload" accept=".csv" />
-                        </span>
-                    </label>
-                    <input type="text" class="form-control" readonly id="selectedFile">
+    <div class="row" style="margin-top: 1rem; margin-bottom: 1rem;">
+        <div class="col-xs-12">
+            <p>Import systems and branches from a properly-formatted <code>.csv</code> file.</p>
+            <ul>
+                <li>
+                    Imports and exports happen via
+                    <a href="https://en.wikipedia.org/wiki/Comma-separated_values"
+                       target="_blank">comma-separated value</a> (<code>.csv</code>) files.
+                </li>
+                <li>
+                    If there is only one system and one branch configured (e.g. how the GRA is
+                    configured when first deployed), the first system and branch in your import file
+                    will overwrite that single system and branch.
+                </li>
+                <li>
+                    If you need to see the file format, please perform an
+                    <strong><a asp-action="Export">Export</a></strong> and review the downloaded file.
+                </li>
+                <li>
+                    The easiest way to edit <code>.csv</code> files is in a spreadsheet application,
+                    however you can edit them in a text editor as well.
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row" style="margin-bottom: 1rem;">
+        <div class="col-xs-12">
+            <form asp-controller="@SystemsController.Name"
+                  asp-action="@nameof(SystemsController.Import)"
+                  method="post"
+                  role="form"
+                  enctype="multipart/form-data">
+                <div class="row row-spacing">
+                    <div class="col-xs-12">
+                        <label for="selectedFile">Select CSV file:</label>
+                        <div class="input-group">
+                            <label class="input-group-btn">
+                                <span class="btn btn-default btn-file">
+                                    <span class="fa fa-file-image-o"></span>
+                                    Select a CSV file to upload<input type="file" asp-for="FileUpload" accept=".csv" />
+                                </span>
+                            </label>
+                            <input type="text" class="form-control" readonly id="selectedFile">
+                        </div>
+                        <div>
+                            <span asp-validation-for="FileUpload" class="text-danger"></span>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <span asp-validation-for="FileUpload" class="text-danger"></span>
+
+                <div class="row row-spacing">
+                    <div class="col-xs-12">
+                        <select class="form-control" asp-for="DoImport">
+                            <option value="false">Test run - read the CSV file and analyze import</option>
+                            <option value="true">Perform import</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="row row-spacing">
-            <div class="col-sm-8 col-sm-offset-2">
-                <select class="form-control" asp-for="DoImport">
-                    <option value="false">Test run - read the CSV file and analyze import</option>
-                    <option value="true">Perform import</option>
-                </select>
-            </div>
+                <div class="row" style="margin-bottom: 2rem;">
+                    <div class="col-xs-12">
+                        <a asp-action="Index" class="btn btn-default">Return to Systems/Branches</a>
+                        <button type="submit" class="btn btn-primary btn-spinner">
+                            <span class="buttonText">Upload</span>
+                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
-
-        <div class="row" style="margin-bottom: 2rem;">
-            <div class="col-sm-8 col-sm-offset-2">
-                <a asp-action="Index" class="btn btn-default">Return to Systems/Branches</a>
-                <button type="submit" class="btn btn-primary btn-spinner">
-                    <span class="buttonText">Upload</span>
-                    <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                </button>
-            </div>
-        </div>
-    </form>
-
+    </div>
     @section scripts {
         <script>
             $(':file').on('fileselect', function (event, numFiles, label) {
