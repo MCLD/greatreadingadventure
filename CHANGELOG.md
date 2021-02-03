@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - Add accessibility (alt tags) to badges
 - Import and export of Systems and Branches
+- Import and export of Schools and Districts
 
 ### Fixed
 
