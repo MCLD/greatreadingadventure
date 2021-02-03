@@ -7,7 +7,8 @@ namespace GRA.Domain.Repository
 {
     public interface ISchoolRepository : IRepository<School>
     {
-        Task<ICollection<School>> GetAllAsync(int siteId, int? districtId = default(int?));
+        Task<ICollection<School>> GetAllAsync(int siteId, int? districtId);
+        Task<ICollection<School>> GetAllAsync(int siteId);
 
         Task<bool> IsInUseAsync(int siteId, int schoolId);
 
@@ -15,5 +16,6 @@ namespace GRA.Domain.Repository
         Task<int> CountAsync(BaseFilter filter);
 
         Task<bool> ValidateAsync(int schoolId, int siteId);
+        Task<IList<SchoolImportExport>> GetForExportAsync();
     }
 }

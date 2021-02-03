@@ -18,9 +18,13 @@ namespace GRA.Data.Repository
             ILogger<SchoolRepository> logger) : base(repositoryFacade, logger)
         {
         }
+        public async Task<ICollection<School>> GetAllAsync(int siteId)
+        {
+            return await GetAllAsync(siteId, null);
+        }
 
         public async Task<ICollection<School>> GetAllAsync(int siteId,
-            int? districtId = default(int?))
+            int? districtId)
         {
             var schoolList = DbSet
                 .AsNoTracking()
@@ -89,6 +93,21 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.Id == schoolId && _.SiteId == siteId)
                 .AnyAsync();
+        }
+
+        public async Task<IList<SchoolImportExport>> GetForExportAsync()
+        {
+            return await DbSet
+                .Include(_ => _.SchoolDistrict)
+                .OrderBy(_ => _.SchoolDistrict.Name)
+                .ThenBy(_ => _.Name)
+                .AsNoTracking()
+                .Select(_ => new SchoolImportExport
+                {
+                    District = _.SchoolDistrict.Name,
+                    Name = _.Name
+                })
+                .ToListAsync();
         }
     }
 }

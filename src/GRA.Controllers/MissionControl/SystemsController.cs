@@ -321,7 +321,7 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Export()
         {
             string date = _dateTimeProvider.Now.ToString("yyyyMMdd", CultureInfo.InvariantCulture);
-            return File(await _branchImportExportService.ExportAsync(),
+            return File(await _branchImportExportService.ToCsvAsync(),
                 "text/csv",
                 Utility.FileUtility.EnsureValidFilename($"{date}-Branches.csv"));
         }

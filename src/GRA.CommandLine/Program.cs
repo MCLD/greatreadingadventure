@@ -115,7 +115,7 @@ namespace GRA.CommandLine
             services.AddScoped<QuestionnaireService>();
             services.AddScoped<ReportService>();
             services.AddScoped<SampleDataService>();
-            services.AddScoped<SchoolImportService>();
+            services.AddScoped<SchoolImportExportService>();
             services.AddScoped<SchoolService>();
             services.AddScoped<SiteLookupService>();
             services.AddScoped<SiteService>();
