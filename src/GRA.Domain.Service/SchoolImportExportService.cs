@@ -36,7 +36,7 @@ namespace GRA.Domain.Service
                 int districtsAdded = 0;
                 int schoolsAdded = 0;
                 var districts = await _schoolService.GetDistrictsAsync();
-                var schools = await _schoolService.GetSchoolsAsync();
+                var schools = await _schoolService.GetForExportAsync();
 
                 var districtIndex = districts.ToDictionary(_ => _.Name, _ => _.Id);
 
@@ -80,7 +80,6 @@ namespace GRA.Domain.Service
                         }
                         else
                         {
-                            _logger.LogDebug($"Adding school district: {record.District.Trim()}");
                             var district = await _schoolService.AddDistrict(new SchoolDistrict
                             {
                                 Name = record.District.Trim()
@@ -90,12 +89,11 @@ namespace GRA.Domain.Service
                             districtsAdded++;
                         }
 
-                        var schoolExists = schools.Any(_ => _.SchoolDistrictId == districtId
+                        var schoolExists = schools.Any(_ => _.District == record.District.Trim()
                             && _.Name == record.Name.Trim());
 
                         if (!schoolExists)
                         {
-                            _logger.LogDebug($"Adding school: {record.Name.Trim()}");
                             await _schoolService
                                 .AddSchool(record.Name.Trim(), districtId);
                             schoolsAdded++;
@@ -118,19 +116,23 @@ namespace GRA.Domain.Service
                         }
                     }
                 }
-                var returnMessage = new StringBuilder($"<p><strong>Imported {recordCount} records ({districtsAdded} districts, {schoolsAdded} schools) and skipped {issues} rows due to issues.</strong></p>");
+                var returnMessage = new StringBuilder($"<p><strong>Read {recordCount} records (added {districtsAdded} districts, {schoolsAdded} schools) and skipped {issues} rows due to issues.</strong></p>");
+
                 foreach (var note in notes)
                 {
                     returnMessage.AppendLine(note);
                 }
+
                 if (issues > 0)
                 {
                     return (ImportStatus.Warning, returnMessage.ToString());
                 }
+
                 if (notes.Count > 0)
                 {
                     return (ImportStatus.Info, returnMessage.ToString());
                 }
+
                 return (ImportStatus.Success, returnMessage.ToString());
             }
             catch (Exception ex)
