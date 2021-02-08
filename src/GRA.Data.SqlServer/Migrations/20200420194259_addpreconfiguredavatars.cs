@@ -2,7 +2,7 @@
 
 namespace GRA.Data.SqlServer.Migrations
 {
-    public partial class addpremadeavatars : Migration
+    public partial class addpreconfiguredavatars : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

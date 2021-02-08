@@ -3,9 +3,9 @@ using GRA.Domain.Model;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Avatar
 {
-    public class PremadeAvatarsViewModel
+    public class PreconfiguredAvatarsViewModel
     {
-        public AvatarBundle PremadeAvatarBundle { get; set; }
+        public AvatarBundle PreconfiguredAvatarBundle { get; set; }
         public int[] SelectedItemIds { get; set; }
         public string ImagePath { get; set; }
         public string ItemPath { get; internal set; }

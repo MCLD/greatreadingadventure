@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GRA.Data.SqlServer.Migrations
 {
     [DbContext(typeof(SqlServerContext))]
-    [Migration("20200424194259_addpremadeavatars")]
-    partial class addpremadeavatars
+    [Migration("20200605222604_adding-preconfiguredavatar-to-users")]
+    partial class addingpreconfiguredavatartousers
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -120,8 +120,7 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<int>("CreatedBy");
 
-                    b.Property<string>("Description")
-                        .HasMaxLength(500);
+                    b.Property<string>("Description");
 
                     b.Property<bool>("HasBeenAwarded");
 
@@ -2591,6 +2590,8 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<string>("PostalCode")
                         .HasMaxLength(32);
+
+                    b.Property<int?>("PreconfiguredAvatarId");
 
                     b.Property<int>("ProgramId");
 

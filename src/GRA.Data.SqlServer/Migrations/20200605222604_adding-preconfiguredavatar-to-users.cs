@@ -2,12 +2,12 @@
 
 namespace GRA.Data.SqlServer.Migrations
 {
-    public partial class addingpremadeavatartousers : Migration
+    public partial class addingpreconfiguredavatartousers : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(
-                name: "PremadeAvatarId",
+                name: "PreconfiguredAvatarId",
                 table: "Users",
                 nullable: true);
         }
@@ -15,7 +15,7 @@ namespace GRA.Data.SqlServer.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "PremadeAvatarId",
+                name: "PreconfiguredAvatarId",
                 table: "Users");
         }
     }

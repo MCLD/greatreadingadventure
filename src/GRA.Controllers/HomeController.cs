@@ -268,9 +268,9 @@ namespace GRA.Controllers
                     }
                     viewModel.AvatarElements = avatarElements;
                 }
-                if (user.PremadeAvatarId.HasValue)
+                if (user.PreconfiguredAvatarId.HasValue)
                 {
-                    var bundle = await _avatarService.GetBundleByIdAsync(user.PremadeAvatarId.Value);
+                    var bundle = await _avatarService.GetBundleByIdAsync(user.PreconfiguredAvatarId.Value);
                     viewModel.AvatarDescription = bundle.Description;
                 }
 

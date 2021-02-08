@@ -1,4 +1,4 @@
-﻿@model GRA.Controllers.ViewModel.MissionControl.Avatar.PremadeDetailsViewModel
+﻿@model GRA.Controllers.ViewModel.MissionControl.Avatar.PreconfiguredDetailsViewModel
 
 @inject Microsoft.Extensions.Localization.IStringLocalizer<GRA.Resources.Shared> SharedLocalizer
 
@@ -176,7 +176,7 @@
                         <a asp-area="MissionControl"
                            asp-controller="Avatars"
                            asp-action="@nameof(AvatarsController.Bundles)"
-                           asp-route-search="Premade"
+                           asp-route-search="Preconfigured"
                            class="btn btn-lg btn-default"
                            style="margin:5px;">
                             <span class="fa fa-arrow-alt-circle-left"></span>
@@ -697,7 +697,7 @@
                 SelectedItemIds: GetAvatarSelection()
             };
             $.ajax({
-                url: "@(Model.NewAvatar ? Url.Action(nameof(AvatarsController.CreatePremadeAvatar)) : Url.Action(nameof(AvatarsController.UpdatePremadeAvatar)))",
+                url: "@(Model.NewAvatar ? Url.Action(nameof(AvatarsController.CreatePreconfiguredAvatar)) : Url.Action(nameof(AvatarsController.UpdatePreconfiguredAvatar)))",
                 type: "POST",
                 contentType: "application/json; charset=utf-8",
                 data: JSON.stringify(datas),

@@ -183,7 +183,7 @@ namespace GRA.Controllers.MissionControl
             try
             {
                 var layeritems = await _avatarService.GetUsersItemsByLayerAsync(layerId);
-                var model = new PremadeAvatarsViewModel
+                var model = new PreconfiguredAvatarsViewModel
                 {
                     ItemPath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/")
                 };
@@ -327,9 +327,9 @@ namespace GRA.Controllers.MissionControl
             {
                 filter.Unlockable = true;
             }
-            else if (search == "Premade")
+            else if (search == "Preconfigured")
             {
-                filter.Premade = true;
+                filter.Preconfigured = true;
             }
             else
             {
@@ -361,9 +361,9 @@ namespace GRA.Controllers.MissionControl
             };
 
             PageTitle = "Avatar Bundles";
-            if (search == "Premade")
+            if (search == "Preconfigured")
             {
-                return View("Premade", viewModel);
+                return View("Preconfigured", viewModel);
             }
             return View(viewModel);
         }
@@ -419,13 +419,13 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Create Bundle";
             return View("BundleDetail", model);
         }
-        public async Task<IActionResult> PremadeDetails(int? bundleId = null)
+        public async Task<IActionResult> PreconfiguredDetails(int? bundleId = null)
         {
             var selectedIds = new List<int>();
             var mannequin = await _avatarService.GetRandomMannequinAsync();
-            var allBundles = await _avatarService.GetAllPremadeParentBundlesAsync();
+            var allBundles = await _avatarService.GetAllPreconfiguredParentBundlesAsync();
 
-            var viewModel = new PremadeDetailsViewModel
+            var viewModel = new PreconfiguredDetailsViewModel
             {
                 Bundles = allBundles.Where(_ => _.Description == null).ToList(),
                 ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/")
@@ -449,9 +449,9 @@ namespace GRA.Controllers.MissionControl
                 viewModel.LayerGroupings = await _avatarService.GetWardrobe(selectedIds);
                 viewModel.Bundle = new AvatarBundle();
             }
-            PageTitle = !bundleId.HasValue ? "Create Premade Avatar" : "Edit Premade Avatar";
+            PageTitle = !bundleId.HasValue ? "Create Preconfigured Avatar" : "Edit Preconfigured Avatar";
             viewModel.NewAvatar = !bundleId.HasValue;
-            return View("PremadeDetails", viewModel);
+            return View("PreconfiguredDetails", viewModel);
         }
 
         public async Task<IActionResult> BundleEdit(int id)
@@ -743,7 +743,8 @@ namespace GRA.Controllers.MissionControl
                 Title = "Importing avatars..."
             });
         }
-        public async Task<IActionResult> CreatePremadeAvatar([FromBody]PremadeDetailsViewModel model)
+
+        public async Task<IActionResult> CreatePreconfiguredAvatar([FromBody]PreconfiguredDetailsViewModel model)
         {
             var bundle = new AvatarBundle
             {
@@ -769,9 +770,9 @@ namespace GRA.Controllers.MissionControl
             {
                 try
                 {
-                    var newPremade = await _avatarService.AddBundleAsync(bundle, model.SelectedItemIds);
-                    ShowAlertSuccess($"Created '{newPremade.Name}' premade avatar.");
-                    RedirectToAction(nameof(PremadeDetails), new { id = newPremade.Id});
+                    var newPreconfigured = await _avatarService.AddBundleAsync(bundle, model.SelectedItemIds);
+                    ShowAlertSuccess($"Created '{newPreconfigured.Name}' pre-configured avatar.");
+                    RedirectToAction(nameof(PreconfiguredDetails), new { id = newPreconfigured.Id});
                 }
                 catch (GraException gex)
                 {
@@ -780,7 +781,7 @@ namespace GRA.Controllers.MissionControl
             }
             else
             {
-                ShowAlertDanger("Could not create premade avatar.");
+                ShowAlertDanger("Could not create pre-configured avatar.");
             }
             var mannequin = await _avatarService.GetRandomMannequinAsync();
             model.SelectedItemIds.Add(mannequin.Id);
@@ -797,16 +798,16 @@ namespace GRA.Controllers.MissionControl
                     .Select(_ => _.ToList())
                     .ToList();
             }
-            model.Bundles = await _avatarService.GetAllPremadeParentBundlesAsync();
+            model.Bundles = await _avatarService.GetAllPreconfiguredParentBundlesAsync();
             model.ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/");
             model.Bundle = bundle;
             model.NewAvatar = true;
-            PageTitle = "Create Premade Avatar";
-            return View("PremadeDetails", model);
+            PageTitle = "Create Preconfigured Avatar";
+            return View("PreconfiguredDetails", model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdatePremadeAvatar([FromBody]PremadeDetailsViewModel model)
+        public async Task<IActionResult> UpdatePreconfiguredAvatar([FromBody]PreconfiguredDetailsViewModel model)
         {
             var bundle = new AvatarBundle
             {
@@ -833,9 +834,9 @@ namespace GRA.Controllers.MissionControl
             {
                 try
                 {
-                    var newPremade = await _avatarService.EditBundleAsync(bundle, model.SelectedItemIds);
-                    ShowAlertSuccess($"Updated '{newPremade.Name}' premade avatar.");
-                    RedirectToAction(nameof(PremadeDetails), new { id = newPremade.Id });
+                    var newPreconfigured = await _avatarService.EditBundleAsync(bundle, model.SelectedItemIds);
+                    ShowAlertSuccess($"Updated '{newPreconfigured.Name}' pre-configured avatar.");
+                    RedirectToAction(nameof(PreconfiguredDetails), new { id = newPreconfigured.Id });
                 }
                 catch (GraException gex)
                 {
@@ -844,7 +845,7 @@ namespace GRA.Controllers.MissionControl
             }
             else
             {
-                ShowAlertDanger("Could not update premade avatar.");
+                ShowAlertDanger("Could not update pre-configured avatar.");
             }
             var mannequin = await _avatarService.GetRandomMannequinAsync();
             model.SelectedItemIds.Add(mannequin.Id);
@@ -861,13 +862,13 @@ namespace GRA.Controllers.MissionControl
                     .Select(_ => _.ToList())
                     .ToList();
             }
-            model.Bundles = await _avatarService.GetAllPremadeParentBundlesAsync();
+            model.Bundles = await _avatarService.GetAllPreconfiguredParentBundlesAsync();
             model.ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/");
 
             model.Bundle = bundle;
             model.NewAvatar = false;
-            PageTitle = "Edit Premade Avatar";
-            return View("PremadeDetails", model);
+            PageTitle = "Edit Preconfigured Avatar";
+            return View("PreconfiguredDetails", model);
         }
     }
 }

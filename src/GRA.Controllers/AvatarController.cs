@@ -66,13 +66,13 @@ namespace GRA.Controllers
             {
                 LayerGroupings = layerGroupings,
                 Bundles = await _avatarService.GetUserUnlockBundlesAsync(),
-                PremadeAvatars = await _avatarService.GetUserUnlockBundlesAsync(true),
+                PreconfiguredAvatars = await _avatarService.GetUserUnlockBundlesAsync(true),
                 DefaultLayer = userWardrobe.First(_ => _.DefaultLayer).Id,
                 ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/")
             };
-            if (user.PremadeAvatarId.HasValue)
+            if (user.PreconfiguredAvatarId.HasValue)
             {
-                viewModel.PremadeAvatar = await _avatarService.GetBundleByIdAsync(user.PremadeAvatarId.Value);
+                viewModel.PreconfiguredAvatar = await _avatarService.GetBundleByIdAsync(user.PreconfiguredAvatarId.Value);
             }
             var userAvatar = await _avatarService.GetUserAvatarAsync();
             viewModel.NewAvatar = userAvatar.Count == 0;
@@ -80,15 +80,15 @@ namespace GRA.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> SaveAvatar(string selectionJson, int? premadeId)
+        public async Task<JsonResult> SaveAvatar(string selectionJson, int? preconfiguredId)
         {
             try
             {
                 await UpdateAvatarAsync(selectionJson);
-                if (premadeId.HasValue)
+                if (preconfiguredId.HasValue)
                 {
                     var user = await _userService.GetDetails(GetActiveUserId());
-                    user.PremadeAvatarId = premadeId;
+                    user.PreconfiguredAvatarId = preconfiguredId;
                     await _userService.Update(user);
                 }
                 return Json(new { success = true });
@@ -271,7 +271,7 @@ namespace GRA.Controllers
         }
 
         [PreventAjaxRedirect]
-        public async Task<IActionResult> GetPremadeAvatarItems(int bundleId)
+        public async Task<IActionResult> GetPreconfiguredAvatarItems(int bundleId)
         {
             try
             {

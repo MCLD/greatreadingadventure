@@ -3,7 +3,7 @@ using GRA.Domain.Model;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Avatar
 {
-    public class PremadeDetailsViewModel
+    public class PreconfiguredDetailsViewModel
     {
         public List<List<AvatarLayer>> LayerGroupings { get; set; }
         public ICollection<AvatarBundle> Bundles { get; set; }

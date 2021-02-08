@@ -110,7 +110,7 @@ namespace GRA.Data.Repository
             {
                 bundles = bundles.Where(_ => _.CanBeUnlocked);
             }
-            if (filter.Premade)
+            if (filter.Preconfigured)
             {
                 bundles = bundles.Where(_ => _.Description != null);
             }
@@ -179,7 +179,7 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task<ICollection<AvatarBundle>> GetAllPremadeParentsAsync(int siteId)
+        public async Task<ICollection<AvatarBundle>> GetAllPreconfiguredParentsAsync(int siteId)
         {
             return await DbSet
                 .AsNoTracking()

@@ -443,7 +443,7 @@ namespace GRA.Domain.Service
             return await _avatarElementRepository.GetUserAvatarAsync(GetActiveUserId());
         }
 
-        public async Task<List<AvatarBundle>> GetUserUnlockBundlesAsync(bool premadeAvatar = false)
+        public async Task<List<AvatarBundle>> GetUserUnlockBundlesAsync(bool preconfiguredAvatar = false)
         {
             var userHistory = await _avatarBundleRepository.UserHistoryAsync(GetActiveUserId());
             var bundles = new List<AvatarBundle>();
@@ -451,10 +451,10 @@ namespace GRA.Domain.Service
             {
                 if (!bundles.Any(bundle => bundle.Id == historyItem.AvatarBundleId))
                 {
-                    if (premadeAvatar)
+                    if (preconfiguredAvatar)
                     {
-                        var premadeBundles = await GetBundlesPremadeAvatarsByIdAsync(historyItem.AvatarBundleId.Value);
-                        bundles.AddRange(premadeBundles);
+                        var preconfiguredBundles = await GetBundlesPreconfiguredAvatarsByIdAsync(historyItem.AvatarBundleId.Value);
+                        bundles.AddRange(preconfiguredBundles);
                     }
                     else
                     {
@@ -467,7 +467,7 @@ namespace GRA.Domain.Service
             return bundles;
         }
 
-        public async Task<List<AvatarBundle>> GetBundlesPremadeAvatarsByIdAsync(int bundleId)
+        public async Task<List<AvatarBundle>> GetBundlesPreconfiguredAvatarsByIdAsync(int bundleId)
         {
             return await _avatarBundleRepository.GetBundlesByAssociatedId(bundleId);
         }
@@ -533,10 +533,10 @@ namespace GRA.Domain.Service
             return await _avatarBundleRepository.GetAllAsync(GetCurrentSiteId(), unlockable);
         }
 
-        public async Task<ICollection<AvatarBundle>> GetAllPremadeParentBundlesAsync()
+        public async Task<ICollection<AvatarBundle>> GetAllPreconfiguredParentBundlesAsync()
         {
             VerifyManagementPermission();
-            return await _avatarBundleRepository.GetAllPremadeParentsAsync(GetCurrentSiteId());
+            return await _avatarBundleRepository.GetAllPreconfiguredParentsAsync(GetCurrentSiteId());
         }
 
         public async Task<ICollection<AvatarItem>> GetBundleItemsAsync(int bundleId)
