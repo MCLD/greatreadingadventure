@@ -45,6 +45,8 @@ namespace GRA.Controllers.ViewModel.Home
 
         public ICollection<AvatarElement> AvatarElements { get; set; }
 
+        public string AvatarDescription { get; set; }
+
         public string ProgramName { get; set; }
         public bool UserJoined { get; set; }
         public bool FirstTimeParticipant { get; set; }

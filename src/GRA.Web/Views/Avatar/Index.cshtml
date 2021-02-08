@@ -196,7 +196,7 @@
                                     @foreach (var avatar in Model.PremadeAvatars)
                                     {
                                         <li class="dropdown-item">
-                                            <a href="#" role="button" onclick="GetPremadeAvatar(@avatar.Id, '@avatar.Description')" aria-label="@avatar.Description">
+                                            <a href="#" role="button" onclick="GetPremadeAvatar(@avatar.Id, '@avatar.Description')" aria-label="@avatar.Name - @avatar.Description">
                                                 @avatar.Name
                                             </a>
                                         </li>
