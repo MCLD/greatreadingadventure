@@ -210,6 +210,8 @@
         var xsZoom = false;
         var unsavedChanges = @Model.NewAvatar.ToString().ToLower();
         var prevLayerSelected = @(Model.SelectedItemIds != null ? Newtonsoft.Json.JsonConvert.SerializeObject(Model.SelectedItemIds) : "[]");
+        var bundleName = "@Model.Bundle.Name";
+        var bundleDescription = "@Model.Bundle.Description";
 
 
         $.ajaxSetup({
@@ -566,6 +568,22 @@
                         UpdateRemoveButtonForBundle(nextSelected);
                     }
                 }
+            }
+        });
+
+        $("#Bundle_Description").on("blur", function () {
+            if (!($("#Bundle_Description").val() === bundleDescription)) {
+                unsavedChanges = true;
+                $("#saveAvatar").removeClass("btn-default");
+                $("#saveAvatar").addClass("btn-success");
+            }
+        });
+
+        $("#Bundle_Name").on("blur", function () {
+            if (!($("#Bundle_Name").val() === bundleName)) {
+                unsavedChanges = true;
+                $("#saveAvatar").removeClass("btn-default");
+                $("#saveAvatar").addClass("btn-success");
             }
         });
 
