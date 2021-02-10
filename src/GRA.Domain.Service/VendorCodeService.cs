@@ -31,6 +31,8 @@ namespace GRA.Domain.Service
         private readonly LanguageService _languageService;
         private readonly PrizeWinnerService _prizeWinnerService;
 
+        private const string ErrorUnableToParse = "Unable to parse {Field}, row {SpreadsheetRow}: {Value}";
+        private const string ErrorParseError = "Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}";
         public VendorCodeService(ILogger<VendorCodeService> logger,
             IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
@@ -248,6 +250,8 @@ namespace GRA.Domain.Service
         private const string DetailsRowHeading = "Details";
         private const string OrderDateRowHeading = "Order Date";
         private const string ShipDateRowHeading = "Ship Date";
+        private const string PackingSlipRowHeading = "Pickpack Number";
+        private const string TrackingNumberRowHeading = "UPS Tracking Number";
 
         public async Task<JobStatus> UpdateStatusFromExcelAsync(int jobId,
             CancellationToken token,
@@ -296,6 +300,8 @@ namespace GRA.Domain.Service
                     int detailsColumnId = 0;
                     int orderDateColumnId = 0;
                     int shipDateColumnId = 0;
+                    int packingSlipColumnId = 0;
+                    int trackingNumberColumnId = 0;
                     var issues = new List<string>();
                     int row = 0;
                     int totalRows = 0;
@@ -354,6 +360,12 @@ namespace GRA.Domain.Service
                                         case ShipDateRowHeading:
                                             shipDateColumnId = i;
                                             break;
+                                        case PackingSlipRowHeading:
+                                            packingSlipColumnId = i;
+                                            break;
+                                        case TrackingNumberRowHeading:
+                                            trackingNumberColumnId = i;
+                                            break;
                                     }
                                 }
                             }
@@ -363,155 +375,111 @@ namespace GRA.Domain.Service
                                     && (excelReader.GetValue(orderDateColumnId) != null
                                         || excelReader.GetValue(shipDateColumnId) != null
                                         || excelReader.GetValue(detailsColumnId) != null
-                                        || excelReader.GetValue(branchColumnId) != null))
+                                        || excelReader.GetValue(branchColumnId) != null
+                                        || excelReader.GetValue(packingSlipColumnId) != null
+                                        || excelReader.GetValue(trackingNumberColumnId) != null))
                                 {
                                     string coupon = null;
                                     DateTime? orderDate = null;
                                     DateTime? shipDate = null;
+#pragma warning disable S1854 // Unused assignments should be removed
+                                    long packingSlip = default;
+#pragma warning restore S1854 // Unused assignments should be removed
+                                    string trackingNumber = null;
                                     string details = null;
                                     int? branchId = null;
 
                                     try
                                     {
-                                        coupon = excelReader.GetString(couponColumnId);
-                                    }
-                                    catch (IndexOutOfRangeException ex)
-                                    {
-                                        _logger.LogError("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
-                                            "code",
+                                        coupon = GetExcelString(excelReader,
                                             row,
-                                            ex.Message);
-                                        issues.Add($"Issue reading code on line {row}: {ex.Message}");
+                                            couponColumnId,
+                                            "code");
+                                    }
+                                    catch (GraException gex)
+                                    {
+                                        issues.Add(gex.Message);
                                     }
 
                                     try
                                     {
-                                        try
-                                        {
-                                            orderDate = excelReader.GetDateTime(orderDateColumnId);
-                                        }
-                                        catch (NullReferenceException)
-#pragma warning disable S108 // Nested blocks of code should not be left empty
-                                        { }
-#pragma warning restore S108 // Nested blocks of code should not be left empty
-                                        catch (InvalidCastException)
-                                        {
-                                            string orderDateString
-                                                = excelReader.GetString(orderDateColumnId);
-                                            if (DateTime.TryParse(
-                                                orderDateString,
-                                                out var orderDateConversion))
-                                            {
-                                                orderDate = orderDateConversion;
-                                            }
-                                            else
-                                            {
-                                                _logger.LogError("Unable to parse {Field}, row {SpreadsheetRow}: {Value}",
-                                                    "order date",
-                                                    row,
-                                                    orderDateString);
-                                                issues.Add($"Issue reading order date on row {row}: {orderDateString}");
-                                            }
-                                        }
-                                    }
-                                    catch (IndexOutOfRangeException ex)
-                                    {
-                                        _logger.LogError("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
-                                            "order date",
+                                        orderDate = GetExcelDateTime(excelReader,
                                             row,
-                                            ex.Message);
-                                        issues.Add($"Issue reading order date on row {row}: {ex.Message}");
+                                            orderDateColumnId,
+                                            "order date");
+                                    }
+                                    catch (GraException gex)
+                                    {
+                                        issues.Add(gex.Message);
                                     }
 
                                     try
                                     {
-                                        try
-                                        {
-                                            shipDate = excelReader.GetDateTime(shipDateColumnId);
-                                        }
-                                        catch (NullReferenceException)
-#pragma warning disable S108 // Nested blocks of code should not be left empty
-                                        { }
-#pragma warning restore S108 // Nested blocks of code should not be left empty
-                                        catch (InvalidCastException)
-                                        {
-                                            string shipDateString
-                                                = excelReader.GetString(shipDateColumnId);
-                                            if (DateTime.TryParse(
-                                                shipDateString,
-                                                out var shipDateConversion))
-                                            {
-                                                shipDate = shipDateConversion;
-                                            }
-                                            else
-                                            {
-                                                _logger.LogError("Unable to parse {Field}, row {SpreadsheetRow}: {Value}",
-                                                    "ship date",
-                                                    row,
-                                                    shipDateString);
-                                                issues.Add($"Issue reading order date on row {row}: {shipDateString}");
-                                            }
-                                        }
-                                    }
-                                    catch (IndexOutOfRangeException ex)
-                                    {
-                                        _logger.LogError("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
-                                            "ship date",
+                                        shipDate = GetExcelDateTime(excelReader,
                                             row,
-                                            ex.Message);
-                                        issues.Add($"Issue reading ship date on row {row}: {ex.Message}");
+                                            shipDateColumnId,
+                                            "ship date");
+                                    }
+                                    catch (GraException gex)
+                                    {
+                                        issues.Add(gex.Message);
                                     }
 
-                                    if (excelReader.GetValue(detailsColumnId) != null)
+                                    try
                                     {
-                                        try
-                                        {
-                                            details = excelReader.GetString(detailsColumnId);
-                                        }
-                                        catch (IndexOutOfRangeException ex)
-                                        {
-                                            _logger.LogWarning("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
-                                                "details",
-                                                row,
-                                                ex.Message);
-                                            issues.Add($"Issue reading details on row {row}: {ex.Message}");
-                                        }
+                                        details = GetExcelString(excelReader,
+                                            row,
+                                            detailsColumnId,
+                                            "details");
+                                    }
+                                    catch (GraException gex)
+                                    {
+                                        issues.Add(gex.Message);
                                     }
 
-                                    if (excelReader.GetValue(branchColumnId) != null)
+                                    try
                                     {
-                                        try
-                                        {
-                                            string branch
-                                                = excelReader.GetString(branchColumnId);
-                                            if (int.TryParse(branch, out int branchIdNum))
-                                            {
-                                                branchId = branchIdNum;
-                                            }
-                                            else
-                                            {
-                                                _logger.LogWarning("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
-                                                    "branch id",
-                                                    row,
-                                                    "Couldn't convert to a number");
-                                                issues.Add($"Issue reading details on row {row}: Couldn't convert to a number");
-                                            }
-                                        }
-                                        catch (IndexOutOfRangeException ex)
-                                        {
-                                            _logger.LogWarning("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
-                                                "branch id",
-                                                row,
-                                                ex.Message);
-                                            issues.Add($"Issue reading details on row {row}: {ex.Message}");
-                                        }
+                                        branchId = GetExcelInt(excelReader,
+                                            row,
+                                            branchColumnId,
+                                            "branch id");
+                                    }
+                                    catch (GraException gex)
+                                    {
+                                        issues.Add(gex.Message);
+                                    }
+
+                                    try
+                                    {
+                                        packingSlip = GetExcelLong(excelReader,
+                                            row,
+                                            packingSlipColumnId,
+                                            "packing slip");
+                                    }
+                                    catch (GraException gex)
+                                    {
+                                        issues.Add(gex.Message);
+                                    }
+
+                                    try
+                                    {
+                                        trackingNumber = GetExcelString(excelReader,
+                                            row,
+                                            trackingNumberColumnId,
+                                            "tracking number");
+                                    }
+                                    catch (GraException gex)
+                                    {
+                                        issues.Add(gex.Message);
                                     }
 
                                     if (!string.IsNullOrEmpty(coupon)
                                         && (orderDate != null
                                             || shipDate != null
                                             || !string.IsNullOrEmpty(details)
-                                            || branchId != null))
+                                            || branchId != null
+                                            || packingSlip != default
+                                            || trackingNumber != null))
                                     {
                                         var code = await _vendorCodeRepository.GetByCode(coupon);
                                         if (code == null)
@@ -525,7 +493,9 @@ namespace GRA.Domain.Service
                                             if (orderDate == code.OrderDate
                                                 && shipDate == code.ShipDate
                                                 && details == code.Details
-                                                && branchId == code.BranchId)
+                                                && branchId == code.BranchId
+                                                && packingSlip == code.PackingSlip
+                                                && trackingNumber == code.TrackingNumber)
                                             {
                                                 alreadyCurrent++;
                                             }
@@ -536,6 +506,8 @@ namespace GRA.Domain.Service
                                                     shipDate,
                                                     details,
                                                     branchId,
+                                                    packingSlip,
+                                                    trackingNumber,
                                                     vendorCodeType);
                                                 updated++;
                                             }
@@ -640,23 +612,29 @@ namespace GRA.Domain.Service
             DateTime? shipDate,
             string details,
             int? branchId,
+            long packingSlip,
+            string trackingNumber,
             VendorCodeType vendorCodeType)
         {
             code.IsUsed = true;
+
             if (orderDate != null)
             {
                 code.OrderDate = orderDate;
             }
+
             if (shipDate != null)
             {
                 code.ShipDate = shipDate;
             }
+
             if (!string.IsNullOrEmpty(details))
             {
                 code.Details = details.Length > 255
                     ? details.Substring(0, 255)
                     : details;
             }
+
             if (branchId != null)
             {
                 code.BranchId = branchId;
@@ -665,8 +643,7 @@ namespace GRA.Domain.Service
             if (code.ShipDate != null
                 && code.BranchId != null)
             {
-                if (vendorCodeType?.Id
-                    != code.VendorCodeTypeId)
+                if (vendorCodeType?.Id != code.VendorCodeTypeId)
                 {
                     vendorCodeType =
                         await _vendorCodeTypeRepository.GetByIdAsync(code.VendorCodeTypeId);
@@ -687,6 +664,18 @@ namespace GRA.Domain.Service
                         });
                     }
                 }
+            }
+
+            if (packingSlip != default)
+            {
+                code.PackingSlip = packingSlip;
+            }
+
+            if (!string.IsNullOrEmpty(trackingNumber))
+            {
+                code.TrackingNumber = trackingNumber.Length > 255
+                    ? trackingNumber.Substring(0, 255)
+                    : trackingNumber;
             }
 
             await _vendorCodeRepository.UpdateSaveNoAuditAsync(code);
@@ -1131,8 +1120,7 @@ namespace GRA.Domain.Service
 
                 timeElapsed = TimeSpan
                     .FromMilliseconds(stopwatch.ElapsedMilliseconds)
-                    .ToString(@"mm\:ss",
-                        System.Globalization.DateTimeFormatInfo.InvariantInfo);
+                    .ToString(@"mm\:ss", DateTimeFormatInfo.InvariantInfo);
 
                 await _jobRepository.UpdateStatusAsync(jobId,
                     $"Inserted {count} vendor codes in {timeElapsed}.");
@@ -1314,41 +1302,43 @@ namespace GRA.Domain.Service
                                     string emailAddress = null;
                                     DateTime? sentDate = null;
                                     int? userId = null;
+
                                     try
                                     {
-                                        emailAddress = excelReader
-                                            .GetString(emailAddressColumnId);
+                                        emailAddress = GetExcelString(excelReader,
+                                            row,
+                                            emailAddressColumnId,
+                                            "email address");
                                     }
-#pragma warning disable CA1031 // Do not catch general exception types
-                                    catch (Exception ex)
-#pragma warning restore CA1031 // Do not catch general exception types
+                                    catch (GraException gex)
                                     {
-                                        _logger.LogError($"Parse error on code, row {row}: {ex.Message}");
-                                        issues.Add($"Issue reading code on line {row}: {ex.Message}");
+                                        issues.Add(gex.Message);
                                     }
+
                                     try
                                     {
-                                        sentDate = excelReader.GetDateTime(sentDateColumnId);
+                                        sentDate = GetExcelDateTime(excelReader,
+                                            row,
+                                            sentDateColumnId,
+                                            "sent date");
                                     }
-#pragma warning disable CA1031 // Do not catch general exception types
-                                    catch (Exception ex)
-#pragma warning restore CA1031 // Do not catch general exception types
+                                    catch (GraException gex)
                                     {
-                                        _logger.LogError($"Parse error on order date, row {row}: {ex.Message}");
-                                        issues.Add($"Issue reading order date on row {row}: {ex.Message}");
+                                        issues.Add(gex.Message);
                                     }
+
                                     try
                                     {
-                                        userId = int.Parse(excelReader.GetValue(userIdColumnId).ToString(),
-                                            CultureInfo.InvariantCulture);
+                                        userId = GetExcelInt(excelReader,
+                                            row,
+                                            userIdColumnId,
+                                            "user id");
                                     }
-#pragma warning disable CA1031 // Do not catch general exception types
-                                    catch (Exception ex)
-#pragma warning restore CA1031 // Do not catch general exception types
+                                    catch (GraException gex)
                                     {
-                                        _logger.LogError($"Parse error on ship date, row {row}: {ex.Message}");
-                                        issues.Add($"Issue reading ship date on row {row}: {ex.Message}");
+                                        issues.Add(gex.Message);
                                     }
+
                                     if (!string.IsNullOrEmpty(emailAddress)
                                         && sentDate.HasValue && userId.HasValue)
                                     {
@@ -1487,5 +1477,140 @@ namespace GRA.Domain.Service
 
             return memoryStream.ToArray();
         }
+
+        #region Excel helper methods
+        private string GetExcelString(IExcelDataReader excelReader,
+            int row,
+            int columnId,
+            string columnName)
+        {
+            if (excelReader == null)
+            {
+                throw new ArgumentNullException(nameof(excelReader));
+            }
+            try
+            {
+                return excelReader.GetString(columnId);
+            }
+            catch (IndexOutOfRangeException ex)
+            {
+                _logger.LogError(ErrorParseError, columnName, row, ex.Message);
+                throw new GraException($"Issue reading {columnName} on line {row}: {ex.Message}");
+            }
+        }
+
+        private DateTime? GetExcelDateTime(IExcelDataReader excelReader,
+            int row,
+            int columnId,
+            string columnName)
+        {
+            if (excelReader == null)
+            {
+                throw new ArgumentNullException(nameof(excelReader));
+            }
+            try
+            {
+                try
+                {
+                    return excelReader.GetDateTime(columnId);
+                }
+                catch (NullReferenceException)
+#pragma warning disable S108 // Nested blocks of code should not be left empty
+                { }
+#pragma warning restore S108 // Nested blocks of code should not be left empty
+                catch (InvalidCastException)
+                {
+                    string dateString = excelReader.GetString(columnId);
+                    if (DateTime.TryParse(dateString, out var orderDateConversion))
+                    {
+                        return orderDateConversion;
+                    }
+                    else
+                    {
+                        _logger.LogError(ErrorUnableToParse, "order date", row, dateString);
+                        throw new GraException($"Issue reading {columnName} on row {row}: {dateString}");
+                    }
+                }
+            }
+            catch (IndexOutOfRangeException ex)
+            {
+                _logger.LogError(ErrorParseError, columnName, row, ex.Message);
+                throw new GraException($"Issue reading {columnName} on row {row}: {ex.Message}");
+            }
+            return null;
+        }
+
+        private int GetExcelInt(IExcelDataReader excelReader,
+            int row,
+            int columnId,
+            string columnName)
+        {
+            if (excelReader == null)
+            {
+                throw new ArgumentNullException(nameof(excelReader));
+            }
+            if (excelReader.GetValue(columnId) != null)
+            {
+                try
+                {
+                    string stringValue = excelReader.GetString(columnId);
+                    if (int.TryParse(stringValue, out int intValue))
+                    {
+                        return intValue;
+                    }
+                    else
+                    {
+                        _logger.LogWarning(ErrorParseError,
+                            columnName,
+                            row,
+                            "Couldn't convert to a number");
+                        throw new GraException($"Issue reading {columnName} on row {row}: Couldn't convert to a number");
+                    }
+                }
+                catch (IndexOutOfRangeException ex)
+                {
+                    _logger.LogWarning(ErrorParseError, columnName, row, ex.Message);
+                    throw new GraException($"Issue reading {columnName} on row {row}: {ex.Message}");
+                }
+            }
+            return default;
+        }
+
+        private long GetExcelLong(IExcelDataReader excelReader,
+            int row,
+            int columnId,
+            string columnName)
+        {
+            if (excelReader == null)
+            {
+                throw new ArgumentNullException(nameof(excelReader));
+            }
+            if (excelReader.GetValue(columnId) != null)
+            {
+                try
+                {
+                    string stringValue = excelReader.GetString(columnId);
+                    if (long.TryParse(stringValue, out long intValue))
+                    {
+                        return intValue;
+                    }
+                    else
+                    {
+                        _logger.LogWarning(ErrorParseError,
+                            columnName,
+                            row,
+                            "Couldn't convert to a number");
+                        throw new GraException($"Issue reading {columnName} on row {row}: Couldn't convert to a number");
+                    }
+                }
+                catch (IndexOutOfRangeException ex)
+                {
+                    _logger.LogWarning(ErrorParseError, columnName, row, ex.Message);
+                    throw new GraException($"Issue reading {columnName} on row {row}: {ex.Message}");
+                }
+            }
+            return default;
+        }
+        #endregion Excel helper methods
     }
 }

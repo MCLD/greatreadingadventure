@@ -28,10 +28,15 @@ namespace GRA.Domain.Model
         public bool CanBeDonated { get; set; }
         public bool CanBeEmailAward { get; set; }
         [MaxLength(255)]
+#pragma warning disable CA1056 // Uri properties should not be strings
         public string Url { get; set; }
+#pragma warning restore CA1056 // Uri properties should not be strings
         [MaxLength(255)]
         public string Details { get; set; }
         public string ParticipantName { get; set; }
         public int? BranchId { get; set; }
+        public long PackingSlip { get; set; }
+        [MaxLength(255)]
+        public string TrackingNumber { get; set; }
     }
 }
