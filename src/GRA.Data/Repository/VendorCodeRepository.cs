@@ -157,7 +157,7 @@ namespace GRA.Data.Repository
         {
             var all = DbSet.AsNoTracking();
 
-            if (await all.CountAsync() == 0)
+            if (!await all.AnyAsync())
             {
                 return new VendorCodeStatus();
             }
@@ -170,6 +170,7 @@ namespace GRA.Data.Repository
             {
                 AssignedCodes = await assigned.CountAsync(),
                 Donated = await assigned.CountAsync(_ => _.IsDonated == true),
+                IsConfigured = true,
                 EmailAwardSelected = await emailAwards.CountAsync(),
                 EmailAwardDownloadedInReport = await emailAwards
                     .CountAsync(_ => _.EmailAwardReported != null),
@@ -183,6 +184,14 @@ namespace GRA.Data.Repository
                 UnusedCodes = await all.CountAsync(_ => _.UserId == null),
                 VendorSelected = await vendorAwards.CountAsync()
             };
+        }
+
+        public async Task<ICollection<string>> GetAllCodesAsync(int vendorCodeTypeId)
+        {
+            return await DbSet
+                .Where(_ => _.VendorCodeTypeId == vendorCodeTypeId)
+                .Select(_ => _.Code)
+                .ToListAsync();
         }
     }
 }

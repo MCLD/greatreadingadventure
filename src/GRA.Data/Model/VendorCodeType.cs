@@ -22,6 +22,7 @@ namespace GRA.Data.Model
         [MaxLength(255)]
         public string MailSubject { get; set; }
 
+        [MaxLength(255)]
         public string OptionSubject { get; set; }
 
         [MaxLength(1250)]

@@ -1,0 +1,208 @@
+﻿@model GRA.Domain.Model.VendorCodeType
+
+@if (Model.Id > 0)
+{
+    @await Html.PartialAsync("_VendorCodePartial")
+}
+
+<div class="row" style="margin-top: 1rem; margin-bottom: 1rem;">
+    <div class="col-xs-12">
+        <p>Vendor codes are not yet configured. Use this page to set them up.</p>
+        <ul>
+            <li>
+                If you wish to configure a vendor code to be awarded with a trigger, you need only
+                configure the top fields.
+            </li>
+            <li>
+                If you'd like to give the participant a choice:
+                <ol>
+                    <li>
+                        Fill out the "Option" section
+                    </li>
+                    <li>
+                        Fill out the "Donation" section, the "Email" section, or both.
+                    </li>
+                </ol>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<form asp-action="@nameof(VendorCodesController.UpdateConfiguration)"
+      method="post"
+      role="form"
+      enctype="multipart/form-data">
+    <input type="hidden" asp-for="SiteId" value="@Model.SiteId" />
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>*
+                <description gra-description-for="Description"></description>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label asp-for="MailSubject" class="control-label"></label>*
+                <description gra-description-for="MailSubject"></description>
+                <input asp-for="MailSubject" class="form-control" />
+                <span asp-validation-for="MailSubject" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label asp-for="Mail" class="control-label"></label>*
+                <description gra-description-for="Mail"></description>
+                <textarea asp-for="Mail" class="form-control"></textarea>
+                <span asp-validation-for="Mail" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label asp-for="Url" class="control-label"></label>
+                <description gra-description-for="Url"></description>
+                <input asp-for="Url" class="form-control" />
+                <span asp-validation-for="Url" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label asp-for="ExpirationDate" class="control-label"></label>
+                <description gra-description-for="ExpirationDate"></description>
+                <input asp-for="ExpirationDate"
+                       class="form-control"
+                       type="date" />
+                <span asp-validation-for="ExpirationDate" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label asp-for="AwardPrizeOnShipDate" class="control-label"></label>
+                <description gra-description-for="AwardPrizeOnShipDate"></description>
+                <select id="AwardPrizeOnShipDate"
+                        class="form-control">
+                    <option value="0">
+                        Don't award a prize when item marked shipped from an
+                        import
+                    </option>
+
+                    <option value="1">
+                        Award a prize when item is marked shipped from an
+                        import
+                    </option>
+                </select>
+                <span asp-validation-for="AwardPrizeOnShipDate" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label asp-for="OptionSubject" class="control-label"></label>
+                <description gra-description-for="OptionSubject"></description>
+                <input asp-for="OptionSubject" class="form-control" />
+                <span asp-validation-for="OptionSubject" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label asp-for="OptionMail" class="control-label"></label>
+                <description gra-description-for="OptionMail"></description>
+                <textarea asp-for="OptionMail" class="form-control"></textarea>
+                <span asp-validation-for="OptionMail" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label asp-for="DonationMessage" class="control-label"></label>
+                <description gra-description-for="DonationMessage"></description>
+                <input asp-for="DonationMessage" class="form-control" />
+                <span asp-validation-for="DonationMessage" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label asp-for="DonationSubject" class="control-label"></label>
+                <description gra-description-for="DonationSubject"></description>
+                <input asp-for="DonationSubject" class="form-control" />
+                <span asp-validation-for="DonationSubject" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label asp-for="DonationMail" class="control-label"></label>
+                <description gra-description-for="DonationMail"></description>
+                <textarea asp-for="DonationMail" class="form-control"></textarea>
+                <span asp-validation-for="DonationMail" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label asp-for="EmailAwardMessage" class="control-label"></label>
+                <description gra-description-for="EmailAwardMessage"></description>
+                <input asp-for="EmailAwardMessage" class="form-control" />
+                <span asp-validation-for="EmailAwardMessage" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label asp-for="EmailAwardSubject" class="control-label"></label>
+                <description gra-description-for="EmailAwardSubject"></description>
+                <input asp-for="EmailAwardSubject" class="form-control" />
+                <span asp-validation-for="EmailAwardSubject" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label asp-for="EmailAwardMail" class="control-label"></label>
+                <description gra-description-for="EmailAwardMail"></description>
+                <textarea asp-for="EmailAwardMail" class="form-control"></textarea>
+                <span asp-validation-for="EmailAwardMail" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row row-spacing">
+        <div class="col-xs-12 text-right">
+            @if (Model.Id > 0)
+            {
+                <a asp-action="@nameof(VendorCodesController.Index)"
+                   class="btn btn-danger">Back</a>
+            }
+            else
+            {
+                <a asp-controller="@HomeController.Name"
+                   asp-action="@nameof(HomeController.Index)"
+                   class="btn btn-primary">Cancel</a>
+            }
+            <input type="submit" class="btn btn-primary" value="Save vendor code" />
+        </div>
+    </div>
+</form>

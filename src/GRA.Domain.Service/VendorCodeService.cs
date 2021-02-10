@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -86,6 +87,10 @@ namespace GRA.Domain.Service
         public async Task<DataWithCount<ICollection<VendorCodeType>>> GetTypePaginatedListAsync(BaseFilter filter)
         {
             VerifyManagementPermission();
+            if (filter == null)
+            {
+                filter = new BaseFilter();
+            }
             filter.SiteId = GetCurrentSiteId();
             return new DataWithCount<ICollection<VendorCodeType>>
             {
@@ -94,15 +99,87 @@ namespace GRA.Domain.Service
             };
         }
 
-        public async Task<VendorCodeType> AddTypeAsync(VendorCodeType vendorCodeType)
+        public Task<VendorCodeType> AddTypeAsync(VendorCodeType vendorCodeType)
+        {
+            if (vendorCodeType == null)
+            {
+                throw new ArgumentNullException(nameof(vendorCodeType));
+            }
+            return AddTypeInternalAsync(vendorCodeType);
+        }
+
+        private async Task<VendorCodeType> AddTypeInternalAsync(VendorCodeType vendorCodeType)
         {
             VerifyManagementPermission();
             vendorCodeType.SiteId = GetCurrentSiteId();
+
+            // some 'requiredness' on fields is dynamically determined
+            var fieldErrors = new Dictionary<string, string>();
+
+            // validate vendor code is accurate
+            if (!string.IsNullOrEmpty(vendorCodeType.OptionSubject))
+            {
+                if (string.IsNullOrEmpty(vendorCodeType.OptionMail))
+                {
+                    fieldErrors.Add(nameof(vendorCodeType.OptionMail),
+                        "If an option subject is provided you must provide an option mail");
+                }
+
+                if (string.IsNullOrEmpty(vendorCodeType.DonationSubject)
+                    && string.IsNullOrEmpty(vendorCodeType.EmailAwardSubject))
+                {
+                    fieldErrors.Add(nameof(vendorCodeType.OptionSubject),
+                        "If you are configuring the option you must also configure a Donation option or an Email option");
+                }
+            }
+
+            if (!string.IsNullOrEmpty(vendorCodeType.DonationSubject))
+            {
+                if (string.IsNullOrEmpty(vendorCodeType.DonationMail))
+                {
+                    fieldErrors.Add(nameof(vendorCodeType.DonationMail),
+                        "If a donation subject is provided you must provide a donation mail");
+                }
+                if (string.IsNullOrEmpty(vendorCodeType.DonationMessage))
+                {
+                    fieldErrors.Add(nameof(vendorCodeType.DonationMessage),
+                        "If a donation subject is provided you must provide a donation message");
+                }
+            }
+
+            if (!string.IsNullOrEmpty(vendorCodeType.EmailAwardSubject))
+            {
+                if (string.IsNullOrEmpty(vendorCodeType.EmailAwardMail))
+                {
+                    fieldErrors.Add(nameof(vendorCodeType.EmailAwardMail),
+                        "If an email award subject is provided you must provide an email award mail");
+                }
+                if (string.IsNullOrEmpty(vendorCodeType.EmailAwardMessage))
+                {
+                    fieldErrors.Add(nameof(vendorCodeType.EmailAwardMessage),
+                        "If an email award subject is provided you must provide an email award message");
+                }
+            }
+
+            if (fieldErrors.Count > 0)
+            {
+                throw new GraFieldValidationException(fieldErrors);
+            }
+
             return await _vendorCodeTypeRepository.AddSaveAsync(GetClaimId(ClaimType.UserId),
                 vendorCodeType);
         }
 
-        public async Task<VendorCodeType> UpdateTypeAsync(VendorCodeType vendorCodeType)
+        public Task<VendorCodeType> UpdateTypeAsync(VendorCodeType vendorCodeType)
+        {
+            if (vendorCodeType == null)
+            {
+                throw new ArgumentNullException(nameof(vendorCodeType));
+            }
+            return UpdateTypeInternalAsync(vendorCodeType);
+        }
+
+        private async Task<VendorCodeType> UpdateTypeInternalAsync(VendorCodeType vendorCodeType)
         {
             VerifyManagementPermission();
             vendorCodeType.SiteId = GetCurrentSiteId();
@@ -145,8 +222,11 @@ namespace GRA.Domain.Service
                     vendorCode.ExpirationDate = codeType.ExpirationDate;
                     if (!string.IsNullOrEmpty(codeType.Url))
                     {
-                        vendorCode.Url = codeType.Url.Contains(TemplateToken.VendorCodeToken)
-                            ? codeType.Url.Replace(TemplateToken.VendorCodeToken, vendorCode.Code)
+                        vendorCode.Url = codeType.Url.Contains(TemplateToken.VendorCodeToken,
+                            StringComparison.OrdinalIgnoreCase)
+                            ? codeType.Url.Replace(TemplateToken.VendorCodeToken,
+                                vendorCode.Code,
+                                StringComparison.OrdinalIgnoreCase)
                             : codeType.Url;
                     }
                     return vendorCode;
@@ -311,7 +391,9 @@ namespace GRA.Domain.Service
                                             orderDate = excelReader.GetDateTime(orderDateColumnId);
                                         }
                                         catch (NullReferenceException)
+#pragma warning disable S108 // Nested blocks of code should not be left empty
                                         { }
+#pragma warning restore S108 // Nested blocks of code should not be left empty
                                         catch (InvalidCastException)
                                         {
                                             string orderDateString
@@ -348,7 +430,9 @@ namespace GRA.Domain.Service
                                             shipDate = excelReader.GetDateTime(shipDateColumnId);
                                         }
                                         catch (NullReferenceException)
+#pragma warning disable S108 // Nested blocks of code should not be left empty
                                         { }
+#pragma warning restore S108 // Nested blocks of code should not be left empty
                                         catch (InvalidCastException)
                                         {
                                             string shipDateString
@@ -711,7 +795,14 @@ namespace GRA.Domain.Service
             return householdPendingCodes.Count;
         }
 
-        public async Task PopulateVendorCodeStatusAsync(User user)
+        public Task PopulateVendorCodeStatusAsync(User user)
+        {
+            if (user == null) { throw new ArgumentNullException(nameof(user)); }
+
+            return PopulateVendorCodeStatusInternalAsync(user);
+        }
+
+        private async Task PopulateVendorCodeStatusInternalAsync(User user)
         {
             var vendorCode = await GetUserVendorCodeAsync(user.Id);
             if (vendorCode != null)
@@ -785,13 +876,15 @@ namespace GRA.Domain.Service
                     if (vendorCode.ShipDate.HasValue)
                     {
                         vendorCodeMessage.Append(" shipped <strong>")
-                            .Append(vendorCode.ShipDate.Value.ToString("d"))
+                            .Append(vendorCode.ShipDate.Value.ToString("d",
+                                CultureInfo.InvariantCulture))
                             .Append("</strong>");
                     }
                     else if (vendorCode.OrderDate.HasValue)
                     {
                         vendorCodeMessage.Append(" ordered <strong>")
-                            .Append(vendorCode.OrderDate.Value.ToString("d"))
+                            .Append(vendorCode.OrderDate.Value.ToString("d",
+                                CultureInfo.InvariantCulture))
                             .Append("</strong>");
                     }
 
@@ -809,7 +902,8 @@ namespace GRA.Domain.Service
             string assignedCode)
         {
             string body;
-            if (!codeType.Mail.Contains(TemplateToken.VendorCodeToken))
+            if (!codeType.Mail.Contains(TemplateToken.VendorCodeToken,
+                StringComparison.OrdinalIgnoreCase))
             {
                 // the token isn't in the message, just append the code to the end
                 body = $"{codeType.Mail} {assignedCode}";
@@ -819,26 +913,35 @@ namespace GRA.Domain.Service
                 if (string.IsNullOrEmpty(codeType.Url))
                 {
                     // we have a token but no url, replace the token with the code
-                    body = codeType.Mail.Replace(TemplateToken.VendorCodeToken, assignedCode);
+                    body = codeType.Mail.Replace(TemplateToken.VendorCodeToken,
+                        assignedCode,
+                        StringComparison.OrdinalIgnoreCase);
                 }
                 else
                 {
                     string url;
                     // see if the url has the token in it, if so swap in the code
-                    if (!codeType.Url.Contains(TemplateToken.VendorCodeToken))
+                    if (!codeType.Url.Contains(TemplateToken.VendorCodeToken,
+                        StringComparison.OrdinalIgnoreCase))
                     {
                         url = codeType.Url;
                     }
                     else
                     {
-                        url = codeType.Url.Replace(TemplateToken.VendorCodeToken, assignedCode);
+                        url = codeType.Url.Replace(TemplateToken.VendorCodeToken,
+                            assignedCode,
+                            StringComparison.OrdinalIgnoreCase);
                     }
                     // token and url - make token clickable to go to url
                     body = codeType.Mail.Replace(TemplateToken.VendorCodeToken,
-                        $"<a href=\"{url}\" _target=\"blank\">{assignedCode}</a>");
-                    if (body.Contains(TemplateToken.VendorLinkToken))
+                        $"<a href=\"{url}\" _target=\"blank\">{assignedCode}</a>",
+                        StringComparison.OrdinalIgnoreCase);
+                    if (body.Contains(TemplateToken.VendorLinkToken,
+                        StringComparison.OrdinalIgnoreCase))
                     {
-                        body = body.Replace(TemplateToken.VendorLinkToken, url);
+                        body = body.Replace(TemplateToken.VendorLinkToken,
+                            url,
+                            StringComparison.OrdinalIgnoreCase);
                     }
                 }
             }
@@ -1216,7 +1319,9 @@ namespace GRA.Domain.Service
                                         emailAddress = excelReader
                                             .GetString(emailAddressColumnId);
                                     }
+#pragma warning disable CA1031 // Do not catch general exception types
                                     catch (Exception ex)
+#pragma warning restore CA1031 // Do not catch general exception types
                                     {
                                         _logger.LogError($"Parse error on code, row {row}: {ex.Message}");
                                         issues.Add($"Issue reading code on line {row}: {ex.Message}");
@@ -1225,17 +1330,21 @@ namespace GRA.Domain.Service
                                     {
                                         sentDate = excelReader.GetDateTime(sentDateColumnId);
                                     }
+#pragma warning disable CA1031 // Do not catch general exception types
                                     catch (Exception ex)
+#pragma warning restore CA1031 // Do not catch general exception types
                                     {
                                         _logger.LogError($"Parse error on order date, row {row}: {ex.Message}");
                                         issues.Add($"Issue reading order date on row {row}: {ex.Message}");
                                     }
                                     try
                                     {
-                                        userId = int.Parse(excelReader.GetValue(
-                                            userIdColumnId).ToString());
+                                        userId = int.Parse(excelReader.GetValue(userIdColumnId).ToString(),
+                                            CultureInfo.InvariantCulture);
                                     }
+#pragma warning disable CA1031 // Do not catch general exception types
                                     catch (Exception ex)
+#pragma warning restore CA1031 // Do not catch general exception types
                                     {
                                         _logger.LogError($"Parse error on ship date, row {row}: {ex.Message}");
                                         issues.Add($"Issue reading ship date on row {row}: {ex.Message}");
@@ -1359,8 +1468,24 @@ namespace GRA.Domain.Service
         public async Task<VendorCodeStatus> GetStatusAsync()
         {
             VerifyManagementPermission();
-
             return await _vendorCodeRepository.GetStatusAsync();
+        }
+
+        public async Task<byte[]> ExportVendorCodesAsync(int vendorCodeTypeId)
+        {
+            VerifyManagementPermission();
+            var codes = await _vendorCodeRepository.GetAllCodesAsync(vendorCodeTypeId);
+
+            using var memoryStream = new MemoryStream();
+            using var writer = new StreamWriter(memoryStream);
+            foreach (var code in codes)
+            {
+                await writer.WriteLineAsync(code);
+            }
+            await writer.FlushAsync();
+            await memoryStream.FlushAsync();
+
+            return memoryStream.ToArray();
         }
     }
 }

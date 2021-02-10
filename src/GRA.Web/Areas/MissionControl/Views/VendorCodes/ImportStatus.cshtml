@@ -1,4 +1,7 @@
 ﻿@model IEnumerable<SelectListItem>
+
+@await Html.PartialAsync("_VendorCodePartial")
+
 <form asp-controller="VendorCodes"
       asp-action="ImportStatus"
       method="post"
