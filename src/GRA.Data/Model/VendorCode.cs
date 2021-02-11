@@ -32,7 +32,7 @@ namespace GRA.Data.Model
         public string Details { get; set; }
         public int? BranchId { get; set; }
         public long PackingSlip { get; set; }
-        [MaxLength(255)]
+        [MaxLength(512)]
         public string TrackingNumber { get; set; }
     }
 }

@@ -3723,18 +3723,11 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<DateTime?>("OrderDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("PackingSlip")
-                        .HasColumnType("bigint");
-
                     b.Property<DateTime?>("ShipDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("SiteId")
                         .HasColumnType("int");
-
-                    b.Property<string>("TrackingNumber")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
 
                     b.Property<int?>("UserId")
                         .IsConcurrencyToken()
@@ -3813,8 +3806,7 @@ namespace GRA.Data.SqlServer.Migrations
                         .HasColumnType("nvarchar(1250)");
 
                     b.Property<string>("OptionSubject")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SiteId")
                         .HasColumnType("int");

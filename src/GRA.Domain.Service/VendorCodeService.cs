@@ -475,6 +475,11 @@ namespace GRA.Domain.Service
                                                 row,
                                                 trackingNumberColumnId,
                                                 "tracking number");
+                                            if (trackingNumber?.Length > 512)
+                                            {
+                                                issues.Add($"Tracking number on row {row} is too long, truncating at 512 characters!");
+                                                trackingNumber = trackingNumber.Substring(0, 512);
+                                            }
                                         }
                                         catch (GraException gex)
                                         {
@@ -682,9 +687,7 @@ namespace GRA.Domain.Service
 
             if (!string.IsNullOrEmpty(trackingNumber))
             {
-                code.TrackingNumber = trackingNumber.Length > 255
-                    ? trackingNumber.Substring(0, 255)
-                    : trackingNumber;
+                code.TrackingNumber = trackingNumber;
             }
 
             await _vendorCodeRepository.UpdateSaveNoAuditAsync(code);
