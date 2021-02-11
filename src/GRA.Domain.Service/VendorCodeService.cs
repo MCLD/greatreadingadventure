@@ -33,6 +33,7 @@ namespace GRA.Domain.Service
 
         private const string ErrorUnableToParse = "Unable to parse {Field}, row {SpreadsheetRow}: {Value}";
         private const string ErrorParseError = "Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}";
+
         public VendorCodeService(ILogger<VendorCodeService> logger,
             IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
@@ -302,6 +303,8 @@ namespace GRA.Domain.Service
                     int shipDateColumnId = 0;
                     int packingSlipColumnId = 0;
                     int trackingNumberColumnId = 0;
+                    bool hasPackingSlipColumn = false;
+                    bool hasTrackingNumberColumn = false;
                     var issues = new List<string>();
                     int row = 0;
                     int totalRows = 0;
@@ -362,9 +365,11 @@ namespace GRA.Domain.Service
                                             break;
                                         case PackingSlipRowHeading:
                                             packingSlipColumnId = i;
+                                            hasPackingSlipColumn = true;
                                             break;
                                         case TrackingNumberRowHeading:
                                             trackingNumberColumnId = i;
+                                            hasTrackingNumberColumn = true;
                                             break;
                                     }
                                 }
@@ -382,9 +387,7 @@ namespace GRA.Domain.Service
                                     string coupon = null;
                                     DateTime? orderDate = null;
                                     DateTime? shipDate = null;
-#pragma warning disable S1854 // Unused assignments should be removed
                                     long packingSlip = default;
-#pragma warning restore S1854 // Unused assignments should be removed
                                     string trackingNumber = null;
                                     string details = null;
                                     int? branchId = null;
@@ -449,28 +452,34 @@ namespace GRA.Domain.Service
                                         issues.Add(gex.Message);
                                     }
 
-                                    try
+                                    if (hasPackingSlipColumn)
                                     {
-                                        packingSlip = GetExcelLong(excelReader,
-                                            row,
-                                            packingSlipColumnId,
-                                            "packing slip");
-                                    }
-                                    catch (GraException gex)
-                                    {
-                                        issues.Add(gex.Message);
+                                        try
+                                        {
+                                            packingSlip = GetExcelLong(excelReader,
+                                                row,
+                                                packingSlipColumnId,
+                                                "packing slip");
+                                        }
+                                        catch (GraException gex)
+                                        {
+                                            issues.Add(gex.Message);
+                                        }
                                     }
 
-                                    try
+                                    if (hasTrackingNumberColumn)
                                     {
-                                        trackingNumber = GetExcelString(excelReader,
-                                            row,
-                                            trackingNumberColumnId,
-                                            "tracking number");
-                                    }
-                                    catch (GraException gex)
-                                    {
-                                        issues.Add(gex.Message);
+                                        try
+                                        {
+                                            trackingNumber = GetExcelString(excelReader,
+                                                row,
+                                                trackingNumberColumnId,
+                                                "tracking number");
+                                        }
+                                        catch (GraException gex)
+                                        {
+                                            issues.Add(gex.Message);
+                                        }
                                     }
 
                                     if (!string.IsNullOrEmpty(coupon)
@@ -1589,10 +1598,10 @@ namespace GRA.Domain.Service
             {
                 try
                 {
-                    string stringValue = excelReader.GetString(columnId);
-                    if (long.TryParse(stringValue, out long intValue))
+                    var value = excelReader.GetValue(columnId);
+                    if (long.TryParse(value.ToString(), out long longValue))
                     {
-                        return intValue;
+                        return longValue;
                     }
                     else
                     {
