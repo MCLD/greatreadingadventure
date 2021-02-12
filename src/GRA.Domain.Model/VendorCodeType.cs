@@ -84,5 +84,9 @@ namespace GRA.Domain.Model
         [Display(Name = "Award prize on ship date",
             Description = "Automatically show a prize as 'awarded' in the participant's profile upon ship date import")]
         public bool AwardPrizeOnShipDate { get; set; }
+
+        [Display(Name = "Award prize on received packing slip",
+            Description = "Automatically show a prize as 'awarded' in the participant's profile upon reception of the packing slip")]
+        public bool AwardPrizeOnPackingSlip { get; set; }
     }
 }

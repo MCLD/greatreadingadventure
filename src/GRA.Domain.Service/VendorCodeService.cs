@@ -25,6 +25,7 @@ namespace GRA.Domain.Service
         private readonly ICodeGenerator _codeGenerator;
         private readonly IJobRepository _jobRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IVendorCodePackingSlipRepository _vendorCodePackingSlipRepository;
         private readonly IVendorCodeRepository _vendorCodeRepository;
         private readonly IVendorCodeTypeRepository _vendorCodeTypeRepository;
         private readonly MailService _mailService;
@@ -41,6 +42,7 @@ namespace GRA.Domain.Service
             ICodeGenerator codeGenerator,
             IJobRepository jobRepository,
             IUserRepository userRepository,
+            IVendorCodePackingSlipRepository vendorCodePackingSlipRepository,
             IVendorCodeRepository vendorCodeRepository,
             IVendorCodeTypeRepository vendorCodeTypeRepository,
             MailService mailService,
@@ -56,6 +58,8 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(jobRepository));
             _userRepository = userRepository
                 ?? throw new ArgumentNullException(nameof(userRepository));
+            _vendorCodePackingSlipRepository = vendorCodePackingSlipRepository
+                ?? throw new ArgumentNullException(nameof(vendorCodePackingSlipRepository));
             _vendorCodeRepository = vendorCodeRepository
                 ?? throw new ArgumentNullException(nameof(vendorCodeRepository));
             _vendorCodeTypeRepository = vendorCodeTypeRepository
@@ -1488,6 +1492,24 @@ namespace GRA.Domain.Service
             await memoryStream.FlushAsync();
 
             return memoryStream.ToArray();
+        }
+
+        public async Task<PackingSlipSummary> VerifyPackingSlipAsync(long packingSlipNumber)
+        {
+            if (!HasPermission(Permission.ManageVendorCodes)
+                && !HasPermission(Permission.ReceivePackingSlips))
+            {
+                _logger.LogError($"User id {GetClaimId(ClaimType.UserId)} does not have permission to enter packing slips.");
+                throw new GraException(Annotations.Validate.Permission);
+            }
+
+            return new PackingSlipSummary
+            {
+                PackingSlipNumber = packingSlipNumber,
+                VendorCodes = await _vendorCodeRepository.GetByPackingSlipAsync(packingSlipNumber),
+                VendorCodePackingSlip = await _vendorCodePackingSlipRepository
+                    .GetByPackingSlipNumberAsync(packingSlipNumber)
+            };
         }
 
         #region Excel helper methods

@@ -191,6 +191,16 @@ namespace GRA.Data.Repository
             return await DbSet
                 .Where(_ => _.VendorCodeTypeId == vendorCodeTypeId)
                 .Select(_ => _.Code)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task<ICollection<VendorCode>> GetByPackingSlipAsync(long packingSlipNumber)
+        {
+            return await DbSet
+                .Where(_ => _.PackingSlip == packingSlipNumber)
+                .AsNoTracking()
+                .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
     }

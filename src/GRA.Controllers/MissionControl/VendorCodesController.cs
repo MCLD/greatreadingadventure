@@ -19,7 +19,6 @@ using Newtonsoft.Json;
 namespace GRA.Controllers.MissionControl
 {
     [Area("MissionControl")]
-    [Authorize(Policy = Policy.ManageVendorCodes)]
     public class VendorCodesController : Base.MCController
     {
         private const string ExcelMimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
@@ -27,13 +26,17 @@ namespace GRA.Controllers.MissionControl
         private const int ExcelStyleIndexBold = 1;
         private const int ExcelPaddingCharacters = 1;
 
+        private const string NoAccess = "You do not have access to vendor codes.";
+
         private readonly ILogger _logger;
         private readonly JobService _jobService;
+        private readonly UserService _userService;
         private readonly VendorCodeService _vendorCodeService;
 
         public VendorCodesController(ServiceFacade.Controller context,
             ILogger<VendorCodesController> logger,
             JobService jobService,
+            UserService userService,
             VendorCodeService vendorCodeService)
             : base(context)
         {
@@ -41,36 +44,44 @@ namespace GRA.Controllers.MissionControl
             _jobService = jobService ?? throw new ArgumentNullException(nameof(jobService));
             _vendorCodeService = vendorCodeService
                 ?? throw new ArgumentNullException(nameof(vendorCodeService));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             PageTitle = "Vendor code management";
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var vendorCodeStatus = await _vendorCodeService.GetStatusAsync();
-            if (vendorCodeStatus.IsConfigured)
+            if (UserHasPermission(Permission.ManageVendorCodes))
             {
-                return View(vendorCodeStatus);
-            }
-            else
-            {
-                var vendorCodeType = await _vendorCodeService.GetTypeAllAsync();
-                if (vendorCodeType?.Count == 0)
+                var vendorCodeStatus = await _vendorCodeService.GetStatusAsync();
+                if (vendorCodeStatus.IsConfigured)
                 {
-                    RedirectToAction(nameof(Configure));
-                    return View("Configure", new VendorCodeType
-                    {
-                        SiteId = GetCurrentSiteId()
-                    });
+                    return View(vendorCodeStatus);
                 }
                 else
                 {
-                    return View("GenerateCodes", vendorCodeType.First().Description);
+                    var vendorCodeType = await _vendorCodeService.GetTypeAllAsync();
+                    if (vendorCodeType?.Count == 0)
+                    {
+                        return RedirectToAction(nameof(Configure));
+                    }
+                    else
+                    {
+                        return RedirectToAction(nameof(GenerateCodes));
+                    }
                 }
             }
+
+            if (UserHasPermission(Permission.ReceivePackingSlips))
+            {
+                return RedirectToAction(nameof(ReceivePackingSlip));
+            }
+
+            return RedirectNotAuthorized(NoAccess);
         }
 
         [HttpGet]
+        [Authorize(Policy = Policy.ManageVendorCodes)]
         public async Task<IActionResult> ImportStatus()
         {
             var codeTypes = await _vendorCodeService.GetTypeAllAsync();
@@ -86,6 +97,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
+        [Authorize(Policy = Policy.ManageVendorCodes)]
         public async Task<IActionResult> ImportStatus(int vendorCodeId,
             Microsoft.AspNetCore.Http.IFormFile excelFile)
         {
@@ -140,6 +152,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpGet]
+        [Authorize(Policy = Policy.ManageVendorCodes)]
         public async Task<IActionResult> EmailAward()
         {
             var codeTypes = await _vendorCodeService.GetTypeAllAsync();
@@ -156,6 +169,7 @@ namespace GRA.Controllers.MissionControl
 
 #pragma warning disable S3220 // Method calls should not resolve ambiguously to overloads with "params"
         [HttpGet]
+        [Authorize(Policy = Policy.ManageVendorCodes)]
         public async Task<IActionResult> DownloadUnreportedEmailAddresses(int vendorCodeTypeId)
         {
             var unreportedEmailAddresses = await _vendorCodeService
@@ -331,6 +345,7 @@ namespace GRA.Controllers.MissionControl
 #pragma warning restore S3220 // Method calls should not resolve ambiguously to overloads with "params"
 
         [HttpPost]
+        [Authorize(Policy = Policy.ManageVendorCodes)]
         public async Task<IActionResult> EmailAwardStatus(int vendorCodeTypeId,
             Microsoft.AspNetCore.Http.IFormFile excelFile)
         {
@@ -385,6 +400,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpGet]
+        [Authorize(Policy = Policy.ManageVendorCodes)]
         public async Task<IActionResult> Configure()
         {
             var vendorCodeType = await _vendorCodeService.GetTypeAllAsync();
@@ -395,6 +411,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
+        [Authorize(Policy = Policy.ManageVendorCodes)]
         public async Task<IActionResult> UpdateConfiguration(VendorCodeType vendorCodeType)
         {
             if (vendorCodeType == null)
@@ -434,6 +451,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpGet]
+        [Authorize(Policy = Policy.ManageVendorCodes)]
         public async Task<IActionResult> GenerateCodes()
         {
             var vendorCodeType = await _vendorCodeService.GetTypeAllAsync();
@@ -446,6 +464,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
+        [Authorize(Policy = Policy.ManageVendorCodes)]
         public async Task<IActionResult> GenerateCodes(int numberOfCodes)
         {
             var existingVendorCodeType = await _vendorCodeService.GetTypeAllAsync();
@@ -479,6 +498,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpGet]
+        [Authorize(Policy = Policy.ManageVendorCodes)]
         public async Task<IActionResult> ExportCodes()
         {
             var vendorCodeType = await _vendorCodeService.GetTypeAllAsync();
@@ -497,6 +517,63 @@ namespace GRA.Controllers.MissionControl
             return File(await _vendorCodeService.ExportVendorCodesAsync(vendorCodeType.First().Id),
                 "text/plain",
                 FileUtility.EnsureValidFilename($"{date}-{codeFileName}.txt"));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ReceivePackingSlip()
+        {
+            if (UserHasPermission(Permission.ManageVendorCodes)
+                || UserHasPermission(Permission.ReceivePackingSlips))
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectNotAuthorized(NoAccess);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> VerifyPackingSlip(long packingSlipNumber)
+        {
+            if (UserHasPermission(Permission.ManageVendorCodes)
+                || UserHasPermission(Permission.ReceivePackingSlips))
+            {
+                if (packingSlipNumber == 0)
+                {
+                    AlertWarning = "Please enter a valid packing slip number.";
+                    return View("ReceivePackingSlip", packingSlipNumber);
+                }
+
+                var summary = await _vendorCodeService.VerifyPackingSlipAsync(packingSlipNumber);
+
+                // look up packing slip, if found pass on to verification page
+                if (summary.VendorCodes.Count > 0 || summary.VendorCodePackingSlip != null)
+                {
+                    if (summary.VendorCodePackingSlip != null)
+                    {
+                        var enteredBy = await _userService
+                            .GetDetails(summary.VendorCodePackingSlip.CreatedBy);
+                        ShowAlertWarning($"This packing slip was already received on {summary.VendorCodePackingSlip.CreatedAt} by {enteredBy.FullName}.");
+                    }
+                    else
+                    {
+                        var vendorCodeType = await _vendorCodeService
+                            .GetTypeById(summary.VendorCodes.First().VendorCodeTypeId);
+                        summary.SubmitText = vendorCodeType.AwardPrizeOnPackingSlip
+                            ? "Mark as received"
+                            : "Mark as received and award prizes";
+                    }
+                    return View("VerifyPackingSlip", summary);
+                }
+
+                ShowAlertDanger($"Could not find packing slip number {packingSlipNumber}, please contact your administrator.");
+                return View("ReceivePackingSlip", packingSlipNumber);
+            }
+            else
+            {
+                return RedirectNotAuthorized(NoAccess);
+            }
         }
 
         #region Spreadsheet utility methods

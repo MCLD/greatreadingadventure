@@ -187,10 +187,10 @@ namespace GRA.Web
 
             services.AddAuthorization(options =>
             {
-                foreach (object permisisonName in Enum.GetValues(typeof(Domain.Model.Permission)))
+                foreach (object permissionName in Enum.GetValues(typeof(Domain.Model.Permission)))
                 {
-                    options.AddPolicy(permisisonName.ToString(),
-                        _ => _.RequireClaim(ClaimType.Permission, permisisonName.ToString()));
+                    options.AddPolicy(permissionName.ToString(),
+                        _ => _.RequireClaim(ClaimType.Permission, permissionName.ToString()));
                 }
 
                 options.AddPolicy(Policy.ActivateChallenges,
@@ -420,6 +420,7 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IUserLogRepository, Data.Repository.UserLogRepository>();
             services.AddScoped<Domain.Repository.IUserRepository, Data.Repository.UserRepository>();
             services.AddScoped<Domain.Repository.IVendorCodeRepository, Data.Repository.VendorCodeRepository>();
+            services.AddScoped<Domain.Repository.IVendorCodePackingSlipRepository, Data.Repository.VendorCodePackingSlipRepository>();
             services.AddScoped<Domain.Repository.IVendorCodeTypeRepository, Data.Repository.VendorCodeTypeRepository>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

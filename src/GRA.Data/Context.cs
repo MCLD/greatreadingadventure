@@ -237,6 +237,7 @@ namespace GRA.Data
         public DbSet<Model.UserRole> UserRoles { get; set; }
         public DbSet<Model.UserTrigger> UserTriggers { get; set; }
         public DbSet<Model.VendorCode> VendorCodes { get; set; }
+        public DbSet<Model.VendorCodePackingSlip> VendorCodePackingSlips { get; set; }
         public DbSet<Model.VendorCodeType> VendorCodeTypes { get; set; }
         public DbSet<Model.VendorCodeTypeText> VendorCodeTypeTexts { get; set; }
     }

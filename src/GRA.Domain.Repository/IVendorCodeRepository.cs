@@ -15,5 +15,6 @@ namespace GRA.Domain.Repository
             int vendorCodeTypeId);
         Task<VendorCodeStatus> GetStatusAsync();
         Task<ICollection<string>> GetAllCodesAsync(int vendorCodeTypeId);
+        Task<ICollection<VendorCode>> GetByPackingSlipAsync(long packingSlipNumber);
     }
 }

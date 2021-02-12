@@ -1,0 +1,38 @@
+﻿@model GRA.Domain.Model.PackingSlipSummary
+
+<div class="row">
+    <div class="col-xs-12">
+        <p>Verification of packing slip number: <strong>@Model.PackingSlipNumber</strong></p>
+
+        @if (Model.VendorCodes?.Count > 0)
+        {
+            <p>
+                There are <strong>@Model.VendorCodes.Count</strong> codes associated with this
+                packing slip.
+            </p>
+            <table class="table table-striped table-condensed">
+                <tr>
+                    <th>Code</th>
+                    <th>Order Date</th>
+                    <th>Ship Date</th>
+                </tr>
+                @foreach (var vendorCode in Model.VendorCodes)
+                {
+                    <tr>
+                        <td>@vendorCode.Code</td>
+                        <td>@vendorCode.OrderDate</td>
+                        <td>@vendorCode.ShipDate</td>
+                    </tr>
+                }
+            </table>
+        }
+
+        @if (Model.VendorCodePackingSlip == null)
+        {
+            <form>
+                <input type="hidden" name="PackingSlipNumber" value="@Model.PackingSlipNumber" />
+                <input type="submit" class="btn btn-success" value="@Model.SubmitText" />
+            </form>
+        }
+    </div>
+</div>

@@ -122,6 +122,7 @@ namespace GRA.Data.Profile
             CreateMap<Model.User, Domain.Model.User>();
             CreateMap<Model.UserLog, Domain.Model.UserLog>();
             CreateMap<Model.VendorCode, Domain.Model.VendorCode>();
+            CreateMap<Model.VendorCodePackingSlip, Domain.Model.VendorCodePackingSlip>();
             CreateMap<Model.VendorCodeType, Domain.Model.VendorCodeType>();
 
             // Domain to Data Mappings
@@ -194,6 +195,7 @@ namespace GRA.Data.Profile
             CreateMap<Domain.Model.User, Model.User>();
             CreateMap<Domain.Model.UserLog, Model.UserLog>();
             CreateMap<Domain.Model.VendorCode, Model.VendorCode>();
+            CreateMap<Domain.Model.VendorCodePackingSlip, Model.VendorCodePackingSlip>();
             CreateMap<Domain.Model.VendorCodeType, Model.VendorCodeType>();
         }
     }

@@ -1,0 +1,26 @@
+﻿@model long 
+
+@if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageVendorCodes.ToString()))
+{
+    @await Html.PartialAsync("_VendorCodePartial")
+}
+
+<div class="row" style="margin-bottom: 2rem;">
+    <div class="col-xs-12">
+        <form asp-action="@nameof(VendorCodesController.VerifyPackingSlip)"
+              method="post"
+              role="form"
+              enctype="multipart/form-data"
+              class="form-inline">
+            <div class="form-group">
+                <label for="numberOfCodes">Receive a packing slip:</label>
+                <input type="number"
+                       name="packingSlipNumber"
+                       class="form-control"
+                       placeholder="Packing slip number"
+                       value="@Model"/>
+            </div>
+            <button type="submit" class="btn btn-info">Verify</button>
+        </form>
+    </div>
+</div>

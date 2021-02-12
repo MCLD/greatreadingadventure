@@ -45,6 +45,7 @@ namespace GRA.Domain.Model
         public const string NewsAutoSubscribe = "NewsAutoSubscribe";
         public const string PerformDrawing = "PerformDrawing";
         public const string ReadAllMail = "ReadAllMail";
+        public const string ReceivePackingSlips = "ReceivePackingSlips";
         public const string RedeemBulkVendorCodes = "RedeemBulkVendorCodes";
         public const string RemoveChallenges = "RemoveChallenges";
         public const string SchedulePerformers = "SchedulePerformers";
