@@ -106,6 +106,25 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label asp-for="AwardPrizeOnPackingSlip" class="control-label"></label>
+                <description gra-description-for="AwardPrizeOnPackingSlip"></description>
+                <select id="AwardPrizeOnPackingSlip"
+                        class="form-control">
+                    <option value="0">
+                        Don't award a prize when item is received via packing slip entry
+                    </option>
+
+                    <option value="1">
+                        Award a prize when item is received via packing slip entry
+                    </option>
+                </select>
+                <span asp-validation-for="AwardPrizeOnShipDate" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
     <hr />
     <div class="row">
         <div class="col-xs-12">

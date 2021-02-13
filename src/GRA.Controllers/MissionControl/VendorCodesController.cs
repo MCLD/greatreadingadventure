@@ -561,8 +561,8 @@ namespace GRA.Controllers.MissionControl
                         var vendorCodeType = await _vendorCodeService
                             .GetTypeById(summary.VendorCodes.First().VendorCodeTypeId);
                         summary.SubmitText = vendorCodeType.AwardPrizeOnPackingSlip
-                            ? "Mark as received"
-                            : "Mark as received and award prizes";
+                            ? "Mark as received and award prizes"
+                            : "Mark as received";
                     }
                     return View("VerifyPackingSlip", summary);
                 }

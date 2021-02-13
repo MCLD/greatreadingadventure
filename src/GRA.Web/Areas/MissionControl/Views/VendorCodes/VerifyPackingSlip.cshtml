@@ -2,7 +2,9 @@
 
 <div class="row">
     <div class="col-xs-12">
-        <p>Verification of packing slip number: <strong>@Model.PackingSlipNumber</strong></p>
+        <p style="margin-top: 1rem;">
+            Verification of packing slip number: <strong>@Model.PackingSlipNumber</strong>
+        </p>
 
         @if (Model.VendorCodes?.Count > 0)
         {
@@ -20,8 +22,8 @@
                 {
                     <tr>
                         <td>@vendorCode.Code</td>
-                        <td>@vendorCode.OrderDate</td>
-                        <td>@vendorCode.ShipDate</td>
+                        <td>@vendorCode.OrderDate?.ToString("d")</td>
+                        <td>@vendorCode.ShipDate?.ToString("d")</td>
                     </tr>
                 }
             </table>
@@ -29,10 +31,17 @@
 
         @if (Model.VendorCodePackingSlip == null)
         {
-            <form>
-                <input type="hidden" name="PackingSlipNumber" value="@Model.PackingSlipNumber" />
-                <input type="submit" class="btn btn-success" value="@Model.SubmitText" />
-            </form>
+            <div style="margin-bottom: 2rem;">
+                <form>
+                    <input type="hidden" 
+                           name="PackingSlipNumber" 
+                           value="@Model.PackingSlipNumber" />
+                    <a asp-action="Index" class="btn btn-warning">Cancel</a>
+                    <input type="submit" 
+                           class="btn btn-success" 
+                           value="@Model.SubmitText" />
+                </form>
+            </div>
         }
     </div>
 </div>
