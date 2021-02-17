@@ -47,9 +47,12 @@ namespace GRA.Data.Model
         public string EmailAwardMessage { get; set; }
 
         [MaxLength(255)]
+#pragma warning disable CA1056 // URI-like properties should not be strings
         public string Url { get; set; }
+#pragma warning restore CA1056 // URI-like properties should not be strings
 
         public DateTime? ExpirationDate { get; set; }
         public bool AwardPrizeOnShipDate { get; set; }
+        public bool AwardPrizeOnPackingSlip { get; set; }
     }
 }
