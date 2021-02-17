@@ -90,17 +90,9 @@
             <div class="form-group">
                 <label asp-for="AwardPrizeOnShipDate" class="control-label"></label>
                 <description gra-description-for="AwardPrizeOnShipDate"></description>
-                <select id="AwardPrizeOnShipDate"
+                <select asp-for="AwardPrizeOnShipDate"
+                        asp-items="VendorCodesController.ShipDateOptions"
                         class="form-control">
-                    <option value="0">
-                        Don't award a prize when item marked shipped from an
-                        import
-                    </option>
-
-                    <option value="1">
-                        Award a prize when item is marked shipped from an
-                        import
-                    </option>
                 </select>
                 <span asp-validation-for="AwardPrizeOnShipDate" class="text-danger"></span>
             </div>
@@ -111,15 +103,9 @@
             <div class="form-group">
                 <label asp-for="AwardPrizeOnPackingSlip" class="control-label"></label>
                 <description gra-description-for="AwardPrizeOnPackingSlip"></description>
-                <select id="AwardPrizeOnPackingSlip"
+                <select asp-for="AwardPrizeOnPackingSlip"
+                        asp-items="VendorCodesController.PackingSlipOptions"
                         class="form-control">
-                    <option value="0">
-                        Don't award a prize when item is received via packing slip entry
-                    </option>
-
-                    <option value="1">
-                        Award a prize when item is received via packing slip entry
-                    </option>
                 </select>
                 <span asp-validation-for="AwardPrizeOnShipDate" class="text-danger"></span>
             </div>

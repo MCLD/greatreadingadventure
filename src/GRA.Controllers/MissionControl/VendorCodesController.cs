@@ -450,6 +450,30 @@ namespace GRA.Controllers.MissionControl
             return RedirectToAction(nameof(Index));
         }
 
+        public static IEnumerable<SelectListItem> ShipDateOptions
+        {
+            get
+            {
+                return new SelectListItem[2] {
+                    new SelectListItem("Don't award a prize when item marked shipped from an import", "False"),
+                    new SelectListItem("Award a prize when item is marked shipped from an import", "True")
+                };
+            }
+        }
+
+        public static IEnumerable<SelectListItem> PackingSlipOptions
+        {
+            get
+            {
+                return new SelectListItem[2]
+                {
+                    new SelectListItem("Don't award a prize when item is received via packing slip entry", "False"),
+                    new SelectListItem("Award a prize when item is received via packing slip entry", "True")
+
+                };
+            }
+        }
+
         [HttpGet]
         [Authorize(Policy = Policy.ManageVendorCodes)]
         public async Task<IActionResult> GenerateCodes()

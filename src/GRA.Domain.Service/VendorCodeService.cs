@@ -168,6 +168,14 @@ namespace GRA.Domain.Service
                 }
             }
 
+            if(vendorCodeType.AwardPrizeOnPackingSlip && vendorCodeType.AwardPrizeOnShipDate)
+            {
+                fieldErrors.Add(nameof(vendorCodeType.AwardPrizeOnPackingSlip),
+                    "Please only award prize based on packing slip or ship date.");
+                fieldErrors.Add(nameof(vendorCodeType.AwardPrizeOnShipDate),
+                    "Please only award prize based on packing slip or ship date.");
+            }
+
             if (fieldErrors.Count > 0)
             {
                 throw new GraFieldValidationException(fieldErrors);
@@ -190,6 +198,68 @@ namespace GRA.Domain.Service
         {
             VerifyManagementPermission();
             vendorCodeType.SiteId = GetCurrentSiteId();
+
+            // some 'requiredness' on fields is dynamically determined
+            var fieldErrors = new Dictionary<string, string>();
+
+            // validate vendor code is accurate
+            if (!string.IsNullOrEmpty(vendorCodeType.OptionSubject))
+            {
+                if (string.IsNullOrEmpty(vendorCodeType.OptionMail))
+                {
+                    fieldErrors.Add(nameof(vendorCodeType.OptionMail),
+                        "If an option subject is provided you must provide an option mail");
+                }
+
+                if (string.IsNullOrEmpty(vendorCodeType.DonationSubject)
+                    && string.IsNullOrEmpty(vendorCodeType.EmailAwardSubject))
+                {
+                    fieldErrors.Add(nameof(vendorCodeType.OptionSubject),
+                        "If you are configuring the option you must also configure a Donation option or an Email option");
+                }
+            }
+
+            if (!string.IsNullOrEmpty(vendorCodeType.DonationSubject))
+            {
+                if (string.IsNullOrEmpty(vendorCodeType.DonationMail))
+                {
+                    fieldErrors.Add(nameof(vendorCodeType.DonationMail),
+                        "If a donation subject is provided you must provide a donation mail");
+                }
+                if (string.IsNullOrEmpty(vendorCodeType.DonationMessage))
+                {
+                    fieldErrors.Add(nameof(vendorCodeType.DonationMessage),
+                        "If a donation subject is provided you must provide a donation message");
+                }
+            }
+
+            if (!string.IsNullOrEmpty(vendorCodeType.EmailAwardSubject))
+            {
+                if (string.IsNullOrEmpty(vendorCodeType.EmailAwardMail))
+                {
+                    fieldErrors.Add(nameof(vendorCodeType.EmailAwardMail),
+                        "If an email award subject is provided you must provide an email award mail");
+                }
+                if (string.IsNullOrEmpty(vendorCodeType.EmailAwardMessage))
+                {
+                    fieldErrors.Add(nameof(vendorCodeType.EmailAwardMessage),
+                        "If an email award subject is provided you must provide an email award message");
+                }
+            }
+
+            if (vendorCodeType.AwardPrizeOnPackingSlip && vendorCodeType.AwardPrizeOnShipDate)
+            {
+                fieldErrors.Add(nameof(vendorCodeType.AwardPrizeOnPackingSlip),
+                    "Please only award prize based on packing slip or ship date.");
+                fieldErrors.Add(nameof(vendorCodeType.AwardPrizeOnShipDate),
+                    "Please only award prize based on packing slip or ship date.");
+            }
+
+            if (fieldErrors.Count > 0)
+            {
+                throw new GraFieldValidationException(fieldErrors);
+            }
+
             return await _vendorCodeTypeRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
                 vendorCodeType);
         }
