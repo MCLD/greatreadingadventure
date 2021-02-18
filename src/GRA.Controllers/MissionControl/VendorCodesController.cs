@@ -633,7 +633,25 @@ namespace GRA.Controllers.MissionControl
                 }
                 else
                 {
-                    // TODO hpn set up and run packing slip job
+                    var jobToken = await _jobService.CreateJobAsync(new Job
+                    {
+                        JobType = JobType.ReceivePackingSlip,
+                        SerializedParameters = JsonConvert.SerializeObject(
+                        new JobDetailsReceivePackingSlip
+                        {
+                            PackingSlipNumber = packingSlipNumber
+                        })
+                    });
+
+                    return View("Job", new ViewModel.MissionControl.Shared.JobViewModel
+                    {
+                        CancelUrl = Url.Action(nameof(Index)),
+                        JobToken = jobToken.ToString(),
+                        PingSeconds = 5,
+                        SuccessRedirectUrl = "",
+                        SuccessUrl = Url.Action(nameof(Index)),
+                        Title = "Receiving packing slip..."
+                    });
                 }
             }
 
