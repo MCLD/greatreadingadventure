@@ -181,6 +181,10 @@ namespace GRA.Domain.Service
                     jobInfo.Id,
                     token,
                     progress),
+                JobType.ReceivePackingSlip => await ReceivePackingSlip(
+                    jobInfo.Id,
+                    token,
+                    progress),
                 _ => throw new GraException($"Undefined job type: {jobInfo.JobType}"),
             };
         }
@@ -284,6 +288,17 @@ namespace GRA.Domain.Service
                 .RequestServices
                 .GetService(typeof(NewsService)) as NewsService;
             return await newsService.RunSendNewsEmailsJob(jobId, token, progress);
+        }
+
+        private async Task<JobStatus> ReceivePackingSlip(int jobId,
+            CancellationToken token,
+            IProgress<JobStatus> progress = null)
+        {
+            var vendorCodeService = _httpContextAccessor
+                .HttpContext
+                .RequestServices
+                .GetService(typeof(VendorCodeService)) as VendorCodeService;
+            return await vendorCodeService.ReceivePackingSlipJobAsync(jobId, token, progress);
         }
     }
 }
