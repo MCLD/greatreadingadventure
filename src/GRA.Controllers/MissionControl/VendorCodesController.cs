@@ -48,6 +48,36 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Vendor code management";
         }
 
+        /// <summary>
+        /// Drop-down list options (true/false) for ship date
+        /// </summary>
+        public static IEnumerable<SelectListItem> ShipDateOptions
+        {
+            get
+            {
+                return new SelectListItem[2] {
+                    new SelectListItem("Don't award a prize when item marked shipped from an import", "False"),
+                    new SelectListItem("Award a prize when item is marked shipped from an import", "True")
+                };
+            }
+        }
+
+        /// <summary>
+        /// Drop-down list options (true/false) for packing slip
+        /// </summary>
+        public static IEnumerable<SelectListItem> PackingSlipOptions
+        {
+            get
+            {
+                return new SelectListItem[2]
+                {
+                    new SelectListItem("Don't award a prize when item is received via packing slip entry", "False"),
+                    new SelectListItem("Award a prize when item is received via packing slip entry", "True")
+
+                };
+            }
+        }
+
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -98,7 +128,7 @@ namespace GRA.Controllers.MissionControl
 
         [HttpPost]
         [Authorize(Policy = Policy.ManageVendorCodes)]
-        public async Task<IActionResult> ImportStatus(int vendorCodeId,
+        public async Task<IActionResult> ImportStatus(int vendorCodeTypeId,
             Microsoft.AspNetCore.Http.IFormFile excelFile)
         {
             if (excelFile == null
@@ -114,7 +144,7 @@ namespace GRA.Controllers.MissionControl
             {
                 var tempFile = _pathResolver.ResolvePrivateTempFilePath();
                 _logger.LogInformation("Accepted vendor id {vendorCodeId} import file {UploadFile} as {TempFile}",
-                    vendorCodeId,
+                    vendorCodeTypeId,
                     excelFile.FileName,
                     tempFile);
 
@@ -131,6 +161,7 @@ namespace GRA.Controllers.MissionControl
                     SerializedParameters = JsonConvert
                         .SerializeObject(new JobDetailsVendorCodeStatus
                         {
+                            VendorCodeTypeId = vendorCodeTypeId,
                             Filename = file
                         })
                 });
@@ -379,6 +410,7 @@ namespace GRA.Controllers.MissionControl
                     SerializedParameters = JsonConvert
                         .SerializeObject(new JobDetailsVendorCodeStatus
                         {
+                            VendorCodeTypeId = vendorCodeTypeId,
                             Filename = file
                         })
                 });
@@ -448,30 +480,6 @@ namespace GRA.Controllers.MissionControl
             }
 
             return RedirectToAction(nameof(Index));
-        }
-
-        public static IEnumerable<SelectListItem> ShipDateOptions
-        {
-            get
-            {
-                return new SelectListItem[2] {
-                    new SelectListItem("Don't award a prize when item marked shipped from an import", "False"),
-                    new SelectListItem("Award a prize when item is marked shipped from an import", "True")
-                };
-            }
-        }
-
-        public static IEnumerable<SelectListItem> PackingSlipOptions
-        {
-            get
-            {
-                return new SelectListItem[2]
-                {
-                    new SelectListItem("Don't award a prize when item is received via packing slip entry", "False"),
-                    new SelectListItem("Award a prize when item is received via packing slip entry", "True")
-
-                };
-            }
         }
 
         [HttpGet]
@@ -560,44 +568,77 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> VerifyPackingSlip(long packingSlipNumber)
         {
-            if (UserHasPermission(Permission.ManageVendorCodes)
-                || UserHasPermission(Permission.ReceivePackingSlips))
-            {
-                if (packingSlipNumber == 0)
-                {
-                    AlertWarning = "Please enter a valid packing slip number.";
-                    return View("ReceivePackingSlip", packingSlipNumber);
-                }
-
-                var summary = await _vendorCodeService.VerifyPackingSlipAsync(packingSlipNumber);
-
-                // look up packing slip, if found pass on to verification page
-                if (summary.VendorCodes.Count > 0 || summary.VendorCodePackingSlip != null)
-                {
-                    if (summary.VendorCodePackingSlip != null)
-                    {
-                        var enteredBy = await _userService
-                            .GetDetails(summary.VendorCodePackingSlip.CreatedBy);
-                        ShowAlertWarning($"This packing slip was already received on {summary.VendorCodePackingSlip.CreatedAt} by {enteredBy.FullName}.");
-                    }
-                    else
-                    {
-                        var vendorCodeType = await _vendorCodeService
-                            .GetTypeById(summary.VendorCodes.First().VendorCodeTypeId);
-                        summary.SubmitText = vendorCodeType.AwardPrizeOnPackingSlip
-                            ? "Mark as received and award prizes"
-                            : "Mark as received";
-                    }
-                    return View("VerifyPackingSlip", summary);
-                }
-
-                ShowAlertDanger($"Could not find packing slip number {packingSlipNumber}, please contact your administrator.");
-                return View("ReceivePackingSlip", packingSlipNumber);
-            }
-            else
+            if (!UserHasPermission(Permission.ManageVendorCodes)
+               && !UserHasPermission(Permission.ReceivePackingSlips))
             {
                 return RedirectNotAuthorized(NoAccess);
             }
+
+            if (packingSlipNumber == 0)
+            {
+                AlertWarning = "Please enter a valid packing slip number.";
+                return View("ReceivePackingSlip", packingSlipNumber);
+            }
+
+            var summary = await _vendorCodeService.VerifyPackingSlipAsync(packingSlipNumber);
+
+            if (summary.VendorCodes.Count > 0 || summary.VendorCodePackingSlip != null)
+            {
+                if (summary.VendorCodePackingSlip != null)
+                {
+                    var enteredBy = await _userService
+                        .GetDetails(summary.VendorCodePackingSlip.CreatedBy);
+                    ShowAlertWarning($"This packing slip was already received on {summary.VendorCodePackingSlip.CreatedAt} by {enteredBy.FullName}.");
+                }
+                else
+                {
+                    var vendorCodeType = await _vendorCodeService
+                        .GetTypeById(summary.VendorCodes.First().VendorCodeTypeId);
+                    summary.SubmitText = vendorCodeType.AwardPrizeOnPackingSlip
+                        ? "Mark as received and award prizes"
+                        : "Mark as received";
+                }
+                return View("VerifyPackingSlip", summary);
+            }
+
+            ShowAlertDanger($"Could not find packing slip number {packingSlipNumber}, please contact your administrator.");
+            return View("ReceivePackingSlip", packingSlipNumber);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ProcessPackingSlip(long packingSlipNumber)
+        {
+            if (!UserHasPermission(Permission.ManageVendorCodes)
+               && !UserHasPermission(Permission.ReceivePackingSlips))
+            {
+                return RedirectNotAuthorized(NoAccess);
+            }
+
+            if (packingSlipNumber == 0)
+            {
+                AlertWarning = "Please enter a valid packing slip number.";
+                return View("ReceivePackingSlip", packingSlipNumber);
+            }
+
+            var summary = await _vendorCodeService.VerifyPackingSlipAsync(packingSlipNumber);
+
+            if (summary.VendorCodes.Count > 0 || summary.VendorCodePackingSlip != null)
+            {
+                if (summary.VendorCodePackingSlip != null)
+                {
+                    var enteredBy = await _userService
+                        .GetDetails(summary.VendorCodePackingSlip.CreatedBy);
+                    ShowAlertWarning($"This packing slip was already received on {summary.VendorCodePackingSlip.CreatedAt} by {enteredBy.FullName}.");
+                    return View("VerifyPackingSlip", summary);
+                }
+                else
+                {
+                    // TODO hpn set up and run packing slip job
+                }
+            }
+
+            ShowAlertDanger($"Could not find packing slip number {packingSlipNumber}, please contact your administrator.");
+            return View("ReceivePackingSlip", packingSlipNumber);
         }
 
         #region Spreadsheet utility methods

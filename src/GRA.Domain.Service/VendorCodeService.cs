@@ -91,7 +91,8 @@ namespace GRA.Domain.Service
             return await _vendorCodeTypeRepository.GetEmailAwardTypesAsync(GetCurrentSiteId());
         }
 
-        public async Task<DataWithCount<ICollection<VendorCodeType>>> GetTypePaginatedListAsync(BaseFilter filter)
+        public async Task<DataWithCount<ICollection<VendorCodeType>>>
+            GetTypePaginatedListAsync(BaseFilter filter)
         {
             VerifyManagementPermission();
             if (filter == null)
@@ -115,91 +116,9 @@ namespace GRA.Domain.Service
             return AddTypeInternalAsync(vendorCodeType);
         }
 
-        private async Task<VendorCodeType> AddTypeInternalAsync(VendorCodeType vendorCodeType)
+        private static IDictionary<string, string>
+            ValidateVendorCodeType(VendorCodeType vendorCodeType)
         {
-            VerifyManagementPermission();
-            vendorCodeType.SiteId = GetCurrentSiteId();
-
-            // some 'requiredness' on fields is dynamically determined
-            var fieldErrors = new Dictionary<string, string>();
-
-            // validate vendor code is accurate
-            if (!string.IsNullOrEmpty(vendorCodeType.OptionSubject))
-            {
-                if (string.IsNullOrEmpty(vendorCodeType.OptionMail))
-                {
-                    fieldErrors.Add(nameof(vendorCodeType.OptionMail),
-                        "If an option subject is provided you must provide an option mail");
-                }
-
-                if (string.IsNullOrEmpty(vendorCodeType.DonationSubject)
-                    && string.IsNullOrEmpty(vendorCodeType.EmailAwardSubject))
-                {
-                    fieldErrors.Add(nameof(vendorCodeType.OptionSubject),
-                        "If you are configuring the option you must also configure a Donation option or an Email option");
-                }
-            }
-
-            if (!string.IsNullOrEmpty(vendorCodeType.DonationSubject))
-            {
-                if (string.IsNullOrEmpty(vendorCodeType.DonationMail))
-                {
-                    fieldErrors.Add(nameof(vendorCodeType.DonationMail),
-                        "If a donation subject is provided you must provide a donation mail");
-                }
-                if (string.IsNullOrEmpty(vendorCodeType.DonationMessage))
-                {
-                    fieldErrors.Add(nameof(vendorCodeType.DonationMessage),
-                        "If a donation subject is provided you must provide a donation message");
-                }
-            }
-
-            if (!string.IsNullOrEmpty(vendorCodeType.EmailAwardSubject))
-            {
-                if (string.IsNullOrEmpty(vendorCodeType.EmailAwardMail))
-                {
-                    fieldErrors.Add(nameof(vendorCodeType.EmailAwardMail),
-                        "If an email award subject is provided you must provide an email award mail");
-                }
-                if (string.IsNullOrEmpty(vendorCodeType.EmailAwardMessage))
-                {
-                    fieldErrors.Add(nameof(vendorCodeType.EmailAwardMessage),
-                        "If an email award subject is provided you must provide an email award message");
-                }
-            }
-
-            if(vendorCodeType.AwardPrizeOnPackingSlip && vendorCodeType.AwardPrizeOnShipDate)
-            {
-                fieldErrors.Add(nameof(vendorCodeType.AwardPrizeOnPackingSlip),
-                    "Please only award prize based on packing slip or ship date.");
-                fieldErrors.Add(nameof(vendorCodeType.AwardPrizeOnShipDate),
-                    "Please only award prize based on packing slip or ship date.");
-            }
-
-            if (fieldErrors.Count > 0)
-            {
-                throw new GraFieldValidationException(fieldErrors);
-            }
-
-            return await _vendorCodeTypeRepository.AddSaveAsync(GetClaimId(ClaimType.UserId),
-                vendorCodeType);
-        }
-
-        public Task<VendorCodeType> UpdateTypeAsync(VendorCodeType vendorCodeType)
-        {
-            if (vendorCodeType == null)
-            {
-                throw new ArgumentNullException(nameof(vendorCodeType));
-            }
-            return UpdateTypeInternalAsync(vendorCodeType);
-        }
-
-        private async Task<VendorCodeType> UpdateTypeInternalAsync(VendorCodeType vendorCodeType)
-        {
-            VerifyManagementPermission();
-            vendorCodeType.SiteId = GetCurrentSiteId();
-
-            // some 'requiredness' on fields is dynamically determined
             var fieldErrors = new Dictionary<string, string>();
 
             // validate vendor code is accurate
@@ -255,6 +174,41 @@ namespace GRA.Domain.Service
                     "Please only award prize based on packing slip or ship date.");
             }
 
+            return fieldErrors;
+        }
+
+        private async Task<VendorCodeType> AddTypeInternalAsync(VendorCodeType vendorCodeType)
+        {
+            VerifyManagementPermission();
+            vendorCodeType.SiteId = GetCurrentSiteId();
+
+            var fieldErrors = ValidateVendorCodeType(vendorCodeType);
+
+            if (fieldErrors.Count > 0)
+            {
+                throw new GraFieldValidationException(fieldErrors);
+            }
+
+            return await _vendorCodeTypeRepository.AddSaveAsync(GetClaimId(ClaimType.UserId),
+                vendorCodeType);
+        }
+
+        public Task<VendorCodeType> UpdateTypeAsync(VendorCodeType vendorCodeType)
+        {
+            if (vendorCodeType == null)
+            {
+                throw new ArgumentNullException(nameof(vendorCodeType));
+            }
+            return UpdateTypeInternalAsync(vendorCodeType);
+        }
+
+        private async Task<VendorCodeType> UpdateTypeInternalAsync(VendorCodeType vendorCodeType)
+        {
+            VerifyManagementPermission();
+            vendorCodeType.SiteId = GetCurrentSiteId();
+
+            var fieldErrors = ValidateVendorCodeType(vendorCodeType);
+
             if (fieldErrors.Count > 0)
             {
                 throw new GraFieldValidationException(fieldErrors);
@@ -275,7 +229,9 @@ namespace GRA.Domain.Service
         {
             var authorized = false;
             var authId = GetClaimId(ClaimType.UserId);
-            if (userId == authId || userId == GetActiveUserId() || HasPermission(Permission.ViewParticipantDetails))
+            if (userId == authId
+                || userId == GetActiveUserId()
+                || HasPermission(Permission.ViewParticipantDetails))
             {
                 authorized = true;
             }
@@ -384,7 +340,9 @@ namespace GRA.Domain.Service
                     int totalRows = 0;
                     int updated = 0;
                     int alreadyCurrent = 0;
-                    VendorCodeType vendorCodeType = null;
+                    var vendorCodeType = await _vendorCodeTypeRepository
+                        .GetByIdAsync(jobDetails.VendorCodeTypeId);
+                    var psStatusCache = new Dictionary<long, bool>();
                     using (var excelReader = ExcelReaderFactory.CreateBinaryReader(stream))
                     {
                         while (excelReader.Read())
@@ -595,8 +553,34 @@ namespace GRA.Domain.Service
                                                     details,
                                                     branchId,
                                                     packingSlip,
-                                                    trackingNumber,
-                                                    vendorCodeType);
+                                                    trackingNumber);
+
+                                                if (shipDate != null
+                                                    && branchId != null
+                                                    && vendorCodeType.AwardPrizeOnShipDate)
+                                                {
+                                                    await AwardPrizeAsync(code);
+                                                }
+
+                                                if (packingSlip != default
+                                                    && vendorCodeType.AwardPrizeOnPackingSlip)
+                                                {
+                                                    if (!psStatusCache.ContainsKey(packingSlip))
+                                                    {
+                                                        var ps = await _vendorCodePackingSlipRepository
+                                                            .GetByPackingSlipNumberAsync(packingSlip);
+                                                        psStatusCache.Add(packingSlip, ps != null);
+                                                        _logger.LogInformation("Found records for packing slip {PackingSlip} which {Status} received",
+                                                            packingSlip,
+                                                            ps != null ? "has been" : "has not been");
+                                                    }
+
+                                                    if (psStatusCache[packingSlip])
+                                                    {
+                                                        await AwardPrizeAsync(code);
+                                                    }
+                                                }
+
                                                 updated++;
                                             }
                                         }
@@ -701,8 +685,7 @@ namespace GRA.Domain.Service
             string details,
             int? branchId,
             long packingSlip,
-            string trackingNumber,
-            VendorCodeType vendorCodeType)
+            string trackingNumber)
         {
             code.IsUsed = true;
 
@@ -728,32 +711,6 @@ namespace GRA.Domain.Service
                 code.BranchId = branchId;
             }
 
-            if (code.ShipDate != null
-                && code.BranchId != null)
-            {
-                if (vendorCodeType?.Id != code.VendorCodeTypeId)
-                {
-                    vendorCodeType =
-                        await _vendorCodeTypeRepository.GetByIdAsync(code.VendorCodeTypeId);
-                }
-
-                if (vendorCodeType.AwardPrizeOnShipDate)
-                {
-                    var vcPrizes = await _prizeWinnerService.GetVendorCodePrizes((int)code.UserId);
-
-                    var thisVcPrize = vcPrizes.SingleOrDefault(_ => _.VendorCodeId == code.Id);
-
-                    if (thisVcPrize == null)
-                    {
-                        await _prizeWinnerService.AddPrizeWinnerAsync(new PrizeWinner
-                        {
-                            UserId = (int)code.UserId,
-                            VendorCodeId = code.Id,
-                        });
-                    }
-                }
-            }
-
             if (packingSlip != default)
             {
                 code.PackingSlip = packingSlip;
@@ -765,6 +722,20 @@ namespace GRA.Domain.Service
             }
 
             await _vendorCodeRepository.UpdateSaveNoAuditAsync(code);
+        }
+
+        private async Task AwardPrizeAsync(VendorCode code)
+        {
+            var vcPrizes = await _prizeWinnerService.GetVendorCodePrizes((int)code.UserId);
+
+            if (vcPrizes.SingleOrDefault(_ => _.VendorCodeId == code.Id) == null)
+            {
+                await _prizeWinnerService.AddPrizeWinnerAsync(new PrizeWinner
+                {
+                    UserId = (int)code.UserId,
+                    VendorCodeId = code.Id,
+                });
+            }
         }
 
         public async Task<bool> SiteHasCodesAsync()
@@ -779,7 +750,9 @@ namespace GRA.Domain.Service
         {
             var authorized = false;
             var authId = GetClaimId(ClaimType.UserId);
-            if (userId == authId || userId == GetActiveUserId() || HasPermission(Permission.ViewParticipantDetails))
+            if (userId == authId
+                || userId == GetActiveUserId()
+                || HasPermission(Permission.ViewParticipantDetails))
             {
                 authorized = true;
             }
@@ -924,14 +897,14 @@ namespace GRA.Domain.Service
                 }
                 else if (vendorCode.CanBeDonated && vendorCode.IsDonated == true)
                 {
-                    var vendorCodeType
-                        = await _vendorCodeTypeRepository.GetByIdAsync(vendorCode.VendorCodeTypeId);
+                    var vendorCodeType = await _vendorCodeTypeRepository
+                        .GetByIdAsync(vendorCode.VendorCodeTypeId);
                     user.VendorCode = vendorCodeType.DonationMessage;
                 }
                 else if (vendorCode.CanBeEmailAward && vendorCode.IsEmailAward == true)
                 {
-                    var vendorCodeType
-                        = await _vendorCodeTypeRepository.GetByIdAsync(vendorCode.VendorCodeTypeId);
+                    var vendorCodeType = await _vendorCodeTypeRepository
+                        .GetByIdAsync(vendorCode.VendorCodeTypeId);
                     user.VendorCode = vendorCodeType.EmailAwardMessage;
                 }
                 else
@@ -948,7 +921,14 @@ namespace GRA.Domain.Service
                             .Append("</strong>");
                     }
 
-                    if (vendorCode.ShipDate.HasValue)
+                    if (vendorCode.ArrivalDate.HasValue)
+                    {
+                        vendorCodeMessage.Append(" arrived <strong>")
+                            .Append(vendorCode.ArrivalDate.Value.ToString("d",
+                                CultureInfo.InvariantCulture))
+                            .Append("</strong> and ready for pick-up");
+                    }
+                    else if (vendorCode.ShipDate.HasValue)
                     {
                         vendorCodeMessage.Append(" shipped <strong>")
                             .Append(vendorCode.ShipDate.Value.ToString("d",
@@ -1447,7 +1427,8 @@ namespace GRA.Domain.Service
                                                 {
                                                     code.EmailAwardSent = sentDate;
                                                 }
-                                                await _vendorCodeRepository.UpdateSaveNoAuditAsync(code);
+                                                await _vendorCodeRepository
+                                                    .UpdateSaveNoAuditAsync(code);
                                                 updated++;
                                             }
                                         }
@@ -1573,13 +1554,165 @@ namespace GRA.Domain.Service
                 throw new GraException(Annotations.Validate.Permission);
             }
 
-            return new PackingSlipSummary
+            var packingSlipSummary = new PackingSlipSummary
             {
                 PackingSlipNumber = packingSlipNumber,
                 VendorCodes = await _vendorCodeRepository.GetByPackingSlipAsync(packingSlipNumber),
                 VendorCodePackingSlip = await _vendorCodePackingSlipRepository
                     .GetByPackingSlipNumberAsync(packingSlipNumber)
             };
+
+            _logger.LogInformation("Verifying packing slip {PackingSlipNumber} has {VendorCodeCount} vendor codes associated {Status}",
+                packingSlipSummary.PackingSlipNumber,
+                packingSlipSummary.VendorCodes?.Count ?? 0,
+                packingSlipSummary.VendorCodePackingSlip?.CreatedAt != null
+                    ? $"already inserted at {packingSlipSummary.VendorCodePackingSlip?.CreatedAt}"
+                    : "not inserted yet");
+
+            return packingSlipSummary;
+        }
+
+        public async Task<JobStatus> ReceivePackingSlipJobAsync(int jobId,
+            CancellationToken token,
+            IProgress<JobStatus> progress = null)
+        {
+            var requestingUser = GetClaimId(ClaimType.UserId);
+
+            if (!HasPermission(Permission.ReceivePackingSlips))
+            {
+                _logger.LogError("User {UserId} doesn't have permission to receive packing slips.",
+                    requestingUser);
+
+                return new JobStatus
+                {
+                    PercentComplete = 0,
+                    Status = "Permission denied.",
+                    Error = true,
+                    Complete = true
+                };
+            }
+            else
+            {
+                var sw = Stopwatch.StartNew();
+
+                var job = await _jobRepository.GetByIdAsync(jobId);
+                var jobDetails
+                    = JsonConvert
+                        .DeserializeObject<JobDetailsReceivePackingSlip>(job.SerializedParameters);
+
+                long packingSlipNumber = jobDetails.PackingSlipNumber;
+
+                token.Register(() =>
+                {
+                    _logger.LogWarning("Receipt of packing slip {PackingSlipNumber} for user {UserId} was cancelled after {Elapsed} ms",
+                        packingSlipNumber,
+                        requestingUser,
+                        sw?.Elapsed.TotalMilliseconds);
+                });
+
+                var codes = await _vendorCodeRepository
+                    .GetByPackingSlipAsync(packingSlipNumber);
+
+                int recordCount = 0;
+                int totalRecords = codes.Count;
+
+                VendorCodeType vendorCodeType = null;
+
+                var receivedAt = _dateTimeProvider.Now;
+
+                foreach (var code in codes)
+                {
+                    if (vendorCodeType == null || vendorCodeType.Id != code.VendorCodeTypeId)
+                    {
+                        vendorCodeType = await _vendorCodeTypeRepository
+                            .GetByIdAsync(code.VendorCodeTypeId);
+                    }
+
+                    code.ArrivalDate = receivedAt;
+
+                    await _vendorCodeRepository.UpdateSaveNoAuditAsync(code);
+
+                    if (vendorCodeType.AwardPrizeOnPackingSlip)
+                    {
+                        await AwardPrizeAsync(code);
+                    }
+
+                    recordCount++;
+
+                    if (recordCount % 10 == 0 || recordCount == 1)
+                    {
+                        await _jobRepository.UpdateStatusAsync(jobId,
+                            $"Processing record {recordCount}/{totalRecords}...");
+
+                        progress?.Report(new JobStatus
+                        {
+                            PercentComplete = recordCount * 100 / totalRecords,
+                            Status = $"Processing record {recordCount}/{totalRecords}...",
+                            Error = false
+                        });
+                    }
+
+                    if (token.IsCancellationRequested)
+                    {
+                        break;
+                    }
+                }
+
+                if (token.IsCancellationRequested)
+                {
+                    await _jobRepository.UpdateStatusAsync(jobId,
+                        $"Import cancelled at record {recordCount}/{totalRecords}.");
+
+                    return new JobStatus
+                    {
+                        Status = $"Operation cancelled at record {recordCount}."
+                    };
+                }
+                else
+                {
+                    await _jobRepository.UpdateStatusAsync(jobId,
+                        $"Inserting packing slip {packingSlipNumber}...");
+
+                    progress?.Report(new JobStatus
+                    {
+                        PercentComplete = recordCount * 100 / totalRecords,
+                        Status = $"Inserting packing slip {packingSlipNumber}...",
+                        Error = false
+                    });
+
+                    await _vendorCodePackingSlipRepository.AddSaveAsync(requestingUser,
+                        new VendorCodePackingSlip
+                        {
+                            IsReceived = true,
+                            CreatedAt = receivedAt,
+                            CreatedBy = requestingUser,
+                            PackingSlip = packingSlipNumber,
+                            SiteId = GetCurrentSiteId()
+                        });
+                }
+
+                await _jobRepository.UpdateStatusAsync(jobId,
+                    $"Updated {recordCount} records of {totalRecords}, inserted packing slip {packingSlipNumber}");
+
+                _logger.LogInformation("Updated {RecordCount} records of {TotalRecords}, inserted packing slip {PackingSlipNumber} in {Elapsed} ms",
+                    recordCount,
+                    totalRecords,
+                    packingSlipNumber,
+                    sw?.ElapsedMilliseconds ?? 0);
+
+                var sb = new StringBuilder("<strong>Packing slip ")
+                    .Append(packingSlipNumber)
+                    .Append(" received</strong>: ")
+                    .Append(recordCount)
+                    .Append(" records updated.");
+
+                return new JobStatus
+                {
+                    PercentComplete = 100,
+                    Complete = true,
+                    Status = sb.ToString(),
+                };
+            }
         }
 
         #region Excel helper methods

@@ -32,13 +32,16 @@
         @if (Model.VendorCodePackingSlip == null)
         {
             <div style="margin-bottom: 2rem;">
-                <form>
-                    <input type="hidden" 
-                           name="PackingSlipNumber" 
+                <form asp-action="@nameof(VendorCodesController.ProcessPackingSlip)"
+                      method="post"
+                      role="form"
+                      enctype="multipart/form-data">
+                    <input type="hidden"
+                           name="PackingSlipNumber"
                            value="@Model.PackingSlipNumber" />
                     <a asp-action="Index" class="btn btn-warning">Cancel</a>
-                    <input type="submit" 
-                           class="btn btn-success" 
+                    <input type="submit"
+                           class="btn btn-success"
                            value="@Model.SubmitText" />
                 </form>
             </div>
