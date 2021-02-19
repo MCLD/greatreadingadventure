@@ -85,12 +85,9 @@ namespace GRA.Controllers
             try
             {
                 await UpdateAvatarAsync(selectionJson);
-                if (preconfiguredId.HasValue)
-                {
-                    var user = await _userService.GetDetails(GetActiveUserId());
-                    user.PreconfiguredAvatarId = preconfiguredId;
-                    await _userService.Update(user);
-                }
+                var user = await _userService.GetDetails(GetActiveUserId());
+                user.PreconfiguredAvatarId = preconfiguredId;
+                await _userService.Update(user);
                 return Json(new { success = true });
             }
             catch (GraException gex)
@@ -276,10 +273,13 @@ namespace GRA.Controllers
             try
             {
                 var items = await _avatarService.GetBundleItemsAsync(bundleId);
+                var bundle = await _avatarService.GetBundleByIdAsync(bundleId);
                 return Json(new
                 {
                     success = true,
-                    items = Newtonsoft.Json.JsonConvert.SerializeObject(items)
+                    items = Newtonsoft.Json.JsonConvert.SerializeObject(items),
+                    name = bundle.Name,
+                    description = bundle.Description
                 });
             }
             catch (GraException gex)

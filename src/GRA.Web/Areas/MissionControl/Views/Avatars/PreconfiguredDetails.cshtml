@@ -104,7 +104,8 @@
                     </div>
                 </div>
             </div>
-            <div id="avatarBundles" class="row col-xs-12" style="text-align:center;">
+            
+            <div id="avatarBundles" class="row col-xs-12 @if (Model.Bundle.AssociatedBundleId.HasValue) {<text>hide</text>}" style="text-align:center;">
                 <ul class="nav" style="display: inline-table;">
                     <li>
 
@@ -212,6 +213,7 @@
         var prevLayerSelected = @(Model.SelectedItemIds != null ? Newtonsoft.Json.JsonConvert.SerializeObject(Model.SelectedItemIds) : "[]");
         var bundleName = "@Model.Bundle.Name";
         var bundleDescription = "@Model.Bundle.Description";
+        var saveOverride = true;
 
 
         $.ajaxSetup({
@@ -221,11 +223,19 @@
             //Sets the bundle layer
             $('.dropdown-toggle').dropdown();
             SetLayer($("#layer-container").find("[data-layer='999']"));
-            @if (Model.Bundle.AssociatedBundleId != null)
+            @if (Model.Bundle.AssociatedBundleId.HasValue)
             {
                 <text>
-                var bundleSelector = $("#bundle-drop").find(".bundle-selectors[data-bundleid='" + @Model.Bundle.AssociatedBundleId + "']");
-                bundleSelector.click();
+                var bundleSelector = $("#bundle-drop").find(".bundle-selectors[data-bundleid='" + @Model.Bundle.AssociatedBundleId.Value + "']");
+                var listItem = $(bundleSelector);
+                $("#avatarItems").removeClass("hide");
+                $("#bundle-selected").text(listItem.contents().not(listItem.children()).text());
+                $("#bundle-selected").append("<span class='caret'></span>");
+                $($("#bundle-drop").find(".active")).removeClass("active");
+                $("#bundle-selected").data("bundleid", listItem.data("bundleid"));
+                listItem.addClass("active");
+                SetLayersSelectors("#avatarItemSelectors", 3);
+                saveOverride = false;
                 </text>
             }
         });
@@ -289,22 +299,26 @@
             return items;
         }
 
-        //Resets avatar when bundle is changed
-        function ResetAvatarSelections() {
-            $(".avatar-layer-selector.bundle-item").each(function () {
-                var layer = $(this);
-                layer.data("item", "");
-            });
-            $(".avatar-container.bundle-item").each(function () {
-                var container = $(this);
-                $(container).find(".bundle-item").each(function () {
-                    var layer = $(this);
-                    layer.attr("src", "");
-                    layer.data("item", "");
-                    layer.addClass("hide");
-                });
-            });
+        //Clears the outfit on the avatar when a preconfigured avatar is selected
+        function ClearOutfit() {
+            @foreach (var layer in Model.LayerGroupings.SelectMany(_ => _))
+            {
+                if (layer.CanBeEmpty && !layer.ShowColorSelector && layer.Id != 999)
+                {
+                    <text>
+                        var layer = GetLayerById(@layer.Id);
+                        layer.data("item", "");
+                        $(".avatar-item-selector.selected").removeClass("selected");
+                        $(".avatar-color-selector.selected").removeClass("selected");
+                        layer.data("item", "");
+                        layer.data("color", "");
+                        UpdateAvatarContainer("item", "", "/", layer.data("layer"), true);
+                    </text>
+                }
+            }
+            SetUnsavedChanges(!saveOverride);
         }
+
         //Updates the the layer's image
         function UpdateAvatarContainer(type,id, srcStr, layerId, hide) {
             for (var idx = 0; idx < $(".avatar-container").length; idx++)
@@ -530,6 +544,7 @@
             }
         });
 
+
         // When a user removes the layer's item
         $("#removeButton").on("click", function () {
             unsavedChanges = true;
@@ -607,20 +622,19 @@
         // When a user selects a bundle from the drop down
         function GetBundleItems(bundle) {
             var listItem = $(bundle);
-            var bundleId = $(bundle).data("bundleid");
             $("#avatarItems").removeClass("hide");
             $("#bundle-selected").text(listItem.contents().not(listItem.children()).text());
             $("#bundle-selected").append("<span class='caret'></span>");
             $($("#bundle-drop").find(".active")).removeClass("active");
             $("#bundle-selected").data("bundleid", listItem.data("bundleid"));
             listItem.addClass("active");
-            ResetAvatarSelections();
+            ClearOutfit();
             SetLayersSelectors("#avatarItemSelectors", 3);
         }
 
         // Selecting an Item
         function SelectItem(item) {
-            unsavedChanges = true;
+            unsavedChanges = !saveOverride;
             $("#saveAvatar").removeClass("btn-default");
             $("#saveAvatar").addClass("btn-success");
             var newDataItem = $(item);
@@ -664,7 +678,8 @@
             else {
                 srcStr = srcStr + "/item.png";
             }
-            UpdateAvatarContainer("item",itemId,srcStr,itemsLayer.data("layer"), false);
+            UpdateAvatarContainer("item", itemId, srcStr, itemsLayer.data("layer"), false);
+            saveOverride = false;
         };
 
         // Updates the color selected and removes the old
