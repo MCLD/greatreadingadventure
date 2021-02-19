@@ -926,7 +926,7 @@ namespace GRA.Domain.Service
                         vendorCodeMessage.Append(" arrived <strong>")
                             .Append(vendorCode.ArrivalDate.Value.ToString("d",
                                 CultureInfo.InvariantCulture))
-                            .Append("</strong> and ready for pick-up");
+                            .Append("</strong> and is ready for pick-up");
                     }
                     else if (vendorCode.ShipDate.HasValue)
                     {
