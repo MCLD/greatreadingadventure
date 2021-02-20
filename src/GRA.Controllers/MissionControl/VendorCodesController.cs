@@ -104,7 +104,7 @@ namespace GRA.Controllers.MissionControl
 
             if (UserHasPermission(Permission.ReceivePackingSlips))
             {
-                return RedirectToAction(nameof(ReceivePackingSlip));
+                return RedirectToAction(nameof(ViewPackingSlip));
             }
 
             return RedirectNotAuthorized(NoAccess);
@@ -552,35 +552,17 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpGet]
-        public async Task<IActionResult> ReceivePackingSlip()
+        public async Task<IActionResult> ViewPackingSlip(long id)
         {
-            if (UserHasPermission(Permission.ManageVendorCodes)
-                || UserHasPermission(Permission.ReceivePackingSlips))
+            if (id == 0)
             {
-                return View();
-            }
-            else
-            {
-                return RedirectNotAuthorized(NoAccess);
-            }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> VerifyPackingSlip(long packingSlipNumber)
-        {
-            if (!UserHasPermission(Permission.ManageVendorCodes)
-               && !UserHasPermission(Permission.ReceivePackingSlips))
-            {
-                return RedirectNotAuthorized(NoAccess);
+                return View("ReceivePackingSlip");
             }
 
-            if (packingSlipNumber == 0)
-            {
-                AlertWarning = "Please enter a valid packing slip number.";
-                return View("ReceivePackingSlip", packingSlipNumber);
-            }
-
-            var summary = await _vendorCodeService.VerifyPackingSlipAsync(packingSlipNumber);
+            var summary = await _vendorCodeService.VerifyPackingSlipAsync(id);
+            summary.CanViewDetails = UserHasPermission(Permission.ViewParticipantDetails);
+            summary.CanReceivePackingSlips = UserHasPermission(Permission.ReceivePackingSlips)
+                || UserHasPermission(Permission.ManageVendorCodes);
 
             if (summary.VendorCodes.Count > 0 || summary.VendorCodePackingSlip != null)
             {
@@ -588,7 +570,7 @@ namespace GRA.Controllers.MissionControl
                 {
                     var enteredBy = await _userService
                         .GetDetails(summary.VendorCodePackingSlip.CreatedBy);
-                    ShowAlertWarning($"This packing slip was already received on {summary.VendorCodePackingSlip.CreatedAt} by {enteredBy.FullName}.");
+                    summary.ReceivedBy = enteredBy.FullName;
                 }
                 else
                 {
@@ -598,11 +580,30 @@ namespace GRA.Controllers.MissionControl
                         ? "Mark as received and award prizes"
                         : "Mark as received";
                 }
-                return View("VerifyPackingSlip", summary);
+
+                var tracking = new List<string>();
+                foreach (var tns in summary.VendorCodes.Select(_ => _.TrackingNumber).Distinct())
+                {
+                    foreach (var tn in tns.Split(','))
+                    {
+                        var trackingNumber = tn.Trim();
+                        if (!tracking.Contains(trackingNumber))
+                        {
+                            tracking.Add(trackingNumber);
+                        }
+                    }
+                }
+
+                if (tracking.Count > 0)
+                {
+                    summary.TrackingNumbers = tracking;
+                }
+
+                return View("ViewPackingSlip", summary);
             }
 
-            ShowAlertDanger($"Could not find packing slip number {packingSlipNumber}, please contact your administrator.");
-            return View("ReceivePackingSlip", packingSlipNumber);
+            ShowAlertDanger($"Could not find packing slip number {id}, please contact your administrator.");
+            return View("ReceivePackingSlip", id);
         }
 
         [HttpPost]
@@ -621,6 +622,8 @@ namespace GRA.Controllers.MissionControl
             }
 
             var summary = await _vendorCodeService.VerifyPackingSlipAsync(packingSlipNumber);
+            summary.CanViewDetails = UserHasPermission(Permission.ViewParticipantDetails);
+            summary.CanReceivePackingSlips = UserHasPermission(Permission.ReceivePackingSlips);
 
             if (summary.VendorCodes.Count > 0 || summary.VendorCodePackingSlip != null)
             {
@@ -629,7 +632,7 @@ namespace GRA.Controllers.MissionControl
                     var enteredBy = await _userService
                         .GetDetails(summary.VendorCodePackingSlip.CreatedBy);
                     ShowAlertWarning($"This packing slip was already received on {summary.VendorCodePackingSlip.CreatedAt} by {enteredBy.FullName}.");
-                    return View("VerifyPackingSlip", summary);
+                    return View("ViewPackingSlip", summary);
                 }
                 else
                 {

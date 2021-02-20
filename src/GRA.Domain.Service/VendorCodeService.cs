@@ -342,7 +342,8 @@ namespace GRA.Domain.Service
                     int alreadyCurrent = 0;
                     var vendorCodeType = await _vendorCodeTypeRepository
                         .GetByIdAsync(jobDetails.VendorCodeTypeId);
-                    var psStatusCache = new Dictionary<long, bool>();
+                    var psStatusCache = new Dictionary<long, VendorCodePackingSlip>();
+
                     using (var excelReader = ExcelReaderFactory.CreateBinaryReader(stream))
                     {
                         while (excelReader.Read())
@@ -540,20 +541,30 @@ namespace GRA.Domain.Service
                                                 && shipDate == code.ShipDate
                                                 && details == code.Details
                                                 && branchId == code.BranchId
-                                                && packingSlip == code.PackingSlip
+                                                && (packingSlip == default || code.ArrivalDate != null)
                                                 && trackingNumber == code.TrackingNumber)
                                             {
                                                 alreadyCurrent++;
                                             }
                                             else
                                             {
-                                                await UpdateVendorCodeAsync(code,
+                                                DateTime? arrivalDate = null;
+
+                                                if (packingSlip != default
+                                                    && code.ArrivalDate == null)
+                                                {
+                                                    arrivalDate = (await GetPs(packingSlip))
+                                                        .CreatedAt;
+                                                }
+
+                                                code = await UpdateVendorCodeAsync(code,
                                                     orderDate,
                                                     shipDate,
                                                     details,
                                                     branchId,
                                                     packingSlip,
-                                                    trackingNumber);
+                                                    trackingNumber,
+                                                    arrivalDate);
 
                                                 if (shipDate != null
                                                     && branchId != null
@@ -563,22 +574,10 @@ namespace GRA.Domain.Service
                                                 }
 
                                                 if (packingSlip != default
-                                                    && vendorCodeType.AwardPrizeOnPackingSlip)
+                                                    && vendorCodeType.AwardPrizeOnPackingSlip
+                                                    && (await GetPs(packingSlip)) != null)
                                                 {
-                                                    if (!psStatusCache.ContainsKey(packingSlip))
-                                                    {
-                                                        var ps = await _vendorCodePackingSlipRepository
-                                                            .GetByPackingSlipNumberAsync(packingSlip);
-                                                        psStatusCache.Add(packingSlip, ps != null);
-                                                        _logger.LogInformation("Found records for packing slip {PackingSlip} which {Status} received",
-                                                            packingSlip,
-                                                            ps != null ? "has been" : "has not been");
-                                                    }
-
-                                                    if (psStatusCache[packingSlip])
-                                                    {
-                                                        await AwardPrizeAsync(code);
-                                                    }
+                                                    await AwardPrizeAsync(code);
                                                 }
 
                                                 updated++;
@@ -679,13 +678,43 @@ namespace GRA.Domain.Service
             }
         }
 
-        private async Task UpdateVendorCodeAsync(VendorCode code,
+        private IDictionary<long, VendorCodePackingSlip> PsCache { get; set; }
+
+        private async Task<VendorCodePackingSlip> GetPs(long packingSlip)
+        {
+            VendorCodePackingSlip ps;
+
+            if (PsCache == null)
+            {
+                PsCache = new Dictionary<long, VendorCodePackingSlip>();
+            }
+
+            if (PsCache.ContainsKey(packingSlip))
+            {
+                return PsCache[packingSlip];
+            }
+            else
+            {
+                ps = await _vendorCodePackingSlipRepository
+                    .GetByPackingSlipNumberAsync(packingSlip);
+                PsCache.Add(packingSlip, ps);
+                _logger.LogInformation("Found records for packing slip {PackingSlip} which {Status}",
+                    packingSlip,
+                    ps != null
+                    ? $"was received on {ps.CreatedAt:d}"
+                    : "has not been received");
+                return ps;
+            }
+        }
+
+        private async Task<VendorCode> UpdateVendorCodeAsync(VendorCode code,
             DateTime? orderDate,
             DateTime? shipDate,
             string details,
             int? branchId,
             long packingSlip,
-            string trackingNumber)
+            string trackingNumber,
+            DateTime? arrivalDate)
         {
             code.IsUsed = true;
 
@@ -721,7 +750,12 @@ namespace GRA.Domain.Service
                 code.TrackingNumber = trackingNumber;
             }
 
-            await _vendorCodeRepository.UpdateSaveNoAuditAsync(code);
+            if (arrivalDate != null && code.ArrivalDate == null)
+            {
+                code.ArrivalDate = arrivalDate;
+            }
+
+            return await _vendorCodeRepository.UpdateSaveNoAuditAsync(code);
         }
 
         private async Task AwardPrizeAsync(VendorCode code)

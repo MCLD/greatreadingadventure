@@ -12,9 +12,10 @@
             </li>
             <li ActiveBy
                 routeKey="Action"
-                value="@nameof(VendorCodesController.ReceivePackingSlip)">
-                <a asp-action="@nameof(VendorCodesController.ReceivePackingSlip)">
-                    Receive Packing Slip
+                value="@nameof(VendorCodesController.ViewPackingSlip)">
+                <a asp-action="@nameof(VendorCodesController.ViewPackingSlip)"
+                   asp-route-id="">
+                    View/Receive Packing Slip
                 </a>
             </li>
             <li role="presentation" class="dropdown">

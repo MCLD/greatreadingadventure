@@ -1,4 +1,4 @@
-﻿@model long 
+﻿@model long
 
 @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageVendorCodes.ToString()))
 {
@@ -7,20 +7,19 @@
 
 <div class="row" style="margin-bottom: 2rem;">
     <div class="col-xs-12">
-        <form asp-action="@nameof(VendorCodesController.VerifyPackingSlip)"
-              method="post"
+        <form asp-action="@nameof(VendorCodesController.ViewPackingSlip)"
+              method="get"
               role="form"
-              enctype="multipart/form-data"
               class="form-inline">
             <div class="form-group">
                 <label for="numberOfCodes">Receive a packing slip:</label>
                 <input type="number"
-                       name="packingSlipNumber"
+                       name="id"
                        class="form-control"
                        placeholder="Packing slip number"
-                       value="@Model"/>
+                       value="@Model" />
             </div>
-            <button type="submit" class="btn btn-info">Verify</button>
+            <button type="submit" class="btn btn-info">View</button>
         </form>
     </div>
 </div>
