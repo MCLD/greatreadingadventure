@@ -122,5 +122,6 @@ namespace GRA.Domain.Model
         public string UnsubscribeToken { get; set; }
 
         public bool IsSystemUser { get; set; }
+        public long VendorCodePackingSlip { get; set; }
     }
 }

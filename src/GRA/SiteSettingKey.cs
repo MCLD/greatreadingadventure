@@ -86,6 +86,13 @@
             public bool Equals(Users other) { return true; }
         }
 
+        public struct VendorCodes : System.IEquatable<VendorCodes>
+        {
+            public static readonly string ShowPackingSlip = "VendorCodes.ShowPackingSlip";
+
+            public bool Equals(VendorCodes other) { return true; }
+        }
+
         public struct Web : System.IEquatable<Web>
         {
             public static readonly string CacheSiteCustomizationsMinutes

@@ -16,6 +16,7 @@ namespace GRA.Controllers.Filter
         private readonly MailService _mailService;
         private readonly PerformerSchedulingService _performerSchedulingService;
         private readonly QuestionnaireService _questionnaireService;
+        private readonly SiteLookupService _siteLookupService;
         private readonly UserService _userService;
 
         public MissionControlFilter(ILogger<MissionControlFilter> logger,
@@ -23,6 +24,7 @@ namespace GRA.Controllers.Filter
             MailService mailService,
             PerformerSchedulingService performerSchedulingService,
             QuestionnaireService questionnaireService,
+            SiteLookupService siteLookupService,
             UserService userService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -33,6 +35,8 @@ namespace GRA.Controllers.Filter
                 ?? throw new ArgumentNullException(nameof(performerSchedulingService));
             _questionnaireService = questionnaireService
                 ?? throw new ArgumentNullException(nameof(questionnaireService));
+            _siteLookupService = siteLookupService
+                ?? throw new ArgumentNullException(nameof(siteLookupService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 
@@ -90,6 +94,14 @@ namespace GRA.Controllers.Filter
                     httpContext.Items.Add(ItemKey.ShowPerformerScheduling, true);
                 }
             }
+
+            var siteId = httpContext.Session.GetInt32(SessionKey.SiteId);
+            if (siteId != null && await _siteLookupService.GetSiteSettingBoolAsync((int)siteId,
+                SiteSettingKey.VendorCodes.ShowPackingSlip))
+            {
+                httpContext.Items.Add(ItemKey.ShowPackingSlips, true);
+            }
+
             await next();
         }
     }

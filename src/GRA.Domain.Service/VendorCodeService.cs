@@ -553,7 +553,7 @@ namespace GRA.Domain.Service
                                                 if (packingSlip != default
                                                     && code.ArrivalDate == null)
                                                 {
-                                                    arrivalDate = (await GetPs(packingSlip))
+                                                    arrivalDate = (await GetPs(packingSlip))?
                                                         .CreatedAt;
                                                 }
 
@@ -976,6 +976,8 @@ namespace GRA.Domain.Service
                                 CultureInfo.InvariantCulture))
                             .Append("</strong>");
                     }
+
+                    user.VendorCodePackingSlip = vendorCode.PackingSlip;
 
                     if (vendorCodeMessage.ToString() != "Item")
                     {
@@ -1581,13 +1583,6 @@ namespace GRA.Domain.Service
 
         public async Task<PackingSlipSummary> VerifyPackingSlipAsync(long packingSlipNumber)
         {
-            if (!HasPermission(Permission.ManageVendorCodes)
-                && !HasPermission(Permission.ReceivePackingSlips))
-            {
-                _logger.LogError($"User id {GetClaimId(ClaimType.UserId)} does not have permission to enter packing slips.");
-                throw new GraException(Annotations.Validate.Permission);
-            }
-
             var packingSlipSummary = new PackingSlipSummary
             {
                 PackingSlipNumber = packingSlipNumber,

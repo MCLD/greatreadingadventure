@@ -19,7 +19,7 @@
             <tr>
                 <th>Status</th>
                 <td>
-                    @if (Model.VendorCodePackingSlip.IsReceived)
+                    @if (Model.VendorCodePackingSlip?.IsReceived == true)
                     {
                         <span>
                             <strong class="text-success">Received</strong>
@@ -42,7 +42,7 @@
                     }
                     else
                     {
-                        @:Not received
+                        @:<strong class="text-warning">Not received yet</strong>
                     }
                 </td>
             </tr>

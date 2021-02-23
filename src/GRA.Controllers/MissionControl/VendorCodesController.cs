@@ -33,6 +33,8 @@ namespace GRA.Controllers.MissionControl
         private readonly UserService _userService;
         private readonly VendorCodeService _vendorCodeService;
 
+        public static string Name { get { return "VendorCodes"; } }
+
         public VendorCodesController(ServiceFacade.Controller context,
             ILogger<VendorCodesController> logger,
             JobService jobService,
@@ -102,12 +104,7 @@ namespace GRA.Controllers.MissionControl
                 }
             }
 
-            if (UserHasPermission(Permission.ReceivePackingSlips))
-            {
-                return RedirectToAction(nameof(ViewPackingSlip));
-            }
-
-            return RedirectNotAuthorized(NoAccess);
+            return RedirectToAction(nameof(ViewPackingSlip));
         }
 
         [HttpGet]
@@ -551,12 +548,18 @@ namespace GRA.Controllers.MissionControl
                 FileUtility.EnsureValidFilename($"{date}-{codeFileName}.txt"));
         }
 
+        [HttpPost]
+        public IActionResult LookupPackingSlip(long id)
+        {
+            return RedirectToAction(nameof(ViewPackingSlip), new { id });
+        }
+
         [HttpGet]
         public async Task<IActionResult> ViewPackingSlip(long id)
         {
             if (id == 0)
             {
-                return View("ReceivePackingSlip");
+                return View("EnterPackingSlip");
             }
 
             var summary = await _vendorCodeService.VerifyPackingSlipAsync(id);
@@ -568,9 +571,12 @@ namespace GRA.Controllers.MissionControl
             {
                 if (summary.VendorCodePackingSlip != null)
                 {
-                    var enteredBy = await _userService
-                        .GetDetails(summary.VendorCodePackingSlip.CreatedBy);
-                    summary.ReceivedBy = enteredBy.FullName;
+                    if (summary.CanViewDetails)
+                    {
+                        var enteredBy = await _userService
+                            .GetDetailsByPermission(summary.VendorCodePackingSlip.CreatedBy);
+                        summary.ReceivedBy = enteredBy.FullName;
+                    }
                 }
                 else
                 {
@@ -581,16 +587,12 @@ namespace GRA.Controllers.MissionControl
                         : "Mark as received";
                 }
 
-                var tracking = new List<string>();
+                var tracking = new HashSet<string>();
                 foreach (var tns in summary.VendorCodes.Select(_ => _.TrackingNumber).Distinct())
                 {
                     foreach (var tn in tns.Split(','))
                     {
-                        var trackingNumber = tn.Trim();
-                        if (!tracking.Contains(trackingNumber))
-                        {
-                            tracking.Add(trackingNumber);
-                        }
+                        tracking.Add(tn.Trim());
                     }
                 }
 
@@ -603,7 +605,7 @@ namespace GRA.Controllers.MissionControl
             }
 
             ShowAlertDanger($"Could not find packing slip number {id}, please contact your administrator.");
-            return View("ReceivePackingSlip", id);
+            return View("EnterPackingSlip", id);
         }
 
         [HttpPost]
@@ -618,7 +620,7 @@ namespace GRA.Controllers.MissionControl
             if (packingSlipNumber == 0)
             {
                 AlertWarning = "Please enter a valid packing slip number.";
-                return View("ReceivePackingSlip", packingSlipNumber);
+                return View("EnterPackingSlip", packingSlipNumber);
             }
 
             var summary = await _vendorCodeService.VerifyPackingSlipAsync(packingSlipNumber);
@@ -659,7 +661,7 @@ namespace GRA.Controllers.MissionControl
             }
 
             ShowAlertDanger($"Could not find packing slip number {packingSlipNumber}, please contact your administrator.");
-            return View("ReceivePackingSlip", packingSlipNumber);
+            return View("EnterPackingSlip", packingSlipNumber);
         }
 
         #region Spreadsheet utility methods
