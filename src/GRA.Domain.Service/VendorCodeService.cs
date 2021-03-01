@@ -342,7 +342,6 @@ namespace GRA.Domain.Service
                     int alreadyCurrent = 0;
                     var vendorCodeType = await _vendorCodeTypeRepository
                         .GetByIdAsync(jobDetails.VendorCodeTypeId);
-                    var psStatusCache = new Dictionary<long, VendorCodePackingSlip>();
 
                     using (var excelReader = ExcelReaderFactory.CreateBinaryReader(stream))
                     {

@@ -57,7 +57,8 @@ namespace GRA.Controllers.MissionControl
         {
             get
             {
-                return new SelectListItem[2] {
+                return new SelectListItem[]
+                {
                     new SelectListItem("Don't award a prize when item marked shipped from an import", "False"),
                     new SelectListItem("Award a prize when item is marked shipped from an import", "True")
                 };
@@ -71,7 +72,7 @@ namespace GRA.Controllers.MissionControl
         {
             get
             {
-                return new SelectListItem[2]
+                return new SelectListItem[]
                 {
                     new SelectListItem("Don't award a prize when item is received via packing slip entry", "False"),
                     new SelectListItem("Award a prize when item is received via packing slip entry", "True")
