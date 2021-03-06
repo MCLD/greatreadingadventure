@@ -227,7 +227,7 @@ namespace GRA.Controllers.MissionControl
 
             if (viewmodel != null && ModelState.IsValid)
             {
-                string sanitized = _codeSanitizer.Sanitize(viewmodel.AuthorizationCode, 255);
+                string sanitized = viewmodel.AuthorizationCode.Trim().ToLowerInvariant();
 
                 try
                 {

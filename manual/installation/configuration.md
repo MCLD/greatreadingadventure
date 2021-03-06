@@ -31,7 +31,9 @@ For password generation, please consider using a utility like [pwgen](https://gi
   "GraInitialAuthCode": "<authorizationcode>"
 ```
 
-This is the code that you will use when you set up your administrator account to grant you full access to Mission Control (the administrative interface) of the software. Please change this value to ensure that people who come across your site cannot grant themselves full administrator access!
+This is the code that you will use when you set up your administrator account to grant you full access to Mission Control (the administrative interface) of the software. Please change this value to ensure that people who come across your site cannot grant themselves full administrator access! This code accepts letters, numbers, and special characters - do not use emoji. Any trailing whitespace will be ignored and it is case-insensitive (i.e. upper and lower case is ignored).
+
+**Please note:** You must escape special characters as above, consider avoiding backslash (`\`) and double quote (`"`) characters.
 
 ### Sample configuration file
 

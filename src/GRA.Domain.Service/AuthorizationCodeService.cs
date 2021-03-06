@@ -97,7 +97,7 @@ namespace GRA.Domain.Service
 
         public async Task<bool> ValidateAuthorizationCode(string authorizationCode)
         {
-            string fixedCode = authorizationCode.Trim().ToLower();
+            string fixedCode = authorizationCode.Trim().ToLowerInvariant();
             int siteId = GetCurrentSiteId();
             var authCode = await _authorizationCodeRepository.GetByCodeAsync(siteId, fixedCode);
             if (authCode == null)

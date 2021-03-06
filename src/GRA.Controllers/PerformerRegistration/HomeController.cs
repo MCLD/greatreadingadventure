@@ -114,7 +114,7 @@ namespace GRA.Controllers.PerformerRegistration
 
             if (ModelState.IsValid)
             {
-                string sanitized = _codeSanitizer.Sanitize(viewmodel.AuthorizationCode, 255);
+                string sanitized = viewmodel.AuthorizationCode.Trim().ToLowerInvariant();
 
                 try
                 {

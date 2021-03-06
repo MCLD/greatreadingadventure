@@ -138,7 +138,7 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Edit(RoleDetailViewModel model)
         {
-            model.SelectedPermissions = model.Permissions?.Split(',') ?? new string[] { };
+            model.SelectedPermissions = model.Permissions?.Split(',') ?? Array.Empty<string>();
             if (ModelState.IsValid)
             {
                 await _roleService.EditAsync(model.Role, model.SelectedPermissions);
@@ -161,12 +161,13 @@ namespace GRA.Controllers.MissionControl
 
             var authorizationCodeList = await _authorizationCodeService.GetPaginatedListAsync(filter);
 
-            PaginateViewModel paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel
             {
                 ItemCount = authorizationCodeList.Count,
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
+
             if (paginateModel.PastMaxPage)
             {
                 return RedirectToRoute(
@@ -189,10 +190,15 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> AddCode(AuthorizationCodeListViewModel model)
         {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+
             try
             {
-                model.AuthorizationCode.Code.Trim();
-                model.AuthorizationCode.Description?.Trim();
+                model.AuthorizationCode.Code = model.AuthorizationCode.Code.Trim();
+                model.AuthorizationCode.Description = model.AuthorizationCode.Description?.Trim();
                 await _authorizationCodeService.AddAsync(model.AuthorizationCode);
                 ShowAlertSuccess($"Added Authorization Code \"{model.AuthorizationCode.Code}\"!");
             }
@@ -209,10 +215,15 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> EditCode(AuthorizationCodeListViewModel model)
         {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+
             try
             {
-                model.AuthorizationCode.Code.Trim();
-                model.AuthorizationCode.Description?.Trim();
+                model.AuthorizationCode.Code = model.AuthorizationCode.Code.Trim();
+                model.AuthorizationCode.Description = model.AuthorizationCode.Description?.Trim();
                 await _authorizationCodeService.UpdateAsync(model.AuthorizationCode);
                 ShowAlertSuccess($"Authorization Code \"{model.AuthorizationCode.Code}\" updated!");
             }
@@ -230,6 +241,11 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> DeleteCode(AuthorizationCodeListViewModel model)
         {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+
             try
             {
                 await _authorizationCodeService.RemoveAsync(model.AuthorizationCode.Id);
