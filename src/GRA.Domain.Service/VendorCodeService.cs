@@ -127,7 +127,7 @@ namespace GRA.Domain.Service
                 if (string.IsNullOrEmpty(vendorCodeType.OptionMail))
                 {
                     fieldErrors.Add(nameof(vendorCodeType.OptionMail),
-                        "If an option subject is provided you must provide an option mail");
+                        "You must supply the option mail along with the option subject");
                 }
 
                 if (string.IsNullOrEmpty(vendorCodeType.DonationSubject)
@@ -137,18 +137,39 @@ namespace GRA.Domain.Service
                         "If you are configuring the option you must also configure a Donation option or an Email option");
                 }
             }
+            else
+            {
+                if (!string.IsNullOrEmpty(vendorCodeType.OptionMail))
+                {
+                    fieldErrors.Add(nameof(vendorCodeType.OptionSubject),
+                        "You must supply the option subject along with the option mail");
+                }
+            }
 
             if (!string.IsNullOrEmpty(vendorCodeType.DonationSubject))
             {
                 if (string.IsNullOrEmpty(vendorCodeType.DonationMail))
                 {
                     fieldErrors.Add(nameof(vendorCodeType.DonationMail),
-                        "If a donation subject is provided you must provide a donation mail");
+                        "You must supply the donation mail along with the donation subject");
                 }
                 if (string.IsNullOrEmpty(vendorCodeType.DonationMessage))
                 {
                     fieldErrors.Add(nameof(vendorCodeType.DonationMessage),
-                        "If a donation subject is provided you must provide a donation message");
+                        "You must supply the donation message along with the donation subject");
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(vendorCodeType.DonationMail))
+                {
+                    fieldErrors.Add(nameof(vendorCodeType.DonationSubject),
+                        "You must supply the donation subject along with the donation mail");
+                }
+                if (!string.IsNullOrEmpty(vendorCodeType.DonationMessage))
+                {
+                    fieldErrors.Add(nameof(vendorCodeType.DonationSubject),
+                        "You must supply the donation subject along with the donation message");
                 }
             }
 
@@ -157,12 +178,25 @@ namespace GRA.Domain.Service
                 if (string.IsNullOrEmpty(vendorCodeType.EmailAwardMail))
                 {
                     fieldErrors.Add(nameof(vendorCodeType.EmailAwardMail),
-                        "If an email award subject is provided you must provide an email award mail");
+                        "You must supply an email award mail along with the email award subject");
                 }
                 if (string.IsNullOrEmpty(vendorCodeType.EmailAwardMessage))
                 {
                     fieldErrors.Add(nameof(vendorCodeType.EmailAwardMessage),
-                        "If an email award subject is provided you must provide an email award message");
+                        "You must supply an email award message along with the email award subject");
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(vendorCodeType.EmailAwardMail))
+                {
+                    fieldErrors.Add(nameof(vendorCodeType.EmailAwardSubject),
+                        "You must supply the award subject along with the email award mail");
+                }
+                if (!string.IsNullOrEmpty(vendorCodeType.EmailAwardMessage))
+                {
+                    fieldErrors.Add(nameof(vendorCodeType.EmailAwardSubject),
+                        "You must supply the award subject along with the email award message");
                 }
             }
 

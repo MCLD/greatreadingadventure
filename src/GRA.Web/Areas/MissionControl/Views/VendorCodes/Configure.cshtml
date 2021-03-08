@@ -10,8 +10,8 @@
         <p>Vendor codes are not yet configured. Use this page to set them up.</p>
         <ul>
             <li>
-                If you wish to configure a vendor code to be awarded with a trigger, you need only
-                configure the top fields.
+                If you wish to configure a vendor code to be awarded with a trigger, you only need
+                to configure the top fields.
             </li>
             <li>
                 If you'd like to give the participant a choice:
@@ -199,13 +199,13 @@
             @if (Model.Id > 0)
             {
                 <a asp-action="@nameof(VendorCodesController.Index)"
-                   class="btn btn-danger">Back</a>
+                   class="btn btn-default">Back</a>
             }
             else
             {
                 <a asp-controller="@HomeController.Name"
                    asp-action="@nameof(HomeController.Index)"
-                   class="btn btn-primary">Cancel</a>
+                   class="btn btn-default">Cancel</a>
             }
             <input type="submit" class="btn btn-primary" value="Save vendor code" />
         </div>
