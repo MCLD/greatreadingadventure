@@ -11,6 +11,7 @@
         GenerateVendorCodes,
         UpdateEmailAwardStatus,
         BranchImport,
-        SendNewsEmails
+        SendNewsEmails,
+        ReceivePackingSlip
     }
 }

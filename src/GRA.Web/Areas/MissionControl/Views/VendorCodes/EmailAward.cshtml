@@ -1,5 +1,7 @@
 ﻿@model IEnumerable<SelectListItem>
 
+@await Html.PartialAsync("_VendorCodePartial")
+
 <form asp-controller="VendorCodes">
     <div class="row row-spacing">
         <div class="col-xs-12">

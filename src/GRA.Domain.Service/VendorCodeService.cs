@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -24,11 +25,15 @@ namespace GRA.Domain.Service
         private readonly ICodeGenerator _codeGenerator;
         private readonly IJobRepository _jobRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IVendorCodePackingSlipRepository _vendorCodePackingSlipRepository;
         private readonly IVendorCodeRepository _vendorCodeRepository;
         private readonly IVendorCodeTypeRepository _vendorCodeTypeRepository;
         private readonly MailService _mailService;
         private readonly LanguageService _languageService;
         private readonly PrizeWinnerService _prizeWinnerService;
+
+        private const string ErrorUnableToParse = "Unable to parse {Field}, row {SpreadsheetRow}: {Value}";
+        private const string ErrorParseError = "Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}";
 
         public VendorCodeService(ILogger<VendorCodeService> logger,
             IDateTimeProvider dateTimeProvider,
@@ -37,6 +42,7 @@ namespace GRA.Domain.Service
             ICodeGenerator codeGenerator,
             IJobRepository jobRepository,
             IUserRepository userRepository,
+            IVendorCodePackingSlipRepository vendorCodePackingSlipRepository,
             IVendorCodeRepository vendorCodeRepository,
             IVendorCodeTypeRepository vendorCodeTypeRepository,
             MailService mailService,
@@ -52,6 +58,8 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(jobRepository));
             _userRepository = userRepository
                 ?? throw new ArgumentNullException(nameof(userRepository));
+            _vendorCodePackingSlipRepository = vendorCodePackingSlipRepository
+                ?? throw new ArgumentNullException(nameof(vendorCodePackingSlipRepository));
             _vendorCodeRepository = vendorCodeRepository
                 ?? throw new ArgumentNullException(nameof(vendorCodeRepository));
             _vendorCodeTypeRepository = vendorCodeTypeRepository
@@ -83,9 +91,14 @@ namespace GRA.Domain.Service
             return await _vendorCodeTypeRepository.GetEmailAwardTypesAsync(GetCurrentSiteId());
         }
 
-        public async Task<DataWithCount<ICollection<VendorCodeType>>> GetTypePaginatedListAsync(BaseFilter filter)
+        public async Task<DataWithCount<ICollection<VendorCodeType>>>
+            GetTypePaginatedListAsync(BaseFilter filter)
         {
             VerifyManagementPermission();
+            if (filter == null)
+            {
+                filter = new BaseFilter();
+            }
             filter.SiteId = GetCurrentSiteId();
             return new DataWithCount<ICollection<VendorCodeType>>
             {
@@ -94,18 +107,147 @@ namespace GRA.Domain.Service
             };
         }
 
-        public async Task<VendorCodeType> AddTypeAsync(VendorCodeType vendorCodeType)
+        public Task<VendorCodeType> AddTypeAsync(VendorCodeType vendorCodeType)
+        {
+            if (vendorCodeType == null)
+            {
+                throw new ArgumentNullException(nameof(vendorCodeType));
+            }
+            return AddTypeInternalAsync(vendorCodeType);
+        }
+
+        private static IDictionary<string, string>
+            ValidateVendorCodeType(VendorCodeType vendorCodeType)
+        {
+            var fieldErrors = new Dictionary<string, string>();
+
+            // validate vendor code is accurate
+            if (!string.IsNullOrEmpty(vendorCodeType.OptionSubject))
+            {
+                if (string.IsNullOrEmpty(vendorCodeType.OptionMail))
+                {
+                    fieldErrors.Add(nameof(vendorCodeType.OptionMail),
+                        "You must supply the option mail along with the option subject");
+                }
+
+                if (string.IsNullOrEmpty(vendorCodeType.DonationSubject)
+                    && string.IsNullOrEmpty(vendorCodeType.EmailAwardSubject))
+                {
+                    fieldErrors.Add(nameof(vendorCodeType.OptionSubject),
+                        "If you are configuring the option you must also configure a Donation option or an Email option");
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(vendorCodeType.OptionMail))
+                {
+                    fieldErrors.Add(nameof(vendorCodeType.OptionSubject),
+                        "You must supply the option subject along with the option mail");
+                }
+            }
+
+            if (!string.IsNullOrEmpty(vendorCodeType.DonationSubject))
+            {
+                if (string.IsNullOrEmpty(vendorCodeType.DonationMail))
+                {
+                    fieldErrors.Add(nameof(vendorCodeType.DonationMail),
+                        "You must supply the donation mail along with the donation subject");
+                }
+                if (string.IsNullOrEmpty(vendorCodeType.DonationMessage))
+                {
+                    fieldErrors.Add(nameof(vendorCodeType.DonationMessage),
+                        "You must supply the donation message along with the donation subject");
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(vendorCodeType.DonationMail))
+                {
+                    fieldErrors.Add(nameof(vendorCodeType.DonationSubject),
+                        "You must supply the donation subject along with the donation mail");
+                }
+                if (!string.IsNullOrEmpty(vendorCodeType.DonationMessage))
+                {
+                    fieldErrors.Add(nameof(vendorCodeType.DonationSubject),
+                        "You must supply the donation subject along with the donation message");
+                }
+            }
+
+            if (!string.IsNullOrEmpty(vendorCodeType.EmailAwardSubject))
+            {
+                if (string.IsNullOrEmpty(vendorCodeType.EmailAwardMail))
+                {
+                    fieldErrors.Add(nameof(vendorCodeType.EmailAwardMail),
+                        "You must supply an email award mail along with the email award subject");
+                }
+                if (string.IsNullOrEmpty(vendorCodeType.EmailAwardMessage))
+                {
+                    fieldErrors.Add(nameof(vendorCodeType.EmailAwardMessage),
+                        "You must supply an email award message along with the email award subject");
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(vendorCodeType.EmailAwardMail))
+                {
+                    fieldErrors.Add(nameof(vendorCodeType.EmailAwardSubject),
+                        "You must supply the award subject along with the email award mail");
+                }
+                if (!string.IsNullOrEmpty(vendorCodeType.EmailAwardMessage))
+                {
+                    fieldErrors.Add(nameof(vendorCodeType.EmailAwardSubject),
+                        "You must supply the award subject along with the email award message");
+                }
+            }
+
+            if (vendorCodeType.AwardPrizeOnPackingSlip && vendorCodeType.AwardPrizeOnShipDate)
+            {
+                fieldErrors.Add(nameof(vendorCodeType.AwardPrizeOnPackingSlip),
+                    "Please only award prize based on packing slip or ship date.");
+                fieldErrors.Add(nameof(vendorCodeType.AwardPrizeOnShipDate),
+                    "Please only award prize based on packing slip or ship date.");
+            }
+
+            return fieldErrors;
+        }
+
+        private async Task<VendorCodeType> AddTypeInternalAsync(VendorCodeType vendorCodeType)
         {
             VerifyManagementPermission();
             vendorCodeType.SiteId = GetCurrentSiteId();
+
+            var fieldErrors = ValidateVendorCodeType(vendorCodeType);
+
+            if (fieldErrors.Count > 0)
+            {
+                throw new GraFieldValidationException(fieldErrors);
+            }
+
             return await _vendorCodeTypeRepository.AddSaveAsync(GetClaimId(ClaimType.UserId),
                 vendorCodeType);
         }
 
-        public async Task<VendorCodeType> UpdateTypeAsync(VendorCodeType vendorCodeType)
+        public Task<VendorCodeType> UpdateTypeAsync(VendorCodeType vendorCodeType)
+        {
+            if (vendorCodeType == null)
+            {
+                throw new ArgumentNullException(nameof(vendorCodeType));
+            }
+            return UpdateTypeInternalAsync(vendorCodeType);
+        }
+
+        private async Task<VendorCodeType> UpdateTypeInternalAsync(VendorCodeType vendorCodeType)
         {
             VerifyManagementPermission();
             vendorCodeType.SiteId = GetCurrentSiteId();
+
+            var fieldErrors = ValidateVendorCodeType(vendorCodeType);
+
+            if (fieldErrors.Count > 0)
+            {
+                throw new GraFieldValidationException(fieldErrors);
+            }
+
             return await _vendorCodeTypeRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
                 vendorCodeType);
         }
@@ -121,7 +263,9 @@ namespace GRA.Domain.Service
         {
             var authorized = false;
             var authId = GetClaimId(ClaimType.UserId);
-            if (userId == authId || userId == GetActiveUserId() || HasPermission(Permission.ViewParticipantDetails))
+            if (userId == authId
+                || userId == GetActiveUserId()
+                || HasPermission(Permission.ViewParticipantDetails))
             {
                 authorized = true;
             }
@@ -145,8 +289,11 @@ namespace GRA.Domain.Service
                     vendorCode.ExpirationDate = codeType.ExpirationDate;
                     if (!string.IsNullOrEmpty(codeType.Url))
                     {
-                        vendorCode.Url = codeType.Url.Contains(TemplateToken.VendorCodeToken)
-                            ? codeType.Url.Replace(TemplateToken.VendorCodeToken, vendorCode.Code)
+                        vendorCode.Url = codeType.Url.Contains(TemplateToken.VendorCodeToken,
+                            StringComparison.OrdinalIgnoreCase)
+                            ? codeType.Url.Replace(TemplateToken.VendorCodeToken,
+                                vendorCode.Code,
+                                StringComparison.OrdinalIgnoreCase)
                             : codeType.Url;
                     }
                     return vendorCode;
@@ -168,6 +315,8 @@ namespace GRA.Domain.Service
         private const string DetailsRowHeading = "Details";
         private const string OrderDateRowHeading = "Order Date";
         private const string ShipDateRowHeading = "Ship Date";
+        private const string PackingSlipRowHeading = "Pickpack Number";
+        private const string TrackingNumberRowHeading = "UPS Tracking Number";
 
         public async Task<JobStatus> UpdateStatusFromExcelAsync(int jobId,
             CancellationToken token,
@@ -216,12 +365,18 @@ namespace GRA.Domain.Service
                     int detailsColumnId = 0;
                     int orderDateColumnId = 0;
                     int shipDateColumnId = 0;
+                    int packingSlipColumnId = 0;
+                    int trackingNumberColumnId = 0;
+                    bool hasPackingSlipColumn = false;
+                    bool hasTrackingNumberColumn = false;
                     var issues = new List<string>();
                     int row = 0;
                     int totalRows = 0;
                     int updated = 0;
                     int alreadyCurrent = 0;
-                    VendorCodeType vendorCodeType = null;
+                    var vendorCodeType = await _vendorCodeTypeRepository
+                        .GetByIdAsync(jobDetails.VendorCodeTypeId);
+
                     using (var excelReader = ExcelReaderFactory.CreateBinaryReader(stream))
                     {
                         while (excelReader.Read())
@@ -274,6 +429,14 @@ namespace GRA.Domain.Service
                                         case ShipDateRowHeading:
                                             shipDateColumnId = i;
                                             break;
+                                        case PackingSlipRowHeading:
+                                            packingSlipColumnId = i;
+                                            hasPackingSlipColumn = true;
+                                            break;
+                                        case TrackingNumberRowHeading:
+                                            trackingNumberColumnId = i;
+                                            hasTrackingNumberColumn = true;
+                                            break;
                                     }
                                 }
                             }
@@ -283,143 +446,110 @@ namespace GRA.Domain.Service
                                     && (excelReader.GetValue(orderDateColumnId) != null
                                         || excelReader.GetValue(shipDateColumnId) != null
                                         || excelReader.GetValue(detailsColumnId) != null
-                                        || excelReader.GetValue(branchColumnId) != null))
+                                        || excelReader.GetValue(branchColumnId) != null
+                                        || excelReader.GetValue(packingSlipColumnId) != null
+                                        || excelReader.GetValue(trackingNumberColumnId) != null))
                                 {
                                     string coupon = null;
                                     DateTime? orderDate = null;
                                     DateTime? shipDate = null;
+                                    long packingSlip = default;
+                                    string trackingNumber = null;
                                     string details = null;
                                     int? branchId = null;
 
                                     try
                                     {
-                                        coupon = excelReader.GetString(couponColumnId);
-                                    }
-                                    catch (IndexOutOfRangeException ex)
-                                    {
-                                        _logger.LogError("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
-                                            "code",
+                                        coupon = GetExcelString(excelReader,
                                             row,
-                                            ex.Message);
-                                        issues.Add($"Issue reading code on line {row}: {ex.Message}");
+                                            couponColumnId,
+                                            "code");
+                                    }
+                                    catch (GraException gex)
+                                    {
+                                        issues.Add(gex.Message);
                                     }
 
                                     try
                                     {
-                                        try
-                                        {
-                                            orderDate = excelReader.GetDateTime(orderDateColumnId);
-                                        }
-                                        catch (NullReferenceException)
-                                        { }
-                                        catch (InvalidCastException)
-                                        {
-                                            string orderDateString
-                                                = excelReader.GetString(orderDateColumnId);
-                                            if (DateTime.TryParse(
-                                                orderDateString,
-                                                out var orderDateConversion))
-                                            {
-                                                orderDate = orderDateConversion;
-                                            }
-                                            else
-                                            {
-                                                _logger.LogError("Unable to parse {Field}, row {SpreadsheetRow}: {Value}",
-                                                    "order date",
-                                                    row,
-                                                    orderDateString);
-                                                issues.Add($"Issue reading order date on row {row}: {orderDateString}");
-                                            }
-                                        }
-                                    }
-                                    catch (IndexOutOfRangeException ex)
-                                    {
-                                        _logger.LogError("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
-                                            "order date",
+                                        orderDate = GetExcelDateTime(excelReader,
                                             row,
-                                            ex.Message);
-                                        issues.Add($"Issue reading order date on row {row}: {ex.Message}");
+                                            orderDateColumnId,
+                                            "order date");
+                                    }
+                                    catch (GraException gex)
+                                    {
+                                        issues.Add(gex.Message);
                                     }
 
                                     try
                                     {
-                                        try
-                                        {
-                                            shipDate = excelReader.GetDateTime(shipDateColumnId);
-                                        }
-                                        catch (NullReferenceException)
-                                        { }
-                                        catch (InvalidCastException)
-                                        {
-                                            string shipDateString
-                                                = excelReader.GetString(shipDateColumnId);
-                                            if (DateTime.TryParse(
-                                                shipDateString,
-                                                out var shipDateConversion))
-                                            {
-                                                shipDate = shipDateConversion;
-                                            }
-                                            else
-                                            {
-                                                _logger.LogError("Unable to parse {Field}, row {SpreadsheetRow}: {Value}",
-                                                    "ship date",
-                                                    row,
-                                                    shipDateString);
-                                                issues.Add($"Issue reading order date on row {row}: {shipDateString}");
-                                            }
-                                        }
-                                    }
-                                    catch (IndexOutOfRangeException ex)
-                                    {
-                                        _logger.LogError("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
-                                            "ship date",
+                                        shipDate = GetExcelDateTime(excelReader,
                                             row,
-                                            ex.Message);
-                                        issues.Add($"Issue reading ship date on row {row}: {ex.Message}");
+                                            shipDateColumnId,
+                                            "ship date");
+                                    }
+                                    catch (GraException gex)
+                                    {
+                                        issues.Add(gex.Message);
                                     }
 
-                                    if (excelReader.GetValue(detailsColumnId) != null)
+                                    try
+                                    {
+                                        details = GetExcelString(excelReader,
+                                            row,
+                                            detailsColumnId,
+                                            "details");
+                                    }
+                                    catch (GraException gex)
+                                    {
+                                        issues.Add(gex.Message);
+                                    }
+
+                                    try
+                                    {
+                                        branchId = GetExcelInt(excelReader,
+                                            row,
+                                            branchColumnId,
+                                            "branch id");
+                                    }
+                                    catch (GraException gex)
+                                    {
+                                        issues.Add(gex.Message);
+                                    }
+
+                                    if (hasPackingSlipColumn)
                                     {
                                         try
                                         {
-                                            details = excelReader.GetString(detailsColumnId);
-                                        }
-                                        catch (IndexOutOfRangeException ex)
-                                        {
-                                            _logger.LogWarning("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
-                                                "details",
+                                            packingSlip = GetExcelLong(excelReader,
                                                 row,
-                                                ex.Message);
-                                            issues.Add($"Issue reading details on row {row}: {ex.Message}");
+                                                packingSlipColumnId,
+                                                "packing slip");
+                                        }
+                                        catch (GraException gex)
+                                        {
+                                            issues.Add(gex.Message);
                                         }
                                     }
 
-                                    if (excelReader.GetValue(branchColumnId) != null)
+                                    if (hasTrackingNumberColumn)
                                     {
                                         try
                                         {
-                                            string branch
-                                                = excelReader.GetString(branchColumnId);
-                                            if (int.TryParse(branch, out int branchIdNum))
+                                            trackingNumber = GetExcelString(excelReader,
+                                                row,
+                                                trackingNumberColumnId,
+                                                "tracking number");
+                                            if (trackingNumber?.Length > 512)
                                             {
-                                                branchId = branchIdNum;
-                                            }
-                                            else
-                                            {
-                                                _logger.LogWarning("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
-                                                    "branch id",
-                                                    row,
-                                                    "Couldn't convert to a number");
-                                                issues.Add($"Issue reading details on row {row}: Couldn't convert to a number");
+                                                issues.Add($"Tracking number on row {row} is too long, truncating at 512 characters!");
+                                                trackingNumber = trackingNumber.Substring(0, 512);
                                             }
                                         }
-                                        catch (IndexOutOfRangeException ex)
+                                        catch (GraException gex)
                                         {
-                                            _logger.LogWarning("Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}",
-                                                "branch id",
-                                                row,
-                                                ex.Message);
-                                            issues.Add($"Issue reading details on row {row}: {ex.Message}");
+                                            issues.Add(gex.Message);
                                         }
                                     }
 
@@ -427,7 +557,9 @@ namespace GRA.Domain.Service
                                         && (orderDate != null
                                             || shipDate != null
                                             || !string.IsNullOrEmpty(details)
-                                            || branchId != null))
+                                            || branchId != null
+                                            || packingSlip != default
+                                            || trackingNumber != null))
                                     {
                                         var code = await _vendorCodeRepository.GetByCode(coupon);
                                         if (code == null)
@@ -441,18 +573,46 @@ namespace GRA.Domain.Service
                                             if (orderDate == code.OrderDate
                                                 && shipDate == code.ShipDate
                                                 && details == code.Details
-                                                && branchId == code.BranchId)
+                                                && branchId == code.BranchId
+                                                && (packingSlip == default || code.ArrivalDate != null)
+                                                && trackingNumber == code.TrackingNumber)
                                             {
                                                 alreadyCurrent++;
                                             }
                                             else
                                             {
-                                                await UpdateVendorCodeAsync(code,
+                                                DateTime? arrivalDate = null;
+
+                                                if (packingSlip != default
+                                                    && code.ArrivalDate == null)
+                                                {
+                                                    arrivalDate = (await GetPs(packingSlip))?
+                                                        .CreatedAt;
+                                                }
+
+                                                code = await UpdateVendorCodeAsync(code,
                                                     orderDate,
                                                     shipDate,
                                                     details,
                                                     branchId,
-                                                    vendorCodeType);
+                                                    packingSlip,
+                                                    trackingNumber,
+                                                    arrivalDate);
+
+                                                if (shipDate != null
+                                                    && branchId != null
+                                                    && vendorCodeType.AwardPrizeOnShipDate)
+                                                {
+                                                    await AwardPrizeAsync(code);
+                                                }
+
+                                                if (packingSlip != default
+                                                    && vendorCodeType.AwardPrizeOnPackingSlip
+                                                    && (await GetPs(packingSlip)) != null)
+                                                {
+                                                    await AwardPrizeAsync(code);
+                                                }
+
                                                 updated++;
                                             }
                                         }
@@ -551,61 +711,98 @@ namespace GRA.Domain.Service
             }
         }
 
-        private async Task UpdateVendorCodeAsync(VendorCode code,
+        private IDictionary<long, VendorCodePackingSlip> PsCache { get; set; }
+
+        private async Task<VendorCodePackingSlip> GetPs(long packingSlip)
+        {
+            VendorCodePackingSlip ps;
+
+            if (PsCache == null)
+            {
+                PsCache = new Dictionary<long, VendorCodePackingSlip>();
+            }
+
+            if (PsCache.ContainsKey(packingSlip))
+            {
+                return PsCache[packingSlip];
+            }
+            else
+            {
+                ps = await _vendorCodePackingSlipRepository
+                    .GetByPackingSlipNumberAsync(packingSlip);
+                PsCache.Add(packingSlip, ps);
+                _logger.LogInformation("Found records for packing slip {PackingSlip} which {Status}",
+                    packingSlip,
+                    ps != null
+                    ? $"was received on {ps.CreatedAt:d}"
+                    : "has not been received");
+                return ps;
+            }
+        }
+
+        private async Task<VendorCode> UpdateVendorCodeAsync(VendorCode code,
             DateTime? orderDate,
             DateTime? shipDate,
             string details,
             int? branchId,
-            VendorCodeType vendorCodeType)
+            long packingSlip,
+            string trackingNumber,
+            DateTime? arrivalDate)
         {
             code.IsUsed = true;
+
             if (orderDate != null)
             {
                 code.OrderDate = orderDate;
             }
+
             if (shipDate != null)
             {
                 code.ShipDate = shipDate;
             }
+
             if (!string.IsNullOrEmpty(details))
             {
                 code.Details = details.Length > 255
                     ? details.Substring(0, 255)
                     : details;
             }
+
             if (branchId != null)
             {
                 code.BranchId = branchId;
             }
 
-            if (code.ShipDate != null
-                && code.BranchId != null)
+            if (packingSlip != default)
             {
-                if (vendorCodeType?.Id
-                    != code.VendorCodeTypeId)
-                {
-                    vendorCodeType =
-                        await _vendorCodeTypeRepository.GetByIdAsync(code.VendorCodeTypeId);
-                }
-
-                if (vendorCodeType.AwardPrizeOnShipDate)
-                {
-                    var vcPrizes = await _prizeWinnerService.GetVendorCodePrizes((int)code.UserId);
-
-                    var thisVcPrize = vcPrizes.SingleOrDefault(_ => _.VendorCodeId == code.Id);
-
-                    if (thisVcPrize == null)
-                    {
-                        await _prizeWinnerService.AddPrizeWinnerAsync(new PrizeWinner
-                        {
-                            UserId = (int)code.UserId,
-                            VendorCodeId = code.Id,
-                        });
-                    }
-                }
+                code.PackingSlip = packingSlip;
             }
 
-            await _vendorCodeRepository.UpdateSaveNoAuditAsync(code);
+            if (!string.IsNullOrEmpty(trackingNumber))
+            {
+                code.TrackingNumber = trackingNumber;
+            }
+
+            if (arrivalDate != null && code.ArrivalDate == null)
+            {
+                code.ArrivalDate = arrivalDate;
+            }
+
+            return await _vendorCodeRepository.UpdateSaveNoAuditAsync(code);
+        }
+
+        private async Task AwardPrizeAsync(VendorCode code)
+        {
+            var vcPrizes = await _prizeWinnerService.GetVendorCodePrizes((int)code.UserId);
+
+            if (vcPrizes.SingleOrDefault(_ => _.VendorCodeId == code.Id) == null)
+            {
+                await _prizeWinnerService.AddPrizeWinnerAsync(new PrizeWinner
+                {
+                    UserId = (int)code.UserId,
+                    VendorCodeId = code.Id,
+                });
+            }
         }
 
         public async Task<bool> SiteHasCodesAsync()
@@ -620,7 +817,9 @@ namespace GRA.Domain.Service
         {
             var authorized = false;
             var authId = GetClaimId(ClaimType.UserId);
-            if (userId == authId || userId == GetActiveUserId() || HasPermission(Permission.ViewParticipantDetails))
+            if (userId == authId
+                || userId == GetActiveUserId()
+                || HasPermission(Permission.ViewParticipantDetails))
             {
                 authorized = true;
             }
@@ -711,7 +910,14 @@ namespace GRA.Domain.Service
             return householdPendingCodes.Count;
         }
 
-        public async Task PopulateVendorCodeStatusAsync(User user)
+        public Task PopulateVendorCodeStatusAsync(User user)
+        {
+            if (user == null) { throw new ArgumentNullException(nameof(user)); }
+
+            return PopulateVendorCodeStatusInternalAsync(user);
+        }
+
+        private async Task PopulateVendorCodeStatusInternalAsync(User user)
         {
             var vendorCode = await GetUserVendorCodeAsync(user.Id);
             if (vendorCode != null)
@@ -758,14 +964,14 @@ namespace GRA.Domain.Service
                 }
                 else if (vendorCode.CanBeDonated && vendorCode.IsDonated == true)
                 {
-                    var vendorCodeType
-                        = await _vendorCodeTypeRepository.GetByIdAsync(vendorCode.VendorCodeTypeId);
+                    var vendorCodeType = await _vendorCodeTypeRepository
+                        .GetByIdAsync(vendorCode.VendorCodeTypeId);
                     user.VendorCode = vendorCodeType.DonationMessage;
                 }
                 else if (vendorCode.CanBeEmailAward && vendorCode.IsEmailAward == true)
                 {
-                    var vendorCodeType
-                        = await _vendorCodeTypeRepository.GetByIdAsync(vendorCode.VendorCodeTypeId);
+                    var vendorCodeType = await _vendorCodeTypeRepository
+                        .GetByIdAsync(vendorCode.VendorCodeTypeId);
                     user.VendorCode = vendorCodeType.EmailAwardMessage;
                 }
                 else
@@ -782,18 +988,29 @@ namespace GRA.Domain.Service
                             .Append("</strong>");
                     }
 
-                    if (vendorCode.ShipDate.HasValue)
+                    if (vendorCode.ArrivalDate.HasValue)
+                    {
+                        vendorCodeMessage.Append(" arrived <strong>")
+                            .Append(vendorCode.ArrivalDate.Value.ToString("d",
+                                CultureInfo.InvariantCulture))
+                            .Append("</strong> and is ready for pick-up");
+                    }
+                    else if (vendorCode.ShipDate.HasValue)
                     {
                         vendorCodeMessage.Append(" shipped <strong>")
-                            .Append(vendorCode.ShipDate.Value.ToString("d"))
+                            .Append(vendorCode.ShipDate.Value.ToString("d",
+                                CultureInfo.InvariantCulture))
                             .Append("</strong>");
                     }
                     else if (vendorCode.OrderDate.HasValue)
                     {
                         vendorCodeMessage.Append(" ordered <strong>")
-                            .Append(vendorCode.OrderDate.Value.ToString("d"))
+                            .Append(vendorCode.OrderDate.Value.ToString("d",
+                                CultureInfo.InvariantCulture))
                             .Append("</strong>");
                     }
+
+                    user.VendorCodePackingSlip = vendorCode.PackingSlip;
 
                     if (vendorCodeMessage.ToString() != "Item")
                     {
@@ -809,7 +1026,8 @@ namespace GRA.Domain.Service
             string assignedCode)
         {
             string body;
-            if (!codeType.Mail.Contains(TemplateToken.VendorCodeToken))
+            if (!codeType.Mail.Contains(TemplateToken.VendorCodeToken,
+                StringComparison.OrdinalIgnoreCase))
             {
                 // the token isn't in the message, just append the code to the end
                 body = $"{codeType.Mail} {assignedCode}";
@@ -819,26 +1037,35 @@ namespace GRA.Domain.Service
                 if (string.IsNullOrEmpty(codeType.Url))
                 {
                     // we have a token but no url, replace the token with the code
-                    body = codeType.Mail.Replace(TemplateToken.VendorCodeToken, assignedCode);
+                    body = codeType.Mail.Replace(TemplateToken.VendorCodeToken,
+                        assignedCode,
+                        StringComparison.OrdinalIgnoreCase);
                 }
                 else
                 {
                     string url;
                     // see if the url has the token in it, if so swap in the code
-                    if (!codeType.Url.Contains(TemplateToken.VendorCodeToken))
+                    if (!codeType.Url.Contains(TemplateToken.VendorCodeToken,
+                        StringComparison.OrdinalIgnoreCase))
                     {
                         url = codeType.Url;
                     }
                     else
                     {
-                        url = codeType.Url.Replace(TemplateToken.VendorCodeToken, assignedCode);
+                        url = codeType.Url.Replace(TemplateToken.VendorCodeToken,
+                            assignedCode,
+                            StringComparison.OrdinalIgnoreCase);
                     }
                     // token and url - make token clickable to go to url
                     body = codeType.Mail.Replace(TemplateToken.VendorCodeToken,
-                        $"<a href=\"{url}\" _target=\"blank\">{assignedCode}</a>");
-                    if (body.Contains(TemplateToken.VendorLinkToken))
+                        $"<a href=\"{url}\" _target=\"blank\">{assignedCode}</a>",
+                        StringComparison.OrdinalIgnoreCase);
+                    if (body.Contains(TemplateToken.VendorLinkToken,
+                        StringComparison.OrdinalIgnoreCase))
                     {
-                        body = body.Replace(TemplateToken.VendorLinkToken, url);
+                        body = body.Replace(TemplateToken.VendorLinkToken,
+                            url,
+                            StringComparison.OrdinalIgnoreCase);
                     }
                 }
             }
@@ -1028,8 +1255,7 @@ namespace GRA.Domain.Service
 
                 timeElapsed = TimeSpan
                     .FromMilliseconds(stopwatch.ElapsedMilliseconds)
-                    .ToString(@"mm\:ss",
-                        System.Globalization.DateTimeFormatInfo.InvariantInfo);
+                    .ToString(@"mm\:ss", DateTimeFormatInfo.InvariantInfo);
 
                 await _jobRepository.UpdateStatusAsync(jobId,
                     $"Inserted {count} vendor codes in {timeElapsed}.");
@@ -1211,35 +1437,43 @@ namespace GRA.Domain.Service
                                     string emailAddress = null;
                                     DateTime? sentDate = null;
                                     int? userId = null;
+
                                     try
                                     {
-                                        emailAddress = excelReader
-                                            .GetString(emailAddressColumnId);
+                                        emailAddress = GetExcelString(excelReader,
+                                            row,
+                                            emailAddressColumnId,
+                                            "email address");
                                     }
-                                    catch (Exception ex)
+                                    catch (GraException gex)
                                     {
-                                        _logger.LogError($"Parse error on code, row {row}: {ex.Message}");
-                                        issues.Add($"Issue reading code on line {row}: {ex.Message}");
+                                        issues.Add(gex.Message);
                                     }
+
                                     try
                                     {
-                                        sentDate = excelReader.GetDateTime(sentDateColumnId);
+                                        sentDate = GetExcelDateTime(excelReader,
+                                            row,
+                                            sentDateColumnId,
+                                            "sent date");
                                     }
-                                    catch (Exception ex)
+                                    catch (GraException gex)
                                     {
-                                        _logger.LogError($"Parse error on order date, row {row}: {ex.Message}");
-                                        issues.Add($"Issue reading order date on row {row}: {ex.Message}");
+                                        issues.Add(gex.Message);
                                     }
+
                                     try
                                     {
-                                        userId = int.Parse(excelReader.GetValue(
-                                            userIdColumnId).ToString());
+                                        userId = GetExcelInt(excelReader,
+                                            row,
+                                            userIdColumnId,
+                                            "user id");
                                     }
-                                    catch (Exception ex)
+                                    catch (GraException gex)
                                     {
-                                        _logger.LogError($"Parse error on ship date, row {row}: {ex.Message}");
-                                        issues.Add($"Issue reading ship date on row {row}: {ex.Message}");
+                                        issues.Add(gex.Message);
                                     }
+
                                     if (!string.IsNullOrEmpty(emailAddress)
                                         && sentDate.HasValue && userId.HasValue)
                                     {
@@ -1262,7 +1496,8 @@ namespace GRA.Domain.Service
                                                 {
                                                     code.EmailAwardSent = sentDate;
                                                 }
-                                                await _vendorCodeRepository.UpdateSaveNoAuditAsync(code);
+                                                await _vendorCodeRepository
+                                                    .UpdateSaveNoAuditAsync(code);
                                                 updated++;
                                             }
                                         }
@@ -1359,8 +1594,322 @@ namespace GRA.Domain.Service
         public async Task<VendorCodeStatus> GetStatusAsync()
         {
             VerifyManagementPermission();
-
             return await _vendorCodeRepository.GetStatusAsync();
         }
+
+        public async Task<byte[]> ExportVendorCodesAsync(int vendorCodeTypeId)
+        {
+            VerifyManagementPermission();
+            var codes = await _vendorCodeRepository.GetAllCodesAsync(vendorCodeTypeId);
+
+            using var memoryStream = new MemoryStream();
+            using var writer = new StreamWriter(memoryStream);
+            foreach (var code in codes)
+            {
+                await writer.WriteLineAsync(code);
+            }
+            await writer.FlushAsync();
+            await memoryStream.FlushAsync();
+
+            return memoryStream.ToArray();
+        }
+
+        public async Task<PackingSlipSummary> VerifyPackingSlipAsync(long packingSlipNumber)
+        {
+            var packingSlipSummary = new PackingSlipSummary
+            {
+                PackingSlipNumber = packingSlipNumber,
+                VendorCodes = await _vendorCodeRepository.GetByPackingSlipAsync(packingSlipNumber),
+                VendorCodePackingSlip = await _vendorCodePackingSlipRepository
+                    .GetByPackingSlipNumberAsync(packingSlipNumber)
+            };
+
+            _logger.LogInformation("Verifying packing slip {PackingSlipNumber} has {VendorCodeCount} vendor codes associated {Status}",
+                packingSlipSummary.PackingSlipNumber,
+                packingSlipSummary.VendorCodes?.Count ?? 0,
+                packingSlipSummary.VendorCodePackingSlip?.CreatedAt != null
+                    ? $"already inserted at {packingSlipSummary.VendorCodePackingSlip?.CreatedAt}"
+                    : "not inserted yet");
+
+            return packingSlipSummary;
+        }
+
+        public async Task<JobStatus> ReceivePackingSlipJobAsync(int jobId,
+            CancellationToken token,
+            IProgress<JobStatus> progress = null)
+        {
+            var requestingUser = GetClaimId(ClaimType.UserId);
+
+            if (!HasPermission(Permission.ReceivePackingSlips))
+            {
+                _logger.LogError("User {UserId} doesn't have permission to receive packing slips.",
+                    requestingUser);
+
+                return new JobStatus
+                {
+                    PercentComplete = 0,
+                    Status = "Permission denied.",
+                    Error = true,
+                    Complete = true
+                };
+            }
+            else
+            {
+                var sw = Stopwatch.StartNew();
+
+                var job = await _jobRepository.GetByIdAsync(jobId);
+                var jobDetails
+                    = JsonConvert
+                        .DeserializeObject<JobDetailsReceivePackingSlip>(job.SerializedParameters);
+
+                long packingSlipNumber = jobDetails.PackingSlipNumber;
+
+                token.Register(() =>
+                {
+                    _logger.LogWarning("Receipt of packing slip {PackingSlipNumber} for user {UserId} was cancelled after {Elapsed} ms",
+                        packingSlipNumber,
+                        requestingUser,
+                        sw?.Elapsed.TotalMilliseconds);
+                });
+
+                var codes = await _vendorCodeRepository
+                    .GetByPackingSlipAsync(packingSlipNumber);
+
+                int recordCount = 0;
+                int totalRecords = codes.Count;
+
+                VendorCodeType vendorCodeType = null;
+
+                var receivedAt = _dateTimeProvider.Now;
+
+                foreach (var code in codes)
+                {
+                    if (vendorCodeType == null || vendorCodeType.Id != code.VendorCodeTypeId)
+                    {
+                        vendorCodeType = await _vendorCodeTypeRepository
+                            .GetByIdAsync(code.VendorCodeTypeId);
+                    }
+
+                    code.ArrivalDate = receivedAt;
+
+                    await _vendorCodeRepository.UpdateSaveNoAuditAsync(code);
+
+                    if (vendorCodeType.AwardPrizeOnPackingSlip)
+                    {
+                        await AwardPrizeAsync(code);
+                    }
+
+                    recordCount++;
+
+                    if (recordCount % 10 == 0 || recordCount == 1)
+                    {
+                        await _jobRepository.UpdateStatusAsync(jobId,
+                            $"Processing record {recordCount}/{totalRecords}...");
+
+                        progress?.Report(new JobStatus
+                        {
+                            PercentComplete = recordCount * 100 / totalRecords,
+                            Status = $"Processing record {recordCount}/{totalRecords}...",
+                            Error = false
+                        });
+                    }
+
+                    if (token.IsCancellationRequested)
+                    {
+                        break;
+                    }
+                }
+
+                if (token.IsCancellationRequested)
+                {
+                    await _jobRepository.UpdateStatusAsync(jobId,
+                        $"Import cancelled at record {recordCount}/{totalRecords}.");
+
+                    return new JobStatus
+                    {
+                        Status = $"Operation cancelled at record {recordCount}."
+                    };
+                }
+                else
+                {
+                    await _jobRepository.UpdateStatusAsync(jobId,
+                        $"Inserting packing slip {packingSlipNumber}...");
+
+                    progress?.Report(new JobStatus
+                    {
+                        PercentComplete = recordCount * 100 / totalRecords,
+                        Status = $"Inserting packing slip {packingSlipNumber}...",
+                        Error = false
+                    });
+
+                    await _vendorCodePackingSlipRepository.AddSaveAsync(requestingUser,
+                        new VendorCodePackingSlip
+                        {
+                            IsReceived = true,
+                            CreatedAt = receivedAt,
+                            CreatedBy = requestingUser,
+                            PackingSlip = packingSlipNumber,
+                            SiteId = GetCurrentSiteId()
+                        });
+                }
+
+                await _jobRepository.UpdateStatusAsync(jobId,
+                    $"Updated {recordCount} records of {totalRecords}, inserted packing slip {packingSlipNumber}");
+
+                _logger.LogInformation("Updated {RecordCount} records of {TotalRecords}, inserted packing slip {PackingSlipNumber} in {Elapsed} ms",
+                    recordCount,
+                    totalRecords,
+                    packingSlipNumber,
+                    sw?.ElapsedMilliseconds ?? 0);
+
+                var sb = new StringBuilder("<strong>Packing slip ")
+                    .Append(packingSlipNumber)
+                    .Append(" received</strong>: ")
+                    .Append(recordCount)
+                    .Append(" records updated.");
+
+                return new JobStatus
+                {
+                    PercentComplete = 100,
+                    Complete = true,
+                    Status = sb.ToString(),
+                };
+            }
+        }
+
+        #region Excel helper methods
+        private string GetExcelString(IExcelDataReader excelReader,
+            int row,
+            int columnId,
+            string columnName)
+        {
+            if (excelReader == null)
+            {
+                throw new ArgumentNullException(nameof(excelReader));
+            }
+            try
+            {
+                return excelReader.GetString(columnId);
+            }
+            catch (IndexOutOfRangeException ex)
+            {
+                _logger.LogError(ErrorParseError, columnName, row, ex.Message);
+                throw new GraException($"Issue reading {columnName} on line {row}: {ex.Message}");
+            }
+        }
+
+        private DateTime? GetExcelDateTime(IExcelDataReader excelReader,
+            int row,
+            int columnId,
+            string columnName)
+        {
+            if (excelReader == null)
+            {
+                throw new ArgumentNullException(nameof(excelReader));
+            }
+            try
+            {
+                try
+                {
+                    return excelReader.GetDateTime(columnId);
+                }
+                catch (NullReferenceException)
+#pragma warning disable S108 // Nested blocks of code should not be left empty
+                { }
+#pragma warning restore S108 // Nested blocks of code should not be left empty
+                catch (InvalidCastException)
+                {
+                    string dateString = excelReader.GetString(columnId);
+                    if (DateTime.TryParse(dateString, out var orderDateConversion))
+                    {
+                        return orderDateConversion;
+                    }
+                    else
+                    {
+                        _logger.LogError(ErrorUnableToParse, "order date", row, dateString);
+                        throw new GraException($"Issue reading {columnName} on row {row}: {dateString}");
+                    }
+                }
+            }
+            catch (IndexOutOfRangeException ex)
+            {
+                _logger.LogError(ErrorParseError, columnName, row, ex.Message);
+                throw new GraException($"Issue reading {columnName} on row {row}: {ex.Message}");
+            }
+            return null;
+        }
+
+        private int GetExcelInt(IExcelDataReader excelReader,
+            int row,
+            int columnId,
+            string columnName)
+        {
+            if (excelReader == null)
+            {
+                throw new ArgumentNullException(nameof(excelReader));
+            }
+            if (excelReader.GetValue(columnId) != null)
+            {
+                try
+                {
+                    string stringValue = excelReader.GetString(columnId);
+                    if (int.TryParse(stringValue, out int intValue))
+                    {
+                        return intValue;
+                    }
+                    else
+                    {
+                        _logger.LogWarning(ErrorParseError,
+                            columnName,
+                            row,
+                            "Couldn't convert to a number");
+                        throw new GraException($"Issue reading {columnName} on row {row}: Couldn't convert to a number");
+                    }
+                }
+                catch (IndexOutOfRangeException ex)
+                {
+                    _logger.LogWarning(ErrorParseError, columnName, row, ex.Message);
+                    throw new GraException($"Issue reading {columnName} on row {row}: {ex.Message}");
+                }
+            }
+            return default;
+        }
+
+        private long GetExcelLong(IExcelDataReader excelReader,
+            int row,
+            int columnId,
+            string columnName)
+        {
+            if (excelReader == null)
+            {
+                throw new ArgumentNullException(nameof(excelReader));
+            }
+            if (excelReader.GetValue(columnId) != null)
+            {
+                try
+                {
+                    var value = excelReader.GetValue(columnId);
+                    if (long.TryParse(value.ToString(), out long longValue))
+                    {
+                        return longValue;
+                    }
+                    else
+                    {
+                        _logger.LogWarning(ErrorParseError,
+                            columnName,
+                            row,
+                            "Couldn't convert to a number");
+                        throw new GraException($"Issue reading {columnName} on row {row}: Couldn't convert to a number");
+                    }
+                }
+                catch (IndexOutOfRangeException ex)
+                {
+                    _logger.LogWarning(ErrorParseError, columnName, row, ex.Message);
+                    throw new GraException($"Issue reading {columnName} on row {row}: {ex.Message}");
+                }
+            }
+            return default;
+        }
+        #endregion Excel helper methods
     }
 }

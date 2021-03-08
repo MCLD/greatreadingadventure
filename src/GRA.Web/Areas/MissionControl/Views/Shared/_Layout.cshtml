@@ -129,6 +129,14 @@
                             </ul>
                         </li>
                     }
+                    @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.ReceivePackingSlips)) && Context.Items.ContainsKey(GRA.Controllers.ItemKey.ShowPackingSlips) && Context.Items[GRA.Controllers.ItemKey.ShowPackingSlips] as bool? == true)
+                    {
+                        <li ActiveBy routeKey="Controller" value="VendorCodes">
+                            <a asp-controller="VendorCodes"
+                               asp-action="ViewPackingSlip"
+                               title="Packing Slips"><span class="fas fa-file-invoice"></span><span class="visible-xs-inline"> Packing Slips</span></a>
+                        </li>
+                    }
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.ManageCarousels)) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageCategories.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageDashboardContent.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageGroupTypes.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.ManageNews)) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewUnpublishedPages.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManagePrograms.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageQuestionnaires.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageRoles.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSchools.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSites.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSystems.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSystems.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageVendorCodes.ToString()))
                     {
                         <li ActiveBy routeKey="Controller" value="Pages, Schools">
@@ -223,8 +231,8 @@
             </div>
         </noscript>
 
-        @if (ViewData.ContainsKey(GRA.Controllers.ViewDataKey.TitleHtml) 
-            && ViewData[GRA.Controllers.ViewDataKey.TitleHtml] != null)
+        @if (ViewData.ContainsKey(GRA.Controllers.ViewDataKey.TitleHtml)
+         && ViewData[GRA.Controllers.ViewDataKey.TitleHtml] != null)
         {
             <div class="row">
                 <div class="col-xs-12">

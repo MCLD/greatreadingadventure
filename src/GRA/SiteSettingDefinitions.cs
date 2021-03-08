@@ -191,6 +191,14 @@ namespace GRA
                     Info = "Maximum size in pixels (width or height) allowed for a badge.",
                     Category = typeof(SiteSettingKey.Badges).Name,
                     Format = SiteSettingFormat.Integer
+                },
+                [SiteSettingKey.VendorCodes.ShowPackingSlip] =
+                new SiteSettingDefinition
+                {
+                    Name = "Show Packing Slips",
+                    Info = "Show the Packing Slip navigation in Mission Control",
+                    Category = typeof(SiteSettingKey.VendorCodes).Name,
+                    Format = SiteSettingFormat.Boolean
                 }
             };
     }

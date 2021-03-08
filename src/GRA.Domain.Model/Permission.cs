@@ -45,6 +45,7 @@ namespace GRA.Domain.Model
         NewsAutoSubscribe,
         PerformDrawing,
         ReadAllMail,
+        ReceivePackingSlips,
         RedeemBulkVendorCodes,
         RemoveChallenges,
         SchedulePerformers,

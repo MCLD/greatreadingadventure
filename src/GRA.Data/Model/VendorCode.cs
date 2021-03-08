@@ -20,6 +20,7 @@ namespace GRA.Data.Model
         public int? UserId { get; set; }
         public DateTime? OrderDate { get; set; }
         public DateTime? ShipDate { get; set; }
+        public DateTime? ArrivalDate { get; set; }
         public bool? IsDonated { get; set; }
         public bool? IsEmailAward { get; set; }
 
@@ -31,5 +32,8 @@ namespace GRA.Data.Model
         [MaxLength(255)]
         public string Details { get; set; }
         public int? BranchId { get; set; }
+        public long PackingSlip { get; set; }
+        [MaxLength(512)]
+        public string TrackingNumber { get; set; }
     }
 }

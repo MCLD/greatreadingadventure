@@ -1,11 +1,6 @@
 ﻿@model GRA.Domain.Model.VendorCodeStatus
 
-<div class="row">
-    <div class="col-xs-12" style="margin: 1rem 0;">
-        <a asp-action="@nameof(VendorCodesController.ImportStatus)" class="btn btn-info">Import Status</a>
-        <a asp-action="@nameof(VendorCodesController.EmailAward)" class="btn btn-info">Email Awards</a>
-    </div>
-</div>
+@await Html.PartialAsync("_VendorCodePartial")
 
 <div class="row">
     <div class="col-xs-12 col-sm-10 col-lg-8">

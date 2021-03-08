@@ -1,0 +1,52 @@
+﻿<div class="row">
+    <div class="col-xs-12">
+        <ul class="nav nav-pills" style="margin-top: 2rem; margin-bottom: 1rem;">
+            <li ActiveBy routeKey="Action" value="@nameof(VendorCodesController.Index)">
+                <a asp-action="@nameof(VendorCodesController.Index)">Summary</a>
+            </li>
+            <li ActiveBy routeKey="Action" value="@nameof(VendorCodesController.ImportStatus)">
+                <a asp-action="@nameof(VendorCodesController.ImportStatus)">Import Status</a>
+            </li>
+            <li ActiveBy routeKey="Action" value="@nameof(VendorCodesController.EmailAward)">
+                <a asp-action="@nameof(VendorCodesController.EmailAward)">Email Awards</a>
+            </li>
+            <li ActiveBy
+                routeKey="Action"
+                value="@nameof(VendorCodesController.ViewPackingSlip)">
+                <a asp-action="@nameof(VendorCodesController.ViewPackingSlip)"
+                   asp-route-id="">
+                    View/Receive Packing Slip
+                </a>
+            </li>
+            <li role="presentation" class="dropdown">
+                <a class="dropdown-toggle"
+                   data-toggle="dropdown"
+                   href="#"
+                   role="button"
+                   aria-haspopup="true"
+                   aria-expanded="false">
+                    Configuration <span class="fas fa-caret-down"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a asp-action="@nameof(VendorCodesController.Configure)">
+                            Configure
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-action="@nameof(VendorCodesController.GenerateCodes)">
+                            Generate
+                            Codes
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-action="@nameof(VendorCodesController.ExportCodes)">
+                            Download
+                            Codes
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>

@@ -1,4 +1,7 @@
 ﻿@model IEnumerable<SelectListItem>
+
+@await Html.PartialAsync("_VendorCodePartial")
+
 <form asp-controller="VendorCodes"
       asp-action="ImportStatus"
       method="post"
@@ -7,8 +10,11 @@
 
     <div class="row">
         <div class="form-group">
-            <label for="vendorCodeId">Vendor code:</label>
-            <select id="vendorCodeId" asp-items="@Model" class="form-control"></select>
+            <label for="vendorCodeTypeId">Vendor code:</label>
+            <select id="vendorCodeTypeId"
+                    name="vendorCodeTypeId"
+                    asp-items="@Model"
+                    class="form-control"></select>
         </div>
         <div class="form-group">
             <label for="selectedFile">Select Excel file:</label>

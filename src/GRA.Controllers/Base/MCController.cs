@@ -21,5 +21,16 @@ namespace GRA.Controllers.Base
         {
             return $"https://www.openbadges.me/designer.html?origin={origin}&email={email}";
         }
+
+        protected IActionResult RedirectNotAuthorized(string reason)
+        {
+            ShowAlertWarning(reason);
+            return RedirectToAction(nameof(MissionControl.HomeController.Index),
+                MissionControl.HomeController.Name,
+                new
+                {
+                    area = nameof(MissionControl)
+                });
+        }
     }
 }

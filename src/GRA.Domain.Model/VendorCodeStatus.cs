@@ -20,5 +20,6 @@
                 ? "\u00A0"
                 : string.Format("{0:0.00}% {1}", items * 100.0 / total, label);
         }
+        public bool IsConfigured { get; set; }
     }
 }
