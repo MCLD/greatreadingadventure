@@ -8,7 +8,7 @@
     <Company>Maricopa County Library District</Company>
     <Copyright>Copyright 2017 Maricopa County Library District</Copyright>
     <Description>The Great Reading Adventure is an open-source tool for managing dynamic library reading programs.</Description>
-    <FileVersion>4.2.0.10</FileVersion>
+    <FileVersion>4.2.0.11</FileVersion>
     <OutputType>Exe</OutputType>
     <PackageId>GRA.Web</PackageId>
     <PackageLicenseUrl>https://github.com/mcld/greatreadingadventure/blob/master/LICENSE</PackageLicenseUrl>
@@ -55,12 +55,12 @@
 
   <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.SqlServer" Version="5.0.2" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="5.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.2">
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="5.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -74,15 +74,15 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.1" PrivateAssets="All" />
-    <PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" PrivateAssets="All" />
+    <PackageReference Include="Serilog.AspNetCore" Version="4.0.0" />
     <PackageReference Include="Serilog.Filters.Expressions" Version="2.1.0" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.1.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
     <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
     <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="5.6.0" />
     <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
-    <PackageReference Include="Serilog.Sinks.Seq" Version="4.0.0" />
+    <PackageReference Include="Serilog.Sinks.Seq" Version="5.0.0" />
     <PackageReference Include="Serilog.Sinks.Slack.Core" Version="0.1.5-beta" />
   </ItemGroup>
 
