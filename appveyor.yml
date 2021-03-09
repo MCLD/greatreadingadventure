@@ -1,7 +1,5 @@
-image: ubuntu
-stack: docker
-test: off
-version: 4.1.2-{build}
-
-build_script:
-- bash build.bash
+version: 4.2.0-build{build}
+image: Visual Studio 2019
+clone_depth: 1
+build:
+  verbosity: minimal
