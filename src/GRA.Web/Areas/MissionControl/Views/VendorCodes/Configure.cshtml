@@ -7,7 +7,10 @@
 
 <div class="row" style="margin-top: 1rem; margin-bottom: 1rem;">
     <div class="col-xs-12">
-        <p>Vendor codes are not yet configured. Use this page to set them up.</p>
+        @if (Model.Id == 0)
+        {
+            <p>Vendor codes are not yet configured. Use this page to set them up.</p>
+        }
         <ul>
             <li>
                 If you wish to configure a vendor code to be awarded with a trigger, you only need

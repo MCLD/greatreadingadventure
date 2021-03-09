@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 
 namespace GRA
 {
     public class GraFieldValidationException : GraException
     {
-        public IDictionary<string, string> FieldValidationErrors { get; }
-        public GraFieldValidationException(IDictionary<string, string> fieldValidationErrors)
+        public ILookup<string, string> FieldValidationErrors { get; }
+        public GraFieldValidationException(ILookup<string, string> fieldValidationErrors)
         {
             FieldValidationErrors = fieldValidationErrors;
         }

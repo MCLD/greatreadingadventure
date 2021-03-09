@@ -14,6 +14,7 @@ using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
+using GRA.Domain.Service.Models;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -116,10 +117,10 @@ namespace GRA.Domain.Service
             return AddTypeInternalAsync(vendorCodeType);
         }
 
-        private static IDictionary<string, string>
+        private static ILookup<string, string>
             ValidateVendorCodeType(VendorCodeType vendorCodeType)
         {
-            var fieldErrors = new Dictionary<string, string>();
+            var fieldErrors = new FieldErrorList();
 
             // validate vendor code is accurate
             if (!string.IsNullOrEmpty(vendorCodeType.OptionSubject))
@@ -158,15 +159,22 @@ namespace GRA.Domain.Service
                     fieldErrors.Add(nameof(vendorCodeType.DonationMessage),
                         "You must supply the donation message along with the donation subject");
                 }
+
             }
             else
             {
-                if (!string.IsNullOrEmpty(vendorCodeType.DonationMail))
+                if (!string.IsNullOrEmpty(vendorCodeType.DonationMail)
+                    && !string.IsNullOrEmpty(vendorCodeType.DonationMessage))
+                {
+                    fieldErrors.Add(nameof(vendorCodeType.DonationSubject),
+                        "You must supply the donation subject along with the donation mail and message");
+                }
+                else if (!string.IsNullOrEmpty(vendorCodeType.DonationMail))
                 {
                     fieldErrors.Add(nameof(vendorCodeType.DonationSubject),
                         "You must supply the donation subject along with the donation mail");
                 }
-                if (!string.IsNullOrEmpty(vendorCodeType.DonationMessage))
+                else if (!string.IsNullOrEmpty(vendorCodeType.DonationMessage))
                 {
                     fieldErrors.Add(nameof(vendorCodeType.DonationSubject),
                         "You must supply the donation subject along with the donation message");
@@ -188,12 +196,18 @@ namespace GRA.Domain.Service
             }
             else
             {
-                if (!string.IsNullOrEmpty(vendorCodeType.EmailAwardMail))
+                if (!string.IsNullOrEmpty(vendorCodeType.EmailAwardMail)
+                    && !string.IsNullOrEmpty(vendorCodeType.EmailAwardMessage))
+                {
+                    fieldErrors.Add(nameof(vendorCodeType.EmailAwardSubject),
+                        "You must supply the award subject along with the email award mail and message");
+                }
+                else if (!string.IsNullOrEmpty(vendorCodeType.EmailAwardMail))
                 {
                     fieldErrors.Add(nameof(vendorCodeType.EmailAwardSubject),
                         "You must supply the award subject along with the email award mail");
                 }
-                if (!string.IsNullOrEmpty(vendorCodeType.EmailAwardMessage))
+                else if (!string.IsNullOrEmpty(vendorCodeType.EmailAwardMessage))
                 {
                     fieldErrors.Add(nameof(vendorCodeType.EmailAwardSubject),
                         "You must supply the award subject along with the email award message");
@@ -208,7 +222,7 @@ namespace GRA.Domain.Service
                     "Please only award prize based on packing slip or ship date.");
             }
 
-            return fieldErrors;
+            return fieldErrors.AsILookup();
         }
 
         private async Task<VendorCodeType> AddTypeInternalAsync(VendorCodeType vendorCodeType)

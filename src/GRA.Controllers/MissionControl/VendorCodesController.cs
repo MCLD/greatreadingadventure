@@ -470,9 +470,12 @@ namespace GRA.Controllers.MissionControl
             }
             catch (GraFieldValidationException gex)
             {
-                foreach (var field in gex.FieldValidationErrors)
+                foreach (var validationError in gex.FieldValidationErrors)
                 {
-                    ModelState.AddModelError(field.Key, field.Value);
+                    foreach (var errorMessage in validationError)
+                    {
+                        ModelState.AddModelError(validationError.Key, errorMessage);
+                    }
                 }
                 return View("Configure", vendorCodeType);
             }
