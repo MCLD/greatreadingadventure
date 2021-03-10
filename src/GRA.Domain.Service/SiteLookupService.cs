@@ -56,6 +56,7 @@ namespace GRA.Domain.Service
                 sites = await _siteRepository.GetAllAsync();
                 if (!sites.Any())
                 {
+                    _logger.LogInformation("No sites in database, inserting initial site");
                     sites = await InsertInitialSiteAsync();
                 }
                 _cache.SetString(CacheKey.Sites, JsonConvert.SerializeObject(sites));
@@ -180,9 +181,11 @@ namespace GRA.Domain.Service
             };
             site = await _siteRepository.AddSaveAsync(-1, site);
             _cache.Remove(CacheKey.Sites);
+            _logger.LogInformation("Inserted initial site named: {SiteName}", site.Name);
 
             await _initialSetupService.InsertAsync(site.Id,
                 _config[ConfigurationKey.InitialAuthorizationCode]);
+            _logger.LogInformation("Inserted initial authorization code");
 
             return new List<Site>
             {
