@@ -35,8 +35,6 @@ namespace GRA.Controllers
         private readonly QuestionnaireService _questionnaireService;
         private readonly UserService _userService;
 
-        private readonly ICodeSanitizer _codeSanitizer;
-
         public static string Name { get { return "Join"; } }
 
         public JoinController(ILogger<JoinController> logger,
@@ -48,8 +46,7 @@ namespace GRA.Controllers
             SchoolService schoolService,
             SiteService siteService,
             QuestionnaireService questionnaireService,
-            UserService userService,
-            ICodeSanitizer codeSanitizer)
+            UserService userService)
                 : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -67,8 +64,6 @@ namespace GRA.Controllers
             _questionnaireService = questionnaireService
                 ?? throw new ArgumentNullException(nameof(questionnaireService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-            _codeSanitizer = codeSanitizer
-                ?? throw new ArgumentNullException(nameof(codeSanitizer));
             PageTitle = _sharedLocalizer[Annotations.Title.Join];
         }
 
@@ -304,7 +299,7 @@ namespace GRA.Controllers
                     string sanitized = null;
                     if (!string.IsNullOrWhiteSpace(model.AuthorizationCode))
                     {
-                        sanitized = _codeSanitizer.Sanitize(model.AuthorizationCode, 255);
+                        sanitized = model.AuthorizationCode.Trim().ToLowerInvariant();
                         useAuthCode = await _authorizationCodeService
                             .ValidateAuthorizationCode(sanitized);
                         if (!useAuthCode)
@@ -781,7 +776,7 @@ namespace GRA.Controllers
                     string sanitized = null;
                     if (!string.IsNullOrWhiteSpace(step1.AuthorizationCode))
                     {
-                        sanitized = _codeSanitizer.Sanitize(step1.AuthorizationCode, 255);
+                        sanitized = step1.AuthorizationCode.Trim().ToLowerInvariant();
                         useAuthCode = await _authorizationCodeService
                             .ValidateAuthorizationCode(sanitized);
                         if (!useAuthCode)
@@ -883,7 +878,7 @@ namespace GRA.Controllers
             var site = await GetCurrentSiteAsync();
             if (!TempData.ContainsKey(AuthCodeAttempts) || (int)TempData.Peek(AuthCodeAttempts) < 5)
             {
-                var sanitized = _codeSanitizer.Sanitize(model.AuthorizationCode, 255);
+                var sanitized = model.AuthorizationCode.Trim().ToLowerInvariant();
                 if (await _authorizationCodeService.ValidateAuthorizationCode(sanitized))
                 {
                     TempData.Remove(AuthCodeAttempts);
