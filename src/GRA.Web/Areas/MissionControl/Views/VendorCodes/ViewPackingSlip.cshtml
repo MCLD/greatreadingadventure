@@ -105,9 +105,10 @@
                            name="PackingSlipNumber"
                            value="@Model.PackingSlipNumber" />
                     <a asp-action="Index" class="btn btn-warning">Cancel</a>
-                    <input type="submit"
-                           class="btn btn-success"
-                           value="@Model.SubmitText" />
+                    <button type="submit"
+                            class="btn btn-success">
+                        @Model.SubmitText
+                    </button>
                 </form>
             </div>
         }
