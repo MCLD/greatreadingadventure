@@ -26,14 +26,12 @@ namespace GRA.Controllers.PerformerRegistration
         private readonly AuthenticationService _authenticationService;
         private readonly PerformerSchedulingService _performerSchedulingService;
         private readonly UserService _userService;
-        private readonly ICodeSanitizer _codeSanitizer;
 
         public HomeController(ILogger<HomeController> logger,
             ServiceFacade.Controller context,
             AuthenticationService authenticationService,
             PerformerSchedulingService performerSchedulingService,
-            UserService userService,
-            ICodeSanitizer codeSanitizer) : base(context)
+            UserService userService) : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _authenticationService = authenticationService
@@ -41,8 +39,6 @@ namespace GRA.Controllers.PerformerRegistration
             _performerSchedulingService = performerSchedulingService
                 ?? throw new ArgumentNullException(nameof(performerSchedulingService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-            _codeSanitizer = codeSanitizer
-                ?? throw new ArgumentNullException(nameof(codeSanitizer));
             PageTitle = "Performer Registration";
         }
 
