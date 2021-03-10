@@ -35,8 +35,6 @@ namespace GRA.Controllers
         private readonly QuestionnaireService _questionnaireService;
         private readonly UserService _userService;
 
-        private readonly ICodeSanitizer _codeSanitizer;
-
         public static string Name { get { return "Join"; } }
 
         public JoinController(ILogger<JoinController> logger,
@@ -48,8 +46,7 @@ namespace GRA.Controllers
             SchoolService schoolService,
             SiteService siteService,
             QuestionnaireService questionnaireService,
-            UserService userService,
-            ICodeSanitizer codeSanitizer)
+            UserService userService)
                 : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -67,8 +64,6 @@ namespace GRA.Controllers
             _questionnaireService = questionnaireService
                 ?? throw new ArgumentNullException(nameof(questionnaireService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-            _codeSanitizer = codeSanitizer
-                ?? throw new ArgumentNullException(nameof(codeSanitizer));
             PageTitle = _sharedLocalizer[Annotations.Title.Join];
         }
 

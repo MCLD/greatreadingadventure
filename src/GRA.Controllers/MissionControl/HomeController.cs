@@ -26,7 +26,6 @@ namespace GRA.Controllers.MissionControl
         private readonly UserService _userService;
         private readonly SiteService _siteService;
 
-        private readonly ICodeSanitizer _codeSanitizer;
         public static string Name { get { return "Home"; } }
 
         public HomeController(ILogger<HomeController> logger,
@@ -36,8 +35,7 @@ namespace GRA.Controllers.MissionControl
             ReportService reportService,
             UserService userService,
             SiteService siteService,
-            ServiceFacade.Controller context,
-            ICodeSanitizer codeSanitizer)
+            ServiceFacade.Controller context)
             : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -49,8 +47,6 @@ namespace GRA.Controllers.MissionControl
                 ?? throw new ArgumentNullException(nameof(reportService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
-            _codeSanitizer = codeSanitizer
-                ?? throw new ArgumentNullException(nameof(codeSanitizer));
 
             PageTitle = "Mission Control";
         }
