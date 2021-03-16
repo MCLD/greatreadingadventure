@@ -319,6 +319,11 @@
             }
         }
 
+        $("li.dropdown-item a").on("click", function () {
+            $("#preconfigured-selected").focus();
+
+        });
+
         //Clears the outfit on the avatar when a preconfigured avatar is selected
         function ClearOutfit() {
             @foreach (var layer in Model.LayerGroupings.SelectMany(_ => _))
