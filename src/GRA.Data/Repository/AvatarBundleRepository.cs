@@ -65,7 +65,8 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.AssociatedBundleId == bundleId)
+                .Where(_ => _.AssociatedBundleId == bundleId
+                    && !_.IsDeleted)
                 .ProjectTo<AvatarBundle>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
