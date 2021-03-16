@@ -14,7 +14,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                    <form asp-controller="Avatars" asp-action="BundleDelete" asp-route-Unlockable="@Model.Unlockable" method="post" role="form" style="display:inline">
+                    <form asp-controller="Avatars" asp-action="BundleDelete" asp-route-search="Preconfigured" method="post" role="form" style="display:inline">
                         <input id="Id" name="Id" type="hidden" />
                         <button type="submit" class="btn btn-danger pull-right" aria-label="Confirm">
                             <span class="fa fa-remove" aria-hidden="true"></span>

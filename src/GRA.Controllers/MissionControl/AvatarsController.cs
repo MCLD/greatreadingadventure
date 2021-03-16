@@ -368,11 +368,12 @@ namespace GRA.Controllers.MissionControl
             return View(viewModel);
         }
 
-        public async Task<IActionResult> BundleCreate()
+        public async Task<IActionResult> BundleCreate(string search = "Default")
         {
             var viewModel = new BundlesDetailViewModel
             {
                 Action = "Create",
+                Search = search,
                 Layers = new SelectList(await _avatarService.GetLayersAsync(), "Id", "Name")
             };
 
@@ -529,7 +530,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public async Task<IActionResult> BundleDelete(int id)
+        public async Task<IActionResult> BundleDelete(int id, string search = "Default")
         {
             try
             {
@@ -540,7 +541,7 @@ namespace GRA.Controllers.MissionControl
             {
                 ShowAlertWarning("Unable to delete bundle: ", gex.Message);
             }
-            return RedirectToAction("Bundles");
+            return RedirectToAction(nameof(Bundles), new { search });
         }
 
         public async Task<IActionResult> GetItemsList(string itemIds,
