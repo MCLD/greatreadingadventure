@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Add accessibility to JavaScript modals throughout the application
 - News posts now send emails via the job system to avoid timeouts
 - Avatar imports now work if the avatars aren't in the root of the ZIP file
+- Name all cookies with the discriminator value to avoid cookie collisions on the same host
 
 ## [4.2.0] - 2021-01-04
 

@@ -87,13 +87,16 @@ Required fields:
 - **Description** - the kind of vendor code, will be shown to staff and participants
 - **Mail subject** - the subject of the in-software mail to send when a participant is
   assigned a code
-- **Mail** - the text of the in-software mail to send when a participant is assigned a code, the
-  text `{Code}` will be replaced with their code (e.g. "Your code is: {Code}")
+- **Mail** - the text of the in-software mail to send when a participant is assigned a code,
+  replaces the following tokens:
+  - `{Code}` - the participant's code (e.g. `X123X-456YY-ZZ789` from above)
+  - `{Link}` - the link (as defined in **Url** below)
 
 Optional fields:
 
-- **Url** - a URL template to redeem a prize, `{Code}` will be replaced with the participant's
-  code (e.g. "https://vendor/?Code={Code}")
+- **Url** - a URL template (e.g. "https://vendor/?Code={Code}") to redeem a prize, replaces the
+  following token:
+  - `{Code}` - the participant's code (e.g. `X123X-456YY-ZZ789` from above)
 - **Expiration date** - a cut-off date after which the codes shouldn't be assigned
 - **Award prize on ship date** - add a prize to the participant's profile when an Excel file is
   imported with the "Ship Date" column set for the code
