@@ -31,7 +31,7 @@ WORKDIR /app
 
 # Install curl for health monitoring
 RUN apt-get update \
-	&& apt-get install --no-install-recommends -y curl=7.64.0-4+deb10u1 \
+	&& apt-get install --no-install-recommends -y curl=7.64.0-4+deb10u2 \
 	&& rm -rf /var/lib/apt/lists/*
 
 # Bring in metadata via --build-arg to publish
