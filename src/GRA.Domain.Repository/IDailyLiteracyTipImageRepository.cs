@@ -8,9 +8,15 @@ namespace GRA.Domain.Repository
     public interface IDailyLiteracyTipImageRepository : IRepository<DailyLiteracyTipImage>
     {
         Task<int> CountAsync(DailyImageFilter filter);
-        Task<ICollection<DailyLiteracyTipImage>> PageAsync(DailyImageFilter filter);
-        Task UpdateSaveAsync(int userId, DailyLiteracyTipImage image, int newDay);
-        new Task RemoveSaveAsync(int userId, int imageId);
+
         Task<DailyLiteracyTipImage> GetByDay(int dailyLiteracyTipId, int day);
+
+        Task<int> GetLatestDayAsync(int dailyLiteracyTipId);
+
+        Task<ICollection<DailyLiteracyTipImage>> PageAsync(DailyImageFilter filter);
+
+        new Task RemoveSaveAsync(int userId, int imageId);
+
+        Task UpdateSaveAsync(int userId, DailyLiteracyTipImage image, int newDay);
     }
 }

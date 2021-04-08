@@ -455,9 +455,9 @@
                  role="document">
                 <div class="modal-content">
                     <span class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute"
-                            data-dismiss="modal"
-                            alt="@SharedLocalizer[GRA.Annotations.Interface.CloseDialog]"
-                            role="button">
+                          data-dismiss="modal"
+                          alt="@SharedLocalizer[GRA.Annotations.Interface.CloseDialog]"
+                          role="button">
                         <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
                         <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
                     </span>
@@ -482,9 +482,9 @@
                 <div class="modal-content">
                     <div class="modal-body">
                         <span class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute"
-                                data-dismiss="modal"
-                                alt="@SharedLocalizer[GRA.Annotations.Interface.CloseDialog]"
-                                role="button">
+                              data-dismiss="modal"
+                              alt="@SharedLocalizer[GRA.Annotations.Interface.CloseDialog]"
+                              role="button">
                             <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
                             <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
                         </span>
@@ -516,7 +516,11 @@
                             var src = $(this).data("src");
                         $(".daily-image").attr("src", src);
                         $("#dailyImageModal").modal().show();
+                        gtag('event', 'view_daily_tip', {
+                            'event_category': 'image',
+                            'event_label': src
                         });
+                    });
                 </text>
             }
             @if (Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null && Model.UserJoined)
@@ -552,7 +556,6 @@
 
                 $("#graCarouselModal").modal().show();
             });
-
         </script>
         <link rel="stylesheet" type="text/css" href="@Url.Content("~/css/slick.min.css")" />
         <script type="text/javascript" src="@Url.Content("~/js/slick.min.js")"></script>
