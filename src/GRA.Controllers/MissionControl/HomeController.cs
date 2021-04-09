@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using GRA.Abstract;
 using GRA.Controllers.ViewModel.MissionControl.Home;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;

@@ -951,23 +951,12 @@ namespace GRA.Domain.Service
 
                         if (vendorCode.CanBeEmailAward)
                         {
-                            var currentCultureName = _userContextProvider.GetCurrentCulture()?.Name;
-                            if (currentCultureName != null)
-                            {
-                                var currentLanguageId = await _languageService
-                                    .GetLanguageIdAsync(currentCultureName);
-                                user.EmailAwardInstructions = await _vendorCodeTypeRepository
-                                    .GetEmailAwardInstructionText(vendorCode.VendorCodeTypeId,
-                                        currentLanguageId);
-                            }
-                            if (string.IsNullOrWhiteSpace(user.EmailAwardInstructions))
-                            {
-                                var defaultLanguageId = await _languageService
-                                    .GetDefaultLanguageIdAsync();
-                                user.EmailAwardInstructions = await _vendorCodeTypeRepository
-                                    .GetEmailAwardInstructionText(vendorCode.VendorCodeTypeId,
-                                        defaultLanguageId);
-                            }
+                            var currentCulture = _userContextProvider.GetCurrentCulture();
+                            var languageId = await _languageService
+                                .GetLanguageIdAsync(currentCulture.Name);
+                            user.EmailAwardInstructions = await _vendorCodeTypeRepository
+                                .GetEmailAwardInstructionText(vendorCode.VendorCodeTypeId,
+                                    languageId);
                             if (string.IsNullOrWhiteSpace(user.EmailAwardInstructions))
                             {
                                 _logger.LogError("Email award instructions are not set for code type {codeTypeId}",

@@ -204,6 +204,10 @@
                                 {
                                     <li><a asp-controller="Sites" asp-action="Index">Site management</a></li>
                                 }
+                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSocial.ToString()))
+                                {
+                                    <li><a asp-controller="Social" asp-action="Index">Social management</a></li>
+                                }
                                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSystems.ToString()))
                                 {
                                     <li><a asp-controller="Systems" asp-action="Index">System &amp; branch management</a></li>
@@ -236,7 +240,7 @@
         </noscript>
 
         @if (ViewData.ContainsKey(GRA.Controllers.ViewDataKey.TitleHtml)
-         && ViewData[GRA.Controllers.ViewDataKey.TitleHtml] != null)
+        && ViewData[GRA.Controllers.ViewDataKey.TitleHtml] != null)
         {
             <div class="row">
                 <div class="col-xs-12">

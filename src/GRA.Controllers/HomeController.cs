@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,13 +17,11 @@ namespace GRA.Controllers
     public class HomeController : Base.UserController
     {
         private const string ActivityErrorMessage = "ActivityErrorMessage";
-        private const string TitleErrorMessage = "TitleErrorMessage";
         private const string AuthorErrorMessage = "AuthorErrorMessage";
+        private const int BadgesToDisplay = 6;
         private const string ModelData = "ModelData";
         private const string SecretCodeMessage = "SecretCodeMessage";
-        private const int BadgesToDisplay = 6;
-
-        private readonly ILogger<HomeController> _logger;
+        private const string TitleErrorMessage = "TitleErrorMessage";
         private readonly ActivityService _activityService;
         private readonly AvatarService _avatarService;
         private readonly CarouselService _carouselService;
@@ -31,12 +30,12 @@ namespace GRA.Controllers
         private readonly EmailManagementService _emailManagementService;
         private readonly EmailReminderService _emailReminderService;
         private readonly EventService _eventService;
+        private readonly ILogger<HomeController> _logger;
         private readonly PerformerSchedulingService _performerSchedulingService;
         private readonly SiteService _siteService;
+        private readonly SocialService _socialService;
         private readonly UserService _userService;
         private readonly VendorCodeService _vendorCodeService;
-
-        public static string Name { get { return "Home"; } }
 
         public HomeController(ILogger<HomeController> logger,
             ServiceFacade.Controller context,
@@ -50,6 +49,7 @@ namespace GRA.Controllers
             EventService eventService,
             PerformerSchedulingService performerSchedulingService,
             SiteService siteService,
+            SocialService socialService,
             UserService userService,
             VendorCodeService vendorCodeService)
             : base(context)
@@ -74,9 +74,66 @@ namespace GRA.Controllers
             _performerSchedulingService = performerSchedulingService
                 ?? throw new ArgumentNullException(nameof(performerSchedulingService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
+            _socialService = socialService
+                ?? throw new ArgumentNullException(nameof(socialService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _vendorCodeService = vendorCodeService
                 ?? throw new ArgumentNullException(nameof(vendorCodeService));
+        }
+
+        public static string Name { get { return "Home"; } }
+
+        [HttpPost]
+        public async Task<IActionResult> AddReminder(LandingPageViewModel viewModel)
+        {
+            if (!string.IsNullOrEmpty(viewModel.Email))
+            {
+                await _emailReminderService
+                    .AddEmailReminderAsync(viewModel.Email, viewModel.SignUpSource);
+                ShowAlertInfo(_sharedLocalizer[Annotations.Info.LetYouKnowWhen], "envelope");
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        [ProducesResponseType(200, Type = typeof(string))]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> GetCarouselDescription(int id)
+        {
+            string carouselItemDescription = null;
+            try
+            {
+                carouselItemDescription = await _carouselService.GetItemDescriptionAsync(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning("Request for carousel item {id} description failed: {message}",
+                    id,
+                    ex.Message);
+            }
+
+            if (string.IsNullOrEmpty(carouselItemDescription))
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(CommonMark.CommonMarkConverter.Convert(carouselItemDescription));
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetIcs()
+        {
+            var site = await GetCurrentSiteAsync();
+            var filename = new string(site.Name.Where(_ => char.IsLetterOrDigit(_)).ToArray());
+            var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
+            var calendarBytes = await _siteService.GetIcsFile(siteUrl);
+            return File(calendarBytes, "text/calendar", $"{filename}.ics");
+        }
+
+        public async Task<IActionResult> Goodbye(int id)
+        {
+            return await ShowExitPageAsync(GetSiteStage(), id);
         }
 
         public async Task<IActionResult> Index()
@@ -285,38 +342,6 @@ namespace GRA.Controllers
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddReminder(BeforeRegistrationViewModel viewModel)
-        {
-            if (!string.IsNullOrEmpty(viewModel.Email))
-            {
-                await _emailReminderService
-                    .AddEmailReminderAsync(viewModel.Email, viewModel.SignUpSource);
-                ShowAlertInfo(_sharedLocalizer[Annotations.Info.LetYouKnowWhen], "envelope");
-            }
-            return RedirectToAction(nameof(Index));
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> GetIcs()
-        {
-            var site = await GetCurrentSiteAsync();
-            var filename = new string(site.Name.Where(_ => char.IsLetterOrDigit(_)).ToArray());
-            var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
-            var calendarBytes = await _siteService.GetIcsFile(siteUrl);
-            return File(calendarBytes, "text/calendar", $"{filename}.ics");
-        }
-
-        [PreventQuestionnaireRedirect]
-        public async Task<IActionResult> Signout()
-        {
-            var id = UserClaim(ClaimType.BranchId);
-
-            await LogoutUser();
-
-            return RedirectToAction(nameof(Goodbye), new { id });
-        }
-
         public IActionResult LogActivity()
         {
             return RedirectToAction(nameof(Index));
@@ -398,30 +423,40 @@ namespace GRA.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [ProducesResponseType(200, Type = typeof(string))]
-        [ProducesResponseType(404)]
-        public async Task<IActionResult> GetCarouselDescription(int id)
+        public async Task<IActionResult> PreviewExit(string id)
         {
-            string carouselItemDescription = null;
-            try
+            if (UserHasPermission(Permission.AccessMissionControl))
             {
-                carouselItemDescription = await _carouselService.GetItemDescriptionAsync(id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning("Request for carousel item {id} description failed: {message}",
-                    id,
-                    ex.Message);
-            }
-
-            if (string.IsNullOrEmpty(carouselItemDescription))
-            {
-                return NotFound();
+                SiteStage stage = ParseStage(id);
+                return await ShowExitPageAsync(stage);
             }
             else
             {
-                return Ok(CommonMark.CommonMarkConverter.Convert(carouselItemDescription));
+                return RedirectToAction(nameof(Index));
             }
+        }
+
+        public async Task<IActionResult> PreviewLanding(string id)
+        {
+            if (UserHasPermission(Permission.AccessMissionControl))
+            {
+                SiteStage stage = ParseStage(id);
+                return await ShowLandingPageAsync(await GetCurrentSiteAsync(), stage);
+            }
+            else
+            {
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+        [PreventQuestionnaireRedirect]
+        public async Task<IActionResult> Signout()
+        {
+            var id = UserClaim(ClaimType.BranchId);
+
+            await LogoutUser();
+
+            return RedirectToAction(nameof(Goodbye), new { id });
         }
 
         public async Task<IActionResult> Unsubscribe(string id)
@@ -443,13 +478,15 @@ namespace GRA.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Goodbye(int id)
+        private static SiteStage ParseStage(string siteStageText)
         {
-            return await ShowExitPageAsync(GetSiteStage(), id);
+            return Enum.TryParse(siteStageText, out SiteStage siteStage)
+                ? siteStage
+                : SiteStage.ProgramOpen;
         }
 
         private async Task<IActionResult> ShowExitPageAsync(SiteStage siteStage,
-            int? branchId = null)
+                    int? branchId = null)
         {
             string siteName = HttpContext.Items[ItemKey.SiteName]?.ToString();
             PageTitle = _sharedLocalizer[Annotations.Title.SeeYouSoon, siteName];
@@ -457,11 +494,14 @@ namespace GRA.Controllers
             ExitPageViewModel exitPageViewModel = null;
             try
             {
+                var culture = _userContextProvider.GetCurrentCulture();
+
                 exitPageViewModel = new ExitPageViewModel
                 {
                     Branch = branchId == null
                     ? await _userService.GetUsersBranch(GetActiveUserId())
-                    : await _siteService.GetBranchByIdAsync((int)branchId)
+                    : await _siteService.GetBranchByIdAsync((int)branchId),
+                    Social = await _socialService.GetAsync(culture.Name)
                 };
             }
             catch (GraException ex)
@@ -471,107 +511,74 @@ namespace GRA.Controllers
                     ex.Message);
             }
 
-            switch (siteStage)
+            return siteStage switch
             {
-                case SiteStage.BeforeRegistration:
-                    return View(ViewTemplates.ExitBeforeRegistration, exitPageViewModel);
-                case SiteStage.RegistrationOpen:
-                    return View(ViewTemplates.ExitRegistrationOpen, exitPageViewModel);
-                case SiteStage.ProgramEnded:
-                    return View(ViewTemplates.ExitProgramEnded, exitPageViewModel);
-                case SiteStage.AccessClosed:
-                    return View(ViewTemplates.ExitAccessClosed, exitPageViewModel);
-                default:
-                    return View(ViewTemplates.ExitProgramOpen, exitPageViewModel);
-            }
+                SiteStage.BeforeRegistration =>
+                    View(ViewTemplates.ExitBeforeRegistration, exitPageViewModel),
+                SiteStage.RegistrationOpen =>
+                    View(ViewTemplates.ExitRegistrationOpen, exitPageViewModel),
+                SiteStage.ProgramEnded => View(ViewTemplates.ExitProgramEnded, exitPageViewModel),
+                SiteStage.AccessClosed => View(ViewTemplates.ExitAccessClosed, exitPageViewModel),
+                _ => View(ViewTemplates.ExitProgramOpen, exitPageViewModel),
+            };
         }
 
         private async Task<IActionResult> ShowLandingPageAsync(Site site, SiteStage siteStage)
         {
             string siteName = HttpContext.Items[ItemKey.SiteName]?.ToString();
             PageTitle = siteName;
+
+            var culture = _userContextProvider.GetCurrentCulture();
+
+            // social
+            var viewmodel = new LandingPageViewModel
+            {
+                SiteName = siteName,
+                Social = await _socialService.GetAsync(culture.Name)
+            };
+
             switch (siteStage)
             {
                 case SiteStage.BeforeRegistration:
-                    var viewModel = new BeforeRegistrationViewModel
-                    {
-                        SignUpSource = nameof(SiteStage.BeforeRegistration),
-                        SiteName = siteName
-                    };
+                    viewmodel.SignUpSource = nameof(SiteStage.BeforeRegistration);
                     if (site != null)
                     {
-                        viewModel.CollectEmail = await _siteLookupService
+                        viewmodel.CollectEmail = await _siteLookupService
                             .GetSiteSettingBoolAsync(site.Id,
                                 SiteSettingKey.Users.CollectPreregistrationEmails);
+
                         if (site.RegistrationOpens != null)
                         {
-                            viewModel.RegistrationOpens
-                                = ((DateTime)site.RegistrationOpens).ToString("D");
+                            viewmodel.RegistrationOpens
+                                = ((DateTime)site.RegistrationOpens).ToString("D",
+                                    CultureInfo.InvariantCulture);
                             PageTitle = _sharedLocalizer[Annotations.Title.RegistrationOpens,
                                 siteName,
-                                viewModel.RegistrationOpens];
+                                viewmodel.RegistrationOpens];
                         }
                     }
-                    return View(ViewTemplates.BeforeRegistration, viewModel);
+                    return View(ViewTemplates.BeforeRegistration, viewmodel);
+
                 case SiteStage.RegistrationOpen:
                     PageTitle = _sharedLocalizer[Annotations.Title.JoinNow, siteName];
-                    return View(ViewTemplates.RegistrationOpen, siteName);
+                    return View(ViewTemplates.RegistrationOpen, viewmodel);
+
                 case SiteStage.ProgramEnded:
-                    return View(ViewTemplates.ProgramEnded, siteName);
+                    return View(ViewTemplates.ProgramEnded, viewmodel);
+
                 case SiteStage.AccessClosed:
-                    var acViewModel = new AccessClosedViewModel
-                    {
-                        SignUpSource = nameof(SiteStage.AccessClosed),
-                    };
+                    viewmodel.SignUpSource = nameof(SiteStage.AccessClosed);
                     if (site != null)
                     {
-                        acViewModel.SiteName = site.Name;
-                        acViewModel.CollectEmail = await _siteLookupService
+                        viewmodel.CollectEmail = await _siteLookupService
                             .GetSiteSettingBoolAsync(site.Id,
                                 SiteSettingKey.Users.CollectAccessClosedEmails);
                     }
-                    return View(ViewTemplates.AccessClosed, acViewModel);
+                    return View(ViewTemplates.AccessClosed, viewmodel);
+
                 default:
                     PageTitle = _sharedLocalizer[Annotations.Title.JoinNow, siteName];
-                    return View(ViewTemplates.ProgramOpen, siteName);
-            }
-        }
-
-        private static SiteStage ParseStage(string siteStageText)
-        {
-            if (Enum.TryParse(siteStageText, out SiteStage siteStage))
-            {
-                return siteStage;
-            }
-            else
-            {
-                return SiteStage.ProgramOpen;
-            }
-        }
-
-        public async Task<IActionResult> PreviewLanding(string id)
-        {
-            if (UserHasPermission(Permission.AccessMissionControl))
-            {
-                SiteStage stage = ParseStage(id);
-                return await ShowLandingPageAsync(await GetCurrentSiteAsync(), stage);
-            }
-            else
-            {
-                return RedirectToAction(nameof(Index));
-            }
-        }
-
-        public async Task<IActionResult> PreviewExit(string id)
-        {
-            if (UserHasPermission(Permission.AccessMissionControl))
-            {
-                SiteStage stage = ParseStage(id);
-                return await ShowExitPageAsync(stage);
-            }
-            else
-            {
-                return RedirectToAction(nameof(Index));
+                    return View(ViewTemplates.ProgramOpen, viewmodel);
             }
         }
     }

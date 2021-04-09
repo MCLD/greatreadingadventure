@@ -15,6 +15,14 @@ namespace GRA.Data.Repository
         public SiteSettingRepository(ServiceFacade.Repository repositoryFacade,
             ILogger<SiteSettingRepository> logger) : base(repositoryFacade, logger) { }
 
+        public async Task AddListAsync(int userId, IEnumerable<SiteSetting> siteSettings)
+        {
+            foreach (var siteSetting in siteSettings)
+            {
+                await base.AddAsync(userId, siteSetting);
+            }
+        }
+
         public async Task<ICollection<SiteSetting>> GetBySiteIdAsync(int siteId)
         {
             return await DbSet
@@ -24,11 +32,11 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task AddListAsync(int userId, IEnumerable<SiteSetting> siteSettings)
+        public async Task RemoveListAsync(int userId, IEnumerable<int> siteSettingIds)
         {
-            foreach (var siteSetting in siteSettings)
+            foreach (var id in siteSettingIds)
             {
-                await base.AddAsync(userId, siteSetting);
+                await base.RemoveAsync(userId, id);
             }
         }
 
@@ -46,14 +54,6 @@ namespace GRA.Data.Repository
                 }
                 setting.Value = siteSetting.Value;
                 await base.UpdateAsync(userId, setting, original);
-            }
-        }
-
-        public async Task RemoveListAsync(int userId, IEnumerable<int> siteSettingIds)
-        {
-            foreach (var id in siteSettingIds)
-            {
-                await base.RemoveAsync(userId, id);
             }
         }
     }

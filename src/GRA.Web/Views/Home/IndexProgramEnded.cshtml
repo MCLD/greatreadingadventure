@@ -1,8 +1,6 @@
-﻿@section metadata {
-    <grasite property="metadescription"></grasite>
-    <grasite property="dcmetadata"></grasite>
-    <grasite property="twittermetadata"></grasite>
-    <grasite property="facebookmetadata"></grasite>
+﻿@model GRA.Controllers.ViewModel.Home.LandingPageViewModel
+@section metadata {
+    <social data="Model.Social"></social>
 }
 <div class="row gra-landing-banner">
     <div class="col-xs-12">
@@ -19,7 +17,7 @@
     </div>
     <div class="col-sm-6">
         <p>
-            @SharedLocalizer[GRA.Annotations.Home.Thanks, Model]
+            @SharedLocalizer[GRA.Annotations.Home.Thanks, Model.SiteName]
             @SharedLocalizer[GRA.Annotations.Home.StillSignIn]
             <div class="row" style="margin-top: 2em;">
                 <div class="col-sm-6 col-sm-offset-3" style="margin-top: 0.5em;">

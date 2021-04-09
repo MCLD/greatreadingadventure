@@ -68,9 +68,7 @@ namespace GRA.Domain.Service
             var activeUserId = GetActiveUserId();
             var siteId = GetCurrentSiteId();
             var currentCultureName = _userContextProvider.GetCurrentCulture()?.Name;
-            var currentLanguageId = currentCultureName != null ?
-                await _languageService.GetLanguageIdAsync(currentCultureName) :
-                await _languageService.GetDefaultLanguageIdAsync();
+            var currentLanguageId = await _languageService.GetLanguageIdAsync(currentCultureName);
             var layers = await _avatarLayerRepository.GetAllWithColorsAsync(siteId);
 
             if (layers.Count > 0)
@@ -150,9 +148,8 @@ namespace GRA.Domain.Service
         public async Task<IEnumerable<AvatarLayer>> GetLayersAsync()
         {
             var currentCultureName = _userContextProvider.GetCurrentCulture()?.Name;
-            var currentLanguageId = currentCultureName != null ?
-                await _languageService.GetLanguageIdAsync(currentCultureName) :
-                await _languageService.GetDefaultLanguageIdAsync();
+            var currentLanguageId =
+                await _languageService.GetLanguageIdAsync(currentCultureName);
             VerifyManagementPermission();
             var layers = await _avatarLayerRepository.GetAllAsync(GetCurrentSiteId());
             if (layers.Count > 0)
@@ -411,9 +408,8 @@ namespace GRA.Domain.Service
         {
             var activeUserId = GetActiveUserId();
             var currentCultureName = _userContextProvider.GetCurrentCulture()?.Name;
-            var currentLanguageId = currentCultureName != null ?
-                await _languageService.GetLanguageIdAsync(currentCultureName) :
-                await _languageService.GetDefaultLanguageIdAsync();
+            var currentLanguageId =
+                await _languageService.GetLanguageIdAsync(currentCultureName);
             var layers = await _avatarLayerRepository.GetAllAsync(GetCurrentSiteId());
             if (layers.Count > 0)
             {

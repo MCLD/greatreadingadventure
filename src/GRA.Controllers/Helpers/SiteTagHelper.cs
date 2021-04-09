@@ -4,9 +4,7 @@ using CommonMark;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
 using GRA.Domain.Service.Abstract;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
@@ -16,228 +14,58 @@ namespace GRA.Controllers.Helpers
     public class SiteTagHelper : TagHelper
     {
         private readonly SiteLookupService _siteLookupService;
-        private readonly IUrlHelperFactory _urlHelperFactory;
         private readonly IUserContextProvider _userContextProvider;
+
+        public SiteTagHelper(IUserContextProvider userContextProvider,
+            SiteLookupService siteLookupService)
+        {
+            _userContextProvider = userContextProvider
+                ?? throw new ArgumentNullException(nameof(userContextProvider));
+            _siteLookupService = siteLookupService
+                ?? throw new ArgumentNullException(nameof(siteLookupService));
+        }
+
+        [HtmlAttributeName("property")]
+        public string property { get; set; }
 
         [ViewContext]
         [HtmlAttributeNotBound]
         public ViewContext ViewContext { get; set; }
 
-        [HtmlAttributeName("property")]
-        public string property { get; set; }
-
-        [HtmlAttributeName("imageUrl")]
-        public string imageUrl { get; set; }
-
-        [HtmlAttributeName("pageUrl")]
-        public string pageUrl { get; set; }
-
-        [HtmlAttributeName("cardDescription")]
-        public string cardDescription { get; set; }
-
-        [HtmlAttributeName("twitterLargeCardOverride")]
-        public bool twitterLargeCardOverride { get; set; }
-
-        public SiteTagHelper(IUrlHelperFactory urlHelperFactory,
-            IUserContextProvider userContextProvider,
-            SiteLookupService siteLookupService)
-        {
-            _urlHelperFactory = urlHelperFactory 
-                ?? throw new ArgumentNullException(nameof(urlHelperFactory));
-            _userContextProvider = userContextProvider 
-                ?? throw new ArgumentNullException(nameof(userContextProvider));
-            _siteLookupService = siteLookupService 
-                ?? throw new ArgumentNullException(nameof(siteLookupService));
-        }
-
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-            IUrlHelper url = _urlHelperFactory.GetUrlHelper(ViewContext);
-            var routeData = url.ActionContext.RouteData.Values;
+            if (context == null || output == null)
+            {
+                output?.SuppressOutput();
+                return;
+            }
+
             var userContext = _userContextProvider.GetContext();
             int siteId = userContext.SiteId;
             Site site = await _siteLookupService.GetByIdAsync(siteId);
-            switch (property.ToLower())
+            switch (property.ToUpperInvariant())
             {
-                case "name":
+                case "NAME":
                     output.TagName = "span";
                     output.Attributes.SetAttribute("class", "gra-sitename");
                     output.Content.SetHtmlContent(site.Name);
                     break;
-                case "pagetitle":
+
+                case "PAGETITLE":
                     output.TagName = "span";
                     output.Attributes.SetAttribute("class", "gra-pagetitle");
                     output.Content.SetHtmlContent(site.PageTitle);
                     break;
-                case "footer":
+
+                case "FOOTER":
                     output.TagName = string.Empty;
                     output.Content.AppendHtml(CommonMarkConverter.Convert(site.Footer));
                     break;
-                case "metadescription":
-                    output.TagName = string.Empty;
-                    if (!string.IsNullOrEmpty(site.MetaDescription))
-                    {
-                        output.Content.AppendHtml(MetaName("description", site.MetaDescription));
-                        output.Content.AppendHtml(Environment.NewLine);
-                    }
-                    break;
-                case "dcmetadata":
-                    output.TagName = string.Empty;
-                    if (!string.IsNullOrEmpty(site.MetaDescription))
-                    {
-                        AddDcMetadata(output, site);
-                    }
-                    break;
-                case "avatarmetadata":
-                    output.TagName = string.Empty;
-                    AddAvatarMetadata(output, site);
-                    break;
-                case "twittermetadata":
-                    output.TagName = string.Empty;
-                    AddTwitterMetadata(output, site);
-                    break;
-                case "facebookmetadata":
-                    output.TagName = string.Empty;
-                    AddFacebookMetadata(output, site);
-                    break;
+
                 default:
-                    throw new NotImplementedException();
+                    output.SuppressOutput();
+                    break;
             }
-        }
-        private string GetSiteUrl(Site site)
-        {
-            string scheme = ViewContext.HttpContext.Request.Scheme;
-            string host = ViewContext.HttpContext.Request.Host.Value;
-            if (site.IsHttpsForced)
-            {
-                scheme = "https";
-            }
-            if (site.IsDefault)
-            {
-                return $"{scheme}://{host}";
-            }
-            else
-            {
-                return $"{scheme}://{host}/{site.Path}";
-            }
-        }
-        private TagBuilder MetaName(string name, string content)
-        {
-            var metaTag = new TagBuilder("meta")
-            {
-                TagRenderMode = TagRenderMode.SelfClosing
-            };
-            metaTag.Attributes.Add("name", name);
-            metaTag.Attributes.Add("content", content);
-            return metaTag;
-        }
-
-        private TagBuilder MetaProperty(string property, string content)
-        {
-            var metaTag = new TagBuilder("meta")
-            {
-                TagRenderMode = TagRenderMode.SelfClosing
-            };
-            metaTag.Attributes.Add("property", property);
-            metaTag.Attributes.Add("content", content);
-            return metaTag;
-        }
-
-        private void AddDcMetadata(TagHelperOutput output, Site site)
-        {
-            output.Content.AppendHtml(MetaName("DC.Title", site.Name));
-            output.Content.AppendHtml(Environment.NewLine);
-            output.Content.AppendHtml(MetaName("DC.Description", site.MetaDescription));
-            output.Content.AppendHtml(Environment.NewLine);
-            output.Content.AppendHtml(MetaName("DC.Source", GetSiteUrl(site)));
-            output.Content.AppendHtml(Environment.NewLine);
-            output.Content.AppendHtml(MetaName("DC.Type", "InteractiveResource"));
-            output.Content.AppendHtml(Environment.NewLine);
-        }
-
-        private void AddTwitterMetadata(TagHelperOutput output, Site site)
-        {
-            if (site.TwitterLargeCard == true || twitterLargeCardOverride)
-            {
-                output.Content.AppendHtml(MetaName("twitter:card", "summary_large_image"));
-            }
-            else
-            {
-                output.Content.AppendHtml(MetaName("twitter:card", "summary"));
-            }
-            output.Content.AppendHtml(Environment.NewLine);
-            output.Content.AppendHtml(MetaName("twitter:title", site.Name));
-            output.Content.AppendHtml(Environment.NewLine);
-            if (!string.IsNullOrWhiteSpace(cardDescription))
-            {
-                output.Content.AppendHtml(MetaName("twitter:description", cardDescription));
-            }
-            else
-            {
-                output.Content.AppendHtml(MetaName("twitter:description", site.MetaDescription));
-            }
-            output.Content.AppendHtml(Environment.NewLine);
-            if (!string.IsNullOrEmpty(site.TwitterUsername))
-            {
-                output.Content.AppendHtml(MetaName("twitter:site", site.TwitterUsername));
-                output.Content.AppendHtml(Environment.NewLine);
-            }
-            if (!string.IsNullOrWhiteSpace(imageUrl))
-            {
-                output.Content.AppendHtml(MetaName("twitter:image", imageUrl));
-                output.Content.AppendHtml(Environment.NewLine);
-            }
-            else if (!string.IsNullOrEmpty(site.TwitterCardImageUrl))
-            {
-                output.Content.AppendHtml(MetaName("twitter:image", site.TwitterCardImageUrl));
-                output.Content.AppendHtml(Environment.NewLine);
-            }
-        }
-
-        private void AddFacebookMetadata(TagHelperOutput output, Site site)
-        {
-            output.Content.AppendHtml(MetaProperty("fb:app_id", site.FacebookAppId));
-            output.Content.AppendHtml(Environment.NewLine);
-            output.Content.AppendHtml(MetaProperty("og:title", site.Name));
-            output.Content.AppendHtml(Environment.NewLine);
-            output.Content.AppendHtml(MetaProperty("og:type", "website"));
-            output.Content.AppendHtml(Environment.NewLine);
-            if (!string.IsNullOrWhiteSpace(cardDescription))
-            {
-                output.Content.AppendHtml(MetaProperty("og:description", cardDescription));
-            }
-            else
-            {
-                output.Content.AppendHtml(MetaProperty("og:description", site.MetaDescription));
-            }
-
-            output.Content.AppendHtml(Environment.NewLine);
-            if (!string.IsNullOrWhiteSpace(pageUrl))
-            {
-                output.Content.AppendHtml(MetaProperty("og:url", pageUrl));
-                output.Content.AppendHtml(Environment.NewLine);
-            }
-            else
-            {
-                output.Content.AppendHtml(MetaProperty("og:url", GetSiteUrl(site)));
-                output.Content.AppendHtml(Environment.NewLine);
-            }
-            if (!string.IsNullOrWhiteSpace(imageUrl))
-            {
-                output.Content.AppendHtml(MetaProperty("og:image", imageUrl));
-                output.Content.AppendHtml(Environment.NewLine);
-            }
-            else if (!string.IsNullOrEmpty(site.FacebookImageUrl))
-            {
-                output.Content.AppendHtml(MetaProperty("og:image", site.FacebookImageUrl));
-                output.Content.AppendHtml(Environment.NewLine);
-            }
-        }
-
-        private void AddAvatarMetadata(TagHelperOutput output, Site site)
-        {
-            output.Content.AppendHtml(MetaName("description",
-                $"A customized avatar for {site.Name}, join the site to make your own!"));
         }
     }
 }

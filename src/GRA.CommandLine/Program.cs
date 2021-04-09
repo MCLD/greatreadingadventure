@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using AutoMapper;
 using GRA.Abstract;
 using GRA.CommandLine.Base;
 using GRA.CommandLine.FakeWeb;
