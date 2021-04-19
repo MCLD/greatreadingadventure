@@ -224,7 +224,6 @@ namespace GRA.Domain.Service
             var rootPath = _pathResolver.ResolveContentFilePath($"site{GetCurrentSiteId()}");
 
             var tipDirectoryInfo = Directory.CreateDirectory(Path.Combine(rootPath,
-                "assets",
                 "dailyimages",
                 $"dailyliteracytip{dailyLiteracyTipId}"));
 
