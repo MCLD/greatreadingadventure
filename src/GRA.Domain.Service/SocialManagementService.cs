@@ -195,8 +195,6 @@ namespace GRA.Domain.Service
 
             await _socialRepository.UpdateSaveAsync(social);
 
-            var socialHeader = await _socialHeaderRepository.GetByIdAsync(socialHeaderId);
-
             await ClearSocialCache(socialHeaderId, languageId);
         }
 
@@ -234,8 +232,6 @@ namespace GRA.Domain.Service
             dbSocial.TwitterUsername = social.TwitterUsername;
 
             await _socialRepository.UpdateSaveAsync(dbSocial);
-
-            var socialHeader = await _socialHeaderRepository.GetByIdAsync(social.SocialHeaderId);
 
             await ClearSocialCache(social.SocialHeaderId, social.LanguageId);
         }
