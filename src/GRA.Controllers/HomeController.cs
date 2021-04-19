@@ -177,7 +177,7 @@ namespace GRA.Controllers
                             var imagePath = Path.Combine($"site{site.Id}",
                                 "dailyimages",
                                 $"dailyliteracytip{program.DailyLiteracyTipId}",
-                                $"{image.Id}{image.Extension}");
+                                $"{image.Name}{image.Extension}");
 
                             if (System.IO.File.Exists(_pathResolver
                                 .ResolveContentFilePath(imagePath)))

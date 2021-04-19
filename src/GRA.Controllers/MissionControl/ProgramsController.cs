@@ -24,6 +24,8 @@ namespace GRA.Controllers.MissionControl
         private readonly PointTranslationService _pointTranslationService;
         private readonly SiteService _siteService;
 
+        public static string Name { get { return "Programs"; } }
+
         public ProgramsController(ILogger<ProgramsController> logger,
             ServiceFacade.Controller context,
             BadgeService badgeService,
@@ -43,6 +45,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         #region Programs
+
         public async Task<IActionResult> Index(string search, int page = 1)
         {
             var filter = new BaseFilter(page)
@@ -98,6 +101,9 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization",
+            "CA1308:Normalize strings to uppercase",
+            Justification = "Using lowercase for filenames")]
         public async Task<IActionResult> Create(ProgramDetailViewModel model)
         {
             byte[] badgeBytes = null;
@@ -174,11 +180,9 @@ namespace GRA.Controllers.MissionControl
                         {
                             if (badgeBytes == null)
                             {
-                                using (var ms = new MemoryStream())
-                                {
-                                    await model.BadgeUploadImage.CopyToAsync(ms);
-                                    badgeBytes = ms.ToArray();
-                                }
+                                using var ms = new MemoryStream();
+                                await model.BadgeUploadImage.CopyToAsync(ms);
+                                badgeBytes = ms.ToArray();
                             }
                             filename = Path.GetFileName(model.BadgeUploadImage.FileName);
                         }
@@ -262,6 +266,9 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization",
+            "CA1308:Normalize strings to uppercase",
+            Justification = "Using lowercase for filenames")]
         public async Task<IActionResult> Edit(ProgramDetailViewModel model)
         {
             byte[] badgeBytes = null;
@@ -352,11 +359,9 @@ namespace GRA.Controllers.MissionControl
                         {
                             if (badgeBytes == null)
                             {
-                                using (var ms = new MemoryStream())
-                                {
-                                    await model.BadgeUploadImage.CopyToAsync(ms);
-                                    badgeBytes = ms.ToArray();
-                                }
+                                using var ms = new MemoryStream();
+                                await model.BadgeUploadImage.CopyToAsync(ms);
+                                badgeBytes = ms.ToArray();
                             }
                             filename = Path.GetFileName(model.BadgeUploadImage.FileName);
                         }
@@ -388,7 +393,7 @@ namespace GRA.Controllers.MissionControl
                             StringComparison.OrdinalIgnoreCase))
                         {
                             existing.AltText = model.BadgeAltText;
-                            await _badgeService.ReplaceBadgeFileAsync(existing,null,null);
+                            await _badgeService.ReplaceBadgeFileAsync(existing, null, null);
                         }
                     }
                     if (!string.IsNullOrWhiteSpace(model.Program.JoinBadgeName))
@@ -438,6 +443,9 @@ namespace GRA.Controllers.MissionControl
             });
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
+            "CA1031:Do not catch general exception types",
+            Justification = "Return proper JSON regardless of errors")]
         public async Task<IActionResult> DecreasePosition(int id)
         {
             try
@@ -452,6 +460,9 @@ namespace GRA.Controllers.MissionControl
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
+            "CA1031:Do not catch general exception types",
+            Justification = "Return proper JSON regardless of errors")]
         public async Task<IActionResult> IncreasePosition(int id)
         {
             try
@@ -465,9 +476,11 @@ namespace GRA.Controllers.MissionControl
                 return Json(false);
             }
         }
-        #endregion
+
+        #endregion Programs
 
         #region Point Translations
+
         public async Task<IActionResult> PointTranslations(int page = 1)
         {
             var filter = new BaseFilter(page);
@@ -514,7 +527,7 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> EditPointTranslation(PointTranslationDetailViewModel model)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && model != null)
             {
                 await _pointTranslationService.UpdateAsync(model.PointTranslation);
                 ShowAlertSuccess($"Saved Point Translation \"{model.PointTranslation.TranslationName}\"!");
@@ -525,6 +538,7 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Edit Point Translation";
             return View("PointTranslationDetail", model);
         }
-        #endregion
+
+        #endregion Point Translations
     }
 }

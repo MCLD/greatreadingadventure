@@ -26,6 +26,23 @@ namespace GRA.Data.Repository
                 .CountAsync();
         }
 
+        public async Task<DailyLiteracyTipImage> GetByDay(int dailyLiteracyTipId, int day)
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.DailyLiteracyTipId == dailyLiteracyTipId && _.Day == day)
+                .ProjectTo<DailyLiteracyTipImage>(_mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync();
+        }
+
+        public async Task<int> GetLatestDayAsync(int dailyLiteracyTipId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.DailyLiteracyTipId == dailyLiteracyTipId)
+                .DefaultIfEmpty()
+                .MaxAsync(_ => (int?)_.Day) ?? 0;
+        }
+
         public async Task<ICollection<DailyLiteracyTipImage>> PageAsync(DailyImageFilter filter)
         {
             return await ApplyFilters(filter)
@@ -35,50 +52,45 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        private IQueryable<Model.DailyLiteracyTipImage> ApplyFilters(DailyImageFilter filter)
-        {
-            return DbSet
-                .AsNoTracking()
-                .Where(_ => _.DailyLiteracyTipId == filter.DailyLiteracyTipId);
-        }
-
-        public async Task UpdateSaveAsync(int userId, DailyLiteracyTipImage image, int newDay)
-        {
-            if (newDay > image.Day)
-            {
-                await DbSet.Where(_ => _.DailyLiteracyTipId == image.DailyLiteracyTipId
-                    && _.Day > image.Day && _.Day <= newDay)
-                    .ForEachAsync(_ => _.Day--);
-            }
-            else
-            {
-                await DbSet.Where(_ => _.DailyLiteracyTipId == image.DailyLiteracyTipId
-                    && _.Day < image.Day && _.Day >= newDay)
-                    .ForEachAsync(_ => _.Day++);
-            }
-            image.Day = newDay;
-            await base.UpdateSaveAsync(userId, image);
-        }
-
-        public override async Task RemoveSaveAsync(int userId, int imageId)
+        public override async Task RemoveSaveAsync(int userId, int id)
         {
             var image = await DbSet.AsNoTracking()
-                .Where(_ => _.Id == imageId)
+                .Where(_ => _.Id == id)
                 .SingleOrDefaultAsync();
 
             await DbSet
                 .Where(_ => _.DailyLiteracyTipId == image.DailyLiteracyTipId && _.Day > image.Day)
                 .ForEachAsync(_ => _.Day--);
 
-            await base.RemoveSaveAsync(userId, imageId);
+            await base.RemoveSaveAsync(userId, id);
         }
 
-        public async Task<DailyLiteracyTipImage> GetByDay(int dailyLiteracyTipId, int day)
+        public async Task UpdateSaveAsync(int userId, DailyLiteracyTipImage image, int newDay)
         {
-            return await DbSet.AsNoTracking()
-                .Where(_ => _.DailyLiteracyTipId == dailyLiteracyTipId && _.Day == day)
-                .ProjectTo<DailyLiteracyTipImage>(_mapper.ConfigurationProvider)
-                .SingleOrDefaultAsync();
+            if (image != null)
+            {
+                if (newDay > image.Day)
+                {
+                    await DbSet.Where(_ => _.DailyLiteracyTipId == image.DailyLiteracyTipId
+                        && _.Day > image.Day && _.Day <= newDay)
+                        .ForEachAsync(_ => _.Day--);
+                }
+                else
+                {
+                    await DbSet.Where(_ => _.DailyLiteracyTipId == image.DailyLiteracyTipId
+                        && _.Day < image.Day && _.Day >= newDay)
+                        .ForEachAsync(_ => _.Day++);
+                }
+                image.Day = newDay;
+                await base.UpdateSaveAsync(userId, image);
+            }
+        }
+
+        private IQueryable<Model.DailyLiteracyTipImage> ApplyFilters(DailyImageFilter filter)
+        {
+            return DbSet
+                .AsNoTracking()
+                .Where(_ => _.DailyLiteracyTipId == filter.DailyLiteracyTipId);
         }
     }
 }

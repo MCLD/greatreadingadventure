@@ -156,6 +156,10 @@
                                 {
                                     <li><a asp-controller="Categories" asp-action="Index">Category management</a></li>
                                 }
+                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageDailyLiteracyTips.ToString()))
+                                {
+                                    <li><a asp-controller="DailyTips" asp-action="Index">Daily tip management</a></li>
+                                }
                                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageDashboardContent.ToString()))
                                 {
                                     <li><a asp-controller="Dashboard" asp-action="Index">Dashboard Content management</a></li>
