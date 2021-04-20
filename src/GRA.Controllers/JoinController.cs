@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GRA.Abstract;
 using GRA.Controllers.Filter;
 using GRA.Controllers.ViewModel.Join;
 using GRA.Controllers.ViewModel.Shared;

@@ -109,6 +109,8 @@ namespace GRA.Data.Profile
             CreateMap<Model.SchoolDistrict, Domain.Model.SchoolDistrict>();
             CreateMap<Model.Site, Domain.Model.Site>();
             CreateMap<Model.SiteSetting, Domain.Model.SiteSetting>();
+            CreateMap<Model.Social, Domain.Model.Social>();
+            CreateMap<Model.SocialHeader, Domain.Model.SocialHeader>();
             CreateMap<Model.SpatialDistanceDetail, Domain.Model.SpatialDistanceDetail>();
             CreateMap<Model.SpatialDistanceHeader, Domain.Model.SpatialDistanceHeader>();
             CreateMap<Model.System, Domain.Model.System>()
@@ -188,6 +190,8 @@ namespace GRA.Data.Profile
             CreateMap<Domain.Model.SchoolDistrict, Model.SchoolDistrict>();
             CreateMap<Domain.Model.Site, Model.Site>();
             CreateMap<Domain.Model.SiteSetting, Model.SiteSetting>();
+            CreateMap<Domain.Model.Social, Model.Social>();
+            CreateMap<Domain.Model.SocialHeader, Model.SocialHeader>();
             CreateMap<Domain.Model.SpatialDistanceDetail, Model.SpatialDistanceDetail>();
             CreateMap<Domain.Model.SpatialDistanceHeader, Model.SpatialDistanceHeader>();
             CreateMap<Domain.Model.System, Model.System>();

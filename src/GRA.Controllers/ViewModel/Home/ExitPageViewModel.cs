@@ -5,5 +5,6 @@ namespace GRA.Controllers.ViewModel.Home
     public class ExitPageViewModel
     {
         public Branch Branch { get; set; }
+        public Social Social { get; set; }
     }
 }

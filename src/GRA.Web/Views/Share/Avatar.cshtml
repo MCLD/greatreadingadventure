@@ -1,15 +1,8 @@
 ﻿@model GRA.Controllers.ViewModel.Share.ShareAvatarViewModel
 
 @section metadata {
-    <grasite property="twittermetadata"
-             cardDescription="@Model.CardDescription"
-             imageUrl="@Model.ImageUrl"
-             twitterLargeCardOverride="true"></grasite>
-    <grasite property="facebookmetadata"
-             cardDescription="@Model.CardDescription"
-             imageUrl="@Model.ImageUrl"
-             pageUrl="@Model.PageUrl"></grasite>
-    <grasite property="avatarmetadata"></grasite>
+    <social data="Model.Social"
+            description="A customized avatar for {sitename}, sign up to make your own!"></social>
 }
 
 <div class="row row-spacing">

@@ -147,30 +147,16 @@ namespace GRA.Domain.Service
             var siteId = GetCurrentSiteId();
 
             var currentCultureName = _userContextProvider.GetCurrentCulture()?.Name;
-            if (currentCultureName != null)
-            {
-                var currentLanguageId = await _languageService.GetLanguageIdAsync(currentCultureName);
-                var localPage
-                    = await _pageRepository.GetByStubAsync(siteId, pageStub, currentLanguageId);
-                if (localPage != null
-                    && (localPage.IsPublished || HasPermission(Permission.ViewUnpublishedPages)))
-                {
-                    return localPage;
-                }
-            }
-            var defaultLanguageId = await _languageService.GetDefaultLanguageIdAsync();
-            var defaultPage
-                = await _pageRepository.GetByStubAsync(siteId, pageStub, defaultLanguageId);
+            var languageId = await _languageService.GetLanguageIdAsync(currentCultureName);
 
-            if (defaultPage != null
-                && (defaultPage.IsPublished || HasPermission(Permission.ViewUnpublishedPages)))
+            var page = await _pageRepository.GetByStubAsync(siteId, pageStub, languageId);
+            if (page != null &&
+                (page.IsPublished || HasPermission(Permission.ViewUnpublishedPages)))
             {
-                return defaultPage;
+                return page;
             }
-            else
-            {
-                throw new GraException("The requested page could not be accessed or does not exist.");
-            }
+
+            throw new GraException("The requested page could not be accessed or does not exist.");
         }
 
         public async Task<IEnumerable<Page>> GetAreaPagesAsync(bool navPages)

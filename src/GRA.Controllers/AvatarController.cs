@@ -149,7 +149,7 @@ namespace GRA.Controllers
                                 Request.Host.Value);
                     var contentPath = _pathResolver.ResolveContentPath(path);
                     viewModel.AvatarImageUrl = Path.Combine(siteUrl, contentPath)
-                        .Replace("\\", "/");
+                        .Replace("\\", "/", StringComparison.OrdinalIgnoreCase);
 
                     var shareUrl = siteUrl + Url.Action(nameof(ShareController.Avatar), "Share")
                         + $"/{filename}";

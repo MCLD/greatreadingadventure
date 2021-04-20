@@ -84,9 +84,9 @@ namespace GRA.Domain.Service
                         await _languageRepository.UpdateSaveNoAuditAsync(dbCulture);
                     }
                 }
-                if (_cache.Get(string.Format(CacheKey.LanguageId, dbCulture.Name)) != null)
+                if (_cache.Get(GetCacheKey(CacheKey.LanguageId, dbCulture.Name)) != null)
                 {
-                    _cache.Remove(string.Format(CacheKey.LanguageId, dbCulture.Name));
+                    _cache.Remove(GetCacheKey(CacheKey.LanguageId, dbCulture.Name));
                 }
             }
 
@@ -112,9 +112,9 @@ namespace GRA.Domain.Service
                     IsDefault = culture.Name == Culture.DefaultName,
                     Name = culture.Name
                 });
-                if (_cache.Get(string.Format(CacheKey.LanguageId, missingCultureName)) != null)
+                if (_cache.Get(GetCacheKey(CacheKey.LanguageId, missingCultureName)) != null)
                 {
-                    _cache.Remove(string.Format(CacheKey.LanguageId, missingCultureName));
+                    _cache.Remove(GetCacheKey(CacheKey.LanguageId, missingCultureName));
                 }
             }
 
@@ -145,15 +145,19 @@ namespace GRA.Domain.Service
 
         public async Task<int> GetLanguageIdAsync(string culture)
         {
-            var key = string.Format(CacheKey.LanguageId, culture);
-            var cachedLanguageId = _cache.Get(key);
+            if (string.IsNullOrEmpty(culture))
+            {
+                return await GetDefaultLanguageIdAsync();
+            }
+            var key = GetCacheKey(CacheKey.LanguageId, culture);
+            var cachedLanguageId = await _cache.GetAsync(key);
             if (cachedLanguageId == null)
             {
                 var languageId = await _languageRepository.GetLanguageId(culture);
                 cachedLanguageId = BitConverter.GetBytes(languageId);
-                _cache.Set(key, cachedLanguageId, new DistributedCacheEntryOptions
+                await _cache.SetAsync(key, cachedLanguageId, new DistributedCacheEntryOptions
                 {
-                    AbsoluteExpirationRelativeToNow = new TimeSpan(1, 0, 0)
+                    AbsoluteExpirationRelativeToNow = new TimeSpan(4, 0, 0)
                 });
             }
             return BitConverter.ToInt32(cachedLanguageId, 0);

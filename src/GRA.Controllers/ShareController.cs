@@ -25,17 +25,23 @@ namespace GRA.Controllers
         {
             var site = await GetCurrentSiteAsync();
 
-            var filePath = _pathResolver.ResolveContentFilePath($"site{site.Id}/useravatars/{id}.png");
+            var filePath = _pathResolver
+                .ResolveContentFilePath($"site{site.Id}/useravatars/{id}.png");
             if (System.IO.File.Exists(filePath))
             {
                 var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
-                var contentPath = _pathResolver.ResolveContentPath($"site{site.Id}/useravatars/{id}.png");
-                var imageUrl = Path.Combine(siteUrl, contentPath).Replace("\\", "/");
+                var contentPath = _pathResolver
+                    .ResolveContentPath($"site{site.Id}/useravatars/{id}.png");
+                var imageUrl = Path.Combine(siteUrl, contentPath)
+                    .Replace("\\", "/", StringComparison.OrdinalIgnoreCase);
                 var viewModel = new ShareAvatarViewModel()
                 {
-                    CardDescription = site.AvatarCardDescription,
                     ImageUrl = imageUrl,
-                    PageUrl = siteUrl + Request.Path
+                    Social = new Domain.Model.Social
+                    {
+                        Description = site.AvatarCardDescription,
+                        ImageLink = imageUrl
+                    }
                 };
                 return View(viewModel);
             }

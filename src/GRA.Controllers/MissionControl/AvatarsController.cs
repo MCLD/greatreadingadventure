@@ -22,6 +22,7 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.ManageAvatars)]
     public class AvatarsController : Base.MCController
     {
+        private const long MaxFileSize = 100L * 1024L * 1024L;
         private const string AvatarIndex = "default avatars.json";
 
         private readonly ILogger<AvatarsController> _logger;
@@ -497,6 +498,8 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
+        [RequestSizeLimit(MaxFileSize)]
+        [RequestFormLimits(MultipartBodyLengthLimit = MaxFileSize)]
         public async Task<IActionResult> SetupAvatars(AvatarIndexViewModel viewModel)
         {
             var layers = await _avatarService.GetLayersAsync();

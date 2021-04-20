@@ -38,6 +38,7 @@ namespace GRA.Domain.Model
         public const string ManageRoles = "ManageRoles";
         public const string ManageSchools = "ManageSchools";
         public const string ManageSites = "ManageSites";
+        public const string ManageSocial = "ManageSocial";
         public const string ManageSystems = "ManageSystems";
         public const string ManageTriggerMail = "ManageTriggerMail";
         public const string ManageTriggers = "ManageTriggers";

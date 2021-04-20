@@ -38,6 +38,7 @@ namespace GRA.Domain.Model
         ManageRoles,
         ManageSchools,
         ManageSites,
+        ManageSocial,
         ManageSystems,
         ManageTriggers,
         ManageTriggerMail,

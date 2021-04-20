@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using GRA.Abstract;
 using GRA.Controllers.ViewModel.PerformerRegistration.Home;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
