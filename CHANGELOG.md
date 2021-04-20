@@ -11,6 +11,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Add accessibility (alt tags) to badges
 - Import and export of Systems and Branches
 - Import and export of Schools and Districts
+- Mission Control interface to add daily images
+- Analytics tracking of clicks on daily images
+- Mission Control interface to manage social images
+- Internationalization of social card images
 
 ### Fixed
 
@@ -18,6 +22,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - News posts now send emails via the job system to avoid timeouts
 - Avatar imports now work if the avatars aren't in the root of the ZIP file
 - Name all cookies with the discriminator value to avoid cookie collisions on the same host
+- Visual issue with close button (X) on pop-up modals
+
 
 ## [4.2.0] - 2021-01-04
 
