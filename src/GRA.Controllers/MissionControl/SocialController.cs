@@ -61,6 +61,9 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         [RequestSizeLimit(MaxFileSize)]
         [RequestFormLimits(MultipartBodyLengthLimit = MaxFileSize)]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
+            "CA1031:Do not catch general exception types",
+            Justification = "Show the user a friendly error rather than an exception page")]
         public async Task<IActionResult> AddSocialHeader(SocialItemViewModel viewmodel)
         {
             if (viewmodel == null)
@@ -189,6 +192,9 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         [RequestSizeLimit(MaxFileSize)]
         [RequestFormLimits(MultipartBodyLengthLimit = MaxFileSize)]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
+            "CA1031:Do not catch general exception types",
+            Justification = "Show the user a friendly error rather than an exception page")]
         public async Task<IActionResult> ReplaceImage(ReplaceImageViewModel viewmodel)
 
         {
@@ -236,8 +242,15 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
+            "CA1031:Do not catch general exception types",
+            Justification = "Show the user a friendly error rather than an exception page")]
         public async Task<IActionResult> UpdateSocial(SocialItemViewModel viewmodel)
         {
+            if (viewmodel == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
             var header = await _socialManagementService.GetHeaderAndSocialAsync(viewmodel.HeaderId,
                 viewmodel.LanguageId);
 

@@ -15,9 +15,6 @@ namespace GRA.Domain.Service
 {
     public class SocialManagementService : BaseUserService<SocialManagementService>
     {
-        // if this is updated here, SocialService must be updated as well
-        private const int CacheInHours = 4;
-
         private const string SocialPath = "social";
 
         private readonly IDistributedCache _cache;
