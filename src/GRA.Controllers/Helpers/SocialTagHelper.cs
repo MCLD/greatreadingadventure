@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Text;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
@@ -90,7 +91,7 @@ namespace GRA.Controllers.Helpers
 
             if (!string.IsNullOrEmpty(Data?.ImageLink))
             {
-                AddFacebookTags(output, GetSiteUrl(site), title, description);
+                AddFacebookTags(output, site, title, description);
                 AddTwitterTags(output);
             }
         }
@@ -126,18 +127,21 @@ namespace GRA.Controllers.Helpers
                 output.Content.AppendHtml(MetaName("DC.Description", site.MetaDescription));
                 output.Content.AppendHtml(Environment.NewLine);
             }
-            output.Content.AppendHtml(MetaName("DC.Source", GetSiteUrl(site)));
+            output.Content.AppendHtml(MetaName("DC.Source", GetSiteLink(site, null)));
             output.Content.AppendHtml(Environment.NewLine);
             output.Content.AppendHtml(MetaName("DC.Type", "InteractiveResource"));
             output.Content.AppendHtml(Environment.NewLine);
         }
 
         private void AddFacebookTags(TagHelperOutput output,
-            string link,
+            Site site,
             string title,
             string description)
         {
-            output.Content.AppendHtml(MetaProperty("og:url", link));
+            var currentCulture = _userContextProvider.GetCurrentCulture();
+            var ogLink = GetSiteLink(site, currentCulture);
+
+            output.Content.AppendHtml(MetaProperty("og:url", ogLink));
             output.Content.AppendHtml(Environment.NewLine);
 
             output.Content.AppendHtml(MetaProperty("og:type", "website"));
@@ -152,7 +156,6 @@ namespace GRA.Controllers.Helpers
                 output.Content.AppendHtml(Environment.NewLine);
             }
 
-            var currentCulture = _userContextProvider.GetCurrentCulture();
             if (currentCulture != null)
             {
                 output.Content.AppendHtml(MetaProperty("og:locale",
@@ -175,6 +178,7 @@ namespace GRA.Controllers.Helpers
 
             if (!string.IsNullOrEmpty(Data?.ImageLink) && !string.IsNullOrEmpty(Data?.ImageAlt))
             {
+                var link = GetSiteLink(site, null);
                 var cardLink = link.EndsWith('/')
                     ? link + Data.ImageLink.TrimStart('/')
                     : link + '/' + Data.ImageLink.TrimStart('/');
@@ -193,7 +197,7 @@ namespace GRA.Controllers.Helpers
                     output.Content.AppendHtml(MetaProperty("og:image:width",
                         Data.ImageWidth.ToString(CultureInfo.InvariantCulture)));
                     output.Content.AppendHtml(Environment.NewLine);
-                    output.Content.AppendHtml(MetaProperty("og:image:width",
+                    output.Content.AppendHtml(MetaProperty("og:image:height",
                         Data.ImageHeight.ToString(CultureInfo.InvariantCulture)));
                     output.Content.AppendHtml(Environment.NewLine);
                 }
@@ -215,16 +219,36 @@ namespace GRA.Controllers.Helpers
             }
         }
 
-        private string GetSiteUrl(Site site)
+        private string GetSiteLink(Site site, CultureInfo linkForCulture)
         {
             string scheme = site.IsHttpsForced
                 ? SecureScheme
                 : ViewContext.HttpContext.Request.Scheme;
-            string host = ViewContext.HttpContext.Request.Host.Value;
 
-            return site.IsDefault
-                ? $"{scheme}://{host}"
-                : $"{scheme}://{host}/{site.Path}";
+            var link = new StringBuilder(scheme)
+                .Append("://")
+                .Append(ViewContext.HttpContext.Request.Host.Value)
+                .Append('/');
+
+            if (linkForCulture != null)
+            {
+                var defaultUiCulture = _localizationOptions
+                    .Value
+                    .DefaultRequestCulture
+                    .UICulture;
+
+                if (linkForCulture.Name != defaultUiCulture.Name)
+                {
+                    link.Append(linkForCulture.Name).Append('/');
+                }
+            }
+
+            if (!site.IsDefault)
+            {
+                link.Append(site.Path).Append('/');
+            }
+
+            return link.ToString();
         }
     }
 }
