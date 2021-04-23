@@ -10,7 +10,7 @@ namespace GRA.Data.SqlServer.Migrations
             migrationBuilder.Sql("INSERT INTO [PageHeaders] ([Id], [CreatedBy], [CreatedAt], [SiteId], [PageName], [Stub]) SELECT [Id], [CreatedBy], [Createdat], [SiteId], [Title], [Stub] FROM [Pages];");
             migrationBuilder.Sql("SET IDENTITY_INSERT [PageHeaders] OFF;");
             migrationBuilder.Sql("UPDATE [Pages] SET [PageHeaderId] = [Id]");
-            migrationBuilder.Sql("UPDATE [Pages] SET [LanguageId] = 1");
+            migrationBuilder.Sql("IF(NOT EXISTS(SELECT 1 FROM [Languages])) BEGIN INSERT INTO [Languages] ([CreatedBy], [CreatedAt], [Description], [IsActive], [IsDefault], [Name]) VALUES (1, GETDATE(), 'English (United States)', 1, 1, 'en-US') END");
             migrationBuilder.Sql("UPDATE [Pages] SET [LanguageId] = l.[Id] FROM (SELECT TOP 1 [Id] FROM [Languages] WHERE [IsDefault] = 1) AS l");
 
             migrationBuilder.DropColumn(
