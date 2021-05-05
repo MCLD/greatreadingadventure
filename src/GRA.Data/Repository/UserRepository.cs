@@ -227,11 +227,6 @@ namespace GRA.Data.Repository
             var userList = DbSet.AsNoTracking()
                 .Where(_ => !_.IsDeleted && _.SiteId == filter.SiteId);
 
-            if (filter.UserIds?.Any() == true)
-            {
-                userList = userList.Where(_ => filter.UserIds.Contains(_.Id));
-            }
-
             if (filter.SystemIds?.Any() == true)
             {
                 userList = userList.Where(_ => filter.SystemIds.Contains(_.SystemId));
@@ -266,6 +261,10 @@ namespace GRA.Data.Repository
                     .Where(_ => !filter.UserIds.Contains(_.Id)
                         && !householdHeadList.Contains(_.Id)
                         && !_.HouseholdHeadUserId.HasValue);
+            }
+            else if (filter.UserIds?.Any() == true)
+            {
+                userList = userList.Where(_ => filter.UserIds.Contains(_.Id));
             }
 
             if (filter.IsSubscribed != null)
