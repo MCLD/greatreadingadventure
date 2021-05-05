@@ -24,6 +24,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Name all cookies with the discriminator value to avoid cookie collisions on the same host
 - Visual issue with close button (X) on pop-up modals
 - Mission Control household add existing participant list being empty
+- Streaming event missing badge alt-text field
 
 
 ## [4.2.0] - 2021-01-04
