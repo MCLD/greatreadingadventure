@@ -23,6 +23,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Avatar imports now work if the avatars aren't in the root of the ZIP file
 - Name all cookies with the discriminator value to avoid cookie collisions on the same host
 - Visual issue with close button (X) on pop-up modals
+- Mission Control household add exisiting participant list being empty
 
 
 ## [4.2.0] - 2021-01-04

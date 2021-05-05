@@ -244,7 +244,7 @@ namespace GRA.Domain.Service
         {
             if (HasPermission(Permission.ViewParticipantList))
             {
-                if (!string.IsNullOrEmpty(filter.Search))
+                if (!filter.CanAddToHousehold && !string.IsNullOrEmpty(filter.Search))
                 {
                     var vendorCode = await _vendorCodeService
                         .GetVendorCodeByCode(filter.Search.ToUpper(CultureInfo.InvariantCulture));
