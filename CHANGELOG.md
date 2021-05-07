@@ -26,6 +26,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Mission Control household add existing participant list being empty
 - Streaming event missing badge alt-text field
 
+- News posts now include the subject correctly
 
 ## [4.2.0] - 2021-01-04
 
