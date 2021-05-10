@@ -80,7 +80,15 @@
                                 <paginate paginateModel="@Model.PaginateModel"></paginate>
                             }
                         }
-                        <a id="addBook" class="btn btn-default" href="#" data-toggle="modal" data-target="#addModal">
+                        <a href="#"
+                           id="addBook"
+                           class="btn btn-default @(!Model.CanEditBooks ? "wide-tooltip" : null)"
+                           data-toggle="@(!Model.CanEditBooks ? "tooltip" : "modal")"
+                           data-target="@(Model.CanEditBooks ? "#addModal" : null)"
+                           title="@(!Model.CanEditBooks ? SharedLocalizer[GRA.Annotations.Interface.DisabledBeforeProgramStarts] : null)"
+                           data-placement="@(!Model.CanEditBooks ? "top" : null)"
+                           @(!Model.CanEditBooks ? "disabled" : null)
+                           }>
                             @SharedLocalizer[GRA.Annotations.Interface.AddBook]
                         </a>
                     </div>

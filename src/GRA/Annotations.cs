@@ -111,6 +111,7 @@
             public const string Delete = "Delete";
             public const string DeleteMail = "Are you sure you wish to delete this mail: {0}";
             public const string Details = "Details";
+            public const string DisabledBeforeProgramStarts = "This functionality will become available once the program starts.";
             public const string Distance = "Distance";
             public const string DonateBook = "Donate book";
             public const string DonateYourBook = "Donate your book";
