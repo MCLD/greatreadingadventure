@@ -87,8 +87,7 @@
                            data-target="@(Model.CanEditBooks ? "#addModal" : null)"
                            title="@(!Model.CanEditBooks ? SharedLocalizer[GRA.Annotations.Interface.DisabledBeforeProgramStarts] : null)"
                            data-placement="@(!Model.CanEditBooks ? "top" : null)"
-                           @(!Model.CanEditBooks ? "disabled" : null)
-                           }>
+                           @(!Model.CanEditBooks ? "disabled" : null)>
                             @SharedLocalizer[GRA.Annotations.Interface.AddBook]
                         </a>
                     </div>
