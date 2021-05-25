@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Analytics tracking of clicks on daily images
 - Mission Control interface to manage social images
 - Internationalization of social card images
+- Ability to see a list of users in each role
 
 ### Fixed
 

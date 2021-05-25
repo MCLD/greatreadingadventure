@@ -13,8 +13,8 @@ namespace GRA.Domain.Service
     public class RoleService : BaseUserService<RoleService>
     {
         private readonly IRoleRepository _roleRepository;
-        private readonly ISiteRepository _siteRepository;
         private readonly SiteLookupService _siteLookupService;
+        private readonly ISiteRepository _siteRepository;
 
         public RoleService(ILogger<RoleService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
@@ -31,30 +31,6 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(siteRepository));
             _siteLookupService = siteLookupService
                 ?? throw new ArgumentNullException(nameof(siteLookupService));
-        }
-
-        public async Task<Role> GetByIdAsync(int id)
-        {
-            VerifyManagementPermission();
-            return await _roleRepository.GetByIdAsync(id);
-        }
-
-        public async Task<IEnumerable<Role>> GetAllAsync()
-        {
-            VerifyManagementPermission();
-            return await _roleRepository.GetAllAsync();
-        }
-
-        public async Task<DataWithCount<IEnumerable<Role>>> GetPaginatedListAsync(BaseFilter filter)
-        {
-            VerifyManagementPermission();
-            var roleList = await _roleRepository.PageAsync(filter);
-            foreach (var role in roleList.Data)
-            {
-                var permissions = await _roleRepository.GetPermissionNamesForRoleAsync(role.Id);
-                role.PermissionCount = permissions.Count();
-            }
-            return roleList;
         }
 
         public async Task<Role> AddAsync(Role role, IEnumerable<string> permissions)
@@ -96,6 +72,49 @@ namespace GRA.Domain.Service
             await _roleRepository.UpdateSaveAsync(authId, currentRole, permissionsToAdd, permissionsToRemove);
         }
 
+        public async Task<IEnumerable<Role>> GetAllAsync()
+        {
+            VerifyManagementPermission();
+            return await _roleRepository.GetAllAsync();
+        }
+
+        public async Task<IEnumerable<string>> GetAllPermissionsAsync()
+        {
+            VerifyManagementPermission();
+            return await _roleRepository.GetAllPermissionsAsync();
+        }
+
+        public async Task<Role> GetByIdAsync(int id)
+        {
+            VerifyManagementPermission();
+            return await _roleRepository.GetByIdAsync(id);
+        }
+
+        public async Task<DataWithCount<IEnumerable<Role>>> GetPaginatedListAsync(BaseFilter filter)
+        {
+            VerifyManagementPermission();
+            var roleList = await _roleRepository.PageAsync(filter);
+            foreach (var role in roleList.Data)
+            {
+                var permissions = await _roleRepository.GetPermissionNamesForRoleAsync(role.Id);
+                role.PermissionCount = permissions.Count();
+            }
+            return roleList;
+        }
+
+        public async Task<IEnumerable<string>> GetPermissionsForRoleAsync(int roleId)
+        {
+            VerifyManagementPermission();
+            return await _roleRepository.GetPermissionNamesForRoleAsync(roleId);
+        }
+
+        public async Task<IDictionary<int, int>>
+            GetUserCountForRolesAsync(IEnumerable<int> roleIds)
+        {
+            VerifyManagementPermission();
+            return await _roleRepository.GetUserCountForRolesAsync(roleIds);
+        }
+
         public async Task RemoveAsync(int roleId)
         {
             VerifyManagementPermission();
@@ -105,18 +124,6 @@ namespace GRA.Domain.Service
                 throw new GraException("Cannot delete an admin role.");
             }
             await _roleRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), roleId);
-        }
-
-        public async Task<IEnumerable<string>> GetAllPermissionsAsync()
-        {
-            VerifyManagementPermission();
-            return await _roleRepository.GetAllPermissionsAsync();
-        }
-
-        public async Task<IEnumerable<string>> GetPermissionsForRoleAsync(int roleId)
-        {
-            VerifyManagementPermission();
-            return await _roleRepository.GetPermissionNamesForRoleAsync(roleId);
         }
 
         public async Task SyncPermissionsAsync()
