@@ -57,16 +57,16 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToRoute(new { page = paginateModel.LastPage ?? 1 });
             }
 
-            var viewmodel = new RoleListViewModel
+            var viewModel = new RoleListViewModel
             {
                 Roles = roleList.Data,
                 PaginateModel = paginateModel,
             };
 
-            viewmodel.SetUsersInRoles(await _roleService
+            viewModel.SetUsersInRoles(await _roleService
                 .GetUserCountForRolesAsync(roleList.Data.Select(_ => _.Id)));
 
-            return View(viewmodel);
+            return View(viewModel);
         }
 
         [HttpPost]
@@ -181,7 +181,7 @@ namespace GRA.Controllers.MissionControl
 
             var users = await _userService.GetUserInfoByRole(id, filter);
 
-            var viewmodel = new UsersInRoleViewModel
+            var viewModel = new UsersInRoleViewModel
             {
                 CurrentPage = page == default ? 1 : page,
                 ItemCount = users.Count,
@@ -190,14 +190,14 @@ namespace GRA.Controllers.MissionControl
                 RoleName = role.Name
             };
 
-            viewmodel.AddUsers(users.Data);
+            viewModel.AddUsers(users.Data);
 
-            if (viewmodel.PastMaxPage)
+            if (viewModel.PastMaxPage)
             {
-                return RedirectToRoute(new { page = viewmodel.LastPage ?? 1 });
+                return RedirectToRoute(new { page = viewModel.LastPage ?? 1 }); 
             }
 
-            return View(viewmodel);
+            return View(viewModel);
         }
 
         #endregion Roles

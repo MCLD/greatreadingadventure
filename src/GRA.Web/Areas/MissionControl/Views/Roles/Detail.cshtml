@@ -29,7 +29,7 @@
 
             <div class="row">
                 <div class="col-xs-6">
-                    <h3>Available Permissions (@Model.UnselectedPermissions?.Count())</h3>
+                    <h2 class="h3">Available Permissions (@Model.UnselectedPermissions?.Count())</h2>
                     <ul id="unselectedPermissions" class="list-group">
                         @foreach (var permission in Model.UnselectedPermissions)
                         {
@@ -42,7 +42,7 @@
                 </div>
 
                 <div class="col-xs-6">
-                    <h3>Has Permissions (@Model.SelectedPermissions?.Count())</h3>
+                    <h2 class="h3">Has Permissions (@Model.SelectedPermissions?.Count())</h2>
                     <ul id="selectedPermissions" class="list-group">
                         @if (Model.SelectedPermissions != null)
                         {
