@@ -1,0 +1,50 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Roles.UsersInRoleViewModel
+
+<p class="lead" style="margin-top: 2rem;">
+    Users in role: <strong>@Model.RoleName</strong>
+    <a asp-action="@nameof(RolesController.Edit)"
+       asp-controller="@RolesController.Name"
+       asp-route-id="@Model.RoleId"
+       class="btn btn-default"
+       style="margin-left: 1rem;">Back to role</a>
+</p>
+
+@if (Model.Users?.Count > 0)
+{
+    <table class="table table-bordered table-striped" style="margin-top: 2rem;">
+        <tr>
+            <th>Username</th>
+            <th>Name</th>
+            <th>System</th>
+            <th>Branch</th>
+            <th>Created At</th>
+            <th>Last Access</th>
+        </tr>
+        @foreach (var user in Model.Users)
+        {
+            <tr>
+                <td>
+                    <a asp-action="@nameof(ParticipantsController.Detail)"
+                       asp-controller="@ParticipantsController.Name"
+                       asp-route-id="@user.Id">@user.Username</a>
+                </td>
+                <td>@user.FullName</td>
+                <td>@user.SystemName</td>
+                <td>@user.BranchName</td>
+                <td>@user.CreatedAt</td>
+                <td>@user.LastAccess</td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <p>
+        No users in this role.
+    </p>
+}
+
+@if (Model.MaxPage > 1)
+{
+    <paginate paginateModel="@Model"></paginate>
+}

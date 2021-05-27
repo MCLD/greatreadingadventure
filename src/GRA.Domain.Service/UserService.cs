@@ -821,7 +821,7 @@ namespace GRA.Domain.Service
         public async Task<IEnumerable<Notification>> GetNotificationsForUser()
         {
             var notifications = await _notificationRepository.GetByUserIdAsync(GetActiveUserId());
-            foreach(var notification in notifications)
+            foreach (var notification in notifications)
             {
                 if (notification.AvatarBundleId.HasValue)
                 {
@@ -1644,7 +1644,7 @@ namespace GRA.Domain.Service
                     return new JobStatus
                     {
                         PercentComplete = 100,
-                        Status = $"Operation cancelled."
+                        Status = "Operation cancelled."
                     };
                 }
 
@@ -1795,6 +1795,21 @@ namespace GRA.Domain.Service
         public async Task<bool> IsEmailSubscribedAsync(string email)
         {
             return await _userRepository.IsEmailSubscribedAsync(email);
+        }
+
+        public async Task<DataWithCount<ICollection<User>>> GetUserInfoByRole(int roleId,
+            BaseFilter filter)
+        {
+            if (HasPermission(Permission.ManageRoles))
+            {
+                return await _userRepository.GetUsersInRoleAsync(roleId, filter);
+            }
+            else
+            {
+                _logger.LogError("User {UserId} doesn't have permission to view all users in a role.",
+                    GetClaimId(ClaimType.UserId));
+                throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
+            }
         }
     }
 }
