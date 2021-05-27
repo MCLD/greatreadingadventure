@@ -86,8 +86,8 @@
             <div class="panel-body text-center">
                 <span class="lead">@SharedHtmlLocalizer["Welcome <strong>{0}!</strong>", Model.FirstName]</span>
                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessPerformerRegistration))
-&& !Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessMissionControl))
-&& Model.SiteStage == GRA.Domain.Model.SiteStage.BeforeRegistration)
+                 && !Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessMissionControl))
+                 && Model.SiteStage == GRA.Domain.Model.SiteStage.BeforeRegistration)
                 {
                     <p class="lead" style="padding-top: 2rem;">
                         Welcome, performer! Please click on the theater masks icon at the top of the
@@ -407,34 +407,31 @@
     </div>
 }
 
-@if (Model.UserLogs?.Count() > 0)
+@if (Model.Carousel != null)
 {
-    <div class="modal fade"
-         id="badgeDetailsModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="badgeDetailsModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button"
-                            class="close"
-                            data-dismiss="modal"
-                            aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h1 class="h4 modal-title">
-                        @SharedLocalizer[GRA.Annotations.Interface.BadgeDetails]
-                    </h1>
-                </div>
-                <div class="modal-body" id="modal-body">
-                </div>
-                <div class="modal-footer">
-                    <button type="button"
-                            class="btn btn-default"
-                            data-dismiss="modal">
-                        @SharedLocalizer[GRA.Annotations.Interface.Back]
-                    </button>
+    <div class="row">
+        <div class="modal gra-carousel-modal" id="graCarouselModal" tabindex="-1" role="dialog" aria-labelledby="graCarouselModal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <span class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute"
+                              data-dismiss="modal"
+                              alt="@SharedLocalizer[GRA.Annotations.Interface.CloseDialog]"
+                              role="button">
+                            <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
+                            <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
+                        </span>
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-3 ">
+                                <img id="graCarouselModalImage"
+                                     class="center-block gra-carousel-modal-image" />
+                            </div>
+                            <div class="col-xs-12 col-sm-9">
+                                <p style="font-size: 2rem; font-weight: bold;" id="graCarouselModalHeader"></p>
+                                <p id="graCarouselModalContent" class="gra-carousel-modal-content"></p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -470,37 +467,34 @@
     </div>
 }
 
-@if (Model.Carousel != null)
+@if (Model.UserLogs?.Count() > 0)
 {
-    <div class="row">
-        <div class="modal gra-carousel-modal"
-             id="graCarouselModal"
-             tabindex="-1"
-             role="dialog"
-             aria-labelledby="graCarouselModal">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <span class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute"
-                              data-dismiss="modal"
-                              alt="@SharedLocalizer[GRA.Annotations.Interface.CloseDialog]"
-                              role="button">
-                            <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
-                            <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
-                        </span>
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-3 ">
-                                <img id="graCarouselModalImage"
-                                     class="center-block gra-carousel-modal-image" />
-                            </div>
-                            <div class="col-xs-12 col-sm-9">
-                                <p style="font-size: 2rem; font-weight: bold;"
-                                   id="graCarouselModalHeader"></p>
-                                <p id="graCarouselModalContent"
-                                   class="gra-carousel-modal-content"></p>
-                            </div>
-                        </div>
-                    </div>
+    <div class="modal fade"
+         id="badgeDetailsModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="badgeDetailsModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h1 class="h4 modal-title">
+                        @SharedLocalizer[GRA.Annotations.Interface.BadgeDetails]
+                    </h1>
+                </div>
+                <div class="modal-body" id="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-default"
+                            data-dismiss="modal">
+                        @SharedLocalizer[GRA.Annotations.Interface.Back]
+                    </button>
                 </div>
             </div>
         </div>
