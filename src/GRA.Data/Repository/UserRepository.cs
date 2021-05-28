@@ -572,10 +572,9 @@ namespace GRA.Data.Repository
             if (!string.IsNullOrWhiteSpace(filter.Search))
             {
                 userList = userList.Where(
-                    _ => _.Username.Contains(filter.Search, StringComparison.OrdinalIgnoreCase)
-                        || (_.FirstName + " " + _.LastName).Contains(filter.Search,
-                            StringComparison.OrdinalIgnoreCase)
-                        || _.Email.Contains(filter.Search, StringComparison.OrdinalIgnoreCase));
+                    _ => _.Username.Contains(filter.Search)
+                        || (_.FirstName + " " + _.LastName).Contains(filter.Search)
+                        || _.Email.Contains(filter.Search));
             }
 
             if (filter.CanAddToHousehold)
