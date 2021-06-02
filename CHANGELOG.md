@@ -28,6 +28,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Streaming event missing badge alt-text field
 
 - News posts now include the subject correctly
+- Event spatial proximity searching
 
 ## [4.2.0] - 2021-01-04
 
