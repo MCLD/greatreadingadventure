@@ -17,6 +17,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Internationalization of social card images
 - Ability to see a list of users in each role
 
+### Changed
+
+- Extended length of stremaing program links to 2000 characters
+
 ### Fixed
 
 - Add accessibility to JavaScript modals throughout the application
@@ -26,7 +30,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Visual issue with close button (X) on pop-up modals
 - Mission Control household add existing participant list being empty
 - Streaming event missing badge alt-text field
-
 - News posts now include the subject correctly
 - Event spatial proximity searching
 
