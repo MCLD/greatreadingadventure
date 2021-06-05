@@ -491,24 +491,38 @@ namespace GRA.Controllers
             string siteName = HttpContext.Items[ItemKey.SiteName]?.ToString();
             PageTitle = _sharedLocalizer[Annotations.Title.SeeYouSoon, siteName];
 
-            ExitPageViewModel exitPageViewModel = null;
+            var exitPageViewModel = new ExitPageViewModel();
+
             try
             {
                 var culture = _userContextProvider.GetCurrentCulture();
-
-                exitPageViewModel = new ExitPageViewModel
-                {
-                    Branch = branchId == null
-                    ? await _userService.GetUsersBranch(GetActiveUserId())
-                    : await _siteService.GetBranchByIdAsync((int)branchId),
-                    Social = await _socialService.GetAsync(culture.Name)
-                };
+                exitPageViewModel.Social = await _socialService.GetAsync(culture.Name);
             }
             catch (GraException ex)
             {
-                _logger.LogInformation(ex, "Attempt to show exit page failed for branch id {BranchId}: {Message}",
-                    branchId,
+                _logger.LogInformation(ex,
+                    "Unable to populate social card for exit page: {ErrorMessage}",
                     ex.Message);
+            }
+
+            if (branchId == null)
+            {
+                try
+                {
+                    exitPageViewModel.Branch
+                        = await _userService.GetUsersBranch(GetActiveUserId());
+                }
+                catch (GraException) { }
+            }
+
+            if (exitPageViewModel.Branch == null && branchId.HasValue)
+            {
+                try
+                {
+                    exitPageViewModel.Branch
+                        = await _siteService.GetBranchByIdAsync(branchId.Value);
+                }
+                catch (GraException) { }
             }
 
             return siteStage switch
