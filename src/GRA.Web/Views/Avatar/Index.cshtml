@@ -380,9 +380,6 @@
                 $("#avatarItems").removeClass("hide");
                 $("#removeButton").data("layer", layer.data("layer"));
                 $("#layerName").text(layer.data("removelabel"));
-                layer.data("removable") == "True" ?
-                    $("#removeButton").removeClass("hide") :
-                    $("#removeButton").addClass("hide");
                 SetLayersSelectors("#avatarItemSelectors", 3);
             }
             else {
@@ -397,6 +394,9 @@
             else {
                 $("#avatarColors").addClass("hide");
             }
+            layer.data("removable") == "True" ?
+                $("#removeButton").removeClass("hide") :
+                $("#removeButton").addClass("hide");
         }
 
         // Initializes the item/color slicks
@@ -534,34 +534,37 @@
             var button = $(this);
             var layer = CurrentSelectedLayer();
             if (layer.data("layer") != 999) {
-                if (!$("#removeButton").hasClass("hide") && $(".avatarItems").find(".selected") != undefined) {
+                if (!$("#removeButton").hasClass("hide") && $(".avatarItems").find(".selected") != undefined
+                    && layer.data("removable") == "True") {
                     $(".avatar-item-selector.selected").removeClass("selected");
                     $(".avatar-color-selector.selected").removeClass("selected");
                     layer.data("item", "");
                     layer.data("color", "");
-                    UpdateAvatarContainer("item", "", "/", layer.data("layer"),true);
+                    UpdateAvatarContainer("item", "", "/", layer.data("layer"), true);
                 }
             }
             else {
                 var itemsLayer = GetLayerById(button.data("layer"));
-                var itemId = GetLayersSelectedItemId(button.data("layer"));
-                itemsLayer.data("item", "");
-                var item = $("#avatarItemSelectors").find("img.avatar-item-selector[data-item='" + itemId + "']");
-                item.removeClass("selected");
-                var nextSelected = undefined;
-                UpdateAvatarContainer("item", "", "/", button.data("layer"),true);
-                prevLayerSelected.splice(0, 1);
-                if (prevLayerSelected[0] != undefined) {
-                    nextSelected = $("#avatarItemSelectors").find("img.avatar-item-selector.selected[data-layer='" + prevLayerSelected[0] + "']");
-                    UpdateRemoveButtonForBundle(nextSelected);
-                }
-                else {
-                    nextSelected = GetFirstActiveSelectedItem();
-                    if (nextSelected == undefined) {
-                        $("#removeButton").addClass("hide");
+                if (itemsLayer.data("removable") == "True") {
+                    var itemId = GetLayersSelectedItemId(button.data("layer"));
+                    itemsLayer.data("item", "");
+                    var item = $("#avatarItemSelectors").find("img.avatar-item-selector[data-item='" + itemId + "']");
+                    item.removeClass("selected");
+                    var nextSelected = undefined;
+                    UpdateAvatarContainer("item", "", "/", button.data("layer"), true);
+                    prevLayerSelected.splice(0, 1);
+                    if (prevLayerSelected[0] != undefined) {
+                        nextSelected = $("#avatarItemSelectors").find("img.avatar-item-selector.selected[data-layer='" + prevLayerSelected[0] + "']");
+                        UpdateRemoveButtonForBundle(nextSelected);
                     }
                     else {
-                        UpdateRemoveButtonForBundle(nextSelected);
+                        nextSelected = GetFirstActiveSelectedItem();
+                        if (nextSelected == undefined) {
+                            $("#removeButton").addClass("hide");
+                        }
+                        else {
+                            UpdateRemoveButtonForBundle(nextSelected);
+                        }
                     }
                 }
             }
