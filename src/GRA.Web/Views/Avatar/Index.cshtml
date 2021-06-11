@@ -180,31 +180,16 @@
             </div>
             @if (Model.PreconfiguredAvatars.Count > 0)
             {
-                <div class="row col-xs-12" style="text-align:center;">
-                    <div class="nav" style="display: inline-table;">
-                        <div class="dropdown" style="margin-top: 1rem;" id="preconfiguredDropdown">
-                            <a class="dropdown-toggle btn btn-info"
-                               id="preconfigured-selected"
-                               data-toggle="dropdown"
-                               href="#" role="button"
-                               aria-haspopup="true"
-                               aria-expanded="false">
-                                @SharedLocalizer[GRA.Annotations.Interface.PreConfiguredAvatars]
-                                <span class="caret"></span>
+                <ul class="sr-only" id="preconfigured-drop" aria-label="@GRA.Annotations.Interface.PreConfiguredAvatars">
+                    @foreach (var avatar in Model.PreconfiguredAvatars)
+                    {
+                        <li class="dropdown-item">
+                            <a href="#" role="button" data-bundleid="@avatar.Id" onclick="GetPreconfiguredAvatar(@avatar.Id, '@avatar.Description')" aria-label="@avatar.Name - @avatar.Description">
+                                @avatar.Name
                             </a>
-                            <ul class="dropdown-menu" id="preconfigured-drop">
-                                @foreach (var avatar in Model.PreconfiguredAvatars)
-                                {
-                                    <li class="dropdown-item">
-                                        <a href="#" role="button" data-bundleid="@avatar.Id" onclick="GetPreconfiguredAvatar(@avatar.Id, '@avatar.Description')" aria-label="@avatar.Name - @avatar.Description">
-                                            @avatar.Name
-                                        </a>
-                                    </li>
-                                }
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+                        </li>
+                    }
+                </ul>
             }
             <div class="row">
                 <div class="col-xs-12">
