@@ -67,7 +67,6 @@ namespace GRA.Domain.Service
             }
             prizeWinner.SiteId = GetCurrentSiteId();
             prizeWinner.CreatedAt = _dateTimeProvider.Now;
-            prizeWinner.CreatedBy = prizeWinner.UserId;
             int currentUserId = userIdIsCurrentUser ? prizeWinner.UserId : GetClaimId(ClaimType.UserId);
             return await _prizeWinnerRepository.AddSaveAsync(currentUserId, prizeWinner);
         }

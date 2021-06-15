@@ -813,6 +813,7 @@ namespace GRA.Domain.Service
             {
                 await _prizeWinnerService.AddPrizeWinnerAsync(new PrizeWinner
                 {
+                    CreatedBy = (int)code.UserId,
                     UserId = (int)code.UserId,
                     VendorCodeId = code.Id,
                 });
