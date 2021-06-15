@@ -34,7 +34,7 @@ namespace GRA.Data.Repository
 
             var dbDetailList = _mapper
                 .Map<List<SpatialDistanceDetail>, List<Model.SpatialDistanceDetail>>(detailList);
-            dbDetailList.ForEach(_ => _.SpatialDistanceHeaderId = dbHeader.Id);
+            dbDetailList.ForEach(_ => _.SpatialDistanceHeader = dbHeader);
             await _context.SpatialDistanceDetails.AddRangeAsync(dbDetailList);
 
             await _context.SaveChangesAsync();

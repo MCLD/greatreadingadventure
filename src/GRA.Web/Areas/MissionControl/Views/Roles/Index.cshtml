@@ -21,8 +21,9 @@
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Has Permissions</th>
-                            <th width="100">&nbsp;</th>
+                            <th>Permissions in role</th>
+                            <th>Users in role</th>
+                            <th>Delete</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -35,6 +36,7 @@
                                     </a>
                                 </td>
                                 <td>@role.PermissionCount</td>
+                                <td>@(Model.UsersInRoles?.ContainsKey(role.Id) == true ? Model.UsersInRoles[role.Id] : 0)</td>
                                 <td class="on-top gra-mc-icon">
                                     @if (role.IsAdmin == false)
                                     {

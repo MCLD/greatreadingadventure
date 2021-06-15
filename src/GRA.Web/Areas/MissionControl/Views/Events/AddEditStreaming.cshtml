@@ -131,6 +131,13 @@
     <div class="row row-spacing">
         <div class="col-xs-12">
             <label asp-for="Event.StreamingLinkData" class="control-label"></label>
+            <small>
+                <em>
+                    Make a responsive embed that looks good on all devices by following the
+                    <a href="https://getbootstrap.com/docs/3.4/components/#responsive-embed"
+                       target="_blank">Boostrap responsive embed guidance</a>.
+                </em>
+            </small>
             <textarea asp-for="Event.StreamingLinkData" required class="form-control"></textarea>
             <span asp-validation-for="Event.StreamingLinkData" class="text-danger"></span>
         </div>
@@ -147,8 +154,8 @@
     </div>
 
     @if (Model.Editing &&
- (Model.CanRelateChallenge
- || Model.Event.Challenge != null || Model.Event.ChallengeGroup != null))
+(Model.CanRelateChallenge
+|| Model.Event.Challenge != null || Model.Event.ChallengeGroup != null))
     {
         <div class="row row-spacing">
             <div class="col-xs-12">
@@ -394,6 +401,17 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row row-spacing">
+                            <div class="col-xs-12">
+                                <label asp-for="BadgeAltText" class="control-label"></label>
+                                <span class="fa fa-info-circle wide-tooltip"
+                                      title="How should this badge be described to someone who can't see it?"
+                                      data-toggle="tooltip"
+                                      data-placement="top"></span>
+                                <textarea asp-for="BadgeAltText" class="form-control"></textarea>
+                                <span asp-validation-for="BadgeAltText" class="text-danger"></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -580,9 +598,9 @@
             <div class="modal-content">
                 <div class="modal-body" style="padding: 30px;">
                     <span class="frame-close fa-stack fa-lg gra-close-stack gra-close-stack-absolute"
-                            data-dismiss="modal"
-                            alt="Close dialog."
-                            role="button">
+                          data-dismiss="modal"
+                          alt="Close dialog."
+                          role="button">
                         <span class="fas fa-circle fa-stack-2x fa-inverse"></span>
                         <span class="fas fa-times-circle fa-stack-1x fa-lg gra-close-times"></span>
                     </span>

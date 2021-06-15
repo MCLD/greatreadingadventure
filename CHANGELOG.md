@@ -15,6 +15,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Analytics tracking of clicks on daily images
 - Mission Control interface to manage social images
 - Internationalization of social card images
+- Ability to see a list of users in each role
+
+### Changed
+
+- Extended length of stremaing program links to 2000 characters
 
 ### Fixed
 
@@ -23,7 +28,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Avatar imports now work if the avatars aren't in the root of the ZIP file
 - Name all cookies with the discriminator value to avoid cookie collisions on the same host
 - Visual issue with close button (X) on pop-up modals
-
+- Mission Control household add existing participant list being empty
+- Streaming event missing badge alt-text field
+- News posts now include the subject correctly
+- Event spatial proximity searching
+- Household secret code entry awarding mail/prize to the user applying the codes
 
 ## [4.2.0] - 2021-01-04
 
