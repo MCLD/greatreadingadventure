@@ -32,6 +32,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Streaming event missing badge alt-text field
 - News posts now include the subject correctly
 - Event spatial proximity searching
+- Household secret code entry awarding mail/prize to the user applying the codes
 
 ## [4.2.0] - 2021-01-04
 

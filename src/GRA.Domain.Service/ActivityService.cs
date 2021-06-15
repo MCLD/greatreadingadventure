@@ -1075,10 +1075,10 @@ namespace GRA.Domain.Service
             }
 
             // send mail if applicable
-            int? mailId = await SendMailAsync(activeUserId, trigger);
+            int? mailId = await SendMailAsync(userIdToLog, trigger);
 
             // award prize if applicable
-            await AwardPrizeAsync(activeUserId, trigger, mailId);
+            await AwardPrizeAsync(userIdToLog, trigger, mailId);
 
             // if there are points to be awarded, do that now, also check for other triggers
             if (pointsAwarded > 0)
@@ -1297,7 +1297,7 @@ namespace GRA.Domain.Service
             {
                 var prize = new PrizeWinner
                 {
-                    CreatedBy = userId,
+                    CreatedBy = userIdIsCurrentUser ? userId : GetClaimId(ClaimType.UserId),
                     CreatedAt = _dateTimeProvider.Now,
                     TriggerId = trigger.Id,
                     PrizeName = trigger.AwardPrizeName,
