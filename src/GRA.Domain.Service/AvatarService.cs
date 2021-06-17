@@ -544,12 +544,20 @@ namespace GRA.Domain.Service
             return await _avatarItemRepository.GetBundleItemsAsync(bundleId);
         }
 
-        public async Task<AvatarBundle> GetBundleByIdAsync(int id, bool includeDeleted = false)
+        public async Task<AvatarBundle> GetBundleByIdAsync(int id, bool includeDeleted = false, bool preconfigured = false)
         {
             var bundle = await _avatarBundleRepository.GetByIdAsync(id, includeDeleted);
             if (bundle == null)
             {
                 throw new GraException("The requested bundle could not be accessed or does not exist.");
+            }
+            if (preconfigured)
+            {
+                var allLayers = await GetLayersAsync();
+                bundle.AvatarItems = bundle.AvatarItems
+                    .Where(_ => allLayers
+                        .Any(__ => __.Id == _.AvatarLayerId && __.CanBeEmpty && !__.ShowColorSelector))
+                    .ToList();
             }
             return bundle;
         }

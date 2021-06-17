@@ -184,7 +184,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.SiteId == siteId && !_.IsDeleted && _.CanBeUnlocked && _.AssociatedBundleId == null && _.Description == null)
+                .Where(_ => _.SiteId == siteId && !_.IsDeleted && _.AssociatedBundleId == null && _.Description == null)
                 .ProjectTo<AvatarBundle>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }

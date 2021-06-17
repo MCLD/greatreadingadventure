@@ -182,14 +182,13 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
-                var layeritems = await _avatarService.GetUsersItemsByLayerAsync(layerId);
                 var model = new PreconfiguredAvatarsViewModel
                 {
                     ItemPath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/")
                 };
                 if (type == "Item")
                 {
-                    model.LayerItems = layeritems;
+                    model.LayerItems = await _avatarService.GetUsersItemsByLayerAsync(layerId);
                     model.SelectedItemId = selectedItemId;
                     model.ItemPath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/");
                     model.LayerId = layerId;
@@ -202,7 +201,7 @@ namespace GRA.Controllers.MissionControl
                 }
                 else
                 {
-                    model.Bundle = await _avatarService.GetBundleByIdAsync(bundleId);
+                    model.Bundle = await _avatarService.GetBundleByIdAsync(bundleId, false, true);
                     model.SelectedItemIds = selectedItemIds;
                 }
                 Response.StatusCode = StatusCodes.Status200OK;
