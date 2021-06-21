@@ -1529,4 +1529,8 @@
     <value>This badge was awarded when you unlocked the avatar bundle: {0}</value>
     <comment>The alternative text description for unlocking an avatar bundle.</comment>
   </data>
+  <data name="You will be able to add books once the program starts." xml:space="preserve">
+    <value>You will be able to add books once the program starts.</value>
+    <comment>Tool tip for the "Add Book" button before the program starts.</comment>
+  </data>
 </root>

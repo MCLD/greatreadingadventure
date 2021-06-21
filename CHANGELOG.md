@@ -33,6 +33,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - News posts now include the subject correctly
 - Event spatial proximity searching
 - Household secret code entry awarding mail/prize to the user applying the codes
+- Proper handling of the "Add Book" button prior to program start
 
 ## [4.2.0] - 2021-01-04
 
