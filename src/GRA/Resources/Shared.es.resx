@@ -1478,4 +1478,8 @@
     <value>Esta insignia se otorgo cuando desbloqueaste el paquete de avatar: {0}</value>
     <comment>The alternative text description for unlocking an avatar bundle.</comment>
   </data>
+  <data name="You will be able to add books once the program starts." xml:space="preserve">
+    <value>Podras añadir libros cuando comience el programa.</value>
+    <comment>Tool tip for the "Add Book" button before the program starts.</comment>
+  </data>
 </root>
