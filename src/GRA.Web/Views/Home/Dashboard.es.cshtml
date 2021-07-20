@@ -29,30 +29,29 @@
         @if (Model.SiteStage != GRA.Domain.Model.SiteStage.BeforeRegistration)
         {
             <div class="panel panel-default">
-                <p>
-                    <a asp-controller="Avatar" asp-action="Index">
-                        @if (Model.AvatarElements?.Count > 0)
-                        {
+                <a asp-controller="Avatar" asp-action="Index">
+                    @if (Model.AvatarElements?.Count > 0)
+                    {
 
-                            <div class="avatar-container-dashboard">
-                                @foreach (var layer in Model.AvatarElements)
-                                {
-                                    <img src="~/@layer.Filename"
-                                         style="z-index: @(layer.AvatarItem.AvatarLayerPosition + 1)"
-                                         class="avatar-layer-dashboard" />
-                                }
-                            </div>
-                        }
-                        else
-                        {
-                            <img src="~/content/no_avatar.png"
-                                 class="img img-responsive center-block"
-                                 style="width:200px;"
-                                 asp-append-version="true" />
+                        <div class="avatar-container-dashboard" aria-hidden="true">
+                            @foreach (var layer in Model.AvatarElements)
+                            {
+                                <img src="~/@layer.Filename"
+                                     style="z-index: @(layer.AvatarItem.AvatarLayerPosition + 1)"
+                                     class="avatar-layer-dashboard" />
+                            }
+                        </div>
+                        <img src="/" class="sr-only" alt="@Model.AvatarDescription" />
+                    }
+                    else
+                    {
+                        <img src="~/content/no_avatar.png"
+                             class="img img-responsive center-block"
+                             style="width:200px;"
+                             asp-append-version="true" />
 
-                        }
-                    </a>
-                </p>
+                    }
+                </a>
                 <div class="dashboard-activity">
                     <p style="font-size: x-large;">@SharedHtmlLocalizer["You have <strong>{0}</strong> points.", Model.CurrentPointTotal]</p>
                     <p><a asp-controller="Profile" asp-action="History">@SharedLocalizer["See your activity history."]</a></p>

@@ -10,5 +10,6 @@ namespace GRA.Domain.Repository
         Task<ICollection<AvatarLayer>> GetAllWithColorsAsync(int siteId);
         Dictionary<string, string> GetNameAndLabelByLanguageId(int layerId, int languageId);
         Task AddAvatarLayerTextAsync(int layerId, int languageId, AvatarLayerText text);
+        Task<AvatarLayer> GetDefaultLayer();
     }
 }

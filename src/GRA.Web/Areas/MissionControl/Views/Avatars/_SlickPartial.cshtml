@@ -1,0 +1,83 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Avatar.PreconfiguredAvatarsViewModel
+
+@if (Model.LayerItems != null)
+{
+    var itemcount = Model.LayerItems.ToList().FindIndex(_ => _.Id == Model.SelectedItemId);
+
+    <div id="avatarItemSelectors"
+         class="avatar-selector-container"
+         data-count="@Model.LayerItems.Count"
+         data-index="@( itemcount == -1 ? 0 : itemcount)">
+        @foreach (var item in Model.LayerItems)
+        {
+
+            <div>
+                <img data-item="@item.Id"
+                     data-layer="@Model.LayerId"
+                     src="/@(Model.ItemPath + "layer" + @Model.LayerId.ToString() + "/item" + item.Id + "/thumbnail.jpg")"
+                     class="avatar-item-selector item@(item.Id) @(Model.SelectedItemId == item.Id ? "selected" : "")"
+                     onclick="SelectItem(this)"/>
+            </div>
+        }
+    </div>
+}
+
+@if (Model.LayerColors != null)
+{
+    var colorcount = Model.LayerColors.ToList().FindIndex(_ => _.Id == Model.SelectedItemId);
+    <div id="avatarColorSelectors"
+         class="avatar-selector-container"
+         data-count="@Model.LayerColors.Count"
+         data-index="@( colorcount == -1 ? 0 : colorcount)">
+        @foreach (var item in Model.LayerColors)
+        {
+
+            <div>
+                <div data-color="@item.Id"
+                     data-layer="@Model.LayerId"
+                     src="/@(Model.ItemPath + "layer" + @Model.LayerId.ToString() + "/item" + item.Id + "/thumbnail.jpg")"
+                     class="avatar-color-selector color@(item.Id) @(Model.SelectedItemId == item.Id ? "selected" : "")"
+                     style="background-color:#@item.Color"
+                     onclick="SelectColor(this)"></div>
+            </div>
+        }
+    </div>
+}
+@if (Model.Bundle != null)
+{
+    int index;
+    try
+    {
+        index = Model.SelectedItemIds
+            .Select(_ => Model.Bundle.AvatarItems.ToList()
+                .Select(__=>__.Id)
+                .ToList()
+                .IndexOf(_)
+                )
+            .ToList()
+            .Where(_=>_ != -1)
+            .Min();
+    }
+    catch
+    {
+        index = 0;
+    }
+
+
+    <div id="avatarItemSelectors"
+         class="avatar-selector-container"
+         data-count="@Model.Bundle.AvatarItems.Count"
+         data-index="@index">
+        @foreach (var item in Model.Bundle.AvatarItems)
+        {
+
+            <div>
+                <img data-item="@item.Id"
+                     data-layer="@item.AvatarLayerId"
+                     src="/@(Model.ItemPath + "layer" + item.AvatarLayerId + "/item" + item.Id + "/thumbnail.jpg")"
+                     class="avatar-item-selector item@(item.Id) @(Model.SelectedItemIds.Contains(item.Id) ? "selected" : "")"
+                     onclick="SelectItem(this)"/>
+            </div>
+        }
+    </div>
+}

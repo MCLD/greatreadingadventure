@@ -268,6 +268,11 @@ namespace GRA.Controllers
                     }
                     viewModel.AvatarElements = avatarElements;
                 }
+                if (user.PreconfiguredAvatarId.HasValue)
+                {
+                    var bundle = await _avatarService.GetBundleByIdAsync(user.PreconfiguredAvatarId.Value);
+                    viewModel.AvatarDescription = bundle.Description;
+                }
 
                 var dashboardPage = await _dashboardContentService.GetCurrentContentAsync();
                 if (dashboardPage != null && !string.IsNullOrWhiteSpace(dashboardPage.Content))

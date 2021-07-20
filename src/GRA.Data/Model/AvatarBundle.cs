@@ -14,6 +14,10 @@ namespace GRA.Data.Model
         public bool IsDeleted { get; set; }
         public bool HasBeenAwarded { get; set; }
 
+        [MaxLength(500)]
+        public string Description { get; set; }
+
+        public int? AssociatedBundleId { get; set; }
         public ICollection<AvatarBundleItem> AvatarBundleItems { get; set; }
     }
 }

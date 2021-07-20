@@ -135,6 +135,9 @@ namespace GRA.Data.SqlServer.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("AssociatedBundleId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("CanBeUnlocked")
                         .HasColumnType("bit");
 
@@ -143,6 +146,10 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<int>("CreatedBy")
                         .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<bool>("HasBeenAwarded")
                         .HasColumnType("bit");
@@ -3425,6 +3432,9 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<string>("PostalCode")
                         .HasMaxLength(32)
                         .HasColumnType("nvarchar(32)");
+
+                    b.Property<int?>("PreconfiguredAvatarId")
+                        .HasColumnType("int");
 
                     b.Property<int>("ProgramId")
                         .HasColumnType("int");

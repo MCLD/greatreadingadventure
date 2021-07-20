@@ -7,6 +7,8 @@ namespace GRA.Controllers.ViewModel.Avatar
     {
         public List<List<AvatarLayer>> LayerGroupings { get; set; }
         public List<AvatarBundle> Bundles { get; set; }
+        public List<AvatarBundle> PreconfiguredAvatars { get; set; }
+        public AvatarBundle PreconfiguredAvatar { get; set; }
         public AvatarBundle Bundle { get; set; }
         public int DefaultLayer { get; set; }
         public string ImagePath { get; set; }

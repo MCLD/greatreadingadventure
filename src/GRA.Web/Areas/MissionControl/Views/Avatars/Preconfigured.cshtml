@@ -14,7 +14,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                    <form asp-controller="Avatars" asp-action="BundleDelete" asp-route-search="Unlockable" method="post" role="form" style="display:inline">
+                    <form asp-controller="Avatars" asp-action="BundleDelete" asp-route-search="Preconfigured" method="post" role="form" style="display:inline">
                         <input id="Id" name="Id" type="hidden" />
                         <button type="submit" class="btn btn-danger pull-right" aria-label="Confirm">
                             <span class="fa fa-remove" aria-hidden="true"></span>
@@ -27,11 +27,12 @@
     </div>
 </div>
 
+
 @await Html.PartialAsync("_BundlesTabPartial")
 
 <div class="row" style="padding: 10px 0;">
     <div class="col-xs-12">
-        <a asp-action="BundleCreate" asp-route-search ="@Model.Search" class="btn btn-default">Create a new bundle</a>
+        <a asp-action="PreconfiguredDetails" class="btn btn-default">Create a pre-configured avatar</a>
     </div>
 </div>
 
@@ -39,7 +40,7 @@
     <div class="col-xs-12">
         @if (Model.Bundles.Count() == 0)
         {
-            <div class="alert alert-warning">No Bundles</div>
+            <div class="alert alert-warning">No Pre-configured Avatars</div>
         }
         else
         {
@@ -57,7 +58,7 @@
                         {
                             <tr>
                                 <td class="td-class">
-                                    <a asp-action="BundleEdit" asp-route-id="@bundle.Id" class="rowlink">
+                                    <a asp-action="PreconfiguredDetails" asp-route-bundleid="@bundle.Id" class="rowlink">
                                         @bundle.Name
                                     </a>
                                 </td>
@@ -79,57 +80,9 @@
             </div>
             @if (Model.PaginateModel.MaxPage > 1)
             {
-                <paginate paginateModel="@Model.PaginateModel" asp-route-search="@Model.Search"></paginate>
+                <paginate paginateModel="@Model.PaginateModel"></paginate>
             }
         }
-    </div>
-</div>
-
-<div class="row">
-    <div class="modal fade"
-         id="deleteModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="deleteModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button"
-                            class="close"
-                            data-dismiss="modal"
-                            aria-label="Close dialog">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h1 class="modal-title h4" id="deleteModalLabel">Delete bundle</h1>
-                </div>
-                <div class="modal-body">
-                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
-                    <span id="modal-text"></span>
-                </div>
-                <div class="modal-footer">
-                    <button type="button"
-                            class="btn btn-default"
-                            data-dismiss="modal"
-                            style="margin-right: 1em;">
-                        Cancel
-                    </button>
-                    <form asp-controller="Avatars"
-                          asp-action="BundleDelete"
-                          asp-route-Unlockable="@Model.Unlockable"
-                          method="post"
-                          role="form"
-                          style="display:inline">
-                        <input id="Id" name="Id" type="hidden" />
-                        <button type="submit"
-                                class="btn btn-danger pull-right"
-                                aria-label="Confirm">
-                            <span class="fa fa-remove" aria-hidden="true"></span>
-                            Delete
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
@@ -141,6 +94,7 @@
                 $(this).children('a.rowlink').height($(this).height() + 11);
             });
         });
+
         $(window).resize(function () {
             $('.td-class').each(function () {
                 $(this).children('a.rowlink').height($(this).height() + 11);
@@ -154,6 +108,6 @@
             var modal = $(this);
             modal.find('#modal-text').text('Are you sure you wish to delete the bundle"' + name + '" ?');
             modal.find('#Id').val(id);
-        })
+        });
     </script>
 }

@@ -24,6 +24,7 @@ namespace GRA.Controllers
     {
         private readonly ILogger<AvatarController> _logger;
         private readonly AvatarService _avatarService;
+        private readonly UserService _userService;
         private readonly SiteService _siteService;
 
         public static string Name { get { return "Avatar"; } }
@@ -31,12 +32,15 @@ namespace GRA.Controllers
         public AvatarController(ILogger<AvatarController> logger,
             ServiceFacade.Controller context,
             AvatarService avatarService,
+            UserService userService,
             SiteService siteService)
             : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _avatarService = avatarService
                 ?? throw new ArgumentNullException(nameof(avatarService));
+            _userService = userService
+                ?? throw new ArgumentNullException(nameof(userService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             PageTitle = _sharedLocalizer[Annotations.Title.Avatar];
         }
@@ -44,6 +48,8 @@ namespace GRA.Controllers
         public async Task<IActionResult> Index()
         {
             var userWardrobe = await _avatarService.GetUserWardrobeAsync();
+            var user = await _userService.GetDetails(GetActiveUserId());
+
             if (userWardrobe.Count == 0)
             {
                 ShowAlertDanger("Avatars have not been configured.");
@@ -56,26 +62,32 @@ namespace GRA.Controllers
                 .GroupBy(_ => _.GroupId)
                 .Select(_ => _.ToList())
                 .ToList();
-
-            var usersresult = await _avatarService.GetUserUnlockBundlesAsync();
             var viewModel = new AvatarViewModel
             {
                 LayerGroupings = layerGroupings,
-                Bundles = usersresult,
+                Bundles = await _avatarService.GetUserUnlockBundlesAsync(),
+                PreconfiguredAvatars = await _avatarService.GetUserUnlockBundlesAsync(true),
                 DefaultLayer = userWardrobe.First(_ => _.DefaultLayer).Id,
                 ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/")
             };
+            if (user.PreconfiguredAvatarId.HasValue)
+            {
+                viewModel.PreconfiguredAvatar = await _avatarService.GetBundleByIdAsync(user.PreconfiguredAvatarId.Value);
+            }
             var userAvatar = await _avatarService.GetUserAvatarAsync();
             viewModel.NewAvatar = userAvatar.Count == 0;
             return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<JsonResult> SaveAvatar(string selectionJson)
+        public async Task<JsonResult> SaveAvatar(string selectionJson, int? preconfiguredId)
         {
             try
             {
                 await UpdateAvatarAsync(selectionJson);
+                var user = await _userService.GetDetails(GetActiveUserId());
+                user.PreconfiguredAvatarId = preconfiguredId;
+                await _userService.Update(user);
                 return Json(new { success = true });
             }
             catch (GraException gex)
@@ -246,6 +258,35 @@ namespace GRA.Controllers
                 _logger.LogError(gex,
                     "Could not retrieve layer items for layer id {layerId}: {Message}",
                     layerId,
+                    gex.Message);
+                Response.StatusCode = StatusCodes.Status400BadRequest;
+                return Json(new
+                {
+                    success = false
+                });
+            }
+        }
+
+        [PreventAjaxRedirect]
+        public async Task<IActionResult> GetPreconfiguredAvatarItems(int bundleId)
+        {
+            try
+            {
+                var items = await _avatarService.GetBundleItemsAsync(bundleId);
+                var bundle = await _avatarService.GetBundleByIdAsync(bundleId);
+                return Json(new
+                {
+                    success = true,
+                    items = Newtonsoft.Json.JsonConvert.SerializeObject(items),
+                    name = bundle.Name,
+                    description = bundle.Description
+                });
+            }
+            catch (GraException gex)
+            {
+                _logger.LogError(gex,
+                    "Could not retrieve layer items for layer id {layerId}: {Message}",
+                    bundleId,
                     gex.Message);
                 Response.StatusCode = StatusCodes.Status400BadRequest;
                 return Json(new

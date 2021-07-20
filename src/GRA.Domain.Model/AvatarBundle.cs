@@ -16,6 +16,10 @@ namespace GRA.Domain.Model
         public bool HasBeenAwarded { get; set; }
         public bool? HasBeenViewed { get; set; }
 
+        [MaxLength(500)]
+        public string Description { get; set; }
+
+        public int? AssociatedBundleId { get; set; }
         public ICollection<AvatarItem> AvatarItems { get; set; }
     }
 }

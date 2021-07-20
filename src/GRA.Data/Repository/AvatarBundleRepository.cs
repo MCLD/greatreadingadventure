@@ -61,6 +61,16 @@ namespace GRA.Data.Repository
             await SaveAsync();
         }
 
+        public async Task<List<AvatarBundle>> GetBundlesByAssociatedId(int bundleId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.AssociatedBundleId == bundleId
+                    && !_.IsDeleted)
+                .ProjectTo<AvatarBundle>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
         public async Task<AvatarBundle> GetByIdAsync(int id, bool includeDeleted)
         {
             var bundles = DbSet.AsNoTracking()
@@ -100,6 +110,14 @@ namespace GRA.Data.Repository
             if (filter.Unlockable)
             {
                 bundles = bundles.Where(_ => _.CanBeUnlocked);
+            }
+            if (filter.Preconfigured)
+            {
+                bundles = bundles.Where(_ => _.Description != null);
+            }
+            else
+            {
+                bundles = bundles.Where(_ => _.Description == null);
             }
 
             return bundles;
@@ -159,6 +177,15 @@ namespace GRA.Data.Repository
             }
 
             return await bundles.ProjectTo<AvatarBundle>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
+        public async Task<ICollection<AvatarBundle>> GetAllPreconfiguredParentsAsync(int siteId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId && !_.IsDeleted && _.AssociatedBundleId == null && _.Description == null)
+                .ProjectTo<AvatarBundle>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 

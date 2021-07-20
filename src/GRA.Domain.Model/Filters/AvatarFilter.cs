@@ -7,6 +7,7 @@ namespace GRA.Domain.Model.Filters
         public bool Available { get; set; }
         public bool Unavailable { get; set; }
         public bool Unlockable { get; set; }
+        public bool Preconfigured { get; set; }
         public bool CanBeUnlocked { get; set; }
         public ICollection<int> ItemIds { get; set; }
         public int? LayerId { get; set; }

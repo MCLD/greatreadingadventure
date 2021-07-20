@@ -7,6 +7,8 @@ namespace GRA.Controllers.ViewModel.MissionControl.Avatar
     {
         public IEnumerable<GRA.Domain.Model.AvatarBundle> Bundles { get; set; }
         public PaginateViewModel PaginateModel { get; set; }
-        public bool Unlockable { get; set; }
+        public bool? Unlockable { get; set; }
+        public string Search { get; set; }
+
     }
 }
