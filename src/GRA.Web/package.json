@@ -5,7 +5,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.1",
     "bootstrap": "^3.3.7",
-    "bootstrap-multiselect": "^0.9.15",
+    "bootstrap-multiselect": "^1.1.0",
     "bootstrap-select": "^1.13.18",
     "commonmark": "^0.29.2",
     "jquery": "^3.5.1",
