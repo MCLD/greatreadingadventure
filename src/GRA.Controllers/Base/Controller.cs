@@ -232,37 +232,47 @@ namespace GRA.Controllers.Base
             return $"<span class=\"fa fa-{iconName}\" aria-hidden=\"true\"></span>";
         }
 
+        private string Far(string iconName)
+        {
+            return $"<span class=\"far fa-{iconName}\" aria-hidden=\"true\"></span>";
+        }
+
+        private string Fas(string iconName)
+        {
+            return $"<span class=\"fas fa-{iconName}\" aria-hidden=\"true\"></span>";
+        }
+
         protected void ShowAlertDanger(string message, string details = null)
         {
-            AlertDanger = $"{Fa("exclamation-triangle")} {message}{details}";
+            AlertDanger = $"{Fas("exclamation-triangle")} {message}{details}";
         }
 
         protected void ShowAlertDanger(string message, GraException gex)
         {
-            AlertDanger = $"{Fa("exclamation-triangle")} {message}{FormatMessage(gex)}";
+            AlertDanger = $"{Fas("exclamation-triangle")} {message}{FormatMessage(gex)}";
         }
 
         protected void ShowAlertWarning(string message, string details = null)
         {
-            AlertWarning = $"{Fa("exclamation-circle")} {message}{details}";
+            AlertWarning = $"{Fas("exclamation-circle")} {message}{details}";
         }
 
         protected void ShowAlertWarning(string message, GraException gex)
         {
-            AlertWarning = $"{Fa("exclamation-circle")} {message}{FormatMessage(gex)}";
+            AlertWarning = $"{Fas("exclamation-circle")} {message}{FormatMessage(gex)}";
         }
 
         protected void ShowAlertSuccess(string message, string faIconName = null)
         {
             AlertSuccess = string.IsNullOrEmpty(faIconName)
-                ? $"{Fa("thumbs-o-up")} {message}"
+                ? $"{Far("thumbs-up")} {message}"
                 : $"{Fa(faIconName)} {message}";
         }
 
         protected void ShowAlertInfo(string message, string faIconName = null)
         {
             AlertInfo = string.IsNullOrEmpty(faIconName)
-                ? $"{Fa("check-circle")} {message}"
+                ? $"{Fas("check-circle")} {message}"
                 : $"{Fa(faIconName)} {message}";
         }
 
