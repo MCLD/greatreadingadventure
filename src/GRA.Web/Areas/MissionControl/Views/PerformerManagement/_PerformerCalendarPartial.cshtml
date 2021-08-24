@@ -2,7 +2,7 @@
 
 <div class="row">
     <div class="col-xs-12" style="font-size:larger;margin-bottom:10px;">
-        @Model.BranchSelection.Branch.Name <a href="https://www.google.com/maps/search/@Model.BranchSelection.Branch.Address" target="_blank"><span class="fa fa-map-o"></span></a> &ndash; Starting at @Model.BranchSelection.RequestedStartTime.ToShortTimeString()@(Model.BranchSelection.BackToBackProgram ? $" & {Model.BranchSelection.RequestedStartTime.AddMinutes(Model.BranchSelection.Program.ProgramLengthMinutes + Model.BranchSelection.Program.BackToBackMinutes).ToShortTimeString()}" : ""): @Model.BranchSelection.Program.Title
+        @Model.BranchSelection.Branch.Name <a href="https://www.google.com/maps/search/@Model.BranchSelection.Branch.Address" target="_blank"><span class="far fa-map"></span></a> &ndash; Starting at @Model.BranchSelection.RequestedStartTime.ToShortTimeString()@(Model.BranchSelection.BackToBackProgram ? $" & {Model.BranchSelection.RequestedStartTime.AddMinutes(Model.BranchSelection.Program.ProgramLengthMinutes + Model.BranchSelection.Program.BackToBackMinutes).ToShortTimeString()}" : ""): @Model.BranchSelection.Program.Title
     </div>
 </div>
 
@@ -95,7 +95,7 @@
                     {
                         @Html.Raw($"&ndash; {Model.DayScheduleModel.BranchSelections[i].ScheduleStartTime.ToLongTimeString()}</li>")
                     }
-                    <li>Booked: @Model.DayScheduleModel.BranchSelections[i].ScheduleStartTime.ToLongTimeString() &ndash; @Model.DayScheduleModel.BranchSelections[i].ScheduleStartTime.AddMinutes(Model.DayScheduleModel.BranchSelections[i].ScheduleDuration).ToLongTimeString() @@ @Model.DayScheduleModel.BranchSelections[i].Branch.Name <a href="https://www.google.com/maps/search/@Model.DayScheduleModel.BranchSelections[i].Branch.Address" target="_blank"><span class="fa fa-map-o"></span></a></li>
+                    <li>Booked: @Model.DayScheduleModel.BranchSelections[i].ScheduleStartTime.ToLongTimeString() &ndash; @Model.DayScheduleModel.BranchSelections[i].ScheduleStartTime.AddMinutes(Model.DayScheduleModel.BranchSelections[i].ScheduleDuration).ToLongTimeString() @@ @Model.DayScheduleModel.BranchSelections[i].Branch.Name <a href="https://www.google.com/maps/search/@Model.DayScheduleModel.BranchSelections[i].Branch.Address" target="_blank"><span class="far fa-map"></span></a></li>
                     if (i != Model.DayScheduleModel.BranchSelections.Count - 1 || !string.IsNullOrWhiteSpace(Model.DayScheduleModel.EndTime))
                     {
                         @Html.Raw($"<li>Available: {Model.DayScheduleModel.BranchSelections[i].ScheduleStartTime.AddMinutes(Model.DayScheduleModel.BranchSelections[i].ScheduleDuration).ToLongTimeString()}")
@@ -120,7 +120,7 @@
                 <td>
                     <div class="input-group date" id="pickerStart" style="width:150px;">
                         <span class="input-group-addon">
-                            <span class="fa fa-clock-o"></span>
+                            <span class="far fa-clock"></span>
                         </span>
                         <input id="startTime" class="form-control" />
                     </div>
@@ -181,12 +181,12 @@
             stepping: 5,
             useCurrent: false,
             icons: {
-                time: "fa fa-clock-o",
-                date: "fa fa-calendar",
-                up: "fa fa-arrow-up",
-                down: "fa fa-arrow-down",
-                previous: "fa fa-arrow-left",
-                next: "fa fa-arrow-right"
+                time: "far fa-clock",
+                date: "fas fa-calendar-alt",
+                up: "fas fa-arrow-up",
+                down: "fas fa-arrow-down",
+                previous: "fas fa-arrow-left",
+                next: "fas fa-arrow-right"
             }
         });
 

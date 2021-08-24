@@ -122,7 +122,7 @@
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane gra-tab-pane @(Model.UseBadgeMaker ? "active" : "")" id="badge">
                     <button id="openMaker" type="button" class="btn btn-default">
-                        <span class="fa fa-certificate"></span> Create a Badge
+                        <span class="fas fa-certificate"></span> Create a Badge
                     </button>
                 </div>
 
@@ -131,7 +131,7 @@
                     <div class="input-group">
                         <label class="input-group-btn">
                             <span class="btn btn-default btn-file">
-                                <span class="fa fa-file-image-o"></span> Select an image<input type="file" name="BadgeUploadImage" id="BadgeUploadImage" accept=".png,.jpg,.jpeg" style="display: none;" />
+                                <span class="far fa-file-image"></span> Select an image<input type="file" name="BadgeUploadImage" id="BadgeUploadImage" accept=".png,.jpg,.jpeg" style="display: none;" />
                             </span>
                         </label>
                         <input type="text" class="form-control" readonly id="selectedFile">
@@ -139,7 +139,7 @@
                     <div>
                         <span asp-validation-for="BadgeUploadImage" class="text-danger"></span>
                     </div>
-                    <button id="clearFile" class="btn btn-default" type="button" style="margin-top: 0.5em;"><span class="fa fa-ban"></span> Clear file selection</button>
+                    <button id="clearFile" class="btn btn-default" type="button" style="margin-top: 0.5em;"><span class="fas fa-ban"></span> Clear file selection</button>
                 </div>
             </div>
         </div>
@@ -147,7 +147,7 @@
     <div class="row row-spacing">
         <div class="col-xs-12">
             <label asp-for="BadgeAltText" class="control-label"></label>
-            <span class="fa fa-info-circle wide-tooltip"
+            <span class="fas fa-info-circle wide-tooltip"
                   title="How should this badge be described to someone who can't see it?"
                   data-toggle="tooltip"
                   data-placement="top"></span>
@@ -209,7 +209,7 @@
                     </h1>
                 </div>
                 <div class="modal-body">
-                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                    <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
                     <span id="modal-text">
                         The awarded points for this trigger exceed the maximum of
                         <strong>@Model.MaxPointLimit points per task</strong>. Do you wish to continue?

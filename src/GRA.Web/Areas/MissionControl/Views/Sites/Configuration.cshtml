@@ -8,7 +8,7 @@
     <div class="row row-spacing">
         <div class="col-xs-12 col-sm-6">
             <label asp-for="ExternalEventListUrl" class="control-label"></label>
-            <span class="fa fa-question-circle-o wide-tooltip" title="Configuring a URL here will link to that site rather than use the built-in event system." data-toggle="tooltip" data-placement="top"></span>
+            <span class="far fa-question-circle wide-tooltip" title="Configuring a URL here will link to that site rather than use the built-in event system." data-toggle="tooltip" data-placement="top"></span>
             <input asp-for="ExternalEventListUrl" type="text" class="form-control" />
             <span asp-validation-for="ExternalEventListUrl" class="text-danger"></span>
         </div>
@@ -36,13 +36,13 @@
     <div class="row row-spacing">
         <div class="col-xs-12 col-sm-6">
             <label asp-for="GoogleAnalyticsTrackingId" class="control-label"></label>
-            <span class="fa fa-question-circle-o wide-tooltip" title="Should be similar to UA-########-#" data-toggle="tooltip" data-placement="top"></span>
+            <span class="far fa-question-circle wide-tooltip" title="Should be similar to UA-########-#" data-toggle="tooltip" data-placement="top"></span>
             <input asp-for="GoogleAnalyticsTrackingId" type="text" class="form-control" />
             <span asp-validation-for="GoogleAnalyticsTrackingId" class="text-danger"></span>
         </div>
         <div class="col-xs-12 col-sm-6">
             <label asp-for="IsHttpsForced" class="control-label"></label>
-            <span class="fa fa-question-circle-o wide-tooltip" title="If your site is placed behind a reverse proxy which handles SSL for you set this to true." data-toggle="tooltip" data-placement="top"></span>
+            <span class="far fa-question-circle wide-tooltip" title="If your site is placed behind a reverse proxy which handles SSL for you set this to true." data-toggle="tooltip" data-placement="top"></span>
             <select asp-for="IsHttpsForced" class="form-control">
                 <option value="false">No</option>
                 <option value="true">Yes</option>
@@ -54,13 +54,13 @@
     <div class="row row-spacing">
         <div class="col-xs-12 col-sm-6">
             <label asp-for="FromEmailName" class="control-label"></label>
-            <span class="fa fa-exclamation-circle wide-tooltip text-danger" title="Required for email to function." data-toggle="tooltip" data-placement="top"></span>
+            <span class="fas fa-exclamation-circle wide-tooltip text-danger" title="Required for email to function." data-toggle="tooltip" data-placement="top"></span>
             <input asp-for="FromEmailName" type="text" class="form-control" />
             <span asp-validation-for="FromEmailName" class="text-danger"></span>
         </div>
         <div class="col-xs-12 col-sm-6">
             <label asp-for="FromEmailAddress" class="control-label"></label>
-            <span class="fa fa-exclamation-circle wide-tooltip text-danger" title="Required for email to function." data-toggle="tooltip" data-placement="top"></span>
+            <span class="fas fa-exclamation-circle wide-tooltip text-danger" title="Required for email to function." data-toggle="tooltip" data-placement="top"></span>
             <input asp-for="FromEmailAddress" type="text" class="form-control" />
             <span asp-validation-for="FromEmailAddress" class="text-danger"></span>
         </div>
@@ -69,13 +69,13 @@
     <div class="row row-spacing">
         <div class="col-xs-12 col-sm-6">
             <label asp-for="OutgoingMailHost" class="control-label"></label>
-            <span class="fa fa-exclamation-circle wide-tooltip text-danger" title="Required for email to function." data-toggle="tooltip" data-placement="top"></span>
+            <span class="fas fa-exclamation-circle wide-tooltip text-danger" title="Required for email to function." data-toggle="tooltip" data-placement="top"></span>
             <input asp-for="OutgoingMailHost" type="text" class="form-control" />
             <span asp-validation-for="OutgoingMailHost" class="text-danger"></span>
         </div>
         <div class="col-xs-12 col-sm-6">
             <label asp-for="OutgoingMailPort" class="control-label"></label>
-            <span class="fa fa-question-circle-o wide-tooltip" title="If not supplied, 25 will be used." data-toggle="tooltip" data-placement="top"></span>
+            <span class="far fa-question-circle wide-tooltip" title="If not supplied, 25 will be used." data-toggle="tooltip" data-placement="top"></span>
             <input asp-for="OutgoingMailPort" type="text" class="form-control" />
             <span asp-validation-for="OutgoingMailPort" class="text-danger"></span>
         </div>

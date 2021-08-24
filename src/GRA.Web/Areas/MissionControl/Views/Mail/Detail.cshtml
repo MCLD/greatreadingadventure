@@ -10,7 +10,7 @@
                 {
                     <div class="mail-thread-container">
                         <div class="mail-thread-header alert-info" role="tab" id="heading@(mail.Id)">
-                            <span class="fa @(mail.ToUserId.HasValue ? "fa-mail-reply" : "fa-mail-forward")"></span> <strong>This message</strong>
+                            <span class="fas @(mail.ToUserId.HasValue ? "fa-reply" : "fa-share")"></span> <strong>This message</strong>
                         </div>
                     </div>
                 }
@@ -19,7 +19,7 @@
                     <div class="mail-thread-container">
                         <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse@(mail.Id)" aria-expanded="true" aria-controls="collapse@(mail.Id)">
                             <div class="mail-thread-header" role="tab" id="heading@(mail.Id)">
-                                <span class="fa @(mail.ToUserId.HasValue ? "fa-mail-reply" : "fa-mail-forward")"></span> @(mail.ToUserId.HasValue ? "To" : "From") @Model.User.FirstName: <strong>@(mail.Subject.Count() > 40 ? $"{mail.Subject.Substring(0, 40)}..." : mail.Subject)</strong>
+                                <span class="fas @(mail.ToUserId.HasValue ? "fa-reply" : "fa-share")"></span> @(mail.ToUserId.HasValue ? "To" : "From") @Model.User.FirstName: <strong>@(mail.Subject.Count() > 40 ? $"{mail.Subject.Substring(0, 40)}..." : mail.Subject)</strong>
                                 <span class="pull-right">@mail.CreatedAt</span>
                             </div>
                         </a>
@@ -140,7 +140,7 @@
                         <h1 class="modal-title h4" id="deleteModalLabel">Delete Mail</h1>
                     </div>
                     <div class="modal-body">
-                        <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                        <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
                         <span id="modal-text">
                             Are you sure you wish to delete the mail "@Model.Mail.Subject" ?
                         </span>
@@ -161,7 +161,7 @@
                             <button type="submit"
                                     class="btn btn-danger pull-right"
                                     aria-label="Confirm">
-                                <span class="fa fa-remove" aria-hidden="true"></span>
+                                <span class="fas fa-times" aria-hidden="true"></span>
                                 Delete
                             </button>
                         </form>

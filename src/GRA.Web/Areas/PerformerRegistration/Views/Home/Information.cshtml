@@ -87,7 +87,7 @@ else
                 <div class="input-group">
                     <label class="input-group-btn">
                         <span class="btn btn-default btn-file">
-                            <span class="fa fa-file-image-o"></span> Select file(s)...
+                            <span class="far fa-file-image"></span> Select file(s)...
                             <input type="file"
                                    multiple="multiple"
                                    asp-for="Images"
@@ -127,7 +127,7 @@ else
             <div class="input-group">
                 <label class="input-group-btn">
                     <span class="btn btn-default btn-file" style="width:132px;text-align:left;">
-                        <span class="fa fa-file-image-o"></span> Select file...
+                        <span class="far fa-file-image"></span> Select file...
                         <input type="file"
                                asp-for="References"
                                accept=".pdf"
@@ -189,7 +189,7 @@ else
             @Model.Settings.VendorIdPrompt
             @if (!string.IsNullOrWhiteSpace(Model.Settings.VendorCodeFormat))
             {
-                <span class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" title="Example number: @Model.Settings.VendorCodeFormat"></span>
+                <span class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Example number: @Model.Settings.VendorCodeFormat"></span>
             }
         </label>
         <div class="col-sm-9">
@@ -294,7 +294,7 @@ else
                                 </label>
                                 <a aria-label="Map (Opens new window)"
                                    href="https://www.google.com/maps/search/@branch.Address"
-                                   target="_blank"><span class="fa fa-map-o"></span></a>
+                                   target="_blank"><span class="far fa-map"></span></a>
                             </div>
                         }
                         <br />

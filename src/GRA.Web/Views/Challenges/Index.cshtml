@@ -112,19 +112,19 @@
                                        asp-route-Status="@Model.Status" 
                                        asp-route-Favorites="@(Model.Favorites == true ? null : "True")" 
                                        class="btn btn-block @(Model.Favorites == true ? "btn-success" : "btn-default")">
-                                        <span class="fa @(Model.Favorites == true ? "fa-star" : "fa-star-o")"></span>
+                                        <span class="@(Model.Favorites == true ? "fas" : "far") fa-star"></span>
                                         @SharedLocalizer[GRA.Annotations.Interface.MyFavorites]
                                     </a>
                                 </div>
                                 <div class="col-xs-6 col-sm-2 col-sm-offset-4 col-md-offset-5 row-spacing">
                                     <a asp-action="Index" class="btn btn-default btn-block">
-                                        <span class="hidden-sm fa fa-minus-circle"></span>
+                                        <span class="hidden-sm fas fa-minus-circle"></span>
                                         @SharedLocalizer[GRA.Annotations.Interface.Clear]
                                     </a>
                                 </div>
                                 <div class="col-xs-6 col-sm-2 row-spacing">
                                     <button type="submit" class="btn btn-primary btn-block">
-                                        <span class="hidden-sm fa fa-search"></span>
+                                        <span class="hidden-sm fas fa-search"></span>
                                         @SharedLocalizer[GRA.Annotations.Interface.Find]
                                     </button>
                                 </div>
@@ -133,13 +133,13 @@
                             {
                                 <div class="col-xs-6 col-sm-2 col-sm-offset-8 col-md-offset-8 row-spacing">
                                     <a asp-action="Index" class="btn btn-default btn-block">
-                                        <span class="hidden-sm fa fa-minus-circle"></span>
+                                        <span class="hidden-sm fas fa-minus-circle"></span>
                                         @SharedLocalizer[GRA.Annotations.Interface.Clear]
                                     </a>
                                 </div>
                                 <div class="col-xs-6 col-sm-2 row-spacing">
                                     <button type="submit" class="btn btn-primary btn-block">
-                                        <span class="hidden-sm fa fa-search"></span>
+                                        <span class="hidden-sm fas fa-search"></span>
                                         @SharedLocalizer[GRA.Annotations.Interface.Find]
                                     </button>
                                 </div>

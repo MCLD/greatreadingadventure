@@ -17,7 +17,7 @@ namespace GRA.Data.Repository
     {
         private const string ChallengeIcon = "fa-trophy";
         private const string ProgramIcon = "fa-asterisk";
-        private const string TriggerIcon = "fa-gears";
+        private const string TriggerIcon = "fa-cogs";
 
         private const string ChallengeDescription = "Challenge";
         private const string JoinDescription = "Join Badge";
