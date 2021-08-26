@@ -17,9 +17,8 @@
                 <form asp-action="@nameof(AvatarsController.SetupAvatarZip)"
                       method="post"
                       style="padding: 1em 0;">
-                    <button type="submit" class="btn btn-primary btn-spinner">
+                    <button type="submit" class="btn btn-primary btn-spinner" button-spinner>
                         Import avatars.zip
-                        <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                     </button>
                 </form>
             }
@@ -28,9 +27,8 @@
                 <form asp-action="@nameof(AvatarsController.SetupDefaultAvatars)"
                       method="post"
                       style="padding: 1em 0;">
-                    <button type="submit" class="btn btn-primary btn-spinner">
+                    <button type="submit" class="btn btn-primary btn-spinner" button-spinner>
                         Add default avatars
-                        <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                     </button>
                 </form>
             }
@@ -62,10 +60,9 @@
                     </div>
                 </div>
                 <div class="row-spacing">
-                    <button class="btn btn-primary btn-spinner" type="submit">
+                    <button class="btn btn-primary btn-spinner" type="submit" button-spinner>
                         <span class="fas fa-file-upload"></span>
                         Upload
-                        <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                     </button>
                 </div>
             </form>

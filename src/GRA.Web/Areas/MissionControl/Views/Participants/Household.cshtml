@@ -91,7 +91,10 @@
                                         </td>
                                     }
                                     <td>
-                                        <button type="submit" class="btn btn-primary btn-spinner activityButton" data-action="@Url.Action("HouseholdApplyActivity")">
+                                        <button type="submit"
+                                                class="btn btn-primary btn-spinner activityButton"
+                                                data-action="@Url.Action("HouseholdApplyActivity")"
+                                                button-spinner>
                                             <span>
                                                 @if (Model.PointTranslation.IsSingleEvent)
                                                 {
@@ -106,7 +109,6 @@
                                                     </span>
                                                 }
                                             </span>
-                                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                                         </button>
                                     </td>
                                 </tr>
@@ -133,9 +135,11 @@
                                             <input data-action="@Url.Action("HouseholdApplySecretCode")" class="form-control codeInput" />
                                         </td>
                                         <td style="padding-left:6px;">
-                                            <button type="submit" class="btn btn-primary btn-spinner codeButton" data-action="@Url.Action("HouseholdApplySecretCode")">
+                                            <button type="submit"
+                                                    class="btn btn-primary btn-spinner codeButton"
+                                                    data-action="@Url.Action("HouseholdApplySecretCode")"
+                                                    button-spinner>
                                                 <span class="buttonText">Secret Code</span>
-                                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                                             </button>
                                         </td>
                                     </tr>
@@ -256,9 +260,9 @@
                                                     name="redeemButton"
                                                     value="@Model.Head.Id"
                                                     asp-action="HandleHouseholdDonation"
-                                                    asp-is-disabled="@(!Model.CanEditDetails)">
+                                                    asp-is-disabled="@(!Model.CanEditDetails)"
+                                                    button-spinner>
                                                 <span class="buttonText">Redeem code</span>
-                                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                                             </button>
                                             @if (Model.Head.CanDonateVendorCode)
                                             {
@@ -267,9 +271,9 @@
                                                         name="donateButton"
                                                         value="@Model.Head.Id"
                                                         asp-action="HandleHouseholdDonation"
-                                                        asp-is-disabled="@(!Model.CanEditDetails)">
+                                                        asp-is-disabled="@(!Model.CanEditDetails)"
+                                                        button-spinner>
                                                     <span class="buttonText">Donate book</span>
-                                                    <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                                                 </button>
                                             }
                                             @if (Model.Head.CanEmailAwardVendorCode)
@@ -305,9 +309,9 @@
                                                         name="undonateButton"
                                                         value="@Model.Head.Id"
                                                         asp-action="HandleHouseholdDonation"
-                                                        asp-is-disabled="@(!Model.CanEditDetails)">
+                                                        asp-is-disabled="@(!Model.CanEditDetails)"
+                                                        button-spinner>
                                                     <span class="buttonText">Un-donate</span>
-                                                    <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                                                 </button>
                                             }
                                         }
@@ -408,9 +412,9 @@
                                                         name="redeemButton"
                                                         value="@user.Id"
                                                         asp-action="HandleHouseholdDonation"
-                                                        asp-is-disabled="@(!Model.CanEditDetails)">
+                                                        asp-is-disabled="@(!Model.CanEditDetails)"
+                                                        button-spinner>
                                                     <span class="buttonText">Redeem code</span>
-                                                    <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                                                 </button>
                                                 @if (user.CanDonateVendorCode)
                                                 {
@@ -419,9 +423,9 @@
                                                             name="donateButton"
                                                             value="@user.Id"
                                                             asp-action="HandleHouseholdDonation"
-                                                            asp-is-disabled="@(!Model.CanEditDetails)">
+                                                            asp-is-disabled="@(!Model.CanEditDetails)"
+                                                            button-spinner>
                                                         <span class="buttonText">Donate book</span>
-                                                        <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                                                     </button>
                                                 }
                                                 @if (user.CanEmailAwardVendorCode)
@@ -456,9 +460,9 @@
                                                             name="undonateButton"
                                                             value="@user.Id"
                                                             asp-action="HandleHouseholdDonation"
-                                                            asp-is-disabled="@(!Model.CanEditDetails)">
+                                                            asp-is-disabled="@(!Model.CanEditDetails)"
+                                                            button-spinner>
                                                         <span class="buttonText">Un-donate</span>
-                                                        <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                                                     </button>
                                                 }
                                             }
@@ -801,9 +805,9 @@
                             </button>
                             <button type="submit"
                                     class="btn btn-warning btn-spinner pull-right"
-                                    aria-label="Confirm">
+                                    aria-label="Confirm"
+                                    button-spinner>
                                 @GRA.Annotations.Interface.Confirm
-                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
                         </div>
                     </form>
@@ -920,9 +924,9 @@
                             <button type="submit"
                                     class="btn btn-info btn-spinner pull-right"
                                     aria-label="Confirm"
-                                    onclick="$('#bulkDoNotRedeem').prop('disabled', true).addClass('disabled')">
+                                    onclick="$('#bulkDoNotRedeem').prop('disabled', true).addClass('disabled')"
+                                    button-spinner>
                                 Redeem all
-                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
                         </div>
                     </form>

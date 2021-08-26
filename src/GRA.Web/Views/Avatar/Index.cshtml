@@ -195,10 +195,10 @@
                         </button>
                         <button id="saveAvatar"
                                 class="btn btn-lg @(Model.NewAvatar ? "btn-success" : "btn-default")"
-                                style="margin:5px;">
+                                style="margin:5px;"
+                                button-spinner>
                             <span class="fa fa-floppy-o"></span>
                             @SharedLocalizer[GRA.Annotations.Interface.Save]
-                            <span id="saveSpinner" class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                         </button>
                         <form id="shareForm"
                               asp-action="Share"
@@ -234,6 +234,8 @@
         $( document ).ready(function() {
             //Sets the default layer
             SetLayer($("#layer-container").find("[data-layer='" + @Model.DefaultLayer +"']"));
+            var saveSpinner = $("#saveAvatar").find("span.fa-spinner");
+            saveSpinner.attr("id", "saveSpinner");
         });
         //Returns the layer's selected item Id
         function GetLayersSelectedItemId(layerId) {

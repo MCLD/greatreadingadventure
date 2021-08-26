@@ -198,18 +198,19 @@ else
         @if (Model.EditingSchedule == false)
         {
             <div class="col-xs-12 col-sm-4 col-sm-offset-4" style="padding-top: 1em;">
-                <button type="submit" class="btn btn-lg btn-success btn-spinner">
+                <button type="submit" class="btn btn-lg btn-success btn-spinner" button-spinner>
                     Next: Programs
-                    <span class="fa fa-spinner fa-pulse fa-fw hidden"></span>
                 </button>
             </div>
         }
         else
         {
             <div class="col-xs-12 col-sm-8 col-sm-offset-3" style="padding-top: 1em;">
-                <button type="submit" class="btn btn-lg btn-success btn-spinner" style="margin-bottom: 10px;">
+                <button type="submit"
+                        class="btn btn-lg btn-success btn-spinner"
+                        style="margin-bottom: 10px;"
+                        button-spinner>
                     Save Schedule
-                    <span class="fa fa-spinner fa-pulse fa-fw hidden"></span>
                 </button>
                 <a asp-action="Dashboard" class="btn btn-lg btn-default pull-left" style="margin-right: 10px;">Return to Dashboard</a>
             </div>
