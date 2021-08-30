@@ -44,6 +44,7 @@
                    asp-action="@nameof(ParticipantsController.Detail)"
                    asp-route-id="@Model.Event.CreatedBy"
                    target="_blank">@Model.CreatedByName</a>
+                <text>on @Model.Event.CreatedAt</text>
             }
             else
             {

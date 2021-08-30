@@ -123,7 +123,11 @@
             Created By:
             @if (Model.CanViewParticipants)
             {
-                <a asp-controller="Participants" asp-action="@nameof(ParticipantsController.Detail)" asp-route-id="@Model.Trigger.CreatedBy" target="_blank">@Model.CreatedByName</a>
+                <a asp-controller="Participants"
+                   asp-action="@nameof(ParticipantsController.Detail)"
+                   asp-route-id="@Model.Trigger.CreatedBy"
+                   target="_blank">@Model.CreatedByName</a>
+                <text>on @Model.Trigger.CreatedAt</text>
             }
             else
             {
