@@ -46,7 +46,7 @@
                                     <a asp-action="@nameof(EmailManagementController.Edit)"
                                        asp-route-id="@template.Id"
                                        class="btn btn-primary btn-sm">
-                                        <span class="fa fa-pencil" aria-hidden="true"></span>
+                                        <span class="fas fa-pencil-alt" aria-hidden="true"></span>
                                         Edit
                                     </a>
                                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.SendBulkEmails.ToString()))

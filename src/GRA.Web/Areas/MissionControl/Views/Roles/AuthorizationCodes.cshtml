@@ -55,7 +55,7 @@
                                             data-code="@code.Code"
                                             data-description="@code.Description"
                                             data-single="@code.IsSingleUse">
-                                        <span class="fa fa-2x fa-pencil" aria-hidden="true"></span>
+                                        <span class="fas fa-2x fa-pencil-alt" aria-hidden="true"></span>
                                     </button>
                                     <button type="button"
                                             class="btn btn-danger btn-xs"
@@ -64,7 +64,7 @@
                                             data-target="#deleteModal"
                                             data-id="@code.Id"
                                             data-code="@code.Code">
-                                        <span class="fa fa-2x fa-remove" aria-hidden="true"></span>
+                                        <span class="fas fa-2x fa-times" aria-hidden="true"></span>
                                     </button>
                                 </td>
                             </tr>
@@ -134,7 +134,7 @@
                         <div class="form-group">
                             <label asp-for="AuthorizationCode.IsSingleUse"
                                    class="control-label"></label>
-                            <span class="fa fa-question-circle-o"
+                            <span class="far fa-question-circle"
                                   data-toggle="tooltip"
                                   title="Single use codes may be used once and then are deactivated."></span>
                             <select id="addSingle" asp-for="AuthorizationCode.IsSingleUse"
@@ -225,7 +225,7 @@
                         <div class="form-group">
                             <label asp-for="AuthorizationCode.IsSingleUse"
                                    class="control-label"></label>
-                            <span class="fa fa-question-circle-o"
+                            <span class="far fa-question-circle"
                                   data-toggle="tooltip"
                                   title="Single use codes may be used once and then are deactivated."></span>
                             <select id="editingle"
@@ -290,7 +290,7 @@
                         </h1>
                     </div>
                     <div class="modal-body">
-                        <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                        <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
                         <span id="modal-text"></span>
                     </div>
                     <div class="modal-footer">
@@ -303,7 +303,7 @@
                         <button type="submit"
                                 class="btn btn-danger btn-spinner pull-right"
                                 aria-label="Confirm">
-                            <span class="fa fa-remove" aria-hidden="true"></span>
+                            <span class="fas fa-times" aria-hidden="true"></span>
                             Delete
                             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                         </button>

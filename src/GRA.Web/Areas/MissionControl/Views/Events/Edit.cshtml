@@ -73,7 +73,7 @@
                     <label asp-for="Event.StartDate" class="control-label"></label>
                     <div class="input-group date" id="pickerStart">
                         <span class="input-group-addon">
-                            <span class="fa fa-calendar"></span>
+                            <span class="fas fa-calendar-alt"></span>
                         </span>
                         <input asp-for="Event.StartDate" type="text" class="form-control" />
                     </div>
@@ -83,7 +83,7 @@
                     <label asp-for="Event.EndDate" class="control-label"></label>
                     <div class="input-group date" id="pickerEnd">
                         <span class="input-group-addon">
-                            <span class="fa fa-calendar"></span>
+                            <span class="fas fa-calendar-alt"></span>
                         </span>
                         <input asp-for="Event.EndDate" type="text" value="@(Model.Event.AllDay ? Model.Event.EndDate?.ToString() : Model.Event.EndDate?.ToString("t"))" class="form-control" />
                     </div>
@@ -152,7 +152,7 @@
                 {
                     <button type="button" class="btn btn-primary btn-xs" style="margin-left:8px;"
                             data-toggle="modal" data-target="#addModal">
-                        <span class="fa fa-2x fa-plus"></span>
+                        <span class="fas fa-2x fa-plus"></span>
                     </button>
                 }
             </div>
@@ -213,18 +213,18 @@
                                 <td class="gra-mc-icon">
                                     @if (Model.Event.Challenge.IsActive)
                                     {
-                                        <span class="fa fa-lg fa-check text-success"></span>
+                                        <span class="fas fa-lg fa-check text-success"></span>
                                     }
                                     else
                                     {
-                                        <span class="fa fa-lg fa-ban text-danger"></span>
+                                        <span class="fas fa-lg fa-ban text-danger"></span>
                                     }
                                 </td>
                                 @if (Model.CanRelateChallenge)
                                 {
                                     <td class="gra-mc-icon">
                                         <button type="button" class="btn btn-link btn-xs removeRelatedButton">
-                                            <span class="fa fa-2x fa-minus-circle text-danger" aria-hidden="true"></span>
+                                            <span class="fas fa-2x fa-minus-circle text-danger" aria-hidden="true"></span>
                                         </button>
                                     </td>
                                 }
@@ -278,7 +278,7 @@
                                         <button type="button"
                                                 class="btn btn-link btn-xs removeRelatedButton"
                                                 data-id="@Model.Event.ChallengeGroup.Id">
-                                            <span class="fa fa-2x fa-minus-circle text-danger" aria-hidden="true"></span>
+                                            <span class="fas fa-2x fa-minus-circle text-danger" aria-hidden="true"></span>
                                         </button>
                                     </td>
                                 }
@@ -301,7 +301,7 @@
     <div class="form-group">
         <a asp-action="Index" class="btn btn-default">Return to List</a>
         <a asp-action="Create" asp-route-id="@Model.Event.Id" class="btn btn-default">
-            <span class="fa fa-copy"></span>
+            <span class="far fa-copy"></span>
             Copy Event
         </a>
         <button type="submit" class="btn btn-primary">
@@ -549,12 +549,12 @@
             allowInputToggle: true,
             sideBySide: true,
             icons: {
-                time: "fa fa-clock-o",
-                date: "fa fa-calendar",
-                up: "fa fa-arrow-up",
-                down: "fa fa-arrow-down",
-                previous: "fa fa-arrow-left",
-                next: "fa fa-arrow-right"
+                time: "far fa-clock",
+                date: "fas fa-calendar-alt",
+                up: "fas fa-arrow-up",
+                down: "fas fa-arrow-down",
+                previous: "fas fa-arrow-left",
+                next: "fas fa-arrow-right"
             }
         });
 
@@ -562,12 +562,12 @@
             format: "@(Model.Event?.AllDay == true ? "MM/DD/YYYY" : "hh:mm A")",
             allowInputToggle: true,
             icons: {
-                time: "fa fa-clock-o",
-                date: "fa fa-calendar",
-                up: "fa fa-arrow-up",
-                down: "fa fa-arrow-down",
-                previous: "fa fa-arrow-left",
-                next: "fa fa-arrow-right"
+                time: "far fa-clock",
+                date: "fas fa-calendar-alt",
+                up: "fas fa-arrow-up",
+                down: "fas fa-arrow-down",
+                previous: "fas fa-arrow-left",
+                next: "fas fa-arrow-right"
             }
         });
 

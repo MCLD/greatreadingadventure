@@ -26,7 +26,7 @@
                                     @SharedLocalizer[GRA.Annotations.Interface.CommunityExperiences]
                                     @if (!string.IsNullOrWhiteSpace(Model.CommunityExperienceDescription))
                                     {
-                                        <span class="fa fa-question-circle-o wide-tooltip"
+                                        <span class="far fa-question-circle wide-tooltip"
                                               title="@SharedLocalizer[Model.CommunityExperienceDescription]"
                                               data-toggle="tooltip"
                                               data-placement="top"></span>
@@ -51,7 +51,7 @@
                             <label asp-for="StartDate" class="control-label"></label>
                             <div class="input-group date" id="pickerStart">
                                 <span class="input-group-addon">
-                                    <span class="fa fa-calendar"></span>
+                                    <span class="fas fa-calendar-alt"></span>
                                 </span>
                                 <input asp-for="StartDate" type="text" class="form-control" />
                             </div>
@@ -61,7 +61,7 @@
                             <label asp-for="EndDate" class="control-label"></label>
                             <div class="input-group date" id="pickerEnd">
                                 <span class="input-group-addon">
-                                    <span class="fa fa-calendar"></span>
+                                    <span class="fas fa-calendar-alt"></span>
                                 </span>
                                 <input asp-for="EndDate" type="text" class="form-control" />
                             </div>
@@ -186,19 +186,19 @@
                                            asp-route-Visited="@Model.Visited"
                                            asp-route-Favorites="@(Model.Favorites == true ? null : "True")"
                                            class="btn btn-block @(Model.Favorites == true ? "btn-success" : "btn-default")">
-                                            <span class="fa @(Model.Favorites == true ? "fa-star" : "fa-star-o")"></span>
+                                            <span class="@(Model.Favorites == true ? "fas" : "far") fa-star"></span>
                                             @SharedLocalizer[GRA.Annotations.Interface.MyFavorites]
                                         </a>
                                     </div>
                                     <div class="col-xs-6 col-sm-2 col-sm-offset-4 col-md-offset-5 row-spacing">
                                         <a asp-action="CommunityExperiences" class="btn btn-default btn-block">
-                                            <span class="hidden-sm fa fa-minus-circle"></span>
+                                            <span class="hidden-sm fas fa-minus-circle"></span>
                                             @SharedLocalizer[GRA.Annotations.Interface.Clear]
                                         </a>
                                     </div>
                                     <div class="col-xs-6 col-sm-2 row-spacing">
                                         <button type="submit" class="btn btn-primary btn-block">
-                                            <span class="hidden-sm fa fa-search"></span>
+                                            <span class="hidden-sm fas fa-search"></span>
                                             @SharedLocalizer[GRA.Annotations.Interface.Find]
                                         </button>
                                     </div>
@@ -209,14 +209,14 @@
                                         @if (Model.EventType == GRA.EventType.CommunityExperience)
                                         {
                                             <a asp-action="CommunityExperiences" class="btn btn-default btn-block">
-                                                <span class="hidden-sm fa fa-minus-circle"></span>
+                                                <span class="hidden-sm fas fa-minus-circle"></span>
                                                 @SharedLocalizer[GRA.Annotations.Interface.Clear]
                                             </a>
                                         }
                                         else
                                         {
                                             <a asp-action="" class="btn btn-default btn-block">
-                                                <span class="hidden-sm fa fa-minus-circle"></span>
+                                                <span class="hidden-sm fas fa-minus-circle"></span>
                                                 @SharedLocalizer[GRA.Annotations.Interface.Clear]
                                             </a>
                                         }
@@ -360,7 +360,7 @@
                                                                         <a class="btn btn-success float-right"
                                                                            href="@Url.Action(nameof(EventsController.Stream),
                                                                                 new { id = Model.Events[i].Id })">
-                                                                            <span class="fa fa-play-circle-o"></span>
+                                                                            <span class="far fa-play-circle"></span>
                                                                             @SharedLocalizer[GRA.Annotations.Interface.StreamNow]
                                                                         </a>
                                                                     }
@@ -377,7 +377,7 @@
                                                                 else
                                                                 {
                                                                     <button disabled class="btn btn-secondary float-right">
-                                                                        <span class="fa fa-stop-circle-o"></span>
+                                                                        <span class="far fa-stop-circle"></span>
                                                                         @(Model.Events[i].StartDate >= DateTime.Now
                                                                     ? SharedLocalizer[GRA.Annotations.Interface.NotStreamingYet]
                                                                     : SharedLocalizer[GRA.Annotations.Interface.ProgramIsOver])
@@ -488,12 +488,12 @@
             allowInputToggle: true,
             useCurrent: false,
             icons: {
-                time: "fa fa-clock-o",
-                date: "fa fa-calendar",
-                up: "fa fa-arrow-up",
-                down: "fa fa-arrow-down",
-                previous: "fa fa-arrow-left",
-                next: "fa fa-arrow-right"
+                time: "far fa-clock",
+                date: "fas fa-calendar-alt",
+                up: "fas fa-arrow-up",
+                down: "fas fa-arrow-down",
+                previous: "fas fa-arrow-left",
+                next: "fas fa-arrow-right"
             }
         });
 

@@ -94,7 +94,7 @@
                             <input id="prizeWinnerId" name="prizeWinnerId" value="@winner.Id" type="hidden" />
                             <input id="page" name="page" value="@Model.PaginateModel.CurrentPage" type="hidden" />
                             <button type="submit" class="btn btn-success btn-xs btn-spinner">
-                                <span class="fa fa-gift"></span>
+                                <span class="fas fa-gift"></span>
                                 Available, click to redeem!
                                 <span class="fa fa-spinner fa-pulse fa-fw hidden"></span>
                             </button>
@@ -120,7 +120,7 @@
                                 data-target="#deleteModal"
                                 data-id="@winner.Id"
                                 data-name="@winner.UserFirstName @winner.UserLastName">
-                            <span class="fa fa-remove" aria-hidden="true"></span>
+                            <span class="fas fa-times" aria-hidden="true"></span>
                         </button>
                     }
                     else
@@ -156,7 +156,7 @@
                     <h1 class="modal-title h4" id="deleteModalLabel">Delete winner</h1>
                 </div>
                 <div class="modal-body">
-                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                    <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
                     <span id="modal-text"></span>
                 </div>
                 <div class="modal-footer">
@@ -183,7 +183,7 @@
                         <button type="submit"
                                 class="btn btn-danger pull-right"
                                 aria-label="Confirm">
-                            <span class="fa fa-remove" aria-hidden="true"></span>
+                            <span class="fas fa-times" aria-hidden="true"></span>
                             Delete
                         </button>
                     </form>

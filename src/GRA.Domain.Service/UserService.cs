@@ -1173,7 +1173,7 @@ namespace GRA.Domain.Service
             var notification = new Notification
             {
                 PointsEarned = 0,
-                Text = $"<span class=\"fa fa-thumbs-o-up\"></span> You've successfully joined <strong>{site.Name}</strong>!",
+                Text = $"<span class=\"far fa-thumbs-up\"></span> You've successfully joined <strong>{site.Name}</strong>!",
                 UserId = registeredUser.Id,
                 IsJoiner = true
             };
@@ -1239,7 +1239,7 @@ namespace GRA.Domain.Service
                     BadgeFilename = badge.Filename,
                     BadgeId = badge.Id,
                     PointsEarned = 0,
-                    Text = $"<span class=\"fa fa-thumbs-o-up\"></span> You've successfully joined <strong>{site.Name}</strong>!",
+                    Text = $"<span class=\"far fa-thumbs-up\"></span> You've successfully joined <strong>{site.Name}</strong>!",
                     UserId = user.Id,
                     IsJoiner = true
                 };
@@ -1293,7 +1293,7 @@ namespace GRA.Domain.Service
                                 BadgeFilename = badge.Filename,
                                 BadgeId = badge.Id,
                                 PointsEarned = 0,
-                                Text = $"<span class=\"fa fa-thumbs-o-up\"></span> You've successfully joined <strong>{site.Name}</strong>!",
+                                Text = $"<span class=\"far fa-thumbs-up\"></span> You've successfully joined <strong>{site.Name}</strong>!",
                                 UserId = member.Id,
                                 IsJoiner = true
                             };

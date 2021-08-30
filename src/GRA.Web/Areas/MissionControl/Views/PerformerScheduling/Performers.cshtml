@@ -26,8 +26,8 @@
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Email <span class="fa fa-question-circle-o" title="Preferred method of contact is italicized." data-toggle="tooltip" data-placement="top"></span></th>
-                        <th>Phone <span class="fa fa-question-circle-o" title="Preferred method of contact is italicized." data-toggle="tooltip" data-placement="top"></span></th>
+                        <th>Email <span class="far fa-question-circle" title="Preferred method of contact is italicized." data-toggle="tooltip" data-placement="top"></span></th>
+                        <th>Phone <span class="far fa-question-circle" title="Preferred method of contact is italicized." data-toggle="tooltip" data-placement="top"></span></th>
                         <th width="80px;">Programs</th>
                         <th width="196px;">Performing in your system</th>
                     </tr>
@@ -44,7 +44,7 @@
                             <td style="@(performer.PhonePreferred ? "" : "font-style:italic")">@performer.Email</td>
                             <td style="@(performer.PhonePreferred ? "font-style:italic" : "")">@performer.Phone</td>
                             <td>@performer.ProgramCount</td>
-                            <td><span class="colored-icon fa @(performer.AvailableInSystem ? "fa-check" : "fa-times")"></span></td>
+                            <td><span class="colored-icon fas @(performer.AvailableInSystem ? "fa-check" : "fa-times")"></span></td>
                         </tr>
                     }
                 </tbody>

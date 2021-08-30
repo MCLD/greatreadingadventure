@@ -87,7 +87,7 @@
                     <label asp-for="Event.StartDate" class="control-label"></label>
                     <div class="input-group date" id="pickerStart">
                         <span class="input-group-addon">
-                            <span class="fa fa-calendar"></span>
+                            <span class="fas fa-calendar-alt"></span>
                         </span>
                         <input asp-for="Event.StartDate" type="text" class="form-control" />
                     </div>
@@ -97,7 +97,7 @@
                     <label asp-for="Event.StreamingAccessEnds" class="control-label"></label>
                     <div class="input-group date" id="pickerEnd">
                         <span class="input-group-addon">
-                            <span class="fa fa-calendar"></span>
+                            <span class="fas fa-calendar-alt"></span>
                         </span>
                         <input asp-for="Event.StreamingAccessEnds"
                                type="text"
@@ -195,18 +195,18 @@
                                 <td class="gra-mc-icon">
                                     @if (Model.Event.Challenge.IsActive)
                                     {
-                                        <span class="fa fa-lg fa-check text-success"></span>
+                                        <span class="fas fa-lg fa-check text-success"></span>
                                     }
                                     else
                                     {
-                                        <span class="fa fa-lg fa-ban text-danger"></span>
+                                        <span class="fas fa-lg fa-ban text-danger"></span>
                                     }
                                 </td>
                                 @if (Model.CanRelateChallenge)
                                 {
                                     <td class="gra-mc-icon">
                                         <button type="button" class="btn btn-link btn-xs removeRelatedButton">
-                                            <span class="fa fa-2x fa-minus-circle text-danger" aria-hidden="true"></span>
+                                            <span class="fas fa-2x fa-minus-circle text-danger" aria-hidden="true"></span>
                                         </button>
                                     </td>
                                 }
@@ -252,7 +252,7 @@
                                         <button type="button"
                                                 class="btn btn-link btn-xs removeRelatedButton"
                                                 data-id="@Model.Event.ChallengeGroup.Id">
-                                            <span class="fa fa-2x fa-minus-circle text-danger" aria-hidden="true"></span>
+                                            <span class="fas fa-2x fa-minus-circle text-danger" aria-hidden="true"></span>
                                         </button>
                                     </td>
                                 }
@@ -326,7 +326,7 @@
                         else
                         {
                             <a role="button" data-toggle="collapse" data-parent="#accordionSecretCode" href="#collapseSecretCode" aria-expanded="true" aria-controls="collapseSecretCode">
-                                <span id="secretCodeIcon" class="fa fa-lg @(Model.IncludeSecretCode ? "fa-caret-down" : "fa-caret-right")"></span>
+                                <span id="secretCodeIcon" class="fas fa-lg @(Model.IncludeSecretCode ? "fa-caret-down" : "fa-caret-right")"></span>
                                 Add Secret Code to this event
                             </a>
                         }
@@ -382,7 +382,7 @@
                                 <div class="tab-content">
                                     <div role="tabpanel" class="tab-pane @(Model.UseBadgeMaker ? "active" : "")" id="badge">
                                         <button id="openMaker" type="button" class="btn btn-default">
-                                            <span class="fa fa-certificate"></span> Create a Badge
+                                            <span class="fas fa-certificate"></span> Create a Badge
                                         </button>
                                     </div>
                                     <div role="tabpanel" class="tab-pane @(Model.UseBadgeMaker ? "" : "active")" id="upload">
@@ -390,7 +390,7 @@
                                         <div class="input-group">
                                             <label class="input-group-btn">
                                                 <span class="btn btn-default btn-file">
-                                                    <span class="fa fa-file-image-o"></span> Select an image<input type="file" asp-for="BadgeUploadImage" accept=".png,.jpg,.jpeg" style="display: none;" />
+                                                    <span class="far fa-file-image"></span> Select an image<input type="file" asp-for="BadgeUploadImage" accept=".png,.jpg,.jpeg" style="display: none;" />
                                                 </span>
                                             </label>
                                             <input type="text" class="form-control" readonly id="selectedFile">
@@ -405,7 +405,7 @@
                         <div class="row row-spacing">
                             <div class="col-xs-12">
                                 <label asp-for="BadgeAltText" class="control-label"></label>
-                                <span class="fa fa-info-circle wide-tooltip"
+                                <span class="fas fa-info-circle wide-tooltip"
                                       title="How should this badge be described to someone who can't see it?"
                                       data-toggle="tooltip"
                                       data-placement="top"></span>
@@ -618,12 +618,12 @@
             allowInputToggle: true,
             sideBySide: true,
             icons: {
-                time: "fa fa-clock-o",
-                date: "fa fa-calendar",
-                up: "fa fa-arrow-up",
-                down: "fa fa-arrow-down",
-                previous: "fa fa-arrow-left",
-                next: "fa fa-arrow-right"
+                time: "far fa-clock",
+                date: "fas fa-calendar-alt",
+                up: "fas fa-arrow-up",
+                down: "fas fa-arrow-down",
+                previous: "fas fa-arrow-left",
+                next: "fas fa-arrow-right"
             }
         });
 
@@ -631,12 +631,12 @@
             allowInputToggle: true,
             sideBySide: true,
             icons: {
-                time: "fa fa-clock-o",
-                date: "fa fa-calendar",
-                up: "fa fa-arrow-up",
-                down: "fa fa-arrow-down",
-                previous: "fa fa-arrow-left",
-                next: "fa fa-arrow-right"
+                time: "far fa-clock",
+                date: "fas fa-calendar-alt",
+                up: "fas fa-arrow-up",
+                down: "fas fa-arrow-down",
+                previous: "fas fa-arrow-left",
+                next: "fas fa-arrow-right"
             }
         });
 

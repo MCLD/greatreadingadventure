@@ -37,7 +37,7 @@
                                 </td>
 
                                 <td>
-                                    <span class="fa fa-square" style="color: @AgeGroup.IconColor"></span>
+                                    <span class="fas fa-square" style="color: @AgeGroup.IconColor"></span>
                                 </td>
                                 <td>
                                     @AgeGroup.BackToBackBranchIds.Count
@@ -49,7 +49,7 @@
                                             data-id="@AgeGroup.Id"
                                             data-name="@AgeGroup.Name"
                                             data-branchids="@string.Join(",", AgeGroup.BackToBackBranchIds)">
-                                        <span class="fa fa-edit" aria-hidden="true"></span>
+                                        <span class="fas fa-edit" aria-hidden="true"></span>
                                     </button>
                                 </td>
                                 <td>
@@ -59,7 +59,7 @@
                                             data-target="#deleteModal"
                                             data-id="@AgeGroup.Id"
                                             data-name="@AgeGroup.Name">
-                                        <span class="fa fa-2x fa-remove" aria-hidden="true"></span>
+                                        <span class="fas fa-2x fa-times" aria-hidden="true"></span>
                                     </button>
                                 </td>
                             </tr>
@@ -224,7 +224,7 @@
                         <h1 class="modal-title h4" id="deleteModalLabel">Delete Age Group</h1>
                     </div>
                     <div class="modal-body">
-                        <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                        <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
                         <span id="modal-text"></span>
                     </div>
                     <div class="modal-footer">
@@ -237,7 +237,7 @@
                         <button type="submit"
                                 class="btn btn-danger btn-spinner pull-right"
                                 aria-label="Confirm">
-                            <span class="fa fa-remove" aria-hidden="true"></span>
+                            <span class="fas fa-times" aria-hidden="true"></span>
                             Delete
                             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                         </button>

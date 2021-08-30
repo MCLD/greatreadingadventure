@@ -9,7 +9,7 @@
         @if (Model.Layers.Count() == 0)
         {
             <div class="alert alert-warning">
-                <span class="fa fa-ban"></span>
+                <span class="fas fa-ban"></span>
                 Avatars have not been configured. Set up the default avatars or upload an avatar .zip file.
             </div>
             @if (Model.AvatarZipPresent)
@@ -19,7 +19,7 @@
                       style="padding: 1em 0;">
                     <button type="submit" class="btn btn-primary btn-spinner">
                         Import avatars.zip
-                        <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                        <span class="fas fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                     </button>
                 </form>
             }
@@ -30,7 +30,7 @@
                       style="padding: 1em 0;">
                     <button type="submit" class="btn btn-primary btn-spinner">
                         Add default avatars
-                        <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                        <span class="fas fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                     </button>
                 </form>
             }
@@ -43,7 +43,7 @@
                         <div class="input-group">
                             <label class="input-group-btn">
                                 <span class="btn btn-default btn-file">
-                                    <span class="fa fa-file-image-o"></span>
+                                    <span class="far fa-file-image"></span>
                                     Select an avatar .zip file
                                     <input type="file"
                                            asp-for="UploadedFile"
@@ -65,7 +65,7 @@
                     <button class="btn btn-primary btn-spinner" type="submit">
                         <span class="fas fa-file-upload"></span>
                         Upload
-                        <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                        <span class="fas fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                     </button>
                 </div>
             </form>

@@ -38,16 +38,16 @@ namespace GRA.Controllers.Helpers
             {
                 if (string.Equals(ascDesc, "Descending", StringComparison.OrdinalIgnoreCase))
                 {
-                    output.PostContent.AppendHtml("<span class='fa fa-lg fa-sort-desc sort-desc'></span>");
+                    output.PostContent.AppendHtml("<span class='fas fa-lg fa-sort-down sort-down'></span>");
                 }
                 else
                 {
-                    output.PostContent.AppendHtml("<span class='fa fa-lg fa-sort-asc sort-asc'></span>");
+                    output.PostContent.AppendHtml("<span class='fas fa-lg fa-sort-up sort-up'></span>");
                 }
             }
             else
             {
-                output.PostContent.AppendHtml("<span class='fa fa-lg fa-sort-asc sort-hide'></span>");
+                output.PostContent.AppendHtml("<span class='fas fa-lg fa-sort-up sort-hide'></span>");
             }
             output.Attributes.Remove(new TagHelperAttribute("sort"));
         }
