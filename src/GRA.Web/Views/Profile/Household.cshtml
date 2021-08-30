@@ -87,7 +87,10 @@
                                                         </td>
                                                     }
                                                     <td>
-                                                        <button type="submit" class="btn btn-primary btn-spinner activityButton" data-action="HouseholdApplyActivity">
+                                                        <button type="submit"
+                                                                class="btn btn-primary btn-spinner activityButton"
+                                                                data-action="HouseholdApplyActivity"
+                                                                button-spinner>
                                                             <span>
                                                                 @if (Model.PointTranslation.IsSingleEvent)
                                                                 {
@@ -102,7 +105,6 @@
                                                                     </span>
                                                                 }
                                                             </span>
-                                                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                                                         </button>
                                                     </td>
                                                 </tr>
@@ -128,9 +130,11 @@
                                                             <input data-action="HouseholdApplySecretCode" class="form-control codeInput" />
                                                         </td>
                                                         <td style="padding-left:6px;">
-                                                            <button type="submit" class="btn btn-primary btn-spinner codeButton" data-action="HouseholdApplySecretCode">
+                                                            <button type="submit"
+                                                                    class="btn btn-primary btn-spinner codeButton"
+                                                                    data-action="HouseholdApplySecretCode"
+                                                                    button-spinner>
                                                                 <span class="buttonText">@SharedLocalizer[GRA.Domain.Model.DisplayNames.SecretCode]</span>
-                                                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                                                             </button>
                                                         </td>
                                                     </tr>
@@ -248,18 +252,18 @@
                                                             <button class="btn btn-info btn-sm btn-spinner"
                                                                     name="redeemButton"
                                                                     value="@Model.Head.Id"
-                                                                    asp-action="HandleHouseholdDonation">
+                                                                    asp-action="HandleHouseholdDonation"
+                                                                    button-spinner>
                                                                 <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.RedeemYourCode]</span>
-                                                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                                                             </button>
                                                             @if (Model.Head.CanDonateVendorCode)
                                                             {
                                                                 <button class="btn btn-success btn-sm btn-spinner"
                                                                         name="donateButton"
                                                                         value="@Model.Head.Id"
-                                                                        asp-action="HandleHouseholdDonation">
+                                                                        asp-action="HandleHouseholdDonation"
+                                                                        button-spinner>
                                                                     <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.DonateYourBook]</span>
-                                                                    <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                                                                 </button>
                                                             }
                                                             @if (Model.Head.CanEmailAwardVendorCode)
@@ -400,18 +404,18 @@
                                                                 <button class="btn btn-info btn-sm btn-spinner"
                                                                         name="redeemButton"
                                                                         value="@user.Id"
-                                                                        asp-action="HandleHouseholdDonation">
+                                                                        asp-action="HandleHouseholdDonation"
+                                                                        button-spinner>
                                                                     <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.RedeemYourCode]</span>
-                                                                    <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                                                                 </button>
                                                                 @if (user.CanDonateVendorCode)
                                                                 {
                                                                     <button class="btn btn-success btn-sm btn-spinner"
                                                                             name="donateButton"
                                                                             value="@user.Id"
-                                                                            asp-action="HandleHouseholdDonation">
+                                                                            asp-action="HandleHouseholdDonation"
+                                                                            button-spinner>
                                                                         <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.DonateYourBook]</span>
-                                                                        <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                                                                     </button>
                                                                 }
                                                                 @if (user.CanEmailAwardVendorCode)
@@ -536,9 +540,9 @@
                             </button>
                             <button type="submit"
                                     class="btn btn-warning btn-spinner pull-right"
-                                    aria-label="Confirm">
+                                    aria-label="Confirm"
+                                    button-spinner>
                                 @SharedLocalizer[GRA.Annotations.Interface.Confirm]
-                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
                         </div>
                     </form>

@@ -166,18 +166,18 @@
                         {
                             <button class="btn btn-info btn-spinner"
                                     asp-action="RedeemCode"
-                                    asp-is-disabled="@(!Model.CanEditDetails)">
+                                    asp-is-disabled="@(!Model.CanEditDetails)"
+                                    button-spinner>
                                 <span class="buttonText">Redeem code</span>
-                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
                             @if (Model.User.CanDonateVendorCode)
                             {
                                 @:or
                                 <button class="btn btn-success btn-spinner"
                                         asp-action="DonateCode"
-                                        asp-is-disabled="@(!Model.CanEditDetails)">
+                                        asp-is-disabled="@(!Model.CanEditDetails)"
+                                        button-spinner>
                                     <span class="buttonText">Donate book</span>
-                                    <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                                 </button>
                             }
                             @if (Model.User.CanEmailAwardVendorCode)
@@ -209,9 +209,9 @@
                             {
                                 <button class="btn btn-info btn-spinner"
                                         asp-action="UndonateCode"
-                                        asp-is-disabled="@(!Model.CanEditDetails)">
+                                        asp-is-disabled="@(!Model.CanEditDetails)"
+                                        button-spinner>
                                     <span class="buttonText">Un-donate</span>
-                                    <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                                 </button>
                             }
                         }
@@ -242,9 +242,14 @@
             <input asp-for="User.PointsEarned" type="hidden" />
             <input asp-for="User.AchievedAt" type="hidden" />
 
-            <button type="submit" asp-action="Detail" id="Submit" name="Submit" value="Submit" class="btn btn-primary btn-spinner">
+            <button type="submit"
+                    asp-action="Detail"
+                    id="Submit"
+                    name="Submit"
+                    value="Submit"
+                    class="btn btn-primary btn-spinner"
+                    button-spinner>
                 <span class="buttonText">Save Changes</span>
-                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
             </button>
         }
     </div>
@@ -293,9 +298,9 @@
                             </button>
                             <button type="submit"
                                     class="btn btn-warning btn-spinner pull-right"
-                                    aria-label="Confirm">
+                                    aria-label="Confirm"
+                                    button-spinner>
                                 @GRA.Annotations.Interface.Confirm
-                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
                         </div>
                     </form>

@@ -225,16 +225,21 @@ else
 
             @if (Model.Performer?.RegistrationCompleted != true)
             {
-                <button id="submitButton" type="submit" class="btn btn-lg btn-success">
+                <button id="submitButton"
+                        type="submit"
+                        class="btn btn-lg btn-success"
+                        button-spinner>
                     Next: Schedule
-                    <span class="fa fa-spinner fa-pulse fa-fw hidden"></span>
                 </button>
             }
             else
             {
-                <button id="submitButton" type="submit" class="btn btn-lg btn-success" style="margin-bottom: 10px;">
+                <button id="submitButton"
+                        type="submit"
+                        class="btn btn-lg btn-success"
+                        style="margin-bottom: 10px;"
+                        button-spinner>
                     Update Information
-                    <span class="fa fa-spinner fa-pulse fa-fw hidden"></span>
                 </button>
                 <a asp-action="Dashboard" class="btn btn-lg btn-default pull-left" style="margin-right: 10px;">Return to Dashboard</a>
             }
