@@ -96,13 +96,13 @@ ul.navbar-nav li.active {
     padding: 5px;
 }
 
-.sort-asc {
+.sort-up {
     margin-left: 4px;
     position: relative;
     top: 2px;
 }
 
-.sort-desc {
+.sort-down {
     margin-left: 4px;
     position: relative;
     top: -2px;

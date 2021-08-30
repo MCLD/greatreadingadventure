@@ -33,7 +33,7 @@
 
     @if (!string.IsNullOrWhiteSpace(Model.Event.ExternalLink))
     {
-        <div class="row-spacing" style="font-size:medium;"><strong>More information: </strong><a target="_blank" href="@Model.Event.ExternalLink">@Model.Event.Name</a> <a target="_blank" href="@Model.Event.ExternalLink"><span class="fa fa-external-link"></span></a></div>
+        <div class="row-spacing" style="font-size:medium;"><strong>More information: </strong><a target="_blank" href="@Model.Event.ExternalLink">@Model.Event.Name</a> <a target="_blank" href="@Model.Event.ExternalLink"><span class="fas fa-external-link-alt"></span></a></div>
     }
     <div class="row-spacing" style="font-size:medium;">
         <table>
@@ -56,7 +56,7 @@
                                 <a class="btn btn-success"
                                    href="@Url.Action(nameof(EventsController.Stream),
                                         new { id = Model.Event.Id })">
-                                    <span class="fa fa-play-circle-o"></span>
+                                    <span class="far fa-play-circle"></span>
                                     @SharedLocalizer[GRA.Annotations.Interface.StreamNow]
                                 </a>
                             }
@@ -74,7 +74,7 @@
                         else
                         {
                             <button disabled class="btn btn-secondary">
-                                <span class="fa fa-stop-circle-o"></span>
+                                <span class="far fa-stop-circle"></span>
                                 @(@Model.Event.StartDate >= DateTime.Now
                                     ? SharedLocalizer[GRA.Annotations.Interface.NotStreamingYet]
                                     : SharedLocalizer[GRA.Annotations.Interface.ProgramIsOver])

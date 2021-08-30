@@ -12,7 +12,7 @@
                 {
                     <td style="position:absolute;">
                         <h1>
-                            <a asp-action="KitSelections" asp-route-id="@Model.PrevKit" style="margin-left:-125px;"><span class="fa fa-chevron-left"></span></a>
+                            <a asp-action="KitSelections" asp-route-id="@Model.PrevKit" style="margin-left:-125px;"><span class="fas fa-chevron-left"></span></a>
                         </h1>
                     </td>
                 }
@@ -21,7 +21,7 @@
                 {
                     <td style="position:absolute;">
                         <h1>
-                            <a asp-action="KitSelections" asp-route-id="@Model.NextKit" style="margin-left:50px;"><span class="fa fa-chevron-right"></span></a>
+                            <a asp-action="KitSelections" asp-route-id="@Model.NextKit" style="margin-left:50px;"><span class="fas fa-chevron-right"></span></a>
                         </h1>
                     </td>
                 }
@@ -89,7 +89,7 @@
                                         data-branchid="@branchSelection.BranchId"
                                         data-branchname="@branchSelection.Branch.Name"
                                         data-systemname="@branchSelection.Branch.SystemName">
-                                    <span class="fa fa-edit"></span>
+                                    <span class="fas fa-edit"></span>
                                 </button>
                             </td>
                             <td class="hidden-print" style="text-align:center;">
@@ -100,7 +100,7 @@
                                         data-selectionid="@branchSelection.Id"
                                         data-branchname="@branchSelection.Branch.Name"
                                         data-kitname="@branchSelection.Kit.Name">
-                                    <span class="fa fa-minus-circle"></span>
+                                    <span class="fas fa-minus-circle"></span>
                                 </button>
                             </td>
                         </tr>
@@ -207,7 +207,7 @@
                     <h1 class="modal-title h4" id="deleteModalLabel">Delete branch selection</h1>
                 </div>
                 <div class="modal-body">
-                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                    <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
                     <span id="modal-text"></span>
                 </div>
                 <div class="modal-footer">
@@ -228,7 +228,7 @@
                                 id="buttonDelete"
                                 class="btn btn-danger pull-right"
                                 aria-label="Confirm">
-                            <span class="fa fa-remove" aria-hidden="true"></span>
+                            <span class="fas fa-times" aria-hidden="true"></span>
                             Delete
                         </button>
                     </form>

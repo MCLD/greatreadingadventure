@@ -19,7 +19,7 @@
                 {
                     <td style="position:absolute;">
                         <h1>
-                            <a asp-action="PerformerSelections" asp-route-id="@Model.PrevPerformer" style="margin-left:-125px;"><span class="fa fa-chevron-left"></span></a>
+                            <a asp-action="PerformerSelections" asp-route-id="@Model.PrevPerformer" style="margin-left:-125px;"><span class="fas fa-chevron-left"></span></a>
                         </h1>
                     </td>
                 }
@@ -28,7 +28,7 @@
                 {
                     <td style="position:absolute;">
                         <h1>
-                            <a asp-action="PerformerSelections" asp-route-id="@Model.NextPerformer" style="margin-left:50px;"><span class="fa fa-chevron-right"></span></a>
+                            <a asp-action="PerformerSelections" asp-route-id="@Model.NextPerformer" style="margin-left:50px;"><span class="fas fa-chevron-right"></span></a>
                         </h1>
                     </td>
                 }
@@ -133,7 +133,7 @@
                                            href="https://www.google.com/maps/search/@branchSelection.Branch.Address"
                                            target="_blank"
                                            class="hidden-print">
-                                            <span class="fa fa-map-o"></span>
+                                            <span class="far fa-map"></span>
                                         </a>
                                         <span class="visible-print">
                                             (@branchSelection.Branch.Address)
@@ -150,7 +150,7 @@
                                                        autocomplete="off" />
                                             </td>
                                             <td style="padding-left:3px; text-align:center; width:30px;">
-                                                <span class="icon fa fa-lg colored-icon @(!string.IsNullOrWhiteSpace(branchSelection.SecretCode) ? "fa-check" : "hidden")"></span>
+                                                <span class="icon fas fa-lg colored-icon @(!string.IsNullOrWhiteSpace(branchSelection.SecretCode) ? "fa-check" : "hidden")"></span>
                                             </td>
                                         </tr>
                                         <tr>
@@ -166,7 +166,7 @@
                                             data-toggle="modal"
                                             data-target="#editModal"
                                             data-selectionid="@branchSelection.Id">
-                                        <span class="fa fa-edit"></span>
+                                        <span class="fas fa-edit"></span>
                                     </button>
                                 </td>
                                 <td class="hidden-print" style="text-align:center;">
@@ -177,7 +177,7 @@
                                             data-selectionid="@branchSelection.Id"
                                             data-branchname="@branchSelection.Branch.Name"
                                             data-programtitle="@branchSelection.Program.Title">
-                                        <span class="fa fa-minus-circle"></span>
+                                        <span class="fas fa-minus-circle"></span>
                                     </button>
                                 </td>
                             </tr>
@@ -208,7 +208,7 @@
                     <h1 class="modal-title h4" id="deleteModalLabel">Delete branch selection</h1>
                 </div>
                 <div class="modal-body">
-                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                    <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
                     <span id="modal-text"></span>
                 </div>
                 <div class="modal-footer">
@@ -229,7 +229,7 @@
                                 id="buttonDelete"
                                 class="btn btn-danger pull-right"
                                 aria-label="Confirm">
-                            <span class="fa fa-remove" aria-hidden="true"></span>
+                            <span class="fas fa-times" aria-hidden="true"></span>
                             Delete
                         </button>
                     </form>

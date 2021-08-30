@@ -225,7 +225,7 @@ namespace GRA.Domain.Service
                 var notification = new Notification
                 {
                     PointsEarned = pointsEarned,
-                    Text = $"<span class=\"fa fa-star\"></span> You earned <strong>{pointsEarned} points</strong> {activityDescription}!",
+                    Text = $"<span class=\"far fa-star\"></span> You earned <strong>{pointsEarned} points</strong> {activityDescription}!",
                     UserId = userToLog.Id
                 };
 
@@ -642,7 +642,7 @@ namespace GRA.Domain.Service
                 var notification = new Notification
                 {
                     PointsEarned = pointsAwarded,
-                    Text = $"<span class=\"fa fa-star\"></span> You earned <strong>{pointsAwarded} points{badgeNotification}</strong> for completing the challenge: <strong>{challenge.Name}</strong>!",
+                    Text = $"<span class=\"far fa-star\"></span> You earned <strong>{pointsAwarded} points{badgeNotification}</strong> for completing the challenge: <strong>{challenge.Name}</strong>!",
                     UserId = activeUserId,
                     ChallengeId = challengeId
                 };
@@ -726,7 +726,7 @@ namespace GRA.Domain.Service
                 var notification = new Notification
                 {
                     PointsEarned = 0,
-                    Text = $"<span class=\"fa fa-certificate\"></span> Congratulations! You've achieved <strong>{program.AchieverPointAmount} points</strong> reaching the goal of the program!",
+                    Text = $"<span class=\"fas fa-certificate\"></span> Congratulations! You've achieved <strong>{program.AchieverPointAmount} points</strong> reaching the goal of the program!",
                     UserId = earnedUser.Id,
                     IsAchiever = true
                 };
@@ -1333,7 +1333,7 @@ namespace GRA.Domain.Service
                 {
                     PointsEarned = 0,
 
-                    Text = $"<span class=\"fa fa-shopping-bag\"></span> You've unlocked the <strong>{bundle.Name}</strong> avatar bundle!",
+                    Text = $"<span class=\"fas fa-shopping-bag\"></span> You've unlocked the <strong>{bundle.Name}</strong> avatar bundle!",
                     UserId = userId,
                     BadgeFilename = bundle.AvatarItems.FirstOrDefault()?.Thumbnail,
                     AvatarBundleId = bundleId

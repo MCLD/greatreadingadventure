@@ -19,7 +19,7 @@
                     }
                 </div>
                 <button type="button" class="btn btn-default avatar-zoom-button">
-                    <span class="fa fa-lg fa-search-plus"></span>
+                    <span class="fas fa-lg fa-search-plus"></span>
                 </button>
             </div>
             <div class="hidden-xs" id="desktop-container">
@@ -184,19 +184,19 @@
                            asp-action="Index"
                            class="btn btn-lg btn-default"
                            style="margin:5px;">
-                            <span class="fa fa-home"></span>
+                            <span class="fas fa-home"></span>
                             @SharedLocalizer[GRA.Domain.Model.DisplayNames.Home]
                         </a>
                         <button id="removeButton"
                                 class="btn btn-lg btn-default hide"
                                 style="margin:5px;">
-                            <span class="fa fa-ban"></span>
+                            <span class="fas fa-ban"></span>
                             <span id="layerName"></span>
                         </button>
                         <button id="saveAvatar"
                                 class="btn btn-lg @(Model.NewAvatar ? "btn-success" : "btn-default")"
                                 style="margin:5px;">
-                            <span class="fa fa-floppy-o"></span>
+                            <span class="far fa-save"></span>
                             @SharedLocalizer[GRA.Annotations.Interface.Save]
                             <span id="saveSpinner" class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                         </button>
@@ -207,7 +207,7 @@
                               style="display: inline-block">
                             <input type="hidden" name="selectionJson" />
                             <button class="btn btn-lg btn-default" style="margin:5px;">
-                                <span class="fa fa-share-alt"></span>
+                                <span class="fas fa-share-alt"></span>
                                 @SharedLocalizer[GRA.Annotations.Interface.Share]
                             </button>
                         </form>

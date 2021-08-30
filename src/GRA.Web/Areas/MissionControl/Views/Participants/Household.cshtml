@@ -65,7 +65,7 @@
                 }
                 @if (Model.CanViewPrizes && Model.HouseholdPrizeList.Count > 0 && Model.Users.Any())
                 {
-                    <button type="button" class="btn btn-success pull-right" data-toggle="modal" data-target="#prizeModal"><span class="fa fa-gift"></span> Prizes available</button>
+                    <button type="button" class="btn btn-success pull-right" data-toggle="modal" data-target="#prizeModal"><span class="fas fa-gift"></span> Prizes available</button>
                 }
             </div>
         }
@@ -165,7 +165,7 @@
                                 }
                                 @if (Model.CanViewPrizes)
                                 {
-                                    <th width="36px" class="text-center"><span class="fa fa-gift fa-lg"></span></th>
+                                    <th width="36px" class="text-center"><span class="fas fa-gift fa-lg"></span></th>
                                 }
                                 <th>User</th>
                                 <th>Points Earned</th>
@@ -199,7 +199,7 @@
                                         }
                                         else
                                         {
-                                            <span class="pendingQuestionnaire fa fa-exclamation-circle text-warning" style="cursor:pointer" data-toggle="modal" data-target=".pendingModal"></span>
+                                            <span class="pendingQuestionnaire fas fa-exclamation-circle text-warning" style="cursor:pointer" data-toggle="modal" data-target=".pendingModal"></span>
                                         }
                                     </td>
                                 }
@@ -225,7 +225,7 @@
                                         <a class="plain-link" asp-action="Prizes" asp-route-id="@Model.Head.Id">
                                             @if (Model.Head.HasUnclaimedPrize)
                                             {
-                                                <span class="fa fa-gift fa-lg text-danger"></span>
+                                                <span class="fas fa-gift fa-lg text-danger"></span>
                                             }
                                             else
                                             {
@@ -239,7 +239,7 @@
                                         <div>
                                             @if (Model.Head.Id == Model.Id)
                                             {
-                                                <span class="fa fa-user"></span>
+                                                <span class="fas fa-user"></span>
                                             }
                                             @Model.Head.FullName
                                         </div>
@@ -338,7 +338,7 @@
                                             }
                                             else
                                             {
-                                                <span class="pendingQuestionnaire fa fa-exclamation-circle text-warning" style="cursor:pointer" data-toggle="modal" data-target=".pendingModal"></span>
+                                                <span class="pendingQuestionnaire fas fa-exclamation-circle text-warning" style="cursor:pointer" data-toggle="modal" data-target=".pendingModal"></span>
                                             }
                                         </td>
                                     }
@@ -363,7 +363,7 @@
                                             <a class="plain-link" asp-action="Prizes" asp-route-id="@user.Id">
                                                 @if (user.HasUnclaimedPrize)
                                                 {
-                                                    <span class="fa fa-gift fa-lg text-danger"></span>
+                                                    <span class="fas fa-gift fa-lg text-danger"></span>
                                                 }
                                                 else
                                                 {
@@ -377,7 +377,7 @@
                                             <div>
                                                 @if (user.Id == Model.Id)
                                                 {
-                                                    <span class="fa fa-user"></span>
+                                                    <span class="fas fa-user"></span>
                                                 }
                                                 @user.FullName
                                             </div>
@@ -388,7 +388,7 @@
                                                 <a class="btn btn-default btn-xs on-top"
                                                    asp-action="RegisterHouseholdMember"
                                                    asp-route-id="@user.Id">
-                                                    <span class="fa fa-user-plus"></span>
+                                                    <span class="fas fa-user-plus"></span>
                                                     Add Username
                                                 </a>
                                             }
@@ -484,7 +484,7 @@
                                                         data-id="@user.Id"
                                                         data-name="@user.FullName"
                                                         title="Promote to @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group") manager">
-                                                    <span class="fa fa-level-up"
+                                                    <span class="fas fa-level-up-alt"
                                                           aria-hidden="true"></span>
                                                 </button>
                                                 <button type="button"
@@ -495,7 +495,7 @@
                                                         data-id="@user.Id"
                                                         data-name="@user.FullName"
                                                         title="Remove from family/group">
-                                                    <span class="fa fa-minus"
+                                                    <span class="fas fa-minus"
                                                           aria-hidden="true"></span>
                                                 </button>
                                             }
@@ -684,7 +684,7 @@
                         <h1 class="modal-title h4" id="promoteModalLabel">Promote to Manager</h1>
                     </div>
                     <div class="modal-body">
-                        <span class="fa fa-exclamation-circle" aria-hidden="true"></span>
+                        <span class="fas fa-exclamation-circle" aria-hidden="true"></span>
                         <span id="modal-text"></span>
                     </div>
                     <div class="modal-footer">
@@ -704,7 +704,7 @@
                             <button type="submit"
                                     class="btn btn-primary pull-right"
                                     aria-label="Confirm">
-                                <span class="fa fa-level-up" aria-hidden="true"></span>
+                                <span class="fas fa-level-up-alt" aria-hidden="true"></span>
                                 Promote
                             </button>
                         </form>
@@ -734,7 +734,7 @@
                         </h1>
                     </div>
                     <div class="modal-body">
-                        <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                        <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
                         <span id="modal-text"></span>
                     </div>
                     <div class="modal-footer">
@@ -754,7 +754,7 @@
                             <button type="submit"
                                     class="btn btn-danger pull-right"
                                     aria-label="Confirm">
-                                <span class="fa fa-minus" aria-hidden="true"></span>
+                                <span class="fas fa-minus" aria-hidden="true"></span>
                                 Remove
                             </button>
                         </form>
