@@ -9,12 +9,12 @@
            asp-action="@nameof(ParticipantsController.Detail)"
            asp-route-id="@Model.Drawing.CreatedBy"
            target="_blank">@Model.CreatedByName</a>
-        <text>on @Model.Drawing.CreatedAt</text>
     }
     else
     {
         @Model.CreatedByName
     }
+    on @Model.Drawing.CreatedAt
 </div>
 
 <div class="row" style="padding: 10px 0;">

@@ -8,12 +8,12 @@
            asp-action="@nameof(ParticipantsController.Detail)"
            asp-route-id="@Model.Criterion.CreatedBy"
            target="_blank">@Model.CreatedByName</a>
-        <text>on @Model.Criterion.CreatedAt</text>
     }
     else
     {
         @Model.CreatedByName
     }
+    on @Model.Criterion.CreatedAt
 </div>
 
 <form asp-controller="Drawing" asp-action="CriteriaDetail" method="post" role="form">
