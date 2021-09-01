@@ -11,5 +11,7 @@ namespace GRA.Controllers
         public static readonly string ChallengePage = "ChallengePage";
         public static readonly string PendingQuestionnaire = "PendingQuestionnaire";
         public static readonly string HeadOfHousehold = "HeadOfHousehold";
+        public static readonly string UserBranchName = "UserBranchName";
+        public static readonly string UserBranchUrl = "UserBranchUrl";
     }
 }

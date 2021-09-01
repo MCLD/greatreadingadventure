@@ -185,6 +185,7 @@
             public const string ViewAttachment = "View Attachment";
             public const string ViewCompleted = "View Completed";
             public const string ViewUncompleted = "View Uncompleted";
+            public const string Visit = "Visit {0}";
             public const string What = "What";
             public const string When = "When";
             public const string Where = "Where";
