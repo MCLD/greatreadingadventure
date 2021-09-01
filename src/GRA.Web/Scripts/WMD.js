@@ -59,7 +59,6 @@ var markSelection = function () {
     }
     preview.find(".selected").removeClass("selected");
     if (elt.length > 0) {
-
         elt.addClass("selected");
     }
 };
@@ -99,7 +98,6 @@ function returnFalse(x) { return false; }
 function HookCollection() { }
 
 HookCollection.prototype = {
-
     chain: function (hookname, func) {
         var original = this[hookname];
         if (!original)
@@ -130,9 +128,7 @@ HookCollection.prototype = {
 Markdown.HookCollection = HookCollection;
 // End of From Markdown.Converter
 
-
 (function () {
-
     var util = {},
         position = {},
         ui = {},
@@ -187,7 +183,6 @@ Markdown.HookCollection = HookCollection;
         help: "Markdown Editing Help"
     };
 
-
     // -------------------------------------------------------------------
     //  YOUR CHANGES GO HERE
     //
@@ -223,7 +218,6 @@ Markdown.HookCollection = HookCollection;
     // - run() actually starts the editor; should be called after all necessary plugins are registered. Calling this more than once is a no-op.
     // - refreshPreview() forces the preview to be updated. This method is only available after run() was called.
     Markdown.Editor = function (options) {
-
         options = options || {};
         if (options.allowUploads == null) {
             options.allowUploads = false;
@@ -276,7 +270,6 @@ Markdown.HookCollection = HookCollection;
             uiManager = new UIManager(panels, undoManager, commandManager, options.allowUploads, options.allowImages, options.privateUpload, options.helpButton, getString);
             uiManager.setUndoRedoButtonStates();
         };
-
     }
 
     // before: contains all the text in the input box BEFORE the selection.
@@ -286,12 +279,10 @@ Markdown.HookCollection = HookCollection;
     // startRegex: a regular expression to find the start tag
     // endRegex: a regular expresssion to find the end tag
     Chunks.prototype.findTags = function (startRegex, endRegex) {
-
         var chunkObj = this;
         var regex;
 
         if (startRegex) {
-
             regex = util.extendRegExp(startRegex, "", "$");
 
             this.before = this.before.replace(regex,
@@ -310,7 +301,6 @@ Markdown.HookCollection = HookCollection;
         }
 
         if (endRegex) {
-
             regex = util.extendRegExp(endRegex, "", "$");
 
             this.selection = this.selection.replace(regex,
@@ -345,9 +335,7 @@ Markdown.HookCollection = HookCollection;
         this.selection = this.selection.replace(/^(\s*)/, beforeReplacer).replace(/(\s*)$/, afterReplacer);
     };
 
-
     Chunks.prototype.skipLines = function (nLinesBefore, nLinesAfter, findExtraNewlines) {
-
         if (nLinesBefore === undefined) {
             nLinesBefore = 1;
         }
@@ -379,7 +367,6 @@ Markdown.HookCollection = HookCollection;
         this.after = this.after + re.$1;
 
         if (this.before) {
-
             regexText = replacementText = "";
 
             while (nLinesBefore--) {
@@ -394,7 +381,6 @@ Markdown.HookCollection = HookCollection;
         }
 
         if (this.after) {
-
             regexText = replacementText = "";
 
             while (nLinesAfter--) {
@@ -435,7 +421,6 @@ Markdown.HookCollection = HookCollection;
     // Returns true if the DOM element is visible, false if it's hidden.
     // Checks if display is anything other than none.
     util.isVisible = function (elem) {
-
         if (window.getComputedStyle) {
             // Most browsers
             return window.getComputedStyle(elem, null).getPropertyValue("display") !== "none";
@@ -445,7 +430,6 @@ Markdown.HookCollection = HookCollection;
             return elem.currentStyle["display"] !== "none";
         }
     };
-
 
     // Adds a listener callback to a DOM element which is fired on a specified
     // event.
@@ -459,7 +443,6 @@ Markdown.HookCollection = HookCollection;
             elem.addEventListener(event, listener, false);
         }
     };
-
 
     // Removes a listener callback from a DOM element which is fired on a specified
     // event.
@@ -490,7 +473,6 @@ Markdown.HookCollection = HookCollection;
     //
     // regex is a RegExp, pre and post are strings.
     util.extendRegExp = function (regex, pre, post) {
-
         if (pre === null || pre === undefined) {
             pre = "";
         }
@@ -536,7 +518,6 @@ Markdown.HookCollection = HookCollection;
     };
 
     position.getPageSize = function () {
-
         var scrollWidth, scrollHeight;
         var innerWidth, innerHeight;
 
@@ -578,7 +559,6 @@ Markdown.HookCollection = HookCollection;
     // Handles pushing and popping TextareaStates for undo/redo commands.
     // I should rename the stack variables to list.
     function UndoManager(callback, panels) {
-
         var undoObj = this;
         var undoStack = []; // A stack of undo states
         var stackPtr = 0; // The index of the current state
@@ -628,7 +608,6 @@ Markdown.HookCollection = HookCollection;
 
         // Removes the last state and restores it.
         this.undo = function () {
-
             if (undoObj.canUndo()) {
                 if (lastState) {
                     // What about setting state -1 to null or checking for undefined?
@@ -652,9 +631,7 @@ Markdown.HookCollection = HookCollection;
 
         // Redo an action.
         this.redo = function () {
-
             if (undoObj.canRedo()) {
-
                 undoStack[++stackPtr].restore();
 
                 if (callback) {
@@ -694,17 +671,14 @@ Markdown.HookCollection = HookCollection;
         };
 
         var handleCtrlYZ = function (event) {
-
             var handled = false;
 
             if ((event.ctrlKey || event.metaKey) && !event.altKey) {
-
                 // IE and Opera do not support charCode.
                 var keyCode = event.charCode || event.keyCode;
                 var keyCodeChar = String.fromCharCode(keyCode);
 
                 switch (keyCodeChar.toLowerCase()) {
-
                     case "y":
                         undoObj.redo();
                         handled = true;
@@ -735,9 +709,7 @@ Markdown.HookCollection = HookCollection;
 
         // Set the mode depending on what is going on in the input area.
         var handleModeChange = function (event) {
-
             if (!event.ctrlKey && !event.metaKey) {
-
                 var keyCode = event.keyCode;
 
                 if ((keyCode >= 33 && keyCode <= 40) || (keyCode >= 63232 && keyCode <= 63235)) {
@@ -812,7 +784,6 @@ Markdown.HookCollection = HookCollection;
     // The input textarea state/contents.
     // This is used to implement undo/redo by the undo manager.
     function TextareaState(panels, isInitialState) {
-
         // Aliases
         var stateObj = this;
         var inputArea = panels.input;
@@ -829,26 +800,22 @@ Markdown.HookCollection = HookCollection;
             if (!this.text && inputArea.selectionStart || inputArea.selectionStart === 0) {
                 this.text = inputArea.value;
             }
-
         }
 
         // Sets the selected text in the input box after we've performed an
         // operation.
         this.setInputAreaSelection = function () {
-
             if (!util.isVisible(inputArea)) {
                 return;
             }
 
             if (inputArea.selectionStart !== undefined && !uaSniffed.isOpera) {
-
                 inputArea.focus();
                 inputArea.selectionStart = stateObj.start;
                 inputArea.selectionEnd = stateObj.end;
                 inputArea.scrollTop = stateObj.scrollTop;
             }
             else if (doc.selection) {
-
                 if (doc.activeElement && doc.activeElement !== inputArea) {
                     return;
                 }
@@ -864,14 +831,11 @@ Markdown.HookCollection = HookCollection;
         };
 
         this.setInputAreaSelectionStartEnd = function () {
-
             if (!panels.ieCachedRange && (inputArea.selectionStart || inputArea.selectionStart === 0)) {
-
                 stateObj.start = inputArea.selectionStart;
                 stateObj.end = inputArea.selectionEnd;
             }
             else if (doc.selection) {
-
                 stateObj.text = util.fixEolChars(inputArea.value);
 
                 // IE loses the selection in the textarea when buttons are
@@ -913,7 +877,6 @@ Markdown.HookCollection = HookCollection;
 
         // Restore this state into the input area.
         this.restore = function () {
-
             if (stateObj.text != undefined && stateObj.text != inputArea.value) {
                 inputArea.value = stateObj.text;
             }
@@ -923,7 +886,6 @@ Markdown.HookCollection = HookCollection;
 
         // Gets a collection of HTML chunks from the inptut textarea.
         this.getChunks = function () {
-
             var chunk = new Chunks();
             chunk.before = util.fixEolChars(stateObj.text.substring(0, stateObj.start));
             chunk.startTag = "";
@@ -937,7 +899,6 @@ Markdown.HookCollection = HookCollection;
 
         // Sets the TextareaState properties given a chunk of markdown.
         this.setChunks = function (chunk) {
-
             chunk.before = chunk.before + chunk.startTag;
             chunk.after = chunk.endTag + chunk.after;
 
@@ -949,13 +910,11 @@ Markdown.HookCollection = HookCollection;
         this.init();
     };
 
-
     // Creates the background behind the hyperlink text entry box.
     // And download dialog
     // Most of this has been moved to CSS but the div creation and
     // browser-specific hacks remain here.
     ui.createBackground = function () {
-
         var background = doc.createElement("div"),
             style = background.style;
 
@@ -996,12 +955,10 @@ Markdown.HookCollection = HookCollection;
     //      It receives a single argument; either the entered text (if OK was chosen) or null (if Cancel
     //      was chosen).
     ui.prompt = function (text, textupload, defaultInputText, callback, allowUploads, privateUpload) {
-
         // These variables need to be declared at this level since they are used
         // in multiple functions.
         var dialog;         // The dialog box.
         var input;         // The text box where you enter the hyperlink.
-
 
         if (defaultInputText === undefined) {
             defaultInputText = "";
@@ -1027,16 +984,15 @@ Markdown.HookCollection = HookCollection;
 
             if (isUpload && !isCancel) {
                 if (window.FormData !== undefined) {
-
                     var fileUpload = $("#FileUpload").get(0);
                     var files = fileUpload.files;
 
-                    // Create FormData object  
+                    // Create FormData object
                     var fileData = new FormData();
 
                     fileData.append("file", files[0]);
 
-                    // Adding one more key to FormData object   
+                    // Adding one more key to FormData object
 
                     var url = "";
                     if (privateUpload) {
@@ -1049,8 +1005,8 @@ Markdown.HookCollection = HookCollection;
                     $.ajax({
                         url: url,
                         type: "POST",
-                        contentType: false, // Not to set any content header  
-                        processData: false, // Not to process data  
+                        contentType: false, // Not to set any content header
+                        processData: false, // Not to process data
                         data: fileData,
                         async: false,
                         success: function (result) {
@@ -1095,15 +1051,12 @@ Markdown.HookCollection = HookCollection;
 
         // Create the text input box form/window.
         var createDialog = function () {
-
-
             // The main dialog box.
             dialog = doc.createElement("div");
             dialog.className = "wmd-prompt-dialog";
             dialog.style.padding = "10px;";
             dialog.style.position = "fixed";
             dialog.style.width = "400px";
-
 
             // Dialog navigation tabs
             var tabs = doc.createElement("ul");
@@ -1130,7 +1083,6 @@ Markdown.HookCollection = HookCollection;
             var tabContainer = doc.createElement("div");
             tabContainer.className = "tab-content";
             dialog.appendChild(tabContainer);
-
 
             // Input URL tab
             var inputUrl = doc.createElement("div");
@@ -1190,7 +1142,6 @@ Markdown.HookCollection = HookCollection;
 
             // Upload File tab
             if (allowUploads == true) {
-
                 var uploadFile = doc.createElement("div");
                 uploadFile.id = "uploadFile";
                 uploadFile.className = "tab-pane active";
@@ -1242,7 +1193,6 @@ Markdown.HookCollection = HookCollection;
                 uploadForm.appendChild(uploadCancelButton);
             }
 
-
             util.addEvent(doc.body, "keyup", checkEscape);
             dialog.style.top = "50%";
             dialog.style.left = "50%";
@@ -1258,13 +1208,11 @@ Markdown.HookCollection = HookCollection;
             // want it to be centered.
             dialog.style.marginTop = -(position.getHeight(dialog) / 2) + "px";
             dialog.style.marginLeft = -(position.getWidth(dialog) / 2) + "px";
-
         };
 
         // Why is this in a zero-length timeout?
         // Is it working around a browser bug?
         setTimeout(function () {
-
             createDialog();
 
             var defTextLen = defaultInputText.length;
@@ -1285,7 +1233,6 @@ Markdown.HookCollection = HookCollection;
     };
 
     function UIManager(panels, undoManager, commandManager, allowUploads, allowImages, privateUpload, helpOptions, getString) {
-
         var inputBox = panels.input,
             buttons = {}; // buttons.undo, buttons.link, etc. The actual DOM elements.
 
@@ -1297,10 +1244,8 @@ Markdown.HookCollection = HookCollection;
         }
 
         util.addEvent(inputBox, keyEvent, function (key) {
-
             // Check to see if we have a button key and, if so execute the callback.
             if ((key.ctrlKey || key.metaKey) && !key.altKey && !key.shiftKey) {
-
                 var keyCode = key.charCode || key.keyCode;
                 var keyCodeStr = String.fromCharCode(keyCode).toLowerCase();
 
@@ -1363,7 +1308,6 @@ Markdown.HookCollection = HookCollection;
                         return;
                 }
 
-
                 if (key.preventDefault) {
                     key.preventDefault();
                 }
@@ -1397,14 +1341,11 @@ Markdown.HookCollection = HookCollection;
             });
         }
 
-
         // Perform the button's action.
         function doClick(button) {
-
             inputBox.focus();
 
             if (button.textOp) {
-
                 if (undoManager) {
                     undoManager.setCommandMode();
                 }
@@ -1435,7 +1376,6 @@ Markdown.HookCollection = HookCollection;
                 // no real workaround.  Only the image and link code
                 // create dialogs and require the function pointers.
                 var fixupInputArea = function () {
-
                     inputBox.focus();
 
                     if (chunks) {
@@ -1451,7 +1391,6 @@ Markdown.HookCollection = HookCollection;
                 if (!noCleanup) {
                     fixupInputArea();
                 }
-
             }
 
             if (button.execute) {
@@ -1460,7 +1399,6 @@ Markdown.HookCollection = HookCollection;
         };
 
         function setupButton(button, isEnabled) {
-
             if (isEnabled) {
                 button.style.color = "black";
 
@@ -1508,7 +1446,6 @@ Markdown.HookCollection = HookCollection;
         }
 
         function makeSpritedButtonRow() {
-
             var buttonBar = panels.buttonBar;
 
             var buttonRow = document.createElement("ul");
@@ -1518,7 +1455,7 @@ Markdown.HookCollection = HookCollection;
             var xPosition = 0;
             var makeButton = function (id, title, faImage, textOp) {
                 var button = document.createElement("li");
-                button.className = "wmd-button fa " + faImage;
+                button.className = "wmd-button fas fa-fw " + faImage;
                 button.style.left = xPosition + "px";
                 xPosition += 25;
                 button.id = id;
@@ -1533,9 +1470,9 @@ Markdown.HookCollection = HookCollection;
                 var spacer = document.createElement("li");
                 spacer.className = "wmd-spacer wmd-spacer" + num;
                 spacer.id = "wmd-spacer" + num;
-                spacer.style.left = xPosition - 5 + "px";
+                spacer.style.left = xPosition - 10 + "px";
                 buttonRow.appendChild(spacer);
-                xPosition += 25;
+                xPosition += 15;
             }
 
             buttons.bold = makeButton("wmd-bold-button", getString("bold"), "fa-bold", bindCommand("doBold"));
@@ -1547,7 +1484,7 @@ Markdown.HookCollection = HookCollection;
             buttons.quote = makeButton("wmd-quote-button", getString("quote"), "fa-quote-left", bindCommand("doBlockquote"));
             buttons.code = makeButton("wmd-code-button", getString("code"), "fa-code", bindCommand("doCode"));
             if (allowImages) {
-                buttons.image = makeButton("wmd-image-button", getString("image"), "fa-picture-o", bindCommand(function (chunk, postProcessing) {
+                buttons.image = makeButton("wmd-image-button", getString("image"), "fa-image", bindCommand(function (chunk, postProcessing) {
                     return this.doLinkOrImage(chunk, postProcessing, true, allowUploads, privateUpload);
                 }));
             }
@@ -1558,17 +1495,17 @@ Markdown.HookCollection = HookCollection;
             buttons.ulist = makeButton("wmd-ulist-button", getString("ulist"), "fa-list-ul", bindCommand(function (chunk, postProcessing) {
                 this.doList(chunk, postProcessing, false);
             }));
-            buttons.heading = makeButton("wmd-heading-button", getString("heading"), "fa-header", bindCommand("doHeading"));
-            buttons.hr = makeButton("wmd-hr-button", getString("hr"), "fa-minus-square-o", bindCommand("doHorizontalRule"));
+            buttons.heading = makeButton("wmd-heading-button", getString("heading"), "fa-heading", bindCommand("doHeading"));
+            buttons.hr = makeButton("wmd-hr-button", getString("hr"), "fa-minus", bindCommand("doHorizontalRule"));
             makeSpacer(3);
-            buttons.undo = makeButton("wmd-undo-button", getString("undo"), "fa-undo", null);
+            buttons.undo = makeButton("wmd-undo-button", getString("undo"), "fa-undo-alt", null);
             buttons.undo.execute = function (manager) { if (manager) manager.undo(); };
 
             var redoTitle = /win/.test(nav.platform.toLowerCase()) ?
                 getString("redo") :
                 getString("redomac"); // mac and other non-Windows platforms
 
-            buttons.redo = makeButton("wmd-redo-button", redoTitle, "fa-repeat", null);
+            buttons.redo = makeButton("wmd-redo-button", redoTitle, "fa-redo-alt", null);
             buttons.redo.execute = function (manager) { if (manager) manager.redo(); };
 
             if (helpOptions) {
@@ -1599,7 +1536,6 @@ Markdown.HookCollection = HookCollection;
         };
 
         this.setUndoRedoButtonStates = setUndoRedoButtonStates;
-
     }
 
     function CommandManager(pluginHooks, getString) {
@@ -1645,7 +1581,6 @@ Markdown.HookCollection = HookCollection;
     // nStars: 1 for italics, 2 for bold
     // insertText: If you just click the button without highlighting text, this gets inserted
     commandProto.doBorI = function (chunk, postProcessing, nStars, insertText) {
-
         // Get rid of whitespace and fixup newlines.
         chunk.trimWhitespace();
         chunk.selection = chunk.selection.replace(/\n{2,}/g, "\n");
@@ -1671,7 +1606,6 @@ Markdown.HookCollection = HookCollection;
             chunk.before = chunk.before + starsAfter + whitespace;
         }
         else {
-
             // In most cases, if you don't have any selected text and click the button
             // you'll get a selected, marked up region with the default text inserted.
             if (!chunk.selection && !starsAfter) {
@@ -1688,7 +1622,6 @@ Markdown.HookCollection = HookCollection;
     };
 
     commandProto.stripLinkDefs = function (text, defsToAdd) {
-
         text = text.replace(/^[ ]{0,3}\[(\d+)\]:[ \t]*\n?[ \t]*<?(\S+?)>?[ \t]*\n?[ \t]*(?:(\n*)["(](.+?)[")][ \t]*)?(?:\n+|$)/gm,
             function (totalMatch, id, link, newlines, title) {
                 defsToAdd[id] = totalMatch.replace(/\s*$/, "");
@@ -1704,7 +1637,6 @@ Markdown.HookCollection = HookCollection;
     };
 
     commandProto.addLinkDef = function (chunk, linkDef) {
-
         var refNumber = 0; // The current reference number
         var defsToAdd = {}; //
         // Start with a clean slate by removing all previous link definitions.
@@ -1820,7 +1752,6 @@ Markdown.HookCollection = HookCollection;
     // sure the URL and the optinal title are "nice".
     function properlyEncoded(linkdef) {
         return linkdef.replace(/^\s*(.*?)(?:\s+"(.+)")?\s*$/, function (wholematch, link, title) {
-
             var inQueryString = false;
 
             // Having `[^\w\d-./]` in there is just a shortcut that lets us skip
@@ -1866,20 +1797,16 @@ Markdown.HookCollection = HookCollection;
     }
 
     commandProto.doLinkOrImage = function (chunk, postProcessing, isImage, allowUploads, privateUpload) {
-
         chunk.trimWhitespace();
         chunk.findTags(/\s*!?\[/, /\][ ]?(?:\n[ ]*)?(\[.*?\])?/);
         var background;
 
         if (chunk.endTag.length > 1 && chunk.startTag.length > 0) {
-
             chunk.startTag = chunk.startTag.replace(/!?\[/, "");
             chunk.endTag = "";
             this.addLinkDef(chunk, null);
-
         }
         else {
-
             // We're moving start and end tag back into the selection, since (as we're in the else block) we're not
             // *removing* a link, but *adding* one, so whatever findTags() found is now back to being part of the
             // link text. linkEnteredCallback takes care of escaping any brackets.
@@ -1894,7 +1821,6 @@ Markdown.HookCollection = HookCollection;
             // The function to be executed when you enter a link and press OK or Cancel.
             // Marks up the link and adds the ref.
             var linkEnteredCallback = function (link) {
-
                 background.parentNode.removeChild(background);
 
                 if (link !== null) {
@@ -1952,7 +1878,6 @@ Markdown.HookCollection = HookCollection;
     // When making a list, hitting shift-enter will put your cursor on the next line
     // at the current indent level.
     commandProto.doAutoindent = function (chunk, postProcessing) {
-
         var commandMgr = this,
             fakeSelection = false;
 
@@ -1995,7 +1920,6 @@ Markdown.HookCollection = HookCollection;
     };
 
     commandProto.doBlockquote = function (chunk, postProcessing) {
-
         chunk.selection = chunk.selection.replace(/^(\n*)([^\r]+?)(\n*)$/,
             function (totalMatch, newlinesBefore, text, newlinesAfter) {
                 chunk.before += newlinesBefore;
@@ -2091,7 +2015,6 @@ Markdown.HookCollection = HookCollection;
         );
 
         var replaceBlanksInTags = function (useBracket) {
-
             var replacement = useBracket ? "> " : "";
 
             if (chunk.startTag) {
@@ -2139,14 +2062,12 @@ Markdown.HookCollection = HookCollection;
     };
 
     commandProto.doCode = function (chunk, postProcessing) {
-
         var hasTextBefore = /\S[ ]*$/.test(chunk.before);
         var hasTextAfter = /^[ ]*\S/.test(chunk.after);
 
         // Use 'four space' markdown if the selection is on its own
         // line or is multiline.
         if ((!hasTextAfter && !hasTextBefore) || /\n/.test(chunk.selection)) {
-
             chunk.before = chunk.before.replace(/[ ]{4}$/,
                 function (totalMatch) {
                     chunk.selection = totalMatch + chunk.selection;
@@ -2204,7 +2125,6 @@ Markdown.HookCollection = HookCollection;
     };
 
     commandProto.doList = function (chunk, postProcessing, isNumberedList) {
-
         // These are identical except at the very beginning and end.
         // Should probably use the regex extension function to make this clearer.
         var previousItemsRegex = /(\n|^)(([ ]{0,3}([*+-]|\d+[.])[ \t]+.*)(\n.+|\n{2,}([*+-].*|\d+[.])[ \t]+.*|\n{2,}[ \t]+\S.*)*)\n*$/;
@@ -2233,7 +2153,6 @@ Markdown.HookCollection = HookCollection;
 
         // Fixes the prefixes of the other list items.
         var getPrefixedItem = function (itemText) {
-
             // The numbering flag is unset when called by autoindent.
             if (isNumberedList === undefined) {
                 isNumberedList = /^\s*\d/.test(itemText);
@@ -2256,7 +2175,6 @@ Markdown.HookCollection = HookCollection;
         }
 
         if (chunk.startTag) {
-
             var hasDigits = /\d+[.]/.test(chunk.startTag);
             chunk.startTag = "";
             chunk.selection = chunk.selection.replace(/\n[ ]{4}/g, "\n");
@@ -2303,11 +2221,9 @@ Markdown.HookCollection = HookCollection;
         var spaces = prefix.replace(/./g, " ");
         this.wrap(chunk, SETTINGS.lineLength - spaces.length);
         chunk.selection = chunk.selection.replace(/\n/g, "\n" + spaces);
-
     };
 
     commandProto.doHeading = function (chunk, postProcessing) {
-
         // Remove leading/trailing whitespace and reduce internal spaces to single spaces.
         chunk.selection = chunk.selection.replace(/\s+/g, " ");
         chunk.selection = chunk.selection.replace(/(^\s+|\s+$)/g, "");
@@ -2349,7 +2265,6 @@ Markdown.HookCollection = HookCollection;
         var headerLevelToCreate = headerLevel == 0 ? 2 : headerLevel - 1;
 
         if (headerLevelToCreate > 0) {
-
             // The button only creates level 1 and 2 underline headers.
             // Why not have it iterate over hash header levels?  Wouldn't that be easier and cleaner?
             var headerChar = headerLevelToCreate >= 2 ? "-" : "=";
@@ -2369,6 +2284,4 @@ Markdown.HookCollection = HookCollection;
         chunk.selection = "";
         chunk.skipLines(2, 1, true);
     }
-
-
 })();

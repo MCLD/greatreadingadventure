@@ -18,18 +18,18 @@
                     {
                         <button class="btn btn-info btn-spinner"
                                 asp-action="RedeemCode"
-                                asp-is-disabled="@(!Model.CanEditDetails)">
+                                asp-is-disabled="@(!Model.CanEditDetails)"
+                                button-spinner>
                             <span class="buttonText">Redeem code</span>
-                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                         </button>
                         @if (Model.User.CanDonateVendorCode)
                         {
                             @:or
                             <button class="btn btn-success btn-spinner"
                                     asp-action="DonateCode"
-                                    asp-is-disabled="@(!Model.CanEditDetails)">
+                                    asp-is-disabled="@(!Model.CanEditDetails)"
+                                    button-spinner>
                                 <span class="buttonText">Donate book</span>
-                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
                         }
                         @if (Model.User.CanEmailAwardVendorCode)
@@ -62,9 +62,9 @@
                         {
                             <button class="btn btn-info btn-spinner"
                                     asp-action="UndonateCode"
-                                    asp-is-disabled="@(!Model.CanEditDetails)">
+                                    asp-is-disabled="@(!Model.CanEditDetails)"
+                                    button-spinner>
                                 <span class="buttonText">Un-donate</span>
-                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
                         }
                     }
@@ -117,9 +117,11 @@
                                             <input id="prizeWinnerId" name="prizeWinnerId" value="@prizeWinner.Id" type="hidden" />
                                             <input id="userId" name="userId" value="@prizeWinner.UserId" type="hidden" />
                                             <input id="page" name="page" value="@Model.PaginateModel.CurrentPage" type="hidden" />
-                                            <button type="submit" style="margin-left:5px;" class="btn btn-default btn-xs btn-spinner">
+                                            <button type="submit"
+                                                    style="margin-left:5px;"
+                                                    class="btn btn-default btn-xs btn-spinner"
+                                                    button-spinner>
                                                 Undo
-                                                <span class="fa fa-spinner fa-pulse fa-fw hidden"></span>
                                             </button>
                                         </form>
                                     }
@@ -129,10 +131,11 @@
                                             <input id="prizeWinnerId" name="prizeWinnerId" value="@prizeWinner.Id" type="hidden" />
                                             <input id="userId" name="userId" value="@prizeWinner.UserId" type="hidden" />
                                             <input id="page" name="page" value="@Model.PaginateModel.CurrentPage" type="hidden" />
-                                            <button type="submit" class="btn btn-success btn-xs btn-spinner">
+                                            <button type="submit"
+                                                    class="btn btn-success btn-xs btn-spinner"
+                                                    button-spinner>
                                                 <span class="fas fa-gift"></span>
                                                 Available, click to redeem!
-                                                <span class="fa fa-spinner fa-pulse fa-fw hidden"></span>
                                             </button>
                                         </form>
                                     }
@@ -213,9 +216,9 @@
                             </button>
                             <button type="submit"
                                     class="btn btn-warning btn-spinner pull-right"
-                                    aria-label="Confirm">
+                                    aria-label="Confirm"
+                                    button-spinner>
                                 @GRA.Annotations.Interface.Confirm
-                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
                         </div>
                     </form>

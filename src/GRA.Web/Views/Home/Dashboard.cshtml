@@ -135,9 +135,10 @@
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn center-block btn-success btn-lg btn-spinner">
+                            <button type="submit"
+                                    class="btn center-block btn-success btn-lg btn-spinner"
+                                    button-spinner>
                                 <span class="buttonText">@SharedLocalizer["I read a book!"]</span>
-                                <span class="fas fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
                         </form>
                     </div>
@@ -172,9 +173,10 @@
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn center-block btn-success btn-lg btn-spinner">
+                            <button type="submit"
+                                    class="btn center-block btn-success btn-lg btn-spinner"
+                                    button-spinner>
                                 <span class="buttonText">@SharedLocalizer["Log {0}", SharedLocalizer[Model.ActivityDescriptionPlural]]</span>
-                                <span class="fas fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
                         </form>
                     </div>
@@ -206,9 +208,10 @@
                                 }
                             </div>
 
-                            <button type="submit" class="btn center-block btn-success btn-lg btn-spinner">
+                            <button type="submit"
+                                    class="btn center-block btn-success btn-lg btn-spinner"
+                                    button-spinner>
                                 <span class="buttonText">@SharedLocalizer["Submit Code"]</span>
-                                <span class="fas fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
                         </form>
                     </div>
@@ -563,7 +566,7 @@
             var modal = $(this);
 
             var modalBody = modal.find(".modal-body");
-            modalBody.html("<div class=\"text-center\" style=\"width: 100%;\"><span class=\"fa fa-spinner fa-2x fa-pulse\"></span></div>");
+            modalBody.html("<div class=\"text-center\" style=\"width: 100%;\"><span class=\"fas fa-spinner fa-2x fa-pulse\"></span></div>");
 
             $.get("@Url.Action(nameof(ProfileController.GetUserBadgeInfo), ProfileController.Name)",
                 { id },
