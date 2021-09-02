@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GRA.Domain.Service;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -77,6 +78,21 @@ namespace GRA.Controllers.Helpers
                     output.TagName = "div";
                     output.Attributes.Add("class", "infolinks");
                     output.Content.AppendHtml(string.Join(" | ", pageList));
+                    var session = ViewContext.HttpContext.Session;
+                    if (!string.IsNullOrEmpty(session.GetString(SessionKey.UserBranchName)) &&
+                        !string.IsNullOrEmpty(session.GetString(SessionKey.UserBranchUrl)))
+                    {
+                        var branchLink = new TagBuilder("a")
+                        {
+                            TagRenderMode = TagRenderMode.Normal
+                        };
+                        branchLink.InnerHtml.AppendHtml(
+                            session.GetString(SessionKey.UserBranchName));
+                        branchLink.MergeAttribute("href",
+                            session.GetString(SessionKey.UserBranchUrl));
+                        output.Content.AppendHtml("<br>");
+                        output.Content.AppendHtml(branchLink);
+                    }
                 }
             }
             else
