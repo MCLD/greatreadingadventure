@@ -78,26 +78,32 @@ namespace GRA.Controllers.Helpers
                     output.TagName = "div";
                     output.Attributes.Add("class", "infolinks");
                     output.Content.AppendHtml(string.Join(" | ", pageList));
-                    var session = ViewContext.HttpContext.Session;
-                    if (!string.IsNullOrEmpty(session.GetString(SessionKey.UserBranchName)) &&
-                        !string.IsNullOrEmpty(session.GetString(SessionKey.UserBranchUrl)))
-                    {
-                        var branchLink = new TagBuilder("a")
-                        {
-                            TagRenderMode = TagRenderMode.Normal
-                        };
-                        branchLink.InnerHtml.AppendHtml(
-                            session.GetString(SessionKey.UserBranchName));
-                        branchLink.MergeAttribute("href",
-                            session.GetString(SessionKey.UserBranchUrl));
-                        output.Content.AppendHtml("<br>");
-                        output.Content.AppendHtml(branchLink);
-                    }
+                    output.Content.AppendHtml("<br>");
                 }
             }
             else
             {
                 output.TagName = "";
+            }
+
+            if (!navPages)
+            {
+                var session = ViewContext.HttpContext.Session;
+                if (!string.IsNullOrEmpty(session.GetString(SessionKey.UserBranchName)) &&
+                    !string.IsNullOrEmpty(session.GetString(SessionKey.UserBranchUrl)))
+                {
+                    var branchLink = new TagBuilder("a")
+                    {
+                        TagRenderMode = TagRenderMode.Normal
+                    };
+                    branchLink.InnerHtml.AppendHtml(
+                        session.GetString(SessionKey.UserBranchName));
+                    branchLink.MergeAttribute("href",
+                        session.GetString(SessionKey.UserBranchUrl));
+                    output.TagName = "div";
+                    output.Attributes.Add("class", "infolinks");
+                    output.Content.AppendHtml(branchLink);
+                }
             }
         }
     }
