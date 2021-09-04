@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 
 namespace GRA.Controllers.Filter
@@ -16,20 +15,16 @@ namespace GRA.Controllers.Filter
     public class UserFilter : Attribute, IAsyncActionFilter
     {
         private readonly ILogger _logger;
-        private readonly IStringLocalizer<Resources.Shared> _sharedLocalizer;
-        private readonly ITempDataDictionaryFactory _tempDataFactory;
         private readonly MailService _mailService;
         private readonly PerformerSchedulingService _performerSchedulingService;
-        private readonly SiteLookupService _siteLookupService;
-        private readonly UserService _userService;
+        private readonly ITempDataDictionaryFactory _tempDataFactory;
         private readonly IUserContextProvider _userContextProvider;
+        private readonly UserService _userService;
 
         public UserFilter(ILogger<UserFilter> logger,
-            IStringLocalizer<Resources.Shared> sharedLocalizer,
             ITempDataDictionaryFactory tempDataFactory,
             MailService mailService,
             PerformerSchedulingService performerSchedulingService,
-            SiteLookupService siteLookupService,
             UserService userService,
             IUserContextProvider userContextProvider)
         {
@@ -39,10 +34,6 @@ namespace GRA.Controllers.Filter
             _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
             _performerSchedulingService = performerSchedulingService
                 ?? throw new ArgumentNullException(nameof(performerSchedulingService));
-            _sharedLocalizer = sharedLocalizer
-                ?? throw new ArgumentNullException(nameof(sharedLocalizer));
-            _siteLookupService = siteLookupService
-                ?? throw new ArgumentNullException(nameof(siteLookupService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _userContextProvider = userContextProvider
                 ?? throw new ArgumentNullException(nameof(userContextProvider));
@@ -115,18 +106,6 @@ namespace GRA.Controllers.Filter
                 {
                     tempData.Remove(TempDataKey.UserSignedIn);
                     httpContext.Items[ItemKey.SignedIn] = true;
-                }
-
-                var siteId = httpContext.Session.GetInt32(SessionKey.SiteId);
-                int? activeUserId = _userContextProvider.GetContext().ActiveUserId;
-                if (await _siteLookupService.GetSiteSettingBoolAsync((int)siteId,
-                    SiteSettingKey.Users.ShowLinkToParticipantsLibrary)
-                    && activeUserId != null)
-                {
-                    var userBranch = await _userService.GetUsersBranch(activeUserId.Value);
-                    httpContext.Session.SetString(SessionKey.UserBranchName,
-                        _sharedLocalizer[Annotations.Interface.Visit, userBranch.Name]);
-                    httpContext.Session.SetString(SessionKey.UserBranchUrl, userBranch.Url);
                 }
             }
             await next();

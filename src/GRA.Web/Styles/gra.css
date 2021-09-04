@@ -143,6 +143,10 @@ ul.navbar-nav li.active {
         font-weight: bold;
     }
 
+    .infolinks > .locations {
+        margin-top: 1rem;
+    }
+
 .total-row {
     background-color: rgb(215, 240, 240);
     font-weight: bold;
