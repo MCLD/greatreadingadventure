@@ -169,8 +169,16 @@
     </div>
 </div>
 
-<div class="form-group">
-    <a asp-action="Index" class="btn btn-default">Return to Participants</a>
+<div class="row">
+    <div class="col-sm-12" style="margin-bottom: 2rem;">
+        @if (Model.User.HouseholdHeadUserId.HasValue || Model.HouseholdCount > 0)
+        {
+            <a asp-action="Household" 
+               asp-route-id="@(Model.User.HouseholdHeadUserId.HasValue ? Model.User.HouseholdHeadUserId.Value : Model.User.Id)"
+               class="btn btn-default">Return to Family</a>
+        }
+        <a asp-action="Index" class="btn btn-default">Return to All Participants</a>
+    </div>
 </div>
 
 @if (Model.CanEditDetails && Model.User.NeedsToAnswerVendorCodeQuestion && Model.User.CanEmailAwardVendorCode)
