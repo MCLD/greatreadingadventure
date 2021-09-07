@@ -1533,4 +1533,8 @@
     <value>You will be able to add books once the program starts.</value>
     <comment>Tool tip for the "Add Book" button before the program starts.</comment>
   </data>
+  <data name="Explore {0}" xml:space="preserve">
+    <value>Explore {0}</value>
+    <comment>Text for the footer link to participant's branch, {0} is the name of the branch</comment>
+  </data>
 </root>

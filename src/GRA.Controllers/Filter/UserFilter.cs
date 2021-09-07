@@ -15,11 +15,11 @@ namespace GRA.Controllers.Filter
     public class UserFilter : Attribute, IAsyncActionFilter
     {
         private readonly ILogger _logger;
-        private readonly ITempDataDictionaryFactory _tempDataFactory;
         private readonly MailService _mailService;
         private readonly PerformerSchedulingService _performerSchedulingService;
-        private readonly UserService _userService;
+        private readonly ITempDataDictionaryFactory _tempDataFactory;
         private readonly IUserContextProvider _userContextProvider;
+        private readonly UserService _userService;
 
         public UserFilter(ILogger<UserFilter> logger,
             ITempDataDictionaryFactory tempDataFactory,

@@ -123,6 +123,7 @@
             public const string EventNotFound = "Could not find the requested event.";
             public const string EventNotStarted = "This streaming event has not started yet.";
             public const string Events = "Events";
+            public const string Explore = "Explore {0}";
             public const string Family = "Family";
             public const string Find = "Find";
             public const string FreeBookCode = "Free book code";
