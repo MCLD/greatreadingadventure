@@ -168,6 +168,14 @@ namespace GRA
                     Category = typeof(SiteSettingKey.Users).Name,
                     Format = SiteSettingFormat.String
                 },
+                [SiteSettingKey.Users.ShowLinkToParticipantsLibrary] =
+                new SiteSettingDefinition
+                {
+                    Name = "Show link to participant's library",
+                    Info = "Shows the link to the participant's library in the footer.",
+                    Category = typeof(SiteSettingKey.Users).Name,
+                    Format = SiteSettingFormat.Boolean
+                },
                 [SiteSettingKey.Web.CacheSiteCustomizationsMinutes] =
                 new SiteSettingDefinition
                 {
