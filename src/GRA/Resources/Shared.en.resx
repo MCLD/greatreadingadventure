@@ -1537,4 +1537,7 @@
     <value>Explore {0}</value>
     <comment>Text for the footer link to participant's branch, {0} is the name of the branch</comment>
   </data>
+  <data name="See more of your badges" xml:space="preserve">
+    <value>See more of your badges</value>
+  </data>
 </root>
