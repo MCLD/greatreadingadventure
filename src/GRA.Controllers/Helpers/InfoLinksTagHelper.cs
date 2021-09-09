@@ -129,22 +129,38 @@ namespace GRA.Controllers.Helpers
                 && siteClaim != null
                 && userClaim != null
                 && int.TryParse(siteClaim.Value, out int siteId)
-                && int.TryParse(userClaim.Value, out int userId)
-                && await _siteLookupService.GetSiteSettingBoolAsync(siteId,
-                    SiteSettingKey.Users.ShowLinkToParticipantsLibrary))
+                && int.TryParse(userClaim.Value, out int userId))
             {
                 var branch = await _userService.GetUsersBranch(userId);
-                if (!string.IsNullOrEmpty(branch.Url))
+                var divTag = new TagBuilder("div");
+                divTag.AddCssClass("locations");
+
+                if (await _siteLookupService.GetSiteSettingBoolAsync(siteId,
+                    SiteSettingKey.Users.ShowLinkToParticipantsLibrary)
+                    && !string.IsNullOrEmpty(branch.Url))
                 {
-                    var branchLink = new TagBuilder("a");
-                    branchLink.InnerHtml.AppendHtml(_sharedLocalizer[Annotations.Interface.Explore,
-                        branch.Name]);
-                    branchLink.MergeAttribute("href", branch.Url);
-                    var divTag = new TagBuilder("div");
-                    divTag.AddCssClass("locations");
-                    divTag.InnerHtml.AppendHtml(branchLink);
-                    output.Content.AppendHtml(divTag);
+                        var branchLink = new TagBuilder("a");
+                        branchLink.InnerHtml.AppendHtml(_sharedLocalizer[Annotations.Interface.Explore,
+                            branch.Name]);
+                        branchLink.MergeAttribute("href", branch.Url);
+                        divTag.InnerHtml.AppendHtml(branchLink);
                 }
+
+                if (await _siteLookupService.GetSiteSettingBoolAsync(siteId,
+                    SiteSettingKey.Users.ShowLinkToParticipatingBranches))
+                {
+                    if (await _siteLookupService.GetSiteSettingBoolAsync(siteId,
+                    SiteSettingKey.Users.ShowLinkToParticipantsLibrary)
+                        && !string.IsNullOrEmpty(branch.Url))
+                    {
+                        divTag.InnerHtml.AppendHtml( " | ");
+                    }
+                    var allBranchesLink = new TagBuilder("a");
+                    allBranchesLink.InnerHtml.AppendHtml(_sharedLocalizer[Annotations.Interface.AllParticipatingBranches]);
+                    allBranchesLink.MergeAttribute("href", ParticipatingBranchesController.Name);
+                    divTag.InnerHtml.AppendHtml(allBranchesLink);
+                }
+                output.Content.AppendHtml(divTag);
             }
         }
     }

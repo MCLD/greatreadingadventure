@@ -9,6 +9,9 @@ namespace GRA.Controllers
     public class ParticipatingBranchesController : Base.UserController
     {
         private readonly SiteService _siteService;
+
+        public static string Name { get { return "ParticipatingBranches"; } }
+
         public ParticipatingBranchesController(ServiceFacade.Controller context,
             SiteService siteService)
             : base(context)

@@ -85,6 +85,8 @@
             public static readonly string FirstTimeSurveyUrl = "Users.FirstTimeSurveyUrl";
             public static readonly string ShowLinkToParticipantsLibrary
                 = "Users.ShowLinkToParticipantsLibrary";
+            public static readonly string ShowLinkToParticipatingBranches
+                = "Users.ShowLinkToParticipatingBranches";
             public bool Equals(Users other) { return true; }
         }
 

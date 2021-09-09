@@ -176,6 +176,14 @@ namespace GRA
                     Category = typeof(SiteSettingKey.Users).Name,
                     Format = SiteSettingFormat.Boolean
                 },
+                [SiteSettingKey.Users.ShowLinkToParticipatingBranches] =
+                new SiteSettingDefinition
+                {
+                    Name = "Show link to all participating branches",
+                    Info = "Shows the link to all participating branches in the footer.",
+                    Category = typeof(SiteSettingKey.Users).Name,
+                    Format = SiteSettingFormat.Boolean
+                },
                 [SiteSettingKey.Web.CacheSiteCustomizationsMinutes] =
                 new SiteSettingDefinition
                 {
