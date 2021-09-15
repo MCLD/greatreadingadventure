@@ -653,6 +653,24 @@ p.password-note {
     position: relative;
 }
 
+.branch-links {
+    display: inline-table;
+    height: 1650px;
+    margin-bottom: 2rem;
+    margin-top: 2rem;
+}
+    .branch-links > h2, .branch-links > a h2 {
+        font-size: large;
+    }
+
+    .branch-links > ul li a h3 {
+        font-size: larger;
+    }
+
+    .branch-links > * {
+        display: block;
+        flex-basis: auto;
+    }
 @media only screen and (min-width: 768px) {
     .avatar-layer-selector {
         height: 32px;
@@ -695,6 +713,10 @@ p.password-note {
         top: 0;
         width: 150px;
     }
+    .branch-links {
+        display: flex;
+        flex-flow: column wrap;
+    }
 }
 
 @media only screen and (min-width : 992px) {
@@ -717,6 +739,10 @@ p.password-note {
         height: 350px;
         width: 210px;
     }
+    .branch-links {
+        display: flex;
+        flex-flow: column wrap;
+    }
 }
 
 @media only screen and (min-width : 1200px) {
@@ -733,6 +759,10 @@ p.password-note {
     .avatar-layer-dashboard {
         height: 425px;
         width: 255px;
+    }
+    .branch-links {
+        display: flex;
+        flex-flow: column wrap;
     }
 }
 
