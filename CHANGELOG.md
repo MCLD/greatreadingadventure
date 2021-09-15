@@ -15,11 +15,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Analytics tracking of clicks on daily images
 - Mission Control interface to manage social images
 - Internationalization of social card images
+- Add social cards which can be scheduled
 - Ability to see a list of users in each role
+- Administration and management of vendor codes from Mission Control
+- Packing slip functionality for showing when vendor code awards have arrived
+- Fix #741 Mission Control interface to add daily tips
+- Fix #354 Add click tracking on daily image
+- Unified approach to spinner buttons to debounce submissions
 
 ### Changed
 
 - Extended length of stremaing program links to 2000 characters
+- Improve accessibility throughout the application
+- Move to updated FontAwesome glyph references
 
 ### Fixed
 
@@ -34,6 +42,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Event spatial proximity searching
 - Household secret code entry awarding mail/prize to the user applying the codes
 - Proper handling of the "Add Book" button prior to program start
+- Allow special characters in authorization codes
+- Extend length of streaming link
+- Error on exit page is user/branch can't be determined
+- Fix remove button logic for handling avatar body layer
+- Fix #784 not-allowed cursor on inputs in FireFox
+- Fix #619 Add date to "created by" display in Mission Control
+- Fix #460 Ability to link to participant's library in the footer
 
 ## [4.2.0] - 2021-01-04
 
