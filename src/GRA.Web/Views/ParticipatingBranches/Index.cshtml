@@ -7,13 +7,15 @@
     {
         if (system.Branches.Count() > 1)
         {
-            <h2>@system.Name</h2>
-            <ul>
-                @foreach (var branch in system.Branches)
-                {
-                    <li class=""><a href="@branch.Url"><h3>@branch.Name</h3></a></li>
-                }
-            </ul>
+            <div>
+                <h2>@system.Name</h2>
+                <ul>
+                    @foreach (var branch in system.Branches)
+                    {
+                        <li><a href="@branch.Url"><h3>@branch.Name</h3></a></li>
+                    }
+                </ul>
+            </div>
         }
         else
         {

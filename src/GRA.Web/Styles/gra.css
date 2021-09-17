@@ -655,16 +655,18 @@ p.password-note {
 
 .branch-links {
     display: inline-table;
-    height: 1650px;
+    height: 1930px;
     margin-bottom: 2rem;
     margin-top: 2rem;
 }
-    .branch-links > h2, .branch-links > a h2 {
+    .branch-links > div h2, .branch-links > a h2 {
         font-size: large;
+        display: inline-flex;
     }
 
-    .branch-links > ul li a h3 {
+    .branch-links > div ul li a h3 {
         font-size: larger;
+        display: inline-flex;
     }
 
     .branch-links > * {
