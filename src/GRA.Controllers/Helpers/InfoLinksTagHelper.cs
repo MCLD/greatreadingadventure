@@ -157,7 +157,9 @@ namespace GRA.Controllers.Helpers
                     }
                     var allBranchesLink = new TagBuilder("a");
                     allBranchesLink.InnerHtml.AppendHtml(_sharedLocalizer[Annotations.Interface.AllParticipatingBranches]);
-                    allBranchesLink.MergeAttribute("href", ParticipatingBranchesController.Name);
+                    IUrlHelper url = _urlHelperFactory.GetUrlHelper(ViewContext);
+                    allBranchesLink.MergeAttribute("href",
+                        url.Action(nameof(ParticipatingBranchesController.Index), ParticipatingBranchesController.Name));
                     divTag.InnerHtml.AppendHtml(allBranchesLink);
                 }
                 output.Content.AppendHtml(divTag);
