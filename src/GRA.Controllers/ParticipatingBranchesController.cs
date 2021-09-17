@@ -22,19 +22,11 @@ namespace GRA.Controllers
         public async Task<IActionResult> Index()
         {
             var site = await GetCurrentSiteAsync();
-            if(await _siteLookupService.GetSiteSettingBoolAsync(site.Id,
-                    SiteSettingKey.Users.ShowLinkToParticipatingBranches))
+            var viewModel = new ParticipatingBranchesViewModel
             {
-                var viewModel = new ParticipatingBranchesViewModel
-                {
-                    Systems = await _siteService.GetSystemList()
-                };
-                return View(nameof(Index), viewModel);
-            }
-            else
-            {
-                return StatusCode(404);
-            }
+                Systems = await _siteService.GetSystemList()
+            };
+            return View(nameof(Index), viewModel);
         }
     }
 }
