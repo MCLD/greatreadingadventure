@@ -12,14 +12,30 @@
                 <ul>
                     @foreach (var branch in system.Branches)
                     {
-                        <li><a href="@branch.Url"><h3>@branch.Name</h3></a></li>
+                        <li>
+                            @if (!string.IsNullOrWhiteSpace(branch.Url))
+                            {
+                                <a href="@branch.Url"><h3>@branch.Name</h3></a>
+                            }
+                            else
+                            {
+                                <h3>@branch.Name</h3>
+                            }
+                        </li>
                     }
                 </ul>
             </div>
         }
         else
         {
-            <a href="@system.Branches.FirstOrDefault().Url"><h2>@system.Branches.FirstOrDefault().Name</h2></a>
+            @if (!string.IsNullOrWhiteSpace(@system.Branches.FirstOrDefault().Url))
+            {
+                <a href="@system.Branches.FirstOrDefault().Url"><h2>@system.Branches.FirstOrDefault().Name</h2></a>
+            }
+            else
+            {
+                <h2>@system.Branches.FirstOrDefault().Name</h2>
+            }
         }
     }
 </div>

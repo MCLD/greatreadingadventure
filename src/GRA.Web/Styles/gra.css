@@ -664,7 +664,7 @@ p.password-note {
         display: inline-flex;
     }
 
-    .branch-links > div ul li a h3 {
+    .branch-links > div ul li a h3, .branch-links > div ul li h3 {
         font-size: larger;
         display: inline-flex;
     }
