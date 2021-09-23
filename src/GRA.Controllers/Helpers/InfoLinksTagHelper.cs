@@ -56,21 +56,21 @@ namespace GRA.Controllers.Helpers
             }
 
             var pages = await _pageService.GetAreaPagesAsync(NavPages);
+            if (!NavPages)
+            {
+                output.Attributes.Add("class", "infolinks");
+                output.TagName = "div";
+            }
+            else
+            {
+                output.TagName = "";
+            }
+
             if (pages.Any())
             {
                 IUrlHelper url = _urlHelperFactory.GetUrlHelper(ViewContext);
                 string activeStub = url.ActionContext.RouteData.Values["id"] as string;
                 var first = true;
-
-                if (!NavPages)
-                {
-                    output.Attributes.Add("class", "infolinks");
-                    output.TagName = "div";
-                }
-                else
-                {
-                    output.TagName = "";
-                }
 
                 foreach (var page in pages)
                 {
@@ -107,10 +107,6 @@ namespace GRA.Controllers.Helpers
 
                     output.Content.AppendHtml(outputTag);
                 }
-            }
-            else
-            {
-                output.TagName = "";
             }
 
             var siteClaim = ViewContext
