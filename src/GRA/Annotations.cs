@@ -81,7 +81,7 @@
             public const string AddedParticipantGroupFamily = "Added {0} to your {1}!";
             public const string AddExistingExplanation = "Add an existing participant into your {0}, if that participant is the head of a {0} their {0} members will be moved into your {0} as well.";
             public const string AddUsername = "Add username";
-            public const string AllParticipatingBranches = "All Participating Branches";
+            public const string AllParticipatingLibraries = "All Participating Libraries";
             public const string AllPrograms = "All Programs";
             public const string AndOtherActivities = "and other activities";
             public const string AndTheir = "and their {0}";

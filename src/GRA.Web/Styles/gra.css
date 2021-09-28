@@ -502,7 +502,6 @@ p.password-note {
             margin-right: 6px;
         }
 
-
     .school-selection-checkbox:checked + label {
         background-color: #dff0d8;
         border-color: #d6e9c6;
@@ -653,26 +652,22 @@ p.password-note {
     position: relative;
 }
 
-.branch-links {
-    display: inline-table;
-    height: 1930px;
+.participating-libraries {
     margin-bottom: 2rem;
-    margin-top: 2rem;
 }
-    .branch-links > div h2, .branch-links > a h2 {
-        font-size: large;
-        display: inline-flex;
+
+    .participating-libraries > .system {
+        padding-bottom: 1rem;
     }
 
-    .branch-links > div ul li a h3, .branch-links > div ul li h3 {
-        font-size: larger;
-        display: inline-flex;
+    .participating-libraries > .library-list {
+        padding-bottom: 0.25rem;
     }
 
-    .branch-links > * {
-        display: block;
-        flex-basis: auto;
+    .participating-libraries small {
+        padding-left: 1rem;
     }
+
 @media only screen and (min-width: 768px) {
     .avatar-layer-selector {
         height: 32px;
@@ -715,10 +710,6 @@ p.password-note {
         top: 0;
         width: 150px;
     }
-    .branch-links {
-        display: flex;
-        flex-flow: column wrap;
-    }
 }
 
 @media only screen and (min-width : 992px) {
@@ -741,10 +732,6 @@ p.password-note {
         height: 350px;
         width: 210px;
     }
-    .branch-links {
-        display: flex;
-        flex-flow: column wrap;
-    }
 }
 
 @media only screen and (min-width : 1200px) {
@@ -761,10 +748,6 @@ p.password-note {
     .avatar-layer-dashboard {
         height: 425px;
         width: 255px;
-    }
-    .branch-links {
-        display: flex;
-        flex-flow: column wrap;
     }
 }
 

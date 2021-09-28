@@ -1540,8 +1540,8 @@
   <data name="See more of your badges" xml:space="preserve">
     <value>See more of your badges</value>
   </data>
-  <data name="All Participating Branches" xml:space="preserve">
-    <value>All Participating Branches</value>
-    <comment>Text for the footer link to view all participating branches.</comment>
+  <data name="All Participating Libraries" xml:space="preserve">
+    <value>All Participating Libraries</value>
+    <comment>Text for the footer link to view all participating libraries.</comment>
   </data>
 </root>
