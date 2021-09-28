@@ -12,7 +12,7 @@ namespace GRA.Controllers.ViewModel.ParticipatingBranches
             if (branch != null &&
                 (!string.IsNullOrEmpty(branch.Telephone) || !string.IsNullOrEmpty(branch.Address)))
             {
-                if (branch.Telephone.Length > 0)
+                if (branch.Telephone?.Length > 0)
                 {
                     sb.Append("<strong>").Append(branch.Telephone).Append("</strong> - ");
                 }
