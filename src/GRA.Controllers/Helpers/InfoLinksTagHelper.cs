@@ -56,25 +56,28 @@ namespace GRA.Controllers.Helpers
             }
 
             var pages = await _pageService.GetAreaPagesAsync(NavPages);
+
+            if (!NavPages)
+            {
+                output.Attributes.Add("class", "infolinks");
+                output.TagName = "div";
+            }
+            else
+            {
+                output.TagName = "";
+            }
+
             if (pages.Any())
             {
                 IUrlHelper url = _urlHelperFactory.GetUrlHelper(ViewContext);
                 string activeStub = url.ActionContext.RouteData.Values["id"] as string;
                 var first = true;
 
-                if (!NavPages)
-                {
-                    output.Attributes.Add("class", "infolinks");
-                    output.TagName = "div";
-                }
-                else
-                {
-                    output.TagName = "";
-                }
-
                 foreach (var page in pages)
                 {
-                    var link = url.Action("Index", "Info", new { id = page.PageStub });
+                    var link = url.Action(nameof(InfoController.Index),
+                        InfoController.Name,
+                        new { id = page.PageStub });
 
                     if (first)
                     {
@@ -108,16 +111,10 @@ namespace GRA.Controllers.Helpers
                     output.Content.AppendHtml(outputTag);
                 }
             }
-            else
-            {
-                output.TagName = "";
-            }
 
-            var siteClaim = ViewContext
+            var siteId = (int)ViewContext
                 .HttpContext
-                .User
-                .Claims
-                .SingleOrDefault(_ => _.Type == ClaimType.SiteId);
+                .Items[ItemKey.SiteId];
 
             var userClaim = ViewContext
                 .HttpContext
@@ -126,23 +123,56 @@ namespace GRA.Controllers.Helpers
                 .SingleOrDefault(_ => _.Type == ClaimType.UserId);
 
             if (!NavPages
-                && siteClaim != null
-                && userClaim != null
-                && int.TryParse(siteClaim.Value, out int siteId)
-                && int.TryParse(userClaim.Value, out int userId)
-                && await _siteLookupService.GetSiteSettingBoolAsync(siteId,
-                    SiteSettingKey.Users.ShowLinkToParticipantsLibrary))
+                && siteId != 0)
             {
-                var branch = await _userService.GetUsersBranch(userId);
-                if (!string.IsNullOrEmpty(branch.Url))
+                bool linkToLibrary = await _siteLookupService.GetSiteSettingBoolAsync(siteId,
+                        SiteSettingKey.Users.ShowLinkToParticipantsLibrary);
+
+                bool showParticipatingLibraries = await _siteLookupService
+                    .GetSiteSettingBoolAsync(siteId,
+                        SiteSettingKey.Users.ShowLinkToParticipatingLibraries);
+
+                if (linkToLibrary || showParticipatingLibraries)
                 {
-                    var branchLink = new TagBuilder("a");
-                    branchLink.InnerHtml.AppendHtml(_sharedLocalizer[Annotations.Interface.Explore,
-                        branch.Name]);
-                    branchLink.MergeAttribute("href", branch.Url);
                     var divTag = new TagBuilder("div");
                     divTag.AddCssClass("locations");
-                    divTag.InnerHtml.AppendHtml(branchLink);
+
+                    if (showParticipatingLibraries)
+                    {
+                        var allBranchesLink = new TagBuilder("a");
+                        allBranchesLink.InnerHtml.AppendHtml(_sharedLocalizer[Annotations
+                            .Interface
+                            .AllParticipatingLibraries]);
+                        IUrlHelper url = _urlHelperFactory.GetUrlHelper(ViewContext);
+                        allBranchesLink.MergeAttribute("href",
+                            url.Action(nameof(ParticipatingLibrariesController.Index),
+                                ParticipatingLibrariesController.Name));
+                        divTag.InnerHtml.AppendHtml(allBranchesLink);
+                    }
+
+                    if (linkToLibrary
+                        && userClaim != null
+                        && int.TryParse(userClaim.Value, out int userId))
+                    {
+                        var branch = await _userService.GetUsersBranch(userId);
+                        if (!string.IsNullOrEmpty(branch.Url))
+                        {
+                            var branchLink = new TagBuilder("a");
+                            branchLink
+                                .InnerHtml
+                                .AppendHtml(_sharedLocalizer[Annotations.Interface.Explore,
+                                    branch.Name]);
+                            branchLink.MergeAttribute("href", branch.Url);
+
+                            if (showParticipatingLibraries)
+                            {
+                                divTag.InnerHtml.AppendHtml(" | ");
+                            }
+
+                            divTag.InnerHtml.AppendHtml(branchLink);
+                        }
+                    }
+
                     output.Content.AppendHtml(divTag);
                 }
             }

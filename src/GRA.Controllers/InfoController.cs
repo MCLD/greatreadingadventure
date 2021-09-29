@@ -10,6 +10,7 @@ namespace GRA.Controllers
     {
         private readonly ILogger<InfoController> _logger;
         private readonly PageService _pageService;
+
         public InfoController(ILogger<InfoController> logger,
             ServiceFacade.Controller context,
             PageService pageService)
@@ -18,6 +19,8 @@ namespace GRA.Controllers
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _pageService = pageService ?? throw new ArgumentNullException(nameof(pageService));
         }
+
+        public static string Name { get { return "Info"; } }
 
         public async Task<IActionResult> Index(string id)
         {

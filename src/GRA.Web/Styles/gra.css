@@ -502,7 +502,6 @@ p.password-note {
             margin-right: 6px;
         }
 
-
     .school-selection-checkbox:checked + label {
         background-color: #dff0d8;
         border-color: #d6e9c6;
@@ -652,6 +651,22 @@ p.password-note {
     max-width: 100%;
     position: relative;
 }
+
+.participating-libraries {
+    margin-bottom: 2rem;
+}
+
+    .participating-libraries > .system {
+        padding-bottom: 1rem;
+    }
+
+    .participating-libraries > .library-list {
+        padding-bottom: 0.25rem;
+    }
+
+    .participating-libraries small {
+        padding-left: 1rem;
+    }
 
 @media only screen and (min-width: 768px) {
     .avatar-layer-selector {
