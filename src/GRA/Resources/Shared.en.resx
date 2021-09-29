@@ -1539,6 +1539,7 @@
   </data>
   <data name="See more of your badges" xml:space="preserve">
     <value>See more of your badges</value>
+    <comment>Dashboard link to view participant's badge gallery, displayed underneath their badges</comment>
   </data>
   <data name="All Participating Libraries" xml:space="preserve">
     <value>All Participating Libraries</value>
