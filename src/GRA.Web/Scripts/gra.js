@@ -1,32 +1,37 @@
 ﻿window.onunload = function () {
-    $(".btn-spinner, .btn-spinner-no-validate").removeClass("disabled");
-    $(".btn-spinner, .btn-spinner-no-validate").children(".fa-spinner").addClass("hidden");
+    ResetSpinners();
+}
+
+function ResetSpinners(target) {
+    if (target != null) {
+        target.removeClass("disabled");
+        target.children(".fa-spinner").addClass("hidden");
+    }
+    else {
+        $(".btn-spinner, .btn-spinner-no-validate").removeClass("disabled");
+        $(".btn-spinner, .btn-spinner-no-validate").children(".fa-spinner").addClass("hidden");
+    }
 }
 
 $(".btn-spinner").on("click", function (e) {
-    if ($(this).parents("form:first").valid())
-    {
-        if ($(this).hasClass("disabled"))
-        {
+    if ($(this).hasClass("disabled")) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+    }
+    else {
+        var parentForm = $(this).closest("form");
+
+        if (!$(this).hasClass("spinner-ignore-validation")
+            && (parentForm.length > 0 && !parentForm.valid())) {
             e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
         }
-        else
-        {
-            $(this).addClass("disabled");
+        else {
+            parentForm.find(".btn-spinner").addClass("disabled");
             $(this).children(".fa-spinner").removeClass("hidden");
         }
-    }
-});
-
-$(".btn-spinner-no-validate").on("click", function(e) {
-    if ($(this).hasClass("disabled"))
-    {
-        e.preventDefault();
-    }
-    else
-    {
-        $(this).addClass("disabled");
-        $(this).children(".fa-spinner").removeClass("hidden");
     }
 });
 

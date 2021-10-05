@@ -142,18 +142,18 @@
 
                                             @if (selection.KitId.HasValue)
                                             {
-                                                <span class="fa fa-square fa-stack-2x age-group-id-@selection.AgeGroupId"></span>
+                                                <span class="fas fa-square fa-stack-2x age-group-id-@selection.AgeGroupId"></span>
                                                 <span class="fa-stack-2x" style="color: white; font-size: small;">KIT</span>
                                             }
                                             else
                                             {
                                                 @if (selection.BackToBackProgram)
                                                 {
-                                                    <span class="fa fa-plus-square fa-stack-2x age-group-id-@selection.AgeGroupId"></span>
+                                                    <span class="fas fa-plus-square fa-stack-2x age-group-id-@selection.AgeGroupId"></span>
                                                 }
                                                 else
                                                 {
-                                                    <span class="fa fa-check-square fa-stack-2x age-group-id-@selection.AgeGroupId"></span>
+                                                    <span class="fas fa-check-square fa-stack-2x age-group-id-@selection.AgeGroupId"></span>
                                                 }
                                             }
                                         </span>
@@ -162,7 +162,7 @@
                                     {
                                         count++;
                                         <span class="fa-stack">
-                                            <span class="fa fa-square-o fa-stack-2x"></span>
+                                            <span class="fas fa-square-o fa-stack-2x"></span>
                                         </span>
                                     }
                                 </td>
@@ -174,20 +174,20 @@
                         {
                             <span style="color: @ageGroup.IconColor"
                                   style="white-space: nowrap; display: inline-block; margin-right: 1rem;">
-                                <span class="fa fa-square"></span>
+                                <span class="fas fa-square"></span>
                                 @ageGroup.Name
                             </span>
                         }
                         <span style="white-space: nowrap; display: inline-block; margin-right: 1rem;">
                             <span class="fa-stack">
-                                <span class="fa fa-square fa-stack-1x"></span>
+                                <span class="fas fa-square fa-stack-1x"></span>
                                 <span class="fa-stack-1x" style="color: white; font-size: x-small;">KIT</span>
                             </span>Kit
                         </span>
                         @if (hasBackToBacks)
                         {
                             <span style="white-space: nowrap; display: inline-block; margin-right: 1rem;">
-                                <span class="fa fa-plus-square"></span>
+                                <span class="fas fa-plus-square"></span>
                                 Back-to-back
                             </span>
                         }

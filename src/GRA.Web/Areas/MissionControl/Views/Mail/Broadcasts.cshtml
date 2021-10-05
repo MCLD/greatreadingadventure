@@ -51,11 +51,11 @@
                                 <td class="gra-mc-icon">
                                     @if (broadcast.SendToNewUsers)
                                     {
-                                        <span class="fa fa-lg fa-check text-success"></span>
+                                        <span class="fas fa-lg fa-check text-success"></span>
                                     }
                                     else
                                     {
-                                        <span class="fa fa-lg fa-ban text-danger"></span>
+                                        <span class="fas fa-lg fa-ban text-danger"></span>
                                     }
                                 </td>
                                 @if (Model.Upcoming)
@@ -67,7 +67,7 @@
                                                 data-target="#deleteModal"
                                                 data-id="@broadcast.Id"
                                                 data-subject="@broadcast.Subject">
-                                            <span class="fa fa-remove" aria-hidden="true"></span>
+                                            <span class="fas fa-times" aria-hidden="true"></span>
                                         </button>
                                     </td>
                                 }
@@ -104,7 +104,7 @@
                         <h1 class="modal-title h4" id="deleteModalLabel">Delete Broadcast</h1>
                     </div>
                     <div class="modal-body">
-                        <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                        <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
                         <span id="modal-text"></span>
                     </div>
                     <div class="modal-footer">
@@ -123,7 +123,7 @@
                             <button type="submit"
                                     class="btn btn-danger pull-right"
                                     aria-label="Confirm">
-                                <span class="fa fa-remove" aria-hidden="true"></span>
+                                <span class="fas fa-times" aria-hidden="true"></span>
                                 Delete
                             </button>
                         </form>

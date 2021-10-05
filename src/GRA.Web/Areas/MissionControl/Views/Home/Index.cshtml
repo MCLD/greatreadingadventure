@@ -193,25 +193,25 @@ else
             <div class="ataglancepill-sidebar ataglance-pill-darkslateblue ataglance-pill-filtered">
                 <div class="text-center hidden-sm">@Model.AtAGlanceReport.FilteredBranchDescription</div>
                 <div title="@Model.AtAGlanceReport.FilteredBranchDescription participant(s)">
-                    <span class="fas fa-users"></span>
+                    <span class="ataglance-icon fas fa-users"></span>
                     <span class="mc-filtered-participants">
                         @Model.AtAGlanceReport.FilteredStatus.RegisteredUsers.ToString("N0")
                     </span><span class="hidden-sm"> participant@(Model.AtAGlanceReport.FilteredStatus.RegisteredUsers != 1 ? "s" : "")</span>
                 </div>
                 <div title="@Model.AtAGlanceReport.FilteredBranchDescription point(s) earned">
-                    <span class="fas fa-hashtag"></span>
+                    <span class="ataglance-icon fas fa-hashtag"></span>
                     <span class="mc-filtered-points">
                         @Model.AtAGlanceReport.FilteredStatus.PointsEarned.ToString("N0")
                     </span><span class="hidden-sm"> point@(Model.AtAGlanceReport.FilteredStatus.PointsEarned != 1 ? "s" : "")</span>
                 </div>
                 <div title="@Model.AtAGlanceReport.FilteredBranchDescription completed challenge(s)">
-                    <span class="fas fa-trophy"></span>
+                    <span class="ataglance-icon fas fa-trophy"></span>
                     <span class="mc-filtered-challenges">
                         @Model.AtAGlanceReport.FilteredStatus.CompletedChallenges.ToString("N0")
                     </span><span class="hidden-sm"> challenge@(Model.AtAGlanceReport.FilteredStatus.CompletedChallenges != 1 ? "s" : "")</span>
                 </div>
                 <div title="@Model.AtAGlanceReport.FilteredBranchDescription badge(s) earned">
-                    <span class="fas fa-certificate"></span>
+                    <span class="ataglance-icon fas fa-certificate"></span>
                     <span class="mc-filtered-badges">
                         @Model.AtAGlanceReport.FilteredStatus.BadgesEarned.ToString("N0")
                     </span><span class="hidden-sm"> badge@(Model.AtAGlanceReport.FilteredStatus.BadgesEarned != 1 ? "s" : "")</span>
@@ -222,25 +222,25 @@ else
             </div>
             <div class="ataglancepill-sidebar ataglance-pill-teal ataglance-pill-site">
                 <div title="Total participant(s)">
-                    <span class="fas fa-users"></span>
+                    <span class="ataglance-icon fas fa-users"></span>
                     <span class="mc-site-participants">
                         @Model.AtAGlanceReport.SiteStatus.RegisteredUsers.ToString("N0")
                     </span><span class="hidden-sm"> participant@(Model.AtAGlanceReport.SiteStatus.RegisteredUsers != 1 ? "s" : "")</span>
                 </div>
                 <div title="Total point(s) earned">
-                    <span class="fas fa-hashtag"></span>
+                    <span class="ataglance-icon fas fa-hashtag"></span>
                     <span class="mc-site-points">
                         @Model.AtAGlanceReport.SiteStatus.PointsEarned.ToString("N0")
                     </span><span class="hidden-sm"> point@(Model.AtAGlanceReport.SiteStatus.PointsEarned != 1 ? "s" : "")</span>
                 </div>
                 <div title="Total completed challenge(s)">
-                    <span class="fas fa-trophy"></span>
+                    <span class="ataglance-icon fas fa-trophy"></span>
                     <span class="mc-site-challenges">
                         @Model.AtAGlanceReport.SiteStatus.CompletedChallenges.ToString("N0")
                     </span><span class="hidden-sm"> challenge@(Model.AtAGlanceReport.SiteStatus.CompletedChallenges != 1 ? "s" : "")</span>
                 </div>
                 <div title="Total badge(s) earned">
-                    <span class="fas fa-certificate"></span>
+                    <span class="ataglance-icon fas fa-certificate"></span>
                     <span class="mc-site-badges">
                         @Model.AtAGlanceReport.SiteStatus.BadgesEarned.ToString("N0")
                     </span><span class="hidden-sm"> badge@(Model.AtAGlanceReport.SiteStatus.BadgesEarned != 1 ? "s" : "")</span>
@@ -248,7 +248,7 @@ else
                 @if (Model.AtAGlanceReport.SiteStatus.DaysUntilEnd != null)
                 {
                     <div title="Day(s) left">
-                        <span class="far fa-calendar-alt"></span>
+                        <span class="ataglance-icon far fa-calendar-alt"></span>
                         <span class="mc-site-days">
                             @Model.AtAGlanceReport.SiteStatus.DaysUntilEnd
                         </span><span class="hidden-sm"> day@(Model.AtAGlanceReport.SiteStatus.DaysUntilEnd != 1 ? "s" : "") left</span>

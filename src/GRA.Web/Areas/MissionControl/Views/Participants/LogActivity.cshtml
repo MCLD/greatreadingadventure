@@ -30,7 +30,9 @@
                             </td>
                         }
                         <td>
-                            <button type="submit" class="btn btn-primary btn-spinner">
+                            <button type="submit"
+                                    class="btn btn-primary btn-spinner"
+                                    button-spinner>
                                 @if (Model.PointTranslation.IsSingleEvent)
                                 {
                                     <span>
@@ -43,7 +45,6 @@
                                         @Model.PointTranslation.ActivityDescriptionPlural
                                     </span>
                                 }
-                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
                         </td>
                     </tr>
@@ -66,9 +67,10 @@
                                 <input asp-for="SecretCode" value="" class="form-control codeInput" />
                             </td>
                             <td style="padding-left:6px;">
-                                <button type="submit" class="btn btn-primary btn-spinner codeButton">
+                                <button type="submit"
+                                        class="btn btn-primary btn-spinner codeButton"
+                                        button-spinner>
                                     <span class="buttonText">Secret Code</span>
-                                    <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                                 </button>
                             </td>
                         </tr>
@@ -95,9 +97,11 @@
                             </select>
                         </td>
                         <td style="padding-left:6px;">
-                            <button type="submit" asp-action="AwardVendorCode" class="btn btn-primary btn-spinner">
+                            <button type="submit"
+                                    asp-action="AwardVendorCode"
+                                    class="btn btn-primary btn-spinner"
+                                    button-spinner>
                                 <span class="buttonText">Vendor Code</span>
-                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
                         </td>
                     </tr>

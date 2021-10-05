@@ -33,17 +33,17 @@
                                                     @SharedLocalizer[GRA.Annotations.Interface.ChooseAnOption]
                                                     <button class="btn btn-info btn-spinner"
                                                             asp-action="RedeemCode"
-                                                            style="margin-top: 0.25em; margin-bottom: 0.25em;">
+                                                            style="margin-top: 0.25em; margin-bottom: 0.25em;"
+                                                            button-spinner>
                                                         <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.RedeemYourCode]</span>
-                                                        <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                                                     </button>
                                                     @if (Model.User.CanDonateVendorCode)
                                                     {
                                                         <button class="btn btn-success btn-spinner"
                                                                 asp-action="DonateCode"
-                                                                style="margin-top: 0.25em; margin-bottom: 0.25em;">
+                                                                style="margin-top: 0.25em; margin-bottom: 0.25em;"
+                                                                button-spinner>
                                                             <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.DonateYourBook]</span>
-                                                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                                                         </button>
                                                     }
                                                     @if (Model.User.CanEmailAwardVendorCode)
@@ -87,7 +87,7 @@
                                 <div class="row row-spacing">
                                     <div class="col-xs-12">
                                         <label asp-for="User.Username" class="control-label"></label>
-                                        <span class="fa fa-info-circle" 
+                                        <span class="fas fa-info-circle" 
                                               data-toggle="tooltip" 
                                               title="@SharedLocalizer[GRA.Annotations.Interface.NeedToChange, GRA.Annotations.Validate.Username]"></span>
                                         <input asp-for="User.Username" class="form-control" readonly />
@@ -148,7 +148,7 @@
                                     <div class="row row-spacing">
                                         <div class="col-xs-12">
                                             <label asp-for="User.SystemId" class="control-label"></label>
-                                            <span class="fa fa-info-circle" 
+                                            <span class="fas fa-info-circle" 
                                                   data-toggle="tooltip" 
                                                   title="@SharedLocalizer[GRA.Annotations.Interface.NeedToChange, GRA.Annotations.Validate.System]"></span>
                                             <input class="form-control" readonly value="@Model.SystemName" />
@@ -161,7 +161,7 @@
                                     <div class="row row-spacing">
                                         <div class="col-xs-12">
                                             <label asp-for="User.BranchId" class="control-label"></label>
-                                            <span class="fa fa-info-circle" 
+                                            <span class="fas fa-info-circle" 
                                                   data-toggle="tooltip" 
                                                   title="@SharedLocalizer[GRA.Annotations.Interface.NeedToChange, GRA.Annotations.Validate.Branch]"></span>
                                             <input class="form-control" readonly value="@Model.BranchName" />
@@ -262,9 +262,13 @@
                     </div>
 
                     <div class="form-group">
-                        <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-primary btn-spinner">
+                        <button type="submit"
+                                id="Submit"
+                                name="Submit"
+                                value="Submit"
+                                class="btn btn-primary btn-spinner"
+                                button-spinner>
                             <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.Save]</span>
-                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                         </button>
                     </div>
                 </form>
@@ -310,9 +314,9 @@
                             </button>
                             <button type="submit"
                                     class="btn btn-warning btn-spinner pull-right"
-                                    aria-label="Confirm">
+                                    aria-label="Confirm"
+                                    button-spinner>
                                 @SharedLocalizer[GRA.Annotations.Interface.Confirm]
-                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
                         </div>
                     </form>

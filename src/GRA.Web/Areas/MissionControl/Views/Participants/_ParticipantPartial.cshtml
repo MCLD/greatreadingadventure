@@ -6,7 +6,7 @@
         <div class="col-xs-12">
             <div class="alert alert-warning">
                 <strong>
-                    <span class="fa fa-exclamation-triangle"></span>
+                    <span class="fas fa-exclamation-triangle"></span>
                     This user has an administrative role in this software.
                 </strong>
             </div>
@@ -81,9 +81,10 @@
                     <form asp-action="@nameof(ParticipantsController.UpdatePrizes)" method="post" role="form">
                         <input name="Id" value="@Model.Id" type="hidden" />
                         <input name="ReturnUrl" value="@Context.Request.Path.ToString()" type="hidden" />
-                        <button class="btn btn-info btn-spinner-no-validate" style="min-height: 40px;">
+                        <button class="btn btn-info btn-spinner-no-validate"
+                                style="min-height: 40px;"
+                                button-spinner>
                             Update Prizes
-                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                         </button>
                     </form>
                 </li>

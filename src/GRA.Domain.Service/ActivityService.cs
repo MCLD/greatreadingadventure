@@ -225,7 +225,7 @@ namespace GRA.Domain.Service
                 var notification = new Notification
                 {
                     PointsEarned = pointsEarned,
-                    Text = $"<span class=\"fa fa-star\"></span> You earned <strong>{pointsEarned} points</strong> {activityDescription}!",
+                    Text = $"<span class=\"far fa-star\"></span> You earned <strong>{pointsEarned} points</strong> {activityDescription}!",
                     UserId = userToLog.Id
                 };
 
@@ -642,7 +642,7 @@ namespace GRA.Domain.Service
                 var notification = new Notification
                 {
                     PointsEarned = pointsAwarded,
-                    Text = $"<span class=\"fa fa-star\"></span> You earned <strong>{pointsAwarded} points{badgeNotification}</strong> for completing the challenge: <strong>{challenge.Name}</strong>!",
+                    Text = $"<span class=\"far fa-star\"></span> You earned <strong>{pointsAwarded} points{badgeNotification}</strong> for completing the challenge: <strong>{challenge.Name}</strong>!",
                     UserId = activeUserId,
                     ChallengeId = challengeId
                 };
@@ -726,7 +726,7 @@ namespace GRA.Domain.Service
                 var notification = new Notification
                 {
                     PointsEarned = 0,
-                    Text = $"<span class=\"fa fa-certificate\"></span> Congratulations! You've achieved <strong>{program.AchieverPointAmount} points</strong> reaching the goal of the program!",
+                    Text = $"<span class=\"fas fa-certificate\"></span> Congratulations! You've achieved <strong>{program.AchieverPointAmount} points</strong> reaching the goal of the program!",
                     UserId = earnedUser.Id,
                     IsAchiever = true
                 };
@@ -1075,10 +1075,10 @@ namespace GRA.Domain.Service
             }
 
             // send mail if applicable
-            int? mailId = await SendMailAsync(activeUserId, trigger);
+            int? mailId = await SendMailAsync(userIdToLog, trigger);
 
             // award prize if applicable
-            await AwardPrizeAsync(activeUserId, trigger, mailId);
+            await AwardPrizeAsync(userIdToLog, trigger, mailId);
 
             // if there are points to be awarded, do that now, also check for other triggers
             if (pointsAwarded > 0)
@@ -1297,7 +1297,7 @@ namespace GRA.Domain.Service
             {
                 var prize = new PrizeWinner
                 {
-                    CreatedBy = userId,
+                    CreatedBy = userIdIsCurrentUser ? userId : GetClaimId(ClaimType.UserId),
                     CreatedAt = _dateTimeProvider.Now,
                     TriggerId = trigger.Id,
                     PrizeName = trigger.AwardPrizeName,
@@ -1333,7 +1333,7 @@ namespace GRA.Domain.Service
                 {
                     PointsEarned = 0,
 
-                    Text = $"<span class=\"fa fa-shopping-bag\"></span> You've unlocked the <strong>{bundle.Name}</strong> avatar bundle!",
+                    Text = $"<span class=\"fas fa-shopping-bag\"></span> You've unlocked the <strong>{bundle.Name}</strong> avatar bundle!",
                     UserId = userId,
                     BadgeFilename = bundle.AvatarItems.FirstOrDefault()?.Thumbnail,
                     AvatarBundleId = bundleId

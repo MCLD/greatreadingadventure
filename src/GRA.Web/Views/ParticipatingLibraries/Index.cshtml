@@ -1,0 +1,34 @@
+﻿@model GRA.Controllers.ViewModel.ParticipatingBranches.ParticipatingLibrariesViewModel
+@using GRA.Controllers.ViewModel.ParticipatingBranches
+
+<h1>
+    @SharedLocalizer[GRA.Annotations.Interface.AllParticipatingLibraries]
+</h1>
+
+<div class="participating-libraries">
+    @foreach (var system in Model.Systems)
+    {
+        <h2 class="h3 system">@system.Name</h2>
+        <ul class="library-list">
+            @foreach (var branch in system.Branches)
+            {
+                <li>
+                    <h3 class="h4">
+                        @if (!string.IsNullOrEmpty(branch.Url))
+                        {
+                            <a href="@branch.Url">@branch.Name</a>
+                        }
+                        else
+                        {
+                            @branch.Name
+                        }
+                        @if (!string.IsNullOrEmpty(ParticipatingLibrariesViewModel.FormatPhoneAddress(branch)))
+                        {
+                            <small>@Html.Raw(ParticipatingLibrariesViewModel.FormatPhoneAddress(branch))</small>
+                        }
+                    </h3>
+                </li>
+            }
+        </ul>
+    }
+</div>

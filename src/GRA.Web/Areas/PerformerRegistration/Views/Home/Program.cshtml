@@ -83,7 +83,7 @@ else
                     <div class="input-group">
                         <label class="input-group-btn">
                             <span class="btn btn-default btn-file">
-                                <span class="fa fa-file-image-o"></span> Select file(s)...
+                                <span class="far fa-file-image"></span> Select file(s)...
                                 <input type="file"
                                        multiple="multiple"
                                        asp-for="Images"
@@ -140,7 +140,7 @@ else
             <div class="visible-xs" style="padding-bottom:10px;"></div>
             <label class="col-sm-2 control-label required-field">
                 Set-up Time
-                <span class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" title="How much time needed before program begins."></span>
+                <span class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="How much time needed before program begins."></span>
             </label>
             <div class="col-sm-2">
                 <input asp-for="Program.SetupTimeMinutes" class="form-control input-lg" type="text" placeholder="" />
@@ -151,7 +151,7 @@ else
         <div class="form-group">
             <label class="col-sm-offset-3 col-sm-2 control-label control-label required-field">
                 Breakdown Time
-                <span class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" title="How much time needed after program ends."></span>
+                <span class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="How much time needed after program ends."></span>
             </label>
             <div class="col-sm-2">
                 <input asp-for="Program.BreakdownTimeMinutes" class="form-control input-lg" type="text" placeholder="" />
@@ -160,7 +160,7 @@ else
             <div class="visible-xs" style="padding-bottom:10px;"></div>
             <label class="col-sm-2 control-label required-field">
                 Time between back-to-back programs
-                <span class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" title="If you are requested to do this program twice in a row, how much time do you require between them?"></span>
+                <span class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="If you are requested to do this program twice in a row, how much time do you require between them?"></span>
             </label>
             <div class="col-sm-2">
                 <input asp-for="Program.BackToBackMinutes" class="form-control input-lg" type="text" placeholder="" />
@@ -171,7 +171,7 @@ else
         <div class="form-group">
             <label class="col-sm-3 control-label required-field">
                 Program description
-                <span class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" title="Limited to 375 characters. Spaces are counted as characters."></span>
+                <span class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Limited to 375 characters. Spaces are counted as characters."></span>
             </label>
             <div class="col-sm-9">
                 <textarea asp-for="Program.Description" class="form-control" maxlength="375" rows="4"></textarea>
@@ -185,7 +185,7 @@ else
         <div class="form-group">
             <label class="col-sm-3 control-label required-field">
                 Inclusive cost
-                <span class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" title="Includes mileage, supplies, etc."></span>
+                <span class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Includes mileage, supplies, etc."></span>
             </label>
 
             <div class="col-sm-9">
@@ -239,9 +239,11 @@ else
 
         <div class="row">
             <div class="col-sm-9 col-sm-offset-3" style="margin-top: 1em;">
-                <button type="submit" class="btn btn-lg btn-success btn-spinner" style="margin-bottom: 10px;">
+                <button type="submit"
+                        class="btn btn-lg btn-success btn-spinner"
+                        style="margin-bottom: 10px;"
+                        button-spinner>
                     Save Program
-                    <span class="fa fa-spinner fa-pulse fa-fw hidden"></span>
                 </button>
                 @if (Model.RegistrationCompleted)
                 {

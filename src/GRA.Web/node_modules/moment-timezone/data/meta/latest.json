@@ -115,7 +115,6 @@
 				"Australia/Lord_Howe",
 				"Antarctica/Macquarie",
 				"Australia/Hobart",
-				"Australia/Currie",
 				"Australia/Melbourne",
 				"Australia/Sydney",
 				"Australia/Broken_Hill",
@@ -342,9 +341,9 @@
 				"America/Creston",
 				"America/Dawson_Creek",
 				"America/Fort_Nelson",
-				"America/Vancouver",
 				"America/Whitehorse",
-				"America/Dawson"
+				"America/Dawson",
+				"America/Vancouver"
 			]
 		},
 		"CC": {
@@ -1498,8 +1497,8 @@
 				"Europe/Moscow",
 				"Europe/Simferopol",
 				"Europe/Kirov",
-				"Europe/Astrakhan",
 				"Europe/Volgograd",
+				"Europe/Astrakhan",
 				"Europe/Saratov",
 				"Europe/Ulyanovsk",
 				"Europe/Samara",
@@ -2269,16 +2268,7 @@
 			"countries": [
 				"AU"
 			],
-			"comments": "Tasmania (most areas)"
-		},
-		"Australia/Currie": {
-			"name": "Australia/Currie",
-			"lat": -38.0667,
-			"long": 143.8667,
-			"countries": [
-				"AU"
-			],
-			"comments": "Tasmania (King Island)"
+			"comments": "Tasmania"
 		},
 		"Australia/Melbourne": {
 			"name": "Australia/Melbourne",
@@ -2838,15 +2828,6 @@
 			],
 			"comments": "MST - BC (Ft Nelson)"
 		},
-		"America/Vancouver": {
-			"name": "America/Vancouver",
-			"lat": 49.2667,
-			"long": -122.8833,
-			"countries": [
-				"CA"
-			],
-			"comments": "Pacific - BC (most areas)"
-		},
 		"America/Whitehorse": {
 			"name": "America/Whitehorse",
 			"lat": 60.7167,
@@ -2854,7 +2835,7 @@
 			"countries": [
 				"CA"
 			],
-			"comments": "Pacific - Yukon (east)"
+			"comments": "MST - Yukon (east)"
 		},
 		"America/Dawson": {
 			"name": "America/Dawson",
@@ -2863,7 +2844,16 @@
 			"countries": [
 				"CA"
 			],
-			"comments": "Pacific - Yukon (west)"
+			"comments": "MST - Yukon (west)"
+		},
+		"America/Vancouver": {
+			"name": "America/Vancouver",
+			"lat": 49.2667,
+			"long": -122.8833,
+			"countries": [
+				"CA"
+			],
+			"comments": "Pacific - BC (most areas)"
 		},
 		"Indian/Cocos": {
 			"name": "Indian/Cocos",
@@ -4372,6 +4362,15 @@
 			],
 			"comments": "MSK+00 - Kirov"
 		},
+		"Europe/Volgograd": {
+			"name": "Europe/Volgograd",
+			"lat": 48.7333,
+			"long": 44.4167,
+			"countries": [
+				"RU"
+			],
+			"comments": "MSK+00 - Volgograd"
+		},
 		"Europe/Astrakhan": {
 			"name": "Europe/Astrakhan",
 			"lat": 46.35,
@@ -4380,15 +4379,6 @@
 				"RU"
 			],
 			"comments": "MSK+01 - Astrakhan"
-		},
-		"Europe/Volgograd": {
-			"name": "Europe/Volgograd",
-			"lat": 48.7333,
-			"long": 44.4167,
-			"countries": [
-				"RU"
-			],
-			"comments": "MSK+01 - Volgograd"
 		},
 		"Europe/Saratov": {
 			"name": "Europe/Saratov",

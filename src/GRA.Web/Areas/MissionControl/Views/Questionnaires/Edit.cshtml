@@ -48,11 +48,11 @@
             foreach (var question in Model.Questionnaire.Questions)
             {
                 <div class="orderable-row" id="question_@question.Id">
-                    <span class="fa fa-reorder" style="margin-right:6px;"></span>
+                    <span class="fas fa-bars" style="margin-right:6px;"></span>
                     <span class="name">@question.Name</span>
                     @if (!Model.Questionnaire.IsLocked)
                     {
-                        <span class="fa fa-lg fa-minus-circle text-danger removeRow"></span>
+                        <span class="fas fa-lg fa-minus-circle text-danger removeRow"></span>
                     }
                     <button type="button"
                             class="btn btn-default pull-right editQuestionButton"
@@ -81,9 +81,8 @@
         <a asp-action="Index" class="btn btn-default">Return to List</a>
         @if (!Model.Questionnaire.IsLocked)
         {
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="btn btn-primary" button-spinner>
                 <span class="buttonText">Save Changes</span>
-                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
             </button>
         }
     </div>
@@ -154,10 +153,9 @@
                             <button id="modalSaveButton"
                                     type="submit"
                                     class="btn btn-primary"
-                                    aria-label="Confirm">
+                                    aria-label="Confirm"
+                                    button-spinner>
                                 Save
-                                <span id="modalSaveSpinner"
-                                      class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
                         }
                     </div>
@@ -183,7 +181,7 @@
         }
 
         function CreateAnswerRow(id, text, type) {
-            return "<div class='orderable-row' name='answer_" + id + "' id='answer_" + id + "'><span class='fa fa-reorder' style='margin-top:10px;float:left;'></span><span class='fa fa-lg fa-minus-circle text-danger removeRow'></span><div class='input-group' style='margin:0 30px;'><span class='input-group-addon'><input type='radio' name='correctAnswer' value='" + id + "'></span><input class='form-control' name='" + type + "_" + id + "' value='" + text + "' required /></div></div>";
+            return "<div class='orderable-row' name='answer_" + id + "' id='answer_" + id + "'><span class='fas fa-bars' style='margin-top:10px;float:left;'></span><span class='fas fa-lg fa-minus-circle text-danger removeRow'></span><div class='input-group' style='margin:0 30px;'><span class='input-group-addon'><input type='radio' name='correctAnswer' value='" + id + "'></span><input class='form-control' name='" + type + "_" + id + "' value='" + text + "' required /></div></div>";
         }
 
         function UpdateAnswerList(answerListItems, correctAnswerId) {
@@ -301,7 +299,7 @@
                                     }
                                     else {
                                         form.find("#Question_Id").val(response.question.id);
-                                        $("#questionList").append("<div class='orderable-row' id='question_" + response.question.id + "' +> <span class='fa fa-reorder' style='margin-right:6px;'></span> <span class='name'>" + response.question.name + "</span><span class='fa fa-lg fa-minus-circle text-danger removeRow'></span><button type='button' class='btn btn-default pull-right editQuestionButton' style='margin-right:10px;' data-id='" + response.question.id + "' data-name='" + response.question.name + "' data-text='" + response.question.text + "' data-correctanswerid='" + response.question.correctAnswerId + "'>Edit</button></div>");
+                                        $("#questionList").append("<div class='orderable-row' id='question_" + response.question.id + "' +> <span class='fas fa-bars' style='margin-right:6px;'></span> <span class='name'>" + response.question.name + "</span><span class='fas fa-lg fa-minus-circle text-danger removeRow'></span><button type='button' class='btn btn-default pull-right editQuestionButton' style='margin-right:10px;' data-id='" + response.question.id + "' data-name='" + response.question.name + "' data-text='" + response.question.text + "' data-correctanswerid='" + response.question.correctAnswerId + "'>Edit</button></div>");
                                         $("#QuestionSortOrder").val($("#questionList").sortable("serialize"));
                                     }
                                     $("#modalUpdateText").show().delay(2000).fadeOut("slow");

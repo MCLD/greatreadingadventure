@@ -76,17 +76,18 @@
         public static class Interface
         {
             public const string ActivityApplied = "Activity applied!";
-            public const string AddedParticipantGroupFamily = "Added {0} to your {1}!";
             public const string AddBook = "Add Book";
+            public const string AddBookNotYet = "You will be able to add books once the program starts.";
+            public const string AddedParticipantGroupFamily = "Added {0} to your {1}!";
             public const string AddExistingExplanation = "Add an existing participant into your {0}, if that participant is the head of a {0} their {0} members will be moved into your {0} as well.";
             public const string AddUsername = "Add username";
+            public const string AllParticipatingLibraries = "All Participating Libraries";
             public const string AllPrograms = "All Programs";
             public const string AndOtherActivities = "and other activities";
             public const string AndTheir = "and their {0}";
             public const string Apply = "Apply";
             public const string AvatarBundleAltText = "This badge was awarded when you unlocked the avatar bundle: {0}";
             public const string AvatarSaved = "Avatar saved.";
-            public const string Bundle = "Bundle";
             public const string Back = "Back";
             public const string BackTo = "Back to {0}";
             public const string BackToChallenges = "Back to Challenges";
@@ -96,6 +97,7 @@
             public const string BadgeDetails = "Badge Details";
             public const string Badges = "Badges";
             public const string BookList = "Book List";
+            public const string Bundle = "Bundle";
             public const string Cancel = "Cancel";
             public const string ChangePassword = "Change Password";
             public const string ChooseAnOption = "Choose an option:";
@@ -119,9 +121,10 @@
             public const string EnterChallengeSearch = "Enter text to search for a challenge here";
             public const string EnterEventSearch = "Enter text to search for an event here";
             public const string EventHasEnded = "This streaming event has ended.";
-            public const string Events = "Events";
             public const string EventNotFound = "Could not find the requested event.";
             public const string EventNotStarted = "This streaming event has not started yet.";
+            public const string Events = "Events";
+            public const string Explore = "Explore {0}";
             public const string Family = "Family";
             public const string Find = "Find";
             public const string FreeBookCode = "Free book code";
@@ -191,6 +194,17 @@
             public const string Yes = "Yes";
         }
 
+        public static class Required
+        {
+            public const string EmailForSubscription = "To receive email updates please supply an email address to send them to.";
+            public const string GroupName = "Group name is required.";
+            public const string JavaScriptWarning = "This website relies on JavaScript. Please enable JavaScript in your browser to get the best experience.";
+            public const string Missing = "Required fields are blank.";
+            public const string MustEnterAmount = "You must enter an amount.";
+            public const string SecretCode = "You must enter a code!";
+            public const string SelectFirst = "Please select some participants first.";
+        }
+
         public static class Title
         {
             public const string Activity = "Activity";
@@ -225,17 +239,6 @@
             public const string UpdateGroupDetails = "Update Group details";
             public const string UpgradeToGroup = "Upgrade from Family to Group";
             public const string UsernameRecovery = "Username Recovery";
-        }
-
-        public static class Required
-        {
-            public const string EmailForSubscription = "To receive email updates please supply an email address to send them to.";
-            public const string GroupName = "Group name is required.";
-            public const string JavaScriptWarning = "This website relies on JavaScript. Please enable JavaScript in your browser to get the best experience.";
-            public const string Missing = "Required fields are blank.";
-            public const string MustEnterAmount = "You must enter an amount.";
-            public const string SecretCode = "You must enter a code!";
-            public const string SelectFirst = "Please select some participants first.";
         }
 
         public static class Validate

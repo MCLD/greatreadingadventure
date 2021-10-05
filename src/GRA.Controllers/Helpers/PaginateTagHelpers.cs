@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using GRA.Controllers.ViewModel.Shared;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
@@ -17,54 +18,61 @@ namespace GRA.Controllers.Helper
 
         public PaginateTagHelper(IUrlHelperFactory urlHelperFactory)
         {
-            _urlHelperFactory = urlHelperFactory 
+            _urlHelperFactory = urlHelperFactory
                 ?? throw new ArgumentNullException(nameof(urlHelperFactory));
         }
+
+        [HtmlAttributeName("asButtons")]
+        public bool AsButtons { get; set; }
+
+        [HtmlAttributeName("paginateModel")]
+        public PaginateViewModel PaginateModel { get; set; }
 
         [ViewContext]
         [HtmlAttributeNotBound]
         public ViewContext ViewContextData { get; set; }
 
-        [HtmlAttributeName("paginateModel")]
-        public PaginateViewModel paginateModel { get; set; }
-
-        [HtmlAttributeName("asButtons")]
-        public bool asButtons { get; set; }
-
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
+            if (output == null)
+            {
+                throw new ArgumentNullException(nameof(output));
+            }
+
             IUrlHelper url = _urlHelperFactory.GetUrlHelper(ViewContextData);
-            TagBuilder ulTag = new TagBuilder("ul")
+            var ulTag = new TagBuilder("ul")
             {
                 TagRenderMode = TagRenderMode.Normal
             };
             ulTag.MergeAttribute("class", "pagination");
 
-            string firstPage = paginateModel.FirstPage == null
+            var firstPage = PaginateModel.FirstPage == null
                                ? null
-                               : QueryBuilder(url, paginateModel.FirstPage, asButtons);
-            ulTag.InnerHtml.AppendHtml(PaginatorLi(firstPage, "fast-backward", asButtons));
+                               : QueryBuilder(url, PaginateModel.FirstPage, AsButtons);
+            ulTag.InnerHtml.AppendHtml(PaginatorLi(firstPage, "fast-backward", AsButtons));
 
-            string previousPage = paginateModel.PreviousPage == null
+            var previousPage = PaginateModel.PreviousPage == null
                                   ? null
-                                  : QueryBuilder(url, paginateModel.PreviousPage, asButtons);
-            ulTag.InnerHtml.AppendHtml(PaginatorLi(previousPage, "backward", asButtons));
+                                  : QueryBuilder(url, PaginateModel.PreviousPage, AsButtons);
+            ulTag.InnerHtml.AppendHtml(PaginatorLi(previousPage, "backward", AsButtons));
 
-            ulTag.InnerHtml.AppendHtml(PaginatorLi(paginateModel.CurrentPage.ToString(), asButtons));
+            ulTag.InnerHtml.AppendHtml(PaginatorLi(PaginateModel
+                .CurrentPage
+                .ToString(CultureInfo.InvariantCulture), AsButtons));
 
-            string nextPage = paginateModel.NextPage == null
+            var nextPage = PaginateModel.NextPage == null
                               ? null
-                              : QueryBuilder(url, paginateModel.NextPage, asButtons);
+                              : QueryBuilder(url, PaginateModel.NextPage, AsButtons);
 
-            ulTag.InnerHtml.AppendHtml(PaginatorLi(nextPage, "forward", asButtons));
+            ulTag.InnerHtml.AppendHtml(PaginatorLi(nextPage, "forward", AsButtons));
 
-            string lastPage = paginateModel.LastPage == null
+            var lastPage = PaginateModel.LastPage == null
                               ? null
-                              : QueryBuilder(url, paginateModel.LastPage, asButtons);
+                              : QueryBuilder(url, PaginateModel.LastPage, AsButtons);
 
-            ulTag.InnerHtml.AppendHtml(PaginatorLi(lastPage, "fast-forward", asButtons));
+            ulTag.InnerHtml.AppendHtml(PaginatorLi(lastPage, "fast-forward", AsButtons));
 
-            TagBuilder navTag = new TagBuilder("nav")
+            var navTag = new TagBuilder("nav")
             {
                 TagRenderMode = TagRenderMode.Normal
             };
@@ -74,7 +82,7 @@ namespace GRA.Controllers.Helper
 
         private static TagBuilder PaginatorLi(string text, bool asButtons)
         {
-            TagBuilder liTag = new TagBuilder("li")
+            var liTag = new TagBuilder("li")
             {
                 TagRenderMode = TagRenderMode.Normal
             };
@@ -82,7 +90,7 @@ namespace GRA.Controllers.Helper
 
             if (asButtons)
             {
-                TagBuilder buttonTag = new TagBuilder("button")
+                var buttonTag = new TagBuilder("button")
                 {
                     TagRenderMode = TagRenderMode.Normal
                 };
@@ -93,7 +101,7 @@ namespace GRA.Controllers.Helper
             }
             else
             {
-                TagBuilder aTag = new TagBuilder("a");
+                var aTag = new TagBuilder("a");
                 aTag.MergeAttribute("href", "#");
                 aTag.MergeAttribute("onclick", "return false;");
                 aTag.InnerHtml.SetHtmlContent(text);
@@ -106,18 +114,18 @@ namespace GRA.Controllers.Helper
 
         private static TagBuilder PaginatorLi(string pageUrl, string glyph, bool asButtons)
         {
-            TagBuilder liTag = new TagBuilder("li")
+            var liTag = new TagBuilder("li")
             {
                 TagRenderMode = TagRenderMode.Normal
             };
-            TagBuilder spanTag = new TagBuilder("span")
+            var spanTag = new TagBuilder("span")
             {
                 TagRenderMode = TagRenderMode.Normal
             };
-            spanTag.MergeAttribute("class", string.Format("fa fa-{0}", glyph));
+            spanTag.MergeAttribute("class", $"fas fa-{glyph}");
             if (asButtons)
             {
-                TagBuilder buttonTag = new TagBuilder("button")
+                var buttonTag = new TagBuilder("button")
                 {
                     TagRenderMode = TagRenderMode.Normal
                 };
@@ -137,7 +145,7 @@ namespace GRA.Controllers.Helper
             }
             else
             {
-                TagBuilder aTag = new TagBuilder("a")
+                var aTag = new TagBuilder("a")
                 {
                     TagRenderMode = TagRenderMode.Normal
                 };
@@ -162,21 +170,14 @@ namespace GRA.Controllers.Helper
         {
             if (asButtons)
             {
-                if (page.HasValue)
-                {
-                    return page.ToString();
-                }
-                else
-                {
-                    return null;
-                }
+                return page.HasValue ? page.ToString() : null;
             }
             else
             {
                 var routeValues = new RouteValueDictionary();
                 foreach (var query in url.ActionContext.HttpContext.Request.Query)
                 {
-                    if (!(string.Equals(query.Key, "page", StringComparison.OrdinalIgnoreCase)))
+                    if (!string.Equals(query.Key, "page", StringComparison.OrdinalIgnoreCase))
                     {
                         routeValues.Add(query.Key, query.Value);
                     }

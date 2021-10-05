@@ -352,6 +352,7 @@ namespace GRA.Domain.Service
             {
                 { "PostCategory", post.CategoryName},
                 { nameof(jobDetails.PostLink), jobDetails.PostLink},
+                { "PostTitle", post.Title },
                 { "PostSummary", post.EmailSummary},
                 { "Preview", $"New post in {jobDetails.SiteName} Mission Control!"},
                 { nameof(jobDetails.SiteLink), jobDetails.SiteLink},

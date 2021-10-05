@@ -36,7 +36,7 @@
                     <label asp-for="Event.StartDate" class="control-label"></label>
                     <div class="input-group date" id="pickerStart">
                         <span class="input-group-addon">
-                            <span class="fa fa-calendar"></span>
+                            <span class="fas fa-calendar-alt"></span>
                         </span>
                         <input asp-for="Event.StartDate" type="text" class="form-control" />
                     </div>
@@ -46,7 +46,7 @@
                     <label asp-for="Event.EndDate" class="control-label"></label>
                     <div class="input-group date" id="pickerEnd">
                         <span class="input-group-addon">
-                            <span class="fa fa-calendar"></span>
+                            <span class="fas fa-calendar-alt"></span>
                         </span>
                         <input asp-for="Event.EndDate" type="text" class="form-control" />
                     </div>
@@ -115,7 +115,7 @@
                 {
                     <button type="button" class="btn btn-primary btn-xs" style="margin-left:8px;"
                             data-toggle="modal" data-target="#addModal">
-                        <span class="fa fa-2x fa-plus"></span>
+                        <span class="fas fa-2x fa-plus"></span>
                     </button>
                 }
             </div>
@@ -187,7 +187,7 @@
                         else
                         {
                             <a role="button" data-toggle="collapse" data-parent="#accordionSecretCode" href="#collapseSecretCode" aria-expanded="true" aria-controls="collapseSecretCode">
-                                <span id="secretCodeIcon" class="fa fa-lg @(Model.IncludeSecretCode ? "fa-caret-down" : "fa-caret-right")"></span>
+                                <span id="secretCodeIcon" class="fas fa-lg @(Model.IncludeSecretCode ? "fa-caret-down" : "fa-caret-right")"></span>
                                 Add Secret Code to this event
                             </a>
                         }
@@ -244,7 +244,7 @@
                                 <div class="tab-content">
                                     <div role="tabpanel" class="tab-pane @(Model.UseBadgeMaker ? "active" : "")" id="badge">
                                         <button id="openMaker" type="button" class="btn btn-default">
-                                            <span class="fa fa-certificate"></span> Create a Badge
+                                            <span class="fas fa-certificate"></span> Create a Badge
                                         </button>
                                     </div>
                                     <div role="tabpanel" class="tab-pane @(Model.UseBadgeMaker ? "" : "active")" id="upload">
@@ -252,7 +252,7 @@
                                         <div class="input-group">
                                             <label class="input-group-btn">
                                                 <span class="btn btn-default btn-file">
-                                                    <span class="fa fa-file-image-o"></span> Select an image<input type="file" asp-for="BadgeUploadImage" accept=".png,.jpg,.jpeg" style="display: none;" />
+                                                    <span class="far fa-file-image"></span> Select an image<input type="file" asp-for="BadgeUploadImage" accept=".png,.jpg,.jpeg" style="display: none;" />
                                                 </span>
                                             </label>
                                             <input type="text" class="form-control" readonly id="selectedFile">
@@ -267,7 +267,7 @@
                         <div class="row row-spacing">
                             <div class="col-xs-12">
                                 <label asp-for="BadgeAltText" class="control-label"></label>
-                                <span class="fa fa-info-circle wide-tooltip"
+                                <span class="fas fa-info-circle wide-tooltip"
                                       title="How should this badge be described to someone who can't see it?"
                                       data-toggle="tooltip"
                                       data-placement="top"></span>
@@ -284,9 +284,8 @@
 
     <div class="form-group">
         <a asp-action="Index" class="btn btn-default">Return to List</a>
-        <button type="submit" class="btn btn-primary" id="saveEvent">
+        <button type="submit" class="btn btn-primary" id="saveEvent" button-spinner>
             <span class="buttonText">Create @(Model.NewCommunityExperience ? "Community Experience" : "Event")</span>
-            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
         </button>
     </div>
 </form>
@@ -310,7 +309,7 @@
                     </h4>
                 </div>
                 <div class="modal-body">
-                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                    <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
                     <span id="modal-text">
                         The awarded points for this trigger exceed the maximum of
                         <strong>@Model.MaxPointLimit points per task</strong>. Do you wish to continue?
@@ -601,12 +600,12 @@
             allowInputToggle: true,
             sideBySide: true,
             icons: {
-                time: "fa fa-clock-o",
-                date: "fa fa-calendar",
-                up: "fa fa-arrow-up",
-                down: "fa fa-arrow-down",
-                previous: "fa fa-arrow-left",
-                next: "fa fa-arrow-right"
+                time: "far fa-clock",
+                date: "fas fa-calendar-alt",
+                up: "fas fa-arrow-up",
+                down: "fas fa-arrow-down",
+                previous: "fas fa-arrow-left",
+                next: "fas fa-arrow-right"
             }
         });
         $("#SecretCode").on("keypress", function () {
@@ -642,12 +641,12 @@
             format: "@(Model.Event?.AllDay == true ? "MM/DD/YYYY" : "hh:mm A")",
             allowInputToggle: true,
             icons: {
-                time: "fa fa-clock-o",
-                date: "fa fa-calendar",
-                up: "fa fa-arrow-up",
-                down: "fa fa-arrow-down",
-                previous: "fa fa-arrow-left",
-                next: "fa fa-arrow-right"
+                time: "far fa-clock",
+                date: "fas fa-calendar-alt",
+                up: "fas fa-arrow-up",
+                down: "fas fa-arrow-down",
+                previous: "fas fa-arrow-left",
+                next: "fas fa-arrow-right"
             }
         });
 

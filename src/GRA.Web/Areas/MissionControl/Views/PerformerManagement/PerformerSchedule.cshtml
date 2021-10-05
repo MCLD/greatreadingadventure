@@ -101,7 +101,7 @@
                         <td>
                             <div class="input-group date" id="pickerStart" style="width:150px;">
                                 <span class="input-group-addon">
-                                    <span class="fa fa-clock-o"></span>
+                                    <span class="far fa-clock"></span>
                                 </span>
                                 <input id="startTime" class="form-control timeInput" />
                             </div>
@@ -112,7 +112,7 @@
                         <td>
                             <div class="input-group date" id="pickerEnd" style="width:150px;">
                                 <span class="input-group-addon">
-                                    <span class="fa fa-clock-o"></span>
+                                    <span class="far fa-clock"></span>
                                 </span>
                                 <input id="endTime" class="form-control timeInput" />
                             </div>
@@ -159,9 +159,11 @@
             </ul>
         </div>
         <div class="col-xs-12 col-sm-8 col-sm-offset-3" style="padding-top: 1em;">
-            <button type="submit" class="btn btn-lg btn-success btn-spinner" style="margin-bottom: 10px;">
+            <button type="submit"
+                    class="btn btn-lg btn-success btn-spinner"
+                    style="margin-bottom: 10px;"
+                    button-spinner>
                 Save Schedule
-                <span class="fa fa-spinner fa-pulse fa-fw hidden"></span>
             </button>
             <a asp-action="Performer" asp-route-id="@Model.Performer.Id" class="btn btn-lg btn-default pull-left" style="margin-right: 10px;">Return to Performer</a>
         </div>
@@ -314,12 +316,12 @@
             stepping: 15,
             useCurrent: false,
             icons: {
-                time: "fa fa-clock-o",
-                date: "fa fa-calendar",
-                up: "fa fa-arrow-up",
-                down: "fa fa-arrow-down",
-                previous: "fa fa-arrow-left",
-                next: "fa fa-arrow-right"
+                time: "far fa-clock",
+                date: "fas fa-calendar-alt",
+                up: "fas fa-arrow-up",
+                down: "fas fa-arrow-down",
+                previous: "fas fa-arrow-left",
+                next: "fas fa-arrow-right"
             }
         });
 

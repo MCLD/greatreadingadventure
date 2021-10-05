@@ -13,7 +13,7 @@
                 {
                     <li class="list-group-item" data-id="@role.Id" data-name="@role.Name">
                         @role.Name
-                        <button type="button" class="btn btn-default btn-xs move-right"><span class="fa fa-angle-double-right"></span></button>
+                        <button type="button" class="btn btn-default btn-xs move-right"><span class="fas fa-angle-double-right"></span></button>
                     </li>
                 }
             </ul>
@@ -26,7 +26,7 @@
                 {
                     <li class="list-group-item" data-id="@role.Id" data-name="@role.Name">
                         @role.Name
-                        <button type="button" class="btn btn-default btn-xs move-left"><span class="fa fa-angle-double-left"></span></button>
+                        <button type="button" class="btn btn-default btn-xs move-left"><span class="fas fa-angle-double-left"></span></button>
                     </li>
                 }
             </ul>
@@ -37,9 +37,13 @@
 
     <div class="form-group">
         <a asp-action="Index" class="btn btn-default">Return to Participants</a>
-        <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-primary btn-spinner">
+        <button type="submit"
+                id="Submit"
+                name="Submit"
+                value="Submit"
+                class="btn btn-primary btn-spinner"
+                button-spinner>
             <span class="buttonText">Save Roles</span>
-            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
         </button>
     </div>
 </form>

@@ -47,10 +47,10 @@
                                 </td>
                                 <td class="on-top gra-mc-icon">
                                     <button type="button" data-id="@program.Id" class="btn btn-default btn-xs decreasePosition" style="width:25px;" disabled="@(Model.PaginateModel.CurrentPage == 1 && program == Model.Programs.First() ? " disabled" : null)">
-                                        <span class="fa fa-arrow-up"></span>
+                                        <span class="fas fa-arrow-up"></span>
                                     </button>
                                     <button type="button" data-id="@program.Id" class="btn btn-default btn-xs increasePosition" style="width:25px;" disabled="@(Model.PaginateModel.CurrentPage == Model.PaginateModel.MaxPage && program == Model.Programs.Last() ? " disabled" : null)">
-                                        <span class="fa fa-arrow-down"></span>
+                                        <span class="fas fa-arrow-down"></span>
                                     </button>
                                     <button type="button"
                                             class="btn btn-danger btn-xs"
@@ -59,7 +59,7 @@
                                             data-target="#deleteModal"
                                             data-id="@program.Id"
                                             data-name="@program.Name">
-                                        <span class="fa fa-remove" aria-hidden="true"></span>
+                                        <span class="fas fa-times" aria-hidden="true"></span>
                                     </button>
                                 </td>
                             </tr>
@@ -98,7 +98,7 @@
                         <h1 class="modal-title h4" id="deleteModalLabel">Delete Program</h1>
                     </div>
                     <div class="modal-body">
-                        <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                        <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
                         <span id="modal-text"></span>
                     </div>
                     <div class="modal-footer">
@@ -110,10 +110,10 @@
                         </button>
                         <button type="submit"
                                 class="btn btn-danger btn-spinner pull-right"
-                                aria-label="Confirm">
-                            <span class="fa fa-remove" aria-hidden="true"></span>
+                                aria-label="Confirm"
+                                button-spinner>
+                            <span class="fas fa-times" aria-hidden="true"></span>
                             Delete
-                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                         </button>
                     </div>
                 </div>

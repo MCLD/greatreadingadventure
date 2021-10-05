@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,22 +26,23 @@ namespace GRA.Controllers.Base
     [ServiceFilter(typeof(SessionTimeoutFilterAttribute), Order = 2)]
     public abstract class Controller : Microsoft.AspNetCore.Mvc.Controller
     {
-        protected const string DropDownTrueValue = "True";
         protected const string DropDownFalseValue = "False";
-
+        protected const string DropDownTrueValue = "True";
         protected static readonly string[] ValidImageExtensions = { ".jpeg", ".jpg", ".png" };
 
         protected readonly IConfiguration _config;
         protected readonly IDateTimeProvider _dateTimeProvider;
         protected readonly IPathResolver _pathResolver;
-        protected readonly IUserContextProvider _userContextProvider;
         protected readonly IStringLocalizer<Resources.Shared> _sharedLocalizer;
         protected readonly SiteLookupService _siteLookupService;
-        protected string PageTitle { get; set; }
-        protected string PageTitleHtml { get; set; }
+        protected readonly IUserContextProvider _userContextProvider;
 
         protected Controller(ServiceFacade.Controller context)
         {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
             _config = context.Config;
             _dateTimeProvider = context.DateTimeProvider;
             _pathResolver = context.PathResolver;
@@ -49,46 +51,11 @@ namespace GRA.Controllers.Base
             _siteLookupService = context.SiteLookupService;
         }
 
-        public override void OnActionExecuted(ActionExecutedContext context)
-        {
-            base.OnActionExecuted(context);
-
-            string siteName = HttpContext.Items[ItemKey.SiteName]?.ToString();
-            string pageTitle;
-
-            // set page title
-            if (context.Controller is Controller controller
-                && !string.IsNullOrWhiteSpace(controller.PageTitle))
-            {
-                pageTitle =
-                    !string.IsNullOrEmpty(siteName) && !controller.PageTitle.Contains(siteName)
-                    ? $"{controller.PageTitle} - {siteName}"
-                    : controller.PageTitle;
-            }
-            else
-            {
-                pageTitle = !string.IsNullOrEmpty(siteName)
-                    ? siteName
-                    : _config[ConfigurationKey.DefaultSiteName];
-            }
-
-            ViewData[ViewDataKey.Title] = pageTitle;
-            ViewData[ViewDataKey.TitleHtml] = PageTitleHtml;
-        }
-
         protected string AlertDanger
         {
             set
             {
                 TempData[TempDataKey.AlertDanger] = value;
-            }
-        }
-
-        protected string AlertWarning
-        {
-            set
-            {
-                TempData[TempDataKey.AlertWarning] = value;
             }
         }
 
@@ -108,48 +75,28 @@ namespace GRA.Controllers.Base
             }
         }
 
+        protected string AlertWarning
+        {
+            set
+            {
+                TempData[TempDataKey.AlertWarning] = value;
+            }
+        }
+
+        protected ClaimsPrincipal AuthUser
+        {
+            get
+            {
+                return HttpContext.User;
+            }
+        }
+
+        protected string PageTitle { get; set; }
+        protected string PageTitleHtml { get; set; }
+
         public IActionResult Error()
         {
             return View();
-        }
-
-        protected async Task LoginUserAsync(AuthenticationResult authResult)
-        {
-            if (authResult.FoundUser && authResult.PasswordIsValid)
-            {
-                var claims = new HashSet<Claim>();
-                foreach (var permissionName in authResult.PermissionNames)
-                {
-                    claims.Add(new Claim(ClaimType.Permission, permissionName));
-                }
-                claims.Add(new Claim(ClaimType.BranchId, authResult.User.BranchId.ToString()));
-                claims.Add(new Claim(ClaimType.SiteId, authResult.User.SiteId.ToString()));
-                claims.Add(new Claim(ClaimType.SystemId, authResult.User.SystemId.ToString()));
-                claims.Add(new Claim(ClaimType.UserId, authResult.User.Id.ToString()));
-                claims.Add(new Claim(ClaimType.AuthenticatedAt, _dateTimeProvider
-                    .Now
-                    .ToString("O")));
-
-                var identity = new ClaimsIdentity(claims, Authentication.TypeGRAPassword);
-
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                    new ClaimsPrincipal(identity));
-
-                HttpContext.Session.SetInt32(SessionKey.ActiveUserId, authResult.User.Id);
-
-                if (!string.IsNullOrEmpty(authResult.Message))
-                {
-                    AlertInfo = authResult.Arguments == null
-                        ? _sharedLocalizer[authResult.Message]
-                        : _sharedLocalizer[authResult.Message, authResult.Arguments];
-                }
-            }
-            else
-            {
-                ShowAlertDanger(authResult.Arguments == null
-                        ? _sharedLocalizer[authResult.Message]
-                        : _sharedLocalizer[authResult.Message, authResult.Arguments]);
-            }
         }
 
         public async Task LogoutUser()
@@ -164,54 +111,66 @@ namespace GRA.Controllers.Base
             }
         }
 
-        protected ClaimsPrincipal AuthUser
+        public override void OnActionExecuted(ActionExecutedContext context)
         {
-            get
+            if (context == null)
             {
-                return HttpContext.User;
+                throw new ArgumentNullException(nameof(context));
             }
+
+            base.OnActionExecuted(context);
+
+            string siteName = HttpContext.Items[ItemKey.SiteName]?.ToString();
+            string pageTitle;
+
+            // set page title
+            if (context.Controller is Controller controller
+                && !string.IsNullOrWhiteSpace(controller.PageTitle))
+            {
+                pageTitle =
+                    !string.IsNullOrEmpty(siteName)
+                    && !controller.PageTitle.Contains(siteName, StringComparison.OrdinalIgnoreCase)
+                    ? $"{controller.PageTitle} - {siteName}"
+                    : controller.PageTitle;
+            }
+            else
+            {
+                pageTitle = !string.IsNullOrEmpty(siteName)
+                    ? siteName
+                    : _config[ConfigurationKey.DefaultSiteName];
+            }
+
+            ViewData[ViewDataKey.Title] = pageTitle;
+            ViewData[ViewDataKey.TitleHtml] = PageTitleHtml;
         }
 
-        protected bool UserHasPermission(Permission permission)
+        /// <summary>
+        /// Construct a drop-down list with a blank (default) option along with No and Yes options.
+        /// </summary>
+        /// <returns>A SelectList with empty, No, and Yes options. Keys are
+        /// <see cref="DropDownFalseValue"/> for no and <see cref="DropDownTrueValue"/> for yes.
+        /// </returns>
+        protected SelectList EmptyNoYes()
         {
-            return _userContextProvider.UserHasPermission(AuthUser, permission.ToString());
+            return new SelectList(new Dictionary<string, string>
+            {
+                {string.Empty, string.Empty},
+                {DropDownFalseValue, _sharedLocalizer[GRA.Annotations.Interface.No] },
+                {DropDownTrueValue, _sharedLocalizer[GRA.Annotations.Interface.Yes] }
+            },
+            "Key",
+            "Value",
+            string.Empty);
         }
 
-        protected string UserClaim(string claimType)
+        protected static string FormatMessage(GraException gex)
         {
-            return _userContextProvider.UserClaim(AuthUser, claimType);
-        }
+            if (gex == null)
+            {
+                throw new ArgumentNullException(nameof(gex));
+            }
 
-        protected int GetId(string claimType)
-        {
-            return _userContextProvider.GetId(AuthUser, claimType);
-        }
-
-        protected int GetCurrentSiteId()
-        {
-            return _userContextProvider.GetContext().SiteId;
-        }
-
-        protected async Task<Site> GetCurrentSiteAsync()
-        {
-            return await _siteLookupService.GetByIdAsync(GetCurrentSiteId());
-        }
-
-        protected int GetActiveUserId()
-        {
-            int? activeUserId = HttpContext.Session.GetInt32(SessionKey.ActiveUserId)
-                ?? (int?)GetId(ClaimType.UserId);
-            return (int)activeUserId;
-        }
-
-        protected SiteStage GetSiteStage()
-        {
-            return (SiteStage)HttpContext.Items[ItemKey.SiteStage];
-        }
-
-        protected string FormatMessage(GraException gex)
-        {
-            if (gex.Message.Contains(Environment.NewLine))
+            if (gex.Message.Contains(Environment.NewLine, StringComparison.OrdinalIgnoreCase))
             {
                 var lines = gex.Message.Split(
                     new string[] { Environment.NewLine },
@@ -227,54 +186,26 @@ namespace GRA.Controllers.Base
             return gex.Message;
         }
 
-        private string Fa(string iconName)
+        protected int GetActiveUserId()
         {
-            return $"<span class=\"fa fa-{iconName}\" aria-hidden=\"true\"></span>";
+            int? activeUserId = HttpContext.Session.GetInt32(SessionKey.ActiveUserId)
+                ?? (int?)GetId(ClaimType.UserId);
+            return (int)activeUserId;
         }
 
-        protected void ShowAlertDanger(string message, string details = null)
+        protected async Task<Site> GetCurrentSiteAsync()
         {
-            AlertDanger = $"{Fa("exclamation-triangle")} {message}{details}";
+            return await _siteLookupService.GetByIdAsync(GetCurrentSiteId());
         }
 
-        protected void ShowAlertDanger(string message, GraException gex)
+        protected int GetCurrentSiteId()
         {
-            AlertDanger = $"{Fa("exclamation-triangle")} {message}{FormatMessage(gex)}";
+            return _userContextProvider.GetContext().SiteId;
         }
 
-        protected void ShowAlertWarning(string message, string details = null)
+        protected int GetId(string claimType)
         {
-            AlertWarning = $"{Fa("exclamation-circle")} {message}{details}";
-        }
-
-        protected void ShowAlertWarning(string message, GraException gex)
-        {
-            AlertWarning = $"{Fa("exclamation-circle")} {message}{FormatMessage(gex)}";
-        }
-
-        protected void ShowAlertSuccess(string message, string faIconName = null)
-        {
-            AlertSuccess = string.IsNullOrEmpty(faIconName)
-                ? $"{Fa("thumbs-o-up")} {message}"
-                : $"{Fa(faIconName)} {message}";
-        }
-
-        protected void ShowAlertInfo(string message, string faIconName = null)
-        {
-            AlertInfo = string.IsNullOrEmpty(faIconName)
-                ? $"{Fa("check-circle")} {message}"
-                : $"{Fa(faIconName)} {message}";
-        }
-
-        /// <summary>
-        /// Look up if a site setting is set by key.
-        /// </summary>
-        /// <param name="key">The site setting key value (a string, up to 255 characters)</param>
-        /// <returns>True if the value is set in the database, false if the key is not present or
-        /// set to NULL.</returns>
-        protected async Task<bool> IsSiteSettingSetAsync(string key)
-        {
-            return await _siteLookupService.IsSiteSettingSetAsync(GetCurrentSiteId(), key);
+            return _userContextProvider.GetId(AuthUser, claimType);
         }
 
         /// <summary>
@@ -312,26 +243,33 @@ namespace GRA.Controllers.Base
             return await _siteLookupService.GetSiteSettingStringAsync(GetCurrentSiteId(), key);
         }
 
-        /// <summary>
-        /// Construct a drop-down list with a blank (default) option along with No and Yes options.
-        /// </summary>
-        /// <returns>A SelectList with empty, No, and Yes options. Keys are 
-        /// <see cref="DropDownFalseValue"/> for no and <see cref="DropDownTrueValue"/> for yes.
-        /// </returns>
-        protected SelectList EmptyNoYes()
+        protected SiteStage GetSiteStage()
         {
-            return new SelectList(new Dictionary<string, string>
-            {
-                {string.Empty, string.Empty},
-                {DropDownFalseValue, _sharedLocalizer[GRA.Annotations.Interface.No] },
-                {DropDownTrueValue, _sharedLocalizer[GRA.Annotations.Interface.Yes] }
-            },
-            "Key",
-            "Value",
-            string.Empty);
+            return (SiteStage)HttpContext.Items[ItemKey.SiteStage];
         }
 
-        protected SelectList NameIdSelectList(System.Collections.IEnumerable listData)
+        /// <summary>
+        /// Look up if a site setting is set by key.
+        /// </summary>
+        /// <param name="key">The site setting key value (a string, up to 255 characters)</param>
+        /// <returns>True if the value is set in the database, false if the key is not present or
+        /// set to NULL.</returns>
+        protected async Task<bool> IsSiteSettingSetAsync(string key)
+        {
+            return await _siteLookupService.IsSiteSettingSetAsync(GetCurrentSiteId(), key);
+        }
+
+        protected Task LoginUserAsync(AuthenticationResult authResult)
+        {
+            if (authResult == null)
+            {
+                throw new ArgumentNullException(nameof(authResult));
+            }
+
+            return LoginUserInternalAsync(authResult);
+        }
+
+        protected static SelectList NameIdSelectList(System.Collections.IEnumerable listData)
         {
             return new SelectList(listData, "Id", "Name");
         }
@@ -348,6 +286,117 @@ namespace GRA.Controllers.Base
                 controller = SignInController.Name,
                 action = nameof(SignInController.Index)
             });
+        }
+
+        protected void ShowAlertDanger(string message, string details = null)
+        {
+            AlertDanger = $"{Fas("exclamation-triangle")} {message}{details}";
+        }
+
+        protected void ShowAlertDanger(string message, GraException gex)
+        {
+            AlertDanger = $"{Fas("exclamation-triangle")} {message}{FormatMessage(gex)}";
+        }
+
+        protected void ShowAlertInfo(string message)
+        {
+            ShowAlertInfo(message, "check-circle");
+        }
+
+        protected void ShowAlertInfo(string message, string fasIconName)
+        {
+            AlertInfo = $"{Fas(fasIconName)} {message}";
+        }
+
+        protected void ShowAlertSuccess(string message)
+        {
+            ShowAlertSuccess(message, "thumbs-up");
+        }
+
+        protected void ShowAlertSuccess(string message, string farIconName)
+        {
+            AlertSuccess = $"{Far(farIconName)} {message}";
+        }
+
+        protected void ShowAlertWarning(string message, string details = null)
+        {
+            AlertWarning = $"{Fas("exclamation-circle")} {message}{details}";
+        }
+
+        protected void ShowAlertWarning(string message, GraException gex)
+        {
+            AlertWarning = $"{Fas("exclamation-circle")} {message}{FormatMessage(gex)}";
+        }
+
+        protected string UserClaim(string claimType)
+        {
+            return _userContextProvider.UserClaim(AuthUser, claimType);
+        }
+
+        protected bool UserHasPermission(Permission permission)
+        {
+            return _userContextProvider.UserHasPermission(AuthUser, permission.ToString());
+        }
+
+        private static string Far(string iconName)
+        {
+            return $"<span class=\"far fa-{iconName}\" aria-hidden=\"true\"></span>";
+        }
+
+        private static string Fas(string iconName)
+        {
+            return $"<span class=\"fas fa-{iconName}\" aria-hidden=\"true\"></span>";
+        }
+
+        private async Task LoginUserInternalAsync(AuthenticationResult authResult)
+        {
+            if (authResult.FoundUser && authResult.PasswordIsValid)
+            {
+                var claims = new HashSet<Claim>();
+                foreach (var permissionName in authResult.PermissionNames)
+                {
+                    claims.Add(new Claim(ClaimType.Permission, permissionName));
+                }
+                claims.Add(new Claim(ClaimType.BranchId, authResult
+                    .User
+                    .BranchId
+                    .ToString(CultureInfo.InvariantCulture)));
+                claims.Add(new Claim(ClaimType.SiteId, authResult
+                    .User
+                    .SiteId
+                    .ToString(CultureInfo.InvariantCulture)));
+                claims.Add(new Claim(ClaimType.SystemId, authResult
+                    .User
+                    .SystemId
+                    .ToString(CultureInfo.InvariantCulture)));
+                claims.Add(new Claim(ClaimType.UserId, authResult
+                    .User
+                    .Id
+                    .ToString(CultureInfo.InvariantCulture)));
+                claims.Add(new Claim(ClaimType.AuthenticatedAt, _dateTimeProvider
+                    .Now
+                    .ToString("O")));
+
+                var identity = new ClaimsIdentity(claims, Authentication.TypeGRAPassword);
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(identity));
+
+                HttpContext.Session.SetInt32(SessionKey.ActiveUserId, authResult.User.Id);
+
+                if (!string.IsNullOrEmpty(authResult.Message))
+                {
+                    AlertInfo = authResult.Arguments == null
+                        ? _sharedLocalizer[authResult.Message]
+                        : _sharedLocalizer[authResult.Message, authResult.Arguments];
+                }
+            }
+            else
+            {
+                ShowAlertDanger(authResult.Arguments == null
+                        ? _sharedLocalizer[authResult.Message]
+                        : _sharedLocalizer[authResult.Message, authResult.Arguments]);
+            }
         }
     }
 }

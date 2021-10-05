@@ -244,7 +244,7 @@ namespace GRA.Domain.Service
         {
             if (HasPermission(Permission.ViewParticipantList))
             {
-                if (!string.IsNullOrEmpty(filter.Search))
+                if (!filter.CanAddToHousehold && !string.IsNullOrEmpty(filter.Search))
                 {
                     var vendorCode = await _vendorCodeService
                         .GetVendorCodeByCode(filter.Search.ToUpper(CultureInfo.InvariantCulture));
@@ -822,7 +822,7 @@ namespace GRA.Domain.Service
         public async Task<IEnumerable<Notification>> GetNotificationsForUser()
         {
             var notifications = await _notificationRepository.GetByUserIdAsync(GetActiveUserId());
-            foreach(var notification in notifications)
+            foreach (var notification in notifications)
             {
                 if (notification.AvatarBundleId.HasValue)
                 {
@@ -1174,7 +1174,7 @@ namespace GRA.Domain.Service
             var notification = new Notification
             {
                 PointsEarned = 0,
-                Text = $"<span class=\"fa fa-thumbs-o-up\"></span> You've successfully joined <strong>{site.Name}</strong>!",
+                Text = $"<span class=\"far fa-thumbs-up\"></span> You've successfully joined <strong>{site.Name}</strong>!",
                 UserId = registeredUser.Id,
                 IsJoiner = true
             };
@@ -1240,7 +1240,7 @@ namespace GRA.Domain.Service
                     BadgeFilename = badge.Filename,
                     BadgeId = badge.Id,
                     PointsEarned = 0,
-                    Text = $"<span class=\"fa fa-thumbs-o-up\"></span> You've successfully joined <strong>{site.Name}</strong>!",
+                    Text = $"<span class=\"far fa-thumbs-up\"></span> You've successfully joined <strong>{site.Name}</strong>!",
                     UserId = user.Id,
                     IsJoiner = true
                 };
@@ -1294,7 +1294,7 @@ namespace GRA.Domain.Service
                                 BadgeFilename = badge.Filename,
                                 BadgeId = badge.Id,
                                 PointsEarned = 0,
-                                Text = $"<span class=\"fa fa-thumbs-o-up\"></span> You've successfully joined <strong>{site.Name}</strong>!",
+                                Text = $"<span class=\"far fa-thumbs-up\"></span> You've successfully joined <strong>{site.Name}</strong>!",
                                 UserId = member.Id,
                                 IsJoiner = true
                             };
@@ -1645,7 +1645,7 @@ namespace GRA.Domain.Service
                     return new JobStatus
                     {
                         PercentComplete = 100,
-                        Status = $"Operation cancelled."
+                        Status = "Operation cancelled."
                     };
                 }
 
@@ -1796,6 +1796,21 @@ namespace GRA.Domain.Service
         public async Task<bool> IsEmailSubscribedAsync(string email)
         {
             return await _userRepository.IsEmailSubscribedAsync(email);
+        }
+
+        public async Task<DataWithCount<ICollection<User>>> GetUserInfoByRole(int roleId,
+            BaseFilter filter)
+        {
+            if (HasPermission(Permission.ManageRoles))
+            {
+                return await _userRepository.GetUsersInRoleAsync(roleId, filter);
+            }
+            else
+            {
+                _logger.LogError("User {UserId} doesn't have permission to view all users in a role.",
+                    GetClaimId(ClaimType.UserId));
+                throw new GraException(_sharedLocalizer[Annotations.Validate.Permission]);
+            }
         }
     }
 }

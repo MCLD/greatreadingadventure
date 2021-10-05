@@ -21,8 +21,9 @@
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Has Permissions</th>
-                            <th width="100">&nbsp;</th>
+                            <th>Permissions in role</th>
+                            <th>Users in role</th>
+                            <th>Delete</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -35,6 +36,7 @@
                                     </a>
                                 </td>
                                 <td>@role.PermissionCount</td>
+                                <td>@(Model.UsersInRoles?.ContainsKey(role.Id) == true ? Model.UsersInRoles[role.Id] : 0)</td>
                                 <td class="on-top gra-mc-icon">
                                     @if (role.IsAdmin == false)
                                     {
@@ -44,7 +46,7 @@
                                                 data-target="#deleteModal"
                                                 data-id="@role.Id"
                                                 data-name="@role.Name">
-                                            <span class="fa fa-remove" aria-hidden="true"></span>
+                                            <span class="fas fa-times" aria-hidden="true"></span>
                                         </button>
                                     }
                                     else
@@ -87,7 +89,7 @@
                         <h1 class="modal-title h4" id="deleteModalLabel">Delete Role</h1>
                     </div>
                     <div class="modal-body">
-                        <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                        <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
                         <span id="modal-text"></span>
                     </div>
                     <div class="modal-footer">
@@ -99,10 +101,10 @@
                         </button>
                         <button type="submit"
                                 class="btn btn-danger btn-spinner pull-right"
-                                aria-label="Confirm">
-                            <span class="fa fa-remove" aria-hidden="true"></span>
+                                aria-label="Confirm"
+                                button-spinner>
+                            <span class="fas fa-times" aria-hidden="true"></span>
                             Delete
-                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                         </button>
                     </div>
                 </div>

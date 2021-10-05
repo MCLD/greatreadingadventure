@@ -1533,4 +1533,20 @@
     <value>This badge was awarded when you unlocked the avatar bundle: {0}</value>
     <comment>The alternative text description for unlocking an avatar bundle.</comment>
   </data>
+  <data name="You will be able to add books once the program starts." xml:space="preserve">
+    <value>You will be able to add books once the program starts.</value>
+    <comment>Tool tip for the "Add Book" button before the program starts.</comment>
+  </data>
+  <data name="Explore {0}" xml:space="preserve">
+    <value>Explore {0}</value>
+    <comment>Text for the footer link to participant's branch, {0} is the name of the branch</comment>
+  </data>
+  <data name="See more of your badges" xml:space="preserve">
+    <value>See more of your badges</value>
+    <comment>Dashboard link to view participant's badge gallery, displayed underneath their badges</comment>
+  </data>
+  <data name="All Participating Libraries" xml:space="preserve">
+    <value>All Participating Libraries</value>
+    <comment>Text for the footer link to view all participating libraries.</comment>
+  </data>
 </root>

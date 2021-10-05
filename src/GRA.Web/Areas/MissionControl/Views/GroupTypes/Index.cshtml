@@ -8,7 +8,7 @@
                 <table>
                     <tr>
                         <td>
-                            <span class="fa fa-exclamation-triangle fa-2x pull-left"
+                            <span class="fas fa-exclamation-triangle fa-2x pull-left"
                                   style="padding-right: 1rem;"></span>
                         </td>
                         <td>
@@ -33,7 +33,7 @@ else
                 <table>
                     <tr>
                         <td>
-                            <span class="fa fa-info-circle fa-2x pull-left"
+                            <span class="fas fa-info-circle fa-2x pull-left"
                                   style="padding-right: 1rem;"></span>
                         </td>
                         <td>
@@ -56,7 +56,7 @@ else
         <a class="btn btn-default"
            data-toggle="modal"
            data-target="#addModal">
-            <span class="fa fa-plus-circle"></span>
+            <span class="fas fa-plus-circle"></span>
             Add a group type
         </a>
     </div>
@@ -71,7 +71,7 @@ else
                 <a class="btn btn-default"
                    data-toggle="modal"
                    data-target="#addModal">
-                    <span class="fa fa-plus-circle"></span>
+                    <span class="fas fa-plus-circle"></span>
                     Add a group type
                 </a>
             </div>
@@ -98,14 +98,14 @@ else
                                             class="btn btn-primary btn-xs"
                                             data-toggle="modal"
                                             data-target="#editModal">
-                                        <span class="fa fa-pencil" aria-hidden="true"></span>
+                                        <span class="fas fa-pencil-alt" aria-hidden="true"></span>
                                     </button>
                                     <button type="button"
                                             class="btn btn-danger btn-xs"
                                             style="margin-left:16px;"
                                             data-toggle="modal"
                                             data-target="#deleteModal">
-                                        <span class="fa fa-remove" aria-hidden="true"></span>
+                                        <span class="fas fa-times" aria-hidden="true"></span>
                                     </button>
                                 </td>
                             </tr>
@@ -157,9 +157,9 @@ else
                     </button>
                     <button type="submit"
                             class="btn btn-primary btn-spinner pull-right"
-                            aria-label="Confirm">
+                            aria-label="Confirm"
+                            button-spinner>
                         Add
-                        <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                     </button>
                 </div>
             </div>
@@ -184,7 +184,7 @@ else
                 <h1 class="modal-title h4" id="deleteModalLabel">Delete group type</h1>
             </div>
             <div class="modal-body">
-                <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
                 <span id="deleteModalText"></span>
             </div>
             <div class="modal-footer">
@@ -206,10 +206,10 @@ else
                     <input asp-for="GroupType.Name" id="deleteGroupTypeName" type="hidden" />
                     <button type="submit"
                             class="btn btn-danger btn-spinner pull-right"
-                            aria-label="Confirm">
-                        <span class="fa fa-remove" aria-hidden="true"></span>
+                            aria-label="Confirm"
+                            button-spinner>
+                        <span class="fas fa-times" aria-hidden="true"></span>
                         Delete
-                        <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                     </button>
                 </form>
             </div>
@@ -259,9 +259,9 @@ else
                         </button>
                         <button type="submit"
                                 class="btn btn-primary btn-spinner pull-right"
-                                aria-label="Confirm">
+                                aria-label="Confirm"
+                                button-spinner>
                             Save
-                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                         </button>
                     </div>
                 </div>

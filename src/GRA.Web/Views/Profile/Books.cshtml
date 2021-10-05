@@ -59,7 +59,7 @@
                                                             data-id="@book.Id"
                                                             data-title="@book.Title"
                                                             data-author="@book.Author">
-                                                        <span class="fa fa-2x fa-pencil" aria-hidden="true"></span>
+                                                        <span class="fas fa-2x fa-pencil-alt" aria-hidden="true"></span>
                                                     </button>
                                                     <button type="button"
                                                             class="btn btn-danger btn-xs pull-right"
@@ -67,7 +67,7 @@
                                                             data-target="#deleteModal"
                                                             data-id="@book.Id"
                                                             data-title="@book.Title">
-                                                        <span class="fa fa-2x fa-remove" aria-hidden="true"></span>
+                                                        <span class="fas fa-2x fa-times" aria-hidden="true"></span>
                                                     </button>
                                                 </td>
                                             }
@@ -80,9 +80,28 @@
                                 <paginate paginateModel="@Model.PaginateModel"></paginate>
                             }
                         }
-                        <a id="addBook" class="btn btn-default" href="#" data-toggle="modal" data-target="#addModal">
-                            @SharedLocalizer[GRA.Annotations.Interface.AddBook]
-                        </a>
+                        @if (Model.CanEditBooks)
+                        {
+                            <a href="#"
+                               id="addBook"
+                               class="btn btn-default"
+                               data-toggle="modal"
+                               data-target="#addModal">
+                                @SharedLocalizer[GRA.Annotations.Interface.AddBook]
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="#"
+                               id="addBook"
+                               class="btn btn-default wide-tooltip"
+                               data-toggle="tooltip"
+                               title="@SharedLocalizer[GRA.Annotations.Interface.AddBookNotYet]"
+                               data-placement="top"
+                               disabled>
+                                @SharedLocalizer[GRA.Annotations.Interface.AddBook]
+                            </a>
+                        }
                     </div>
                 </div>
             </div>
@@ -235,7 +254,7 @@
                         </h1>
                     </div>
                     <div class="modal-body">
-                        <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                        <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
                         <span id="modal-text"></span>
                     </div>
                     <div class="modal-footer">
@@ -256,10 +275,10 @@
                             <input asp-for="Book.Title" type="hidden" />
                             <button type="submit"
                                     class="btn btn-danger btn-spinner pull-right"
-                                    aria-label="Confirm">
-                                <span class="fa fa-remove" aria-hidden="true"></span>
+                                    aria-label="Confirm"
+                                    button-spinner>
+                                <span class="fas fa-times" aria-hidden="true"></span>
                                 @SharedLocalizer[GRA.Annotations.Interface.Delete]
-                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
                         </form>
                     </div>

@@ -2,7 +2,6 @@
 
 <div class="row">
     <div class="col-xs-12">
-        <div style="font-size:large;padding-top:10px;">Created By:</div>
         <ul class="nav nav-pills" style="padding: 10px 0;">
             <li class="@(Model.ActiveNav == "All" ? "active" : "")"><a asp-route-Search="@Model.Search" asp-route-ProgramId="@Model.ProgramId">All</a></li>
             <li class="@(Model.ActiveNav == "System" ? "active" : "")">
@@ -131,7 +130,7 @@
                                             data-hasDependents="@trigger.HasDependents"
                                             data-relatedEventId="@trigger.RelatedEventId"
                                             data-relatedEventName="@trigger.RelatedEventName">
-                                        <span class="fa fa-remove" aria-hidden="true"></span>
+                                        <span class="fas fa-times" aria-hidden="true"></span>
                                     </button>
                                 </td>
                             </tr>
@@ -165,7 +164,7 @@
                     <h1 class="modal-title h4" id="deleteModalLabel">Delete trigger</h1>
                 </div>
                 <div class="modal-body">
-                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                    <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
                     <span id="modal-text"></span>
                 </div>
                 <div class="modal-footer">
@@ -185,7 +184,7 @@
                                 type="submit"
                                 class="btn btn-danger pull-right"
                                 aria-label="Confirm">
-                            <span class="fa fa-remove" aria-hidden="true"></span>
+                            <span class="fas fa-times" aria-hidden="true"></span>
                             Delete
                         </button>
                     </form>

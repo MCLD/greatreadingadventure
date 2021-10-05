@@ -21,8 +21,22 @@ namespace GRA.Data.Repository
             ILogger<UserRepository> logger,
             Security.Abstract.IPasswordHasher passwordHasher) : base(repositoryFacade, logger)
         {
-            _passwordHasher = passwordHasher 
+            _passwordHasher = passwordHasher
                 ?? throw new ArgumentNullException(nameof(passwordHasher));
+        }
+
+        public async Task AddBulkEmailLogAsync(int userId,
+            int emailTemplateId,
+            string emailAddress)
+        {
+            await _context.EmailUserLogs.AddAsync(new Model.EmailUserLog
+            {
+                EmailAddress = emailAddress,
+                EmailTemplateId = emailTemplateId,
+                UserId = userId,
+                SentAt = _dateTimeProvider.Now
+            });
+            await _context.SaveChangesAsync();
         }
 
         public async Task AddRoleAsync(int currentUserId, int userId, int roleId)
@@ -45,63 +59,6 @@ namespace GRA.Data.Repository
                 CreatedAt = _dateTimeProvider.Now
             };
             await _context.UserRoles.AddAsync(userRoleAssignment);
-        }
-
-        public async Task<ICollection<int>> GetUserRolesAsync(int userId)
-        {
-            return await _context.UserRoles.AsNoTracking()
-                .Where(_ => _.UserId == userId)
-                .Select(_ => _.RoleId)
-                .ToListAsync();
-        }
-
-        public async Task UpdateUserRolesAsync(int currentUserId,
-            int userId,
-            IEnumerable<int> rolesToAdd,
-            IEnumerable<int> rolesToRemove)
-        {
-            var now = _dateTimeProvider.Now;
-
-            var addRoles = rolesToAdd.Select(_ => new Model.UserRole
-            {
-                RoleId = _,
-                UserId = userId,
-                CreatedAt = now,
-                CreatedBy = currentUserId
-            });
-            var removeRoles = _context.UserRoles
-                .Where(_ => _.UserId == userId && rolesToRemove.Contains(_.RoleId));
-
-            await _context.UserRoles.AddRangeAsync(addRoles);
-            _context.UserRoles.RemoveRange(removeRoles);
-        }
-
-        public async Task SetUserPasswordAsync(int currentUserId, int userId, string password)
-        {
-            var user = DbSet.Find(userId);
-            if (user.IsSystemUser)
-            {
-                throw new GraException("Cannot set a password for the System User.");
-            }
-            string original = _entitySerializer.Serialize(user);
-            user.PasswordHash = _passwordHasher.HashPassword(password);
-            await UpdateSaveAsync(currentUserId, user, original);
-        }
-
-        public async Task<User> GetByUsernameAsync(string username)
-        {
-            var lookupUser = await DbSet
-                .AsNoTracking()
-                .Where(_ => _.Username == username && !_.IsDeleted)
-                .SingleOrDefaultAsync();
-            if (lookupUser != null)
-            {
-                return _mapper.Map<Model.User, User>(lookupUser);
-            }
-            else
-            {
-                return null;
-            }
         }
 
         public async Task<AuthenticationResult> AuthenticateUserAsync(string username,
@@ -139,190 +96,74 @@ namespace GRA.Data.Repository
             return result;
         }
 
-        public async Task<IEnumerable<User>> PageAllAsync(UserFilter filter)
+        public async Task ChangeDeletedUsersProgramAsync(int oldProgram, int newProgram)
         {
-            var userList = ApplyUserFilter(filter);
-
-            switch (filter.SortBy)
+            var usersToMove = DbSet.Where(_ => _.ProgramId == oldProgram && _.IsDeleted);
+            foreach (var user in usersToMove)
             {
-                // default is by last name
-                default:
-                    if (filter.OrderDescending)
-                    {
-                        userList = userList
-                            .OrderByDescending(_ => _.LastName)
-                            .ThenByDescending(_ => _.FirstName)
-                            .ThenByDescending(_ => _.Username);
-                    }
-                    else
-                    {
-                        userList = userList
-                            .OrderBy(_ => _.LastName)
-                            .ThenBy(_ => _.FirstName)
-                            .ThenBy(_ => _.Username);
-                    }
-                    break;
-                case SortUsersBy.FirstName:
-                    if (filter.OrderDescending)
-                    {
-                        userList = userList
-                            .OrderByDescending(_ => _.FirstName)
-                            .ThenByDescending(_ => _.LastName)
-                            .ThenByDescending(_ => _.Username);
-                    }
-                    else
-                    {
-                        userList = userList
-                            .OrderBy(_ => _.FirstName)
-                            .ThenBy(_ => _.LastName)
-                            .ThenBy(_ => _.Username);
-                    }
-                    break;
-                case SortUsersBy.RegistrationDate:
-                    if (filter.OrderDescending)
-                    {
-                        userList = userList
-                            .OrderByDescending(_ => _.CreatedAt)
-                            .ThenByDescending(_ => _.LastName)
-                            .ThenByDescending(_ => _.FirstName)
-                            .ThenByDescending(_ => _.Username);
-                    }
-                    else
-                    {
-                        userList = userList
-                            .OrderBy(_ => _.CreatedAt)
-                            .ThenBy(_ => _.LastName)
-                            .ThenBy(_ => _.FirstName)
-                            .ThenBy(_ => _.Username);
-                    }
-                    break;
-                case SortUsersBy.Username:
-                    if (filter.OrderDescending)
-                    {
-                        userList = userList
-                            .OrderBy(_ => string.IsNullOrWhiteSpace(_.Username))
-                            .ThenByDescending(_ => _.Username)
-                            .ThenByDescending(_ => _.LastName)
-                            .ThenByDescending(_ => _.FirstName);
-                    }
-                    else
-                    {
-                        userList = userList
-                            .OrderBy(_ => string.IsNullOrWhiteSpace(_.Username))
-                            .ThenBy(_ => _.Username)
-                            .ThenBy(_ => _.LastName)
-                            .ThenBy(_ => _.FirstName);
-                    }
-                    break;
+                user.ProgramId = newProgram;
             }
+            DbSet.UpdateRange(usersToMove);
+            await _context.SaveChangesAsync();
+        }
 
-            return await userList
-                .ApplyPagination(filter)
+        public async Task<int> GetAchieverCountAsync(ReportCriterion request)
+        {
+            return await ApplyUserFilter(request)
+                .Where(_ => _.AchievedAt.HasValue)
+                .CountAsync();
+        }
+
+        public async Task<IEnumerable<int>> GetAllUserIds(int siteId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId && !_.IsDeleted)
+                .Select(_ => _.Id)
+                .ToListAsync();
+        }
+
+        public async Task<ICollection<User>> GetAllUsersWithoutUnsubscribeToken()
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => !_.IsSystemUser && string.IsNullOrWhiteSpace(_.UnsubscribeToken))
                 .ProjectTo<User>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
-        private IQueryable<Model.User> ApplyUserFilter(UserFilter filter)
+        public override async Task<User> GetByIdAsync(int id)
         {
-            var userList = DbSet.AsNoTracking()
-                .Where(_ => !_.IsDeleted && _.SiteId == filter.SiteId);
-
-            if (filter.UserIds?.Any() == true)
-            {
-                userList = userList.Where(_ => filter.UserIds.Contains(_.Id));
-            }
-
-            if (filter.SystemIds?.Any() == true)
-            {
-                userList = userList.Where(_ => filter.SystemIds.Contains(_.SystemId));
-            }
-
-            if (filter.BranchIds?.Any() == true)
-            {
-                userList = userList.Where(_ => filter.BranchIds.Contains(_.BranchId));
-            }
-
-            if (filter.ProgramIds?.Any() == true)
-            {
-                userList = userList
-                    .Where(_ => filter.ProgramIds.Cast<int>().Contains(_.ProgramId));
-            }
-
-            if (!string.IsNullOrWhiteSpace(filter.Search))
-            {
-                userList = userList.Where(_ => _.Username.Contains(filter.Search)
-                        || (_.FirstName + " " + _.LastName).Contains(filter.Search)
-                        || _.Email.Contains(filter.Search));
-            }
-
-            if (filter.CanAddToHousehold)
-            {
-                var householdHeadList = DbSet.AsNoTracking()
-                    .Where(_ => _.HouseholdHeadUserId.HasValue)
-                    .Select(u => u.HouseholdHeadUserId)
-                    .Distinct();
-
-                userList = userList
-                    .Where(_ => !filter.UserIds.Contains(_.Id)
-                        && !householdHeadList.Contains(_.Id)
-                        && !_.HouseholdHeadUserId.HasValue);
-            }
-
-            if (filter.IsSubscribed != null)
-            {
-                userList = userList.Where(_ => _.IsEmailSubscribed == filter.IsSubscribed);
-            }
-
-            return userList;
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.Id == id && !_.IsDeleted)
+                .ProjectTo<User>(_mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync();
         }
 
-        private IQueryable<Model.User> ApplyUserFilter(ReportCriterion criterion)
+        public async Task<User> GetByUnsubscribeToken(int siteId, string token)
         {
-            var userList = DbSet.AsNoTracking()
-                .Where(_ => !_.IsDeleted && _.SiteId == criterion.SiteId);
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId && _.UnsubscribeToken == token)
+                .ProjectTo<User>(_mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync();
+        }
 
-            if (criterion.SystemId != null)
+        public async Task<User> GetByUsernameAsync(string username)
+        {
+            var lookupUser = await DbSet
+                .AsNoTracking()
+                .Where(_ => _.Username == username && !_.IsDeleted)
+                .SingleOrDefaultAsync();
+            if (lookupUser != null)
             {
-                userList = userList.Where(_ => criterion.SystemId == _.SystemId);
+                return _mapper.Map<Model.User, User>(lookupUser);
             }
-
-            if (criterion.BranchId != null)
+            else
             {
-                userList = userList.Where(_ => criterion.BranchId == _.BranchId);
+                return null;
             }
-
-            if (criterion.ProgramId != null)
-            {
-                userList = userList.Where(_ => criterion.ProgramId == _.ProgramId);
-            }
-
-            if (criterion.StartDate != null)
-            {
-                userList = userList.Where(_ => _.CreatedAt >= criterion.StartDate);
-            }
-
-            if (criterion.EndDate != null)
-            {
-                userList = userList.Where(_ => _.CreatedAt <= criterion.EndDate);
-            }
-
-            if (criterion.SchoolId != null)
-            {
-                userList = userList.Where(_ => _.SchoolId == criterion.SchoolId);
-            }
-
-            if (criterion.VendorCodeTypeId != null)
-            {
-                userList = userList.Join(_context.VendorCodes,
-                    u => u.Id,
-                    v => v.UserId,
-                    (u, v) => new { u, v })
-                    .Where(_ => _.v.VendorCodeTypeId == criterion.VendorCodeTypeId.Value
-                        && _.v.IsDonated == true)
-                    .Select(_ => _.u);
-            }
-
-            return userList;
         }
 
         public async Task<int> GetCountAsync(ReportCriterion request)
@@ -342,25 +183,14 @@ namespace GRA.Data.Repository
             return await users.Where(_ => _.IsFirstTime).CountAsync();
         }
 
-        public async Task<int> GetAchieverCountAsync(ReportCriterion request)
-        {
-            return await ApplyUserFilter(request)
-                .Where(_ => _.AchievedAt.HasValue)
-                .CountAsync();
-        }
-
-        public async Task<IEnumerable<User>>
-            PageHouseholdAsync(int householdHeadUserId, int skip, int take)
+        public async Task<IEnumerable<User>> GetHouseholdAsync(int householdHeadUserId)
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => !_.IsDeleted
-                       && _.HouseholdHeadUserId == householdHeadUserId)
-                .OrderBy(_ => _.LastName)
-                .ThenBy(_ => _.FirstName)
+                .Where(_ => !_.IsDeleted && _.HouseholdHeadUserId == householdHeadUserId)
+                .OrderBy(_ => _.FirstName)
+                .ThenBy(_ => _.LastName)
                 .ThenBy(_ => _.Username)
-                .Skip(skip)
-                .Take(take)
                 .ProjectTo<User>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
@@ -374,92 +204,24 @@ namespace GRA.Data.Repository
                        .CountAsync();
         }
 
-        public override async Task<User> GetByIdAsync(int id)
+        public async Task<ICollection<User>> GetHouseholdUsersWithAvailablePrizeAsync(
+            int headId, int? drawingId, int? triggerId)
         {
-            return await DbSet
+            var householdMemberIds = DbSet
                 .AsNoTracking()
-                .Where(_ => _.Id == id && !_.IsDeleted)
-                .ProjectTo<User>(_mapper.ConfigurationProvider)
-                .SingleOrDefaultAsync();
-        }
+                .Where(_ => !_.IsDeleted && (_.Id == headId || _.HouseholdHeadUserId == headId))
+                .Select(_ => _.Id);
 
-        public async Task<DataWithId<IEnumerable<string>>> GetUserIdAndUsernames(string email)
-        {
-            var userIdLookup = await DbSet
-                .AsNoTracking()
-                .Where(_ => _.Email == email && !_.IsDeleted)
-                .FirstOrDefaultAsync();
-
-            if (userIdLookup == null)
-            {
-                return null;
-            }
-
-            return new DataWithId<IEnumerable<string>>
-            {
-                Id = userIdLookup.Id,
-                Data = await DbSet
-                    .AsNoTracking()
-                    .Where(_ => _.Email == email
-                        && !string.IsNullOrEmpty(_.Username)
-                        && !_.IsDeleted)
-                    .Select(_ => _.Username)
-                    .ToListAsync()
-            };
-        }
-
-        public async Task<IEnumerable<int>> GetAllUserIds(int siteId)
-        {
-            return await DbSet
-                .AsNoTracking()
-                .Where(_ => _.SiteId == siteId && !_.IsDeleted)
-                .Select(_ => _.Id)
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<User>> GetHouseholdAsync(int householdHeadUserId)
-        {
-            return await DbSet
-                .AsNoTracking()
-                .Where(_ => !_.IsDeleted && _.HouseholdHeadUserId == householdHeadUserId)
-                .OrderBy(_ => _.FirstName)
+            return await _context.PrizeWinners
+                .Where(_ => !_.RedeemedAt.HasValue
+                    && _.DrawingId == drawingId
+                    && _.TriggerId == triggerId
+                    && householdMemberIds.Contains(_.UserId))
+                .Select(_ => _.User)
+                .OrderBy(_ => _.HouseholdHeadUserId.HasValue)
+                .ThenBy(_ => _.FirstName)
                 .ThenBy(_ => _.LastName)
                 .ThenBy(_ => _.Username)
-                .ProjectTo<User>(_mapper.ConfigurationProvider)
-                .ToListAsync();
-        }
-
-        public async Task<bool> UsernameInUseAsync(int siteId, string username)
-        {
-            return await DbSet.AsNoTracking()
-                .Where(_ => _.SiteId == siteId && _.Username == username && !_.IsDeleted)
-                .AnyAsync();
-        }
-
-        public async Task<List<int>> GetUserIdsByBranchProgram(ReportCriterion criterion)
-        {
-            return await DbSet
-                .AsNoTracking()
-                .Where(_ => !_.IsDeleted
-                    && _.BranchId == criterion.BranchId
-                    && _.ProgramId == criterion.ProgramId)
-                .Select(_ => _.Id)
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<User>> GetTopScoresAsync(ReportCriterion criterion,
-            int scoresToReturn)
-        {
-            return await ApplyUserFilter(criterion)
-                .OrderByDescending(_ => _.PointsEarned)
-                .Take(scoresToReturn)
-                .ProjectTo<User>(_mapper.ConfigurationProvider)
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<User>> GetUsersByCriterionAsync(ReportCriterion criterion)
-        {
-            return await ApplyUserFilter(criterion)
                 .ProjectTo<User>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
@@ -521,85 +283,65 @@ namespace GRA.Data.Repository
             return systemUser.Id;
         }
 
-        public async Task ChangeDeletedUsersProgramAsync(int oldProgram, int newProgram)
+        public async Task<IEnumerable<User>> GetTopScoresAsync(ReportCriterion criterion,
+            int scoresToReturn)
         {
-            var usersToMove = DbSet.Where(_ => _.ProgramId == oldProgram && _.IsDeleted);
-            foreach (var user in usersToMove)
+            return await ApplyUserFilter(criterion)
+                .OrderByDescending(_ => _.PointsEarned)
+                .Take(scoresToReturn)
+                .ProjectTo<User>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
+        public async Task<DataWithId<IEnumerable<string>>> GetUserIdAndUsernames(string email)
+        {
+            var userIdLookup = await DbSet
+                .AsNoTracking()
+                .Where(_ => _.Email == email && !_.IsDeleted)
+                .FirstOrDefaultAsync();
+
+            if (userIdLookup == null)
             {
-                user.ProgramId = newProgram;
+                return null;
             }
-            DbSet.UpdateRange(usersToMove);
-            await _context.SaveChangesAsync();
-        }
 
-        public async Task<ICollection<User>> GetHouseholdUsersWithAvailablePrizeAsync(
-            int headId, int? drawingId, int? triggerId)
-        {
-            var householdMemberIds = DbSet
-                .AsNoTracking()
-                .Where(_ => !_.IsDeleted && (_.Id == headId || _.HouseholdHeadUserId == headId))
-                .Select(_ => _.Id);
-
-            return await _context.PrizeWinners
-                .Where(_ => !_.RedeemedAt.HasValue
-                    && _.DrawingId == drawingId
-                    && _.TriggerId == triggerId
-                    && householdMemberIds.Contains(_.UserId))
-                .Select(_ => _.User)
-                .OrderBy(_ => _.HouseholdHeadUserId.HasValue)
-                .ThenBy(_ => _.FirstName)
-                .ThenBy(_ => _.LastName)
-                .ThenBy(_ => _.Username)
-                .ProjectTo<User>(_mapper.ConfigurationProvider)
-                .ToListAsync();
-        }
-
-        public async Task<bool> UnsubscribeTokenExists(int siteId, string token)
-        {
-            return await DbSet
-                .AsNoTracking()
-                .Where(_ => _.SiteId == siteId && _.UnsubscribeToken == token)
-                .AnyAsync();
-        }
-
-        public async Task<User> GetByUnsubscribeToken(int siteId, string token)
-        {
-            return await DbSet
-                .AsNoTracking()
-                .Where(_ => _.SiteId == siteId && _.UnsubscribeToken == token)
-                .ProjectTo<User>(_mapper.ConfigurationProvider)
-                .SingleOrDefaultAsync();
-        }
-
-        public async Task<ICollection<User>> GetAllUsersWithoutUnsubscribeToken()
-        {
-            return await DbSet
-                .AsNoTracking()
-                .Where(_ => !_.IsSystemUser && string.IsNullOrWhiteSpace(_.UnsubscribeToken))
-                .ProjectTo<User>(_mapper.ConfigurationProvider)
-                .ToListAsync();
-        }
-
-        public async Task<bool> HasReceivedBulkEmailAsync(int emailTemplateId, string emailAddress)
-        {
-            return await _context.EmailUserLogs
-                .AsNoTracking()
-                .AnyAsync(_ => _.EmailTemplateId == emailTemplateId
-                    && _.EmailAddress == emailAddress);
-        }
-
-        public async Task AddBulkEmailLogAsync(int userId,
-            int emailTemplateId,
-            string emailAddress)
-        {
-            await _context.EmailUserLogs.AddAsync(new Model.EmailUserLog
+            return new DataWithId<IEnumerable<string>>
             {
-                EmailAddress = emailAddress,
-                EmailTemplateId = emailTemplateId,
-                UserId = userId,
-                SentAt = _dateTimeProvider.Now
-            });
-            await _context.SaveChangesAsync();
+                Id = userIdLookup.Id,
+                Data = await DbSet
+                    .AsNoTracking()
+                    .Where(_ => _.Email == email
+                        && !string.IsNullOrEmpty(_.Username)
+                        && !_.IsDeleted)
+                    .Select(_ => _.Username)
+                    .ToListAsync()
+            };
+        }
+
+        public async Task<List<int>> GetUserIdsByBranchProgram(ReportCriterion criterion)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => !_.IsDeleted
+                    && _.BranchId == criterion.BranchId
+                    && _.ProgramId == criterion.ProgramId)
+                .Select(_ => _.Id)
+                .ToListAsync();
+        }
+
+        public async Task<ICollection<int>> GetUserRolesAsync(int userId)
+        {
+            return await _context.UserRoles.AsNoTracking()
+                .Where(_ => _.UserId == userId)
+                .Select(_ => _.RoleId)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<User>> GetUsersByCriterionAsync(ReportCriterion criterion)
+        {
+            return await ApplyUserFilter(criterion)
+                .ProjectTo<User>(_mapper.ConfigurationProvider)
+                .ToListAsync();
         }
 
         public async Task<ICollection<User>> GetUsersByEmailAddressAsync(string email)
@@ -610,12 +352,303 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
+        public async Task<DataWithCount<ICollection<User>>> GetUsersInRoleAsync(int roleId,
+            BaseFilter filter)
+        {
+            var users = _context.UserRoles
+                .AsNoTracking()
+                .Where(_ => _.RoleId == roleId
+                    && !_.User.IsDeleted
+                    && _.User.SiteId == filter.SiteId)
+                .Select(_ => new User
+                {
+                    BranchName = _.User.Branch.Name,
+                    CreatedAt = _.User.CreatedAt,
+                    FirstName = _.User.FirstName,
+                    Id = _.UserId,
+                    LastAccess = _.User.LastAccess,
+                    LastName = _.User.LastName,
+                    SystemName = _.User.System.Name,
+                    Username = _.User.Username
+                });
+
+            return new DataWithCount<ICollection<User>>
+            {
+                Count = await users.CountAsync(),
+                Data = await users
+                    .OrderBy(_ => _.Username)
+                    .ApplyPagination(filter)
+                    .ToListAsync()
+            };
+        }
+
+        public async Task<bool> HasReceivedBulkEmailAsync(int emailTemplateId, string emailAddress)
+        {
+            return await _context.EmailUserLogs
+                .AsNoTracking()
+                .AnyAsync(_ => _.EmailTemplateId == emailTemplateId
+                    && _.EmailAddress == emailAddress);
+        }
+
         public async Task<bool> IsEmailSubscribedAsync(string email)
         {
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.Email == email && _.IsEmailSubscribed && !_.IsDeleted)
                 .AnyAsync();
+        }
+
+        public async Task<IEnumerable<User>> PageAllAsync(UserFilter filter)
+        {
+            var userList = ApplyUserFilter(filter);
+
+            switch (filter.SortBy)
+            {
+                // default is by last name
+                default:
+                    if (filter.OrderDescending)
+                    {
+                        userList = userList
+                            .OrderByDescending(_ => _.LastName)
+                            .ThenByDescending(_ => _.FirstName)
+                            .ThenByDescending(_ => _.Username);
+                    }
+                    else
+                    {
+                        userList = userList
+                            .OrderBy(_ => _.LastName)
+                            .ThenBy(_ => _.FirstName)
+                            .ThenBy(_ => _.Username);
+                    }
+                    break;
+
+                case SortUsersBy.FirstName:
+                    if (filter.OrderDescending)
+                    {
+                        userList = userList
+                            .OrderByDescending(_ => _.FirstName)
+                            .ThenByDescending(_ => _.LastName)
+                            .ThenByDescending(_ => _.Username);
+                    }
+                    else
+                    {
+                        userList = userList
+                            .OrderBy(_ => _.FirstName)
+                            .ThenBy(_ => _.LastName)
+                            .ThenBy(_ => _.Username);
+                    }
+                    break;
+
+                case SortUsersBy.RegistrationDate:
+                    if (filter.OrderDescending)
+                    {
+                        userList = userList
+                            .OrderByDescending(_ => _.CreatedAt)
+                            .ThenByDescending(_ => _.LastName)
+                            .ThenByDescending(_ => _.FirstName)
+                            .ThenByDescending(_ => _.Username);
+                    }
+                    else
+                    {
+                        userList = userList
+                            .OrderBy(_ => _.CreatedAt)
+                            .ThenBy(_ => _.LastName)
+                            .ThenBy(_ => _.FirstName)
+                            .ThenBy(_ => _.Username);
+                    }
+                    break;
+
+                case SortUsersBy.Username:
+                    if (filter.OrderDescending)
+                    {
+                        userList = userList
+                            .OrderBy(_ => string.IsNullOrWhiteSpace(_.Username))
+                            .ThenByDescending(_ => _.Username)
+                            .ThenByDescending(_ => _.LastName)
+                            .ThenByDescending(_ => _.FirstName);
+                    }
+                    else
+                    {
+                        userList = userList
+                            .OrderBy(_ => string.IsNullOrWhiteSpace(_.Username))
+                            .ThenBy(_ => _.Username)
+                            .ThenBy(_ => _.LastName)
+                            .ThenBy(_ => _.FirstName);
+                    }
+                    break;
+            }
+
+            return await userList
+                .ApplyPagination(filter)
+                .ProjectTo<User>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<User>>
+            PageHouseholdAsync(int householdHeadUserId, int skip, int take)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => !_.IsDeleted
+                       && _.HouseholdHeadUserId == householdHeadUserId)
+                .OrderBy(_ => _.LastName)
+                .ThenBy(_ => _.FirstName)
+                .ThenBy(_ => _.Username)
+                .Skip(skip)
+                .Take(take)
+                .ProjectTo<User>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
+        public async Task SetUserPasswordAsync(int currentUserId, int userId, string password)
+        {
+            var user = DbSet.Find(userId);
+            if (user.IsSystemUser)
+            {
+                throw new GraException("Cannot set a password for the System User.");
+            }
+            string original = _entitySerializer.Serialize(user);
+            user.PasswordHash = _passwordHasher.HashPassword(password);
+            await UpdateSaveAsync(currentUserId, user, original);
+        }
+
+        public async Task<bool> UnsubscribeTokenExists(int siteId, string token)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId && _.UnsubscribeToken == token)
+                .AnyAsync();
+        }
+
+        public async Task UpdateUserRolesAsync(int currentUserId,
+                                                                                    int userId,
+            IEnumerable<int> rolesToAdd,
+            IEnumerable<int> rolesToRemove)
+        {
+            var now = _dateTimeProvider.Now;
+
+            var addRoles = rolesToAdd.Select(_ => new Model.UserRole
+            {
+                RoleId = _,
+                UserId = userId,
+                CreatedAt = now,
+                CreatedBy = currentUserId
+            });
+            var removeRoles = _context.UserRoles
+                .Where(_ => _.UserId == userId && rolesToRemove.Contains(_.RoleId));
+
+            await _context.UserRoles.AddRangeAsync(addRoles);
+            _context.UserRoles.RemoveRange(removeRoles);
+        }
+
+        public async Task<bool> UsernameInUseAsync(int siteId, string username)
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.SiteId == siteId && _.Username == username && !_.IsDeleted)
+                .AnyAsync();
+        }
+
+        private IQueryable<Model.User> ApplyUserFilter(UserFilter filter)
+        {
+            var userList = DbSet.AsNoTracking()
+                .Where(_ => !_.IsDeleted && _.SiteId == filter.SiteId);
+
+            if (filter.SystemIds?.Any() == true)
+            {
+                userList = userList.Where(_ => filter.SystemIds.Contains(_.SystemId));
+            }
+
+            if (filter.BranchIds?.Any() == true)
+            {
+                userList = userList.Where(_ => filter.BranchIds.Contains(_.BranchId));
+            }
+
+            if (filter.ProgramIds?.Any() == true)
+            {
+                userList = userList
+                    .Where(_ => filter.ProgramIds.Cast<int>().Contains(_.ProgramId));
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.Search))
+            {
+                userList = userList.Where(
+                    _ => _.Username.Contains(filter.Search)
+                        || (_.FirstName + " " + _.LastName).Contains(filter.Search)
+                        || _.Email.Contains(filter.Search));
+            }
+
+            if (filter.CanAddToHousehold)
+            {
+                var householdHeadList = DbSet.AsNoTracking()
+                    .Where(_ => _.HouseholdHeadUserId.HasValue)
+                    .Select(u => u.HouseholdHeadUserId)
+                    .Distinct();
+
+                userList = userList
+                    .Where(_ => !filter.UserIds.Contains(_.Id)
+                        && !householdHeadList.Contains(_.Id)
+                        && !_.HouseholdHeadUserId.HasValue);
+            }
+            else if (filter.UserIds?.Any() == true)
+            {
+                userList = userList.Where(_ => filter.UserIds.Contains(_.Id));
+            }
+
+            if (filter.IsSubscribed != null)
+            {
+                userList = userList.Where(_ => _.IsEmailSubscribed == filter.IsSubscribed);
+            }
+
+            return userList;
+        }
+
+        private IQueryable<Model.User> ApplyUserFilter(ReportCriterion criterion)
+        {
+            var userList = DbSet.AsNoTracking()
+                .Where(_ => !_.IsDeleted && _.SiteId == criterion.SiteId);
+
+            if (criterion.SystemId != null)
+            {
+                userList = userList.Where(_ => criterion.SystemId == _.SystemId);
+            }
+
+            if (criterion.BranchId != null)
+            {
+                userList = userList.Where(_ => criterion.BranchId == _.BranchId);
+            }
+
+            if (criterion.ProgramId != null)
+            {
+                userList = userList.Where(_ => criterion.ProgramId == _.ProgramId);
+            }
+
+            if (criterion.StartDate != null)
+            {
+                userList = userList.Where(_ => _.CreatedAt >= criterion.StartDate);
+            }
+
+            if (criterion.EndDate != null)
+            {
+                userList = userList.Where(_ => _.CreatedAt <= criterion.EndDate);
+            }
+
+            if (criterion.SchoolId != null)
+            {
+                userList = userList.Where(_ => _.SchoolId == criterion.SchoolId);
+            }
+
+            if (criterion.VendorCodeTypeId != null)
+            {
+                userList = userList.Join(_context.VendorCodes,
+                    u => u.Id,
+                    v => v.UserId,
+                    (u, v) => new { u, v })
+                    .Where(_ => _.v.VendorCodeTypeId == criterion.VendorCodeTypeId.Value
+                        && _.v.IsDonated == true)
+                    .Select(_ => _.u);
+            }
+
+            return userList;
         }
     }
 }

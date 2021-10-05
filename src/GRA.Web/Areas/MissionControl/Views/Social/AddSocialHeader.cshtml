@@ -33,7 +33,7 @@
                 <description gra-description-for="StartDate"></description>
                 <div class="input-group date datetimepicker">
                     <span class="input-group-addon">
-                        <span class="fa fa-calendar"></span>
+                        <span class="fas fa-calendar-alt"></span>
                     </span>
                     <input asp-for="StartDate" type="text" class="form-control" />
                 </div>
@@ -79,7 +79,7 @@
                 <div class="input-group @SocialItemViewModel.ValidationClass(ViewData, "UploadedImage")">
                     <label class="input-group-btn">
                         <span class="btn btn-default btn-file">
-                            <span class="fa fa-file-image-o"></span>
+                            <span class="far fa-file-image"></span>
                             Image file
                             <input type="file"
                                    asp-for="UploadedImage"
@@ -96,10 +96,9 @@
                 <span asp-validation-for="UploadedImage" class="text-danger"></span>
             </div>
             <div>
-                <button class="btn btn-primary btn-spinner" type="submit">
+                <button class="btn btn-primary btn-spinner" type="submit" button-spinner>
                     <span class="fas fa-file-upload"></span>
                     Upload and Create
-                    <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                 </button>
             </div>
         </div>
@@ -113,12 +112,12 @@
             allowInputToggle: true,
             sideBySide: true,
             icons: {
-                time: "fa fa-clock-o",
-                date: "fa fa-calendar",
-                up: "fa fa-arrow-up",
-                down: "fa fa-arrow-down",
-                previous: "fa fa-arrow-left",
-                next: "fa fa-arrow-right"
+                time: "far fa-clock",
+                date: "fas fa-calendar-alt",
+                up: "fas fa-arrow-up",
+                down: "fas fa-arrow-down",
+                previous: "fas fa-arrow-left",
+                next: "fas fa-arrow-right"
             }
         });
 

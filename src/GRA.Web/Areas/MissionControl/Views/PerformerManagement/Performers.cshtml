@@ -14,8 +14,8 @@
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Email <span class="fa fa-question-circle-o" title="Preferred method of contact is italicized." data-toggle="tooltip" data-placement="top"></span></th>
-                        <th>Phone <span class="fa fa-question-circle-o" title="Preferred method of contact is italicized." data-toggle="tooltip" data-placement="top"></span></th>
+                        <th>Email <span class="far fa-question-circle" title="Preferred method of contact is italicized." data-toggle="tooltip" data-placement="top"></span></th>
+                        <th>Phone <span class="far fa-question-circle" title="Preferred method of contact is italicized." data-toggle="tooltip" data-placement="top"></span></th>
                         <th>@Model.VendorIdPrompt</th>
                         <th>Programs</th>
                         @if (Model.RegistrationClosed)
@@ -45,7 +45,7 @@
                             @if (Model.RegistrationClosed)
                             {
                                 <td>
-                                    <span class="colored-icon fa @(performer.IsApproved ? "fa-check" : "fa-times")"></span>
+                                    <span class="colored-icon fas @(performer.IsApproved ? "fa-check" : "fa-times")"></span>
                                 </td>
                             }
                             @if (Model.SchedulingStage < GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
@@ -57,7 +57,7 @@
                                             data-target="#deleteModal"
                                             data-id="@performer.Id"
                                             data-name="@performer.Name">
-                                        <span class="fa fa-remove" aria-hidden="true"></span>
+                                        <span class="fas fa-times" aria-hidden="true"></span>
                                     </button>
                                 </td>
                             }
@@ -104,7 +104,7 @@
                         <h1 class="modal-title h4" id="deleteModalLabel">Delete performer</h1>
                     </div>
                     <div class="modal-body">
-                        <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                        <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
                         <span id="modal-text"></span>
                     </div>
                     <div class="modal-footer">
@@ -123,10 +123,10 @@
                             <input asp-for="PerformerToDelete.Name" type="hidden" />
                             <button type="submit"
                                     class="btn btn-danger btn-spinner pull-right"
-                                    aria-label="Confirm">
-                                <span class="fa fa-remove" aria-hidden="true"></span>
+                                    aria-label="Confirm"
+                                    button-spinner>
+                                <span class="fas fa-times" aria-hidden="true"></span>
                                 Delete
-                                <span class="fa fa-spinner fa-pulse fa-fw hidden"></span>
                             </button>
                         </form>
                     </div>

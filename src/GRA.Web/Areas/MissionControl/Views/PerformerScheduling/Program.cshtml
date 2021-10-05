@@ -14,7 +14,7 @@
                     {
                         <td style="position:absolute;">
                             <h1>
-                                <a asp-action="Program" asp-route-id="@Model.PrevProgram" asp-route-list="true" asp-route-ageGroup="@Model.AgeGroup?.Id" style="margin-left:-125px;"><span class="fa fa-chevron-left"></span></a>
+                                <a asp-action="Program" asp-route-id="@Model.PrevProgram" asp-route-list="true" asp-route-ageGroup="@Model.AgeGroup?.Id" style="margin-left:-125px;"><span class="fas fa-chevron-left"></span></a>
                             </h1>
                         </td>
                     }
@@ -23,7 +23,7 @@
                     {
                         <td style="position:absolute;">
                             <h1>
-                                <a asp-action="Program" asp-route-id="@Model.NextProgram" asp-route-list="true" asp-route-ageGroup="@Model.AgeGroup?.Id" style="margin-left:50px;"><span class="fa fa-chevron-right"></span></a>
+                                <a asp-action="Program" asp-route-id="@Model.NextProgram" asp-route-list="true" asp-route-ageGroup="@Model.AgeGroup?.Id" style="margin-left:50px;"><span class="fas fa-chevron-right"></span></a>
                             </h1>
                         </td>
                     }
@@ -195,9 +195,11 @@
 
                         <div class="row">
                             <div class="col-sm-6 col-sm-offset-3" style="margin-top: 1em;">
-                                <button type="submit" class="btn btn-lg btn-primary btn-spinner" style="margin-bottom: 10px;">
+                                <button type="submit"
+                                        class="btn btn-lg btn-primary btn-spinner"
+                                        style="margin-bottom: 10px;"
+                                        button-spinner>
                                     Select Time
-                                    <span class="fa fa-spinner fa-pulse fa-fw hidden"></span>
                                 </button>
                             </div>
                         </div>
@@ -232,7 +234,7 @@
                     @foreach (var branch in Model.System.Branches)
                     {
                         <div>
-                            <span class="colored-icon fa fa-lg @(Model.AllBranches || Model.BranchAvailability.Contains(branch.Id) ? "fa-check" : "fa-times")"></span>
+                            <span class="colored-icon fas fa-lg @(Model.AllBranches || Model.BranchAvailability.Contains(branch.Id) ? "fa-check" : "fa-times")"></span>
                             <label data-toggle="tooltip"
                                    data-placement="top"
                                    title="@branch.Address">
@@ -241,7 +243,7 @@
                             <a aria-label="Map (Opens new window)"
                                href="https://www.google.com/maps/search/@branch.Address"
                                target="_blank">
-                                <span class="fa fa-map-o"></span>
+                                <span class="far fa-map"></span>
                             </a>
                         </div>
                     }

@@ -125,7 +125,7 @@
                                     @if (!string.IsNullOrWhiteSpace(Model.Tasks[i].FilePath))
                                     {
                                         <a href="@Model.Tasks[i].FilePath" target="_blank" class="btn btn-xs btn-default" style="margin-top:5px;">
-                                            <span class="fa fa-file-o"></span>
+                                            <span class="far fa-file"></span>
                                             @SharedLocalizer[GRA.Annotations.Interface.ViewAttachment]
                                         </a>
                                     }
@@ -151,9 +151,10 @@
                     {
                         <input asp-for="Challenge.Id" type="hidden" />
                         <div class="pull-right">
-                            <button type="submit" class="btn center-block btn-success btn-lg btn-spinner">
+                            <button type="submit"
+                                    class="btn center-block btn-success btn-lg btn-spinner"
+                                    button-spinner>
                                 <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.Save]</span>
-                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
                         </div>
                     }

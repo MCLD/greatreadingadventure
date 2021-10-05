@@ -17,7 +17,7 @@
             <div class="row row-spacing">
                 <div class="col-xs-12">
                     <label asp-for="SiteSettingGroups[i].SettingInformations[j].SiteSetting.Value">@Model.SiteSettingGroups[i].SettingInformations[j].Definition.Name</label>
-                    <span class="fa fa-question-circle-o wide-tooltip" title="@Model.SiteSettingGroups[i].SettingInformations[j].Definition.Info" data-toggle="tooltip" data-placement="top"></span>
+                    <span class="far fa-question-circle wide-tooltip" title="@Model.SiteSettingGroups[i].SettingInformations[j].Definition.Info" data-toggle="tooltip" data-placement="top"></span>
                     @if (Model.SiteSettingGroups[i].SettingInformations[j].Definition.Format == GRA.Domain.Model.SiteSettingFormat.Boolean)
                     {
                         <select asp-for="SiteSettingGroups[i].SettingInformations[j].SiteSetting.Value" class="form-control">
@@ -42,9 +42,13 @@
 
     <div class="form-group">
         <a asp-action="Index" class="btn btn-default">Return to List</a>
-        <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-primary btn-spinner">
+        <button type="submit"
+                id="Submit"
+                name="Submit"
+                value="Submit"
+                class="btn btn-primary btn-spinner"
+                button-spinner>
             <span class="buttonText">Save</span>
-            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
         </button>
     </div>
 </form>

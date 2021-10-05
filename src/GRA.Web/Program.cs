@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.PlatformAbstractions;
 using Serilog;
 
 namespace GRA.Web
@@ -103,7 +102,7 @@ namespace GRA.Web
             var contentRoot
                 = Environment.GetEnvironmentVariable(EnvAspNetCoreEnv) == DevEnvironment
                     ? System.IO.Directory.GetCurrentDirectory()
-                    : PlatformServices.Default.Application.ApplicationBasePath;
+                    : System.AppContext.BaseDirectory;
 
             return Host.CreateDefaultBuilder(args)
                        .ConfigureWebHostDefaults(webBuilder =>

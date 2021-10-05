@@ -20,45 +20,51 @@ namespace GRA.Controllers.MissionControl
         private readonly ILogger<RolesController> _logger;
         private readonly AuthorizationCodeService _authorizationCodeService;
         private readonly RoleService _roleService;
+        private readonly UserService _userService;
+        public static string Name { get { return "Roles"; } }
+
         public RolesController(ILogger<RolesController> logger,
             ServiceFacade.Controller context,
             AuthorizationCodeService authorizationCodeService,
-            RoleService roleService)
+            RoleService roleService,
+            UserService userService)
             : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _authorizationCodeService = authorizationCodeService
                 ?? throw new ArgumentNullException(nameof(authorizationCodeService));
             _roleService = roleService ?? throw new ArgumentNullException(nameof(roleService));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 
         #region Roles
-        public async Task<IActionResult> Index(int page = 1)
+
+        public async Task<IActionResult> Index(int page)
         {
-            var filter = new BaseFilter(page);
+            var filter = new BaseFilter(page == default ? 1 : page);
 
             var roleList = await _roleService.GetPaginatedListAsync(filter);
 
-            PaginateViewModel paginateModel = new PaginateViewModel
+            var paginateModel = new PaginateViewModel
             {
                 ItemCount = roleList.Count,
-                CurrentPage = page,
+                CurrentPage = page == default ? 1 : page,
                 ItemsPerPage = filter.Take.Value
             };
+
             if (paginateModel.PastMaxPage)
             {
-                return RedirectToRoute(
-                    new
-                    {
-                        page = paginateModel.LastPage ?? 1
-                    });
+                return RedirectToRoute(new { page = paginateModel.LastPage ?? 1 });
             }
 
             var viewModel = new RoleListViewModel
             {
                 Roles = roleList.Data,
-                PaginateModel = paginateModel
+                PaginateModel = paginateModel,
             };
+
+            viewModel.SetUsersInRoles(await _roleService
+                .GetUserCountForRolesAsync(roleList.Data.Select(_ => _.Id)));
 
             return View(viewModel);
         }
@@ -100,7 +106,7 @@ namespace GRA.Controllers.MissionControl
         {
             if (ModelState.IsValid)
             {
-                var permissionList = model.Permissions?.Split(',') ?? new string[] { };
+                var permissionList = model.Permissions?.Split(',') ?? Array.Empty<string>();
                 var role = await _roleService.AddAsync(model.Role, permissionList);
                 ShowAlertSuccess($"Added Role \"{role.Name}\"!");
                 return RedirectToAction(nameof(Edit), new { id = role.Id });
@@ -117,7 +123,7 @@ namespace GRA.Controllers.MissionControl
         {
             PageTitle = "Edit Role";
 
-            var viewModel = new RoleDetailViewModel()
+            var viewModel = new RoleDetailViewModel
             {
                 Role = await _roleService.GetByIdAsync(id),
                 Action = nameof(Edit),
@@ -131,6 +137,10 @@ namespace GRA.Controllers.MissionControl
             {
                 ShowAlertWarning("Permissions for the System Administrator role cannot be modified. This role always has all permissions.");
             }
+
+            var usersInRoles = await _roleService.GetUserCountForRolesAsync(new[] { id });
+
+            viewModel.UsersInRole = usersInRoles?.ContainsKey(id) == true ? usersInRoles[id] : 0;
 
             return View("Detail", viewModel);
         }
@@ -152,9 +162,48 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Edit Role";
             return View("Detail", model);
         }
-        #endregion
+
+        [HttpGet]
+        public async Task<IActionResult> UsersInRole(int id, int page)
+        {
+            var role = await _roleService.GetByIdAsync(id);
+
+            if (role == null)
+            {
+                ShowAlertDanger("Unknown role id {id}.");
+                return RedirectToAction(nameof(Index));
+            }
+
+            var filter = new BaseFilter(page == default ? 1 : page)
+            {
+                SiteId = GetCurrentSiteId()
+            };
+
+            var users = await _userService.GetUserInfoByRole(id, filter);
+
+            var viewModel = new UsersInRoleViewModel
+            {
+                CurrentPage = page == default ? 1 : page,
+                ItemCount = users.Count,
+                ItemsPerPage = filter.Take.Value,
+                RoleId = id,
+                RoleName = role.Name
+            };
+
+            viewModel.AddUsers(users.Data);
+
+            if (viewModel.PastMaxPage)
+            {
+                return RedirectToRoute(new { page = viewModel.LastPage ?? 1 }); 
+            }
+
+            return View(viewModel);
+        }
+
+        #endregion Roles
 
         #region Authorization Codes
+
         public async Task<IActionResult> AuthorizationCodes(int page = 1)
         {
             var filter = new BaseFilter(page);
@@ -192,7 +241,8 @@ namespace GRA.Controllers.MissionControl
         {
             if (model == null)
             {
-                throw new ArgumentNullException(nameof(model));
+                ShowAlertDanger("Unable to add empty code.");
+                return RedirectToAction(nameof(Index));
             }
 
             try
@@ -217,7 +267,8 @@ namespace GRA.Controllers.MissionControl
         {
             if (model == null)
             {
-                throw new ArgumentNullException(nameof(model));
+                ShowAlertDanger("Unable to edit empty code.");
+                return RedirectToAction(nameof(Index));
             }
 
             try
@@ -243,7 +294,8 @@ namespace GRA.Controllers.MissionControl
         {
             if (model == null)
             {
-                throw new ArgumentNullException(nameof(model));
+                ShowAlertDanger("Unable to delete empty code.");
+                return RedirectToAction(nameof(Index));
             }
 
             try
@@ -261,6 +313,7 @@ namespace GRA.Controllers.MissionControl
                 page = model.PaginateModel.CurrentPage
             });
         }
-        #endregion
+
+        #endregion Authorization Codes
     }
 }

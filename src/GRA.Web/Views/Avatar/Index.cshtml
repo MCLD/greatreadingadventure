@@ -19,7 +19,7 @@
                     }
                 </div>
                 <button type="button" class="btn btn-default avatar-zoom-button">
-                    <span class="fa fa-lg fa-search-plus"></span>
+                    <span class="fas fa-lg fa-search-plus"></span>
                 </button>
             </div>
             <div class="hidden-xs" id="desktop-container" aria-hidden="true">
@@ -198,21 +198,21 @@
                            asp-action="Index"
                            class="btn btn-lg btn-default"
                            style="margin:5px;">
-                            <span class="fa fa-home"></span>
+                            <span class="fas fa-home"></span>
                             @SharedLocalizer[GRA.Domain.Model.DisplayNames.Home]
                         </a>
                         <button id="removeButton"
                                 class="btn btn-lg btn-default hide"
                                 style="margin:5px;">
-                            <span class="fa fa-ban"></span>
+                            <span class="fas fa-ban"></span>
                             <span id="layerName"></span>
                         </button>
                         <button id="saveAvatar"
                                 class="btn btn-lg @(Model.NewAvatar ? "btn-success" : "btn-default")"
-                                style="margin:5px;">
-                            <span class="fa fa-floppy-o"></span>
+                                style="margin:5px;"
+                                button-spinner>
+                            <span class="far fa-save"></span>
                             @SharedLocalizer[GRA.Annotations.Interface.Save]
-                            <span id="saveSpinner" class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                         </button>
                         <form id="shareForm"
                               asp-action="Share"
@@ -221,7 +221,7 @@
                               style="display: inline-block">
                             <input type="hidden" name="selectionJson" />
                             <button class="btn btn-lg btn-default" style="margin:5px;">
-                                <span class="fa fa-share-alt"></span>
+                                <span class="fas fa-share-alt"></span>
                                 @SharedLocalizer[GRA.Annotations.Interface.Share]
                             </button>
                         </form>
@@ -252,6 +252,8 @@
             //Sets the default layer
             $('.dropdown-toggle').dropdown();
             SetLayer($("#layer-container").find("[data-layer='" + @Model.DefaultLayer +"']"));
+            var saveSpinner = $("#saveAvatar").find("span.fa-spinner");
+            saveSpinner.attr("id", "saveSpinner");
 
             @if (@Model.PreconfiguredAvatar !=null)
             {
@@ -487,9 +489,6 @@
                 $("#avatarItems").removeClass("hide");
                 $("#removeButton").data("layer", layer.data("layer"));
                 $("#layerName").text(layer.data("removelabel"));
-                layer.data("removable") == "True" ?
-                    $("#removeButton").removeClass("hide") :
-                    $("#removeButton").addClass("hide");
                 SetLayersSelectors("#avatarItemSelectors", 3);
             }
             else {
@@ -504,6 +503,9 @@
             else {
                 $("#avatarColors").addClass("hide");
             }
+            layer.data("removable") == "True" ?
+                $("#removeButton").removeClass("hide") :
+                $("#removeButton").addClass("hide");
         }
 
         // Initializes the item/color slicks
@@ -640,34 +642,37 @@
             var button = $(this);
             var layer = CurrentSelectedLayer();
             if (layer.data("layer") != 999) {
-                if (!$("#removeButton").hasClass("hide") && $(".avatarItems").find(".selected") != undefined) {
+                if (!$("#removeButton").hasClass("hide") && $(".avatarItems").find(".selected") != undefined
+                    && layer.data("removable") == "True") {
                     $(".avatar-item-selector.selected").removeClass("selected");
                     $(".avatar-color-selector.selected").removeClass("selected");
                     layer.data("item", "");
                     layer.data("color", "");
-                    UpdateAvatarContainer("item", "", "/", layer.data("layer"),true);
+                    UpdateAvatarContainer("item", "", "/", layer.data("layer"), true);
                 }
             }
             else {
                 var itemsLayer = GetLayerById(button.data("layer"));
-                var itemId = GetLayersSelectedItemId(button.data("layer"));
-                itemsLayer.data("item", "");
-                var item = $("#avatarItemSelectors").find("img.avatar-item-selector[data-item='" + itemId + "']");
-                item.removeClass("selected");
-                var nextSelected = undefined;
-                UpdateAvatarContainer("item", "", "/", button.data("layer"),true);
-                prevLayerSelected.splice(0, 1);
-                if (prevLayerSelected[0] != undefined) {
-                    nextSelected = $("#avatarItemSelectors").find("img.avatar-item-selector.selected[data-layer='" + prevLayerSelected[0] + "']");
-                    UpdateRemoveButtonForBundle(nextSelected);
-                }
-                else {
-                    nextSelected = GetFirstActiveSelectedItem();
-                    if (nextSelected == undefined) {
-                        $("#removeButton").addClass("hide");
+                if (itemsLayer.data("removable") == "True") {
+                    var itemId = GetLayersSelectedItemId(button.data("layer"));
+                    itemsLayer.data("item", "");
+                    var item = $("#avatarItemSelectors").find("img.avatar-item-selector[data-item='" + itemId + "']");
+                    item.removeClass("selected");
+                    var nextSelected = undefined;
+                    UpdateAvatarContainer("item", "", "/", button.data("layer"), true);
+                    prevLayerSelected.splice(0, 1);
+                    if (prevLayerSelected[0] != undefined) {
+                        nextSelected = $("#avatarItemSelectors").find("img.avatar-item-selector.selected[data-layer='" + prevLayerSelected[0] + "']");
+                        UpdateRemoveButtonForBundle(nextSelected);
                     }
                     else {
-                        UpdateRemoveButtonForBundle(nextSelected);
+                        nextSelected = GetFirstActiveSelectedItem();
+                        if (nextSelected == undefined) {
+                            $("#removeButton").addClass("hide");
+                        }
+                        else {
+                            UpdateRemoveButtonForBundle(nextSelected);
+                        }
                     }
                 }
             }

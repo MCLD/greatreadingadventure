@@ -72,7 +72,7 @@
                 <div class="input-group">
                     <label class="input-group-btn">
                         <span class="btn btn-default btn-file">
-                            <span class="fa fa-file-image-o"></span>
+                            <span class="far fa-file-image"></span>
                             Image .zip file
                             <input type="file"
                                    asp-for="UploadedFile"
@@ -90,10 +90,9 @@
                 <span asp-validation-for="UploadedFile" class="text-danger"></span>
             </div>
             <div>
-                <button class="btn btn-primary btn-spinner" type="submit">
+                <button class="btn btn-primary btn-spinner" type="submit" button-spinner>
                     <span class="fas fa-file-upload"></span>
                     Upload
-                    <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                 </button>
             </div>
         </div>

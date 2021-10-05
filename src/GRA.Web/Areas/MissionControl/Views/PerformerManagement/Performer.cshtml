@@ -12,7 +12,7 @@
                 {
                     <td style="position:absolute;">
                         <h1>
-                            <a asp-action="Performer" asp-route-id="@Model.PrevPerformer" style="margin-left:-125px;"><span class="fa fa-chevron-left"></span></a>
+                            <a asp-action="Performer" asp-route-id="@Model.PrevPerformer" style="margin-left:-125px;"><span class="fas fa-chevron-left"></span></a>
                         </h1>
                     </td>
                 }
@@ -21,7 +21,7 @@
                 {
                     <td style="position:absolute;">
                         <h1>
-                            <a asp-action="Performer" asp-route-id="@Model.NextPerformer" style="margin-left:50px;"><span class="fa fa-chevron-right"></span></a>
+                            <a asp-action="Performer" asp-route-id="@Model.NextPerformer" style="margin-left:50px;"><span class="fas fa-chevron-right"></span></a>
                         </h1>
                     </td>
                 }
@@ -194,7 +194,7 @@
                                             data-target="#deleteModal"
                                             data-id="@program.Id"
                                             data-name="@program.Title">
-                                        <span class="fa fa-remove" aria-hidden="true"></span>
+                                        <span class="fas fa-times" aria-hidden="true"></span>
                                     </button>
                                 </td>
                             }
@@ -303,7 +303,7 @@
                         @foreach (var branch in system.Branches)
                         {
                             <div>
-                                <span class="colored-icon fa fa-lg @(Model.BranchAvailability.Contains(branch.Id) || Model.Performer.AllBranches ? "fa-check" : "fa-times")"></span>
+                                <span class="colored-icon fas fa-lg @(Model.BranchAvailability.Contains(branch.Id) || Model.Performer.AllBranches ? "fa-check" : "fa-times")"></span>
                                 <label data-toggle="tooltip"
                                        data-placement="top"
                                        title="@branch.Address">
@@ -312,7 +312,7 @@
                                 <a aria-label="Map (Opens new window)"
                                    href="https://www.google.com/maps/search/@branch.Address"
                                    target="_blank">
-                                    <span class="fa fa-map-o"></span>
+                                    <span class="far fa-map"></span>
                                 </a>
                             </div>
                         }
@@ -350,7 +350,7 @@
                     <h1 class="modal-title h4" id="deleteModalLabel">Delete program</h1>
                 </div>
                 <div class="modal-body">
-                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                    <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
                     <span id="modal-text"></span>
                 </div>
                 <div class="modal-footer">
@@ -369,10 +369,10 @@
                         <input asp-for="ProgramToDelete.Title" type="hidden" />
                         <button type="submit"
                                 class="btn btn-danger btn-spinner pull-right"
-                                aria-label="Confirm">
-                            <span class="fa fa-remove" aria-hidden="true"></span>
+                                aria-label="Confirm"
+                                button-spinner>
+                            <span class="fas fa-times" aria-hidden="true"></span>
                             Delete
-                            <span class="fa fa-spinner fa-pulse fa-fw hidden"></span>
                         </button>
                     </form>
                 </div>

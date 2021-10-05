@@ -38,13 +38,13 @@
                 <a asp-controller="Home"
                    asp-action="Index"
                    class="navbar-brand mc-navbar-brand">
-                    <span class="fa fa-rocket"></span>
+                    <span class="fas fa-rocket"></span>
                     Mission Control
                 </a>
             </div>
             <div class="navbar-collapse navbar-right collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index" title="Back to the site" data-toggle="tooltip" data-placement="bottom" class="gra-homelink"><span class="fa fa-sitemap"></span><span class="visible-xs-inline"> Back to the site</span></a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Index" title="Back to the site" data-toggle="tooltip" data-placement="bottom" class="gra-homelink"><span class="fas fa-sitemap"></span><span class="visible-xs-inline"> Back to the site</span></a></li>
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.ReadAllMail)))
                     {
                         var newMail = (int)Context.Items[GRA.Controllers.ItemKey.UnreadCount] > 0;
@@ -61,12 +61,12 @@
                     }
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewParticipantList.ToString()))
                     {
-                        <li ActiveBy routeKey="Controller" value="Participants"><a asp-controller="Participants" asp-action="Index" title="Participants"><span class="fa fa-users"></span><span class="visible-xs-inline"> Participants</span></a></li>
+                        <li ActiveBy routeKey="Controller" value="Participants"><a asp-controller="Participants" asp-action="Index" title="Participants"><span class="fas fa-users"></span><span class="visible-xs-inline"> Participants</span></a></li>
                     }
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewAllChallenges.ToString()))
                     {
                         <li ActiveBy routeKey="Controller" value="Challenges">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Challenges"><span class="fa fa-trophy"></span><span class="visible-xs-inline"> Challenges</span><span class="caret"></span></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Challenges"><span class="fas fa-trophy"></span><span class="visible-xs-inline"> Challenges</span><span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li><a asp-controller="Challenges" asp-action="Index">All Challenges</a></li>
                                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ActivateAllChallenges.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ActivateSystemChallenges.ToString()))
@@ -79,12 +79,12 @@
                     }
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageTriggers.ToString()))
                     {
-                        <li ActiveBy routeKey="Controller" value="Triggers"><a asp-controller="Triggers" asp-action="Index" title="Triggers"><span class="fa fa-gears"></span><span class="visible-xs-inline"> Triggers</span></a></li>
+                        <li ActiveBy routeKey="Controller" value="Triggers"><a asp-controller="Triggers" asp-action="Index" title="Triggers"><span class="fas fa-cogs"></span><span class="visible-xs-inline"> Triggers</span></a></li>
                     }
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageEvents.ToString()) && Context.Items.ContainsKey(GRA.Controllers.ItemKey.ExternalEventListUrl) == false)
                     {
                         <li ActiveBy routeKey="Controller" value="Events">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Events"><span class="fa fa-calendar"></span><span class="visible-xs-inline"> Events</span><span class="caret"></span></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Events"><span class="fas fa-calendar-alt"></span><span class="visible-xs-inline"> Events</span><span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li><a asp-controller="Events" asp-action="Index">Events</a></li>
                                 <li><a asp-controller="Events" asp-action="CommunityExperiences">Community Experiences</a></li>
@@ -99,7 +99,7 @@
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageAvatars.ToString()))
                     {
                         <li ActiveBy routeKey="Controller" value="Avatars">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Avatars"><span class="fa fa-picture-o"></span><span class="visible-xs-inline"> Avatars</span> <span class="caret"></span></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Avatars"><span class="far fa-image"></span><span class="visible-xs-inline"> Avatars</span> <span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li><a asp-controller="Avatars" asp-action="Index">Avatars</a></li>
                                 <li><a asp-controller="Avatars" asp-action="Bundles" asp-route-Search="Default">Avatar Bundles</a></li>
@@ -109,7 +109,7 @@
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.PerformDrawing.ToString()))
                     {
                         <li ActiveBy routeKey="Controller" value="Drawing">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Drawings"><span class="fa fa-ticket"></span><span class="visible-xs-inline"> Drawings</span> <span class="caret"></span></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Drawings"><span class="fas fa-ticket-alt"></span><span class="visible-xs-inline"> Drawings</span> <span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li><a asp-controller="Drawing" asp-action="Criteria">Drawing Criteria</a></li>
                                 <li><a asp-controller="Drawing" asp-action="Index">Drawings</a></li>
@@ -123,7 +123,7 @@
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewAllReporting.ToString()))
                     {
                         <li ActiveBy routeKey="Controller" value="Reporting">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Reporting"><span class="fa fa-file-text-o"></span><span class="visible-xs-inline"> Reporting</span> <span class="caret"></span></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Reporting"><span class="far fa-file"></span><span class="visible-xs-inline"> Reporting</span> <span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li><a asp-controller="Reporting" asp-action="Index">All reports</a></li>
                             </ul>
@@ -140,7 +140,7 @@
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.ManageCarousels)) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageCategories.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageDashboardContent.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageGroupTypes.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.ManageNews)) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewUnpublishedPages.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManagePrograms.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageQuestionnaires.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageRoles.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSchools.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSites.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSystems.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSystems.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageVendorCodes.ToString()))
                     {
                         <li ActiveBy routeKey="Controller" value="Pages, Schools">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Setup"><span class="fa fa-wrench"></span><span class="visible-xs-inline"> Setup</span> <span class="caret"></span></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Setup"><span class="fas fa-wrench"></span><span class="visible-xs-inline"> Setup</span> <span class="caret"></span></a>
 
                             <ul class="dropdown-menu">
                                 <li>
@@ -218,7 +218,7 @@
                                 }
                                 <li>
                                     <a asp-controller="SystemInformation" asp-action="Index">
-                                        <span class="fa fa-info-circle"></span>
+                                        <span class="fas fa-info-circle"></span>
                                         System information
                                     </a>
                                 </li>
@@ -234,7 +234,7 @@
         <noscript>
             <div class="row">
                 <div class="col-xs-12">
-                    <div class="alert alert-warning"><span class="fa fa-lg fa-warning text-primary"></span> This website relies on JavaScript. Please enable JavaScript in your browser to get the best experience.</div>
+                    <div class="alert alert-warning"><span class="fas fa-lg fa-exclamation-triangle text-primary"></span> This website relies on JavaScript. Please enable JavaScript in your browser to get the best experience.</div>
                 </div>
             </div>
         </noscript>
