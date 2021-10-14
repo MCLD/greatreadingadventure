@@ -22,12 +22,13 @@ The Great Reading Adventure is open source software developed with the help of [
 ### <a name="people-support"></a>Support
 
 - [Caris O'Malley](https://www.linkedin.com/in/caris-o-malley-28b5a547) &#9734;
-- Brianna King
+- [Brianna King](https://www.linkedin.com/in/brianna-king-22373b211/)
 - Danette Barton
 - [Daniel Messer](https://cyberpunklibrarian.com/)
 - [Erin MacFarlane](https://www.linkedin.com/in/erin-macfarlane-407646118)
 - [Heather Hershey](https://www.linkedin.com/in/heatherhershey)
 - [Holly Brennan](https://www.linkedin.com/in/holly-brennan-76450270)
+- [Jennifer Brown](https://www.linkedin.com/in/jenniferbrown32/)
 - [Lindsey Powers](https://www.linkedin.com/in/lindsey-powers-a3422730)
 - [Lucas Gonzalez](http://diffracted.com/)
 - [Paula Wilson](https://www.linkedin.com/in/apaulawilson)
@@ -43,6 +44,7 @@ The Great Reading Adventure is open source software developed with the help of [
 
 - [AppHarbor](https://appharbor.com/) - free hosting tier that will run the GRA for testing
 - [AppVeyor](http://www.appveyor.com/) - continuous integration, ensuring code check-ins don't break Windows builds
+- [Atomist](https://atomist.com/) - DevSecOps tool to keep up-to-date and prevent vulnerabilities
 - [Codacy](https://www.codacy.com/) - automated code reviews and code analytics
 - [Docker](https://www.docker.com/) - containerized builds and deployment
 - [Eleven Giants](http://www.elevengiants.com/) - helped with extraction of avatars from the Glitch public domain game art
@@ -58,10 +60,10 @@ The Great Reading Adventure is open source software developed with the help of [
 
 The Great Reading Adventure uses open source components. You can find information about those components along with links to their source code and license information below. We are grateful to these developers for their contributions to the open source community, without them The Great Reading Adventure wouldn't exist!
 
-### .NET Core
+### Microsoft .NET
 
-- [.NET Core](https://www.microsoft.com/net/core) is a general purpose development platform maintained by Microsoft and the .NET community on GitHub. It is cross-platform, supporting Windows, macOS and Linux, and can be used in device, cloud, and embedded/IoT scenarios.
-- Source on GitHub: [dotnet/core](https://github.com/dotnet/core) - [MIT License](https://github.com/dotnet/core/blob/master/LICENSE)
+- [Microsoft .NET](https://dotnet.microsoft.com/) is a general purpose development platform maintained by Microsoft and the .NET community on GitHub. It is cross-platform, supporting Windows, macOS and Linux, and can be used in device, cloud, and embedded/IoT scenarios.
+- Source on GitHub: [dotnet/aspnetcore](https://github.com/dotnet/aspnetcore) - [MIT License](https://github.com/dotnet/aspnetcore/blob/main/LICENSE.txt)
 
 ### AutoMapper
 
@@ -164,11 +166,6 @@ The Great Reading Adventure uses open source components. You can find informatio
 - Adapted code from the [ASP.NET Identity PasswordHasher class](https://github.com/aspnet/Identity/blob/dev/src/Microsoft.AspNetCore.Identity/PasswordHasher.cs)
 - Source on GitHub: [aspnet/Identity](https://github.com/aspnet/Identity) - [Apache License, Version 2.0](https://github.com/aspnet/Identity/blob/dev/LICENSE.txt)
 
-### PageDown
-
-- Markdown to HTML converter and editor [hg-git clone](http://code.google.com/p/pagedown/)
-- Source on GitHub: [ujifgc/pagedown](https://github.com/ujifgc/pagedown) - [MIT License](https://github.com/ujifgc/pagedown/blob/master/LICENSE.txt)
-
 ### Serilog
 
 - [Serilog](https://serilog.net/): Simple .NET logging with fully-structured events
@@ -179,12 +176,7 @@ The Great Reading Adventure uses open source components. You can find informatio
 - Javascipt carousel [Slick](http://kenwheeler.github.io/slick/)
 - Source on GitHub: [kenwheeler/slick/](https://github.com/kenwheeler/slick/) - [MIT License](https://github.com/kenwheeler/slick/blob/master/LICENSE)
 
-### Slugify.js
+### Stubble.Core
 
-- Javascript text replacement to slugify strings.
-- Source on GitHub Gist: [mathewbyrne/slugify.js](https://gist.github.com/mathewbyrne/1280286)
-
-### SmartFormat.NET
-
-- A lightweight engine that makes it easy to form natural language from text templates.
-- Source on GitHub [scottrippey/SmartFormat.NET](https://github.com/scottrippey/SmartFormat.NET) - [MIT License](https://github.com/scottrippey/SmartFormat.NET/blob/master/license.txt)
+- Trimmed down {{mustache}} templates
+- Source on GitHub [StubbleOrg/Stubble](https://github.com/stubbleorg/stubble) - [MIT License](https://github.com/StubbleOrg/Stubble/blob/master/licence.md)
