@@ -60,6 +60,7 @@ namespace GRA.Data.Repository
                 .ProjectTo<AvatarLayer>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync();
         }
+
         public Dictionary<string, string> GetNameAndLabelByLanguageId(int layerId, int languageId)
         {
             var layerText = _context.AvatarLayerTexts

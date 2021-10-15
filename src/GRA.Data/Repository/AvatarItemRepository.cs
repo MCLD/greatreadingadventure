@@ -58,6 +58,7 @@ namespace GRA.Data.Repository
                 .Select(_ => _.AvatarItemId)
                 .ToListAsync();
         }
+
         public async Task<AvatarItem> GetDefaultLayerItemAsync(int defaultLayerId)
         {
             return await DbSet.AsNoTracking()

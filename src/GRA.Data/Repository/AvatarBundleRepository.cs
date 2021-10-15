@@ -111,7 +111,7 @@ namespace GRA.Data.Repository
             {
                 bundles = bundles.Where(_ => _.CanBeUnlocked);
             }
-            if (filter.Preconfigured)
+            if (filter.IsPreconfigured)
             {
                 bundles = bundles.Where(_ => _.Description != null);
             }

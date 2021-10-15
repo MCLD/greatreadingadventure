@@ -178,7 +178,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         public async Task<IActionResult> GetLayersItems(
-    string type, int layerId, int selectedItemId, int bundleId, int[] selectedItemIds)
+            string type, int layerId, int selectedItemId, int bundleId, int[] selectedItemIds)
         {
             try
             {
@@ -328,7 +328,7 @@ namespace GRA.Controllers.MissionControl
             }
             else if (search == "Preconfigured")
             {
-                filter.Preconfigured = true;
+                filter.IsPreconfigured = true;
             }
             else
             {
@@ -744,7 +744,7 @@ namespace GRA.Controllers.MissionControl
             });
         }
 
-        public async Task<IActionResult> CreatePreconfiguredAvatar([FromBody]PreconfiguredDetailsViewModel model)
+        public async Task<IActionResult> CreatePreconfiguredAvatar([FromBody] PreconfiguredDetailsViewModel model)
         {
             var bundle = new AvatarBundle
             {
@@ -772,7 +772,7 @@ namespace GRA.Controllers.MissionControl
                 {
                     var newPreconfigured = await _avatarService.AddBundleAsync(bundle, model.SelectedItemIds);
                     ShowAlertSuccess($"Created '{newPreconfigured.Name}' pre-configured avatar.");
-                    RedirectToAction(nameof(PreconfiguredDetails), new { id = newPreconfigured.Id});
+                    return RedirectToAction(nameof(PreconfiguredDetails), new { id = newPreconfigured.Id });
                 }
                 catch (GraException gex)
                 {
@@ -807,7 +807,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdatePreconfiguredAvatar([FromBody]PreconfiguredDetailsViewModel model)
+        public async Task<IActionResult> UpdatePreconfiguredAvatar([FromBody] PreconfiguredDetailsViewModel model)
         {
             var bundle = new AvatarBundle
             {
