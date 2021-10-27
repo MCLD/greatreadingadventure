@@ -38,6 +38,7 @@
             public const string CompleteTasksEarnPointsBadge = "When you complete <strong>{0}</strong>, you will earn <strong>{1}</strong> and a badge.";
             public const string ConfirmBookDelete = "Are you sure you want to delete this book from your book list:";
             public const string CouldNotFind = "We couldn't find what you were looking for. Sorry about that!";
+            public const string DashboardOptionalFields = "If you choose to enter a title and author, you can view a list of all the books you've read in your profile.";
             public const string EarnedOn = "Earned on {0}";
             public const string EventBadgeEarned = "You earned this badge for attending the event: <a href=\"{0}\" target=\"_blank\">{1}</a>";
             public const string EventLimitedToProgram = "This event is limited to the program: {0}";
@@ -144,6 +145,7 @@
             public const string NoEvents = "No Events";
             public const string NoMail = "You currently have no mail.";
             public const string NotStreamingYet = "Not streaming yet";
+            public const string Optional = "Optional";
             public const string PasswordChanged = "Your password has been changed.";
             public const string PointsYoullEarn = "Points you'll earn";
             public const string ProfileUpdated = "Profile updated.";

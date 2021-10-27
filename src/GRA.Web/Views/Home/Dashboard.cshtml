@@ -86,8 +86,8 @@
             <div class="panel-body text-center">
                 <span class="lead">@SharedHtmlLocalizer["Welcome <strong>{0}!</strong>", Model.FirstName]</span>
                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessPerformerRegistration))
-                 && !Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessMissionControl))
-                 && Model.SiteStage == GRA.Domain.Model.SiteStage.BeforeRegistration)
+              && !Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessMissionControl))
+              && Model.SiteStage == GRA.Domain.Model.SiteStage.BeforeRegistration)
                 {
                     <p class="lead" style="padding-top: 2rem;">
                         Welcome, performer! Please click on the theater masks icon at the top of the
@@ -154,6 +154,16 @@
                                 <div class="col-sm-5 col-md-7 col-lg-8">
                                     <input asp-for="ActivityAmount" type="text" value="@Model.ActivityAmount" class="form-control" />
                                     <span asp-validation-for="ActivityAmount" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row" style="margin-bottom: 1rem;">
+                                <div class="col-xs-12">
+                                    <span class="h4">@SharedLocalizer[GRA.Annotations.Interface.Optional]</span>
+                                    <span class="fas fa-info-circle fa-sm wide-tooltip"
+                                          title="@SharedLocalizer[GRA.Annotations.Info.DashboardOptionalFields]"
+                                          data-toggle="tooltip"
+                                          data-placement="top"></span>
                                 </div>
                             </div>
 
