@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - Notation on the participant dashboard that title and author are optional
 
+### Updated
+
+- Package references
+
 ## [4.2.1] - 2021-10-14
 
 ### Added
