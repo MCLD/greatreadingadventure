@@ -1545,8 +1545,8 @@
     <value>All Participating Libraries</value>
     <comment>Text for the footer link to view all participating libraries.</comment>
   </data>
-  <data name="Optional:" xml:space="preserve">
-    <value>Optional:</value>
+  <data name="Optional" xml:space="preserve">
+    <value>Optional</value>
     <comment>Indication for fields that are not required.</comment>
   </data>
   <data name="If you choose to enter a title and author, you can view a list of all the books you've read in your profile." xml:space="preserve">
