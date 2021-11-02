@@ -63,7 +63,9 @@ namespace GRA.Controllers
                 LayerGroupings = layerGroupings,
                 Bundles = usersresult,
                 DefaultLayer = userWardrobe.First(_ => _.DefaultLayer).Id,
-                ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/")
+                ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/"),
+                SharingEnabled =
+                    !await GetSiteSettingBoolAsync(SiteSettingKey.Avatars.DisableSharing)
             };
             var userAvatar = await _avatarService.GetUserAvatarAsync();
             viewModel.NewAvatar = userAvatar.Count == 0;
@@ -100,6 +102,11 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> Share()
         {
+            if (await GetSiteSettingBoolAsync(SiteSettingKey.Avatars.DisableSharing))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             PageTitle = _sharedLocalizer[Annotations.Title.ShareYourAvatar];
             var userAvatar = await _avatarService.GetUserAvatarAsync();
             if (userAvatar?.Count > 0)
@@ -180,6 +187,11 @@ namespace GRA.Controllers
         [HttpPost]
         public async Task<IActionResult> Share(string selectionJson)
         {
+            if (await GetSiteSettingBoolAsync(SiteSettingKey.Avatars.DisableSharing))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             if (!string.IsNullOrWhiteSpace(selectionJson))
             {
                 try
@@ -265,6 +277,11 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> InstagramImage(string id)
         {
+            if (await GetSiteSettingBoolAsync(SiteSettingKey.Avatars.DisableSharing))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             var siteId = GetCurrentSiteId();
 
             var igFilePath = _pathResolver.ResolveContentFilePath($"site{siteId}/igavatars/{id}.png");
