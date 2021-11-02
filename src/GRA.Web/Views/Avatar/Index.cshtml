@@ -45,7 +45,7 @@
                     {
                         foreach (var layerGroup in Model.LayerGroupings)
                         {
-                            <div style="display: inline-block;" class="@(Model.LayerGroupings.Count == 1 ? "hide" : "")">
+                            <div style="display: inline-block;" class="@(layerGroup.Count == 1 ? "hide" : "")">
                                 @foreach (var layer in layerGroup)
                                 {
                                     <img src="~/@layer.Icon"
@@ -66,7 +66,7 @@
                             </div>
                         }
                     }
-                    <div style="display: inline-block;" class="col-xs-24">
+                    <div style="display: inline-block;" class="@(Model.Bundles.Count == 0 ? "hide" : "")">
                         <img src="@(Model.Bundles.Any(_=>!_.HasBeenViewed.Value && _.CanBeUnlocked)
                             ? "/content/site1/avatarbundles/notif.png"
                             : "/content/site1/avatarbundles/icon.png")"
