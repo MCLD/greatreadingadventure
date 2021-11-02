@@ -9,6 +9,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Added
 
 - Notation on the participant dashboard that title and author are optional
+- Site setting to disable avatar sharing
+
+### Changed
+
+- Hide avatar bundle icon if no bundles are available
 
 ### Updated
 
