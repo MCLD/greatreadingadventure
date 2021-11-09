@@ -178,7 +178,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         public async Task<IActionResult> GetLayersItems(
-            string type, int layerId, int selectedItemId, int bundleId, int[] selectedItemIds)
+            int layerId, int bundleId, int[] selectedItemIds)
         {
             try
             {
@@ -186,24 +186,9 @@ namespace GRA.Controllers.MissionControl
                 {
                     ItemPath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/")
                 };
-                if (type == "Item")
-                {
-                    model.LayerItems = await _avatarService.GetUsersItemsByLayerAsync(layerId);
-                    model.SelectedItemId = selectedItemId;
-                    model.ItemPath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/");
-                    model.LayerId = layerId;
-                }
-                else if (type == "Color")
-                {
-                    model.LayerColors = await _avatarService.GetColorsByLayerAsync(layerId);
-                    model.SelectedItemId = selectedItemId;
-                    model.LayerId = layerId;
-                }
-                else
-                {
-                    model.Bundle = await _avatarService.GetBundleByIdAsync(bundleId, false, true);
-                    model.SelectedItemIds = selectedItemIds;
-                }
+
+                model.Bundle = await _avatarService.GetBundleByIdAsync(bundleId, false, true);
+                model.SelectedItemIds = selectedItemIds;
                 Response.StatusCode = StatusCodes.Status200OK;
                 return PartialView("_SlickPartial", model);
             }
@@ -442,6 +427,7 @@ namespace GRA.Controllers.MissionControl
                 selectedIds.Add(mannequin.Id);
                 viewModel.LayerGroupings = await _avatarService.GetWardrobe(selectedIds);
                 viewModel.SelectedItemIds = selectedIds;
+                viewModel.ItemIds = JsonConvert.SerializeObject(selectedIds);
             }
             else
             {
@@ -744,50 +730,52 @@ namespace GRA.Controllers.MissionControl
             });
         }
 
-        public async Task<IActionResult> CreatePreconfiguredAvatar([FromBody] PreconfiguredDetailsViewModel model)
+        [HttpPost]
+        public async Task<IActionResult> CreatePreconfiguredAvatar(PreconfiguredDetailsViewModel model)
         {
-            var bundle = new AvatarBundle
-            {
-                Name = model.Name,
-                Description = model.Description,
-                AssociatedBundleId = model.AssociatedBundleId,
-            };
-            if (string.IsNullOrEmpty(bundle.Name))
-            {
-                ModelState.AddModelError("Bundle.Name",
-                    _sharedLocalizer[ErrorMessages.Field, nameof(AvatarBundle.Name)]);
-            }
-            if (string.IsNullOrEmpty(bundle.Description))
+            if (string.IsNullOrEmpty(model.Bundle.Description))
             {
                 ModelState.AddModelError("Bundle.Description",
                     _sharedLocalizer[ErrorMessages.Field, nameof(AvatarBundle.Description)]);
             }
-            if (bundle.AssociatedBundleId == 0 || model.SelectedItemIds.Count < 1)
+            if (!string.IsNullOrWhiteSpace(model.ItemIds))
             {
-                ModelState.AddModelError("SelectedItemIds", "A bundle and items must be selected.");
+                model.SelectedItemIds = JsonConvert.DeserializeObject<List<int>>(model.ItemIds);
+            }
+            if (model.Bundle.AssociatedBundleId == 0 || model.SelectedItemIds.Count < 1)
+            {
+                ModelState.AddModelError("ItemIds", "A bundle and items must be selected.");
             }
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var newPreconfigured = await _avatarService.AddBundleAsync(bundle, model.SelectedItemIds);
+                    var newPreconfigured = await _avatarService
+                        .AddBundleAsync(model.Bundle, model.SelectedItemIds);
                     ShowAlertSuccess($"Created '{newPreconfigured.Name}' pre-configured avatar.");
-                    return RedirectToAction(nameof(PreconfiguredDetails), new { id = newPreconfigured.Id });
+                    return RedirectToAction(
+                        nameof(PreconfiguredDetails), new { bundleId = newPreconfigured.Id });
                 }
                 catch (GraException gex)
                 {
                     ShowAlertDanger(gex.Message);
+                    model.AssociatedBundleId = 0;
                 }
             }
             else
             {
                 ShowAlertDanger("Could not create pre-configured avatar.");
+                model.AssociatedBundleId = 0;
             }
+            var allBundles = await _avatarService.GetAllPreconfiguredParentBundlesAsync();
+            model.Bundles = allBundles.Where(_ => _.Description == null).ToList();
+
             var mannequin = await _avatarService.GetRandomMannequinAsync();
             model.SelectedItemIds.Add(mannequin.Id);
             if (model.SelectedItemIds.Count > 0)
             {
                 model.LayerGroupings = await _avatarService.GetWardrobe(model.SelectedItemIds);
+                model.ItemIds = JsonConvert.SerializeObject(model.SelectedItemIds);
             }
             else
             {
@@ -800,75 +788,87 @@ namespace GRA.Controllers.MissionControl
             }
             model.Bundles = await _avatarService.GetAllPreconfiguredParentBundlesAsync();
             model.ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/");
-            model.Bundle = bundle;
             model.NewAvatar = true;
             PageTitle = "Create Preconfigured Avatar";
             return View("PreconfiguredDetails", model);
         }
 
+        [Authorize]
         [HttpPost]
-        public async Task<IActionResult> UpdatePreconfiguredAvatar([FromBody] PreconfiguredDetailsViewModel model)
+        public async Task<IActionResult> UpdatePreconfiguredAvatar(PreconfiguredDetailsViewModel model)
         {
-            var bundle = new AvatarBundle
-            {
-                Id = model.BundleId,
-                Name = model.Name,
-                Description = model.Description,
-                AssociatedBundleId = model.AssociatedBundleId,
-            };
-            if (string.IsNullOrEmpty(bundle.Name))
-            {
-                ModelState.AddModelError("Bundle.Name",
-                    _sharedLocalizer[ErrorMessages.Field, nameof(AvatarBundle.Name)]);
-            }
-            if (string.IsNullOrEmpty(bundle.Description))
-            {
-                ModelState.AddModelError("Bundle.Description",
-                    _sharedLocalizer[ErrorMessages.Field, nameof(AvatarBundle.Description)]);
-            }
-            if (bundle.AssociatedBundleId == 0 || model.SelectedItemIds.Count < 1)
-            {
-                ModelState.AddModelError("SelectedItemIds", "A bundle and items must be selected.");
-            }
-            if (ModelState.IsValid)
-            {
-                try
+            if (model.Bundle.Id != 0) {
+                var bundle = await _avatarService.GetBundleByIdAsync(model.Bundle.Id);
+                if (bundle != null)
                 {
-                    var newPreconfigured = await _avatarService.EditBundleAsync(bundle, model.SelectedItemIds);
-                    ShowAlertSuccess($"Updated '{newPreconfigured.Name}' pre-configured avatar.");
-                    RedirectToAction(nameof(PreconfiguredDetails), new { id = newPreconfigured.Id });
+                    if (string.IsNullOrEmpty(model.Bundle.Description))
+                    {
+                        ModelState.AddModelError("Bundle.Description",
+                            _sharedLocalizer[ErrorMessages.Field, nameof(AvatarBundle.Description)]);
+                    }
+                    if (!string.IsNullOrWhiteSpace(model.ItemIds))
+                    {
+                        model.SelectedItemIds = JsonConvert.DeserializeObject<List<int>>(model.ItemIds);
+                    }
+                    if (model.Bundle.AssociatedBundleId == 0 || model.SelectedItemIds.Count < 1)
+                    {
+                        ShowAlertDanger("Bundle items must be selected.");
+                        var mannequin = await _avatarService.GetRandomMannequinAsync();
+                        model.SelectedItemIds.Add(mannequin.Id);
+                        if (model.SelectedItemIds.Count > 0)
+                        {
+                            model.LayerGroupings = await _avatarService.GetWardrobe(model.SelectedItemIds);
+                            model.ItemIds = JsonConvert.SerializeObject(model.SelectedItemIds);
+                        }
+                        else
+                        {
+                            var wardrobe = await _avatarService.GetLayersAsync();
+
+                            model.LayerGroupings = wardrobe
+                                .GroupBy(_ => _.GroupId)
+                                .Select(_ => _.ToList())
+                                .ToList();
+                        }
+                        model.Bundles = await _avatarService.GetAllPreconfiguredParentBundlesAsync();
+                        model.ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/");
+                        model.AssociatedBundleId = bundle.AssociatedBundleId.Value;
+                        model.Bundle = bundle;
+                        model.NewAvatar = false;
+                        PageTitle = "Edit Preconfigured Avatar";
+                        return View("PreconfiguredDetails", model);
+                    }
+                    if (ModelState.IsValid)
+                    {
+                        try
+                        {
+                            bundle.Name = model.Bundle.Name;
+                            bundle.Description = model.Bundle.Description;
+                            var newPreconfigured = await _avatarService.EditBundleAsync(bundle, model.SelectedItemIds);
+                            ShowAlertSuccess($"Updated '{newPreconfigured.Name}' pre-configured avatar.");
+                            RedirectToAction(nameof(PreconfiguredDetails), new { id = newPreconfigured.Id });
+                        }
+                        catch (GraException gex)
+                        {
+                            ShowAlertDanger(gex.Message);
+                        }
+                    }
+                    else
+                    {
+                        ShowAlertDanger("Could not update pre-configured avatar.");
+                    }
+                    return RedirectToAction(nameof(PreconfiguredDetails), new { bundleId = bundle.Id });
                 }
-                catch (GraException gex)
+                else
                 {
-                    ShowAlertDanger(gex.Message);
+                    ShowAlertDanger($"Could not find pre-configured avatar id {model.Bundle.Id}");
+                    return RedirectToAction(nameof(Bundles), new { search = "Preconfigured" });
                 }
             }
             else
             {
-                ShowAlertDanger("Could not update pre-configured avatar.");
+                ShowAlertDanger("Please provide a pre-configured avatar id.");
+                return RedirectToAction(nameof(Bundles), new { search = "Preconfigured" });
             }
-            var mannequin = await _avatarService.GetRandomMannequinAsync();
-            model.SelectedItemIds.Add(mannequin.Id);
-            if (model.SelectedItemIds.Count > 0)
-            {
-                model.LayerGroupings = await _avatarService.GetWardrobe(model.SelectedItemIds);
-            }
-            else
-            {
-                var wardrobe = await _avatarService.GetLayersAsync();
-
-                model.LayerGroupings = wardrobe
-                    .GroupBy(_ => _.GroupId)
-                    .Select(_ => _.ToList())
-                    .ToList();
-            }
-            model.Bundles = await _avatarService.GetAllPreconfiguredParentBundlesAsync();
-            model.ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/");
-
-            model.Bundle = bundle;
-            model.NewAvatar = false;
-            PageTitle = "Edit Preconfigured Avatar";
-            return View("PreconfiguredDetails", model);
         }
     }
 }
