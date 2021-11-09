@@ -14,7 +14,5 @@ namespace GRA.Controllers.ViewModel.MissionControl.Avatar
         public string ItemIds { get; set; }
         public List<int> SelectedItemIds { get; set; }
         public ICollection<AvatarItem> SelectedItems { get; set; }
-        [Required]
-        public int AssociatedBundleId { get; set; }
     }
 }

@@ -10,7 +10,7 @@
       id="avatarForm"
       method="post"
       role="form">
-    <input asp-for="Bundle.AssociatedBundleId" value="@Model.AssociatedBundleId" type="hidden" />
+    <input asp-for="Bundle.AssociatedBundleId" value="@Model.Bundle.AssociatedBundleId" type="hidden" />
     <input asp-for="Bundle.Id" value="@Model.Bundle.Id" type="hidden" />
     <input asp-for="ItemIds" value="@Model.ItemIds" class="hide" required/>
     <div class="row row-spacing">
@@ -84,8 +84,6 @@
                                              data-layer="@layer.Id"
                                              data-name="@layer.Name"
                                              data-removelabel="@layer.RemoveLabel"
-                                             data-removable="@layer.CanBeEmpty"
-                                             data-showitemselector="@layer.ShowItemSelector"
                                              data-item="@layer.SelectedItem"
                                              data-zoomscale="@layer.ZoomScale"
                                              data-zoomyoffset="@layer.ZoomYOffset"/>
@@ -95,11 +93,9 @@
                         }
                         <div style="display: inline-block;" class="col-xs-24">
                             <img src="/"
-                                 id="selector999"
                                  class="avatar-layer-selector"
                                  data-layer="999"
                                  data-name="@SharedLocalizer[GRA.Annotations.Interface.Bundle]"
-                                 data-showitemselector="True"
                                  bundle-item=""
                                  data-zoomscale="1.30"
                                  data-zoomyoffset="-5">
@@ -503,6 +499,25 @@
             }
         });
 
+        //Clears the outfit on the avatar when a preconfigured avatar is selected
+        function ClearOutfit() {
+            @foreach (var layer in Model.LayerGroupings.SelectMany(_ => _))
+            {
+                if (layer.CanBeEmpty && !layer.ShowColorSelector && layer.Id != 999)
+                {
+                    <text>
+                        var layer = GetLayerById(@layer.Id);
+                        layer.data("item", "");
+                        $(".avatar-item-selector.selected").removeClass("selected");
+                        $(".avatar-color-selector.selected").removeClass("selected");
+                        layer.data("item", "");
+                        UpdateAvatarContainer("", "/", layer.data("layer"), true);
+                    </text>
+                }
+            }
+            SetUnsavedChanges(!saveOverride);
+        }
+
         // When a user selects a bundle from the drop down
         function GetBundleItems(bundle) {
             var listItem = $(bundle);
@@ -512,6 +527,7 @@
             $($("#bundle-drop").find(".active")).removeClass("active");
             $("#bundle-selected").data("bundleid", listItem.data("bundleid"));
             listItem.addClass("active");
+            ClearOutfit();
             SetLayersSelectors("#avatarItemSelectors", 3);
         }
 
@@ -544,7 +560,7 @@
             srcStr = srcStr + "/item.png";
             UpdateAvatarContainer(itemId, srcStr, itemsLayer.data("layer"), false);
             saveOverride = false;
-        };
+        }
 
         // Saves the Avatars items
         function SaveAvatar() {

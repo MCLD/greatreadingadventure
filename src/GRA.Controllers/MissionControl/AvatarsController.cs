@@ -418,7 +418,6 @@ namespace GRA.Controllers.MissionControl
             if (bundleId.HasValue)
             {
                 viewModel.Bundle = await _avatarService.GetBundleByIdAsync(bundleId.Value);
-                viewModel.AssociatedBundleId = viewModel.Bundle.AssociatedBundleId.Value;
                 viewModel.SelectedItems = await _avatarService.GetBundleItemsAsync(bundleId.Value);
                 if (viewModel.SelectedItems.Count > 0)
                 {
@@ -759,13 +758,11 @@ namespace GRA.Controllers.MissionControl
                 catch (GraException gex)
                 {
                     ShowAlertDanger(gex.Message);
-                    model.AssociatedBundleId = 0;
                 }
             }
             else
             {
                 ShowAlertDanger("Could not create pre-configured avatar.");
-                model.AssociatedBundleId = 0;
             }
             var allBundles = await _avatarService.GetAllPreconfiguredParentBundlesAsync();
             model.Bundles = allBundles.Where(_ => _.Description == null).ToList();
@@ -831,7 +828,6 @@ namespace GRA.Controllers.MissionControl
                         }
                         model.Bundles = await _avatarService.GetAllPreconfiguredParentBundlesAsync();
                         model.ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/");
-                        model.AssociatedBundleId = bundle.AssociatedBundleId.Value;
                         model.Bundle = bundle;
                         model.NewAvatar = false;
                         PageTitle = "Edit Preconfigured Avatar";
