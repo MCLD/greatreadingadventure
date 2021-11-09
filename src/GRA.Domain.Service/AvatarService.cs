@@ -390,7 +390,7 @@ namespace GRA.Domain.Service
             {
                 if (currentBundle.HasBeenAwarded)
                 {
-                    throw new GraException($"This bundle has been awarded to a participant and can no longer be edited. ");
+                    throw new GraException("This bundle has been awarded to a participant and can no longer be edited.");
                 }
 
                 var items = await _avatarItemRepository.GetByIdsAsync(itemIds);
@@ -402,7 +402,7 @@ namespace GRA.Domain.Service
                 if (!currentBundle.CanBeUnlocked
                     && items.GroupBy(_ => _.AvatarLayerId).Any(_ => _.Skip(1).Any()))
                 {
-                    throw new GraException($"Default bundles cannot have multiple items per layer.");
+                    throw new GraException("Default bundles cannot have multiple items per layer.");
                 }
             }
             else

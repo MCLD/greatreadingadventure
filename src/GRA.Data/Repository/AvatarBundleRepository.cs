@@ -111,16 +111,9 @@ namespace GRA.Data.Repository
             {
                 bundles = bundles.Where(_ => _.CanBeUnlocked);
             }
-            if (filter.IsPreconfigured)
-            {
-                bundles = bundles.Where(_ => _.Description != null);
-            }
-            else
-            {
-                bundles = bundles.Where(_ => _.Description == null);
-            }
-
-            return bundles;
+            return filter.IsPreconfigured
+                ? bundles.Where(_ => _.Description != null)
+                : bundles.Where(_ => _.Description == null);
         }
 
         public async Task AddItemsAsync(int bundleId, List<int> itemIds)
