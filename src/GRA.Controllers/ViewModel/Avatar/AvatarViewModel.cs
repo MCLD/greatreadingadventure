@@ -18,5 +18,6 @@ namespace GRA.Controllers.ViewModel.Avatar
         public int[] SelectedItemIds { get; set; }
         public string ItemPath { get; set; }
         public int LayerId { get; set; }
+        public bool SharingEnabled { get; set; }
     }
 }
