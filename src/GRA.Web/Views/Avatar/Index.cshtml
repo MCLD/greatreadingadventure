@@ -6,7 +6,9 @@
 <div class="alert alert-danger" id="error-container"></div>
 <div class="panel panel-default">
     <div class="row">
-        <div class="col-xs-12 col-sm-5 pull-right" id="avatarImageContainer" aria-label="@(Model.PreconfiguredAvatar != null ? Model.PreconfiguredAvatar.Description : "" )">
+        <div class="col-xs-12 col-sm-5 pull-right"
+             id="avatarImageContainer"
+             aria-label="@(Model.PreconfiguredAvatar != null ? Model.PreconfiguredAvatar.Description : "" )">
             <div class="visible-xs" id="mobile-container" aria-hidden="true">
                 <div class="avatar-container center-block">
                     @foreach (var layer in Model.LayerGroupings.SelectMany(_ => _))
@@ -82,8 +84,10 @@
                     </div>
                 </div>
             </div>
-            <div id="avatarBundles" class="row col-xs-12" style="text-align:center;" aria-hidden="true">
-
+            <div id="avatarBundles"
+                 class="row col-xs-12"
+                 style="text-align:center;"
+                 aria-hidden="true">
                 <ul class="nav" style="display: inline-table;">
                     <li>
 
@@ -180,11 +184,17 @@
             </div>
             @if (Model.PreconfiguredAvatars.Count > 0)
             {
-                <ul class="sr-only" id="preconfigured-drop" aria-label="@GRA.Annotations.Interface.PreConfiguredAvatars">
+                <ul class="sr-only"
+                    id="preconfigured-drop"
+                    aria-label="@GRA.Annotations.Interface.PreConfiguredAvatars">
                     @foreach (var avatar in Model.PreconfiguredAvatars)
                     {
                         <li class="dropdown-item">
-                            <a href="#" role="button" data-bundleid="@avatar.Id" onclick="GetPreconfiguredAvatar(@avatar.Id, '@avatar.Description')" aria-label="@avatar.Name - @avatar.Description">
+                            <a href="#"
+                               role="button"
+                               data-bundleid="@avatar.Id"
+                               onclick="GetPreconfiguredAvatar(@avatar.Id, '@avatar.Description')"
+                               aria-label="@avatar.Name - @avatar.Description">
                                 @avatar.Name
                             </a>
                         </li>
@@ -311,7 +321,7 @@
 
         });
 
-        //Clears the outfit on the avatar when a preconfigured avatar is selected
+        //Clears the outfit on the avatar when a pre-configured avatar is selected
         function ClearOutfit() {
             @foreach (var layer in Model.LayerGroupings.SelectMany(_ => _))
             {
@@ -725,7 +735,6 @@
 
         // Selecting an Item
         function SelectItem(item) {
-            var preconfiguredId = $("#avatarImageContainer").data("preconfigured");
             if (preconfigured != "") {
                 $("#avatarImageContainer").data("preconfigured", "");
             }

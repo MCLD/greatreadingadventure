@@ -72,7 +72,8 @@ namespace GRA.Controllers
             };
             if (user.PreconfiguredAvatarId.HasValue)
             {
-                viewModel.PreconfiguredAvatar = await _avatarService.GetBundleByIdAsync(user.PreconfiguredAvatarId.Value);
+                viewModel.PreconfiguredAvatar =
+                    await _avatarService.GetBundleByIdAsync(user.PreconfiguredAvatarId.Value);
             }
             var userAvatar = await _avatarService.GetUserAvatarAsync();
             viewModel.NewAvatar = userAvatar.Count == 0;

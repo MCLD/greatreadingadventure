@@ -169,7 +169,7 @@
                             <a asp-area="MissionControl"
                                asp-controller="Avatars"
                                asp-action="@nameof(AvatarsController.Bundles)"
-                               asp-route-search="Preconfigured"
+                               asp-route-search="Pre-configured"
                                class="btn btn-lg btn-default"
                                style="margin:5px;">
                                 <span class="fa fa-arrow-alt-circle-left"></span>
@@ -499,7 +499,7 @@
             }
         });
 
-        //Clears the outfit on the avatar when a preconfigured avatar is selected
+        //Clears the outfit on the avatar when a pre-configured avatar is selected
         function ClearOutfit() {
             @foreach (var layer in Model.LayerGroupings.SelectMany(_ => _))
             {

@@ -311,7 +311,7 @@ namespace GRA.Controllers.MissionControl
             {
                 filter.Unlockable = true;
             }
-            else if (search == "Preconfigured")
+            else if (search == "Pre-configured")
             {
                 filter.IsPreconfigured = true;
             }
@@ -345,7 +345,7 @@ namespace GRA.Controllers.MissionControl
             };
 
             PageTitle = "Avatar Bundles";
-            if (search == "Preconfigured")
+            if (search == "Pre-configured")
             {
                 return View("Preconfigured", viewModel);
             }
@@ -434,7 +434,7 @@ namespace GRA.Controllers.MissionControl
                 viewModel.LayerGroupings = await _avatarService.GetWardrobe(selectedIds);
                 viewModel.Bundle = new AvatarBundle();
             }
-            PageTitle = !bundleId.HasValue ? "Create Preconfigured Avatar" : "Edit Preconfigured Avatar";
+            PageTitle = !bundleId.HasValue ? "Create Pre-configured Avatar" : "Edit Preconfigured Avatar";
             viewModel.NewAvatar = !bundleId.HasValue;
             return View("PreconfiguredDetails", viewModel);
         }
@@ -786,7 +786,7 @@ namespace GRA.Controllers.MissionControl
             model.Bundles = await _avatarService.GetAllPreconfiguredParentBundlesAsync();
             model.ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/");
             model.NewAvatar = true;
-            PageTitle = "Create Preconfigured Avatar";
+            PageTitle = "Create Pre-configured Avatar";
             return View("PreconfiguredDetails", model);
         }
 
@@ -857,13 +857,13 @@ namespace GRA.Controllers.MissionControl
                 else
                 {
                     ShowAlertDanger($"Could not find pre-configured avatar id {model.Bundle.Id}");
-                    return RedirectToAction(nameof(Bundles), new { search = "Preconfigured" });
+                    return RedirectToAction(nameof(Bundles), new { search = "Pre-configured" });
                 }
             }
             else
             {
                 ShowAlertDanger("Please provide a pre-configured avatar id.");
-                return RedirectToAction(nameof(Bundles), new { search = "Preconfigured" });
+                return RedirectToAction(nameof(Bundles), new { search = "Pre-configured" });
             }
         }
     }
