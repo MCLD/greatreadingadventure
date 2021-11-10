@@ -1545,4 +1545,12 @@
     <value>Todas las Bibliotecas Participantes</value>
     <comment>Text for the footer link to view all participating libraries.</comment>
   </data>
+  <data name="Optional" xml:space="preserve">
+    <value>Opcional</value>
+    <comment>Indication for fields that are not required.</comment>
+  </data>
+  <data name="If you choose to enter a title and author, you can view a list of all the books you've read in your profile." xml:space="preserve">
+    <value>Si eliges un título y un autor, puedes ver una lista de todos los libros que has leído en tu perfil.</value>
+    <comment>Help text for the dashboard's Author and Title fields.</comment>
+  </data>
 </root>

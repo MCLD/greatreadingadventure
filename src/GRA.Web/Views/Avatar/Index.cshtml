@@ -47,7 +47,7 @@
                     {
                         foreach (var layerGroup in Model.LayerGroupings)
                         {
-                            <div style="display: inline-block;" class="@(Model.LayerGroupings.Count == 1 ? "hide" : "")">
+                            <div style="display: inline-block;" class="@(layerGroup.Count == 1 ? "hide" : "")">
                                 @foreach (var layer in layerGroup)
                                 {
                                     <img src="~/@layer.Icon"
@@ -68,7 +68,7 @@
                             </div>
                         }
                     }
-                    <div style="display: inline-block;" class="col-xs-24">
+                    <div style="display: inline-block;" class="@(Model.Bundles.Count == 0 ? "hide" : "")">
                         <img src="@(Model.Bundles.Any(_=>!_.HasBeenViewed.Value && _.CanBeUnlocked)
                             ? "/content/site1/avatarbundles/notif.png"
                             : "/content/site1/avatarbundles/icon.png")"
@@ -224,17 +224,20 @@
                             <span class="far fa-save"></span>
                             @SharedLocalizer[GRA.Annotations.Interface.Save]
                         </button>
-                        <form id="shareForm"
-                              asp-action="Share"
-                              method="post"
-                              role="form"
-                              style="display: inline-block">
-                            <input type="hidden" name="selectionJson" />
-                            <button class="btn btn-lg btn-default" style="margin:5px;">
-                                <span class="fas fa-share-alt"></span>
-                                @SharedLocalizer[GRA.Annotations.Interface.Share]
-                            </button>
-                        </form>
+                        @if (Model.SharingEnabled)
+                        {
+                            <form id="shareForm"
+                                  asp-action="Share"
+                                  method="post"
+                                  role="form"
+                                  style="display: inline-block">
+                                <input type="hidden" name="selectionJson" />
+                                <button class="btn btn-lg btn-default" style="margin:5px;">
+                                    <span class="fas fa-share-alt"></span>
+                                    @SharedLocalizer[GRA.Annotations.Interface.Share]
+                                </button>
+                            </form>
+                        }
                     </div>
                 </div>
             </div>
@@ -633,17 +636,21 @@
             SaveAvatar();
         });
 
+        @if (Model.SharingEnabled) {
         // Add's the avatars selection to the share form
-        $("#shareForm").on("submit", function (e) {
-            if (unsavedChanges) {
-                @if (Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null){
-                    @:gtag('event', 'avatar_update');
-                 }
-            $("#shareForm").find("input")
-            .attr("value", GetAvatarSelection())
-            .appendTo($(this));
-            }
-        });
+            <text>
+            $("#shareForm").on("submit", function(e) {
+                if (unsavedChanges) {
+                    @if(Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null){
+                        @:gtag('event', 'avatar_update');
+                    }
+                    $("#shareForm").find("input")
+                        .attr("value", GetAvatarSelection())
+                        .appendTo($(this));
+                }
+            });
+            </text>
+        }
 
         // When a user removes the layer's item
         $("#removeButton").on("click", function () {

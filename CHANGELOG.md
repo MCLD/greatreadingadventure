@@ -8,6 +8,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### Added
 
+- Notation on the participant dashboard that title and author are optional
+- Site setting to disable avatar sharing
+
+### Changed
+
+- Hide avatar bundle icon if no bundles are available
+
+### Updated
+
+- Package references
+
+## [4.2.1] - 2021-10-14
+
+### Added
+
 - Add accessibility (alt tags) to badges
 - Import and export of Systems and Branches
 - Import and export of Schools and Districts
@@ -308,6 +323,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - Everything! First release of 4.0.
 
+[4.2.1]: https://github.com/mcld/greatreadingadventure/tree/v4.2.1
 [4.2.0]: https://github.com/mcld/greatreadingadventure/tree/v4.2.0
 [4.1.1]: https://github.com/mcld/greatreadingadventure/tree/v4.1.1
 [4.1.0]: https://github.com/mcld/greatreadingadventure/tree/v4.1.0

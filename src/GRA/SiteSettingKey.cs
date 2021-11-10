@@ -7,6 +7,16 @@
             return true;
         }
 
+        public struct Avatars : System.IEquatable<Avatars>
+        {
+            public static readonly string DisableSharing = "Avatars.DisableSharing";
+
+            public bool Equals(Avatars other)
+            {
+                return true;
+            }
+        }
+
         public struct Badges : System.IEquatable<Badges>
         {
             public static readonly string MaxDimension = "Badges.MaxDimension";

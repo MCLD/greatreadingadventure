@@ -1,4 +1,4 @@
-version: 4.2.0-build{build}
+version: 4.2.1-build{build}
 image: Visual Studio 2019
 clone_depth: 1
 before_build:

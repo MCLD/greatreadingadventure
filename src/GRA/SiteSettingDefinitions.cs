@@ -215,6 +215,14 @@ namespace GRA
                     Info = "Show the Packing Slip navigation in Mission Control",
                     Category = typeof(SiteSettingKey.VendorCodes).Name,
                     Format = SiteSettingFormat.Boolean
+                },
+                [SiteSettingKey.Avatars.DisableSharing] = 
+                new SiteSettingDefinition
+                {
+                    Name = "Disable Sharing",
+                    Info = "Hide the avatar share button and disable sharing options",
+                    Category = typeof(SiteSettingKey.Avatars).Name,
+                    Format = SiteSettingFormat.Boolean
                 }
             };
     }

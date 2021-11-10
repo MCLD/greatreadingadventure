@@ -23,6 +23,11 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> Avatar(string id)
         {
+            if (await GetSiteSettingBoolAsync(SiteSettingKey.Avatars.DisableSharing))
+            {
+                return NotFound();
+            }
+
             var site = await GetCurrentSiteAsync();
 
             var filePath = _pathResolver

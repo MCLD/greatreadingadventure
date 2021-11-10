@@ -6,7 +6,7 @@
 
 # Supported tags and respective `Dockerfile` links
 
-- [`v4.2.0`, `latest`](https://github.com/MCLD/greatreadingadventure/blob/v4.2.0/Dockerfile)
+- [`v4.2.1`, `latest`](https://github.com/MCLD/greatreadingadventure/blob/v4.2.1/Dockerfile)
 - [`develop`](https://github.com/MCLD/greatreadingadventure/blob/develop/Dockerfile)
 
 # What is the Great Reading Adventure
