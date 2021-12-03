@@ -126,7 +126,10 @@ if [[ -z ${BLD_BRANCH} ]]; then
   fi
 fi
 
-if [[ $BLD_BRANCH = "master" || $BLD_BRANCH = "main" || $BLD_BRANCH = "develop" ]]; then
+if [[ $BLD_BRANCH = "develop"
+      || $BLD_BRANCH = "main"
+      || $BLD_BRANCH = "master"
+      || $BLD_BRANCH = "test" ]]; then
   BLD_DOCKER_TAG=$BLD_BRANCH
   BLD_VERSION=${BLD_BRANCH}-${BLD_VERSION_DATE}
   BLD_PUSH=true
@@ -151,8 +154,11 @@ fi
 
 # Ensure a configured Docker image name
 if [[ -z ${BLD_DOCKER_IMAGE-} ]]; then
+  msg "Script Dir = $script_dir"
   BLD_DIRECTORY=${PWD##*/}
+  msg "BLD_DIRECTORY = $BLD_DIRECTORY"
   BLD_DOCKER_IMAGE=${BLD_DIRECTORY,,}
+  msg "BLD_DOCKER_IMAGE = $BLD_DOCKER_IMAGE"
   msg "${ORANGE}===${NOFORMAT} No BLD_DOCKER_IMAGE configured, using this directory name: $BLD_DOCKER_IMAGE"
 fi
 
@@ -289,7 +295,7 @@ else
   --build-arg IMAGE_VERSION="$BLD_VERSION" \
   --target build .
   msg "${GREEN}===${NOFORMAT} Docker image built"
-  msg "${ORANGE}===${NOFORMAT} Not pushing Docker image: branch is not main, develop, or versioned release"
+  msg "${ORANGE}===${NOFORMAT} Not pushing Docker image: branch is not develop, main, test, or versioned release"
 fi
 
 msg "${PURPLE}===${NOFORMAT} Build script complete in $((SECONDS - BLD_STARTAT)) seconds."
