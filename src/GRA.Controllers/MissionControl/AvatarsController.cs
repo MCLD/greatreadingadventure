@@ -22,12 +22,11 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.ManageAvatars)]
     public class AvatarsController : Base.MCController
     {
-        private const long MaxFileSize = 100L * 1024L * 1024L;
         private const string AvatarIndex = "default avatars.json";
-
-        private readonly ILogger<AvatarsController> _logger;
+        private const long MaxFileSize = 100L * 1024L * 1024L;
         private readonly AvatarService _avatarService;
         private readonly JobService _jobService;
+        private readonly ILogger<AvatarsController> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
         public AvatarsController(ILogger<AvatarsController> logger,
@@ -42,272 +41,6 @@ namespace GRA.Controllers.MissionControl
             _jobService = jobService ?? throw new ArgumentNullException(nameof(jobService));
             _webHostEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
             PageTitle = "Avatars";
-        }
-
-        public async Task<IActionResult> Index()
-        {
-            var layers = await _avatarService.GetLayersAsync();
-            foreach (var layer in layers)
-            {
-                layer.Icon = _pathResolver.ResolveContentPath(layer.Icon);
-
-                layer.AvailableItems = await _avatarService.GetLayerAvailableItemCountAsync(
-                    layer.Id);
-                layer.UnavailableItems = await _avatarService.GetLayerUnavailableItemCountAsync(
-                    layer.Id);
-                layer.UnlockableItems = await _avatarService.GetLayerUnlockableItemCountAsync(
-                    layer.Id);
-            }
-
-            var defaultAvatarPath = Path.Combine(
-                Directory.GetParent(_webHostEnvironment.WebRootPath).FullName,
-                "assets",
-                "defaultavatars");
-
-            var avatarZip = _pathResolver.ResolvePrivateFilePath("avatars.zip");
-
-            return View(new AvatarIndexViewModel
-            {
-                Layers = layers,
-                DefaultAvatarsPresent = Directory.Exists(defaultAvatarPath),
-                AvatarZipPresent = System.IO.File.Exists(avatarZip)
-            });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> SetupDefaultAvatars()
-        {
-            var layers = await _avatarService.GetLayersAsync();
-            if (layers.Any())
-            {
-                AlertDanger = "Avatars have already been set up";
-                return RedirectToAction(nameof(Index));
-            }
-
-            string assetPath = Path.Combine(
-                Directory.GetParent(_webHostEnvironment.WebRootPath).FullName, "assets");
-
-            if (!Directory.Exists(assetPath))
-            {
-                AlertDanger = $"Asset directory not found at: {assetPath}";
-                return RedirectToAction(nameof(Index));
-            }
-
-            assetPath = Path.Combine(assetPath, "defaultavatars");
-            if (!Directory.Exists(assetPath))
-            {
-                AlertDanger = $"Asset directory not found at: {assetPath}";
-                return RedirectToAction(nameof(Index));
-            }
-
-            return await RunImportJob(assetPath);
-        }
-
-        public async Task<IActionResult> Layer(int id,
-            string search,
-            bool available = false,
-            bool unavailable = false,
-            bool unlockable = false,
-            int page = 1)
-        {
-            var computedAvailable = available;
-            var computedUnavailable = unavailable;
-            var computedUnlockable = unlockable;
-
-            var filter = new AvatarFilter(page, 12)
-            {
-                LayerId = id,
-                Search = search
-            };
-            if (computedAvailable)
-            {
-                filter.Available = true;
-                computedUnavailable = false;
-                computedUnlockable = false;
-            }
-            else if (computedUnavailable)
-            {
-                filter.Unavailable = true;
-                computedUnlockable = false;
-            }
-            else if (computedUnlockable)
-            {
-                filter.Unlockable = true;
-            }
-
-            var itemList = await _avatarService.PageItemsAsync(filter);
-
-            var paginateModel = new PaginateViewModel
-            {
-                ItemCount = itemList.Count,
-                CurrentPage = page,
-                ItemsPerPage = filter.Take.Value
-            };
-            if (paginateModel.PastMaxPage)
-            {
-                return RedirectToRoute(
-                    new
-                    {
-                        page = paginateModel.LastPage ?? 1
-                    });
-            }
-
-            foreach (var item in itemList.Data)
-            {
-                item.Thumbnail = _pathResolver.ResolveContentPath(item.Thumbnail);
-            }
-
-            if (itemList.Data.Count > 0)
-            {
-                PageTitle = $"Avatar Items: {itemList.Data.First().AvatarLayerName}";
-            }
-
-            var viewModel = new ItemsListViewModel
-            {
-                Items = itemList.Data,
-                PaginateModel = paginateModel,
-                Id = id,
-                Search = search,
-                Available = computedAvailable,
-                Unavailable = computedUnavailable,
-                Unlockable = computedUnlockable
-            };
-
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> DecreaseItemSort(ItemsListViewModel model)
-        {
-            await _avatarService.DescreaseItemSortAsync(model.ItemId);
-            return RedirectToAction(nameof(Layer), new
-            {
-                id = model.Id,
-                search = model.Search,
-                available = model.Available,
-                unavailable = model.Unavailable,
-                unlockable = model.Unlockable,
-                page = model.PaginateModel.CurrentPage
-            });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> IncreaseItemSort(ItemsListViewModel model)
-        {
-            await _avatarService.IncreaseItemSortAsync(model.ItemId);
-            return RedirectToAction(nameof(Layer), new
-            {
-                id = model.Id,
-                search = model.Search,
-                available = model.Available,
-                unavailable = model.Unavailable,
-                unlockable = model.Unlockable,
-                page = model.PaginateModel.CurrentPage
-            });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> SetItemUnlockable(ItemsListViewModel model)
-        {
-            try
-            {
-                await _avatarService.SetItemUnlockableAsync(model.ItemId);
-                ShowAlertSuccess("Item has been set to be unlockable.");
-            }
-            catch (GraException gex)
-            {
-                ShowAlertDanger("Unable to set item to be unlockable: ", gex);
-            }
-            return RedirectToAction(nameof(Layer), new
-            {
-                id = model.Id,
-                search = model.Search,
-                available = model.Available,
-                unavailable = model.Unavailable,
-                unlockable = model.Unlockable,
-                page = model.PaginateModel.CurrentPage
-            });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> SetItemAvailable(ItemsListViewModel model)
-        {
-            try
-            {
-                await _avatarService.SetItemAvailableAsync(model.ItemId);
-                ShowAlertSuccess("Item has been set to be available.");
-            }
-            catch (GraException gex)
-            {
-                ShowAlertDanger("Unable to set item to be available: ", gex);
-            }
-            return RedirectToAction(nameof(Layer), new
-            {
-                id = model.Id,
-                search = model.Search,
-                available = model.Available,
-                unavailable = model.Unavailable,
-                unlockable = model.Unlockable,
-                page = model.PaginateModel.CurrentPage
-            });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> DeleteItem(ItemsListViewModel model)
-        {
-            try
-            {
-                await _avatarService.DeleteItemAsync(model.ItemId);
-                ShowAlertSuccess("Item has been deleted.");
-            }
-            catch (GraException gex)
-            {
-                ShowAlertDanger("Unable to delete item: ", gex);
-            }
-            return RedirectToAction(nameof(Layer), new
-            {
-                id = model.Id,
-                search = model.Search,
-                available = model.Available,
-                unavailable = model.Unavailable,
-                unlockable = model.Unlockable,
-                page = model.PaginateModel.CurrentPage
-            });
-        }
-
-        public async Task<IActionResult> Bundles(bool unlockable = true, int page = 1)
-        {
-            var filter = new AvatarFilter(page)
-            {
-                Unlockable = unlockable
-            };
-
-            var bundleList = await _avatarService.GetPaginatedBundleListAsync(filter);
-
-            var paginateModel = new PaginateViewModel
-            {
-                ItemCount = bundleList.Count,
-                CurrentPage = page,
-                ItemsPerPage = filter.Take.Value
-            };
-            if (paginateModel.PastMaxPage)
-            {
-                return RedirectToRoute(
-                    new
-                    {
-                        page = paginateModel.LastPage ?? 1
-                    });
-            }
-
-            var viewModel = new BundlesListViewModel
-            {
-                Bundles = bundleList.Data,
-                PaginateModel = paginateModel,
-                Unlockable = unlockable
-            };
-
-            PageTitle = "Avatar Bundles";
-            return View(viewModel);
         }
 
         public async Task<IActionResult> BundleCreate()
@@ -360,6 +93,21 @@ namespace GRA.Controllers.MissionControl
             model.Layers = new SelectList(await _avatarService.GetLayersAsync(), "Id", "Name");
             PageTitle = "Create Bundle";
             return View("BundleDetail", model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> BundleDelete(int id)
+        {
+            try
+            {
+                await _avatarService.RemoveBundleAsync(id);
+                ShowAlertSuccess("Bundle successfully deleted!");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning("Unable to delete bundle: ", gex.Message);
+            }
+            return RedirectToAction("Bundles");
         }
 
         public async Task<IActionResult> BundleEdit(int id)
@@ -436,19 +184,77 @@ namespace GRA.Controllers.MissionControl
             return View("BundleDetail", model);
         }
 
+        public async Task<IActionResult> Bundles(bool unlockable = true, int page = 1)
+        {
+            var filter = new AvatarFilter(page)
+            {
+                Unlockable = unlockable
+            };
+
+            var bundleList = await _avatarService.GetPaginatedBundleListAsync(filter);
+
+            var paginateModel = new PaginateViewModel
+            {
+                ItemCount = bundleList.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
+            };
+            if (paginateModel.PastMaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
+            }
+
+            var viewModel = new BundlesListViewModel
+            {
+                Bundles = bundleList.Data,
+                PaginateModel = paginateModel,
+                Unlockable = unlockable
+            };
+
+            PageTitle = "Avatar Bundles";
+            return View(viewModel);
+        }
+
         [HttpPost]
-        public async Task<IActionResult> BundleDelete(int id)
+        public async Task<IActionResult> DecreaseItemSort(ItemsListViewModel model)
+        {
+            await _avatarService.DescreaseItemSortAsync(model.ItemId);
+            return RedirectToAction(nameof(Layer), new
+            {
+                id = model.Id,
+                search = model.Search,
+                available = model.Available,
+                unavailable = model.Unavailable,
+                unlockable = model.Unlockable,
+                page = model.PaginateModel.CurrentPage
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteItem(ItemsListViewModel model)
         {
             try
             {
-                await _avatarService.RemoveBundleAsync(id);
-                ShowAlertSuccess("Bundle successfully deleted!");
+                await _avatarService.DeleteItemAsync(model.ItemId);
+                ShowAlertSuccess("Item has been deleted.");
             }
             catch (GraException gex)
             {
-                ShowAlertWarning("Unable to delete bundle: ", gex.Message);
+                ShowAlertDanger("Unable to delete item: ", gex);
             }
-            return RedirectToAction("Bundles");
+            return RedirectToAction(nameof(Layer), new
+            {
+                id = model.Id,
+                search = model.Search,
+                available = model.Available,
+                unavailable = model.Unavailable,
+                unlockable = model.Unlockable,
+                page = model.PaginateModel.CurrentPage
+            });
         }
 
         public async Task<IActionResult> GetItemsList(string itemIds,
@@ -498,6 +304,170 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
+        public async Task<IActionResult> IncreaseItemSort(ItemsListViewModel model)
+        {
+            await _avatarService.IncreaseItemSortAsync(model.ItemId);
+            return RedirectToAction(nameof(Layer), new
+            {
+                id = model.Id,
+                search = model.Search,
+                available = model.Available,
+                unavailable = model.Unavailable,
+                unlockable = model.Unlockable,
+                page = model.PaginateModel.CurrentPage
+            });
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var layers = await _avatarService.GetLayersAsync();
+            foreach (var layer in layers)
+            {
+                layer.Icon = _pathResolver.ResolveContentPath(layer.Icon);
+
+                layer.AvailableItems = await _avatarService.GetLayerAvailableItemCountAsync(
+                    layer.Id);
+                layer.UnavailableItems = await _avatarService.GetLayerUnavailableItemCountAsync(
+                    layer.Id);
+                layer.UnlockableItems = await _avatarService.GetLayerUnlockableItemCountAsync(
+                    layer.Id);
+            }
+
+            var defaultAvatarPath = Path.Combine(
+                Directory.GetParent(_webHostEnvironment.WebRootPath).FullName,
+                "assets",
+                "defaultavatars");
+
+            var avatarZip = _pathResolver.ResolvePrivateFilePath("avatars.zip");
+
+            return View(new AvatarIndexViewModel
+            {
+                Layers = layers,
+                DefaultAvatarsPresent = Directory.Exists(defaultAvatarPath),
+                AvatarZipPresent = System.IO.File.Exists(avatarZip)
+            });
+        }
+
+        public async Task<IActionResult> Layer(int id,
+            string search,
+            bool available = false,
+            bool unavailable = false,
+            bool unlockable = false,
+            int page = 1)
+        {
+            var computedAvailable = available;
+            var computedUnavailable = unavailable;
+            var computedUnlockable = unlockable;
+
+            var filter = new AvatarFilter(page, 12)
+            {
+                LayerId = id,
+                Search = search
+            };
+            if (computedAvailable)
+            {
+                filter.Available = true;
+                computedUnavailable = false;
+                computedUnlockable = false;
+            }
+            else if (computedUnavailable)
+            {
+                filter.Unavailable = true;
+                computedUnlockable = false;
+            }
+            else if (computedUnlockable)
+            {
+                filter.Unlockable = true;
+            }
+
+            var itemList = await _avatarService.PageItemsAsync(filter);
+
+            var paginateModel = new PaginateViewModel
+            {
+                ItemCount = itemList.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
+            };
+            if (paginateModel.PastMaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
+            }
+
+            foreach (var item in itemList.Data)
+            {
+                item.Thumbnail = _pathResolver.ResolveContentPath(item.Thumbnail);
+            }
+
+            if (itemList.Data.Count > 0)
+            {
+                PageTitle = $"Avatar Items: {itemList.Data.First().AvatarLayerName}";
+            }
+
+            var viewModel = new ItemsListViewModel
+            {
+                Items = itemList.Data,
+                PaginateModel = paginateModel,
+                Id = id,
+                Search = search,
+                Available = computedAvailable,
+                Unavailable = computedUnavailable,
+                Unlockable = computedUnlockable
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SetItemAvailable(ItemsListViewModel model)
+        {
+            try
+            {
+                await _avatarService.SetItemAvailableAsync(model.ItemId);
+                ShowAlertSuccess("Item has been set to be available.");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to set item to be available: ", gex);
+            }
+            return RedirectToAction(nameof(Layer), new
+            {
+                id = model.Id,
+                search = model.Search,
+                available = model.Available,
+                unavailable = model.Unavailable,
+                unlockable = model.Unlockable,
+                page = model.PaginateModel.CurrentPage
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SetItemUnlockable(ItemsListViewModel model)
+        {
+            try
+            {
+                await _avatarService.SetItemUnlockableAsync(model.ItemId);
+                ShowAlertSuccess("Item has been set to be unlockable.");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to set item to be unlockable: ", gex);
+            }
+            return RedirectToAction(nameof(Layer), new
+            {
+                id = model.Id,
+                search = model.Search,
+                available = model.Available,
+                unavailable = model.Unavailable,
+                unlockable = model.Unlockable,
+                page = model.PaginateModel.CurrentPage
+            });
+        }
+
+        [HttpPost]
         [RequestSizeLimit(MaxFileSize)]
         [RequestFormLimits(MultipartBodyLengthLimit = MaxFileSize)]
         public async Task<IActionResult> SetupAvatars(AvatarIndexViewModel viewModel)
@@ -516,9 +486,7 @@ namespace GRA.Controllers.MissionControl
                     "An avatar .zip file is required.");
                 return RedirectToAction(nameof(AvatarsController.Index));
             }
-
-            string assetPath = Path.Combine(
-                Directory.GetParent(_webHostEnvironment.WebRootPath).FullName, "assets");
+            string assetPath = _pathResolver.ResolvePrivateFilePath();
 
             if (!Directory.Exists(assetPath))
             {
@@ -550,7 +518,7 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(AvatarsController.Index));
             }
 
-            return await RunImportJob(assetPath);
+            return await RunImportJob(assetPath, true);
         }
 
         [HttpPost]
@@ -607,6 +575,35 @@ namespace GRA.Controllers.MissionControl
             return await RunImportJob(assetPath);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> SetupDefaultAvatars()
+        {
+            var layers = await _avatarService.GetLayersAsync();
+            if (layers.Any())
+            {
+                AlertDanger = "Avatars have already been set up";
+                return RedirectToAction(nameof(Index));
+            }
+
+            string assetPath = Path.Combine(
+                Directory.GetParent(_webHostEnvironment.WebRootPath).FullName, "assets");
+
+            if (!Directory.Exists(assetPath))
+            {
+                AlertDanger = $"Asset directory not found at: {assetPath}";
+                return RedirectToAction(nameof(Index));
+            }
+
+            assetPath = Path.Combine(assetPath, "defaultavatars");
+            if (!Directory.Exists(assetPath))
+            {
+                AlertDanger = $"Asset directory not found at: {assetPath}";
+                return RedirectToAction(nameof(Index));
+            }
+
+            return await RunImportJob(assetPath);
+        }
+
         private string LocateAvatarIndexPath(string assetPath)
         {
             if (!System.IO.File.Exists(Path.Combine(assetPath, AvatarIndex)))
@@ -631,13 +628,19 @@ namespace GRA.Controllers.MissionControl
 
         private async Task<IActionResult> RunImportJob(string assetPath)
         {
+            return await RunImportJob(assetPath, false);
+        }
+
+        private async Task<IActionResult> RunImportJob(string assetPath, bool uploadedFile)
+        {
             var jobToken = await _jobService.CreateJobAsync(new Job
             {
                 JobType = JobType.AvatarImport,
                 SerializedParameters = JsonConvert
                     .SerializeObject(new JobDetailsAvatarImport
                     {
-                        AssetPath = assetPath
+                        AssetPath = assetPath,
+                        UploadedFile = uploadedFile
                     })
             });
 
