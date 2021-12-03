@@ -15,6 +15,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - Hide avatar bundle icon if no bundles are available
 
+### Fixed
+
+- Fix location of uploaded avatar file
+
 ### Updated
 
 - Package references
