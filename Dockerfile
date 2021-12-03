@@ -1,5 +1,5 @@
 # Get build image
-FROM mcr.microsoft.com/dotnet/sdk:5.0@sha256:1bd86365c0de18fb256bfe44e615c693d6be82cedc74a9a7cfb86164ec9514e9 AS build
+FROM mcr.microsoft.com/dotnet/sdk:5.0@sha256:e5214d47dd7e854cdb05f65bc97aeeca2cce03152ea8e44f573a19a055d1b0c9 AS build
 WORKDIR /app
 
 # Copy source
@@ -26,7 +26,7 @@ RUN dotnet publish -c Release -o "/app/publish/"
 RUN cp /app/release-publish.bash "/app/publish/"
 
 # Get runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:5.0@sha256:d8a410efaa2270e363212bfb23b6f739775f414529ee1a93264c4d5161208f06 AS publish
+FROM mcr.microsoft.com/dotnet/aspnet:5.0@sha256:5c4472d0db1b0c8f0e51b1d8531b9f8fbc6df031caca8d07dd7a0e4b72b5b340 AS publish
 WORKDIR /app
 
 # Install curl for health monitoring
