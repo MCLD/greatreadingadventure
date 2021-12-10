@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Fixed
 
 - Fix location of uploaded avatar file
+- Fix #816 Incorrect Profile tooltip annotations referenced
 
 ### Updated
 
