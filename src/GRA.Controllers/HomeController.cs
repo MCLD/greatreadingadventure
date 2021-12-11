@@ -565,7 +565,7 @@ namespace GRA.Controllers
                         {
                             viewmodel.RegistrationOpens
                                 = ((DateTime)site.RegistrationOpens).ToString("D",
-                                    CultureInfo.InvariantCulture);
+                                    culture);
                             PageTitle = _sharedLocalizer[Annotations.Title.RegistrationOpens,
                                 siteName,
                                 viewmodel.RegistrationOpens];
