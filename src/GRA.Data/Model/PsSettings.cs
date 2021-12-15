@@ -31,5 +31,8 @@ namespace GRA.Data.Model
 
         [MaxLength(255)]
         public string BranchAvailabilitySupplementalText { get; set; }
+
+        [MaxLength(50)]
+        public string SetupSupplementalText { get; set; }
     }
 }

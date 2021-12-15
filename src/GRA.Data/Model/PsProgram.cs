@@ -33,7 +33,7 @@ namespace GRA.Data.Model
         public decimal Cost { get; set; }
 
         [MaxLength(1000)]
-
+        [Required]
         public string Setup { get; set; }
 
         public bool AllowStreaming { get; set; }

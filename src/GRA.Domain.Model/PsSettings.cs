@@ -51,5 +51,9 @@ namespace GRA.Domain.Model
         [DisplayName("Branch Availability Supplemental Text")]
         [MaxLength(255)]
         public string BranchAvailabilitySupplementalText { get; set; }
+
+        [DisplayName("Program Set up Supplemental Text")]
+        [MaxLength(50)]
+        public string SetupSupplementalText { get; set; }
     }
 }

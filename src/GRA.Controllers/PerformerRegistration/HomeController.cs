@@ -476,7 +476,8 @@ namespace GRA.Controllers.PerformerRegistration
             {
                 AgeList = ageList,
                 MaxUploadMB = MaxUploadMB,
-                RegistrationCompleted = performer.RegistrationCompleted
+                RegistrationCompleted = performer.RegistrationCompleted,
+                SetupSupplementalText = settings.SetupSupplementalText
             };
 
             if (id.HasValue)
@@ -605,6 +606,7 @@ namespace GRA.Controllers.PerformerRegistration
             }
             model.AgeList = ageList;
             model.MaxUploadMB = MaxUploadMB;
+            model.SetupSupplementalText = settings.SetupSupplementalText;
             return View(model);
         }
 
