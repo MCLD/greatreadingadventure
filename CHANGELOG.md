@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Fix #816 Incorrect Profile tooltip annotations referenced
 - Fix landing page translation and add culture in date formatting
 - Preemptive button spinner on performer registration preventing submission
+- Household prize redemption directing to the wrong controller
 
 ### Updated
 
