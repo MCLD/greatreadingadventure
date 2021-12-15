@@ -340,20 +340,10 @@ else
             if (BranchAvailability.length == 0) {
                 $("#branchValidator").show();
                 e.preventDefault();
+                ResetSpinners(e.relatedTarget);
             }
             else {
                 $("#BranchAvailabilityString").val(JSON.stringify(BranchAvailability));
-
-                if ($("#submitButton").parents("form:first").valid()) {
-                    if ($("#submitButton").hasClass("disabled")) {
-                        e.preventDefault();
-                    }
-                    else {
-                        $("#submitButton").addClass("disabled");
-                        $("#submitButton").siblings(".btn-spinner").addClass("disabled");
-                        $("#submitButton").children(".fa-spinner").removeClass("hidden");
-                    }
-                }
             }
         });
     </script>
