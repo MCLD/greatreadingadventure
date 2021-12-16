@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - Notation on the participant dashboard that title and author are optional
 - Site setting to disable avatar sharing
+- Performer program setup supplemental text
 
 ### Changed
 

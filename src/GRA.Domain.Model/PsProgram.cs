@@ -45,7 +45,7 @@ namespace GRA.Domain.Model
 
         [DisplayName("Library set up")]
         [MaxLength(1000, ErrorMessage = "Please enter no more than {1} characters for {0}.")]
-
+        [Required]
         public string Setup { get; set; }
 
         [DisplayName("Allow streaming")]

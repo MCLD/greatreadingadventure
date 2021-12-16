@@ -17,5 +17,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.PerformerManagement
         public string PerformerName { get; set; }
 
         public int MaxUploadMB { get; set; }
+
+        public string SetupSupplementalText { get; set; }
     }
 }

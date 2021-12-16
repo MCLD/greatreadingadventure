@@ -30,7 +30,7 @@ namespace GRA.Domain.Model
         [Required]
         public string Phone { get; set; }
 
-        [DisplayName("Prefered method of contact")]
+        [DisplayName("Preferred method of contact")]
         public bool PhonePreferred { get; set; }
 
         [DisplayName("Vendor ID number")]
