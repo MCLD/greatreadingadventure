@@ -45,7 +45,7 @@
                 </button>
             </form>
         }
-        else if (Model.SchedulingStage >= GRA.Domain.Model.PsSchedulingStage.SchedulingOpen)
+        else if (Model.SchedulingStage >= GRA.Domain.Model.PsSchedulingStage.SchedulingOpen && Model.Performer.IsApproved)
         {
             <a asp-action="PerformerSelections"
                asp-route-id="@Model.Performer.Id"
