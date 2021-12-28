@@ -15,6 +15,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Changed
 
 - Hide avatar bundle icon if no bundles are available
+- Reduce streaming video caching on dashboard to 15 minutes
+- Order streaming videos on dashboard by start date descending (newest at the top)
 
 ### Fixed
 
