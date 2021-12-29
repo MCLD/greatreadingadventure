@@ -107,10 +107,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.SiteId == filter.SiteId && !_.IsDeleted);
 
-            if (filter.Unlockable)
-            {
-                bundles = bundles.Where(_ => _.CanBeUnlocked);
-            }
+            bundles = bundles.Where(_ => _.CanBeUnlocked == filter.Unlockable);
             return filter.IsPreconfigured
                 ? bundles.Where(_ => _.Description != null)
                 : bundles.Where(_ => _.Description == null);
