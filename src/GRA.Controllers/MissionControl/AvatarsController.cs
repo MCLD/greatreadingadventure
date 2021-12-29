@@ -318,7 +318,6 @@ namespace GRA.Controllers.MissionControl
             else
             {
                 filter.Unlockable = false;
-                search = "Default";
             }
             var bundleList = await _avatarService.GetPaginatedBundleListAsync(filter);
 
@@ -352,7 +351,7 @@ namespace GRA.Controllers.MissionControl
             return View(viewModel);
         }
 
-        public async Task<IActionResult> BundleCreate(string search = "Default")
+        public async Task<IActionResult> BundleCreate(string search = null)
         {
             var viewModel = new BundlesDetailViewModel
             {
@@ -514,7 +513,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public async Task<IActionResult> BundleDelete(int id, string search = "Default")
+        public async Task<IActionResult> BundleDelete(int id, string search = null)
         {
             try
             {
