@@ -200,5 +200,12 @@ namespace GRA.Data.Repository
             var bundleItems = _context.AvatarBundleItems.Where(_ => _.AvatarItemId == id);
             _context.AvatarBundleItems.RemoveRange(bundleItems);
         }
+
+        public async Task<bool> HasChildBundlesAsync(int bundleId)
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.AssociatedBundleId == bundleId && !_.IsDeleted)
+                .AnyAsync();
+        }
     }
 }

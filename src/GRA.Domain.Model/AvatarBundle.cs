@@ -15,6 +15,7 @@ namespace GRA.Domain.Model
         public bool IsDeleted { get; set; }
         public bool HasBeenAwarded { get; set; }
         public bool? HasBeenViewed { get; set; }
+        public bool? IsParentBundle { get; set; }
 
         [MaxLength(500)]
         public string Description { get; set; }

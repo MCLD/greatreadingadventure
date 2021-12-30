@@ -20,5 +20,6 @@ namespace GRA.Domain.Repository
         Task UpdateHasBeenViewedAsync(int userId, int bundleId);
         Task<List<AvatarBundle>> GetBundlesByAssociatedId(int bundleId);
         Task<ICollection<AvatarBundle>> GetAllPreconfiguredParentsAsync(int siteId);
+        Task<bool> HasChildBundlesAsync(int bundleId);
     }
 }

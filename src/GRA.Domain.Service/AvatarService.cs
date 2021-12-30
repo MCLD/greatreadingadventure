@@ -574,9 +574,14 @@ namespace GRA.Domain.Service
         {
             VerifyManagementPermission();
             filter.SiteId = GetCurrentSiteId();
+            var data = await _avatarBundleRepository.PageAsync(filter);
+            foreach (var bundle in data)
+            {
+                bundle.IsParentBundle = await _avatarBundleRepository.HasChildBundlesAsync(bundle.Id);
+            }
             return new DataWithCount<ICollection<AvatarBundle>>
             {
-                Data = await _avatarBundleRepository.PageAsync(filter),
+                Data = data,
                 Count = await _avatarBundleRepository.CountAsync(filter)
             };
         }

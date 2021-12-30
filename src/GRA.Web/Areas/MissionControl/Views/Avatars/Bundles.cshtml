@@ -81,14 +81,24 @@
                                 </td>
                                 <td>@bundle.AvatarItems.Count</td>
                                 <td class="on-top gra-mc-icon">
-                                    <button type="button"
-                                            class="btn btn-danger btn-xs"
-                                            data-toggle="modal"
-                                            data-target="#deleteModal"
-                                            data-id="@bundle.Id"
-                                            data-name="@bundle.Name">
-                                        <span class="fas fa-times" aria-hidden="true"></span>
-                                    </button>
+                                    @if(bundle.IsParentBundle.HasValue && bundle.IsParentBundle.Value){
+                                        <span data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="This is a parent bundle to a pre-configured avatar."
+                                            tabindex="0"
+                                            class="fas fa-exclamation-triangle wide-tooltip" />
+                                    }
+                                    else
+                                    {
+                                        <button type="button"
+                                                class="btn btn-danger btn-xs"
+                                                data-toggle="modal"
+                                                data-target="#deleteModal"
+                                                data-id="@bundle.Id"
+                                                data-name="@bundle.Name">
+                                            <span class="fas fa-times" aria-hidden="true"></span>
+                                        </button>
+                                    }
                                 </td>
                             </tr>
                         }
