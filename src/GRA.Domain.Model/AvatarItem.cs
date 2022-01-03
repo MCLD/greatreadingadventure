@@ -19,5 +19,6 @@ namespace GRA.Domain.Model
 
         public bool Unlockable { get; set; }
         public string FileType { get; set; }
+        public bool? InBundle { get; set; }
     }
 }
