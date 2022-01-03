@@ -140,7 +140,7 @@ namespace GRA.Data.Repository
         public async Task<ICollection<AvatarItem>> GetRandomDefaultBundleAsync(int siteId)
         {
             var bundleItems = await DbSet.AsNoTracking()
-               .Where(_ => _.SiteId == siteId && !_.CanBeUnlocked && !_.IsDeleted)
+               .Where(_ => _.SiteId == siteId && !_.CanBeUnlocked && !_.IsDeleted && !_.AssociatedBundleId.HasValue)
                .OrderBy(_ => Guid.NewGuid())
                .Take(1)
                .Select(_ => _.AvatarBundleItems.Select(i => i.AvatarItem))
