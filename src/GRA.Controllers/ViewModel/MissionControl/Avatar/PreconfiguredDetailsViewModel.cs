@@ -6,7 +6,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Avatar
 {
     public class PreconfiguredDetailsViewModel
     {
-        public List<List<AvatarLayer>> LayerGroupings { get; set; }
+        public List<AvatarLayer> Layers { get; set; }
         public ICollection<AvatarBundle> Bundles { get; set; }
         public AvatarBundle Bundle { get; set; }
         public string ImagePath { get; set; }

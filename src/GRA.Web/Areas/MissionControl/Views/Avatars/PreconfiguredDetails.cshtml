@@ -39,7 +39,7 @@
             <div class="col-xs-12 col-sm-5 pull-right">
                 <div class="visible-xs" id="mobile-container">
                     <div class="avatar-container center-block">
-                        @foreach (var layer in Model.LayerGroupings.SelectMany(_ => _))
+                        @foreach (var layer in Model.Layers)
                         {
                             <img src="~/@layer.FilePath"
                                  class="@($"image{layer.Id}") xsLayer avatar-layer@(string.IsNullOrWhiteSpace(layer.FilePath) ? " hide" : "")  @(layer.GroupId == 1  ? "bundle-item" : "")"
@@ -54,7 +54,7 @@
                 </div>
                 <div class="hidden-xs" id="desktop-container">
                     <div class="avatar-container center-block">
-                        @foreach (var layer in Model.LayerGroupings.SelectMany(_ => _))
+                        @foreach (var layer in Model.Layers)
                         {
                             <img src="~/@layer.FilePath"
                                  class="@($"image{layer.Id}") avatar-layer@(string.IsNullOrWhiteSpace(layer.FilePath) ? " hide" : "")  @(layer.GroupId == 1 ? "bundle-item" : "")"
@@ -71,24 +71,19 @@
             <div class="col-xs-12 col-sm-7">
                 <div class="row">
                     <div class="col-xs-12 text-center hide" id="layer-container">
-                        @if (Model.LayerGroupings.Count > 0)
+                        @if (Model.Layers.Count > 0)
                         {
-                            foreach (var layerGroup in Model.LayerGroupings)
+                            foreach (var layer in Model.Layers)
                             {
-                                <div style="display: inline-block;" class="@(Model.LayerGroupings.Count == 1 ? "bundle-item" : "")">
-                                    @foreach (var layer in layerGroup)
-                                    {
-                                        <img src="/"
-                                             id="@($"selector{layer.Id}")"
-                                             class="avatar-layer-selector @(layer.GroupId != 0 ? "hide clothing" : "")"
-                                             data-layer="@layer.Id"
-                                             data-name="@layer.Name"
-                                             data-removelabel="@layer.RemoveLabel"
-                                             data-item="@layer.SelectedItem"
-                                             data-zoomscale="@layer.ZoomScale"
-                                             data-zoomyoffset="@layer.ZoomYOffset"/>
-                                    }
-                                </div>
+                                <img src="/"
+                                        id="@($"selector{layer.Id}")"
+                                        class="avatar-layer-selector @(layer.GroupId != 0 ? "hide clothing" : "")"
+                                        data-layer="@layer.Id"
+                                        data-name="@layer.Name"
+                                        data-removelabel="@layer.RemoveLabel"
+                                        data-item="@layer.SelectedItem"
+                                        data-zoomscale="@layer.ZoomScale"
+                                        data-zoomyoffset="@layer.ZoomYOffset"/>
                             }
                         }
                         <div style="display: inline-block;" class="col-xs-24">
@@ -501,7 +496,7 @@
 
         //Clears the outfit on the avatar when a pre-configured avatar is selected
         function ClearOutfit() {
-            @foreach (var layer in Model.LayerGroupings.SelectMany(_ => _))
+            @foreach (var layer in Model.Layers)
             {
                 if (layer.CanBeEmpty && !layer.ShowColorSelector && layer.Id != 999)
                 {

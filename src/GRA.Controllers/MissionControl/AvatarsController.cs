@@ -423,14 +423,14 @@ namespace GRA.Controllers.MissionControl
                     selectedIds = viewModel.SelectedItems.Select(_ => _.Id).ToList();
                 }
                 selectedIds.Add(mannequin.Id);
-                viewModel.LayerGroupings = await _avatarService.GetWardrobe(selectedIds);
+                viewModel.Layers = await _avatarService.GetWardrobe(selectedIds);
                 viewModel.SelectedItemIds = selectedIds;
                 viewModel.ItemIds = JsonConvert.SerializeObject(selectedIds);
             }
             else
             {
                 selectedIds.Add(mannequin.Id);
-                viewModel.LayerGroupings = await _avatarService.GetWardrobe(selectedIds);
+                viewModel.Layers = await _avatarService.GetWardrobe(selectedIds);
                 viewModel.Bundle = new AvatarBundle();
             }
             PageTitle = !bundleId.HasValue ? "Create Pre-configured Avatar" : "Edit Preconfigured Avatar";
@@ -770,17 +770,12 @@ namespace GRA.Controllers.MissionControl
             model.SelectedItemIds.Add(mannequin.Id);
             if (model.SelectedItemIds.Count > 0)
             {
-                model.LayerGroupings = await _avatarService.GetWardrobe(model.SelectedItemIds);
+                model.Layers = await _avatarService.GetWardrobe(model.SelectedItemIds);
                 model.ItemIds = JsonConvert.SerializeObject(model.SelectedItemIds);
             }
             else
             {
-                var wardrobe = await _avatarService.GetLayersAsync();
-
-                model.LayerGroupings = wardrobe
-                    .GroupBy(_ => _.GroupId)
-                    .Select(_ => _.ToList())
-                    .ToList();
+                model.Layers = (List<AvatarLayer>)await _avatarService.GetLayersAsync();
             }
             model.Bundles = await _avatarService.GetAllPreconfiguredParentBundlesAsync();
             model.ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/");
@@ -813,17 +808,12 @@ namespace GRA.Controllers.MissionControl
                         model.SelectedItemIds.Add(mannequin.Id);
                         if (model.SelectedItemIds.Count > 0)
                         {
-                            model.LayerGroupings = await _avatarService.GetWardrobe(model.SelectedItemIds);
+                            model.Layers = await _avatarService.GetWardrobe(model.SelectedItemIds);
                             model.ItemIds = JsonConvert.SerializeObject(model.SelectedItemIds);
                         }
                         else
                         {
-                            var wardrobe = await _avatarService.GetLayersAsync();
-
-                            model.LayerGroupings = wardrobe
-                                .GroupBy(_ => _.GroupId)
-                                .Select(_ => _.ToList())
-                                .ToList();
+                            model.Layers = (List<AvatarLayer>)await _avatarService.GetLayersAsync();
                         }
                         model.Bundles = await _avatarService.GetAllPreconfiguredParentBundlesAsync();
                         model.ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/");

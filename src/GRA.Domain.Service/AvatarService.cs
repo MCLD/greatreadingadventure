@@ -145,19 +145,15 @@ namespace GRA.Domain.Service
             return layers.Where(_ => _.AvatarItems.Count > 0).ToList();
         }
 
-        public async Task<List<List<AvatarLayer>>> GetWardrobe(List<int> itemIds)
+        public async Task<List<AvatarLayer>> GetWardrobe(List<int> itemIds)
         {
             var siteId = GetCurrentSiteId();
             var layers = await GetLayersAsync();
-            var layerGroupings = layers
-                .GroupBy(_ => _.GroupId)
-                .Select(_ => _.ToList())
-                .ToList();
             var filePath = _pathResolver.ResolveContentPath($"site{siteId}/avatars/");
             if (itemIds != null)
             {
                 var items = await GetItemsByIdsAsync(itemIds);
-                foreach (var layer in layerGroupings.SelectMany(_ => _))
+                foreach (var layer in layers)
                 {
                     var item = items
                         .FirstOrDefault(_ => _.AvatarLayerId == layer.Id);
@@ -177,7 +173,7 @@ namespace GRA.Domain.Service
                     }
                 }
             }
-            return layerGroupings;
+            return layers.ToList();
         }
 
         public async Task<AvatarItem> GetRandomMannequinAsync()
