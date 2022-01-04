@@ -89,7 +89,7 @@
                                         <label asp-for="User.Username" class="control-label"></label>
                                         <span class="fas fa-info-circle" 
                                               data-toggle="tooltip" 
-                                              title="@SharedLocalizer[GRA.Annotations.Interface.NeedToChange, GRA.Annotations.Validate.Username]"></span>
+                                              title="@SharedLocalizer[GRA.Annotations.Interface.NeedToChange, SharedLocalizer[DisplayNames.Username]]"></span>
                                         <input asp-for="User.Username" class="form-control" readonly />
                                     </div>
                                 </div>
@@ -150,7 +150,7 @@
                                             <label asp-for="User.SystemId" class="control-label"></label>
                                             <span class="fas fa-info-circle" 
                                                   data-toggle="tooltip" 
-                                                  title="@SharedLocalizer[GRA.Annotations.Interface.NeedToChange, GRA.Annotations.Validate.System]"></span>
+                                                  title="@SharedLocalizer[GRA.Annotations.Interface.NeedToChange, SharedLocalizer[DisplayNames.System]]"></span>
                                             <input class="form-control" readonly value="@Model.SystemName" />
                                         </div>
                                     </div>
@@ -163,7 +163,7 @@
                                             <label asp-for="User.BranchId" class="control-label"></label>
                                             <span class="fas fa-info-circle" 
                                                   data-toggle="tooltip" 
-                                                  title="@SharedLocalizer[GRA.Annotations.Interface.NeedToChange, GRA.Annotations.Validate.Branch]"></span>
+                                                  title="@SharedLocalizer[GRA.Annotations.Interface.NeedToChange, SharedLocalizer[DisplayNames.Branch]]"></span>
                                             <input class="form-control" readonly value="@Model.BranchName" />
                                         </div>
                                     </div>

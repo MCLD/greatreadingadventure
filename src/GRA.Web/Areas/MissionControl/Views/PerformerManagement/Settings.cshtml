@@ -138,6 +138,12 @@
     </div>
 
     <div class="form-group">
+        <label asp-for="Settings.SetupSupplementalText" class="control-label"></label>
+        <input asp-for="Settings.SetupSupplementalText" class="form-control" />
+        <span asp-validation-for="Settings.SetupSupplementalText" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
         <button type="submit"
                 id="Submit"
                 name="Submit"
