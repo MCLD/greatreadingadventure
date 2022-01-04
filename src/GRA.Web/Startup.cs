@@ -433,8 +433,7 @@ namespace GRA.Web
                             .Throw(throwEvents.ToArray())
                             .Log(logEvents.ToArray())
                             .Ignore(ignoreEvents.ToArray())));
-                    services.AddHealthChecks()
-                        .AddSqlServer(cs);
+                    services.AddHealthChecks();
                     break;
 
                 case ConnectionStringNameSQLite:

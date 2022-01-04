@@ -694,7 +694,8 @@ namespace GRA.Controllers.MissionControl
                 AgeList = new SelectList(ageGroups, "Id", "Name"),
                 PerformerId = id,
                 PerformerName = performer.Name,
-                MaxUploadMB = MaxUploadMB
+                MaxUploadMB = MaxUploadMB,
+                SetupSupplementalText = settings.SetupSupplementalText
             };
 
             return View(nameof(ProgramDetails), viewModel);
@@ -727,7 +728,8 @@ namespace GRA.Controllers.MissionControl
             {
                 AgeList = new SelectList(ageGroups, "Id", "Name"),
                 AgeSelection = program.AgeGroups.Select(_ => _.Id).ToList(),
-                Program = program
+                Program = program,
+                SetupSupplementalText = settings.SetupSupplementalText
             };
 
             return View(viewModel);
@@ -803,12 +805,17 @@ namespace GRA.Controllers.MissionControl
             }
 
             model.AgeList = new SelectList(ageGroups, "Id", "Name");
+            model.MaxUploadMB = MaxUploadMB;
             if (model.PerformerId.HasValue)
             {
                 var performer = await _performerSchedulingService
                         .GetPerformerByIdAsync(model.PerformerId.Value);
                 model.PerformerName = performer.Name;
             }
+
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            model.SetupSupplementalText = settings.SetupSupplementalText;
+
             return View(model);
         }
 

@@ -25,6 +25,167 @@ namespace GRA.Data.Repository
             return await ApplyFilters(filter).CountAsync();
         }
 
+        public async Task DetachRelatedChallenge(int userId, int challengeId)
+        {
+            var events = await DbSet.Where(_ => _.ChallengeId == challengeId).ToListAsync();
+
+            foreach (var graEvent in events)
+            {
+                graEvent.ChallengeId = null;
+                await base.UpdateAsync(userId, graEvent, null);
+            }
+        }
+
+        public async Task DetachRelatedChallengeGroup(int userId, int challengeGroupId)
+        {
+            var events = await DbSet.Where(_ => _.ChallengeGroupId == challengeGroupId)
+                .ToListAsync();
+
+            foreach (var graEvent in events)
+            {
+                graEvent.ChallengeGroupId = null;
+                await base.UpdateAsync(userId, graEvent, null);
+            }
+        }
+
+        public async Task DetachRelatedTrigger(int triggerId)
+        {
+            var Events = await DbSet.Where(_ => _.RelatedTriggerId == triggerId).ToListAsync();
+            Events.Select(_ => { _.RelatedTriggerId = null; return _; }).ToList();
+            _context.UpdateRange(Events);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<Event>> GetByChallengeGroupIdAsync(int challengeGroupId)
+        {
+            return await DbSet.AsNoTracking()
+                   .Where(_ => _.ChallengeGroupId == challengeGroupId)
+                   .ProjectTo<Event>(_mapper.ConfigurationProvider)
+                   .ToListAsync();
+        }
+
+        public async Task<List<Event>> GetByChallengeIdAsync(int challengeId)
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.ChallengeId == challengeId)
+                .ProjectTo<Event>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
+        public override async Task<Event> GetByIdAsync(int id)
+        {
+            var currentEvent = await DbSet
+                .AsNoTracking()
+                .Where(_ => _.Id == id)
+                .ProjectTo<Event>(_mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync();
+
+            if (currentEvent != null)
+            {
+                await AddLocationData(currentEvent);
+            }
+            return currentEvent;
+        }
+
+        public async Task<ICollection<DataWithCount<Event>>>
+            GetCommunityExperienceAttendanceAsync(ReportCriterion criterion)
+        {
+            var communityExperiences = DbSet
+                .AsNoTracking()
+                .Where(_ => _.IsCommunityExperience && _.RelatedTriggerId.HasValue);
+
+            if (criterion.BranchId.HasValue)
+            {
+                communityExperiences = communityExperiences
+                    .Where(_ => _.RelatedBranchId == criterion.BranchId);
+            }
+            else if (criterion.SystemId.HasValue)
+            {
+                communityExperiences = communityExperiences
+                    .Where(_ => _.RelatedSystemId == criterion.SystemId);
+            }
+
+            var communityExperienceList = (await communityExperiences
+                .ToListAsync())
+                .Select(_ => new DataWithCount<Event>
+                {
+                    Data = _mapper.Map<Event>(_)
+                })
+                .OrderBy(_ => _.Data.Name)
+                .ToList();
+
+            var triggerCounts = await _context.UserTriggers
+                .AsNoTracking()
+                .Where(_ => communityExperiences
+                    .Select(e => e.RelatedTriggerId)
+                    .Contains(_.TriggerId))
+                .GroupBy(_ => _.TriggerId)
+                .Select(_ => new { _.Key, Count = _.Count() })
+                .ToListAsync();
+
+            foreach (var experience in communityExperienceList)
+            {
+                experience.Count = triggerCounts
+                    .Where(_ => _.Key == experience.Data.RelatedTriggerId)
+                    .Select(_ => _.Count)
+                    .FirstOrDefault();
+            }
+
+            return communityExperienceList;
+        }
+
+        public async Task<ICollection<Event>> GetEventListAsync(EventFilter filter)
+        {
+            if (filter == null)
+            {
+                throw new ArgumentNullException(nameof(filter));
+            }
+
+            return await ApplyFilters(filter).Select(_ => new Event
+            {
+                Id = _.Id,
+                Name = _.Name,
+                StartDate = _.StartDate,
+                StreamingAccessEnds = _.StreamingAccessEnds,
+                EndDate = _.EndDate
+            })
+            .ToListAsync();
+        }
+
+        public async Task<ICollection<Event>> GetRelatedEventsForTriggerAsync(int triggerId)
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.RelatedTriggerId == triggerId)
+                .ProjectTo<Event>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<int>> GetUserFavoriteEvents(int userId,
+            IEnumerable<int> eventIds = null)
+        {
+            var favoriteEvents = _context.UserFavoriteEvents
+                .AsNoTracking()
+                .Where(_ => _.UserId == userId);
+
+            if (eventIds?.Count() > 0)
+            {
+                favoriteEvents = favoriteEvents
+                    .Where(_ => eventIds.Contains(_.EventId));
+            }
+
+            return await favoriteEvents
+                .Select(_ => _.EventId)
+                .ToListAsync();
+        }
+
+        public async Task<bool> LocationInUse(int siteId, int locationId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId && _.AtLocationId == locationId)
+                .AnyAsync();
+        }
+
         public async Task<ICollection<Event>> PageAsync(EventFilter filter)
         {
             var eventQuery = ApplyFilters(filter);
@@ -91,6 +252,75 @@ namespace GRA.Data.Repository
             return await eventQuery.ApplyPagination(filter)
                 .ProjectTo<Event>(_mapper.ConfigurationProvider)
                 .ToListAsync();
+        }
+
+        public async Task UpdateUserFavoritesAsync(int authUserId, int userId,
+            IEnumerable<int> favoritesToAdd, IEnumerable<int> favoritesToRemove)
+        {
+            if (favoritesToAdd.Any())
+            {
+                var time = _dateTimeProvider.Now;
+                var userFavoriteList = new List<Model.UserFavoriteEvent>();
+                foreach (var eventId in favoritesToAdd)
+                {
+                    userFavoriteList.Add(new Model.UserFavoriteEvent
+                    {
+                        UserId = userId,
+                        EventId = eventId,
+                        CreatedAt = time,
+                        CreatedBy = authUserId
+                    });
+                }
+                await _context.UserFavoriteEvents.AddRangeAsync(userFavoriteList);
+            }
+            if (favoritesToRemove.Any())
+            {
+                var removeList = _context.UserFavoriteEvents
+                    .Where(_ => _.UserId == userId && favoritesToRemove
+                    .Contains(_.EventId));
+                _context.UserFavoriteEvents.RemoveRange(removeList);
+            }
+            await SaveAsync();
+        }
+
+        public async Task<IEnumerable<int>> ValidateEventIdsAsync(int siteId,
+            IEnumerable<int> eventIds)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId && eventIds.Contains(_.Id))
+                .Select(_ => _.Id)
+                .ToListAsync();
+        }
+
+        private async Task AddLocationData(Event currentEvent)
+        {
+            if (currentEvent.AtLocationId != null)
+            {
+                var location = await _context.Locations
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(_ => _.Id == currentEvent.AtLocationId);
+                if (location != null)
+                {
+                    currentEvent.EventLocationAddress = location.Address;
+                    currentEvent.EventLocationLink = location.Url;
+                    currentEvent.EventLocationName = location.Name;
+                    currentEvent.EventLocationTelephone = location.Telephone;
+                }
+            }
+            else if (currentEvent.AtBranchId != null)
+            {
+                var branch = await _context.Branches
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(_ => _.Id == currentEvent.AtBranchId);
+                if (branch != null)
+                {
+                    currentEvent.EventLocationAddress = branch.Address;
+                    currentEvent.EventLocationLink = branch.Url;
+                    currentEvent.EventLocationName = branch.Name;
+                    currentEvent.EventLocationTelephone = branch.Telephone;
+                }
+            }
         }
 
         private IQueryable<Model.Event> ApplyFilters(EventFilter filter)
@@ -251,7 +481,7 @@ namespace GRA.Data.Repository
                     || _.Description.Contains(filter.Search));
             }
 
-            // for spatial searches make sure events have a corresponding geolocation 
+            // for spatial searches make sure events have a corresponding geolocation
             if (filter.SpatialDistanceHeaderId.HasValue)
             {
                 var spatialDetails = _context.SpatialDistanceDetails
@@ -272,237 +502,14 @@ namespace GRA.Data.Repository
                         && spatialLocationIds.Contains(_.AtLocationId.Value)));
             }
 
+            // apply ordering if requested
+            if (filter.ByStreamingStartDesc)
+            {
+                events = events.OrderByDescending(_ => _.StartDate)
+                    .ThenBy(_ => _.Name);
+            }
+
             return events;
-        }
-
-        public override async Task<Event> GetByIdAsync(int id)
-        {
-            var currentEvent = await DbSet
-                .AsNoTracking()
-                .Where(_ => _.Id == id)
-                .ProjectTo<Event>(_mapper.ConfigurationProvider)
-                .SingleOrDefaultAsync();
-
-            if (currentEvent != null)
-            {
-                await AddLocationData(currentEvent);
-            }
-            return currentEvent;
-        }
-
-        public async Task<List<Event>> GetByChallengeIdAsync(int challengeId)
-        {
-            return await DbSet.AsNoTracking()
-                .Where(_ => _.ChallengeId == challengeId)
-                .ProjectTo<Event>(_mapper.ConfigurationProvider)
-                .ToListAsync();
-        }
-
-        public async Task<List<Event>> GetByChallengeGroupIdAsync(int challengeGroupId)
-        {
-            return await DbSet.AsNoTracking()
-                   .Where(_ => _.ChallengeGroupId == challengeGroupId)
-                   .ProjectTo<Event>(_mapper.ConfigurationProvider)
-                   .ToListAsync();
-        }
-
-        private async Task AddLocationData(Event currentEvent)
-        {
-            if (currentEvent.AtLocationId != null)
-            {
-                var location = await _context.Locations
-                    .AsNoTracking()
-                    .SingleOrDefaultAsync(_ => _.Id == currentEvent.AtLocationId);
-                if (location != null)
-                {
-                    currentEvent.EventLocationAddress = location.Address;
-                    currentEvent.EventLocationLink = location.Url;
-                    currentEvent.EventLocationName = location.Name;
-                    currentEvent.EventLocationTelephone = location.Telephone;
-                }
-            }
-            else if (currentEvent.AtBranchId != null)
-            {
-                var branch = await _context.Branches
-                    .AsNoTracking()
-                    .SingleOrDefaultAsync(_ => _.Id == currentEvent.AtBranchId);
-                if (branch != null)
-                {
-                    currentEvent.EventLocationAddress = branch.Address;
-                    currentEvent.EventLocationLink = branch.Url;
-                    currentEvent.EventLocationName = branch.Name;
-                    currentEvent.EventLocationTelephone = branch.Telephone;
-                }
-            }
-        }
-
-        public async Task<ICollection<Event>> GetEventListAsync(EventFilter filter)
-        {
-            if (filter == null)
-            {
-                throw new ArgumentNullException(nameof(filter));
-            }
-
-            return await ApplyFilters(filter).Select(_ => new Event
-            {
-                Id = _.Id,
-                Name = _.Name,
-                StartDate = _.StartDate,
-                StreamingAccessEnds = _.StreamingAccessEnds,
-                EndDate = _.EndDate
-            })
-            .ToListAsync();
-        }
-
-        public async Task<bool> LocationInUse(int siteId, int locationId)
-        {
-            return await DbSet
-                .AsNoTracking()
-                .Where(_ => _.SiteId == siteId && _.AtLocationId == locationId)
-                .AnyAsync();
-        }
-
-        public async Task DetachRelatedTrigger(int triggerId)
-        {
-            var Events = await DbSet.Where(_ => _.RelatedTriggerId == triggerId).ToListAsync();
-            Events.Select(_ => { _.RelatedTriggerId = null; return _; }).ToList();
-            _context.UpdateRange(Events);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task<ICollection<Event>> GetRelatedEventsForTriggerAsync(int triggerId)
-        {
-            return await DbSet.AsNoTracking()
-                .Where(_ => _.RelatedTriggerId == triggerId)
-                .ProjectTo<Event>(_mapper.ConfigurationProvider)
-                .ToListAsync();
-        }
-
-        public async Task DetachRelatedChallenge(int userId, int challengeId)
-        {
-            var events = await DbSet.Where(_ => _.ChallengeId == challengeId).ToListAsync();
-
-            foreach (var graEvent in events)
-            {
-                graEvent.ChallengeId = null;
-                await base.UpdateAsync(userId, graEvent, null);
-            }
-        }
-
-        public async Task DetachRelatedChallengeGroup(int userId, int challengeGroupId)
-        {
-            var events = await DbSet.Where(_ => _.ChallengeGroupId == challengeGroupId)
-                .ToListAsync();
-
-            foreach (var graEvent in events)
-            {
-                graEvent.ChallengeGroupId = null;
-                await base.UpdateAsync(userId, graEvent, null);
-            }
-        }
-
-        public async Task<ICollection<DataWithCount<Event>>>
-            GetCommunityExperienceAttendanceAsync(ReportCriterion criterion)
-        {
-            var communityExperiences = DbSet
-                .AsNoTracking()
-                .Where(_ => _.IsCommunityExperience && _.RelatedTriggerId.HasValue);
-
-            if (criterion.BranchId.HasValue)
-            {
-                communityExperiences = communityExperiences
-                    .Where(_ => _.RelatedBranchId == criterion.BranchId);
-            }
-            else if (criterion.SystemId.HasValue)
-            {
-                communityExperiences = communityExperiences
-                    .Where(_ => _.RelatedSystemId == criterion.SystemId);
-            }
-
-            var communityExperienceList = (await communityExperiences
-                .ToListAsync())
-                .Select(_ => new DataWithCount<Event>
-                {
-                    Data = _mapper.Map<Event>(_)
-                })
-                .OrderBy(_ => _.Data.Name)
-                .ToList();
-
-            var triggerCounts = await _context.UserTriggers
-                .AsNoTracking()
-                .Where(_ => communityExperiences
-                    .Select(e => e.RelatedTriggerId)
-                    .Contains(_.TriggerId))
-                .GroupBy(_ => _.TriggerId)
-                .Select(_ => new { _.Key, Count = _.Count() })
-                .ToListAsync();
-
-            foreach (var experience in communityExperienceList)
-            {
-                experience.Count = triggerCounts
-                    .Where(_ => _.Key == experience.Data.RelatedTriggerId)
-                    .Select(_ => _.Count)
-                    .FirstOrDefault();
-            }
-
-            return communityExperienceList;
-        }
-
-        public async Task<IEnumerable<int>> GetUserFavoriteEvents(int userId,
-            IEnumerable<int> eventIds = null)
-        {
-            var favoriteEvents = _context.UserFavoriteEvents
-                .AsNoTracking()
-                .Where(_ => _.UserId == userId);
-
-            if (eventIds?.Count() > 0)
-            {
-                favoriteEvents = favoriteEvents
-                    .Where(_ => eventIds.Contains(_.EventId));
-            }
-
-            return await favoriteEvents
-                .Select(_ => _.EventId)
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<int>> ValidateEventIdsAsync(int siteId,
-            IEnumerable<int> eventIds)
-        {
-            return await DbSet
-                .AsNoTracking()
-                .Where(_ => _.SiteId == siteId && eventIds.Contains(_.Id))
-                .Select(_ => _.Id)
-                .ToListAsync();
-        }
-
-        public async Task UpdateUserFavoritesAsync(int authUserId, int userId,
-            IEnumerable<int> favoritesToAdd, IEnumerable<int> favoritesToRemove)
-        {
-            if (favoritesToAdd.Any())
-            {
-                var time = _dateTimeProvider.Now;
-                var userFavoriteList = new List<Model.UserFavoriteEvent>();
-                foreach (var eventId in favoritesToAdd)
-                {
-                    userFavoriteList.Add(new Model.UserFavoriteEvent
-                    {
-                        UserId = userId,
-                        EventId = eventId,
-                        CreatedAt = time,
-                        CreatedBy = authUserId
-                    });
-                }
-                await _context.UserFavoriteEvents.AddRangeAsync(userFavoriteList);
-            }
-            if (favoritesToRemove.Any())
-            {
-                var removeList = _context.UserFavoriteEvents
-                    .Where(_ => _.UserId == userId && favoritesToRemove
-                    .Contains(_.EventId));
-                _context.UserFavoriteEvents.RemoveRange(removeList);
-            }
-            await SaveAsync();
         }
     }
 }

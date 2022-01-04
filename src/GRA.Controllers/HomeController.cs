@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -81,7 +80,8 @@ namespace GRA.Controllers
                 ?? throw new ArgumentNullException(nameof(vendorCodeService));
         }
 
-        public static string Name { get { return "Home"; } }
+        public static string Name
+        { get { return "Home"; } }
 
         [HttpPost]
         public async Task<IActionResult> AddReminder(LandingPageViewModel viewModel)
@@ -209,7 +209,8 @@ namespace GRA.Controllers
                     UserLogs = userLogs.Data,
                     DisableSecretCode
                         = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable),
-                    UpcomingStreams = await _eventService.GetUpcomingStreamListAsync()
+                    UpcomingStreams = await _eventService
+                        .GetUpcomingStreamListAsync()
                 };
 
                 try
@@ -570,7 +571,7 @@ namespace GRA.Controllers
                         {
                             viewmodel.RegistrationOpens
                                 = ((DateTime)site.RegistrationOpens).ToString("D",
-                                    CultureInfo.InvariantCulture);
+                                    culture);
                             PageTitle = _sharedLocalizer[Annotations.Title.RegistrationOpens,
                                 siteName,
                                 viewmodel.RegistrationOpens];

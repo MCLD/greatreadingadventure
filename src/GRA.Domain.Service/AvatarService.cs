@@ -24,8 +24,8 @@ namespace GRA.Domain.Service
         private readonly IAvatarLayerRepository _avatarLayerRepository;
         private readonly IJobRepository _jobRepository;
         private readonly LanguageService _languageService;
-        private readonly ITriggerRepository _triggerRepository;
         private readonly IPathResolver _pathResolver;
+        private readonly ITriggerRepository _triggerRepository;
 
         public AvatarService(ILogger<AvatarService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
@@ -61,6 +61,298 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(pathResolver));
 
             SetManagementPermission(Permission.ManageAvatars);
+        }
+
+        public async Task<AvatarBundle> AddBundleAsync(AvatarBundle bundle,
+            List<int> itemIds)
+        {
+            VerifyManagementPermission();
+            var items = await _avatarItemRepository.GetByIdsAsync(itemIds);
+            if (bundle?.AssociatedBundleId == null
+                && items.Any(_ => _.Unlockable != bundle.CanBeUnlocked))
+            {
+                throw new GraException($"Not all items are {(bundle.CanBeUnlocked ? "Unlockable" : "Available")}.");
+            }
+
+            if (bundle.AssociatedBundleId == null && (!bundle.CanBeUnlocked
+                && items.GroupBy(_ => _.AvatarLayerId).Any(_ => _.Skip(1).Any())))
+            {
+                throw new GraException("Default bundles cannot have multiple items per layer.");
+            }
+            
+            if (!string.IsNullOrEmpty(bundle.Name))
+            {
+                bundle.Name = bundle.Name.Trim();
+            }
+            if (!string.IsNullOrEmpty(bundle.Description))
+            {
+                bundle.Description = bundle.Description.Trim();
+            }
+
+            bundle.SiteId = GetCurrentSiteId();
+            var newBundle = await _avatarBundleRepository.AddSaveAsync(
+                GetClaimId(ClaimType.UserId), bundle);
+
+            await _avatarBundleRepository.AddItemsAsync(newBundle.Id, itemIds);
+
+            return newBundle;
+        }
+
+        public async Task<AvatarLayer> AddLayerAsync(AvatarLayer layer)
+        {
+            VerifyManagementPermission();
+            layer.SiteId = GetCurrentSiteId();
+            var currentLayer = await _avatarLayerRepository.AddSaveAsync(
+                GetClaimId(ClaimType.UserId), layer);
+
+            foreach (var text in layer.Texts)
+            {
+                var languageId = await _languageService.GetLanguageIdAsync(text.Language);
+                if (languageId != default)
+                {
+                    await _avatarLayerRepository.AddAvatarLayerTextAsync(currentLayer.Id,
+                        languageId,
+                        text);
+                }
+            }
+            await _avatarLayerRepository.SaveAsync();
+
+            var layerData = _avatarLayerRepository.GetNameAndLabelByLanguageId(currentLayer.Id,
+                await _languageService.GetDefaultLanguageIdAsync());
+            currentLayer.Name = layerData["Name"];
+            return currentLayer;
+        }
+
+        public async Task DeleteItemAsync(int id)
+        {
+            VerifyManagementPermission();
+            if (await _avatarItemRepository.IsLastInRequiredLayer(id))
+            {
+                throw new GraException("Required layer needs an available item.");
+            }
+            await _avatarItemRepository.RemoveUserItemAsync(id);
+            _avatarItemRepository.RemoveUserUnlockedItem(id);
+            _avatarElementRepository.RemoveByItemId(id);
+            _avatarBundleRepository.RemoveItemFromBundles(id);
+            await _avatarItemRepository.RemoveAsync(GetClaimId(ClaimType.UserId), id);
+            await _avatarItemRepository.SaveAsync();
+        }
+
+        public async Task DescreaseItemSortAsync(int id)
+        {
+            VerifyManagementPermission();
+            await _avatarItemRepository.DecreaseSortPosition(GetCurrentSiteId(), id);
+        }
+
+        public async Task<AvatarBundle> EditBundleAsync(AvatarBundle bundle,
+            List<int> itemIds)
+        {
+            VerifyManagementPermission();
+
+            var currentBundle = await _avatarBundleRepository.GetByIdAsync(bundle.Id, false);
+            if (currentBundle.HasBeenAwarded)
+            {
+                throw new GraException("This bundle has been awarded to a participant and can no longer be edited. ");
+            }
+
+            if (bundle.AssociatedBundleId == null)
+            {
+                if (currentBundle.HasBeenAwarded)
+                {
+                    throw new GraException("This bundle has been awarded to a participant and can no longer be edited.");
+                }
+
+                var items = await _avatarItemRepository.GetByIdsAsync(itemIds);
+                if (items.Any(_ => _.Unlockable != currentBundle.CanBeUnlocked))
+                {
+                    throw new GraException($"Not all items are {(bundle.CanBeUnlocked ? "Unlockable" : "Available")}.");
+                }
+
+                if (!currentBundle.CanBeUnlocked
+                    && items.GroupBy(_ => _.AvatarLayerId).Any(_ => _.Skip(1).Any()))
+                {
+                    throw new GraException("Default bundles cannot have multiple items per layer.");
+                }
+            }
+            else
+            {
+                currentBundle.Description = bundle.Description.Trim();
+            }
+
+            currentBundle.Name = bundle.Name.Trim();
+            await _avatarBundleRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
+                currentBundle);
+
+            var currentItemIds = currentBundle.AvatarItems.Select(_ => _.Id).ToList();
+            var itemsToRemove = currentItemIds.Except(itemIds).ToList();
+            var itemsToAdd = itemIds.Except(currentItemIds).ToList();
+
+            await _avatarBundleRepository.RemoveItemsAsync(currentBundle.Id, itemsToRemove);
+            await _avatarBundleRepository.AddItemsAsync(currentBundle.Id, itemsToAdd);
+
+            return currentBundle;
+        }
+
+        public async Task<ICollection<AvatarBundle>> GetAllBundlesAsync(
+            bool? unlockable = null)
+        {
+            VerifyManagementPermission();
+            return await _avatarBundleRepository.GetAllAsync(GetCurrentSiteId(), unlockable);
+        }
+        
+        public async Task<ICollection<AvatarBundle>> GetAllPreconfiguredParentBundlesAsync()
+        {
+            VerifyManagementPermission();
+            return await _avatarBundleRepository.GetAllPreconfiguredParentsAsync(GetCurrentSiteId());
+        }
+
+        public async Task<ICollection<AvatarItem>> GetBundleItemsAsync(int bundleId)
+        {
+            return await _avatarItemRepository.GetBundleItemsAsync(bundleId);
+        }
+
+        public async Task<AvatarBundle> GetBundleByIdAsync(
+            int id, bool includeDeleted = false, bool preconfigured = false)
+        {
+            var bundle = await _avatarBundleRepository.GetByIdAsync(id, includeDeleted);
+            if (bundle == null)
+            {
+                throw new GraException("The requested bundle could not be accessed or does not exist.");
+            }
+            if (preconfigured)
+            {
+                var allLayers = await GetLayersAsync();
+                bundle.AvatarItems = bundle.AvatarItems
+                    .Where(_ => allLayers
+                        .Any(__ => __.Id == _.AvatarLayerId
+                            && __.CanBeEmpty
+                            && !__.ShowColorSelector))
+                    .ToList();
+            }
+            return bundle;
+        }
+
+        public async Task<ICollection<AvatarColor>> GetColorsByLayerAsync(int layerId)
+        {
+            return await _avatarColorRepository.GetByLayerAsync(layerId);
+        }
+
+        public async Task<AvatarItem> GetItemByLayerPositionSortOrderAsync(int layerPosition,
+            int sortOrder)
+        {
+            VerifyManagementPermission();
+            return await _avatarItemRepository.GetByLayerPositionSortOrderAsync(layerPosition,
+                sortOrder);
+        }
+
+        public async Task<ICollection<AvatarItem>> GetItemsByIdsAsync(List<int> ids)
+        {
+            VerifyManagementPermission();
+            return await _avatarItemRepository.GetByIdsAsync(ids);
+        }
+
+        public async Task<ICollection<AvatarItem>> GetItemsByLayerAsync(int layerId)
+        {
+            return await _avatarItemRepository.GetByLayerAsync(layerId);
+        }
+
+        public async Task<int> GetLayerAvailableItemCountAsync(int layerId)
+        {
+            VerifyManagementPermission();
+            return await _avatarItemRepository.GetLayerAvailableItemCountAsync(layerId);
+        }
+
+        public async Task<IEnumerable<AvatarLayer>> GetLayersAsync()
+        {
+            var currentCultureName = _userContextProvider.GetCurrentCulture()?.Name;
+            var currentLanguageId =
+                await _languageService.GetLanguageIdAsync(currentCultureName);
+            VerifyManagementPermission();
+            var layers = await _avatarLayerRepository.GetAllAsync(GetCurrentSiteId());
+            if (layers.Count > 0)
+            {
+                foreach (var layer in layers.ToList())
+                {
+                    var layerText = _avatarLayerRepository
+                        .GetNameAndLabelByLanguageId(layer.Id, currentLanguageId);
+                    layer.Name = layerText["Name"];
+                    layer.RemoveLabel = layerText["RemoveLabel"];
+                }
+            }
+            return layers;
+        }
+
+        public async Task<int> GetLayerUnavailableItemCountAsync(int layerId)
+        {
+            VerifyManagementPermission();
+            return await _avatarItemRepository.GetLayerUnavailableItemCountAsync(layerId);
+        }
+
+
+        public async Task<int> GetLayerUnlockableItemCountAsync(int layerId)
+        {
+            VerifyManagementPermission();
+            return await _avatarItemRepository.GetLayerUnlockableItemCountAsync(layerId);
+        }
+
+        public async Task<DataWithCount<ICollection<AvatarBundle>>>
+            GetPaginatedBundleListAsync(AvatarFilter filter)
+        {
+            VerifyManagementPermission();
+            filter.SiteId = GetCurrentSiteId();
+            return new DataWithCount<ICollection<AvatarBundle>>
+            {
+                Data = await _avatarBundleRepository.PageAsync(filter),
+                Count = await _avatarBundleRepository.CountAsync(filter)
+            };
+        }
+
+        public async Task<ICollection<Trigger>> GetTriggersAwardingBundleAsync(int id)
+        {
+            VerifyManagementPermission();
+            return await _triggerRepository.GetTriggersAwardingBundleAsync(id);
+        }
+
+        public async Task<ICollection<AvatarElement>> GetUserAvatarAsync()
+        {
+            return await _avatarElementRepository.GetUserAvatarAsync(GetActiveUserId());
+        }
+
+        public async Task<ICollection<AvatarItem>> GetUsersItemsByLayerAsync(int layerId)
+        {
+            var userId = GetClaimId(ClaimType.UserId);
+            return await _avatarItemRepository.GetUserItemsByLayerAsync(userId, layerId);
+        }
+
+        public async Task<List<AvatarBundle>> GetUserUnlockBundlesAsync(
+            bool preconfiguredAvatar = false)
+        {
+            var userHistory = await _avatarBundleRepository.UserHistoryAsync(GetActiveUserId());
+            var bundles = new List<AvatarBundle>();
+            foreach (var historyItem in userHistory.Where(_ => _.AvatarBundleId.HasValue))
+            {
+                if (!bundles.Any(bundle => bundle.Id == historyItem.AvatarBundleId))
+                {
+                    if (preconfiguredAvatar)
+                    {
+                        var preconfiguredBundles = await GetBundlesPreconfiguredAvatarsByIdAsync(
+                            historyItem.AvatarBundleId.Value);
+                        bundles.AddRange(preconfiguredBundles);
+                    }
+                    else
+                    {
+                        var bundle = await GetBundleByIdAsync(historyItem.AvatarBundleId.Value);
+                        bundle.HasBeenViewed = historyItem.HasBeenViewed ?? false;
+                        bundles.Add(bundle);
+                    }
+                }
+            }
+            return bundles;
+        }
+
+        public async Task<List<AvatarBundle>> GetBundlesPreconfiguredAvatarsByIdAsync(int bundleId)
+        {
+            return await _avatarBundleRepository.GetBundlesByAssociatedId(bundleId);
         }
 
         public async Task<ICollection<AvatarLayer>> GetUserWardrobeAsync()
@@ -144,7 +436,7 @@ namespace GRA.Domain.Service
             }
             return layers.Where(_ => _.AvatarItems.Count > 0).ToList();
         }
-
+        
         public async Task<List<List<AvatarLayer>>> GetWardrobe(List<int> itemIds)
         {
             var siteId = GetCurrentSiteId();
@@ -186,425 +478,6 @@ namespace GRA.Domain.Service
             return await _avatarItemRepository.GetDefaultLayerItemAsync(layer.Id);
         }
 
-        public async Task<IEnumerable<AvatarLayer>> GetLayersAsync()
-        {
-            var currentCultureName = _userContextProvider.GetCurrentCulture()?.Name;
-            var currentLanguageId =
-                await _languageService.GetLanguageIdAsync(currentCultureName);
-            VerifyManagementPermission();
-            var layers = await _avatarLayerRepository.GetAllAsync(GetCurrentSiteId());
-            if (layers.Count > 0)
-            {
-                foreach (var layer in layers.ToList())
-                {
-                    var layerText = _avatarLayerRepository
-                        .GetNameAndLabelByLanguageId(layer.Id, currentLanguageId);
-                    layer.Name = layerText["Name"];
-                    layer.RemoveLabel = layerText["RemoveLabel"];
-                }
-            }
-            return layers;
-        }
-
-        public async Task<int> GetLayerAvailableItemCountAsync(int layerId)
-        {
-            VerifyManagementPermission();
-            return await _avatarItemRepository.GetLayerAvailableItemCountAsync(layerId);
-        }
-
-        public async Task<int> GetLayerUnavailableItemCountAsync(int layerId)
-        {
-            VerifyManagementPermission();
-            return await _avatarItemRepository.GetLayerUnavailableItemCountAsync(layerId);
-        }
-
-        public async Task<int> GetLayerUnlockableItemCountAsync(int layerId)
-        {
-            VerifyManagementPermission();
-            return await _avatarItemRepository.GetLayerUnlockableItemCountAsync(layerId);
-        }
-
-        public async Task<AvatarLayer> AddLayerAsync(AvatarLayer layer)
-        {
-            VerifyManagementPermission();
-            layer.SiteId = GetCurrentSiteId();
-            var currentLayer = await _avatarLayerRepository.AddSaveAsync(
-                GetClaimId(ClaimType.UserId), layer);
-
-            foreach (var text in layer.Texts)
-            {
-                var languageId = await _languageService.GetLanguageIdAsync(text.Language);
-                if (languageId != default)
-                {
-                    await _avatarLayerRepository.AddAvatarLayerTextAsync(currentLayer.Id,
-                        languageId,
-                        text);
-                }
-            }
-            await _avatarLayerRepository.SaveAsync();
-
-            var layerData = _avatarLayerRepository.GetNameAndLabelByLanguageId(currentLayer.Id,
-                await _languageService.GetDefaultLanguageIdAsync());
-            currentLayer.Name = layerData["Name"];
-            return currentLayer;
-        }
-
-        public async Task<AvatarLayer> UpdateLayerAsync(AvatarLayer layer)
-        {
-            VerifyManagementPermission();
-            layer.SiteId = GetCurrentSiteId();
-            return await _avatarLayerRepository.UpdateSaveAsync(
-                GetClaimId(ClaimType.UserId), layer);
-        }
-
-        public async Task<ICollection<AvatarItem>> GetItemsByLayerAsync(int layerId)
-        {
-            return await _avatarItemRepository.GetByLayerAsync(layerId);
-        }
-
-        public async Task<ICollection<AvatarItem>> GetUsersItemsByLayerAsync(int layerId)
-        {
-            var userId = GetClaimId(ClaimType.UserId);
-            return await _avatarItemRepository.GetUserItemsByLayerAsync(userId, layerId);
-        }
-
-        public async Task<AvatarItem> GetItemByLayerPositionSortOrderAsync(int layerPosition,
-            int sortOrder)
-        {
-            VerifyManagementPermission();
-            return await _avatarItemRepository.GetByLayerPositionSortOrderAsync(layerPosition,
-                sortOrder);
-        }
-
-        public async Task DescreaseItemSortAsync(int id)
-        {
-            VerifyManagementPermission();
-            await _avatarItemRepository.DecreaseSortPosition(GetCurrentSiteId(), id);
-        }
-
-        public async Task IncreaseItemSortAsync(int id)
-        {
-            VerifyManagementPermission();
-            await _avatarItemRepository.IncreaseSortPosition(GetCurrentSiteId(), id);
-        }
-
-        public async Task SetItemUnlockableAsync(int id)
-        {
-            VerifyManagementPermission();
-            if (await _avatarItemRepository.IsLastInRequiredLayer(id))
-            {
-                throw new GraException("Required layer needs an available item.");
-            }
-            if (await _avatarBundleRepository.IsItemInBundleAsync(id, false))
-            {
-                throw new GraException("Item is part of a default bundle.");
-            }
-            if (await _avatarItemRepository.IsInUse(id, true))
-            {
-                throw new GraException("Item is in use by a participant.");
-            }
-
-            var item = await _avatarItemRepository.GetByIdAsync(id);
-            item.Unlockable = true;
-            await _avatarItemRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), item);
-        }
-
-        public async Task SetItemAvailableAsync(int id)
-        {
-            VerifyManagementPermission();
-            if (await _avatarBundleRepository.IsItemInBundleAsync(id, true))
-            {
-                throw new GraException("Item is part of an unlockable bundle.");
-            }
-
-            var item = await _avatarItemRepository.GetByIdAsync(id);
-            item.Unlockable = false;
-            await _avatarItemRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), item);
-        }
-
-        public async Task DeleteItemAsync(int id)
-        {
-            VerifyManagementPermission();
-            if (await _avatarItemRepository.IsLastInRequiredLayer(id))
-            {
-                throw new GraException("Required layer needs an available item.");
-            }
-            await _avatarItemRepository.RemoveUserItemAsync(id);
-            _avatarItemRepository.RemoveUserUnlockedItem(id);
-            _avatarElementRepository.RemoveByItemId(id);
-            _avatarBundleRepository.RemoveItemFromBundles(id);
-            await _avatarItemRepository.RemoveAsync(GetClaimId(ClaimType.UserId), id);
-            await _avatarItemRepository.SaveAsync();
-        }
-
-        public async Task<ICollection<AvatarColor>> GetColorsByLayerAsync(int layerId)
-        {
-            return await _avatarColorRepository.GetByLayerAsync(layerId);
-        }
-
-        public async Task<AvatarBundle> AddBundleAsync(AvatarBundle bundle,
-            List<int> itemIds)
-        {
-            VerifyManagementPermission();
-            var items = await _avatarItemRepository.GetByIdsAsync(itemIds);
-            if (bundle?.AssociatedBundleId == null
-                && items.Any(_ => _.Unlockable != bundle.CanBeUnlocked))
-            {
-                throw new GraException($"Not all items are {(bundle.CanBeUnlocked ? "Unlockable" : "Available")}.");
-            }
-
-            if (bundle.AssociatedBundleId == null && (!bundle.CanBeUnlocked
-                && items.GroupBy(_ => _.AvatarLayerId).Any(_ => _.Skip(1).Any())))
-            {
-                throw new GraException("Default bundles cannot have multiple items per layer.");
-            }
-
-            if (!string.IsNullOrEmpty(bundle.Name))
-            {
-                bundle.Name = bundle.Name.Trim();
-            }
-            if (!string.IsNullOrEmpty(bundle.Description))
-            {
-                bundle.Description = bundle.Description.Trim();
-            }
-
-            bundle.SiteId = GetCurrentSiteId();
-            var newBundle = await _avatarBundleRepository.AddSaveAsync(
-                GetClaimId(ClaimType.UserId), bundle);
-
-            await _avatarBundleRepository.AddItemsAsync(newBundle.Id, itemIds);
-
-            return newBundle;
-        }
-
-        public async Task<AvatarBundle> EditBundleAsync(AvatarBundle bundle,
-            List<int> itemIds)
-        {
-            VerifyManagementPermission();
-
-            var currentBundle = await _avatarBundleRepository.GetByIdAsync(bundle.Id, false);
-            if (currentBundle.HasBeenAwarded)
-            {
-                throw new GraException("This bundle has been awarded to a participant and can no longer be edited. ");
-            }
-
-            if (bundle.AssociatedBundleId == null)
-            {
-                if (currentBundle.HasBeenAwarded)
-                {
-                    throw new GraException("This bundle has been awarded to a participant and can no longer be edited.");
-                }
-
-                var items = await _avatarItemRepository.GetByIdsAsync(itemIds);
-                if (items.Any(_ => _.Unlockable != currentBundle.CanBeUnlocked))
-                {
-                    throw new GraException($"Not all items are {(bundle.CanBeUnlocked ? "Unlockable" : "Available")}.");
-                }
-
-                if (!currentBundle.CanBeUnlocked
-                    && items.GroupBy(_ => _.AvatarLayerId).Any(_ => _.Skip(1).Any()))
-                {
-                    throw new GraException("Default bundles cannot have multiple items per layer.");
-                }
-            }
-            else
-            {
-                currentBundle.Description = bundle.Description.Trim();
-            }
-
-            currentBundle.Name = bundle.Name.Trim();
-            await _avatarBundleRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
-                currentBundle);
-
-            var currentItemIds = currentBundle.AvatarItems.Select(_ => _.Id).ToList();
-            var itemsToRemove = currentItemIds.Except(itemIds).ToList();
-            var itemsToAdd = itemIds.Except(currentItemIds).ToList();
-
-            await _avatarBundleRepository.RemoveItemsAsync(currentBundle.Id, itemsToRemove);
-            await _avatarBundleRepository.AddItemsAsync(currentBundle.Id, itemsToAdd);
-
-            return currentBundle;
-        }
-
-        public async Task RemoveBundleAsync(int id)
-        {
-            VerifyManagementPermission();
-            if (await _triggerRepository.BundleIsInUseAsync(id))
-            {
-                throw new GraException("Bundle is currently being awarded by a trigger");
-            }
-
-            var bundle = await _avatarBundleRepository.GetByIdAsync(id, false);
-            bundle.IsDeleted = true;
-            await _avatarBundleRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
-                bundle);
-        }
-
-        public async Task<ICollection<AvatarElement>> GetUserAvatarAsync()
-        {
-            return await _avatarElementRepository.GetUserAvatarAsync(GetActiveUserId());
-        }
-
-        public async Task<List<AvatarBundle>> GetUserUnlockBundlesAsync(
-            bool preconfiguredAvatar = false)
-        {
-            var userHistory = await _avatarBundleRepository.UserHistoryAsync(GetActiveUserId());
-            var bundles = new List<AvatarBundle>();
-            foreach (var historyItem in userHistory.Where(_ => _.AvatarBundleId.HasValue))
-            {
-                if (!bundles.Any(bundle => bundle.Id == historyItem.AvatarBundleId))
-                {
-                    if (preconfiguredAvatar)
-                    {
-                        var preconfiguredBundles = await GetBundlesPreconfiguredAvatarsByIdAsync(
-                            historyItem.AvatarBundleId.Value);
-                        bundles.AddRange(preconfiguredBundles);
-                    }
-                    else
-                    {
-                        var bundle = await GetBundleByIdAsync(historyItem.AvatarBundleId.Value);
-                        bundle.HasBeenViewed = historyItem.HasBeenViewed ?? false;
-                        bundles.Add(bundle);
-                    }
-                }
-            }
-            return bundles;
-        }
-
-        public async Task<List<AvatarBundle>> GetBundlesPreconfiguredAvatarsByIdAsync(int bundleId)
-        {
-            return await _avatarBundleRepository.GetBundlesByAssociatedId(bundleId);
-        }
-
-        public async Task UpdateBundleHasBeenViewedAsync(int bundleId)
-        {
-            await _avatarBundleRepository.UpdateHasBeenViewedAsync(GetActiveUserId(),
-                bundleId);
-        }
-
-        public async Task UpdateUserAvatarAsync(ICollection<AvatarLayer> selectionLayers)
-        {
-            var activeUserId = GetActiveUserId();
-            var currentCultureName = _userContextProvider.GetCurrentCulture()?.Name;
-            var currentLanguageId =
-                await _languageService.GetLanguageIdAsync(currentCultureName);
-            var layers = await _avatarLayerRepository.GetAllAsync(GetCurrentSiteId());
-            if (layers.Count > 0)
-            {
-                foreach (var layer in layers.ToList())
-                {
-                    var layerText = _avatarLayerRepository
-                        .GetNameAndLabelByLanguageId(layer.Id, currentLanguageId);
-                    layer.Name = layerText["Name"];
-                    layer.RemoveLabel = layerText["RemoveLabel"];
-                }
-            }
-            var elementList = new List<int>();
-            foreach (var layer in layers)
-            {
-                var selection = selectionLayers.FirstOrDefault(_ => _.Id == layer.Id);
-                if (selection != default(AvatarLayer))
-                {
-                    var element = await _avatarElementRepository.GetByItemAndColorAsync(
-                        selection.SelectedItem.Value, selection.SelectedColor);
-
-                    if (element != default(AvatarElement)
-                        && (!element.AvatarItem.Unlockable
-                        || await _avatarItemRepository
-                            .HasUserUnlockedItemAsync(activeUserId, element.AvatarItemId)))
-                    {
-                        elementList.Add(element.Id);
-                    }
-                    else
-                    {
-                        _logger.LogWarning($"User {activeUserId} can't select item {selection.SelectedItem.Value} and color {selection.SelectedColor} for layer {layer.Id}.");
-                        throw new GraException($"Invalid selection for {layer.Name}");
-                    }
-                }
-                else if (!layer.CanBeEmpty)
-                {
-                    _logger.LogWarning($"User {activeUserId} can't have an empty selection for layer {layer.Id}.");
-                    throw new GraException($"A {layer.Name} must be selected");
-                }
-            }
-            await _avatarElementRepository.SetUserAvatarAsync(activeUserId, elementList);
-        }
-
-        public async Task<ICollection<AvatarBundle>> GetAllBundlesAsync(
-            bool? unlockable = null)
-        {
-            VerifyManagementPermission();
-            return await _avatarBundleRepository.GetAllAsync(GetCurrentSiteId(), unlockable);
-        }
-
-        public async Task<ICollection<AvatarBundle>> GetAllPreconfiguredParentBundlesAsync()
-        {
-            VerifyManagementPermission();
-            return await _avatarBundleRepository.GetAllPreconfiguredParentsAsync(GetCurrentSiteId());
-        }
-
-        public async Task<ICollection<AvatarItem>> GetBundleItemsAsync(int bundleId)
-        {
-            return await _avatarItemRepository.GetBundleItemsAsync(bundleId);
-        }
-
-        public async Task<AvatarBundle> GetBundleByIdAsync(
-            int id, bool includeDeleted = false, bool preconfigured = false)
-        {
-            var bundle = await _avatarBundleRepository.GetByIdAsync(id, includeDeleted);
-            if (bundle == null)
-            {
-                throw new GraException("The requested bundle could not be accessed or does not exist.");
-            }
-            if (preconfigured)
-            {
-                var allLayers = await GetLayersAsync();
-                bundle.AvatarItems = bundle.AvatarItems
-                    .Where(_ => allLayers
-                        .Any(__ => __.Id == _.AvatarLayerId
-                            && __.CanBeEmpty
-                            && !__.ShowColorSelector))
-                    .ToList();
-            }
-            return bundle;
-        }
-
-        public async Task<DataWithCount<ICollection<AvatarBundle>>>
-            GetPaginatedBundleListAsync(AvatarFilter filter)
-        {
-            VerifyManagementPermission();
-            filter.SiteId = GetCurrentSiteId();
-            return new DataWithCount<ICollection<AvatarBundle>>
-            {
-                Data = await _avatarBundleRepository.PageAsync(filter),
-                Count = await _avatarBundleRepository.CountAsync(filter)
-            };
-        }
-
-        public async Task<DataWithCount<ICollection<AvatarItem>>> PageItemsAsync(
-            AvatarFilter filter)
-        {
-            VerifyManagementPermission();
-            filter.SiteId = GetCurrentSiteId();
-            return new DataWithCount<ICollection<AvatarItem>>
-            {
-                Data = await _avatarItemRepository.PageAsync(filter),
-                Count = await _avatarItemRepository.CountAsync(filter)
-            };
-        }
-
-        public async Task<ICollection<AvatarItem>> GetItemsByIdsAsync(List<int> ids)
-        {
-            VerifyManagementPermission();
-            return await _avatarItemRepository.GetByIdsAsync(ids);
-        }
-
-        public async Task<ICollection<Trigger>> GetTriggersAwardingBundleAsync(int id)
-        {
-            VerifyManagementPermission();
-            return await _triggerRepository.GetTriggersAwardingBundleAsync(id);
-        }
-
         public async Task<JobStatus> ImportAvatarsAsync(int jobId,
             CancellationToken token,
             IProgress<JobStatus> progress = null)
@@ -613,8 +486,7 @@ namespace GRA.Domain.Service
 
             if (HasPermission(Permission.ManageAvatars))
             {
-                var sw = new Stopwatch();
-                sw.Start();
+                var sw = Stopwatch.StartNew();
 
                 var job = await _jobRepository.GetByIdAsync(jobId);
                 var jobDetails
@@ -625,16 +497,25 @@ namespace GRA.Domain.Service
 
                 token.Register(() =>
                 {
-                    string duration = "";
-                    if (sw?.Elapsed != null)
-                    {
-                        duration = $" after {sw.Elapsed:c}";
-                    }
-                    _logger.LogWarning($"Import avatars for user {requestingUser} was cancelled{duration}.");
+                    _logger.LogWarning("Import avatars for user {User} was cancelled after {Elapsed} ms.", requestingUser, sw?.ElapsedMilliseconds);
                 });
 
-                IEnumerable<AvatarLayer> avatarList;
                 var jsonPath = Path.Combine(assetPath, "default avatars.json");
+
+                if (!File.Exists(jsonPath))
+                {
+                    _logger.LogError("Unable to find file {DefaultAvatarsJson}", jsonPath);
+                    return new JobStatus
+                    {
+                        PercentComplete = 0,
+                        Complete = true,
+                        Error = true,
+                        Status = $"Unable to find the default avatars.json file in {assetPath}."
+                    };
+                }
+
+                IEnumerable<AvatarLayer> avatarList;
+
                 using (StreamReader file = File.OpenText(jsonPath))
                 {
                     var jsonString = await file.ReadToEndAsync();
@@ -642,7 +523,7 @@ namespace GRA.Domain.Service
                 }
 
                 var layerCount = avatarList.Count();
-                _logger.LogInformation($"Found {layerCount} AvatarLayer objects in avatar file");
+                _logger.LogInformation("Found {Count} AvatarLayer objects in avatar JSON file", layerCount);
 
                 // Layers + background/bundles
                 var processingCount = layerCount + 1;
@@ -764,7 +645,7 @@ namespace GRA.Domain.Service
                     await _avatarItemRepository.SaveAsync();
                     items = await GetItemsByLayerAsync(addedLayer.Id);
 
-                    _logger.LogInformation($"Processing {items.Count} items in {layer.Name}...");
+                    _logger.LogInformation("Processing {Count} items in {LayerName}", items.Count, layer.Name);
 
                     progress?.Report(new JobStatus
                     {
@@ -843,7 +724,7 @@ namespace GRA.Domain.Service
 
                     await _avatarElementRepository.SaveAsync();
                     totalFilesCopied += elementCount;
-                    _logger.LogInformation($"Copied {elementCount} items for {layer.Name}");
+                    _logger.LogInformation("Copied {Count} items for {LayerName}", elementCount, layer.Name);
 
                     processedCount++;
                 }
@@ -878,7 +759,7 @@ namespace GRA.Domain.Service
                     Path.Combine(bundlePath, "notif.png"));
                 totalFilesCopied++;
 
-                _logger.LogInformation($"Copied {totalFilesCopied} items for all layers.");
+                _logger.LogInformation("Copied {TotalFilesCopied} items for all layers.", totalFilesCopied);
 
                 if (bundleJsonExists)
                 {
@@ -892,7 +773,7 @@ namespace GRA.Domain.Service
 
                     foreach (var bundle in bundleList)
                     {
-                        _logger.LogInformation($"Processing bundle {bundle.Name}...");
+                        _logger.LogInformation("Processing bundle {BundleName}", bundle.Name);
                         var items = new List<int>();
                         foreach (var bundleItem in bundle.AvatarItems)
                         {
@@ -905,19 +786,44 @@ namespace GRA.Domain.Service
                     }
                 }
 
+                var deleteIssues = false;
+
+                if (jobDetails.UploadedFile)
+                {
+                    _logger.LogInformation("Upload successful, clearing out uploaded files from {AssetPath}", assetPath);
+                    var directoryInfo = new DirectoryInfo(assetPath);
+                    try
+                    {
+                        directoryInfo.Delete(true);
+                    }
+                    catch (Exception ex) when (
+                        ex is DirectoryNotFoundException
+                        || ex is IOException
+                        || ex is System.Security.SecurityException
+                        || ex is UnauthorizedAccessException)
+                    {
+                        deleteIssues = true;
+                        _logger.LogWarning("Unable to delete uploaded files from {Path}: {Message}",
+                            assetPath,
+                            ex.Message);
+                    }
+                }
+
                 sw.Stop();
-                _logger.LogInformation($"Default avatars added in {sw.Elapsed.TotalSeconds} seconds.");
+                _logger.LogInformation("Default avatars added in {TotalSeconds} seconds.", sw.Elapsed.TotalSeconds);
 
                 return new JobStatus
                 {
                     PercentComplete = 100,
                     Complete = true,
-                    Status = "<strong>Import Complete</strong>"
+                    Status = deleteIssues
+                        ? $"<strong>Import Complete</strong> - could not delete all uploaded files"
+                        : "<strong>Import Complete</strong>"
                 };
             }
             else
             {
-                _logger.LogError($"User {requestingUser} doesn't have permission to import avatars.");
+                _logger.LogError("User {RequestingUser} doesn't have permission to import avatars.", requestingUser);
                 return new JobStatus
                 {
                     PercentComplete = 0,
@@ -926,6 +832,134 @@ namespace GRA.Domain.Service
                     Complete = true
                 };
             }
+        }
+
+        public async Task IncreaseItemSortAsync(int id)
+        {
+            VerifyManagementPermission();
+            await _avatarItemRepository.IncreaseSortPosition(GetCurrentSiteId(), id);
+        }
+
+        public async Task<DataWithCount<ICollection<AvatarItem>>> PageItemsAsync(
+            AvatarFilter filter)
+        {
+            VerifyManagementPermission();
+            filter.SiteId = GetCurrentSiteId();
+            return new DataWithCount<ICollection<AvatarItem>>
+            {
+                Data = await _avatarItemRepository.PageAsync(filter),
+                Count = await _avatarItemRepository.CountAsync(filter)
+            };
+        }
+
+        public async Task RemoveBundleAsync(int id)
+        {
+            VerifyManagementPermission();
+            if (await _triggerRepository.BundleIsInUseAsync(id))
+            {
+                throw new GraException("Bundle is currently being awarded by a trigger");
+            }
+
+            var bundle = await _avatarBundleRepository.GetByIdAsync(id, false);
+            bundle.IsDeleted = true;
+            await _avatarBundleRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
+                bundle);
+        }
+
+        public async Task SetItemAvailableAsync(int id)
+        {
+            VerifyManagementPermission();
+            if (await _avatarBundleRepository.IsItemInBundleAsync(id, true))
+            {
+                throw new GraException("Item is part of an unlockable bundle.");
+            }
+
+            var item = await _avatarItemRepository.GetByIdAsync(id);
+            item.Unlockable = false;
+            await _avatarItemRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), item);
+        }
+
+        public async Task SetItemUnlockableAsync(int id)
+        {
+            VerifyManagementPermission();
+            if (await _avatarItemRepository.IsLastInRequiredLayer(id))
+            {
+                throw new GraException("Required layer needs an available item.");
+            }
+            if (await _avatarBundleRepository.IsItemInBundleAsync(id, false))
+            {
+                throw new GraException("Item is part of a default bundle.");
+            }
+            if (await _avatarItemRepository.IsInUse(id, true))
+            {
+                throw new GraException("Item is in use by a participant.");
+            }
+
+            var item = await _avatarItemRepository.GetByIdAsync(id);
+            item.Unlockable = true;
+            await _avatarItemRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), item);
+        }
+
+        public async Task UpdateBundleHasBeenViewedAsync(int bundleId)
+        {
+            await _avatarBundleRepository.UpdateHasBeenViewedAsync(GetActiveUserId(),
+                bundleId);
+        }
+
+        public async Task<AvatarLayer> UpdateLayerAsync(AvatarLayer layer)
+        {
+            VerifyManagementPermission();
+            layer.SiteId = GetCurrentSiteId();
+            return await _avatarLayerRepository.UpdateSaveAsync(
+                GetClaimId(ClaimType.UserId), layer);
+        }
+
+        public async Task UpdateUserAvatarAsync(ICollection<AvatarLayer> selectionLayers)
+        {
+            var activeUserId = GetActiveUserId();
+            var currentCultureName = _userContextProvider.GetCurrentCulture()?.Name;
+            var currentLanguageId =
+                await _languageService.GetLanguageIdAsync(currentCultureName);
+            var layers = await _avatarLayerRepository.GetAllAsync(GetCurrentSiteId());
+            if (layers.Count > 0)
+            {
+                foreach (var layer in layers.ToList())
+                {
+                    var layerText = _avatarLayerRepository
+                        .GetNameAndLabelByLanguageId(layer.Id, currentLanguageId);
+                    layer.Name = layerText["Name"];
+                    layer.RemoveLabel = layerText["RemoveLabel"];
+                }
+            }
+            var elementList = new List<int>();
+            foreach (var layer in layers)
+            {
+                var selection = selectionLayers.FirstOrDefault(_ => _.Id == layer.Id);
+                if (selection != default(AvatarLayer))
+                {
+                    var element = await _avatarElementRepository.GetByItemAndColorAsync(
+                        selection.SelectedItem.Value, selection.SelectedColor);
+
+                    if (element != default(AvatarElement)
+                        && (!element.AvatarItem.Unlockable
+                        || await _avatarItemRepository
+                            .HasUserUnlockedItemAsync(activeUserId, element.AvatarItemId)))
+                    {
+                        elementList.Add(element.Id);
+                    }
+                    else
+                    {
+                        _logger.LogWarning($"User {activeUserId} can't select item {selection.SelectedItem.Value} and color {selection.SelectedColor} for layer {layer.Id}.");
+                        throw new GraException($"Invalid selection for {layer.Name}");
+                    }
+                }
+                else if (!layer.CanBeEmpty)
+                {
+                    _logger.LogWarning($"User {activeUserId} can't have an empty selection for layer {layer.Id}.");
+                    throw new GraException($"A {layer.Name} must be selected");
+                }
+            }
+            await _avatarElementRepository.SetUserAvatarAsync(activeUserId, elementList);
         }
     }
 }

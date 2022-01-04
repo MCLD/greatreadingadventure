@@ -148,6 +148,14 @@ namespace GRA.Domain.Service
         {
             VerifyManagementPermission();
             var authId = GetClaimId(ClaimType.UserId);
+
+            settings.BranchAvailabilitySupplementalText = settings
+                .BranchAvailabilitySupplementalText?.Trim();
+            settings.ContactEmail = settings.ContactEmail?.Trim();
+            settings.SetupSupplementalText = settings.SetupSupplementalText?.Trim();
+            settings.VendorIdPrompt = settings.VendorIdPrompt?.Trim();
+            settings.VendorCodeFormat = settings.VendorCodeFormat?.Trim();
+
             var currentSettings = await GetSettingsAsync();
             if (currentSettings == null)
             {
@@ -157,8 +165,8 @@ namespace GRA.Domain.Service
             else
             {
                 currentSettings.BranchAvailabilitySupplementalText = settings
-                    .BranchAvailabilitySupplementalText?.Trim();
-                currentSettings.ContactEmail = settings.ContactEmail?.Trim();
+                    .BranchAvailabilitySupplementalText;
+                currentSettings.ContactEmail = settings.ContactEmail;
                 currentSettings.SelectionsPerBranch = settings.SelectionsPerBranch;
                 currentSettings.RegistrationOpen = settings.RegistrationOpen;
                 currentSettings.RegistrationClosed = settings.RegistrationClosed;
@@ -168,8 +176,9 @@ namespace GRA.Domain.Service
                 currentSettings.SchedulePosted = settings.SchedulePosted;
                 currentSettings.ScheduleStartDate = settings.ScheduleStartDate;
                 currentSettings.ScheduleEndDate = settings.ScheduleEndDate;
-                currentSettings.VendorIdPrompt = settings.VendorIdPrompt?.Trim();
-                currentSettings.VendorCodeFormat = settings.VendorCodeFormat?.Trim();
+                currentSettings.SetupSupplementalText = settings.SetupSupplementalText;
+                currentSettings.VendorIdPrompt = settings.VendorIdPrompt;
+                currentSettings.VendorCodeFormat = settings.VendorCodeFormat;
 
                 await _psSettingsRepository.UpdateSaveAsync(authId, currentSettings);
             }

@@ -198,11 +198,17 @@ else
         </div>
 
         <div class="form-group">
-            <label class="col-sm-3 control-label">
-                Set-up
-            </label>
+            <div class="col-sm-3">
+                <div class="row">
+                    <label asp-for="Program.Setup" class="col-xs-12 control-label required-field"></label>
+                    @if (!string.IsNullOrWhiteSpace(Model.SetupSupplementalText))
+                    {
+                        <label class="col-xs-12 control-label" style="font-size:small;"><em>@Model.SetupSupplementalText</em></label>
+                    }
+                </div>
+            </div>
             <div class="col-sm-9">
-                <textarea asp-for="Program.Setup" class="form-control"></textarea>
+                <textarea asp-for="Program.Setup" class="form-control" rows="3"></textarea>
                 <span asp-validation-for="Program.Setup" class="text-danger"></span>
             </div>
         </div>

@@ -4,14 +4,16 @@ using GRA.Data.SqlServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GRA.Data.SqlServer.Migrations
 {
     [DbContext(typeof(SqlServerContext))]
-    partial class SqlServerContextModelSnapshot : ModelSnapshot
+    [Migration("20211215212118_performer-setup-supplemental-text")]
+    partial class performersetupsupplementaltext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -135,9 +137,6 @@ namespace GRA.Data.SqlServer.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("AssociatedBundleId")
-                        .HasColumnType("int");
-
                     b.Property<bool>("CanBeUnlocked")
                         .HasColumnType("bit");
 
@@ -146,10 +145,6 @@ namespace GRA.Data.SqlServer.Migrations
 
                     b.Property<int>("CreatedBy")
                         .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
 
                     b.Property<bool>("HasBeenAwarded")
                         .HasColumnType("bit");
@@ -3437,9 +3432,6 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<string>("PostalCode")
                         .HasMaxLength(32)
                         .HasColumnType("nvarchar(32)");
-
-                    b.Property<int?>("PreconfiguredAvatarId")
-                        .HasColumnType("int");
 
                     b.Property<int>("ProgramId")
                         .HasColumnType("int");

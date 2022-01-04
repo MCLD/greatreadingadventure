@@ -10,10 +10,22 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - Notation on the participant dashboard that title and author are optional
 - Site setting to disable avatar sharing
+- Performer program setup supplemental text
 
 ### Changed
 
 - Hide avatar bundle icon if no bundles are available
+- Reduce streaming video caching on dashboard to 15 minutes
+- Order streaming videos on dashboard by start date descending (newest at the top)
+
+### Fixed
+
+- Fix location of uploaded avatar file
+- Fix #816 Incorrect Profile tooltip annotations referenced
+- Fix landing page translation and add culture in date formatting
+- Preemptive button spinner on performer registration preventing submission
+- Household prize redemption directing to the wrong controller
+- Performer view selections button being visible for non-approved performers
 
 ### Updated
 

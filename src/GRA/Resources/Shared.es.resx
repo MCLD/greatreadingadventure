@@ -702,7 +702,7 @@
     <comment>Landing page button to download a calendar reminder file (when opened it will add a calendar reminder on the visitor's computer)</comment>
   </data>
   <data name="For more information about this reading program, visit your local library!" xml:space="preserve">
-    <value>¡Para más información sobre este programa de lectura de verano, visite su biblioteca local!</value>
+    <value>¡Para más información sobre este programa de lectura, visite su biblioteca local!</value>
     <comment>Landing page call to action for learning more</comment>
   </data>
   <data name="Reading for 20 minutes a day helps build a strong lifelong reading habit." xml:space="preserve">

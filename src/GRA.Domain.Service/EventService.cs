@@ -14,10 +14,10 @@ namespace GRA.Domain.Service
 {
     public class EventService : BaseUserService<EventService>
     {
-        private readonly IDistributedCache _cache;
         private readonly IBranchRepository _branchRepository;
-        private readonly IChallengeRepository _challengeRepository;
+        private readonly IDistributedCache _cache;
         private readonly IChallengeGroupRepository _challengeGroupRepository;
+        private readonly IChallengeRepository _challengeRepository;
         private readonly IEventRepository _eventRepository;
         private readonly ILocationRepository _locationRepository;
         private readonly IProgramRepository _programRepository;
@@ -52,6 +52,104 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(programRepository));
             _spatialDistanceRepository = spatialDistanceRepository
                 ?? throw new ArgumentNullException(nameof(spatialDistanceRepository));
+        }
+
+        public async Task<Event> Add(Event graEvent)
+        {
+            VerifyPermission(Permission.ManageEvents);
+            graEvent.SiteId = GetCurrentSiteId();
+            graEvent.RelatedBranchId = GetClaimId(ClaimType.BranchId);
+            graEvent.RelatedSystemId = GetClaimId(ClaimType.SystemId);
+            if (!HasPermission(Permission.ViewAllChallenges))
+            {
+                graEvent.ChallengeId = null;
+                graEvent.ChallengeGroupId = null;
+            }
+            await ValidateEvent(graEvent);
+            if (graEvent.IsStreaming)
+            {
+                await _cache.RemoveAsync(CacheKey.StreamingEvents);
+            }
+            return await _eventRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), graEvent);
+        }
+
+        public async Task<Location> AddLocationAsync(Location location)
+        {
+            VerifyPermission(Permission.ManageLocations);
+
+            location.Address = location.Address.Trim();
+            location.Name = location.Name.Trim();
+            location.SiteId = GetCurrentSiteId();
+            location.Telephone = location.Telephone?.Trim();
+            location.Url = location.Url?.Trim();
+
+            return await _locationRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), location);
+        }
+
+        public async Task<Event> Edit(Event graEvent)
+        {
+            VerifyPermission(Permission.ManageEvents);
+            var currentEvent = await _eventRepository.GetByIdAsync(graEvent.Id);
+            graEvent.SiteId = currentEvent.SiteId;
+            if (!HasPermission(Permission.ViewAllChallenges))
+            {
+                graEvent.ChallengeId = currentEvent.ChallengeId;
+                graEvent.ChallengeGroupId = currentEvent.ChallengeGroupId;
+            }
+            await ValidateEvent(graEvent);
+            if (graEvent.IsStreaming)
+            {
+                await _cache.RemoveAsync(CacheKey.StreamingEvents);
+            }
+            return await _eventRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), graEvent);
+        }
+
+        public async Task<List<Event>> GetByChallengeGroupIdAsync(int challengeGroupId)
+        {
+            return await _eventRepository.GetByChallengeGroupIdAsync(challengeGroupId);
+        }
+
+        public async Task<List<Event>> GetByChallengeIdAsync(int challengeId)
+        {
+            return await _eventRepository.GetByChallengeIdAsync(challengeId);
+        }
+
+        public async Task<Event> GetDetails(int eventId, bool showInactiveChallenge = false)
+        {
+            var graEvent = await _eventRepository.GetByIdAsync(eventId);
+            if (graEvent == null)
+            {
+                throw new GraException("Event not found.");
+            }
+
+            if (graEvent.AtBranchId != null)
+            {
+                var branch = await _branchRepository.GetByIdAsync((int)graEvent.AtBranchId);
+                graEvent.EventLocationName = branch.Name;
+                graEvent.EventLocationAddress = branch.Address;
+                graEvent.EventLocationTelephone = branch.Telephone;
+                graEvent.EventLocationLink = branch.Url;
+            }
+            if (graEvent.AtLocationId != null)
+            {
+                var location = await _locationRepository.GetByIdAsync((int)graEvent.AtLocationId);
+                graEvent.EventLocationName = location.Name;
+                graEvent.EventLocationAddress = location.Address;
+                graEvent.EventLocationTelephone = location.Telephone;
+                graEvent.EventLocationLink = location.Url;
+            }
+
+            return await GetRelatedChallengeDetails(graEvent, showInactiveChallenge);
+        }
+
+        public async Task<Location> GetLocationByIdAsync(int id)
+        {
+            return await _locationRepository.GetByIdAsync(id);
+        }
+
+        public async Task<ICollection<Location>> GetLocations()
+        {
+            return await _locationRepository.GetAll(GetCurrentSiteId());
         }
 
         public async Task<DataWithCount<IEnumerable<Event>>>
@@ -111,132 +209,6 @@ namespace GRA.Domain.Service
             };
         }
 
-        public async Task<Event> GetDetails(int eventId, bool showInactiveChallenge = false)
-        {
-            var graEvent = await _eventRepository.GetByIdAsync(eventId);
-            if (graEvent == null)
-            {
-                throw new GraException("Event not found.");
-            }
-
-            if (graEvent.AtBranchId != null)
-            {
-                var branch = await _branchRepository.GetByIdAsync((int)graEvent.AtBranchId);
-                graEvent.EventLocationName = branch.Name;
-                graEvent.EventLocationAddress = branch.Address;
-                graEvent.EventLocationTelephone = branch.Telephone;
-                graEvent.EventLocationLink = branch.Url;
-            }
-            if (graEvent.AtLocationId != null)
-            {
-                var location = await _locationRepository.GetByIdAsync((int)graEvent.AtLocationId);
-                graEvent.EventLocationName = location.Name;
-                graEvent.EventLocationAddress = location.Address;
-                graEvent.EventLocationTelephone = location.Telephone;
-                graEvent.EventLocationLink = location.Url;
-            }
-
-            return await GetRelatedChallengeDetails(graEvent, showInactiveChallenge);
-        }
-
-        public async Task<Event> Add(Event graEvent)
-        {
-            VerifyPermission(Permission.ManageEvents);
-            graEvent.SiteId = GetCurrentSiteId();
-            graEvent.RelatedBranchId = GetClaimId(ClaimType.BranchId);
-            graEvent.RelatedSystemId = GetClaimId(ClaimType.SystemId);
-            if (!HasPermission(Permission.ViewAllChallenges))
-            {
-                graEvent.ChallengeId = null;
-                graEvent.ChallengeGroupId = null;
-            }
-            await ValidateEvent(graEvent);
-            if (graEvent.IsStreaming)
-            {
-                await _cache.RemoveAsync(CacheKey.StreamingEvents);
-            }
-            return await _eventRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), graEvent);
-        }
-
-        public async Task<ICollection<Event>> GetUpcomingStreamListAsync()
-        {
-            ICollection<Event> events = null;
-
-            var cachedEvents = await _cache.GetStringAsync(CacheKey.StreamingEvents);
-
-            if (!string.IsNullOrEmpty(cachedEvents))
-            {
-                events = JsonConvert.DeserializeObject<ICollection<Event>>(cachedEvents);
-            }
-            else
-            {
-                var filter = new EventFilter
-                {
-                    SiteId = GetCurrentSiteId(),
-                    IsActive = true,
-                    EventType = (int)EventType.StreamingEvent,
-                    IsStreamingNow = true,
-                    StartDate = _dateTimeProvider.Now
-                };
-
-                events = await _eventRepository.GetEventListAsync(filter);
-
-                // expire cache at the earlier of: StreamingAccessEnds or one hour from now
-                var expiration = events.OrderBy(_ => _.StreamingAccessEnds)
-                    .Select(_ => _.StreamingAccessEnds)
-                    .FirstOrDefault();
-
-                if (expiration == null || expiration > _dateTimeProvider.Now.AddHours(1))
-                {
-                    expiration = _dateTimeProvider.Now.AddHours(1);
-                }
-                else
-                {
-                    _logger.LogDebug("Expiring dashboard streaming events early becuase an event stops streaming at {Expiration}",
-                        expiration);
-                }
-
-                await _cache.SetStringAsync(CacheKey.StreamingEvents,
-                    JsonConvert.SerializeObject(events),
-                    new DistributedCacheEntryOptions
-                    {
-                        AbsoluteExpiration = expiration
-                    });
-            }
-
-            return events;
-        }
-
-        public async Task<Event> Edit(Event graEvent)
-        {
-            VerifyPermission(Permission.ManageEvents);
-            var currentEvent = await _eventRepository.GetByIdAsync(graEvent.Id);
-            graEvent.SiteId = currentEvent.SiteId;
-            if (!HasPermission(Permission.ViewAllChallenges))
-            {
-                graEvent.ChallengeId = currentEvent.ChallengeId;
-                graEvent.ChallengeGroupId = currentEvent.ChallengeGroupId;
-            }
-            await ValidateEvent(graEvent);
-            if (graEvent.IsStreaming)
-            {
-                await _cache.RemoveAsync(CacheKey.StreamingEvents);
-            }
-            return await _eventRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), graEvent);
-        }
-
-        public async Task Remove(int eventId)
-        {
-            VerifyPermission(Permission.ManageEvents);
-            await _cache.RemoveAsync(CacheKey.StreamingEvents);
-            await _eventRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), eventId);
-        }
-
-        public async Task<ICollection<Location>> GetLocations()
-        {
-            return await _locationRepository.GetAll(GetCurrentSiteId());
-        }
-
         public async Task<DataWithCount<ICollection<Location>>> GetPaginatedLocationsListAsync(
             BaseFilter filter)
         {
@@ -247,77 +219,6 @@ namespace GRA.Domain.Service
                 Data = await _locationRepository.PageAsync(filter),
                 Count = await _locationRepository.CountAsync(filter)
             };
-        }
-
-        public async Task<Location> GetLocationByIdAsync(int id)
-        {
-            return await _locationRepository.GetByIdAsync(id);
-        }
-
-        public async Task<Location> AddLocationAsync(Location location)
-        {
-            VerifyPermission(Permission.ManageLocations);
-
-            location.Address = location.Address.Trim();
-            location.Name = location.Name.Trim();
-            location.SiteId = GetCurrentSiteId();
-            location.Telephone = location.Telephone?.Trim();
-            location.Url = location.Url?.Trim();
-
-            return await _locationRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), location);
-        }
-
-        public async Task<Location> UpdateLocationAsync(Location location)
-        {
-            VerifyPermission(Permission.ManageLocations);
-
-            var currentLocation = await _locationRepository.GetByIdAsync(location.Id);
-
-            var invalidateSpatialHeaders = false;
-            if (currentLocation.Geolocation != location.Geolocation)
-            {
-                invalidateSpatialHeaders = true;
-            }
-
-            currentLocation.Address = location.Address.Trim();
-            currentLocation.Geolocation = location.Geolocation;
-            currentLocation.Name = location.Name.Trim();
-            currentLocation.Telephone = location.Telephone?.Trim();
-            currentLocation.Url = location.Url?.Trim();
-
-            currentLocation = await _locationRepository.UpdateSaveAsync(
-                GetClaimId(ClaimType.UserId), currentLocation);
-
-            if (invalidateSpatialHeaders)
-            {
-                await _spatialDistanceRepository.InvalidateHeadersAsync(GetCurrentSiteId());
-            }
-
-            return currentLocation;
-        }
-
-        public async Task RemoveLocationAsync(int locationId)
-        {
-            VerifyPermission(Permission.ManageLocations);
-            if (await _eventRepository.LocationInUse(GetCurrentSiteId(), locationId))
-            {
-                throw new GraException("The location is being used by events.");
-            }
-
-            var location = await _locationRepository.GetByIdAsync(locationId);
-
-            await _locationRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), locationId);
-
-            if (!string.IsNullOrWhiteSpace(location.Geolocation))
-            {
-                await _spatialDistanceRepository.InvalidateHeadersAsync(GetCurrentSiteId());
-            }
-        }
-
-        public async Task<ICollection<Event>> GetRelatedEventsForTriggerAsync(int triggerId)
-        {
-            VerifyPermission(Permission.ManageEvents);
-            return await _eventRepository.GetRelatedEventsForTriggerAsync(triggerId);
         }
 
         public async Task<Event> GetRelatedChallengeDetails(Event graEvent,
@@ -352,6 +253,135 @@ namespace GRA.Domain.Service
             return graEvent;
         }
 
+        public async Task<ICollection<Event>> GetRelatedEventsForTriggerAsync(int triggerId)
+        {
+            VerifyPermission(Permission.ManageEvents);
+            return await _eventRepository.GetRelatedEventsForTriggerAsync(triggerId);
+        }
+
+        public async Task<ICollection<Event>> GetUpcomingStreamListAsync()
+        {
+            return await GetUpcomingStreamListAsync(null);
+        }
+
+        public async Task<ICollection<Event>> GetUpcomingStreamListAsync(int count)
+        {
+            if (count == 0)
+            {
+                return null;
+            }
+            return await GetUpcomingStreamListAsync(count);
+        }
+
+        public async Task Remove(int eventId)
+        {
+            VerifyPermission(Permission.ManageEvents);
+            await _cache.RemoveAsync(CacheKey.StreamingEvents);
+            await _eventRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), eventId);
+        }
+
+        public async Task RemoveLocationAsync(int locationId)
+        {
+            VerifyPermission(Permission.ManageLocations);
+            if (await _eventRepository.LocationInUse(GetCurrentSiteId(), locationId))
+            {
+                throw new GraException("The location is being used by events.");
+            }
+
+            var location = await _locationRepository.GetByIdAsync(locationId);
+
+            await _locationRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), locationId);
+
+            if (!string.IsNullOrWhiteSpace(location.Geolocation))
+            {
+                await _spatialDistanceRepository.InvalidateHeadersAsync(GetCurrentSiteId());
+            }
+        }
+
+        public async Task<Location> UpdateLocationAsync(Location location)
+        {
+            VerifyPermission(Permission.ManageLocations);
+
+            var currentLocation = await _locationRepository.GetByIdAsync(location.Id);
+
+            var invalidateSpatialHeaders = false;
+            if (currentLocation.Geolocation != location.Geolocation)
+            {
+                invalidateSpatialHeaders = true;
+            }
+
+            currentLocation.Address = location.Address.Trim();
+            currentLocation.Geolocation = location.Geolocation;
+            currentLocation.Name = location.Name.Trim();
+            currentLocation.Telephone = location.Telephone?.Trim();
+            currentLocation.Url = location.Url?.Trim();
+
+            currentLocation = await _locationRepository.UpdateSaveAsync(
+                GetClaimId(ClaimType.UserId), currentLocation);
+
+            if (invalidateSpatialHeaders)
+            {
+                await _spatialDistanceRepository.InvalidateHeadersAsync(GetCurrentSiteId());
+            }
+
+            return currentLocation;
+        }
+
+        private async Task<ICollection<Event>> GetUpcomingStreamListAsync(int? count)
+        {
+            ICollection<Event> events = null;
+
+            var cachedEvents = await _cache.GetStringAsync(CacheKey.StreamingEvents);
+
+            if (!string.IsNullOrEmpty(cachedEvents))
+            {
+                events = JsonConvert.DeserializeObject<ICollection<Event>>(cachedEvents);
+            }
+            else
+            {
+                var filter = new EventFilter
+                {
+                    ByStreamingStartDesc = true,
+                    EventType = (int)EventType.StreamingEvent,
+                    IsActive = true,
+                    IsStreamingNow = true,
+                    SiteId = GetCurrentSiteId(),
+                    StartDate = _dateTimeProvider.Now
+                };
+
+                if (count.HasValue)
+                {
+                    filter.Take = count.Value;
+                }
+
+                events = await _eventRepository.GetEventListAsync(filter);
+
+                // expire cache at the earlier of: StreamingAccessEnds or one hour from now
+                var expiration = events.OrderBy(_ => _.StreamingAccessEnds)
+                    .Select(_ => _.StreamingAccessEnds)
+                    .FirstOrDefault();
+
+                if (expiration == null || expiration > _dateTimeProvider.Now.AddMinutes(15))
+                {
+                    expiration = _dateTimeProvider.Now.AddMinutes(15);
+                }
+                else
+                {
+                    _logger.LogDebug("Expiring dashboard streaming events early becuase an event stops streaming at {Expiration}",
+                        expiration);
+                }
+
+                await _cache.SetStringAsync(CacheKey.StreamingEvents,
+                    JsonConvert.SerializeObject(events),
+                    new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpiration = expiration
+                    });
+            }
+
+            return events;
+        }
+
         private async Task ValidateEvent(Event graEvent)
         {
             if (graEvent.AtBranchId.HasValue && !(await _branchRepository.ValidateBySiteAsync(
@@ -369,16 +399,6 @@ namespace GRA.Domain.Service
             {
                 throw new GraException("Invalid Program selection.");
             }
-        }
-
-        public async Task<List<Event>> GetByChallengeIdAsync(int challengeId)
-        {
-            return await _eventRepository.GetByChallengeIdAsync(challengeId);
-        }
-
-        public async Task<List<Event>> GetByChallengeGroupIdAsync(int challengeGroupId)
-        {
-            return await _eventRepository.GetByChallengeGroupIdAsync(challengeGroupId);
         }
     }
 }
