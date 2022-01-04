@@ -44,313 +44,6 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Avatars";
         }
 
-        public async Task<IActionResult> Index()
-        {
-            var layers = await _avatarService.GetLayersAsync();
-            foreach (var layer in layers)
-            {
-                layer.Icon = _pathResolver.ResolveContentPath(layer.Icon);
-
-                layer.AvailableItems = await _avatarService.GetLayerAvailableItemCountAsync(
-                    layer.Id);
-                layer.UnavailableItems = await _avatarService.GetLayerUnavailableItemCountAsync(
-                    layer.Id);
-                layer.UnlockableItems = await _avatarService.GetLayerUnlockableItemCountAsync(
-                    layer.Id);
-            }
-
-            var defaultAvatarPath = Path.Combine(
-                Directory.GetParent(_webHostEnvironment.WebRootPath).FullName,
-                "assets",
-                "defaultavatars");
-
-            var avatarZip = _pathResolver.ResolvePrivateFilePath("avatars.zip");
-
-            return View(new AvatarIndexViewModel
-            {
-                Layers = layers,
-                DefaultAvatarsPresent = Directory.Exists(defaultAvatarPath),
-                AvatarZipPresent = System.IO.File.Exists(avatarZip)
-            });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> SetupDefaultAvatars()
-        {
-            var layers = await _avatarService.GetLayersAsync();
-            if (layers.Any())
-            {
-                AlertDanger = "Avatars have already been set up";
-                return RedirectToAction(nameof(Index));
-            }
-
-            string assetPath = Path.Combine(
-                Directory.GetParent(_webHostEnvironment.WebRootPath).FullName, "assets");
-
-            if (!Directory.Exists(assetPath))
-            {
-                AlertDanger = $"Asset directory not found at: {assetPath}";
-                return RedirectToAction(nameof(Index));
-            }
-
-            assetPath = Path.Combine(assetPath, "defaultavatars");
-            if (!Directory.Exists(assetPath))
-            {
-                AlertDanger = $"Asset directory not found at: {assetPath}";
-                return RedirectToAction(nameof(Index));
-            }
-
-            return await RunImportJob(assetPath);
-        }
-
-        public async Task<IActionResult> Layer(int id,
-            string search,
-            bool available = false,
-            bool unavailable = false,
-            bool unlockable = false,
-            int page = 1)
-        {
-            var computedAvailable = available;
-            var computedUnavailable = unavailable;
-            var computedUnlockable = unlockable;
-
-            var filter = new AvatarFilter(page, 12)
-            {
-                LayerId = id,
-                Search = search
-            };
-            if (computedAvailable)
-            {
-                filter.Available = true;
-                computedUnavailable = false;
-                computedUnlockable = false;
-            }
-            else if (computedUnavailable)
-            {
-                filter.Unavailable = true;
-                computedUnlockable = false;
-            }
-            else if (computedUnlockable)
-            {
-                filter.Unlockable = true;
-            }
-
-            var itemList = await _avatarService.PageItemsAsync(filter);
-
-            var paginateModel = new PaginateViewModel
-            {
-                ItemCount = itemList.Count,
-                CurrentPage = page,
-                ItemsPerPage = filter.Take.Value
-            };
-            if (paginateModel.PastMaxPage)
-            {
-                return RedirectToRoute(
-                    new
-                    {
-                        page = paginateModel.LastPage ?? 1
-                    });
-            }
-
-            foreach (var item in itemList.Data)
-            {
-                item.Thumbnail = _pathResolver.ResolveContentPath(item.Thumbnail);
-            }
-
-            if (itemList.Data.Count > 0)
-            {
-                PageTitle = $"Avatar Items: {itemList.Data.First().AvatarLayerName}";
-            }
-
-            var viewModel = new ItemsListViewModel
-            {
-                Items = itemList.Data,
-                PaginateModel = paginateModel,
-                Id = id,
-                Search = search,
-                Available = computedAvailable,
-                Unavailable = computedUnavailable,
-                Unlockable = computedUnlockable
-            };
-
-            return View(viewModel);
-        }
-
-        public async Task<IActionResult> GetLayersItems(
-            int layerId, int bundleId, int[] selectedItemIds)
-        {
-            try
-            {
-                var model = new PreconfiguredAvatarsViewModel
-                {
-                    ItemPath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/")
-                };
-
-                model.Bundle = await _avatarService.GetBundleByIdAsync(bundleId, false, true);
-                model.SelectedItemIds = selectedItemIds;
-                Response.StatusCode = StatusCodes.Status200OK;
-                return PartialView("_SlickPartial", model);
-            }
-            catch (GraException gex)
-            {
-                _logger.LogError(gex,
-                    "Could not retrieve layer items for layer id {layerId}: {Message}",
-                    layerId,
-                    gex.Message);
-                Response.StatusCode = StatusCodes.Status400BadRequest;
-                return Json(new
-                {
-                    success = false
-                });
-            }
-        }
-        
-        [HttpPost]
-        public async Task<IActionResult> DecreaseItemSort(ItemsListViewModel model)
-        {
-            await _avatarService.DescreaseItemSortAsync(model.ItemId);
-            return RedirectToAction(nameof(Layer), new
-            {
-                id = model.Id,
-                search = model.Search,
-                available = model.Available,
-                unavailable = model.Unavailable,
-                unlockable = model.Unlockable,
-                page = model.PaginateModel.CurrentPage
-            });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> IncreaseItemSort(ItemsListViewModel model)
-        {
-            await _avatarService.IncreaseItemSortAsync(model.ItemId);
-            return RedirectToAction(nameof(Layer), new
-            {
-                id = model.Id,
-                search = model.Search,
-                available = model.Available,
-                unavailable = model.Unavailable,
-                unlockable = model.Unlockable,
-                page = model.PaginateModel.CurrentPage
-            });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> SetItemUnlockable(ItemsListViewModel model)
-        {
-            try
-            {
-                await _avatarService.SetItemUnlockableAsync(model.ItemId);
-                ShowAlertSuccess("Item has been set to be unlockable.");
-            }
-            catch (GraException gex)
-            {
-                ShowAlertDanger("Unable to set item to be unlockable: ", gex);
-            }
-            return RedirectToAction(nameof(Layer), new
-            {
-                id = model.Id,
-                search = model.Search,
-                available = model.Available,
-                unavailable = model.Unavailable,
-                unlockable = model.Unlockable,
-                page = model.PaginateModel.CurrentPage
-            });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> SetItemAvailable(ItemsListViewModel model)
-        {
-            try
-            {
-                await _avatarService.SetItemAvailableAsync(model.ItemId);
-                ShowAlertSuccess("Item has been set to be available.");
-            }
-            catch (GraException gex)
-            {
-                ShowAlertDanger("Unable to set item to be available: ", gex);
-            }
-            return RedirectToAction(nameof(Layer), new
-            {
-                id = model.Id,
-                search = model.Search,
-                available = model.Available,
-                unavailable = model.Unavailable,
-                unlockable = model.Unlockable,
-                page = model.PaginateModel.CurrentPage
-            });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> DeleteItem(ItemsListViewModel model)
-        {
-            try
-            {
-                await _avatarService.DeleteItemAsync(model.ItemId);
-                ShowAlertSuccess("Item has been deleted.");
-            }
-            catch (GraException gex)
-            {
-                ShowAlertDanger("Unable to delete item: ", gex);
-            }
-            return RedirectToAction(nameof(Layer), new
-            {
-                id = model.Id,
-                search = model.Search,
-                available = model.Available,
-                unavailable = model.Unavailable,
-                unlockable = model.Unlockable,
-                page = model.PaginateModel.CurrentPage
-            });
-        }
-
-        public async Task<IActionResult> Bundles(string search = null, int page = 1)
-        {
-            var filter = new AvatarFilter(page);
-            if (search == "Unlockable")
-            {
-                filter.Unlockable = true;
-            }
-            else if (search == "Pre-configured")
-            {
-                filter.IsPreconfigured = true;
-            }
-            else
-            {
-                filter.Unlockable = false;
-            }
-            var bundleList = await _avatarService.GetPaginatedBundleListAsync(filter);
-
-            var paginateModel = new PaginateViewModel
-            {
-                ItemCount = bundleList.Count,
-                CurrentPage = page,
-                ItemsPerPage = filter.Take.Value
-            };
-            if (paginateModel.PastMaxPage)
-            {
-                return RedirectToRoute(
-                    new
-                    {
-                        page = paginateModel.LastPage ?? 1
-                    });
-            }
-
-            var viewModel = new BundlesListViewModel
-            {
-                Bundles = bundleList.Data,
-                PaginateModel = paginateModel,
-                Search = search
-            };
-
-            PageTitle = "Avatar Bundles";
-            if (search == "Pre-configured")
-            {
-                return View("Preconfigured", viewModel);
-            }
-            return View(viewModel);
-        }
-
         public async Task<IActionResult> BundleCreate(string search = null)
         {
             var viewModel = new BundlesDetailViewModel
@@ -402,40 +95,6 @@ namespace GRA.Controllers.MissionControl
             model.Layers = new SelectList(await _avatarService.GetLayersAsync(), "Id", "Name");
             PageTitle = "Create Bundle";
             return View("BundleDetail", model);
-        }
-        public async Task<IActionResult> PreconfiguredDetails(int? bundleId = null)
-        {
-            var selectedIds = new List<int>();
-            var mannequin = await _avatarService.GetRandomMannequinAsync();
-            var allBundles = await _avatarService.GetAllPreconfiguredParentBundlesAsync();
-
-            var viewModel = new PreconfiguredDetailsViewModel
-            {
-                Bundles = allBundles.Where(_ => _.Description == null).ToList(),
-                ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/")
-            };
-            if (bundleId.HasValue)
-            {
-                viewModel.Bundle = await _avatarService.GetBundleByIdAsync(bundleId.Value);
-                viewModel.SelectedItems = await _avatarService.GetBundleItemsAsync(bundleId.Value);
-                if (viewModel.SelectedItems.Count > 0)
-                {
-                    selectedIds = viewModel.SelectedItems.Select(_ => _.Id).ToList();
-                }
-                selectedIds.Add(mannequin.Id);
-                viewModel.Layers = await _avatarService.GetWardrobe(selectedIds);
-                viewModel.SelectedItemIds = selectedIds;
-                viewModel.ItemIds = JsonConvert.SerializeObject(selectedIds);
-            }
-            else
-            {
-                selectedIds.Add(mannequin.Id);
-                viewModel.Layers = await _avatarService.GetWardrobe(selectedIds);
-                viewModel.Bundle = new AvatarBundle();
-            }
-            PageTitle = !bundleId.HasValue ? "Create Pre-configured Avatar" : "Edit Preconfigured Avatar";
-            viewModel.NewAvatar = !bundleId.HasValue;
-            return View("PreconfiguredDetails", viewModel);
         }
 
         [HttpPost]
@@ -527,13 +186,21 @@ namespace GRA.Controllers.MissionControl
             return View("BundleDetail", model);
         }
 
-        public async Task<IActionResult> Bundles(bool unlockable = true, int page = 1)
+        public async Task<IActionResult> Bundles(string search = null, int page = 1)
         {
-            var filter = new AvatarFilter(page)
+            var filter = new AvatarFilter(page);
+            if (search == "Unlockable")
             {
-                Unlockable = unlockable
-            };
-
+                filter.Unlockable = true;
+            }
+            else if (search == "Pre-configured")
+            {
+                filter.IsPreconfigured = true;
+            }
+            else
+            {
+                filter.Unlockable = false;
+            }
             var bundleList = await _avatarService.GetPaginatedBundleListAsync(filter);
 
             var paginateModel = new PaginateViewModel
@@ -555,25 +222,109 @@ namespace GRA.Controllers.MissionControl
             {
                 Bundles = bundleList.Data,
                 PaginateModel = paginateModel,
-                Unlockable = unlockable
+                Search = search
             };
 
             PageTitle = "Avatar Bundles";
+            if (search == "Pre-configured")
+            {
+                return View("Preconfigured", viewModel);
+            }
             return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> BundleDelete(int id, string search = null)
+        public async Task<IActionResult> CreatePreconfiguredAvatar(PreconfiguredDetailsViewModel model)
+        {
+            if (string.IsNullOrEmpty(model.Bundle.Description))
+            {
+                ModelState.AddModelError("Bundle.Description",
+                    _sharedLocalizer[ErrorMessages.Field, nameof(AvatarBundle.Description)]);
+            }
+            if (!string.IsNullOrWhiteSpace(model.ItemIds))
+            {
+                model.SelectedItemIds = JsonConvert.DeserializeObject<List<int>>(model.ItemIds);
+            }
+            if (model.Bundle.AssociatedBundleId == 0 || model.SelectedItemIds.Count < 1)
+            {
+                ModelState.AddModelError("ItemIds", "A bundle and items must be selected.");
+            }
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var newPreconfigured = await _avatarService
+                        .AddBundleAsync(model.Bundle, model.SelectedItemIds);
+                    ShowAlertSuccess($"Created '{newPreconfigured.Name}' pre-configured avatar.");
+                    return RedirectToAction(
+                        nameof(PreconfiguredDetails), new { bundleId = newPreconfigured.Id });
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger(gex.Message);
+                }
+            }
+            else
+            {
+                ShowAlertDanger("Could not create pre-configured avatar.");
+            }
+            var allBundles = await _avatarService.GetAllPreconfiguredParentBundlesAsync();
+            model.Bundles = allBundles.Where(_ => _.Description == null).ToList();
+
+            var mannequin = await _avatarService.GetRandomMannequinAsync();
+            model.SelectedItemIds.Add(mannequin.Id);
+            if (model.SelectedItemIds.Count > 0)
+            {
+                model.Layers = await _avatarService.GetWardrobe(model.SelectedItemIds);
+                model.ItemIds = JsonConvert.SerializeObject(model.SelectedItemIds);
+            }
+            else
+            {
+                model.Layers = (List<AvatarLayer>)await _avatarService.GetLayersAsync();
+            }
+            model.Bundles = await _avatarService.GetAllPreconfiguredParentBundlesAsync();
+            model.ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/");
+            model.NewAvatar = true;
+            PageTitle = "Create Pre-configured Avatar";
+            return View("PreconfiguredDetails", model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DecreaseItemSort(ItemsListViewModel model)
+        {
+            await _avatarService.DescreaseItemSortAsync(model.ItemId);
+            return RedirectToAction(nameof(Layer), new
+            {
+                id = model.Id,
+                search = model.Search,
+                available = model.Available,
+                unavailable = model.Unavailable,
+                unlockable = model.Unlockable,
+                page = model.PaginateModel.CurrentPage
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteItem(ItemsListViewModel model)
         {
             try
             {
-                await _avatarService.RemoveBundleAsync(id);
-                ShowAlertSuccess("Bundle successfully deleted!");
+                await _avatarService.DeleteItemAsync(model.ItemId);
+                ShowAlertSuccess("Item has been deleted.");
             }
             catch (GraException gex)
             {
-                ShowAlertWarning("Unable to delete bundle: ", gex.Message);
+                ShowAlertDanger("Unable to delete item: ", gex);
             }
+            return RedirectToAction(nameof(Layer), new
+            {
+                id = model.Id,
+                search = model.Search,
+                available = model.Available,
+                unavailable = model.Unavailable,
+                unlockable = model.Unlockable,
+                page = model.PaginateModel.CurrentPage
+            });
         }
 
         public async Task<IActionResult> GetItemsList(string itemIds,
@@ -620,6 +371,35 @@ namespace GRA.Controllers.MissionControl
             };
 
             return PartialView("_ItemsPartial", viewModel);
+        }
+
+        public async Task<IActionResult> GetLayersItems(
+            int layerId, int bundleId, int[] selectedItemIds)
+        {
+            try
+            {
+                var model = new PreconfiguredAvatarsViewModel
+                {
+                    ItemPath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/")
+                };
+
+                model.Bundle = await _avatarService.GetBundleByIdAsync(bundleId, false, true);
+                model.SelectedItemIds = selectedItemIds;
+                Response.StatusCode = StatusCodes.Status200OK;
+                return PartialView("_SlickPartial", model);
+            }
+            catch (GraException gex)
+            {
+                _logger.LogError(gex,
+                    "Could not retrieve layer items for layer id {layerId}: {Message}",
+                    layerId,
+                    gex.Message);
+                Response.StatusCode = StatusCodes.Status400BadRequest;
+                return Json(new
+                {
+                    success = false
+                });
+            }
         }
 
         [HttpPost]
@@ -738,6 +518,41 @@ namespace GRA.Controllers.MissionControl
             };
 
             return View(viewModel);
+        }
+
+        public async Task<IActionResult> PreconfiguredDetails(int? bundleId = null)
+        {
+            var selectedIds = new List<int>();
+            var mannequin = await _avatarService.GetRandomMannequinAsync();
+            var allBundles = await _avatarService.GetAllPreconfiguredParentBundlesAsync();
+
+            var viewModel = new PreconfiguredDetailsViewModel
+            {
+                Bundles = allBundles.Where(_ => _.Description == null).ToList(),
+                ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/")
+            };
+            if (bundleId.HasValue)
+            {
+                viewModel.Bundle = await _avatarService.GetBundleByIdAsync(bundleId.Value);
+                viewModel.SelectedItems = await _avatarService.GetBundleItemsAsync(bundleId.Value);
+                if (viewModel.SelectedItems.Count > 0)
+                {
+                    selectedIds = viewModel.SelectedItems.Select(_ => _.Id).ToList();
+                }
+                selectedIds.Add(mannequin.Id);
+                viewModel.Layers = await _avatarService.GetWardrobe(selectedIds);
+                viewModel.SelectedItemIds = selectedIds;
+                viewModel.ItemIds = JsonConvert.SerializeObject(selectedIds);
+            }
+            else
+            {
+                selectedIds.Add(mannequin.Id);
+                viewModel.Layers = await _avatarService.GetWardrobe(selectedIds);
+                viewModel.Bundle = new AvatarBundle();
+            }
+            PageTitle = !bundleId.HasValue ? "Create Pre-configured Avatar" : "Edit Preconfigured Avatar";
+            viewModel.NewAvatar = !bundleId.HasValue;
+            return View("PreconfiguredDetails", viewModel);
         }
 
         [HttpPost]
@@ -974,67 +789,12 @@ namespace GRA.Controllers.MissionControl
             });
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreatePreconfiguredAvatar(PreconfiguredDetailsViewModel model)
-        {
-            if (string.IsNullOrEmpty(model.Bundle.Description))
-            {
-                ModelState.AddModelError("Bundle.Description",
-                    _sharedLocalizer[ErrorMessages.Field, nameof(AvatarBundle.Description)]);
-            }
-            if (!string.IsNullOrWhiteSpace(model.ItemIds))
-            {
-                model.SelectedItemIds = JsonConvert.DeserializeObject<List<int>>(model.ItemIds);
-            }
-            if (model.Bundle.AssociatedBundleId == 0 || model.SelectedItemIds.Count < 1)
-            {
-                ModelState.AddModelError("ItemIds", "A bundle and items must be selected.");
-            }
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    var newPreconfigured = await _avatarService
-                        .AddBundleAsync(model.Bundle, model.SelectedItemIds);
-                    ShowAlertSuccess($"Created '{newPreconfigured.Name}' pre-configured avatar.");
-                    return RedirectToAction(
-                        nameof(PreconfiguredDetails), new { bundleId = newPreconfigured.Id });
-                }
-                catch (GraException gex)
-                {
-                    ShowAlertDanger(gex.Message);
-                }
-            }
-            else
-            {
-                ShowAlertDanger("Could not create pre-configured avatar.");
-            }
-            var allBundles = await _avatarService.GetAllPreconfiguredParentBundlesAsync();
-            model.Bundles = allBundles.Where(_ => _.Description == null).ToList();
-
-            var mannequin = await _avatarService.GetRandomMannequinAsync();
-            model.SelectedItemIds.Add(mannequin.Id);
-            if (model.SelectedItemIds.Count > 0)
-            {
-                model.Layers = await _avatarService.GetWardrobe(model.SelectedItemIds);
-                model.ItemIds = JsonConvert.SerializeObject(model.SelectedItemIds);
-            }
-            else
-            {
-                model.Layers = (List<AvatarLayer>)await _avatarService.GetLayersAsync();
-            }
-            model.Bundles = await _avatarService.GetAllPreconfiguredParentBundlesAsync();
-            model.ImagePath = _pathResolver.ResolveContentPath($"site{GetCurrentSiteId()}/avatars/");
-            model.NewAvatar = true;
-            PageTitle = "Create Pre-configured Avatar";
-            return View("PreconfiguredDetails", model);
-        }
-
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> UpdatePreconfiguredAvatar(PreconfiguredDetailsViewModel model)
         {
-            if (model.Bundle.Id != 0) {
+            if (model.Bundle.Id != 0)
+            {
                 var bundle = await _avatarService.GetBundleByIdAsync(model.Bundle.Id);
                 if (bundle != null)
                 {

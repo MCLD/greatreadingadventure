@@ -79,7 +79,7 @@ namespace GRA.Domain.Service
             {
                 throw new GraException("Default bundles cannot have multiple items per layer.");
             }
-            
+
             if (!string.IsNullOrEmpty(bundle.Name))
             {
                 bundle.Name = bundle.Name.Trim();
@@ -92,6 +92,11 @@ namespace GRA.Domain.Service
             bundle.SiteId = GetCurrentSiteId();
             var newBundle = await _avatarBundleRepository.AddSaveAsync(
                 GetClaimId(ClaimType.UserId), bundle);
+
+            await _avatarBundleRepository.AddItemsAsync(newBundle.Id, itemIds);
+
+            return newBundle;
+        }
 
         public async Task<List<AvatarLayer>> GetWardrobe(List<int> itemIds)
         {
@@ -119,15 +124,12 @@ namespace GRA.Domain.Service
                         }
                         fileName += ".png";
                         layer.SelectedItem = item.Id;
-                        layer.FilePath =Path.Combine(
+                        layer.FilePath = Path.Combine(
                             filePath, $"layer{layer.Id}", $"item{item.Id}", fileName);
                     }
                 }
             }
             return layers.ToList();
-        }
-
-            return newBundle;
         }
 
         public async Task<AvatarLayer> AddLayerAsync(AvatarLayer layer)
@@ -231,7 +233,7 @@ namespace GRA.Domain.Service
             VerifyManagementPermission();
             return await _avatarBundleRepository.GetAllAsync(GetCurrentSiteId(), unlockable);
         }
-        
+
         public async Task<ICollection<AvatarBundle>> GetAllPreconfiguredParentBundlesAsync()
         {
             VerifyManagementPermission();
@@ -467,36 +469,6 @@ namespace GRA.Domain.Service
                 }
             }
             return layers.Where(_ => _.AvatarItems.Count > 0).ToList();
-        }
-
-        public async Task<DataWithCount<ICollection<AvatarBundle>>>
-            GetPaginatedBundleListAsync(AvatarFilter filter)
-        {
-            VerifyManagementPermission();
-            filter.SiteId = GetCurrentSiteId();
-            return new DataWithCount<ICollection<AvatarBundle>>
-            {
-                Data = await _avatarBundleRepository.PageAsync(filter),
-                Count = await _avatarBundleRepository.CountAsync(filter)
-            };
-        }
-
-        public async Task<DataWithCount<ICollection<AvatarItem>>> PageItemsAsync(
-            AvatarFilter filter)
-        {
-            VerifyManagementPermission();
-            filter.SiteId = GetCurrentSiteId();
-            return new DataWithCount<ICollection<AvatarItem>>
-            {
-                Data = await _avatarItemRepository.PageAsync(filter),
-                Count = await _avatarItemRepository.CountAsync(filter)
-            };
-        }
-
-        public async Task<ICollection<AvatarItem>> GetItemsByIdsAsync(List<int> ids)
-        {
-            VerifyManagementPermission();
-            return await _avatarItemRepository.GetByIdsAsync(ids);
         }
 
         public async Task<AvatarItem> GetRandomMannequinAsync()
