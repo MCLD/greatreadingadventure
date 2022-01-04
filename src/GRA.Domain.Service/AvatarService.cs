@@ -160,11 +160,14 @@ namespace GRA.Domain.Service
                     if (item != null)
                     {
                         var fileName = "item";
-                        var element =
-                            await _avatarElementRepository.GetRandomColorByItemAsync(item.Id);
-                        if (element.AvatarColorId != null)
+                        if (!layer.SelectedColor.HasValue)
                         {
-                            fileName += $"_{element.AvatarColorId}";
+                            var element =
+                                await _avatarElementRepository.GetRandomColorByItemAsync(item.Id);
+                            if (element.AvatarColorId != null)
+                            {
+                                fileName += $"_{element.AvatarColorId}";
+                            }
                         }
                         fileName += ".png";
                         layer.SelectedItem = item.Id;
