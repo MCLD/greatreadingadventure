@@ -26,6 +26,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Preemptive button spinner on performer registration preventing submission
 - Household prize redemption directing to the wrong controller
 - Performer view selections button being visible for non-approved performers
+- Fix bug binding performer archiving and streaming choices
 
 ### Updated
 
