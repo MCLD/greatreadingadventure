@@ -456,7 +456,7 @@ namespace GRA.Data.Repository
             }
 
             var data = await challengeList
-                .OrderBy(_ => _.Name)
+                .OrderByDescending(_ => _.CreatedAt)
                 .ThenBy(_ => _.Id)
                 .ApplyPagination(filter)
                 .Select(_ => _.Id)
