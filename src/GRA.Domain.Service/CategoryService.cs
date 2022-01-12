@@ -48,7 +48,7 @@ namespace GRA.Domain.Service
             category.SiteId = GetCurrentSiteId();
             if (string.IsNullOrWhiteSpace(category.Color))
             {
-                category.Color = "#777";
+                category.Color = "#777777";
             }
             return await _categoryRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), category);
         }
@@ -59,6 +59,7 @@ namespace GRA.Domain.Service
             var current = await _categoryRepository.GetByIdAsync(category.Id);
             current.Name = category.Name?.Trim();
             current.Description = category.Description?.Trim();
+            current.Color = category.Color?.Trim();
 
             return await _categoryRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), current);
         }
