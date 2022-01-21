@@ -18,8 +18,8 @@ namespace GRA.Domain.Service
         private readonly IBadgeRepository _badgeRepository;
         private readonly IBranchRepository _branchRepository;
         private readonly ICategoryRepository _categoryRepository;
-        private readonly IChallengeRepository _challengeRepository;
         private readonly IChallengeGroupRepository _challengeGroupRepository;
+        private readonly IChallengeRepository _challengeRepository;
         private readonly IChallengeTaskRepository _challengeTaskRepository;
         private readonly IEventRepository _eventRepository;
         private readonly IPathResolver _pathResolver;
@@ -41,138 +41,50 @@ namespace GRA.Domain.Service
             ITriggerRepository triggerRepository)
             : base(logger, dateTimeProvider, userContextProvider)
         {
-            _badgeRepository = badgeRepository 
+            _badgeRepository = badgeRepository
                 ?? throw new ArgumentNullException(nameof(badgeRepository));
-            _branchRepository = branchRepository 
+            _branchRepository = branchRepository
                 ?? throw new ArgumentNullException(nameof(branchRepository));
-            _categoryRepository = categoryRepository 
+            _categoryRepository = categoryRepository
                 ?? throw new ArgumentNullException(nameof(categoryRepository));
-            _challengeRepository = challengeRepository 
+            _challengeRepository = challengeRepository
                 ?? throw new ArgumentNullException(nameof(challengeRepository));
-            _challengeGroupRepository = challengeGroupRepository 
+            _challengeGroupRepository = challengeGroupRepository
                 ?? throw new ArgumentNullException(nameof(challengeGroupRepository));
-            _challengeTaskRepository = challengeTaskRepository 
+            _challengeTaskRepository = challengeTaskRepository
                 ?? throw new ArgumentNullException(nameof(challengeTaskRepository));
-            _eventRepository = eventRepository 
+            _eventRepository = eventRepository
                 ?? throw new ArgumentNullException(nameof(eventRepository));
             _pathResolver = pathResolver ?? throw new ArgumentNullException(nameof(pathResolver));
-            _siteLookupService = siteLookupService 
+            _siteLookupService = siteLookupService
                 ?? throw new ArgumentNullException(nameof(siteLookupService));
-            _triggerRepository = triggerRepository 
+            _triggerRepository = triggerRepository
                 ?? throw new ArgumentNullException(nameof(triggerRepository));
         }
 
-        public async Task<DataWithCount<IEnumerable<Challenge>>>
-            GetPaginatedChallengeListAsync(ChallengeFilter filter)
+        public async Task ActivateChallengeAsync(Challenge challenge)
         {
-            ICollection<Challenge> challenges = null;
-            int challengeCount;
-
-            filter.IsActive = true;
-            filter.SiteId = GetCurrentSiteId();
-            if (GetAuthUser().Identity.IsAuthenticated)
+            int authUserId = GetClaimId(ClaimType.UserId);
+            if (HasPermission(Permission.ActivateAllChallenges)
+                || ((HasPermission(Permission.ActivateSystemChallenges))
+                    && challenge.RelatedSystemId == GetClaimId(ClaimType.SystemId)))
             {
-                var userLookupChallenges = new List<Challenge>();
-                int userId = GetActiveUserId();
-                filter.FavoritesUserId = userId;
-                var challengeIds = await _challengeRepository.PageIdsAsync(filter, userId);
-                foreach (var challengeId in challengeIds.Data)
+                if (challenge.IsValid)
                 {
-                    var challengeStatus = await _challengeRepository.GetActiveByIdAsync(challengeId, userId);
-                    int completed = challengeStatus.Tasks.Count(_ => _.IsCompleted == true);
-                    if (completed > 0)
-                    {
-                        challengeStatus.Status = $"Completed {completed} of {challengeStatus.TasksToComplete} tasks.";
-                        challengeStatus.PercentComplete = Math.Min((int)(completed * 100 / challengeStatus.TasksToComplete), 100);
-                        challengeStatus.CompletedTasks = completed;
-                    }
-
-                    userLookupChallenges.Add(challengeStatus);
+                    challenge.IsActive = true;
+                    await _challengeRepository.UpdateSaveAsync(authUserId, challenge);
                 }
-                challenges = userLookupChallenges;
-                challengeCount = challengeIds.Count;
+                else
+                {
+                    _logger.LogError($"User {authUserId} cannot activate invalid challenge {challenge.Id}.");
+                    throw new GraException("Challenge is not valid.");
+                }
             }
             else
             {
-                challenges = await _challengeRepository.PageAllAsync(filter);
-                challengeCount = await _challengeRepository.GetChallengeCountAsync(filter);
+                _logger.LogError($"User {authUserId} doesn't have permission to activate challenge {challenge.Id}.");
+                throw new GraException("Permission denied.");
             }
-            await AddBadgeFilenames(challenges);
-            return new DataWithCount<IEnumerable<Challenge>>
-            {
-                Data = challenges,
-                Count = challengeCount
-            };
-        }
-
-        public async Task<DataWithCount<IEnumerable<Challenge>>>
-            MCGetPaginatedChallengeListAsync(ChallengeFilter filter)
-        {
-            int authUserId = GetClaimId(ClaimType.UserId);
-            if (HasPermission(Permission.ViewAllChallenges))
-            {
-                if (filter.IsActive == false)
-                {
-                    if (!HasPermission(Permission.ActivateSystemChallenges)
-                        && !HasPermission(Permission.ActivateAllChallenges))
-                    {
-                        _logger.LogError($"User {authUserId} doesn't have permission to view pending challenges.");
-                        throw new GraException("Permission denied.");
-                    }
-                    else if (!HasPermission(Permission.ActivateAllChallenges)
-                        && filter.SystemIds?.FirstOrDefault() != GetClaimId(ClaimType.SystemId))
-                    {
-                        _logger.LogError($"User {authUserId} doesn't have permission to view pending challenges for system.");
-                        throw new GraException("Permission denied.");
-                    }
-                }
-
-                filter.SiteId = GetCurrentSiteId();
-                var challenges = await _challengeRepository.PageAllAsync(filter);
-                await AddBadgeFilenames(challenges);
-                return new DataWithCount<IEnumerable<Challenge>>
-                {
-                    Data = challenges,
-                    Count = await _challengeRepository.GetChallengeCountAsync(filter)
-                };
-            }
-            _logger.LogError($"User {authUserId} doesn't have permission to view all challenges.");
-            throw new GraException("Permission denied.");
-        }
-
-        public async Task<Challenge> GetChallengeDetailsAsync(int challengeId)
-        {
-            int? userId = null;
-            if (GetAuthUser().Identity.IsAuthenticated)
-            {
-                userId = GetActiveUserId();
-            }
-            var challenge = await _challengeRepository.GetActiveByIdAsync(challengeId, userId);
-            if (challenge == null)
-            {
-                throw new GraException("Challenge not found.");
-            }
-            await AddBadgeFileData(challenge);
-
-            return challenge;
-        }
-
-        public async Task<Challenge> MCGetChallengeDetailsAsync(int challengeId)
-        {
-            int authUserId = GetClaimId(ClaimType.UserId);
-            if (HasPermission(Permission.ViewAllChallenges))
-            {
-                var challenge = await _challengeRepository.GetByIdAsync(challengeId);
-                if (challenge == null)
-                {
-                    throw new GraException("Challenge not found.");
-                }
-                await AddBadgeFileData(challenge);
-
-                return challenge;
-            }
-            _logger.LogError($"User {authUserId} doesn't have permission to view all challenge {challengeId}.");
-            throw new GraException("Permission denied.");
         }
 
         public async Task<ServiceResult<Challenge>> AddChallengeAsync(Challenge challenge)
@@ -229,6 +141,77 @@ namespace GRA.Domain.Service
             }
             _logger.LogError($"User {authUserId} doesn't have permission to add a challenge.");
             throw new GraException("Permission denied.");
+        }
+
+        public async Task<ServiceResult<ChallengeGroup>> AddGroupAsync(ChallengeGroup challengeGroup,
+            List<int> ChallengeIds)
+        {
+            VerifyPermission(Permission.AddChallengeGroups);
+
+            var siteId = GetCurrentSiteId();
+            var stub = challengeGroup.Stub.Trim().ToLower();
+            var existingStub = await _challengeGroupRepository.StubInUseAsync(siteId, stub);
+            if (existingStub)
+            {
+                throw new GraException($"A challenge group with the link {stub} already exists.");
+            }
+
+            var serviceResult = new ServiceResult<ChallengeGroup>();
+            challengeGroup.SiteId = siteId;
+            challengeGroup.Stub = stub;
+
+            var validChallengeIds = await _challengeRepository.ValidateChallengeIdsAsync(siteId,
+                ChallengeIds);
+
+            if (ChallengeIds.Count != validChallengeIds.Count())
+            {
+                serviceResult.Status = ServiceResultStatus.Warning;
+                serviceResult.Message = "One or more of the selected challenges could not be added to this group.";
+            }
+
+            serviceResult.Data = await _challengeGroupRepository.AddSaveAsync(
+                GetClaimId(ClaimType.UserId), challengeGroup, validChallengeIds);
+
+            return serviceResult;
+        }
+
+        public async Task<ChallengeTask> AddTaskAsync(ChallengeTask task, byte[] fileBytes = null)
+        {
+            int authUserId = GetClaimId(ClaimType.UserId);
+            if (HasPermission(Permission.EditChallenges))
+            {
+                var newTask = await _challengeTaskRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), task);
+                newTask.ChallengeTaskType = task.ChallengeTaskType;
+                if (fileBytes != null)
+                {
+                    newTask.Filename = WriteTaskFile(newTask, fileBytes);
+                    newTask = await _challengeTaskRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), newTask);
+                }
+
+                var challenge = await _challengeRepository.GetByIdAsync(task.ChallengeId);
+                if (challenge.TasksToComplete <= challenge.Tasks.Count() && !challenge.IsValid)
+                {
+                    await _challengeRepository.SetValidationAsync(authUserId, challenge.Id, true);
+                }
+
+                return newTask;
+            }
+            _logger.LogError($"User {authUserId} doesn't have permission to add a task to challenge {task.ChallengeId}.");
+            throw new GraException("Permission denied.");
+        }
+
+        public async Task DecreaseTaskPositionAsync(int taskId)
+        {
+            if (HasPermission(Permission.EditChallenges))
+            {
+                await _challengeTaskRepository.DecreasePositionAsync(taskId);
+            }
+            else
+            {
+                int userId = GetClaimId(ClaimType.UserId);
+                _logger.LogError($"User {userId} doesn't have permission to modify a challenge task");
+                throw new GraException("Permission denied.");
+            }
         }
 
         public async Task<ServiceResult<Challenge>> EditChallengeAsync(Challenge challenge)
@@ -310,74 +293,33 @@ namespace GRA.Domain.Service
             throw new GraException("Permission denied.");
         }
 
-        public async Task ActivateChallengeAsync(Challenge challenge)
+        public async Task<ServiceResult<ChallengeGroup>> EditGroupAsync(
+            ChallengeGroup challengeGroup, List<int> ChallengeIds)
         {
-            int authUserId = GetClaimId(ClaimType.UserId);
-            if (HasPermission(Permission.ActivateAllChallenges)
-                || ((HasPermission(Permission.ActivateSystemChallenges))
-                    && challenge.RelatedSystemId == GetClaimId(ClaimType.SystemId)))
-            {
-                if (challenge.IsValid)
-                {
-                    challenge.IsActive = true;
-                    await _challengeRepository.UpdateSaveAsync(authUserId, challenge);
-                }
-                else
-                {
-                    _logger.LogError($"User {authUserId} cannot activate invalid challenge {challenge.Id}.");
-                    throw new GraException("Challenge is not valid.");
-                }
-            }
-            else
-            {
-                _logger.LogError($"User {authUserId} doesn't have permission to activate challenge {challenge.Id}.");
-                throw new GraException("Permission denied.");
-            }
-        }
+            VerifyPermission(Permission.EditChallengeGroups);
 
-        public async Task RemoveChallengeAsync(int challengeId)
-        {
-            var userId = GetClaimId(ClaimType.UserId);
-            if (HasPermission(Permission.RemoveChallenges))
-            {
-                if (await _challengeRepository.HasDependentsAsync(challengeId))
-                {
-                    throw new GraException("Challenge has dependents");
-                }
-                await _eventRepository.DetachRelatedChallenge(userId, challengeId);
-                await _challengeRepository
-                    .RemoveSaveAsync(userId, challengeId);
-            }
-            else
-            {
-                _logger.LogError($"User {userId} doesn't have permission to remove challenge {challengeId}.");
-                throw new GraException("Permission denied.");
-            }
-        }
+            var siteId = GetCurrentSiteId();
+            var serviceResult = new ServiceResult<ChallengeGroup>();
+            var currentChallengeGroup = await _challengeGroupRepository.GetByIdAsync(
+                challengeGroup.Id);
+            challengeGroup.SiteId = currentChallengeGroup.SiteId;
+            challengeGroup.Stub = currentChallengeGroup.Stub;
 
-        public async Task<ChallengeTask> AddTaskAsync(ChallengeTask task, byte[] fileBytes = null)
-        {
-            int authUserId = GetClaimId(ClaimType.UserId);
-            if (HasPermission(Permission.EditChallenges))
+            var validChallengeIds = await _challengeRepository.ValidateChallengeIdsAsync(siteId,
+                ChallengeIds);
+            if (ChallengeIds.Count != validChallengeIds.Count())
             {
-                var newTask = await _challengeTaskRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), task);
-                newTask.ChallengeTaskType = task.ChallengeTaskType;
-                if (fileBytes != null)
-                {
-                    newTask.Filename = WriteTaskFile(newTask, fileBytes);
-                    newTask = await _challengeTaskRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), newTask);
-                }
-
-                var challenge = await _challengeRepository.GetByIdAsync(task.ChallengeId);
-                if (challenge.TasksToComplete <= challenge.Tasks.Count() && !challenge.IsValid)
-                {
-                    await _challengeRepository.SetValidationAsync(authUserId, challenge.Id, true);
-                }
-
-                return newTask;
+                serviceResult.Status = ServiceResultStatus.Warning;
+                serviceResult.Message = "One or more of the selected challenges could not be added to this group.";
             }
-            _logger.LogError($"User {authUserId} doesn't have permission to add a task to challenge {task.ChallengeId}.");
-            throw new GraException("Permission denied.");
+
+            var challengesToAdd = ChallengeIds.Except(currentChallengeGroup.ChallengeIds);
+            var challengesToRemove = currentChallengeGroup.ChallengeIds.Except(ChallengeIds);
+
+            serviceResult.Data = await _challengeGroupRepository.UpdateSaveAsync(
+                GetClaimId(ClaimType.UserId), challengeGroup, challengesToAdd, challengesToRemove);
+
+            return serviceResult;
         }
 
         public async Task<ChallengeTask> EditTaskAsync(ChallengeTask task, byte[] fileBytes = null)
@@ -413,9 +355,231 @@ namespace GRA.Domain.Service
             throw new GraException("Permission denied.");
         }
 
+        public async Task<ChallengeGroup> GetActiveGroupByStubAsync(string stub)
+        {
+            return await _challengeGroupRepository.GetActiveByStubAsync(GetCurrentSiteId(),
+                stub.ToLower());
+        }
+
+        public async Task<List<Challenge>> GetByIdsAsync(IEnumerable<int> challengeIds)
+        {
+            VerifyPermission(Permission.ViewAllChallenges);
+            return await _challengeRepository.GetByIdsAsync(GetCurrentSiteId(), challengeIds);
+        }
+
+        public async Task<Challenge> GetChallengeDetailsAsync(int challengeId)
+        {
+            int? userId = null;
+            if (GetAuthUser().Identity.IsAuthenticated)
+            {
+                userId = GetActiveUserId();
+            }
+            var challenge = await _challengeRepository.GetActiveByIdAsync(challengeId, userId);
+            if (challenge == null)
+            {
+                throw new GraException("Challenge not found.");
+            }
+            await AddBadgeFileData(challenge);
+
+            return challenge;
+        }
+
+        public async Task<IEnumerable<ChallengeTask>> GetChallengeTasksAsync(int challengeId)
+        {
+            int? userId = null;
+            if (GetAuthUser().Identity.IsAuthenticated)
+            {
+                userId = GetActiveUserId();
+            }
+            return await _challengeRepository.GetChallengeTasksAsync(challengeId, userId);
+        }
+
+        public async Task<ICollection<Trigger>> GetDependentsAsync(int challengeId)
+        {
+            return await _triggerRepository.GetChallengeDependentsAsync(challengeId);
+        }
+
+        public async Task<ChallengeGroup> GetGroupByIdAsync(int id)
+        {
+            var challengeGroup = await _challengeGroupRepository.GetByIdAsync(id);
+            if (challengeGroup == null)
+            {
+                throw new GraException("The request challenge group could not be accessed or does not exist");
+            }
+            challengeGroup.Challenges = await _challengeRepository.GetByIdsAsync(GetCurrentSiteId(),
+                challengeGroup.ChallengeIds);
+            await AddBadgeFilenames(challengeGroup.Challenges);
+
+            return challengeGroup;
+        }
+
+        public async Task<List<ChallengeGroup>> GetGroupsByChallengeId(int id)
+        {
+            VerifyPermission(Permission.ViewAllChallenges);
+            return await _challengeGroupRepository.GetByChallengeId(GetCurrentSiteId(), id);
+        }
+
+        public async Task<int?> GetMaximumAllowedPointsAsync(int siteId)
+        {
+            var (IsSet, SetValue) = await _siteLookupService.GetSiteSettingIntAsync(siteId,
+                SiteSettingKey.Challenges.MaxPointsPerChallengeTask);
+
+            return IsSet ? SetValue : (int?)null;
+        }
+
+        public async Task<DataWithCount<IEnumerable<Challenge>>>
+                                                                                                                                            GetPaginatedChallengeListAsync(ChallengeFilter filter)
+        {
+            ICollection<Challenge> challenges = null;
+            int challengeCount;
+
+            filter.IsActive = true;
+            filter.SiteId = GetCurrentSiteId();
+            if (GetAuthUser().Identity.IsAuthenticated)
+            {
+                var userLookupChallenges = new List<Challenge>();
+                int userId = GetActiveUserId();
+                filter.FavoritesUserId = userId;
+                var challengeIds = await _challengeRepository.PageIdsAsync(filter, userId);
+                foreach (var challengeId in challengeIds.Data)
+                {
+                    var challengeStatus = await _challengeRepository.GetActiveByIdAsync(challengeId, userId);
+                    int completed = challengeStatus.Tasks.Count(_ => _.IsCompleted == true);
+                    if (completed > 0)
+                    {
+                        challengeStatus.Status = $"Completed {completed} of {challengeStatus.TasksToComplete} tasks.";
+                        challengeStatus.PercentComplete = Math.Min((int)(completed * 100 / challengeStatus.TasksToComplete), 100);
+                        challengeStatus.CompletedTasks = completed;
+                    }
+
+                    userLookupChallenges.Add(challengeStatus);
+                }
+                challenges = userLookupChallenges;
+                challengeCount = challengeIds.Count;
+            }
+            else
+            {
+                challenges = await _challengeRepository.PageAllAsync(filter);
+                challengeCount = await _challengeRepository.GetChallengeCountAsync(filter);
+            }
+            await AddBadgeFilenames(challenges);
+            return new DataWithCount<IEnumerable<Challenge>>
+            {
+                Data = challenges,
+                Count = challengeCount
+            };
+        }
+
+        public async Task<DataWithCount<IEnumerable<ChallengeGroup>>>
+            GetPaginatedGroupListAsync(ChallengeGroupFilter filter)
+        {
+            VerifyPermission(Permission.ViewAllChallenges);
+            filter.SiteId = GetCurrentSiteId();
+            return new DataWithCount<IEnumerable<ChallengeGroup>>
+            {
+                Data = await _challengeGroupRepository.PageAsync(filter),
+                Count = await _challengeGroupRepository.CountAsync(filter)
+            };
+        }
+
         public async Task<ChallengeTask> GetTaskAsync(int id)
         {
             return await _challengeTaskRepository.GetByIdAsync(id);
+        }
+
+        public async Task IncreaseTaskPositionAsync(int taskId)
+        {
+            if (HasPermission(Permission.EditChallenges))
+            {
+                await _challengeTaskRepository.IncreasePositionAsync(taskId);
+            }
+            else
+            {
+                int userId = GetClaimId(ClaimType.UserId);
+                _logger.LogError($"User {userId} doesn't have permission to modify a challenge task");
+                throw new GraException("Permission denied.");
+            }
+        }
+
+        public async Task<Challenge> MCGetChallengeDetailsAsync(int challengeId)
+        {
+            int authUserId = GetClaimId(ClaimType.UserId);
+            if (HasPermission(Permission.ViewAllChallenges))
+            {
+                var challenge = await _challengeRepository.GetByIdAsync(challengeId);
+                if (challenge == null)
+                {
+                    throw new GraException("Challenge not found.");
+                }
+                await AddBadgeFileData(challenge);
+
+                return challenge;
+            }
+            _logger.LogError($"User {authUserId} doesn't have permission to view all challenge {challengeId}.");
+            throw new GraException("Permission denied.");
+        }
+
+        public async Task<DataWithCount<IEnumerable<Challenge>>>
+                                            MCGetPaginatedChallengeListAsync(ChallengeFilter filter)
+        {
+            int authUserId = GetClaimId(ClaimType.UserId);
+            if (HasPermission(Permission.ViewAllChallenges))
+            {
+                if (filter.IsActive == false)
+                {
+                    if (!HasPermission(Permission.ActivateSystemChallenges)
+                        && !HasPermission(Permission.ActivateAllChallenges))
+                    {
+                        _logger.LogError($"User {authUserId} doesn't have permission to view pending challenges.");
+                        throw new GraException("Permission denied.");
+                    }
+                    else if (!HasPermission(Permission.ActivateAllChallenges)
+                        && filter.SystemIds?.FirstOrDefault() != GetClaimId(ClaimType.SystemId))
+                    {
+                        _logger.LogError($"User {authUserId} doesn't have permission to view pending challenges for system.");
+                        throw new GraException("Permission denied.");
+                    }
+                }
+
+                filter.SiteId = GetCurrentSiteId();
+                var challenges = await _challengeRepository.PageAllAsync(filter);
+                await AddBadgeFilenames(challenges);
+                return new DataWithCount<IEnumerable<Challenge>>
+                {
+                    Data = challenges,
+                    Count = await _challengeRepository.GetChallengeCountAsync(filter)
+                };
+            }
+            _logger.LogError($"User {authUserId} doesn't have permission to view all challenges.");
+            throw new GraException("Permission denied.");
+        }
+
+        public async Task RemoveChallengeAsync(int challengeId)
+        {
+            var userId = GetClaimId(ClaimType.UserId);
+            if (HasPermission(Permission.RemoveChallenges))
+            {
+                if (await _challengeRepository.HasDependentsAsync(challengeId))
+                {
+                    throw new GraException("Challenge has dependents");
+                }
+                await _eventRepository.DetachRelatedChallenge(userId, challengeId);
+                await _challengeRepository
+                    .RemoveSaveAsync(userId, challengeId);
+            }
+            else
+            {
+                _logger.LogError($"User {userId} doesn't have permission to remove challenge {challengeId}.");
+                throw new GraException("Permission denied.");
+            }
+        }
+
+        public async Task RemoveGroupAsync(int groupId)
+        {
+            VerifyPermission(Permission.EditChallengeGroups);
+            var userId = GetClaimId(ClaimType.UserId);
+            await _eventRepository.DetachRelatedChallengeGroup(userId, groupId);
+            await _challengeGroupRepository.RemoveSaveAsync(userId, groupId);
         }
 
         public async Task RemoveTaskAsync(int taskId)
@@ -449,47 +613,10 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task DecreaseTaskPositionAsync(int taskId)
+        public async Task<bool> StubInUseAsync(string stub)
         {
-            if (HasPermission(Permission.EditChallenges))
-            {
-                await _challengeTaskRepository.DecreasePositionAsync(taskId);
-            }
-            else
-            {
-                int userId = GetClaimId(ClaimType.UserId);
-                _logger.LogError($"User {userId} doesn't have permission to modify a challenge task");
-                throw new GraException("Permission denied.");
-            }
-        }
-
-        public async Task IncreaseTaskPositionAsync(int taskId)
-        {
-            if (HasPermission(Permission.EditChallenges))
-            {
-                await _challengeTaskRepository.IncreasePositionAsync(taskId);
-            }
-            else
-            {
-                int userId = GetClaimId(ClaimType.UserId);
-                _logger.LogError($"User {userId} doesn't have permission to modify a challenge task");
-                throw new GraException("Permission denied.");
-            }
-        }
-
-        public async Task<IEnumerable<ChallengeTask>> GetChallengeTasksAsync(int challengeId)
-        {
-            int? userId = null;
-            if (GetAuthUser().Identity.IsAuthenticated)
-            {
-                userId = GetActiveUserId();
-            }
-            return await _challengeRepository.GetChallengeTasksAsync(challengeId, userId);
-        }
-
-        public async Task<ICollection<Trigger>> GetDependentsAsync(int challengeId)
-        {
-            return await _triggerRepository.GetChallengeDependentsAsync(challengeId);
+            VerifyPermission(Permission.AddChallengeGroups);
+            return await _challengeGroupRepository.StubInUseAsync(GetCurrentSiteId(), stub.ToLower());
         }
 
         private async Task AddBadgeFileData(Challenge challenge)
@@ -532,16 +659,6 @@ namespace GRA.Domain.Service
             return $"site{GetCurrentSiteId()}/{TaskFilesPath}/{filename}";
         }
 
-        private string WriteTaskFile(ChallengeTask task, byte[] taskFile)
-        {
-            string extension = System.IO.Path.GetExtension(task.Filename).ToLower();
-            string filename = $"task{task.Id}{extension}";
-            string fullFilePath = GetTaskFilePath(filename);
-            _logger.LogDebug("Writing out task file {TaskFile}", fullFilePath);
-            System.IO.File.WriteAllBytes(fullFilePath, taskFile);
-            return GetTaskUrlPath(filename);
-        }
-
         private void RemoveTaskFile(ChallengeTask task)
         {
             var filePath = _pathResolver.ResolveContentFilePath(task.Filename);
@@ -551,131 +668,14 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<ChallengeGroup> GetGroupByIdAsync(int id)
+        private string WriteTaskFile(ChallengeTask task, byte[] taskFile)
         {
-            var challengeGroup = await _challengeGroupRepository.GetByIdAsync(id);
-            if (challengeGroup == null)
-            {
-                throw new GraException("The request challenge group could not be accessed or does not exist");
-            }
-            challengeGroup.Challenges = await _challengeRepository.GetByIdsAsync(GetCurrentSiteId(),
-                challengeGroup.ChallengeIds);
-            await AddBadgeFilenames(challengeGroup.Challenges);
-
-            return challengeGroup;
-        }
-
-        public async Task<ChallengeGroup> GetActiveGroupByStubAsync(string stub)
-        {
-            return await _challengeGroupRepository.GetActiveByStubAsync(GetCurrentSiteId(),
-                stub.ToLower());
-        }
-
-        public async Task<DataWithCount<IEnumerable<ChallengeGroup>>>
-            GetPaginatedGroupListAsync(ChallengeGroupFilter filter)
-        {
-            VerifyPermission(Permission.ViewAllChallenges);
-            filter.SiteId = GetCurrentSiteId();
-            return new DataWithCount<IEnumerable<ChallengeGroup>>
-            {
-                Data = await _challengeGroupRepository.PageAsync(filter),
-                Count = await _challengeGroupRepository.CountAsync(filter)
-            };
-        }
-
-        public async Task<ServiceResult<ChallengeGroup>> AddGroupAsync(ChallengeGroup challengeGroup,
-            List<int> ChallengeIds)
-        {
-            VerifyPermission(Permission.AddChallengeGroups);
-
-            var siteId = GetCurrentSiteId();
-            var stub = challengeGroup.Stub.Trim().ToLower();
-            var existingStub = await _challengeGroupRepository.StubInUseAsync(siteId, stub);
-            if (existingStub)
-            {
-                throw new GraException($"A challenge group with the link {stub} already exists.");
-            }
-
-            var serviceResult = new ServiceResult<ChallengeGroup>();
-            challengeGroup.SiteId = siteId;
-            challengeGroup.Stub = stub;
-
-            var validChallengeIds = await _challengeRepository.ValidateChallengeIdsAsync(siteId,
-                ChallengeIds);
-
-            if (ChallengeIds.Count != validChallengeIds.Count())
-            {
-                serviceResult.Status = ServiceResultStatus.Warning;
-                serviceResult.Message = "One or more of the selected challenges could not be added to this group.";
-            }
-
-            serviceResult.Data = await _challengeGroupRepository.AddSaveAsync(
-                GetClaimId(ClaimType.UserId), challengeGroup, validChallengeIds);
-
-            return serviceResult;
-        }
-
-        public async Task<ServiceResult<ChallengeGroup>> EditGroupAsync(
-            ChallengeGroup challengeGroup, List<int> ChallengeIds)
-        {
-            VerifyPermission(Permission.EditChallengeGroups);
-
-            var siteId = GetCurrentSiteId();
-            var serviceResult = new ServiceResult<ChallengeGroup>();
-            var currentChallengeGroup = await _challengeGroupRepository.GetByIdAsync(
-                challengeGroup.Id);
-            challengeGroup.SiteId = currentChallengeGroup.SiteId;
-            challengeGroup.Stub = currentChallengeGroup.Stub;
-
-            var validChallengeIds = await _challengeRepository.ValidateChallengeIdsAsync(siteId,
-                ChallengeIds);
-            if (ChallengeIds.Count != validChallengeIds.Count())
-            {
-                serviceResult.Status = ServiceResultStatus.Warning;
-                serviceResult.Message = "One or more of the selected challenges could not be added to this group.";
-            }
-
-            var challengesToAdd = ChallengeIds.Except(currentChallengeGroup.ChallengeIds);
-            var challengesToRemove = currentChallengeGroup.ChallengeIds.Except(ChallengeIds);
-
-            serviceResult.Data = await _challengeGroupRepository.UpdateSaveAsync(
-                GetClaimId(ClaimType.UserId), challengeGroup, challengesToAdd, challengesToRemove);
-
-            return serviceResult;
-        }
-
-        public async Task RemoveGroupAsync(int groupId)
-        {
-            VerifyPermission(Permission.EditChallengeGroups);
-            var userId = GetClaimId(ClaimType.UserId);
-            await _eventRepository.DetachRelatedChallengeGroup(userId, groupId);
-            await _challengeGroupRepository.RemoveSaveAsync(userId, groupId);
-        }
-
-        public async Task<List<Challenge>> GetByIdsAsync(IEnumerable<int> challengeIds)
-        {
-            VerifyPermission(Permission.ViewAllChallenges);
-            return await _challengeRepository.GetByIdsAsync(GetCurrentSiteId(), challengeIds);
-        }
-
-        public async Task<List<ChallengeGroup>> GetGroupsByChallengeId(int id)
-        {
-            VerifyPermission(Permission.ViewAllChallenges);
-            return await _challengeGroupRepository.GetByChallengeId(GetCurrentSiteId(), id);
-        }
-
-        public async Task<bool> StubInUseAsync(string stub)
-        {
-            VerifyPermission(Permission.AddChallengeGroups);
-            return await _challengeGroupRepository.StubInUseAsync(GetCurrentSiteId(), stub.ToLower());
-        }
-
-        public async Task<int?> GetMaximumAllowedPointsAsync(int siteId)
-        {
-            var (IsSet, SetValue) = await _siteLookupService.GetSiteSettingIntAsync(siteId,
-                SiteSettingKey.Challenges.MaxPointsPerChallengeTask);
-
-            return IsSet ? SetValue : (int?)null;
+            string extension = System.IO.Path.GetExtension(task.Filename).ToLower();
+            string filename = $"task{task.Id}{extension}";
+            string fullFilePath = GetTaskFilePath(filename);
+            _logger.LogDebug("Writing out task file {TaskFile}", fullFilePath);
+            System.IO.File.WriteAllBytes(fullFilePath, taskFile);
+            return GetTaskUrlPath(filename);
         }
     }
 }

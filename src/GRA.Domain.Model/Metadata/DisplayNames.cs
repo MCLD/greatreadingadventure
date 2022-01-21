@@ -31,12 +31,15 @@
         public const string Mail = "Mail";
         public const string Menu = "Menu";
         public const string MissionControl = "Mission Control";
+        public const string MostRecent = "Most recent";
         public const string MyProfile = "My Profile";
         public const string MyProgress = "My progress";
+        public const string Name = "Name";
         public const string NearLocation = "Near Location";
         public const string NewPassword = "New Password";
         public const string NextStep = "Next Step";
         public const string OldPassword = "Old Password";
+        public const string Ordering = "Ordering";
         public const string Password = "Password";
         public const string PhoneNumber = "Phone Number";
         public const string Program = "Program";

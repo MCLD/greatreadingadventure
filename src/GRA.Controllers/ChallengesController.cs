@@ -22,11 +22,11 @@ namespace GRA.Controllers
         public const string StatusCompleted = "Completed";
         public const string StatusUncompleted = "Uncompleted";
 
-        private readonly ILogger<ChallengesController> _logger;
-        private readonly AutoMapper.IMapper _mapper;
         private readonly ActivityService _activityService;
         private readonly CategoryService _categoryService;
         private readonly ChallengeService _challengeService;
+        private readonly ILogger<ChallengesController> _logger;
+        private readonly AutoMapper.IMapper _mapper;
         private readonly SiteService _siteService;
 
         public ChallengesController(ILogger<ChallengesController> logger,
@@ -48,18 +48,125 @@ namespace GRA.Controllers
             PageTitle = _sharedLocalizer[Annotations.Title.Challenges];
         }
 
-        public static string Name { get { return "Challenges"; } }
+        public static string Name
+        { get { return "Challenges"; } }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> CompleteTasks(ChallengeDetailViewModel model)
+        {
+            List<ChallengeTask> tasks = _mapper.Map<List<ChallengeTask>>(model.Tasks);
+            try
+            {
+                var completed = await _activityService.UpdateChallengeTasksAsync(model.Challenge.Id, tasks);
+                if (!completed)
+                {
+                    var challenge
+                        = await _challengeService.GetChallengeDetailsAsync(model.Challenge.Id);
+                    if (challenge.TasksToComplete != null
+                        && challenge.TasksToComplete > 0)
+                    {
+                        int tasksCompleted = model.Tasks.Count(_ => _.IsCompleted);
+                        int percentage = tasksCompleted * 100 / (int)challenge.TasksToComplete;
+                        ShowAlertSuccess(_sharedLocalizer[Annotations.Info.StatusSavedPercentage,
+                            percentage,
+                            challenge.Name]);
+                    }
+                    else
+                    {
+                        ShowAlertSuccess(_sharedLocalizer[Annotations.Info.StatusSaved]);
+                    }
+                }
+            }
+            catch (GraException gex)
+            {
+                AlertInfo = gex.Message;
+            }
+            return RedirectToAction(nameof(Detail), new { id = model.Challenge.Id });
+        }
+
+        public async Task<IActionResult> Detail(int id)
+        {
+            Challenge challenge;
+            try
+            {
+                challenge = await _challengeService.GetChallengeDetailsAsync(id);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning(gex.Message);
+                return await Index(httpStatus: System.Net.HttpStatusCode.NotFound);
+            }
+            var siteStage = GetSiteStage();
+
+            if (!string.IsNullOrEmpty(challenge.BadgeFilename))
+            {
+                challenge.BadgeFilename = _pathResolver.ResolveContentPath(challenge.BadgeFilename);
+            }
+
+            bool isActive = AuthUser.Identity.IsAuthenticated && siteStage == SiteStage.ProgramOpen;
+            bool showCompleted = siteStage == SiteStage.ProgramOpen
+                || siteStage == SiteStage.ProgramEnded;
+
+            var viewModel = new ChallengeDetailViewModel
+            {
+                Challenge = challenge,
+                BadgePath = challenge.BadgeFilename,
+                BadgeAltText = challenge.BadgeAltText,
+                IsActive = isActive,
+                IsLoggedIn = AuthUser.Identity.IsAuthenticated,
+                ShowCompleted = showCompleted,
+                Tasks = new List<TaskDetailViewModel>(),
+                IsBadgeEarning = challenge.BadgeId.HasValue,
+                PointCountAndDescription = challenge.PointsAwarded == 1
+                    ? _sharedLocalizer[Annotations.Info.PointSingular, challenge.PointsAwarded]
+                    : _sharedLocalizer[Annotations.Info.PointsPlural, challenge.PointsAwarded],
+                TaskCountAndDescription = challenge.TasksToComplete == 1
+                    ? _sharedLocalizer[Annotations.Info.TaskSingular, challenge.TasksToComplete]
+                    : _sharedLocalizer[Annotations.Info.TasksPlural, challenge.TasksToComplete]
+            };
+
+            var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
+            foreach (var task in challenge.Tasks)
+            {
+                var taskModel = new TaskDetailViewModel
+                {
+                    Id = task.Id,
+                    IsCompleted = task.IsCompleted ?? false,
+                    TaskType = task.ChallengeTaskType.ToString(),
+                    Url = task.Url,
+                    Title = task.Title,
+                    Author = task.Author
+                };
+                if (taskModel.TaskType != "Book")
+                {
+                    taskModel.Description = CommonMark.CommonMarkConverter.Convert(task.Title);
+                }
+                if (!string.IsNullOrWhiteSpace(task.Filename))
+                {
+                    var contentPath = _pathResolver.ResolveContentPath(task.Filename);
+                    taskModel.FilePath = $"{siteUrl}/{contentPath}";
+                }
+                viewModel.Tasks.Add(taskModel);
+            }
+            PageTitle = _sharedLocalizer[Annotations.Title.ChallengeDetails, challenge.Name];
+            return View(viewModel);
+        }
 
         public async Task<IActionResult> Index(string Search = null,
-            int? Program = null,
+                            int? Program = null,
             string Categories = null,
             string Group = null,
             bool Favorites = false,
             string Status = null,
             int page = 1,
+            ChallengeFilter.OrderingOption ordering = ChallengeFilter.OrderingOption.Recent,
             System.Net.HttpStatusCode httpStatus = System.Net.HttpStatusCode.OK)
         {
-            var filter = new ChallengeFilter(page);
+            var filter = new ChallengeFilter(page)
+            {
+                Ordering = ordering
+            };
             if (!string.IsNullOrWhiteSpace(Search))
             {
                 filter.Search = Search;
@@ -146,19 +253,20 @@ namespace GRA.Controllers
 
             var viewModel = new ChallengesListViewModel
             {
-                Challenges = challengeList.Data.ToList(),
-                ChallengeGroup = challengeGroup,
-                PaginateModel = paginateModel,
-                Search = Search,
-                Program = Program,
                 Categories = Categories,
-                Favorites = Favorites,
-                Status = Status,
-                IsActive = isActive,
-                IsLoggedIn = AuthUser.Identity.IsAuthenticated,
                 CategoryIds = filter.CategoryIds,
                 CategoryList = new SelectList(categoryList, "Id", "Name"),
-                ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name")
+                ChallengeGroup = challengeGroup,
+                Challenges = challengeList.Data.ToList(),
+                Favorites = Favorites,
+                IsActive = isActive,
+                IsLoggedIn = AuthUser.Identity.IsAuthenticated,
+                Ordering = filter.Ordering,
+                PaginateModel = paginateModel,
+                Program = Program,
+                ProgramList = new SelectList(await _siteService.GetProgramList(), "Id", "Name"),
+                Search = Search,
+                Status = Status
             };
             if (!string.IsNullOrWhiteSpace(Search))
             {
@@ -193,6 +301,33 @@ namespace GRA.Controllers
 
         [Authorize]
         [HttpPost]
+        public async Task<IActionResult> UpdateFavorites(ChallengesListViewModel model)
+        {
+            var serviceResult = await _activityService.UpdateFavoriteChallenges(model.Challenges);
+            if (serviceResult.Status == ServiceResultStatus.Warning
+                        && !string.IsNullOrWhiteSpace(serviceResult.Message))
+            {
+                ShowAlertWarning(serviceResult.Message);
+            }
+            int? page = null;
+            if (model.PaginateModel.CurrentPage > 1)
+            {
+                page = model.PaginateModel.CurrentPage;
+            }
+            return RedirectToAction(nameof(Index), new
+            {
+                page,
+                model.Search,
+                model.Program,
+                model.Categories,
+                model.Favorites,
+                model.Status,
+                Group = model.ChallengeGroup?.Stub
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
         public async Task<IActionResult> UpdateSingleFavorite(int challengeId, bool favorite)
         {
             var serviceResult = new ServiceResult();
@@ -222,135 +357,6 @@ namespace GRA.Controllers
                 message = serviceResult.Message,
                 favorite
             });
-        }
-
-        [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> UpdateFavorites(ChallengesListViewModel model)
-        {
-            var serviceResult = await _activityService.UpdateFavoriteChallenges(model.Challenges);
-            if (serviceResult.Status == ServiceResultStatus.Warning
-                        && !string.IsNullOrWhiteSpace(serviceResult.Message))
-            {
-                ShowAlertWarning(serviceResult.Message);
-            }
-            int? page = null;
-            if (model.PaginateModel.CurrentPage > 1)
-            {
-                page = model.PaginateModel.CurrentPage;
-            }
-            return RedirectToAction(nameof(Index), new
-            {
-                page,
-                model.Search,
-                model.Program,
-                model.Categories,
-                model.Favorites,
-                model.Status,
-                Group = model.ChallengeGroup?.Stub
-            });
-        }
-
-        public async Task<IActionResult> Detail(int id)
-        {
-            Challenge challenge;
-            try
-            {
-                challenge = await _challengeService.GetChallengeDetailsAsync(id);
-            }
-            catch (GraException gex)
-            {
-                ShowAlertWarning(gex.Message);
-                return await Index(httpStatus: System.Net.HttpStatusCode.NotFound);
-            }
-            var siteStage = GetSiteStage();
-
-            if (!string.IsNullOrEmpty(challenge.BadgeFilename))
-            {
-                challenge.BadgeFilename = _pathResolver.ResolveContentPath(challenge.BadgeFilename);
-            }
-
-            bool isActive = AuthUser.Identity.IsAuthenticated && siteStage == SiteStage.ProgramOpen;
-            bool showCompleted = siteStage == SiteStage.ProgramOpen
-                || siteStage == SiteStage.ProgramEnded;
-
-            var viewModel = new ChallengeDetailViewModel
-            {
-                Challenge = challenge,
-                BadgePath = challenge.BadgeFilename,
-                BadgeAltText = challenge.BadgeAltText,
-                IsActive = isActive,
-                IsLoggedIn = AuthUser.Identity.IsAuthenticated,
-                ShowCompleted = showCompleted,
-                Tasks = new List<TaskDetailViewModel>(),
-                IsBadgeEarning = challenge.BadgeId.HasValue,
-                PointCountAndDescription = challenge.PointsAwarded == 1
-                    ? _sharedLocalizer[Annotations.Info.PointSingular, challenge.PointsAwarded]
-                    : _sharedLocalizer[Annotations.Info.PointsPlural, challenge.PointsAwarded],
-                TaskCountAndDescription = challenge.TasksToComplete == 1
-                    ? _sharedLocalizer[Annotations.Info.TaskSingular, challenge.TasksToComplete]
-                    : _sharedLocalizer[Annotations.Info.TasksPlural, challenge.TasksToComplete]
-            };
-
-            var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
-            foreach (var task in challenge.Tasks)
-            {
-                var taskModel = new TaskDetailViewModel
-                {
-                    Id = task.Id,
-                    IsCompleted = task.IsCompleted ?? false,
-                    TaskType = task.ChallengeTaskType.ToString(),
-                    Url = task.Url,
-                    Title = task.Title,
-                    Author = task.Author
-                };
-                if (taskModel.TaskType != "Book")
-                {
-                    taskModel.Description = CommonMark.CommonMarkConverter.Convert(task.Title);
-                }
-                if (!string.IsNullOrWhiteSpace(task.Filename))
-                {
-                    var contentPath = _pathResolver.ResolveContentPath(task.Filename);
-                    taskModel.FilePath = $"{siteUrl}/{contentPath}";
-                }
-                viewModel.Tasks.Add(taskModel);
-            }
-            PageTitle = _sharedLocalizer[Annotations.Title.ChallengeDetails, challenge.Name];
-            return View(viewModel);
-        }
-
-        [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> CompleteTasks(ChallengeDetailViewModel model)
-        {
-            List<ChallengeTask> tasks = _mapper.Map<List<ChallengeTask>>(model.Tasks);
-            try
-            {
-                var completed = await _activityService.UpdateChallengeTasksAsync(model.Challenge.Id, tasks);
-                if (!completed)
-                {
-                    var challenge
-                        = await _challengeService.GetChallengeDetailsAsync(model.Challenge.Id);
-                    if (challenge.TasksToComplete != null
-                        && challenge.TasksToComplete > 0)
-                    {
-                        int tasksCompleted = model.Tasks.Count(_ => _.IsCompleted);
-                        int percentage = tasksCompleted * 100 / (int)challenge.TasksToComplete;
-                        ShowAlertSuccess(_sharedLocalizer[Annotations.Info.StatusSavedPercentage,
-                            percentage,
-                            challenge.Name]);
-                    }
-                    else
-                    {
-                        ShowAlertSuccess(_sharedLocalizer[Annotations.Info.StatusSaved]);
-                    }
-                }
-            }
-            catch (GraException gex)
-            {
-                AlertInfo = gex.Message;
-            }
-            return RedirectToAction(nameof(Detail), new { id = model.Challenge.Id });
         }
     }
 }
