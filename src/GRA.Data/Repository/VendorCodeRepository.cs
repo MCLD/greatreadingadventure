@@ -203,5 +203,22 @@ namespace GRA.Data.Repository
                 .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
+
+        public async Task<ICollection<VendorCode>> GetRemainingPrizesForBranchAsync(int branchId)
+        {
+            var remainingPrizes = _context.PrizeWinners.Where(_ => !_.RedeemedAt.HasValue);
+
+            return await DbSet
+                .Where(_ => _.BranchId == branchId && _.UserId.HasValue)
+                .Join(remainingPrizes,
+                    vendorCode => vendorCode.Id,
+                    prize => prize.VendorCodeId,
+                    (vendorCode, _) => vendorCode)
+                .AsNoTracking()
+                .OrderBy(_ => _.ArrivalDate)
+                .ThenBy(_ => _.Details)
+                .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
     }
 }
