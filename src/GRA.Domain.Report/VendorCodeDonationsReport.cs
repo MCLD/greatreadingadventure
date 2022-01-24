@@ -13,7 +13,7 @@ namespace GRA.Domain.Report
 {
     [ReportInformation(15,
         "Vendor Code Donations Report",
-        "Vendor prizes by program filterable by system.",
+        "Vendor prizes donations filterable by system.",
         "Participants")]
     public class VendorCodeDonationsReport : BaseReport
     {

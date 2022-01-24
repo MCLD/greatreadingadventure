@@ -107,6 +107,11 @@ namespace GRA.Data.Repository
                 validUsers = validUsers.Where(_ => _.SystemId == criterion.SystemId.Value);
             }
 
+            if (criterion.ProgramId.HasValue)
+            {
+                validUsers = validUsers.Where(_ => _.ProgramId == criterion.ProgramId.Value);
+            }
+
             return await (from vendorCodes in DbSet.AsNoTracking()
                             .Where(_ => _.UserId.HasValue && _.SiteId == criterion.SiteId)
                           join users in validUsers
