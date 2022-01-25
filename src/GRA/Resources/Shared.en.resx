@@ -1553,4 +1553,8 @@
     <value>If you choose to enter a title and author, you can view a list of all the books you've read in your profile.</value>
     <comment>Help text for the dashboard's Author and Title fields.</comment>
   </data>
+  <data name="Most Popular" xml:space="preserve">
+    <value>Most Popular</value>
+    <comment>Label for ordering challenges by highest popularity</comment>
+  </data>
 </root>
