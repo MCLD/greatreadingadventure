@@ -13,7 +13,8 @@
         public enum OrderingOption
         {
             Recent,
-            Name
+            Name,
+            MostPopular
         }
 
         public bool? Favorites { get; set; }

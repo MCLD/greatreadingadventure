@@ -625,6 +625,9 @@ namespace GRA.Domain.Service
                 }
                 await _userLogRepository.AddSaveAsync(activeUserId, userLog);
 
+                challenge.EstimatedPopularity++;
+                await _challengeRepository.UpdateAsync(activeUserId, challenge);
+
                 // update the score in the user record
                 await AddPointsSaveAsync(authUserId,
                     activeUserId,

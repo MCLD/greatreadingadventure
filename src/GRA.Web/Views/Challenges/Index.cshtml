@@ -105,6 +105,13 @@
                                            @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Name)>
                                            @SharedLocalizer[GRA.Domain.Model.DisplayNames.Name]
                                 </label>
+                                <label class="checkbox-inline">
+                                    <input type="radio" 
+                                           name="Ordering"
+                                           value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.MostPopular"
+                                           @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.MostPopular)>
+                                           Most popular
+                                </label>
                             </div>
                         </div>
                         @if (Model.IsLoggedIn)

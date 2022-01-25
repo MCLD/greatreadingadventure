@@ -123,6 +123,13 @@
                        @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Name)>
                 Name
             </label>
+            <label class="checkbox-inline">
+                <input type="radio"
+                       name="Ordering"
+                       value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.MostPopular"
+                       @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.MostPopular)>
+                Most Popular
+            </label>
         </div>
     </div>
 
