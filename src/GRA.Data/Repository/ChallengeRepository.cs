@@ -238,6 +238,20 @@ namespace GRA.Data.Repository
                 .AnyAsync();
         }
 
+        public async Task IncrementPopularity(int challengeId)
+        {
+            try
+            {
+                await _context
+                    .Database
+                    .ExecuteSqlInterpolatedAsync($"UPDATE [Challenges] SET [EstimatedPopularity] = [EstimatedPopularity] + 1 WHERE [Id] = {challengeId}");
+            }
+            catch (Exception ex)
+            {
+                throw new GraException("Unable to increment popularity for challenge id {challengeId}", ex);
+            }
+        }
+
         public async Task<ICollection<Challenge>> PageAllAsync(ChallengeFilter filter)
         {
             var challengeList = await ApplyFilters(filter)
