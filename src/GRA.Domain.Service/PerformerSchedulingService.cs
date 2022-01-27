@@ -375,7 +375,15 @@ namespace GRA.Domain.Service
                 _logger.LogError($"User {GetClaimId(ClaimType.UserId)} doesn't have permission to view age group.");
                 throw new GraException("Permission denied.");
             }
-            return await _psAgeGroupRepository.GetByIdAsync(id);
+
+            try
+            {
+                return await _psAgeGroupRepository.GetByIdAsync(id);
+            }
+            catch (Exception)
+            {
+                throw new GraException("The requested age group could not be accessed or does not exist.");
+            }
         }
 
         public async Task<PsAgeGroup> AddAgeGroupAsync(PsAgeGroup ageGroup)

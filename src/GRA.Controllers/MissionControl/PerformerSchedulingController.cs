@@ -508,6 +508,19 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(Program), new { id = program.Id });
             }
 
+            PsAgeGroup ageGroup;
+
+            try
+            {
+                ageGroup = await _performerSchedulingService
+                    .GetAgeGroupByIdAsync(model.BranchSelection.AgeGroupId);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to select age group: ", gex.Message);
+                return RedirectToAction(nameof(Program), new { id = program.Id });
+            }
+
             var viewModel = new SelectProgramViewModel
             {
                 BranchSelection = model.BranchSelection,
@@ -526,8 +539,7 @@ namespace GRA.Controllers.MissionControl
                 viewModel.BranchSelection.BackToBackProgram = true;
             }
 
-            viewModel.BranchSelection.AgeGroup = await _performerSchedulingService
-                .GetAgeGroupByIdAsync(viewModel.BranchSelection.AgeGroupId);
+            viewModel.BranchSelection.AgeGroup = ageGroup;
             viewModel.BranchSelection.Branch = await _performerSchedulingService
                 .GetNonExcludedBranch(model.BranchSelection.BranchId);
             viewModel.BranchSelection.Program = program;
