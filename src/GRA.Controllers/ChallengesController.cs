@@ -58,7 +58,8 @@ namespace GRA.Controllers
             List<ChallengeTask> tasks = _mapper.Map<List<ChallengeTask>>(model.Tasks);
             try
             {
-                var completed = await _activityService.UpdateChallengeTasksAsync(model.Challenge.Id, tasks);
+                var completed = await _activityService
+                    .UpdateChallengeTasksAsync(model.Challenge.Id, tasks);
                 if (!completed)
                 {
                     var challenge
@@ -154,7 +155,7 @@ namespace GRA.Controllers
         }
 
         public async Task<IActionResult> Index(string Search = null,
-                            int? Program = null,
+            int? Program = null,
             string Categories = null,
             string Group = null,
             bool Favorites = false,
@@ -236,7 +237,8 @@ namespace GRA.Controllers
             {
                 if (!string.IsNullOrEmpty(challenge.BadgeFilename))
                 {
-                    challenge.BadgeFilename = _pathResolver.ResolveContentPath(challenge.BadgeFilename);
+                    challenge.BadgeFilename = _pathResolver
+                        .ResolveContentPath(challenge.BadgeFilename);
                 }
                 if (challenge.IsCompleted == true)
                 {

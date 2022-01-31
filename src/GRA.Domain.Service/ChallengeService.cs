@@ -143,8 +143,8 @@ namespace GRA.Domain.Service
             throw new GraException("Permission denied.");
         }
 
-        public async Task<ServiceResult<ChallengeGroup>> AddGroupAsync(ChallengeGroup challengeGroup,
-            List<int> ChallengeIds)
+        public async Task<ServiceResult<ChallengeGroup>>
+            AddGroupAsync(ChallengeGroup challengeGroup, List<int> ChallengeIds)
         {
             VerifyPermission(Permission.AddChallengeGroups);
 
@@ -180,12 +180,14 @@ namespace GRA.Domain.Service
             int authUserId = GetClaimId(ClaimType.UserId);
             if (HasPermission(Permission.EditChallenges))
             {
-                var newTask = await _challengeTaskRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), task);
+                var newTask = await _challengeTaskRepository
+                    .AddSaveAsync(GetClaimId(ClaimType.UserId), task);
                 newTask.ChallengeTaskType = task.ChallengeTaskType;
                 if (fileBytes != null)
                 {
                     newTask.Filename = WriteTaskFile(newTask, fileBytes);
-                    newTask = await _challengeTaskRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), newTask);
+                    newTask = await _challengeTaskRepository
+                        .UpdateSaveAsync(GetClaimId(ClaimType.UserId), newTask);
                 }
 
                 var challenge = await _challengeRepository.GetByIdAsync(task.ChallengeId);
@@ -263,8 +265,9 @@ namespace GRA.Domain.Service
 
                 if (challenge.CategoryIds?.Count > 0)
                 {
-                    var validCategoryIds = (await _categoryRepository.GetAllAsync(GetCurrentSiteId()))
-                        .Select(_ => _.Id);
+                    var validCategoryIds
+                        = (await _categoryRepository.GetAllAsync(GetCurrentSiteId()))
+                            .Select(_ => _.Id);
                     var invalidSelectedIds = challenge.CategoryIds.Except(validCategoryIds);
 
                     if (invalidSelectedIds.Any())
@@ -428,7 +431,7 @@ namespace GRA.Domain.Service
         }
 
         public async Task<DataWithCount<IEnumerable<Challenge>>>
-                                                                                                                                            GetPaginatedChallengeListAsync(ChallengeFilter filter)
+            GetPaginatedChallengeListAsync(ChallengeFilter filter)
         {
             ICollection<Challenge> challenges = null;
             int challengeCount;
@@ -443,7 +446,8 @@ namespace GRA.Domain.Service
                 var challengeIds = await _challengeRepository.PageIdsAsync(filter, userId);
                 foreach (var challengeId in challengeIds.Data)
                 {
-                    var challengeStatus = await _challengeRepository.GetActiveByIdAsync(challengeId, userId);
+                    var challengeStatus = await _challengeRepository
+                        .GetActiveByIdAsync(challengeId, userId);
                     int completed = challengeStatus.Tasks.Count(_ => _.IsCompleted == true);
                     if (completed > 0)
                     {
@@ -616,7 +620,8 @@ namespace GRA.Domain.Service
         public async Task<bool> StubInUseAsync(string stub)
         {
             VerifyPermission(Permission.AddChallengeGroups);
-            return await _challengeGroupRepository.StubInUseAsync(GetCurrentSiteId(), stub.ToLower());
+            return await _challengeGroupRepository
+                .StubInUseAsync(GetCurrentSiteId(), stub.ToLowerInvariant());
         }
 
         private async Task AddBadgeFileData(Challenge challenge)
