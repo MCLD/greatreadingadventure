@@ -161,7 +161,7 @@ namespace GRA.Controllers
             bool Favorites = false,
             string Status = null,
             int page = 1,
-            ChallengeFilter.OrderingOption ordering = ChallengeFilter.OrderingOption.Recent,
+            ChallengeFilter.OrderingOption ordering = ChallengeFilter.OrderingOption.MostPopular,
             System.Net.HttpStatusCode httpStatus = System.Net.HttpStatusCode.OK)
         {
             var filter = new ChallengeFilter(page)

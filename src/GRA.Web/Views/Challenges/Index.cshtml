@@ -93,24 +93,24 @@
                             <div class="col-xs-12 col-sm-10">
                                 <label class="radio-inline">
                                     <input type="radio"
-                                           name="Ordering"
-                                           value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Recent"
-                                           @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Recent)>
-                                           @SharedLocalizer[GRA.Domain.Model.DisplayNames.MostRecent]
+                                       name="Ordering"
+                                       value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.MostPopular"
+                                       @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.MostPopular)>
+                                    Most popular
                                 </label>
-                                <label class="checkbox-inline">
-                                    <input type="radio" 
-                                           name="Ordering"
-                                           value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Name"
-                                           @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Name)>
-                                           @SharedLocalizer[GRA.Domain.Model.DisplayNames.Name]
+                                <label class="radio-inline">
+                                    <input type="radio"
+                                       name="Ordering"
+                                       value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Name"
+                                       @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Name)>
+                                    @SharedLocalizer[GRA.Domain.Model.DisplayNames.Name]
                                 </label>
-                                <label class="checkbox-inline">
-                                    <input type="radio" 
-                                           name="Ordering"
-                                           value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.MostPopular"
-                                           @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.MostPopular)>
-                                           Most popular
+                                <label class="radio-inline">
+                                    <input type="radio"
+                                       name="Ordering"
+                                       value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Recent"
+                                       @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Recent)>
+                                    @SharedLocalizer[GRA.Domain.Model.DisplayNames.MostRecent]
                                 </label>
                             </div>
                         </div>

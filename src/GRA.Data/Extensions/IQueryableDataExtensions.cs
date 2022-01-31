@@ -15,10 +15,12 @@ namespace GRA.Data.Extensions
             return filter.Ordering switch
             {
                 ChallengeFilter.OrderingOption.Name => queryable.OrderBy(_ => _.Name),
-                ChallengeFilter.OrderingOption.MostPopular => queryable
+                ChallengeFilter.OrderingOption.Recent => queryable
+                    .OrderByDescending(_ => _.CreatedAt)
+                    .ThenBy(_ => _.Name),
+                _ => queryable
                     .OrderByDescending(_ => _.EstimatedPopularity)
-                    .ThenByDescending(_ => _.CreatedAt),
-                _ => queryable.OrderByDescending(_ => _.CreatedAt).ThenBy(_ => _.Name),
+                    .ThenByDescending(_ => _.CreatedAt)
             };
         }
     }
