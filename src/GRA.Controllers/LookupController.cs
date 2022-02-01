@@ -41,7 +41,8 @@ namespace GRA.Controllers
         public async Task<JsonResult> GetBranches(int? systemId,
             int? branchId,
             bool listAll = false,
-            bool prioritize = false)
+            bool prioritize = false,
+            bool includeSystemName = false)
         {
             var branchList = new List<Branch>();
 
@@ -52,7 +53,8 @@ namespace GRA.Controllers
             }
             else if (listAll)
             {
-                branchList = (await _siteService.GetAllBranches()).OrderBy(_ => _.Name)
+                branchList = (await _siteService.GetAllBranches(includeSystemName))
+                    .OrderBy(_ => _.Name)
                     .ToList();
             }
 

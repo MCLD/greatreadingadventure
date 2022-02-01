@@ -39,5 +39,6 @@ namespace GRA.Domain.Model
         public long PackingSlip { get; set; }
         [MaxLength(512)]
         public string TrackingNumber { get; set; }
+        public DateTime? EmailSentAt { get; set; }
     }
 }
