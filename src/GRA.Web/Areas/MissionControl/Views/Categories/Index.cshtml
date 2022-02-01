@@ -34,6 +34,7 @@
                         <tr>
                             <th>Name</th>
                             <th>Description</th>
+                            <th>Preview</th>
                             <th width="100">&nbsp;</th>
                         </tr>
                     </thead>
@@ -48,13 +49,17 @@
                                     @category.Description
                                 </td>
                                 <td>
+                                    <span class="label" style="background-color:@category.Color">@category.Name</span>
+                                </td>
+                                <td>
                                     <button type="button"
                                             class="btn btn-primary btn-xs"
                                             data-toggle="modal"
                                             data-target="#editModal"
                                             data-id="@category.Id"
                                             data-name="@category.Name"
-                                            data-description="@category.Description">
+                                            data-description="@category.Description"
+                                            data-color="@category.Color">
                                         <span class="fas fa-2x fa-pencil-alt" aria-hidden="true"></span>
                                     </button>
                                     <button type="button"
@@ -116,6 +121,12 @@
                             <span asp-validation-for="Category.Description"
                                   class="text-danger"></span>
                         </div>
+                        <div class="form-group">
+                            <label asp-for="Category.Color" class="control-label"></label>
+                            <input asp-for="Category.Color" type="color" value="#777777"/>
+                            <span asp-validation-for="Category.Color"
+                                  class="text-danger"></span>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal"
@@ -170,6 +181,12 @@
                             <label asp-for="Category.Description" class="control-label"></label>
                             <input asp-for="Category.Description" class="form-control" />
                             <span asp-validation-for="Category.Description"
+                                  class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Category.Color" class="control-label"></label>
+                            <input asp-for="Category.Color" type="color" />
+                            <span asp-validation-for="Category.Color"
                                   class="text-danger"></span>
                         </div>
                     </div>
@@ -250,12 +267,14 @@
             var button = $(e.relatedTarget);
             var id = button.data("id");
             var name = button.data("name");
-            var description = button.data("description")
+            var description = button.data("description");
+            var color = button.data("color");
             var modal = $(this);
             modal.find("#editModalLabel").text("Edit Category - \"" + name + "\"");
             modal.find("#Category_Id").val(id);
             modal.find("#Category_Name").val(name);
             modal.find("#Category_Description").val(description);
+            modal.find("#Category_Color").val(color);
         });
 
         $("#deleteModal").on("show.bs.modal", function (e) {
