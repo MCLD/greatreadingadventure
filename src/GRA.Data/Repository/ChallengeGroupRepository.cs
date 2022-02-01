@@ -51,6 +51,19 @@ namespace GRA.Data.Repository
                 .SingleOrDefaultAsync();
         }
 
+        public async Task<List<ChallengeGroup>> GetActiveFeatureGroupsAsync(int siteId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId && _.ChallengeGroupChallenges
+                    .Any(c => c.Challenge.IsActive
+                        && !c.Challenge.IsDeleted
+                        && c.ChallengeGroup.FeatureStartDate < _dateTimeProvider.Now
+                        && c.ChallengeGroup.FeatureEndDate > _dateTimeProvider.Now))
+                .ProjectTo<ChallengeGroup>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
         public async Task<List<ChallengeGroup>> GetByChallengeId(int siteId, int challengeId)
         {
             return await DbSet

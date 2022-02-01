@@ -571,6 +571,11 @@ namespace GRA.Domain.Service
                 stub.ToLower());
         }
 
+        public async Task<List<ChallengeGroup>> GetActiveFeatureGroupsAsync()
+        {
+            return await _challengeGroupRepository.GetActiveFeatureGroupsAsync(GetCurrentSiteId());
+        }
+
         public async Task<DataWithCount<IEnumerable<ChallengeGroup>>>
             GetPaginatedGroupListAsync(ChallengeGroupFilter filter)
         {
