@@ -12,6 +12,7 @@ namespace GRA.Domain.Service
     public class CategoryService : BaseUserService<CategoryService>
     {
         private readonly ICategoryRepository _categoryRepository;
+
         public CategoryService(ILogger<CategoryService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
@@ -21,23 +22,6 @@ namespace GRA.Domain.Service
             SetManagementPermission(Permission.ManageCategories);
             _categoryRepository = categoryRepository
                 ?? throw new ArgumentNullException(nameof(categoryRepository));
-        }
-
-        public async Task<IEnumerable<Category>> GetListAsync(bool hideEmpty = false)
-        {
-            return await _categoryRepository.GetAllAsync(GetCurrentSiteId(), hideEmpty);
-        }
-
-        public async Task<DataWithCount<IEnumerable<Category>>> GetPaginatedListAsync(
-            BaseFilter filter)
-        {
-            VerifyManagementPermission();
-            filter.SiteId = GetCurrentSiteId();
-            return new DataWithCount<IEnumerable<Category>>
-            {
-                Data = await _categoryRepository.PageAsync(filter),
-                Count = await _categoryRepository.CountAsync(filter)
-            };
         }
 
         public async Task<Category> AddAsync(Category category)
@@ -62,6 +46,23 @@ namespace GRA.Domain.Service
             current.Color = category.Color?.Trim();
 
             return await _categoryRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), current);
+        }
+
+        public async Task<IEnumerable<Category>> GetListAsync(bool hideEmpty = false)
+        {
+            return await _categoryRepository.GetAllAsync(GetCurrentSiteId(), hideEmpty);
+        }
+
+        public async Task<DataWithCount<IEnumerable<Category>>> GetPaginatedListAsync(
+            BaseFilter filter)
+        {
+            VerifyManagementPermission();
+            filter.SiteId = GetCurrentSiteId();
+            return new DataWithCount<IEnumerable<Category>>
+            {
+                Data = await _categoryRepository.PageAsync(filter),
+                Count = await _categoryRepository.CountAsync(filter)
+            };
         }
 
         public async Task RemoveAsync(int categoryId)
