@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,10 +41,12 @@ namespace GRA.Domain.Report
             IProgress<JobStatus> progress = null)
         {
             #region Reporting intialization
+
             request = await StartRequestAsync(request);
 
             var criterion
-                    = await _serviceFacade.ReportCriterionRepository.GetByIdAsync(request.ReportCriteriaId)
+                    = await _serviceFacade.ReportCriterionRepository
+                        .GetByIdAsync(request.ReportCriteriaId)
                     ?? throw new GraException($"Report criteria {request.ReportCriteriaId} for report request id {request.Id} could not be found.");
 
             if (!criterion.SiteId.HasValue)
@@ -64,9 +67,11 @@ namespace GRA.Domain.Report
                 AsOf = _serviceFacade.DateTimeProvider.Now
             };
             var reportData = new List<object[]>();
-            #endregion
+
+            #endregion Reporting intialization
 
             #region Collect data
+
             UpdateProgress(progress, 1, "Starting report...", request.Name);
 
             // header row
@@ -75,9 +80,9 @@ namespace GRA.Domain.Report
                 "Name",
                 "Email",
                 "Phone",
-                "Book name",
-                "Book arrival date",
-                "Emailed on"
+                "Item name",
+                "Item arrival",
+                "Email sent"
             };
 
             int count = 0;
@@ -115,21 +120,28 @@ namespace GRA.Domain.Report
                     user.Email,
                     user.PhoneNumber,
                     prize.Details,
-                    prize.ArrivalDate,
-                    prize.EmailSentAt
+                    prize.ArrivalDate.HasValue
+                        ? prize.ArrivalDate.Value.ToString("g", CultureInfo.CurrentCulture)
+                        : null,
+                    prize.EmailSentAt.HasValue
+                        ? prize.EmailSentAt.Value.ToString("g", CultureInfo.CurrentCulture)
+                        : null
                 });
             }
 
             report.Data = reportData.ToArray();
-            #endregion
+
+            #endregion Collect data
 
             #region Finish up reporting
+
             if (!token.IsCancellationRequested)
             {
                 ReportSet.Reports.Add(report);
             }
             await FinishRequestAsync(request, !token.IsCancellationRequested);
-            #endregion
+
+            #endregion Finish up reporting
         }
     }
 }

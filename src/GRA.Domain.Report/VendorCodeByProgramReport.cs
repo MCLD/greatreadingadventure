@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
@@ -45,6 +44,7 @@ namespace GRA.Domain.Report
             IProgress<JobStatus> progress = null)
         {
             #region Reporting initialization
+
             request = await StartRequestAsync(request);
 
             var criterion
@@ -58,9 +58,11 @@ namespace GRA.Domain.Report
 
             int count = 0;
             var asof = _serviceFacade.DateTimeProvider.Now;
-            #endregion
+
+            #endregion Reporting initialization
 
             #region Collect data
+
             UpdateProgress(progress, 1, "Starting report...", request.Name);
 
             var programTotals = new Dictionary<int, (int earned, int donated, int redeemed)>();
@@ -105,9 +107,9 @@ namespace GRA.Domain.Report
 
                 // header row
                 var headerRow = new object[] {
-                    "# Earned",
-                    "# Donated",
-                    "# Redeemed"
+                    "Earned",
+                    "Donated",
+                    "Redeemed"
                 };
 
                 int programTotalEarned = 0;
@@ -130,7 +132,8 @@ namespace GRA.Domain.Report
 
                         criterion.BranchId = branch.Id;
 
-                        var vendorCodes = await _vendorCodeRepository.GetEarnedCodesAsync(criterion);
+                        var vendorCodes = await _vendorCodeRepository
+                            .GetEarnedCodesAsync(criterion);
 
                         var earned = vendorCodes.Count;
                         var donated = vendorCodes.Count(_ => _.IsDonated == true);
@@ -172,7 +175,8 @@ namespace GRA.Domain.Report
 
                         criterion.SystemId = system.Id;
 
-                        var vendorCodes = await _vendorCodeRepository.GetEarnedCodesAsync(criterion);
+                        var vendorCodes = await _vendorCodeRepository
+                            .GetEarnedCodesAsync(criterion);
 
                         var earned = vendorCodes.Count;
                         var donated = vendorCodes.Count(_ => _.IsDonated == true);
@@ -262,9 +266,11 @@ namespace GRA.Domain.Report
                 donatedTotal,
                 redeemedTotal
             };
-            #endregion
+
+            #endregion Collect data
 
             #region Finish up reporting
+
             if (!token.IsCancellationRequested)
             {
                 ReportSet.Reports.Add(summaryReport);
@@ -274,7 +280,8 @@ namespace GRA.Domain.Report
                 }
             }
             await FinishRequestAsync(request, !token.IsCancellationRequested);
-            #endregion
+
+            #endregion Finish up reporting
         }
     }
 }
