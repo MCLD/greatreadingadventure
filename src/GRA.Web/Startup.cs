@@ -532,7 +532,9 @@ namespace GRA.Web
             services.AddScoped<Domain.Report.PrizeRedemptionCountReport>();
             services.AddScoped<Domain.Report.RegistrationsAchieversBySchoolReport>();
             services.AddScoped<Domain.Report.RegistrationsAchieversReport>();
+            services.AddScoped<Domain.Report.RemainingVendorPrizePickupReport>();
             services.AddScoped<Domain.Report.TopScoresReport>();
+            services.AddScoped<Domain.Report.VendorCodeByProgramReport>();
             services.AddScoped<Domain.Report.VendorCodeDonationsReport>();
             services.AddScoped<Domain.Report.VendorCodeReport>();
 
