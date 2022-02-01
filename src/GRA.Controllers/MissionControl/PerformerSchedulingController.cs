@@ -22,10 +22,11 @@ namespace GRA.Controllers.MissionControl
         private const int PerformersPerPage = 15;
         private const int ProgramsPerPage = 15;
 
-        private static readonly DateTime DefaultPerformerScheduleStartTime
-            = DateTime.Parse("8:00 AM");
         private static readonly DateTime DefaultPerformerScheduleEndTime
             = DateTime.Parse("8:00 PM");
+
+        private static readonly DateTime DefaultPerformerScheduleStartTime
+                    = DateTime.Parse("8:00 AM");
 
         private readonly ILogger<PerformerSchedulingController> _logger;
         private readonly PerformerSchedulingService _performerSchedulingService;
@@ -39,6 +40,180 @@ namespace GRA.Controllers.MissionControl
             _performerSchedulingService = performerSchedulingService
                 ?? throw new ArgumentNullException(nameof(performerSchedulingService));
             PageTitle = "Performer Scheduling";
+        }
+
+        [Authorize(Policy = Policy.SchedulePerformers)]
+        public async Task<JsonResult> CheckProgramTimeAvailability(int programId,
+            DateTime dateTime,
+            bool backToBack)
+        {
+            try
+            {
+                var result = await _performerSchedulingService
+                    .ValidateScheduleTimeAsync(programId, dateTime, backToBack);
+
+                if (!string.IsNullOrWhiteSpace(result))
+                {
+                    return Json(new
+                    {
+                        success = true,
+                        message = result
+                    });
+                }
+            }
+            catch (GraException gex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = gex.Message
+                });
+            }
+
+            return Json(new
+            {
+                success = true
+            });
+        }
+
+        [Authorize(Policy = Policy.SchedulePerformers)]
+        public async Task<JsonResult> GetKitAvailableAgeGroups(int branchId, int kitId)
+        {
+            PsKit kit;
+            try
+            {
+                kit = await _performerSchedulingService.GetKitByIdAsync(kitId,
+                    includeAgeGroups: true);
+            }
+            catch (GraException gex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = gex.Message
+                });
+            }
+
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+
+            var branchSelections = await _performerSchedulingService
+                .GetSelectionsByBranchIdAsync(branchId);
+            if (branchSelections.Count >= settings.SelectionsPerBranch)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = $"Branch has already made its {settings.SelectionsPerBranch} selections."
+                });
+            }
+
+            var availableAgeGroups = kit.AgeGroups.Select(_ => _.Id.ToString())
+                .Except(branchSelections.Select(_ => _.AgeGroupId.ToString()))
+                .ToList();
+            if (availableAgeGroups.Count == 0)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Branch already has selections for all of this kits age groups."
+                });
+            }
+
+            return Json(new
+            {
+                success = true,
+                data = availableAgeGroups
+            });
+        }
+
+        [Authorize(Policy = Policy.SchedulePerformers)]
+        public async Task<IActionResult> GetPerformerDaySchedule(int performerId, DateTime date)
+        {
+            var performerSchedule = await _performerSchedulingService
+                .GetPerformerDateScheduleAsync(performerId, date.Date);
+
+            var branchSelections = (await _performerSchedulingService
+                .GetPerformerBranchSelectionsAsync(performerId, date)).ToList();
+
+            var viewModel = new DayScheduleViewModel
+            {
+                BranchSelections = branchSelections
+            };
+            var startTime = performerSchedule?.StartTime ?? DefaultPerformerScheduleStartTime;
+            var endTime = performerSchedule?.EndTime ?? DefaultPerformerScheduleEndTime;
+
+            var earliestSelection = branchSelections
+                .OrderBy(_ => _.ScheduleStartTime)
+                .FirstOrDefault();
+            var latestSelection = branchSelections
+                .OrderByDescending(_ => _.ScheduleStartTime)
+                .FirstOrDefault();
+
+            if (earliestSelection == null
+                || startTime.TimeOfDay < earliestSelection.ScheduleStartTime.TimeOfDay)
+            {
+                viewModel.StartTime = startTime.ToShortTimeString();
+            }
+            if (latestSelection == null
+                || endTime.TimeOfDay > latestSelection.ScheduleStartTime
+                    .AddMinutes(latestSelection.ScheduleDuration).TimeOfDay)
+            {
+                viewModel.EndTime = endTime.ToShortTimeString();
+            }
+
+            return PartialView("_DaySchedulePartial", viewModel);
+        }
+
+        [Authorize(Policy = Policy.SchedulePerformers)]
+        public async Task<JsonResult> GetProgramAvailableAgeGroups(int branchId, int programId)
+        {
+            PsProgram program;
+            try
+            {
+                program = await _performerSchedulingService.GetProgramByIdAsync(programId,
+                    includeAgeGroups: true,
+                    onlyApproved: true);
+            }
+            catch (GraException gex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = gex.Message
+                });
+            }
+
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+
+            var branchSelections = await _performerSchedulingService
+                .GetSelectionsByBranchIdAsync(branchId);
+            if (branchSelections.Count >= settings.SelectionsPerBranch)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = $"Branch has already made its {settings.SelectionsPerBranch} selections."
+                });
+            }
+
+            var availableAgeGroups = program.AgeGroups
+                .Select(_ => _.Id.ToString())
+                .Except(branchSelections.Select(_ => _.AgeGroupId.ToString()))
+                .ToList();
+            if (availableAgeGroups.Count == 0)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Branch already has selections for all of this programs age groups."
+                });
+            }
+
+            return Json(new
+            {
+                success = true,
+                data = availableAgeGroups
+            });
         }
 
         public async Task<IActionResult> Index()
@@ -87,35 +262,7 @@ namespace GRA.Controllers.MissionControl
             return View(viewModel);
         }
 
-        public async Task<IActionResult> Schedule(int id)
-        {
-            var settings = await _performerSchedulingService.GetSettingsAsync();
-            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
-            if (schedulingStage < PsSchedulingStage.SchedulePosted)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            var branch = await _performerSchedulingService.GetNonExcludedBranch(id);
-
-            if (branch == null)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            branch.Selections = await _performerSchedulingService
-                .GetSelectionsByBranchIdAsync(branch.Id);
-
-            var viewModel = new ScheduleViewModel
-            {
-                Settings = settings,
-                Branch = branch
-            };
-
-            return View(viewModel);
-        }
-
-        public async Task<IActionResult> Performers(int page = 1)
+        public async Task<IActionResult> Kit(int id)
         {
             var settings = await _performerSchedulingService.GetSettingsAsync();
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
@@ -124,17 +271,127 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(Index));
             }
 
-            var filter = new PerformerSchedulingFilter(page, PerformersPerPage)
+            PsKit kit;
+            try
             {
-                IsApproved = true
+                kit = await _performerSchedulingService
+                    .GetKitByIdAsync(id, includeAgeGroups: true, includeImages: true);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to view kit: ", gex);
+                return RedirectToAction(nameof(Kits));
+            }
+
+            var viewModel = new KitViewModel
+            {
+                Kit = kit,
+                SchedulingOpen = schedulingStage == PsSchedulingStage.SchedulingOpen,
+                CanSchedule = UserHasPermission(Permission.SchedulePerformers)
             };
 
-            var performerList
-                = await _performerSchedulingService.GetPaginatedPerformerListAsync(filter);
+            if (kit.Images.Count > 0)
+            {
+                viewModel.ImagePath = _pathResolver.ResolveContentPath(
+                    kit.Images[0].Filename);
+            }
+
+            if (!string.IsNullOrWhiteSpace(kit.Website)
+                && Uri.TryCreate(kit.Website, UriKind.Absolute, out Uri absoluteUri))
+            {
+                viewModel.Uri = absoluteUri;
+            }
+
+            if (viewModel.SchedulingOpen)
+            {
+                viewModel.AgeGroupList = new SelectList(kit.AgeGroups, "Id", "Name");
+
+                var system = await _performerSchedulingService
+                    .GetSystemWithoutExcludedBranchesAsync(GetId(ClaimType.SystemId));
+
+                var branches = new List<Branch>();
+                foreach (var branch in system.Branches)
+                {
+                    var branchSelections = await _performerSchedulingService
+                            .GetSelectionsByBranchIdAsync(branch.Id);
+
+                    if (branchSelections.Count >= settings.SelectionsPerBranch)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        var selectedAgeGroups = branchSelections.Select(_ => _.AgeGroupId);
+                        var availableAgeGroups = kit.AgeGroups
+                            .Any(_ => !selectedAgeGroups.Contains(_.Id));
+
+                        if (!availableAgeGroups)
+                        {
+                            continue;
+                        }
+                    }
+                    branches.Add(branch);
+                }
+                viewModel.BranchList = new SelectList(branches, "Id", "Name");
+            }
+
+            var kitIndexList = await _performerSchedulingService.GetKitIndexListAsync();
+            var index = kitIndexList.IndexOf(id);
+            viewModel.ReturnPage = (index / KitsPerPage) + 1;
+            if (index != 0)
+            {
+                viewModel.PrevKit = kitIndexList[index - 1];
+            }
+            if (kitIndexList.Count != index + 1)
+            {
+                viewModel.NextKit = kitIndexList[index + 1];
+            }
+
+            return View(viewModel);
+        }
+
+        public async Task<IActionResult> KitImages(int id)
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
+            if (schedulingStage < PsSchedulingStage.SchedulingPreview)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            PsKit kit;
+            try
+            {
+                kit = await _performerSchedulingService.GetKitByIdAsync(id, includeImages: true);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to view kit images: ", gex);
+                return RedirectToAction(nameof(Kits));
+            }
+
+            kit.Images.ForEach(_ => _.Filename = _pathResolver
+               .ResolveContentPath(_.Filename));
+
+            return View(kit);
+        }
+
+        public async Task<IActionResult> Kits(int page = 1)
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
+            if (schedulingStage < PsSchedulingStage.SchedulingPreview)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var filter = new BaseFilter(page, KitsPerPage);
+
+            var kitList = await _performerSchedulingService.GetPaginatedKitListAsync(filter);
 
             var paginateModel = new PaginateViewModel
             {
-                ItemCount = performerList.Count,
+                ItemCount = kitList.Count,
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
@@ -147,18 +404,9 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
-            var systemId = GetId(ClaimType.SystemId);
-            foreach (var performer in performerList.Data)
+            var viewModel = new KitListViewModel
             {
-                performer.AvailableInSystem = await _performerSchedulingService
-                    .GetPerformerSystemAvailabilityAsync(performer.Id, systemId);
-                performer.ProgramCount = await _performerSchedulingService
-                    .GetPerformerProgramCountAsync(performer.Id);
-            }
-
-            var viewModel = new PerformerListViewModel
-            {
-                Performers = performerList.Data,
+                Kits = kitList.Data,
                 PaginateModel = paginateModel
             };
 
@@ -264,7 +512,7 @@ namespace GRA.Controllers.MissionControl
             return View(performer);
         }
 
-        public async Task<IActionResult> Programs(int page = 1, int? ageGroup = null)
+        public async Task<IActionResult> Performers(int page = 1)
         {
             var settings = await _performerSchedulingService.GetSettingsAsync();
             var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
@@ -273,18 +521,17 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(Index));
             }
 
-            var filter = new PerformerSchedulingFilter(page, ProgramsPerPage)
+            var filter = new PerformerSchedulingFilter(page, PerformersPerPage)
             {
-                AgeGroupId = ageGroup,
                 IsApproved = true
             };
 
-            var programList
-                = await _performerSchedulingService.GetPaginatedProgramListAsync(filter);
+            var performerList
+                = await _performerSchedulingService.GetPaginatedPerformerListAsync(filter);
 
             var paginateModel = new PaginateViewModel
             {
-                ItemCount = programList.Count,
+                ItemCount = performerList.Count,
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
@@ -298,18 +545,18 @@ namespace GRA.Controllers.MissionControl
             }
 
             var systemId = GetId(ClaimType.SystemId);
-            foreach (var program in programList.Data)
+            foreach (var performer in performerList.Data)
             {
-                program.AvailableInSystem = await _performerSchedulingService
-                    .GetPerformerSystemAvailabilityAsync(program.PerformerId, systemId);
+                performer.AvailableInSystem = await _performerSchedulingService
+                    .GetPerformerSystemAvailabilityAsync(performer.Id, systemId);
+                performer.ProgramCount = await _performerSchedulingService
+                    .GetPerformerProgramCountAsync(performer.Id);
             }
 
-            var viewModel = new ProgramListViewModel
+            var viewModel = new PerformerListViewModel
             {
-                Programs = programList.Data,
-                PaginateModel = paginateModel,
-                AgeGroups = await _performerSchedulingService.GetAgeGroupsAsync(),
-                AgeGroupId = ageGroup
+                Performers = performerList.Data,
+                PaginateModel = paginateModel
             };
 
             return View(viewModel);
@@ -408,7 +655,8 @@ namespace GRA.Controllers.MissionControl
             if (viewModel.List)
             {
                 var programIndexList = await _performerSchedulingService.GetProgramIndexListAsync(
-                    ageGroupId: selectedAgeGroup?.Id, onlyApproved: true);
+                    ageGroupId: selectedAgeGroup?.Id,
+                    onlyApproved: true);
 
                 var index = programIndexList.IndexOf(id);
                 viewModel.ReturnPage = (index / ProgramsPerPage) + 1;
@@ -438,9 +686,8 @@ namespace GRA.Controllers.MissionControl
             PsProgram program;
             try
             {
-                program = await _performerSchedulingService.GetProgramByIdAsync(id,
-                    includeImages: true,
-                    onlyApproved: true);
+                program = await _performerSchedulingService
+                    .GetProgramByIdAsync(id, includeImages: true, onlyApproved: true);
             }
             catch (GraException gex)
             {
@@ -463,6 +710,164 @@ namespace GRA.Controllers.MissionControl
             }
 
             return View(viewModel);
+        }
+
+        public async Task<IActionResult> Programs(int page = 1, int? ageGroup = null)
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
+            if (schedulingStage < PsSchedulingStage.SchedulingPreview)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var filter = new PerformerSchedulingFilter(page, ProgramsPerPage)
+            {
+                AgeGroupId = ageGroup,
+                IsApproved = true
+            };
+
+            var programList
+                = await _performerSchedulingService.GetPaginatedProgramListAsync(filter);
+
+            var paginateModel = new PaginateViewModel
+            {
+                ItemCount = programList.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
+            };
+            if (paginateModel.PastMaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
+            }
+
+            var systemId = GetId(ClaimType.SystemId);
+            foreach (var program in programList.Data)
+            {
+                program.AvailableInSystem = await _performerSchedulingService
+                    .GetPerformerSystemAvailabilityAsync(program.PerformerId, systemId);
+            }
+
+            var viewModel = new ProgramListViewModel
+            {
+                Programs = programList.Data,
+                PaginateModel = paginateModel,
+                AgeGroups = await _performerSchedulingService.GetAgeGroupsAsync(),
+                AgeGroupId = ageGroup
+            };
+
+            return View(viewModel);
+        }
+
+        public async Task<IActionResult> Schedule(int id)
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
+            if (schedulingStage < PsSchedulingStage.SchedulePosted)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var branch = await _performerSchedulingService.GetNonExcludedBranch(id);
+
+            if (branch == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            branch.Selections = await _performerSchedulingService
+                .GetSelectionsByBranchIdAsync(branch.Id);
+
+            var viewModel = new ScheduleViewModel
+            {
+                Settings = settings,
+                Branch = branch
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Authorize(Policy = Policy.SchedulePerformers)]
+        public async Task<JsonResult> ScheduleProgram(PsBranchSelection branchSelection)
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
+            if (schedulingStage != PsSchedulingStage.SchedulingOpen)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Program selection is not currently open."
+                });
+            }
+
+            try
+            {
+                var addedBranchSelection = await _performerSchedulingService
+                    .AddBranchProgramSelectionAsync(branchSelection);
+
+                _logger.LogInformation("Program selection: {BranchSelectionId} added by user {UserId}",
+                    addedBranchSelection.Id,
+                    GetId(ClaimType.UserId));
+            }
+            catch (GraException gex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = gex.Message
+                });
+            }
+
+            ShowAlertSuccess("Program selection added!");
+            return Json(new
+            {
+                success = true
+            });
+        }
+
+        [HttpPost]
+        [Authorize(Policy = Policy.SchedulePerformers)]
+        public async Task<IActionResult> SelectKit(PsBranchSelection branchSelection)
+        {
+            var settings = await _performerSchedulingService.GetSettingsAsync();
+            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
+            if (schedulingStage != PsSchedulingStage.SchedulingOpen)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            PsBranchSelection addedBranchSelection = null;
+
+            try
+            {
+                addedBranchSelection = await _performerSchedulingService
+                    .AddBranchKitSelectionAsync(branchSelection);
+
+                _logger.LogInformation("Kit selection: {BranchSelectionId} added by user {UserId}",
+                    addedBranchSelection.Id,
+                    GetId(ClaimType.UserId));
+
+                ShowAlertSuccess("Kit selection added!");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger($"Unable to select kit: ", gex);
+            }
+
+            if (branchSelection?.KitId != null)
+            {
+                return RedirectToAction(nameof(Kit), new { id = branchSelection.KitId });
+            }
+            else
+            {
+                return RedirectToAction(nameof(Kits));
+            }
         }
 
         [HttpPost]
@@ -508,6 +913,19 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(Program), new { id = program.Id });
             }
 
+            PsAgeGroup ageGroup;
+
+            try
+            {
+                ageGroup = await _performerSchedulingService
+                    .GetAgeGroupByIdAsync(model.BranchSelection.AgeGroupId);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to select age group: ", gex.Message);
+                return RedirectToAction(nameof(Program), new { id = program.Id });
+            }
+
             var viewModel = new SelectProgramViewModel
             {
                 BranchSelection = model.BranchSelection,
@@ -526,420 +944,12 @@ namespace GRA.Controllers.MissionControl
                 viewModel.BranchSelection.BackToBackProgram = true;
             }
 
-            viewModel.BranchSelection.AgeGroup = await _performerSchedulingService
-                .GetAgeGroupByIdAsync(viewModel.BranchSelection.AgeGroupId);
+            viewModel.BranchSelection.AgeGroup = ageGroup;
             viewModel.BranchSelection.Branch = await _performerSchedulingService
                 .GetNonExcludedBranch(model.BranchSelection.BranchId);
             viewModel.BranchSelection.Program = program;
 
             return View(viewModel);
-        }
-
-        [HttpPost]
-        [Authorize(Policy = Policy.SchedulePerformers)]
-        public async Task<JsonResult> ScheduleProgram(PsBranchSelection branchSelection)
-        {
-            var settings = await _performerSchedulingService.GetSettingsAsync();
-            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
-            if (schedulingStage != PsSchedulingStage.SchedulingOpen)
-            {
-                return Json(new
-                {
-                    success = false,
-                    message = "Program selection is not currently open."
-                });
-            }
-
-            try
-            {
-                var addedBranchSelection = await _performerSchedulingService
-                    .AddBranchProgramSelectionAsync(branchSelection);
-
-                _logger.LogInformation("Program selection: {BranchSelectionId} added by user {UserId}",
-                    addedBranchSelection.Id,
-                    GetId(ClaimType.UserId));
-            }
-            catch (GraException gex)
-            {
-                return Json(new
-                {
-                    success = false,
-                    message = gex.Message
-                });
-            }
-
-            ShowAlertSuccess("Program selection added!");
-            return Json(new
-            {
-                success = true
-            });
-        }
-
-        [Authorize(Policy = Policy.SchedulePerformers)]
-        public async Task<JsonResult> GetProgramAvailableAgeGroups(int branchId, int programId)
-        {
-            PsProgram program;
-            try
-            {
-                program = await _performerSchedulingService.GetProgramByIdAsync(programId,
-                    includeAgeGroups: true,
-                    onlyApproved: true);
-            }
-            catch (GraException gex)
-            {
-                return Json(new
-                {
-                    success = false,
-                    message = gex.Message
-                });
-            }
-
-            var settings = await _performerSchedulingService.GetSettingsAsync();
-
-            var branchSelections = await _performerSchedulingService
-                .GetSelectionsByBranchIdAsync(branchId);
-            if (branchSelections.Count >= settings.SelectionsPerBranch)
-            {
-                return Json(new
-                {
-                    success = false,
-                    message = $"Branch has already made its {settings.SelectionsPerBranch} selections."
-                });
-            }
-
-            var availableAgeGroups = program.AgeGroups
-                .Select(_ => _.Id.ToString())
-                .Except(branchSelections.Select(_ => _.AgeGroupId.ToString()))
-                .ToList();
-            if (availableAgeGroups.Count == 0)
-            {
-                return Json(new
-                {
-                    success = false,
-                    message = "Branch already has selections for all of this programs age groups."
-                });
-            }
-
-            return Json(new
-            {
-                success = true,
-                data = availableAgeGroups
-            });
-        }
-
-#pragma warning disable MVC1004
-        // disable warning that "date" is named the same as a property on the object
-        [Authorize(Policy = Policy.SchedulePerformers)]
-        public async Task<IActionResult> GetPerformerDaySchedule(int performerId, DateTime date)
-        {
-            var performerSchedule = await _performerSchedulingService.GetPerformerDateScheduleAsync(
-                performerId, date.Date);
-
-            var branchSelections = (await _performerSchedulingService
-                .GetPerformerBranchSelectionsAsync(performerId, date)).ToList();
-
-            var viewModel = new DayScheduleViewModel
-            {
-                BranchSelections = branchSelections
-            };
-            var startTime = performerSchedule?.StartTime ?? DefaultPerformerScheduleStartTime;
-            var endTime = performerSchedule?.EndTime ?? DefaultPerformerScheduleEndTime;
-
-            var earliestSelection = branchSelections
-                .OrderBy(_ => _.ScheduleStartTime)
-                .FirstOrDefault();
-            var latestSelection = branchSelections
-                .OrderByDescending(_ => _.ScheduleStartTime)
-                .FirstOrDefault();
-
-            if (earliestSelection == null
-                || startTime.TimeOfDay < earliestSelection.ScheduleStartTime.TimeOfDay)
-            {
-                viewModel.StartTime = startTime.ToShortTimeString();
-            }
-            if (latestSelection == null
-                || endTime.TimeOfDay > latestSelection.ScheduleStartTime
-                    .AddMinutes(latestSelection.ScheduleDuration).TimeOfDay)
-            {
-                viewModel.EndTime = endTime.ToShortTimeString();
-            }
-
-            return PartialView("_DaySchedulePartial", viewModel);
-        }
-#pragma warning restore MVC1004
-
-        [Authorize(Policy = Policy.SchedulePerformers)]
-        public async Task<JsonResult> CheckProgramTimeAvailability(int programId,
-            DateTime dateTime,
-            bool backToBack)
-        {
-            try
-            {
-                var result = await _performerSchedulingService
-                    .ValidateScheduleTimeAsync(programId, dateTime, backToBack);
-
-                if (!string.IsNullOrWhiteSpace(result))
-                {
-                    return Json(new
-                    {
-                        success = true,
-                        message = result
-                    });
-                }
-            }
-            catch (GraException gex)
-            {
-                return Json(new
-                {
-                    success = false,
-                    message = gex.Message
-                });
-            }
-
-            return Json(new
-            {
-                success = true
-            });
-        }
-
-        public async Task<IActionResult> Kits(int page = 1)
-        {
-            var settings = await _performerSchedulingService.GetSettingsAsync();
-            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
-            if (schedulingStage < PsSchedulingStage.SchedulingPreview)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            var filter = new BaseFilter(page, KitsPerPage);
-
-            var kitList = await _performerSchedulingService.GetPaginatedKitListAsync(filter);
-
-            var paginateModel = new PaginateViewModel
-            {
-                ItemCount = kitList.Count,
-                CurrentPage = page,
-                ItemsPerPage = filter.Take.Value
-            };
-            if (paginateModel.PastMaxPage)
-            {
-                return RedirectToRoute(
-                    new
-                    {
-                        page = paginateModel.LastPage ?? 1
-                    });
-            }
-
-            var viewModel = new KitListViewModel
-            {
-                Kits = kitList.Data,
-                PaginateModel = paginateModel
-            };
-
-            return View(viewModel);
-        }
-
-        public async Task<IActionResult> Kit(int id)
-        {
-            var settings = await _performerSchedulingService.GetSettingsAsync();
-            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
-            if (schedulingStage < PsSchedulingStage.SchedulingPreview)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            PsKit kit;
-            try
-            {
-                kit = await _performerSchedulingService.GetKitByIdAsync(id, includeAgeGroups: true,
-                    includeImages: true);
-            }
-            catch (GraException gex)
-            {
-                ShowAlertDanger("Unable to view kit: ", gex);
-                return RedirectToAction(nameof(Kits));
-            }
-
-            var viewModel = new KitViewModel
-            {
-                Kit = kit,
-                SchedulingOpen = schedulingStage == PsSchedulingStage.SchedulingOpen,
-                CanSchedule = UserHasPermission(Permission.SchedulePerformers)
-            };
-
-            if (kit.Images.Count > 0)
-            {
-                viewModel.ImagePath = _pathResolver.ResolveContentPath(
-                    kit.Images[0].Filename);
-            }
-
-            if (!string.IsNullOrWhiteSpace(kit.Website)
-                && Uri.TryCreate(kit.Website, UriKind.Absolute, out Uri absoluteUri))
-            {
-                viewModel.Uri = absoluteUri;
-            }
-
-            if (viewModel.SchedulingOpen)
-            {
-                viewModel.AgeGroupList = new SelectList(kit.AgeGroups, "Id", "Name");
-
-                var system = await _performerSchedulingService
-                    .GetSystemWithoutExcludedBranchesAsync(GetId(ClaimType.SystemId));
-
-                var branches = new List<Branch>();
-                foreach (var branch in system.Branches)
-                {
-                    var branchSelections = await _performerSchedulingService
-                            .GetSelectionsByBranchIdAsync(branch.Id);
-
-                    if (branchSelections.Count >= settings.SelectionsPerBranch)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        var selectedAgeGroups = branchSelections.Select(_ => _.AgeGroupId);
-                        var availableAgeGroups = kit.AgeGroups
-                            .Any(_ => !selectedAgeGroups.Contains(_.Id));
-
-                        if (!availableAgeGroups)
-                        {
-                            continue;
-                        }
-                    }
-                    branches.Add(branch);
-                }
-                viewModel.BranchList = new SelectList(branches, "Id", "Name");
-            }
-
-            var kitIndexList = await _performerSchedulingService.GetKitIndexListAsync();
-            var index = kitIndexList.IndexOf(id);
-            viewModel.ReturnPage = (index / KitsPerPage) + 1;
-            if (index != 0)
-            {
-                viewModel.PrevKit = kitIndexList[index - 1];
-            }
-            if (kitIndexList.Count != index + 1)
-            {
-                viewModel.NextKit = kitIndexList[index + 1];
-            }
-
-            return View(viewModel);
-        }
-
-        public async Task<IActionResult> KitImages(int id)
-        {
-            var settings = await _performerSchedulingService.GetSettingsAsync();
-            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
-            if (schedulingStage < PsSchedulingStage.SchedulingPreview)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            PsKit kit;
-            try
-            {
-                kit = await _performerSchedulingService.GetKitByIdAsync(id, includeImages: true);
-            }
-            catch (GraException gex)
-            {
-                ShowAlertDanger("Unable to view kit images: ", gex);
-                return RedirectToAction(nameof(Kits));
-            }
-
-            kit.Images.ForEach(_ => _.Filename = _pathResolver
-               .ResolveContentPath(_.Filename));
-
-            return View(kit);
-        }
-
-        [HttpPost]
-        [Authorize(Policy = Policy.SchedulePerformers)]
-        public async Task<IActionResult> SelectKit(PsBranchSelection branchSelection)
-        {
-            var settings = await _performerSchedulingService.GetSettingsAsync();
-            var schedulingStage = _performerSchedulingService.GetSchedulingStage(settings);
-            if (schedulingStage != PsSchedulingStage.SchedulingOpen)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            PsBranchSelection addedBranchSelection = null;
-
-            try
-            {
-                addedBranchSelection = await _performerSchedulingService
-                    .AddBranchKitSelectionAsync(branchSelection);
-
-                _logger.LogInformation("Kit selection: {BranchSelectionId} added by user {UserId}",
-                    addedBranchSelection.Id,
-                    GetId(ClaimType.UserId));
-
-                ShowAlertSuccess("Kit selection added!");
-            }
-            catch (GraException gex)
-            {
-                ShowAlertDanger($"Unable to select kit: ", gex);
-            }
-
-            if (branchSelection?.KitId != null)
-            {
-                return RedirectToAction(nameof(Kit), new { id = branchSelection.KitId });
-            }
-            else
-            {
-                return RedirectToAction(nameof(Kits));
-            }
-        }
-
-        [Authorize(Policy = Policy.SchedulePerformers)]
-        public async Task<JsonResult> GetKitAvailableAgeGroups(int branchId, int kitId)
-        {
-            PsKit kit;
-            try
-            {
-                kit = await _performerSchedulingService.GetKitByIdAsync(kitId,
-                    includeAgeGroups: true);
-            }
-            catch (GraException gex)
-            {
-                return Json(new
-                {
-                    success = false,
-                    message = gex.Message
-                });
-            }
-
-            var settings = await _performerSchedulingService.GetSettingsAsync();
-
-            var branchSelections = await _performerSchedulingService
-                .GetSelectionsByBranchIdAsync(branchId);
-            if (branchSelections.Count >= settings.SelectionsPerBranch)
-            {
-                return Json(new
-                {
-                    success = false,
-                    message = $"Branch has already made its {settings.SelectionsPerBranch} selections."
-                });
-            }
-
-            var availableAgeGroups = kit.AgeGroups.Select(_ => _.Id.ToString())
-                .Except(branchSelections.Select(_ => _.AgeGroupId.ToString()))
-                .ToList();
-            if (availableAgeGroups.Count == 0)
-            {
-                return Json(new
-                {
-                    success = false,
-                    message = "Branch already has selections for all of this kits age groups."
-                });
-            }
-
-            return Json(new
-            {
-                success = true,
-                data = availableAgeGroups
-            });
         }
     }
 }
