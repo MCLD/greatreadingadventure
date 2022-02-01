@@ -13,7 +13,7 @@ namespace GRA.Domain.Report
 {
     [ReportInformation(15,
         "Vendor Code Donations Report",
-        "Vendor prizes by program filterable by system.",
+        "Vendor prize donations filterable by system.",
         "Participants")]
     public class VendorCodeDonationsReport : BaseReport
     {
@@ -44,10 +44,12 @@ namespace GRA.Domain.Report
             IProgress<JobStatus> progress = null)
         {
             #region Reporting initialization
+
             request = await StartRequestAsync(request);
 
             var criterion
-                = await _serviceFacade.ReportCriterionRepository.GetByIdAsync(request.ReportCriteriaId)
+                = await _serviceFacade.ReportCriterionRepository
+                    .GetByIdAsync(request.ReportCriteriaId)
                 ?? throw new GraException($"Report criteria {request.ReportCriteriaId} for report request id {request.Id} could not be found.");
 
             if (criterion.SiteId == null)
@@ -68,9 +70,11 @@ namespace GRA.Domain.Report
                 AsOf = _serviceFacade.DateTimeProvider.Now
             };
             var reportData = new List<object[]>();
+
             #endregion Reporting initialization
 
             #region Collect data
+
             UpdateProgress(progress, 1, "Starting report...", request.Name);
 
             // header row
@@ -165,11 +169,13 @@ namespace GRA.Domain.Report
             #endregion Collect data
 
             #region Finish up reporting
+
             if (!token.IsCancellationRequested)
             {
                 ReportSet.Reports.Add(report);
             }
             await FinishRequestAsync(request, !token.IsCancellationRequested);
+
             #endregion Finish up reporting
         }
     }
