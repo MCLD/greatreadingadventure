@@ -29,6 +29,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Household prize redemption directing to the wrong controller
 - Performer view selections button being visible for non-approved performers
 - Fix bug binding performer archiving and streaming choices
+- Hide branch selection in performer scheduling when no branches are available
 
 ### Updated
 
