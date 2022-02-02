@@ -31,7 +31,7 @@
         public const string Mail = "Mail";
         public const string Menu = "Menu";
         public const string MissionControl = "Mission Control";
-        public const string MostPopular = "Most Popular";
+        public const string MostPopular = "Most popular";
         public const string MostRecent = "Most recent";
         public const string MyProfile = "My Profile";
         public const string MyProgress = "My progress";

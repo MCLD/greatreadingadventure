@@ -1554,7 +1554,15 @@
     <comment>Help text for the dashboard's Author and Title fields.</comment>
   </data>
   <data name="Most Popular" xml:space="preserve">
-    <value></value>
+    <value>Más popular</value>
     <comment>Label for ordering challenges by highest popularity</comment>
+  </data>
+  <data name="Most recent" xml:space="preserve">
+    <value>Más reciente</value>
+    <comment>An ordering option: the most recent first</comment>
+  </data>
+  <data name="Ordering" xml:space="preserve">
+    <value>Orden</value>
+    <comment>Prompt for what order items should be placed in</comment>
   </data>
 </root>

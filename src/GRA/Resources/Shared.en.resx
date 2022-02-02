@@ -1557,4 +1557,12 @@
     <value>Most Popular</value>
     <comment>Label for ordering challenges by highest popularity</comment>
   </data>
+  <data name="Most recent" xml:space="preserve">
+    <value>Most recent</value>
+    <comment>An ordering option: the most recent first</comment>
+  </data>
+  <data name="Ordering" xml:space="preserve">
+    <value>Ordering</value>
+    <comment>Prompt for what order items should be placed in</comment>
+  </data>
 </root>
