@@ -20,7 +20,7 @@
                     @if (Model.ChallengeGroup != null)
                     {
                         @SharedLocalizer[GRA.Annotations.Title.ChallengeGroup,
-                            Model.ChallengeGroup.Name]
+                    Model.ChallengeGroup.Name]
                     }
                     else
                     {
@@ -47,8 +47,8 @@
                             </div>
                             <div class="col-xs-12 col-sm-10 gra-search-container">
                                 <input asp-for="Search"
-                                       class="form-control"
-                                       placeholder="@SharedLocalizer[GRA.Annotations.Interface.EnterChallengeSearch]" />
+                                   class="form-control"
+                                   placeholder="@SharedLocalizer[GRA.Annotations.Interface.EnterChallengeSearch]" />
                             </div>
                         </div>
 
@@ -72,20 +72,48 @@
                                 <div class="col-xs-12 col-sm-10">
                                     <noscript id="noscript">
                                         <select asp-for="Categories"
-                                                asp-items="Model.CategoryList"
-                                                class="form-control">
+                                        asp-items="Model.CategoryList"
+                                        class="form-control">
                                             <option></option>
                                         </select>
                                     </noscript>
                                     <input id="CategoryPlaceholder" class="form-control" />
                                     <select asp-for="CategoryIds"
-                                            asp-items="Model.CategoryList"
-                                            class="form-control hidden"
-                                            disabled="disabled"
-                                            multiple="multiple"></select>
+                                    asp-items="Model.CategoryList"
+                                    class="form-control hidden"
+                                    disabled="disabled"
+                                    multiple="multiple"></select>
                                 </div>
                             </div>
                         }
+                        <div id="Ordering" class="row row-spacing">
+                            <div class="col-xs-12 col-sm-2" style="margin-bottom:5px;">
+                                <span style="font-size:large;">@SharedLocalizer[GRA.Domain.Model.DisplayNames.Ordering]:</span>
+                            </div>
+                            <div class="col-xs-12 col-sm-10">
+                                <label class="radio-inline">
+                                    <input type="radio"
+                                       name="Ordering"
+                                       value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.MostPopular"
+                                       @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.MostPopular)>
+                                    @SharedLocalizer[GRA.Domain.Model.DisplayNames.MostPopular]
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio"
+                                       name="Ordering"
+                                       value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Name"
+                                       @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Name)>
+                                    @SharedLocalizer[GRA.Domain.Model.DisplayNames.Name]
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio"
+                                       name="Ordering"
+                                       value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Recent"
+                                       @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Recent)>
+                                    @SharedLocalizer[GRA.Domain.Model.DisplayNames.MostRecent]
+                                </label>
+                            </div>
+                        </div>
                         @if (Model.IsLoggedIn)
                         {
                             <div class="row row-spacing">
@@ -105,13 +133,13 @@
                             @if (Model.IsLoggedIn)
                             {
                                 <div class="col-xs-12 col-sm-4 col-md-3 row-spacing">
-                                    <a asp-action="Index" 
-                                       asp-route-Search="@Model.Search" 
-                                       asp-route-Program="@Model.Program" 
-                                       asp-route-Categories="@Model.Categories"
-                                       asp-route-Status="@Model.Status" 
-                                       asp-route-Favorites="@(Model.Favorites == true ? null : "True")" 
-                                       class="btn btn-block @(Model.Favorites == true ? "btn-success" : "btn-default")">
+                                    <a asp-action="Index"
+                               asp-route-Search="@Model.Search"
+                               asp-route-Program="@Model.Program"
+                               asp-route-Categories="@Model.Categories"
+                               asp-route-Status="@Model.Status"
+                               asp-route-Favorites="@(Model.Favorites == true ? null : "True")"
+                               class="btn btn-block @(Model.Favorites == true ? "btn-success" : "btn-default")">
                                         <span class="@(Model.Favorites == true ? "fas" : "far") fa-star"></span>
                                         @SharedLocalizer[GRA.Annotations.Interface.MyFavorites]
                                     </a>
@@ -225,9 +253,9 @@
                                                         {
                                                             <div style="text-align:center;">
                                                                 <img class="img-thumbnail badge-sm"
-                                                                     src="~/@Model.Challenges[i].BadgeFilename"
-                                                                     alt="@Model.Challenges[i].BadgeAltText"
-                                                                     asp-append-version="true" />
+                                                         src="~/@Model.Challenges[i].BadgeFilename"
+                                                         alt="@Model.Challenges[i].BadgeAltText"
+                                                         asp-append-version="true" />
                                                             </div>
                                                         }
                                                         else
@@ -260,67 +288,67 @@
 </div>
 
 @section scripts {
-    <script>
-        var favoriteUrl = "@(Url.Action("UpdateSingleFavorite"))";
-        var showFavorites = "@Model.Favorites" == "True";
+<script>
+    var favoriteUrl = "@(Url.Action("UpdateSingleFavorite"))";
+    var showFavorites = "@Model.Favorites" == "True";
 
-        $("#CategoryIds").removeAttr("disabled");
-        $("#CategoryPlaceholder").remove();
-        $("#CategoryIds").multiselect({
-            nonSelectedText: "",
-            buttonClass: "form-control",
-            buttonWidth: "100%",
-            disableIfEmpty: true
-        });
+    $("#CategoryIds").removeAttr("disabled");
+    $("#CategoryPlaceholder").remove();
+    $("#CategoryIds").multiselect({
+        nonSelectedText: "",
+        buttonClass: "form-control",
+        buttonWidth: "100%",
+        disableIfEmpty: true
+    });
 
-        $("#searchForm").on("submit", function () {
-            var categoryIds = $("#CategoryIds option:selected")
-                .map(function (a, item) { return item.value; })
-                .get();
+    $("#searchForm").on("submit", function () {
+        var categoryIds = $("#CategoryIds option:selected")
+            .map(function (a, item) { return item.value; })
+            .get();
 
-            if (categoryIds.length > 0) {
-                $("#CategoryIds").attr("disabled", "disabled");
-                $("<input />")
-                    .attr("type", "hidden")
-                    .attr("name", "Categories")
-                    .attr("value", categoryIds.join(","))
-                    .appendTo($(this));
-            }
-        });
+        if (categoryIds.length > 0) {
+            $("#CategoryIds").attr("disabled", "disabled");
+            $("<input />")
+                .attr("type", "hidden")
+                .attr("name", "Categories")
+                .attr("value", categoryIds.join(","))
+                .appendTo($(this));
+        }
+    });
 
-        $(".favorite-button").on("click", function () {
-            var button = $(this);
-            if (button.hasClass("fa-spinner") == false) {
-                button.removeClass("far fa-star").addClass("fas fa-spinner fa-pulse");
-                var favorite = button.data("favorite") == "False";
+    $(".favorite-button").on("click", function () {
+        var button = $(this);
+        if (button.hasClass("fa-spinner") == false) {
+            button.removeClass("far fa-star").addClass("fas fa-spinner fa-pulse");
+            var favorite = button.data("favorite") == "False";
 
-                $.post(favoriteUrl, { challengeId: button.data("challengeid"), favorite: favorite }, function (response) {
-                    setTimeout(function() {
-                        if (response.success) {
-                            if (response.favorite) {
-                                button.addClass("fa-star");
-                                button.data("favorite", "True");
+            $.post(favoriteUrl, { challengeId: button.data("challengeid"), favorite: favorite }, function (response) {
+                setTimeout(function() {
+                    if (response.success) {
+                        if (response.favorite) {
+                            button.addClass("fa-star");
+                            button.data("favorite", "True");
+                        }
+                        else {
+                            if (showFavorites) {
+                                button.parent().parent().remove();
                             }
                             else {
-                                if (showFavorites) {
-                                    button.parent().parent().remove();
-                                }
-                                else {
-                                    button.removeClass("fas");
-                                    button.addClass("far fa-star");
-                                    button.data("favorite", "False");
-                                }
+                                button.removeClass("fas");
+                                button.addClass("far fa-star");
+                                button.data("favorite", "False");
                             }
-                            button.removeClass("fa-spinner fa-pulse").css("transform", "none");
-                            }
-                        else {
-                            button.addClass("fa-exclamation-triangle").removeClass("fa-spinner fa-pulse").css("transform", "none");
-                            alert(response.message);
                         }
-                    }, 500);
-                });
-            }
+                        button.removeClass("fa-spinner fa-pulse").css("transform", "none");
+                        }
+                    else {
+                        button.addClass("fa-exclamation-triangle").removeClass("fa-spinner fa-pulse").css("transform", "none");
+                        alert(response.message);
+                    }
+                }, 500);
+            });
+        }
 
-        });
-    </script>
+    });
+</script>
 }

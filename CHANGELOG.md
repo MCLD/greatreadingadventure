@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Performer program setup supplemental text
 - Remaining vendor prize report
 - Vendor code by program report
+- Challenge sorting options (most recent, most popular)
 
 ### Changed
 

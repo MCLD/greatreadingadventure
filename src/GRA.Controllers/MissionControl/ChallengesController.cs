@@ -20,15 +20,15 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.ViewAllChallenges)]
     public class ChallengesController : Base.MCController
     {
-        private const string NewTask = "NewTask";
         private const string EditTask = "EditTask";
+        private const string NewTask = "NewTask";
         private const string TempEditChallenge = "TempEditChallenge";
 
-        private readonly ILogger<ChallengesController> _logger;
         private readonly BadgeService _badgeService;
         private readonly CategoryService _categoryService;
         private readonly ChallengeService _challengeService;
         private readonly EventService _eventService;
+        private readonly ILogger<ChallengesController> _logger;
         private readonly SiteService _siteService;
         private readonly UserService _userService;
 
@@ -52,216 +52,6 @@ namespace GRA.Controllers.MissionControl
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             PageTitle = "Challenges";
-        }
-
-        public async Task<IActionResult> Index(string Search, string Categories, int? Program, int? System, int? Branch,
-            bool? Mine, int page = 1)
-        {
-            try
-            {
-                var viewModel = await GetChallengeList(Search, Categories, Program, System, Branch, Mine, page);
-                viewModel.ShowSystem = true;
-
-                if (viewModel.PaginateModel.MaxPage > 0
-                    && viewModel.PaginateModel.CurrentPage > viewModel.PaginateModel.MaxPage)
-                {
-                    return RedirectToRoute(
-                        new
-                        {
-                            page = viewModel.PaginateModel.LastPage ?? 1
-                        });
-                }
-                return View("Index", viewModel);
-            }
-            catch (GraException ex)
-            {
-                _logger.LogError($"Invalid challenge filter by User {GetId(ClaimType.UserId)}: {ex}");
-                ShowAlertDanger("Invalid filter parameters.");
-                return RedirectToAction("Index");
-            }
-        }
-
-        [Authorize(Policy = Policy.ActivateChallenges)]
-        public async Task<IActionResult> Pending(string Search, string Categories, int? System, int? Branch,
-            int? Program, bool? Mine, int page = 1)
-        {
-            try
-            {
-                PageTitle = "Pending Challenges";
-
-                if (!UserHasPermission(Permission.ActivateAllChallenges))
-                {
-                    System = GetId(ClaimType.SystemId);
-                    if (Branch.HasValue && !(await _siteService.ValidateBranch(
-                        Branch.Value, System.Value)))
-                    {
-                        Branch = GetId(ClaimType.BranchId);
-                    }
-                }
-                var viewModel = await GetChallengeList(Search, Categories, Program, System, Branch, Mine, page, true);
-
-                viewModel.ShowSystem = UserHasPermission(Permission.ActivateAllChallenges);
-                if (viewModel.PaginateModel.MaxPage > 0
-                    && viewModel.PaginateModel.CurrentPage > viewModel.PaginateModel.MaxPage)
-                {
-                    return RedirectToRoute(
-                        new
-                        {
-                            page = viewModel.PaginateModel.LastPage ?? 1
-                        });
-                }
-
-                return View("Index", viewModel);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Invalid challenge filter by User {GetId(ClaimType.UserId)}: {ex}");
-                ShowAlertDanger("Invalid filter parameters.");
-                return RedirectToAction("Pending");
-            }
-        }
-
-        private async Task<ChallengesListViewModel> GetChallengeList(string Search, string Categories, int? Program,
-            int? System, int? Branch, bool? Mine, int page = 1, bool pending = false)
-        {
-            var filter = new ChallengeFilter(page);
-            if (!string.IsNullOrWhiteSpace(Search))
-            {
-                filter.Search = Search;
-            }
-            if (!string.IsNullOrWhiteSpace(Categories))
-            {
-                var categoryIds = new List<int>();
-                foreach (var category in Categories.Split(','))
-                {
-                    if (int.TryParse(category, out int result))
-                    {
-                        categoryIds.Add(result);
-                    }
-                }
-                filter.CategoryIds = categoryIds;
-            }
-            if (System.HasValue)
-            {
-                filter.SystemIds = new List<int>() { System.Value };
-            }
-            if (Branch.HasValue)
-            {
-                filter.BranchIds = new List<int>() { Branch.Value };
-            }
-            if (Program.HasValue)
-            {
-                if (Program.Value == 0)
-                {
-                    filter.ProgramIds = new List<int?>() { null };
-                }
-                else
-                {
-                    filter.ProgramIds = new List<int?>() { Program.Value };
-                }
-            }
-            if (Mine == true)
-            {
-                filter.UserIds = new List<int>() { GetId(ClaimType.UserId) };
-            }
-            if (pending)
-            {
-                filter.IsActive = false;
-            }
-            var challengeList = await _challengeService
-                .MCGetPaginatedChallengeListAsync(filter);
-
-            foreach (var challenge in challengeList.Data)
-            {
-                if (!string.IsNullOrEmpty(challenge.BadgeFilename))
-                {
-                    challenge.BadgeFilename = _pathResolver.ResolveContentPath(challenge.BadgeFilename);
-                }
-            }
-
-            var paginateModel = new PaginateViewModel
-            {
-                ItemCount = challengeList.Count,
-                CurrentPage = (filter.Skip.Value / filter.Take.Value) + 1,
-                ItemsPerPage = filter.Take.Value
-            };
-
-            var systemList = (await _siteService.GetSystemList())
-                .OrderByDescending(_ => _.Id == GetId(ClaimType.SystemId)).ThenBy(_ => _.Name);
-
-            var categoryList = await _categoryService.GetListAsync();
-            var viewModel = new ChallengesListViewModel
-            {
-                Challenges = challengeList.Data,
-                PaginateModel = paginateModel,
-                Search = filter.Search,
-                Categories = Categories,
-                System = System,
-                Branch = Branch,
-                Program = Program,
-                Mine = Mine,
-                CanAddChallenges = UserHasPermission(Permission.AddChallenges),
-                CanDeleteChallenges = UserHasPermission(Permission.RemoveChallenges),
-                CanEditChallenges = UserHasPermission(Permission.EditChallenges),
-                SystemList = systemList,
-                ProgramList = await _siteService.GetProgramList(),
-                CategoryIds = filter.CategoryIds,
-                CategoryList = new SelectList(categoryList, "Id", "Name")
-            };
-            if (Mine == true)
-            {
-                viewModel.BranchList = (await _siteService.GetBranches(GetId(ClaimType.SystemId)))
-                        .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
-                        .ThenBy(_ => _.Name);
-                viewModel.ActiveNav = "Mine";
-                if (pending && !UserHasPermission(Permission.ActivateAllChallenges))
-                {
-                    viewModel.SystemName = systemList
-                    .SingleOrDefault(_ => _.Id == GetId(ClaimType.SystemId))?.Name;
-                }
-            }
-            else if (Branch.HasValue)
-            {
-                var branch = await _siteService.GetBranchByIdAsync(viewModel.Branch.Value);
-                viewModel.BranchName = branch.Name;
-                viewModel.SystemName = systemList
-                    .SingleOrDefault(_ => _.Id == branch.SystemId)?.Name;
-                viewModel.BranchList = (await _siteService.GetBranches(branch.SystemId))
-                    .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
-                    .ThenBy(_ => _.Name);
-                viewModel.ActiveNav = "Branch";
-            }
-            else if (System.HasValue)
-            {
-                viewModel.SystemName = systemList
-                    .SingleOrDefault(_ => _.Id == viewModel.System.Value)?.Name;
-                viewModel.BranchList = (await _siteService.GetBranches(viewModel.System.Value))
-                    .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
-                    .ThenBy(_ => _.Name);
-                viewModel.ActiveNav = "System";
-            }
-            else
-            {
-                viewModel.BranchList = (await _siteService.GetBranches(GetId(ClaimType.SystemId)))
-                        .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
-                        .ThenBy(_ => _.Name);
-                viewModel.ActiveNav = "All";
-            }
-
-            if (Program.HasValue)
-            {
-                if (Program.Value > 0)
-                {
-                    viewModel.ProgramName =
-                        (await _siteService.GetProgramByIdAsync(Program.Value)).Name;
-                }
-                else
-                {
-                    viewModel.ProgramName = "Not Limited";
-                }
-            }
-
-            return viewModel;
         }
 
         [Authorize(Policy = Policy.AddChallenges)]
@@ -332,7 +122,8 @@ namespace GRA.Controllers.MissionControl
                         ModelState.AddModelError("BadgeUploadImage", $"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
                     }
                 }
-                if (model.BadgeUploadImage != null) {
+                if (model.BadgeUploadImage != null)
+                {
                     try
                     {
                         using (var ms = new MemoryStream())
@@ -408,6 +199,22 @@ namespace GRA.Controllers.MissionControl
             }
 
             return View(model);
+        }
+
+        [Authorize(Policy = Policy.RemoveChallenges)]
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                await _challengeService.RemoveChallengeAsync(id);
+                ShowAlertSuccess("Challenge deleted.");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning("Unable to delete challenge: ", gex.Message);
+            }
+            return RedirectToAction("Index");
         }
 
         [Authorize(Policy = Policy.EditChallenges)]
@@ -724,6 +531,263 @@ namespace GRA.Controllers.MissionControl
             }
         }
 
+        public async Task<IActionResult> Index(string Search,
+            string Categories,
+            int? Program,
+            int? System,
+            int? Branch,
+            bool? Mine,
+            string Ordering,
+            int page = 1)
+        {
+            try
+            {
+                var viewModel = await GetChallengeList(Search,
+                    Categories,
+                    Program,
+                    System,
+                    Branch,
+                    Mine,
+                    Ordering,
+                    page);
+                viewModel.ShowSystem = true;
+
+                if (viewModel.PaginateModel.MaxPage > 0
+                    && viewModel.PaginateModel.CurrentPage > viewModel.PaginateModel.MaxPage)
+                {
+                    return RedirectToRoute(
+                        new
+                        {
+                            page = viewModel.PaginateModel.LastPage ?? 1
+                        });
+                }
+                return View("Index", viewModel);
+            }
+            catch (GraException ex)
+            {
+                _logger.LogError($"Invalid challenge filter by User {GetId(ClaimType.UserId)}: {ex}");
+                ShowAlertDanger("Invalid filter parameters.");
+                return RedirectToAction("Index");
+            }
+        }
+
+        [Authorize(Policy = Policy.ActivateChallenges)]
+        public async Task<IActionResult> Pending(string Search,
+            string Categories,
+            int? System,
+            int? Branch,
+            int? Program,
+            bool? Mine,
+            ChallengeFilter.OrderingOption Ordering = ChallengeFilter.OrderingOption.Name,
+            int page = 1)
+        {
+            try
+            {
+                PageTitle = "Pending Challenges";
+
+                if (!UserHasPermission(Permission.ActivateAllChallenges))
+                {
+                    System = GetId(ClaimType.SystemId);
+                    if (Branch.HasValue && !(await _siteService.ValidateBranch(
+                        Branch.Value, System.Value)))
+                    {
+                        Branch = GetId(ClaimType.BranchId);
+                    }
+                }
+                var viewModel = await GetChallengeList(Search,
+                    Categories,
+                    Program,
+                    System,
+                    Branch,
+                    Mine,
+                    Ordering.ToString(),
+                    page,
+                    true);
+
+                viewModel.ShowSystem = UserHasPermission(Permission.ActivateAllChallenges);
+                if (viewModel.PaginateModel.MaxPage > 0
+                    && viewModel.PaginateModel.CurrentPage > viewModel.PaginateModel.MaxPage)
+                {
+                    return RedirectToRoute(
+                        new
+                        {
+                            page = viewModel.PaginateModel.LastPage ?? 1
+                        });
+                }
+
+                return View("Index", viewModel);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Invalid challenge filter by User {GetId(ClaimType.UserId)}: {ex}");
+                ShowAlertDanger("Invalid filter parameters.");
+                return RedirectToAction("Pending");
+            }
+        }
+
+        private async Task<ChallengesListViewModel> GetChallengeList(string Search,
+            string Categories,
+            int? Program,
+            int? System,
+            int? Branch,
+            bool? Mine,
+            string Ordering,
+            int page = 1,
+            bool pending = false)
+        {
+            var filter = new ChallengeFilter(page);
+
+            if (!string.IsNullOrEmpty(Ordering) && Enum.TryParse(typeof(ChallengeFilter.OrderingOption),
+                    Ordering,
+                    out var typedOrdering))
+            {
+                filter.Ordering = (ChallengeFilter.OrderingOption)typedOrdering;
+            }
+            else
+            {
+                filter.Ordering = ChallengeFilter.OrderingOption.Name;
+            }
+
+            if (!string.IsNullOrWhiteSpace(Search))
+            {
+                filter.Search = Search;
+            }
+            if (!string.IsNullOrWhiteSpace(Categories))
+            {
+                var categoryIds = new List<int>();
+                foreach (var category in Categories.Split(','))
+                {
+                    if (int.TryParse(category, out int result))
+                    {
+                        categoryIds.Add(result);
+                    }
+                }
+                filter.CategoryIds = categoryIds;
+            }
+            if (System.HasValue)
+            {
+                filter.SystemIds = new List<int>() { System.Value };
+            }
+            if (Branch.HasValue)
+            {
+                filter.BranchIds = new List<int>() { Branch.Value };
+            }
+            if (Program.HasValue)
+            {
+                if (Program.Value == 0)
+                {
+                    filter.ProgramIds = new List<int?>() { null };
+                }
+                else
+                {
+                    filter.ProgramIds = new List<int?>() { Program.Value };
+                }
+            }
+            if (Mine == true)
+            {
+                filter.UserIds = new List<int>() { GetId(ClaimType.UserId) };
+            }
+            if (pending)
+            {
+                filter.IsActive = false;
+            }
+            var challengeList = await _challengeService
+                .MCGetPaginatedChallengeListAsync(filter);
+
+            foreach (var challenge in challengeList.Data)
+            {
+                if (!string.IsNullOrEmpty(challenge.BadgeFilename))
+                {
+                    challenge.BadgeFilename = _pathResolver.ResolveContentPath(challenge.BadgeFilename);
+                }
+            }
+
+            var paginateModel = new PaginateViewModel
+            {
+                ItemCount = challengeList.Count,
+                CurrentPage = (filter.Skip.Value / filter.Take.Value) + 1,
+                ItemsPerPage = filter.Take.Value
+            };
+
+            var systemList = (await _siteService.GetSystemList())
+                .OrderByDescending(_ => _.Id == GetId(ClaimType.SystemId)).ThenBy(_ => _.Name);
+
+            var categoryList = await _categoryService.GetListAsync();
+            var viewModel = new ChallengesListViewModel
+            {
+                Branch = Branch,
+                CanAddChallenges = UserHasPermission(Permission.AddChallenges),
+                CanDeleteChallenges = UserHasPermission(Permission.RemoveChallenges),
+                CanEditChallenges = UserHasPermission(Permission.EditChallenges),
+                Categories = Categories,
+                CategoryIds = filter.CategoryIds,
+                CategoryList = new SelectList(categoryList, "Id", "Name"),
+                Challenges = challengeList.Data,
+                Mine = Mine,
+                Ordering = filter.Ordering,
+                PaginateModel = paginateModel,
+                Program = Program,
+                ProgramList = await _siteService.GetProgramList(),
+                Search = filter.Search,
+                System = System,
+                SystemList = systemList
+            };
+            if (Mine == true)
+            {
+                viewModel.BranchList = (await _siteService.GetBranches(GetId(ClaimType.SystemId)))
+                        .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
+                        .ThenBy(_ => _.Name);
+                viewModel.ActiveNav = "Mine";
+                if (pending && !UserHasPermission(Permission.ActivateAllChallenges))
+                {
+                    viewModel.SystemName = systemList
+                    .SingleOrDefault(_ => _.Id == GetId(ClaimType.SystemId))?.Name;
+                }
+            }
+            else if (Branch.HasValue)
+            {
+                var branch = await _siteService.GetBranchByIdAsync(viewModel.Branch.Value);
+                viewModel.BranchName = branch.Name;
+                viewModel.SystemName = systemList
+                    .SingleOrDefault(_ => _.Id == branch.SystemId)?.Name;
+                viewModel.BranchList = (await _siteService.GetBranches(branch.SystemId))
+                    .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
+                    .ThenBy(_ => _.Name);
+                viewModel.ActiveNav = "Branch";
+            }
+            else if (System.HasValue)
+            {
+                viewModel.SystemName = systemList
+                    .SingleOrDefault(_ => _.Id == viewModel.System.Value)?.Name;
+                viewModel.BranchList = (await _siteService.GetBranches(viewModel.System.Value))
+                    .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
+                    .ThenBy(_ => _.Name);
+                viewModel.ActiveNav = "System";
+            }
+            else
+            {
+                viewModel.BranchList = (await _siteService.GetBranches(GetId(ClaimType.SystemId)))
+                        .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
+                        .ThenBy(_ => _.Name);
+                viewModel.ActiveNav = "All";
+            }
+
+            if (Program.HasValue)
+            {
+                if (Program.Value > 0)
+                {
+                    viewModel.ProgramName =
+                        (await _siteService.GetProgramByIdAsync(Program.Value)).Name;
+                }
+                else
+                {
+                    viewModel.ProgramName = "Not Limited";
+                }
+            }
+
+            return viewModel;
+        }
+
         private async Task<ChallengesDetailViewModel> GetDetailLists(ChallengesDetailViewModel model)
         {
             var systemList = (await _siteService.GetSystemList())
@@ -756,41 +820,7 @@ namespace GRA.Controllers.MissionControl
             return model;
         }
 
-        [Authorize(Policy = Policy.RemoveChallenges)]
-        [HttpPost]
-        public async Task<IActionResult> Delete(int id)
-        {
-            try
-            {
-                await _challengeService.RemoveChallengeAsync(id);
-                ShowAlertSuccess("Challenge deleted.");
-            }
-            catch (GraException gex)
-            {
-                ShowAlertWarning("Unable to delete challenge: ", gex.Message);
-            }
-            return RedirectToAction("Index");
-        }
-
         #region Task methods
-        [Authorize(Policy = Policy.EditChallenges)]
-        [HttpPost]
-        public IActionResult CloseTask(ChallengesDetailViewModel viewModel)
-        {
-            TempData[TempEditChallenge] = Newtonsoft.Json.JsonConvert
-                .SerializeObject(viewModel.Challenge);
-            return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
-        }
-
-        [Authorize(Policy = Policy.EditChallenges)]
-        [HttpPost]
-        public IActionResult OpenAddTask(ChallengesDetailViewModel viewModel)
-        {
-            TempData[NewTask] = true;
-            TempData[TempEditChallenge] = Newtonsoft.Json.JsonConvert
-                .SerializeObject(viewModel.Challenge);
-            return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
-        }
 
         [Authorize(Policy = Policy.EditChallenges)]
         [HttpPost]
@@ -861,12 +891,62 @@ namespace GRA.Controllers.MissionControl
 
         [Authorize(Policy = Policy.EditChallenges)]
         [HttpPost]
-        public IActionResult OpenModifyTask(ChallengesDetailViewModel viewModel, int taskId)
+        public IActionResult CloseTask(ChallengesDetailViewModel viewModel)
         {
-            TempData[EditTask] = taskId;
             TempData[TempEditChallenge] = Newtonsoft.Json.JsonConvert
                 .SerializeObject(viewModel.Challenge);
             return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
+        }
+
+        [Authorize(Policy = Policy.EditChallenges)]
+        [HttpPost]
+        public async Task<IActionResult> DecreaseTaskSort(int id)
+        {
+            try
+            {
+                await _challengeService.DecreaseTaskPositionAsync(id);
+                return Json(true);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error decreasing task sort for task {id} : {ex}", ex);
+                return Json(false);
+            }
+        }
+
+        [Authorize(Policy = Policy.EditChallenges)]
+        [HttpPost]
+        public async Task<IActionResult> DeleteTask(ChallengesDetailViewModel viewModel, int id)
+        {
+            try
+            {
+                await _challengeService.RemoveTaskAsync(id);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to delete task: ", gex);
+            }
+
+            TempData[TempEditChallenge] = Newtonsoft.Json.JsonConvert
+                .SerializeObject(viewModel.Challenge);
+
+            return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
+        }
+
+        [Authorize(Policy = Policy.EditChallenges)]
+        [HttpPost]
+        public async Task<IActionResult> IncreaseTaskSort(int id)
+        {
+            try
+            {
+                await _challengeService.IncreaseTaskPositionAsync(id);
+                return Json(true);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error increasing task sort for task {id} : {ex}", ex);
+                return Json(false);
+            }
         }
 
         [Authorize(Policy = Policy.EditChallenges)]
@@ -937,93 +1017,27 @@ namespace GRA.Controllers.MissionControl
 
         [Authorize(Policy = Policy.EditChallenges)]
         [HttpPost]
-        public async Task<IActionResult> DeleteTask(ChallengesDetailViewModel viewModel, int id)
+        public IActionResult OpenAddTask(ChallengesDetailViewModel viewModel)
         {
-            try
-            {
-                await _challengeService.RemoveTaskAsync(id);
-            }
-            catch (GraException gex)
-            {
-                ShowAlertDanger("Unable to delete task: ", gex);
-            }
-
+            TempData[NewTask] = true;
             TempData[TempEditChallenge] = Newtonsoft.Json.JsonConvert
                 .SerializeObject(viewModel.Challenge);
-
             return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
         }
 
         [Authorize(Policy = Policy.EditChallenges)]
         [HttpPost]
-        public async Task<IActionResult> DecreaseTaskSort(int id)
+        public IActionResult OpenModifyTask(ChallengesDetailViewModel viewModel, int taskId)
         {
-            try
-            {
-                await _challengeService.DecreaseTaskPositionAsync(id);
-                return Json(true);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error decreasing task sort for task {id} : {ex}", ex);
-                return Json(false);
-            }
+            TempData[EditTask] = taskId;
+            TempData[TempEditChallenge] = Newtonsoft.Json.JsonConvert
+                .SerializeObject(viewModel.Challenge);
+            return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
         }
 
-        [Authorize(Policy = Policy.EditChallenges)]
-        [HttpPost]
-        public async Task<IActionResult> IncreaseTaskSort(int id)
-        {
-            try
-            {
-                await _challengeService.IncreaseTaskPositionAsync(id);
-                return Json(true);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error increasing task sort for task {id} : {ex}", ex);
-                return Json(false);
-            }
-        }
-        #endregion
+        #endregion Task methods
 
         #region Challenge Group methods
-        public async Task<IActionResult> Groups(string search, int page = 1)
-        {
-            PageTitle = "Challenge Groups";
-            var filter = new ChallengeGroupFilter(page)
-            {
-                Search = search
-            };
-
-            var groupList = await _challengeService.GetPaginatedGroupListAsync(filter);
-
-            var paginateModel = new PaginateViewModel
-            {
-                ItemCount = groupList.Count,
-                CurrentPage = page,
-                ItemsPerPage = filter.Take.Value
-            };
-            if (paginateModel.PastMaxPage)
-            {
-                return RedirectToRoute(
-                    new
-                    {
-                        page = paginateModel.LastPage ?? 1
-                    });
-            }
-
-            var viewModel = new ChallengeGroupListViewModel()
-            {
-                ChallengeGroups = groupList.Data,
-                PaginateModel = paginateModel,
-                Search = search,
-                CanAddGroups = UserHasPermission(Permission.AddChallengeGroups),
-                CanEditGroups = UserHasPermission(Permission.EditChallengeGroups)
-            };
-
-            return View(viewModel);
-        }
 
         [Authorize(Policy = Policy.AddChallengeGroups)]
         public IActionResult CreateGroup()
@@ -1083,6 +1097,26 @@ namespace GRA.Controllers.MissionControl
 
             PageTitle = "Create Challenge Group";
             return View("GroupDetail", model);
+        }
+
+        [Authorize(Policy = Policy.EditChallengeGroups)]
+        public async Task<IActionResult> DeleteGroup(ChallengeGroupListViewModel model)
+        {
+            try
+            {
+                await _challengeService.RemoveGroupAsync(model.ChallengeGroup.Id);
+                ShowAlertSuccess($"Category \"{model.ChallengeGroup.Name}\" removed!");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to remove Challenge Group: ", gex);
+            }
+
+            return RedirectToAction("Groups", new
+            {
+                search = model.Search,
+                page = model.PaginateModel.CurrentPage
+            });
         }
 
         [Authorize(Policy = Policy.EditChallengeGroups)]
@@ -1165,24 +1199,41 @@ namespace GRA.Controllers.MissionControl
             return View("GroupDetail", model);
         }
 
-        [Authorize(Policy = Policy.EditChallengeGroups)]
-        public async Task<IActionResult> DeleteGroup(ChallengeGroupListViewModel model)
+        public async Task<IActionResult> Groups(string search, int page = 1)
         {
-            try
+            PageTitle = "Challenge Groups";
+            var filter = new ChallengeGroupFilter(page)
             {
-                await _challengeService.RemoveGroupAsync(model.ChallengeGroup.Id);
-                ShowAlertSuccess($"Category \"{model.ChallengeGroup.Name}\" removed!");
-            }
-            catch (GraException gex)
+                Search = search
+            };
+
+            var groupList = await _challengeService.GetPaginatedGroupListAsync(filter);
+
+            var paginateModel = new PaginateViewModel
             {
-                ShowAlertDanger("Unable to remove Challenge Group: ", gex);
+                ItemCount = groupList.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
+            };
+            if (paginateModel.PastMaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
             }
 
-            return RedirectToAction("Groups", new
+            var viewModel = new ChallengeGroupListViewModel()
             {
-                search = model.Search,
-                page = model.PaginateModel.CurrentPage
-            });
+                ChallengeGroups = groupList.Data,
+                PaginateModel = paginateModel,
+                Search = search,
+                CanAddGroups = UserHasPermission(Permission.AddChallengeGroups),
+                CanEditGroups = UserHasPermission(Permission.EditChallengeGroups)
+            };
+
+            return View(viewModel);
         }
 
         [HttpPost]
@@ -1190,6 +1241,7 @@ namespace GRA.Controllers.MissionControl
         {
             return Json(await _challengeService.StubInUseAsync(stub));
         }
-        #endregion
+
+        #endregion Challenge Group methods
     }
 }

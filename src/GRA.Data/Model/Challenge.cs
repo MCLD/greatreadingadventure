@@ -38,5 +38,6 @@ namespace GRA.Data.Model
         public virtual ICollection<ChallengeTask> Tasks { get; set; }
         public virtual ICollection<ChallengeGroupChallenge> ChallengeGroupChallenges { get; set; }
         public int? BadgeId { get; set; }
+        public int EstimatedPopularity { get; set; }
     }
 }
