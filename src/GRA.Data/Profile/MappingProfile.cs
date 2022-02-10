@@ -43,10 +43,15 @@ namespace GRA.Data.Profile
             CreateMap<Model.DailyLiteracyTip, Domain.Model.DailyLiteracyTip>();
             CreateMap<Model.DailyLiteracyTipImage, Domain.Model.DailyLiteracyTipImage>();
             CreateMap<Model.DashboardContent, Domain.Model.DashboardContent>();
+            CreateMap<Model.DirectEmailHistory, Domain.Model.DirectEmailHistory>();
+            CreateMap<Model.DirectEmailTemplate, Domain.Model.DirectEmailTemplate>();
+            CreateMap<Model.DirectEmailTemplateText, Domain.Model.DirectEmailTemplateText>();
             CreateMap<Model.Drawing, Domain.Model.Drawing>();
             CreateMap<Model.DrawingCriterion, Domain.Model.DrawingCriterion>()
                 .ForMember(dest => dest.ProgramIds, opt => opt.MapFrom(src
                 => src.CriterionPrograms.Select(_ => _.ProgramId).ToList()));
+            CreateMap<Model.EmailBase, Domain.Model.EmailBase>();
+            CreateMap<Model.EmailBaseText, Domain.Model.EmailBaseText>();
             CreateMap<Model.EmailReminder, Domain.Model.EmailReminder>();
             CreateMap<Model.EmailSubscriptionAuditLog, Domain.Model.EmailSubscriptionAuditLog>()
                 .ForMember(dest => dest.CreatedByName, opt => opt
@@ -148,8 +153,13 @@ namespace GRA.Data.Profile
             CreateMap<Domain.Model.DailyLiteracyTip, Model.DailyLiteracyTip>();
             CreateMap<Domain.Model.DailyLiteracyTipImage, Model.DailyLiteracyTipImage>();
             CreateMap<Domain.Model.DashboardContent, Model.DashboardContent>();
+            CreateMap<Domain.Model.DirectEmailHistory, Model.DirectEmailHistory>();
+            CreateMap<Domain.Model.DirectEmailTemplate, Model.DirectEmailTemplate>();
+            CreateMap<Domain.Model.DirectEmailTemplateText, Model.DirectEmailTemplateText>();
             CreateMap<Domain.Model.Drawing, Model.Drawing>();
             CreateMap<Domain.Model.DrawingCriterion, Model.DrawingCriterion>();
+            CreateMap<Domain.Model.EmailBase, Model.EmailBase>();
+            CreateMap<Domain.Model.EmailBaseText, Model.EmailBaseText>();
             CreateMap<Domain.Model.EmailReminder, Model.EmailReminder>();
             CreateMap<Domain.Model.EmailSubscriptionAuditLog, Model.EmailSubscriptionAuditLog>();
             CreateMap<Domain.Model.EmailTemplate, Model.EmailTemplate>();
@@ -163,15 +173,14 @@ namespace GRA.Data.Profile
             CreateMap<Domain.Model.NewsCategory, Model.NewsCategory>();
             CreateMap<Domain.Model.NewsPost, Model.NewsPost>();
             CreateMap<Domain.Model.Notification, Model.Notification>();
-            CreateMap<Domain.Model.PageHeader, Model.PageHeader>();
             CreateMap<Domain.Model.Page, Model.Page>();
+            CreateMap<Domain.Model.PageHeader, Model.PageHeader>();
             CreateMap<Domain.Model.PointTranslation, Model.PointTranslation>();
             CreateMap<Domain.Model.PrizeWinner, Model.PrizeWinner>();
             CreateMap<Domain.Model.Program, Model.Program>();
             CreateMap<Domain.Model.PsAgeGroup, Model.PsAgeGroup>();
             CreateMap<Domain.Model.PsBlackoutDate, Model.PsBlackoutDate>();
             CreateMap<Domain.Model.PsBranchSelection, Model.PsBranchSelection>();
-            CreateMap<Domain.Model.PsSettings, Model.PsSettings>();
             CreateMap<Domain.Model.PsKit, Model.PsKit>();
             CreateMap<Domain.Model.PsKitImage, Model.PsKitImage>();
             CreateMap<Domain.Model.PsPerformer, Model.PsPerformer>();
@@ -179,6 +188,7 @@ namespace GRA.Data.Profile
             CreateMap<Domain.Model.PsPerformerSchedule, Model.PsPerformerSchedule>();
             CreateMap<Domain.Model.PsProgram, Model.PsProgram>();
             CreateMap<Domain.Model.PsProgramImage, Model.PsProgramImage>();
+            CreateMap<Domain.Model.PsSettings, Model.PsSettings>();
             CreateMap<Domain.Model.Question, Model.Question>();
             CreateMap<Domain.Model.Questionnaire, Model.Questionnaire>();
             CreateMap<Domain.Model.RecoveryToken, Model.RecoveryToken>();
