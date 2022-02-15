@@ -8,11 +8,14 @@ namespace GRA.Domain.Model
         [MaxLength(255)]
         public string Description { get; set; }
 
+        public DirectEmailTemplateText DirectEmailTemplateText { get; set; }
+
         public EmailBase EmailBase { get; set; }
 
         [Required]
         public int EmailBaseId { get; set; }
 
-        public int? SystemEmail { get; set; }
+        [MaxLength(25)]
+        public string SystemEmailId { get; set; }
     }
 }

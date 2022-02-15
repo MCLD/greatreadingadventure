@@ -18,6 +18,9 @@ namespace GRA.Data.Model
         [MaxLength(255)]
         public string FromName { get; set; }
 
+        [Required]
+        public int LanguageId { get; set; }
+
         [MaxLength(255)]
         public string OverrideToEmailAddress { get; set; }
 
@@ -27,6 +30,8 @@ namespace GRA.Data.Model
         [Required]
         [MaxLength(255)]
         public string Subject { get; set; }
+
+        public bool Successful { get; set; }
 
         [Required]
         [MaxLength(255)]

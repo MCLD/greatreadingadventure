@@ -10,6 +10,8 @@ namespace GRA.Domain.Model
         [Required]
         public string BodyText { get; set; }
 
+        public int EmailBaseId { get; set; }
+
         [Required]
         [MaxLength(255)]
         public string FromEmailAddress { get; set; }
@@ -17,6 +19,9 @@ namespace GRA.Domain.Model
         [Required]
         [MaxLength(255)]
         public string FromName { get; set; }
+
+        [Required]
+        public int LanguageId { get; set; }
 
         [MaxLength(255)]
         public string OverrideToEmailAddress { get; set; }
@@ -27,6 +32,8 @@ namespace GRA.Domain.Model
         [Required]
         [MaxLength(255)]
         public string Subject { get; set; }
+
+        public bool Successful { get; set; }
 
         [Required]
         [MaxLength(255)]

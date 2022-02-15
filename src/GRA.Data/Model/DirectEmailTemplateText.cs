@@ -19,6 +19,9 @@ namespace GRA.Data.Model
         [Key]
         public int DirectEmailTemplateId { get; set; }
 
+        [Required]
+        public string Footer { get; set; }
+
         public Language Language { get; set; }
 
         [Key]
@@ -31,5 +34,9 @@ namespace GRA.Data.Model
         [Required]
         [MaxLength(255)]
         public string Subject { get; set; }
+
+        [Required]
+        [MaxLength(255)]
+        public string Title { get; set; }
     }
 }

@@ -7,7 +7,7 @@ namespace GRA.Data.Repository
         : AuditingRepository<Model.DirectEmailHistory, Domain.Model.DirectEmailHistory>,
         IDirectEmailHistoryRepository
     {
-        internal DirectEmailHistoryRepository(ServiceFacade.Repository repositoryFacade,
+        public DirectEmailHistoryRepository(ServiceFacade.Repository repositoryFacade,
             ILogger<IDirectEmailHistoryRepository> logger)
             : base(repositoryFacade, logger)
         {

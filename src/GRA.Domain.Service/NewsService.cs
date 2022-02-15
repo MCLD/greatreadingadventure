@@ -374,7 +374,7 @@ namespace GRA.Domain.Service
                     };
                 }
 
-                var sent = await _emailService.Send(userId,
+                var sent = await _emailService.SendMissionControlNews(userId,
                     "[{{SiteName}}] {{PostTitle}}",
                     EmailTemplateText,
                     EmailTemplateHtml,

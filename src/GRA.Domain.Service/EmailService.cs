@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Utility;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MimeKit;
+using Serilog.Context;
 using Stubble.Core.Builders;
 
 namespace GRA.Domain.Service
@@ -15,97 +18,49 @@ namespace GRA.Domain.Service
     public class EmailService : BaseService<EmailService>
     {
         private readonly IConfiguration _config;
+        private readonly IDirectEmailHistoryRepository _directEmailHistoryRepository;
+        private readonly IDirectEmailTemplateRepository _directEmailTemplateRepository;
+        private readonly IEmailBaseRepository _emailBaseRepository;
         private readonly IEmailTemplateRepository _emailTemplateRepository;
+        private readonly LanguageService _languageService;
         private readonly ISiteRepository _siteRepository;
+        private readonly ISiteSettingRepository _siteSettingRepository;
         private readonly IUserRepository _userRepository;
 
         public EmailService(ILogger<EmailService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IConfiguration config,
+            IDirectEmailHistoryRepository directEmailHistoryRepository,
+            IDirectEmailTemplateRepository directEmailTemplateRepository,
+            IEmailBaseRepository emailBaseRepository,
             IEmailTemplateRepository emailTemplateRepository,
             ISiteRepository siteRepository,
-            IUserRepository userRepository) : base(logger, dateTimeProvider)
+            ISiteSettingRepository siteSettingRepository,
+            IUserRepository userRepository,
+            LanguageService languageService) : base(logger, dateTimeProvider)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
+            _directEmailHistoryRepository = directEmailHistoryRepository
+                ?? throw new ArgumentNullException(nameof(directEmailHistoryRepository));
+            _directEmailTemplateRepository = directEmailTemplateRepository
+                ?? throw new ArgumentNullException(nameof(directEmailTemplateRepository));
+            _emailBaseRepository = emailBaseRepository
+                ?? throw new ArgumentNullException(nameof(emailBaseRepository));
             _emailTemplateRepository = emailTemplateRepository
                 ?? throw new ArgumentNullException(nameof(emailTemplateRepository));
             _siteRepository = siteRepository
                 ?? throw new ArgumentNullException(nameof(siteRepository));
+            _siteSettingRepository = siteSettingRepository
+                ?? throw new ArgumentNullException(nameof(siteSettingRepository));
             _userRepository = userRepository
                 ?? throw new ArgumentNullException(nameof(userRepository));
-        }
-
-        private static bool SiteCanSendMail(Site site)
-        {
-            return !string.IsNullOrEmpty(site.FromEmailAddress)
-                && !string.IsNullOrEmpty(site.FromEmailName)
-                && !string.IsNullOrEmpty(site.OutgoingMailHost);
-        }
-
-        public Task<bool> Send(int userId,
-            string subject,
-            string body,
-            string htmlBody)
-        {
-            return Send(userId, subject, body, htmlBody, null);
-        }
-
-        public async Task<bool> Send(int userId,
-            string subject,
-            string body,
-            string htmlBody,
-            IDictionary<string, string> tags)
-        {
-            var user = await _userRepository.GetByIdAsync(userId);
-            var site = await _siteRepository.GetByIdAsync(user.SiteId);
-
-            if (!string.IsNullOrEmpty(user.Email))
-            {
-                string processedSubject;
-                string processedBody;
-                string processedHtml;
-
-                if (tags?.Count > 0)
-                {
-                    var stubble = new StubbleBuilder().Build();
-                    processedSubject = await stubble.RenderAsync(subject, tags);
-                    processedBody = await stubble.RenderAsync(body, tags);
-                    processedHtml = await stubble.RenderAsync(htmlBody, tags);
-                }
-                else
-                {
-                    processedSubject = subject;
-                    processedBody = body;
-                    processedHtml = htmlBody;
-                }
-
-                await SendEmailAsync(site,
-                    user.Email,
-                    processedSubject,
-                    processedBody,
-                    processedHtml,
-                    user.FullName);
-                return true;
-            }
-            else
-            {
-                _logger.LogError("Unable to send email to user {UserId} with subject {Subject}: no email address configured.",
-                    userId,
-                    subject);
-                return false;
-            }
+            _languageService = languageService
+                ?? throw new ArgumentNullException(nameof(languageService));
         }
 
         public async Task<EmailTemplate> GetEmailTemplate(int emailTemplateId)
         {
             return await _emailTemplateRepository.GetByIdAsync(emailTemplateId);
-        }
-
-        public async Task UpdateSentCount(int emailTemplateId, int additionalMailsSent)
-        {
-            var template = await _emailTemplateRepository.GetByIdAsync(emailTemplateId);
-            template.EmailsSent += additionalMailsSent;
-            await _emailTemplateRepository.UpdateSaveNoAuditAsync(template);
         }
 
         public async Task SendBulkAsync(User user, int emailTemplateId)
@@ -208,6 +163,155 @@ namespace GRA.Domain.Service
             return SendBulkTestInternalAsync(emailTo, emailTemplateId);
         }
 
+        public async Task<DirectEmailHistory> SendDirectAsync(int userId,
+            DirectEmailDetails directEmailDetails)
+        {
+            if (directEmailDetails == null)
+            {
+                throw new ArgumentNullException(nameof(directEmailDetails));
+            }
+
+            var user = await _userRepository.GetByIdAsync(userId);
+            var site = await _siteRepository.GetByIdAsync(user.SiteId);
+
+            var history = new DirectEmailHistory
+            {
+                CreatedBy = userId,
+                FromEmailAddress = site.FromEmailAddress,
+                FromName = site.FromEmailName,
+                LanguageId = string.IsNullOrEmpty(user.Culture)
+                    ? await _languageService.GetDefaultLanguageIdAsync()
+                    : await _languageService.GetLanguageIdAsync(user.Culture),
+                OverrideToEmailAddress = string
+                    .IsNullOrWhiteSpace(_config[ConfigurationKey.EmailOverride])
+                    ? null
+                    : _config[ConfigurationKey.EmailOverride],
+                ToEmailAddress = user.Email,
+                ToName = user.FullName,
+                UserId = userId
+            };
+
+            var directEmailTemplate = !string.IsNullOrEmpty(directEmailDetails.DirectEmailSystemId)
+                ? await _directEmailTemplateRepository
+                    .GetWithTextBySystemId(directEmailDetails.DirectEmailSystemId,
+                        history.LanguageId)
+                : await _directEmailTemplateRepository
+                    .GetWithTextByIdAsync(directEmailDetails.DirectEmailTemplateId,
+                    history.LanguageId);
+
+            history.EmailBaseId = directEmailTemplate.EmailBaseId;
+
+            var stubble = new StubbleBuilder().Build();
+
+            history.Subject = await stubble
+                .RenderAsync(directEmailTemplate.DirectEmailTemplateText.Subject,
+                    directEmailDetails.Tags);
+            history.BodyText = await stubble
+                .RenderAsync(directEmailTemplate.DirectEmailTemplateText.BodyCommonMark,
+                    directEmailDetails.Tags);
+            history.BodyHtml = CommonMark.CommonMarkConverter.Convert(history.BodyText);
+
+            string preview = await stubble
+                .RenderAsync(directEmailTemplate.DirectEmailTemplateText.Preview,
+                    directEmailDetails.Tags);
+            string title = await stubble
+                .RenderAsync(directEmailTemplate.DirectEmailTemplateText.Title,
+                    directEmailDetails.Tags);
+            string footer = await stubble
+                .RenderAsync(directEmailTemplate.DirectEmailTemplateText.Footer,
+                    directEmailDetails.Tags);
+
+            history = await SendDirectAsync(site,
+                history,
+                new Dictionary<string, string>
+            {
+                { "Footer", footer },
+                { "Preview", preview },
+                { "Title", title },
+                { "BodyHtml", history.BodyHtml },
+                { "BodyText", history.BodyText }
+            });
+
+            await _directEmailHistoryRepository.AddSaveAsync(history.CreatedBy, history);
+
+            return history;
+        }
+
+        public async Task SendEmailToAddressAsync(int siteId,
+        string emailAddress,
+        string subject,
+        string body,
+        string htmlBody = null)
+        {
+            var site = await _siteRepository.GetByIdAsync(siteId);
+
+            await SendEmailAsync(site,
+                emailAddress,
+                subject,
+                body,
+                htmlBody);
+        }
+
+        public async Task<bool> SendMissionControlNews(int userId,
+                                                    string subject,
+            string body,
+            string htmlBody,
+            IDictionary<string, string> tags)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            var site = await _siteRepository.GetByIdAsync(user.SiteId);
+
+            if (!string.IsNullOrEmpty(user.Email))
+            {
+                string processedSubject;
+                string processedBody;
+                string processedHtml;
+
+                if (tags?.Count > 0)
+                {
+                    var stubble = new StubbleBuilder().Build();
+                    processedSubject = await stubble.RenderAsync(subject, tags);
+                    processedBody = await stubble.RenderAsync(body, tags);
+                    processedHtml = await stubble.RenderAsync(htmlBody, tags);
+                }
+                else
+                {
+                    processedSubject = subject;
+                    processedBody = body;
+                    processedHtml = htmlBody;
+                }
+
+                await SendEmailAsync(site,
+                    user.Email,
+                    processedSubject,
+                    processedBody,
+                    processedHtml,
+                    user.FullName);
+                return true;
+            }
+            else
+            {
+                _logger.LogError("Unable to send email to user {UserId} with subject {Subject}: no email address configured.",
+                    userId,
+                    subject);
+                return false;
+            }
+        }
+
+        public async Task UpdateSentCount(int emailTemplateId, int additionalMailsSent)
+        {
+            var template = await _emailTemplateRepository.GetByIdAsync(emailTemplateId);
+            template.EmailsSent += additionalMailsSent;
+            await _emailTemplateRepository.UpdateSaveNoAuditAsync(template);
+        }
+
+        private static bool SiteCanSendMail(Site site)
+        {
+            return !string.IsNullOrEmpty(site.FromEmailAddress)
+                && !string.IsNullOrEmpty(site.FromEmailName)
+                && !string.IsNullOrEmpty(site.OutgoingMailHost);
+        }
+
         private async Task SendBulkTestInternalAsync(string emailTo, int emailTemplateId)
         {
             var template = await _emailTemplateRepository.GetByIdAsync(emailTemplateId);
@@ -230,19 +334,126 @@ namespace GRA.Domain.Service
                 providedFromEmail: template.FromAddress);
         }
 
-        public async Task SendEmailToAddressAsync(int siteId,
-            string emailAddress,
-            string subject,
-            string body,
-            string htmlBody = null)
+        private async Task<DirectEmailHistory> SendDirectAsync(Site site,
+            DirectEmailHistory history,
+            IDictionary<string, string> tags)
         {
-            var site = await _siteRepository.GetByIdAsync(siteId);
+            if (history == null)
+            {
+                throw new ArgumentNullException(nameof(history));
+            }
 
-            await SendEmailAsync(site,
-                emailAddress,
-                subject,
-                body,
-                htmlBody);
+            var emailBase = await _emailBaseRepository.GetWithTextByIdAsync(history.EmailBaseId,
+                history.LanguageId);
+
+            var stubble = new StubbleBuilder().Build();
+
+            using var message = new MimeMessage
+            {
+                Subject = history.Subject,
+                Body = new BodyBuilder
+                {
+                    TextBody = await stubble
+                        .RenderAsync(emailBase.EmailBaseText.TemplateText, tags),
+                    HtmlBody = await stubble
+                        .RenderAsync(emailBase.EmailBaseText.TemplateHtml,
+                            tags,
+                            new Stubble.Core.Settings.RenderSettings { SkipHtmlEncoding = true })
+                }.ToMessageBody()
+            };
+
+            message.From.Add(new MailboxAddress(history.FromName, history.FromEmailAddress));
+
+            if (string.IsNullOrEmpty(history.OverrideToEmailAddress))
+            {
+                message.To.Add(MailboxAddress.Parse(history.OverrideToEmailAddress));
+            }
+            else
+            {
+                message.To.Add(new MailboxAddress(history.ToName, history.ToEmailAddress));
+            }
+
+            using var client = new SmtpClient
+            {
+                // accept any STARTTLS certificate
+                ServerCertificateValidationCallback = (_, __, ___, ____) => true
+            };
+
+            client.MessageSent += (sender, e) =>
+            {
+                history.SentResponse = e.Response;
+                history.CreatedAt = _dateTimeProvider.Now;
+            };
+
+            client.Timeout = 30 * 1000;  // 30 seconds
+
+            var sendTimer = Stopwatch.StartNew();
+
+            await client.ConnectAsync(site.OutgoingMailHost,
+                site.OutgoingMailPort ?? 25,
+                false);
+
+            client.AuthenticationMechanisms.Remove("XOAUTH2");
+
+            if (!string.IsNullOrEmpty(site.OutgoingMailLogin)
+                && !string.IsNullOrEmpty(site.OutgoingMailPassword))
+            {
+                client.Authenticate(site.OutgoingMailLogin, site.OutgoingMailPassword);
+            }
+
+            using (LogContext.PushProperty("EmailFromAddress", history.FromEmailAddress))
+            using (LogContext.PushProperty("EmailFromName", history.FromName))
+            using (LogContext.PushProperty("EmailLanguageId", history.LanguageId))
+            using (LogContext.PushProperty("EmailSentAt", history.CreatedAt))
+            using (LogContext.PushProperty("EmailServer", site.OutgoingMailHost))
+            using (LogContext.PushProperty("EmailServerPort", site.OutgoingMailPort))
+            using (LogContext.PushProperty("EmailSubject", history.Subject))
+            using (LogContext.PushProperty("EmailToAddress", history.ToEmailAddress))
+            using (LogContext.PushProperty("EmailToAddressOverride",
+                history.OverrideToEmailAddress))
+            using (LogContext.PushProperty("EmailToName", history.ToName))
+            using (LogContext.PushProperty("EmailToUserId", history.UserId))
+            using (LogContext.PushProperty("EmailTriggeredById", history.CreatedBy))
+            {
+                try
+                {
+                    await client.SendAsync(message);
+                    using (LogContext.PushProperty("EmailServerResponse", history.SentResponse))
+                    {
+                        _logger.LogInformation("Email sent to {EmailToAddress} with subject {EmailSubject} in {Elapsed} ms",
+                        history.OverrideToEmailAddress ?? history.ToEmailAddress,
+                        history.Subject,
+                        sendTimer.ElapsedMilliseconds);
+                    }
+                    history.Successful = true;
+                }
+                catch (MailKit.CommandException ex)
+                {
+                    using (LogContext.PushProperty("EmailServerResponse", history.SentResponse))
+                    {
+                        _logger.LogError(ex,
+                        "Error sending email to {EmailToAddress} with subject {EmailSubject}: {ErrorMessage} in {Elapsed} ms",
+                        history.OverrideToEmailAddress ?? history.ToEmailAddress,
+                        history.Subject,
+                        sendTimer.ElapsedMilliseconds,
+                        ex.Message);
+                    }
+                }
+                finally
+                {
+                    if (client.IsConnected)
+                    {
+                        await client.DisconnectAsync(true);
+                    }
+                }
+            }
+
+            if (string.IsNullOrEmpty(history.SentResponse))
+            {
+                history.SentResponse = "Server provided no response.";
+            }
+
+            return history;
         }
 
         private async Task SendEmailAsync(Site site,
@@ -259,7 +470,7 @@ namespace GRA.Domain.Service
                 throw new GraException("Sending email is not configured.");
             }
 
-            var message = new MimeMessage();
+            using var message = new MimeMessage();
 
             string fromName = providedFromName ?? site.FromEmailName;
             string fromEmail = providedFromEmail ?? site.FromEmailAddress;
@@ -298,9 +509,14 @@ namespace GRA.Domain.Service
             using var client = new SmtpClient
             {
                 // accept any STARTTLS certificate
-#pragma warning disable S4830 // Server certificates should be verified during SSL/TLS connections
                 ServerCertificateValidationCallback = (_, __, ___, ____) => true
-#pragma warning restore S4830 // Server certificates should be verified during SSL/TLS connections
+            };
+
+            string response = null;
+
+            client.MessageSent += (sender, e) =>
+            {
+                response = e.Response;
             };
 
             await client.ConnectAsync(site.OutgoingMailHost,
@@ -308,6 +524,7 @@ namespace GRA.Domain.Service
                 false);
 
             client.AuthenticationMechanisms.Remove("XOAUTH2");
+
             if (!string.IsNullOrEmpty(site.OutgoingMailLogin)
                 && !string.IsNullOrEmpty(site.OutgoingMailPassword))
             {
@@ -318,16 +535,34 @@ namespace GRA.Domain.Service
             {
                 await client.SendAsync(message);
             }
-            catch (Exception ex)
+            catch (MailKit.CommandException ex)
             {
-                _logger.LogError(ex,
+                using (LogContext.PushProperty("EmailFromAddress", fromEmail))
+                using (LogContext.PushProperty("EmailFromName", fromName))
+                using (LogContext.PushProperty("EmailServer", site.OutgoingMailHost))
+                using (LogContext.PushProperty("EmailServerPort", site.OutgoingMailPort))
+                using (LogContext.PushProperty("EmailSubject", subject))
+                using (LogContext.PushProperty("EmailToAddress", emailAddress))
+                using (LogContext.PushProperty("EmailToAddressOverride",
+                    _config[ConfigurationKey.EmailOverride]))
+                using (LogContext.PushProperty("EmailToName", emailName))
+                using (LogContext.PushProperty("EmailServerResponse", response))
+                {
+                    _logger.LogError(ex,
                     "Unable to send email to {EmailAddress} with subject {Subject}: {ErrorMessage}",
                     emailAddress,
                     subject,
                     ex.Message);
+                }
                 throw new GraException("Unable to send email.", ex);
             }
-            await client.DisconnectAsync(true);
+            finally
+            {
+                if (client.IsConnected)
+                {
+                    await client.DisconnectAsync(true);
+                }
+            }
         }
     }
 }

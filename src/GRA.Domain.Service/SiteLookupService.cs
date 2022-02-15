@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -14,12 +15,13 @@ namespace GRA.Domain.Service
 {
     public class SiteLookupService : BaseService<SiteLookupService>
     {
-        private readonly IConfiguration _config;
         private readonly IDistributedCache _cache;
+        private readonly IConfiguration _config;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IInitialSetupService _initialSetupService;
         private readonly ISiteRepository _siteRepository;
         private readonly ISiteSettingRepository _siteSettingRepository;
         private readonly IUserRepository _userRepository;
-        private readonly IInitialSetupService _initialSetupService;
 
         public SiteLookupService(ILogger<SiteLookupService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
@@ -28,6 +30,7 @@ namespace GRA.Domain.Service
             ISiteRepository siteRepository,
             ISiteSettingRepository siteSettingRepository,
             IUserRepository userRepository,
+            IHttpContextAccessor httpContextAccessor,
             IInitialSetupService initialSetupService) : base(logger, dateTimeProvider)
         {
             _cache = cache ?? throw new ArgumentNullException(nameof(cache));
@@ -38,55 +41,16 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(siteSettingRepository));
             _userRepository = userRepository
                 ?? throw new ArgumentNullException(nameof(userRepository));
+            _httpContextAccessor = httpContextAccessor
+                ?? throw new ArgumentNullException(nameof(httpContextAccessor));
             _initialSetupService = initialSetupService
                 ?? throw new ArgumentNullException(nameof(initialSetupService));
         }
 
-        public async Task<int> GetSystemUserId()
+        public async Task<Site> GetByIdAsync(int siteId)
         {
-            return await _userRepository.GetSystemUserId();
-        }
-
-        private async Task<IEnumerable<Site>> GetSitesFromCacheAsync()
-        {
-            IEnumerable<Site> sites;
-            var cachedSites = _cache.GetString(CacheKey.Sites);
-            if (cachedSites == null)
-            {
-                sites = await _siteRepository.GetAllAsync();
-                if (!sites.Any())
-                {
-                    _logger.LogInformation("No sites in database, inserting initial site");
-                    sites = await InsertInitialSiteAsync();
-                }
-                _cache.SetString(CacheKey.Sites, JsonConvert.SerializeObject(sites));
-                _logger.LogTrace("Cache miss on sites: {Count} loaded", sites.Count());
-            }
-            else
-            {
-                sites = JsonConvert.DeserializeObject<IEnumerable<Site>>(cachedSites);
-            }
-
-            foreach (var site in sites)
-            {
-                string key = $"s{site.Id}.{CacheKey.SiteSettings}";
-                var cachedSiteSettings = _cache.GetString(key);
-
-                if (cachedSiteSettings == null)
-                {
-                    site.Settings = await _siteSettingRepository.GetBySiteIdAsync(site.Id);
-                    _cache.SetString(key, JsonConvert.SerializeObject(site.Settings));
-                    _logger.LogTrace("Cache miss on site settings for site id {Id}, {Count} loaded",
-                        site.Id,
-                        site.Settings.Count);
-                }
-                else
-                {
-                    site.Settings = JsonConvert.DeserializeObject<ICollection<SiteSetting>>(cachedSiteSettings);
-                }
-            }
-
-            return sites;
+            var sites = await GetSitesFromCacheAsync();
+            return sites.FirstOrDefault(_ => _.Id == siteId);
         }
 
         public async Task<int> GetDefaultSiteIdAsync()
@@ -99,47 +63,6 @@ namespace GRA.Domain.Service
         {
             var sites = await GetSitesFromCacheAsync();
             return sites.SingleOrDefault(_ => _.Path == sitePath);
-        }
-
-        public async Task<Site> GetByIdAsync(int siteId)
-        {
-            var sites = await GetSitesFromCacheAsync();
-            return sites.FirstOrDefault(_ => _.Id == siteId);
-        }
-
-        public async Task<IEnumerable<string>> GetSitePathsAsync()
-        {
-            var sites = await GetSitesFromCacheAsync();
-            return sites.Select(_ => _.Path);
-        }
-
-        public SiteStage GetSiteStage(Site site)
-        {
-            if (site.AccessClosed == null
-                && site.ProgramEnds == null
-                && site.ProgramStarts == null
-                && site.RegistrationOpens == null)
-            {
-                return SiteStage.ProgramOpen;
-            }
-
-            if (site.AccessClosed != null && _dateTimeProvider.Now >= site.AccessClosed)
-            {
-                return SiteStage.AccessClosed;
-            }
-            if (site.ProgramEnds != null && _dateTimeProvider.Now >= site.ProgramEnds)
-            {
-                return SiteStage.ProgramEnded;
-            }
-            if (site.ProgramStarts != null && _dateTimeProvider.Now >= site.ProgramStarts)
-            {
-                return SiteStage.ProgramOpen;
-            }
-            if (site.RegistrationOpens != null && _dateTimeProvider.Now >= site.RegistrationOpens)
-            {
-                return SiteStage.RegistrationOpen;
-            }
-            return SiteStage.BeforeRegistration;
         }
 
         public int? GetSiteDay(Site site)
@@ -155,77 +78,30 @@ namespace GRA.Domain.Service
             }
         }
 
-        private async Task<IEnumerable<Site>> InsertInitialSiteAsync()
+        public async Task<Uri> GetSiteLinkAsync(int siteId)
         {
-            int? outgoingMailPort = null;
-            if (!string.IsNullOrEmpty(_config[ConfigurationKey.DefaultOutgoingMailPort]))
+            var site = await GetByIdAsync(siteId);
+            var builder = new UriBuilder
             {
-                outgoingMailPort = int.Parse(_config[ConfigurationKey.DefaultOutgoingMailPort]);
+                Scheme = site.IsHttpsForced
+                    ? "https"
+                    : _httpContextAccessor.HttpContext.Request.Scheme,
+                Host = _httpContextAccessor.HttpContext.Request.Host.Host,
+                Path = site.IsDefault ? null : site.Path
+            };
+            var port = _httpContextAccessor.HttpContext.Request.Host.Port;
+            if (port.HasValue && (port != 80 && port != 443))
+            {
+                builder.Port = port.Value;
             }
 
-            var site = new Site
-            {
-                IsDefault = true,
-                Name = _config[ConfigurationKey.DefaultSiteName],
-                PageTitle = _config[ConfigurationKey.DefaultPageTitle],
-                Path = _config[ConfigurationKey.DefaultSitePath],
-                Footer = _config[ConfigurationKey.DefaultFooter],
-                OutgoingMailHost = _config[ConfigurationKey.DefaultOutgoingMailHost],
-                OutgoingMailLogin = _config[ConfigurationKey.DefaultOutgoingMailLogin],
-                OutgoingMailPassword = _config[ConfigurationKey.DefaultOutgoingMailPassword],
-                OutgoingMailPort = outgoingMailPort,
-                RegistrationOpens = _dateTimeProvider.Now,
-                ProgramStarts = _dateTimeProvider.Now,
-                ProgramEnds = _dateTimeProvider.Now.AddDays(60),
-                AccessClosed = _dateTimeProvider.Now.AddDays(90)
-            };
-            site = await _siteRepository.AddSaveAsync(-1, site);
-            _cache.Remove(CacheKey.Sites);
-            _logger.LogInformation("Inserted initial site named: {SiteName}", site.Name);
-
-            await _initialSetupService.InsertAsync(site.Id,
-                _config[ConfigurationKey.InitialAuthorizationCode]);
-            _logger.LogInformation("Inserted initial authorization code");
-
-            return new List<Site>
-            {
-                site
-            };
+            return builder.Uri;
         }
 
-        public async Task<IEnumerable<Site>> ReloadSiteCacheAsync()
+        public async Task<IEnumerable<string>> GetSitePathsAsync()
         {
-            var sites = await _siteRepository.GetAllAsync();
-            foreach (var site in sites)
-            {
-                _cache.Remove($"s{site.Id}.{CacheKey.SiteSettings}");
-                _cache.Remove($"s{site.Id}.{CacheKey.SiteCss}");
-            }
-            _cache.Remove(CacheKey.Sites);
-            return await GetSitesFromCacheAsync();
-        }
-
-        /// <summary>
-        /// Look up if a site setting is set by site id and key.
-        /// </summary>
-        /// <param name="siteId">Site id that the setting is associated with</param>
-        /// <param name="key">The site setting key value (a string, up to 255 characters)</param>
-        /// <returns>True if the value is set in the database, false if the key is not present or
-        /// set to NULL.</returns>
-        public async Task<bool> IsSiteSettingSetAsync(int siteId, string key)
-        {
-            var settingDefinition = SiteSettingDefinitions.DefinitionDictionary[key];
-
-            if (settingDefinition == null)
-            {
-                throw new GraException($"Invalid key: {key}");
-            }
-
-            var site = (await GetSitesFromCacheAsync())
-                .SingleOrDefault(_ => _.Id == siteId);
-            return site.Settings
-                .FirstOrDefault(_ => _.Key == key)?
-                .Value != null;
+            var sites = await GetSitesFromCacheAsync();
+            return sites.Select(_ => _.Path);
         }
 
         /// <summary>
@@ -325,6 +201,155 @@ namespace GRA.Domain.Service
                 return (IsSet: true, SetValue: settingValueString);
             }
             return (IsSet: false, SetValue: string.Empty);
+        }
+
+        public SiteStage GetSiteStage(Site site)
+        {
+            if (site.AccessClosed == null
+                && site.ProgramEnds == null
+                && site.ProgramStarts == null
+                && site.RegistrationOpens == null)
+            {
+                return SiteStage.ProgramOpen;
+            }
+
+            if (site.AccessClosed != null && _dateTimeProvider.Now >= site.AccessClosed)
+            {
+                return SiteStage.AccessClosed;
+            }
+            if (site.ProgramEnds != null && _dateTimeProvider.Now >= site.ProgramEnds)
+            {
+                return SiteStage.ProgramEnded;
+            }
+            if (site.ProgramStarts != null && _dateTimeProvider.Now >= site.ProgramStarts)
+            {
+                return SiteStage.ProgramOpen;
+            }
+            if (site.RegistrationOpens != null && _dateTimeProvider.Now >= site.RegistrationOpens)
+            {
+                return SiteStage.RegistrationOpen;
+            }
+            return SiteStage.BeforeRegistration;
+        }
+
+        public async Task<int> GetSystemUserId()
+        {
+            return await _userRepository.GetSystemUserId();
+        }
+
+        /// <summary>
+        /// Look up if a site setting is set by site id and key.
+        /// </summary>
+        /// <param name="siteId">Site id that the setting is associated with</param>
+        /// <param name="key">The site setting key value (a string, up to 255 characters)</param>
+        /// <returns>True if the value is set in the database, false if the key is not present or
+        /// set to NULL.</returns>
+        public async Task<bool> IsSiteSettingSetAsync(int siteId, string key)
+        {
+            var settingDefinition = SiteSettingDefinitions.DefinitionDictionary[key];
+
+            if (settingDefinition == null)
+            {
+                throw new GraException($"Invalid key: {key}");
+            }
+
+            var site = (await GetSitesFromCacheAsync())
+                .SingleOrDefault(_ => _.Id == siteId);
+            return site.Settings
+                .FirstOrDefault(_ => _.Key == key)?
+                .Value != null;
+        }
+
+        public async Task<IEnumerable<Site>> ReloadSiteCacheAsync()
+        {
+            var sites = await _siteRepository.GetAllAsync();
+            foreach (var site in sites)
+            {
+                _cache.Remove($"s{site.Id}.{CacheKey.SiteSettings}");
+                _cache.Remove($"s{site.Id}.{CacheKey.SiteCss}");
+            }
+            _cache.Remove(CacheKey.Sites);
+            return await GetSitesFromCacheAsync();
+        }
+
+        private async Task<IEnumerable<Site>> GetSitesFromCacheAsync()
+        {
+            IEnumerable<Site> sites;
+            var cachedSites = _cache.GetString(CacheKey.Sites);
+            if (cachedSites == null)
+            {
+                sites = await _siteRepository.GetAllAsync();
+                if (!sites.Any())
+                {
+                    _logger.LogInformation("No sites in database, inserting initial site");
+                    sites = await InsertInitialSiteAsync();
+                }
+                _cache.SetString(CacheKey.Sites, JsonConvert.SerializeObject(sites));
+                _logger.LogTrace("Cache miss on sites: {Count} loaded", sites.Count());
+            }
+            else
+            {
+                sites = JsonConvert.DeserializeObject<IEnumerable<Site>>(cachedSites);
+            }
+
+            foreach (var site in sites)
+            {
+                string key = $"s{site.Id}.{CacheKey.SiteSettings}";
+                var cachedSiteSettings = _cache.GetString(key);
+
+                if (cachedSiteSettings == null)
+                {
+                    site.Settings = await _siteSettingRepository.GetBySiteIdAsync(site.Id);
+                    _cache.SetString(key, JsonConvert.SerializeObject(site.Settings));
+                    _logger.LogTrace("Cache miss on site settings for site id {Id}, {Count} loaded",
+                        site.Id,
+                        site.Settings.Count);
+                }
+                else
+                {
+                    site.Settings = JsonConvert.DeserializeObject<ICollection<SiteSetting>>(cachedSiteSettings);
+                }
+            }
+
+            return sites;
+        }
+
+        private async Task<IEnumerable<Site>> InsertInitialSiteAsync()
+        {
+            int? outgoingMailPort = null;
+            if (!string.IsNullOrEmpty(_config[ConfigurationKey.DefaultOutgoingMailPort]))
+            {
+                outgoingMailPort = int.Parse(_config[ConfigurationKey.DefaultOutgoingMailPort]);
+            }
+
+            var site = new Site
+            {
+                IsDefault = true,
+                Name = _config[ConfigurationKey.DefaultSiteName],
+                PageTitle = _config[ConfigurationKey.DefaultPageTitle],
+                Path = _config[ConfigurationKey.DefaultSitePath],
+                Footer = _config[ConfigurationKey.DefaultFooter],
+                OutgoingMailHost = _config[ConfigurationKey.DefaultOutgoingMailHost],
+                OutgoingMailLogin = _config[ConfigurationKey.DefaultOutgoingMailLogin],
+                OutgoingMailPassword = _config[ConfigurationKey.DefaultOutgoingMailPassword],
+                OutgoingMailPort = outgoingMailPort,
+                RegistrationOpens = _dateTimeProvider.Now,
+                ProgramStarts = _dateTimeProvider.Now,
+                ProgramEnds = _dateTimeProvider.Now.AddDays(60),
+                AccessClosed = _dateTimeProvider.Now.AddDays(90)
+            };
+            site = await _siteRepository.AddSaveAsync(-1, site);
+            _cache.Remove(CacheKey.Sites);
+            _logger.LogInformation("Inserted initial site named: {SiteName}", site.Name);
+
+            await _initialSetupService.InsertAsync(site.Id,
+                _config[ConfigurationKey.InitialAuthorizationCode]);
+            _logger.LogInformation("Inserted initial authorization code");
+
+            return new List<Site>
+            {
+                site
+            };
         }
     }
 }
