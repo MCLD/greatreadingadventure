@@ -19,21 +19,21 @@ namespace GRA.Domain.Service
         private readonly IBookRepository _bookRepository;
         private readonly IChallengeRepository _challengeRepository;
         private readonly IChallengeTaskRepository _challengeTaskRepository;
+        private readonly ICodeSanitizer _codeSanitizer;
         private readonly IEventRepository _eventRepository;
+        private readonly MailService _mailService;
         private readonly INotificationRepository _notificationRepository;
         private readonly IPointTranslationRepository _pointTranslationRepository;
+        private readonly PrizeWinnerService _prizeWinnerService;
         private readonly IProgramRepository _programRepository;
         private readonly IRequiredQuestionnaireRepository _requiredQuestionnaireRepository;
-        private readonly ITriggerRepository _triggerRepository;
-        private readonly IUserRepository _userRepository;
-        private readonly IUserLogRepository _userLogRepository;
-        private readonly IVendorCodeRepository _vendorCodeRepository;
-        private readonly IVendorCodeTypeRepository _vendorCodeTypeRepository;
-        private readonly ICodeSanitizer _codeSanitizer;
-        private readonly MailService _mailService;
-        private readonly PrizeWinnerService _prizeWinnerService;
         private readonly SiteLookupService _siteLookupService;
+        private readonly ITriggerRepository _triggerRepository;
+        private readonly IUserLogRepository _userLogRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IVendorCodeRepository _vendorCodeRepository;
         private readonly VendorCodeService _vendorCodeService;
+        private readonly IVendorCodeTypeRepository _vendorCodeTypeRepository;
 
         public ActivityService(ILogger<UserService> logger,
             IDateTimeProvider dateTimeProvider,
@@ -103,8 +103,99 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(vendorCodeService));
         }
 
+        public async Task<ServiceResult<int>> AddBookAsync(int userId, Book book, bool addNotification = false)
+        {
+            VerifyCanLog();
+            int activeUserId = GetActiveUserId();
+            var activeUser = await _userRepository.GetByIdAsync(activeUserId);
+            int authUserId = GetClaimId(ClaimType.UserId);
+            var serviceResult = new ServiceResult<int>();
+
+            if (userId != activeUserId
+                && activeUser.HouseholdHeadUserId != authUserId
+                && !HasPermission(Permission.LogActivityForAny))
+            {
+                _logger.LogError("User {UserId} doesn't have permission to add a book for {UserIdToLog}.",
+                    activeUserId,
+                    userId);
+                throw new GraException("Permission denied.");
+            }
+
+            var user = await _userRepository.GetByIdAsync(userId);
+
+            if ((await _requiredQuestionnaireRepository.GetForUser(GetCurrentSiteId(), user.Id,
+                user.Age)).Count > 0)
+            {
+                _logger.LogError("User id {UserId} cannot add a book for user {UserIdToLog} who has a pending questionnaire.",
+                    activeUserId,
+                    userId);
+                throw new GraException("Books cannot be added while there is a pending questionnaire to be taken.");
+            }
+
+            book.Title = book.Title?.Trim();
+            book.Author = book.Author?.Trim();
+
+            var addedBook = await _bookRepository.GetBookAsync(book) ?? book;
+            if (await _bookRepository.UserHasBookAsync(userId, addedBook.Id))
+            {
+                serviceResult.Status = ServiceResultStatus.Warning;
+                serviceResult.Message = $"The book <strong><em>{addedBook.Title}</em></strong> by <strong>{addedBook.Author}</strong> is already on the booklist.";
+            }
+            else
+            {
+                await _bookRepository.AddSaveForUserAsync(activeUserId, userId, addedBook);
+
+                if (addNotification)
+                {
+                    var notification = new Notification
+                    {
+                        UserId = userId,
+                        Text = $"The book <strong><em>{book.Title}</em></strong> by <strong>{book.Author}</strong> was added to your book list."
+                    };
+
+                    await _notificationRepository.AddSaveAsync(authUserId, notification);
+                    serviceResult.Status = ServiceResultStatus.Success;
+                    serviceResult.Data = addedBook.Id;
+                }
+            }
+            return serviceResult;
+        }
+
+        public async Task AwardUserTriggersAsync(int userId, bool awardHousehold)
+        {
+            var userContext = GetUserContext();
+            var logPoints = userContext.SiteStage == SiteStage.ProgramOpen;
+
+            await AwardTriggersAsync(userId, logPoints, userContext.SiteId,
+                !userContext.User.Identity.IsAuthenticated);
+
+            if (awardHousehold)
+            {
+                var householdMemebers = await _userRepository.GetHouseholdAsync(userId);
+                if (householdMemebers.Any())
+                {
+                    foreach (var member in householdMemebers)
+                    {
+                        await AwardTriggersAsync(member.Id, logPoints, userContext.SiteId,
+                            !userContext.User.Identity.IsAuthenticated);
+                    }
+                }
+            }
+        }
+
+        public async Task<int> GetActivityEarnedAsync()
+        {
+            return await _userLogRepository.GetActivityEarnedForUserAsync(GetActiveUserId());
+        }
+
+        public async Task<PointTranslation> GetUserPointTranslationAsync()
+        {
+            var user = await _userRepository.GetByIdAsync(GetActiveUserId());
+            return await _pointTranslationRepository.GetByProgramIdAsync(user.ProgramId);
+        }
+
         public async Task<ActivityLogResult> LogActivityAsync(int userIdToLog,
-            int activityAmountEarned,
+                                            int activityAmountEarned,
             Book book = null)
         {
             VerifyCanLog();
@@ -273,8 +364,256 @@ namespace GRA.Domain.Service
             return activityLogResult;
         }
 
+        public async Task LogHouseholdActivityAsync(List<int> userIds, int activityAmount)
+        {
+            VerifyCanLog();
+
+            if (activityAmount < 1)
+            {
+                throw new GraException("Amount must be at least 1.");
+            }
+            int authUserId = GetClaimId(ClaimType.UserId);
+
+            if (!HasPermission(Permission.LogActivityForAny))
+            {
+                var authUser = await _userRepository.GetByIdAsync(authUserId);
+                if (authUser.HouseholdHeadUserId.HasValue)
+                {
+                    _logger.LogError("User id {UserId} cannot log activity for a household",
+                        authUserId);
+                    throw new GraException("Permission denied.");
+                }
+
+                var householdList = (await _userRepository.GetHouseholdAsync(authUserId))
+                .Select(_ => _.Id).ToList();
+                householdList.Add(authUserId);
+                if (userIds.Except(householdList).Any())
+                {
+                    _logger.LogError("User id {UserId} cannot log activity for {UserIdList}",
+                        authUserId,
+                        userIds.Except(householdList).First());
+                    throw new GraException("Permission denied.");
+                }
+            }
+
+            foreach (var userId in userIds)
+            {
+                await LogActivityAsync(userId, activityAmount);
+            }
+        }
+
+        public async Task<bool> LogHouseholdSecretCodeAsync(List<int> userIds, string secretCode)
+        {
+            VerifyCanLog();
+
+            if (string.IsNullOrWhiteSpace(secretCode))
+            {
+                throw new GraException(Annotations.Required.SecretCode);
+            }
+
+            secretCode = _codeSanitizer.Sanitize(secretCode);
+
+            int authUserId = GetClaimId(ClaimType.UserId);
+
+            if (!HasPermission(Permission.LogActivityForAny))
+            {
+                var authUser = await _userRepository.GetByIdAsync(authUserId);
+                if (authUser.HouseholdHeadUserId.HasValue)
+                {
+                    _logger.LogError("User id {UserId} cannot log codes for a family/group", authUserId);
+                    throw new GraException("Permission denied.");
+                }
+
+                var householdList = (await _userRepository.GetHouseholdAsync(authUserId))
+                    .Select(_ => _.Id).ToList();
+                householdList.Add(authUserId);
+                if (userIds.Except(householdList).Any())
+                {
+                    _logger.LogError("User id {UserId} cannot log codes for {UserIdList}",
+                        authUserId,
+                        userIds.Except(householdList).First());
+                    throw new GraException("Permission denied.");
+                }
+            }
+
+            var trigger = await _triggerRepository.GetByCodeAsync(GetCurrentSiteId(), secretCode,
+                true);
+
+            if (trigger == null)
+            {
+                throw new GraException($"<strong>{secretCode}</strong> is not a valid code.");
+            }
+
+            var codeApplied = false;
+
+            foreach (var userId in userIds)
+            {
+                if (await LogSecretCodeAsync(userId, secretCode, true))
+                {
+                    codeApplied = true;
+                }
+            }
+            return codeApplied;
+        }
+
+        public async Task<bool> LogSecretCodeAsync(int userIdToLog, string secretCode,
+            bool householdLogging = false)
+        {
+            VerifyCanLog();
+
+            if (string.IsNullOrWhiteSpace(secretCode))
+            {
+                throw new GraException(Annotations.Required.SecretCode);
+            }
+
+            secretCode = _codeSanitizer.Sanitize(secretCode);
+
+            int activeUserId = GetActiveUserId();
+            int authUserId = GetClaimId(ClaimType.UserId);
+            var userToLog = await _userRepository.GetByIdAsync(userIdToLog);
+
+            bool loggingAsAdminUser = HasPermission(Permission.LogActivityForAny);
+
+            if (activeUserId != userIdToLog
+                && authUserId != userIdToLog
+                && authUserId != userToLog.HouseholdHeadUserId
+                && !loggingAsAdminUser)
+            {
+                _logger.LogError("User id {UserId} cannot log a code for user id {UserIdToLog}",
+                    activeUserId,
+                    userIdToLog);
+                throw new GraException("You do not have permission to apply that code.");
+            }
+
+            if ((await _requiredQuestionnaireRepository.GetForUser(GetCurrentSiteId(), userToLog.Id,
+                userToLog.Age)).Count > 0)
+            {
+                _logger.LogError("User id {UserId} cannot log a code for user id {UserIdToLog} who has a pending questionnaire",
+                    activeUserId,
+                    userToLog.Id);
+                throw new GraException("Secret codes cannot be entered while there is a pending questionnaire to be taken.");
+            }
+
+            var trigger = await _triggerRepository.GetByCodeAsync(GetCurrentSiteId(), secretCode,
+                true);
+
+            if (trigger == null)
+            {
+                throw new GraException($"<strong>{secretCode}</strong> is not a valid code.");
+            }
+
+            var pointsAwarded = trigger.AwardPoints;
+
+            // cap points at setting or int.MaxValue
+            long totalPoints = Convert.ToInt64(userToLog.PointsEarned)
+                + Convert.ToInt64(pointsAwarded);
+            var maximumPoints = await GetMaximumAllowedPointsAsync(userToLog.SiteId);
+
+            if (totalPoints > maximumPoints)
+            {
+                pointsAwarded = maximumPoints - userToLog.PointsEarned;
+            }
+
+            // check if this user's gotten this code
+            var alreadyDone
+                = await _triggerRepository.CheckTriggerActivationAsync(userIdToLog, trigger.Id);
+            if (alreadyDone != null)
+            {
+                if (householdLogging)
+                {
+                    return false;
+                }
+                else
+                {
+                    throw new GraException($"You already entered the code <strong>{secretCode}</strong> on <strong>{alreadyDone:d}</strong>!");
+                }
+            }
+
+            // add that we've processed this trigger for this user
+            await _triggerRepository.AddTriggerActivationAsync(userIdToLog, trigger.Id);
+
+            // every trigger awards a badge
+            var badge = await AwardBadgeAsync(userIdToLog, trigger.AwardBadgeId);
+
+            // log the notification
+            await _notificationRepository.AddSaveAsync(authUserId, new Notification
+            {
+                PointsEarned = pointsAwarded,
+                UserId = userIdToLog,
+                Text = trigger.AwardMessage,
+                BadgeId = trigger.AwardBadgeId,
+                BadgeFilename = badge.Filename
+            });
+
+            // find if the trigger is related to an event
+            var relatedEvents = await _eventRepository.GetRelatedEventsForTriggerAsync(
+                    trigger.Id);
+            var relatedEventId = relatedEvents.FirstOrDefault()?.Id;
+
+            // add the award to the user's history
+            var userLog = new UserLog
+            {
+                UserId = userIdToLog,
+                PointsEarned = pointsAwarded,
+                IsDeleted = false,
+                BadgeId = trigger.AwardBadgeId,
+                EventId = relatedEventId,
+                TriggerId = trigger.Id,
+                Description = trigger.AwardMessage
+            };
+
+            if (activeUserId != userToLog.Id)
+            {
+                userLog.AwardedBy = activeUserId;
+            }
+
+            await _userLogRepository.AddSaveAsync(authUserId, userLog);
+
+            // award any vendor code that is necessary
+            await AwardVendorCodeAsync(userIdToLog, trigger.AwardVendorCodeTypeId);
+
+            // award any avatar bundle that is necessary
+            if (trigger.AwardAvatarBundleId.HasValue)
+            {
+                await AwardUserBundle(userIdToLog, trigger.AwardAvatarBundleId.Value);
+            }
+
+            // send mail if applicable
+            int? mailId = await SendMailAsync(userIdToLog, trigger);
+
+            // award prize if applicable
+            await AwardPrizeAsync(userIdToLog, trigger, mailId);
+
+            // if there are points to be awarded, do that now, also check for other triggers
+            if (pointsAwarded > 0)
+            {
+                await AddPointsSaveAsync(authUserId,
+                    activeUserId,
+                    userIdToLog,
+                    pointsAwarded);
+            }
+            else
+            {
+                await AwardTriggersAsync(userIdToLog);
+            }
+            return true;
+        }
+
+        public async Task MCAwardVendorCodeAsync(int userId, int vendorCodeTypeId)
+        {
+            var authUserId = GetClaimId(ClaimType.UserId);
+
+            if (!HasPermission(Permission.ManageVendorCodes))
+            {
+                _logger.LogError("User {UserId} cannot award vendor codes.", authUserId);
+                throw new GraException("Permission denied.");
+            }
+
+            await AwardVendorCodeAsync(userId, vendorCodeTypeId);
+        }
+
         public async Task<User> RemoveActivityAsync(int userIdToLog,
-            int userLogIdToRemove)
+                                            int userLogIdToRemove)
         {
             int activeUserId = GetActiveUserId();
             var activeUser = await _userRepository.GetByIdAsync(activeUserId);
@@ -346,62 +685,29 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<ServiceResult<int>> AddBookAsync(int userId, Book book, bool addNotification = false)
+        public async Task RemoveBookAsync(int bookId, int? userId = null)
         {
-            VerifyCanLog();
-            int activeUserId = GetActiveUserId();
-            var activeUser = await _userRepository.GetByIdAsync(activeUserId);
-            int authUserId = GetClaimId(ClaimType.UserId);
-            var serviceResult = new ServiceResult<int>();
-
-            if (userId != activeUserId
-                && activeUser.HouseholdHeadUserId != authUserId
-                && !HasPermission(Permission.LogActivityForAny))
+            var authUserId = GetClaimId(ClaimType.UserId);
+            var activeUserId = GetActiveUserId();
+            var forUserId = userId ?? activeUserId;
+            if (HasPermission(Permission.LogActivityForAny)
+                || await _bookRepository.UserHasBookAsync(activeUserId, bookId))
             {
-                _logger.LogError("User {UserId} doesn't have permission to add a book for {UserIdToLog}.",
-                    activeUserId,
-                    userId);
-                throw new GraException("Permission denied.");
-            }
-
-            var user = await _userRepository.GetByIdAsync(userId);
-
-            if ((await _requiredQuestionnaireRepository.GetForUser(GetCurrentSiteId(), user.Id,
-                user.Age)).Count > 0)
-            {
-                _logger.LogError("User id {UserId} cannot add a book for user {UserIdToLog} who has a pending questionnaire.",
-                    activeUserId,
-                    userId);
-                throw new GraException("Books cannot be added while there is a pending questionnaire to be taken.");
-            }
-
-            book.Title = book.Title?.Trim();
-            book.Author = book.Author?.Trim();
-
-            var addedBook = await _bookRepository.GetBookAsync(book) ?? book;
-            if (await _bookRepository.UserHasBookAsync(userId, addedBook.Id))
-            {
-                serviceResult.Status = ServiceResultStatus.Warning;
-                serviceResult.Message = $"The book <strong><em>{addedBook.Title}</em></strong> by <strong>{addedBook.Author}</strong> is already on the booklist.";
+                await _bookRepository.RemoveForUserAsync(authUserId, forUserId, bookId);
+                var bookUserCount = await _bookRepository.GetUserCountForBookAsync(bookId);
+                if (bookUserCount == 0)
+                {
+                    await _bookRepository.RemoveSaveAsync(authUserId, bookId);
+                }
             }
             else
             {
-                await _bookRepository.AddSaveForUserAsync(activeUserId, userId, addedBook);
-
-                if (addNotification)
-                {
-                    var notification = new Notification
-                    {
-                        UserId = userId,
-                        Text = $"The book <strong><em>{book.Title}</em></strong> by <strong>{book.Author}</strong> was added to your book list."
-                    };
-
-                    await _notificationRepository.AddSaveAsync(authUserId, notification);
-                    serviceResult.Status = ServiceResultStatus.Success;
-                    serviceResult.Data = addedBook.Id;
-                }
+                _logger.LogError("User {UserId} doesn't have permission to remove book {BookId} for user {UserIdToLog}.",
+                    authUserId,
+                    bookId,
+                    forUserId);
+                throw new GraException("Permission denied.");
             }
-            return serviceResult;
         }
 
         public async Task UpdateBookAsync(Book book, int? userId = null)
@@ -435,31 +741,6 @@ namespace GRA.Domain.Service
                 _logger.LogError("User {UserId} doesn't have permission to edit book {BookId} for user {UserIdToLog}.",
                     authUserId,
                     book.Id,
-                    forUserId);
-                throw new GraException("Permission denied.");
-            }
-        }
-
-        public async Task RemoveBookAsync(int bookId, int? userId = null)
-        {
-            var authUserId = GetClaimId(ClaimType.UserId);
-            var activeUserId = GetActiveUserId();
-            var forUserId = userId ?? activeUserId;
-            if (HasPermission(Permission.LogActivityForAny)
-                || await _bookRepository.UserHasBookAsync(activeUserId, bookId))
-            {
-                await _bookRepository.RemoveForUserAsync(authUserId, forUserId, bookId);
-                var bookUserCount = await _bookRepository.GetUserCountForBookAsync(bookId);
-                if (bookUserCount == 0)
-                {
-                    await _bookRepository.RemoveSaveAsync(authUserId, bookId);
-                }
-            }
-            else
-            {
-                _logger.LogError("User {UserId} doesn't have permission to remove book {BookId} for user {UserIdToLog}.",
-                    authUserId,
-                    bookId,
                     forUserId);
                 throw new GraException("Permission denied.");
             }
@@ -625,6 +906,19 @@ namespace GRA.Domain.Service
                 }
                 await _userLogRepository.AddSaveAsync(activeUserId, userLog);
 
+                try
+                {
+                    await _challengeRepository.IncrementPopularity(challenge.Id);
+                }
+                catch (GraException gex)
+                {
+                    var exception = gex.InnerException ?? gex;
+                    _logger.LogError(exception,
+                        "Unable to increment popularity for challenge id {challengeId}: {ErrorMessage}",
+                        challenge.Id,
+                        exception.Message);
+                }
+
                 // update the score in the user record
                 await AddPointsSaveAsync(authUserId,
                     activeUserId,
@@ -662,30 +956,80 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task AwardUserTriggersAsync(int userId, bool awardHousehold)
+        public async Task<ServiceResult> UpdateFavoriteChallenges(IList<Challenge> challenges)
         {
-            var userContext = GetUserContext();
-            var logPoints = userContext.SiteStage == SiteStage.ProgramOpen;
+            var authUserId = GetClaimId(ClaimType.UserId);
+            var activeUserId = GetActiveUserId();
+            var serviceResult = new ServiceResult();
 
-            await AwardTriggersAsync(userId, logPoints, userContext.SiteId,
-                !userContext.User.Identity.IsAuthenticated);
-
-            if (awardHousehold)
+            var challengeIds = challenges.Select(_ => _.Id);
+            var validChallengeIds = await _challengeRepository.ValidateChallengeIdsAsync(
+                GetCurrentSiteId(), challengeIds);
+            if (challengeIds.Count() != validChallengeIds.Count())
             {
-                var householdMemebers = await _userRepository.GetHouseholdAsync(userId);
-                if (householdMemebers.Any())
-                {
-                    foreach (var member in householdMemebers)
-                    {
-                        await AwardTriggersAsync(member.Id, logPoints, userContext.SiteId,
-                            !userContext.User.Identity.IsAuthenticated);
-                    }
-                }
+                serviceResult.Status = ServiceResultStatus.Warning;
+                serviceResult.Message = string.Format(
+                    Annotations.Validate.CouldNotFavorite, Annotations.Title.Challenges);
             }
+
+            var userFavorites = await _challengeRepository.GetUserFavoriteChallenges(activeUserId,
+                challengeIds);
+
+            var validChallenges = challenges.Where(_ => validChallengeIds.Contains(_.Id));
+
+            var favoritesToAdd = validChallenges
+                .Where(_ => _.IsFavorited)
+                .Select(_ => _.Id)
+                .Except(userFavorites);
+
+            var favoritesToRemove = validChallenges
+                .Where(_ => !_.IsFavorited && userFavorites.Contains(_.Id))
+                .Select(_ => _.Id);
+
+            await _challengeRepository.UpdateUserFavoritesAsync(authUserId, activeUserId,
+                favoritesToAdd, favoritesToRemove);
+
+            return serviceResult;
+        }
+
+        public async Task<ServiceResult> UpdateFavoriteEvents(IList<Event> events)
+        {
+            var authUserId = GetClaimId(ClaimType.UserId);
+            var activeUserId = GetActiveUserId();
+            var serviceResult = new ServiceResult();
+
+            var eventIds = events.Select(_ => _.Id);
+            var validEventIds = await _eventRepository.ValidateEventIdsAsync(
+                GetCurrentSiteId(), eventIds);
+            if (eventIds.Count() != validEventIds.Count())
+            {
+                serviceResult.Status = ServiceResultStatus.Warning;
+                serviceResult.Message = string.Format(
+                    Annotations.Validate.CouldNotFavorite, Annotations.Interface.Events);
+            }
+
+            var userFavorites = await _eventRepository.GetUserFavoriteEvents(activeUserId,
+                eventIds);
+
+            var validEvents = events.Where(_ => validEventIds.Contains(_.Id));
+
+            var favoritesToAdd = validEvents
+                .Where(_ => _.IsFavorited)
+                .Select(_ => _.Id)
+                .Except(userFavorites);
+
+            var favoritesToRemove = validEvents
+                .Where(_ => !_.IsFavorited && userFavorites.Contains(_.Id))
+                .Select(_ => _.Id);
+
+            await _eventRepository.UpdateUserFavoritesAsync(authUserId, activeUserId,
+                favoritesToAdd, favoritesToRemove);
+
+            return serviceResult;
         }
 
         private async Task<User> AddPointsSaveAsync(int authUserId,
-            int activeUserId,
+                            int activeUserId,
             int whoEarnedUserId,
             int pointsEarned,
             bool checkTriggers = true)
@@ -753,42 +1097,6 @@ namespace GRA.Domain.Service
             return earnedUser;
         }
 
-        public async Task<PointTranslation> GetUserPointTranslationAsync()
-        {
-            var user = await _userRepository.GetByIdAsync(GetActiveUserId());
-            return await _pointTranslationRepository.GetByProgramIdAsync(user.ProgramId);
-        }
-
-        private async Task<User>
-            RemovePointsSaveAsync(int currentUserId,
-            int removePointsFromUserId,
-            int pointsToRemove)
-        {
-            if (pointsToRemove < 0)
-            {
-                throw new GraException($"Cannot remove negative points!");
-            }
-
-            var removeUser = await _userRepository.GetByIdAsync(removePointsFromUserId);
-
-            if (removeUser == null)
-            {
-                throw new GraException($"Could not find single user with id {removePointsFromUserId}");
-            }
-
-            removeUser.PointsEarned -= pointsToRemove;
-
-            // update the user's achiever status if they've crossed the threshhold
-            var program = await _programRepository.GetByIdAsync(removeUser.ProgramId);
-
-            if (removeUser.PointsEarned < program.AchieverPointAmount)
-            {
-                removeUser.AchievedAt = null;
-            }
-
-            return await _userRepository.UpdateSaveAsync(currentUserId, removeUser);
-        }
-
         private async Task<Badge> AwardBadgeAsync(int userId, int? badgeId)
         {
             Badge badge = null;
@@ -798,6 +1106,30 @@ namespace GRA.Domain.Service
                 await _badgeRepository.AddUserBadge(userId, (int)badgeId);
             }
             return badge;
+        }
+
+        private async Task AwardPrizeAsync(int userId, Trigger trigger, int? mailId,
+            bool userIdIsCurrentUser = false)
+        {
+            if (!string.IsNullOrEmpty(trigger.AwardPrizeName))
+            {
+                var prize = new PrizeWinner
+                {
+                    CreatedBy = userIdIsCurrentUser ? userId : GetClaimId(ClaimType.UserId),
+                    CreatedAt = _dateTimeProvider.Now,
+                    TriggerId = trigger.Id,
+                    PrizeName = trigger.AwardPrizeName,
+                    PrizeRedemptionInstructions = trigger.AwardPrizeRedemptionInstructions,
+                    UserId = userId
+                };
+
+                if (mailId != null)
+                {
+                    prize.MailId = mailId;
+                }
+
+                await _prizeWinnerService.AddPrizeWinnerAsync(prize, userIdIsCurrentUser);
+            }
         }
 
         private async Task AwardTriggersAsync(int userId, bool logPoints = true, int? siteId = null,
@@ -905,415 +1237,6 @@ namespace GRA.Domain.Service
             await AwardTriggersAsync(userId, logPoints, siteId, userIdIsCurrentUser);
         }
 
-        private async Task AwardVendorCodeAsync(int userId, int? vendorCodeTypeId, int? siteId = null)
-        {
-            if (vendorCodeTypeId != null)
-            {
-                var codeType = await _vendorCodeTypeRepository.GetByIdAsync((int)vendorCodeTypeId);
-
-                try
-                {
-                    await _vendorCodeRepository.AssignCodeAsync((int)vendorCodeTypeId, userId);
-
-                    // if there are no award options then send the email with the code
-                    if (string.IsNullOrEmpty(codeType.OptionSubject))
-                    {
-                        await _vendorCodeService.ResolveCodeStatusAsync(userId, false, false);
-                    }
-                    else
-                    {
-                        // award has options, let the user know
-                        await _mailService.SendSystemMailAsync(new Mail
-                        {
-                            ToUserId = userId,
-                            CanParticipantDelete = false,
-                            Subject = codeType.OptionSubject,
-                            Body = codeType.OptionMail
-                        }, siteId);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    await _mailService.SendSystemMailAsync(new Mail
-                    {
-                        ToUserId = userId,
-                        CanParticipantDelete = true,
-                        Subject = codeType.MailSubject,
-                        Body = codeType.Mail.Contains(TemplateToken.VendorCodeToken)
-                            ? codeType.Mail.Replace(TemplateToken.VendorCodeToken, $"{codeType.Description} not available - please contact us.")
-                            : codeType.Mail + " " + $"{codeType.Description} not available - please contact us."
-                    }, siteId);
-
-                    // TODO let admin know that vendor code assignment didn't work?
-                    _logger.LogError(ex,
-                        "Vendor code assignment failed, probably out of codes: {Message}",
-                        ex.Message);
-                }
-            }
-        }
-
-        public async Task<bool> LogSecretCodeAsync(int userIdToLog, string secretCode,
-            bool householdLogging = false)
-        {
-            VerifyCanLog();
-
-            if (string.IsNullOrWhiteSpace(secretCode))
-            {
-                throw new GraException(Annotations.Required.SecretCode);
-            }
-
-            secretCode = _codeSanitizer.Sanitize(secretCode);
-
-            int activeUserId = GetActiveUserId();
-            int authUserId = GetClaimId(ClaimType.UserId);
-            var userToLog = await _userRepository.GetByIdAsync(userIdToLog);
-
-            bool loggingAsAdminUser = HasPermission(Permission.LogActivityForAny);
-
-            if (activeUserId != userIdToLog
-                && authUserId != userIdToLog
-                && authUserId != userToLog.HouseholdHeadUserId
-                && !loggingAsAdminUser)
-            {
-                _logger.LogError("User id {UserId} cannot log a code for user id {UserIdToLog}",
-                    activeUserId,
-                    userIdToLog);
-                throw new GraException("You do not have permission to apply that code.");
-            }
-
-            if ((await _requiredQuestionnaireRepository.GetForUser(GetCurrentSiteId(), userToLog.Id,
-                userToLog.Age)).Count > 0)
-            {
-                _logger.LogError("User id {UserId} cannot log a code for user id {UserIdToLog} who has a pending questionnaire",
-                    activeUserId,
-                    userToLog.Id);
-                throw new GraException("Secret codes cannot be entered while there is a pending questionnaire to be taken.");
-            }
-
-            var trigger = await _triggerRepository.GetByCodeAsync(GetCurrentSiteId(), secretCode,
-                true);
-
-            if (trigger == null)
-            {
-                throw new GraException($"<strong>{secretCode}</strong> is not a valid code.");
-            }
-
-            var pointsAwarded = trigger.AwardPoints;
-
-            // cap points at setting or int.MaxValue
-            long totalPoints = Convert.ToInt64(userToLog.PointsEarned)
-                + Convert.ToInt64(pointsAwarded);
-            var maximumPoints = await GetMaximumAllowedPointsAsync(userToLog.SiteId);
-
-            if (totalPoints > maximumPoints)
-            {
-                pointsAwarded = maximumPoints - userToLog.PointsEarned;
-            }
-
-            // check if this user's gotten this code
-            var alreadyDone
-                = await _triggerRepository.CheckTriggerActivationAsync(userIdToLog, trigger.Id);
-            if (alreadyDone != null)
-            {
-                if (householdLogging)
-                {
-                    return false;
-                }
-                else
-                {
-                    throw new GraException($"You already entered the code <strong>{secretCode}</strong> on <strong>{alreadyDone:d}</strong>!");
-                }
-            }
-
-            // add that we've processed this trigger for this user
-            await _triggerRepository.AddTriggerActivationAsync(userIdToLog, trigger.Id);
-
-            // every trigger awards a badge
-            var badge = await AwardBadgeAsync(userIdToLog, trigger.AwardBadgeId);
-
-            // log the notification
-            await _notificationRepository.AddSaveAsync(authUserId, new Notification
-            {
-                PointsEarned = pointsAwarded,
-                UserId = userIdToLog,
-                Text = trigger.AwardMessage,
-                BadgeId = trigger.AwardBadgeId,
-                BadgeFilename = badge.Filename
-            });
-
-            // find if the trigger is related to an event
-            var relatedEvents = await _eventRepository.GetRelatedEventsForTriggerAsync(
-                    trigger.Id);
-            var relatedEventId = relatedEvents.FirstOrDefault()?.Id;
-
-            // add the award to the user's history
-            var userLog = new UserLog
-            {
-                UserId = userIdToLog,
-                PointsEarned = pointsAwarded,
-                IsDeleted = false,
-                BadgeId = trigger.AwardBadgeId,
-                EventId = relatedEventId,
-                TriggerId = trigger.Id,
-                Description = trigger.AwardMessage
-            };
-
-            if (activeUserId != userToLog.Id)
-            {
-                userLog.AwardedBy = activeUserId;
-            }
-
-            await _userLogRepository.AddSaveAsync(authUserId, userLog);
-
-            // award any vendor code that is necessary
-            await AwardVendorCodeAsync(userIdToLog, trigger.AwardVendorCodeTypeId);
-
-            // award any avatar bundle that is necessary
-            if (trigger.AwardAvatarBundleId.HasValue)
-            {
-                await AwardUserBundle(userIdToLog, trigger.AwardAvatarBundleId.Value);
-            }
-
-            // send mail if applicable
-            int? mailId = await SendMailAsync(userIdToLog, trigger);
-
-            // award prize if applicable
-            await AwardPrizeAsync(userIdToLog, trigger, mailId);
-
-            // if there are points to be awarded, do that now, also check for other triggers
-            if (pointsAwarded > 0)
-            {
-                await AddPointsSaveAsync(authUserId,
-                    activeUserId,
-                    userIdToLog,
-                    pointsAwarded);
-            }
-            else
-            {
-                await AwardTriggersAsync(userIdToLog);
-            }
-            return true;
-        }
-
-        public async Task LogHouseholdActivityAsync(List<int> userIds, int activityAmount)
-        {
-            VerifyCanLog();
-
-            if (activityAmount < 1)
-            {
-                throw new GraException("Amount must be at least 1.");
-            }
-            int authUserId = GetClaimId(ClaimType.UserId);
-
-            if (!HasPermission(Permission.LogActivityForAny))
-            {
-                var authUser = await _userRepository.GetByIdAsync(authUserId);
-                if (authUser.HouseholdHeadUserId.HasValue)
-                {
-                    _logger.LogError("User id {UserId} cannot log activity for a household",
-                        authUserId);
-                    throw new GraException("Permission denied.");
-                }
-
-                var householdList = (await _userRepository.GetHouseholdAsync(authUserId))
-                .Select(_ => _.Id).ToList();
-                householdList.Add(authUserId);
-                if (userIds.Except(householdList).Any())
-                {
-                    _logger.LogError("User id {UserId} cannot log activity for {UserIdList}",
-                        authUserId,
-                        userIds.Except(householdList).First());
-                    throw new GraException("Permission denied.");
-                }
-            }
-
-            foreach (var userId in userIds)
-            {
-                await LogActivityAsync(userId, activityAmount);
-            }
-        }
-
-        public async Task<bool> LogHouseholdSecretCodeAsync(List<int> userIds, string secretCode)
-        {
-            VerifyCanLog();
-
-            if (string.IsNullOrWhiteSpace(secretCode))
-            {
-                throw new GraException(Annotations.Required.SecretCode);
-            }
-
-            secretCode = _codeSanitizer.Sanitize(secretCode);
-
-            int authUserId = GetClaimId(ClaimType.UserId);
-
-            if (!HasPermission(Permission.LogActivityForAny))
-            {
-                var authUser = await _userRepository.GetByIdAsync(authUserId);
-                if (authUser.HouseholdHeadUserId.HasValue)
-                {
-                    _logger.LogError("User id {UserId} cannot log codes for a family/group", authUserId);
-                    throw new GraException("Permission denied.");
-                }
-
-                var householdList = (await _userRepository.GetHouseholdAsync(authUserId))
-                    .Select(_ => _.Id).ToList();
-                householdList.Add(authUserId);
-                if (userIds.Except(householdList).Any())
-                {
-                    _logger.LogError("User id {UserId} cannot log codes for {UserIdList}",
-                        authUserId,
-                        userIds.Except(householdList).First());
-                    throw new GraException("Permission denied.");
-                }
-            }
-
-            var trigger = await _triggerRepository.GetByCodeAsync(GetCurrentSiteId(), secretCode,
-                true);
-
-            if (trigger == null)
-            {
-                throw new GraException($"<strong>{secretCode}</strong> is not a valid code.");
-            }
-
-            var codeApplied = false;
-
-            foreach (var userId in userIds)
-            {
-                if (await LogSecretCodeAsync(userId, secretCode, true))
-                {
-                    codeApplied = true;
-                }
-            }
-            return codeApplied;
-        }
-
-        public async Task MCAwardVendorCodeAsync(int userId, int vendorCodeTypeId)
-        {
-            var authUserId = GetClaimId(ClaimType.UserId);
-
-            if (!HasPermission(Permission.ManageVendorCodes))
-            {
-                _logger.LogError("User {UserId} cannot award vendor codes.", authUserId);
-                throw new GraException("Permission denied.");
-            }
-
-            await AwardVendorCodeAsync(userId, vendorCodeTypeId);
-        }
-
-        public async Task<ServiceResult> UpdateFavoriteChallenges(IList<Challenge> challenges)
-        {
-            var authUserId = GetClaimId(ClaimType.UserId);
-            var activeUserId = GetActiveUserId();
-            var serviceResult = new ServiceResult();
-
-            var challengeIds = challenges.Select(_ => _.Id);
-            var validChallengeIds = await _challengeRepository.ValidateChallengeIdsAsync(
-                GetCurrentSiteId(), challengeIds);
-            if (challengeIds.Count() != validChallengeIds.Count())
-            {
-                serviceResult.Status = ServiceResultStatus.Warning;
-                serviceResult.Message = string.Format(
-                    Annotations.Validate.CouldNotFavorite, Annotations.Title.Challenges);
-            }
-
-            var userFavorites = await _challengeRepository.GetUserFavoriteChallenges(activeUserId,
-                challengeIds);
-
-            var validChallenges = challenges.Where(_ => validChallengeIds.Contains(_.Id));
-
-            var favoritesToAdd = validChallenges
-                .Where(_ => _.IsFavorited)
-                .Select(_ => _.Id)
-                .Except(userFavorites);
-
-            var favoritesToRemove = validChallenges
-                .Where(_ => !_.IsFavorited && userFavorites.Contains(_.Id))
-                .Select(_ => _.Id);
-
-            await _challengeRepository.UpdateUserFavoritesAsync(authUserId, activeUserId,
-                favoritesToAdd, favoritesToRemove);
-
-            return serviceResult;
-        }
-
-        public async Task<ServiceResult> UpdateFavoriteEvents(IList<Event> events)
-        {
-            var authUserId = GetClaimId(ClaimType.UserId);
-            var activeUserId = GetActiveUserId();
-            var serviceResult = new ServiceResult();
-
-            var eventIds = events.Select(_ => _.Id);
-            var validEventIds = await _eventRepository.ValidateEventIdsAsync(
-                GetCurrentSiteId(), eventIds);
-            if (eventIds.Count() != validEventIds.Count())
-            {
-                serviceResult.Status = ServiceResultStatus.Warning;
-                serviceResult.Message = string.Format(
-                    Annotations.Validate.CouldNotFavorite, Annotations.Interface.Events);
-            }
-
-            var userFavorites = await _eventRepository.GetUserFavoriteEvents(activeUserId,
-                eventIds);
-
-            var validEvents = events.Where(_ => validEventIds.Contains(_.Id));
-
-            var favoritesToAdd = validEvents
-                .Where(_ => _.IsFavorited)
-                .Select(_ => _.Id)
-                .Except(userFavorites);
-
-            var favoritesToRemove = validEvents
-                .Where(_ => !_.IsFavorited && userFavorites.Contains(_.Id))
-                .Select(_ => _.Id);
-
-            await _eventRepository.UpdateUserFavoritesAsync(authUserId, activeUserId,
-                favoritesToAdd, favoritesToRemove);
-
-            return serviceResult;
-        }
-
-        private async Task<int?> SendMailAsync(int userId, Trigger trigger, int? siteId = null)
-        {
-            if (!string.IsNullOrEmpty(trigger.AwardMailSubject)
-                && !string.IsNullOrEmpty(trigger.AwardMail))
-            {
-                var mail = await _mailService.SendSystemMailAsync(new Mail
-                {
-                    Body = trigger.AwardMail,
-                    Subject = trigger.AwardMailSubject,
-                    ToUserId = userId,
-                    TriggerId = trigger.Id,
-                }, siteId);
-
-                return mail.Id;
-            }
-            return null;
-        }
-
-        private async Task AwardPrizeAsync(int userId, Trigger trigger, int? mailId,
-            bool userIdIsCurrentUser = false)
-        {
-            if (!string.IsNullOrEmpty(trigger.AwardPrizeName))
-            {
-                var prize = new PrizeWinner
-                {
-                    CreatedBy = userIdIsCurrentUser ? userId : GetClaimId(ClaimType.UserId),
-                    CreatedAt = _dateTimeProvider.Now,
-                    TriggerId = trigger.Id,
-                    PrizeName = trigger.AwardPrizeName,
-                    PrizeRedemptionInstructions = trigger.AwardPrizeRedemptionInstructions,
-                    UserId = userId
-                };
-
-                if (mailId != null)
-                {
-                    prize.MailId = mailId;
-                }
-
-                await _prizeWinnerService.AddPrizeWinnerAsync(prize, userIdIsCurrentUser);
-            }
-        }
-
         private async Task AwardUserBundle(int userId, int bundleId,
             bool userIdIsCurrentUser = false)
         {
@@ -1364,6 +1287,53 @@ namespace GRA.Domain.Service
             }
         }
 
+        private async Task AwardVendorCodeAsync(int userId, int? vendorCodeTypeId, int? siteId = null)
+        {
+            if (vendorCodeTypeId != null)
+            {
+                var codeType = await _vendorCodeTypeRepository.GetByIdAsync((int)vendorCodeTypeId);
+
+                try
+                {
+                    await _vendorCodeRepository.AssignCodeAsync((int)vendorCodeTypeId, userId);
+
+                    // if there are no award options then send the email with the code
+                    if (string.IsNullOrEmpty(codeType.OptionSubject))
+                    {
+                        await _vendorCodeService.ResolveCodeStatusAsync(userId, false, false);
+                    }
+                    else
+                    {
+                        // award has options, let the user know
+                        await _mailService.SendSystemMailAsync(new Mail
+                        {
+                            ToUserId = userId,
+                            CanParticipantDelete = false,
+                            Subject = codeType.OptionSubject,
+                            Body = codeType.OptionMail
+                        }, siteId);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await _mailService.SendSystemMailAsync(new Mail
+                    {
+                        ToUserId = userId,
+                        CanParticipantDelete = true,
+                        Subject = codeType.MailSubject,
+                        Body = codeType.Mail.Contains(TemplateToken.VendorCodeToken)
+                            ? codeType.Mail.Replace(TemplateToken.VendorCodeToken, $"{codeType.Description} not available - please contact us.")
+                            : codeType.Mail + " " + $"{codeType.Description} not available - please contact us."
+                    }, siteId);
+
+                    // TODO let admin know that vendor code assignment didn't work?
+                    _logger.LogError(ex,
+                        "Vendor code assignment failed, probably out of codes: {Message}",
+                        ex.Message);
+                }
+            }
+        }
+
         private async Task<int> GetMaximumAllowedActivityAsync(int siteId)
         {
             var (IsSet, SetValue) = await _siteLookupService.GetSiteSettingIntAsync(siteId,
@@ -1380,9 +1350,52 @@ namespace GRA.Domain.Service
             return IsSet ? SetValue : int.MaxValue;
         }
 
-        public async Task<int> GetActivityEarnedAsync()
+        private async Task<User>
+                                                                    RemovePointsSaveAsync(int currentUserId,
+            int removePointsFromUserId,
+            int pointsToRemove)
         {
-            return await _userLogRepository.GetActivityEarnedForUserAsync(GetActiveUserId());
+            if (pointsToRemove < 0)
+            {
+                throw new GraException($"Cannot remove negative points!");
+            }
+
+            var removeUser = await _userRepository.GetByIdAsync(removePointsFromUserId);
+
+            if (removeUser == null)
+            {
+                throw new GraException($"Could not find single user with id {removePointsFromUserId}");
+            }
+
+            removeUser.PointsEarned -= pointsToRemove;
+
+            // update the user's achiever status if they've crossed the threshhold
+            var program = await _programRepository.GetByIdAsync(removeUser.ProgramId);
+
+            if (removeUser.PointsEarned < program.AchieverPointAmount)
+            {
+                removeUser.AchievedAt = null;
+            }
+
+            return await _userRepository.UpdateSaveAsync(currentUserId, removeUser);
+        }
+
+        private async Task<int?> SendMailAsync(int userId, Trigger trigger, int? siteId = null)
+        {
+            if (!string.IsNullOrEmpty(trigger.AwardMailSubject)
+                && !string.IsNullOrEmpty(trigger.AwardMail))
+            {
+                var mail = await _mailService.SendSystemMailAsync(new Mail
+                {
+                    Body = trigger.AwardMail,
+                    Subject = trigger.AwardMailSubject,
+                    ToUserId = userId,
+                    TriggerId = trigger.Id,
+                }, siteId);
+
+                return mail.Id;
+            }
+            return null;
         }
     }
 }

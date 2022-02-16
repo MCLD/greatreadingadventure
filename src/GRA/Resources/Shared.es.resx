@@ -1553,6 +1553,17 @@
     <value>Si eliges un título y un autor, puedes ver una lista de todos los libros que has leído en tu perfil.</value>
     <comment>Help text for the dashboard's Author and Title fields.</comment>
   </data>
+  <data name="Most popular" xml:space="preserve">
+    <value>Más popular</value>
+    <comment>Label for ordering challenges by highest popularity</comment>
+  </data>
+  <data name="Most recent" xml:space="preserve">
+    <value>Más reciente</value>
+    <comment>An ordering option: the most recent first</comment>
+  </data>
+  <data name="Ordering" xml:space="preserve">
+    <value>Orden</value>
+    <comment>Prompt for what order items should be placed in</comment>
   <data name="&lt;em&gt;{0}&lt;/em&gt; arrived on &lt;strong&gt;{1}&lt;/strong&gt; and is ready for pick-up." xml:space="preserve">
     <value />
     <comment>Message informing the user their requested item has arrived, {0} is the name of the item and {1} is the date it arrived.</comment>

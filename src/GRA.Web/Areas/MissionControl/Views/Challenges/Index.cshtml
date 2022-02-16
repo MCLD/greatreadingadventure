@@ -67,8 +67,6 @@
     </div>
 </div>
 
-
-
 <form id="searchForm" asp-controller="Challenges" method="get" role="form">
     @if (Model.Program.HasValue)
     {
@@ -106,6 +104,35 @@
             </div>
         </div>
     }
+    <div id="Ordering" class="row row-spacing">
+        <div class="col-xs-12 col-sm-2" style="margin-bottom:5px;">
+            <span style="font-size:large;">Ordering:</span>
+        </div>
+        <div class="col-xs-12 col-sm-10">
+            <label class="radio-inline">
+                <input type="radio"
+                       name="Ordering"
+                       value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.MostPopular"
+                       @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.MostPopular)>
+                Most Popular
+            </label>
+            <label class="radio-inline">
+                <input type="radio"
+                       name="Ordering"
+                       value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Name"
+                       @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Name)>
+                Name
+            </label>
+            <label class="radio-inline">
+                <input type="radio"
+                       name="Ordering"
+                       value="@GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Recent"
+                       @Model.IsChecked(GRA.Domain.Model.Filters.ChallengeFilter.OrderingOption.Recent)>
+                Most Recent
+            </label>
+        </div>
+    </div>
+
 
     <div class="row row-spacing">
 
@@ -197,12 +224,12 @@
                                 {
                                     <td class="on-top gra-mc-icon">
                                         <button type="button"
-                                                class="btn btn-danger btn-xs"
-                                                data-toggle="modal"
-                                                data-target="#deleteModal"
-                                                data-id="@challenge.Id"
-                                                data-name="@challenge.Name"
-                                                data-hasDependents="@challenge.HasDependents">
+                                    class="btn btn-danger btn-xs"
+                                    data-toggle="modal"
+                                    data-target="#deleteModal"
+                                    data-id="@challenge.Id"
+                                    data-name="@challenge.Name"
+                                    data-hasDependents="@challenge.HasDependents">
                                             <span class="fas fa-times" aria-hidden="true"></span>
                                         </button>
                                     </td>
@@ -269,65 +296,65 @@
 </div>
 
 @section scripts{
-    <script>
-        $("#CategoryPlaceholder").remove();
-        $("#CategoryIds").multiselect({
-            nonSelectedText: "",
-            buttonClass: "form-control",
-            buttonWidth: "100%",
-            disableIfEmpty: true
-        });
+<script>
+    $("#CategoryPlaceholder").remove();
+    $("#CategoryIds").multiselect({
+        nonSelectedText: "",
+        buttonClass: "form-control",
+        buttonWidth: "100%",
+        disableIfEmpty: true
+    });
 
-        $("#searchForm").on("submit", function () {
-            var categoryIds = $("#CategoryIds option:selected")
-                .map(function (a, item) { return item.value; })
-                .get();
+    $("#searchForm").on("submit", function () {
+        var categoryIds = $("#CategoryIds option:selected")
+            .map(function (a, item) { return item.value; })
+            .get();
 
-            if (categoryIds.length > 0) {
-                $("<input />")
-                    .attr("type", "hidden")
-                    .attr("name", "Categories")
-                    .attr("value", categoryIds.join(","))
-                    .appendTo($(this));
-            }
-        });
-
-        @if (Model.CanEditChallenges) {
-        <text>
-        $(window).on("load", function() {
-            $('.td-class').each(function() {
-                $(this).children('a.rowlink').height($(this).height() + 11);
-            });
-        });
-        $(window).resize(function() {
-            $('.td-class').each(function() {
-                $(this).children('a.rowlink').height($(this).height() + 11);
-            });
-        });
-        </text>
+        if (categoryIds.length > 0) {
+            $("<input />")
+                .attr("type", "hidden")
+                .attr("name", "Categories")
+                .attr("value", categoryIds.join(","))
+                .appendTo($(this));
         }
+    });
 
-        @if (Model.CanDeleteChallenges) {
-        <text>
-        $('#deleteModal').on('show.bs.modal', function(event) {
-            var button = $(event.relatedTarget);
-            var id = button.data('id');
-            var name = button.data('name');
-            var hasDependents = button.data('hasdependents');
-            var modal = $(this);
-            modal.find('#Id').val(id);
-            if (hasDependents == "True")
-            {
-                modal.find('#modal-text').text(name + " has triggers depending on it and cannot be deleted.");
-                modal.find("#modal-deleteButton").hide();
-            }
-            else
-            {
-                modal.find('#modal-text').text('Are you sure you wish to delete the challenge "' + name + '" ?');
-                modal.find("#modal-deleteButton").show();
-            }
-        })
-        </text>
+    @if (Model.CanEditChallenges) {
+    <text>
+    $(window).on("load", function() {
+        $('.td-class').each(function() {
+            $(this).children('a.rowlink').height($(this).height() + 11);
+        });
+    });
+    $(window).resize(function() {
+        $('.td-class').each(function() {
+            $(this).children('a.rowlink').height($(this).height() + 11);
+        });
+    });
+    </text>
+    }
+
+    @if (Model.CanDeleteChallenges) {
+    <text>
+    $('#deleteModal').on('show.bs.modal', function(event) {
+        var button = $(event.relatedTarget);
+        var id = button.data('id');
+        var name = button.data('name');
+        var hasDependents = button.data('hasdependents');
+        var modal = $(this);
+        modal.find('#Id').val(id);
+        if (hasDependents == "True")
+        {
+            modal.find('#modal-text').text(name + " has triggers depending on it and cannot be deleted.");
+            modal.find("#modal-deleteButton").hide();
         }
-    </script>
+        else
+        {
+            modal.find('#modal-text').text('Are you sure you wish to delete the challenge "' + name + '" ?');
+            modal.find("#modal-deleteButton").show();
+        }
+    })
+    </text>
+    }
+</script>
 }

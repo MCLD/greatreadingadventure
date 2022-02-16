@@ -62,5 +62,6 @@ namespace GRA.Domain.Model
         [DisplayName("Categories")]
         public ICollection<int> CategoryIds { get; set; }
         public ICollection<Category> Categories { get; set; }
+        public int EstimatedPopularity { get; set; }
     }
 }
