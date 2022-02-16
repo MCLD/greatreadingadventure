@@ -75,7 +75,7 @@ namespace GRA.Domain.Repository
         Task<bool> UnsubscribeTokenExists(int siteId, string token);
 
         Task UpdateUserRolesAsync(
-                                                                                    int currentUserId,
+            int currentUserId,
             int userId,
             IEnumerable<int> rolesToAdd,
             IEnumerable<int> rolesToRemove);

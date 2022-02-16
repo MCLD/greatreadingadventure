@@ -4,10 +4,8 @@ namespace GRA.Data.Model
 {
     public class DirectEmailHistory : Abstract.BaseDbEntity
     {
-        [Required]
         public string BodyHtml { get; set; }
 
-        [Required]
         public string BodyText { get; set; }
 
         [Required]
@@ -17,6 +15,8 @@ namespace GRA.Data.Model
         [Required]
         [MaxLength(255)]
         public string FromName { get; set; }
+
+        public bool IsBulk { get; set; }
 
         [Required]
         public int LanguageId { get; set; }

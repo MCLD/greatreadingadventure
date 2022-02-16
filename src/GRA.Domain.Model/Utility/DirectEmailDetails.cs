@@ -21,5 +21,8 @@ namespace GRA.Domain.Model.Utility
         public string DirectEmailSystemId { get; set; }
         public int DirectEmailTemplateId { get; set; }
         public IDictionary<string, string> Tags { get; }
+        public bool IsBulk { get; set; }
+        public int? ToUserId { get; set; }
+        public int SendingUserId { get; set; }
     }
 }

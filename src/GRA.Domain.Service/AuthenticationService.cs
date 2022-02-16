@@ -112,7 +112,9 @@ namespace GRA.Domain.Service
 
             var directEmailDetails = new DirectEmailDetails(site.Name)
             {
-                DirectEmailSystemId = "UsernameRecovery"
+                DirectEmailSystemId = "UsernameRecovery",
+                SendingUserId = await _userRepository.GetSystemUserId(),
+                ToUserId = usernames.Id
             };
             directEmailDetails.Tags.Add("Email", lookupEmail);
             directEmailDetails.Tags.Add("Content", sb.ToString());
@@ -121,8 +123,7 @@ namespace GRA.Domain.Service
 
             directEmailDetails.Tags.Add("Sitelink", siteLink.AbsoluteUri);
 
-            var history = await _emailService.SendDirectAsync(usernames.Id,
-                    directEmailDetails);
+            var history = await _emailService.SendDirectAsync(directEmailDetails);
 
             return history.Successful
                 ? new Models.ServiceResult(Models.ServiceResultStatus.Success)
@@ -185,7 +186,9 @@ namespace GRA.Domain.Service
 
             var directEmailDetails = new DirectEmailDetails(site.Name)
             {
-                DirectEmailSystemId = "PasswordRecovery"
+                DirectEmailSystemId = "PasswordRecovery",
+                SendingUserId = await _userRepository.GetSystemUserId(),
+                ToUserId = user.Id
             };
             directEmailDetails.Tags.Add("RecoveryLink",
                 $"{recoveryUrl}?username={trimmedUsername}&token={tokenString}");
@@ -197,8 +200,7 @@ namespace GRA.Domain.Service
 
             directEmailDetails.Tags.Add("Sitelink", siteLink.AbsoluteUri);
 
-            var history = await _emailService.SendDirectAsync(user.Id,
-                directEmailDetails);
+            var history = await _emailService.SendDirectAsync(directEmailDetails);
 
             return history.Successful
                 ? new Models.ServiceResult(Models.ServiceResultStatus.Success)

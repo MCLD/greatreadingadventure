@@ -314,6 +314,7 @@ namespace GRA.Data.Repository
                         && !string.IsNullOrEmpty(_.Username)
                         && !_.IsDeleted)
                     .Select(_ => _.Username)
+                    .OrderBy(_ => _)
                     .ToListAsync()
             };
         }

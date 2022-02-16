@@ -163,22 +163,23 @@ namespace GRA.Domain.Service
             return SendBulkTestInternalAsync(emailTo, emailTemplateId);
         }
 
-        public async Task<DirectEmailHistory> SendDirectAsync(int userId,
-            DirectEmailDetails directEmailDetails)
+        public async Task<DirectEmailHistory> SendDirectAsync(DirectEmailDetails directEmailDetails)
         {
             if (directEmailDetails == null)
             {
                 throw new ArgumentNullException(nameof(directEmailDetails));
             }
 
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await _userRepository.GetByIdAsync(directEmailDetails.ToUserId
+                ?? directEmailDetails.SendingUserId);
             var site = await _siteRepository.GetByIdAsync(user.SiteId);
 
             var history = new DirectEmailHistory
             {
-                CreatedBy = userId,
+                CreatedBy = directEmailDetails.SendingUserId,
                 FromEmailAddress = site.FromEmailAddress,
                 FromName = site.FromEmailName,
+                IsBulk = directEmailDetails.IsBulk,
                 LanguageId = string.IsNullOrEmpty(user.Culture)
                     ? await _languageService.GetDefaultLanguageIdAsync()
                     : await _languageService.GetLanguageIdAsync(user.Culture),
@@ -187,9 +188,13 @@ namespace GRA.Domain.Service
                     ? null
                     : _config[ConfigurationKey.EmailOverride],
                 ToEmailAddress = user.Email,
-                ToName = user.FullName,
-                UserId = userId
+                ToName = user.FullName
             };
+
+            if (directEmailDetails.ToUserId.HasValue)
+            {
+                history.UserId = directEmailDetails.ToUserId.Value;
+            }
 
             var directEmailTemplate = !string.IsNullOrEmpty(directEmailDetails.DirectEmailSystemId)
                 ? await _directEmailTemplateRepository
@@ -217,9 +222,9 @@ namespace GRA.Domain.Service
             string title = await stubble
                 .RenderAsync(directEmailTemplate.DirectEmailTemplateText.Title,
                     directEmailDetails.Tags);
-            string footer = await stubble
+            string footer = CommonMark.CommonMarkConverter.Convert(await stubble
                 .RenderAsync(directEmailTemplate.DirectEmailTemplateText.Footer,
-                    directEmailDetails.Tags);
+                    directEmailDetails.Tags));
 
             history = await SendDirectAsync(site,
                 history,
@@ -232,7 +237,24 @@ namespace GRA.Domain.Service
                 { "BodyText", history.BodyText }
             });
 
-            await _directEmailHistoryRepository.AddSaveAsync(history.CreatedBy, history);
+            if (directEmailDetails.IsBulk)
+            {
+                if (directEmailDetails.ToUserId.HasValue)
+                {
+                    history.BodyHtml = null;
+                    history.BodyText = null;
+                    await _directEmailHistoryRepository.AddSaveNoAuditAsync(history);
+                }
+                if (!directEmailTemplate.SentBulk)
+                {
+                    await _directEmailTemplateRepository
+                        .UpdateSentBulkAsync(directEmailTemplate.Id);
+                }
+            }
+            else
+            {
+                await _directEmailHistoryRepository.AddSaveNoAuditAsync(history);
+            }
 
             return history;
         }
@@ -250,52 +272,6 @@ namespace GRA.Domain.Service
                 subject,
                 body,
                 htmlBody);
-        }
-
-        public async Task<bool> SendMissionControlNews(int userId,
-                                                    string subject,
-            string body,
-            string htmlBody,
-            IDictionary<string, string> tags)
-        {
-            var user = await _userRepository.GetByIdAsync(userId);
-            var site = await _siteRepository.GetByIdAsync(user.SiteId);
-
-            if (!string.IsNullOrEmpty(user.Email))
-            {
-                string processedSubject;
-                string processedBody;
-                string processedHtml;
-
-                if (tags?.Count > 0)
-                {
-                    var stubble = new StubbleBuilder().Build();
-                    processedSubject = await stubble.RenderAsync(subject, tags);
-                    processedBody = await stubble.RenderAsync(body, tags);
-                    processedHtml = await stubble.RenderAsync(htmlBody, tags);
-                }
-                else
-                {
-                    processedSubject = subject;
-                    processedBody = body;
-                    processedHtml = htmlBody;
-                }
-
-                await SendEmailAsync(site,
-                    user.Email,
-                    processedSubject,
-                    processedBody,
-                    processedHtml,
-                    user.FullName);
-                return true;
-            }
-            else
-            {
-                _logger.LogError("Unable to send email to user {UserId} with subject {Subject}: no email address configured.",
-                    userId,
-                    subject);
-                return false;
-            }
         }
 
         public async Task UpdateSentCount(int emailTemplateId, int additionalMailsSent)
@@ -381,11 +357,14 @@ namespace GRA.Domain.Service
 
             client.MessageSent += (sender, e) =>
             {
-                history.SentResponse = e.Response;
+                history.SentResponse = e.Response?.Length > 255
+                    ? e.Response[..255]
+                    : e.Response;
+
                 history.CreatedAt = _dateTimeProvider.Now;
             };
 
-            client.Timeout = 30 * 1000;  // 30 seconds
+            client.Timeout = 10 * 1000;  // 10 seconds
 
             var sendTimer = Stopwatch.StartNew();
 

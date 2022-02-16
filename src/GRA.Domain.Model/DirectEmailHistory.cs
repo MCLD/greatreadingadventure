@@ -4,10 +4,8 @@ namespace GRA.Domain.Model
 {
     public class DirectEmailHistory : Abstract.BaseDomainEntity
     {
-        [Required]
         public string BodyHtml { get; set; }
 
-        [Required]
         public string BodyText { get; set; }
 
         public int EmailBaseId { get; set; }
@@ -20,6 +18,8 @@ namespace GRA.Domain.Model
         [MaxLength(255)]
         public string FromName { get; set; }
 
+        public bool IsBulk { get; set; }
+
         [Required]
         public int LanguageId { get; set; }
 
@@ -27,6 +27,7 @@ namespace GRA.Domain.Model
         public string OverrideToEmailAddress { get; set; }
 
         [Required]
+        [MaxLength(255)]
         public string SentResponse { get; set; }
 
         [Required]

@@ -10,5 +10,7 @@ namespace GRA.Domain.Repository
 
         public Task<DirectEmailTemplate> GetWithTextBySystemId(string systemEmailId,
             int languageId);
+
+        public Task UpdateSentBulkAsync(int directEmailTemplateId);
     }
 }

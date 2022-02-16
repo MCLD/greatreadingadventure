@@ -15,6 +15,8 @@ namespace GRA.Domain.Model
         [Required]
         public int EmailBaseId { get; set; }
 
+        public bool SentBulk { get; set; }
+
         [MaxLength(25)]
         public string SystemEmailId { get; set; }
     }

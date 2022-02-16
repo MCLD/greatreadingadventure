@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
@@ -53,6 +54,20 @@ namespace GRA.Data.Repository
                         && _.LanguageId == languageId);
             }
             return directEmailTemplate;
+        }
+
+        public async Task UpdateSentBulkAsync(int directEmailTemplateId)
+        {
+            var directEmailTemplate = await DbSet
+                .Where(_ => _.Id == directEmailTemplateId)
+                .ProjectTo<DirectEmailTemplate>(_mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync();
+
+            if (directEmailTemplate != null)
+            {
+                directEmailTemplate.SentBulk = true;
+            }
+            await UpdateSaveNoAuditAsync(directEmailTemplate);
         }
     }
 }
