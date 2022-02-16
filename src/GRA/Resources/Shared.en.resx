@@ -1564,6 +1564,7 @@
   <data name="Ordering" xml:space="preserve">
     <value>Ordering</value>
     <comment>Prompt for what order items should be placed in</comment>
+  </data>
   <data name="&lt;em&gt;{0}&lt;/em&gt; arrived on &lt;strong&gt;{1}&lt;/strong&gt; and is ready for pick-up." xml:space="preserve">
     <value>&lt;em&gt;{0}&lt;/em&gt; arrived on &lt;strong&gt;{1}&lt;/strong&gt; and is ready for pick-up.</value>
     <comment>Message informing the user their requested item has arrived, {0} is the name of the item and {1} is the date it arrived.</comment>
