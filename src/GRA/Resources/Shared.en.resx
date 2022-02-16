@@ -1553,4 +1553,16 @@
     <value>If you choose to enter a title and author, you can view a list of all the books you've read in your profile.</value>
     <comment>Help text for the dashboard's Author and Title fields.</comment>
   </data>
+  <data name="&lt;em&gt;{0}&lt;/em&gt; arrived on &lt;strong&gt;{1}&lt;/strong&gt; and is ready for pick-up." xml:space="preserve">
+    <value>&lt;em&gt;{0}&lt;/em&gt; arrived on &lt;strong&gt;{1}&lt;/strong&gt; and is ready for pick-up.</value>
+    <comment>Message informing the user their requested item has arrived, {0} is the name of the item and {1} is the date it arrived.</comment>
+  </data>
+  <data name="&lt;em&gt;{0}&lt;/em&gt; ordered on &lt;strong&gt;{1}&lt;/strong&gt;." xml:space="preserve">
+    <value>&lt;em&gt;{0}&lt;/em&gt; ordered on &lt;strong&gt;{1}&lt;/strong&gt;.</value>
+    <comment>Message informing the user their requested item has been ordered, {0} is the name of the item and {1} is the date it was ordered.</comment>
+  </data>
+  <data name="&lt;em&gt;{0}&lt;/em&gt; shipped on &lt;strong&gt;{1}&lt;/strong&gt;." xml:space="preserve">
+    <value>&lt;em&gt;{0}&lt;/em&gt; shipped on &lt;strong&gt;{1}&lt;/strong&gt;.</value>
+    <comment>Message informing the user their requested item has been shipped, {0} is the name of the item and {1} is the date it shipped.</comment>
+  </data>
 </root>

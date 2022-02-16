@@ -104,6 +104,7 @@ namespace GRA.Domain.Model
         public bool? Donated { get; set; }
         public bool? EmailAwarded { get; set; }
         public string EmailAwardInstructions { get; set; }
+        public VendorOrderStatus? VendorOrderStatus { get; set; }
 
         public bool IsEmailSubscribed { get; set; }
 

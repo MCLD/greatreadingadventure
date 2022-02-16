@@ -11,12 +11,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Notation on the participant dashboard that title and author are optional
 - Site setting to disable avatar sharing
 - Performer program setup supplemental text
+- Packing slip functionality for checking item status on arival
 
 ### Changed
 
 - Hide avatar bundle icon if no bundles are available
 - Reduce streaming video caching on dashboard to 15 minutes
 - Order streaming videos on dashboard by start date descending (newest at the top)
+- Vendor item status display on participants profile
 
 ### Fixed
 

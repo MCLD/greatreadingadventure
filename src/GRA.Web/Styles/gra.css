@@ -858,3 +858,11 @@ p.password-note {
     .gra-landing-content .gra-landing-calendar-button {
         margin-top: 2rem;
     }
+
+.active-status-color {
+    color: #449d44; /* Bootstrap 3 success green */
+}
+
+.inactive-status-color {
+    color: lightgrey;
+}
