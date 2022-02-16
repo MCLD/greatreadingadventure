@@ -11,10 +11,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Notation on the participant dashboard that title and author are optional
 - Site setting to disable avatar sharing
 - Performer program setup supplemental text
-- Packing slip functionality for checking item status on arival
 - Remaining vendor prize report
 - Vendor code by program report
 - Challenge sorting options (most recent, most popular)
+- Packing slip functionality for checking item status on arrival
 
 ### Changed
 
