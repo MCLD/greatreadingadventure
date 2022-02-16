@@ -3796,6 +3796,9 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<DateTime?>("EmailAwardSent")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("EmailSentAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool?>("IsDonated")
                         .HasColumnType("bit");
 
