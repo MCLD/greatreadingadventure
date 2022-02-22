@@ -869,6 +869,10 @@
     <value>Points you'll earn</value>
     <comment>Column heading showing many points a participant will earn for completing a task</comment>
   </data>
+  <data name="Pre-configured Avatars" xml:space="preserve">
+    <value>Pre-configured Avatars</value>
+    <comment>A pre-configured image representation of a participant that they can select, help for those with low vision or blindness.</comment>
+  </data>
   <data name="Progress" xml:space="preserve">
     <value>Progress</value>
     <comment>Column heading showing far a participant is towards completing an item (i.e. their progress)</comment>

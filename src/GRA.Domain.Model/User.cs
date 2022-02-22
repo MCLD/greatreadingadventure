@@ -123,5 +123,7 @@ namespace GRA.Domain.Model
 
         public bool IsSystemUser { get; set; }
         public long VendorCodePackingSlip { get; set; }
+
+        public int? PreconfiguredAvatarId { get; set; }
     }
 }

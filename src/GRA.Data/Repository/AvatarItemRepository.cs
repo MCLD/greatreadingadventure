@@ -59,6 +59,14 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
+        public async Task<AvatarItem> GetDefaultLayerItemAsync(int defaultLayerId)
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.AvatarLayerId == defaultLayerId)
+                .ProjectTo<AvatarItem>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task AddUserItemsAsync(int userId, List<int> itemIds)
         {
             foreach (var itemId in itemIds)

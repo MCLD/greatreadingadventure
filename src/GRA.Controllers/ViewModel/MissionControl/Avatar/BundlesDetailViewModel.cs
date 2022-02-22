@@ -13,5 +13,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.Avatar
         public string ItemsList { get; set; }
         public SelectList Layers { get; set; }
         public ICollection<Trigger> TriggersAwardingBundle { get; set; }
+        public string Search { get; set; }
     }
 }

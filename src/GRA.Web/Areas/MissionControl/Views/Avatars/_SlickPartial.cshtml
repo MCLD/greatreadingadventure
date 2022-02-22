@@ -1,0 +1,36 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Avatar.PreconfiguredAvatarsViewModel
+
+    @{int index;
+        try
+        {
+            index = Model.SelectedItemIds
+                .Select(_ => Model.Bundle.AvatarItems.ToList()
+                    .Select(__ => __.Id)
+                    .ToList()
+                    .IndexOf(_)
+                    )
+                .ToList()
+                .Where(_ => _ != -1)
+                .Min();
+        }
+        catch
+        {
+            index = 0;
+        }
+    }
+
+    <div id="avatarItemSelectors"
+         class="avatar-selector-container"
+         data-count="@Model.Bundle.AvatarItems.Count"
+         data-index="@index">
+        @foreach (var item in Model.Bundle.AvatarItems)
+        {
+            <div>
+                <img data-item="@item.Id"
+                     data-layer="@item.AvatarLayerId"
+                     src="/@(Model.ItemPath + "layer" + item.AvatarLayerId + "/item" + item.Id + "/thumbnail.jpg")"
+                     class="avatar-item-selector item@(item.Id) @(Model.SelectedItemIds.Contains(item.Id) ? "selected" : "")"
+                     onclick="SelectItem(this)"/>
+            </div>
+        }
+    </div>
