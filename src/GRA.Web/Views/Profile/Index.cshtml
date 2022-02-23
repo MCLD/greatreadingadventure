@@ -21,97 +21,64 @@
                             <input asp-for="User.VendorCode" type="hidden" />
                             <input asp-for="User.VendorCodeMessage" type="hidden" />
 
-                            @if (!string.IsNullOrWhiteSpace(Model.User.VendorCode) || Model.User.NeedsToAnswerVendorCodeQuestion)
+                            @if ((!string.IsNullOrWhiteSpace(Model.User.VendorCode) || Model.User.NeedsToAnswerVendorCodeQuestion)
+                               && (Model.User.VendorOrderStatus == null || Model.User.VendorOrderStatus == VendorOrderStatus.Pending))
                             {
-                                if (Model.User.VendorOrderStatus == null || Model.User.VendorOrderStatus == VendorOrderStatus.Pending)
-                                {
-                                    <div class="row row spacing">
-                                        <div class="col-xs-12">
-                                            <div class="alert alert-info" style="padding: 1em;">
-                                                @if (Model.User.NeedsToAnswerVendorCodeQuestion)
-                                                {
-                                                    <p><strong>@SharedLocalizer[GRA.Annotations.Interface.FreeBookCongratulations]</strong></p>
-                                                    <p>
-                                                        @SharedLocalizer[GRA.Annotations.Interface.ChooseAnOption]
-                                                        <button class="btn btn-info btn-spinner"
-                                                                asp-action="RedeemCode"
+                                <div class="row row spacing">
+                                    <div class="col-xs-12">
+                                        <div class="alert alert-info" style="padding: 1em;">
+                                            @if (Model.User.NeedsToAnswerVendorCodeQuestion)
+                                            {
+                                                <p><strong>@SharedLocalizer[GRA.Annotations.Interface.FreeBookCongratulations]</strong></p>
+                                                <p>
+                                                    @SharedLocalizer[GRA.Annotations.Interface.ChooseAnOption]
+                                                    <button class="btn btn-info btn-spinner"
+                                                            asp-action="RedeemCode"
+                                                            style="margin-top: 0.25em; margin-bottom: 0.25em;"
+                                                            button-spinner>
+                                                        <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.RedeemYourCode]</span>
+                                                    </button>
+                                                    @if (Model.User.CanDonateVendorCode)
+                                                    {
+                                                        <button class="btn btn-success btn-spinner"
+                                                                asp-action="DonateCode"
                                                                 style="margin-top: 0.25em; margin-bottom: 0.25em;"
                                                                 button-spinner>
-                                                            <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.RedeemYourCode]</span>
+                                                            <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.DonateYourBook]</span>
                                                         </button>
-                                                        @if (Model.User.CanDonateVendorCode)
-                                                        {
-                                                            <button class="btn btn-success btn-spinner"
-                                                                    asp-action="DonateCode"
-                                                                    style="margin-top: 0.25em; margin-bottom: 0.25em;"
-                                                                    button-spinner>
-                                                                <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.DonateYourBook]</span>
-                                                            </button>
-                                                        }
-                                                        @if (Model.User.CanEmailAwardVendorCode)
-                                                        {
-                                                            <a id="emailAwardButton"
-                                                               class="btn btn-warning"
-                                                               asp-action="@nameof(ProfileController.EmailAward)"
-                                                               style="margin-top: 0.25em; margin-bottom: 0.25em;">
-                                                                <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.ReceiveEAudiobook]</span>
-                                                            </a>
-                                                        }
-                                                    </p>
-                                                }
-                                                else
-                                                {
-                                                    <p>
-                                                        @SharedLocalizer[GRA.Annotations.Interface.FreeBookCode]:
-                                                        @if (!string.IsNullOrEmpty(Model.User.VendorCodeUrl))
-                                                        {
-                                                            <strong><a href="@Model.User.VendorCodeUrl" target="_blank">@Model.User.VendorCode</a></strong>
-                                                        }
-                                                        else
-                                                        {
-                                                            <strong>@Model.User.VendorCode</strong>
-                                                        }
-                                                    </p>
-                                                }
-                                                @if (!string.IsNullOrWhiteSpace(Model.User.VendorCodeMessage))
-                                                {
-                                                    <p>@Html.Raw(Model.User.VendorCodeMessage)</p>
-                                                }
-                                            </div>
+                                                    }
+                                                    @if (Model.User.CanEmailAwardVendorCode)
+                                                    {
+                                                        <a id="emailAwardButton"
+                                                           class="btn btn-warning"
+                                                           asp-action="@nameof(ProfileController.EmailAward)"
+                                                           style="margin-top: 0.25em; margin-bottom: 0.25em;">
+                                                            <span class="buttonText">@SharedLocalizer[GRA.Annotations.Interface.ReceiveEAudiobook]</span>
+                                                        </a>
+                                                    }
+                                                </p>
+                                            }
+                                            else
+                                            {
+                                                <p>
+                                                    @SharedLocalizer[GRA.Annotations.Interface.FreeBookCode]:
+                                                    @if (!string.IsNullOrEmpty(Model.User.VendorCodeUrl))
+                                                    {
+                                                        <strong><a href="@Model.User.VendorCodeUrl" target="_blank">@Model.User.VendorCode</a></strong>
+                                                    }
+                                                    else
+                                                    {
+                                                        <strong>@Model.User.VendorCode</strong>
+                                                    }
+                                                </p>
+                                            }
+                                            @if (!string.IsNullOrWhiteSpace(Model.User.VendorCodeMessage))
+                                            {
+                                                <p>@Html.Raw(Model.User.VendorCodeMessage)</p>
+                                            }
                                         </div>
                                     </div>
-                                }
-                                else if (Model.User.VendorOrderStatus < VendorOrderStatus.Receieved)
-                                {
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            <div class="panel panel-default">
-                                                <div class="panel-body">
-                                                    <div class="row" style="margin-bottom: 1.5em;">
-                                                        <div class="col-xs-12 col-md-8 col-md-push-2">
-                                                            <div class="row">
-                                                                <div class="col-xs-4 text-center">
-                                                                    <span class="fas fa-shopping-cart fa-2x @(Model.User.VendorOrderStatus == VendorOrderStatus.Ordered ? "active-status-color" : "inactive-status-color")"></span>
-                                                                </div>
-                                                                <div class="col-xs-4 text-center">
-                                                                    <span class="fas fa-shipping-fast fa-2x @(Model.User.VendorOrderStatus == VendorOrderStatus.Shipped ? "active-status-color" : "inactive-status-color")"></span>
-                                                                </div>
-                                                                <div class="col-xs-4 text-center">
-                                                                    <span class="fas fa-box fa-2x @(Model.User.VendorOrderStatus == VendorOrderStatus.Arrived ? "active-status-color" : "inactive-status-color")"></span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-xs-12 text-center">
-                                                            @Html.Raw(Model.User.VendorCodeMessage)
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
+                                </div>
                             }
 
                             @if (!string.IsNullOrWhiteSpace(Model.User.Username))
