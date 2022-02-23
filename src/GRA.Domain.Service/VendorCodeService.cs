@@ -590,8 +590,8 @@ namespace GRA.Domain.Service
                                         else
                                         {
                                             if ((code.ArrivalDate.HasValue
-                                                    && code.IsDamaged == false
-                                                    && code.IsMissing == false)
+                                                    && code.IsDamaged != true
+                                                    && code.IsMissing != true)
                                                 || (orderDate == code.OrderDate
                                                     && shipDate == code.ShipDate
                                                     && details == code.Details
@@ -1019,8 +1019,8 @@ namespace GRA.Domain.Service
                             itemName = vendorCode.Details;
                         }
 
-                        if (vendorCode.ArrivalDate.HasValue && vendorCode.IsDamaged == false
-                            && vendorCode.IsMissing == false)
+                        if (vendorCode.ArrivalDate.HasValue && vendorCode.IsDamaged != true
+                            && vendorCode.IsMissing != true)
                         {
                             user.VendorCodeMessage = _sharedLocalizer[Annotations.Info.VendorItemArrived,
                                 itemName,
@@ -1745,8 +1745,8 @@ namespace GRA.Domain.Service
 
                     await _vendorCodeRepository.UpdateSaveNoAuditAsync(code);
 
-                    if (vendorCodeType.AwardPrizeOnPackingSlip && code.IsDamaged == false
-                        && code.IsMissing == false)
+                    if (vendorCodeType.AwardPrizeOnPackingSlip && code.IsDamaged != true
+                        && code.IsMissing != true)
                     {
                         await AwardPrizeAsync(code);
                     }
