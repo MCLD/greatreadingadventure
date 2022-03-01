@@ -29,6 +29,7 @@ namespace GRA.Controllers
         private readonly EmailManagementService _emailManagementService;
         private readonly EmailReminderService _emailReminderService;
         private readonly EventService _eventService;
+        private readonly LanguageService _languageService;
         private readonly ILogger<HomeController> _logger;
         private readonly PerformerSchedulingService _performerSchedulingService;
         private readonly SiteService _siteService;
@@ -46,6 +47,7 @@ namespace GRA.Controllers
             EmailManagementService emailManagementService,
             EmailReminderService emailReminderService,
             EventService eventService,
+            LanguageService languageService,
             PerformerSchedulingService performerSchedulingService,
             SiteService siteService,
             SocialService socialService,
@@ -70,6 +72,8 @@ namespace GRA.Controllers
                 ?? throw new ArgumentNullException(nameof(emailReminderService));
             _eventService = eventService
                 ?? throw new ArgumentNullException(nameof(eventService));
+            _languageService = languageService
+                ?? throw new ArgumentNullException(nameof(languageService));
             _performerSchedulingService = performerSchedulingService
                 ?? throw new ArgumentNullException(nameof(performerSchedulingService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
@@ -88,8 +92,13 @@ namespace GRA.Controllers
         {
             if (!string.IsNullOrEmpty(viewModel.Email))
             {
+                var currentCultureName = _userContextProvider.GetCurrentCulture()?.Name;
+                var currentLanguageId = await _languageService
+                    .GetLanguageIdAsync(currentCultureName);
                 await _emailReminderService
-                    .AddEmailReminderAsync(viewModel.Email, viewModel.SignUpSource);
+                    .AddEmailReminderAsync(viewModel.Email,
+                    viewModel.SignUpSource,
+                    currentLanguageId);
                 ShowAlertInfo(_sharedLocalizer[Annotations.Info.LetYouKnowWhen], "envelope");
             }
             return RedirectToAction(nameof(Index));

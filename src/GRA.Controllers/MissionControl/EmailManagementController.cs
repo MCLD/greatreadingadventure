@@ -3,18 +3,19 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl.EmailManagement;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
+using GRA.Domain.Model.Utility;
 using GRA.Domain.Service;
 using GRA.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -22,14 +23,13 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.ManageBulkEmails)]
     public class EmailManagementController : Base.MCController
     {
-        private readonly ILogger _logger;
-        private readonly EmailManagementService _emailManagementService;
-        private readonly EmailService _emailService;
-        private readonly EmailReminderService _emailReminderService;
-        private readonly JobService _jobService;
-        private readonly UserService _userService;
-
         private const string SubscribedParticipants = "SubscribedParticipants";
+        private readonly EmailManagementService _emailManagementService;
+        private readonly EmailReminderService _emailReminderService;
+        private readonly EmailService _emailService;
+        private readonly JobService _jobService;
+        private readonly ILogger _logger;
+        private readonly UserService _userService;
 
         public EmailManagementController(ServiceFacade.Controller context,
             ILogger<EmailManagementController> logger,
@@ -49,6 +49,227 @@ namespace GRA.Controllers.MissionControl
             _jobService = jobService ?? throw new ArgumentNullException(nameof(jobService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             PageTitle = "Email Management";
+        }
+
+        [Authorize(Policy = Policy.ManageBulkEmails)]
+        public async Task<IActionResult> Addresses()
+        {
+            return await ShowAddressView(null);
+        }
+
+        public async Task<IActionResult> Create()
+        {
+            PageTitle = "Create Email";
+            var site = await GetCurrentSiteAsync();
+            var viewModel = new EmailDetailViewModel
+            {
+                Action = nameof(Create),
+                EmailTemplate = new EmailTemplate(),
+            };
+            viewModel.EmailTemplate.FromAddress = site.FromEmailAddress;
+            viewModel.EmailTemplate.FromName = site.FromEmailName;
+            return View("Detail", viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(EmailDetailViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var newTemplate
+                    = await _emailManagementService.CreateEmailTemplate(viewModel.EmailTemplate);
+                return RedirectToAction(nameof(EmailManagementController.Edit),
+                    new { id = newTemplate.Id });
+            }
+            PageTitle = "Create Email";
+            return View("Detail", viewModel);
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            PageTitle = "Edit Email";
+            var viewModel = new EmailDetailViewModel
+            {
+                Action = nameof(Edit),
+                EmailTemplate = await _emailService.GetEmailTemplate(id)
+            };
+            if (viewModel.EmailTemplate == null)
+            {
+                ShowAlertDanger($"Could not find email template {id}");
+                RedirectToAction(nameof(EmailManagementController.Index));
+            }
+            return View("Detail", viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(EmailDetailViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                await _emailManagementService.EditEmailTemplate(viewModel.EmailTemplate);
+                return RedirectToAction(nameof(EmailManagementController.Edit),
+                    viewModel.EmailTemplate.Id);
+            }
+            ShowAlertDanger("Could not update email template");
+            PageTitle = "Edit Email";
+            return View("Detail", viewModel);
+        }
+
+        [HttpGet]
+        [Authorize(Policy = Policy.ManageBulkEmails)]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability",
+            "CA2000:Dispose objects before losing scope",
+            Justification = "The File() method handles the stream disposal for us.")]
+        public async Task<IActionResult> ExportAddresses(EmailAddressesViewModel viewModel)
+        {
+            if (string.IsNullOrEmpty(viewModel?.SignUpSource))
+            {
+                ModelState.AddModelError(nameof(viewModel.SignUpSource),
+                    "Please select a list to export.");
+                return await ShowAddressView(viewModel);
+            }
+
+            var subscribers = await _emailReminderService
+                .ExportSubscribersAsync(viewModel.SignUpSource);
+
+            if (!subscribers.Any())
+            {
+                ShowAlertWarning("Unable to prepare export: no subscribers to that list.");
+                return await ShowAddressView(viewModel);
+            }
+
+            var user = await _userService.GetDetails(GetActiveUserId());
+            var site = await GetCurrentSiteAsync();
+            var link = await _siteLookupService.GetSiteLinkAsync(site.Id);
+
+            var filename = $"EmailList-{viewModel.SignUpSource}.json";
+
+            var ms = new MemoryStream();
+            await JsonSerializer.SerializeAsync(ms, new EmailListExport
+            {
+                Addresses = subscribers,
+                ExportedAt = _dateTimeProvider.Now,
+                ExportedBy = $"{user.FullName} ({user.Email ?? user.Username})",
+                Source = $"{site.Name} ({link})",
+                Version = 2
+            });
+            ms.Seek(0, SeekOrigin.Begin);
+            return File(ms,
+                "text/json",
+                FileUtility.EnsureValidFilename(filename));
+        }
+
+        [HttpPost]
+        [Authorize(Policy = Policy.ManageBulkEmails)]
+        public async Task<IActionResult> ImportAddresses(EmailAddressesViewModel viewModel)
+        {
+            if (viewModel?.UploadedFile == null)
+            {
+                ShowAlertDanger("You must upload a JSON file of email records.");
+                ModelState.AddModelError(nameof(viewModel.UploadedFile),
+                    "A .json file is required.");
+                return RedirectToAction(nameof(EmailManagementController.Addresses));
+            }
+
+            var issues = new List<string>();
+            int recordNumber = 1;
+            var success = 0;
+            string successMessage;
+
+            var stream = viewModel.UploadedFile.OpenReadStream();
+
+            var emailReminders = new List<EmailReminder>();
+            EmailListImport emailListImport = null;
+
+            try
+            {
+                emailListImport = await JsonSerializer
+                    .DeserializeAsync<EmailListImport>(stream);
+            }
+            catch (JsonException)
+            {
+            }
+
+            if (emailListImport != null)
+            {
+                // Version 2+
+                emailReminders.AddRange(emailListImport.Addresses);
+                successMessage = $"Import from <strong>{emailListImport.Source}</strong> complete.";
+            }
+            else
+            {
+                // Version 1
+                stream.Seek(0, SeekOrigin.Begin);
+                try
+                {
+                    emailReminders.AddRange(await JsonSerializer
+                        .DeserializeAsync<IEnumerable<EmailReminder>>(stream));
+                }
+                catch (JsonException jex)
+                {
+                    ShowAlertWarning($"Unable to import file: {jex.Message}");
+                    _logger.LogError(jex,
+                        "Unable to import mailing list file: {ErrorMessage}",
+                        jex.Message);
+                    return RedirectToAction(nameof(Addresses));
+                }
+                successMessage = "Import complete.";
+            }
+
+            if (emailReminders.Any())
+            {
+                foreach (var emailReminder in emailReminders)
+                {
+                    if (string.IsNullOrEmpty(emailReminder.Email))
+                    {
+                        issues.Add("Record {recordNumber} is missing an email address.");
+                    }
+
+                    emailReminder.SignUpSource = viewModel.SignUpSource;
+
+                    success += await _emailReminderService
+                        .ImportEmailToListAsync(GetActiveUserId(), emailReminder) ? 1 : 0;
+
+                    recordNumber++;
+
+                    if (success % 40 == 0)
+                    {
+                        await _emailReminderService.SaveImportAsync();
+                    }
+                }
+                await _emailReminderService.SaveImportAsync();
+            }
+
+            var response = new StringBuilder(successMessage).Append(' ');
+            if (success > 0)
+            {
+                response.Append("Successfully imported <strong>")
+                    .Append(success)
+                    .Append(" addresses</strong> to list ")
+                    .Append(viewModel.SignUpSource)
+                    .Append('.');
+            }
+            else
+            {
+                response.Append("All addresses were already present on the list.");
+            }
+
+            if (issues.Count == 0)
+            {
+                ShowAlertSuccess(response.ToString());
+            }
+            else
+            {
+                response.Append(" The following issues occurred with the import:<ul>");
+                foreach (var issue in issues)
+                {
+                    response.Append("<li>").Append(issue).Append("</li>");
+                }
+                response.Append("</ul>");
+                ShowAlertWarning(response.ToString());
+            }
+
+            return RedirectToAction(nameof(EmailManagementController.Addresses));
         }
 
         public async Task<IActionResult> Index(int page = 1)
@@ -113,103 +334,6 @@ namespace GRA.Controllers.MissionControl
             return View(viewModel);
         }
 
-        public async Task<IActionResult> Create()
-        {
-            PageTitle = "Create Email";
-            var site = await GetCurrentSiteAsync();
-            var viewModel = new EmailDetailViewModel
-            {
-                Action = nameof(Create),
-                EmailTemplate = new EmailTemplate(),
-            };
-            viewModel.EmailTemplate.FromAddress = site.FromEmailAddress;
-            viewModel.EmailTemplate.FromName = site.FromEmailName;
-            return View("Detail", viewModel);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Create(EmailDetailViewModel viewModel)
-        {
-            if (ModelState.IsValid)
-            {
-                var newTemplate
-                    = await _emailManagementService.CreateEmailTemplate(viewModel.EmailTemplate);
-                return RedirectToAction(nameof(EmailManagementController.Edit),
-                    new { id = newTemplate.Id });
-            }
-            PageTitle = "Create Email";
-            return View("Detail", viewModel);
-        }
-
-        public async Task<IActionResult> Edit(int id)
-        {
-            PageTitle = "Edit Email";
-            var viewModel = new EmailDetailViewModel
-            {
-                Action = nameof(Edit),
-                EmailTemplate = await _emailService.GetEmailTemplate(id)
-            };
-            if (viewModel.EmailTemplate == null)
-            {
-                ShowAlertDanger($"Could not find email template {id}");
-                RedirectToAction(nameof(EmailManagementController.Index));
-            }
-            return View("Detail", viewModel);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Edit(EmailDetailViewModel viewModel)
-        {
-            if (ModelState.IsValid)
-            {
-                await _emailManagementService.EditEmailTemplate(viewModel.EmailTemplate);
-                return RedirectToAction(nameof(EmailManagementController.Edit),
-                    viewModel.EmailTemplate.Id);
-            }
-            ShowAlertDanger("Could not update email template");
-            PageTitle = "Edit Email";
-            return View("Detail", viewModel);
-        }
-
-        [HttpPost]
-        [Authorize(Policy = Policy.SendBulkEmails)]
-        public async Task<IActionResult> SendEmailTest(EmailIndexViewModel viewModel)
-        {
-            if (string.IsNullOrEmpty(viewModel.SendTestRecipients))
-            {
-                ShowAlertDanger("You must supply one or more email addresses in order to send a test.");
-                return RedirectToAction(nameof(EmailManagementController.Index));
-            }
-            else
-            {
-                _logger.LogInformation("Email test requested by {UserId} for email {EmailId} to {Addresses}",
-                    GetActiveUserId(),
-                    viewModel.SendTestTemplateId,
-                    viewModel.SendTestRecipients);
-
-                var jobToken = await _jobService.CreateJobAsync(new Job
-                {
-                    JobType = JobType.SendBulkEmails,
-                    SerializedParameters = JsonConvert
-                        .SerializeObject(new JobDetailsSendBulkEmails
-                        {
-                            EmailTemplateId = viewModel.SendTestTemplateId,
-                            To = viewModel.SendTestRecipients
-                        })
-                });
-
-                return View("Job", new ViewModel.MissionControl.Shared.JobViewModel
-                {
-                    CancelUrl = Url.Action(nameof(Index)),
-                    JobToken = jobToken.ToString(),
-                    PingSeconds = 5,
-                    SuccessRedirectUrl = "",
-                    SuccessUrl = Url.Action(nameof(Index)),
-                    Title = "Sending test emails..."
-                });
-            }
-        }
-
         [HttpPost]
         [Authorize(Policy = Policy.SendBulkEmails)]
         public async Task<IActionResult> SendEmail(EmailIndexViewModel viewModel)
@@ -231,8 +355,8 @@ namespace GRA.Controllers.MissionControl
                 var jobToken = await _jobService.CreateJobAsync(new Job
                 {
                     JobType = JobType.SendBulkEmails,
-                    SerializedParameters = JsonConvert
-                        .SerializeObject(new JobDetailsSendBulkEmails
+                    SerializedParameters = JsonSerializer
+                        .Serialize(new JobDetailsSendBulkEmails
                         {
                             EmailTemplateId = viewModel.SendEmailTemplateId,
                             MailingList = viewModel.EmailList == SubscribedParticipants
@@ -254,10 +378,43 @@ namespace GRA.Controllers.MissionControl
             }
         }
 
-        [Authorize(Policy = Policy.ManageBulkEmails)]
-        public async Task<IActionResult> Addresses()
+        [HttpPost]
+        [Authorize(Policy = Policy.SendBulkEmails)]
+        public async Task<IActionResult> SendEmailTest(EmailIndexViewModel viewModel)
         {
-            return await ShowAddressView(null);
+            if (string.IsNullOrEmpty(viewModel.SendTestRecipients))
+            {
+                ShowAlertDanger("You must supply one or more email addresses in order to send a test.");
+                return RedirectToAction(nameof(EmailManagementController.Index));
+            }
+            else
+            {
+                _logger.LogInformation("Email test requested by {UserId} for email {EmailId} to {Addresses}",
+                    GetActiveUserId(),
+                    viewModel.SendTestTemplateId,
+                    viewModel.SendTestRecipients);
+
+                var jobToken = await _jobService.CreateJobAsync(new Job
+                {
+                    JobType = JobType.SendBulkEmails,
+                    SerializedParameters = JsonSerializer
+                        .Serialize(new JobDetailsSendBulkEmails
+                        {
+                            EmailTemplateId = viewModel.SendTestTemplateId,
+                            To = viewModel.SendTestRecipients
+                        })
+                });
+
+                return View("Job", new ViewModel.MissionControl.Shared.JobViewModel
+                {
+                    CancelUrl = Url.Action(nameof(Index)),
+                    JobToken = jobToken.ToString(),
+                    PingSeconds = 5,
+                    SuccessRedirectUrl = "",
+                    SuccessUrl = Url.Action(nameof(Index)),
+                    Title = "Sending test emails..."
+                });
+            }
         }
 
         private async Task<IActionResult> ShowAddressView(EmailAddressesViewModel viewModel)
@@ -280,129 +437,6 @@ namespace GRA.Controllers.MissionControl
                 emailAddressesViewModel.HasSources = allEmailReminders.Count > 0;
             }
             return View(emailAddressesViewModel);
-        }
-
-        [HttpGet]
-        [Authorize(Policy = Policy.ManageBulkEmails)]
-        public async Task<IActionResult> ExportAddresses(EmailAddressesViewModel viewModel)
-        {
-            if (string.IsNullOrEmpty(viewModel.SignUpSource))
-            {
-                ModelState.AddModelError(nameof(viewModel.SignUpSource),
-                    "Please select a list to export.");
-                return await ShowAddressView(viewModel);
-            }
-            var json = JsonConvert.SerializeObject(await _emailReminderService
-                .GetAllSubscribersAsync(viewModel.SignUpSource));
-
-            var filename = $"EmailList-{viewModel.SignUpSource}.json";
-
-            using (var ms = new MemoryStream())
-            {
-                using (var writer = new StreamWriter(ms))
-                {
-                    await writer.WriteAsync(json);
-                    await writer.FlushAsync();
-                    writer.Close();
-                    return File(ms.ToArray(),
-                        "text/json",
-                        FileUtility.EnsureValidFilename(filename));
-                }
-            }
-        }
-
-        [HttpPost]
-        [Authorize(Policy = Policy.ManageBulkEmails)]
-        public async Task<IActionResult> ImportAddresses(EmailAddressesViewModel viewModel)
-        {
-            if (viewModel?.UploadedFile == null)
-            {
-                ShowAlertDanger("You must upload a JSON file of email records.");
-                ModelState.AddModelError(nameof(viewModel.UploadedFile),
-                    "A .json file is required.");
-                return RedirectToAction(nameof(EmailManagementController.Addresses));
-            }
-
-            using (var reader = new StreamReader(viewModel.UploadedFile.OpenReadStream()))
-            {
-                var issues = new List<string>();
-                int recordNumber = 1;
-                var success = 0;
-                try
-                {
-                    var jsonString = await reader.ReadToEndAsync();
-                    foreach (var emailReminder in JsonConvert
-                        .DeserializeObject<ICollection<EmailReminder>>(jsonString))
-                    {
-                        try
-                        {
-                            if (await _emailReminderService
-                                .ImportEmailToListAsync(GetActiveUserId(), emailReminder))
-                            {
-                                success++;
-                            }
-                        }
-#pragma warning disable CA1031 // Do not catch general exception types
-                        catch (Exception ex)
-                        {
-                            _logger.LogError("Issue in {Filename} on record {RecordNumber}: {ErrorMessage}",
-                                viewModel.UploadedFile.FileName,
-                                recordNumber,
-                                ex.Message);
-                            issues.Add($"Issue in item {recordNumber}: {ex.Message}");
-                        }
-#pragma warning restore CA1031 // Do not catch general exception types
-
-                        if (recordNumber % 50 == 0)
-                        {
-                            await _emailReminderService.SaveImportAsync();
-                        }
-
-                        recordNumber++;
-                    }
-                    await _emailReminderService.SaveImportAsync();
-                }
-#pragma warning disable CA1031 // Do not catch general exception types
-                catch (Exception ex)
-                {
-                    _logger.LogError("Import failed for {Filename} on record {RecordNumber}: {ErrorMessage}",
-                        viewModel.UploadedFile.FileName,
-                        recordNumber,
-                        ex.Message);
-                    ShowAlertDanger($"Failed to import addresses: {ex.Message}");
-                    return RedirectToAction(nameof(EmailManagementController.Addresses));
-                }
-#pragma warning restore CA1031 // Do not catch general exception types
-
-                var response = new StringBuilder();
-                if (success > 0)
-                {
-                    response.Append("Successfully imported <strong>")
-                        .Append(success)
-                        .Append(" addresses</strong>.");
-                }
-                else
-                {
-                    response.Append("All addresses were already present on the list.");
-                }
-
-                if (issues.Count == 0)
-                {
-                    ShowAlertSuccess(response.ToString());
-                }
-                else
-                {
-                    response.Append(" The following issues occurred with the import:<ul>");
-                    foreach (var issue in issues)
-                    {
-                        response.Append("<li>").Append(issue).Append("</li>");
-                    }
-                    response.Append("</ul>");
-                    ShowAlertWarning(response.ToString());
-                }
-
-                return RedirectToAction(nameof(EmailManagementController.Addresses));
-            }
         }
     }
 }

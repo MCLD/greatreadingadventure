@@ -23,8 +23,7 @@ namespace GRA.Domain.Service
         private readonly IEmailBaseRepository _emailBaseRepository;
         private readonly IEmailTemplateRepository _emailTemplateRepository;
         private readonly LanguageService _languageService;
-        private readonly ISiteRepository _siteRepository;
-        private readonly ISiteSettingRepository _siteSettingRepository;
+        private readonly SiteLookupService _siteLookupService;
         private readonly IUserRepository _userRepository;
 
         public EmailService(ILogger<EmailService> logger,
@@ -34,10 +33,9 @@ namespace GRA.Domain.Service
             IDirectEmailTemplateRepository directEmailTemplateRepository,
             IEmailBaseRepository emailBaseRepository,
             IEmailTemplateRepository emailTemplateRepository,
-            ISiteRepository siteRepository,
-            ISiteSettingRepository siteSettingRepository,
             IUserRepository userRepository,
-            LanguageService languageService) : base(logger, dateTimeProvider)
+            LanguageService languageService,
+            SiteLookupService siteLookupService) : base(logger, dateTimeProvider)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
             _directEmailHistoryRepository = directEmailHistoryRepository
@@ -48,21 +46,45 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(emailBaseRepository));
             _emailTemplateRepository = emailTemplateRepository
                 ?? throw new ArgumentNullException(nameof(emailTemplateRepository));
-            _siteRepository = siteRepository
-                ?? throw new ArgumentNullException(nameof(siteRepository));
-            _siteSettingRepository = siteSettingRepository
-                ?? throw new ArgumentNullException(nameof(siteSettingRepository));
+            _siteLookupService = siteLookupService
+                ?? throw new ArgumentNullException(nameof(siteLookupService));
             _userRepository = userRepository
                 ?? throw new ArgumentNullException(nameof(userRepository));
             _languageService = languageService
                 ?? throw new ArgumentNullException(nameof(languageService));
         }
 
+        [Obsolete("Please use EmailService.SendDirectAsync for sending templated emails.")]
         public async Task<EmailTemplate> GetEmailTemplate(int emailTemplateId)
         {
             return await _emailTemplateRepository.GetByIdAsync(emailTemplateId);
         }
 
+        public Task IncrementSentCountAsync(int directEmailTemplateId)
+        {
+            return IncrementSentCountAsync(directEmailTemplateId, 1);
+        }
+
+        public async Task IncrementSentCountAsync(int directEmailTemplateId, int incrementBy)
+        {
+            if (incrementBy == 0)
+            {
+                throw new ArgumentNullException(nameof(incrementBy));
+            }
+
+            var directEmailTemplate
+                 = await _directEmailTemplateRepository.GetByIdAsync(directEmailTemplateId);
+
+            if (directEmailTemplate == null)
+            {
+                throw new GraException($"Unable to find email template id {directEmailTemplateId}");
+            }
+
+            directEmailTemplate.EmailsSent += incrementBy;
+            await _directEmailTemplateRepository.UpdateSaveNoAuditAsync(directEmailTemplate);
+        }
+
+        [Obsolete("Please use EmailService.SendDirectAsync for sending templated emails.")]
         public async Task SendBulkAsync(User user, int emailTemplateId)
         {
             if (user == null)
@@ -72,7 +94,7 @@ namespace GRA.Domain.Service
                 return;
             }
 
-            var site = await _siteRepository.GetByIdAsync(user.SiteId);
+            var site = await _siteLookupService.GetByIdAsync(user.SiteId);
             var template = await _emailTemplateRepository.GetByIdAsync(emailTemplateId);
 
             if (user?.SiteId != template.SiteId)
@@ -124,7 +146,7 @@ namespace GRA.Domain.Service
                 return;
             }
 
-            var site = await _siteRepository.GetByIdAsync(siteId);
+            var site = await _siteLookupService.GetByIdAsync(siteId);
 
             var template = await _emailTemplateRepository.GetByIdAsync(emailTemplateId);
 
@@ -170,9 +192,30 @@ namespace GRA.Domain.Service
                 throw new ArgumentNullException(nameof(directEmailDetails));
             }
 
-            var user = await _userRepository.GetByIdAsync(directEmailDetails.ToUserId
-                ?? directEmailDetails.SendingUserId);
-            var site = await _siteRepository.GetByIdAsync(user.SiteId);
+            string toAddress;
+            string toName;
+            int languageId;
+            Site site;
+
+            if (directEmailDetails.ToUserId.HasValue)
+            {
+                var user = await _userRepository.GetByIdAsync(directEmailDetails.ToUserId
+                    ?? directEmailDetails.SendingUserId);
+                site = await _siteLookupService.GetByIdAsync(user.SiteId);
+                toAddress = user.Email;
+                toName = user.FullName;
+                languageId = string.IsNullOrEmpty(user.Culture)
+                    ? await _languageService.GetDefaultLanguageIdAsync()
+                    : await _languageService.GetLanguageIdAsync(user.Culture);
+            }
+            else
+            {
+                site = await _siteLookupService.GetByIdAsync(directEmailDetails.SendingUserId);
+                toAddress = directEmailDetails.ToAddress;
+                toName = directEmailDetails.ToName;
+                languageId = directEmailDetails.LanguageId
+                    ?? await _languageService.GetDefaultLanguageIdAsync();
+            }
 
             var history = new DirectEmailHistory
             {
@@ -180,15 +223,13 @@ namespace GRA.Domain.Service
                 FromEmailAddress = site.FromEmailAddress,
                 FromName = site.FromEmailName,
                 IsBulk = directEmailDetails.IsBulk,
-                LanguageId = string.IsNullOrEmpty(user.Culture)
-                    ? await _languageService.GetDefaultLanguageIdAsync()
-                    : await _languageService.GetLanguageIdAsync(user.Culture),
+                LanguageId = languageId,
                 OverrideToEmailAddress = string
                     .IsNullOrWhiteSpace(_config[ConfigurationKey.EmailOverride])
                     ? null
                     : _config[ConfigurationKey.EmailOverride],
-                ToEmailAddress = user.Email,
-                ToName = user.FullName
+                ToEmailAddress = toAddress,
+                ToName = toName
             };
 
             if (directEmailDetails.ToUserId.HasValue)
@@ -254,6 +295,7 @@ namespace GRA.Domain.Service
             else
             {
                 await _directEmailHistoryRepository.AddSaveNoAuditAsync(history);
+                await IncrementSentCountAsync(directEmailTemplate.Id);
             }
 
             return history;
@@ -265,7 +307,7 @@ namespace GRA.Domain.Service
         string body,
         string htmlBody = null)
         {
-            var site = await _siteRepository.GetByIdAsync(siteId);
+            var site = await _siteLookupService.GetByIdAsync(siteId);
 
             await SendEmailAsync(site,
                 emailAddress,
@@ -299,7 +341,7 @@ namespace GRA.Domain.Service
                 emailTo,
                 StringComparison.InvariantCultureIgnoreCase);
 
-            var site = await _siteRepository.GetByIdAsync(template.SiteId);
+            var site = await _siteLookupService.GetByIdAsync(template.SiteId);
 
             await SendEmailAsync(site,
                 emailTo,

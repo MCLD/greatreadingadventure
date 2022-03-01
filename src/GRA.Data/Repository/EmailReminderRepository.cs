@@ -27,6 +27,17 @@ namespace GRA.Data.Repository
             return lookup != null;
         }
 
+        public async Task<ICollection<EmailReminder>>
+            GetAllListSubscribersAsync(string signUpSource)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.SignUpSource == signUpSource)
+                .OrderBy(_ => _.CreatedAt)
+                .ProjectTo<EmailReminder>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
         public async Task<ICollection<DataWithCount<string>>> GetEmailListsAsync()
         {
             return await DbSet
@@ -38,14 +49,6 @@ namespace GRA.Data.Repository
                     Count = _.Count()
                 })
                 .ToListAsync();
-        }
-
-        public async Task<int> GetListSubscribersCountAsync(string signUpSource)
-        {
-            return await DbSet
-                .AsNoTracking()
-                .Where(_ => _.SignUpSource == signUpSource && _.SentAt == null)
-                .CountAsync();
         }
 
         public async Task<ICollection<EmailReminder>> GetListSubscribersAsync(string signUpSource,
@@ -62,6 +65,14 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
+        public async Task<int> GetListSubscribersCountAsync(string signUpSource)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.SignUpSource == signUpSource && _.SentAt == null)
+                .CountAsync();
+        }
+
         public async Task UpdateSentDateAsync(int emailReminderId)
         {
             var reminder = await DbSet.Where(_ => _.Id == emailReminderId).SingleOrDefaultAsync();
@@ -74,17 +85,6 @@ namespace GRA.Data.Repository
             {
                 throw new GraException($"Could not find email reminder ID {emailReminderId}");
             }
-        }
-
-        public async Task<ICollection<EmailReminder>>
-            GetAllListSubscribersAsync(string signUpSource)
-        {
-            return await DbSet
-                .AsNoTracking()
-                .Where(_ => _.SignUpSource == signUpSource)
-                .OrderBy(_ => _.CreatedAt)
-                .ProjectTo<EmailReminder>(_mapper.ConfigurationProvider)
-                .ToListAsync();
         }
     }
 }

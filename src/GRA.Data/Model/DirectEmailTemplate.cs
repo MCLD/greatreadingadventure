@@ -17,6 +17,7 @@ namespace GRA.Data.Model
         [Required]
         public int EmailBaseId { get; set; }
 
+        public int EmailsSent { get; set; }
         public bool SentBulk { get; set; }
 
         [MaxLength(25)]
