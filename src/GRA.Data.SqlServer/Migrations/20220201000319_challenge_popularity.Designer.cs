@@ -4,14 +4,16 @@ using GRA.Data.SqlServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GRA.Data.SqlServer.Migrations
 {
     [DbContext(typeof(SqlServerContext))]
-    partial class SqlServerContextModelSnapshot : ModelSnapshot
+    [Migration("20220201000319_challenge_popularity")]
+    partial class challenge_popularity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -3794,9 +3796,6 @@ namespace GRA.Data.SqlServer.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("EmailAwardSent")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("EmailSentAt")
                         .HasColumnType("datetime2");
 
                     b.Property<bool?>("IsDonated")
