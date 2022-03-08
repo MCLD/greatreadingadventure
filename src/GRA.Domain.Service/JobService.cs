@@ -45,7 +45,7 @@ namespace GRA.Domain.Service
                         using (Serilog.Context.LogContext.PushProperty(LoggingEnrichment.JobType,
                             jobInfo.JobType))
                         using (Serilog.Context.LogContext.PushProperty(LoggingEnrichment.JobToken,
-                            jobTokenString))
+                            jobToken))
                         {
                             progress?.Report(new JobStatus
                             {
@@ -62,14 +62,11 @@ namespace GRA.Domain.Service
                                 await _jobRepository.UpdateFinishAsync(jobInfo.Id,
                                     token.IsCancellationRequested);
                             }
-#pragma warning disable CA1031 // Do not catch general exception types
                             catch (Exception ex)
-#pragma warning restore CA1031 // Do not catch general exception types
                             {
                                 _logger.LogError(ex,
-                                    "Error executing job id {JobId} ({JobToken}): {Message}",
+                                    "Error executing job id {JobId}: {Message}",
                                     jobInfo.Id,
-                                    jobInfo.JobToken,
                                     ex.Message);
                                 status = new JobStatus
                                 {

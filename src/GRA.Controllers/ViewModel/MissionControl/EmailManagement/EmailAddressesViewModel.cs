@@ -19,7 +19,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.EmailManagement
                     _allSources = new List<SelectListItem> {
                     new SelectListItem("Before Registration", nameof(SiteStage.BeforeRegistration)),
                     new SelectListItem("Access Closed", nameof(SiteStage.AccessClosed))
-                };
+                    };
                 }
                 return _allSources;
             }

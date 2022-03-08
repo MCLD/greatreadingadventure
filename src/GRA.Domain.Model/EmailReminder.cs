@@ -10,6 +10,8 @@ namespace GRA.Domain.Model
 
         public int? LanguageId { get; set; }
 
+        public string LanguageName { get; set; }
+
         public DateTime? SentAt { get; set; }
 
         [Required]

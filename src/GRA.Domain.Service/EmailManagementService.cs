@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
+using GRA.Domain.Model.Utility;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Localization;
@@ -12,22 +13,31 @@ namespace GRA.Domain.Service
 {
     public class EmailManagementService : BaseUserService<EmailManagementService>
     {
-        private readonly IEmailSubscriptionAuditLogRepository _emailSubscriptionAuditLogRepository;
-        private readonly IUserRepository _userRepository;
+        private readonly IDirectEmailTemplateRepository _directEmailTemplateRepository;
+        private readonly IEmailBaseRepository _emailBaseRepository;
         private readonly IEmailReminderRepository _emailReminderRepository;
+        private readonly IEmailSubscriptionAuditLogRepository _emailSubscriptionAuditLogRepository;
         private readonly IEmailTemplateRepository _emailTemplateRepository;
         private readonly IStringLocalizer<Resources.Shared> _sharedLocalizer;
+        private readonly IUserRepository _userRepository;
 
         public EmailManagementService(ILogger<EmailManagementService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
-            IUserContextProvider userContextProvider,
+            IDirectEmailTemplateRepository directEmailTemplateRepository,
+            IEmailBaseRepository emailBaseRepository,
+            IEmailReminderRepository emailReminderRepository,
             IEmailSubscriptionAuditLogRepository emailSubscriptionAuditLogRepository,
             IEmailTemplateRepository emailTemplateRepository,
-            IEmailReminderRepository emailReminderRepository,
+            IStringLocalizer<Resources.Shared> sharedLocalizer,
+            IUserContextProvider userContextProvider,
             IUserRepository userRepository,
-            IStringLocalizer<Resources.Shared> sharedLocalizer)
+            LanguageService languageService)
             : base(logger, dateTimeProvider, userContextProvider)
         {
+            _directEmailTemplateRepository = directEmailTemplateRepository
+                ?? throw new ArgumentNullException(nameof(directEmailTemplateRepository));
+            _emailBaseRepository = emailBaseRepository
+                ?? throw new ArgumentNullException(nameof(emailBaseRepository));
             _emailReminderRepository = emailReminderRepository
                 ?? throw new ArgumentNullException(nameof(emailReminderRepository));
             _emailSubscriptionAuditLogRepository = emailSubscriptionAuditLogRepository
@@ -38,6 +48,78 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(userRepository));
             _sharedLocalizer = sharedLocalizer
                 ?? throw new ArgumentNullException(nameof(sharedLocalizer));
+        }
+
+        public async Task<int> AddTemplateAsync(DirectEmailTemplate directEmailTemplate)
+        {
+            if(directEmailTemplate == null)
+            {
+                throw new ArgumentNullException(nameof(directEmailTemplate));
+            }
+
+            var baseExists = await _emailBaseRepository
+                .GetByIdAsync(directEmailTemplate.EmailBaseId);
+
+            if (baseExists == null)
+            {
+                throw new GraException($"Could not find base email template id {directEmailTemplate.EmailBaseId}");
+            }
+
+            return await _directEmailTemplateRepository
+                .AddSaveWithTextAsync(GetActiveUserId(), directEmailTemplate);
+        }
+
+        public async Task UpdateTemplateAsync(DirectEmailTemplate directEmailTemplate)
+        {
+            await _directEmailTemplateRepository
+                .UpdateSaveWithText(GetActiveUserId(), directEmailTemplate);
+        }
+
+        public async Task<DirectEmailTemplate> GetTemplateAsync(int templateId, int languageId)
+        {
+            var template = await _directEmailTemplateRepository
+                .GetWithTextByIdAsync(templateId, languageId);
+
+            if (template?.Id == null)
+            {
+                throw new GraException($"Unable to find template id {templateId}");
+            }
+
+            return template;
+        }
+
+        public async Task<IEnumerable<EmailBase>> GetEmailBasesAsync()
+        {
+            return await _emailBaseRepository.GetAllAsync();
+        }
+
+        public async Task<ICollection<DataWithCount<string>>> GetEmailListsAsync()
+        {
+            return await _emailReminderRepository.GetEmailListsAsync();
+        }
+
+        public async Task<ICollectionWithCount<EmailTemplateListItem>>
+            GetPaginatedEmailTemplateListAsync(BaseFilter filter)
+        {
+            if (HasPermission(Permission.ManageBulkEmails))
+            {
+                return await _directEmailTemplateRepository.PageAsync(filter);
+            }
+            else
+            {
+                _logger.LogError("User {UserId} doesn't have permission to view the email template list.",
+                    GetClaimId(ClaimType.UserId));
+                throw new GraException("Permission denied.");
+            }
+        }
+
+        public async Task<int> GetSubscriberCount()
+        {
+            return await _userRepository.GetCountAsync(new UserFilter
+            {
+                SiteId = GetCurrentSiteId(),
+                IsSubscribed = true
+            });
         }
 
         public async Task<ICollection<EmailSubscriptionAuditLog>> GetUserAuditLogAsync(int userId)
@@ -112,93 +194,6 @@ namespace GRA.Domain.Service
             }
 
             await _userRepository.SaveAsync();
-        }
-
-        public async Task<DataWithCount<ICollection<EmailTemplate>>>
-            GetPaginatedEmailTemplateListAsync(BaseFilter filter)
-        {
-            if (HasPermission(Permission.ManageBulkEmails))
-            {
-                return await _emailTemplateRepository.PageAsync(filter);
-            }
-            else
-            {
-                _logger.LogError("User {UserId} doesn't have permission to view the email template list.",
-                    GetClaimId(ClaimType.UserId));
-                throw new GraException("Permission denied.");
-            }
-        }
-
-        public async Task<EmailTemplate> CreateEmailTemplate(EmailTemplate emailTemplate)
-        {
-            if (emailTemplate == null)
-            {
-                throw new ArgumentNullException(nameof(emailTemplate));
-            }
-
-            if (HasPermission(Permission.ManageBulkEmails))
-            {
-                var userId = GetActiveUserId();
-                emailTemplate.BodyHtml = emailTemplate.BodyHtml.Trim();
-                emailTemplate.BodyText = emailTemplate.BodyText.Trim();
-                emailTemplate.CreatedAt = _dateTimeProvider.Now;
-                emailTemplate.CreatedBy = GetActiveUserId();
-                emailTemplate.Description = emailTemplate.Description.Trim();
-                emailTemplate.EmailsSent = 0;
-                emailTemplate.FromAddress = emailTemplate.FromAddress.Trim();
-                emailTemplate.FromName = emailTemplate.FromName.Trim();
-                emailTemplate.SiteId = GetCurrentSiteId();
-                emailTemplate.Subject = emailTemplate.Subject.Trim();
-                return await _emailTemplateRepository.AddSaveAsync(userId, emailTemplate);
-            }
-            else
-            {
-                _logger.LogError("User {UserId} doesn't have permission to create an email template.",
-                    GetClaimId(ClaimType.UserId));
-                throw new GraException("Permission denied.");
-            }
-        }
-
-        public async Task<EmailTemplate> EditEmailTemplate(EmailTemplate emailTemplate)
-        {
-            if (emailTemplate == null)
-            {
-                throw new ArgumentNullException(nameof(emailTemplate));
-            }
-
-            if (HasPermission(Permission.ManageBulkEmails))
-            {
-                var userId = GetActiveUserId();
-                var currentTemplate
-                    = await _emailTemplateRepository.GetByIdAsync(emailTemplate.Id);
-                currentTemplate.BodyHtml = emailTemplate.BodyHtml.Trim();
-                currentTemplate.BodyText = emailTemplate.BodyText.Trim();
-                currentTemplate.Description = emailTemplate.Description.Trim();
-                currentTemplate.FromAddress = emailTemplate.FromAddress.Trim();
-                currentTemplate.FromName = emailTemplate.FromName.Trim();
-                currentTemplate.Subject = emailTemplate.Subject.Trim();
-                return await _emailTemplateRepository.UpdateSaveAsync(userId, currentTemplate);
-            }
-            else
-            {
-                _logger.LogError("User {UserId} doesn't have permission to edit an email template.",
-                    GetClaimId(ClaimType.UserId));
-                throw new GraException("Permission denied.");
-            }
-        }
-
-        public async Task<int> GetSubscriberCount()
-        {
-            return await _userRepository.GetCountAsync(new UserFilter
-            {
-                SiteId = GetCurrentSiteId(),
-                IsSubscribed = true
-            });
-        }
-
-        public async Task<ICollection<DataWithCount<string>>> GetEmailListsAsync()
-        {
-            return await _emailReminderRepository.GetEmailListsAsync();
         }
     }
 }

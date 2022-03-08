@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -28,6 +29,7 @@ namespace GRA.Controllers.MissionControl
         private readonly EmailReminderService _emailReminderService;
         private readonly EmailService _emailService;
         private readonly JobService _jobService;
+        private readonly LanguageService _languageService;
         private readonly ILogger _logger;
         private readonly UserService _userService;
 
@@ -37,6 +39,7 @@ namespace GRA.Controllers.MissionControl
             EmailService emailService,
             EmailReminderService emailReminderService,
             JobService jobService,
+            LanguageService languageService,
             UserService userService)
             : base(context)
         {
@@ -47,6 +50,8 @@ namespace GRA.Controllers.MissionControl
             _emailReminderService = emailReminderService
                 ?? throw new ArgumentNullException(nameof(emailReminderService));
             _jobService = jobService ?? throw new ArgumentNullException(nameof(jobService));
+            _languageService = languageService
+                ?? throw new ArgumentNullException(nameof(languageService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             PageTitle = "Email Management";
         }
@@ -57,62 +62,262 @@ namespace GRA.Controllers.MissionControl
             return await ShowAddressView(null);
         }
 
-        public async Task<IActionResult> Create()
+        //public async Task<IActionResult> Create()
+        //{
+        //    PageTitle = "Create Email";
+        //    var site = await GetCurrentSiteAsync();
+        //    var viewModel = new EmailDetailViewModel
+        //    {
+        //        Action = nameof(Create),
+        //        EmailTemplate = new EmailTemplate(),
+        //    };
+        //    viewModel.EmailTemplate.FromAddress = site.FromEmailAddress;
+        //    viewModel.EmailTemplate.FromName = site.FromEmailName;
+        //    return View("Detail", viewModel);
+        //}
+
+        //[HttpPost]
+        //public async Task<IActionResult> Create(EmailDetailViewModel viewModel)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var newTemplate
+        //            = await _emailManagementService.CreateEmailTemplate(viewModel.EmailTemplate);
+        //        return RedirectToAction(nameof(EmailManagementController.Edit),
+        //            new { id = newTemplate.Id });
+        //    }
+        //    PageTitle = "Create Email";
+        //    return View("Detail", viewModel);
+        //}
+
+        //public async Task<IActionResult> Edit(int id)
+        //{
+        //    PageTitle = "Edit Email";
+        //    var viewModel = new EmailDetailViewModel
+        //    {
+        //        Action = nameof(Edit),
+        //        EmailTemplate = await _emailService.GetEmailTemplate(id)
+        //    };
+        //    if (viewModel.EmailTemplate == null)
+        //    {
+        //        ShowAlertDanger($"Could not find email template {id}");
+        //        RedirectToAction(nameof(EmailManagementController.Index));
+        //    }
+        //    return View("Detail", viewModel);
+        //}
+
+        //[HttpPost]
+        //public async Task<IActionResult> Edit(EmailDetailViewModel viewModel)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        await _emailManagementService.EditEmailTemplate(viewModel.EmailTemplate);
+        //        return RedirectToAction(nameof(EmailManagementController.Edit),
+        //            viewModel.EmailTemplate.Id);
+        //    }
+        //    ShowAlertDanger("Could not update email template");
+        //    PageTitle = "Edit Email";
+        //    return View("Detail", viewModel);
+        //}
+
+        [HttpGet]
+        [Authorize(Policy = Policy.ManageBulkEmails)]
+        public async Task<IActionResult> CreateTemplate()
         {
-            PageTitle = "Create Email";
-            var site = await GetCurrentSiteAsync();
-            var viewModel = new EmailDetailViewModel
+            var defaultLanguageId = await _languageService.GetDefaultLanguageIdAsync();
+            var languageList = await _languageService.GetActiveAsync();
+            var emailBases = await _emailManagementService.GetEmailBasesAsync();
+
+            var languageSelect = new SelectList(languageList,
+                    nameof(Language.Id),
+                    nameof(Language.Description),
+                    defaultLanguageId);
+
+            foreach (var languageOption in languageSelect)
             {
-                Action = nameof(Create),
-                EmailTemplate = new EmailTemplate(),
-            };
-            viewModel.EmailTemplate.FromAddress = site.FromEmailAddress;
-            viewModel.EmailTemplate.FromName = site.FromEmailName;
-            return View("Detail", viewModel);
+                if (languageOption.Value != defaultLanguageId.ToString(CultureInfo.InvariantCulture))
+                {
+                    languageOption.Disabled = true;
+                }
+            }
+            return View("Details", new DetailsViewModel
+            {
+                Action = nameof(CreateTemplate),
+                EmailBases = new SelectList(emailBases,
+                    nameof(EmailBase.Id),
+                    nameof(EmailBase.Name)),
+                Footer = "You are receiving this email becuase you are subscribed to news updates for {{Sitename}}. You can [unsubscribe instantly at any time]({{UnsubscribeLink}})",
+                Languages = languageSelect,
+                LanguageId = defaultLanguageId,
+                Title = "{{Sitename}}"
+            });
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(EmailDetailViewModel viewModel)
+        [Authorize(Policy = Policy.ManageBulkEmails)]
+        public async Task<IActionResult> CreateTemplate(DetailsViewModel detailsViewModel)
         {
+            if(detailsViewModel == null)
+            {
+                ShowAlertWarning("Unable to create template.");
+                return RedirectToAction(nameof(Index));
+            }
+
+            string insertProblem = null;
             if (ModelState.IsValid)
             {
-                var newTemplate
-                    = await _emailManagementService.CreateEmailTemplate(viewModel.EmailTemplate);
-                return RedirectToAction(nameof(EmailManagementController.Edit),
-                    new { id = newTemplate.Id });
+                var emailTemplate = new DirectEmailTemplate
+                {
+                    Description = detailsViewModel.TemplateDescription?.Trim(),
+                    EmailBaseId = detailsViewModel.EmailBaseId,
+                    DirectEmailTemplateText = new DirectEmailTemplateText
+                    {
+                        BodyCommonMark = detailsViewModel.BodyCommonMark?.Trim(),
+                        Footer = detailsViewModel.Footer?.Trim(),
+                        LanguageId = detailsViewModel.LanguageId,
+                        Preview = detailsViewModel.Preview?.Trim(),
+                        Subject = detailsViewModel.Subject?.Trim(),
+                        Title = detailsViewModel.Title?.Trim()
+                    }
+                };
+
+                try
+                {
+                    var insertedId = await _emailManagementService.AddTemplateAsync(emailTemplate);
+
+                    ShowAlertSuccess($"Successfully created template: {detailsViewModel.TemplateDescription}");
+
+                    return RedirectToAction(nameof(EditTemplate), new
+                    {
+                        templateId = insertedId,
+                        languageId = detailsViewModel.LanguageId
+                    });
+                }
+                catch (GraException gex)
+                {
+                    insertProblem = gex.Message;
+                }
             }
-            PageTitle = "Create Email";
-            return View("Detail", viewModel);
+
+            var issues = new StringBuilder("There were issues with your submission:<ul>");
+            if (!string.IsNullOrEmpty(insertProblem))
+            {
+                issues.Append("<li>").Append(insertProblem).AppendLine("</li>");
+            }
+            foreach (var key in ModelState.Keys)
+            {
+                issues.Append("<li>").Append(ModelState[key]).AppendLine("</li>");
+            }
+            issues.Append("</ul>");
+            ShowAlertWarning(issues.ToString());
+            return View("Details", detailsViewModel);
         }
 
-        public async Task<IActionResult> Edit(int id)
+        [HttpGet]
+        [Authorize(Policy = Policy.ManageBulkEmails)]
+        public async Task<IActionResult> EditTemplate(int templateId, int languageId)
         {
-            PageTitle = "Edit Email";
-            var viewModel = new EmailDetailViewModel
+            var languageList = await _languageService.GetActiveAsync();
+            var emailBases = await _emailManagementService.GetEmailBasesAsync();
+
+            if (languageList.SingleOrDefault(_ => _.Id == languageId) == null)
             {
-                Action = nameof(Edit),
-                EmailTemplate = await _emailService.GetEmailTemplate(id)
-            };
-            if (viewModel.EmailTemplate == null)
-            {
-                ShowAlertDanger($"Could not find email template {id}");
-                RedirectToAction(nameof(EmailManagementController.Index));
+                ShowAlertWarning($"Could not find language id {languageId}");
+                return RedirectToAction(nameof(Index));
             }
-            return View("Detail", viewModel);
+
+            var template = await _emailManagementService.GetTemplateAsync(templateId, languageId);
+
+            if (template == null)
+            {
+                ShowAlertWarning($"Could not find template id {templateId}");
+                return RedirectToAction(nameof(Index));
+            }
+
+            var currentUser = await _userService.GetDetails(GetActiveUserId());
+
+            return View("Details", new DetailsViewModel
+            {
+                Action = nameof(EditTemplate),
+                BodyCommonMark = template.DirectEmailTemplateText?.BodyCommonMark,
+                DefaultTestEmail = currentUser?.Email,
+                EmailBaseId = template.EmailBaseId,
+                EmailBases = new SelectList(emailBases,
+                    nameof(EmailBase.Id),
+                    nameof(EmailBase.Name)),
+                EmailTemplateId = template.Id,
+                Footer = template.DirectEmailTemplateText?.Footer,
+                Languages = new SelectList(languageList,
+                    nameof(Language.Id),
+                    nameof(Language.Description),
+                    languageId),
+                LanguageId = languageId,
+                Preview = template.DirectEmailTemplateText?.Preview,
+                Subject = template.DirectEmailTemplateText?.Subject,
+                TemplateDescription = template.Description,
+                Title = template.DirectEmailTemplateText?.Title
+            });
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(EmailDetailViewModel viewModel)
+        [Authorize(Policy = Policy.ManageBulkEmails)]
+        public async Task<IActionResult> EditTemplate(DetailsViewModel detailsViewModel)
         {
+            if(detailsViewModel == null)
+            {
+                ShowAlertWarning("Could not find template to update.");
+                return RedirectToAction(nameof(Index));
+            }
+
+            string updateProblem = null;
             if (ModelState.IsValid)
             {
-                await _emailManagementService.EditEmailTemplate(viewModel.EmailTemplate);
-                return RedirectToAction(nameof(EmailManagementController.Edit),
-                    viewModel.EmailTemplate.Id);
+                var emailTemplate = new DirectEmailTemplate
+                {
+                    Id = detailsViewModel.EmailTemplateId,
+                    Description = detailsViewModel.TemplateDescription?.Trim(),
+                    EmailBaseId = detailsViewModel.EmailBaseId,
+                    DirectEmailTemplateText = new DirectEmailTemplateText
+                    {
+                        BodyCommonMark = detailsViewModel.BodyCommonMark?.Trim(),
+                        Footer = detailsViewModel.Footer?.Trim(),
+                        LanguageId = detailsViewModel.LanguageId,
+                        Preview = detailsViewModel.Preview?.Trim(),
+                        Subject = detailsViewModel.Subject?.Trim(),
+                        Title = detailsViewModel.Title?.Trim()
+                    }
+                };
+
+                try
+                {
+                    await _emailManagementService.UpdateTemplateAsync(emailTemplate);
+
+                    ShowAlertSuccess($"Successfully updated template: {detailsViewModel.TemplateDescription}");
+
+                    return RedirectToAction(nameof(EditTemplate), new
+                    {
+                        templateId = emailTemplate.Id,
+                        languageId = detailsViewModel.LanguageId
+                    });
+                }
+                catch (GraException gex)
+                {
+                    updateProblem = gex.Message;
+                }
             }
-            ShowAlertDanger("Could not update email template");
-            PageTitle = "Edit Email";
-            return View("Detail", viewModel);
+
+            var issues = new StringBuilder("There were issues with your submission:<ul>");
+            if (!string.IsNullOrEmpty(updateProblem))
+            {
+                issues.Append("<li>").Append(updateProblem).AppendLine("</li>");
+            }
+            foreach (var key in ModelState.Keys)
+            {
+                issues.Append("<li>").Append(ModelState[key]).AppendLine("</li>");
+            }
+            issues.Append("</ul>");
+            ShowAlertWarning(issues.ToString());
+            return View("Details", detailsViewModel);
         }
 
         [HttpGet]
@@ -218,6 +423,9 @@ namespace GRA.Controllers.MissionControl
 
             if (emailReminders.Any())
             {
+                var languages = (await _languageService.GetActiveAsync())
+                    .ToDictionary(k => k.Name, v => v.Id);
+
                 foreach (var emailReminder in emailReminders)
                 {
                     if (string.IsNullOrEmpty(emailReminder.Email))
@@ -226,6 +434,12 @@ namespace GRA.Controllers.MissionControl
                     }
 
                     emailReminder.SignUpSource = viewModel.SignUpSource;
+
+                    if (!string.IsNullOrEmpty(emailReminder.LanguageName)
+                        && languages.ContainsKey(emailReminder.LanguageName))
+                    {
+                        emailReminder.LanguageId = languages[emailReminder.LanguageName];
+                    }
 
                     success += await _emailReminderService
                         .ImportEmailToListAsync(GetActiveUserId(), emailReminder) ? 1 : 0;
@@ -316,14 +530,16 @@ namespace GRA.Controllers.MissionControl
             }
             var addressSelectList = new SelectList(addressTypes, "Value", "Text");
 
+            var languageList = await _languageService.GetActiveAsync();
+
             var viewModel = new EmailIndexViewModel
             {
                 PaginateModel = paginateModel,
                 EmailTemplates = templateList.Data,
                 SubscribedParticipants = subscribedParticipants,
-                DefaultTestEmail = currentUser?.Email,
                 IsAdmin = currentUser?.IsAdmin == true,
-                AddressTypes = addressSelectList
+                AddressTypes = addressSelectList,
+                LanguageNames = languageList.ToDictionary(k => k.Id, v => v.Description)
             };
 
             if (!string.IsNullOrEmpty(viewModel.SendButtonDisabled))
@@ -380,7 +596,7 @@ namespace GRA.Controllers.MissionControl
 
         [HttpPost]
         [Authorize(Policy = Policy.SendBulkEmails)]
-        public async Task<IActionResult> SendEmailTest(EmailIndexViewModel viewModel)
+        public async Task<IActionResult> SendEmailTest(DetailsViewModel viewModel)
         {
             if (string.IsNullOrEmpty(viewModel.SendTestRecipients))
             {
@@ -391,7 +607,7 @@ namespace GRA.Controllers.MissionControl
             {
                 _logger.LogInformation("Email test requested by {UserId} for email {EmailId} to {Addresses}",
                     GetActiveUserId(),
-                    viewModel.SendTestTemplateId,
+                    viewModel.EmailTemplateId,
                     viewModel.SendTestRecipients);
 
                 var jobToken = await _jobService.CreateJobAsync(new Job
@@ -399,8 +615,9 @@ namespace GRA.Controllers.MissionControl
                     JobType = JobType.SendBulkEmails,
                     SerializedParameters = JsonSerializer
                         .Serialize(new JobDetailsSendBulkEmails
-                        {
-                            EmailTemplateId = viewModel.SendTestTemplateId,
+                        {                            
+                            EmailTemplateId = viewModel.EmailTemplateId,
+                            TestLanguageId = viewModel.LanguageId,
                             To = viewModel.SendTestRecipients
                         })
                 });

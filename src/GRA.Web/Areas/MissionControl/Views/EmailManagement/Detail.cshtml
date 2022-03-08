@@ -2,7 +2,7 @@
 
 <form asp-action="@Model.Action" method="post" role="form" enctype="multipart/form-data" style="padding-top:10px;">
     <input asp-for="Action" type="hidden" />
-    @if (Model.Action == nameof(EmailManagementController.Edit))
+    @if (Model.Action == nameof(EmailManagementController))
     {
         <input asp-for="EmailTemplate.Id" type="hidden" />
     }

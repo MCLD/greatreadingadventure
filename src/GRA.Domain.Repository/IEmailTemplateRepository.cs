@@ -7,6 +7,6 @@ namespace GRA.Domain.Repository
 {
     public interface IEmailTemplateRepository : IRepository<Model.EmailTemplate>
     {
-        Task<DataWithCount<ICollection<EmailTemplate>>> PageAsync(BaseFilter filter);
+        public Task<DataWithCount<ICollection<EmailTemplate>>> PageAsync(BaseFilter filter);
     }
 }

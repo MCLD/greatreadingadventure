@@ -33,6 +33,12 @@ namespace GRA.Domain.Model.Utility
         public bool IsBulk { get; set; }
 
         /// <summary>
+        /// True if this is a test email and shouldn't be counted towards the total number of
+        /// emails sent.
+        /// </summary>
+        public bool IsTest { get; set; }
+
+        /// <summary>
         /// Lanaguage ID of the template to use, ignored if ToUserId is defined.
         /// </summary>
         public int? LanguageId { get; set; }

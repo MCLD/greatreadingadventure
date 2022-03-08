@@ -13,13 +13,17 @@ namespace GRA.Domain.Service
     public class EmailReminderService : Abstract.BaseService<EmailReminderService>
     {
         private readonly IEmailReminderRepository _emailReminderRepository;
+        private readonly LanguageService _languageService;
 
         public EmailReminderService(ILogger<EmailReminderService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
-            IEmailReminderRepository emailReminderRepository) : base(logger, dateTimeProvider)
+            IEmailReminderRepository emailReminderRepository,
+            LanguageService languageService) : base(logger, dateTimeProvider)
         {
             _emailReminderRepository = emailReminderRepository
                 ?? throw new ArgumentNullException(nameof(emailReminderRepository));
+            _languageService = languageService 
+                ?? throw new ArgumentNullException(nameof(languageService));
         }
 
         public async Task AddEmailReminderAsync(string email,
@@ -52,14 +56,18 @@ namespace GRA.Domain.Service
         {
             var subscribers = await _emailReminderRepository
                 .GetAllListSubscribersAsync(signUpSource);
+
+            var languages = (await _languageService.GetActiveAsync())
+                .ToDictionary(k => k.Id, v => v.Name);
+
             return subscribers.Select(_ => new
             EmailReminderExport
             {
                 CreatedAt = _.CreatedAt,
                 Email = _.Email,
-                LanguageId = _.LanguageId,
+                LanguageName = _.LanguageId.HasValue ? languages[_.LanguageId.Value] : null,
                 SignUpSource = _.SignUpSource
-            });
+            }); ;
         }
 
         public async Task<ICollection<EmailReminder>>

@@ -6,7 +6,7 @@ namespace GRA.Domain.Model.Utility
     {
         public DateTime CreatedAt { get; set; }
         public string Email { get; set; }
-        public int? LanguageId { get; set; }
+        public string LanguageName { get; set; }
         public string SignUpSource { get; set; }
     }
 }

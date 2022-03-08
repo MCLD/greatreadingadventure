@@ -83,7 +83,7 @@ namespace GRA.Domain.Service
                 }
                 else
                 {
-                    return await SendTestAsync(jobId, token, progress, jobDetails);
+                    return await SendTestAsync(userId, jobId, progress, jobDetails, token);
                 }
             }
             else
@@ -289,7 +289,8 @@ namespace GRA.Domain.Service
 
                                 if (addSentCounter > 0)
                                 {
-                                    await _emailService.UpdateSentCount(jobDetails.EmailTemplateId,
+                                    await _emailService.IncrementSentCountAsync(
+                                        jobDetails.EmailTemplateId,
                                         addSentCounter);
                                     addSentCounter = 0;
                                 }
@@ -331,7 +332,7 @@ namespace GRA.Domain.Service
                     subscribed = await _emailReminderService.GetSubscribersAsync(filter);
                 }
 
-                await _emailService.UpdateSentCount(jobDetails.EmailTemplateId,
+                await _emailService.IncrementSentCountAsync(jobDetails.EmailTemplateId,
                     addSentCounter);
                 addSentCounter = 0;
 
@@ -545,7 +546,8 @@ namespace GRA.Domain.Service
 
                                 if (addSentCounter > 0)
                                 {
-                                    await _emailService.UpdateSentCount(jobDetails.EmailTemplateId,
+                                    await _emailService.IncrementSentCountAsync(
+                                        jobDetails.EmailTemplateId,
                                         addSentCounter);
                                     addSentCounter = 0;
                                 }
@@ -590,7 +592,7 @@ namespace GRA.Domain.Service
                         .Where(_ => !problemUsers.Contains(_.Id));
                 }
 
-                await _emailService.UpdateSentCount(jobDetails.EmailTemplateId, addSentCounter);
+                await _emailService.IncrementSentCountAsync(jobDetails.EmailTemplateId);
 
                 string taskStatus = token.IsCancellationRequested
                     ? "Cancelled after"
@@ -637,93 +639,264 @@ namespace GRA.Domain.Service
             }
         }
 
-        private async Task<JobStatus> SendTestAsync(int jobId,
-                            CancellationToken token,
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
+        private async Task<JobStatus> SendTestAsync(int userId,
+            int jobId,
             IProgress<JobStatus> progress,
-            JobDetailsSendBulkEmails jobDetails)
+            JobDetailsSendBulkEmails jobDetails,
+            CancellationToken token)
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
-            try
+
+            int emailsSent = 0;
+            int emailsSkipped = 0;
+            int userCounter = 0;
+
+            int addSentCounter = 0;
+
+            var problemEmails = new HashSet<string>();
+
+            var subscribers = new DataWithCount<ICollection<EmailReminder>>();
+
+            var tos = new List<EmailReminder>();
+
+            foreach (var address in jobDetails.To.Split(','))
             {
-                string[] toArray = jobDetails.To.Contains(',')
-                    ? jobDetails.To.Split(',')
-                    : new[] { jobDetails.To };
+                tos.Add(new EmailReminder
+                {
+                    Email = address,
+                    LanguageId = jobDetails.TestLanguageId,
+                });
+            }
+
+            var subscribedCount = tos.Count;
+            var subscribed = tos;
+
+            _logger.LogInformation("Test email job {JobId}: found {Count} subscribed users, processing first batch of {BatchCount}",
+                jobId,
+                subscribedCount,
+                subscribed.Count);
+
+            token.Register(() =>
+            {
+                _logger.LogWarning("Test email job {JobId} for user {UserId} was cancelled after {EmailsSent} sent, {EmailsSkipped} skipped of {SubscribedUsersCount} in {TimeElapsed}.",
+                    jobId,
+                    userId,
+                    emailsSent,
+                    emailsSkipped,
+                    subscribedCount,
+                    sw.Elapsed.ToString(SpanFormat, CultureInfo.InvariantCulture));
+            });
+
+            if (subscribed.Count > 0)
+            {
+                var site = await _siteLookupService.GetByIdAsync(GetCurrentSiteId());
+
+                var emailDetails = new DirectEmailDetails(site.Name)
+                {
+                    IsTest = true,
+                    SendingUserId = userId,
+                    DirectEmailTemplateId = jobDetails.EmailTemplateId
+                };
+
+                var elapsedStatus = sw.Elapsed;
+                var elapsedUpdateDbStatus = sw.Elapsed;
+                var elapsedLogInfoStatus = sw.Elapsed;
+                var elapsedLogInfoPercent = 0;
 
                 progress.Report(new JobStatus
                 {
                     PercentComplete = 0,
-                    Status = $"Preparing to send {toArray.Length} test emails...",
+                    Title = $"Sending test email...",
+                    Status = $"Preparing to send a test email to {subscribed.Count} participants...",
+                    Error = false
                 });
 
-                int sent = 0;
-                bool cancelled = false;
+                var sent = new List<EmailReminder>();
 
-                foreach (string toAddress in toArray)
+                while (subscribed.Count > 0)
                 {
-                    if (sent > 1)
+                    Thread.Sleep(1000);
+
+                    foreach (var emailReminder in subscribed)
                     {
-                        Thread.Sleep(1000);
+                        if (problemEmails.Contains(emailReminder.Email))
+                        {
+                            emailsSkipped++;
+                            continue;
+                        }
+
+                        bool clearToSend = true;
+
+                        if (emailReminder.SentAt != null || !clearToSend)
+                        {
+                            // send email
+                            _logger.LogTrace("Test email job {JobId}: skipping email {Count}/{Total} to {Email}: {Message}",
+                                jobId,
+                                userCounter + 1,
+                                subscribedCount,
+                                emailReminder.Email,
+                                emailReminder.SentAt != null
+                                    ? " already sent at " + emailReminder.SentAt
+                                    : " is a subscribed participant");
+
+                            emailsSkipped++;
+                        }
+                        else
+                        {
+                            // send email
+                            _logger.LogTrace("Test email job {JobId}: sending email {Count}/{Total} to {Email} with template {EmailTemplate}",
+                                jobId,
+                                userCounter + 1,
+                                subscribedCount,
+                                emailReminder.Email,
+                                jobDetails.EmailTemplateId);
+
+                            // send email to user
+                            try
+                            {
+                                emailDetails.ToAddress = emailReminder.Email;
+                                emailDetails.LanguageId = emailReminder.LanguageId;
+                                emailDetails.ClearTags();
+                                emailDetails.SetTag("Email", emailReminder.Email);
+
+                                sent.Add(emailReminder);
+                                var result = await _emailService.SendDirectAsync(emailDetails);
+
+                                if (result.Successful)
+                                {
+                                    addSentCounter++;
+                                    emailsSent++;
+                                }
+                                else
+                                {
+                                    problemEmails.Add(emailReminder.Email);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                _logger.LogError(ex,
+                                    "Test email job {JobId}: Send failed to {UserId} at {Email}: {ErrorMessage}",
+                                    jobId,
+                                    emailReminder.Id,
+                                    emailReminder.Email,
+                                    ex.Message);
+
+                                problemEmails.Add(emailReminder.Email);
+                            }
+                        }
+
+                        userCounter++;
+
+                        if (token.IsCancellationRequested)
+                        {
+                            break;
+                        }
+
+                        if (sw.Elapsed.TotalSeconds - elapsedStatus.TotalSeconds > 5
+                            || userCounter == 1)
+                        {
+                            elapsedStatus = sw.Elapsed;
+
+                            var remaining = TimeSpan
+                                .FromMilliseconds(elapsedStatus.TotalMilliseconds / userCounter
+                                    * (subscribedCount - userCounter))
+                                .ToString(SpanFormat, CultureInfo.InvariantCulture);
+
+                            var status = new JobStatus
+                            {
+                                PercentComplete = userCounter * 100 / subscribedCount,
+                                Status = $"Sent {emailsSent}, skipped {emailsSkipped} of {subscribedCount}; {elapsedStatus.ToString(SpanFormat, CultureInfo.InvariantCulture)}, remaining: {remaining}, problems: {problemEmails.Count}",
+                                Error = false
+                            };
+
+                            progress.Report(status);
+
+                            if (sw.Elapsed.TotalSeconds - elapsedUpdateDbStatus.TotalSeconds > 60
+                                || userCounter == 1)
+                            {
+                                elapsedUpdateDbStatus = sw.Elapsed;
+
+                                var dbStatusText = string.Format(CultureInfo.InvariantCulture,
+                                    "{0}%: {1}",
+                                    status.PercentComplete,
+                                    status.Status);
+
+                                await _jobRepository.UpdateStatusAsync(jobId,
+                                    dbStatusText[..Math.Min(dbStatusText.Length, 255)]);
+                            }
+
+                            if (sw.Elapsed.TotalSeconds - elapsedLogInfoStatus.TotalSeconds > 500
+                                || userCounter == 1
+                                || status.PercentComplete - elapsedLogInfoPercent >= 20)
+                            {
+                                elapsedLogInfoStatus = sw.Elapsed;
+                                elapsedLogInfoPercent = status.PercentComplete ?? 0;
+
+                                _logger.LogInformation("Test email job {JobId}: {EmailsSent} sent, {EmailsSkipped} skipped of {SubscribedCount} total in {ElapsedTime}, remaining: {EmailsRemaining}, problems: {EmailProblems}",
+                                    jobId,
+                                    emailsSent,
+                                    emailsSkipped,
+                                    subscribedCount,
+                                    elapsedStatus.ToString(SpanFormat, CultureInfo.InvariantCulture),
+                                    remaining,
+                                    problemEmails.Count);
+                            }
+                        }
                     }
 
                     if (token.IsCancellationRequested)
                     {
-                        cancelled = true;
                         break;
                     }
 
-                    await _emailService
-                        .SendBulkTestAsync(toAddress, jobDetails.EmailTemplateId);
-                    sent++;
-
-                    if (sent % 5 == 0 || sent == 1)
-                    {
-                        progress.Report(new JobStatus
-                        {
-                            PercentComplete = sent * 100 / toArray.Length,
-                            Status = $"Sent {sent} test emails of {toArray.Length}",
-                        });
-                    }
+                    subscribed = subscribed.Except(sent).ToList();
                 }
 
-                sw.Stop();
+                string taskStatus = token.IsCancellationRequested
+                    ? "Cancelled after"
+                    : "Task completed with";
 
-                string outcome = cancelled ? "cancelled" : "completed";
-
-                _logger.LogInformation("Email job {JobId}: " + outcome + ", {EmailsSent} test email(s) sent in {Elapsed} ms",
-                    jobId,
-                    toArray.Length,
-                    sw.Elapsed.TotalMilliseconds);
-
-                string status = cancelled
-                    ? $"Cancelled after sending {toArray.Length} test email(s) in {sw.Elapsed.ToString(SpanFormat, CultureInfo.InvariantCulture)} s."
-                    : $"Sent {toArray.Length} test email(s) in {sw.Elapsed.ToString(SpanFormat, CultureInfo.InvariantCulture)} s.";
-
-                await _jobRepository.UpdateStatusAsync(jobId,
-                    status.Substring(0, Math.Min(status.Length, 255)));
-
-                return new JobStatus
+                var finalStatus = new JobStatus
                 {
-                    PercentComplete = sent * 100 / toArray.Length,
-                    Status = status,
-                    Complete = !cancelled
+                    PercentComplete = userCounter * 100 / subscribedCount,
+                    Status = $"{taskStatus} {emailsSent} tests sent, {emailsSkipped} skipped of {subscribedCount} in {elapsedStatus.ToString(SpanFormat, CultureInfo.InvariantCulture)}."
                 };
-            }
-            catch (Exception ex)
-            {
-                _logger.LogInformation("Email job {JobId}: test send to {To} failed: {ErrorMessage}",
-                    jobId,
-                    jobDetails.To,
-                    ex.Message);
+
+                var statusText = string.Format(CultureInfo.InvariantCulture,
+                    "{0}%: {1}",
+                    finalStatus.PercentComplete,
+                    finalStatus.Status);
 
                 await _jobRepository.UpdateStatusAsync(jobId,
-                    $"Error sending test: {ex.Message}");
+                    statusText[..Math.Min(statusText.Length, 255)]);
+
+                _logger.LogInformation("Test email job {JobId}: " + taskStatus + " {EmailsSent} sent, {EmailsSkipped} skipped of {SubscribedCount} total in {ElapsedTime}",
+                    jobId,
+                    emailsSent,
+                    emailsSkipped,
+                    subscribedCount,
+                    elapsedStatus.ToString(SpanFormat, CultureInfo.InvariantCulture));
+
+                return finalStatus;
+            }
+            else
+            {
+                _logger.LogWarning("User {UserId} attempted to send test emails in job {JobId} with no provided addresses.",
+                    userId,
+                    jobId);
+
+                await _jobRepository.UpdateStatusAsync(jobId,
+                    "No addresses were provided.");
 
                 return new JobStatus
                 {
-                    Status = $"Error sending test: {ex.Message}",
+                    PercentComplete = 0,
+                    Status = "No addresses were provided.",
                     Error = true
                 };
             }
+
         }
     }
 }

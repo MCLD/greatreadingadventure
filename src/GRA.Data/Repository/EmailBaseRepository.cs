@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
@@ -16,6 +17,15 @@ namespace GRA.Data.Repository
             ILogger<EmailBaseRepository> logger)
             : base(repositoryFacade, logger)
         {
+        }
+
+        public async Task<IEnumerable<EmailBase>> GetAllAsync()
+        {
+            return await DbSet
+                .AsNoTracking()
+                .OrderBy(_ => _.Name)
+                .ProjectTo<EmailBase>(_mapper.ConfigurationProvider)
+                .ToListAsync();
         }
 
         public async Task<EmailBase> GetWithTextByIdAsync(int emailBaseId, int languageId)

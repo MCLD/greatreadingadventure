@@ -69,7 +69,7 @@ namespace GRA.Domain.Service
         {
             if (incrementBy == 0)
             {
-                throw new ArgumentNullException(nameof(incrementBy));
+                return;
             }
 
             var directEmailTemplate
@@ -210,7 +210,8 @@ namespace GRA.Domain.Service
             }
             else
             {
-                site = await _siteLookupService.GetByIdAsync(directEmailDetails.SendingUserId);
+                var user = await _userRepository.GetByIdAsync(directEmailDetails.SendingUserId);
+                site = await _siteLookupService.GetByIdAsync(user.SiteId);
                 toAddress = directEmailDetails.ToAddress;
                 toName = directEmailDetails.ToName;
                 languageId = directEmailDetails.LanguageId
@@ -278,13 +279,14 @@ namespace GRA.Domain.Service
                 { "BodyText", history.BodyText }
             });
 
-            if (directEmailDetails.IsBulk)
+            if (directEmailDetails.IsBulk && !directEmailDetails.IsTest)
             {
                 if (directEmailDetails.ToUserId.HasValue)
                 {
                     history.BodyHtml = null;
                     history.BodyText = null;
                     await _directEmailHistoryRepository.AddSaveNoAuditAsync(history);
+                    await IncrementSentCountAsync(directEmailTemplate.Id);
                 }
                 if (!directEmailTemplate.SentBulk)
                 {
@@ -294,8 +296,11 @@ namespace GRA.Domain.Service
             }
             else
             {
-                await _directEmailHistoryRepository.AddSaveNoAuditAsync(history);
-                await IncrementSentCountAsync(directEmailTemplate.Id);
+                if (!directEmailDetails.IsTest)
+                {
+                    await _directEmailHistoryRepository.AddSaveNoAuditAsync(history);
+                    await IncrementSentCountAsync(directEmailTemplate.Id);
+                }
             }
 
             return history;
@@ -314,13 +319,6 @@ namespace GRA.Domain.Service
                 subject,
                 body,
                 htmlBody);
-        }
-
-        public async Task UpdateSentCount(int emailTemplateId, int additionalMailsSent)
-        {
-            var template = await _emailTemplateRepository.GetByIdAsync(emailTemplateId);
-            template.EmailsSent += additionalMailsSent;
-            await _emailTemplateRepository.UpdateSaveNoAuditAsync(template);
         }
 
         private static bool SiteCanSendMail(Site site)
@@ -364,6 +362,12 @@ namespace GRA.Domain.Service
             var emailBase = await _emailBaseRepository.GetWithTextByIdAsync(history.EmailBaseId,
                 history.LanguageId);
 
+            if (emailBase.EmailBaseText == null)
+            {
+                emailBase = await _emailBaseRepository.GetWithTextByIdAsync(history.EmailBaseId,
+                    await _languageService.GetDefaultLanguageIdAsync());
+            }
+
             var stubble = new StubbleBuilder().Build();
 
             using var message = new MimeMessage
@@ -382,7 +386,7 @@ namespace GRA.Domain.Service
 
             message.From.Add(new MailboxAddress(history.FromName, history.FromEmailAddress));
 
-            if (string.IsNullOrEmpty(history.OverrideToEmailAddress))
+            if (!string.IsNullOrEmpty(history.OverrideToEmailAddress))
             {
                 message.To.Add(MailboxAddress.Parse(history.OverrideToEmailAddress));
             }
