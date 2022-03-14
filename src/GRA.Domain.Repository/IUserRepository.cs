@@ -43,6 +43,8 @@ namespace GRA.Domain.Repository
 
         Task<IEnumerable<int>> GetNewsSubscribedUserIdsAsync(int siteId);
 
+        Task<IDictionary<string, int>> GetSubscribedLanguageCountAsync(string unspecifiedString);
+
         Task<int> GetSystemUserId();
 
         Task<IEnumerable<User>> GetTopScoresAsync(ReportCriterion criterion, int scoresToReturn);
@@ -60,6 +62,8 @@ namespace GRA.Domain.Repository
         Task<DataWithCount<ICollection<User>>> GetUsersInRoleAsync(int roleId, BaseFilter filter);
 
         Task<bool> HasReceivedBulkEmailAsync(int emailTemplateId, string emailAddress);
+
+        Task<bool> IsAnyoneSubscribedAsync();
 
         Task<bool> IsEmailSubscribedAsync(string email);
 

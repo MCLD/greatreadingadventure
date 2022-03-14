@@ -40,7 +40,8 @@
                             <th>Emails Sent</th>
                             <th>Editable</th>
                             <th>System email</th>
-                            <th>&nbsp;</th>
+                            <th>Edit</th>
+                            <th>Send</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -54,7 +55,14 @@
                                     @template.EmailsSent
                                 </td>
                                 <td style="vertical-align: middle;">
-                                    @(template.IsBulkSent ? "No" : "Yes")
+                                    @if (template.IsSystem || !template.IsBulkSent)
+                                    {
+                                        @:Yes
+                                    }
+                                    else
+                                    {
+                                        <span class="text-danger" title="Emails have already been sent.">No</span>
+                                    }
                                 </td>
                                 <td style="vertical-align: middle;">
                                     @(template.IsSystem ? "Yes" : "No")
@@ -67,16 +75,19 @@
                                asp-route-languageId="@language"
                                class="btn btn-file btn-default btn-sm gra-button-buffer">@Model.LanguageNames[language]</a>
                                     }
-                                    @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.SendBulkEmails.ToString()))
+                                </td>
+                                <td class="text-right">
+                                    @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.SendBulkEmails.ToString()) && !template.IsSystem && Model.IsAnyoneSubscribed)
                                     {
-                                        <button class="btn btn-sm btn-warning sendEmail gra-button-buffer"
-                                    data-toggle="modal"
-                                    data-target="#sendModal"
-                                    data-id="@template.Id"
-                                    data-descr="@template.Description"
-                                    disabled="@Model.SendButtonDisabled">
+                                        <a class="btn btn-sm btn-warning sendEmail gra-button-buffer"
+                               asp-action="@nameof(EmailManagementController.Send)"
+                               asp-route-templateId="@template.Id">
                                             Send Email
-                                        </button>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        @:&nbsp;
                                     }
                                 </td>
                             </tr>
@@ -84,97 +95,10 @@
                     </tbody>
                 </table>
             </div>
-            @if (Model.PaginateModel.MaxPage > 1)
+            @if (Model.MaxPage > 1)
             {
-                <paginate paginateModel="@Model.PaginateModel"></paginate>
+                <paginate paginateModel="@Model"></paginate>
             }
         }
     </div>
 </div>
-
-<div class="modal fade"
-     id="sendModal"
-     tabindex="-1"
-     role="dialog"
-     aria-labelledby="sendModalLabel">
-    <div class="modal-dialog" role="document">
-        <form asp-action="@nameof(EmailManagementController.SendEmail)"
-              method="post"
-              role="form"
-              style="display:inline">
-            <input id="sendEmailTemplateId" name="SendEmailTemplateId" type="hidden" />
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button"
-                            class="close"
-                            data-dismiss="modal"
-                            aria-label="Close dialog">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h1 class="modal-title h4" id="sendModalHeader">Send email</h1>
-                </div>
-                <div class="modal-body">
-                    <div class="row row-spacing">
-                        <div class="col-xs-12">
-                            <label asp-for="EmailList"
-                                   class="control-label">Select a mailing list:</label>
-                            <select asp-for="EmailList"
-                                    asp-items="@Model.AddressTypes"
-                                    placeholder="Select a mailing list"
-                                    class="form-control"
-                                    formgroup>
-                            </select>
-                            <span asp-validation-for="EmailList" class="text-danger"></span>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label asp-for="SendValidation" class="control-label"></label>
-                        <input asp-for="SendValidation" class="form-control" hidden />
-                    </div>
-
-                    <div class="form-group">
-
-                        <label asp-for="SendToParticipantsToo" class="control-label"></label>
-                        <select asp-for="SendToParticipantsToo"
-                                class="form-control"
-                                formgroup>
-                            <option value="true">Send to participants as well</option>
-                            <option value="false">
-                                Send only to people subscribed on the list
-                            </option>
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button"
-                            class="btn btn-default"
-                            data-dismiss="modal"
-                            style="margin-right: 1em;">
-                        Cancel
-                    </button>
-                    <button type="submit"
-                            class="btn btn-warning pull-right"
-                            aria-label="Confirm"
-                            disabled="@Model.SendButtonDisabled">
-                        Send emails
-                    </button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
-@section scripts
-    {
-<script>
-    $(".sendEmail").on("click", function () {
-        $('#sendEmailTemplateId').val($(this).data('id'));
-        $('#sendModalHeader').text('Send Email: ' + $(this).data('descr'));
-    });
-    $('.testEmail').on('click', function () {
-        $('#sendTestTemplateId').val($(this).data('id'));
-        $('#sendTestModalHeader').text('Send Test: ' + $(this).data('descr'));
-    });
-</script>
-}

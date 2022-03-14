@@ -38,17 +38,45 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task<ICollection<DataWithCount<string>>> GetEmailListsAsync()
+        public async Task<IDictionary<string, Dictionary<int, int>>> GetEmailListsAsync(
+            int defaultLanguageId)
         {
-            return await DbSet
-                .AsNoTracking()
-                .GroupBy(_ => _.SignUpSource)
-                .Select(_ => new DataWithCount<string>
+            var listStatuses = await DbSet.AsNoTracking()
+                .GroupBy(_ => new { _.SignUpSource, _.LanguageId })
+                .Select(_ => new
                 {
-                    Data = _.Key,
+                    _.Key.SignUpSource,
+                    _.Key.LanguageId,
                     Count = _.Count()
                 })
                 .ToListAsync();
+
+            var lists = new Dictionary<string, Dictionary<int, int>>();
+
+            foreach (var signUpSource in listStatuses.Select(_ => _.SignUpSource).Distinct())
+            {
+                lists.Add(signUpSource, listStatuses
+                    .Where(_ => _.SignUpSource == signUpSource && _.LanguageId.HasValue)
+                    .ToDictionary(k => k.LanguageId.Value, v => v.Count));
+
+                var noLanguageId = listStatuses
+                    .Where(_ => _.SignUpSource == signUpSource && !_.LanguageId.HasValue)
+                    .Sum(_ => _.Count);
+
+                if (noLanguageId > 0)
+                {
+                    if (lists[signUpSource].ContainsKey(defaultLanguageId))
+                    {
+                        lists[signUpSource][defaultLanguageId] += noLanguageId;
+                    }
+                    else
+                    {
+                        lists[signUpSource].Add(defaultLanguageId, noLanguageId);
+                    }
+                }
+            }
+
+            return lists;
         }
 
         public async Task<ICollection<EmailReminder>> GetListSubscribersAsync(string signUpSource,
@@ -71,6 +99,13 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.SignUpSource == signUpSource && _.SentAt == null)
                 .CountAsync();
+        }
+
+        public async Task<bool> IsAnyoneSubscribedAsync()
+        {
+            return await DbSet
+                .AsNoTracking()
+                .AnyAsync();
         }
 
         public async Task UpdateSentDateAsync(int emailReminderId)

@@ -12,6 +12,8 @@ namespace GRA.Controllers.ViewModel.MissionControl.EmailManagement
         [Display(Name = "Email body", Description = "Specified in CommonMark")]
         public string BodyCommonMark { get; set; }
 
+        public string DefaultTestEmail { get; set; }
+
         [Required]
         [Display(Name = "Email base template")]
         public int EmailBaseId { get; set; }
@@ -22,6 +24,8 @@ namespace GRA.Controllers.ViewModel.MissionControl.EmailManagement
         [Display(Name = "Email footer", Description = "Specified in CommonMark")]
         [Required]
         public string Footer { get; set; }
+
+        public bool IsDisabled { get; set; }
 
         [Required]
         [Display(Name = "Language")]
@@ -34,6 +38,9 @@ namespace GRA.Controllers.ViewModel.MissionControl.EmailManagement
             Description = "Shown to recipient before they open the email, up to 255 characters")]
         [MaxLength(255)]
         public string Preview { get; set; }
+
+        [DisplayName("Email addresses for test email, comma separated")]
+        public string SendTestRecipients { get; set; }
 
         [Required]
         [MaxLength(255)]
@@ -49,10 +56,5 @@ namespace GRA.Controllers.ViewModel.MissionControl.EmailManagement
         [MaxLength(255)]
         [Display(Name = "Email title", Description = "Up to 255 characters")]
         public string Title { get; set; }
-
-        [DisplayName("Email addresses for test email, comma separated")]
-        public string SendTestRecipients { get; set; }
-
-        public string DefaultTestEmail { get; set; }
     }
 }

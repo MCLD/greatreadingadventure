@@ -1,31 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model.Utility;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GRA.Controllers.ViewModel.MissionControl.EmailManagement
 {
-    public class EmailIndexViewModel
+    public class EmailIndexViewModel : PaginateViewModel
     {
         public SelectList AddressTypes { get; set; }
         public string EmailList { get; set; }
         public ICollection<EmailTemplateListItem> EmailTemplates { get; set; }
         public bool IsAdmin { get; set; }
+        public bool IsAnyoneSubscribed { get; set; }
         public Dictionary<int, string> LanguageNames { get; set; }
-        public PaginateViewModel PaginateModel { get; set; }
-
-        public string SendButtonDisabled
-        {
-            get
-            {
-                return AddressTypes?.Any() == true
-                    ? null
-                    : "disabled";
-            }
-        }
-
         public int SendEmailTemplateId { get; set; }
         public int SendTestTemplateId { get; set; }
 

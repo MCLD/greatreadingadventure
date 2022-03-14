@@ -235,6 +235,17 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
+        public async Task<IDictionary<string, int>>
+            GetSubscribedLanguageCountAsync(string unspecifiedString)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => !_.IsDeleted && _.IsEmailSubscribed)
+                .GroupBy(_ => _.Culture)
+                .Select(_ => new { Culture = _.Key, Count = _.Count() })
+                .ToDictionaryAsync(k => k.Culture ?? unspecifiedString, v => v.Count);
+        }
+
         public async Task<int> GetSystemUserId()
         {
             var systemUser = await DbSet
@@ -389,6 +400,14 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .AnyAsync(_ => _.EmailTemplateId == emailTemplateId
                     && _.EmailAddress == emailAddress);
+        }
+
+        public async Task<bool> IsAnyoneSubscribedAsync()
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.IsEmailSubscribed && !_.IsDeleted)
+                .AnyAsync();
         }
 
         public async Task<bool> IsEmailSubscribedAsync(string email)

@@ -6,11 +6,13 @@
     }
 </style>
 }
+
 <form asp-action="@Model.Action"
-      method="post"
-      role="form"
-      enctype="multipart/form-data"
-      style="padding-top:10px;">
+    id="updateTemplate"
+    method="post"
+    role="form"
+    enctype="multipart/form-data"
+    style="padding-top:10px;">
     <input asp-for="Action" type="hidden" />
     <input asp-for="LanguageId" type="hidden" />
     @if (Model.Action == nameof(EmailManagementController.EditTemplate))
@@ -127,21 +129,24 @@
                     @if (Model.Action == nameof(EmailManagementController.EditTemplate))
                     {
 
-                        <button class="btn btn-sm btn-primary testEmail gra-button-buffer"
+                        <button class="btn btn-info testEmail gra-button-buffer"
                         type="button"
                         data-toggle="modal"
                         data-target="#sendTestModal">
                             Send Test
                         </button>
                     }
-                    <button type="submit"
+                    @if (!Model.IsDisabled)
+                    {
+                        <button type="submit"
                         id="Submit"
                         name="Submit"
                         value="Submit"
                         class="btn btn-primary btn-spinner gra-save-button"
                         button-spinner>
-                        <span class="buttonText">Save Template</span>
-                    </button>
+                            <span class="buttonText">Save Template</span>
+                        </button>
+                    }
                 }
             </div>
 
@@ -204,18 +209,16 @@
 }
 
 @section scripts {
-<script src="~/js/markdown.min.js" asp-append-version="true"></script>
-
 <script>
+    var formDisabled = @(Model.IsDisabled ? "true" : "false");
+
     $(function () {
-        var editor = new Markdown.Editor($('#BodyCommonMark'), {
-            allowUploads: false,
-            allowImages: false,
-            allowCode: false,
-            allowHR: false
-        });
-        if (editor) {
-            editor.run();
+        if(formDisabled === true) {
+            $('#updateTemplate *').each(function(index) {
+                if($(this).is('select') || $(this).is('input') || $(this).is('textarea')) {
+                    $(this).prop('disabled', true);
+                }
+            });
         }
     });
 
@@ -229,8 +232,6 @@
     }
 
     $('input.form-control').keydown(showSaveWarning);
-
     $('textarea.form-control').keydown(showSaveWarning);
-
 </script>
     }

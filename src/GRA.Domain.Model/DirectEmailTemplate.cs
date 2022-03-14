@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace GRA.Domain.Model
 {
@@ -16,6 +17,16 @@ namespace GRA.Domain.Model
         public int EmailBaseId { get; set; }
 
         public int EmailsSent { get; set; }
+
+        public bool IsDisabled
+        {
+            get
+            {
+                return string.IsNullOrEmpty(SystemEmailId) && SentBulk;
+            }
+        }
+
+        public IDictionary<int, bool> LanguageUnsub { get; set; }
         public bool SentBulk { get; set; }
 
         [MaxLength(25)]

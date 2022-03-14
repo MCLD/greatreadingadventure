@@ -52,7 +52,7 @@ namespace GRA.Domain.Service
 
         public async Task<int> AddTemplateAsync(DirectEmailTemplate directEmailTemplate)
         {
-            if(directEmailTemplate == null)
+            if (directEmailTemplate == null)
             {
                 throw new ArgumentNullException(nameof(directEmailTemplate));
             }
@@ -69,33 +69,15 @@ namespace GRA.Domain.Service
                 .AddSaveWithTextAsync(GetActiveUserId(), directEmailTemplate);
         }
 
-        public async Task UpdateTemplateAsync(DirectEmailTemplate directEmailTemplate)
-        {
-            await _directEmailTemplateRepository
-                .UpdateSaveWithText(GetActiveUserId(), directEmailTemplate);
-        }
-
-        public async Task<DirectEmailTemplate> GetTemplateAsync(int templateId, int languageId)
-        {
-            var template = await _directEmailTemplateRepository
-                .GetWithTextByIdAsync(templateId, languageId);
-
-            if (template?.Id == null)
-            {
-                throw new GraException($"Unable to find template id {templateId}");
-            }
-
-            return template;
-        }
-
         public async Task<IEnumerable<EmailBase>> GetEmailBasesAsync()
         {
             return await _emailBaseRepository.GetAllAsync();
         }
 
-        public async Task<ICollection<DataWithCount<string>>> GetEmailListsAsync()
+        public async Task<IDictionary<string, Dictionary<int, int>>>
+            GetEmailListsAsync(int defaultLanguageId)
         {
-            return await _emailReminderRepository.GetEmailListsAsync();
+            return await _emailReminderRepository.GetEmailListsAsync(defaultLanguageId);
         }
 
         public async Task<ICollectionWithCount<EmailTemplateListItem>>
@@ -113,19 +95,46 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<int> GetSubscriberCount()
+        public async Task<DirectEmailTemplate> GetTemplateAsync(int templateId, int languageId)
         {
-            return await _userRepository.GetCountAsync(new UserFilter
+            var template = await _directEmailTemplateRepository
+                .GetWithTextByIdAsync(templateId, languageId);
+
+            if (template?.Id == null)
             {
-                SiteId = GetCurrentSiteId(),
-                IsSubscribed = true
-            });
+                throw new GraException($"Unable to find template id {templateId}");
+            }
+
+            return template;
+        }
+
+        public async Task<DirectEmailTemplate> GetTemplateStatusAsync(int templateId)
+        {
+            var template = await _directEmailTemplateRepository.GetByIdAsync(templateId);
+
+            template.LanguageUnsub = await _directEmailTemplateRepository
+                .GetLanguageUnsubAsync(templateId);
+
+            return template;
         }
 
         public async Task<ICollection<EmailSubscriptionAuditLog>> GetUserAuditLogAsync(int userId)
         {
             VerifyPermission(Permission.ViewParticipantDetails);
             return await _emailSubscriptionAuditLogRepository.GetUserAuditLogAsync(userId);
+        }
+
+        public async Task<bool> IsAnyoneSubscribedAsync()
+        {
+            if (await _emailReminderRepository.IsAnyoneSubscribedAsync())
+            {
+                return true;
+            }
+            if (await _userRepository.IsAnyoneSubscribedAsync())
+            {
+                return true;
+            }
+            return false;
         }
 
         public async Task<bool> SetUserEmailSubscriptionStatusAsync(int userId, bool subscribe,
@@ -194,6 +203,12 @@ namespace GRA.Domain.Service
             }
 
             await _userRepository.SaveAsync();
+        }
+
+        public async Task UpdateTemplateAsync(DirectEmailTemplate directEmailTemplate)
+        {
+            await _directEmailTemplateRepository
+                .UpdateSaveWithText(GetActiveUserId(), directEmailTemplate);
         }
     }
 }

@@ -7,7 +7,6 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl.EmailManagement;
-using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Model.Utility;
@@ -24,6 +23,9 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.ManageBulkEmails)]
     public class EmailManagementController : Base.MCController
     {
+        private const string CannotUpdateAlreadySent
+            = "This template cannot be edited - bulk emails were already sent to participants utilizing it.";
+
         private const string SubscribedParticipants = "SubscribedParticipants";
         private readonly EmailManagementService _emailManagementService;
         private readonly EmailReminderService _emailReminderService;
@@ -62,64 +64,6 @@ namespace GRA.Controllers.MissionControl
             return await ShowAddressView(null);
         }
 
-        //public async Task<IActionResult> Create()
-        //{
-        //    PageTitle = "Create Email";
-        //    var site = await GetCurrentSiteAsync();
-        //    var viewModel = new EmailDetailViewModel
-        //    {
-        //        Action = nameof(Create),
-        //        EmailTemplate = new EmailTemplate(),
-        //    };
-        //    viewModel.EmailTemplate.FromAddress = site.FromEmailAddress;
-        //    viewModel.EmailTemplate.FromName = site.FromEmailName;
-        //    return View("Detail", viewModel);
-        //}
-
-        //[HttpPost]
-        //public async Task<IActionResult> Create(EmailDetailViewModel viewModel)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var newTemplate
-        //            = await _emailManagementService.CreateEmailTemplate(viewModel.EmailTemplate);
-        //        return RedirectToAction(nameof(EmailManagementController.Edit),
-        //            new { id = newTemplate.Id });
-        //    }
-        //    PageTitle = "Create Email";
-        //    return View("Detail", viewModel);
-        //}
-
-        //public async Task<IActionResult> Edit(int id)
-        //{
-        //    PageTitle = "Edit Email";
-        //    var viewModel = new EmailDetailViewModel
-        //    {
-        //        Action = nameof(Edit),
-        //        EmailTemplate = await _emailService.GetEmailTemplate(id)
-        //    };
-        //    if (viewModel.EmailTemplate == null)
-        //    {
-        //        ShowAlertDanger($"Could not find email template {id}");
-        //        RedirectToAction(nameof(EmailManagementController.Index));
-        //    }
-        //    return View("Detail", viewModel);
-        //}
-
-        //[HttpPost]
-        //public async Task<IActionResult> Edit(EmailDetailViewModel viewModel)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        await _emailManagementService.EditEmailTemplate(viewModel.EmailTemplate);
-        //        return RedirectToAction(nameof(EmailManagementController.Edit),
-        //            viewModel.EmailTemplate.Id);
-        //    }
-        //    ShowAlertDanger("Could not update email template");
-        //    PageTitle = "Edit Email";
-        //    return View("Detail", viewModel);
-        //}
-
         [HttpGet]
         [Authorize(Policy = Policy.ManageBulkEmails)]
         public async Task<IActionResult> CreateTemplate()
@@ -157,7 +101,7 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.ManageBulkEmails)]
         public async Task<IActionResult> CreateTemplate(DetailsViewModel detailsViewModel)
         {
-            if(detailsViewModel == null)
+            if (detailsViewModel == null)
             {
                 ShowAlertWarning("Unable to create template.");
                 return RedirectToAction(nameof(Index));
@@ -236,6 +180,11 @@ namespace GRA.Controllers.MissionControl
 
             var currentUser = await _userService.GetDetails(GetActiveUserId());
 
+            if (template.IsDisabled)
+            {
+                ShowAlertInfo(CannotUpdateAlreadySent);
+            }
+
             return View("Details", new DetailsViewModel
             {
                 Action = nameof(EditTemplate),
@@ -247,6 +196,7 @@ namespace GRA.Controllers.MissionControl
                     nameof(EmailBase.Name)),
                 EmailTemplateId = template.Id,
                 Footer = template.DirectEmailTemplateText?.Footer,
+                IsDisabled = template.IsDisabled,
                 Languages = new SelectList(languageList,
                     nameof(Language.Id),
                     nameof(Language.Description),
@@ -263,10 +213,23 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.ManageBulkEmails)]
         public async Task<IActionResult> EditTemplate(DetailsViewModel detailsViewModel)
         {
-            if(detailsViewModel == null)
+            if (detailsViewModel == null)
             {
                 ShowAlertWarning("Could not find template to update.");
                 return RedirectToAction(nameof(Index));
+            }
+
+            var currentTemplate = await _emailManagementService
+                .GetTemplateAsync(detailsViewModel.EmailTemplateId, detailsViewModel.LanguageId);
+
+            if (currentTemplate.IsDisabled)
+            {
+                ShowAlertWarning(CannotUpdateAlreadySent);
+                return RedirectToAction(nameof(EditTemplate), new
+                {
+                    templateId = detailsViewModel.EmailTemplateId,
+                    languageId = detailsViewModel.LanguageId
+                });
             }
 
             string updateProblem = null;
@@ -491,58 +454,37 @@ namespace GRA.Controllers.MissionControl
             var filter = new BaseFilter();
             var templateList
                 = await _emailManagementService.GetPaginatedEmailTemplateListAsync(filter);
-            var paginateModel = new PaginateViewModel
+
+            var viewModel = new EmailIndexViewModel
             {
                 ItemCount = templateList.Count,
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
 
-            if (paginateModel.PastMaxPage)
+            if (viewModel.PastMaxPage)
             {
                 return RedirectToRoute(
                     new
                     {
-                        page = paginateModel.LastPage ?? 1
+                        page = viewModel.LastPage ?? 1
                     });
             }
 
             var currentUser = await _userService.GetDetails(GetActiveUserId());
-            int subscribedParticipants = await _emailManagementService.GetSubscriberCount();
             var addressTypes = new List<SelectListItem>();
-            var emailLists = await _emailManagementService.GetEmailListsAsync();
-            foreach (var emailList in emailLists.Where(_ => _.Count > 0))
-            {
-                var signupsourcedata = new SelectListItem
-                {
-                    Text = $"{emailList.Data} ({emailList.Count} subscribed)",
-                    Value = emailList.Data
-                };
-                addressTypes.Add(signupsourcedata);
-            }
-            if (subscribedParticipants > 0)
-            {
-                addressTypes.Add(new SelectListItem
-                {
-                    Text = $"Subscribed participants ({subscribedParticipants} subscribed)",
-                    Value = SubscribedParticipants
-                });
-            }
-            var addressSelectList = new SelectList(addressTypes, "Value", "Text");
+            var defaultLanguage = await _languageService.GetDefaultLanguageIdAsync();
+
+            var isAnyoneSubscribed = await _emailManagementService.IsAnyoneSubscribedAsync();
 
             var languageList = await _languageService.GetActiveAsync();
 
-            var viewModel = new EmailIndexViewModel
-            {
-                PaginateModel = paginateModel,
-                EmailTemplates = templateList.Data,
-                SubscribedParticipants = subscribedParticipants,
-                IsAdmin = currentUser?.IsAdmin == true,
-                AddressTypes = addressSelectList,
-                LanguageNames = languageList.ToDictionary(k => k.Id, v => v.Description)
-            };
+            viewModel.EmailTemplates = templateList.Data;
+            viewModel.IsAdmin = currentUser?.IsAdmin == true;
+            viewModel.IsAnyoneSubscribed = isAnyoneSubscribed;
+            viewModel.LanguageNames = languageList.ToDictionary(k => k.Id, v => v.Description);
 
-            if (!string.IsNullOrEmpty(viewModel.SendButtonDisabled))
+            if (!isAnyoneSubscribed)
             {
                 ShowAlertWarning("There are no subscribed participants or interested parties to send an email to.");
             }
@@ -550,48 +492,113 @@ namespace GRA.Controllers.MissionControl
             return View(viewModel);
         }
 
-        [HttpPost]
-        [Authorize(Policy = Policy.SendBulkEmails)]
-        public async Task<IActionResult> SendEmail(EmailIndexViewModel viewModel)
+        [HttpGet]
+        [Authorize(Policy = Policy.ManageBulkEmails)]
+        public async Task<IActionResult> SelectList(int templateId, string listName)
         {
-            if (!string.Equals(viewModel.SendValidation,
-                    "YES",
-                    StringComparison.Ordinal))
+            var defaultLanguageId = await _languageService.GetDefaultLanguageIdAsync();
+            var languageList = await _languageService.GetActiveAsync();
+            var languages = languageList.ToDictionary(k => k.Id, v => v.Name);
+
+            var viewModel = new SendEmailViewModel
             {
-                ShowAlertDanger("Emails not sent: you must enter YES in the confirmation field.");
-                return RedirectToAction(nameof(EmailManagementController.Index));
+                SelectedList = listName,
+                Template = await _emailManagementService.GetTemplateStatusAsync(templateId)
+            };
+
+            viewModel.IsForSubscribers
+                = viewModel.Template.LanguageUnsub.Any(_ => _.Value == false);
+
+            if (!viewModel.IsForSubscribers)
+            {
+                return RedirectToAction(nameof(Send), new { templateId });
+            }
+
+            // check update subscribers for languages
+            // key = list, value = dictionary language id, subscribers
+            var listsAndLanguages = await _emailManagementService
+                .GetEmailListsAsync(defaultLanguageId);
+
+            viewModel.RegisteredLanguages =
+                listsAndLanguages[listName]
+                .ToDictionary(k => languageList.SingleOrDefault(_ => _.Id == k.Key).Description,
+                    v => v.Value);
+
+            var templateLanguageIds = viewModel.Template.LanguageUnsub.Select(_ => _.Key);
+
+            viewModel.TemplateLanguages = templateLanguageIds
+                .Select(_ => languageList.SingleOrDefault(__ => __.Id == _).Description);
+
+            return View(viewModel);
+        }
+
+        [HttpGet]
+        [Authorize(Policy = Policy.ManageBulkEmails)]
+        public async Task<IActionResult> Send(int templateId)
+        {
+            var defaultLanguageId = await _languageService.GetDefaultLanguageIdAsync();
+            var languageList = await _languageService.GetActiveAsync();
+            var languages = languageList.ToDictionary(k => k.Id, v => v.Name);
+
+            var viewModel = new SendEmailViewModel
+            {
+                Template = await _emailManagementService.GetTemplateStatusAsync(templateId)
+            };
+
+            // if any footer doesn't have the unsubscribe link then it's not for participants
+            viewModel.IsForSubscribers
+                = viewModel.Template.LanguageUnsub.Any(_ => _.Value == false);
+
+            // if some footers have unsub link and some don't then we're in conflict
+            viewModel.IsMixedFooter = viewModel.IsForSubscribers
+                && viewModel.Template.LanguageUnsub.Any(_ => _.Value == true);
+
+            if (!viewModel.IsMixedFooter)
+            {
+                if (viewModel.IsForSubscribers)
+                {
+                    // check update subscribers for languages
+                    // key = list, value = dictionary language id, subscribers
+                    var listsAndLanguages = await _emailManagementService
+                        .GetEmailListsAsync(defaultLanguageId);
+
+                    var languageSelect = listsAndLanguages
+                        .Select(_ => new SelectListItem
+                        {
+                            Text = $"{_.Key} ({_.Value.Sum(_ => _.Value)} subscribers)",
+                            Value = _.Key
+                        });
+
+                    viewModel.SubscriptionLists = new SelectList(languageSelect,
+                       nameof(SelectListItem.Value),
+                       nameof(SelectListItem.Text));
+                }
+                else
+                {
+                    // check participants for languages
+                    // key = language id, value = count
+                    var participantLanguageIds = await _userService
+                        .GetSubscribedLanguageCountAsync();
+
+                    viewModel.RegisteredLanguages = participantLanguageIds
+                        .ToDictionary(k => languageList.SingleOrDefault(_ => _.Id == k.Key)
+                            .Description,
+                            v => v.Value);
+
+                    var templateLanguageIds = viewModel.Template.LanguageUnsub.Select(_ => _.Key);
+
+                    viewModel.TemplateLanguages = templateLanguageIds
+                        .Select(_ => languageList.SingleOrDefault(__ => __.Id == _).Description);
+                }
             }
             else
             {
-                _logger.LogInformation("Email send requested by {UserId} for email {EmailId} with {SendValidation}",
-                    GetActiveUserId(),
-                    viewModel.SendEmailTemplateId,
-                    viewModel.SendValidation);
-
-                var jobToken = await _jobService.CreateJobAsync(new Job
-                {
-                    JobType = JobType.SendBulkEmails,
-                    SerializedParameters = JsonSerializer
-                        .Serialize(new JobDetailsSendBulkEmails
-                        {
-                            EmailTemplateId = viewModel.SendEmailTemplateId,
-                            MailingList = viewModel.EmailList == SubscribedParticipants
-                                ? null
-                                : viewModel.EmailList,
-                            SendToParticipantsToo = viewModel.SendToParticipantsToo
-                        })
-                });
-
-                return View("Job", new ViewModel.MissionControl.Shared.JobViewModel
-                {
-                    CancelUrl = Url.Action(nameof(Index)),
-                    JobToken = jobToken.ToString(),
-                    PingSeconds = 5,
-                    SuccessRedirectUrl = "",
-                    SuccessUrl = Url.Action(nameof(Index)),
-                    Title = "Sending emails..."
-                });
+                ShowAlertDanger("Some languages for this template have an {{UnsubscribeLink}} in the footer and some do not. You can only send an email to subscribed addresses or participants, not both.");
             }
+
+            // check participant/subscriber lists for languages
+            // check email for translations, notify
+            return View(viewModel);
         }
 
         [HttpPost]
@@ -615,10 +622,11 @@ namespace GRA.Controllers.MissionControl
                     JobType = JobType.SendBulkEmails,
                     SerializedParameters = JsonSerializer
                         .Serialize(new JobDetailsSendBulkEmails
-                        {                            
+                        {
                             EmailTemplateId = viewModel.EmailTemplateId,
                             TestLanguageId = viewModel.LanguageId,
-                            To = viewModel.SendTestRecipients
+                            To = viewModel.SendTestRecipients,
+                            UnsubscribeBase = UnsubBase()
                         })
                 });
 
@@ -634,26 +642,98 @@ namespace GRA.Controllers.MissionControl
             }
         }
 
+        [HttpPost]
+        [Authorize(Policy = Policy.ManageBulkEmails)]
+        public async Task<IActionResult> SendParticipants(int templateId)
+        {
+            _logger.LogInformation("Email send to participants by {UserId} for templated id {TemplateId}",
+                GetActiveUserId(),
+                templateId);
+
+            var jobToken = await _jobService.CreateJobAsync(new Job
+            {
+                JobType = JobType.SendBulkEmails,
+                SerializedParameters = JsonSerializer
+                    .Serialize(new JobDetailsSendBulkEmails
+                    {
+                        EmailTemplateId = templateId,
+                        UnsubscribeBase = UnsubBase()
+                    })
+            });
+
+            return View("Job", new ViewModel.MissionControl.Shared.JobViewModel
+            {
+                CancelUrl = Url.Action(nameof(Index)),
+                JobToken = jobToken.ToString(),
+                PingSeconds = 5,
+                SuccessRedirectUrl = "",
+                SuccessUrl = Url.Action(nameof(Index)),
+                Title = "Sending email to participants..."
+            });
+        }
+
+        [HttpPost]
+        [Authorize(Policy = Policy.ManageBulkEmails)]
+        public async Task<IActionResult> SendSubscribers(int templateId, string listName)
+        {
+            _logger.LogInformation("Email to subscribers by {UserId} for template id {TemplateId} to list {ListName}",
+                GetActiveUserId(),
+                templateId,
+                listName);
+
+            var jobToken = await _jobService.CreateJobAsync(new Job
+            {
+                JobType = JobType.SendBulkEmails,
+                SerializedParameters = JsonSerializer
+                    .Serialize(new JobDetailsSendBulkEmails
+                    {
+                        EmailTemplateId = templateId,
+                        MailingList = listName,
+                    })
+            });
+
+            return View("Job", new ViewModel.MissionControl.Shared.JobViewModel
+            {
+                CancelUrl = Url.Action(nameof(Index)),
+                JobToken = jobToken.ToString(),
+                PingSeconds = 5,
+                SuccessRedirectUrl = "",
+                SuccessUrl = Url.Action(nameof(Index)),
+                Title = "Sending email to subscribers..."
+            });
+        }
+
         private async Task<IActionResult> ShowAddressView(EmailAddressesViewModel viewModel)
         {
             var emailAddressesViewModel = viewModel ?? new EmailAddressesViewModel();
 
             if (!emailAddressesViewModel.HasSources)
             {
-                var allEmailReminders = await _emailManagementService.GetEmailListsAsync();
+                var defaultLanguageId = await _languageService.GetDefaultLanguageIdAsync();
+                var allEmailReminders = await _emailManagementService
+                    .GetEmailListsAsync(defaultLanguageId);
 
                 var selectListMailingLists = allEmailReminders.Select(_ =>
                     new SelectListItem
                     {
-                        Text = $"{_.Data} ({_.Count})",
-                        Value = _.Data
+                        Text = $"{_.Key} ({_.Value.Values.Sum()} subscribers across {_.Value.Values.Count} language{(_.Value.Values.Count == 1 ? null : 's')})",
+                        Value = _.Key
                     });
+
                 emailAddressesViewModel.SignUpSources = new SelectList(selectListMailingLists,
                     nameof(SelectListItem.Value),
                     nameof(SelectListItem.Text));
                 emailAddressesViewModel.HasSources = allEmailReminders.Count > 0;
             }
             return View(emailAddressesViewModel);
+        }
+
+        private string UnsubBase()
+        {
+            return Url.Action(nameof(Controllers.HomeController.Unsubscribe),
+                Controllers.HomeController.Name,
+                null,
+                HttpContext.Request.Scheme);
         }
     }
 }

@@ -104,6 +104,18 @@ namespace GRA.Domain.Service
             }
         }
 
+        private static string BuildUnsub(string baseLink, string token)
+        {
+            if (string.IsNullOrEmpty(baseLink))
+            {
+                return null;
+            }
+
+            return baseLink.EndsWith('/')
+                ? $"{baseLink}{token}"
+                : $"{baseLink}/{token}";
+        }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         private async Task<JobStatus> SendBulkListAsync(int userId,
             int jobId,
@@ -140,7 +152,7 @@ namespace GRA.Domain.Service
 
             token.Register(() =>
             {
-                _logger.LogWarning("Email job {JobId} for user {UserId} was cancelled after {EmailsSent} sent, {EmailsSkipped} skipped of {SubscribedUsersCount} in {TimeElapsed}.",
+                _logger.LogWarning("Email job {JobId} for user {UserId} was cancelled after {EmailsSent} sent, {EmailsSkipped} skipped of {SubscribedUsersCount} total in {TimeElapsed}.",
                     jobId,
                     userId,
                     emailsSent,
@@ -175,8 +187,6 @@ namespace GRA.Domain.Service
 
                 while (subscribed.Count > 0)
                 {
-                    Thread.Sleep(1000);
-
                     foreach (var emailReminder in subscribed)
                     {
                         if (problemEmails.Contains(emailReminder.Email))
@@ -187,15 +197,12 @@ namespace GRA.Domain.Service
 
                         bool clearToSend = true;
 
-                        if (!jobDetails.SendToParticipantsToo)
-                        {
-                            var isParticipant = await _userService
-                                .IsEmailSubscribedAsync(emailReminder.Email);
+                        var isParticipant = await _userService
+                            .IsEmailSubscribedAsync(emailReminder.Email);
 
-                            if (isParticipant)
-                            {
-                                clearToSend = false;
-                            }
+                        if (isParticipant)
+                        {
+                            clearToSend = false;
                         }
 
                         if (emailReminder.SentAt != null || !clearToSend)
@@ -330,6 +337,10 @@ namespace GRA.Domain.Service
 
                     filter.Skip = userCounter;
                     subscribed = await _emailReminderService.GetSubscribersAsync(filter);
+                    if (subscribed.Any())
+                    {
+                        Thread.Sleep(1000);
+                    }
                 }
 
                 await _emailService.IncrementSentCountAsync(jobDetails.EmailTemplateId,
@@ -343,7 +354,7 @@ namespace GRA.Domain.Service
                 var finalStatus = new JobStatus
                 {
                     PercentComplete = userCounter * 100 / subscribedCount,
-                    Status = $"{taskStatus} {emailsSent} sent, {emailsSkipped} skipped of {subscribedCount} in {elapsedStatus.ToString(SpanFormat, CultureInfo.InvariantCulture)}."
+                    Status = $"{taskStatus} {emailsSent} sent, {emailsSkipped} skipped of {subscribedCount} total in {elapsedStatus.ToString(SpanFormat, CultureInfo.InvariantCulture)}."
                 };
 
                 var statusText = string.Format(CultureInfo.InvariantCulture,
@@ -415,7 +426,7 @@ namespace GRA.Domain.Service
 
             token.Register(() =>
             {
-                _logger.LogWarning("Email job {JobId} for user {UserId} was cancelled after {EmailsSent} sent, {EmailsSkipped} skipped of {SubscribedUsersCount} in {TimeElapsed}.",
+                _logger.LogWarning("Email job {JobId} for user {UserId} cancelled after {EmailsSent} sent, {EmailsSkipped} skipped of {SubscribedUsersCount} total in {TimeElapsed}.",
                     jobId,
                     userId,
                     emailsSent,
@@ -453,7 +464,6 @@ namespace GRA.Domain.Service
 
                 while (subscribedUsers.Data.Any())
                 {
-                    Thread.Sleep(1000);
                     foreach (var user in subscribedUsers.Data)
                     {
                         if (alreadyReceived.Contains(user.Email))
@@ -484,6 +494,8 @@ namespace GRA.Domain.Service
                             emailDetails.ClearTags();
                             emailDetails.SetTag("Name", user.FullName);
                             emailDetails.SetTag("Email", user.Email);
+                            emailDetails.SetTag("UnsubscribeLink",
+                                BuildUnsub(jobDetails.UnsubscribeBase, user.UnsubscribeToken));
 
                             // send email to user
                             try
@@ -590,6 +602,11 @@ namespace GRA.Domain.Service
 
                     subscribedUsers.Data = subscribedUsers.Data
                         .Where(_ => !problemUsers.Contains(_.Id));
+
+                    if (subscribedUsers.Data.Any())
+                    {
+                        Thread.Sleep(1000);
+                    }
                 }
 
                 await _emailService.IncrementSentCountAsync(jobDetails.EmailTemplateId);
@@ -601,7 +618,7 @@ namespace GRA.Domain.Service
                 var finalStatus = new JobStatus
                 {
                     PercentComplete = userCounter * 100 / subscribedUsers.Count,
-                    Status = $"{taskStatus} {emailsSent} sent, {emailsSkipped} skipped of {subscribedUsers.Count} in {elapsedStatus.ToString(SpanFormat, CultureInfo.InvariantCulture)}."
+                    Status = $"{taskStatus} {emailsSent} sent, {emailsSkipped} skipped of {subscribedUsers.Count} total in {elapsedStatus.ToString(SpanFormat, CultureInfo.InvariantCulture)}."
                 };
 
                 var statusText = string.Format(CultureInfo.InvariantCulture,
@@ -716,8 +733,6 @@ namespace GRA.Domain.Service
 
                 while (subscribed.Count > 0)
                 {
-                    Thread.Sleep(1000);
-
                     foreach (var emailReminder in subscribed)
                     {
                         if (problemEmails.Contains(emailReminder.Email))
@@ -759,6 +774,8 @@ namespace GRA.Domain.Service
                                 emailDetails.LanguageId = emailReminder.LanguageId;
                                 emailDetails.ClearTags();
                                 emailDetails.SetTag("Email", emailReminder.Email);
+                                emailDetails.SetTag("UnsubscribeLink",
+                                    BuildUnsub(jobDetails.UnsubscribeBase, "TESTEMAIL"));
 
                                 sent.Add(emailReminder);
                                 var result = await _emailService.SendDirectAsync(emailDetails);
@@ -851,6 +868,11 @@ namespace GRA.Domain.Service
                     }
 
                     subscribed = subscribed.Except(sent).ToList();
+
+                    if (subscribed.Any())
+                    {
+                        Thread.Sleep(1000);
+                    }
                 }
 
                 string taskStatus = token.IsCancellationRequested
@@ -896,7 +918,6 @@ namespace GRA.Domain.Service
                     Error = true
                 };
             }
-
         }
     }
 }

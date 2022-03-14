@@ -25,7 +25,6 @@ namespace GRA.Data.Repository
         public async Task<int> AddSaveWithTextAsync(int userId,
             DirectEmailTemplate directEmailTemplate)
         {
-
             var dbTemplate = await AddSaveAsync(userId, directEmailTemplate);
 
             if (directEmailTemplate?.DirectEmailTemplateText != null)
@@ -48,6 +47,17 @@ namespace GRA.Data.Repository
             }
 
             return dbTemplate.Id;
+        }
+
+        public async Task<IDictionary<int, bool>> GetLanguageUnsubAsync(int directEmailTemplateId)
+        {
+            return await _context
+                .DirectEmailTemplateTexts
+                .AsNoTracking()
+                .Where(_ => _.DirectEmailTemplateId == directEmailTemplateId)
+                .ToDictionaryAsync(k => k.LanguageId,
+                    v => v.Footer.Contains("{{UnsubscribeLink}}",
+                        System.StringComparison.OrdinalIgnoreCase));
         }
 
         public async Task<DirectEmailTemplate> GetWithTextByIdAsync(int directEmailTemplateId,
@@ -88,6 +98,14 @@ namespace GRA.Data.Repository
             return directEmailTemplate;
         }
 
+        public async Task IncrementSentCountAsync(int directEmailTemplateId, int incrementBy)
+        {
+            var template = await DbSet.FindAsync(directEmailTemplateId);
+            template.EmailsSent += incrementBy;
+            _context.Update(template);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<ICollectionWithCount<EmailTemplateListItem>> PageAsync(BaseFilter filter)
         {
             var templates = DbSet.AsNoTracking();
@@ -112,11 +130,11 @@ namespace GRA.Data.Repository
                 .Where(_ => templateList.Select(_ => _.Id).Contains(_.DirectEmailTemplateId))
                 .ToLookup(_ => _.DirectEmailTemplateId, _ => _.LanguageId);
 
-            foreach(var template in templateList)
+            foreach (var template in templateList)
             {
-                if(languageLookup.Contains(template.Id))
+                if (languageLookup.Contains(template.Id))
                 {
-                   template.LanguageIds = languageLookup[template.Id];
+                    template.LanguageIds = languageLookup[template.Id];
                 }
             }
 
