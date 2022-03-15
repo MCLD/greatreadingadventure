@@ -16,6 +16,7 @@ namespace GRA.Domain.Model
         [Key]
         public int EmailBaseId { get; set; }
 
+        public string ImportCulture { get; set; }
         public Language Language { get; set; }
 
         [Key]

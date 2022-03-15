@@ -7,6 +7,9 @@ namespace GRA.Domain.Model
         public EmailBaseText EmailBaseText { get; set; }
 
         [Required]
+        public bool IsDefault { get; set; }
+
+        [Required]
         [MaxLength(255)]
         public string Name { get; set; }
     }

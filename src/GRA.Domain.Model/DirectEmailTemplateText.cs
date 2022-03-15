@@ -21,6 +21,9 @@ namespace GRA.Domain.Model
         [Required]
         public string Footer { get; set; }
 
+        public string ImportCulture { get; set; }
+        public string ImportSystemEmailId { get; set; }
+
         public Language Language { get; set; }
 
         [Key]

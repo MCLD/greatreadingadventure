@@ -5,6 +5,7 @@ using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
 
 namespace GRA.Data.Repository
@@ -28,6 +29,15 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
+        public async Task<EmailBase> GetDefaultAsync()
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.IsDefault)
+                .ProjectTo<EmailBase>(_mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync();
+        }
+
         public async Task<EmailBase> GetWithTextByIdAsync(int emailBaseId, int languageId)
         {
             var emailBase = await DbSet
@@ -47,6 +57,23 @@ namespace GRA.Data.Repository
             }
 
             return emailBase;
+        }
+
+        public async Task ImportSaveTextAsync(int userId, EmailBaseText emailBaseText)
+        {
+            var dbEntity = _mapper.Map<EmailBaseText, Model.EmailBaseText>(emailBaseText);
+            dbEntity.CreatedBy = userId;
+            dbEntity.CreatedAt = _dateTimeProvider.Now;
+            EntityEntry<Model.EmailBaseText> dbEntityEntry = _context.Entry(dbEntity);
+            if (dbEntityEntry.State != EntityState.Detached)
+            {
+                dbEntityEntry.State = EntityState.Added;
+            }
+            else
+            {
+                await _context.EmailBaseTexts.AddAsync(dbEntity);
+            }
+            await SaveAsync();
         }
     }
 }

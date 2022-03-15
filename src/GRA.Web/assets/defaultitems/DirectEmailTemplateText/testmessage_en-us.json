@@ -1,0 +1,9 @@
+{
+  "BodyCommonMark": "**This is a test message from {{Sitename}}.**",
+  "Footer": "This email was requested from {{Sitename}}.<br>For more information, visit: {{Sitelink}}",
+  "Preview": "Testing emails from {{Sitename}}",
+  "Subject": "{{Sitename}} Test Message",
+  "Title": "{{Sitename}}",
+  "ImportCulture": "en-US",
+  "ImportSystemEmailId": "TestMessage"
+}

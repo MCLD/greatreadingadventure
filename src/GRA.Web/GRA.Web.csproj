@@ -110,6 +110,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="assets\defaultitems\EmailBase\" />
+    <Folder Include="assets\defaultitems\EmailBaseText\" />
+    <Folder Include="assets\defaultitems\DirectEmailTemplate\" />
+    <Folder Include="assets\defaultitems\DirectEmailTemplateText\" />
     <Folder Include="wwwroot\webfonts\" />
   </ItemGroup>
 

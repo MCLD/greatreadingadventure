@@ -484,6 +484,7 @@ namespace GRA.Web
             services.AddScoped<ChallengeService>();
             services.AddScoped<DailyLiteracyTipService>();
             services.AddScoped<DashboardContentService>();
+            services.AddScoped<DefaultItemsService>();
             services.AddScoped<Domain.Report.ServiceFacade.Report>();
             services.AddScoped<DrawingService>();
             services.AddScoped<EmailBulkService>();

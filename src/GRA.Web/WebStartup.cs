@@ -118,9 +118,20 @@ namespace GRA.Web
 
             try
             {
+                await _scope.ServiceProvider
+                    .GetRequiredService<DefaultItemsService>()
+                    .EnsureDefaultItemsAsync();
+            }
+            catch (GraException gex)
+            {
+                _log.LogError(gex, "Error ensuring default items: {ErrorMessage}", gex.Message);
+            }
+
+            try
+            {
                 await _scope
-               .ServiceProvider.GetRequiredService<NewsService>()
-               .EnsureDefaultCategoryAsync();
+                   .ServiceProvider.GetRequiredService<NewsService>()
+                   .EnsureDefaultCategoryAsync();
             }
             catch (Exception ex)
             {

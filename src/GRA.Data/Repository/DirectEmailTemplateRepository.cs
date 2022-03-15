@@ -8,6 +8,7 @@ using GRA.Domain.Model.Utility;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
 
 namespace GRA.Data.Repository
@@ -47,6 +48,27 @@ namespace GRA.Data.Repository
             }
 
             return dbTemplate.Id;
+        }
+
+        public async Task<(int, List<int>)> GetIdAndLanguagesBySystemIdAsync(string systemEmailId)
+        {
+            var directEmailTemplate = await DbSet
+                .AsNoTracking()
+                .SingleOrDefaultAsync(_ => _.SystemEmailId == systemEmailId);
+
+            if (directEmailTemplate == null)
+            {
+                throw new GraException($"Unable to find DirectEmailTemplate with system email id {systemEmailId}");
+            }
+
+            var languages = await _context
+                .DirectEmailTemplateTexts
+                .AsNoTracking()
+                .Where(_ => _.DirectEmailTemplateId == directEmailTemplate.Id)
+                .Select(_ => _.LanguageId)
+                .ToListAsync();
+
+            return (directEmailTemplate.Id, languages);
         }
 
         public async Task<IDictionary<int, bool>> GetLanguageUnsubAsync(int directEmailTemplateId)
@@ -98,6 +120,25 @@ namespace GRA.Data.Repository
             return directEmailTemplate;
         }
 
+        public async Task ImportSaveTextAsync(int userId,
+            DirectEmailTemplateText directEmailTemplateText)
+        {
+            var dbEntity = _mapper.Map<DirectEmailTemplateText,
+                Model.DirectEmailTemplateText>(directEmailTemplateText);
+            dbEntity.CreatedBy = userId;
+            dbEntity.CreatedAt = _dateTimeProvider.Now;
+            EntityEntry<Model.DirectEmailTemplateText> dbEntityEntry = _context.Entry(dbEntity);
+            if (dbEntityEntry.State != EntityState.Detached)
+            {
+                dbEntityEntry.State = EntityState.Added;
+            }
+            else
+            {
+                await _context.DirectEmailTemplateTexts.AddAsync(dbEntity);
+            }
+            await SaveAsync();
+        }
+
         public async Task IncrementSentCountAsync(int directEmailTemplateId, int incrementBy)
         {
             var template = await DbSet.FindAsync(directEmailTemplateId);
@@ -143,6 +184,18 @@ namespace GRA.Data.Repository
                 Data = templateList,
                 Count = count
             };
+        }
+
+        public async Task<bool> SystemEmailIdExistsAsync(string systemEmailId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .AnyAsync(_ => _.SystemEmailId == systemEmailId);
+        }
+
+        public Task<bool> SystemEmailTextExists(int directEmailTemplateId, int languageId)
+        {
+            throw new System.NotImplementedException();
         }
 
         public async Task UpdateSaveWithText(int userId, DirectEmailTemplate directEmailTemplate)
