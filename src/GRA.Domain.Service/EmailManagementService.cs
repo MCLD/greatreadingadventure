@@ -13,27 +13,27 @@ namespace GRA.Domain.Service
 {
     public class EmailManagementService : BaseUserService<EmailManagementService>
     {
+        private readonly GRA.Abstract.IGraCache _cache;
         private readonly IDirectEmailTemplateRepository _directEmailTemplateRepository;
         private readonly IEmailBaseRepository _emailBaseRepository;
         private readonly IEmailReminderRepository _emailReminderRepository;
         private readonly IEmailSubscriptionAuditLogRepository _emailSubscriptionAuditLogRepository;
-        private readonly IEmailTemplateRepository _emailTemplateRepository;
         private readonly IStringLocalizer<Resources.Shared> _sharedLocalizer;
         private readonly IUserRepository _userRepository;
 
         public EmailManagementService(ILogger<EmailManagementService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
+            GRA.Abstract.IGraCache cache,
             IDirectEmailTemplateRepository directEmailTemplateRepository,
             IEmailBaseRepository emailBaseRepository,
             IEmailReminderRepository emailReminderRepository,
             IEmailSubscriptionAuditLogRepository emailSubscriptionAuditLogRepository,
-            IEmailTemplateRepository emailTemplateRepository,
             IStringLocalizer<Resources.Shared> sharedLocalizer,
             IUserContextProvider userContextProvider,
-            IUserRepository userRepository,
-            LanguageService languageService)
+            IUserRepository userRepository)
             : base(logger, dateTimeProvider, userContextProvider)
         {
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
             _directEmailTemplateRepository = directEmailTemplateRepository
                 ?? throw new ArgumentNullException(nameof(directEmailTemplateRepository));
             _emailBaseRepository = emailBaseRepository
@@ -42,12 +42,20 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(emailReminderRepository));
             _emailSubscriptionAuditLogRepository = emailSubscriptionAuditLogRepository
                 ?? throw new ArgumentNullException(nameof(emailSubscriptionAuditLogRepository));
-            _emailTemplateRepository = emailTemplateRepository
-                ?? throw new ArgumentNullException(nameof(emailTemplateRepository));
             _userRepository = userRepository
                 ?? throw new ArgumentNullException(nameof(userRepository));
             _sharedLocalizer = sharedLocalizer
                 ?? throw new ArgumentNullException(nameof(sharedLocalizer));
+        }
+
+        public async Task<int> AddBaseTemplateAsync(EmailBase emailBase)
+        {
+            if (emailBase == null)
+            {
+                throw new ArgumentNullException(nameof(emailBase));
+            }
+
+            return await _emailBaseRepository.AddSaveWithTextAsync(GetActiveUserId(), emailBase);
         }
 
         public async Task<int> AddTemplateAsync(DirectEmailTemplate directEmailTemplate)
@@ -69,6 +77,19 @@ namespace GRA.Domain.Service
                 .AddSaveWithTextAsync(GetActiveUserId(), directEmailTemplate);
         }
 
+        public async Task<EmailBase> GetBaseTemplateAsync(int emailBaseId, int languageId)
+        {
+            var baseTemplate = await _emailBaseRepository
+                .GetWithTextAsync(emailBaseId, languageId);
+
+            if (baseTemplate?.Id == null)
+            {
+                throw new GraException($"Unable to find template id {emailBaseId}");
+            }
+
+            return baseTemplate;
+        }
+
         public async Task<IEnumerable<EmailBase>> GetEmailBasesAsync()
         {
             return await _emailBaseRepository.GetAllAsync();
@@ -78,6 +99,27 @@ namespace GRA.Domain.Service
             GetEmailListsAsync(int defaultLanguageId)
         {
             return await _emailReminderRepository.GetEmailListsAsync(defaultLanguageId);
+        }
+
+        public async Task<ICollectionWithCount<EmailBase>>
+            GetPaginatedEmailBaseListAsync(BaseFilter filter)
+        {
+            if (HasPermission(Permission.ManageBulkEmails))
+            {
+                var emailBases = await _emailBaseRepository.PageAsync(filter);
+                foreach (var emailBase in emailBases.Data)
+                {
+                    emailBase.ConfiguredLanguages
+                        = await _emailBaseRepository.GetTextLanguagesAsync(emailBase.Id);
+                }
+                return emailBases;
+            }
+            else
+            {
+                _logger.LogError("User {UserId} doesn't have permission to view the base email list.",
+                    GetClaimId(ClaimType.UserId));
+                throw new GraException("Permission denied.");
+            }
         }
 
         public async Task<ICollectionWithCount<EmailTemplateListItem>>
@@ -126,15 +168,8 @@ namespace GRA.Domain.Service
 
         public async Task<bool> IsAnyoneSubscribedAsync()
         {
-            if (await _emailReminderRepository.IsAnyoneSubscribedAsync())
-            {
-                return true;
-            }
-            if (await _userRepository.IsAnyoneSubscribedAsync())
-            {
-                return true;
-            }
-            return false;
+            return await _emailReminderRepository.IsAnyoneSubscribedAsync()
+                || await _userRepository.IsAnyoneSubscribedAsync();
         }
 
         public async Task<bool> SetUserEmailSubscriptionStatusAsync(int userId, bool subscribe,
@@ -205,10 +240,37 @@ namespace GRA.Domain.Service
             await _userRepository.SaveAsync();
         }
 
+        public async Task UpdateBaseTemplateAsync(EmailBase emailBase)
+        {
+            await _emailBaseRepository
+                .UpdateSaveWithText(GetActiveUserId(), emailBase);
+
+            if (emailBase?.EmailBaseText?.LanguageId != null)
+            {
+                await _cache.RemoveAsync(GetCacheKey(CacheKey.EmailBase,
+                    emailBase.Id,
+                    emailBase.EmailBaseText.LanguageId));
+            }
+        }
+
         public async Task UpdateTemplateAsync(DirectEmailTemplate directEmailTemplate)
         {
-            await _directEmailTemplateRepository
-                .UpdateSaveWithText(GetActiveUserId(), directEmailTemplate);
+            var updated = await _directEmailTemplateRepository
+                .UpdateSaveWithTextAsync(GetActiveUserId(), directEmailTemplate);
+
+            if (directEmailTemplate?.DirectEmailTemplateText?.LanguageId != null)
+            {
+                if (!string.IsNullOrEmpty(updated.SystemEmailId))
+                {
+                    await _cache.RemoveAsync(GetCacheKey(CacheKey.DirectEmailTemplateSystemId,
+                        updated.SystemEmailId,
+                        directEmailTemplate.DirectEmailTemplateText.LanguageId));
+                }
+
+                await _cache.RemoveAsync(GetCacheKey(CacheKey.DirectEmailTemplateId,
+                    directEmailTemplate.Id,
+                    directEmailTemplate.DirectEmailTemplateText.LanguageId));
+            }
         }
     }
 }

@@ -1,9 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace GRA.Domain.Model
 {
     public class EmailBase : Abstract.BaseDomainEntity
     {
+        public IEnumerable<int> ConfiguredLanguages { get; set; }
         public EmailBaseText EmailBaseText { get; set; }
 
         [Required]

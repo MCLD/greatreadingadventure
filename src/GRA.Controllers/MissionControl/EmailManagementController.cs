@@ -26,6 +26,7 @@ namespace GRA.Controllers.MissionControl
         private const string CannotUpdateAlreadySent
             = "This template cannot be edited - bulk emails were already sent to participants utilizing it.";
 
+        private const string DefaultMailTitle = "{{Sitename}}";
         private const string SubscribedParticipants = "SubscribedParticipants";
         private readonly EmailManagementService _emailManagementService;
         private readonly EmailReminderService _emailReminderService;
@@ -58,23 +59,128 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Email Management";
         }
 
-        [Authorize(Policy = Policy.ManageBulkEmails)]
         public async Task<IActionResult> Addresses()
         {
             return await ShowAddressView(null);
         }
 
+        public async Task<IActionResult> BaseIndex(int page)
+        {
+            var filter = new BaseFilter();
+            var baseList = await _emailManagementService.GetPaginatedEmailBaseListAsync(filter);
+
+            var viewModel = new EmailBaseIndexViewModel
+            {
+                CurrentPage = page,
+                EmailBases = baseList.Data,
+                ItemCount = baseList.Count,
+                ItemsPerPage = filter.Take.Value,
+                LanguageNames = await _languageService.GetIdDescriptionDictionaryAsync()
+            };
+
+            if (viewModel.PastMaxPage)
+            {
+                return RedirectToRoute(new { page = viewModel.LastPage ?? 1 });
+            }
+
+            return View(viewModel);
+        }
+
         [HttpGet]
-        [Authorize(Policy = Policy.ManageBulkEmails)]
+        public async Task<IActionResult> CreateBaseTemplate()
+        {
+            var defaultLanguageId = await _languageService.GetDefaultLanguageIdAsync();
+
+            var languageSelect 
+                = new SelectList(await _languageService.GetIdDescriptionDictionaryAsync(),
+                    "Key",
+                    "Value",
+                    defaultLanguageId);
+
+            foreach (var languageOption in languageSelect)
+            {
+                if (languageOption.Value != defaultLanguageId.ToString(CultureInfo.InvariantCulture))
+                {
+                    languageOption.Disabled = true;
+                }
+            }
+
+            return View("BaseDetails", new BaseDetailsViewModel
+            {
+                Action = nameof(CreateBaseTemplate),
+                Languages = languageSelect,
+                LanguageId = defaultLanguageId,
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult>
+            CreateBaseTemplate(BaseDetailsViewModel baseDetailsViewModel)
+        {
+            if (baseDetailsViewModel == null)
+            {
+                ShowAlertWarning("Unable to create base template.");
+                return RedirectToAction(nameof(Index));
+            }
+
+            string insertProblem = null;
+            if (ModelState.IsValid)
+            {
+                var emailBaseTemplate = new EmailBase
+                {
+                    Name = baseDetailsViewModel.Name,
+                    EmailBaseText = new EmailBaseText
+                    {
+                        LanguageId = baseDetailsViewModel.LanguageId,
+                        TemplateHtml = baseDetailsViewModel.TemplateHtml,
+                        TemplateMjml = baseDetailsViewModel.TemplateMjml,
+                        TemplateText = baseDetailsViewModel.TemplateText
+                    }
+                };
+
+                try
+                {
+                    var insertedId = await _emailManagementService
+                        .AddBaseTemplateAsync(emailBaseTemplate);
+
+                    ShowAlertSuccess($"Successfully created template: {emailBaseTemplate.Name}");
+
+                    return RedirectToAction(nameof(EditBaseTemplate), new
+                    {
+                        templateId = insertedId,
+                        languageId = baseDetailsViewModel.LanguageId
+                    });
+                }
+                catch (GraException gex)
+                {
+                    insertProblem = gex.Message;
+                }
+            }
+
+            var issues = new StringBuilder("There were issues with your submission:<ul>");
+            if (!string.IsNullOrEmpty(insertProblem))
+            {
+                issues.Append("<li>").Append(insertProblem).AppendLine("</li>");
+            }
+            foreach (var key in ModelState.Keys)
+            {
+                issues.Append("<li>").Append(ModelState[key]).AppendLine("</li>");
+            }
+            issues.Append("</ul>");
+            ShowAlertWarning(issues.ToString());
+            return View("BaseDetails", baseDetailsViewModel);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> CreateTemplate()
         {
             var defaultLanguageId = await _languageService.GetDefaultLanguageIdAsync();
-            var languageList = await _languageService.GetActiveAsync();
             var emailBases = await _emailManagementService.GetEmailBasesAsync();
 
-            var languageSelect = new SelectList(languageList,
-                    nameof(Language.Id),
-                    nameof(Language.Description),
+            var languageSelect 
+                = new SelectList(await _languageService.GetIdDescriptionDictionaryAsync(),
+                    "Key",
+                    "Value",
                     defaultLanguageId);
 
             foreach (var languageOption in languageSelect)
@@ -93,12 +199,11 @@ namespace GRA.Controllers.MissionControl
                 Footer = "You are receiving this email becuase you are subscribed to news updates for {{Sitename}}. You can [unsubscribe instantly at any time]({{UnsubscribeLink}})",
                 Languages = languageSelect,
                 LanguageId = defaultLanguageId,
-                Title = "{{Sitename}}"
+                Title = DefaultMailTitle
             });
         }
 
         [HttpPost]
-        [Authorize(Policy = Policy.ManageBulkEmails)]
         public async Task<IActionResult> CreateTemplate(DetailsViewModel detailsViewModel)
         {
             if (detailsViewModel == null)
@@ -158,13 +263,111 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpGet]
-        [Authorize(Policy = Policy.ManageBulkEmails)]
+        public async Task<IActionResult> EditBaseTemplate(int emailBaseId, int languageId)
+        {
+            var languageList = await _languageService.GetIdDescriptionDictionaryAsync();
+
+            if (!languageList.ContainsKey(languageId))
+            {
+                ShowAlertWarning($"Could not find language id {languageId}");
+                return RedirectToAction(nameof(Index));
+            }
+
+            var template = await _emailManagementService
+                .GetBaseTemplateAsync(emailBaseId, languageId);
+
+            if (template == null)
+            {
+                ShowAlertWarning($"Could not find base template id {emailBaseId}");
+                return RedirectToAction(nameof(Index));
+            }
+
+            var currentUser = await _userService.GetDetails(GetActiveUserId());
+
+            return View("BaseDetails", new BaseDetailsViewModel
+            {
+                Action = nameof(EditBaseTemplate),
+                Name = template.Name,
+                EmailBaseId = template.Id,
+                TemplateHtml = template.EmailBaseText?.TemplateHtml,
+                TemplateMjml = template.EmailBaseText?.TemplateMjml,
+                TemplateText = template.EmailBaseText?.TemplateText,
+                Languages = new SelectList(languageList,
+                    "Key",
+                    "Value",
+                    languageId),
+                LanguageId = languageId,
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditBaseTemplate(BaseDetailsViewModel baseDetailsViewModel)
+        {
+            if (baseDetailsViewModel == null)
+            {
+                ShowAlertWarning("Could not find base template to update.");
+                return RedirectToAction(nameof(Index));
+            }
+            var currentTemplate = await _emailManagementService
+                .GetBaseTemplateAsync(baseDetailsViewModel.EmailBaseId,
+                    baseDetailsViewModel.LanguageId);
+
+            string updateProblem = null;
+
+            if (ModelState.IsValid)
+            {
+                var emailBase = new EmailBase
+                {
+                    Id = baseDetailsViewModel.EmailBaseId,
+                    Name = baseDetailsViewModel.Name,
+                    EmailBaseText = new EmailBaseText
+                    {
+                        EmailBaseId = baseDetailsViewModel.EmailBaseId,
+                        LanguageId = baseDetailsViewModel.LanguageId,
+                        TemplateHtml = baseDetailsViewModel.TemplateHtml,
+                        TemplateMjml = baseDetailsViewModel.TemplateMjml,
+                        TemplateText = baseDetailsViewModel.TemplateText
+                    }
+                };
+
+                try
+                {
+                    await _emailManagementService.UpdateBaseTemplateAsync(emailBase);
+
+                    ShowAlertSuccess($"Successfully updated base template: {baseDetailsViewModel.Name}");
+                    return RedirectToAction(nameof(EditBaseTemplate), new
+                    {
+                        emailBaseId = emailBase.Id,
+                        languageId = baseDetailsViewModel.LanguageId
+                    });
+                }
+                catch (GraException gex)
+                {
+                    updateProblem = gex.Message;
+                }
+            }
+
+            var issues = new StringBuilder("There were issues with your submission:<ul>");
+            if (!string.IsNullOrEmpty(updateProblem))
+            {
+                issues.Append("<li>").Append(updateProblem).AppendLine("</li>");
+            }
+            foreach (var key in ModelState.Keys)
+            {
+                issues.Append("<li>").Append(ModelState[key]).AppendLine("</li>");
+            }
+            issues.Append("</ul>");
+            ShowAlertWarning(issues.ToString());
+            return View("BaseDetails", baseDetailsViewModel);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> EditTemplate(int templateId, int languageId)
         {
-            var languageList = await _languageService.GetActiveAsync();
+            var languageList = await _languageService.GetIdDescriptionDictionaryAsync();
             var emailBases = await _emailManagementService.GetEmailBasesAsync();
 
-            if (languageList.SingleOrDefault(_ => _.Id == languageId) == null)
+            if (!languageList.ContainsKey(languageId))
             {
                 ShowAlertWarning($"Could not find language id {languageId}");
                 return RedirectToAction(nameof(Index));
@@ -198,19 +401,18 @@ namespace GRA.Controllers.MissionControl
                 Footer = template.DirectEmailTemplateText?.Footer,
                 IsDisabled = template.IsDisabled,
                 Languages = new SelectList(languageList,
-                    nameof(Language.Id),
-                    nameof(Language.Description),
+                   "Key",
+                    "Value",
                     languageId),
                 LanguageId = languageId,
                 Preview = template.DirectEmailTemplateText?.Preview,
                 Subject = template.DirectEmailTemplateText?.Subject,
                 TemplateDescription = template.Description,
-                Title = template.DirectEmailTemplateText?.Title
+                Title = template.DirectEmailTemplateText?.Title ?? DefaultMailTitle
             });
         }
 
         [HttpPost]
-        [Authorize(Policy = Policy.ManageBulkEmails)]
         public async Task<IActionResult> EditTemplate(DetailsViewModel detailsViewModel)
         {
             if (detailsViewModel == null)
@@ -284,7 +486,6 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpGet]
-        [Authorize(Policy = Policy.ManageBulkEmails)]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability",
             "CA2000:Dispose objects before losing scope",
             Justification = "The File() method handles the stream disposal for us.")]
@@ -328,7 +529,6 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        [Authorize(Policy = Policy.ManageBulkEmails)]
         public async Task<IActionResult> ImportAddresses(EmailAddressesViewModel viewModel)
         {
             if (viewModel?.UploadedFile == null)
@@ -386,9 +586,6 @@ namespace GRA.Controllers.MissionControl
 
             if (emailReminders.Any())
             {
-                var languages = (await _languageService.GetActiveAsync())
-                    .ToDictionary(k => k.Name, v => v.Id);
-
                 foreach (var emailReminder in emailReminders)
                 {
                     if (string.IsNullOrEmpty(emailReminder.Email))
@@ -398,10 +595,10 @@ namespace GRA.Controllers.MissionControl
 
                     emailReminder.SignUpSource = viewModel.SignUpSource;
 
-                    if (!string.IsNullOrEmpty(emailReminder.LanguageName)
-                        && languages.ContainsKey(emailReminder.LanguageName))
+                    if(!string.IsNullOrEmpty(emailReminder.LanguageName))
                     {
-                        emailReminder.LanguageId = languages[emailReminder.LanguageName];
+                        emailReminder.LanguageId = await _languageService
+                            .GetLanguageIdAsync(emailReminder.LanguageName);
                     }
 
                     success += await _emailReminderService
@@ -472,17 +669,13 @@ namespace GRA.Controllers.MissionControl
             }
 
             var currentUser = await _userService.GetDetails(GetActiveUserId());
-            var addressTypes = new List<SelectListItem>();
-            var defaultLanguage = await _languageService.GetDefaultLanguageIdAsync();
 
             var isAnyoneSubscribed = await _emailManagementService.IsAnyoneSubscribedAsync();
-
-            var languageList = await _languageService.GetActiveAsync();
 
             viewModel.EmailTemplates = templateList.Data;
             viewModel.IsAdmin = currentUser?.IsAdmin == true;
             viewModel.IsAnyoneSubscribed = isAnyoneSubscribed;
-            viewModel.LanguageNames = languageList.ToDictionary(k => k.Id, v => v.Description);
+            viewModel.LanguageNames = await _languageService.GetIdDescriptionDictionaryAsync();
 
             if (!isAnyoneSubscribed)
             {
@@ -493,7 +686,6 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpGet]
-        [Authorize(Policy = Policy.ManageBulkEmails)]
         public async Task<IActionResult> SelectList(int templateId, string listName)
         {
             var defaultLanguageId = await _languageService.GetDefaultLanguageIdAsync();
@@ -533,7 +725,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpGet]
-        [Authorize(Policy = Policy.ManageBulkEmails)]
+        [Authorize(Policy = Policy.SendBulkEmails)]
         public async Task<IActionResult> Send(int templateId)
         {
             var defaultLanguageId = await _languageService.GetDefaultLanguageIdAsync();
@@ -596,16 +788,13 @@ namespace GRA.Controllers.MissionControl
                 ShowAlertDanger("Some languages for this template have an {{UnsubscribeLink}} in the footer and some do not. You can only send an email to subscribed addresses or participants, not both.");
             }
 
-            // check participant/subscriber lists for languages
-            // check email for translations, notify
             return View(viewModel);
         }
 
         [HttpPost]
-        [Authorize(Policy = Policy.SendBulkEmails)]
         public async Task<IActionResult> SendEmailTest(DetailsViewModel viewModel)
         {
-            if (string.IsNullOrEmpty(viewModel.SendTestRecipients))
+            if (string.IsNullOrEmpty(viewModel?.SendTestRecipients))
             {
                 ShowAlertDanger("You must supply one or more email addresses in order to send a test.");
                 return RedirectToAction(nameof(EmailManagementController.Index));
@@ -643,7 +832,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        [Authorize(Policy = Policy.ManageBulkEmails)]
+        [Authorize(Policy = Policy.SendBulkEmails)]
         public async Task<IActionResult> SendParticipants(int templateId)
         {
             _logger.LogInformation("Email send to participants by {UserId} for templated id {TemplateId}",
@@ -673,7 +862,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        [Authorize(Policy = Policy.ManageBulkEmails)]
+        [Authorize(Policy = Policy.SendBulkEmails)]
         public async Task<IActionResult> SendSubscribers(int templateId, string listName)
         {
             _logger.LogInformation("Email to subscribers by {UserId} for template id {TemplateId} to list {ListName}",

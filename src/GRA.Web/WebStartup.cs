@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using GRA.Abstract;
 using GRA.Domain.Service;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,12 +27,12 @@ namespace GRA.Web
         {
             try
             {
-                var cache = _scope.ServiceProvider.GetRequiredService<IDistributedCache>();
+                var cache = _scope.ServiceProvider.GetRequiredService<IGraCache>();
                 var options = new DistributedCacheEntryOptions()
                     .SetAbsoluteExpiration(TimeSpan.FromSeconds(10));
-                await cache.SetStringAsync("Startup",
+                await cache.SaveToCacheAsync("Startup",
                     DateTime.Now.ToString(System.Globalization.CultureInfo.InvariantCulture),
-                    options);
+                    TimeSpan.FromSeconds(10));
             }
             catch (Exception ex)
             {

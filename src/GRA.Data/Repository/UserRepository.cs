@@ -25,20 +25,6 @@ namespace GRA.Data.Repository
                 ?? throw new ArgumentNullException(nameof(passwordHasher));
         }
 
-        public async Task AddBulkEmailLogAsync(int userId,
-            int emailTemplateId,
-            string emailAddress)
-        {
-            await _context.EmailUserLogs.AddAsync(new Model.EmailUserLog
-            {
-                EmailAddress = emailAddress,
-                EmailTemplateId = emailTemplateId,
-                UserId = userId,
-                SentAt = _dateTimeProvider.Now
-            });
-            await _context.SaveChangesAsync();
-        }
-
         public async Task AddRoleAsync(int currentUserId, int userId, int roleId)
         {
             var userLookup = await DbSet
@@ -392,14 +378,6 @@ namespace GRA.Data.Repository
                     .ApplyPagination(filter)
                     .ToListAsync()
             };
-        }
-
-        public async Task<bool> HasReceivedBulkEmailAsync(int emailTemplateId, string emailAddress)
-        {
-            return await _context.EmailUserLogs
-                .AsNoTracking()
-                .AnyAsync(_ => _.EmailTemplateId == emailTemplateId
-                    && _.EmailAddress == emailAddress);
         }
 
         public async Task<bool> IsAnyoneSubscribedAsync()

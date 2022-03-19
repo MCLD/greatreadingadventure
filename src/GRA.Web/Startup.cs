@@ -458,6 +458,7 @@ namespace GRA.Web
             services.AddScoped<ICodeSanitizer, CodeSanitizer>();
             services.AddScoped<IDateTimeProvider, CurrentDateTimeProvider>();
             services.AddScoped<IEntitySerializer, EntitySerializer>();
+            services.AddScoped<IGraCache, Utility.GraCache>();
             services.AddScoped<IPasswordValidator, PasswordValidator>();
             services.AddScoped<IPathResolver, PathResolver>();
             services.AddScoped<ITokenGenerator, TokenGenerator>();
@@ -589,7 +590,6 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IEmailBaseRepository, Data.Repository.EmailBaseRepository>();
             services.AddScoped<Domain.Repository.IEmailReminderRepository, Data.Repository.EmailReminderRepository>();
             services.AddScoped<Domain.Repository.IEmailSubscriptionAuditLogRepository, Data.Repository.EmailSubscriptionAuditLogRepository>();
-            services.AddScoped<Domain.Repository.IEmailTemplateRepository, Data.Repository.EmailTemplateRepository>();
             services.AddScoped<Domain.Repository.IEventRepository, Data.Repository.EventRepository>();
             services.AddScoped<Domain.Repository.IGroupInfoRepository, Data.Repository.GroupInfoRepository>();
             services.AddScoped<Domain.Repository.IGroupTypeRepository, Data.Repository.GroupTypeRepository>();

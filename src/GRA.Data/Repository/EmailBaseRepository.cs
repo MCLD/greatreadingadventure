@@ -3,7 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
+using GRA.Domain.Repository.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
@@ -18,6 +20,32 @@ namespace GRA.Data.Repository
             ILogger<EmailBaseRepository> logger)
             : base(repositoryFacade, logger)
         {
+        }
+
+        public async Task<int> AddSaveWithTextAsync(int userId, EmailBase emailBase)
+        {
+            var dbBase = await AddSaveAsync(userId, emailBase);
+
+            if (emailBase?.EmailBaseText != null)
+            {
+                emailBase.EmailBaseText.EmailBaseId = dbBase.Id;
+                var dbBaseText = _mapper.Map<EmailBaseText,
+                    Model.EmailBaseText>(emailBase.EmailBaseText);
+                try
+                {
+                    dbBaseText.CreatedAt = _dateTimeProvider.Now;
+                    dbBaseText.CreatedBy = userId;
+                    await _context.AddAsync(dbBaseText);
+                    await _context.SaveChangesAsync();
+                }
+                catch (GraDbUpdateException gex)
+                {
+                    await RemoveSaveAsync(userId, dbBase.Id);
+                    throw gex;
+                }
+            }
+
+            return dbBase.Id;
         }
 
         public async Task<IEnumerable<EmailBase>> GetAllAsync()
@@ -36,6 +64,35 @@ namespace GRA.Data.Repository
                 .Where(_ => _.IsDefault)
                 .ProjectTo<EmailBase>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<int>> GetTextLanguagesAsync(int emailBaseId)
+        {
+            return await _context
+                .EmailBaseTexts
+                .AsNoTracking()
+                .Where(_ => _.EmailBaseId == emailBaseId)
+                .Select(_ => _.LanguageId)
+                .ToListAsync();
+        }
+
+        public async Task<EmailBase> GetWithTextAsync(int emailBaseId, int languageId)
+        {
+            var emailBase = await DbSet
+                .AsNoTracking()
+                .ProjectTo<EmailBase>(_mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync(_ => _.Id == emailBaseId);
+
+            if (emailBase != null)
+            {
+                emailBase.EmailBaseText = await _context
+                    .EmailBaseTexts
+                    .AsNoTracking()
+                    .ProjectTo<EmailBaseText>(_mapper.ConfigurationProvider)
+                    .SingleOrDefaultAsync(_ => _.EmailBaseId == emailBaseId
+                        && _.LanguageId == languageId);
+            }
+            return emailBase;
         }
 
         public async Task<EmailBase> GetWithTextByIdAsync(int emailBaseId, int languageId)
@@ -74,6 +131,89 @@ namespace GRA.Data.Repository
                 await _context.EmailBaseTexts.AddAsync(dbEntity);
             }
             await SaveAsync();
+        }
+
+        public async Task<ICollectionWithCount<EmailBase>> PageAsync(BaseFilter filter)
+        {
+            var templates = DbSet.AsNoTracking();
+
+            var count = await templates.CountAsync();
+
+            var templateList = await templates
+                .OrderBy(_ => _.Name)
+                .ApplyPagination(filter)
+                .ProjectTo<EmailBase>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+
+            return new ICollectionWithCount<EmailBase>
+            {
+                Data = templateList,
+                Count = count
+            };
+        }
+
+        public async Task UpdateSaveWithText(int userId, EmailBase emailBase)
+        {
+            if (emailBase == null)
+            {
+                throw new GraException("No email base template to update.");
+            }
+
+            var dbTemplate = await GetByIdAsync(emailBase.Id);
+
+            if (dbTemplate == null)
+            {
+                throw new GraException($"Unable to find email template id {emailBase.Id}.");
+            }
+
+            bool changes = false;
+            if (!string.IsNullOrEmpty(emailBase.Name)
+                && emailBase.Name.Trim() != dbTemplate.Name)
+            {
+                dbTemplate.Name = emailBase.Name.Trim();
+                changes = true;
+            }
+
+            if (changes)
+            {
+                await UpdateSaveAsync(userId, dbTemplate);
+            }
+
+            bool newRecord = false;
+            if (emailBase?.EmailBaseText != null)
+            {
+                var dbBaseText = await _context
+                    .EmailBaseTexts
+                    .SingleOrDefaultAsync(_ => _.EmailBaseId == emailBase.Id
+                        && _.LanguageId == emailBase.EmailBaseText.LanguageId);
+
+                if (dbBaseText == null)
+                {
+                    newRecord = true;
+                    dbBaseText = new Model.EmailBaseText
+                    {
+                        EmailBaseId = emailBase.Id,
+                        CreatedAt = _dateTimeProvider.Now,
+                        CreatedBy = userId,
+                        LanguageId = emailBase.EmailBaseText.LanguageId
+                    };
+                }
+
+                dbBaseText.TemplateHtml = emailBase.EmailBaseText.TemplateHtml?.Trim();
+                dbBaseText.TemplateMjml = emailBase.EmailBaseText.TemplateMjml?.Trim();
+                dbBaseText.TemplateText = emailBase.EmailBaseText.TemplateText?.Trim();
+
+                if (newRecord)
+                {
+                    await _context.EmailBaseTexts.AddAsync(dbBaseText);
+                }
+                else
+                {
+                    _context.EmailBaseTexts.Update(dbBaseText);
+                }
+
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

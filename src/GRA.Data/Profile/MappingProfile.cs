@@ -56,7 +56,6 @@ namespace GRA.Data.Profile
             CreateMap<Model.EmailSubscriptionAuditLog, Domain.Model.EmailSubscriptionAuditLog>()
                 .ForMember(dest => dest.CreatedByName, opt => opt
                     .MapFrom(src => $"{src.CreatedByUser.FirstName} {src.CreatedByUser.LastName}"));
-            CreateMap<Model.EmailTemplate, Domain.Model.EmailTemplate>();
             CreateMap<Model.Event, Domain.Model.Event>()
                 .ForMember(dest => dest.Challenge, opt => opt.Ignore())
                 .ForMember(dest => dest.ChallengeGroup, opt => opt.Ignore());
@@ -162,7 +161,6 @@ namespace GRA.Data.Profile
             CreateMap<Domain.Model.EmailBaseText, Model.EmailBaseText>();
             CreateMap<Domain.Model.EmailReminder, Model.EmailReminder>();
             CreateMap<Domain.Model.EmailSubscriptionAuditLog, Model.EmailSubscriptionAuditLog>();
-            CreateMap<Domain.Model.EmailTemplate, Model.EmailTemplate>();
             CreateMap<Domain.Model.Event, Model.Event>();
             CreateMap<Domain.Model.GroupInfo, Model.GroupInfo>();
             CreateMap<Domain.Model.GroupType, Model.GroupType>();

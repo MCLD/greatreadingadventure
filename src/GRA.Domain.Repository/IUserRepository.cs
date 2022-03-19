@@ -7,8 +7,6 @@ namespace GRA.Domain.Repository
 {
     public interface IUserRepository : IRepository<User>
     {
-        Task AddBulkEmailLogAsync(int userId, int emailTemplateId, string emailAddress);
-
         Task AddRoleAsync(int currentUserId, int userId, int roleId);
 
         Task<AuthenticationResult> AuthenticateUserAsync(
@@ -60,8 +58,6 @@ namespace GRA.Domain.Repository
         Task<ICollection<User>> GetUsersByEmailAddressAsync(string email);
 
         Task<DataWithCount<ICollection<User>>> GetUsersInRoleAsync(int roleId, BaseFilter filter);
-
-        Task<bool> HasReceivedBulkEmailAsync(int emailTemplateId, string emailAddress);
 
         Task<bool> IsAnyoneSubscribedAsync();
 

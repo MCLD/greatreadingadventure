@@ -21,6 +21,11 @@
             <span class="fas fa-list-alt"></span>
             Manage Lists
         </a>
+        <a class="btn btn-info"
+           style="margin-left: 1rem;"
+           asp-action="@nameof(EmailManagementController.BaseIndex)">
+            Base Templates
+        </a>
     </div>
 </div>
 
@@ -41,7 +46,10 @@
                             <th>Editable</th>
                             <th>System email</th>
                             <th>Edit</th>
-                            <th>Send</th>
+                            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.SendBulkEmails.ToString()))
+                            {
+                                <th>Send</th>
+                            }
                         </tr>
                     </thead>
                     <tbody>
@@ -76,20 +84,19 @@
                                class="btn btn-file btn-default btn-sm gra-button-buffer">@Model.LanguageNames[language]</a>
                                     }
                                 </td>
-                                <td class="text-right">
-                                    @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.SendBulkEmails.ToString()) && !template.IsSystem && Model.IsAnyoneSubscribed)
-                                    {
-                                        <a class="btn btn-sm btn-warning sendEmail gra-button-buffer"
+                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.SendBulkEmails.ToString()))
+                                {
+                                    <td class="text-right">
+                                        @if (!template.IsSystem && Model.IsAnyoneSubscribed)
+                                        {
+                                            <a class="btn btn-sm btn-warning sendEmail gra-button-buffer"
                                asp-action="@nameof(EmailManagementController.Send)"
                                asp-route-templateId="@template.Id">
-                                            Send Email
-                                        </a>
-                                    }
-                                    else
-                                    {
-                                        @:&nbsp;
-                                    }
-                                </td>
+                                                Send Email
+                                            </a>
+                                        }
+                                    </td>
+                                }
                             </tr>
                         }
                     </tbody>

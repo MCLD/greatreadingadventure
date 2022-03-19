@@ -17,26 +17,28 @@ namespace GRA.Domain.Service
 {
     public class EmailService : BaseService<EmailService>
     {
+        private const int CacheEmailTemplatesHours = 1;
+        private readonly GRA.Abstract.IGraCache _cache;
         private readonly IConfiguration _config;
         private readonly IDirectEmailHistoryRepository _directEmailHistoryRepository;
         private readonly IDirectEmailTemplateRepository _directEmailTemplateRepository;
         private readonly IEmailBaseRepository _emailBaseRepository;
-        private readonly IEmailTemplateRepository _emailTemplateRepository;
         private readonly LanguageService _languageService;
         private readonly SiteLookupService _siteLookupService;
         private readonly IUserRepository _userRepository;
 
         public EmailService(ILogger<EmailService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
+            GRA.Abstract.IGraCache cache,
             IConfiguration config,
             IDirectEmailHistoryRepository directEmailHistoryRepository,
             IDirectEmailTemplateRepository directEmailTemplateRepository,
             IEmailBaseRepository emailBaseRepository,
-            IEmailTemplateRepository emailTemplateRepository,
             IUserRepository userRepository,
             LanguageService languageService,
             SiteLookupService siteLookupService) : base(logger, dateTimeProvider)
         {
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
             _config = config ?? throw new ArgumentNullException(nameof(config));
             _directEmailHistoryRepository = directEmailHistoryRepository
                 ?? throw new ArgumentNullException(nameof(directEmailHistoryRepository));
@@ -44,14 +46,12 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(directEmailTemplateRepository));
             _emailBaseRepository = emailBaseRepository
                 ?? throw new ArgumentNullException(nameof(emailBaseRepository));
-            _emailTemplateRepository = emailTemplateRepository
-                ?? throw new ArgumentNullException(nameof(emailTemplateRepository));
+            _languageService = languageService
+                ?? throw new ArgumentNullException(nameof(languageService));
             _siteLookupService = siteLookupService
                 ?? throw new ArgumentNullException(nameof(siteLookupService));
             _userRepository = userRepository
                 ?? throw new ArgumentNullException(nameof(userRepository));
-            _languageService = languageService
-                ?? throw new ArgumentNullException(nameof(languageService));
         }
 
         public Task IncrementSentCountAsync(int directEmailTemplateId)
@@ -103,6 +103,11 @@ namespace GRA.Domain.Service
                     ?? await _languageService.GetDefaultLanguageIdAsync();
             }
 
+            if (!SiteCanSendMail(site))
+            {
+                throw new GraException("Unable to send mail, please ensure from name, from email, and outgoing mail server are configured in Site Management -> Configuration.");
+            }
+
             var history = new DirectEmailHistory
             {
                 CreatedBy = directEmailDetails.SendingUserId,
@@ -123,13 +128,18 @@ namespace GRA.Domain.Service
                 history.UserId = directEmailDetails.ToUserId.Value;
             }
 
-            var directEmailTemplate = !string.IsNullOrEmpty(directEmailDetails.DirectEmailSystemId)
-                ? await _directEmailTemplateRepository
-                    .GetWithTextBySystemId(directEmailDetails.DirectEmailSystemId,
-                        history.LanguageId)
-                : await _directEmailTemplateRepository
-                    .GetWithTextByIdAsync(directEmailDetails.DirectEmailTemplateId,
+            DirectEmailTemplate directEmailTemplate
+                = await GetDirectEmailTemplateAsync(directEmailDetails.DirectEmailSystemId,
+                    directEmailDetails.DirectEmailTemplateId,
                     history.LanguageId);
+
+            //var directEmailTemplate = !string.IsNullOrEmpty(directEmailDetails.DirectEmailSystemId)
+            //    ? await _directEmailTemplateRepository
+            //        .GetWithTextBySystemId(directEmailDetails.DirectEmailSystemId,
+            //            history.LanguageId)
+            //    : await _directEmailTemplateRepository
+            //        .GetWithTextByIdAsync(directEmailDetails.DirectEmailTemplateId,
+            //        history.LanguageId);
 
             history.EmailBaseId = directEmailTemplate.EmailBaseId;
 
@@ -198,6 +208,63 @@ namespace GRA.Domain.Service
                 && !string.IsNullOrEmpty(site.OutgoingMailHost);
         }
 
+        private async Task<DirectEmailTemplate> GetDirectEmailTemplateAsync(
+                            string templateSystemId,
+            int templateId,
+            int languageId)
+        {
+            var useTemplateId = string.IsNullOrEmpty(templateSystemId);
+
+            var cacheKey = useTemplateId
+                    ? GetCacheKey(CacheKey.DirectEmailTemplateId, templateId, languageId)
+                    : GetCacheKey(CacheKey.DirectEmailTemplateSystemId,
+                        templateSystemId,
+                        languageId);
+            ;
+            var cacheTemplate = await _cache.GetObjectFromCacheAsync<DirectEmailTemplate>(cacheKey);
+
+            if (cacheTemplate != null)
+            {
+                return cacheTemplate;
+            }
+
+            var directEmailTemplate = useTemplateId
+                ? await _directEmailTemplateRepository.GetWithTextByIdAsync(templateId, languageId)
+                : await _directEmailTemplateRepository
+                    .GetWithTextBySystemId(templateSystemId, languageId);
+
+            if (directEmailTemplate != null)
+            {
+                await _cache.SaveToCacheAsync(cacheKey,
+                    directEmailTemplate,
+                    CacheEmailTemplatesHours);
+            }
+
+            return directEmailTemplate;
+        }
+
+        private async Task<EmailBase> GetEmailBase(int emailBaseId, int languageId)
+        {
+            string cacheKey = GetCacheKey(CacheKey.EmailBase, emailBaseId, languageId);
+
+            var fromCache = await _cache.GetObjectFromCacheAsync<EmailBase>(cacheKey);
+
+            if (fromCache != null)
+            {
+                return fromCache;
+            }
+
+            var emailBase = await _emailBaseRepository.GetWithTextByIdAsync(emailBaseId,
+                languageId);
+
+            if (emailBase != null)
+            {
+                await _cache.SaveToCacheAsync(cacheKey, emailBase, CacheEmailTemplatesHours);
+            }
+
+            return emailBase;
+        }
+
         private async Task<DirectEmailHistory> SendDirectAsync(Site site,
             DirectEmailHistory history,
             IDictionary<string, string> tags)
@@ -207,12 +274,11 @@ namespace GRA.Domain.Service
                 throw new ArgumentNullException(nameof(history));
             }
 
-            var emailBase = await _emailBaseRepository.GetWithTextByIdAsync(history.EmailBaseId,
-                history.LanguageId);
+            var emailBase = await GetEmailBase(history.EmailBaseId, history.LanguageId);
 
             if (emailBase.EmailBaseText == null)
             {
-                emailBase = await _emailBaseRepository.GetWithTextByIdAsync(history.EmailBaseId,
+                emailBase = await GetEmailBase(history.EmailBaseId,
                     await _languageService.GetDefaultLanguageIdAsync());
             }
 

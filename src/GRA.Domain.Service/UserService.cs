@@ -886,11 +886,6 @@ namespace GRA.Domain.Service
             return user.FullName;
         }
 
-        public async Task<bool> HasReceivedBulkEmailAsync(int emailTemplateId, string emailAddress)
-        {
-            return await _userRepository.HasReceivedBulkEmailAsync(emailTemplateId, emailAddress);
-        }
-
         public async Task<JobStatus> ImportHouseholdMembersAsync(int jobId,
             CancellationToken token,
             IProgress<JobStatus> progress = null)

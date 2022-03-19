@@ -193,17 +193,15 @@ namespace GRA.Data.Repository
                 .AnyAsync(_ => _.SystemEmailId == systemEmailId);
         }
 
-        public Task<bool> SystemEmailTextExists(int directEmailTemplateId, int languageId)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public async Task UpdateSaveWithText(int userId, DirectEmailTemplate directEmailTemplate)
+        public async Task<DirectEmailTemplate> 
+            UpdateSaveWithTextAsync(int userId, DirectEmailTemplate directEmailTemplate)
         {
             if (directEmailTemplate == null)
             {
                 throw new GraException("No email template to update.");
             }
+
+            DirectEmailTemplate updated = null;
 
             var dbTemplate = await GetByIdAsync(directEmailTemplate.Id);
 
@@ -225,10 +223,9 @@ namespace GRA.Data.Repository
                 changes = true;
             }
 
-            if (changes)
-            {
-                await UpdateSaveAsync(userId, dbTemplate);
-            }
+            updated = changes
+                ? await UpdateSaveAsync(userId, dbTemplate)
+                : await GetByIdAsync(directEmailTemplate.Id);
 
             bool newRecord = false;
             if (directEmailTemplate?.DirectEmailTemplateText != null)
@@ -272,6 +269,8 @@ namespace GRA.Data.Repository
 
                 await _context.SaveChangesAsync();
             }
+
+            return updated;
         }
 
         public async Task UpdateSentBulkAsync(int directEmailTemplateId)

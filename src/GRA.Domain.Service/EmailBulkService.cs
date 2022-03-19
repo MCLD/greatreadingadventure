@@ -22,7 +22,6 @@ namespace GRA.Domain.Service
         private readonly IDirectEmailHistoryRepository _directEmailHistoryRepository;
         private readonly EmailReminderService _emailReminderService;
         private readonly EmailService _emailService;
-        private readonly IEmailTemplateRepository _emailTemplateRepository;
         private readonly IJobRepository _jobRepository;
         private readonly SiteLookupService _siteLookupService;
         private readonly UserService _userService;
@@ -33,7 +32,6 @@ namespace GRA.Domain.Service
             EmailReminderService emailReminderService,
             EmailService emailService,
             IDirectEmailHistoryRepository directEmailHistoryRepository,
-            IEmailTemplateRepository emailTemplateRepository,
             IJobRepository jobRepository,
             UserService userService,
             SiteLookupService siteLookupService)
@@ -44,8 +42,6 @@ namespace GRA.Domain.Service
             _emailReminderService = emailReminderService
                 ?? throw new ArgumentNullException(nameof(emailReminderService));
             _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
-            _emailTemplateRepository = emailTemplateRepository
-                ?? throw new ArgumentNullException(nameof(emailTemplateRepository));
             _jobRepository = jobRepository
                 ?? throw new ArgumentNullException(nameof(jobRepository));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));

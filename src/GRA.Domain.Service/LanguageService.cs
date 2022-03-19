@@ -6,7 +6,6 @@ using GRA.Abstract;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -14,14 +13,16 @@ namespace GRA.Domain.Service
 {
     public class LanguageService : Abstract.BaseService<LanguageService>
     {
-        private readonly IDistributedCache _cache;
+        private const int DefaultCacheHours = 4;
+
+        private readonly IGraCache _cache;
         private readonly IOptions<RequestLocalizationOptions> _l10nOptions;
         private readonly ILanguageRepository _languageRepository;
         private readonly SiteLookupService _siteLookupService;
 
         public LanguageService(ILogger<LanguageService> logger,
             IDateTimeProvider dateTimeProvider,
-            IDistributedCache cache,
+            IGraCache cache,
             IOptions<RequestLocalizationOptions> l10nOptions,
             ILanguageRepository languageRepository,
             SiteLookupService siteLookupService) : base(logger, dateTimeProvider)
@@ -32,6 +33,64 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(languageRepository));
             _siteLookupService = siteLookupService
                 ?? throw new ArgumentNullException(nameof(siteLookupService));
+        }
+
+        public async Task<ICollection<Language>> GetActiveAsync()
+        {
+            var languages = await _cache
+                .GetObjectFromCacheAsync<ICollection<Language>>(CacheKey.ActiveLanguages);
+
+            if (languages == null || languages.Count == 0)
+            {
+                languages = await _languageRepository.GetActiveAsync();
+                await _cache.SaveToCacheAsync(CacheKey.ActiveLanguages,
+                    languages,
+                    DefaultCacheHours);
+            }
+
+            return languages;
+        }
+
+        public async Task<Language> GetActiveByIdAsync(int id)
+        {
+            var activeLanguages = await GetActiveAsync();
+            return activeLanguages.SingleOrDefault(_ => _.Id == id);
+        }
+
+        public async Task<int> GetDefaultLanguageIdAsync()
+        {
+            var defaultLanguageId = await _cache.GetIntFromCacheAsync(CacheKey.DefaultLanguageId);
+            if (!defaultLanguageId.HasValue)
+            {
+                defaultLanguageId = await _languageRepository.GetDefaultLanguageId();
+                await _cache.SaveToCacheAsync(CacheKey.DefaultLanguageId,
+                    defaultLanguageId.Value,
+                    DefaultCacheHours);
+            }
+            return defaultLanguageId.Value;
+        }
+
+        public async Task<IDictionary<int, string>> GetIdDescriptionDictionaryAsync()
+        {
+            var languages = await GetActiveAsync();
+            return languages.ToDictionary(k => k.Id, v => v.Description);
+        }
+
+        public async Task<int> GetLanguageIdAsync(string culture)
+        {
+            if (string.IsNullOrEmpty(culture))
+            {
+                return await GetDefaultLanguageIdAsync();
+            }
+
+            var cacheKey = GetCacheKey(CacheKey.LanguageId, culture);
+            var languageId = await _cache.GetIntFromCacheAsync(cacheKey);
+            if (!languageId.HasValue)
+            {
+                languageId = await _languageRepository.GetLanguageId(culture);
+                await _cache.SaveToCacheAsync(cacheKey, languageId.Value, DefaultCacheHours);
+            }
+            return languageId.Value;
         }
 
         public async Task SyncLanguagesAsync()
@@ -84,10 +143,8 @@ namespace GRA.Domain.Service
                         await _languageRepository.UpdateSaveNoAuditAsync(dbCulture);
                     }
                 }
-                if (_cache.Get(GetCacheKey(CacheKey.LanguageId, dbCulture.Name)) != null)
-                {
-                    _cache.Remove(GetCacheKey(CacheKey.LanguageId, dbCulture.Name));
-                }
+
+                await _cache.RemoveAsync(GetCacheKey(CacheKey.LanguageId, dbCulture.Name));
             }
 
             var namesMissingFromDb = siteCultures
@@ -112,55 +169,11 @@ namespace GRA.Domain.Service
                     IsDefault = culture.Name == Culture.DefaultName,
                     Name = culture.Name
                 });
-                if (_cache.Get(GetCacheKey(CacheKey.LanguageId, missingCultureName)) != null)
-                {
-                    _cache.Remove(GetCacheKey(CacheKey.LanguageId, missingCultureName));
-                }
+                await _cache.RemoveAsync(GetCacheKey(CacheKey.LanguageId, missingCultureName));
             }
 
-            _cache.Remove(CacheKey.DefaultLanguageId);
-        }
-
-        public async Task<ICollection<Language>> GetActiveAsync()
-        {
-            return await _languageRepository.GetActiveAsync();
-        }
-
-        public async Task<Language> GetActiveByIdAsync(int id)
-        {
-            return await _languageRepository.GetActiveByIdAsync(id);
-        }
-
-        public async Task<int> GetDefaultLanguageIdAsync()
-        {
-            var cachedDefaultLanguageId = _cache.Get(CacheKey.DefaultLanguageId);
-            if (cachedDefaultLanguageId == null)
-            {
-                var defaultLanguageId = await _languageRepository.GetDefaultLanguageId();
-                cachedDefaultLanguageId = BitConverter.GetBytes(defaultLanguageId);
-                _cache.Set(CacheKey.DefaultLanguageId, cachedDefaultLanguageId);
-            }
-            return BitConverter.ToInt32(cachedDefaultLanguageId, 0);
-        }
-
-        public async Task<int> GetLanguageIdAsync(string culture)
-        {
-            if (string.IsNullOrEmpty(culture))
-            {
-                return await GetDefaultLanguageIdAsync();
-            }
-            var key = GetCacheKey(CacheKey.LanguageId, culture);
-            var cachedLanguageId = await _cache.GetAsync(key);
-            if (cachedLanguageId == null)
-            {
-                var languageId = await _languageRepository.GetLanguageId(culture);
-                cachedLanguageId = BitConverter.GetBytes(languageId);
-                await _cache.SetAsync(key, cachedLanguageId, new DistributedCacheEntryOptions
-                {
-                    AbsoluteExpirationRelativeToNow = new TimeSpan(4, 0, 0)
-                });
-            }
-            return BitConverter.ToInt32(cachedLanguageId, 0);
+            await _cache.RemoveAsync(CacheKey.DefaultLanguageId);
+            await _cache.RemoveAsync(CacheKey.ActiveLanguages);
         }
     }
 }

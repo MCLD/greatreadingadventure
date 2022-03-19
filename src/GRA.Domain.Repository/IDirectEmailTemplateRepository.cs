@@ -29,9 +29,8 @@ namespace GRA.Domain.Repository
 
         public Task<bool> SystemEmailIdExistsAsync(string systemEmailId);
 
-        public Task<bool> SystemEmailTextExists(int directEmailTemplateId, int languageId);
-
-        public Task UpdateSaveWithText(int userId, DirectEmailTemplate directEmailTemplate);
+        public Task<DirectEmailTemplate> UpdateSaveWithTextAsync(int userId, 
+            DirectEmailTemplate directEmailTemplate);
 
         public Task UpdateSentBulkAsync(int directEmailTemplateId);
     }

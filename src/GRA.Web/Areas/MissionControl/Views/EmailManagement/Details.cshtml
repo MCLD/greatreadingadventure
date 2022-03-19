@@ -8,11 +8,11 @@
 }
 
 <form asp-action="@Model.Action"
-    id="updateTemplate"
-    method="post"
-    role="form"
-    enctype="multipart/form-data"
-    style="padding-top:10px;">
+      id="updateTemplate"
+      method="post"
+      role="form"
+      enctype="multipart/form-data"
+      style="padding-top:10px;">
     <input asp-for="Action" type="hidden" />
     <input asp-for="LanguageId" type="hidden" />
     @if (Model.Action == nameof(EmailManagementController.EditTemplate))
@@ -128,7 +128,6 @@
                 {
                     @if (Model.Action == nameof(EmailManagementController.EditTemplate))
                     {
-
                         <button class="btn btn-info testEmail gra-button-buffer"
                         type="button"
                         data-toggle="modal"
@@ -136,20 +135,19 @@
                             Send Test
                         </button>
                     }
-                    @if (!Model.IsDisabled)
-                    {
-                        <button type="submit"
+                }
+                @if (!Model.IsDisabled)
+                {
+                    <button type="submit"
                         id="Submit"
                         name="Submit"
                         value="Submit"
                         class="btn btn-primary btn-spinner gra-save-button"
                         button-spinner>
-                            <span class="buttonText">Save Template</span>
-                        </button>
-                    }
+                        <span class="buttonText">Save Template</span>
+                    </button>
                 }
             </div>
-
         </div>
     </div>
 </form>
