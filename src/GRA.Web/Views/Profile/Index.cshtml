@@ -21,7 +21,8 @@
                             <input asp-for="User.VendorCode" type="hidden" />
                             <input asp-for="User.VendorCodeMessage" type="hidden" />
 
-                            @if (!string.IsNullOrWhiteSpace(Model.User.VendorCode) || Model.User.NeedsToAnswerVendorCodeQuestion)
+                            @if ((!string.IsNullOrWhiteSpace(Model.User.VendorCode) || Model.User.NeedsToAnswerVendorCodeQuestion)
+                               && (Model.User.VendorOrderStatus == null || Model.User.VendorOrderStatus == VendorOrderStatus.Pending))
                             {
                                 <div class="row row spacing">
                                     <div class="col-xs-12">
@@ -80,15 +81,13 @@
                                 </div>
                             }
 
-
-
                             @if (!string.IsNullOrWhiteSpace(Model.User.Username))
                             {
                                 <div class="row row-spacing">
                                     <div class="col-xs-12">
                                         <label asp-for="User.Username" class="control-label"></label>
-                                        <span class="fas fa-info-circle" 
-                                              data-toggle="tooltip" 
+                                        <span class="fas fa-info-circle"
+                                              data-toggle="tooltip"
                                               title="@SharedLocalizer[GRA.Annotations.Interface.NeedToChange, SharedLocalizer[DisplayNames.Username]]"></span>
                                         <input asp-for="User.Username" class="form-control" readonly />
                                     </div>
@@ -148,8 +147,8 @@
                                     <div class="row row-spacing">
                                         <div class="col-xs-12">
                                             <label asp-for="User.SystemId" class="control-label"></label>
-                                            <span class="fas fa-info-circle" 
-                                                  data-toggle="tooltip" 
+                                            <span class="fas fa-info-circle"
+                                                  data-toggle="tooltip"
                                                   title="@SharedLocalizer[GRA.Annotations.Interface.NeedToChange, SharedLocalizer[DisplayNames.System]]"></span>
                                             <input class="form-control" readonly value="@Model.SystemName" />
                                         </div>
@@ -161,8 +160,8 @@
                                     <div class="row row-spacing">
                                         <div class="col-xs-12">
                                             <label asp-for="User.BranchId" class="control-label"></label>
-                                            <span class="fas fa-info-circle" 
-                                                  data-toggle="tooltip" 
+                                            <span class="fas fa-info-circle"
+                                                  data-toggle="tooltip"
                                                   title="@SharedLocalizer[GRA.Annotations.Interface.NeedToChange, SharedLocalizer[DisplayNames.Branch]]"></span>
                                             <input class="form-control" readonly value="@Model.BranchName" />
                                         </div>

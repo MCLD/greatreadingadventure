@@ -103,6 +103,9 @@ Optional fields:
 - **Award prize on received packing slip** - add a prize to the participant's profile when:
   1. An Excel file is imported with a "Packing Slip" number set
   2. Also, the packing slip is entered as received through the packing slip interface
+    and the prize is not marked as damaged or missing
+  - Once a packing slip is marked as received any further invoice updates with the same
+    packing number will award the prize as soon as they're imported
 
 ### Additional configuration options
 

@@ -8,8 +8,7 @@ namespace GRA.Controllers.ViewModel.Home
 {
     public class DashboardViewModel
     {
-        public string FirstName { get; set; }
-        public int CurrentPointTotal { get; set; }
+        public User User { get; set; }
         public bool SingleEvent { get; set; }
         public string ActivityDescriptionPlural { get; set; }
 

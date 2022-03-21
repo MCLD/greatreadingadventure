@@ -181,6 +181,15 @@ namespace GRA.Data.Repository
                 .ToList();
         }
 
+        public async Task<PrizeWinner> GetPrizeForVendorCodeAsync(int vendorCodeId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.VendorCodeId == vendorCodeId)
+                .ProjectTo<PrizeWinner>(_mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync();
+        }
+
         public async Task<ICollection<PrizeWinner>> GetVendorCodePrizesAsync(int userId)
         {
             return await DbSet

@@ -196,6 +196,8 @@ namespace GRA.Controllers
                     return RedirectToAction(nameof(SignOut));
                 }
 
+                await _vendorCodeService.PopulateVendorCodeStatusAsync(user);
+
                 var userLogs = await _userService.GetPaginatedUserHistoryAsync(user.Id,
                     new UserLogFilter(take: BadgesToDisplay)
                     {
@@ -211,8 +213,7 @@ namespace GRA.Controllers
                 var pointTranslation = await _activityService.GetUserPointTranslationAsync();
                 var viewModel = new DashboardViewModel
                 {
-                    FirstName = user.FirstName,
-                    CurrentPointTotal = user.PointsEarned,
+                    User = user,
                     SingleEvent = pointTranslation.IsSingleEvent,
                     ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural,
                     UserLogs = userLogs.Data,

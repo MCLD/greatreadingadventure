@@ -23,6 +23,37 @@
         </div>
     </div>
 }
+else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.VendorOrderStatus < VendorOrderStatus.Receieved)
+{
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row" style="margin-bottom: 1.5em;">
+                        <div class="col-xs-12 col-md-8 col-md-push-2">
+                            <div class="row">
+                                <div class="col-xs-4 text-center">
+                                    <span class="fas fa-shopping-cart fa-2x @(Model.User.VendorOrderStatus == VendorOrderStatus.Ordered ? "active-status-color" : "inactive-status-color")"></span>
+                                </div>
+                                <div class="col-xs-4 text-center">
+                                    <span class="fas fa-shipping-fast fa-2x @(Model.User.VendorOrderStatus == VendorOrderStatus.Shipped ? "active-status-color" : "inactive-status-color")"></span>
+                                </div>
+                                <div class="col-xs-4 text-center">
+                                    <span class="fas fa-box fa-2x @(Model.User.VendorOrderStatus == VendorOrderStatus.Arrived ? "active-status-color" : "inactive-status-color")"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            @Html.Raw(Model.User.VendorCodeMessage)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 <div class="row" style="font-size: larger;">
     <div class="col-sm-3 text-center">
@@ -54,7 +85,7 @@
                     </a>
                 </p>
                 <div class="dashboard-activity">
-                    <p style="font-size: x-large;">@SharedHtmlLocalizer["You have <strong>{0}</strong> points.", Model.CurrentPointTotal]</p>
+                    <p style="font-size: x-large;">@SharedHtmlLocalizer["You have <strong>{0}</strong> points.", Model.User.PointsEarned]</p>
                     <p><a asp-controller="Profile" asp-action="History">@SharedLocalizer["See your activity history."]</a></p>
                     @if (Model.TotalProgramGoal.HasValue)
                     {
@@ -84,10 +115,10 @@
     <div class="col-sm-6">
         <div class="panel panel-default">
             <div class="panel-body text-center">
-                <span class="lead">@SharedHtmlLocalizer["Welcome <strong>{0}!</strong>", Model.FirstName]</span>
+                <span class="lead">@SharedHtmlLocalizer["Welcome <strong>{0}!</strong>", Model.User.FirstName]</span>
                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessPerformerRegistration))
-              && !Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessMissionControl))
-              && Model.SiteStage == GRA.Domain.Model.SiteStage.BeforeRegistration)
+                    && !Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessMissionControl))
+                    && Model.SiteStage == GRA.Domain.Model.SiteStage.BeforeRegistration)
                 {
                     <p class="lead" style="padding-top: 2rem;">
                         Welcome, performer! Please click on the theater masks icon at the top of the

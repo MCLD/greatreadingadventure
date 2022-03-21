@@ -16,5 +16,6 @@ namespace GRA.Domain.Repository
         Task<int> GetBranchPrizeRedemptionCountAsync(int branchId, IEnumerable<int> triggerIds);
         Task<List<PrizeCount>> GetHouseholdUnredeemedPrizesAsync(int headId);
         Task<ICollection<PrizeWinner>> GetVendorCodePrizesAsync(int userId);
+        Task<PrizeWinner> GetPrizeForVendorCodeAsync(int vendorCodeId);
     }
 }
