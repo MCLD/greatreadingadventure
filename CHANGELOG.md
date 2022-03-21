@@ -22,6 +22,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Reduce streaming video caching on dashboard to 15 minutes
 - Order streaming videos on dashboard by start date descending (newest at the top)
 - Vendor item status display on participants profile
+- Show wrench menu to all who have Mission Control access
 
 ### Fixed
 
