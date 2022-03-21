@@ -40,5 +40,8 @@ namespace GRA.Domain.Model
         [MaxLength(512)]
         public string TrackingNumber { get; set; }
         public DateTime? EmailSentAt { get; set; }
+
+        public bool? IsDamaged { get; set; }
+        public bool? IsMissing { get; set; }
     }
 }

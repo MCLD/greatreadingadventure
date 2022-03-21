@@ -153,6 +153,11 @@ namespace GRA.Domain.Service
             }
         }
 
+        public async Task<PrizeWinner> GetPrizeForVendorCodeAsync(int vendorCodeId)
+        {
+            return await _prizeWinnerRepository.GetPrizeForVendorCodeAsync(vendorCodeId);
+        }
+
         public async Task<ICollection<PrizeWinner>> GetVendorCodePrizes(int userId)
         {
             return await _prizeWinnerRepository.GetVendorCodePrizesAsync(userId);

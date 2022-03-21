@@ -15,6 +15,7 @@ using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using GRA.Domain.Service.Models;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -32,6 +33,7 @@ namespace GRA.Domain.Service
         private readonly MailService _mailService;
         private readonly LanguageService _languageService;
         private readonly PrizeWinnerService _prizeWinnerService;
+        private readonly IStringLocalizer<Resources.Shared> _sharedLocalizer;
 
         private const string ErrorUnableToParse = "Unable to parse {Field}, row {SpreadsheetRow}: {Value}";
         private const string ErrorParseError = "Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}";
@@ -48,7 +50,8 @@ namespace GRA.Domain.Service
             IVendorCodeTypeRepository vendorCodeTypeRepository,
             MailService mailService,
             LanguageService languageService,
-                        PrizeWinnerService prizeWinnerService)
+            PrizeWinnerService prizeWinnerService,
+            IStringLocalizer<Resources.Shared> sharedLocalizer)
             : base(logger, dateTimeProvider, userContextProvider)
         {
             SetManagementPermission(Permission.ManageVendorCodes);
@@ -70,6 +73,8 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(languageService));
             _prizeWinnerService = prizeWinnerService
                 ?? throw new ArgumentNullException(nameof(prizeWinnerService));
+            _sharedLocalizer = sharedLocalizer
+                ?? throw new ArgumentNullException(nameof(sharedLocalizer));
         }
 
         public async Task<VendorCodeType> GetTypeById(int id)
@@ -584,12 +589,16 @@ namespace GRA.Domain.Service
                                         }
                                         else
                                         {
-                                            if (orderDate == code.OrderDate
-                                                && shipDate == code.ShipDate
-                                                && details == code.Details
-                                                && branchId == code.BranchId
-                                                && (packingSlip == default || code.ArrivalDate != null)
-                                                && trackingNumber == code.TrackingNumber)
+                                            if ((code.ArrivalDate.HasValue
+                                                    && code.IsDamaged != true
+                                                    && code.IsMissing != true)
+                                                || (orderDate == code.OrderDate
+                                                    && shipDate == code.ShipDate
+                                                    && details == code.Details
+                                                    && branchId == code.BranchId
+                                                    && trackingNumber == code.TrackingNumber
+                                                    && (packingSlip == default
+                                                        || code.PackingSlip == packingSlip)))
                                             {
                                                 alreadyCurrent++;
                                             }
@@ -622,7 +631,7 @@ namespace GRA.Domain.Service
 
                                                 if (packingSlip != default
                                                     && vendorCodeType.AwardPrizeOnPackingSlip
-                                                    && (await GetPs(packingSlip)) != null)
+                                                    && await GetPs(packingSlip) != null)
                                                 {
                                                     await AwardPrizeAsync(code);
                                                 }
@@ -787,19 +796,30 @@ namespace GRA.Domain.Service
                 code.BranchId = branchId;
             }
 
-            if (packingSlip != default)
+            if (code.IsDamaged == true || code.IsMissing == true)
             {
+                code.ArrivalDate = null;
+                code.IsDamaged = null;
+                code.IsMissing = null;
                 code.PackingSlip = packingSlip;
-            }
-
-            if (!string.IsNullOrEmpty(trackingNumber))
-            {
                 code.TrackingNumber = trackingNumber;
             }
-
-            if (arrivalDate != null && code.ArrivalDate == null)
+            else
             {
-                code.ArrivalDate = arrivalDate;
+                if (arrivalDate != null && code.ArrivalDate == null)
+                {
+                    code.ArrivalDate = arrivalDate;
+                }
+
+                if (packingSlip != default)
+                {
+                    code.PackingSlip = packingSlip;
+                }
+
+                if (!string.IsNullOrEmpty(trackingNumber))
+                {
+                    code.TrackingNumber = trackingNumber;
+                }
             }
 
             return await _vendorCodeRepository.UpdateSaveNoAuditAsync(code);
@@ -983,43 +1003,54 @@ namespace GRA.Domain.Service
                     user.VendorCode = vendorCode.Code;
                     user.VendorCodeUrl = vendorCode.Url;
 
-                    var vendorCodeMessage = new StringBuilder("Item");
+                    var vendorPrize = await _prizeWinnerService
+                        .GetPrizeForVendorCodeAsync(vendorCode.Id);
 
-                    if (!string.IsNullOrEmpty(vendorCode.Details))
+                    if (vendorPrize?.RedeemedAt.HasValue == true)
                     {
-                        vendorCodeMessage.Append(" <strong>")
-                            .Append(HttpUtility.HtmlEncode(vendorCode.Details))
-                            .Append("</strong>");
+                        user.VendorOrderStatus = VendorOrderStatus.Receieved;
                     }
+                    else
+                    {
+                        var itemName = "Item";
 
-                    if (vendorCode.ArrivalDate.HasValue)
-                    {
-                        vendorCodeMessage.Append(" arrived <strong>")
-                            .Append(vendorCode.ArrivalDate.Value.ToString("d",
-                                CultureInfo.InvariantCulture))
-                            .Append("</strong> and is ready for pick-up");
-                    }
-                    else if (vendorCode.ShipDate.HasValue)
-                    {
-                        vendorCodeMessage.Append(" shipped <strong>")
-                            .Append(vendorCode.ShipDate.Value.ToString("d",
-                                CultureInfo.InvariantCulture))
-                            .Append("</strong>");
-                    }
-                    else if (vendorCode.OrderDate.HasValue)
-                    {
-                        vendorCodeMessage.Append(" ordered <strong>")
-                            .Append(vendorCode.OrderDate.Value.ToString("d",
-                                CultureInfo.InvariantCulture))
-                            .Append("</strong>");
+                        if (!string.IsNullOrWhiteSpace(vendorCode.Details))
+                        {
+                            itemName = vendorCode.Details;
+                        }
+
+                        if (vendorCode.ArrivalDate.HasValue && vendorCode.IsDamaged != true
+                            && vendorCode.IsMissing != true)
+                        {
+                            user.VendorCodeMessage = _sharedLocalizer[Annotations.Info.VendorItemArrived,
+                                itemName,
+                                vendorCode.ArrivalDate.Value.ToString("d", CultureInfo.InvariantCulture)];
+
+                            user.VendorOrderStatus = VendorOrderStatus.Arrived;
+                        }
+                        else if (vendorCode.ShipDate.HasValue)
+                        {
+                            user.VendorCodeMessage = _sharedLocalizer[Annotations.Info.VendorItemShipped,
+                                itemName,
+                                vendorCode.ShipDate.Value.ToString("d", CultureInfo.InvariantCulture)];
+
+                            user.VendorOrderStatus = VendorOrderStatus.Shipped;
+                        }
+                        else if (vendorCode.OrderDate.HasValue)
+                        {
+                            user.VendorCodeMessage = _sharedLocalizer[Annotations.Info.VendorItemOrdered,
+                                itemName,
+                                vendorCode.OrderDate.Value.ToString("d", CultureInfo.InvariantCulture)];
+
+                            user.VendorOrderStatus = VendorOrderStatus.Ordered;
+                        }
+                        else
+                        {
+                            user.VendorOrderStatus = VendorOrderStatus.Pending;
+                        }
                     }
 
                     user.VendorCodePackingSlip = vendorCode.PackingSlip;
-
-                    if (vendorCodeMessage.ToString() != "Item")
-                    {
-                        user.VendorCodeMessage = vendorCodeMessage.ToString();
-                    }
                 }
             }
         }
@@ -1696,9 +1727,26 @@ namespace GRA.Domain.Service
 
                     code.ArrivalDate = receivedAt;
 
+                    if (jobDetails.DamagedItems?.Contains(code.Id) == true)
+                    {
+                        code.IsDamaged = true;
+                        code.IsMissing = false;
+                    }
+                    else if (jobDetails.MissingItems?.Contains(code.Id) == true)
+                    {
+                        code.IsMissing = true;
+                        code.IsDamaged = false;
+                    }
+                    else
+                    {
+                        code.IsDamaged = false;
+                        code.IsMissing = false;
+                    }
+
                     await _vendorCodeRepository.UpdateSaveNoAuditAsync(code);
 
-                    if (vendorCodeType.AwardPrizeOnPackingSlip)
+                    if (vendorCodeType.AwardPrizeOnPackingSlip && code.IsDamaged != true
+                        && code.IsMissing != true)
                     {
                         await AwardPrizeAsync(code);
                     }

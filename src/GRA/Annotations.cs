@@ -71,6 +71,9 @@
             public const string UpgradeToGroupDescription = "It appears that you have more than {0} members in your family. We'd like you to convert your family to a group in order to add more members.";
             public const string UsernameIsAvailable = "That username is available!";
             public const string UsernameListSent = "A list of usernames associated with the email address '{0}' has been sent.";
+            public const string VendorItemArrived = "<em>{0}</em> arrived on <strong>{1}</strong> and is ready for pick-up.";
+            public const string VendorItemOrdered = "<em>{0}</em> ordered on <strong>{1}</strong>.";
+            public const string VendorItemShipped = "<em>{0}</em> shipped on <strong>{1}</strong>.";
             public const string YouCanJoinOn = "You can join {0} on {1}.";
         }
 

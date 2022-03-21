@@ -568,8 +568,6 @@ namespace GRA.Controllers.MissionControl
 
             var summary = await _vendorCodeService.VerifyPackingSlipAsync(id);
             summary.CanViewDetails = UserHasPermission(Permission.ViewParticipantDetails);
-            summary.CanReceivePackingSlips = UserHasPermission(Permission.ReceivePackingSlips)
-                || UserHasPermission(Permission.ManageVendorCodes);
 
             if (summary.VendorCodes.Count > 0 || summary.VendorCodePackingSlip != null)
             {
@@ -586,6 +584,8 @@ namespace GRA.Controllers.MissionControl
                 {
                     var vendorCodeType = await _vendorCodeService
                         .GetTypeById(summary.VendorCodes.First().VendorCodeTypeId);
+                    summary.CanBeReceived = UserHasPermission(Permission.ReceivePackingSlips)
+                        || UserHasPermission(Permission.ManageVendorCodes);
                     summary.SubmitText = vendorCodeType.AwardPrizeOnPackingSlip
                         ? "Mark as received and award prizes"
                         : "Mark as received";
@@ -613,7 +613,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public async Task<IActionResult> ProcessPackingSlip(long packingSlipNumber)
+        public async Task<IActionResult> ProcessPackingSlip(PackingSlipSummary summary)
         {
             if (!UserHasPermission(Permission.ManageVendorCodes)
                && !UserHasPermission(Permission.ReceivePackingSlips))
@@ -621,15 +621,16 @@ namespace GRA.Controllers.MissionControl
                 return RedirectNotAuthorized(NoAccess);
             }
 
-            if (packingSlipNumber == 0)
+            if (summary.PackingSlipNumber == 0)
             {
                 AlertWarning = "Please enter a valid packing slip number.";
-                return View("EnterPackingSlip", packingSlipNumber);
+                return View("EnterPackingSlip", summary.PackingSlipNumber);
             }
 
-            var summary = await _vendorCodeService.VerifyPackingSlipAsync(packingSlipNumber);
-            summary.CanViewDetails = UserHasPermission(Permission.ViewParticipantDetails);
-            summary.CanReceivePackingSlips = UserHasPermission(Permission.ReceivePackingSlips);
+            var damagedItems = summary.DamagedItems;
+            var missingItems = summary.MissingItems;
+
+            summary = await _vendorCodeService.VerifyPackingSlipAsync(summary.PackingSlipNumber);
 
             if (summary.VendorCodes.Count > 0 || summary.VendorCodePackingSlip != null)
             {
@@ -638,6 +639,9 @@ namespace GRA.Controllers.MissionControl
                     var enteredBy = await _userService
                         .GetDetails(summary.VendorCodePackingSlip.CreatedBy);
                     ShowAlertWarning($"This packing slip was already received on {summary.VendorCodePackingSlip.CreatedAt} by {enteredBy.FullName}.");
+
+                    summary.CanViewDetails = UserHasPermission(Permission.ViewParticipantDetails);
+
                     return View("ViewPackingSlip", summary);
                 }
                 else
@@ -648,7 +652,9 @@ namespace GRA.Controllers.MissionControl
                         SerializedParameters = JsonConvert.SerializeObject(
                         new JobDetailsReceivePackingSlip
                         {
-                            PackingSlipNumber = packingSlipNumber
+                            PackingSlipNumber = summary.PackingSlipNumber,
+                            DamagedItems = damagedItems,
+                            MissingItems = missingItems
                         })
                     });
 
@@ -664,8 +670,8 @@ namespace GRA.Controllers.MissionControl
                 }
             }
 
-            ShowAlertDanger($"Could not find packing slip number {packingSlipNumber}, please contact your administrator.");
-            return View("EnterPackingSlip", packingSlipNumber);
+            ShowAlertDanger($"Could not find packing slip number {summary.PackingSlipNumber}, please contact your administrator.");
+            return View("EnterPackingSlip", summary.PackingSlipNumber);
         }
 
         #region Spreadsheet utility methods

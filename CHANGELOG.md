@@ -14,12 +14,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Remaining vendor prize report
 - Vendor code by program report
 - Challenge sorting options (most recent, most popular)
+- Packing slip functionality for checking item status on arrival
 
 ### Changed
 
 - Hide avatar bundle icon if no bundles are available
 - Reduce streaming video caching on dashboard to 15 minutes
 - Order streaming videos on dashboard by start date descending (newest at the top)
+- Vendor item status display on participants profile
 - Show wrench menu to all who have Mission Control access
 
 ### Fixed
