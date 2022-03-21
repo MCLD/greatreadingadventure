@@ -159,67 +159,69 @@
 
             @if (!string.IsNullOrWhiteSpace(Model.User.VendorCode) || Model.User.NeedsToAnswerVendorCodeQuestion)
             {
-                <div class="row row-spacing" style="padding: 1rem 0; margin-top: 2rem; font-size: 1.5rem; border-radius: 0.5rem; border: 1px solid grey;">
-                    <div class="col-xs-12">
-                        <strong>Free Book Code:</strong>
-                        @if (Model.User.NeedsToAnswerVendorCodeQuestion)
-                        {
-                            <button class="btn btn-info btn-spinner"
-                                    asp-action="RedeemCode"
-                                    asp-is-disabled="@(!Model.CanEditDetails)"
-                                    button-spinner>
-                                <span class="buttonText">Redeem code</span>
-                            </button>
-                            @if (Model.User.CanDonateVendorCode)
+                <div class="row row-spacing">
+                    <div class="col-xs-12" >
+                        <div style="padding: 1rem; margin-top: 1rem; font-size: 1.5rem; border-radius: 0.5rem; border: 1px solid grey;">
+                            <strong>Free Book Code:</strong>
+                            @if (Model.User.NeedsToAnswerVendorCodeQuestion)
                             {
-                                @:or
-                                <button class="btn btn-success btn-spinner"
-                                        asp-action="DonateCode"
+                                <button class="btn btn-info btn-spinner"
+                                        asp-action="RedeemCode"
                                         asp-is-disabled="@(!Model.CanEditDetails)"
                                         button-spinner>
-                                    <span class="buttonText">Donate book</span>
+                                    <span class="buttonText">Redeem code</span>
                                 </button>
-                            }
-                            @if (Model.User.CanEmailAwardVendorCode)
-                            {
-                                @:or
-                                <button id="emailAwardButton"
-                                        class="btn btn-warning"
-                                        asp-is-disabled="@(!Model.CanEditDetails)">
-                                    <span class="buttonText">Email e-audiobook</span>
-                                </button>
-                            }
-                        }
-                        else
-                        {
-                            if (!string.IsNullOrEmpty(Model.User.VendorCodeUrl))
-                            {
-                                <strong>
-                                    <a href="@Model.User.VendorCodeUrl"
-                                       target="_blank">@Model.User.VendorCode</a>
-                                </strong>
+                                @if (Model.User.CanDonateVendorCode)
+                                {
+                                    @:or
+                                    <button class="btn btn-success btn-spinner"
+                                            asp-action="DonateCode"
+                                            asp-is-disabled="@(!Model.CanEditDetails)"
+                                            button-spinner>
+                                        <span class="buttonText">Donate book</span>
+                                    </button>
+                                }
+                                @if (Model.User.CanEmailAwardVendorCode)
+                                {
+                                    @:or
+                                    <button id="emailAwardButton"
+                                            class="btn btn-warning"
+                                            asp-is-disabled="@(!Model.CanEditDetails)">
+                                        <span class="buttonText">Email e-audiobook</span>
+                                    </button>
+                                }
                             }
                             else
                             {
-                                <strong>@Model.User.VendorCode</strong>
+                                if (!string.IsNullOrEmpty(Model.User.VendorCodeUrl))
+                                {
+                                    <strong>
+                                        <a href="@Model.User.VendorCodeUrl"
+                                           target="_blank">@Model.User.VendorCode</a>
+                                    </strong>
+                                }
+                                else
+                                {
+                                    <strong>@Model.User.VendorCode</strong>
+                                }
+                                if (Model.User.Donated == true
+                                    && User.HasClaim(ClaimType.Permission,
+                                        Permission.UnDonateVendorCode.ToString()))
+                                {
+                                    <button class="btn btn-info btn-spinner"
+                                            asp-action="UndonateCode"
+                                            asp-is-disabled="@(!Model.CanEditDetails)"
+                                            button-spinner>
+                                        <span class="buttonText">Un-donate</span>
+                                    </button>
+                                }
                             }
-                            if (Model.User.Donated == true
-                                && User.HasClaim(ClaimType.Permission,
-                                    Permission.UnDonateVendorCode.ToString()))
+                            @if (!string.IsNullOrWhiteSpace(Model.User.VendorCodeMessage))
                             {
-                                <button class="btn btn-info btn-spinner"
-                                        asp-action="UndonateCode"
-                                        asp-is-disabled="@(!Model.CanEditDetails)"
-                                        button-spinner>
-                                    <span class="buttonText">Un-donate</span>
-                                </button>
+                                @:/
+                                @Html.Raw(Model.User.VendorCodeMessage)
                             }
-                        }
-                        @if (!string.IsNullOrWhiteSpace(Model.User.VendorCodeMessage))
-                        {
-                            @:/
-                            @Html.Raw(Model.User.VendorCodeMessage)
-                        }
+                        </div>
                     </div>
                 </div>
             }
