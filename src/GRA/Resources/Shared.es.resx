@@ -1566,15 +1566,15 @@
     <comment>Prompt for what order items should be placed in</comment>
   </data>
   <data name="&lt;em&gt;{0}&lt;/em&gt; arrived on &lt;strong&gt;{1}&lt;/strong&gt; and is ready for pick-up." xml:space="preserve">
-    <value />
+    <value>&lt;em&gt;{0}&lt;/em&gt; llegó el &lt;Strong&gt;{1}&lt;/strong&gt; Y está listo para recoger.</value>
     <comment>Message informing the user their requested item has arrived, {0} is the name of the item and {1} is the date it arrived.</comment>
   </data>
   <data name="&lt;em&gt;{0}&lt;/em&gt; ordered on &lt;strong&gt;{1}&lt;/strong&gt;." xml:space="preserve">
-    <value />
+    <value>&lt;em&gt;{0}&lt;/em&gt; ordenado el &lt;strong&gt;{1}&lt;/strong&gt;.</value>
     <comment>Message informing the user their requested item has been ordered, {0} is the name of the item and {1} is the date it was ordered.</comment>
   </data>
   <data name="&lt;em&gt;{0}&lt;/em&gt; shipped on &lt;strong&gt;{1}&lt;/strong&gt;." xml:space="preserve">
-    <value />
+    <value>&lt;em&gt;{0}&lt;/em&gt; se envió el &lt;strong&gt;{1}&lt;/strong&gt;.</value>
     <comment>Message informing the user their requested item has been shipped, {0} is the name of the item and {1} is the date it shipped.</comment>
   </data>
 </root>
