@@ -1577,4 +1577,8 @@
     <value>&lt;em&gt;{0}&lt;/em&gt; shipped on &lt;strong&gt;{1}&lt;/strong&gt;.</value>
     <comment>Message informing the user their requested item has been shipped, {0} is the name of the item and {1} is the date it shipped.</comment>
   </data>
+  <data name="Sign in again" xml:space="preserve">
+    <value>Sign in again</value>
+    <comment>Button shown on exit screen in case the participant wishes to sign in again</comment>
+  </data>
 </root>

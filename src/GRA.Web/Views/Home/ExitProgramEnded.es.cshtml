@@ -1,6 +1,6 @@
 ﻿@model GRA.Controllers.ViewModel.Home.ExitPageViewModel
 @section metadata {
-    <social data="Model.Social"></social>
+<social data="Model.Social"></social>
 }
 <div class="row gra-landing-banner">
     <div class="col-xs-12">
@@ -14,6 +14,14 @@
     <div class="@(string.IsNullOrEmpty(Model?.Branch?.Name) ? "col-sm-12" : "col-sm-7")">
         <h2 class="gra-exit-header">@SharedLocalizer[GRA.Annotations.Home.AdventureNotOver]</h2>
         <p>@SharedLocalizer[GRA.Annotations.Home.ContinueYourAdventure]</p>
+        <div class="text-center">
+            <a asp-controller="@SignInController.Name"
+               asp-action="@nameof(SignInController.Index)"
+               class="btn btn-success btn-lg">
+                <span class="fa fa-sign-in"></span>
+                @SharedLocalizer[GRA.Annotations.Home.SignInAgain]
+            </a>
+        </div>
     </div>
     @if (!string.IsNullOrEmpty(Model?.Branch?.Name))
     {
