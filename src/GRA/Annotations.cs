@@ -14,6 +14,7 @@
             public const string Read20 = "Reading for 20 minutes a day helps build a strong lifelong reading habit.";
             public const string ReadingIsFundamental = "Reading is fundamental for developing literacy skills!";
             public const string RemindMe = "Remind Me!";
+            public const string SignInAgain = "Sign in again";
             public const string StartAdventure = "Join to get started on your reading adventure!";
             public const string StartsSoon = "Our program starts soon but you can join now to be ready to go when the program starts!";
             public const string StillSignIn = "You can still sign in to review your history and achievements.";
