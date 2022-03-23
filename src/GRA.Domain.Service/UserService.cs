@@ -1485,9 +1485,7 @@ namespace GRA.Domain.Service
         {
             VerifyPermission(Permission.AccessMissionControl);
 
-            var user = await _userRepository.GetByIdAsync(userId);
-
-            return user.FullName;
+            return await _userRepository.GetFullNameByIdAsync(userId);
         }
 
         public async Task UpdateCulture(string cultureName)

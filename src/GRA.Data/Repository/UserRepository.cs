@@ -183,6 +183,16 @@ namespace GRA.Data.Repository
             return await users.Where(_ => _.IsFirstTime).CountAsync();
         }
 
+        public async Task<string> GetFullNameByIdAsync(int userId)
+        {
+            var user = await DbSet
+                .AsNoTracking()
+                .Where(_ => _.Id == userId)
+                .ProjectTo<User>(_mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync();
+            return user?.FullName;
+        }
+
         public async Task<IEnumerable<User>> GetHouseholdAsync(int householdHeadUserId)
         {
             return await DbSet
