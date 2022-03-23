@@ -89,5 +89,9 @@ namespace GRA.Domain.Model
             "CA1056:Uri properties should not be strings",
             Justification = "This is a text link, not used programatically")]
         public string Url { get; set; }
+
+        [Display(Name = "Ready for pickup email template", 
+            Description = "Email template to send participant when their vendor code item is ready for pick up")]
+        public int? ReadyForPickupEmailTemplateId { get; set; }
     }
 }

@@ -112,7 +112,9 @@ namespace GRA.Domain.Service
                 : $"{baseLink}/{token}";
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
+            "CA1031:Do not catch general exception types",
+            Justification = "Single email failure should not kill the entire job.")]
         private async Task<JobStatus> SendBulkListAsync(int userId,
             int jobId,
             IProgress<JobStatus> progress,

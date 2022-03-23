@@ -153,6 +153,8 @@ namespace GRA.Controllers.MissionControl
 
                 string file = WebUtility.UrlEncode(Path.GetFileName(tempFile));
 
+                var site = await GetCurrentSiteAsync();
+
                 var jobToken = await _jobService.CreateJobAsync(new Job
                 {
                     JobType = JobType.UpdateVendorStatus,
@@ -160,9 +162,10 @@ namespace GRA.Controllers.MissionControl
                         .SerializeObject(new JobDetailsVendorCodeStatus
                         {
                             VendorCodeTypeId = vendorCodeTypeId,
-                            Filename = file
+                            Filename = file,
+                            SiteName = site.Name
                         })
-                });
+                }); ;
 
                 return View("Job", new ViewModel.MissionControl.Shared.JobViewModel
                 {
@@ -402,6 +405,8 @@ namespace GRA.Controllers.MissionControl
 
                 string file = WebUtility.UrlEncode(Path.GetFileName(tempFile));
 
+                var site = await GetCurrentSiteAsync();
+
                 var jobToken = await _jobService.CreateJobAsync(new Job
                 {
                     JobType = JobType.UpdateEmailAwardStatus,
@@ -409,7 +414,8 @@ namespace GRA.Controllers.MissionControl
                         .SerializeObject(new JobDetailsVendorCodeStatus
                         {
                             VendorCodeTypeId = vendorCodeTypeId,
-                            Filename = file
+                            Filename = file,
+                            SiteName = site.Name
                         })
                 });
 
@@ -646,12 +652,14 @@ namespace GRA.Controllers.MissionControl
                 }
                 else
                 {
+                    var currentSite = await GetCurrentSiteAsync();
                     var jobToken = await _jobService.CreateJobAsync(new Job
                     {
                         JobType = JobType.ReceivePackingSlip,
                         SerializedParameters = JsonConvert.SerializeObject(
                         new JobDetailsReceivePackingSlip
                         {
+                            SiteName = currentSite.Name,
                             PackingSlipNumber = summary.PackingSlipNumber,
                             DamagedItems = damagedItems,
                             MissingItems = missingItems

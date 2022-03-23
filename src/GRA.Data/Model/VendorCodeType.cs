@@ -54,5 +54,7 @@ namespace GRA.Data.Model
         public DateTime? ExpirationDate { get; set; }
         public bool AwardPrizeOnShipDate { get; set; }
         public bool AwardPrizeOnPackingSlip { get; set; }
+        public int? ReadyForPickupEmailTemplateId { get; set; }
+
     }
 }

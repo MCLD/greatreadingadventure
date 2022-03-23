@@ -133,14 +133,6 @@ namespace GRA.Domain.Service
                     directEmailDetails.DirectEmailTemplateId,
                     history.LanguageId);
 
-            //var directEmailTemplate = !string.IsNullOrEmpty(directEmailDetails.DirectEmailSystemId)
-            //    ? await _directEmailTemplateRepository
-            //        .GetWithTextBySystemId(directEmailDetails.DirectEmailSystemId,
-            //            history.LanguageId)
-            //    : await _directEmailTemplateRepository
-            //        .GetWithTextByIdAsync(directEmailDetails.DirectEmailTemplateId,
-            //        history.LanguageId);
-
             history.EmailBaseId = directEmailTemplate.EmailBaseId;
 
             var stubble = new StubbleBuilder().Build();
