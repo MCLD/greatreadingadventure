@@ -732,7 +732,7 @@ namespace GRA.Domain.Service
         }
 
         public async Task<DataWithCount<ICollection<Book>>>
-            GetPaginatedUserBookListAsync(int userId, BookFilter filter)
+                    GetPaginatedUserBookListAsync(int userId, BookFilter filter)
         {
             int requestedByUserId = GetActiveUserId();
             if (requestedByUserId == userId
@@ -881,13 +881,11 @@ namespace GRA.Domain.Service
         {
             VerifyPermission(Permission.AccessMissionControl);
 
-            var user = await _userRepository.GetByIdAsync(userId);
-
-            return user.FullName;
+            return await _userRepository.GetFullNameByIdAsync(userId);
         }
 
         public async Task<JobStatus> ImportHouseholdMembersAsync(int jobId,
-            CancellationToken token,
+                    CancellationToken token,
             IProgress<JobStatus> progress = null)
         {
             var requestingUser = GetClaimId(ClaimType.UserId);

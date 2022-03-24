@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Vendor code by program report
 - Challenge sorting options (most recent, most popular)
 - Packing slip functionality for checking item status on arrival
+- Sign in again button on exit pages when the program is running
 
 ### Changed
 
@@ -34,6 +35,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Performer view selections button being visible for non-approved performers
 - Fix bug binding performer archiving and streaming choices
 - Hide branch selection in performer scheduling when no branches are available
+- Mission Control error if a user who posted a news post was deleted
 
 ### Updated
 

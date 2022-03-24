@@ -32,6 +32,8 @@ namespace GRA.Domain.Repository
 
         Task<int> GetFirstTimeCountAsync(ReportCriterion request);
 
+        Task<string> GetFullNameByIdAsync(int userId);
+
         Task<IEnumerable<User>> GetHouseholdAsync(int householdHeadUserId);
 
         Task<int> GetHouseholdCountAsync(int householdHeadUserId);
@@ -74,8 +76,7 @@ namespace GRA.Domain.Repository
 
         Task<bool> UnsubscribeTokenExists(int siteId, string token);
 
-        Task UpdateUserRolesAsync(
-            int currentUserId,
+        Task UpdateUserRolesAsync(int currentUserId,
             int userId,
             IEnumerable<int> rolesToAdd,
             IEnumerable<int> rolesToRemove);
