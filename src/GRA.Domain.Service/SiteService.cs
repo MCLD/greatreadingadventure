@@ -162,7 +162,7 @@ namespace GRA.Domain.Service
             var site = await _siteRepository.GetByIdAsync(GetCurrentSiteId());
             if (site.RegistrationOpens == null)
             {
-                _logger.LogError($"Can't generate calendar file becuase RegistrationOpens date is not set for site {site.Id}");
+                _logger.LogError($"Can't generate calendar file because RegistrationOpens date is not set for site {site.Id}");
                 throw new GraException("Unable to generate calendar file.");
             }
             string project = new string(site.Name.Where(_ => char.IsLetterOrDigit(_)).ToArray());

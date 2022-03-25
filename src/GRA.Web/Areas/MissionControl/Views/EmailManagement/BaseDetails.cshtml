@@ -1,4 +1,9 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.EmailManagement.BaseDetailsViewModel
+
+@{
+    var invalid = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid;
+}
+
 @section Styles {
 <style>
     .d-none {
@@ -90,6 +95,26 @@
                 <span asp-validation-for="TemplateText" class="text-danger"></span>
             </div>
 
+            @if (Model.Action == nameof(EmailManagementController.EditBaseTemplate))
+            {
+                <div class="form-group">
+                    <button type="button"
+                        data-toggle="modal"
+                        data-target="#importModal"
+                        class="btn btn-default">
+                        <span class="fas fa-file-upload"></span>
+                        Import
+                    </button>
+                    <a asp-action="@nameof(EmailManagementController.ExportBaseText)"
+                   class="btn btn-default"
+                   asp-route-emailBaseId="@Model.EmailBaseId"
+                   asp-route-languageId="@Model.LanguageId">
+                        <span class="fas fa-file-download"></span>
+                        Export
+                    </a>
+                </div>
+            }
+
             <div class="form-group">
                 <a asp-action="BaseIndex" class="btn btn-default">Return to List</a>
                 <button type="submit"
@@ -105,6 +130,72 @@
     </div>
 </form>
 
+<div class="modal fade"
+     id="importModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="importModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form asp-action="@nameof(EmailManagementController.ImportBaseText)"
+                  method="post"
+                  role="form"
+                  enctype="multipart/form-data"
+                  style="display:inline">
+                <input asp-for="LanguageId" type="hidden" />
+                <input asp-for="EmailBaseId" type="hidden" />
+                <div class="modal-header">
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close dialog">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h1 class="modal-title h4" id="sendTestModalHeader">Import Base Template</h1>
+                </div>
+                <div class="modal-body">
+                    <p>Upload a .json file to replace the content of the selected template and language.</p>
+                    <div class="input-group">
+                        <label class="input-group-btn">
+                            <span class="btn btn-default btn-file">
+                                <span class="far fa-file-image"></span>
+                                Select a .json file
+                                <input type="file"
+                                       asp-for="UploadedFile"
+                                       class="form-control"
+                                       accept=".json"
+                                       style="display: none;" />
+                            </span>
+                        </label>
+                        <input type="text"
+                               class="form-control"
+                               readonly
+                               id="selectedFile"
+                               @(ViewData.ModelState.GetValidationState("UploadedFile") == invalid ? "input-validation-error" : "")>
+                    </div>
+                    <span asp-validation-for="UploadedFile" class="text-danger"></span>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-default"
+                            type="button"
+                            data-dismiss="modal"
+                            style="margin-right: 1em;">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="btn btn-primary pull-right"
+                            aria-label="Confirm">
+                        Upload and replace
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
 @section scripts {
 <script>
     function showSaveWarning() {
@@ -118,5 +209,31 @@
 
     $('input.form-control').keydown(showSaveWarning);
     $('textarea.form-control').keydown(showSaveWarning);
+
+    $(':file').on('fileselect', function (event, numFiles, label) {
+        var input = $(this).parents('.input-group').find(':text'),
+            log = numFiles > 1 ? numFiles = ' files selected' : label;
+
+        if (input.length) {
+            input.val(log);
+            $('.btn-file').removeClass('btn-default');
+            $('.btn-file').addClass('btn-success');
+            $("#badgeImage").removeAttr("src");
+            $("#badgeImage").height(200);
+            $("#BadgeMakerImage").val("");
+        }
+        else {
+            input.val('');
+            $('.btn-file').addClass('btn-default');
+            $('.btn-file').removeClass('btn-success');
+        }
+    });
+
+    $(document).on('change', ':file', function () {
+        var input = $(this),
+            numFiles = input.get(0).files ? input.get(0).files.length : 1,
+            label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+        input.trigger('fileselect', [numFiles, label]);
+    });
 </script>
     }

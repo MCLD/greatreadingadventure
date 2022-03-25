@@ -1,0 +1,16 @@
+{
+  "Data": {
+    "BodyCommonMark": "A new post has been made to {{Sitename}} in the category **{{Category}}**:\r\n\r\n\u003E {{Summary}}\r\n\r\n\r\nTo read the entire post, [view it in Mission Control]({{PostLink}}).",
+    "Footer": "You are receiving this email becuase you are subscribed to news updates for {{Sitename}}. You can unsubscribe at any time in [Mission Control]({{UnsubscribeLink}}).",
+    "ImportCulture": "en-US",
+    "ImportSystemEmailId": "NewsPost",
+    "Preview": "{{Category}} news in {{Sitename}}",
+    "Subject": "[{{Sitename}}] {{PostTitle}}",
+    "Title": "{{Sitename}}"
+  },
+  "ExportedAt": "2022-03-25T00:00:00-07:00",
+  "ExportedBy": "Great Reading Adventure Development (https://github.com/MCLD/greatreadingadventure/discussions)",
+  "Source": "The Great Reating Adventure (https://github.com/MCLD/greatreadingadventure)",
+  "Type": "DirectEmailTemplateText",
+  "Version": 1
+}

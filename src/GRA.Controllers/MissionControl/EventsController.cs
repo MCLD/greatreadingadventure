@@ -63,7 +63,7 @@ namespace GRA.Controllers.MissionControl
             var site = await GetCurrentSiteAsync();
             if (!string.IsNullOrEmpty(site.ExternalEventListUrl))
             {
-                ShowAlertWarning($"Events will not be seen becuase all event requests will be <a href=\"{site.ExternalEventListUrl}\"> redirected to another site</a>.");
+                ShowAlertWarning($"Events will not be seen because all event requests will be <a href=\"{site.ExternalEventListUrl}\"> redirected to another site</a>.");
             }
 
             try
@@ -94,7 +94,7 @@ namespace GRA.Controllers.MissionControl
             var site = await GetCurrentSiteAsync();
             if (!string.IsNullOrEmpty(site.ExternalEventListUrl))
             {
-                ShowAlertWarning($"Events will not be seen becuase all event requests will be <a href=\"{site.ExternalEventListUrl}\"> redirected to another site</a>.");
+                ShowAlertWarning($"Events will not be seen because all event requests will be <a href=\"{site.ExternalEventListUrl}\"> redirected to another site</a>.");
             }
 
             try
@@ -128,7 +128,7 @@ namespace GRA.Controllers.MissionControl
             var site = await GetCurrentSiteAsync();
             if (!string.IsNullOrEmpty(site.ExternalEventListUrl))
             {
-                ShowAlertWarning($"Events will not be seen becuase all event requests will be <a href=\"{site.ExternalEventListUrl}\"> redirected to another site</a>.");
+                ShowAlertWarning($"Events will not be seen because all event requests will be <a href=\"{site.ExternalEventListUrl}\"> redirected to another site</a>.");
             }
 
             try

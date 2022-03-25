@@ -166,10 +166,67 @@ namespace GRA.Domain.Service
             return await _emailSubscriptionAuditLogRepository.GetUserAuditLogAsync(userId);
         }
 
+        public async Task<IDictionary<int, string>> GetUserTemplatesAsync()
+        {
+            return await _directEmailTemplateRepository.GetAllUserTemplatesAsync();
+        }
+
         public async Task<bool> IsAnyoneSubscribedAsync()
         {
             return await _emailReminderRepository.IsAnyoneSubscribedAsync()
                 || await _userRepository.IsAnyoneSubscribedAsync();
+        }
+
+        public async Task ReplaceBaseTextAsync(int emailBaseId,
+                                                                                                            int languageId,
+            EmailBaseText emailBaseText)
+        {
+            if (emailBaseText == null)
+            {
+                throw new ArgumentNullException(nameof(emailBaseText));
+            }
+
+            var currentBase = await _emailBaseRepository
+                .GetWithTextByIdAsync(emailBaseId, languageId);
+
+            if (currentBase == null)
+            {
+                throw new GraException("Unable to find that base template in the database.");
+            }
+
+            currentBase.EmailBaseText.TemplateHtml = emailBaseText.TemplateHtml;
+            currentBase.EmailBaseText.TemplateMjml = emailBaseText.TemplateMjml;
+            currentBase.EmailBaseText.TemplateText = emailBaseText.TemplateText;
+
+            await _emailBaseRepository.UpdateSaveWithText(GetActiveUserId(), currentBase);
+        }
+
+        public async Task ReplaceTemplateTextAsync(int directEmailTemplateId,
+            int languageId,
+            DirectEmailTemplateText emailTemplateText)
+        {
+            if (emailTemplateText == null)
+            {
+                throw new ArgumentNullException(nameof(emailTemplateText));
+            }
+
+            var currentTemplate = await _directEmailTemplateRepository
+                .GetWithTextByIdAsync(directEmailTemplateId, languageId);
+
+            if (currentTemplate == null)
+            {
+                throw new GraException("Unable to find that template in the database.");
+            }
+
+            currentTemplate.DirectEmailTemplateText.BodyCommonMark
+                = emailTemplateText.BodyCommonMark;
+            currentTemplate.DirectEmailTemplateText.Footer = emailTemplateText.Footer;
+            currentTemplate.DirectEmailTemplateText.Preview = emailTemplateText.Preview;
+            currentTemplate.DirectEmailTemplateText.Subject = emailTemplateText.Subject;
+            currentTemplate.DirectEmailTemplateText.Title = emailTemplateText.Title;
+
+            await _directEmailTemplateRepository
+                .UpdateSaveWithTextAsync(GetActiveUserId(), currentTemplate);
         }
 
         public async Task<bool> SetUserEmailSubscriptionStatusAsync(int userId, bool subscribe,

@@ -42,6 +42,7 @@ namespace GRA.Domain.Service
         private readonly IPathResolver _pathResolver;
         private readonly PrizeWinnerService _prizeWinnerService;
         private readonly IStringLocalizer<Resources.Shared> _sharedLocalizer;
+        private readonly SiteService _siteService;
         private readonly IUserRepository _userRepository;
         private readonly IVendorCodePackingSlipRepository _vendorCodePackingSlipRepository;
         private readonly IVendorCodeRepository _vendorCodeRepository;
@@ -50,26 +51,36 @@ namespace GRA.Domain.Service
         public VendorCodeService(ILogger<VendorCodeService> logger,
             IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
-            IPathResolver pathResolver,
+            EmailService emailService,
             ICodeGenerator codeGenerator,
             IJobRepository jobRepository,
+            IPathResolver pathResolver,
+            IStringLocalizer<Resources.Shared> sharedLocalizer,
             IUserRepository userRepository,
             IVendorCodePackingSlipRepository vendorCodePackingSlipRepository,
             IVendorCodeRepository vendorCodeRepository,
             IVendorCodeTypeRepository vendorCodeTypeRepository,
-            MailService mailService,
             LanguageService languageService,
+            MailService mailService,
             PrizeWinnerService prizeWinnerService,
-            EmailService emailService,
-            IStringLocalizer<Resources.Shared> sharedLocalizer)
+            SiteService siteService)
             : base(logger, dateTimeProvider, userContextProvider)
         {
             SetManagementPermission(Permission.ManageVendorCodes);
-            _pathResolver = pathResolver ?? throw new ArgumentNullException(nameof(pathResolver));
             _codeGenerator = codeGenerator
                 ?? throw new ArgumentNullException(nameof(codeGenerator));
+            _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
             _jobRepository = jobRepository
                 ?? throw new ArgumentNullException(nameof(jobRepository));
+            _languageService = languageService
+                ?? throw new ArgumentNullException(nameof(languageService));
+            _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
+            _pathResolver = pathResolver ?? throw new ArgumentNullException(nameof(pathResolver));
+            _prizeWinnerService = prizeWinnerService
+                ?? throw new ArgumentNullException(nameof(prizeWinnerService));
+            _sharedLocalizer = sharedLocalizer
+                ?? throw new ArgumentNullException(nameof(sharedLocalizer));
+            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             _userRepository = userRepository
                 ?? throw new ArgumentNullException(nameof(userRepository));
             _vendorCodePackingSlipRepository = vendorCodePackingSlipRepository
@@ -78,15 +89,6 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(vendorCodeRepository));
             _vendorCodeTypeRepository = vendorCodeTypeRepository
                 ?? throw new ArgumentNullException(nameof(vendorCodeTypeRepository));
-            _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
-            _languageService = languageService
-                ?? throw new ArgumentNullException(nameof(languageService));
-            _prizeWinnerService = prizeWinnerService
-                ?? throw new ArgumentNullException(nameof(prizeWinnerService));
-            _sharedLocalizer = sharedLocalizer
-                ?? throw new ArgumentNullException(nameof(sharedLocalizer));
-            _emailService = emailService
-                ?? throw new ArgumentNullException(nameof(emailService));
         }
 
         private IDictionary<long, VendorCodePackingSlip> PsCache { get; set; }
@@ -497,7 +499,8 @@ namespace GRA.Domain.Service
                             var result = await SendPickupEmailAsync(
                                 vendorCodeType.ReadyForPickupEmailTemplateId.Value,
                                 code.UserId.Value,
-                                emailDetails);
+                                emailDetails,
+                                code);
 
                             if (result == true)
                             {
@@ -575,15 +578,20 @@ namespace GRA.Domain.Service
                     emailErrors,
                     sw?.ElapsedMilliseconds ?? 0);
 
-                var sb = new StringBuilder("<strong>Packing slip ")
+                var sb = new StringBuilder("Packing slip <strong>")
                     .Append(packingSlipNumber)
-                    .Append(" received</strong>: ")
+                    .Append("</strong> received: ")
                     .Append(recordCount)
                     .Append(" records updated, ")
                     .Append(emailsSent)
-                    .Append(" emails sent, ")
+                    .Append(" emails sent");
+                if (emailErrors > 0)
+                {
+                    sb.Append(", ")
                     .Append(emailErrors)
-                    .Append(" email errors.");
+                    .Append(" email errors");
+                }
+                sb.Append('.');
 
                 return new JobStatus
                 {
@@ -1334,7 +1342,8 @@ namespace GRA.Domain.Service
                                                             .ReadyForPickupEmailTemplateId
                                                             .Value,
                                                         code.UserId.Value,
-                                                        emailDetails);
+                                                        emailDetails,
+                                                        code);
 
                                                     if (result == true)
                                                     {
@@ -1403,9 +1412,13 @@ namespace GRA.Domain.Service
                     {
                         sb.Append(", sent ")
                             .Append(emailsSent)
-                            .Append(" emails with ")
+                            .Append(" emails");
+                        if (emailErrors > 0)
+                        {
+                            sb.Append(" with ")
                             .Append(emailErrors)
                             .Append(" email errors");
+                        }
                     }
                     sb.Append('.');
 
@@ -1758,7 +1771,8 @@ namespace GRA.Domain.Service
 
         private async Task<bool?> SendPickupEmailAsync(int templateId,
             int userId,
-            Model.Utility.DirectEmailDetails emailDetails)
+            Model.Utility.DirectEmailDetails emailDetails,
+            VendorCode code)
         {
             var user = await _userRepository.GetByIdAsync(userId);
             int languageId = string.IsNullOrEmpty(user.Culture)
@@ -1773,7 +1787,19 @@ namespace GRA.Domain.Service
                 emailDetails.ToAddress = user.Email;
                 emailDetails.ToName = user.FullName;
                 emailDetails.ToUserId = user.Id;
-                emailDetails.Tags.Add("", "");
+                emailDetails.Tags.Add("Details", code.Details);
+
+                if (code.BranchId.HasValue)
+                {
+                    var branch = await _siteService.GetBranchByIdAsync(code.BranchId.Value);
+                    if (branch != null)
+                    {
+                        emailDetails.Tags.Add("LocationAddress", branch.Address);
+                        emailDetails.Tags.Add("LocationLink", branch.Url);
+                        emailDetails.Tags.Add("LocationName", branch.Name);
+                        emailDetails.Tags.Add("LocationTelephone", branch.Telephone);
+                    }
+                }
 
                 var result = await _emailService.SendDirectAsync(emailDetails);
                 return result.Successful;

@@ -91,7 +91,7 @@ namespace GRA.Controllers.MissionControl
         {
             var defaultLanguageId = await _languageService.GetDefaultLanguageIdAsync();
 
-            var languageSelect 
+            var languageSelect
                 = new SelectList(await _languageService.GetIdDescriptionDictionaryAsync(),
                     "Key",
                     "Value",
@@ -147,7 +147,7 @@ namespace GRA.Controllers.MissionControl
 
                     return RedirectToAction(nameof(EditBaseTemplate), new
                     {
-                        templateId = insertedId,
+                        emailBaseId = insertedId,
                         languageId = baseDetailsViewModel.LanguageId
                     });
                 }
@@ -177,7 +177,7 @@ namespace GRA.Controllers.MissionControl
             var defaultLanguageId = await _languageService.GetDefaultLanguageIdAsync();
             var emailBases = await _emailManagementService.GetEmailBasesAsync();
 
-            var languageSelect 
+            var languageSelect
                 = new SelectList(await _languageService.GetIdDescriptionDictionaryAsync(),
                     "Key",
                     "Value",
@@ -196,7 +196,7 @@ namespace GRA.Controllers.MissionControl
                 EmailBases = new SelectList(emailBases,
                     nameof(EmailBase.Id),
                     nameof(EmailBase.Name)),
-                Footer = "You are receiving this email becuase you are subscribed to news updates for {{Sitename}}. You can [unsubscribe instantly at any time]({{UnsubscribeLink}})",
+                Footer = "You are receiving this email because you are subscribed to news updates for {{Sitename}}. You can [unsubscribe instantly at any time]({{UnsubscribeLink}})",
                 Languages = languageSelect,
                 LanguageId = defaultLanguageId,
                 Title = DefaultMailTitle
@@ -514,13 +514,117 @@ namespace GRA.Controllers.MissionControl
             var filename = $"EmailList-{viewModel.SignUpSource}.json";
 
             var ms = new MemoryStream();
-            await JsonSerializer.SerializeAsync(ms, new EmailListExport
+            await JsonSerializer.SerializeAsync(ms, new ListExport<EmailReminderExport>
             {
-                Addresses = subscribers,
+                Data = subscribers,
                 ExportedAt = _dateTimeProvider.Now,
                 ExportedBy = $"{user.FullName} ({user.Email ?? user.Username})",
                 Source = $"{site.Name} ({link})",
+                Type = nameof(EmailReminder),
                 Version = 2
+            });
+            ms.Seek(0, SeekOrigin.Begin);
+            return File(ms,
+                "text/json",
+                FileUtility.EnsureValidFilename(filename));
+        }
+
+        [HttpGet]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability",
+            "CA2000:Dispose objects before losing scope",
+            Justification = "The File() method handles the stream disposal for us.")]
+        public async Task<IActionResult> ExportBaseText(int emailBaseId, int languageId)
+        {
+            var baseTemplate = await _emailManagementService
+                .GetBaseTemplateAsync(emailBaseId, languageId);
+
+            if (baseTemplate == null)
+            {
+                ShowAlertDanger("Unable to find that template.");
+                return RedirectToAction(nameof(Index));
+            }
+
+            var user = await _userService.GetDetails(GetActiveUserId());
+            var site = await GetCurrentSiteAsync();
+            var link = await _siteLookupService.GetSiteLinkAsync(site.Id);
+
+            var language = await _languageService
+                .GetActiveByIdAsync(baseTemplate.EmailBaseText.LanguageId);
+
+            var filename = string.Format(CultureInfo.InvariantCulture,
+                "EmailBaseText_{0}_{1}.json",
+                baseTemplate.Name.Replace(' ', '-'),
+                language.Name);
+
+            var ms = new MemoryStream();
+
+            await JsonSerializer.SerializeAsync(ms, new ItemExport<ExportEmailBaseText>
+            {
+                Data = new ExportEmailBaseText
+                {
+                    ImportCulture = language.Name,
+                    TemplateHtml = baseTemplate.EmailBaseText.TemplateHtml,
+                    TemplateMjml = baseTemplate.EmailBaseText.TemplateMjml,
+                    TemplateText = baseTemplate.EmailBaseText.TemplateText
+                },
+                ExportedAt = _dateTimeProvider.Now,
+                ExportedBy = $"{user.FullName} ({user.Email ?? user.Username})",
+                Source = $"{site.Name} ({link})",
+                Type = nameof(EmailBaseText),
+                Version = 1
+            });
+            ms.Seek(0, SeekOrigin.Begin);
+            return File(ms,
+                "text/json",
+                FileUtility.EnsureValidFilename(filename));
+        }
+
+        [HttpGet]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability",
+            "CA2000:Dispose objects before losing scope",
+            Justification = "The File() method handles the stream disposal for us.")]
+        public async Task<IActionResult> ExportTemplateText(int emailTemplateId, int languageId)
+        {
+            var templateText = await _emailManagementService
+                .GetTemplateAsync(emailTemplateId, languageId);
+
+            if (templateText == null)
+            {
+                ShowAlertDanger("Unable to find that template.");
+                return RedirectToAction(nameof(Index));
+            }
+
+            var user = await _userService.GetDetails(GetActiveUserId());
+            var site = await GetCurrentSiteAsync();
+            var link = await _siteLookupService.GetSiteLinkAsync(site.Id);
+
+            var language = await _languageService
+                .GetActiveByIdAsync(templateText.DirectEmailTemplateText.LanguageId);
+
+            var filename = string.Format(CultureInfo.InvariantCulture,
+                "EmailTemplateText_{0}_{1}.json",
+                templateText.Description.Replace(' ', '-'),
+                language.Name);
+
+            var ms = new MemoryStream();
+
+            await JsonSerializer.SerializeAsync(ms, new ItemExport<ExportEmailTemplateText>
+            {
+                Data = new ExportEmailTemplateText
+                {
+                    BodyCommonMark = templateText.DirectEmailTemplateText.BodyCommonMark,
+                    Footer = templateText.DirectEmailTemplateText.Footer,
+                    ImportCulture = language.Name,
+                    ImportSystemEmailId = templateText.SystemEmailId,
+                    Preview = templateText.DirectEmailTemplateText.Preview,
+                    Subject = templateText.DirectEmailTemplateText.Subject,
+                    Title = templateText.DirectEmailTemplateText.Title
+                },
+                ExportedAt = _dateTimeProvider.Now,
+                ExportedBy = $"{user.FullName} ({user.Email ?? user.Username})",
+                Source = $"{site.Name} ({link})",
+                Type = nameof(DirectEmailTemplateText),
+                Version = 1
             });
             ms.Seek(0, SeekOrigin.Begin);
             return File(ms,
@@ -547,12 +651,12 @@ namespace GRA.Controllers.MissionControl
             var stream = viewModel.UploadedFile.OpenReadStream();
 
             var emailReminders = new List<EmailReminder>();
-            EmailListImport emailListImport = null;
+            ListImport<EmailReminder> emailListImport = null;
 
             try
             {
                 emailListImport = await JsonSerializer
-                    .DeserializeAsync<EmailListImport>(stream);
+                    .DeserializeAsync<ListImport<EmailReminder>>(stream);
             }
             catch (JsonException)
             {
@@ -561,7 +665,7 @@ namespace GRA.Controllers.MissionControl
             if (emailListImport != null)
             {
                 // Version 2+
-                emailReminders.AddRange(emailListImport.Addresses);
+                emailReminders.AddRange(emailListImport.Data);
                 successMessage = $"Import from <strong>{emailListImport.Source}</strong> complete.";
             }
             else
@@ -595,7 +699,7 @@ namespace GRA.Controllers.MissionControl
 
                     emailReminder.SignUpSource = viewModel.SignUpSource;
 
-                    if(!string.IsNullOrEmpty(emailReminder.LanguageName))
+                    if (!string.IsNullOrEmpty(emailReminder.LanguageName))
                     {
                         emailReminder.LanguageId = await _languageService
                             .GetLanguageIdAsync(emailReminder.LanguageName);
@@ -644,6 +748,120 @@ namespace GRA.Controllers.MissionControl
             }
 
             return RedirectToAction(nameof(EmailManagementController.Addresses));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ImportBaseText(BaseDetailsViewModel baseDetailsViewModel)
+        {
+            if (baseDetailsViewModel == null
+                || (baseDetailsViewModel.LanguageId == default
+                    && baseDetailsViewModel.EmailBaseId == default))
+            {
+                RedirectToAction(nameof(Index));
+            }
+
+            if (baseDetailsViewModel?.UploadedFile == null)
+            {
+                ShowAlertDanger("You must upload a JSON file of email records.");
+            }
+            else
+            {
+                ItemImport<EmailBaseText> importText = null;
+                var stream = baseDetailsViewModel.UploadedFile.OpenReadStream();
+
+                try
+                {
+                    importText = await JsonSerializer
+                        .DeserializeAsync<ItemImport<EmailBaseText>>(stream);
+                }
+                catch (JsonException)
+                {
+                }
+
+                if (importText?.Data == null)
+                {
+                    ShowAlertDanger("Unable to extract template from JSON file.");
+                }
+                else
+                {
+                    try
+                    {
+                        await _emailManagementService
+                            .ReplaceBaseTextAsync(baseDetailsViewModel.EmailBaseId,
+                                 baseDetailsViewModel.LanguageId,
+                                 importText.Data);
+
+                        ShowAlertSuccess("Template text successfully imported.");
+                    }
+                    catch (GraException gex)
+                    {
+                        ShowAlertDanger(gex.Message);
+                    }
+                }
+            }
+
+            return RedirectToAction(nameof(EditBaseTemplate), new
+            {
+                emailBaseId = baseDetailsViewModel.EmailBaseId,
+                languageId = baseDetailsViewModel.LanguageId
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ImportTemplateText(DetailsViewModel detailsViewModel)
+        {
+            if (detailsViewModel == null
+                || (detailsViewModel.LanguageId == default
+                    && detailsViewModel.EmailTemplateId == default))
+            {
+                RedirectToAction(nameof(Index));
+            }
+
+            if (detailsViewModel?.UploadedFile == null)
+            {
+                ShowAlertDanger("You must upload a JSON file of email records.");
+            }
+            else
+            {
+                ItemImport<DirectEmailTemplateText> importTemplateText = null;
+                var stream = detailsViewModel.UploadedFile.OpenReadStream();
+
+                try
+                {
+                    importTemplateText = await JsonSerializer
+                        .DeserializeAsync<ItemImport<DirectEmailTemplateText>>(stream);
+                }
+                catch (JsonException)
+                {
+                }
+
+                if (importTemplateText?.Data == null)
+                {
+                    ShowAlertDanger("Unable to extract template from JSON file.");
+                }
+                else
+                {
+                    try
+                    {
+                        await _emailManagementService
+                            .ReplaceTemplateTextAsync(detailsViewModel.EmailTemplateId,
+                                 detailsViewModel.LanguageId,
+                                 importTemplateText.Data);
+
+                        ShowAlertSuccess("Template text successfully imported.");
+                    }
+                    catch (GraException gex)
+                    {
+                        ShowAlertDanger(gex.Message);
+                    }
+                }
+            }
+
+            return RedirectToAction(nameof(EditTemplate), new
+            {
+                templateId = detailsViewModel.EmailTemplateId,
+                languageId = detailsViewModel.LanguageId
+            });
         }
 
         public async Task<IActionResult> Index(int page = 1)

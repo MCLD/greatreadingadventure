@@ -50,6 +50,15 @@ namespace GRA.Data.Repository
             return dbTemplate.Id;
         }
 
+        public async Task<IDictionary<int, string>> GetAllUserTemplatesAsync()
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => string.IsNullOrEmpty(_.SystemEmailId))
+                .OrderBy(_ => _.Description)
+                .ToDictionaryAsync(k => k.Id, v => v.Description);
+        }
+
         public async Task<(int, List<int>)> GetIdAndLanguagesBySystemIdAsync(string systemEmailId)
         {
             var directEmailTemplate = await DbSet
@@ -193,7 +202,7 @@ namespace GRA.Data.Repository
                 .AnyAsync(_ => _.SystemEmailId == systemEmailId);
         }
 
-        public async Task<DirectEmailTemplate> 
+        public async Task<DirectEmailTemplate>
             UpdateSaveWithTextAsync(int userId, DirectEmailTemplate directEmailTemplate)
         {
             if (directEmailTemplate == null)

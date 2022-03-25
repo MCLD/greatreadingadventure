@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using GRA.Abstract;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Utility;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Configuration;
@@ -88,12 +90,12 @@ namespace GRA.Domain.Service
                     try
                     {
                         var insertEmailBase = await JsonSerializer
-                            .DeserializeAsync<EmailBase>(emailBaseFileStream);
-                        if (insertEmailBase != null)
+                            .DeserializeAsync<ItemImport<EmailBase>>(emailBaseFileStream);
+                        if (insertEmailBase.Data != null)
                         {
-                            insertEmailBase.IsDefault = true;
+                            insertEmailBase.Data.IsDefault = true;
                             defaultBase = await _emailBaseRepository
-                                .AddSaveAsync(systemUserId, insertEmailBase);
+                                .AddSaveAsync(systemUserId, insertEmailBase.Data);
                             defaultBaseId = defaultBase.Id;
                             insertedItems++;
                         }
@@ -114,32 +116,13 @@ namespace GRA.Domain.Service
                         foreach (var filePath in Directory
                             .EnumerateFiles(emailBaseTextPath, "*.json"))
                         {
-                            using var emailBaseTextFileStream = File
-                                .OpenRead(Path.Combine(emailBaseTextPath, filePath));
                             try
                             {
-                                var insertEmailBaseText = await JsonSerializer
-                                    .DeserializeAsync<EmailBaseText>(emailBaseTextFileStream);
-                                if (insertEmailBaseText != null)
-                                {
-                                    if (string.IsNullOrEmpty(insertEmailBaseText.ImportCulture)
-                                        || !cultureLookup
-                                            .ContainsKey(insertEmailBaseText.ImportCulture))
-                                    {
-                                        _logger.LogError("Unable to import {filePath}, invalid or missing ImportCulture: {ImportCulture}",
-                                            filePath,
-                                            insertEmailBaseText.ImportCulture);
-                                    }
-                                    else
-                                    {
-                                        insertEmailBaseText.EmailBaseId = defaultBaseId.Value;
-                                        insertEmailBaseText.LanguageId
-                                            = cultureLookup[insertEmailBaseText.ImportCulture];
-                                        await _emailBaseRepository
-                                            .ImportSaveTextAsync(systemUserId, insertEmailBaseText);
-                                        insertedItems++;
-                                    }
-                                }
+                                string fullPath = Path.Combine(emailBaseTextPath, filePath);
+                                insertedItems += await ImportBaseTextAsync(fullPath,
+                                        cultureLookup,
+                                        systemUserId,
+                                        defaultBaseId.Value);
                             }
                             catch (JsonException jex)
                             {
@@ -176,34 +159,12 @@ namespace GRA.Domain.Service
                 foreach (var filePath in Directory
                     .EnumerateFiles(directEmailTemplatePath, "*.json"))
                 {
-                    using var fileStream = File.OpenRead(Path.Combine(emailBasePath, filePath));
+                    var fullPath = Path.Combine(emailBasePath, filePath);
                     try
                     {
-                        var insertDirectEmailTemplate = await JsonSerializer
-                            .DeserializeAsync<DirectEmailTemplate>(fileStream);
-
-                        if (insertDirectEmailTemplate != null)
-                        {
-                            if (!string.IsNullOrEmpty(insertDirectEmailTemplate.SystemEmailId))
-                            {
-                                var exists = await _directEmailTemplateRepository
-                                    .SystemEmailIdExistsAsync(insertDirectEmailTemplate
-                                        .SystemEmailId);
-
-                                if (!exists)
-                                {
-                                    insertDirectEmailTemplate.EmailBaseId = defaultBaseId.Value;
-                                    await _directEmailTemplateRepository
-                                        .AddSaveAsync(systemUserId, insertDirectEmailTemplate);
-                                    insertedItems++;
-                                }
-                            }
-                            else
-                            {
-                                _logger.LogError("Unable to import from file {Filename}: no SystemEmailId specified",
-                                    filePath);
-                            }
-                        }
+                        insertedItems += await ImportDirectEmailTemplateAsync(fullPath,
+                            systemUserId,
+                            defaultBaseId.Value);
                     }
                     catch (JsonException jex)
                     {
@@ -217,53 +178,12 @@ namespace GRA.Domain.Service
                 foreach (var filePath in Directory
                     .EnumerateFiles(directEmailTemplateTextPath, "*.json"))
                 {
-                    using var fileStream = File.OpenRead(Path.Combine(emailBasePath, filePath));
+                    var fullPath = Path.Combine(emailBasePath, filePath);
                     try
                     {
-                        var insertText = await JsonSerializer
-                            .DeserializeAsync<DirectEmailTemplateText>(fileStream);
-
-                        if (insertText != null)
-                        {
-                            if (string.IsNullOrEmpty(insertText.ImportCulture)
-                                || string.IsNullOrEmpty(insertText.ImportSystemEmailId))
-                            {
-                                _logger.LogError("Unable to import {Filename} - missing ImportCulture or SystemEmailId.");
-                            }
-                            else
-                            {
-                                try
-                                {
-                                    var (templateId, definedLanguages) = await _directEmailTemplateRepository
-                                        .GetIdAndLanguagesBySystemIdAsync(insertText.ImportSystemEmailId);
-
-                                    if (!cultureLookup.ContainsKey(insertText.ImportCulture))
-                                    {
-                                        _logger.LogError("Unable to find culture specified in {Filename}: {Culture}",
-                                            filePath,
-                                            insertText.ImportCulture);
-                                    }
-                                    else
-                                    {
-                                        var languageId = cultureLookup[insertText.ImportCulture];
-                                        if (!definedLanguages.Contains(languageId))
-                                        {
-                                            insertText.LanguageId = languageId;
-                                            insertText.DirectEmailTemplateId = templateId;
-                                            await _directEmailTemplateRepository
-                                                .ImportSaveTextAsync(systemUserId, insertText);
-                                            insertedItems++;
-                                        }
-                                    }
-                                }
-                                catch (GraException gex)
-                                {
-                                    _logger.LogError(gex,
-                                        "Could not map direct email template text to template: {ErrorMessage}",
-                                        gex.Message);
-                                }
-                            }
-                        }
+                        insertedItems += await ImportDirectEmailTextAsync(fullPath,
+                            cultureLookup,
+                            systemUserId);
                     }
                     catch (JsonException jex)
                     {
@@ -286,6 +206,127 @@ namespace GRA.Domain.Service
                 _logger.LogTrace("Email templates already present, checked in {Elapsed} ms",
                     sw.ElapsedMilliseconds);
             }
+        }
+
+        private async Task<int> ImportBaseTextAsync(string path,
+            IDictionary<string, int> cultureLookup,
+            int systemUserId,
+            int defaultBaseId)
+        {
+            using var emailBaseTextFileStream = File.OpenRead(path);
+            var insertEmailBaseText = await JsonSerializer
+                .DeserializeAsync<ItemImport<EmailBaseText>>(emailBaseTextFileStream);
+
+            if (insertEmailBaseText != null)
+            {
+                if (string.IsNullOrEmpty(insertEmailBaseText.Data.ImportCulture)
+                    || !cultureLookup.ContainsKey(insertEmailBaseText.Data.ImportCulture))
+                {
+                    _logger.LogError("Unable to import {Path}, invalid or missing ImportCulture: {ImportCulture}",
+                        path,
+                        insertEmailBaseText.Data.ImportCulture);
+                }
+                else
+                {
+                    insertEmailBaseText.Data.EmailBaseId = defaultBaseId;
+                    insertEmailBaseText.Data.LanguageId
+                        = cultureLookup[insertEmailBaseText.Data.ImportCulture];
+                    await _emailBaseRepository
+                        .ImportSaveTextAsync(systemUserId, insertEmailBaseText.Data);
+                    return 1;
+                }
+            }
+
+            return 0;
+        }
+
+        private async Task<int> ImportDirectEmailTemplateAsync(string path,
+                    int systemUserId,
+            int defaultBaseId)
+        {
+            using var fileStream = File.OpenRead(path);
+
+            var insertDirectEmailTemplate = await JsonSerializer
+                .DeserializeAsync<ItemImport<DirectEmailTemplate>>(fileStream);
+
+            if (insertDirectEmailTemplate != null)
+            {
+                if (!string.IsNullOrEmpty(insertDirectEmailTemplate.Data.SystemEmailId))
+                {
+                    var exists = await _directEmailTemplateRepository
+                        .SystemEmailIdExistsAsync(insertDirectEmailTemplate
+                            .Data.SystemEmailId);
+
+                    if (!exists)
+                    {
+                        insertDirectEmailTemplate.Data.EmailBaseId = defaultBaseId;
+                        await _directEmailTemplateRepository
+                            .AddSaveAsync(systemUserId, insertDirectEmailTemplate.Data);
+                        return 1;
+                    }
+                }
+                else
+                {
+                    _logger.LogError("Unable to import from file {Path}: no SystemEmailId specified",
+                        path);
+                }
+            }
+
+            return 0;
+        }
+
+        private async Task<int> ImportDirectEmailTextAsync(string path,
+            IDictionary<string, int> cultureLookup,
+            int systemUserId)
+        {
+            using var fileStream = File.OpenRead(path);
+            var insertText = await JsonSerializer
+                .DeserializeAsync<ItemImport<DirectEmailTemplateText>>(fileStream);
+
+            if (insertText != null)
+            {
+                if (string.IsNullOrEmpty(insertText.Data.ImportCulture)
+                    || string.IsNullOrEmpty(insertText.Data.ImportSystemEmailId))
+                {
+                    _logger.LogError("Unable to import {Path} - missing ImportCulture or SystemEmailId.",
+                        path);
+                }
+                else
+                {
+                    try
+                    {
+                        var (templateId, definedLanguages) = await _directEmailTemplateRepository
+                            .GetIdAndLanguagesBySystemIdAsync(insertText.Data.ImportSystemEmailId);
+
+                        if (!cultureLookup.ContainsKey(insertText.Data.ImportCulture))
+                        {
+                            _logger.LogError("Unable to find culture specified in {Path}: {Culture}",
+                                path,
+                                insertText.Data.ImportCulture);
+                        }
+                        else
+                        {
+                            var languageId = cultureLookup[insertText.Data.ImportCulture];
+                            if (!definedLanguages.Contains(languageId))
+                            {
+                                insertText.Data.LanguageId = languageId;
+                                insertText.Data.DirectEmailTemplateId = templateId;
+                                await _directEmailTemplateRepository
+                                    .ImportSaveTextAsync(systemUserId, insertText.Data);
+                                return 1;
+                            }
+                        }
+                    }
+                    catch (GraException gex)
+                    {
+                        _logger.LogError(gex,
+                            "Could not map direct email template text to template: {ErrorMessage}",
+                            gex.Message);
+                    }
+                }
+            }
+
+            return 0;
         }
     }
 }

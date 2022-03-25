@@ -10,12 +10,14 @@ namespace GRA.Domain.Repository
     {
         public Task<int> AddSaveWithTextAsync(int userId, DirectEmailTemplate directEmailTemplate);
 
+        public Task<IDictionary<int, string>> GetAllUserTemplatesAsync();
+
         public Task<(int, List<int>)> GetIdAndLanguagesBySystemIdAsync(string systemEmailId);
 
         public Task<IDictionary<int, bool>> GetLanguageUnsubAsync(int directEmailTemplateId);
 
         public Task<DirectEmailTemplate> GetWithTextByIdAsync(int directEmailTemplateId,
-                                            int languageId);
+            int languageId);
 
         public Task<DirectEmailTemplate> GetWithTextBySystemId(string systemEmailId,
             int languageId);
@@ -29,7 +31,7 @@ namespace GRA.Domain.Repository
 
         public Task<bool> SystemEmailIdExistsAsync(string systemEmailId);
 
-        public Task<DirectEmailTemplate> UpdateSaveWithTextAsync(int userId, 
+        public Task<DirectEmailTemplate> UpdateSaveWithTextAsync(int userId,
             DirectEmailTemplate directEmailTemplate);
 
         public Task UpdateSentBulkAsync(int directEmailTemplateId);

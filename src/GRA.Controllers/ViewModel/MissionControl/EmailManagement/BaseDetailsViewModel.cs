@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using DocumentFormat.OpenXml.Wordprocessing;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GRA.Controllers.ViewModel.MissionControl.EmailManagement
@@ -34,5 +35,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.EmailManagement
         [MaxLength(255)]
         [Display(Name = "Text Email Template")]
         public string TemplateText { get; set; }
+
+        public IFormFile UploadedFile { get; set; }
     }
 }

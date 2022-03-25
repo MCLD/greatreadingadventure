@@ -29,6 +29,7 @@ namespace GRA.Controllers.MissionControl
         private const string NoAccess = "You do not have access to vendor codes.";
 
         private readonly ILogger _logger;
+        private readonly EmailManagementService _emailManagementService;
         private readonly JobService _jobService;
         private readonly UserService _userService;
         private readonly VendorCodeService _vendorCodeService;
@@ -37,12 +38,15 @@ namespace GRA.Controllers.MissionControl
 
         public VendorCodesController(ServiceFacade.Controller context,
             ILogger<VendorCodesController> logger,
+            EmailManagementService emailManagementService,
             JobService jobService,
             UserService userService,
             VendorCodeService vendorCodeService)
             : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _emailManagementService = emailManagementService
+                ?? throw new ArgumentNullException(nameof(emailManagementService));
             _jobService = jobService ?? throw new ArgumentNullException(nameof(jobService));
             _vendorCodeService = vendorCodeService
                 ?? throw new ArgumentNullException(nameof(vendorCodeService));
@@ -440,10 +444,15 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Configure()
         {
             var vendorCodeType = await _vendorCodeService.GetTypeAllAsync();
-            return View("Configure", vendorCodeType?.FirstOrDefault() ?? new VendorCodeType
+
+            var viewModel = vendorCodeType?.FirstOrDefault() ?? new VendorCodeType
             {
                 SiteId = GetCurrentSiteId()
-            });
+            };
+
+            viewModel.DirectEmailTemplates = await _emailManagementService.GetUserTemplatesAsync();
+
+            return View("Configure", viewModel);
         }
 
         [HttpPost]
@@ -458,6 +467,9 @@ namespace GRA.Controllers.MissionControl
 
             if (!ModelState.IsValid)
             {
+                vendorCodeType.DirectEmailTemplates = await _emailManagementService
+                    .GetUserTemplatesAsync();
+
                 return View("Configure", vendorCodeType);
             }
 

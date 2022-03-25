@@ -1,4 +1,5 @@
-﻿@model GRA.Domain.Model.VendorCodeType
+﻿@using System.Globalization
+@model GRA.Domain.Model.VendorCodeType
 
 @if (Model.Id > 0)
 {
@@ -194,6 +195,21 @@
                 <description gra-description-for="EmailAwardMail"></description>
                 <textarea asp-for="EmailAwardMail" class="form-control"></textarea>
                 <span asp-validation-for="EmailAwardMail" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label asp-for="ReadyForPickupEmailTemplateId" class="control-label"></label>
+                <description gra-description-for="ReadyForPickupEmailTemplateId"></description>
+                <select asp-for="ReadyForPickupEmailTemplateId"
+                        asp-items="VendorCodesController.GetSelectList(Model.DirectEmailTemplates)"
+                        class="form-control">
+                        <option value="">None</option>
+                </select>
+                <span asp-validation-for="ReadyForPickupEmailTemplateId" class="text-danger"></span>
             </div>
         </div>
     </div>

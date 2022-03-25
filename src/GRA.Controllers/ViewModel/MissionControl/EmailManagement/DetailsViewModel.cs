@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GRA.Controllers.ViewModel.MissionControl.EmailManagement
@@ -56,5 +57,8 @@ namespace GRA.Controllers.ViewModel.MissionControl.EmailManagement
         [MaxLength(255)]
         [Display(Name = "Email title", Description = "Up to 255 characters")]
         public string Title { get; set; }
+
+        [Display(Name = "Import template .json")]
+        public IFormFile UploadedFile { get; set; }
     }
 }
