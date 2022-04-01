@@ -196,7 +196,7 @@ namespace GRA.Controllers.MissionControl
                 EmailBases = new SelectList(emailBases,
                     nameof(EmailBase.Id),
                     nameof(EmailBase.Name)),
-                Footer = "You are receiving this email because you are subscribed to news updates for {{Sitename}}. You can [unsubscribe instantly at any time]({{UnsubscribeLink}})",
+                Footer = _sharedLocalizer[GRA.Annotations.Interface.EmailDefaultFooter],
                 Languages = languageSelect,
                 LanguageId = defaultLanguageId,
                 Title = DefaultMailTitle
@@ -388,6 +388,19 @@ namespace GRA.Controllers.MissionControl
                 ShowAlertInfo(CannotUpdateAlreadySent);
             }
 
+            string footer = template.DirectEmailTemplateText?.Footer;
+
+            if (template.DirectEmailTemplateText == null)
+            {
+                var defaultLanguageId = await _languageService.GetDefaultLanguageIdAsync();
+                if (languageId != defaultLanguageId)
+                {
+                    var culture = await _languageService.GetActiveByIdAsync(languageId);
+                    CultureInfo.CurrentUICulture = new CultureInfo(culture.Name);
+                }
+                footer = _sharedLocalizer[Annotations.Interface.EmailDefaultFooter];
+            }
+
             return View("Details", new DetailsViewModel
             {
                 Action = nameof(EditTemplate),
@@ -398,7 +411,7 @@ namespace GRA.Controllers.MissionControl
                     nameof(EmailBase.Id),
                     nameof(EmailBase.Name)),
                 EmailTemplateId = template.Id,
-                Footer = template.DirectEmailTemplateText?.Footer,
+                Footer = footer,
                 IsDisabled = template.IsDisabled,
                 Languages = new SelectList(languageList,
                    "Key",

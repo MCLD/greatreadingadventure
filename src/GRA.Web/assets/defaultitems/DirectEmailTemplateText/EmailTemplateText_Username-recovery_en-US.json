@@ -1,10 +1,10 @@
 {
   "Data": {
-    "BodyCommonMark": "**{{Sitename}} has recevied a request for usernames associated with this email address.**\r\n\r\nThe following usernames are associated with {{Email}}:\r\n\r\n{{Content}}",
+    "BodyCommonMark": "**{{Sitename}} has received a request for usernames associated with this email address.**\r\n\r\nThe following usernames are associated with {{Email}}:\r\n\r\n{{Content}}",
     "Footer": "This email was requested from {{Sitename}}.\u003Cbr\u003EFor more information, visit: {{Sitelink}}",
     "ImportCulture": "en-US",
     "ImportSystemEmailId": "UsernameRecovery",
-    "Preview": "Usernames associated with your {{Sitename}}",
+    "Preview": "Usernames associated with your email on {{Sitename}}",
     "Subject": "{{Sitename}} usernames associated with your email address",
     "Title": "{{Sitename}}"
   },
