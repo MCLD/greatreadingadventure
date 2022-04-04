@@ -3,7 +3,7 @@
 # How to run this:
 # 1. Find a Linux system (Windows Docker path sharing is a mess)
 # 2. Clone the repository
-# 4. Run the following: docker run -it --rm -v `pwd`:/app mcr.microsoft.com/dotnet/sdk:5.0 bash /app/dev/docker-yarn-update.sh
+# 4. Run the following: docker run -it --rm -v `pwd`:/app mcr.microsoft.com/dotnet/sdk:6.0 bash /app/dev/docker-yarn-update.sh
 # 5. See what happened with git status
 
 apt-get update && apt-get install -y apt-transport-https lsb-release gnupg

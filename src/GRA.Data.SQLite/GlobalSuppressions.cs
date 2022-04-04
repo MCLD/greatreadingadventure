@@ -25,3 +25,6 @@ using System.Diagnostics.CodeAnalysis;
     Justification = "Generated EF Code",
     Scope = "namespaceanddescendants",
     Target = "~N:GRA.Data.SQLite.Migrations")]
+[assembly: SuppressMessage("CodeQuality",
+    "IDE0076:Invalid global 'SuppressMessageAttribute'",
+    Justification = "Suppress messages when EF code is generated")]

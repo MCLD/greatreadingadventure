@@ -7,10 +7,6 @@
     <CodeAnalysisRuleSet>../../GRARuleSet.ruleset</CodeAnalysisRuleSet>
     <Company>Maricopa County Library District</Company>
     <Copyright>Copyright 2017 Maricopa County Library District</Copyright>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <NetStandardImplicitPackageVersion>2.0</NetStandardImplicitPackageVersion>
     <PackageId>GRA.Domain.Model</PackageId>
     <PackageLicenseUrl>https://github.com/mcld/greatreadingadventure/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://www.greatreadingadventure.com/</PackageProjectUrl>
