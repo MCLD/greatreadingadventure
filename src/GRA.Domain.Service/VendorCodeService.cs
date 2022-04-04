@@ -627,6 +627,18 @@ namespace GRA.Domain.Service
                 vendorCodeTypeId);
         }
 
+        private async Task MarkCodeDonatedAsync(string coupon)
+        {
+            var vendorCode = await _vendorCodeRepository.GetByCode(coupon);
+            if(vendorCode == null)
+            {
+                throw new GraException("Unable to find vendor code {coupon}");
+            }
+
+            vendorCode.IsDonated = true;
+            await _vendorCodeRepository.UpdateSaveAsync(GetActiveUserId(), vendorCode);
+        }
+
         public async Task<VendorCode> ResolveCodeStatusAsync(int userId,
             bool? donate,
             bool? emailAward,
@@ -1071,6 +1083,7 @@ namespace GRA.Domain.Service
                     int totalRows = 0;
                     int updated = 0;
                     int alreadyCurrent = 0;
+                    int donationCount = 0;
                     var vendorCodeType = await _vendorCodeTypeRepository
                         .GetByIdAsync(jobDetails.VendorCodeTypeId);
 
@@ -1152,7 +1165,37 @@ namespace GRA.Domain.Service
                             }
                             else
                             {
-                                if (excelReader.GetValue(couponColumnId) != null
+                                bool donated = false;
+                                throw new NotImplementedException();
+                                if (excelReader.GetValue(couponColumnId) != null && donated)
+                                {
+                                    string coupon = null;
+                                    try
+                                    {
+                                        coupon = GetExcelString(excelReader,
+                                            row,
+                                            couponColumnId,
+                                            "code");
+                                    }
+                                    catch (GraException gex)
+                                    {
+                                        issues.Add(gex.Message);
+                                    }
+                                    if (!string.IsNullOrEmpty(coupon))
+                                    {
+                                        try
+                                        {
+                                            await MarkCodeDonatedAsync(coupon);
+                                            updated++;
+                                            donationCount++;
+                                        }
+                                        catch (GraException gex)
+                                        {
+                                            issues.Add(gex.Message);
+                                        }
+                                    }
+                                }
+                                else if (excelReader.GetValue(couponColumnId) != null
                                     && (excelReader.GetValue(orderDateColumnId) != null
                                         || excelReader.GetValue(shipDateColumnId) != null
                                         || excelReader.GetValue(detailsColumnId) != null
@@ -1380,11 +1423,12 @@ namespace GRA.Domain.Service
                     }
 
                     await _jobRepository.UpdateStatusAsync(jobId,
-                        $"Updated {updated} records, {alreadyCurrent} already current, {issues?.Count ?? 0} issues.");
+                        $"Updated {updated} records, {donationCount} donations, {alreadyCurrent} already current, {issues?.Count ?? 0} issues.");
 
-                    _logger.LogInformation("Import of {FileName} completed: {UpdatedRecords} updates, {CurrentRecords} already current, {IssueCount} issues, {EmailsSent} sent emails, {ErrorEmails} errors emails in {Elapsed} ms",
+                    _logger.LogInformation("Import of {FileName} completed: {UpdatedRecords} updates, {DonationCount} donations, {CurrentRecords} already current, {IssueCount} issues, {EmailsSent} sent emails, {ErrorEmails} errors emails in {Elapsed} ms",
                         filename,
                         updated,
+                        donationCount,
                         alreadyCurrent,
                         issues?.Count ?? 0,
                         emailsSent,
@@ -1395,6 +1439,10 @@ namespace GRA.Domain.Service
                     if (updated > 0)
                     {
                         sb.Append(": ").Append(updated).Append(" records were updated");
+                    }
+                    if(donationCount > 0)
+                    {
+                        sb.Append(", ").Append(donationCount).Append(" donations");
                     }
                     if (alreadyCurrent > 0)
                     {
