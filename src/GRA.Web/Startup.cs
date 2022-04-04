@@ -34,6 +34,9 @@ using Serilog.Context;
 
 namespace GRA.Web
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
+        "CA1506: Avoid excessive class coupling",
+        Justification = "Dependency injected methods lead to large amounts of coupling")]
     public class Startup
     {
         private const string ConfigurationMultipleProgramValue = "Multiple";

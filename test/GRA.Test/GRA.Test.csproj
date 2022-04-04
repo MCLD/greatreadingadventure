@@ -13,7 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\GRA.CommandLine\GRA.CommandLine.csproj" />
     <ProjectReference Include="..\..\src\GRA.Controllers\GRA.Controllers.csproj" />
     <ProjectReference Include="..\..\src\GRA.Data.SQLite\GRA.Data.SQLite.csproj" />
     <ProjectReference Include="..\..\src\GRA.Data.SqlServer\GRA.Data.SqlServer.csproj" />

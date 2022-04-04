@@ -78,6 +78,9 @@ namespace GRA.Web
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", 
+            "CA1031:Do not catch general exception types", 
+            Justification = "Catch all exceptions to return proper job response to client.")]
         private async Task RunWsTaskAsync(HttpContext context,
             Func<string, CancellationToken, Progress<JobStatus>, Task<JobStatus>> task)
         {
@@ -91,126 +94,126 @@ namespace GRA.Web
             {
                 processedPath = processedPath.TrimEnd('/');
             }
-            string parameterValue = processedPath.Substring(processedPath.LastIndexOf('/') + 1);
+            string parameterValue = processedPath[(processedPath.LastIndexOf('/') + 1)..];
 
             // accept the upgrade to WebSocket
-            using (var webSocket = await context.WebSockets.AcceptWebSocketAsync())
+            using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+
+            // cancellation token for the process we are running
+            using var cancellationTokenSource = new CancellationTokenSource();
+
+            // cancellation token for the WebSocket, bound to the context aborting
+            var wsToken = context.RequestAborted;
+
+            try
             {
-                // cancellation token for the process we are running
-                var cancellationTokenSource = new CancellationTokenSource();
-                // cancellation token for the WebSocket, bound to the context aborting
-                var wsToken = context.RequestAborted;
-
-                try
+                // configure the last update sent timer - don't flood updates
+                double lastUpdateSent = 0;
+                var progress = new Progress<JobStatus>(_ =>
                 {
-                    // configure the last update sent timer - don't flood updates
-                    double lastUpdateSent = 0;
-                    var progress = new Progress<JobStatus>(_ =>
+                    double passed = sw.Elapsed.TotalSeconds - lastUpdateSent;
+                    if (passed > MinimumSecondsElapsedBetweenUpdates
+                        && webSocket.State == WebSocketState.Open)
                     {
-                        double passed = sw.Elapsed.TotalSeconds - lastUpdateSent;
-                        if (passed > MinimumSecondsElapsedBetweenUpdates
-                            && webSocket.State == WebSocketState.Open)
-                        {
-                            lastUpdateSent = sw.Elapsed.TotalSeconds;
-                            try
-                            {
-                                var status = Encoding
-                                    .UTF8
-                                    .GetBytes(JsonConvert.SerializeObject(_));
-                                webSocket.SendAsync(new ArraySegment<byte>(status),
-                                    WebSocketMessageType.Text,
-                                    true,
-                                    wsToken).Wait();
-                            }
-                            catch (Exception ex)
-                            {
-                                _logger.LogError(ex,
-                                    "Could not send WebSocket update: {Message}",
-                                    ex.Message);
-                            }
-                        }
-                    });
-
-                    // create and start the task running
-                    var runTask = task(parameterValue, cancellationTokenSource.Token, progress);
-
-                    // continue receiving data as long as the socket is open and the task is running
-                    var buffer = new ArraySegment<byte>(new byte[1024]);
-                    while (webSocket.State == WebSocketState.Open && !runTask.IsCompleted)
-                    {
-                        await webSocket.ReceiveAsync(buffer, wsToken);
-                    }
-
-                    // out of this loop means that the WebSocket is not open or the task is done
-                    sw.Stop();
-
-                    // ideal state is socket still open, task complete
-                    if (webSocket.State == WebSocketState.Open && runTask.IsCompleted)
-                    {
-                        _logger.LogTrace("WebSocket {Status}, socket {State}, sending final update after {Elapsed} ms",
-                            runTask.Status,
-                            webSocket.State,
-                            sw.ElapsedMilliseconds);
-
-                        var result = runTask.Result;
-                        result.Complete = true;
-
-                        switch (runTask.Status)
-                        {
-                            case TaskStatus.RanToCompletion:
-                                result.PercentComplete = 100;
-                                break;
-                            case TaskStatus.Faulted:
-                                result.Error = true;
-                                break;
-                            case TaskStatus.Canceled:
-                                break;
-                            default:
-                                _logger.LogError("Unknown task status: {Status}", runTask.Status);
-                                result.Error = true;
-                                break;
-                        }
-
-                        var last = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(runTask.Result));
+                        lastUpdateSent = sw.Elapsed.TotalSeconds;
                         try
                         {
-                            await webSocket.SendAsync(new ArraySegment<byte>(last),
+                            var status = Encoding
+                                .UTF8
+                                .GetBytes(JsonConvert.SerializeObject(_));
+                            webSocket.SendAsync(new ArraySegment<byte>(status),
                                 WebSocketMessageType.Text,
                                 true,
-                                wsToken);
+                                wsToken).Wait();
                         }
                         catch (Exception ex)
                         {
                             _logger.LogError(ex,
-                                "Unable to send final WebSocket update: {Message}",
+                                "Could not send WebSocket update: {Message}",
                                 ex.Message);
                         }
                     }
-                    else
-                    {
-                        // socket is not open or task is not complete. cancel everything!
-                        _logger.LogDebug("Task {Status}, socket {State}, sending cancel after {Elapsed} ms",
-                            runTask.Status,
-                            webSocket.State,
-                            sw.ElapsedMilliseconds);
-                        if (!runTask.IsCompleted)
-                        {
-                            cancellationTokenSource.Cancel();
-                            runTask.Wait();
-                        }
-                        _logger.LogDebug("Task {Status}, cancellation processed.",
-                            runTask.Status);
-                    }
-                }
-                finally
+                });
+
+                // create and start the task running
+                var runTask = task(parameterValue, cancellationTokenSource.Token, progress);
+
+                // continue receiving data as long as the socket is open and the task is running
+                var buffer = new ArraySegment<byte>(new byte[1024]);
+                while (webSocket.State == WebSocketState.Open && !runTask.IsCompleted)
                 {
-                    // if the socket is still open, close it gracefully
-                    if (webSocket?.State == WebSocketState.Open)
+                    await webSocket.ReceiveAsync(buffer, wsToken);
+                }
+
+                // out of this loop means that the WebSocket is not open or the task is done
+                sw.Stop();
+
+                // ideal state is socket still open, task complete
+                if (webSocket.State == WebSocketState.Open && runTask.IsCompleted)
+                {
+                    _logger.LogTrace("WebSocket {Status}, socket {State}, sending final update after {Elapsed} ms",
+                        runTask.Status,
+                        webSocket.State,
+                        sw.ElapsedMilliseconds);
+
+                    var result = runTask.Result;
+                    result.Complete = true;
+
+                    switch (runTask.Status)
                     {
-                        await webSocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure,
-                            "Task complete.",
+                        case TaskStatus.RanToCompletion:
+                            result.PercentComplete = 100;
+                            break;
+                        case TaskStatus.Faulted:
+                            result.Error = true;
+                            break;
+                        case TaskStatus.Canceled:
+                            break;
+                        default:
+                            _logger.LogError("Unknown task status: {Status}", runTask.Status);
+                            result.Error = true;
+                            break;
+                    }
+
+                    var last = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(runTask.Result));
+                    try
+                    {
+                        await webSocket.SendAsync(new ArraySegment<byte>(last),
+                            WebSocketMessageType.Text,
+                            true,
                             wsToken);
                     }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex,
+                            "Unable to send final WebSocket update: {Message}",
+                            ex.Message);
+                    }
+                }
+                else
+                {
+                    // socket is not open or task is not complete. cancel everything!
+                    _logger.LogDebug("Task {Status}, socket {State}, sending cancel after {Elapsed} ms",
+                        runTask.Status,
+                        webSocket.State,
+                        sw.ElapsedMilliseconds);
+                    if (!runTask.IsCompleted)
+                    {
+                        cancellationTokenSource.Cancel();
+                        runTask.Wait();
+                    }
+                    _logger.LogDebug("Task {Status}, cancellation processed.",
+                        runTask.Status);
+                }
+            }
+            finally
+            {
+                // if the socket is still open, close it gracefully
+                if (webSocket?.State == WebSocketState.Open)
+                {
+                    await webSocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure,
+                        "Task complete.",
+                        wsToken);
                 }
             }
         }

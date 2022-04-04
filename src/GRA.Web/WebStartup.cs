@@ -19,9 +19,6 @@ namespace GRA.Web
             _log = scope.ServiceProvider.GetRequiredService<ILogger<WebStartup>>();
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
-            "CA1031:Do not catch general exception types",
-            Justification = "Many startup exception possibilities")]
         public async Task InitalizeAsync()
         {
             try
@@ -78,6 +75,7 @@ namespace GRA.Web
             {
                 _log.LogError("Startup error applying database migrations: {ErrorMessage}",
                     ex.Message);
+                throw;
             }
 
             try
@@ -91,6 +89,7 @@ namespace GRA.Web
             {
                 _log.LogError("Startup error loading sites: {ErrorMessage}",
                     ex.Message);
+                throw;
             }
 
             try
@@ -102,6 +101,7 @@ namespace GRA.Web
             {
                 _log.LogError("Startup error loading languages: {ErrorMessage}",
                     ex.Message);
+                throw;
             }
 
             try
@@ -114,6 +114,7 @@ namespace GRA.Web
             {
                 _log.LogError("Startup error synchronizing permissions: {ErrorMessage}",
                     ex.Message);
+                throw;
             }
 
             try
@@ -126,6 +127,7 @@ namespace GRA.Web
             {
                 _log.LogError("Startup error ensuring default news category: {ErrorMessage}",
                     ex.Message);
+                throw;
             }
 
             try
@@ -138,6 +140,7 @@ namespace GRA.Web
             {
                 _log.LogError("Startup error ensuring users have unsubscribe tokens: {ErrorMessage}",
                     ex.Message);
+                throw;
             }
         }
     }
