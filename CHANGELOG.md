@@ -41,6 +41,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - Package references
 
+### Removed
+
+- GRA.CommandLine project
+
 ## [4.2.1] - 2021-10-14
 
 ### Added
