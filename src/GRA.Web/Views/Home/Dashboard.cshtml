@@ -257,7 +257,7 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
                 </div>
             }
         }
-        if (!string.IsNullOrWhiteSpace(Model.DashboardPageContent))
+        @if (!string.IsNullOrWhiteSpace(Model.DashboardPageContent))
         {
             <div class="panel panel-default visible-sm visible-md visible-lg">
                 <div class="dashboard-page-container">
