@@ -1,6 +1,6 @@
 ﻿@model GRA.Controllers.ViewModel.Home.LandingPageViewModel
 @section metadata {
-    <social data="Model.Social"></social>
+<social data="Model.Social"></social>
 }
 <div class="row gra-landing-banner">
     <div class="col-xs-12">
@@ -28,10 +28,10 @@
             <p>@SharedLocalizer[GRA.Annotations.Home.SubmitEmailBelow]</p>
 
             <form asp-controller="Home"
-                  asp-action="AddReminder"
-                  method="post"
-                  role="form"
-                  class="form-horizontal">
+              asp-action="AddReminder"
+              method="post"
+              role="form"
+              class="form-horizontal">
                 <input asp-for="SignUpSource" type="hidden" />
                 <div class="form-group" style="padding: 0.5em 1em; margin-top: 1rem;">
                     <label asp-for="Email" class="control-label sr-only">@SharedLocalizer[GRA.Domain.Model.DisplayNames.EmailAddress]</label>
@@ -39,7 +39,7 @@
                         <input asp-for="Email" class="form-control" type="email" autofocus />
                         <span class="input-group-btn">
                             <button type="submit"
-                                    class="btn btn-info">
+                                class="btn btn-info">
                                 <span class="far fa-envelope"></span>
                                 @SharedLocalizer[GRA.Annotations.Home.RemindMe]
                             </button>

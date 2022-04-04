@@ -54,7 +54,6 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
         </div>
     </div>
 }
-
 <div class="row" style="font-size: larger;">
     <div class="col-sm-3 text-center">
         @if (Model.SiteStage != GRA.Domain.Model.SiteStage.BeforeRegistration)
@@ -141,10 +140,9 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
                 }
             </div>
         </div>
-
         @if (Model.SiteStage == GRA.Domain.Model.SiteStage.ProgramOpen)
         {
-            @if (Model.SingleEvent)
+            if (Model.SingleEvent)
             {
                 <div class="panel panel-default">
                     <div class="panel-body">
@@ -222,7 +220,7 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
                     </div>
                 </div>
             }
-            @if (!Model.DisableSecretCode)
+            if (!Model.DisableSecretCode)
             {
                 <div class="panel panel-default">
                     <div class="panel-body">
@@ -258,7 +256,7 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
                 </div>
             }
         }
-        @if (!string.IsNullOrWhiteSpace(Model.DashboardPageContent))
+        if (!string.IsNullOrWhiteSpace(Model.DashboardPageContent))
         {
             <div class="panel panel-default visible-sm visible-md visible-lg">
                 <div class="dashboard-page-container">
@@ -339,7 +337,7 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
                     </div>
                 </div>
             </div>
-            @if (!string.IsNullOrWhiteSpace(Model.DailyImageMessage))
+            if (!string.IsNullOrWhiteSpace(Model.DailyImageMessage))
             {
                 <div class="panel panel-default">
                     <div class="panel-body text-center">
@@ -361,7 +359,6 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
             @:&nbsp;
         }
     </div>
-
     @if (Model.UpcomingStreams?.Count() > 0)
     {
         <div class="col-sm-3 text-center">
@@ -387,7 +384,6 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
         </div>
     }
 </div>
-
 @if (!string.IsNullOrWhiteSpace(Model.DashboardPageContent))
 {
     <div class="row visible-xs">
@@ -400,7 +396,6 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
         </div>
     </div>
 }
-
 @if (Model.Carousel != null)
 {
     <div class="sr-only">
@@ -449,7 +444,6 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
         </div>
     </div>
 }
-
 @if (Model.Carousel != null)
 {
     <div class="row">
@@ -480,7 +474,6 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
         </div>
     </div>
 }
-
 @if (!string.IsNullOrWhiteSpace(Model.DailyImageMessage))
 {
     <div class="row">
@@ -509,7 +502,6 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
         </div>
     </div>
 }
-
 @if (Model.UserLogs?.Count() > 0)
 {
     <div class="modal fade"
@@ -543,7 +535,6 @@ else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.
         </div>
     </div>
 }
-
 @section scripts {
     <script>
             @if (!string.IsNullOrWhiteSpace(Model.DailyImageMessage))
