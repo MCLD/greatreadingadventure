@@ -23,12 +23,12 @@ namespace GRA.Domain.Service
     public class VendorCodeService : BaseUserService<VendorCodeService>
     {
         private const string BranchIdRowHeading = "Branch Id";
-        private const string CouponRowHeading = "Coupon";
-        private const string DetailsRowHeading = "Details";
+        private const string CouponRowHeading = "Free Book Code";
+        private const string DetailsRowHeading = "Title";
         private const string EmailAddressRowHeading = "Email Address";
         private const string ErrorParseError = "Parse error on {Field}, row {SpreadsheetRow}: {ErrorMessage}";
         private const string ErrorUnableToParse = "Unable to parse {Field}, row {SpreadsheetRow}: {Value}";
-        private const string OrderDateRowHeading = "Order Date";
+        private const string OrderDateRowHeading = "Creation Date";
         private const string PackingSlipRowHeading = "Pickpack Number";
         private const string SentDateRowHeading = "Sent Date";
         private const string ShipDateRowHeading = "Ship Date";
@@ -627,18 +627,6 @@ namespace GRA.Domain.Service
                 vendorCodeTypeId);
         }
 
-        private async Task MarkCodeDonatedAsync(string coupon)
-        {
-            var vendorCode = await _vendorCodeRepository.GetByCode(coupon);
-            if(vendorCode == null)
-            {
-                throw new GraException("Unable to find vendor code {coupon}");
-            }
-
-            vendorCode.IsDonated = true;
-            await _vendorCodeRepository.UpdateSaveAsync(GetActiveUserId(), vendorCode);
-        }
-
         public async Task<VendorCode> ResolveCodeStatusAsync(int userId,
             bool? donate,
             bool? emailAward,
@@ -688,7 +676,14 @@ namespace GRA.Domain.Service
                 }
                 else if (donate == false && emailAward == false)
                 {
-                    vendorCode.IsDonated = false;
+                    if (vendorCode.IsDonationLocked != true)
+                    {
+                        vendorCode.IsDonated = false;
+                    }
+                    else
+                    {
+                        throw new GraException("Unable to remove donation commitment.");
+                    }
                     vendorCode.IsEmailAward = false;
                 }
                 else if (donate == null && emailAward == null)
@@ -1165,9 +1160,8 @@ namespace GRA.Domain.Service
                             }
                             else
                             {
-                                bool donated = false;
-                                throw new NotImplementedException();
-                                if (excelReader.GetValue(couponColumnId) != null && donated)
+                                if (excelReader.GetValue(couponColumnId) != null
+                                    && excelReader.GetValue(branchColumnId) == null)
                                 {
                                     string coupon = null;
                                     try
@@ -1440,7 +1434,7 @@ namespace GRA.Domain.Service
                     {
                         sb.Append(": ").Append(updated).Append(" records were updated");
                     }
-                    if(donationCount > 0)
+                    if (donationCount > 0)
                     {
                         sb.Append(", ").Append(donationCount).Append(" donations");
                     }
@@ -1708,12 +1702,28 @@ namespace GRA.Domain.Service
             }
         }
 
+        private async Task MarkCodeDonatedAsync(string coupon)
+        {
+            var vendorCode = await _vendorCodeRepository.GetByCode(coupon);
+            if (vendorCode == null)
+            {
+                throw new GraException("Unable to find vendor code {coupon}");
+            }
+
+            vendorCode.IsDonated = true;
+            await _vendorCodeRepository.UpdateSaveAsync(GetActiveUserId(), vendorCode);
+        }
+
         private async Task PopulateVendorCodeStatusInternalAsync(User user)
         {
             var vendorCode = await GetUserVendorCodeAsync(user.Id);
             if (vendorCode != null)
             {
                 user.Donated = vendorCode.IsDonated;
+                if (user.Donated == true)
+                {
+                    user.IsDonationLocked = vendorCode.IsDonationLocked;
+                }
                 user.EmailAwarded = vendorCode.IsEmailAward;
 
                 if ((vendorCode.CanBeDonated || vendorCode.CanBeEmailAward)
