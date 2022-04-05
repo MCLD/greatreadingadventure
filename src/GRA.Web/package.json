@@ -12,7 +12,7 @@
     "jquery": "^3.5.1",
     "jquery-validation": "^1.19.3",
     "jquery-validation-unobtrusive": "^3.2.11",
-    "moment": "^2.29.1",
+    "moment": "^2.29.2",
     "moment-timezone": "^0.5.32",
     "slick-carousel": "^1.8.1"
   }
