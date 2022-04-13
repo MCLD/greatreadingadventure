@@ -21,7 +21,7 @@ namespace GRA.Data.Repository
         {
             var result = await DbSet
                 .AsNoTracking()
-                .Where(_ => _.Id == directEmailTemplateId)
+                .Where(_ => _.DirectEmailTemplateId == directEmailTemplateId)
                 .Select(_ => _.ToEmailAddress)
                 .Distinct()
                 .ToListAsync();

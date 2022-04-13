@@ -8,6 +8,7 @@ namespace GRA.Domain.Model
 
         public string BodyText { get; set; }
 
+        public int DirectEmailTemplateId { get; set; }
         public int EmailBaseId { get; set; }
 
         [Required]

@@ -178,7 +178,7 @@ namespace GRA.Domain.Service
         }
 
         public async Task ReplaceBaseTextAsync(int emailBaseId,
-                                                                                                            int languageId,
+            int languageId,
             EmailBaseText emailBaseText)
         {
             if (emailBaseText == null)

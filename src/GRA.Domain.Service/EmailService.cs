@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Utility;
@@ -89,9 +90,9 @@ namespace GRA.Domain.Service
                 site = await _siteLookupService.GetByIdAsync(user.SiteId);
                 toAddress = user.Email;
                 toName = user.FullName;
-                languageId = string.IsNullOrEmpty(user.Culture)
-                    ? await _languageService.GetDefaultLanguageIdAsync()
-                    : await _languageService.GetLanguageIdAsync(user.Culture);
+                languageId = directEmailDetails.LanguageId ?? (string.IsNullOrEmpty(user.Culture)
+                        ? await _languageService.GetDefaultLanguageIdAsync()
+                        : await _languageService.GetLanguageIdAsync(user.Culture));
             }
             else
             {
@@ -100,7 +101,7 @@ namespace GRA.Domain.Service
                 toAddress = directEmailDetails.ToAddress;
                 toName = directEmailDetails.ToName;
                 languageId = directEmailDetails.LanguageId
-                    ?? await _languageService.GetDefaultLanguageIdAsync();
+                    ?? await _languageService.GetLanguageIdAsync(CultureInfo.CurrentCulture.Name);
             }
 
             if (!SiteCanSendMail(site))
@@ -133,6 +134,18 @@ namespace GRA.Domain.Service
                     directEmailDetails.DirectEmailTemplateId,
                     history.LanguageId);
 
+            if (directEmailTemplate == null || directEmailTemplate.DirectEmailTemplateText == null)
+            {
+                // not available in the requested language, use the default language
+                history.LanguageId = await _languageService.GetDefaultLanguageIdAsync();
+
+                directEmailTemplate
+                    = await GetDirectEmailTemplateAsync(directEmailDetails.DirectEmailSystemId,
+                        directEmailDetails.DirectEmailTemplateId,
+                        history.LanguageId);
+            }
+
+            history.DirectEmailTemplateId = directEmailTemplate.Id;
             history.EmailBaseId = directEmailTemplate.EmailBaseId;
 
             var stubble = new StubbleBuilder().Build();
@@ -155,7 +168,7 @@ namespace GRA.Domain.Service
                 .RenderAsync(directEmailTemplate.DirectEmailTemplateText.Footer,
                     directEmailDetails.Tags));
 
-            history = await SendDirectAsync(site,
+            history = await InternalSendDirectAsync(site,
                 history,
                 new Dictionary<string, string>
             {
@@ -173,7 +186,6 @@ namespace GRA.Domain.Service
                     history.BodyHtml = null;
                     history.BodyText = null;
                     await _directEmailHistoryRepository.AddSaveNoAuditAsync(history);
-                    await IncrementSentCountAsync(directEmailTemplate.Id);
                 }
                 if (!directEmailTemplate.SentBulk)
                 {
@@ -186,8 +198,8 @@ namespace GRA.Domain.Service
                 if (!directEmailDetails.IsTest)
                 {
                     await _directEmailHistoryRepository.AddSaveNoAuditAsync(history);
-                    await IncrementSentCountAsync(directEmailTemplate.Id);
                 }
+                await IncrementSentCountAsync(directEmailTemplate.Id);
             }
 
             return history;
@@ -201,7 +213,7 @@ namespace GRA.Domain.Service
         }
 
         private async Task<DirectEmailTemplate> GetDirectEmailTemplateAsync(
-                            string templateSystemId,
+            string templateSystemId,
             int templateId,
             int languageId)
         {
@@ -212,7 +224,7 @@ namespace GRA.Domain.Service
                     : GetCacheKey(CacheKey.DirectEmailTemplateSystemId,
                         templateSystemId,
                         languageId);
-            ;
+
             var cacheTemplate = await _cache.GetObjectFromCacheAsync<DirectEmailTemplate>(cacheKey);
 
             if (cacheTemplate != null)
@@ -257,7 +269,7 @@ namespace GRA.Domain.Service
             return emailBase;
         }
 
-        private async Task<DirectEmailHistory> SendDirectAsync(Site site,
+        private async Task<DirectEmailHistory> InternalSendDirectAsync(Site site,
             DirectEmailHistory history,
             IDictionary<string, string> tags)
         {

@@ -1475,11 +1475,6 @@ namespace GRA.Domain.Service
             await _userRepository.UpdateSaveAsync(authId, user);
         }
 
-        //public async Task SentBulkEmailAsync(int userId, int emailTemplateId, string emailAddress)
-        //{
-        //    await _userRepository.AddBulkEmailLogAsync(userId, emailTemplateId, emailAddress);
-        //}
-
         public async Task<User> Update(User userToUpdate)
         {
             int requestingUserId = GetActiveUserId();

@@ -343,7 +343,6 @@ namespace GRA.Domain.Service
 
                 await _emailService.IncrementSentCountAsync(jobDetails.EmailTemplateId,
                     addSentCounter);
-                addSentCounter = 0;
 
                 string taskStatus = token.IsCancellationRequested
                     ? "Cancelled after"
@@ -607,11 +606,12 @@ namespace GRA.Domain.Service
                     }
                 }
 
-                await _emailService.IncrementSentCountAsync(jobDetails.EmailTemplateId);
+                await _emailService.IncrementSentCountAsync(jobDetails.EmailTemplateId,
+                    addSentCounter);
 
                 string taskStatus = token.IsCancellationRequested
-                    ? "Cancelled after"
-                    : "Task completed with";
+                ? "Cancelled after"
+                : "Task completed with";
 
                 var finalStatus = new JobStatus
                 {

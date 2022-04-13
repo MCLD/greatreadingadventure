@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace GRA.Domain.Service
     public class AuthenticationService : Abstract.BaseUserService<AuthenticationService>
     {
         private readonly EmailService _emailService;
+        private readonly LanguageService _languageService;
         private readonly GRA.Abstract.IPasswordValidator _passwordValidator;
         private readonly IRecoveryTokenRepository _recoveryTokenRepository;
         private readonly IRoleRepository _roleRepository;
@@ -31,6 +33,7 @@ namespace GRA.Domain.Service
             IRoleRepository roleRepository,
             IUserContextProvider userContextProvider,
             IUserRepository userRepository,
+            LanguageService languageService,
             SiteLookupService siteLookupService)
             : base(logger, dateTimeProvider, userContextProvider)
         {
@@ -45,6 +48,8 @@ namespace GRA.Domain.Service
             _roleRepository = roleRepository
                 ?? throw new ArgumentNullException(nameof(roleRepository));
             _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
+            _languageService = languageService
+                ?? throw new ArgumentNullException(nameof(languageService));
             _siteLookupService = siteLookupService
                 ?? throw new ArgumentNullException(nameof(siteLookupService));
         }
@@ -113,6 +118,8 @@ namespace GRA.Domain.Service
             var directEmailDetails = new DirectEmailDetails(site.Name)
             {
                 DirectEmailSystemId = "UsernameRecovery",
+                LanguageId = await _languageService
+                    .GetLanguageIdAsync(CultureInfo.CurrentUICulture.Name),
                 SendingUserId = await _userRepository.GetSystemUserId(),
                 ToUserId = usernames.Id
             };
@@ -187,6 +194,8 @@ namespace GRA.Domain.Service
             var directEmailDetails = new DirectEmailDetails(site.Name)
             {
                 DirectEmailSystemId = "PasswordRecovery",
+                LanguageId = await _languageService
+                    .GetLanguageIdAsync(CultureInfo.CurrentUICulture.Name),
                 SendingUserId = await _userRepository.GetSystemUserId(),
                 ToUserId = user.Id
             };

@@ -8,6 +8,8 @@ namespace GRA.Data.Model
 
         public string BodyText { get; set; }
 
+        public int DirectEmailTemplateId { get; set; }
+
         [Required]
         [MaxLength(255)]
         public string FromEmailAddress { get; set; }
