@@ -26,7 +26,7 @@ RUN dotnet publish -c Release -o "/app/publish/"
 RUN cp /app/release-publish.bash "/app/publish/"
 
 # Get runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:5.0@sha256:770bf8712bc1b986e90d9de190b8804adf946fc76db5d1e4dd5e676cbb3a9135 AS publish
+FROM mcr.microsoft.com/dotnet/aspnet:5.0@sha256:e0cfd4b763444a5f3bf738a46543909ba47770b8252cb541552fbd653db8c126 AS publish
 WORKDIR /app
 
 # Install curl for health monitoring
