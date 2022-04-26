@@ -71,8 +71,9 @@ namespace GRA.Domain.Service
             string filename = $"badge{badge.Id}{extension}";
             string fullFilePath = GetFilePath(filename);
 
-            using (var image = Image.Load(imageFile))
+            try
             {
+                using var image = Image.Load(imageFile);
                 var (IsSet, SetValue) = await _siteLookupService.GetSiteSettingIntAsync(
                     GetCurrentSiteId(),
                     SiteSettingKey.Badges.MaxDimension);
@@ -121,8 +122,17 @@ namespace GRA.Domain.Service
                     _logger.LogDebug("Writing out badge file {BadgeFile}", fullFilePath);
                     File.WriteAllBytes(fullFilePath, imageFile);
                 }
-                return GetUrlPath(filename);
             }
+            catch (UnknownImageFormatException uifex)
+            {
+                _logger.LogError(uifex,
+                    "Unknown image format exception on file {Filename}: {ErrorMessage}",
+                    badge.Filename,
+                    uifex.Message);
+                throw new GraException("Unknown image type, please upload a JPEG or PNG image.",
+                    uifex);
+            }
+            return GetUrlPath(filename);
         }
 
         public async Task<Badge> AddBadgeAsync(Badge badge, byte[] imageFile)
@@ -187,12 +197,18 @@ namespace GRA.Domain.Service
                 throw new GraException($"File size exceeds the maximum of {SetValue}KB");
             }
 
-            using (var image = Image.Load(badgeImage))
+            try
             {
+                using var image = Image.Load(badgeImage);
                 if (image.Height != image.Width)
                 {
                     throw new GraException("Badge images must be square.");
                 }
+            }
+            catch(UnknownImageFormatException uifex)
+            {
+                throw new GraException("Unknown image type, please upload a JPEG or PNG image.",
+                    uifex);
             }
         }
     }
