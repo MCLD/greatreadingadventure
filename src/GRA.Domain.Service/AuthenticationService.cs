@@ -21,7 +21,6 @@ namespace GRA.Domain.Service
         private readonly SiteLookupService _siteLookupService;
         private readonly GRA.Abstract.ITokenGenerator _tokenGenerator;
 
-        //private readonly ISiteRepository _siteRepository;
         private readonly IUserRepository _userRepository;
 
         public AuthenticationService(ILogger<AuthenticationService> logger,

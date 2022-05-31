@@ -319,7 +319,7 @@ namespace GRA.Domain.Service
                 ServerCertificateValidationCallback = (_, __, ___, ____) => true
             };
 
-            client.MessageSent += (sender, e) =>
+            client.MessageSent += (_, e) =>
             {
                 history.SentResponse = e.Response?.Length > 255
                     ? e.Response[..255]

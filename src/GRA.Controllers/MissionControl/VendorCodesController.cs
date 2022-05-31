@@ -169,7 +169,7 @@ namespace GRA.Controllers.MissionControl
                             Filename = file,
                             SiteName = site.Name
                         })
-                }); ;
+                });
 
                 return View("Job", new ViewModel.MissionControl.Shared.JobViewModel
                 {

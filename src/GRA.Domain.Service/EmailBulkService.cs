@@ -671,8 +671,6 @@ namespace GRA.Domain.Service
 
             var problemEmails = new HashSet<string>();
 
-            var subscribers = new DataWithCount<ICollection<EmailReminder>>();
-
             var tos = new List<EmailReminder>();
 
             foreach (var address in jobDetails.To.Split(','))

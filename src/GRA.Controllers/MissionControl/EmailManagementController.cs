@@ -282,8 +282,6 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction(nameof(Index));
             }
 
-            var currentUser = await _userService.GetDetails(GetActiveUserId());
-
             return View("BaseDetails", new BaseDetailsViewModel
             {
                 Action = nameof(EditBaseTemplate),
@@ -308,9 +306,6 @@ namespace GRA.Controllers.MissionControl
                 ShowAlertWarning("Could not find base template to update.");
                 return RedirectToAction(nameof(Index));
             }
-            var currentTemplate = await _emailManagementService
-                .GetBaseTemplateAsync(baseDetailsViewModel.EmailBaseId,
-                    baseDetailsViewModel.LanguageId);
 
             string updateProblem = null;
 
@@ -671,9 +666,7 @@ namespace GRA.Controllers.MissionControl
                 emailListImport = await JsonSerializer
                     .DeserializeAsync<ListImport<EmailReminder>>(stream);
             }
-            catch (JsonException)
-            {
-            }
+            catch (JsonException) { }
 
             if (emailListImport != null)
             {
@@ -921,7 +914,6 @@ namespace GRA.Controllers.MissionControl
         {
             var defaultLanguageId = await _languageService.GetDefaultLanguageIdAsync();
             var languageList = await _languageService.GetActiveAsync();
-            var languages = languageList.ToDictionary(k => k.Id, v => v.Name);
 
             var viewModel = new SendEmailViewModel
             {

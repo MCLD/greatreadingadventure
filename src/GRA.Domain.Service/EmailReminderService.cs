@@ -67,7 +67,7 @@ namespace GRA.Domain.Service
                 Email = _.Email,
                 LanguageName = _.LanguageId.HasValue ? languages[_.LanguageId.Value] : null,
                 SignUpSource = _.SignUpSource
-            }); ;
+            });
         }
 
         public async Task<ICollection<EmailReminder>>
