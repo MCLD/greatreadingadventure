@@ -43,7 +43,7 @@ namespace GRA.Data.Repository
                 catch (GraDbUpdateException gex)
                 {
                     await RemoveSaveAsync(userId, dbTemplate.Id);
-                    throw gex;
+                    throw;
                 }
             }
 

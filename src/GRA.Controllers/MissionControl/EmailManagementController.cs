@@ -953,7 +953,6 @@ namespace GRA.Controllers.MissionControl
         {
             var defaultLanguageId = await _languageService.GetDefaultLanguageIdAsync();
             var languageList = await _languageService.GetActiveAsync();
-            var languages = languageList.ToDictionary(k => k.Id, v => v.Name);
 
             var viewModel = new SendEmailViewModel
             {
