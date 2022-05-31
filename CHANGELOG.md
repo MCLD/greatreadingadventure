@@ -36,6 +36,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Fix bug binding performer archiving and streaming choices
 - Hide branch selection in performer scheduling when no branches are available
 - Mission Control error if a user who posted a news post was deleted
+- Show friendly message when invalid image type is uploaded
 
 ### Updated
 
