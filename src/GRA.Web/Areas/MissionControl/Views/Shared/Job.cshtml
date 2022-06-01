@@ -44,6 +44,7 @@
     var wsPageTitle = '@Model.Title';
     var webSocket;
     var wsPing;
+    var wsPingOnce;
     var wsFunction = 'job';
     var wsScheme = document.location.protocol == "https:" ? "wss" : "ws";
     var wsPort = document.location.port ? (":" + document.location.port) : "";
@@ -220,6 +221,7 @@
         }
         webSocket.onclose = updateState;
         webSocket.onmessage = updateState;
+        wsPingOnce = setTimeout(doPing, 900);
         wsPing = setInterval(doPing, @(Model.PingSeconds * 1000));
         console.log("Client set to ping server every @Model.PingSeconds seconds");
         return false;

@@ -29,6 +29,7 @@ namespace GRA.Controllers.MissionControl
         private const string NoAccess = "You do not have access to vendor codes.";
 
         private readonly ILogger _logger;
+        private readonly EmailManagementService _emailManagementService;
         private readonly JobService _jobService;
         private readonly UserService _userService;
         private readonly VendorCodeService _vendorCodeService;
@@ -37,12 +38,15 @@ namespace GRA.Controllers.MissionControl
 
         public VendorCodesController(ServiceFacade.Controller context,
             ILogger<VendorCodesController> logger,
+            EmailManagementService emailManagementService,
             JobService jobService,
             UserService userService,
             VendorCodeService vendorCodeService)
             : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _emailManagementService = emailManagementService
+                ?? throw new ArgumentNullException(nameof(emailManagementService));
             _jobService = jobService ?? throw new ArgumentNullException(nameof(jobService));
             _vendorCodeService = vendorCodeService
                 ?? throw new ArgumentNullException(nameof(vendorCodeService));
@@ -153,6 +157,8 @@ namespace GRA.Controllers.MissionControl
 
                 string file = WebUtility.UrlEncode(Path.GetFileName(tempFile));
 
+                var site = await GetCurrentSiteAsync();
+
                 var jobToken = await _jobService.CreateJobAsync(new Job
                 {
                     JobType = JobType.UpdateVendorStatus,
@@ -160,7 +166,8 @@ namespace GRA.Controllers.MissionControl
                         .SerializeObject(new JobDetailsVendorCodeStatus
                         {
                             VendorCodeTypeId = vendorCodeTypeId,
-                            Filename = file
+                            Filename = file,
+                            SiteName = site.Name
                         })
                 });
 
@@ -402,6 +409,8 @@ namespace GRA.Controllers.MissionControl
 
                 string file = WebUtility.UrlEncode(Path.GetFileName(tempFile));
 
+                var site = await GetCurrentSiteAsync();
+
                 var jobToken = await _jobService.CreateJobAsync(new Job
                 {
                     JobType = JobType.UpdateEmailAwardStatus,
@@ -409,7 +418,8 @@ namespace GRA.Controllers.MissionControl
                         .SerializeObject(new JobDetailsVendorCodeStatus
                         {
                             VendorCodeTypeId = vendorCodeTypeId,
-                            Filename = file
+                            Filename = file,
+                            SiteName = site.Name
                         })
                 });
 
@@ -434,10 +444,15 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Configure()
         {
             var vendorCodeType = await _vendorCodeService.GetTypeAllAsync();
-            return View("Configure", vendorCodeType?.FirstOrDefault() ?? new VendorCodeType
+
+            var viewModel = vendorCodeType?.FirstOrDefault() ?? new VendorCodeType
             {
                 SiteId = GetCurrentSiteId()
-            });
+            };
+
+            viewModel.DirectEmailTemplates = await _emailManagementService.GetUserTemplatesAsync();
+
+            return View("Configure", viewModel);
         }
 
         [HttpPost]
@@ -452,6 +467,9 @@ namespace GRA.Controllers.MissionControl
 
             if (!ModelState.IsValid)
             {
+                vendorCodeType.DirectEmailTemplates = await _emailManagementService
+                    .GetUserTemplatesAsync();
+
                 return View("Configure", vendorCodeType);
             }
 
@@ -646,12 +664,14 @@ namespace GRA.Controllers.MissionControl
                 }
                 else
                 {
+                    var currentSite = await GetCurrentSiteAsync();
                     var jobToken = await _jobService.CreateJobAsync(new Job
                     {
                         JobType = JobType.ReceivePackingSlip,
                         SerializedParameters = JsonConvert.SerializeObject(
                         new JobDetailsReceivePackingSlip
                         {
+                            SiteName = currentSite.Name,
                             PackingSlipNumber = summary.PackingSlipNumber,
                             DamagedItems = damagedItems,
                             MissingItems = missingItems

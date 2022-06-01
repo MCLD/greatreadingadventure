@@ -1,16 +1,30 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.EmailManagement.EmailIndexViewModel
 
+@section Styles {
+<style>
+    .gra-button-buffer {
+        margin-right: 0.25rem;
+        margin-bottom: 0.25rem;
+    }
+</style>
+}
+
 <div class="row" style="margin: 1rem 0;">
     <div class="col-xs-12">
-        <a asp-action="@nameof(EmailManagementController.Create)"
-           class="btn btn-success">
+        <a class="btn btn-success"
+           asp-action="@nameof(EmailManagementController.CreateTemplate)">
             <span class="fas fa-plus-circle"></span>
-            Create Email
+            Create Template
         </a>
         <a asp-action="@nameof(EmailManagementController.Addresses)"
            class="btn btn-default">
             <span class="fas fa-list-alt"></span>
             Manage Lists
+        </a>
+        <a class="btn btn-info"
+           style="margin-left: 1rem;"
+           asp-action="@nameof(EmailManagementController.BaseIndex)">
+            Base Templates
         </a>
     </div>
 </div>
@@ -29,7 +43,13 @@
                         <tr>
                             <th>Description</th>
                             <th>Emails Sent</th>
-                            <th>&nbsp;</th>
+                            <th>Editable</th>
+                            <th>System email</th>
+                            <th>Edit</th>
+                            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.SendBulkEmails.ToString()))
+                            {
+                                <th>Send</th>
+                            }
                         </tr>
                     </thead>
                     <tbody>
@@ -42,175 +62,50 @@
                                 <td style="vertical-align: middle;">
                                     @template.EmailsSent
                                 </td>
-                                <td class="text-right">
-                                    <a asp-action="@nameof(EmailManagementController.Edit)"
-                                       asp-route-id="@template.Id"
-                                       class="btn btn-primary btn-sm">
-                                        <span class="fas fa-pencil-alt" aria-hidden="true"></span>
-                                        Edit
-                                    </a>
-                                    @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.SendBulkEmails.ToString()))
+                                <td style="vertical-align: middle;">
+                                    @if (template.IsSystem || !template.IsBulkSent)
                                     {
-                                        <button class="btn btn-sm btn-default testEmail"
-                                                data-toggle="modal"
-                                                data-target="#sendTestModal"
-                                                data-id="@template.Id"
-                                                data-descr="@template.Description">
-                                            Send Test
-                                        </button>
-                                        <button class="btn btn-sm btn-warning sendEmail"
-                                                data-toggle="modal"
-                                                data-target="#sendModal"
-                                                data-id="@template.Id"
-                                                data-descr="@template.Description"
-                                                disabled="@Model.SendButtonDisabled">
-                                            Send Email
-                                        </button>
+                                        @:Yes
+                                    }
+                                    else
+                                    {
+                                        <span class="text-danger" title="Emails have already been sent.">No</span>
                                     }
                                 </td>
+                                <td style="vertical-align: middle;">
+                                    @(template.IsSystem ? "Yes" : "No")
+                                </td>
+                                <td class="text-right">
+                                    @foreach (var language in template.LanguageIds)
+                                    {
+                                        <a asp-action="@nameof(EmailManagementController.EditTemplate)"
+                               asp-route-templateId="@template.Id"
+                               asp-route-languageId="@language"
+                               class="btn btn-file btn-default btn-sm gra-button-buffer">@Model.LanguageNames[language]</a>
+                                    }
+                                </td>
+                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.SendBulkEmails.ToString()))
+                                {
+                                    <td class="text-right">
+                                        @if (!template.IsSystem && Model.IsAnyoneSubscribed)
+                                        {
+                                            <a class="btn btn-sm btn-warning sendEmail gra-button-buffer"
+                               asp-action="@nameof(EmailManagementController.Send)"
+                               asp-route-templateId="@template.Id">
+                                                Send Email
+                                            </a>
+                                        }
+                                    </td>
+                                }
                             </tr>
                         }
                     </tbody>
                 </table>
             </div>
-            @if (Model.PaginateModel.MaxPage > 1)
+            @if (Model.MaxPage > 1)
             {
-                <paginate paginateModel="@Model.PaginateModel"></paginate>
+                <paginate paginateModel="@Model"></paginate>
             }
         }
     </div>
 </div>
-
-<div class="modal fade"
-     id="sendTestModal"
-     tabindex="-1"
-     role="dialog"
-     aria-labelledby="sendTestModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <form asp-action="@nameof(EmailManagementController.SendEmailTest)"
-                  method="post"
-                  role="form"
-                  style="display:inline">
-                <input id="sendTestTemplateId" name="SendTestTemplateId" type="hidden" />
-                <div class="modal-header">
-                    <button type="button"
-                            class="close"
-                            data-dismiss="modal"
-                            aria-label="Close dialog">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h1 class="modal-title h4" id="sendTestModalHeader">Send Test</h1>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label asp-for="SendTestRecipients" class="control-label"></label>
-                        <input asp-for="SendTestRecipients"
-                               class="form-control"
-                               value="@Model.DefaultTestEmail"
-                               hidden />
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button"
-                            class="btn btn-default"
-                            data-dismiss="modal"
-                            style="margin-right: 1em;">
-                        Cancel
-                    </button>
-                    <button type="submit"
-                            class="btn btn-primary pull-right"
-                            aria-label="Confirm">
-                        Send
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<div class="modal fade"
-     id="sendModal"
-     tabindex="-1"
-     role="dialog"
-     aria-labelledby="sendModalLabel">
-    <div class="modal-dialog" role="document">
-        <form asp-action="@nameof(EmailManagementController.SendEmail)"
-              method="post"
-              role="form"
-              style="display:inline">
-            <input id="sendEmailTemplateId" name="SendEmailTemplateId" type="hidden" />
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button"
-                            class="close"
-                            data-dismiss="modal"
-                            aria-label="Close dialog">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h1 class="modal-title h4" id="sendModalHeader">Send email</h1>
-                </div>
-                <div class="modal-body">
-                    <div class="row row-spacing">
-                        <div class="col-xs-12">
-                            <label asp-for="EmailList"
-                                   class="control-label">Select a mailing list:</label>
-                            <select asp-for="EmailList"
-                                    asp-items="@Model.AddressTypes"
-                                    placeholder="Select a mailing list"
-                                    class="form-control"
-                                    formgroup>
-                            </select>
-                            <span asp-validation-for="EmailList" class="text-danger"></span>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label asp-for="SendValidation" class="control-label"></label>
-                        <input asp-for="SendValidation" class="form-control" hidden />
-                    </div>
-
-                    <div class="form-group">
-
-                        <label asp-for="SendToParticipantsToo" class="control-label"></label>
-                        <select asp-for="SendToParticipantsToo"
-                                class="form-control"
-                                formgroup>
-                            <option value="true">Send to participants as well</option>
-                            <option value="false">
-                                Send only to people subscribed on the list
-                            </option>
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button"
-                            class="btn btn-default"
-                            data-dismiss="modal"
-                            style="margin-right: 1em;">
-                        Cancel
-                    </button>
-                    <button type="submit"
-                            class="btn btn-warning pull-right"
-                            aria-label="Confirm"
-                            disabled="@Model.SendButtonDisabled">
-                        Send emails
-                    </button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
-@section scripts
-    {
-    <script>
-        $(".sendEmail").on("click", function () {
-            $('#sendEmailTemplateId').val($(this).data('id'));
-            $('#sendModalHeader').text('Send Email: ' + $(this).data('descr'));
-        });
-        $('.testEmail').on('click', function () {
-            $('#sendTestTemplateId').val($(this).data('id'));
-            $('#sendTestModalHeader').text('Send Test: ' + $(this).data('descr'));
-        });
-    </script>
-}

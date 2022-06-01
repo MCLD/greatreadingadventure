@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using GRA.Abstract;
 using GRA.Domain.Service;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,12 +24,12 @@ namespace GRA.Web
         {
             try
             {
-                var cache = _scope.ServiceProvider.GetRequiredService<IDistributedCache>();
+                var cache = _scope.ServiceProvider.GetRequiredService<IGraCache>();
                 var options = new DistributedCacheEntryOptions()
                     .SetAbsoluteExpiration(TimeSpan.FromSeconds(10));
-                await cache.SetStringAsync("Startup",
+                await cache.SaveToCacheAsync("Startup",
                     DateTime.Now.ToString(System.Globalization.CultureInfo.InvariantCulture),
-                    options);
+                    TimeSpan.FromSeconds(10));
             }
             catch (Exception ex)
             {
@@ -119,9 +120,20 @@ namespace GRA.Web
 
             try
             {
+                await _scope.ServiceProvider
+                    .GetRequiredService<DefaultItemsService>()
+                    .EnsureDefaultItemsAsync();
+            }
+            catch (GraException gex)
+            {
+                _log.LogError(gex, "Error ensuring default items: {ErrorMessage}", gex.Message);
+            }
+
+            try
+            {
                 await _scope
-               .ServiceProvider.GetRequiredService<NewsService>()
-               .EnsureDefaultCategoryAsync();
+                   .ServiceProvider.GetRequiredService<NewsService>()
+                   .EnsureDefaultCategoryAsync();
             }
             catch (Exception ex)
             {

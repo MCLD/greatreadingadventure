@@ -62,19 +62,20 @@ namespace GRA.Data
 
         public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
 
+        public DbSet<Model.DirectEmailHistory> DirectEmailHistories { get; set; }
+        public DbSet<Model.DirectEmailTemplate> DirectEmailTemplates { get; set; }
+        public DbSet<Model.DirectEmailTemplateText> DirectEmailTemplateTexts { get; set; }
         public DbSet<Model.DrawingCriterion> DrawingCriteria { get; set; }
 
         public DbSet<Model.DrawingCriterionProgram> DrawingCriterionPrograms { get; set; }
 
         public DbSet<Model.Drawing> Drawings { get; set; }
 
+        public DbSet<Model.EmailBase> EmailBases { get; set; }
+        public DbSet<Model.EmailBaseText> EmailBaseTexts { get; set; }
         public DbSet<Model.EmailReminder> EmailReminders { get; set; }
 
         public DbSet<Model.EmailSubscriptionAuditLog> EmailSubscriptionAuditLogs { get; set; }
-
-        public DbSet<Model.EmailTemplate> EmailTemplates { get; set; }
-
-        public DbSet<Model.EmailUserLog> EmailUserLogs { get; set; }
 
         public DbSet<Model.Event> Events { get; set; }
 
@@ -264,10 +265,12 @@ namespace GRA.Data
                 .HasKey(_ => new { _.ChallengeId, _.CategoryId });
             modelBuilder.Entity<Model.ChallengeGroupChallenge>()
                 .HasKey(_ => new { _.ChallengeGroupId, _.ChallengeId });
+            modelBuilder.Entity<Model.DirectEmailTemplateText>()
+                .HasKey(_ => new { _.DirectEmailTemplateId, _.LanguageId });
             modelBuilder.Entity<Model.DrawingCriterionProgram>()
                 .HasKey(_ => new { _.DrawingCriterionId, _.ProgramId });
-            modelBuilder.Entity<Model.EmailUserLog>()
-                .HasKey(_ => new { _.UserId, _.EmailTemplateId });
+            modelBuilder.Entity<Model.EmailBaseText>()
+                .HasKey(_ => new { _.EmailBaseId, _.LanguageId });
             modelBuilder.Entity<Model.PsBackToBack>()
                 .HasKey(_ => new { _.PsAgeGroupId, _.BranchId });
             modelBuilder.Entity<Model.PsKitAgeGroup>()
@@ -313,9 +316,6 @@ namespace GRA.Data
             // https://docs.microsoft.com/en-us/ef/core/modeling/indexes
             modelBuilder.Entity<Model.EmailReminder>()
                 .HasIndex(_ => new { _.Email, _.SignUpSource })
-                .IsUnique();
-            modelBuilder.Entity<Model.EmailUserLog>()
-                .HasIndex(_ => new { _.EmailTemplateId, _.EmailAddress })
                 .IsUnique();
             modelBuilder.Entity<Model.Job>()
                 .HasIndex(_ => new { _.JobToken })

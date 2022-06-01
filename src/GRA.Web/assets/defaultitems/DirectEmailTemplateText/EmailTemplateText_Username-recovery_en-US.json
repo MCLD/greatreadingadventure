@@ -1,0 +1,16 @@
+{
+  "Data": {
+    "BodyCommonMark": "**{{Sitename}} has received a request for usernames associated with this email address.**\r\n\r\nThe following usernames are associated with {{Email}}:\r\n\r\n{{Content}}",
+    "Footer": "This email was requested from {{Sitename}}.\r\n\r\nFor more information, visit: {{Sitelink}}",
+    "ImportCulture": "en-US",
+    "ImportSystemEmailId": "UsernameRecovery",
+    "Preview": "Usernames associated with your email on {{Sitename}}",
+    "Subject": "{{Sitename}} usernames associated with your email address",
+    "Title": "{{Sitename}}"
+  },
+  "ExportedAt": "2022-03-25T00:00:00-07:00",
+  "ExportedBy": "Great Reading Adventure Development (https://github.com/MCLD/greatreadingadventure/discussions)",
+  "Source": "The Great Reating Adventure (https://github.com/MCLD/greatreadingadventure)",
+  "Type": "DirectEmailTemplateText",
+  "Version": 1
+}

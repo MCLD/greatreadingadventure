@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using GRA.Abstract;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
+using GRA.Domain.Model.Utility;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Caching.Distributed;
@@ -17,12 +18,12 @@ namespace GRA.Domain.Service
     public class NewsService : Abstract.BaseUserService<NewsService>
     {
         private readonly IDistributedCache _cache;
+        private readonly EmailService _emailService;
         private readonly IJobRepository _jobRepository;
         private readonly INewsCategoryRepository _newsCategoryRepository;
         private readonly INewsPostRepository _newsPostRepository;
         private readonly ISiteRepository _siteRepository;
         private readonly IUserRepository _userRepository;
-        private readonly EmailService _emailService;
 
         public NewsService(ILogger<NewsService> logger,
             IDateTimeProvider dateTimeProvider,
@@ -52,53 +53,25 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(emailService));
         }
 
-        public async Task EnsureDefaultCategoryAsync()
-        {
-            var sites = await _siteRepository.GetAllAsync();
-            foreach (var site in sites)
-            {
-                var defaultCategory = await _newsCategoryRepository
-                    .GetDefaultCategoryAsync(site.Id);
-                if (defaultCategory == null)
-                {
-                    var category = new NewsCategory
-                    {
-                        IsDefault = true,
-                        Name = "News",
-                        SiteId = site.Id
-                    };
-
-                    await _newsCategoryRepository.AddSaveAsync(-1, category);
-                }
-            }
-        }
-
         public async Task<bool> AnyPublishedPostsAsync()
         {
             return await _newsPostRepository.AnyPublishedPostsAsync(GetCurrentSiteId());
         }
 
-        public async Task<DataWithCount<IEnumerable<NewsPost>>> GetPaginatedPostListAsync(
-            NewsFilter filter)
+        public async Task<NewsCategory> CreateCategoryAsync(NewsCategory category)
         {
-            if (filter?.IsActive != true)
+            VerifyManagementPermission();
+
+            if (category == null)
             {
-                VerifyManagementPermission();
+                throw new GraException("You must provide a category to add.");
             }
 
-            if (filter == null)
-            {
-                filter = new NewsFilter();
-            }
+            category.Name = category.Name.Trim();
+            category.IsDefault = false;
+            category.SiteId = GetCurrentSiteId();
 
-            filter.SiteId = GetClaimId(ClaimType.SiteId);
-
-            return await _newsPostRepository.PageAsync(filter);
-        }
-
-        public async Task<NewsPost> GetPostByIdAsync(int id)
-        {
-            return await _newsPostRepository.GetByIdAsync(id);
+            return await _newsCategoryRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), category);
         }
 
         public async Task<NewsPost> CreatePostAsync(NewsPost post, bool publish)
@@ -125,13 +98,30 @@ namespace GRA.Domain.Service
 
             if (publish)
             {
-                addedPost.CategoryName =
-                    (await _newsCategoryRepository.GetByIdAsync(addedPost.CategoryId)).Name;
+                var category = await _newsCategoryRepository.GetByIdAsync(addedPost.CategoryId);
+                addedPost.CategoryName = category.Name;
 
                 _cache.Remove($"s{GetClaimId(ClaimType.SiteId)}.{CacheKey.LatestNewsPostId}");
             }
 
             return addedPost;
+        }
+
+        public async Task<NewsCategory> EditCategoryAsync(NewsCategory category)
+        {
+            VerifyManagementPermission();
+
+            if (category == null)
+            {
+                throw new GraException("You must provide a category to edit.");
+            }
+
+            var currentCategory = await _newsCategoryRepository.GetByIdAsync(category.Id);
+
+            currentCategory.Name = category.Name.Trim();
+
+            return await _newsCategoryRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
+                currentCategory);
         }
 
         public async Task<NewsPost> EditPostAsync(NewsPost post, bool publish)
@@ -174,10 +164,25 @@ namespace GRA.Domain.Service
             return currentPost;
         }
 
-        public async Task RemovePostAsync(int postId)
+        public async Task EnsureDefaultCategoryAsync()
         {
-            VerifyManagementPermission();
-            await _newsPostRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), postId);
+            var sites = await _siteRepository.GetAllAsync();
+            foreach (var site in sites)
+            {
+                var defaultCategory = await _newsCategoryRepository
+                    .GetDefaultCategoryAsync(site.Id);
+                if (defaultCategory == null)
+                {
+                    var category = new NewsCategory
+                    {
+                        IsDefault = true,
+                        Name = "News",
+                        SiteId = site.Id
+                    };
+
+                    await _newsCategoryRepository.AddSaveAsync(-1, category);
+                }
+            }
         }
 
         public async Task<IEnumerable<NewsCategory>> GetAllCategoriesAsync()
@@ -185,72 +190,10 @@ namespace GRA.Domain.Service
             return await _newsCategoryRepository.GetAllAsync(GetCurrentSiteId());
         }
 
-        public async Task<DataWithCount<IEnumerable<NewsCategory>>> GetPaginatedCategoryListAsync(
-            BaseFilter filter)
-        {
-            VerifyManagementPermission();
-
-            var configuredFilter = filter ?? new BaseFilter();
-            configuredFilter.SiteId = GetClaimId(ClaimType.SiteId);
-
-            return await _newsCategoryRepository.PageAsync(configuredFilter);
-        }
-
         public async Task<NewsCategory> GetCategoryByIdAsync(int id)
         {
             VerifyManagementPermission();
             return await _newsCategoryRepository.GetByIdAsync(id);
-        }
-
-        public async Task<NewsCategory> CreateCategoryAsync(NewsCategory category)
-        {
-            VerifyManagementPermission();
-
-            if (category == null)
-            {
-                throw new GraException("You must provide a category to add.");
-            }
-
-            category.Name = category.Name.Trim();
-            category.IsDefault = false;
-            category.SiteId = GetCurrentSiteId();
-
-            return await _newsCategoryRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), category);
-        }
-
-        public async Task<NewsCategory> EditCategoryAsync(NewsCategory category)
-        {
-            VerifyManagementPermission();
-
-            if (category == null)
-            {
-                throw new GraException("You must provide a category to edit.");
-            }
-
-            var currentCategory = await _newsCategoryRepository.GetByIdAsync(category.Id);
-
-            currentCategory.Name = category.Name.Trim();
-
-            return await _newsCategoryRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
-                currentCategory);
-        }
-
-        public async Task RemoveCategoryAsync(int categoryId)
-        {
-            VerifyManagementPermission();
-
-            var category = await _newsCategoryRepository.GetByIdAsync(categoryId);
-
-            if (category.IsDefault)
-            {
-                throw new GraException("Category is the default category.");
-            }
-            else if (category.PostCount > 0)
-            {
-                throw new GraException("Category has posts.");
-            }
-
-            await _newsCategoryRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), categoryId);
         }
 
         public async Task<int> GetLatestNewsIdAsync()
@@ -277,9 +220,63 @@ namespace GRA.Domain.Service
 
             return lastId;
         }
-        public bool WithinTimeFrame(DateTime date, int daysAllotted)
+
+        public async Task<DataWithCount<IEnumerable<NewsCategory>>> GetPaginatedCategoryListAsync(
+            BaseFilter filter)
         {
-            return _dateTimeProvider.Now.Date.Subtract(date) <= TimeSpan.FromDays(daysAllotted);
+            VerifyManagementPermission();
+
+            var configuredFilter = filter ?? new BaseFilter();
+            configuredFilter.SiteId = GetClaimId(ClaimType.SiteId);
+
+            return await _newsCategoryRepository.PageAsync(configuredFilter);
+        }
+
+        public async Task<DataWithCount<IEnumerable<NewsPost>>> GetPaginatedPostListAsync(
+                                            NewsFilter filter)
+        {
+            if (filter?.IsActive != true)
+            {
+                VerifyManagementPermission();
+            }
+
+            if (filter == null)
+            {
+                filter = new NewsFilter();
+            }
+
+            filter.SiteId = GetClaimId(ClaimType.SiteId);
+
+            return await _newsPostRepository.PageAsync(filter);
+        }
+
+        public async Task<NewsPost> GetPostByIdAsync(int id)
+        {
+            return await _newsPostRepository.GetByIdAsync(id);
+        }
+
+        public async Task RemoveCategoryAsync(int categoryId)
+        {
+            VerifyManagementPermission();
+
+            var category = await _newsCategoryRepository.GetByIdAsync(categoryId);
+
+            if (category.IsDefault)
+            {
+                throw new GraException("Category is the default category.");
+            }
+            else if (category.PostCount > 0)
+            {
+                throw new GraException("Category has posts.");
+            }
+
+            await _newsCategoryRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), categoryId);
+        }
+
+        public async Task RemovePostAsync(int postId)
+        {
+            VerifyManagementPermission();
+            await _newsPostRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), postId);
         }
 
         public async Task<JobStatus> RunSendNewsEmailsJob(int jobId,
@@ -306,6 +303,11 @@ namespace GRA.Domain.Service
             });
 
             var post = await _newsPostRepository.GetByIdAsync(jobDetails.NewsPostId);
+            if(string.IsNullOrEmpty(post.CategoryName))
+            {
+                var category = await _newsCategoryRepository.GetByIdAsync(post.CategoryId);
+                post.CategoryName = category?.Name;
+            }
 
             if (post == null)
             {
@@ -348,17 +350,17 @@ namespace GRA.Domain.Service
                 Status = $"Preparing to email {subscribedUserIds.Count} users..."
             });
 
-            var tags = new Dictionary<string, string>
+            var directEmailDetails = new DirectEmailDetails(jobDetails.SiteName)
             {
-                { "PostCategory", post.CategoryName},
-                { nameof(jobDetails.PostLink), jobDetails.PostLink},
-                { "PostTitle", post.Title },
-                { "PostSummary", post.EmailSummary},
-                { "Preview", $"New post in {jobDetails.SiteName} Mission Control!"},
-                { nameof(jobDetails.SiteLink), jobDetails.SiteLink},
-                { nameof(jobDetails.SiteMcLink), jobDetails.SiteMcLink},
-                { nameof(jobDetails.SiteName), jobDetails.SiteName},
+                DirectEmailSystemId = "NewsPost",
+                IsBulk = true,
+                SendingUserId = await _userRepository.GetSystemUserId()
             };
+            directEmailDetails.Tags.Add("Category", post.CategoryName);
+            directEmailDetails.Tags.Add("PostLink", jobDetails.PostLink);
+            directEmailDetails.Tags.Add("PostTitle", post.Title);
+            directEmailDetails.Tags.Add("Summary", post.EmailSummary);
+            directEmailDetails.Tags.Add("UnsubscribeLink", jobDetails.SiteMcLink);
 
             foreach (var userId in subscribedUserIds)
             {
@@ -373,14 +375,11 @@ namespace GRA.Domain.Service
                         Status = $"Cancelling after {sentEmails}/{subscribedUserIds.Count} emails in {sw?.Elapsed.TotalMilliseconds} ms."
                     };
                 }
+                directEmailDetails.ToUserId = userId;
 
-                var sent = await _emailService.Send(userId,
-                    "[{{SiteName}}] {{PostTitle}}",
-                    EmailTemplateText,
-                    EmailTemplateHtml,
-                    tags);
+                var history = await _emailService.SendDirectAsync(directEmailDetails);
 
-                if (sent)
+                if (history.Successful)
                 {
                     sentEmails++;
                 }
@@ -409,34 +408,9 @@ namespace GRA.Domain.Service
             };
         }
 
-        private const string EmailTemplateText = @"A new post has been made to {{SiteName}} in the {{PostCategory}} category:
-
-{{PostSummary}}
-
-To read the entire post, view it on Mission Control: {{PostLink}}
-
--- 
-You are receiving this email because you are subscribed to news updates from Mission Control of
-{{SiteName}}. You can unsubscribe at any time from Mission Control: {{SiteMcLink}}
-";
-
-        private const string EmailTemplateHtml = @"<!doctype html><html xmlns=""http://www.w3.org/1999/xhtml"" xmlns:v=""urn:schemas-microsoft-com:vml"" xmlns:o=""urn:schemas-microsoft-com:office:office""><head><title></title><!--[if !mso]><!--><meta http-equiv=""X-UA-Compatible"" content=""IE=edge""><!--<![endif]--><meta http-equiv=""Content-Type"" content=""text/html; charset=UTF-8""><meta name=""viewport"" content=""width=device-width,initial-scale=1""><style type=""text/css"">#outlook a { padding:0; }
-          body { margin:0;padding:0;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%; }
-          table, td { border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt; }
-          img { border:0;height:auto;line-height:100%; outline:none;text-decoration:none;-ms-interpolation-mode:bicubic; }
-          p { display:block;margin:13px 0; }</style><!--[if mso]>
-        <xml>
-        <o:OfficeDocumentSettings>
-          <o:AllowPNG/>
-          <o:PixelsPerInch>96</o:PixelsPerInch>
-        </o:OfficeDocumentSettings>
-        </xml>
-        <![endif]--><!--[if lte mso 11]>
-        <style type=""text/css"">
-          .mj-outlook-group-fix { width:100% !important; }
-        </style>
-        <![endif]--><style type=""text/css"">@media only screen and (min-width:480px) {
-        .mj-column-per-100 { width:100% !important; max-width: 100%; }
-      }</style><style type=""text/css""></style></head><body style=""word-spacing:normal;""><div style=""display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;"">{{Preview}}</div><div><!--[if mso | IE]><table align=""center"" border=""0"" cellpadding=""0"" cellspacing=""0"" class="""" style=""width:600px;"" width=""600"" ><tr><td style=""line-height:0px;font-size:0px;mso-line-height-rule:exactly;""><![endif]--><div style=""margin:0px auto;max-width:600px;""><table align=""center"" border=""0"" cellpadding=""0"" cellspacing=""0"" role=""presentation"" style=""width:100%;""><tbody><tr><td style=""border-bottom:4px solid #cccccc;direction:ltr;font-size:0px;padding:0px;text-align:center;""><!--[if mso | IE]><table role=""presentation"" border=""0"" cellpadding=""0"" cellspacing=""0""><tr><td class="""" style=""vertical-align:top;width:600px;"" ><![endif]--><div class=""mj-column-per-100 mj-outlook-group-fix"" style=""font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;""><table border=""0"" cellpadding=""0"" cellspacing=""0"" role=""presentation"" width=""100%""><tbody><tr><td style=""vertical-align:top;padding:0px;""><table border=""0"" cellpadding=""0"" cellspacing=""0"" role=""presentation"" width=""100%""><tbody><tr><td align=""center"" style=""font-size:0px;padding:10px;word-break:break-word;""><div style=""font-family:Helvetica, Arial, Verdana, Trebuchet MS, sans-serif;font-size:18px;line-height:22px;text-align:center;text-decoration:none;color:#000000;""><a href=""{{SiteLink}}"" style=""color: #000000; text-decoration: none;""><strong style=""color: #000000; font-weight: normal; text-decoration: none;"">{{SiteName}}</strong></a></div></td></tr></tbody></table></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><table align=""center"" border=""0"" cellpadding=""0"" cellspacing=""0"" class="""" style=""width:600px;"" width=""600"" ><tr><td style=""line-height:0px;font-size:0px;mso-line-height-rule:exactly;""><![endif]--><div style=""margin:0px auto;max-width:600px;""><table align=""center"" border=""0"" cellpadding=""0"" cellspacing=""0"" role=""presentation"" style=""width:100%;""><tbody><tr><td style=""direction:ltr;font-size:0px;padding:15px;text-align:center;""><!--[if mso | IE]><table role=""presentation"" border=""0"" cellpadding=""0"" cellspacing=""0""><tr><td class="""" style=""vertical-align:top;width:570px;"" ><![endif]--><div class=""mj-column-per-100 mj-outlook-group-fix"" style=""font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;""><table border=""0"" cellpadding=""0"" cellspacing=""0"" role=""presentation"" width=""100%""><tbody><tr><td style=""vertical-align:top;padding:0px;""><table border=""0"" cellpadding=""0"" cellspacing=""0"" role=""presentation"" width=""100%""><tbody><tr><td align=""left"" style=""font-size:0px;padding:0px;word-break:break-word;""><div style=""font-family:Helvetica, Arial, Verdana, Trebuchet MS, sans-serif;font-size:15px;line-height:22px;text-align:left;color:#000000;"">A new post has been made to {{SiteName}} in the {{PostCategory}} category:</div></td></tr><tr><td align=""left"" style=""font-size:0px;padding:15px;word-break:break-word;""><div style=""font-family:Helvetica, Arial, Verdana, Trebuchet MS, sans-serif;font-size:15px;line-height:22px;text-align:left;color:#000000;"">{{PostSummary}}</div></td></tr><tr><td align=""left"" style=""font-size:0px;padding:0px;word-break:break-word;""><div style=""font-family:Helvetica, Arial, Verdana, Trebuchet MS, sans-serif;font-size:15px;line-height:22px;text-align:left;color:#000000;"">To read the entire post, <a href=""{{PostLink}}"">view it in Mission Control</a>.</div></td></tr></tbody></table></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><table align=""center"" border=""0"" cellpadding=""0"" cellspacing=""0"" class="""" style=""width:600px;"" width=""600"" ><tr><td style=""line-height:0px;font-size:0px;mso-line-height-rule:exactly;""><![endif]--><div style=""margin:0px auto;max-width:600px;""><table align=""center"" border=""0"" cellpadding=""0"" cellspacing=""0"" role=""presentation"" style=""width:100%;""><tbody><tr><td style=""border-top:1px solid #cccccc;direction:ltr;font-size:0px;padding:8px 5px;text-align:center;""><!--[if mso | IE]><table role=""presentation"" border=""0"" cellpadding=""0"" cellspacing=""0""><tr><td class="""" style=""vertical-align:top;width:590px;"" ><![endif]--><div class=""mj-column-per-100 mj-outlook-group-fix"" style=""font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;""><table border=""0"" cellpadding=""0"" cellspacing=""0"" role=""presentation"" width=""100%""><tbody><tr><td style=""vertical-align:top;padding:0px;""><table border=""0"" cellpadding=""0"" cellspacing=""0"" role=""presentation"" width=""100%""><tbody><tr><td align=""left"" style=""font-size:0px;padding:0px;word-break:break-word;""><div style=""font-family:Helvetica, Arial, Verdana, Trebuchet MS, sans-serif;font-size:12px;line-height:22px;text-align:left;color:#000000;""><em>You are receiving this email because you are subscribed to news updates from Mission Control of {{SiteName}}. You can unsubscribe at any time from <a href=""{{SiteMcLink}}"" style=""color: #000000"">Mission Control</a>.</em></div></td></tr></tbody></table></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--></td></tr></tbody></table></div><!--[if mso | IE]></td></tr></table><![endif]--></div></body></html>";
+        public bool WithinTimeFrame(DateTime date, int daysAllotted)
+        {
+            return _dateTimeProvider.Now.Date.Subtract(date) <= TimeSpan.FromDays(daysAllotted);
+        }
     }
 }

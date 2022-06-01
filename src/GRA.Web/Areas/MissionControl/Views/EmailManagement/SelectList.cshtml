@@ -1,0 +1,36 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.EmailManagement.SendEmailViewModel
+
+<div class="row row-spacing">
+    <div class="col-sm-6">
+        <h2>Participants</h2>
+        <ul>
+            @foreach (var item in Model.RegisteredLanguages.OrderBy(_ => _.Key))
+            {
+                <li>@item.Key - @item.Value subscriber(s)</li>
+            }
+        </ul>
+    </div>
+    <div class="col-sm-6">
+        <h2>Template Languages</h2>
+        <ul>
+            @foreach (var item in Model.TemplateLanguages.OrderBy(_ => _))
+            {
+                <li>@item</li>
+            }
+        </ul>
+    </div>
+</div>
+@if (Model.RegisteredLanguages.Sum(_ => _.Value) > 0)
+{
+    <form method="post" asp-action="@nameof(EmailManagementController.SendSubscribers)">
+        <input type="hidden" name="templateId" value="@Model.Template.Id">
+        <input type="hidden" name="listName" value="@Model.SelectedList">
+        <div class="row row-spacing">
+            <div class="col-xs-12">
+                <a class="btn btn-default"
+               asp-action="@nameof(EmailManagementController.Index)">Back</a>
+                <button class="btn btn-success">Send</button>
+            </div>
+        </div>
+    </form>
+}

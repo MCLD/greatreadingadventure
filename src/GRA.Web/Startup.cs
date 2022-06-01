@@ -461,6 +461,7 @@ namespace GRA.Web
             services.AddScoped<ICodeSanitizer, CodeSanitizer>();
             services.AddScoped<IDateTimeProvider, CurrentDateTimeProvider>();
             services.AddScoped<IEntitySerializer, EntitySerializer>();
+            services.AddScoped<IGraCache, Utility.GraCache>();
             services.AddScoped<IPasswordValidator, PasswordValidator>();
             services.AddScoped<IPathResolver, PathResolver>();
             services.AddScoped<ITokenGenerator, TokenGenerator>();
@@ -487,6 +488,7 @@ namespace GRA.Web
             services.AddScoped<ChallengeService>();
             services.AddScoped<DailyLiteracyTipService>();
             services.AddScoped<DashboardContentService>();
+            services.AddScoped<DefaultItemsService>();
             services.AddScoped<Domain.Report.ServiceFacade.Report>();
             services.AddScoped<DrawingService>();
             services.AddScoped<EmailBulkService>();
@@ -584,11 +586,13 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IDailyLiteracyTipImageRepository, Data.Repository.DailyLiteracyTipImageRepository>();
             services.AddScoped<Domain.Repository.IDailyLiteracyTipRepository, Data.Repository.DailyLiteracyTipRepository>();
             services.AddScoped<Domain.Repository.IDashboardContentRepository, Data.Repository.DashboardContentRepository>();
+            services.AddScoped<Domain.Repository.IDirectEmailHistoryRepository, Data.Repository.DirectEmailHistoryRepository>();
+            services.AddScoped<Domain.Repository.IDirectEmailTemplateRepository, Data.Repository.DirectEmailTemplateRepository>();
             services.AddScoped<Domain.Repository.IDrawingCriterionRepository, Data.Repository.DrawingCriterionRepository>();
             services.AddScoped<Domain.Repository.IDrawingRepository, Data.Repository.DrawingRepository>();
+            services.AddScoped<Domain.Repository.IEmailBaseRepository, Data.Repository.EmailBaseRepository>();
             services.AddScoped<Domain.Repository.IEmailReminderRepository, Data.Repository.EmailReminderRepository>();
             services.AddScoped<Domain.Repository.IEmailSubscriptionAuditLogRepository, Data.Repository.EmailSubscriptionAuditLogRepository>();
-            services.AddScoped<Domain.Repository.IEmailTemplateRepository, Data.Repository.EmailTemplateRepository>();
             services.AddScoped<Domain.Repository.IEventRepository, Data.Repository.EventRepository>();
             services.AddScoped<Domain.Repository.IGroupInfoRepository, Data.Repository.GroupInfoRepository>();
             services.AddScoped<Domain.Repository.IGroupTypeRepository, Data.Repository.GroupTypeRepository>();
@@ -601,10 +605,12 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.INotificationRepository, Data.Repository.NotificationRepository>();
             services.AddScoped<Domain.Repository.IPageHeaderRepository, Data.Repository.PageHeaderRepository>();
             services.AddScoped<Domain.Repository.IPageRepository, Data.Repository.PageRepository>();
+            services.AddScoped<Domain.Repository.IPointTranslationRepository, Data.Repository.PointTranslationRepository>();
+            services.AddScoped<Domain.Repository.IPrizeWinnerRepository, Data.Repository.PrizeWinnerRepository>();
+            services.AddScoped<Domain.Repository.IProgramRepository, Data.Repository.ProgramRepository>();
             services.AddScoped<Domain.Repository.IPsAgeGroupRepository, Data.Repository.PsAgeGroupRepository>();
             services.AddScoped<Domain.Repository.IPsBlackoutDateRepository, Data.Repository.PsBlackoutDateRepository>();
             services.AddScoped<Domain.Repository.IPsBranchSelectionRepository, Data.Repository.PsBranchSelectionRepository>();
-            services.AddScoped<Domain.Repository.IPsSettingsRepository, Data.Repository.PsSettingsRepository>();
             services.AddScoped<Domain.Repository.IPsKitImageRepository, Data.Repository.PsKitImageRepository>();
             services.AddScoped<Domain.Repository.IPsKitRepository, Data.Repository.PsKitRepository>();
             services.AddScoped<Domain.Repository.IPsPerformerImageRepository, Data.Repository.PsPerformerImageRepository>();
@@ -612,9 +618,7 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IPsPerformerScheduleRepository, Data.Repository.PsPerformerScheduleRepository>();
             services.AddScoped<Domain.Repository.IPsProgramImageRepository, Data.Repository.PsProgramImageRepository>();
             services.AddScoped<Domain.Repository.IPsProgramRepository, Data.Repository.PsProgramRepository>();
-            services.AddScoped<Domain.Repository.IPointTranslationRepository, Data.Repository.PointTranslationRepository>();
-            services.AddScoped<Domain.Repository.IPrizeWinnerRepository, Data.Repository.PrizeWinnerRepository>();
-            services.AddScoped<Domain.Repository.IProgramRepository, Data.Repository.ProgramRepository>();
+            services.AddScoped<Domain.Repository.IPsSettingsRepository, Data.Repository.PsSettingsRepository>();
             services.AddScoped<Domain.Repository.IQuestionnaireRepository, Data.Repository.QuestionnaireRepository>();
             services.AddScoped<Domain.Repository.IQuestionRepository, Data.Repository.QuestionRepository>();
             services.AddScoped<Domain.Repository.IRecoveryTokenRepository, Data.Repository.RecoveryTokenRepository>();
@@ -626,16 +630,16 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.ISchoolRepository, Data.Repository.SchoolRepository>();
             services.AddScoped<Domain.Repository.ISiteRepository, Data.Repository.SiteRepository>();
             services.AddScoped<Domain.Repository.ISiteSettingRepository, Data.Repository.SiteSettingRepository>();
-            services.AddScoped<Domain.Repository.ISocialRepository, Data.Repository.SocialRepository>();
             services.AddScoped<Domain.Repository.ISocialHeaderRepository, Data.Repository.SocialHeaderRepository>();
+            services.AddScoped<Domain.Repository.ISocialRepository, Data.Repository.SocialRepository>();
             services.AddScoped<Domain.Repository.ISpatialDistanceRepository, Data.Repository.SpatialDistanceRepository>();
             services.AddScoped<Domain.Repository.ISystemInformationRepository, Data.Repository.SystemInformationRepository>();
             services.AddScoped<Domain.Repository.ISystemRepository, Data.Repository.SystemRepository>();
             services.AddScoped<Domain.Repository.ITriggerRepository, Data.Repository.TriggerRepository>();
             services.AddScoped<Domain.Repository.IUserLogRepository, Data.Repository.UserLogRepository>();
             services.AddScoped<Domain.Repository.IUserRepository, Data.Repository.UserRepository>();
-            services.AddScoped<Domain.Repository.IVendorCodeRepository, Data.Repository.VendorCodeRepository>();
             services.AddScoped<Domain.Repository.IVendorCodePackingSlipRepository, Data.Repository.VendorCodePackingSlipRepository>();
+            services.AddScoped<Domain.Repository.IVendorCodeRepository, Data.Repository.VendorCodeRepository>();
             services.AddScoped<Domain.Repository.IVendorCodeTypeRepository, Data.Repository.VendorCodeTypeRepository>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

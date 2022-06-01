@@ -37,6 +37,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Hide branch selection in performer scheduling when no branches are available
 - Mission Control error if a user who posted a news post was deleted
 - Show friendly message when invalid image type is uploaded
+- Unify email sending to use a single process with logging
+- Allow Mission Control editing of email templates
+- Add email internationalization
 
 ### Updated
 
