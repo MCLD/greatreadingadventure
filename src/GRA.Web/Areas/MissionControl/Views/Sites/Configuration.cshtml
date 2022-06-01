@@ -126,16 +126,17 @@
             var button = $(this);
             button.attr("disabled", "disabled");
             button.children("span").removeClass("hidden");
-            var url = "@Url.Action("SendTestEmail")";
+            var url = "@Url.Action(nameof(SitesController.SendTestEmail))";
             $.post(url, { emailAddress: emailAddress }, function (response) {
                 button.removeAttr("disabled", "disabled");
                 button.children("span").addClass("hidden");
                 if (response.success) {
-                    alert("Email successfully sent!");
+                    alert("Email sent, server response: " + response.message);
                 }
                 else {
-                    alert("Error sending email: " + response.message);
+                    alert("Error sending email, server response: " + response.message);
                 }
+                ResetSpinners();
             });
         })
     </script>

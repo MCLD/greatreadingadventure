@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace GRA.Domain.Model
@@ -17,6 +18,8 @@ namespace GRA.Domain.Model
         [MaxLength(255)]
         [Display(Description = "Description of the vendor code type (e.g. 'Free book code')")]
         public string Description { get; set; }
+
+        public IDictionary<int, string> DirectEmailTemplates { get; set; }
 
         // Must be set if DonationSubject is set
         [Display(Name = "Donation mail",
@@ -80,6 +83,10 @@ namespace GRA.Domain.Model
         [Display(Name = "Option subject",
             Description = "Subject of the mail to send an achiever offering them an award choice")]
         public string OptionSubject { get; set; }
+
+        [Display(Name = "Ready for pickup email template",
+            Description = "Email template to send participant when their vendor code item is ready for pick up")]
+        public int? ReadyForPickupEmailTemplateId { get; set; }
 
         public int SiteId { get; set; }
 

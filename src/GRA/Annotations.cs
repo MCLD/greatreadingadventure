@@ -125,6 +125,7 @@
             public const string EnterAddressOrZipCode = "Enter an address or ZIP code";
             public const string EnterChallengeSearch = "Enter text to search for a challenge here";
             public const string EnterEventSearch = "Enter text to search for an event here";
+            public const string EmailDefaultFooter = "You are receiving this email because you are subscribed for updates from {{Sitename}}. You can [instantly unsubscribe at any time]({{UnsubscribeLink}})";
             public const string EventHasEnded = "This streaming event has ended.";
             public const string EventNotFound = "Could not find the requested event.";
             public const string EventNotStarted = "This streaming event has not started yet.";

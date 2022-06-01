@@ -1,0 +1,65 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.EmailManagement.EmailBaseIndexViewModel
+
+<div class="row" style="margin: 1rem 0;">
+    <div class="col-xs-12">
+        <a class="btn btn-default"
+           asp-action="@nameof(EmailManagementController.Index)">
+            Return to Template List
+        </a>
+
+        <a class="btn btn-info"
+           asp-action="@nameof(EmailManagementController.CreateBaseTemplate)">
+            <span class="fas fa-plus-circle"></span>
+            Create Base Template
+        </a>
+    </div>
+</div>
+
+<div class="row" style="margin: 1rem 0;">
+    <div class="col-xs-12">
+        @if (Model.EmailBases?.Any() != true)
+        {
+            <div class="alert alert-warning"
+             style="margin-top: 2rem;">
+                No base email templates.
+            </div>
+        }
+        else
+        {
+            <div>
+                <table class="table table-condensed table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Is Default</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var emailBase in Model.EmailBases)
+                        {
+                            <tr>
+                                <td style="vertical-align: middle;">
+                                    @emailBase.Name
+                                </td>
+                                <td style="vertical-align: middle;">
+                                    @(emailBase.IsDefault ? "Yes" : "No")
+                                </td>
+                                <td class="text-right">
+                                    @foreach (var language in emailBase.ConfiguredLanguages)
+                                    {
+                                        <a asp-action="@nameof(EmailManagementController.EditBaseTemplate)"
+                               asp-route-emailBaseId="@emailBase.Id"
+                               asp-route-languageId="@language"
+                               class="btn btn-file btn-default btn-sm gra-button-buffer">@Model.LanguageNames[language]</a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <paginate paginateModel="@Model"></paginate>
+        }
+    </div>
+</div>

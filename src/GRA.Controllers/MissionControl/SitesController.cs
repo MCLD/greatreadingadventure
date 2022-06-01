@@ -5,6 +5,7 @@ using GRA.Controllers.ViewModel.MissionControl.Sites;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
+using GRA.Domain.Model.Utility;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,9 +17,9 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.ManageSites)]
     public class SitesController : Base.MCController
     {
+        private readonly EmailService _emailSerivce;
         private readonly ILogger<SitesController> _logger;
         private readonly AutoMapper.IMapper _mapper;
-        private readonly EmailService _emailSerivce;
         private readonly SiteService _siteService;
         private readonly UserService _userService;
 
@@ -35,73 +36,6 @@ namespace GRA.Controllers.MissionControl
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             PageTitle = "Site management";
-        }
-
-        public async Task<IActionResult> Index(int page = 1)
-        {
-            var filter = new BaseFilter(page);
-
-            var siteList = await _siteService.GetPaginatedListAsync(filter);
-
-            if (siteList.Count == 1)
-            {
-                return RedirectToAction("Detail", new { id = siteList.Data.First().Id });
-            }
-
-            var paginateModel = new PaginateViewModel
-            {
-                ItemCount = siteList.Count,
-                CurrentPage = page,
-                ItemsPerPage = filter.Take.Value
-            };
-            if (paginateModel.PastMaxPage)
-            {
-                return RedirectToRoute(
-                    new
-                    {
-                        page = paginateModel.LastPage ?? 1
-                    });
-            }
-
-            var viewModel = new SiteListViewModel()
-            {
-                Sites = siteList.Data,
-                PaginateModel = paginateModel
-            };
-
-            return View(viewModel);
-        }
-
-        public async Task<IActionResult> Detail(int id)
-        {
-            var site = await _siteLookupService.GetByIdAsync(id);
-            var viewModel = _mapper.Map<Site, SiteDetailViewModel>(site);
-
-            PageTitle = $"Site management - {site.Name}";
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Detail(SiteDetailViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    var site = await _siteLookupService.GetByIdAsync(model.Id);
-                    _mapper.Map<SiteDetailViewModel, Site>(model, site);
-
-                    await _siteService.UpdateAsync(site);
-                    ShowAlertSuccess($"Site '{site.Name}' successfully updated!");
-                    return RedirectToAction(nameof(Detail), new { id = site.Id });
-                }
-                catch (GraException gex)
-                {
-                    ShowAlertDanger("Unable to update site: ", gex);
-                }
-            }
-            PageTitle = $"Site management - {model.Name}";
-            return View(model);
         }
 
         public async Task<IActionResult> Configuration(int id)
@@ -142,6 +76,73 @@ namespace GRA.Controllers.MissionControl
             return View(model);
         }
 
+        public async Task<IActionResult> Detail(int id)
+        {
+            var site = await _siteLookupService.GetByIdAsync(id);
+            var viewModel = _mapper.Map<Site, SiteDetailViewModel>(site);
+
+            PageTitle = $"Site management - {site.Name}";
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Detail(SiteDetailViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var site = await _siteLookupService.GetByIdAsync(model.Id);
+                    _mapper.Map<SiteDetailViewModel, Site>(model, site);
+
+                    await _siteService.UpdateAsync(site);
+                    ShowAlertSuccess($"Site '{site.Name}' successfully updated!");
+                    return RedirectToAction(nameof(Detail), new { id = site.Id });
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger("Unable to update site: ", gex);
+                }
+            }
+            PageTitle = $"Site management - {model.Name}";
+            return View(model);
+        }
+
+        public async Task<IActionResult> Index(int page = 1)
+        {
+            var filter = new BaseFilter(page);
+
+            var siteList = await _siteService.GetPaginatedListAsync(filter);
+
+            if (siteList.Count == 1)
+            {
+                return RedirectToAction("Detail", new { id = siteList.Data.First().Id });
+            }
+
+            var paginateModel = new PaginateViewModel
+            {
+                ItemCount = siteList.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
+            };
+            if (paginateModel.PastMaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
+            }
+
+            var viewModel = new SiteListViewModel()
+            {
+                Sites = siteList.Data,
+                PaginateModel = paginateModel
+            };
+
+            return View(viewModel);
+        }
+
         public async Task<IActionResult> Schedule(int id)
         {
             var site = await _siteLookupService.GetByIdAsync(id);
@@ -174,36 +175,37 @@ namespace GRA.Controllers.MissionControl
             return View(model);
         }
 
-        public async Task<IActionResult> SocialMedia(int id)
-        {
-            var site = await _siteLookupService.GetByIdAsync(id);
-            var viewModel = _mapper.Map<Site, SiteSocialMediaViewModel>(site);
-
-            PageTitle = $"Site management - {site.Name}";
-            return View(viewModel);
-        }
-
         [HttpPost]
-        public async Task<IActionResult> SocialMedia(SiteSocialMediaViewModel model)
+        public async Task<JsonResult> SendTestEmail(string emailAddress)
         {
-            var site = await _siteLookupService.GetByIdAsync(model.Id);
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _mapper.Map<SiteSocialMediaViewModel, Site>(model, site);
+                var site = await GetCurrentSiteAsync();
+                var link = await _siteLookupService.GetSiteLinkAsync(site.Id);
 
-                    await _siteService.UpdateAsync(site);
-                    ShowAlertSuccess($"Site '{site.Name}' successfully updated!");
-                    return RedirectToAction(nameof(SocialMedia), new { id = site.Id });
-                }
-                catch (GraException gex)
+                var details = new DirectEmailDetails(site.Name)
                 {
-                    ShowAlertDanger("Unable to update site: ", gex);
-                }
+                    DirectEmailSystemId = "TestMessage",
+                    IsTest = true,
+                    SendingUserId = GetActiveUserId(),
+                    ToAddress = emailAddress,
+                };
+
+                details.Tags.Add("Sitelink", link.ToString());
+
+                var result = await _emailSerivce.SendDirectAsync(details);
+
+                return Json(new
+                {
+                    success = result.Successful,
+                    message = result.SentResponse
+                });
             }
-            PageTitle = $"Site management - {site.Name}";
-            return View(model);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error sending test email: {Message}", ex.Message);
+                return Json(new { success = false, message = ex.Message });
+            }
         }
 
         public async Task<IActionResult> Settings(int id)
@@ -309,24 +311,36 @@ namespace GRA.Controllers.MissionControl
             return View(viewModel);
         }
 
-        [HttpPost]
-        public async Task<JsonResult> SendTestEmail(string emailAddress)
+        public async Task<IActionResult> SocialMedia(int id)
         {
-            try
+            var site = await _siteLookupService.GetByIdAsync(id);
+            var viewModel = _mapper.Map<Site, SiteSocialMediaViewModel>(site);
+
+            PageTitle = $"Site management - {site.Name}";
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SocialMedia(SiteSocialMediaViewModel model)
+        {
+            var site = await _siteLookupService.GetByIdAsync(model.Id);
+            if (ModelState.IsValid)
             {
-                var site = await GetCurrentSiteAsync();
-                var subject = $"{site.Name} test email";
-                var body = $"This is a test email sent by {site.Name} at {_dateTimeProvider.Now}";
-                await _emailSerivce.SendEmailToAddressAsync(GetCurrentSiteId(), emailAddress,
-                    subject, body);
-                _logger.LogInformation("Test email sent to {emailAddress}", emailAddress);
-                return Json(new { success = true });
+                try
+                {
+                    _mapper.Map<SiteSocialMediaViewModel, Site>(model, site);
+
+                    await _siteService.UpdateAsync(site);
+                    ShowAlertSuccess($"Site '{site.Name}' successfully updated!");
+                    return RedirectToAction(nameof(SocialMedia), new { id = site.Id });
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger("Unable to update site: ", gex);
+                }
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error sending test email: {Message}", ex.Message);
-                return Json(new { Success = false, message = ex.Message });
-            }
+            PageTitle = $"Site management - {site.Name}";
+            return View(model);
         }
     }
 }

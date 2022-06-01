@@ -1,0 +1,109 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.EmailManagement.SendEmailViewModel
+
+@if (!Model.IsMixedFooter)
+{
+    @if (Model.IsForSubscribers)
+    {
+        <div class="row row-spacing" style="margin-top: 1rem;">
+            <div class="col-xs-12">
+                <div class="alert alert-info">
+                    <p>
+                        This email does not have the <code>{{UnsubscribeLink}}</code> in the footer so it is
+                        configured to be sent to people who have expressed interest in the program and submitted
+                        their email address.
+                    </p>
+                    <p>
+                        If you intend to send this email to program participants please edit the template and
+                        ensure it has <code>{{UnsubscribeLink}}</code> in the footer.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <form method="get" asp-action="@nameof(EmailManagementController.SelectList)">
+            <input type="hidden" name="templateId" value="@Model.Template.Id">
+            <div class="row row-spacing">
+                <div class="col-xs-12">
+                    <label asp-for="SubscriptionLists"
+                   class="control-label">Select a subscriber list:</label>
+                    <select name="listName"
+                    asp-items="@Model.SubscriptionLists"
+                    placeholder="Select a mailing list"
+                    class="form-control"
+                    formgroup>
+                    </select>
+                    <span asp-validation-for="SubscriptionLists" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row row-spacing">
+                <div class="col-xs-12">
+                    <a class="btn btn-default"
+               asp-action="@nameof(EmailManagementController.Index)">Back</a>
+                    <button class="btn btn-success">Select this list</button>
+                </div>
+            </div>
+        </form>
+    }
+    else
+    {
+        <div class="row" style="margin-top: 1rem;">
+            <div class="col-xs-12">
+                <div class="alert alert-info">
+                    <p>
+                        This email has the <code>{{UnsubscribeLink}}</code> in the footer so it is
+                        configured to be sent to program participants who have opted-in to receive emails.
+                    </p>
+                    <p>
+                        If you intend to send this email to people who expressed interest and supplied an email
+                        address, please edit the template and remove <code>{{UnsubscribeLink}}</code> from the
+                        footer.
+                    </p>
+                </div>
+            </div>
+        </div>
+        @if (Model.RegisteredLanguages.Any())
+        {
+            <div class="row row-spacing">
+                <div class="col-sm-6">
+                    <h2>Participants</h2>
+                    <ul>
+                        @foreach (var item in Model.RegisteredLanguages.OrderBy(_ => _.Key))
+                        {
+                            <li>@item.Key - @item.Value subscriber(s)</li>
+                        }
+                    </ul>
+                </div>
+                <div class="col-sm-6">
+                    <h2>Template Languages</h2>
+                    <ul>
+                        @foreach (var item in Model.TemplateLanguages.OrderBy(_ => _))
+                        {
+                            <li>@item</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+            <form method="post" asp-action="@nameof(EmailManagementController.SendParticipants)">
+                <input type="hidden" name="templateId" value="@Model.Template.Id">
+                <div class="row row-spacing">
+                    <div class="col-xs-12">
+                        <a class="btn btn-default"
+               asp-action="@nameof(EmailManagementController.Index)">Back</a>
+                        <button class="btn btn-success">Send to participants</button>
+                    </div>
+                </div>
+            </form>
+        }
+        else
+        {
+            <div class="row row-spacing">
+                <div class="col-xs-12">
+                    <div class="alert alert-danger">
+                        There are no subscribed participants.
+                    </div>
+                </div>
+            </div>
+        }
+    }
+}

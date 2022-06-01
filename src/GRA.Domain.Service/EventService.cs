@@ -382,7 +382,7 @@ namespace GRA.Domain.Service
                 }
                 else
                 {
-                    _logger.LogDebug("Expiring dashboard streaming events early becuase an event stops streaming at {Expiration}",
+                    _logger.LogDebug("Expiring dashboard streaming events early because an event stops streaming at {Expiration}",
                         expiration);
                 }
 

@@ -1,0 +1,16 @@
+{
+  "Data": {
+    "BodyCommonMark": "**{{Sitename}} ha recibido una solicitud de nombres de usuario asociados a esta direcci\u00F3n de correo electr\u00F3nico. **\r\n\r\nLos siguientes nombres de usuario est\u00E1n asociados con {{Email}}:\r\n\r\n{{Content}}",
+    "Footer": "Este correo electr\u00F3nico fue solicitado por {{Sitename}}.\r\n\r\nPara obtener m\u00E1s informaci\u00F3n, visite: {{Sitelink}}",
+    "ImportCulture": "es-US",
+    "ImportSystemEmailId": "UsernameRecovery",
+    "Preview": "Nombres de usuario asociados con su correo electr\u00F3nico en {{Sitename}}",
+    "Subject": "{{Sitename}} nombres de usuario asociados a su direcci\u00F3n de correo electr\u00F3nico",
+    "Title": "{{Sitename}}"
+  },
+  "ExportedAt": "2022-03-25T00:00:00-07:00",
+  "ExportedBy": "Great Reading Adventure Development (https://github.com/MCLD/greatreadingadventure/discussions)",
+  "Source": "The Great Reating Adventure (https://github.com/MCLD/greatreadingadventure)",
+  "Type": "DirectEmailTemplateText",
+  "Version": 1
+}

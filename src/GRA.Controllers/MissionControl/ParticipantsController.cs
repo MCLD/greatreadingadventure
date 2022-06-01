@@ -2652,7 +2652,14 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.UnDonateVendorCode)]
         public async Task<IActionResult> UndonateCode(ParticipantsDetailViewModel viewModel)
         {
-            await _vendorCodeService.ResolveCodeStatusAsync(viewModel.User.Id, null, null);
+            try
+            {
+                await _vendorCodeService.ResolveCodeStatusAsync(viewModel.User.Id, null, null);
+            }
+            catch (GraException gex)
+            {
+                AlertWarning = gex.Message;
+            }
             return RedirectToAction(viewModel.Action, new { id = viewModel.User.Id });
         }
 

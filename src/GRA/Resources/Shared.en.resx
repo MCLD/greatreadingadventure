@@ -1581,4 +1581,8 @@
     <value>Sign in again</value>
     <comment>Button shown on exit screen in case the participant wishes to sign in again</comment>
   </data>
+  <data name="You are receiving this email because you are subscribed for updates from {{Sitename}}. You can [instantly unsubscribe at any time]({{UnsubscribeLink}})" xml:space="preserve">
+    <value>You are receiving this email because you are subscribed for updates from {{Sitename}}. You can [instantly unsubscribe at any time]({{UnsubscribeLink}})</value>
+    <comment>Default footer for emails including an unsubscribe link.</comment>
+  </data>
 </root>
