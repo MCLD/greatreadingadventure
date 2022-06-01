@@ -10,6 +10,14 @@
         @Html.Raw(Model.Embed)
     </div>
 </div>
+@if (!string.IsNullOrWhiteSpace(Model.SecretCode))
+{
+    <div class="row row-spacing">
+        <div class="col-sm-12 text-center">
+            <strong>@SharedLocalizer[GRA.Domain.Model.DisplayNames.SecretCode]:</strong> @Model.SecretCode
+        </div>
+    </div>
+}
 <div class="row row-spacing">
     <div class="col-sm-12 text-center">
         <a href="@Url.Action(nameof(EventsController.StreamingEvents))"

@@ -599,11 +599,20 @@ namespace GRA.Controllers
                 {
                     if (graEvent.IsStreamingEmbed)
                     {
-                        return View("Stream", new StreamViewModel
+                        var viewModel = new StreamViewModel
                         {
                             EventName = graEvent.Name,
                             Embed = graEvent.StreamingLinkData
-                        });
+                        };
+
+                        if (graEvent.RelatedTriggerId.HasValue
+                            && await GetSiteSettingBoolAsync(SiteSettingKey.Events.StreamingShowCode))
+                        {
+                            viewModel.SecretCode = await _eventService
+                                .GetSecretCodeForStreamingEventAsync(graEvent.Id);
+                        }
+
+                        return View(viewModel);
                     }
                     else
                     {

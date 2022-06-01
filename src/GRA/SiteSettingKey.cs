@@ -57,6 +57,8 @@
 
             public static readonly string RequireBadge = "Events.RequireBadge";
 
+            public static readonly string StreamingShowCode = "Events.StreamingShowCode";
+
             public bool Equals(Events other)
             {
                 return true;

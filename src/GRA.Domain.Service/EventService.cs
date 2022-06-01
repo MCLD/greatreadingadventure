@@ -22,6 +22,7 @@ namespace GRA.Domain.Service
         private readonly ILocationRepository _locationRepository;
         private readonly IProgramRepository _programRepository;
         private readonly ISpatialDistanceRepository _spatialDistanceRepository;
+        private readonly SiteLookupService _siteLookupService;
 
         public EventService(ILogger<EventService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
@@ -33,7 +34,8 @@ namespace GRA.Domain.Service
             IEventRepository eventRepository,
             ILocationRepository locationRepository,
             IProgramRepository programRepository,
-            ISpatialDistanceRepository spatialDistanceRepository)
+            ISpatialDistanceRepository spatialDistanceRepository,
+            SiteLookupService siteLookupService)
             : base(logger, dateTimeProvider, userContextProvider)
         {
             _branchRepository = branchRepository
@@ -52,6 +54,8 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(programRepository));
             _spatialDistanceRepository = spatialDistanceRepository
                 ?? throw new ArgumentNullException(nameof(spatialDistanceRepository));
+            _siteLookupService = siteLookupService
+                ?? throw new ArgumentNullException(nameof(siteLookupService));
         }
 
         public async Task<Event> Add(Event graEvent)
@@ -257,6 +261,17 @@ namespace GRA.Domain.Service
         {
             VerifyPermission(Permission.ManageEvents);
             return await _eventRepository.GetRelatedEventsForTriggerAsync(triggerId);
+        }
+
+        public async Task<string> GetSecretCodeForStreamingEventAsync(int eventId)
+        {
+            if (!await _siteLookupService.GetSiteSettingBoolAsync(GetCurrentSiteId(),
+                SiteSettingKey.Events.StreamingShowCode))
+            {
+                throw new GraException(Annotations.Validate.Permission);
+            }
+
+            return await _eventRepository.GetSecretCodeForStreamingEventAsync(eventId);
         }
 
         public async Task<ICollection<Event>> GetUpcomingStreamListAsync()

@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Challenge sorting options (most recent, most popular)
 - Packing slip functionality for checking item status on arrival
 - Sign in again button on exit pages when the program is running
+- Site setting to show secret codes on the streaming event pages
 
 ### Changed
 
