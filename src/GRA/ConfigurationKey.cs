@@ -5,6 +5,7 @@
         public static readonly string CSSqlServerSerilog = "SqlServerSerilog";
 
         public static readonly string ApplicationDiscriminator = "GraApplicationDiscriminator";
+        public static readonly string CompletionPortThreads = "GraCompletionPortThreads";
         public static readonly string ConnectionStringName = "GraConnectionStringName";
         public static readonly string ContentDirectory = "GraContentDirectory";
         public static readonly string ContentPath = "GraContentPath";
@@ -35,5 +36,6 @@
         public static readonly string SeqEndpoint = "GraSeqEndpoint";
         public static readonly string SqlSessionSchemaName = "GraSqlSessionSchemaName";
         public static readonly string SqlSessionTable = "GraSqlSessionTable";
+        public static readonly string WorkerThreads = "GraWorkerThreads";
     }
 }
