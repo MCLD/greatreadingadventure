@@ -25,5 +25,6 @@ namespace GRA.Domain.Repository
         Task<IEnumerable<int>> ValidateEventIdsAsync(int siteId,
             IEnumerable<int> eventIds);
         Task<ICollection<Event>> GetEventListAsync(EventFilter filter);
+        Task<string> GetSecretCodeForStreamingEventAsync(int eventId);
     }
 }

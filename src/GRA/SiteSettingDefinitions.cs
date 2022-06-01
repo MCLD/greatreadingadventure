@@ -72,6 +72,14 @@ namespace GRA
                     Category = typeof(SiteSettingKey.Events).Name,
                     Format = SiteSettingFormat.Boolean,
                 },
+                [SiteSettingKey.Events.StreamingShowCode] =
+                new SiteSettingDefinition
+                {
+                    Name = "Show code for streaming events",
+                    Info = "Put any text here to show on all streaming event pages their associated secret code to participants.",
+                    Category = typeof(SiteSettingKey.Events).Name,
+                    Format = SiteSettingFormat.Boolean,
+                },
                 [SiteSettingKey.Points.MaximumPermitted] =
                 new SiteSettingDefinition
                 {
