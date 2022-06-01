@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Versioning;
+using System.Threading;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl;
 using GRA.Domain.Service;
@@ -96,7 +98,7 @@ namespace GRA.Controllers.MissionControl
             }
 
             var site = await GetCurrentSiteAsync();
-            settings.Add("Site created", site.CreatedAt.ToString());
+            settings.Add("Site created", site.CreatedAt.ToString(CultureInfo.InvariantCulture));
 
             var versions = new Dictionary<string, string>();
             var assemblies = Assembly.GetEntryAssembly()
@@ -165,6 +167,21 @@ namespace GRA.Controllers.MissionControl
             {
                 runtimeSettings.Add("Container image revision", imageRevision);
             }
+
+            ThreadPool.GetMinThreads(out int minThreads, out int minCompletionPortThreads);
+            ThreadPool.GetAvailableThreads(out int availWorkerThreads,
+                out int availCompletionPortThreads);
+            ThreadPool.GetMaxThreads(out int maxThreads, out int maxCompletionPortThreads);
+
+            runtimeSettings.Add("Worker threads (min/available/max)",
+                $"{minThreads}/{availWorkerThreads}/{maxThreads}");
+            runtimeSettings.Add("Completion port threads (min/available/max)",
+                $"{minCompletionPortThreads}/{availCompletionPortThreads}/{maxCompletionPortThreads}");
+
+            runtimeSettings.Add("Completed work item count",
+                ThreadPool.CompletedWorkItemCount.ToString(CultureInfo.InvariantCulture));
+            runtimeSettings.Add("Pending work item count",
+                ThreadPool.PendingWorkItemCount.ToString(CultureInfo.InvariantCulture));
 
             return View(new SystemInformationViewModel
             {
