@@ -131,7 +131,17 @@ namespace GRA.Utility
 
         private async Task<bool?> GetBoolFromCacheInternalAsync(string cacheKey)
         {
-            var cachedValue = await _cache.GetAsync(cacheKey);
+            byte[] cachedValue = null;
+            try
+            {
+                cachedValue = await _cache.GetAsync(cacheKey);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Exception reading key {CacheKey} from cache: {ErrorMessage}",
+                    cacheKey,
+                    ex.Message);
+            }
 
             if (cachedValue?.Length > 0)
             {
@@ -153,7 +163,17 @@ namespace GRA.Utility
 
         private async Task<int?> GetIntFromCacheInternalAsync(string cacheKey)
         {
-            var cachedValue = await _cache.GetAsync(cacheKey);
+            byte[] cachedValue = null;
+            try
+            {
+                cachedValue = await _cache.GetAsync(cacheKey);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Exception reading key {CacheKey} from cache: {ErrorMessage}",
+                    cacheKey,
+                    ex.Message);
+            }
 
             if (cachedValue?.Length > 0)
             {
@@ -175,7 +195,17 @@ namespace GRA.Utility
 
         private async Task<long?> GetLongFromCacheInternalAsync(string cacheKey)
         {
-            var cachedValue = await _cache.GetAsync(cacheKey);
+            byte[] cachedValue = null;
+            try
+            {
+                cachedValue = await _cache.GetAsync(cacheKey);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Exception reading key {CacheKey} from cache: {ErrorMessage}",
+                    cacheKey,
+                    ex.Message);
+            }
 
             if (cachedValue?.Length > 0)
             {
@@ -197,7 +227,19 @@ namespace GRA.Utility
 
         private async Task<string> GetStringFromCacheInternalAsync(string cacheKey)
         {
-            return await _cache.GetStringAsync(cacheKey);
+            string cachedValue = null;
+            try
+            {
+                cachedValue = await _cache.GetStringAsync(cacheKey);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Exception reading key {CacheKey} from cache: {ErrorMessage}",
+                    cacheKey,
+                    ex.Message);
+            }
+
+            return cachedValue;
         }
 
         private Task SaveToCacheInternalAsync<T>(string cacheKey,

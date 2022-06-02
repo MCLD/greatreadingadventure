@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GRA.Abstract;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -15,7 +15,7 @@ namespace GRA.Domain.Service
 {
     public class SiteLookupService : BaseService<SiteLookupService>
     {
-        private readonly IDistributedCache _cache;
+        private readonly IGraCache _cache;
         private readonly IConfiguration _config;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IInitialSetupService _initialSetupService;
@@ -24,9 +24,9 @@ namespace GRA.Domain.Service
         private readonly IUserRepository _userRepository;
 
         public SiteLookupService(ILogger<SiteLookupService> logger,
-            GRA.Abstract.IDateTimeProvider dateTimeProvider,
+            IDateTimeProvider dateTimeProvider,
             IConfiguration config,
-            IDistributedCache cache,
+            IGraCache cache,
             ISiteRepository siteRepository,
             ISiteSettingRepository siteSettingRepository,
             IUserRepository userRepository,
@@ -265,17 +265,17 @@ namespace GRA.Domain.Service
             var sites = await _siteRepository.GetAllAsync();
             foreach (var site in sites)
             {
-                _cache.Remove($"s{site.Id}.{CacheKey.SiteSettings}");
-                _cache.Remove($"s{site.Id}.{CacheKey.SiteCss}");
+                await _cache.RemoveAsync($"s{site.Id}.{CacheKey.SiteSettings}");
+                await _cache.RemoveAsync($"s{site.Id}.{CacheKey.SiteCss}");
             }
-            _cache.Remove(CacheKey.Sites);
+            await _cache.RemoveAsync(CacheKey.Sites);
             return await GetSitesFromCacheAsync();
         }
 
         private async Task<IEnumerable<Site>> GetSitesFromCacheAsync()
         {
             IEnumerable<Site> sites;
-            var cachedSites = _cache.GetString(CacheKey.Sites);
+            var cachedSites = await _cache.GetStringFromCache(CacheKey.Sites);
             if (cachedSites == null)
             {
                 sites = await _siteRepository.GetAllAsync();
@@ -284,7 +284,9 @@ namespace GRA.Domain.Service
                     _logger.LogInformation("No sites in database, inserting initial site");
                     sites = await InsertInitialSiteAsync();
                 }
-                _cache.SetString(CacheKey.Sites, JsonConvert.SerializeObject(sites));
+                await _cache.SaveToCacheAsync(CacheKey.Sites,
+                    JsonConvert.SerializeObject(sites),
+                    8);
                 _logger.LogTrace("Cache miss on sites: {Count} loaded", sites.Count());
             }
             else
@@ -295,12 +297,14 @@ namespace GRA.Domain.Service
             foreach (var site in sites)
             {
                 string key = $"s{site.Id}.{CacheKey.SiteSettings}";
-                var cachedSiteSettings = _cache.GetString(key);
+                var cachedSiteSettings = await _cache.GetStringFromCache(key);
 
                 if (cachedSiteSettings == null)
                 {
                     site.Settings = await _siteSettingRepository.GetBySiteIdAsync(site.Id);
-                    _cache.SetString(key, JsonConvert.SerializeObject(site.Settings));
+                    await _cache.SaveToCacheAsync(key,
+                        JsonConvert.SerializeObject(site.Settings),
+                        8);
                     _logger.LogTrace("Cache miss on site settings for site id {Id}, {Count} loaded",
                         site.Id,
                         site.Settings.Count);
@@ -339,7 +343,7 @@ namespace GRA.Domain.Service
                 AccessClosed = _dateTimeProvider.Now.AddDays(90)
             };
             site = await _siteRepository.AddSaveAsync(-1, site);
-            _cache.Remove(CacheKey.Sites);
+            await _cache.RemoveAsync(CacheKey.Sites);
             _logger.LogInformation("Inserted initial site named: {SiteName}", site.Name);
 
             await _initialSetupService.InsertAsync(site.Id,

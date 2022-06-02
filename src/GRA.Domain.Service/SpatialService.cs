@@ -4,11 +4,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using GRA.Abstract;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using GRA.Domain.Service.Models;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -16,16 +16,16 @@ namespace GRA.Domain.Service
 {
     public class SpatialService : BaseUserService<SpatialService>
     {
-        private readonly IDistributedCache _cache;
-        private readonly SiteLookupService _siteLookupService;
         private readonly IBranchRepository _branchRepository;
+        private readonly IGraCache _cache;
         private readonly ILocationRepository _locationRepository;
+        private readonly SiteLookupService _siteLookupService;
         private readonly ISpatialDistanceRepository _spatialDistanceRepository;
 
         public SpatialService(ILogger<SpatialService> logger,
-            GRA.Abstract.IDateTimeProvider dateTimeProvider,
+            IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
-            IDistributedCache cache,
+            IGraCache cache,
             SiteLookupService siteLookupService,
             IBranchRepository branchRepository,
             ILocationRepository locationRepository,
@@ -65,7 +65,7 @@ namespace GRA.Domain.Service
             var formattedAddress = address.Trim();
 
             var cacheKey = $"a{formattedAddress}.{CacheKey.AddressGeocoding}";
-            var geolocation = await _cache.GetStringAsync(cacheKey);
+            var geolocation = await _cache.GetStringFromCache(cacheKey);
 
             if (!string.IsNullOrWhiteSpace(geolocation))
             {
@@ -106,7 +106,9 @@ namespace GRA.Domain.Service
 
                             geolocation = $"{latitude},{longitude}";
 
-                            await _cache.SetStringAsync(cacheKey, geolocation, ExpireIn(60));
+                            await _cache.SaveToCacheAsync(cacheKey,
+                                geolocation,
+                                ExpireInTimeSpan(60));
 
                             serviceResult.Status = ServiceResultStatus.Success;
                             serviceResult.Data = geolocation;
@@ -127,6 +129,22 @@ namespace GRA.Domain.Service
                 }
             }
             return serviceResult;
+        }
+
+        public double GetHaversineDistance(double latitude1, double longitude1,
+            double latitude2, double longitude2)
+        {
+            const int R = 3959; // In miles
+            var latitudeArc = ToRadians(latitude2 - latitude1);
+            var longitudeArc = ToRadians(longitude2 - longitude1);
+            var latitude1Radians = ToRadians(latitude1);
+            var latitude2Radians = ToRadians(latitude2);
+
+            var a = (Math.Sin(latitudeArc / 2) * Math.Sin(latitudeArc / 2))
+                + (Math.Sin(longitudeArc / 2) * Math.Sin(longitudeArc / 2)
+                * Math.Cos(latitude1Radians) * Math.Cos(latitude2Radians));
+
+            return R * 2 * Math.Asin(Math.Sqrt(a));
         }
 
         public async Task<int> GetSpatialDistanceIdForGeolocationAsync(string geolocation)
@@ -196,22 +214,6 @@ namespace GRA.Domain.Service
                 spatialDistanceHeader, spatialDistanceDetailList);
 
             return spatialDistanceHeader.Id;
-        }
-
-        public double GetHaversineDistance(double latitude1, double longitude1,
-            double latitude2, double longitude2)
-        {
-            const int R = 3959; // In miles
-            var latitudeArc = ToRadians(latitude2 - latitude1);
-            var longitudeArc = ToRadians(longitude2 - longitude1);
-            var latitude1Radians = ToRadians(latitude1);
-            var latitude2Radians = ToRadians(latitude2);
-
-            var a = (Math.Sin(latitudeArc / 2) * Math.Sin(latitudeArc / 2))
-                + (Math.Sin(longitudeArc / 2) * Math.Sin(longitudeArc / 2)
-                * Math.Cos(latitude1Radians) * Math.Cos(latitude2Radians));
-
-            return R * 2 * Math.Asin(Math.Sqrt(a));
         }
 
         private static double ToRadians(double angle)
