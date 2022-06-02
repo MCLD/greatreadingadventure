@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using GRA.Abstract;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Service
@@ -14,13 +13,14 @@ namespace GRA.Domain.Service
         // if this is updated here, SocialManagementService must be updated as well
         private const int CacheInHours = 4;
 
-        private readonly IDistributedCache _cache;
+        private readonly IGraCache _cache;
         private readonly LanguageService _languageService;
         private readonly ISocialHeaderRepository _socialHeaderRepository;
         private readonly ISocialRepository _socialRepository;
+
         public SocialService(ILogger<SocialService> logger,
             IDateTimeProvider dateTimeProvider,
-            IDistributedCache cache,
+            IGraCache cache,
             ISocialRepository socialRepository,
             ISocialHeaderRepository socialHeaderRepository,
             LanguageService languageService) : base(logger, dateTimeProvider)
@@ -36,16 +36,11 @@ namespace GRA.Domain.Service
 
         public async Task<Social> GetAsync(string culture)
         {
-            var socialHeadingCache = await _cache.GetAsync(CacheKey.SocialHeader);
             var expiration = DateTime.Now.AddHours(CacheInHours).Ticks;
 
-            int? headerId;
+            int? headerId = await _cache.GetIntFromCacheAsync(CacheKey.SocialHeader);
 
-            if (socialHeadingCache != null)
-            {
-                headerId = BitConverter.ToInt32(socialHeadingCache);
-            }
-            else
+            if (!headerId.HasValue)
             {
                 var headerIdRecord = await _socialHeaderRepository
                     .GetByDateAsync(_dateTimeProvider.Now);
@@ -62,12 +57,9 @@ namespace GRA.Domain.Service
                         headerIdRecord.NextStartDate.Value.Ticks);
                 }
 
-                await _cache.SetAsync(CacheKey.SocialHeader,
-                    BitConverter.GetBytes(headerIdRecord.Id),
-                    new DistributedCacheEntryOptions
-                    {
-                        AbsoluteExpiration = new DateTime(expiration)
-                    });
+                await _cache.SaveToCacheAsync(CacheKey.SocialHeader,
+                    headerIdRecord.Id,
+                    TimeSpan.FromTicks(expiration));
 
                 headerId = headerIdRecord.Id;
             }
@@ -83,7 +75,7 @@ namespace GRA.Domain.Service
 
             var cacheKey = GetCacheKey(CacheKey.Social, headerId.Value, languageId);
 
-            var socialCache = await _cache.GetStringAsync(cacheKey);
+            var socialCache = await _cache.GetStringFromCache(cacheKey);
 
             if (!string.IsNullOrEmpty(socialCache))
             {
@@ -102,12 +94,9 @@ namespace GRA.Domain.Service
             {
                 social = await _socialRepository.GetByHeaderLanguageAsync(headerId.Value, languageId);
 
-                await _cache.SetStringAsync(cacheKey,
+                await _cache.SaveToCacheAsync(cacheKey,
                     JsonSerializer.Serialize(social),
-                    new DistributedCacheEntryOptions
-                    {
-                        AbsoluteExpiration = new DateTime(expiration)
-                    });
+                    TimeSpan.FromTicks(expiration));
             }
 
             return social;

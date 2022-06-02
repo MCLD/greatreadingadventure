@@ -14,14 +14,14 @@ namespace GRA.Domain.Service
     public class MailService : Abstract.BaseUserService<MailService>
     {
         private readonly IBroadcastRepository _broadcastRepository;
-        private readonly IDistributedCache _cache;
+        private readonly GRA.Abstract.IGraCache _cache;
         private readonly IMailRepository _mailRepository;
         private readonly IUserRepository _userRepository;
         public MailService(ILogger<MailService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             IBroadcastRepository broadcastRepository,
-            IDistributedCache cache,
+            GRA.Abstract.IGraCache cache,
             IMailRepository mailRepository,
             IUserRepository userRepository) : base(logger, dateTimeProvider, userContextProvider)
         {
@@ -39,18 +39,18 @@ namespace GRA.Domain.Service
             var activeUserId = GetActiveUserId();
             var siteId = GetCurrentSiteId();
             var cacheKey = UnreadMailCacheKey(siteId, activeUserId);
-            var cachedUnreadCount = _cache.GetString(cacheKey);
-            if (string.IsNullOrEmpty(cachedUnreadCount))
+            var cachedUnreadCount = await _cache.GetIntFromCacheAsync(cacheKey);
+            if (!cachedUnreadCount.HasValue)
             {
                 await SendUserBroadcastsAsync(activeUserId, true);
 
                 int unreadCount = await _mailRepository.GetUserUnreadCountAsync(activeUserId);
-                _cache.SetString(cacheKey, unreadCount.ToString(), ExpireIn());
+                await _cache.SaveToCacheAsync(cacheKey, unreadCount, ExpireInTimeSpan());
                 return unreadCount;
             }
             else
             {
-                return int.Parse(cachedUnreadCount);
+                return cachedUnreadCount.Value;
             }
         }
 
@@ -176,16 +176,16 @@ namespace GRA.Domain.Service
             {
                 int siteId = GetClaimId(ClaimType.SiteId);
                 var cacheKey = UnhandledMailCount(siteId);
-                var cacheUnhandledCount = _cache.GetString(cacheKey);
-                if (string.IsNullOrEmpty(cacheUnhandledCount))
+                var cacheUnhandledCount = await _cache.GetIntFromCacheAsync(cacheKey);
+                if (!cacheUnhandledCount.HasValue)
                 {
                     int unhandledCount = await _mailRepository.GetAdminUnrepliedCountAsync(siteId);
-                    _cache.SetString(cacheKey, unhandledCount.ToString(), ExpireIn());
+                    await _cache.SaveToCacheAsync(cacheKey, unhandledCount, ExpireInTimeSpan());
                     return unhandledCount;
                 }
                 else
                 {
-                    return int.Parse(cacheUnhandledCount);
+                    return cacheUnhandledCount.Value;
                 }
             }
             else
@@ -203,7 +203,7 @@ namespace GRA.Domain.Service
             if (mail.ToUserId == activeUserId)
             {
                 await _mailRepository.MarkAsReadAsync(mailId);
-                _cache.Remove(UnreadMailCacheKey(mail.SiteId, activeUserId));
+                await _cache.RemoveAsync(UnreadMailCacheKey(mail.SiteId, activeUserId));
                 return;
             }
             _logger.LogError($"User {activeUserId} doesn't have permission mark mail {mailId} as read.");
@@ -222,7 +222,7 @@ namespace GRA.Domain.Service
                 mail.IsDeleted = false;
                 mail.SiteId = siteId;
 
-                _cache.Remove(UnhandledMailCount(siteId));
+                await _cache.RemoveAsync(UnhandledMailCount(siteId));
 
                 return await _mailRepository.AddSaveAsync(authId, mail);
             }
@@ -253,7 +253,7 @@ namespace GRA.Domain.Service
                     await _mailRepository.UpdateAsync(authId, inReplyToMail);
                 }
 
-                _cache.Remove(UnhandledMailCount(siteId));
+                await _cache.RemoveAsync(UnhandledMailCount(siteId));
 
                 return await _mailRepository.AddSaveAsync(authId, mail);
             }
@@ -295,7 +295,7 @@ namespace GRA.Domain.Service
                     mail.IsDeleted = false;
                     mail.SiteId = GetClaimId(ClaimType.SiteId);
 
-                    _cache.Remove(UnreadMailCacheKey(mail.SiteId, (int)mail.ToUserId));
+                    await _cache.RemoveAsync(UnreadMailCacheKey(mail.SiteId, (int)mail.ToUserId));
 
                     return await _mailRepository.AddSaveAsync(authId, mail);
                 }
@@ -327,11 +327,11 @@ namespace GRA.Domain.Service
                 mail.IsDeleted = false;
                 mail.SiteId = siteId;
 
-                _cache.Remove(UnreadMailCacheKey(siteId, (int)mail.ToUserId));
+                await _cache.RemoveAsync(UnreadMailCacheKey(siteId, (int)mail.ToUserId));
                 if (!inReplyToMail.IsRepliedTo)
                 {
                     await _mailRepository.MarkAdminReplied(inReplyToMail.Id);
-                    _cache.Remove(UnhandledMailCount(siteId));
+                    await _cache.RemoveAsync(UnhandledMailCount(siteId));
                 }
                 return await _mailRepository.AddSaveAsync(authId, mail);
             }
@@ -352,7 +352,7 @@ namespace GRA.Domain.Service
                 {
                     await _mailRepository.MarkAdminReplied(mailId);
                     var siteId = GetCurrentSiteId();
-                    _cache.Remove(UnhandledMailCount(siteId));
+                    await _cache.RemoveAsync(UnhandledMailCount(siteId));
                 }
                 else
                 {
@@ -384,11 +384,11 @@ namespace GRA.Domain.Service
                     var siteId = GetCurrentSiteId();
                     if (mail.ToUserId != null)
                     {
-                        _cache.Remove(UnreadMailCacheKey(siteId, (int)mail.ToUserId));
+                        await _cache.RemoveAsync(UnreadMailCacheKey(siteId, (int)mail.ToUserId));
                     }
                     else
                     {
-                        _cache.Remove(UnhandledMailCount(siteId));
+                        await _cache.RemoveAsync(UnhandledMailCount(siteId));
                     }
                     await _mailRepository.RemoveSaveAsync(authId, mailId);
                     return;
@@ -409,7 +409,7 @@ namespace GRA.Domain.Service
                 mail.CreatedAt = _dateTimeProvider.Now;
                 mail.SiteId = siteId ?? GetClaimId(ClaimType.SiteId);
 
-                _cache.Remove(UnreadMailCacheKey(mail.SiteId, (int)mail.ToUserId));
+                await _cache.RemoveAsync(UnreadMailCacheKey(mail.SiteId, (int)mail.ToUserId));
 
                 return await _mailRepository.AddSaveNoAuditAsync(mail);
             }
@@ -567,7 +567,7 @@ namespace GRA.Domain.Service
                 user.LastBroadcast = lastBroadcastDate.Value;
                 await _userRepository.UpdateSaveAsync(authUserId, user);
 
-                _cache.Remove(UnreadMailCacheKey(user.SiteId, userId));
+                await _cache.RemoveAsync(UnreadMailCacheKey(user.SiteId, userId));
             }
 
             if (includeHousehold)
