@@ -43,7 +43,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Allow Mission Control editing of email templates
 - Add email internationalization
 - Show error if user tries to log in as another user that they cannot
-- Show error if initial user email check fails
+- Log error if initial user email check fails
+- Show friendly error when geolocation fails
 
 ### Updated
 
