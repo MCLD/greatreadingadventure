@@ -45,6 +45,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Show error if user tries to log in as another user that they cannot
 - Log error if initial user email check fails
 - Show friendly error when geolocation fails
+- Bug with avatar translated text display error
+- Check for null viewmodel on some posts
+- Bug with empty username in UsernameInUseAsync
 
 ### Updated
 

@@ -362,7 +362,13 @@ namespace GRA.Controllers
         [HttpPost]
         public async Task<IActionResult> LogActivity(DashboardViewModel viewModel)
         {
+            if(viewModel == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             bool valid = true;
+
             if (!viewModel.SingleEvent
                 && (viewModel.ActivityAmount == null || viewModel.ActivityAmount <= 0))
             {
@@ -370,6 +376,7 @@ namespace GRA.Controllers
                 TempData[ActivityErrorMessage]
                     = _sharedLocalizer[Annotations.Validate.WholeNumber].Value;
             }
+
             if (!ModelState.IsValid)
             {
                 valid = false;
@@ -386,6 +393,7 @@ namespace GRA.Controllers
                         .ErrorMessage;
                 }
             }
+
             if (string.IsNullOrWhiteSpace(viewModel.Title)
                 && !string.IsNullOrWhiteSpace(viewModel.Author))
             {
@@ -393,6 +401,7 @@ namespace GRA.Controllers
                 TempData[TitleErrorMessage]
                     = _sharedLocalizer[Annotations.Validate.BookTitle].Value;
             }
+
             if (!valid)
             {
                 TempData[ModelData] = Newtonsoft.Json.JsonConvert.SerializeObject(viewModel);

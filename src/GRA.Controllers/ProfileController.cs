@@ -1181,7 +1181,7 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> HouseholdApplySecretCode(HouseholdListViewModel model)
         {
-            if (string.IsNullOrWhiteSpace(model.SecretCode))
+            if (string.IsNullOrWhiteSpace(model?.SecretCode))
             {
                 TempData[SecretCodeMessage]
                     = _sharedLocalizer[Annotations.Required.SecretCode].ToString();
