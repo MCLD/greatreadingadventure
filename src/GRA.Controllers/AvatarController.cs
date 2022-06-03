@@ -180,7 +180,7 @@ namespace GRA.Controllers
                 return View(viewModel);
             }
             TempData[TempDataKey.AlertDanger]
-                = _sharedLocalizer[Annotations.Validate.CustomizeAvatarFirst];
+                = _sharedLocalizer[Annotations.Validate.CustomizeAvatarFirst].ToString();
             return RedirectToAction(nameof(Index));
         }
 
