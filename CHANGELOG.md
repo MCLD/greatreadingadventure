@@ -48,6 +48,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Bug with avatar translated text display error
 - Check for null viewmodel on some posts
 - Bug with empty username in UsernameInUseAsync
+- Allow deletion of events even if participants have favorited them
 
 ### Updated
 

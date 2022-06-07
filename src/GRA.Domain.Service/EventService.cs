@@ -287,11 +287,13 @@ namespace GRA.Domain.Service
             return await GetUpcomingStreamListAsync(count);
         }
 
-        public async Task Remove(int eventId)
+        public async Task<int> Remove(int eventId)
         {
             VerifyPermission(Permission.ManageEvents);
             await _cache.RemoveAsync(CacheKey.StreamingEvents);
+            var favoritesCount = await _eventRepository.RemoveFavoritesAsync(eventId);
             await _eventRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), eventId);
+            return favoritesCount;
         }
 
         public async Task RemoveLocationAsync(int locationId)
