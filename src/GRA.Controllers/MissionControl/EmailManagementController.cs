@@ -694,7 +694,7 @@ namespace GRA.Controllers.MissionControl
                 successMessage = "Import complete.";
             }
 
-            if (emailReminders.Any())
+            if (emailReminders.Count > 0)
             {
                 foreach (var emailReminder in emailReminders)
                 {

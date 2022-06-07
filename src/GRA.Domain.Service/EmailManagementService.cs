@@ -199,6 +199,13 @@ namespace GRA.Domain.Service
             currentBase.EmailBaseText.TemplateText = emailBaseText.TemplateText;
 
             await _emailBaseRepository.UpdateSaveWithText(GetActiveUserId(), currentBase);
+
+            if (currentBase?.EmailBaseText?.LanguageId != null)
+            {
+                await _cache.RemoveAsync(GetCacheKey(CacheKey.EmailBase,
+                    emailBaseId,
+                    currentBase.EmailBaseText.LanguageId));
+            }
         }
 
         public async Task ReplaceTemplateTextAsync(int directEmailTemplateId,
@@ -227,6 +234,10 @@ namespace GRA.Domain.Service
 
             await _directEmailTemplateRepository
                 .UpdateSaveWithTextAsync(GetActiveUserId(), currentTemplate);
+
+            await _cache.RemoveAsync(GetCacheKey(CacheKey.DirectEmailTemplateId,
+                currentTemplate.Id,
+                currentTemplate.DirectEmailTemplateText.LanguageId));
         }
 
         public async Task<bool> SetUserEmailSubscriptionStatusAsync(int userId, bool subscribe,
