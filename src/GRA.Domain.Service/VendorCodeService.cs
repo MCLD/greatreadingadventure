@@ -877,7 +877,8 @@ namespace GRA.Domain.Service
                                     }
 
                                     if (!string.IsNullOrEmpty(emailAddress)
-                                        && sentDate.HasValue && userId.HasValue)
+                                        && sentDate.HasValue
+                                        && userId.HasValue)
                                     {
                                         var code = await _vendorCodeRepository
                                             .GetUserVendorCode(userId.Value);
@@ -1317,7 +1318,7 @@ namespace GRA.Domain.Service
                                         }
                                         else
                                         {
-                                            if ((code.ArrivalDate.HasValue
+                                            bool recordIsCurrent = (code.ArrivalDate.HasValue
                                                     && code.IsDamaged != true
                                                     && code.IsMissing != true)
                                                 || (orderDate == code.OrderDate
@@ -1326,7 +1327,19 @@ namespace GRA.Domain.Service
                                                     && branchId == code.BranchId
                                                     && trackingNumber == code.TrackingNumber
                                                     && (packingSlip == default
-                                                        || code.PackingSlip == packingSlip)))
+                                                        || code.PackingSlip == packingSlip));
+
+                                            if (recordIsCurrent)
+                                            {
+                                                // looks current but let's verify that if there is
+                                                // a branchId that it is NOT set as donated
+                                                if (branchId.HasValue && code.IsDonated == true)
+                                                {
+                                                    recordIsCurrent = false;
+                                                }
+                                            }
+
+                                            if (recordIsCurrent)
                                             {
                                                 alreadyCurrent++;
                                             }
@@ -1998,6 +2011,7 @@ namespace GRA.Domain.Service
             if (branchId != null)
             {
                 code.BranchId = branchId;
+                code.IsDonated = false;
             }
 
             if (code.IsDamaged == true || code.IsMissing == true)
