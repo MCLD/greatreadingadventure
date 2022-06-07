@@ -1080,6 +1080,7 @@ namespace GRA.Domain.Service
                     int updated = 0;
                     int alreadyCurrent = 0;
                     int donationCount = 0;
+                    int undonationCount = 0;
                     var vendorCodeType = await _vendorCodeTypeRepository
                         .GetByIdAsync(jobDetails.VendorCodeTypeId);
 
@@ -1180,6 +1181,9 @@ namespace GRA.Domain.Service
                                     {
                                         try
                                         {
+                                            _logger.LogInformation("In import of {FileName}, code {Code} has no branch id, marking as donated",
+                                                filename,
+                                                coupon);
                                             await MarkCodeDonatedAsync(coupon);
                                             updated++;
                                             donationCount++;
@@ -1335,7 +1339,11 @@ namespace GRA.Domain.Service
                                                 // a branchId that it is NOT set as donated
                                                 if (branchId.HasValue && code.IsDonated == true)
                                                 {
+                                                    _logger.LogInformation("Import: {FileName}, code {Code} has a branch id but is marked donated, un-donating",
+                                                        filename,
+                                                        code.Code);
                                                     recordIsCurrent = false;
+                                                    undonationCount++;
                                                 }
                                             }
 
@@ -1430,12 +1438,13 @@ namespace GRA.Domain.Service
                     }
 
                     await _jobRepository.UpdateStatusAsync(jobId,
-                        $"Updated {updated} records, {donationCount} donations, {alreadyCurrent} already current, {issues?.Count ?? 0} issues.");
+                        $"Updated {updated} records, {donationCount} donations, {undonationCount} un-donations, {alreadyCurrent} already current, {issues?.Count ?? 0} issues.");
 
-                    _logger.LogInformation("Import of {FileName} completed: {UpdatedRecords} updates, {DonationCount} donations, {CurrentRecords} already current, {IssueCount} issues, {EmailsSent} sent emails, {ErrorEmails} errors emails in {Elapsed} ms",
+                    _logger.LogInformation("Import of {FileName} completed: {UpdatedRecords} updates, {DonationCount} donations, {UndonationCount} un-donations, {CurrentRecords} already current, {IssueCount} issues, {EmailsSent} sent emails, {ErrorEmails} errors emails in {Elapsed} ms",
                         filename,
                         updated,
                         donationCount,
+                        undonationCount,
                         alreadyCurrent,
                         issues?.Count ?? 0,
                         emailsSent,
@@ -1450,6 +1459,10 @@ namespace GRA.Domain.Service
                     if (donationCount > 0)
                     {
                         sb.Append(", ").Append(donationCount).Append(" donations");
+                    }
+                    if(undonationCount> 0)
+                    {
+                        sb.Append(", ").Append(undonationCount).Append(" un-donations");
                     }
                     if (alreadyCurrent > 0)
                     {
