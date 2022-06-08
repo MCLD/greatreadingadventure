@@ -694,7 +694,7 @@ namespace GRA.Controllers.MissionControl
                 successMessage = "Import complete.";
             }
 
-            if (emailReminders.Any())
+            if (emailReminders.Count > 0)
             {
                 foreach (var emailReminder in emailReminders)
                 {
@@ -811,6 +811,110 @@ namespace GRA.Controllers.MissionControl
                 emailBaseId = baseDetailsViewModel.EmailBaseId,
                 languageId = baseDetailsViewModel.LanguageId
             });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ImportTemplate()
+        {
+            var defaultLanguageId = await _languageService.GetDefaultLanguageIdAsync();
+            var emailBases = await _emailManagementService.GetEmailBasesAsync();
+
+            var languageSelect
+                = new SelectList(await _languageService.GetIdDescriptionDictionaryAsync(),
+                    "Key",
+                    "Value",
+                    defaultLanguageId);
+
+            foreach (var languageOption in languageSelect)
+            {
+                if (languageOption.Value != defaultLanguageId.ToString(CultureInfo.InvariantCulture))
+                {
+                    languageOption.Disabled = true;
+                }
+            }
+            return View("ImportTemplate", new DetailsViewModel
+            {
+                Action = nameof(ImportTemplate),
+                EmailBases = new SelectList(emailBases,
+                    nameof(EmailBase.Id),
+                    nameof(EmailBase.Name)),
+                Footer = _sharedLocalizer[Annotations.Interface.EmailDefaultFooter],
+                Languages = languageSelect,
+                LanguageId = defaultLanguageId,
+                Title = DefaultMailTitle
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ImportTemplate(DetailsViewModel detailsViewModel)
+        {
+            if (string.IsNullOrEmpty(detailsViewModel?.TemplateDescription))
+            {
+                ShowAlertDanger("You must provide a name for the email template.");
+                return RedirectToAction(nameof(Index));
+            }
+            if (detailsViewModel?.UploadedFile == null)
+            {
+                ShowAlertDanger("You must upload a JSON file of email records.");
+                return RedirectToAction(nameof(Index));
+            }
+
+            string insertProblem = null;
+
+            ItemImport<DirectEmailTemplateText> importTemplateText = null;
+            var stream = detailsViewModel.UploadedFile.OpenReadStream();
+
+            try
+            {
+                importTemplateText = await JsonSerializer
+                    .DeserializeAsync<ItemImport<DirectEmailTemplateText>>(stream);
+            }
+            catch (JsonException)
+            {
+            }
+
+            if (importTemplateText?.Data == null)
+            {
+                ShowAlertDanger("Unable to extract template from JSON file.");
+                return RedirectToAction(nameof(Index));
+            }
+
+            try
+            {
+                importTemplateText.Data.LanguageId = detailsViewModel.LanguageId;
+
+                var insertedId = await _emailManagementService.AddTemplateAsync(new DirectEmailTemplate
+                {
+                    Description = detailsViewModel.TemplateDescription?.Trim(),
+                    EmailBaseId = detailsViewModel.EmailBaseId,
+                    DirectEmailTemplateText = importTemplateText.Data,
+                });
+
+                ShowAlertSuccess($"Successfully created template: {detailsViewModel.TemplateDescription}");
+
+                return RedirectToAction(nameof(EditTemplate), new
+                {
+                    templateId = insertedId,
+                    languageId = detailsViewModel.LanguageId
+                });
+            }
+            catch (GraException gex)
+            {
+                insertProblem = gex.Message;
+            }
+
+            var issues = new StringBuilder("There were issues with your submission:<ul>");
+            if (!string.IsNullOrEmpty(insertProblem))
+            {
+                issues.Append("<li>").Append(insertProblem).AppendLine("</li>");
+            }
+            foreach (var key in ModelState.Keys)
+            {
+                issues.Append("<li>").Append(ModelState[key]).AppendLine("</li>");
+            }
+            issues.Append("</ul>");
+            ShowAlertWarning(issues.ToString());
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
