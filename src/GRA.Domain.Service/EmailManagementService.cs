@@ -220,9 +220,13 @@ namespace GRA.Domain.Service
             var currentTemplate = await _directEmailTemplateRepository
                 .GetWithTextByIdAsync(directEmailTemplateId, languageId);
 
-            if (currentTemplate == null)
+            if (currentTemplate.DirectEmailTemplateText == null)
             {
-                throw new GraException("Unable to find that template in the database.");
+                currentTemplate.DirectEmailTemplateText = new DirectEmailTemplateText
+                {
+                    DirectEmailTemplateId = directEmailTemplateId,
+                    LanguageId = languageId
+                };
             }
 
             currentTemplate.DirectEmailTemplateText.BodyCommonMark
