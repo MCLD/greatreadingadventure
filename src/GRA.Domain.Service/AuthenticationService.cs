@@ -144,7 +144,7 @@ namespace GRA.Domain.Service
                 {
                     result.Status = Models.ServiceResultStatus.Error;
                     result.Message = Annotations.Validate.EmailAddressInvalid;
-                    result.Arguments = new string[] { email };
+                    result.Arguments = new[] { email };
                 }
             }
 
@@ -238,7 +238,7 @@ namespace GRA.Domain.Service
                 {
                     result.Status = Models.ServiceResultStatus.Error;
                     result.Message = Annotations.Validate.AssociatedEmailAddressInvalid;
-                    result.Arguments = new string[] { username };
+                    result.Arguments = new[] { username };
                 }
             }
 
