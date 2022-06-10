@@ -507,6 +507,7 @@ namespace GRA.Domain.Service
                             }
                             catch (GraException)
                             {
+                                result = false;
                             }
 
                             if (result == true)
