@@ -496,17 +496,24 @@ namespace GRA.Domain.Service
                         if (vendorCodeType.ReadyForPickupEmailTemplateId.HasValue
                             && code.UserId.HasValue)
                         {
-                            var result = await SendPickupEmailAsync(
-                                vendorCodeType.ReadyForPickupEmailTemplateId.Value,
-                                code.UserId.Value,
-                                emailDetails,
-                                code);
+                            bool? result = null;
+                            try
+                            {
+                                result = await SendPickupEmailAsync(
+                                    vendorCodeType.ReadyForPickupEmailTemplateId.Value,
+                                    code.UserId.Value,
+                                    emailDetails,
+                                    code);
+                            }
+                            catch (GraException)
+                            {
+                            }
 
                             if (result == true)
                             {
                                 emailsSent++;
                             }
-                            else if (result == false)
+                            else
                             {
                                 emailErrors++;
                             }
@@ -1460,7 +1467,7 @@ namespace GRA.Domain.Service
                     {
                         sb.Append(", ").Append(donationCount).Append(" donations");
                     }
-                    if(undonationCount> 0)
+                    if (undonationCount > 0)
                     {
                         sb.Append(", ").Append(undonationCount).Append(" un-donations");
                     }
