@@ -78,6 +78,10 @@ namespace GRA.Data
 
         public DbSet<Model.Event> Events { get; set; }
 
+        public DbSet<Model.FeaturedChallengeGroup> FeaturedChallengeGroups { get; set; }
+
+        public DbSet<Model.FeaturedChallengeGroupText> FeaturedChallengeGroupTexts { get; set; }
+
         public DbSet<Model.GroupInfo> GroupInfos { get; set; }
 
         public DbSet<Model.GroupType> GroupTypes { get; set; }
@@ -268,6 +272,8 @@ namespace GRA.Data
                 .HasKey(_ => new { _.DrawingCriterionId, _.ProgramId });
             modelBuilder.Entity<Model.EmailUserLog>()
                 .HasKey(_ => new { _.UserId, _.EmailTemplateId });
+            modelBuilder.Entity<Model.FeaturedChallengeGroupText>()
+                .HasKey(_ => new { _.FeaturedChallengeGroupId, _.LanguageId });
             modelBuilder.Entity<Model.PsBackToBack>()
                 .HasKey(_ => new { _.PsAgeGroupId, _.BranchId });
             modelBuilder.Entity<Model.PsKitAgeGroup>()

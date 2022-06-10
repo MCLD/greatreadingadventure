@@ -1,0 +1,137 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Challenges.FeaturedGroupDetailsViewModel
+
+<form asp-controller="@ChallengesController.Name"
+      asp-action="@nameof(ChallengesController.FeaturedDetails)"
+      style="padding: 1em 0;"
+      method="post"
+      role="form"
+      enctype="multipart/form-data">
+    <input asp-for="NewFeaturedGroup" type="hidden" />
+    @if (!Model.NewFeaturedGroup)
+    {
+        <input asp-for="FeaturedGroup.Id" type="hidden" />
+    }
+
+    <div class="row">
+        <div class="col-xs-12">
+
+            <div class="form-group">
+                <label asp-for="FeaturedGroup.Name" class="control-label"></label>
+                <input asp-for="FeaturedGroup.Name" class="form-control" />
+                <span asp-validation-for="FeaturedGroup.Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="FeaturedGroup.ChallengeGroupId" class="control-label"></label>
+                <select asp-for="FeaturedGroup.ChallengeGroupId" asp-items="Model.ChallengeGroupList" class="form-control">
+                    <option></option>
+                </select>
+                <span asp-validation-for="FeaturedGroup.ChallengeGroupId" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 row-spacing">
+                    <label asp-for="FeaturedGroup.StartDate" class="control-label"></label>
+                    <div class="input-group date datetimePicker">
+                        <span class="input-group-addon">
+                            <span class="fas fa-calendar-alt"></span>
+                        </span>
+                        <input asp-for="FeaturedGroup.StartDate" type="text" class="form-control" />
+                    </div>
+                    <span asp-validation-for="FeaturedGroup.StartDate" class="text-danger"></span>
+                </div>
+
+                <div class="col-xs-12 col-sm-6 row-spacing">
+                    <label asp-for="FeaturedGroup.EndDate" class="control-label"></label>
+                    <div class="input-group date datetimePicker">
+                        <span class="input-group-addon">
+                            <span class="fas fa-calendar-alt"></span>
+                        </span>
+                        <input asp-for="FeaturedGroup.EndDate" type="text" class="form-control" />
+                    </div>
+                    <span asp-validation-for="FeaturedGroup.EndDate" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="UploadedImage" class="control-label"></label>
+                <div class="input-group">
+                    <label class="input-group-btn">
+                        <span class="btn btn-default btn-file">
+                            <span class="far fa-file-image"></span>
+                            Image file
+                            <input type="file"
+                                   asp-for="UploadedImage"
+                                   class="form-control"
+                                   accept=".jpg,.png"
+                                   style="display: none;" />
+                        </span>
+                    </label>
+                    <input type="text"
+                           class="form-control"
+                           readonly
+                           id="selectedFile" />
+                </div>
+                <span asp-validation-for="UploadedImage" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="FeaturedGroupText.AltText" class="control-label"></label>
+                <span class="fas fa-info-circle wide-tooltip"
+                      title="How should this image be described to someone who can't see it?"
+                      data-toggle="tooltip"
+                      data-placement="top"></span>
+                <textarea asp-for="FeaturedGroupText.AltText" class="form-control"></textarea>
+                <span asp-validation-for="FeaturedGroupText.AltText" class="text-danger"></span>
+            </div>
+
+            <div>
+                <a asp-action="@nameof(ChallengesController.FeaturedGroups)" class="btn btn-default">Return to List</a>
+                <button class="btn btn-primary btn-spinner" type="submit" button-spinner>
+                    <span class="fas fa-file-upload"></span>
+                    Upload and Create
+                </button>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+@section scripts {
+    <script>
+        $(".datetimePicker").datetimepicker({
+            format: "MM/DD/YYYY hh:mm A",
+            allowInputToggle: true,
+            sideBySide: true,
+            icons: {
+                time: "far fa-clock",
+                date: "fas fa-calendar-alt",
+                up: "fas fa-arrow-up",
+                down: "fas fa-arrow-down",
+                previous: "fas fa-arrow-left",
+                next: "fas fa-arrow-right"
+            }
+        });
+
+        $(':file').on('fileselect', function (event, numFiles, label) {
+            var input = $(this).parents('.input-group').find(':text'),
+                log = numFiles > 1 ? numFiles = ' files selected' : label;
+
+            if (input.length) {
+                input.val(log);
+                $('.btn-file').removeClass('btn-default').addClass('btn-success');
+            }
+            else {
+                input.val('');
+                $('.btn-file').addClass('btn-default').removeClass('btn-success');
+            }
+        });
+
+        $(document).on('change', ':file', function () {
+            var input = $(this),
+                numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+            input.trigger('fileselect', [numFiles, label]);
+        });
+    </script>
+}

@@ -55,6 +55,8 @@ namespace GRA.Data.Profile
             CreateMap<Model.Event, Domain.Model.Event>()
                 .ForMember(dest => dest.Challenge, opt => opt.Ignore())
                 .ForMember(dest => dest.ChallengeGroup, opt => opt.Ignore());
+            CreateMap<Model.FeaturedChallengeGroup, Domain.Model.FeaturedChallengeGroup>();
+            CreateMap<Model.FeaturedChallengeGroupText, Domain.Model.FeaturedChallengeGroupText>();
             CreateMap<Model.GroupInfo, Domain.Model.GroupInfo>();
             CreateMap<Model.GroupType, Domain.Model.GroupType>();
             CreateMap<Model.Job, Domain.Model.Job>();
@@ -154,6 +156,8 @@ namespace GRA.Data.Profile
             CreateMap<Domain.Model.EmailSubscriptionAuditLog, Model.EmailSubscriptionAuditLog>();
             CreateMap<Domain.Model.EmailTemplate, Model.EmailTemplate>();
             CreateMap<Domain.Model.Event, Model.Event>();
+            CreateMap<Domain.Model.FeaturedChallengeGroup, Model.FeaturedChallengeGroup>();
+            CreateMap<Domain.Model.FeaturedChallengeGroupText, Model.FeaturedChallengeGroupText>();
             CreateMap<Domain.Model.GroupInfo, Model.GroupInfo>();
             CreateMap<Domain.Model.GroupType, Model.GroupType>();
             CreateMap<Domain.Model.Job, Model.Job>();

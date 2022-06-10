@@ -18,13 +18,5 @@ namespace GRA.Data.Model
         public string Stub { get; set; }
 
         public virtual ICollection<ChallengeGroupChallenge> ChallengeGroupChallenges { get; set; }
-        public DateTime? FeatureStartDate { get; set; }
-        public DateTime? FeatureEndDate { get; set; }
-
-        [MaxLength(255)]
-        public string ImagePath { get; set; }
-
-        [MaxLength(255)]
-        public string AltText { get; set; }
     }
 }

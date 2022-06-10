@@ -27,6 +27,7 @@ namespace GRA.Domain.Model
         public const string ManageDailyLiteracyTips = "ManageDailyLiteracyTips";
         public const string ManageDashboardContent = "ManageDashboardContent";
         public const string ManageEvents = "ManageEvents";
+        public const string ManageFeaturedChallengeGroups = "ManageFeaturedChallengeGroups";
         public const string ManageGroupTypes = "ManageGroupTypes";
         public const string ManageLocations = "ManageLocations";
         public const string ManageNews = "ManageNews";

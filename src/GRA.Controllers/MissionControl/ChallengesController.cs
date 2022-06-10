@@ -32,6 +32,8 @@ namespace GRA.Controllers.MissionControl
         private readonly SiteService _siteService;
         private readonly UserService _userService;
 
+        public static string Name { get { return "Challenges"; } }
+
         public ChallengesController(ILogger<ChallengesController> logger,
             ServiceFacade.Controller context,
             BadgeService badgeService,
@@ -1243,5 +1245,172 @@ namespace GRA.Controllers.MissionControl
         }
 
         #endregion Challenge Group methods
+
+        #region Featured Challenge Group methods
+        public async Task<IActionResult> FeaturedGroups(int page = 1, bool active = false)
+        {
+            PageTitle = "Featured Groups";
+
+            var filter = new BaseFilter(page)
+            {
+                IsActive = active
+            };
+
+            var featuredGroupList = await _challengeService
+                .GetPaignatedFeaturedGroupListAsync(filter);
+
+            var paginateModel = new PaginateViewModel
+            {
+                ItemCount = featuredGroupList.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
+            };
+            if (paginateModel.PastMaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
+            }
+
+            var viewModel = new FeaturedGroupListViewModel
+            {
+                FeaturedGroups = featuredGroupList.Data,
+                PaginateModel = paginateModel,
+                CanManageFeaturedGroups = UserHasPermission(Permission.ManageFeaturedChallengeGroups),
+                ShowActive = active,
+                Now = _dateTimeProvider.Now
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Authorize(Policy = Policy.ManageFeaturedChallengeGroups)]
+        public async Task<JsonResult> FeaturedChangeSort(int id, bool increase, bool active)
+        {
+            JsonResponse response;
+
+            if (!UserHasPermission(Permission.ManageFeaturedChallengeGroups))
+            {
+                response = new JsonResponse
+                {
+                    Message = "Unauthorized",
+                    Success = false
+                };
+            }
+            else
+            {
+                try
+                {
+                    await _challengeService.UpdateFeaturedGroupSort(id, increase, active);
+
+                    response = new JsonResponse
+                    {
+                        Success = true
+                    };
+                }
+                catch (GraException gex)
+                {
+                    response = new JsonResponse
+                    {
+                        Message = gex.Message,
+                        Success = false
+                    };
+                }
+            }
+
+            return Json(response);
+        }
+
+        [Authorize(Policy = Policy.ManageFeaturedChallengeGroups)]
+        public async Task<IActionResult> FeaturedCreate()
+        {
+            PageTitle = "Create Featured Group";
+
+            var viewModel = new FeaturedGroupDetailsViewModel()
+            {
+                ChallengeGroupList = new SelectList(await _challengeService.GetGroupListAsync(),
+                    "Id",
+                    "Name"),
+                NewFeaturedGroup = true
+            };
+
+            return View(nameof(FeaturedDetails), viewModel);
+        }
+
+        [HttpPost]
+        [Authorize(Policy = Policy.ManageFeaturedChallengeGroups)]
+        public async Task<IActionResult> FeaturedDelete(int id)
+        {
+            return null;
+        }
+
+        [Authorize(Policy = Policy.ManageFeaturedChallengeGroups)]
+        public async Task<IActionResult> FeaturedDetails(int id)
+        {
+            return null;
+        }
+
+        [HttpPost]
+        [Authorize(Policy = Policy.ManageFeaturedChallengeGroups)]
+        public async Task<IActionResult> FeaturedDetails(FeaturedGroupDetailsViewModel model)
+        {
+            byte[] imageBytes = null;
+
+            if (model.NewFeaturedGroup)
+            {
+                if (model.UploadedImage == null)
+                {
+                    ModelState.AddModelError("UploadedImage", "Please attach an image to submit.");
+                }
+                else
+                {
+                    try
+                    {
+                        using var ms = new System.IO.MemoryStream();
+                        await model.UploadedImage.CopyToAsync(ms);
+                        imageBytes = ms.ToArray();
+                    }
+                    catch (Exception ex)
+                    {
+                        ModelState.AddModelError(nameof(model.UploadedImage), ex.Message);
+                    }
+                }
+            }
+
+            if (ModelState.IsValid)
+            {
+                FeaturedChallengeGroup featuredGroup;
+                if (model.NewFeaturedGroup)
+                {
+                    featuredGroup = await _challengeService.AddFeaturedGroupAsync(
+                        model.FeaturedGroup,
+                        model.FeaturedGroupText,
+                        imageBytes);
+
+                    ShowAlertSuccess($"Added featured challenge group '<strong>{featuredGroup.Name}</strong>'");
+                    return RedirectToAction(nameof(FeaturedDetails), new { id = featuredGroup.Id });
+                }
+
+            }
+
+            model.ChallengeGroupList = new SelectList(await _challengeService.GetGroupListAsync(),
+                    "Id",
+                    "Name");
+
+            if (model.NewFeaturedGroup)
+            {
+                PageTitle = "Create Featured Group";
+            }
+            else
+            {
+                PageTitle = "Edit Featured Group";
+            }
+
+            return View(model);
+        }
+        #endregion
     }
 }

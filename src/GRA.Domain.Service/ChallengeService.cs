@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using GRA.Abstract;
@@ -14,17 +15,22 @@ namespace GRA.Domain.Service
 {
     public class ChallengeService : BaseUserService<ChallengeService>
     {
+        private const string FeaturedFilesPath = "featuredchallenges";
         private const string TaskFilesPath = "tasks";
+
         private readonly IBadgeRepository _badgeRepository;
         private readonly IBranchRepository _branchRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IChallengeGroupRepository _challengeGroupRepository;
         private readonly IChallengeRepository _challengeRepository;
         private readonly IChallengeTaskRepository _challengeTaskRepository;
+        private readonly IFeaturedChallengeGroupRepository _featuredChallengeGroupRepository;
         private readonly IEventRepository _eventRepository;
         private readonly IPathResolver _pathResolver;
-        private readonly SiteLookupService _siteLookupService;
         private readonly ITriggerRepository _triggerRepository;
+        private readonly LanguageService _languageService;
+        private readonly SiteLookupService _siteLookupService;
+
 
         public ChallengeService(ILogger<ChallengeService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
@@ -36,9 +42,11 @@ namespace GRA.Domain.Service
             IChallengeGroupRepository challengeGroupRepository,
             IChallengeTaskRepository challengeTaskRepository,
             IEventRepository eventRepository,
+            IFeaturedChallengeGroupRepository featuredChallengeGroupRepository,
             IPathResolver pathResolver,
-            SiteLookupService siteLookupService,
-            ITriggerRepository triggerRepository)
+            ITriggerRepository triggerRepository,
+            LanguageService languageService,
+            SiteLookupService siteLookupService)
             : base(logger, dateTimeProvider, userContextProvider)
         {
             _badgeRepository = badgeRepository
@@ -55,11 +63,16 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(challengeTaskRepository));
             _eventRepository = eventRepository
                 ?? throw new ArgumentNullException(nameof(eventRepository));
+            _featuredChallengeGroupRepository = featuredChallengeGroupRepository
+                ?? throw new ArgumentNullException(nameof(featuredChallengeGroupRepository));
             _pathResolver = pathResolver ?? throw new ArgumentNullException(nameof(pathResolver));
-            _siteLookupService = siteLookupService
-                ?? throw new ArgumentNullException(nameof(siteLookupService));
+
             _triggerRepository = triggerRepository
                 ?? throw new ArgumentNullException(nameof(triggerRepository));
+            _languageService = languageService
+                ?? throw new ArgumentNullException(nameof(languageService));
+            _siteLookupService = siteLookupService
+                ?? throw new ArgumentNullException(nameof(siteLookupService));
         }
 
         public async Task ActivateChallengeAsync(Challenge challenge)
@@ -474,9 +487,11 @@ namespace GRA.Domain.Service
             };
         }
 
-        public async Task<List<ChallengeGroup>> GetActiveFeatureGroupsAsync()
+        public async Task<ICollection<ChallengeGroup>> GetGroupListAsync()
         {
-            return await _challengeGroupRepository.GetActiveFeatureGroupsAsync(GetCurrentSiteId());
+            VerifyPermission(Permission.ViewAllChallenges);
+
+            return await _challengeGroupRepository.GetAllAsync(GetCurrentSiteId());
         }
 
         public async Task<DataWithCount<IEnumerable<ChallengeGroup>>>
@@ -687,5 +702,127 @@ namespace GRA.Domain.Service
             System.IO.File.WriteAllBytes(fullFilePath, taskFile);
             return GetTaskUrlPath(filename);
         }
+
+        #region Featured Challenge Groups methods
+        public async Task<FeaturedChallengeGroup> AddFeaturedGroupAsync(
+            FeaturedChallengeGroup featuredGroup,
+            FeaturedChallengeGroupText featuredGroupText,
+            byte[] imageBytes)
+        {
+            VerifyPermission(Permission.ManageFeaturedChallengeGroups);
+
+            var siteId = GetCurrentSiteId();
+
+            featuredGroup.Name = featuredGroup.Name?.Trim();
+            featuredGroup.SiteId = siteId;
+
+            var maxSortOrder = await _featuredChallengeGroupRepository.GetMaxSortOrderAsync(siteId);
+            if (maxSortOrder.HasValue)
+            {
+                featuredGroup.SortOrder = maxSortOrder.Value + 1;
+            }
+
+            var addedFeaturedGroup = await _featuredChallengeGroupRepository.AddSaveAsync(
+                GetClaimId(ClaimType.UserId),
+                featuredGroup);
+
+            featuredGroupText.AltText = featuredGroupText.AltText?.Trim();
+            featuredGroupText.ImagePath = "blah";
+
+            await _featuredChallengeGroupRepository.AddTextAsnyc(featuredGroupText,
+                addedFeaturedGroup.Id,
+                await _languageService.GetDefaultLanguageIdAsync());
+            await _featuredChallengeGroupRepository.SaveAsync();
+
+            return addedFeaturedGroup;
+        }
+
+        public async Task<DataWithCount<IEnumerable<FeaturedChallengeGroup>>>
+            GetPaignatedFeaturedGroupListAsync(BaseFilter filter)
+        {
+            VerifyPermission(Permission.ViewAllChallenges);
+
+            filter.SiteId = GetCurrentSiteId();
+
+            return await _featuredChallengeGroupRepository.PageAsync(filter);
+        }
+
+        public async Task UpdateFeaturedGroupSort(int id, bool increase, bool active)
+        {
+            VerifyPermission(Permission.ManageFeaturedChallengeGroups);
+
+            int authUserId = GetClaimId(ClaimType.UserId);
+
+            var featuredGroup = await _featuredChallengeGroupRepository.GetByIdAsync(id);
+
+            var featuredGroupInPosition = await _featuredChallengeGroupRepository
+                .GetNextInOrderAsync(featuredGroup.SiteId, featuredGroup.SortOrder, increase, active);
+
+            if (featuredGroupInPosition == null)
+            {
+                _logger.LogError("Unable to update featured group sort for {id}, no featured group in new position (increase: {increase}, active: {active}).",
+                    id,
+                    increase,
+                    active);
+
+                throw new GraException("Unable to update featured group sort.");
+            }
+
+            if (active)
+            {
+                var inbetweenFeatureGroups = await _featuredChallengeGroupRepository
+                    .GetBetweenSortOrdersAsync(featuredGroup.SiteId,
+                        featuredGroup.SortOrder,
+                        featuredGroupInPosition.SortOrder);
+
+                foreach (var inbetweenFeatureGroup in inbetweenFeatureGroups)
+                {
+                    if (increase)
+                    {
+                        inbetweenFeatureGroup.SortOrder--;
+                    }
+                    else
+                    {
+                        inbetweenFeatureGroup.SortOrder++;
+                    }
+
+                    await _featuredChallengeGroupRepository.UpdateAsync(authUserId,
+                        inbetweenFeatureGroup);
+                }
+            }
+
+            featuredGroup.SortOrder = featuredGroupInPosition.SortOrder;
+
+            if (increase)
+            {
+                featuredGroupInPosition.SortOrder--;
+            }
+            else
+            {
+                featuredGroup.SortOrder++;
+            }
+
+            await _featuredChallengeGroupRepository.UpdateAsync(authUserId, featuredGroup);
+            await _featuredChallengeGroupRepository.UpdateAsync(authUserId, featuredGroupInPosition);
+
+            await _featuredChallengeGroupRepository.SaveAsync();
+        }
+
+        private string GetFeaturedFilePath(string filename)
+        {
+            string contentDir = _pathResolver.ResolveContentFilePath(Path.Combine(
+                $"site{GetCurrentSiteId()}",
+                FeaturedFilesPath));
+
+            System.IO.Directory.CreateDirectory(contentDir);
+
+            return System.IO.Path.Combine(contentDir, filename);
+        }
+
+        private string GetFeaturedUrlPath(string filename)
+        {
+            return $"site{GetCurrentSiteId()}/{FeaturedFilesPath}/{filename}";
+        }
+        #endregion
     }
 }

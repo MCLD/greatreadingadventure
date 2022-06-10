@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace GRA.Domain.Model
@@ -20,20 +18,5 @@ namespace GRA.Domain.Model
 
         public IEnumerable<int> ChallengeIds { get; set; }
         public ICollection<Challenge> Challenges { get; set; }
-
-        [DisplayName("Feature Start Date")]
-        public DateTime? FeatureStartDate { get; set; }
-
-        [DisplayName("Feature End Date")]
-        public DateTime? FeatureEndDate { get; set; }
-
-        [MaxLength(255)]
-        [Display(Name = "Image Path",
-            Description = "The image you will see in the featured challenge group's carousel.")]
-        public string ImagePath { get; set; }
-
-        [MaxLength(255)]
-        [DisplayName("Alternative Text")]
-        public string AltText { get; set; }
     }
 }

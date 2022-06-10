@@ -1,0 +1,228 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Challenges.FeaturedGroupListViewModel
+
+@await Html.PartialAsync("_ChallengeGroupsPartial")
+
+@if (Model.CanManageFeaturedGroups)
+{
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <a asp-action="@nameof(ChallengesController.FeaturedCreate)" class="btn btn-default">Add Featured Group</a>
+        </div>
+    </div>
+}
+
+<div class="row">
+    <div class="col-xs-12">
+        @if (Model.FeaturedGroups.Count() == 0)
+        {
+            <div class="alert alert-warning">No Featured Groups</div>
+        }
+        else
+        {
+            <div>
+                <table class="table table-condensed table-bordered @(Model.CanManageFeaturedGroups ? "link-table" : "table-striped")">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Active</th>
+                            @if (Model.CanManageFeaturedGroups)
+                            {
+                                <th>&nbsp;</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var featuredGroup in Model.FeaturedGroups)
+                        {
+                            <tr>
+                                <td class="td-class">
+                                    @if (Model.CanManageFeaturedGroups)
+                                    {
+                                        <a asp-action="@nameof(ChallengesController.FeaturedDetails)" asp-route-id="@featuredGroup.Id" class="rowlink">
+                                            @featuredGroup.Name
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        @featuredGroup.Name
+                                    }
+                                </td>
+                                <td>
+                                    <span class="fa colored-icon" @(featuredGroup.IsActive(Model.Now) ? "fa-check" : "fa-times")></span>
+                                </td>
+                                @if (Model.CanManageFeaturedGroups)
+                                {
+                                    <td class="on-top gra-mc-icon">
+                                        <button type="button"
+                                                data-id="@featuredGroup.Id"
+                                                data-increase="false"
+                                                class="btn btn-default btn-xs changeSort"
+                                                style="width:25px;"
+                                                disabled="@(Model.PaginateModel.CurrentPage == 1 && featuredGroup == Model.FeaturedGroups.First() ? " disabled" : null)">
+                                            <span class="fas fa-arrow-up"></span>
+                                        </button>
+                                        <button type="button"
+                                                data-id="@featuredGroup.Id"
+                                                data-increase="true"
+                                                class="btn btn-default btn-xs changeSort"
+                                                style="width:25px;"
+                                                disabled="@(Model.PaginateModel.CurrentPage == Model.PaginateModel.MaxPage && featuredGroup == Model.FeaturedGroups.Last() ? " disabled" : null)">
+                                            <span class="fas fa-arrow-down"></span>
+                                        </button>
+                                        <button type="button"
+                                                class="btn btn-danger btn-xs"
+                                                style="margin-left:16px;"
+                                                data-toggle="modal"
+                                                data-target="#deleteModal"
+                                                data-id="@featuredGroup.Id"
+                                                data-name="@featuredGroup.Name">
+                                            <span class="fas fa-times" aria-hidden="true"></span>
+                                        </button>
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            @if (Model.PaginateModel.MaxPage > 1)
+            {
+                <paginate paginateModel="@Model.PaginateModel"></paginate>
+            }
+        }
+    </div>
+</div>
+
+<div class="row">
+    <div class="modal fade"
+         id="deleteModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="deleteModalLabel">
+        <div class="modal-dialog" role="document">
+            <form asp-action="@nameof(ChallengesController.FeaturedDelete)"
+                  method="post"
+                  role="form"
+                  style="display: inline;">
+                <input asp-for="PaginateModel.CurrentPage" type="hidden" />
+                <input asp-for="ShowActive" type="hidden" />
+                <input asp-for="FeaturedGroup.Id" type="hidden" />
+                <input asp-for="FeaturedGroup.Name" type="hidden" />
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-label="Close dialog">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h1 class="modal-title h4" id="deleteModalLabel">Delete Featuring Group</h1>
+                    </div>
+                    <div class="modal-body">
+                        <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
+                        <span id="modal-text"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="btn btn-danger pull-right"
+                                aria-label="Confirm"
+                                button-spinner>
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    @if (Model.CanManageFeaturedGroups)
+    {
+        <script>
+            $("#deleteModal").on("show.bs.modal", function (e) {
+                var button = $(e.relatedTarget);
+                var id = button.data("id");
+                var name = button.data("name");
+                var modal = $(this);
+                modal.find("#modal-text").text("Are you sure you want to stop featuring the group \"" + name + "\'?");
+                modal.find("#FeaturedGroup_Id").val(id);
+                modal.find("#FeaturedGroup_Name").val(name);
+            });
+
+            $(window).on("load", function () {
+                $(".td-class").each(function () {
+                    $(this).children("a.rowlink").height($(this).height() + 11);
+                });
+            });
+            $(window).resize(function () {
+                $(".td-class").each(function () {
+                    $(this).children("a.rowlink").height($(this).height() + 11);
+                });
+            });
+
+            $(".changeSort").on("click", function () {
+                var button = $(this);
+                var id = button.data("id");
+                var increase = button.data("increase");
+                var icon = button.children("span");
+                if (icon.hasClass("fa-spinner") == false) {
+                    icon.removeClass("fa-arrow-up fa-arrow-down").addClass("fa-spinner fa-pulse");
+                    $.post("@Url.Action(nameof(ChallengesController.FeaturedChangeSort))",
+                        { id, increase },
+                        function (response) {
+                            icon.removeclass("fa-spinner fa-pulse");
+
+                            if (increase) {
+                                icon.addClass("fa-arrow-down")
+                            }
+                            else {
+                                icon.addclass("fa-arrow-up");
+                            }
+
+                            if (response.success) {
+                                var row = button.parent().parent();
+                                if (increase) {
+                                    var nextRow = row.next();
+                                    row.insertAfter(nextRow);
+
+                                    row.find(".changeSort[data-increase=\"false\"]").removeAttr("disabled");
+                                    if (row.next().length == 0) {
+                                        row.find(".changeSort[data-increase=\"true\"]").attr("disabled", "disabled");
+                                    }
+
+                                    nextRow.find(".changeSort[data-increase=\"true\"]").removeAttr("disabled");
+                                    if (nextRow.prev().length == 0) {
+                                        nextRow.find(".changeSort[data-increase=\"false\"]").attr("disabled", "disabled");
+                                    }
+                                }
+                                else {
+                                    var prevRow = row.prev();
+                                    row.insertBefore(prevRow);
+
+                                    row.find(".changeSort[data-increase=\"true\"]").removeAttr("disabled");
+                                    if (row.prev().length == 0) {
+                                        row.find(".changeSort[data-increase=\"false\"]").attr("disabled", "disabled");
+                                    }
+
+                                    prevRow.find(".changeSort[data-increase=\"false\"]").removeAttr("disabled");
+                                    if (prevRow.next().length == 0) {
+                                        prevRow.find(".changeSort[data-increase=\"true\"]").attr("disabled", "disabled");
+                                    }
+                                }
+                            }
+                            else {
+                                alert(response.message);
+                            }
+                    });
+                }
+            });
+        </script>
+    }
+}

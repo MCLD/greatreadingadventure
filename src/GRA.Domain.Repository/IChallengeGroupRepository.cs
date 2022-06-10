@@ -17,6 +17,6 @@ namespace GRA.Domain.Repository
         Task<ChallengeGroup> UpdateSaveAsync(int userId, ChallengeGroup challengeGroup,
             IEnumerable<int> challengesToAdd, IEnumerable<int> challengesToRemove);
         Task<bool> StubInUseAsync(int siteId, string stub);
-        Task<List<ChallengeGroup>> GetActiveFeatureGroupsAsync(int siteId);
+        Task<ICollection<ChallengeGroup>> GetAllAsync(int siteId);
     }
 }
