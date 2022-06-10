@@ -133,98 +133,95 @@
                     {
                         <li ActiveBy routeKey="Controller" value="VendorCodes">
                             <a asp-controller="VendorCodes"
-                               asp-action="ViewPackingSlip"
-                               title="Packing Slips"><span class="fas fa-file-invoice"></span><span class="visible-xs-inline"> Packing Slips</span></a>
+                           asp-action="ViewPackingSlip"
+                           title="Packing Slips"><span class="fas fa-file-invoice"></span><span class="visible-xs-inline"> Packing Slips</span></a>
                         </li>
                     }
-                    @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.ManageCarousels)) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageCategories.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageDashboardContent.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageGroupTypes.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.ManageNews)) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewUnpublishedPages.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManagePrograms.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageQuestionnaires.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageRoles.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSchools.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSites.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSystems.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSystems.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageVendorCodes.ToString()))
-                    {
-                        <li ActiveBy routeKey="Controller" value="Pages, Schools">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Setup"><span class="fas fa-wrench"></span><span class="visible-xs-inline"> Setup</span> <span class="caret"></span></a>
+                    <li ActiveBy routeKey="Controller" value="Pages, Schools">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Setup"><span class="fas fa-wrench"></span><span class="visible-xs-inline"> Setup</span> <span class="caret"></span></a>
 
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a asp-controller="Home" asp-action="AuthorizationCode">
-                                        Authorization code
-                                    </a>
-                                </li>
-                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.ManageCarousels)))
-                                {
-                                    <li><a asp-controller="Carousels" asp-action="Index">Carousel management</a></li>
-                                }
-                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageCategories.ToString()))
-                                {
-                                    <li><a asp-controller="Categories" asp-action="Index">Category management</a></li>
-                                }
-                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageDailyLiteracyTips.ToString()))
-                                {
-                                    <li><a asp-controller="DailyTips" asp-action="Index">Daily tip management</a></li>
-                                }
-                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageDashboardContent.ToString()))
-                                {
-                                    <li><a asp-controller="Dashboard" asp-action="Index">Dashboard Content management</a></li>
-                                }
-                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageBulkEmails.ToString()))
-                                {
-                                    <li><a asp-controller="EmailManagement" asp-action="Index">Email management</a></li>
-                                }
-                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageGroupTypes.ToString()))
-                                {
-                                    <li><a asp-controller="GroupTypes" asp-action="Index">Group Type management</a></li>
-                                }
-                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.ManageNews)))
-                                {
-                                    <li><a asp-controller="News" asp-action="Index">News management</a></li>
-                                }
-                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewUnpublishedPages.ToString()))
-                                {
-                                    <li><a asp-controller="Pages" asp-action="Index">Page management</a></li>
-                                }
-                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManagePerformers.ToString()))
-                                {
-                                    <li><a asp-controller="PerformerManagement" asp-action="Index">Performer management</a></li>
-                                }
-                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManagePrograms.ToString()))
-                                {
-                                    <li><a asp-controller="Programs" asp-action="Index">Program management</a></li>
-                                }
-                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageQuestionnaires.ToString()))
-                                {
-                                    <li><a asp-controller="Questionnaires" asp-action="Index">Questionnaire management</a></li>
-                                }
-                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageRoles.ToString()))
-                                {
-                                    <li><a asp-controller="Roles" asp-action="Index">Role management</a></li>
-                                }
-                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSchools.ToString()))
-                                {
-                                    <li><a asp-controller="Schools" asp-action="Index">School management</a></li>
-                                }
-                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSites.ToString()))
-                                {
-                                    <li><a asp-controller="Sites" asp-action="Index">Site management</a></li>
-                                }
-                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSocial.ToString()))
-                                {
-                                    <li><a asp-controller="Social" asp-action="Index">Social management</a></li>
-                                }
-                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSystems.ToString()))
-                                {
-                                    <li><a asp-controller="Systems" asp-action="Index">System &amp; branch management</a></li>
-                                }
-                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageVendorCodes.ToString()))
-                                {
-                                    <li><a asp-controller="VendorCodes" asp-action="Index">Vendor code management</a></li>
-                                }
-                                <li>
-                                    <a asp-controller="SystemInformation" asp-action="Index">
-                                        <span class="fas fa-info-circle"></span>
-                                        System information
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    }
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a asp-controller="Home" asp-action="AuthorizationCode">
+                                    Authorization code
+                                </a>
+                            </li>
+                            @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.ManageCarousels)))
+                            {
+                                <li><a asp-controller="Carousels" asp-action="Index">Carousel management</a></li>
+                            }
+                            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageCategories.ToString()))
+                            {
+                                <li><a asp-controller="Categories" asp-action="Index">Category management</a></li>
+                            }
+                            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageDailyLiteracyTips.ToString()))
+                            {
+                                <li><a asp-controller="DailyTips" asp-action="Index">Daily tip management</a></li>
+                            }
+                            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageDashboardContent.ToString()))
+                            {
+                                <li><a asp-controller="Dashboard" asp-action="Index">Dashboard Content management</a></li>
+                            }
+                            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageBulkEmails.ToString()))
+                            {
+                                <li><a asp-controller="EmailManagement" asp-action="Index">Email management</a></li>
+                            }
+                            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageGroupTypes.ToString()))
+                            {
+                                <li><a asp-controller="GroupTypes" asp-action="Index">Group Type management</a></li>
+                            }
+                            @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.ManageNews)))
+                            {
+                                <li><a asp-controller="News" asp-action="Index">News management</a></li>
+                            }
+                            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewUnpublishedPages.ToString()))
+                            {
+                                <li><a asp-controller="Pages" asp-action="Index">Page management</a></li>
+                            }
+                            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManagePerformers.ToString()))
+                            {
+                                <li><a asp-controller="PerformerManagement" asp-action="Index">Performer management</a></li>
+                            }
+                            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManagePrograms.ToString()))
+                            {
+                                <li><a asp-controller="Programs" asp-action="Index">Program management</a></li>
+                            }
+                            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageQuestionnaires.ToString()))
+                            {
+                                <li><a asp-controller="Questionnaires" asp-action="Index">Questionnaire management</a></li>
+                            }
+                            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageRoles.ToString()))
+                            {
+                                <li><a asp-controller="Roles" asp-action="Index">Role management</a></li>
+                            }
+                            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSchools.ToString()))
+                            {
+                                <li><a asp-controller="Schools" asp-action="Index">School management</a></li>
+                            }
+                            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSites.ToString()))
+                            {
+                                <li><a asp-controller="Sites" asp-action="Index">Site management</a></li>
+                            }
+                            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSocial.ToString()))
+                            {
+                                <li><a asp-controller="Social" asp-action="Index">Social management</a></li>
+                            }
+                            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSystems.ToString()))
+                            {
+                                <li><a asp-controller="Systems" asp-action="Index">System &amp; branch management</a></li>
+                            }
+                            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageVendorCodes.ToString()))
+                            {
+                                <li><a asp-controller="VendorCodes" asp-action="Index">Vendor code management</a></li>
+                            }
+                            <li>
+                                <a asp-controller="SystemInformation" asp-action="Index">
+                                    <span class="fas fa-info-circle"></span>
+                                    System information
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                     <li><a asp-controller="Home" asp-action="Signout" asp-area="">Sign out</a></li>
                 </ul>
             </div>
@@ -307,30 +304,30 @@
     @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.ReadAllMail)))
     {
         <script>
-            var mcMailUpdateEvery = 300 * 1000;
-            function updateUnreadMailCount(updateInterval) {
-                var mcMailInterval = setInterval(function () {
-                    $.ajax("@Url.Action("GetUnreadMailCount", "Home", new { area = "MissionControl" })")
-                        .done(function (data, textStatus, jqXHR) {
-                            if (data === 0) {
-                                $(".mc-mail-icon").removeClass("text-danger");
-                                $(".mc-mail-incoming-count").hide();
-                                $(".mc-mail-incoming-count").text("0");
-                            } else {
-                                $(".mc-mail-icon").addClass("text-danger");
-                                $(".mc-mail-incoming-count").text(data);
-                                $(".mc-mail-incoming-count").show();
-                            }
-                        })
-                        .fail(function (jqXHR, textStatus, errorThrown) {
-                            console.log("Failure: " + textStatus + " on unread mail count, stopping updates");
-                            clearInterval(mcMailInterval);
-                        });
-                }, updateInterval);
-         }
-        $().ready(function() {
-            updateUnreadMailCount(mcMailUpdateEvery);
-        });
+                var mcMailUpdateEvery = 300 * 1000;
+                function updateUnreadMailCount(updateInterval) {
+                    var mcMailInterval = setInterval(function () {
+                        $.ajax("@Url.Action("GetUnreadMailCount", "Home", new { area = "MissionControl" })")
+                            .done(function (data, textStatus, jqXHR) {
+                                if (data === 0) {
+                                    $(".mc-mail-icon").removeClass("text-danger");
+                                    $(".mc-mail-incoming-count").hide();
+                                    $(".mc-mail-incoming-count").text("0");
+                                } else {
+                                    $(".mc-mail-icon").addClass("text-danger");
+                                    $(".mc-mail-incoming-count").text(data);
+                                    $(".mc-mail-incoming-count").show();
+                                }
+                            })
+                            .fail(function (jqXHR, textStatus, errorThrown) {
+                                console.log("Failure: " + textStatus + " on unread mail count, stopping updates");
+                                clearInterval(mcMailInterval);
+                            });
+                    }, updateInterval);
+             }
+            $().ready(function() {
+                updateUnreadMailCount(mcMailUpdateEvery);
+            });
         </script>
     }
 

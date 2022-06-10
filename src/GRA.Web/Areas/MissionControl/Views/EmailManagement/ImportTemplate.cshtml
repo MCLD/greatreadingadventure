@@ -1,0 +1,142 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.EmailManagement.DetailsViewModel
+@{
+    var invalid = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid;
+}
+
+@section Styles {
+    <style>
+        .d-none {
+            display: none;
+        }
+    </style>
+}
+
+    <form asp-action="@Model.Action"
+      id="uploadTemplate"
+      method="post"
+      role="form"
+      enctype="multipart/form-data"
+      style="padding-top:10px;">
+        <input asp-for="LanguageId" type="hidden" />
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <label asp-for="TemplateDescription" class="control-label"></label>
+                    <description gra-description-for="TemplateDescription"></description>
+                    <input asp-for="TemplateDescription" class="form-control" />
+                    <span asp-validation-for="TemplateDescription" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="EmailBaseId" class="control-label"></label>
+                    <description gra-description-for="EmailBaseId"></description>
+                    <select class="form-control" asp-for="EmailBaseId">
+                        @foreach (var emailBase in Model.EmailBases.Where(_ => !_.Disabled))
+                    {
+                        <option value="@emailBase.Value">@emailBase.Text</option>
+                    }
+                </select>
+                <span asp-validation-for="EmailBaseId" class="text-danger"></span>
+            </div>
+
+            @if (Model.Languages.Count() > 1)
+            {
+                <div class="form-group">
+                    <label asp-for="LanguageId" class="control-label"></label><br>
+                    <description gra-description-for="LanguageId"></description><br>
+                    @foreach (var item in Model.Languages)
+                    {
+                        @if (item.Disabled)
+                        {
+                            <button disabled
+                        title="You must first create the template in the default language"
+                        class="btn btn-sm btn-default mt-1">
+                                @item.Text
+                            </button>
+                        }
+                        else
+                        {
+                            if (Model.Action == nameof(EmailManagementController.EditTemplate))
+                            {
+                                <a href="@Url.Action(Model.Action, new { templateId = Model.EmailTemplateId, languageId = item.Value })"
+                   class="btn btn-sm btn-default mt-1 @(item.Selected ? "active" : null)">@item.Text</a>
+                            }
+                            else
+                            {
+                                <button disabled
+                        title="You must first create the template in the default language"
+                        class="btn btn-sm btn-default mt-1 @(item.Selected ? "active" : null)">
+                                    @item.Text
+                                </button>
+                            }
+                        }
+                    }
+                </div>
+            }
+
+            <div class="form-group">
+                <label asp-for="UploadedFile">Upload a .json file with the template content.</label>
+                <div class="input-group">
+                    <label class="input-group-btn">
+                        <span class="btn btn-default btn-file">
+                            <span class="far fa-file-image"></span>
+                            Select a .json file
+                            <input type="file"
+                                   asp-for="UploadedFile"
+                                   class="form-control"
+                                   accept=".json"
+                                   style="display: none;" />
+                        </span>
+                    </label>
+                    <input type="text"
+                           class="form-control"
+                           readonly
+                           id="selectedFile"
+                           @(ViewData.ModelState.GetValidationState("UploadedFile") == invalid ? "input-validation-error" : "")>
+                </div>
+                <span asp-validation-for="UploadedFile" class="text-danger"></span>
+            </div>
+
+            <button type="submit"
+                    id="Submit"
+                    name="Submit"
+                    value="Submit"
+                    class="btn btn-primary btn-spinner gra-save-button"
+                    button-spinner>
+                <span class="buttonText">Upload and Save Template</span>
+            </button>
+        </div>
+    </div>
+</form>
+
+@section scripts {
+    <script>
+        $(function() {
+            $(':file').on('fileselect', function(event, numFiles, label) {
+                var input = $(this).parents('.input-group').find(':text'),
+                    log = numFiles > 1 ? numFiles = ' files selected' : label;
+
+                if (input.length) {
+                    input.val(log);
+                    $('.btn-file').removeClass('btn-default');
+                    $('.btn-file').addClass('btn-success');
+                    $("#badgeImage").removeAttr("src");
+                    $("#badgeImage").height(200);
+                    $("#BadgeMakerImage").val("");
+                }
+                else {
+                    input.val('');
+                    $('.btn-file').addClass('btn-default');
+                    $('.btn-file').removeClass('btn-success');
+                }
+            });
+
+            $(document).on('change', ':file', function() {
+                var input = $(this),
+                    numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                    label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+                input.trigger('fileselect', [numFiles, label]);
+            });
+        });
+    </script>
+    }

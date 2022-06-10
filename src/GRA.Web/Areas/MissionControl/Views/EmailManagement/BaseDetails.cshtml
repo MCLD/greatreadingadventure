@@ -1,0 +1,239 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.EmailManagement.BaseDetailsViewModel
+
+@{
+    var invalid = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid;
+}
+
+@section Styles {
+<style>
+    .d-none {
+        display: none;
+    }
+</style>
+}
+
+<form asp-action="@Model.Action"
+      id="updateBaseTemplate"
+      method="post"
+      role="form"
+      enctype="multipart/form-data"
+      style="padding-top:10px;">
+    <input asp-for="Action" type="hidden" />
+    <input asp-for="LanguageId" type="hidden" />
+    @if (Model.Action == nameof(EmailManagementController.EditBaseTemplate))
+    {
+        <input asp-for="EmailBaseId" type="hidden" />
+    }
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            @if (Model.Languages?.Count() > 1)
+            {
+                <div class="form-group">
+                    <label asp-for="LanguageId" class="control-label"></label><br>
+                    <description gra-description-for="LanguageId"></description><br>
+                    @foreach (var item in Model.Languages)
+                    {
+                        @if (item.Disabled)
+                        {
+                            <button disabled
+                        title="You must first create the template in the default language"
+                        class="btn btn-sm btn-default mt-1">
+                                @item.Text
+                            </button>
+                        }
+                        else
+                        {
+                            if (Model.Action == nameof(EmailManagementController.EditBaseTemplate))
+                            {
+                                <a href="@Url.Action(Model.Action, new { emailBaseId = Model.EmailBaseId, languageId = item.Value })"
+                   class="btn btn-sm btn-default mt-1 @(item.Selected ? "active" : null)">@item.Text</a>
+                            }
+                            else
+                            {
+                                <button disabled
+                        title="You must first create the template in the default language"
+                        class="btn btn-sm btn-default mt-1 @(item.Selected ? "active" : null)">
+                                    @item.Text
+                                </button>
+                            }
+                        }
+                    }
+                </div>
+                <div class="row d-none gra-save-warning">
+                    <div class="offset-md-3 col-md-9">
+                        <div class="alert alert-warning">
+                            <span class="fas fa-arrow-circle-up"></span>
+                            Unsaved changes will be lost if you change languages.
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <hr />
+
+            <div class="form-group">
+                <label asp-for="TemplateMjml" class="control-label"></label>
+                <description gra-description-for="TemplateMjml"></description>
+                <textarea asp-for="TemplateMjml" class="form-control" rows="8"></textarea>
+                <span asp-validation-for="TemplateMjml" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TemplateHtml" class="control-label"></label>
+                <textarea asp-for="TemplateHtml" class="form-control" rows="8"></textarea>
+                <span asp-validation-for="TemplateHtml" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TemplateText" class="control-label"></label>
+                <textarea asp-for="TemplateText" class="form-control" rows="8"></textarea>
+                <span asp-validation-for="TemplateText" class="text-danger"></span>
+            </div>
+
+            @if (Model.Action == nameof(EmailManagementController.EditBaseTemplate))
+            {
+                <div class="form-group">
+                    <button type="button"
+                        data-toggle="modal"
+                        data-target="#importModal"
+                        class="btn btn-default">
+                        <span class="fas fa-file-upload"></span>
+                        Import
+                    </button>
+                    <a asp-action="@nameof(EmailManagementController.ExportBaseText)"
+                   class="btn btn-default"
+                   asp-route-emailBaseId="@Model.EmailBaseId"
+                   asp-route-languageId="@Model.LanguageId">
+                        <span class="fas fa-file-download"></span>
+                        Export
+                    </a>
+                </div>
+            }
+
+            <div class="form-group">
+                <a asp-action="BaseIndex" class="btn btn-default">Return to List</a>
+                <button type="submit"
+                        id="Submit"
+                        name="Submit"
+                        value="Submit"
+                        class="btn btn-primary btn-spinner gra-save-button"
+                        button-spinner>
+                    <span class="buttonText">Save Base Template</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="modal fade"
+     id="importModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="importModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form asp-action="@nameof(EmailManagementController.ImportBaseText)"
+                  method="post"
+                  role="form"
+                  enctype="multipart/form-data"
+                  style="display:inline">
+                <input asp-for="LanguageId" type="hidden" />
+                <input asp-for="EmailBaseId" type="hidden" />
+                <div class="modal-header">
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close dialog">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h1 class="modal-title h4" id="sendTestModalHeader">Import Base Template</h1>
+                </div>
+                <div class="modal-body">
+                    <p>Upload a .json file to replace the content of the selected template and language.</p>
+                    <div class="input-group">
+                        <label class="input-group-btn">
+                            <span class="btn btn-default btn-file">
+                                <span class="far fa-file-image"></span>
+                                Select a .json file
+                                <input type="file"
+                                       asp-for="UploadedFile"
+                                       class="form-control"
+                                       accept=".json"
+                                       style="display: none;" />
+                            </span>
+                        </label>
+                        <input type="text"
+                               class="form-control"
+                               readonly
+                               id="selectedFile"
+                               @(ViewData.ModelState.GetValidationState("UploadedFile") == invalid ? "input-validation-error" : "")>
+                    </div>
+                    <span asp-validation-for="UploadedFile" class="text-danger"></span>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-default"
+                            type="button"
+                            data-dismiss="modal"
+                            style="margin-right: 1em;">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="btn btn-primary pull-right"
+                            aria-label="Confirm">
+                        Upload and replace
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section scripts {
+<script>
+    function showSaveWarning() {
+        if($('.gra-save-warning')) {
+            $('.gra-save-warning').removeClass('d-none');
+        }
+        if($('.gra-save-button')) {
+            $('.gra-save-button').removeClass('btn-primary').addClass('btn-success');
+        }
+    }
+
+    $('input.form-control').keydown(showSaveWarning);
+    $('textarea.form-control').keydown(showSaveWarning);
+
+    $(':file').on('fileselect', function (event, numFiles, label) {
+        var input = $(this).parents('.input-group').find(':text'),
+            log = numFiles > 1 ? numFiles = ' files selected' : label;
+
+        if (input.length) {
+            input.val(log);
+            $('.btn-file').removeClass('btn-default');
+            $('.btn-file').addClass('btn-success');
+            $("#badgeImage").removeAttr("src");
+            $("#badgeImage").height(200);
+            $("#BadgeMakerImage").val("");
+        }
+        else {
+            input.val('');
+            $('.btn-file').addClass('btn-default');
+            $('.btn-file').removeClass('btn-success');
+        }
+    });
+
+    $(document).on('change', ':file', function () {
+        var input = $(this),
+            numFiles = input.get(0).files ? input.get(0).files.length : 1,
+            label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+        input.trigger('fileselect', [numFiles, label]);
+    });
+</script>
+    }

@@ -16,7 +16,7 @@ namespace GRA.Data.SqlServer.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.13")
+                .HasAnnotation("ProductVersion", "5.0.16")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("GRA.Data.Model.Answer", b =>
@@ -934,6 +934,161 @@ namespace GRA.Data.SqlServer.Migrations
                     b.ToTable("DashboardContents");
                 });
 
+            modelBuilder.Entity("GRA.Data.Model.DirectEmailHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("BodyHtml")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BodyText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DirectEmailTemplateId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FromEmailAddress")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("FromName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<bool>("IsBulk")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("LanguageId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("OverrideToEmailAddress")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("SentResponse")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<bool>("Successful")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ToEmailAddress")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("ToName")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("DirectEmailHistories");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.DirectEmailTemplate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<int>("EmailBaseId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EmailsSent")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("SentBulk")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SystemEmailId")
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmailBaseId");
+
+                    b.ToTable("DirectEmailTemplates");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.DirectEmailTemplateText", b =>
+                {
+                    b.Property<int>("DirectEmailTemplateId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LanguageId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("BodyCommonMark")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Footer")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Preview")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.HasKey("DirectEmailTemplateId", "LanguageId");
+
+                    b.HasIndex("LanguageId");
+
+                    b.ToTable("DirectEmailTemplateTexts");
+                });
+
             modelBuilder.Entity("GRA.Data.Model.Drawing", b =>
                 {
                     b.Property<int>("Id")
@@ -1065,6 +1220,62 @@ namespace GRA.Data.SqlServer.Migrations
                     b.ToTable("DrawingCriterionPrograms");
                 });
 
+            modelBuilder.Entity("GRA.Data.Model.EmailBase", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EmailBases");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.EmailBaseText", b =>
+                {
+                    b.Property<int>("EmailBaseId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LanguageId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TemplateHtml")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TemplateMjml")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TemplateText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("EmailBaseId", "LanguageId");
+
+                    b.HasIndex("LanguageId");
+
+                    b.ToTable("EmailBaseTexts");
+                });
+
             modelBuilder.Entity("GRA.Data.Model.EmailReminder", b =>
                 {
                     b.Property<int>("Id")
@@ -1081,6 +1292,9 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("LanguageId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("SentAt")
                         .HasColumnType("datetime2");
@@ -1124,79 +1338,6 @@ namespace GRA.Data.SqlServer.Migrations
                     b.HasIndex("CreatedBy");
 
                     b.ToTable("EmailSubscriptionAuditLogs");
-                });
-
-            modelBuilder.Entity("GRA.Data.Model.EmailTemplate", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("BodyHtml")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("BodyText")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<int>("EmailsSent")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FromAddress")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("FromName")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<int>("SiteId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Subject")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("EmailTemplates");
-                });
-
-            modelBuilder.Entity("GRA.Data.Model.EmailUserLog", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("EmailTemplateId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("EmailAddress")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("SentAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("UserId", "EmailTemplateId");
-
-                    b.HasIndex("EmailTemplateId", "EmailAddress")
-                        .IsUnique();
-
-                    b.ToTable("EmailUserLogs");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Event", b =>
@@ -3799,10 +3940,19 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<DateTime?>("EmailSentAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool?>("IsDamaged")
+                        .HasColumnType("bit");
+
                     b.Property<bool?>("IsDonated")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsDonationLocked")
+                        .HasColumnType("bit");
+
                     b.Property<bool?>("IsEmailAward")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("IsMissing")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsUsed")
@@ -3933,6 +4083,9 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Property<string>("OptionSubject")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
+
+                    b.Property<int?>("ReadyForPickupEmailTemplateId")
+                        .HasColumnType("int");
 
                     b.Property<int>("SiteId")
                         .HasColumnType("int");
@@ -4163,6 +4316,46 @@ namespace GRA.Data.SqlServer.Migrations
                     b.Navigation("DailyLiteracyTip");
                 });
 
+            modelBuilder.Entity("GRA.Data.Model.DirectEmailHistory", b =>
+                {
+                    b.HasOne("GRA.Data.Model.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.DirectEmailTemplate", b =>
+                {
+                    b.HasOne("GRA.Data.Model.EmailBase", "EmailBase")
+                        .WithMany()
+                        .HasForeignKey("EmailBaseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("EmailBase");
+                });
+
+            modelBuilder.Entity("GRA.Data.Model.DirectEmailTemplateText", b =>
+                {
+                    b.HasOne("GRA.Data.Model.DirectEmailTemplate", "DirectEmailTemplate")
+                        .WithMany()
+                        .HasForeignKey("DirectEmailTemplateId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("GRA.Data.Model.Language", "Language")
+                        .WithMany()
+                        .HasForeignKey("LanguageId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("DirectEmailTemplate");
+
+                    b.Navigation("Language");
+                });
+
             modelBuilder.Entity("GRA.Data.Model.Drawing", b =>
                 {
                     b.HasOne("GRA.Data.Model.DrawingCriterion", "DrawingCriterion")
@@ -4200,6 +4393,25 @@ namespace GRA.Data.SqlServer.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("GRA.Data.Model.EmailBaseText", b =>
+                {
+                    b.HasOne("GRA.Data.Model.EmailBase", "EmailBase")
+                        .WithMany()
+                        .HasForeignKey("EmailBaseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("GRA.Data.Model.Language", "Language")
+                        .WithMany()
+                        .HasForeignKey("LanguageId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("EmailBase");
+
+                    b.Navigation("Language");
+                });
+
             modelBuilder.Entity("GRA.Data.Model.EmailSubscriptionAuditLog", b =>
                 {
                     b.HasOne("GRA.Data.Model.User", "CreatedByUser")
@@ -4209,25 +4421,6 @@ namespace GRA.Data.SqlServer.Migrations
                         .IsRequired();
 
                     b.Navigation("CreatedByUser");
-                });
-
-            modelBuilder.Entity("GRA.Data.Model.EmailUserLog", b =>
-                {
-                    b.HasOne("GRA.Data.Model.EmailTemplate", "EmailTemplate")
-                        .WithMany()
-                        .HasForeignKey("EmailTemplateId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("GRA.Data.Model.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("EmailTemplate");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GRA.Data.Model.Event", b =>

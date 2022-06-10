@@ -94,6 +94,13 @@ namespace GRA.Controllers.Base
         protected string PageTitle { get; set; }
         protected string PageTitleHtml { get; set; }
 
+        public static SelectList GetSelectList(IDictionary<int, string> items)
+        {
+            return items?.Count > 0
+                ? new SelectList(items, "Key", "Value")
+                : null;
+        }
+
         public IActionResult Error()
         {
             return View();
@@ -144,25 +151,6 @@ namespace GRA.Controllers.Base
             ViewData[ViewDataKey.TitleHtml] = PageTitleHtml;
         }
 
-        /// <summary>
-        /// Construct a drop-down list with a blank (default) option along with No and Yes options.
-        /// </summary>
-        /// <returns>A SelectList with empty, No, and Yes options. Keys are
-        /// <see cref="DropDownFalseValue"/> for no and <see cref="DropDownTrueValue"/> for yes.
-        /// </returns>
-        protected SelectList EmptyNoYes()
-        {
-            return new SelectList(new Dictionary<string, string>
-            {
-                {string.Empty, string.Empty},
-                {DropDownFalseValue, _sharedLocalizer[GRA.Annotations.Interface.No] },
-                {DropDownTrueValue, _sharedLocalizer[GRA.Annotations.Interface.Yes] }
-            },
-            "Key",
-            "Value",
-            string.Empty);
-        }
-
         protected static string FormatMessage(GraException gex)
         {
             if (gex == null)
@@ -184,6 +172,30 @@ namespace GRA.Controllers.Base
                 return formatted.ToString();
             }
             return gex.Message;
+        }
+
+        protected static SelectList NameIdSelectList(System.Collections.IEnumerable listData)
+        {
+            return new SelectList(listData, "Id", "Name");
+        }
+
+        /// <summary>
+        /// Construct a drop-down list with a blank (default) option along with No and Yes options.
+        /// </summary>
+        /// <returns>A SelectList with empty, No, and Yes options. Keys are
+        /// <see cref="DropDownFalseValue"/> for no and <see cref="DropDownTrueValue"/> for yes.
+        /// </returns>
+        protected SelectList EmptyNoYes()
+        {
+            return new SelectList(new Dictionary<string, string>
+            {
+                {string.Empty, string.Empty},
+                {DropDownFalseValue, _sharedLocalizer[GRA.Annotations.Interface.No] },
+                {DropDownTrueValue, _sharedLocalizer[GRA.Annotations.Interface.Yes] }
+            },
+            "Key",
+            "Value",
+            string.Empty);
         }
 
         protected int GetActiveUserId()
@@ -267,11 +279,6 @@ namespace GRA.Controllers.Base
             }
 
             return LoginUserInternalAsync(authResult);
-        }
-
-        protected static SelectList NameIdSelectList(System.Collections.IEnumerable listData)
-        {
-            return new SelectList(listData, "Id", "Name");
         }
 
         protected IActionResult RedirectToSignIn()

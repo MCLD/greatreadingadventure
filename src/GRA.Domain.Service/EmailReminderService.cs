@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
+using GRA.Domain.Model.Utility;
 using GRA.Domain.Repository;
 using Microsoft.Extensions.Logging;
 
@@ -13,15 +13,22 @@ namespace GRA.Domain.Service
     public class EmailReminderService : Abstract.BaseService<EmailReminderService>
     {
         private readonly IEmailReminderRepository _emailReminderRepository;
+        private readonly LanguageService _languageService;
+
         public EmailReminderService(ILogger<EmailReminderService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
-            IEmailReminderRepository emailReminderRepository) : base(logger, dateTimeProvider)
+            IEmailReminderRepository emailReminderRepository,
+            LanguageService languageService) : base(logger, dateTimeProvider)
         {
-            _emailReminderRepository = emailReminderRepository 
+            _emailReminderRepository = emailReminderRepository
                 ?? throw new ArgumentNullException(nameof(emailReminderRepository));
+            _languageService = languageService 
+                ?? throw new ArgumentNullException(nameof(languageService));
         }
 
-        public async Task AddEmailReminderAsync(string email, string signUpSource)
+        public async Task AddEmailReminderAsync(string email,
+            string signUpSource,
+            int languageId)
         {
             if (string.IsNullOrEmpty(email))
             {
@@ -39,41 +46,37 @@ namespace GRA.Domain.Service
                 {
                     CreatedAt = _dateTimeProvider.Now,
                     Email = email,
+                    LanguageId = languageId,
                     SignUpSource = signUpSource
                 });
             }
         }
 
-        public async Task<bool> ImportEmailToListAsync(int userId,
-            Model.EmailReminder emailReminder)
+        public async Task<IEnumerable<EmailReminderExport>> ExportSubscribersAsync(string signUpSource)
         {
-            if (string.IsNullOrEmpty(emailReminder.Email))
+            var subscribers = await _emailReminderRepository
+                .GetAllListSubscribersAsync(signUpSource);
+
+            var languages = (await _languageService.GetActiveAsync())
+                .ToDictionary(k => k.Id, v => v.Name);
+
+            return subscribers.Select(_ => new
+            EmailReminderExport
             {
-                throw new ArgumentNullException(nameof(emailReminder.Email));
-            }
-            if (string.IsNullOrEmpty(emailReminder.SignUpSource))
-            {
-                throw new ArgumentNullException(nameof(emailReminder.SignUpSource));
-            }
-            var alreadySubscribed = await _emailReminderRepository
-                .ExistsEmailSourceAsync(emailReminder.Email, emailReminder.SignUpSource);
-            if (!alreadySubscribed)
-            {
-                await _emailReminderRepository.AddAsync(userId,
-                    new EmailReminder
-                    {
-                        CreatedAt = emailReminder.CreatedAt,
-                        Email = emailReminder.Email,
-                        SignUpSource = emailReminder.SignUpSource
-                    });
-                return true;
-            }
-            return false;
+                CreatedAt = _.CreatedAt,
+                Email = _.Email,
+                LanguageName = _.LanguageId.HasValue ? languages[_.LanguageId.Value] : null,
+                SignUpSource = _.SignUpSource
+            });
         }
 
-        public async Task SaveImportAsync()
+        public async Task<ICollection<EmailReminder>>
+            GetSubscribersAsync(EmailReminderFilter filter)
         {
-            await _emailReminderRepository.SaveAsync();
+            return await _emailReminderRepository
+                    .GetListSubscribersAsync(filter.MailingList,
+                filter.Skip ?? 0,
+                filter.Take ?? 30);
         }
 
         public async Task<DataWithCount<ICollection<EmailReminder>>>
@@ -87,34 +90,43 @@ namespace GRA.Domain.Service
             };
         }
 
-        public async Task<ICollection<EmailReminder>>
-            GetSubscribersAsync(EmailReminderFilter filter)
+        public async Task<bool> ImportEmailToListAsync(int userId, EmailReminder emailReminder)
         {
-            return await _emailReminderRepository
-                    .GetListSubscribersAsync(filter.MailingList,
-                filter.Skip ?? 0,
-                filter.Take ?? 30);
-        }
+            if(emailReminder == null)
+            {
+                throw new ArgumentNullException(nameof(emailReminder));
+            }
 
-        public async Task UpdateSentDateAsync(int emailReminderId)
-        {
-            await _emailReminderRepository.UpdateSentDateAsync(emailReminderId);
+            var alreadySubscribed = await _emailReminderRepository
+                .ExistsEmailSourceAsync(emailReminder.Email, emailReminder.SignUpSource);
+            if (!alreadySubscribed)
+            {
+                await _emailReminderRepository.AddAsync(userId,
+                    new EmailReminder
+                    {
+                        CreatedAt = emailReminder.CreatedAt,
+                        Email = emailReminder.Email,
+                        LanguageId = emailReminder.LanguageId,
+                        SignUpSource = emailReminder.SignUpSource
+                    });
+                return true;
+            }
+            return false;
         }
 
         public async Task SaveAsync()
         {
             await _emailReminderRepository.SaveAsync();
         }
-        public async Task<IEnumerable> GetAllSubscribersAsync(string signUpSource)
+
+        public async Task SaveImportAsync()
         {
-            var subscribers = await _emailReminderRepository
-                .GetAllListSubscribersAsync(signUpSource);
-            return subscribers.Select(_ => new
-            {
-                _.SignUpSource,
-                _.Email,
-                _.CreatedAt
-            });
+            await _emailReminderRepository.SaveAsync();
+        }
+
+        public async Task UpdateSentDateAsync(int emailReminderId)
+        {
+            await _emailReminderRepository.UpdateSentDateAsync(emailReminderId);
         }
     }
 }

@@ -14,6 +14,7 @@
             public const string Read20 = "Reading for 20 minutes a day helps build a strong lifelong reading habit.";
             public const string ReadingIsFundamental = "Reading is fundamental for developing literacy skills!";
             public const string RemindMe = "Remind Me!";
+            public const string SignInAgain = "Sign in again";
             public const string StartAdventure = "Join to get started on your reading adventure!";
             public const string StartsSoon = "Our program starts soon but you can join now to be ready to go when the program starts!";
             public const string StillSignIn = "You can still sign in to review your history and achievements.";
@@ -71,6 +72,9 @@
             public const string UpgradeToGroupDescription = "It appears that you have more than {0} members in your family. We'd like you to convert your family to a group in order to add more members.";
             public const string UsernameIsAvailable = "That username is available!";
             public const string UsernameListSent = "A list of usernames associated with the email address '{0}' has been sent.";
+            public const string VendorItemArrived = "<em>{0}</em> arrived on <strong>{1}</strong> and is ready for pick-up.";
+            public const string VendorItemOrdered = "<em>{0}</em> ordered on <strong>{1}</strong>.";
+            public const string VendorItemShipped = "<em>{0}</em> shipped on <strong>{1}</strong>.";
             public const string YouCanJoinOn = "You can join {0} on {1}.";
         }
 
@@ -121,6 +125,7 @@
             public const string EnterAddressOrZipCode = "Enter an address or ZIP code";
             public const string EnterChallengeSearch = "Enter text to search for a challenge here";
             public const string EnterEventSearch = "Enter text to search for an event here";
+            public const string EmailDefaultFooter = "You are receiving this email because you are subscribed for updates from {{Sitename}}. You can [instantly unsubscribe at any time]({{UnsubscribeLink}})";
             public const string EventHasEnded = "This streaming event has ended.";
             public const string EventNotFound = "Could not find the requested event.";
             public const string EventNotStarted = "This streaming event has not started yet.";

@@ -7,8 +7,6 @@ namespace GRA.Domain.Repository
 {
     public interface IUserRepository : IRepository<User>
     {
-        Task AddBulkEmailLogAsync(int userId, int emailTemplateId, string emailAddress);
-
         Task AddRoleAsync(int currentUserId, int userId, int roleId);
 
         Task<AuthenticationResult> AuthenticateUserAsync(
@@ -34,6 +32,8 @@ namespace GRA.Domain.Repository
 
         Task<int> GetFirstTimeCountAsync(ReportCriterion request);
 
+        Task<string> GetFullNameByIdAsync(int userId);
+
         Task<IEnumerable<User>> GetHouseholdAsync(int householdHeadUserId);
 
         Task<int> GetHouseholdCountAsync(int householdHeadUserId);
@@ -42,6 +42,8 @@ namespace GRA.Domain.Repository
             int headId, int? drawingId, int? triggerId);
 
         Task<IEnumerable<int>> GetNewsSubscribedUserIdsAsync(int siteId);
+
+        Task<IDictionary<string, int>> GetSubscribedLanguageCountAsync(string unspecifiedString);
 
         Task<int> GetSystemUserId();
 
@@ -59,7 +61,7 @@ namespace GRA.Domain.Repository
 
         Task<DataWithCount<ICollection<User>>> GetUsersInRoleAsync(int roleId, BaseFilter filter);
 
-        Task<bool> HasReceivedBulkEmailAsync(int emailTemplateId, string emailAddress);
+        Task<bool> IsAnyoneSubscribedAsync();
 
         Task<bool> IsEmailSubscribedAsync(string email);
 
@@ -74,8 +76,7 @@ namespace GRA.Domain.Repository
 
         Task<bool> UnsubscribeTokenExists(int siteId, string token);
 
-        Task UpdateUserRolesAsync(
-                                                                                    int currentUserId,
+        Task UpdateUserRolesAsync(int currentUserId,
             int userId,
             IEnumerable<int> rolesToAdd,
             IEnumerable<int> rolesToRemove);

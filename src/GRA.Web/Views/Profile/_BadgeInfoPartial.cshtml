@@ -21,6 +21,13 @@
 </div>
 <div class="row" style="margin-top: 1rem;">
     <div class="col-xs-12">
-        <p style="margin-bottom: 0;"><em>@SharedLocalizer[GRA.Annotations.Info.EarnedOn, Model.UserLog.CreatedAt.ToShortDateString()]</em></p>
+        @if (Model?.UserLog?.CreatedAt != null)
+        {
+            <p style="margin-bottom: 0;"><em>@SharedLocalizer[GRA.Annotations.Info.EarnedOn, Model.UserLog.CreatedAt.ToShortDateString()]</em></p>
+        }
+        else
+        {
+            <p style="margin-bottom: 0;">&nbsp;</p>
+        }
     </div>
 </div>

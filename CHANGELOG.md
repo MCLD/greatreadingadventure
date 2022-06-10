@@ -14,12 +14,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Remaining vendor prize report
 - Vendor code by program report
 - Challenge sorting options (most recent, most popular)
+- Packing slip functionality for checking item status on arrival
+- Sign in again button on exit pages when the program is running
+- Site setting to show secret codes on the streaming event pages
+- Ability to configure minimum worker threads and completion port threads
 
 ### Changed
 
 - Hide avatar bundle icon if no bundles are available
 - Reduce streaming video caching on dashboard to 15 minutes
 - Order streaming videos on dashboard by start date descending (newest at the top)
+- Vendor item status display on participants profile
+- Show wrench menu to all who have Mission Control access
 
 ### Fixed
 
@@ -31,10 +37,26 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Performer view selections button being visible for non-approved performers
 - Fix bug binding performer archiving and streaming choices
 - Hide branch selection in performer scheduling when no branches are available
+- Mission Control error if a user who posted a news post was deleted
+- Show friendly message when invalid image type is uploaded
+- Unify email sending to use a single process with logging
+- Allow Mission Control editing of email templates
+- Add email internationalization
+- Show error if user tries to log in as another user that they cannot
+- Log error if initial user email check fails
+- Show friendly error when geolocation fails
+- Bug with avatar translated text display error
+- Check for null viewmodel on some posts
+- Bug with empty username in UsernameInUseAsync
+- Allow deletion of events even if participants have favorited them
 
 ### Updated
 
 - Package references
+
+### Removed
+
+- GRA.CommandLine project
 
 ## [4.2.1] - 2021-10-14
 

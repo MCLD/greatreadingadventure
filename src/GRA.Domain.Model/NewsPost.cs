@@ -24,6 +24,7 @@ namespace GRA.Domain.Model
 
         [DisplayName("Brief summary of this post to include in emails")]
         [MaxLength(255)]
+        [Required]
         public string EmailSummary { get; set; }
     }
 }

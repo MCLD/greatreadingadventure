@@ -29,6 +29,7 @@ namespace GRA.Controllers
         private readonly EmailManagementService _emailManagementService;
         private readonly EmailReminderService _emailReminderService;
         private readonly EventService _eventService;
+        private readonly LanguageService _languageService;
         private readonly ILogger<HomeController> _logger;
         private readonly PerformerSchedulingService _performerSchedulingService;
         private readonly SiteService _siteService;
@@ -46,6 +47,7 @@ namespace GRA.Controllers
             EmailManagementService emailManagementService,
             EmailReminderService emailReminderService,
             EventService eventService,
+            LanguageService languageService,
             PerformerSchedulingService performerSchedulingService,
             SiteService siteService,
             SocialService socialService,
@@ -70,6 +72,8 @@ namespace GRA.Controllers
                 ?? throw new ArgumentNullException(nameof(emailReminderService));
             _eventService = eventService
                 ?? throw new ArgumentNullException(nameof(eventService));
+            _languageService = languageService
+                ?? throw new ArgumentNullException(nameof(languageService));
             _performerSchedulingService = performerSchedulingService
                 ?? throw new ArgumentNullException(nameof(performerSchedulingService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
@@ -88,8 +92,13 @@ namespace GRA.Controllers
         {
             if (!string.IsNullOrEmpty(viewModel.Email))
             {
+                var currentCultureName = _userContextProvider.GetCurrentCulture()?.Name;
+                var currentLanguageId = await _languageService
+                    .GetLanguageIdAsync(currentCultureName);
                 await _emailReminderService
-                    .AddEmailReminderAsync(viewModel.Email, viewModel.SignUpSource);
+                    .AddEmailReminderAsync(viewModel.Email,
+                    viewModel.SignUpSource,
+                    currentLanguageId);
                 ShowAlertInfo(_sharedLocalizer[Annotations.Info.LetYouKnowWhen], "envelope");
             }
             return RedirectToAction(nameof(Index));
@@ -187,6 +196,8 @@ namespace GRA.Controllers
                     return RedirectToAction(nameof(SignOut));
                 }
 
+                await _vendorCodeService.PopulateVendorCodeStatusAsync(user);
+
                 var userLogs = await _userService.GetPaginatedUserHistoryAsync(user.Id,
                     new UserLogFilter(take: BadgesToDisplay)
                     {
@@ -202,8 +213,7 @@ namespace GRA.Controllers
                 var pointTranslation = await _activityService.GetUserPointTranslationAsync();
                 var viewModel = new DashboardViewModel
                 {
-                    FirstName = user.FirstName,
-                    CurrentPointTotal = user.PointsEarned,
+                    User = user,
                     SingleEvent = pointTranslation.IsSingleEvent,
                     ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural,
                     UserLogs = userLogs.Data,
@@ -352,7 +362,13 @@ namespace GRA.Controllers
         [HttpPost]
         public async Task<IActionResult> LogActivity(DashboardViewModel viewModel)
         {
+            if(viewModel == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             bool valid = true;
+
             if (!viewModel.SingleEvent
                 && (viewModel.ActivityAmount == null || viewModel.ActivityAmount <= 0))
             {
@@ -360,6 +376,7 @@ namespace GRA.Controllers
                 TempData[ActivityErrorMessage]
                     = _sharedLocalizer[Annotations.Validate.WholeNumber].Value;
             }
+
             if (!ModelState.IsValid)
             {
                 valid = false;
@@ -376,6 +393,7 @@ namespace GRA.Controllers
                         .ErrorMessage;
                 }
             }
+
             if (string.IsNullOrWhiteSpace(viewModel.Title)
                 && !string.IsNullOrWhiteSpace(viewModel.Author))
             {
@@ -383,6 +401,7 @@ namespace GRA.Controllers
                 TempData[TitleErrorMessage]
                     = _sharedLocalizer[Annotations.Validate.BookTitle].Value;
             }
+
             if (!valid)
             {
                 TempData[ModelData] = Newtonsoft.Json.JsonConvert.SerializeObject(viewModel);

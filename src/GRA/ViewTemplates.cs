@@ -6,17 +6,17 @@ namespace GRA
 {
     public static class ViewTemplates
     {
-        public static readonly string Dashboard = "Dashboard";
         public static readonly string AccessClosed = "IndexAccessClosed";
-        public static readonly string ExitAccessClosed = "ExitAccessClosed";
         public static readonly string BeforeRegistration = "IndexBeforeRegistration";
+        public static readonly string Dashboard = "Dashboard";
+        public static readonly string ExitAccessClosed = "ExitAccessClosed";
         public static readonly string ExitBeforeRegistration = "ExitBeforeRegistration";
-        public static readonly string ProgramEnded = "IndexProgramEnded";
         public static readonly string ExitProgramEnded = "ExitProgramEnded";
-        public static readonly string ProgramOpen = "IndexProgramOpen";
         public static readonly string ExitProgramOpen = "ExitProgramOpen";
-        public static readonly string RegistrationOpen = "IndexRegistrationOpen";
         public static readonly string ExitRegistrationOpen = "ExitRegistrationOpen";
+        public static readonly string ProgramEnded = "IndexProgramEnded";
+        public static readonly string ProgramOpen = "IndexProgramOpen";
+        public static readonly string RegistrationOpen = "IndexRegistrationOpen";
 
         public static void CopyToShared(string contentRoot, Serilog.ILogger logger)
         {
@@ -52,9 +52,7 @@ namespace GRA
                 }
             }
 
-            var viewPath = Path.Combine(contentRoot,
-                "Views",
-                "Home");
+            var viewPath = Path.Combine(contentRoot, "Views", "Home");
             templatePath = Path.Combine(templatePath, "Home");
 
             Directory.CreateDirectory(templatePath);
@@ -118,8 +116,7 @@ namespace GRA
             {
                 foreach (var filePath in Directory.EnumerateFiles(defaultImagesPath, "*.*"))
                 {
-                    var contentPathFile = Path.Combine(contentPath,
-                        Path.GetFileName(filePath));
+                    var contentPathFile = Path.Combine(contentPath, Path.GetFileName(filePath));
                     if (!File.Exists(contentPathFile))
                     {
                         try

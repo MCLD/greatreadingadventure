@@ -29,6 +29,7 @@ namespace GRA.Controllers.MissionControl
         private const string NoAccess = "You do not have access to vendor codes.";
 
         private readonly ILogger _logger;
+        private readonly EmailManagementService _emailManagementService;
         private readonly JobService _jobService;
         private readonly UserService _userService;
         private readonly VendorCodeService _vendorCodeService;
@@ -37,12 +38,15 @@ namespace GRA.Controllers.MissionControl
 
         public VendorCodesController(ServiceFacade.Controller context,
             ILogger<VendorCodesController> logger,
+            EmailManagementService emailManagementService,
             JobService jobService,
             UserService userService,
             VendorCodeService vendorCodeService)
             : base(context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _emailManagementService = emailManagementService
+                ?? throw new ArgumentNullException(nameof(emailManagementService));
             _jobService = jobService ?? throw new ArgumentNullException(nameof(jobService));
             _vendorCodeService = vendorCodeService
                 ?? throw new ArgumentNullException(nameof(vendorCodeService));
@@ -153,6 +157,8 @@ namespace GRA.Controllers.MissionControl
 
                 string file = WebUtility.UrlEncode(Path.GetFileName(tempFile));
 
+                var site = await GetCurrentSiteAsync();
+
                 var jobToken = await _jobService.CreateJobAsync(new Job
                 {
                     JobType = JobType.UpdateVendorStatus,
@@ -160,7 +166,8 @@ namespace GRA.Controllers.MissionControl
                         .SerializeObject(new JobDetailsVendorCodeStatus
                         {
                             VendorCodeTypeId = vendorCodeTypeId,
-                            Filename = file
+                            Filename = file,
+                            SiteName = site.Name
                         })
                 });
 
@@ -402,6 +409,8 @@ namespace GRA.Controllers.MissionControl
 
                 string file = WebUtility.UrlEncode(Path.GetFileName(tempFile));
 
+                var site = await GetCurrentSiteAsync();
+
                 var jobToken = await _jobService.CreateJobAsync(new Job
                 {
                     JobType = JobType.UpdateEmailAwardStatus,
@@ -409,7 +418,8 @@ namespace GRA.Controllers.MissionControl
                         .SerializeObject(new JobDetailsVendorCodeStatus
                         {
                             VendorCodeTypeId = vendorCodeTypeId,
-                            Filename = file
+                            Filename = file,
+                            SiteName = site.Name
                         })
                 });
 
@@ -434,10 +444,15 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Configure()
         {
             var vendorCodeType = await _vendorCodeService.GetTypeAllAsync();
-            return View("Configure", vendorCodeType?.FirstOrDefault() ?? new VendorCodeType
+
+            var viewModel = vendorCodeType?.FirstOrDefault() ?? new VendorCodeType
             {
                 SiteId = GetCurrentSiteId()
-            });
+            };
+
+            viewModel.DirectEmailTemplates = await _emailManagementService.GetUserTemplatesAsync();
+
+            return View("Configure", viewModel);
         }
 
         [HttpPost]
@@ -452,6 +467,9 @@ namespace GRA.Controllers.MissionControl
 
             if (!ModelState.IsValid)
             {
+                vendorCodeType.DirectEmailTemplates = await _emailManagementService
+                    .GetUserTemplatesAsync();
+
                 return View("Configure", vendorCodeType);
             }
 
@@ -568,8 +586,6 @@ namespace GRA.Controllers.MissionControl
 
             var summary = await _vendorCodeService.VerifyPackingSlipAsync(id);
             summary.CanViewDetails = UserHasPermission(Permission.ViewParticipantDetails);
-            summary.CanReceivePackingSlips = UserHasPermission(Permission.ReceivePackingSlips)
-                || UserHasPermission(Permission.ManageVendorCodes);
 
             if (summary.VendorCodes.Count > 0 || summary.VendorCodePackingSlip != null)
             {
@@ -586,6 +602,8 @@ namespace GRA.Controllers.MissionControl
                 {
                     var vendorCodeType = await _vendorCodeService
                         .GetTypeById(summary.VendorCodes.First().VendorCodeTypeId);
+                    summary.CanBeReceived = UserHasPermission(Permission.ReceivePackingSlips)
+                        || UserHasPermission(Permission.ManageVendorCodes);
                     summary.SubmitText = vendorCodeType.AwardPrizeOnPackingSlip
                         ? "Mark as received and award prizes"
                         : "Mark as received";
@@ -613,7 +631,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public async Task<IActionResult> ProcessPackingSlip(long packingSlipNumber)
+        public async Task<IActionResult> ProcessPackingSlip(PackingSlipSummary summary)
         {
             if (!UserHasPermission(Permission.ManageVendorCodes)
                && !UserHasPermission(Permission.ReceivePackingSlips))
@@ -621,15 +639,16 @@ namespace GRA.Controllers.MissionControl
                 return RedirectNotAuthorized(NoAccess);
             }
 
-            if (packingSlipNumber == 0)
+            if (summary.PackingSlipNumber == 0)
             {
                 AlertWarning = "Please enter a valid packing slip number.";
-                return View("EnterPackingSlip", packingSlipNumber);
+                return View("EnterPackingSlip", summary.PackingSlipNumber);
             }
 
-            var summary = await _vendorCodeService.VerifyPackingSlipAsync(packingSlipNumber);
-            summary.CanViewDetails = UserHasPermission(Permission.ViewParticipantDetails);
-            summary.CanReceivePackingSlips = UserHasPermission(Permission.ReceivePackingSlips);
+            var damagedItems = summary.DamagedItems;
+            var missingItems = summary.MissingItems;
+
+            summary = await _vendorCodeService.VerifyPackingSlipAsync(summary.PackingSlipNumber);
 
             if (summary.VendorCodes.Count > 0 || summary.VendorCodePackingSlip != null)
             {
@@ -638,17 +657,24 @@ namespace GRA.Controllers.MissionControl
                     var enteredBy = await _userService
                         .GetDetails(summary.VendorCodePackingSlip.CreatedBy);
                     ShowAlertWarning($"This packing slip was already received on {summary.VendorCodePackingSlip.CreatedAt} by {enteredBy.FullName}.");
+
+                    summary.CanViewDetails = UserHasPermission(Permission.ViewParticipantDetails);
+
                     return View("ViewPackingSlip", summary);
                 }
                 else
                 {
+                    var currentSite = await GetCurrentSiteAsync();
                     var jobToken = await _jobService.CreateJobAsync(new Job
                     {
                         JobType = JobType.ReceivePackingSlip,
                         SerializedParameters = JsonConvert.SerializeObject(
                         new JobDetailsReceivePackingSlip
                         {
-                            PackingSlipNumber = packingSlipNumber
+                            SiteName = currentSite.Name,
+                            PackingSlipNumber = summary.PackingSlipNumber,
+                            DamagedItems = damagedItems,
+                            MissingItems = missingItems
                         })
                     });
 
@@ -664,8 +690,8 @@ namespace GRA.Controllers.MissionControl
                 }
             }
 
-            ShowAlertDanger($"Could not find packing slip number {packingSlipNumber}, please contact your administrator.");
-            return View("EnterPackingSlip", packingSlipNumber);
+            ShowAlertDanger($"Could not find packing slip number {summary.PackingSlipNumber}, please contact your administrator.");
+            return View("EnterPackingSlip", summary.PackingSlipNumber);
         }
 
         #region Spreadsheet utility methods

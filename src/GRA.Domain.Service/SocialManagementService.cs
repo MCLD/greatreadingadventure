@@ -8,7 +8,6 @@ using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Service
@@ -17,7 +16,7 @@ namespace GRA.Domain.Service
     {
         private const string SocialPath = "social";
 
-        private readonly IDistributedCache _cache;
+        private readonly IGraCache _cache;
         private readonly LanguageService _languageService;
         private readonly IPathResolver _pathResolver;
         private readonly ISocialHeaderRepository _socialHeaderRepository;
@@ -25,7 +24,7 @@ namespace GRA.Domain.Service
 
         public SocialManagementService(ILogger<SocialManagementService> logger,
            IDateTimeProvider dateTimeProvider,
-           IDistributedCache cache,
+           IGraCache cache,
            IPathResolver pathResolver,
            IUserContextProvider userContextProvider,
            ISocialHeaderRepository socialHeaderRepository,

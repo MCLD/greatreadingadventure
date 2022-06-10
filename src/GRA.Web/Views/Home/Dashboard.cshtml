@@ -23,7 +23,37 @@
         </div>
     </div>
 }
-
+else if (Model.User.VendorOrderStatus > VendorOrderStatus.Pending && Model.User.VendorOrderStatus < VendorOrderStatus.Receieved)
+{
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row" style="margin-bottom: 1.5em;">
+                        <div class="col-xs-12 col-md-8 col-md-push-2">
+                            <div class="row">
+                                <div class="col-xs-4 text-center">
+                                    <span class="fas fa-shopping-cart fa-2x @(Model.User.VendorOrderStatus == VendorOrderStatus.Ordered ? "active-status-color" : "inactive-status-color")"></span>
+                                </div>
+                                <div class="col-xs-4 text-center">
+                                    <span class="fas fa-shipping-fast fa-2x @(Model.User.VendorOrderStatus == VendorOrderStatus.Shipped ? "active-status-color" : "inactive-status-color")"></span>
+                                </div>
+                                <div class="col-xs-4 text-center">
+                                    <span class="fas fa-box fa-2x @(Model.User.VendorOrderStatus == VendorOrderStatus.Arrived ? "active-status-color" : "inactive-status-color")"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            @Html.Raw(Model.User.VendorCodeMessage)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 <div class="row" style="font-size: larger;">
     <div class="col-sm-3 text-center">
         @if (Model.SiteStage != GRA.Domain.Model.SiteStage.BeforeRegistration)
@@ -54,7 +84,7 @@
                     </a>
                 </p>
                 <div class="dashboard-activity">
-                    <p style="font-size: x-large;">@SharedHtmlLocalizer["You have <strong>{0}</strong> points.", Model.CurrentPointTotal]</p>
+                    <p style="font-size: x-large;">@SharedHtmlLocalizer["You have <strong>{0}</strong> points.", Model.User.PointsEarned]</p>
                     <p><a asp-controller="Profile" asp-action="History">@SharedLocalizer["See your activity history."]</a></p>
                     @if (Model.TotalProgramGoal.HasValue)
                     {
@@ -84,10 +114,10 @@
     <div class="col-sm-6">
         <div class="panel panel-default">
             <div class="panel-body text-center">
-                <span class="lead">@SharedHtmlLocalizer["Welcome <strong>{0}!</strong>", Model.FirstName]</span>
+                <span class="lead">@SharedHtmlLocalizer["Welcome <strong>{0}!</strong>", Model.User.FirstName]</span>
                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessPerformerRegistration))
-              && !Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessMissionControl))
-              && Model.SiteStage == GRA.Domain.Model.SiteStage.BeforeRegistration)
+                    && !Context.User.HasClaim(GRA.ClaimType.Permission, nameof(GRA.Domain.Model.Permission.AccessMissionControl))
+                    && Model.SiteStage == GRA.Domain.Model.SiteStage.BeforeRegistration)
                 {
                     <p class="lead" style="padding-top: 2rem;">
                         Welcome, performer! Please click on the theater masks icon at the top of the
@@ -110,10 +140,9 @@
                 }
             </div>
         </div>
-
         @if (Model.SiteStage == GRA.Domain.Model.SiteStage.ProgramOpen)
         {
-            @if (Model.SingleEvent)
+            if (Model.SingleEvent)
             {
                 <div class="panel panel-default">
                     <div class="panel-body">
@@ -192,7 +221,7 @@
                     </div>
                 </div>
             }
-            @if (!Model.DisableSecretCode)
+            if (!Model.DisableSecretCode)
             {
                 <div class="panel panel-default">
                     <div class="panel-body">
@@ -282,7 +311,6 @@
                                     </div>
                                 }
                                 display++;
-
                                 if (display >= 6)
                                 {
                                     <div class="col-xs-12 visible-lg visible-md visible-xs">
@@ -309,7 +337,7 @@
                     </div>
                 </div>
             </div>
-            @if (!string.IsNullOrWhiteSpace(Model.DailyImageMessage))
+            if (!string.IsNullOrWhiteSpace(Model.DailyImageMessage))
             {
                 <div class="panel panel-default">
                     <div class="panel-body text-center">
@@ -331,7 +359,6 @@
             @:&nbsp;
         }
     </div>
-
     @if (Model.UpcomingStreams?.Count() > 0)
     {
         <div class="col-sm-3 text-center">
@@ -357,7 +384,6 @@
         </div>
     }
 </div>
-
 @if (!string.IsNullOrWhiteSpace(Model.DashboardPageContent))
 {
     <div class="row visible-xs">
@@ -370,7 +396,6 @@
         </div>
     </div>
 }
-
 @if (Model.Carousel != null)
 {
     <div class="sr-only">
@@ -419,7 +444,6 @@
         </div>
     </div>
 }
-
 @if (Model.Carousel != null)
 {
     <div class="row">
@@ -450,7 +474,6 @@
         </div>
     </div>
 }
-
 @if (!string.IsNullOrWhiteSpace(Model.DailyImageMessage))
 {
     <div class="row">
@@ -479,7 +502,6 @@
         </div>
     </div>
 }
-
 @if (Model.UserLogs?.Count() > 0)
 {
     <div class="modal fade"
@@ -513,7 +535,6 @@
         </div>
     </div>
 }
-
 @section scripts {
     <script>
             @if (!string.IsNullOrWhiteSpace(Model.DailyImageMessage))

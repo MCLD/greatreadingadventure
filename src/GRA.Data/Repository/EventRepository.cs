@@ -160,6 +160,19 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
+        public async Task<string> GetSecretCodeForStreamingEventAsync(int eventId)
+        {
+            return await DbSet
+                .Where(_ => _.IsStreaming && _.RelatedTriggerId.HasValue && _.Id == eventId)
+                .Join(_context.Triggers,
+                    graEvent => graEvent.RelatedTriggerId,
+                    trigger => trigger.Id,
+                    (_, trigger) => trigger)
+                .AsNoTracking()
+                .Select(_ => _.SecretCode)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<IEnumerable<int>> GetUserFavoriteEvents(int userId,
             IEnumerable<int> eventIds = null)
         {
@@ -252,6 +265,22 @@ namespace GRA.Data.Repository
             return await eventQuery.ApplyPagination(filter)
                 .ProjectTo<Event>(_mapper.ConfigurationProvider)
                 .ToListAsync();
+        }
+
+        public async Task<int> RemoveFavoritesAsync(int eventId)
+        {
+            var favorites = await _context
+                .UserFavoriteEvents
+                .AsNoTracking()
+                .Where(_ => _.EventId == eventId)
+                .ToListAsync();
+
+            int favoriteCount = favorites.Count;
+
+            _context.UserFavoriteEvents.RemoveRange(favorites);
+            await _context.SaveChangesAsync();
+
+            return favoriteCount;
         }
 
         public async Task UpdateUserFavoritesAsync(int authUserId, int userId,

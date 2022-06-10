@@ -23,14 +23,12 @@ namespace GRA.Controllers
         public const string VisitedNo = "No";
         public const string VisitedYes = "Yes";
 
-        private readonly ILogger<EventsController> _logger;
         private readonly ActivityService _activityService;
         private readonly EventService _eventService;
+        private readonly ILogger<EventsController> _logger;
         private readonly SiteService _siteService;
         private readonly SpatialService _spatialService;
         private readonly UserService _userService;
-
-        public static string Name { get { return "Events"; } }
 
         public EventsController(ILogger<EventsController> logger,
             ServiceFacade.Controller context,
@@ -51,6 +49,9 @@ namespace GRA.Controllers
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             PageTitle = _sharedLocalizer[Annotations.Title.Events];
         }
+
+        public static string Name
+        { get { return "Events"; } }
 
         public async Task<IActionResult> CommunityExperiences(int page = 1,
             string sort = null,
@@ -86,18 +87,8 @@ namespace GRA.Controllers
                 Status,
                 EventType.CommunityExperience);
         }
-        public async Task<IActionResult> StreamingEvents(int page = 1,
-            string sort = null,
-            string search = null,
-            string near = null,
-            int? system = null,
-            int? branch = null,
-            int? location = null,
-            int? program = null,
-            string StartDate = null,
-            string EndDate = null,
-            bool Favorites = false,
-            string Status = null)
+
+        public async Task<IActionResult> Detail(int id)
         {
             var site = await GetCurrentSiteAsync();
             if (!string.IsNullOrEmpty(site.ExternalEventListUrl))
@@ -105,20 +96,81 @@ namespace GRA.Controllers
                 return new RedirectResult(site.ExternalEventListUrl);
             }
 
-            PageTitle = _sharedLocalizer[Annotations.Title.StreamingEvents];
-            return await Index(page,
-                sort,
-                search,
-                near,
-                system,
-                branch,
-                location,
-                program,
-                StartDate,
-                EndDate,
-                Favorites,
-                Status,
-                EventType.StreamingEvent);
+            try
+            {
+                var viewModel = new EventsDetailViewModel
+                {
+                    IsAuthenticated = AuthUser.Identity.IsAuthenticated,
+                    Event = await _eventService.GetDetails(id)
+                };
+
+                PageTitle = _sharedLocalizer[Annotations.Interface.DateAtTime,
+                    viewModel.Event.Name,
+                    viewModel.Event.EventLocationName];
+
+                if (!string.IsNullOrEmpty(viewModel.Event.EventLocationName)
+                    && !string.IsNullOrEmpty(viewModel.Event.EventLocationAddress))
+                {
+                    viewModel.ShowStructuredData = true;
+                    if (viewModel.Event.AllDay)
+                    {
+                        viewModel.EventStart = viewModel.Event.StartDate.ToString("yyyy-MM-dd",
+                            CultureInfo.InvariantCulture);
+                    }
+                    else
+                    {
+                        viewModel.EventStart = viewModel.Event.StartDate.ToString("s",
+                            CultureInfo.InvariantCulture);
+                        if (viewModel.Event.EndDate != null)
+                        {
+                            var endDate = (DateTime)viewModel.Event.EndDate;
+                            viewModel.EventEnd = endDate.ToString("s",
+                                CultureInfo.InvariantCulture);
+                        }
+                    }
+                }
+
+                if (viewModel.Event.ProgramId.HasValue)
+                {
+                    var program
+                        = await _siteService.GetProgramByIdAsync(viewModel.Event.ProgramId.Value);
+                    viewModel.ProgramString
+                        = _sharedLocalizer[Annotations.Info.EventLimitedToProgram, program.Name];
+                }
+                return View(viewModel);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning(gex.Message);
+                return await Index(httpStatus: HttpStatusCode.NotFound);
+            }
+        }
+
+        public async Task<IActionResult> GetDetails(int eventId)
+        {
+            try
+            {
+                var viewModel = new EventsDetailViewModel
+                {
+                    IsAuthenticated = AuthUser.Identity.IsAuthenticated,
+                    Event = await _eventService.GetDetails(eventId)
+                };
+
+                if (viewModel.Event.ProgramId.HasValue)
+                {
+                    var program
+                        = await _siteService.GetProgramByIdAsync(viewModel.Event.ProgramId.Value);
+                    viewModel.ProgramString
+                        = _sharedLocalizer[Annotations.Info.EventLimitedToProgram, program.Name];
+                }
+
+                return PartialView("_DetailPartial", viewModel);
+            }
+            catch (GraException gex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.NotFound;
+                return Content(gex.Message);
+            }
         }
 
         public async Task<IActionResult> Index(int page = 1,
@@ -185,6 +237,11 @@ namespace GRA.Controllers
                     {
                         filter.SpatialDistanceHeaderId = await _spatialService
                             .GetSpatialDistanceIdForGeolocationAsync(geocodeResult.Data);
+                    }
+                    else
+                    {
+                        ShowAlertWarning("Not able to find that location.");
+                        return RedirectToAction(nameof(Index));
                     }
                 }
             }
@@ -403,150 +460,6 @@ namespace GRA.Controllers
             });
         }
 
-        [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> UpdateSingleFavorite(int eventId, bool favorite)
-        {
-            var serviceResult = new ServiceResult();
-            var currEvent = await _eventService.GetDetails(eventId, true);
-            try
-            {
-                var eventList = new List<Event>
-                {
-                    new Event
-                    {
-                        Id = eventId,
-                        IsFavorited = favorite
-                    }
-                };
-                serviceResult = await _activityService.UpdateFavoriteEvents(eventList);
-            }
-            catch (Exception ex)
-            {
-                if (currEvent.IsCommunityExperience)
-                {
-                    _logger.LogError(ex,
-                        "Error updating user favorite community experience: {ErrorMessage}",
-                        ex.Message);
-                    serviceResult.Status = ServiceResultStatus.Error;
-                    serviceResult.Message = "An error occured while trying to update the community experience.";
-                }
-                else
-                {
-                    _logger.LogError(ex,
-                        "Error updating user favorite events: {ErrorMessage}",
-                        ex.Message);
-                    serviceResult.Status = ServiceResultStatus.Error;
-                    serviceResult.Message = "An error occured while trying to update the event.";
-                }
-            }
-            return Json(new
-            {
-                success = serviceResult.Status == ServiceResultStatus.Success,
-                message = serviceResult.Message,
-                favorite
-            });
-        }
-
-        [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> UpdateFavorites(EventsListViewModel model)
-        {
-            var serviceResult = await _activityService.UpdateFavoriteEvents(model.Events);
-            if (serviceResult.Status == ServiceResultStatus.Warning
-                        && !string.IsNullOrWhiteSpace(serviceResult.Message))
-            {
-                ShowAlertWarning(serviceResult.Message);
-            }
-
-            return Index(model, true);
-        }
-
-        public async Task<IActionResult> Detail(int id)
-        {
-            var site = await GetCurrentSiteAsync();
-            if (!string.IsNullOrEmpty(site.ExternalEventListUrl))
-            {
-                return new RedirectResult(site.ExternalEventListUrl);
-            }
-
-            try
-            {
-                var viewModel = new EventsDetailViewModel
-                {
-                    IsAuthenticated = AuthUser.Identity.IsAuthenticated,
-                    Event = await _eventService.GetDetails(id)
-                };
-
-                PageTitle = _sharedLocalizer[Annotations.Interface.DateAtTime,
-                    viewModel.Event.Name,
-                    viewModel.Event.EventLocationName];
-
-                if (!string.IsNullOrEmpty(viewModel.Event.EventLocationName)
-                    && !string.IsNullOrEmpty(viewModel.Event.EventLocationAddress))
-                {
-                    viewModel.ShowStructuredData = true;
-                    if (viewModel.Event.AllDay)
-                    {
-                        viewModel.EventStart = viewModel.Event.StartDate.ToString("yyyy-MM-dd",
-                            CultureInfo.InvariantCulture);
-                    }
-                    else
-                    {
-                        viewModel.EventStart = viewModel.Event.StartDate.ToString("s",
-                            CultureInfo.InvariantCulture);
-                        if (viewModel.Event.EndDate != null)
-                        {
-                            var endDate = (DateTime)viewModel.Event.EndDate;
-                            viewModel.EventEnd = endDate.ToString("s",
-                                CultureInfo.InvariantCulture);
-                        }
-                    }
-                }
-
-                if (viewModel.Event.ProgramId.HasValue)
-                {
-                    var program
-                        = await _siteService.GetProgramByIdAsync(viewModel.Event.ProgramId.Value);
-                    viewModel.ProgramString
-                        = _sharedLocalizer[Annotations.Info.EventLimitedToProgram, program.Name];
-                }
-                return View(viewModel);
-            }
-            catch (GraException gex)
-            {
-                ShowAlertWarning(gex.Message);
-                return await Index(httpStatus: HttpStatusCode.NotFound);
-            }
-        }
-
-        public async Task<IActionResult> GetDetails(int eventId)
-        {
-            try
-            {
-                var viewModel = new EventsDetailViewModel
-                {
-                    IsAuthenticated = AuthUser.Identity.IsAuthenticated,
-                    Event = await _eventService.GetDetails(eventId)
-                };
-
-                if (viewModel.Event.ProgramId.HasValue)
-                {
-                    var program
-                        = await _siteService.GetProgramByIdAsync(viewModel.Event.ProgramId.Value);
-                    viewModel.ProgramString
-                        = _sharedLocalizer[Annotations.Info.EventLimitedToProgram, program.Name];
-                }
-
-                return PartialView("_DetailPartial", viewModel);
-            }
-            catch (GraException gex)
-            {
-                Response.StatusCode = (int)HttpStatusCode.NotFound;
-                return Content(gex.Message);
-            }
-        }
-
         public async Task<IActionResult> Stream(int id)
         {
             if (!AuthUser.Identity.IsAuthenticated)
@@ -599,11 +512,20 @@ namespace GRA.Controllers
                 {
                     if (graEvent.IsStreamingEmbed)
                     {
-                        return View("Stream", new StreamViewModel
+                        var viewModel = new StreamViewModel
                         {
                             EventName = graEvent.Name,
                             Embed = graEvent.StreamingLinkData
-                        });
+                        };
+
+                        if (graEvent.RelatedTriggerId.HasValue
+                            && await GetSiteSettingBoolAsync(SiteSettingKey.Events.StreamingShowCode))
+                        {
+                            viewModel.SecretCode = await _eventService
+                                .GetSecretCodeForStreamingEventAsync(graEvent.Id);
+                        }
+
+                        return View(viewModel);
                     }
                     else
                     {
@@ -611,6 +533,100 @@ namespace GRA.Controllers
                     }
                 }
             }
+        }
+
+        public async Task<IActionResult> StreamingEvents(int page = 1,
+                                                    string sort = null,
+                    string search = null,
+                    string near = null,
+                    int? system = null,
+                    int? branch = null,
+                    int? location = null,
+                    int? program = null,
+                    string StartDate = null,
+                    string EndDate = null,
+                    bool Favorites = false,
+                    string Status = null)
+        {
+            var site = await GetCurrentSiteAsync();
+            if (!string.IsNullOrEmpty(site.ExternalEventListUrl))
+            {
+                return new RedirectResult(site.ExternalEventListUrl);
+            }
+
+            PageTitle = _sharedLocalizer[Annotations.Title.StreamingEvents];
+            return await Index(page,
+                sort,
+                search,
+                near,
+                system,
+                branch,
+                location,
+                program,
+                StartDate,
+                EndDate,
+                Favorites,
+                Status,
+                EventType.StreamingEvent);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> UpdateFavorites(EventsListViewModel model)
+        {
+            var serviceResult = await _activityService.UpdateFavoriteEvents(model.Events);
+            if (serviceResult.Status == ServiceResultStatus.Warning
+                        && !string.IsNullOrWhiteSpace(serviceResult.Message))
+            {
+                ShowAlertWarning(serviceResult.Message);
+            }
+
+            return Index(model, true);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> UpdateSingleFavorite(int eventId, bool favorite)
+        {
+            var serviceResult = new ServiceResult();
+            var currEvent = await _eventService.GetDetails(eventId, true);
+            try
+            {
+                var eventList = new List<Event>
+                {
+                    new Event
+                    {
+                        Id = eventId,
+                        IsFavorited = favorite
+                    }
+                };
+                serviceResult = await _activityService.UpdateFavoriteEvents(eventList);
+            }
+            catch (Exception ex)
+            {
+                if (currEvent.IsCommunityExperience)
+                {
+                    _logger.LogError(ex,
+                        "Error updating user favorite community experience: {ErrorMessage}",
+                        ex.Message);
+                    serviceResult.Status = ServiceResultStatus.Error;
+                    serviceResult.Message = "An error occured while trying to update the community experience.";
+                }
+                else
+                {
+                    _logger.LogError(ex,
+                        "Error updating user favorite events: {ErrorMessage}",
+                        ex.Message);
+                    serviceResult.Status = ServiceResultStatus.Error;
+                    serviceResult.Message = "An error occured while trying to update the event.";
+                }
+            }
+            return Json(new
+            {
+                success = serviceResult.Status == ServiceResultStatus.Success,
+                message = serviceResult.Message,
+                favorite
+            });
         }
     }
 }
