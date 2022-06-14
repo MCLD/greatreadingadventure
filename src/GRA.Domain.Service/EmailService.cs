@@ -87,6 +87,12 @@ namespace GRA.Domain.Service
             {
                 var user = await _userRepository.GetByIdAsync(directEmailDetails.ToUserId
                     ?? directEmailDetails.SendingUserId);
+                if(string.IsNullOrEmpty(user.Email))
+                {
+                    _logger.LogError("Unable to send email to user id {UserId}: no email address configured.",
+                        directEmailDetails.ToUserId);
+                    throw new GraException($"User id {directEmailDetails.ToUserId} does not have an email address configured.");
+                }
                 site = await _siteLookupService.GetByIdAsync(user.SiteId);
                 toAddress = user.Email;
                 toName = user.FullName;
@@ -304,13 +310,22 @@ namespace GRA.Domain.Service
 
             message.From.Add(new MailboxAddress(history.FromName, history.FromEmailAddress));
 
-            if (!string.IsNullOrEmpty(history.OverrideToEmailAddress))
+            try
             {
-                message.To.Add(MailboxAddress.Parse(history.OverrideToEmailAddress));
+                if (!string.IsNullOrEmpty(history.OverrideToEmailAddress))
+                {
+                    message.To.Add(MailboxAddress.Parse(history.OverrideToEmailAddress));
+                }
+                else
+                {
+                    message.To.Add(new MailboxAddress(history.ToName, history.ToEmailAddress));
+                }
             }
-            else
+            catch (ParseException ex)
             {
-                message.To.Add(new MailboxAddress(history.ToName, history.ToEmailAddress));
+                _logger.LogError("Unable to parse email address: {EmailAddress}",
+                    history.ToEmailAddress);
+                throw new GraException($"Unable to parse email address: {history.ToEmailAddress}", ex);
             }
 
             using var client = new SmtpClient

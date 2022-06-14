@@ -249,6 +249,7 @@
 
         public static class Validate
         {
+            public const string AssociatedEmailAddressInvalid = "The email address associated with username {0} is invalid, please call or stop by to resolve this.";
             public const string AuthorizationCodeWarning = "To activate an authorization code, please sign in or <a href=\"{0}\">join</a>.";
             public const string BookTitle = "When providing an author of a book, please also provide a title.";
             public const string Branch = "The branch you've selected is not valid, please select another branch.";
@@ -261,6 +262,7 @@
             public const string CouldNotSaveAvatarReason = "Could not save avatar: {0}";
             public const string CustomizeAvatarFirst = "Please customize your avatar and save it, then you can share it!";
             public const string Email = "The {0} field is not a valid e-mail address.";
+            public const string EmailAddressInvalid = "The email address {0} is invalid.";
             public const string EmailConfigured = "Username '{0}' does not have an email address configured.";
             public const string EmailPhoneNeededForPrizes = "Email and Phone Number are not required however at least one is needed in order to be eligible for prizes.";
             public const string EmailSubscription = "Please let us know if you would like to receive emails throughout the program.";

@@ -1585,4 +1585,12 @@
     <value>You are receiving this email because you are subscribed for updates from {{Sitename}}. You can [instantly unsubscribe at any time]({{UnsubscribeLink}})</value>
     <comment>Default footer for emails including an unsubscribe link.</comment>
   </data>
+  <data name="The email address associated with username {0} is invalid, please call or stop by to resolve this." xml:space="preserve">
+    <value>The email address associated with username {0} is invalid, please call or stop by to resolve this.</value>
+    <comment>The email address associated with an account (shown as {0}) is invalid.</comment>
+  </data>
+  <data name="The email address {0} is invalid." xml:space="preserve">
+    <value>The email address {0} is invalid.</value>
+    <comment>A user-specified email address (shown in {0}) is not valid and cannot be emailed.</comment>
+  </data>
 </root>

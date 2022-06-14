@@ -235,10 +235,20 @@ namespace GRA.Domain.Service
                                 emailDetails.ClearTags();
                                 emailDetails.SetTag("Email", emailReminder.Email);
 
-                                var result = await _emailService.SendDirectAsync(emailDetails);
-                                await _emailReminderService.UpdateSentDateAsync(emailReminder.Id);
+                                DirectEmailHistory result = null;
+                                try
+                                {
+                                    result = await _emailService.SendDirectAsync(emailDetails);
+                                    await _emailReminderService.UpdateSentDateAsync(emailReminder.Id);
+                                }
+                                catch (Exception ex)
+                                {
+                                    _logger.LogWarning("Unable to email {ToAddress}: {ErrorMessage}",
+                                        emailDetails.ToAddress,
+                                        ex.Message);
+                                }
 
-                                if (result.Successful)
+                                if (result?.Successful == true)
                                 {
                                     addSentCounter++;
                                     emailsSent++;
