@@ -12,7 +12,7 @@ namespace GRA.Data.Model
 
         [MaxLength(255)]
         [Required]
-        public string ImagePath { get; set; }
+        public string Filename { get; set; }
 
         [MaxLength(255)]
         [Required]

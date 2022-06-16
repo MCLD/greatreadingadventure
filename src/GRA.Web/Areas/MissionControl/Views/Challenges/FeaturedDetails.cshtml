@@ -10,6 +10,7 @@
     @if (!Model.NewFeaturedGroup)
     {
         <input asp-for="FeaturedGroup.Id" type="hidden" />
+        <input asp-for="FeaturedGroupText.ImagePath" type="hidden" />
     }
 
     <div class="row">
@@ -53,27 +54,30 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <label asp-for="UploadedImage" class="control-label"></label>
-                <div class="input-group">
-                    <label class="input-group-btn">
-                        <span class="btn btn-default btn-file">
-                            <span class="far fa-file-image"></span>
-                            Image file
-                            <input type="file"
-                                   asp-for="UploadedImage"
-                                   class="form-control"
-                                   accept=".jpg,.png"
-                                   style="display: none;" />
-                        </span>
-                    </label>
-                    <input type="text"
-                           class="form-control"
-                           readonly
-                           id="selectedFile" />
+            @if (Model.NewFeaturedGroup)
+            {
+                <div class="form-group">
+                    <label asp-for="UploadedImage" class="control-label"></label>
+                    <div class="input-group">
+                        <label class="input-group-btn">
+                            <span class="btn btn-default btn-file">
+                                <span class="far fa-file-image"></span>
+                                Image file
+                                <input type="file"
+                                       asp-for="UploadedImage"
+                                       class="form-control"
+                                       accept=".jpg,.png"
+                                       style="display: none;" />
+                            </span>
+                        </label>
+                        <input type="text"
+                               class="form-control"
+                               readonly
+                               id="selectedFile" />
+                    </div>
+                    <span asp-validation-for="UploadedImage" class="text-danger"></span>
                 </div>
-                <span asp-validation-for="UploadedImage" class="text-danger"></span>
-            </div>
+            }
 
             <div class="form-group">
                 <label asp-for="FeaturedGroupText.AltText" class="control-label"></label>
@@ -85,17 +89,115 @@
                 <span asp-validation-for="FeaturedGroupText.AltText" class="text-danger"></span>
             </div>
 
-            <div>
-                <a asp-action="@nameof(ChallengesController.FeaturedGroups)" class="btn btn-default">Return to List</a>
-                <button class="btn btn-primary btn-spinner" type="submit" button-spinner>
-                    <span class="fas fa-file-upload"></span>
-                    Upload and Create
-                </button>
+            @if (!Model.NewFeaturedGroup)
+            {
+                <div class="row">
+                    <div class="col-sm-6">
+                        <strong>Image:</strong><br />
+                        <a href="/@Model.FeaturedGroupText.ImagePath"
+                           target="_blank">
+                            <img src="/@Model.FeaturedGroupText.ImagePath"
+                                 style="border: 1px solid #ccc;"
+                                 class="img img-responsive" />
+
+                        </a>
+                    </div>
+                    <div class="col-sm-6">
+                        @if (!string.IsNullOrEmpty(Model.FeaturedGroupText.Filename))
+                        {
+                            <strong>Filename:</strong> @Model.FeaturedGroupText.Filename<br />
+                        }
+                        <a class="btn btn-warning" data-toggle="modal" data-target="#modalReplaceImage">
+                            <span class="fas fa-file-upload"></span>
+                            Replace Image
+                        </a>
+                    </div>
+                </div>
+            }
+
+            <div class="row" style="margin-top: 2rem;">
+                <div class="col-xs-12">
+                    <a asp-action="@nameof(ChallengesController.FeaturedGroups)" class="btn btn-default">Return to List</a>
+                    <button class="btn btn-primary btn-spinner" type="submit" button-spinner>
+                        <span class="fas fa-file-upload"></span>
+                        @if (Model.NewFeaturedGroup)
+                        {
+                            @:Upload and Create
+                        }
+                        else
+                        {
+                            @:Update Featured Group
+                        }
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-
 </form>
+
+@if (!Model.NewFeaturedGroup)
+{
+    <form asp-action="@nameof(GRA.Controllers.MissionControl.ChallengesController.ReplaceFeaturedImage)"
+          method="post"
+          role="form"
+          enctype="multipart/form-data">
+        <input type="hidden" asp-for="FeaturedGroupId" value="@Model.FeaturedGroup.Id" />
+        <div>
+            <div class="modal fade"
+                 tabindex="-1"
+                 role="dialog"
+                 id="modalReplaceImage"
+                 aria-labelledby="modalReplaceImageLabel">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button"
+                                    class="close"
+                                    data-dismiss="modal"
+                                    aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title" id="modalReplaceImageLabel">Replace image</h4>
+                        </div>
+                        <div class="modal-body">
+                            <img src="/@Model.FeaturedGroupText.ImagePath" class="img img-responsive" />
+                        </div>
+                        <div class="modal-footer" style="text-align: left;">
+                            <div class="form-group">
+                                <label asp-for="UploadedImage" class="control-label"></label>
+                                <description gra-description-for="UploadedImage"></description>
+                                <div class="input-group">
+                                    <label class="input-group-btn">
+                                        <span class="btn btn-default btn-file">
+                                            <span class="far fa-file-image"></span>
+                                            Image file
+                                            <input type="file"
+                                                   asp-for="UploadedImage"
+                                                   class="form-control"
+                                                   accept=".jpg,.png"
+                                                   style="display: none;" />
+                                        </span>
+                                    </label>
+                                    <input type="text"
+                                           class="form-control"
+                                           readonly
+                                           id="selectedFile">
+                                </div>
+                                <span asp-validation-for="UploadedImage" class="text-danger"></span>
+                            </div>
+                            <div style="text-align: right;">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">
+                                    Update Image
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+}
 
 @section scripts {
     <script>

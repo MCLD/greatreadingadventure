@@ -11,6 +11,10 @@ namespace GRA.Domain.Repository
         Task<ICollection<FeaturedChallengeGroup>> GetBetweenSortOrdersAsync(int siteId, int firstSortOrder, int secondSortOrder);
         Task<int?> GetMaxSortOrderAsync(int siteId);
         Task<FeaturedChallengeGroup> GetNextInOrderAsync(int siteId, int sortOrder, bool increase, bool active);
+        Task<FeaturedChallengeGroupText> GetTextByFeaturedGroupAndLanguageAsync(int featuredGroupId, int languageId);
+        Task<ICollection<FeaturedChallengeGroupText>> GetTextsForFeaturedGroupAsync(int featuredGroupId);
         Task<DataWithCount<IEnumerable<FeaturedChallengeGroup>>> PageAsync(BaseFilter filter);
+        void RemoveFeaturedGroupTexts(int featuredGroupId, int? languageId = null);
+        Task UpdateTextAsync(FeaturedChallengeGroupText text, int featuredGroupId, int languageId);
     }
 }

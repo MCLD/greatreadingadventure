@@ -121,6 +121,58 @@ namespace GRA.Data.Repository
 
             await _context.FeaturedChallengeGroupTexts.AddAsync(textEntity);
         }
+
+        public async Task<FeaturedChallengeGroupText> GetTextByFeaturedGroupAndLanguageAsync(
+            int featuredGroupId,
+            int languageId)
+        {
+            return await _context.FeaturedChallengeGroupTexts
+                .AsNoTracking()
+                .Where(_ => _.FeaturedChallengeGroupId == featuredGroupId
+                    && _.LanguageId == languageId)
+                .ProjectTo<FeaturedChallengeGroupText>(_mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync();
+        }
+
+        public async Task<ICollection<FeaturedChallengeGroupText>> GetTextsForFeaturedGroupAsync(
+            int featuredGroupId)
+        {
+            return await _context.FeaturedChallengeGroupTexts
+                .AsNoTracking()
+                .Where(_ => _.FeaturedChallengeGroupId == featuredGroupId)
+                .ProjectTo<FeaturedChallengeGroupText>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
+        public void RemoveFeaturedGroupTexts(int featuredGroupId, int? languageId = null)
+        {
+            var textEntities = _context.FeaturedChallengeGroupTexts
+                .AsNoTracking()
+                .Where(_ => _.FeaturedChallengeGroupId == featuredGroupId);
+
+            if (languageId.HasValue)
+            {
+                textEntities.Where(_ => _.LanguageId == languageId.Value);
+            }
+
+            _context.FeaturedChallengeGroupTexts.RemoveRange(textEntities);
+        }
+
+        public async Task UpdateTextAsync(FeaturedChallengeGroupText text,
+            int featuredGroupId,
+            int languageId)
+        {
+            var textEntity = await _context.FeaturedChallengeGroupTexts
+                .AsNoTracking()
+                .Where(_ => _.FeaturedChallengeGroupId == featuredGroupId
+                    && _.LanguageId == languageId)
+                .SingleOrDefaultAsync();
+
+            textEntity.AltText = text.AltText;
+            textEntity.Filename = text.Filename;
+
+            _context.FeaturedChallengeGroupTexts.Update(textEntity);
+        }
         #endregion
     }
 }

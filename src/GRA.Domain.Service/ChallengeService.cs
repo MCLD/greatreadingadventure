@@ -707,6 +707,7 @@ namespace GRA.Domain.Service
         public async Task<FeaturedChallengeGroup> AddFeaturedGroupAsync(
             FeaturedChallengeGroup featuredGroup,
             FeaturedChallengeGroupText featuredGroupText,
+            string filename,
             byte[] imageBytes)
         {
             VerifyPermission(Permission.ManageFeaturedChallengeGroups);
@@ -727,14 +728,59 @@ namespace GRA.Domain.Service
                 featuredGroup);
 
             featuredGroupText.AltText = featuredGroupText.AltText?.Trim();
-            featuredGroupText.ImagePath = "blah";
+            featuredGroupText.Filename = (await HandleFeaturedImage(filename, imageBytes))?.Trim();
 
             await _featuredChallengeGroupRepository.AddTextAsnyc(featuredGroupText,
                 addedFeaturedGroup.Id,
                 await _languageService.GetDefaultLanguageIdAsync());
+
             await _featuredChallengeGroupRepository.SaveAsync();
 
             return addedFeaturedGroup;
+        }
+
+        public async Task<FeaturedChallengeGroup> EditFeaturedGroupAsync(
+            FeaturedChallengeGroup group,
+            FeaturedChallengeGroupText text)
+        {
+            VerifyPermission(Permission.ManageFeaturedChallengeGroups);
+
+            var featuredGroup = await _featuredChallengeGroupRepository.GetByIdAsync(group.Id);
+
+            featuredGroup.ChallengeGroupId = group.ChallengeGroupId;
+            featuredGroup.EndDate = group.EndDate;
+            featuredGroup.Name = group.Name?.Trim();
+            featuredGroup.StartDate = group.StartDate;
+
+            var defaultLanguageId = await _languageService.GetDefaultLanguageIdAsync();
+            var groupText = await _featuredChallengeGroupRepository
+                .GetTextByFeaturedGroupAndLanguageAsync(featuredGroup.Id, defaultLanguageId);
+
+            groupText.AltText = text.AltText?.Trim();
+
+            await _featuredChallengeGroupRepository.UpdateAsync(GetClaimId(ClaimType.UserId),
+                featuredGroup);
+            await _featuredChallengeGroupRepository.UpdateTextAsync(groupText,
+                featuredGroup.Id,
+                defaultLanguageId);
+            await _featuredChallengeGroupRepository.SaveAsync();
+
+            return featuredGroup;
+        }
+
+        public async Task<FeaturedChallengeGroup> GetFeaturedGroupByIdAsync(int id)
+        {
+            var featuredGroup = await _featuredChallengeGroupRepository.GetByIdAsync(id);
+
+            var text = await _featuredChallengeGroupRepository
+                .GetTextByFeaturedGroupAndLanguageAsync(featuredGroup.Id,
+                    await _languageService.GetDefaultLanguageIdAsync());
+
+            text.ImagePath = _pathResolver.ResolveContentPath(GetFeaturedUrlPath(text.Filename));
+
+            featuredGroup.FeaturedGroupText = text;
+
+            return featuredGroup;
         }
 
         public async Task<DataWithCount<IEnumerable<FeaturedChallengeGroup>>>
@@ -747,7 +793,62 @@ namespace GRA.Domain.Service
             return await _featuredChallengeGroupRepository.PageAsync(filter);
         }
 
-        public async Task UpdateFeaturedGroupSort(int id, bool increase, bool active)
+        public async Task ReplaceFeaturedImageAsync(int featuredGroupId,
+            string filename,
+            byte[] imageBytes)
+        {
+            VerifyPermission(Permission.ManageFeaturedChallengeGroups);
+
+            var defaultLanguageId = await _languageService.GetDefaultLanguageIdAsync();
+
+            var featuredGroupText = await _featuredChallengeGroupRepository
+                .GetTextByFeaturedGroupAndLanguageAsync(featuredGroupId, defaultLanguageId);
+
+            if (featuredGroupText == null)
+            {
+                return;
+            }
+
+            var oldImagePath = GetFeaturedFilePath(featuredGroupText.Filename);
+
+            featuredGroupText.Filename = (await HandleFeaturedImage(filename, imageBytes))?.Trim();
+
+            if (File.Exists(oldImagePath))
+            {
+                File.Delete(oldImagePath);
+            }
+
+            await _featuredChallengeGroupRepository.UpdateTextAsync(featuredGroupText,
+                featuredGroupId,
+                defaultLanguageId);
+
+            await _featuredChallengeGroupRepository.SaveAsync();
+        }
+
+        public async Task RemoveFeaturedGroupAsync(int featuredGroupId)
+        {
+            VerifyPermission(Permission.ManageFeaturedChallengeGroups);
+
+            var texts = await _featuredChallengeGroupRepository
+                .GetTextsForFeaturedGroupAsync(featuredGroupId);
+
+            _featuredChallengeGroupRepository.RemoveFeaturedGroupTexts(featuredGroupId);
+            await _featuredChallengeGroupRepository.SaveAsync();
+
+            foreach (var text in texts)
+            {
+                var imagePath = GetFeaturedFilePath(text.Filename);
+                if (File.Exists(imagePath))
+                {
+                    File.Delete(imagePath);
+                }
+            }
+
+            await _featuredChallengeGroupRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId),
+                featuredGroupId);
+        }
+
+        public async Task UpdateFeaturedGroupSortAsync(int id, bool increase, bool active)
         {
             VerifyPermission(Permission.ManageFeaturedChallengeGroups);
 
@@ -822,6 +923,23 @@ namespace GRA.Domain.Service
         private string GetFeaturedUrlPath(string filename)
         {
             return $"site{GetCurrentSiteId()}/{FeaturedFilesPath}/{filename}";
+        }
+
+        private async Task<string> HandleFeaturedImage(string filename, byte[] imageBytes)
+        {
+            var fullPath = GetFeaturedFilePath(filename);
+            int dupeCheck = 1;
+            while (File.Exists(fullPath))
+            {
+                filename = Path.GetFileNameWithoutExtension(filename)
+                        + $"-{dupeCheck++}"
+                        + Path.GetExtension(filename);
+                fullPath = GetFeaturedFilePath(filename);
+            }
+
+            await File.WriteAllBytesAsync(fullPath, imageBytes);
+
+            return filename;
         }
         #endregion
     }

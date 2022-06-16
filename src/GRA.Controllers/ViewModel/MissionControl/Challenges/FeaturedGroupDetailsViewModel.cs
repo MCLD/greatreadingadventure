@@ -15,5 +15,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Challenges
 
         [DisplayName("Image file")]
         public IFormFile UploadedImage { get; set; }
+
+        public int FeaturedGroupId { get; set; }
     }
 }
