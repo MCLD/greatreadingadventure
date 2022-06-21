@@ -367,12 +367,24 @@ namespace GRA.Domain.Service
                     };
                 }
                 directEmailDetails.ToUserId = userId;
-
-                var history = await _emailService.SendDirectAsync(directEmailDetails);
-
-                if (history.Successful)
+                try
                 {
-                    sentEmails++;
+                    var history = await _emailService.SendDirectAsync(directEmailDetails);
+                    if (history.Successful)
+                    {
+                        sentEmails++;
+                    }
+                    else
+                    {
+                        _logger.LogWarning("Unable to send newsletter notification email to user {UserId}",
+                            userId);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning("Unable to send newsletter notification email to user {UserId}: {ErrorMessage}",
+                        userId,
+                        ex.Message);
                 }
 
                 if (sw.Elapsed.TotalSeconds > lastUpdate + 5)

@@ -129,11 +129,26 @@ namespace GRA.Domain.Service
 
             directEmailDetails.Tags.Add("Sitelink", siteLink.AbsoluteUri);
 
-            var history = await _emailService.SendDirectAsync(directEmailDetails);
+            var result = new Models.ServiceResult();
 
-            return history.Successful
-                ? new Models.ServiceResult(Models.ServiceResultStatus.Success)
-                : new Models.ServiceResult(Models.ServiceResultStatus.Error);
+            try
+            {
+                var history = await _emailService.SendDirectAsync(directEmailDetails);
+                result.Status = history?.Successful == true
+                    ? Models.ServiceResultStatus.Success
+                    : Models.ServiceResultStatus.Error;
+            }
+            catch (GraException ex)
+            {
+                if (ex?.InnerException is MimeKit.ParseException)
+                {
+                    result.Status = Models.ServiceResultStatus.Error;
+                    result.Message = Annotations.Validate.EmailAddressInvalid;
+                    result.Arguments = new[] { email };
+                }
+            }
+
+            return result;
         }
 
         public async Task<Models.ServiceResult> GenerateTokenAndEmail(string username,
@@ -208,11 +223,26 @@ namespace GRA.Domain.Service
 
             directEmailDetails.Tags.Add("Sitelink", siteLink.AbsoluteUri);
 
-            var history = await _emailService.SendDirectAsync(directEmailDetails);
+            var result = new Models.ServiceResult();
 
-            return history.Successful
-                ? new Models.ServiceResult(Models.ServiceResultStatus.Success)
-                : new Models.ServiceResult(Models.ServiceResultStatus.Error);
+            try
+            {
+                var history = await _emailService.SendDirectAsync(directEmailDetails);
+                result.Status = history?.Successful == true
+                    ? Models.ServiceResultStatus.Success
+                    : Models.ServiceResultStatus.Error;
+            }
+            catch (GraException ex)
+            {
+                if (ex?.InnerException is MimeKit.ParseException)
+                {
+                    result.Status = Models.ServiceResultStatus.Error;
+                    result.Message = Annotations.Validate.AssociatedEmailAddressInvalid;
+                    result.Arguments = new[] { username };
+                }
+            }
+
+            return result;
         }
 
         public async Task ResetPassword(int userIdToReset, string password)
