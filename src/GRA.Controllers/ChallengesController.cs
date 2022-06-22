@@ -127,7 +127,7 @@ namespace GRA.Controllers
                     : _sharedLocalizer[Annotations.Info.TasksPlural, challenge.TasksToComplete]
             };
 
-            var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
+            var siteUrl = await _siteLookupService.GetSiteLinkAsync(GetCurrentSiteId());
             foreach (var task in challenge.Tasks)
             {
                 var taskModel = new TaskDetailViewModel
@@ -253,6 +253,9 @@ namespace GRA.Controllers
 
             var categoryList = await _categoryService.GetListAsync(true);
 
+            var featuredChallengeGroups = await _challengeService
+                    .GetActiveFeaturedChallengeGroupsAsync();
+
             var viewModel = new ChallengesListViewModel
             {
                 Categories = Categories,
@@ -261,6 +264,7 @@ namespace GRA.Controllers
                 ChallengeGroup = challengeGroup,
                 Challenges = challengeList.Data.ToList(),
                 Favorites = Favorites,
+                FeaturedChallengeGroups = featuredChallengeGroups,
                 IsActive = isActive,
                 IsLoggedIn = AuthUser.Identity.IsAuthenticated,
                 Ordering = filter.Ordering,

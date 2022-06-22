@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
@@ -20,35 +21,54 @@ namespace GRA.Data.Repository
         {
         }
 
-        public async Task<DataWithCount<IEnumerable<FeaturedChallengeGroup>>> PageAsync(
-            BaseFilter filter)
+        public async Task<ICollection<DisplayChallengeGroup>> GetActiveAsync(int siteId,
+            int languageId,
+            int defaultLanguageId)
         {
-            var featuredGroups = DbSet
+            var now = _dateTimeProvider.Now;
+
+            var activeFeatureGroups = await DbSet
                 .AsNoTracking()
-                .Where(_ => _.SiteId == filter.SiteId);
-
-            if (filter.IsActive == true)
-            {
-                var now = _dateTimeProvider.Now;
-
-                featuredGroups = featuredGroups
-                    .Where(_ => (!_.StartDate.HasValue || _.StartDate <= now)
-                        && (!_.EndDate.HasValue || _.EndDate >= now));
-            }
-
-            var count = await featuredGroups.CountAsync();
-
-            var data = await featuredGroups
+                .Where(_ => _.SiteId == siteId
+                    && (!_.StartDate.HasValue || _.StartDate <= now)
+                    && (!_.EndDate.HasValue || _.EndDate >= now))
                 .OrderBy(_ => _.SortOrder)
-                .ApplyPagination(filter)
-                .ProjectTo<FeaturedChallengeGroup>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
-            return new DataWithCount<IEnumerable<FeaturedChallengeGroup>>
+            var challengeGroupIds = activeFeatureGroups.ConvertAll(_ => _.ChallengeGroupId);
+
+            var groups = await _context.ChallengeGroups
+                .AsNoTracking()
+                .Where(_ => challengeGroupIds.Contains(_.Id))
+                .ToListAsync();
+
+            var displayChallengeGroups = new List<DisplayChallengeGroup>();
+
+            foreach (var featureGroup in activeFeatureGroups)
             {
-                Data = data,
-                Count = count
-            };
+                var text
+                    = await GetTextByFeaturedGroupAndLanguageAsync(featureGroup.Id, languageId);
+                if (text == null)
+                {
+                    text = await GetTextByFeaturedGroupAndLanguageAsync(featureGroup.Id,
+                        defaultLanguageId);
+                }
+                if (text != null)
+                {
+                    displayChallengeGroups.Add(new DisplayChallengeGroup
+                    {
+                        AltText = text.AltText,
+                        ImageFile = text.Filename,
+                        Name = featureGroup.Name,
+                        SortOrder = featureGroup.SortOrder,
+                        Stub = groups.Where(_ => _.Id == featureGroup.ChallengeGroupId)
+                            .Select(_ => _.Stub)
+                            .SingleOrDefault()
+                    });
+                }
+            }
+
+            return displayChallengeGroups;
         }
 
         public async Task<ICollection<FeaturedChallengeGroup>> GetBetweenSortOrdersAsync(int siteId,
@@ -72,23 +92,38 @@ namespace GRA.Data.Repository
                 .MaxAsync(_ => (int?)_.SortOrder);
         }
 
+        public async Task<DateTime?> GetNextActiveTimestampAsync(int siteId)
+        {
+            var now = _dateTimeProvider.Now;
+
+            var nextStart = await DbSet.AsNoTracking()
+                .Where(_ => _.StartDate > now)
+                .Select(_ => _.StartDate)
+                .MinAsync() ?? DateTime.MaxValue;
+
+            var nextEnd = await DbSet.AsNoTracking()
+                .Where(_ => _.EndDate > now)
+                .Select(_ => _.EndDate)
+                .MinAsync() ?? DateTime.MinValue;
+
+            var min = Math.Min(nextStart.Ticks, nextEnd.Ticks);
+
+            _logger.LogDebug("Next active featured challenge transition times - start: {NextStart} end: {NextEnd}",
+                nextStart,
+                nextEnd);
+
+            return min == DateTime.MaxValue.Ticks
+                ? null
+                : new DateTime(min);
+        }
+
         public async Task<FeaturedChallengeGroup> GetNextInOrderAsync(int siteId,
             int sortOrder,
-            bool increase,
-            bool active)
+            bool increase)
         {
             var nextFeatuedGroup = DbSet
                 .AsNoTracking()
                 .Where(_ => _.SiteId == siteId);
-
-            if (active)
-            {
-                var now = _dateTimeProvider.Now;
-
-                nextFeatuedGroup = nextFeatuedGroup
-                    .Where(_ => (!_.StartDate.HasValue || _.StartDate <= now)
-                        && (!_.EndDate.HasValue || _.EndDate >= now));
-            }
 
             if (increase)
             {
@@ -108,8 +143,63 @@ namespace GRA.Data.Repository
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<ICollectionWithCount<FeaturedChallengeGroup>> PageAsync(
+                                    BaseFilter filter)
+        {
+            var featuredGroups = DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == filter.SiteId);
+
+            if (filter?.IsActive == true)
+            {
+                var now = _dateTimeProvider.Now;
+
+                featuredGroups = featuredGroups
+                    .Where(_ => (!_.StartDate.HasValue || _.StartDate <= now)
+                        && (!_.EndDate.HasValue || _.EndDate >= now));
+            }
+
+            var count = await featuredGroups.CountAsync();
+
+            var data = await featuredGroups
+                .OrderBy(_ => _.SortOrder)
+                .ApplyPagination(filter)
+                .ProjectTo<FeaturedChallengeGroup>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+
+            return new ICollectionWithCount<FeaturedChallengeGroup>
+            {
+                Data = data,
+                Count = count
+            };
+        }
+
+        public override async Task RemoveSaveAsync(int userId, int id)
+        {
+            var sortOrder = await DbSet.AsNoTracking()
+                .Where(_ => _.Id == id)
+                .Select(_ => _.SortOrder)
+                .SingleOrDefaultAsync();
+
+            await base.RemoveSaveAsync(userId, id);
+
+            var itemIds = await DbSet.AsNoTracking()
+                .Where(_ => _.SortOrder > sortOrder)
+                .Select(_ => _.Id)
+                .ToListAsync();
+
+            foreach (var itemId in itemIds)
+            {
+                var item = await GetByIdAsync(itemId);
+                item.SortOrder--;
+                await UpdateAsync(userId, item);
+            }
+            await _context.SaveChangesAsync();
+        }
+
         #region Featured Challenge Group Text methods
-        public async Task AddTextAsnyc(FeaturedChallengeGroupText text,
+
+        public async Task AddTextAsync(FeaturedChallengeGroupText text,
             int featuredGroupId,
             int languageId)
         {
@@ -173,6 +263,7 @@ namespace GRA.Data.Repository
 
             _context.FeaturedChallengeGroupTexts.Update(textEntity);
         }
-        #endregion
+
+        #endregion Featured Challenge Group Text methods
     }
 }

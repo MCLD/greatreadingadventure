@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -32,8 +33,6 @@ namespace GRA.Controllers.MissionControl
         private readonly SiteService _siteService;
         private readonly UserService _userService;
 
-        public static string Name { get { return "Challenges"; } }
-
         public ChallengesController(ILogger<ChallengesController> logger,
             ServiceFacade.Controller context,
             BadgeService badgeService,
@@ -55,6 +54,9 @@ namespace GRA.Controllers.MissionControl
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             PageTitle = "Challenges";
         }
+
+        public static string Name
+        { get { return "Challenges"; } }
 
         [Authorize(Policy = Policy.AddChallenges)]
         public async Task<IActionResult> Create()
@@ -1247,81 +1249,27 @@ namespace GRA.Controllers.MissionControl
         #endregion Challenge Group methods
 
         #region Featured Challenge Group methods
-        public async Task<IActionResult> FeaturedGroups(int page = 1, bool active = false)
-        {
-            PageTitle = "Featured Groups";
-
-            var filter = new BaseFilter(page)
-            {
-                IsActive = active
-            };
-
-            var featuredGroupList = await _challengeService
-                .GetPaignatedFeaturedGroupListAsync(filter);
-
-            var paginateModel = new PaginateViewModel
-            {
-                ItemCount = featuredGroupList.Count,
-                CurrentPage = page,
-                ItemsPerPage = filter.Take.Value
-            };
-            if (paginateModel.PastMaxPage)
-            {
-                return RedirectToRoute(
-                    new
-                    {
-                        page = paginateModel.LastPage ?? 1
-                    });
-            }
-
-            var viewModel = new FeaturedGroupListViewModel
-            {
-                FeaturedGroups = featuredGroupList.Data,
-                PaginateModel = paginateModel,
-                CanManageFeaturedGroups = UserHasPermission(Permission.ManageFeaturedChallengeGroups),
-                ShowActive = active,
-                Now = _dateTimeProvider.Now
-            };
-
-            return View(viewModel);
-        }
 
         [HttpPost]
         [Authorize(Policy = Policy.ManageFeaturedChallengeGroups)]
-        public async Task<JsonResult> FeaturedChangeSort(int id, bool increase, bool active)
+        public async Task<IActionResult> FeaturedChangeSort(int id, bool increase, int? page)
         {
-            JsonResponse response;
-
             if (!UserHasPermission(Permission.ManageFeaturedChallengeGroups))
             {
-                response = new JsonResponse
-                {
-                    Message = "Unauthorized",
-                    Success = false
-                };
+                ShowAlertDanger("Permission denied.");
             }
             else
             {
                 try
                 {
-                    await _challengeService.UpdateFeaturedGroupSortAsync(id, increase, active);
-
-                    response = new JsonResponse
-                    {
-                        Success = true
-                    };
+                    await _challengeService.UpdateFeaturedGroupSortAsync(id, increase);
                 }
                 catch (GraException gex)
                 {
-                    response = new JsonResponse
-                    {
-                        Message = gex.Message,
-                        Success = false
-                    };
+                    ShowAlertDanger(gex.Message);
                 }
             }
-
-            return Json(response);
+            return RedirectToAction(nameof(FeaturedGroups), page);
         }
 
         [Authorize(Policy = Policy.ManageFeaturedChallengeGroups)]
@@ -1356,7 +1304,6 @@ namespace GRA.Controllers.MissionControl
 
             return RedirectToAction(nameof(FeaturedGroups), new
             {
-                active = model.ShowActive,
                 page = model.PaginateModel.CurrentPage
             });
         }
@@ -1401,13 +1348,14 @@ namespace GRA.Controllers.MissionControl
                 {
                     try
                     {
-                        using var ms = new System.IO.MemoryStream();
-                        await model.UploadedImage.CopyToAsync(ms);
-                        imageBytes = ms.ToArray();
+                        using var memoryStream = new MemoryStream();
+                        await model.UploadedImage.CopyToAsync(memoryStream);
+                        imageBytes = memoryStream.ToArray();
+                        await _badgeService.ValidateBadgeImageAsync(imageBytes);
                     }
-                    catch (Exception ex)
+                    catch (GraException gex)
                     {
-                        ModelState.AddModelError(nameof(model.UploadedImage), ex.Message);
+                        ModelState.AddModelError(nameof(model.UploadedImage), gex.Message);
                     }
                 }
             }
@@ -1453,33 +1401,77 @@ namespace GRA.Controllers.MissionControl
             return View(model);
         }
 
+        public async Task<IActionResult> FeaturedGroups(int page)
+        {
+            PageTitle = "Featured Groups";
+
+            if (page == default)
+            {
+                page = 1;
+            }
+
+            var filter = new BaseFilter(page);
+
+            var featuredGroupList = await _challengeService
+                .GetPaginatedFeaturedGroupListAsync(filter);
+
+            var viewModel = new FeaturedGroupListViewModel
+            {
+                CanManageFeaturedGroups
+                    = UserHasPermission(Permission.ManageFeaturedChallengeGroups),
+                CurrentPage = page,
+                FeaturedGroups = featuredGroupList.Data,
+                ItemCount = featuredGroupList.Count,
+                ItemsPerPage = filter.Take.Value,
+                Now = _dateTimeProvider.Now,
+            };
+
+            if (viewModel.PastMaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = viewModel.LastPage ?? 1
+                    });
+            }
+
+            return View(viewModel);
+        }
+
         public async Task<IActionResult> ReplaceFeaturedImage(FeaturedGroupDetailsViewModel model)
         {
-            if (model.UploadedImage == null)
+            if (model?.UploadedImage == null)
             {
-                ShowAlertWarning("No replacement image was submitted.");
+                ShowAlertDanger("No replacement image was submitted.");
+                return RedirectToAction(nameof(FeaturedDetails), new { id = model.FeaturedGroupId });
             }
-            else
+
+            if (!ValidImageExtensions.Contains(Path.GetExtension(model.UploadedImage.FileName).ToLower(CultureInfo.InvariantCulture)))
             {
-                byte[] imageBytes = null;
-                try
-                {
-                    using var ms = new System.IO.MemoryStream();
-                    await model.UploadedImage.CopyToAsync(ms);
-                    imageBytes = ms.ToArray();
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError(nameof(model.UploadedImage), ex.Message);
-                }
+                ShowAlertDanger($"Image must be one of the following types: {string.Join(", ", ValidImageExtensions)}");
+                return RedirectToAction(nameof(FeaturedDetails), new { id = model.FeaturedGroupId });
+            }
+
+            byte[] imageBytes = null;
+            try
+            {
+                using var memoryStream = new MemoryStream();
+                await model.UploadedImage.CopyToAsync(memoryStream);
+                imageBytes = memoryStream.ToArray();
+                await _badgeService.ValidateBadgeImageAsync(imageBytes);
 
                 await _challengeService.ReplaceFeaturedImageAsync(model.FeaturedGroupId,
                     model.UploadedImage.FileName,
                     imageBytes);
             }
+            catch (GraException gex)
+            {
+                ShowAlertDanger(gex.Message);
+            }
 
             return RedirectToAction(nameof(FeaturedDetails), new { id = model.FeaturedGroupId });
         }
-        #endregion
+
+        #endregion Featured Challenge Group methods
     }
 }

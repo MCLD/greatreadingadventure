@@ -5,17 +5,13 @@ using GRA.Domain.Model;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Challenges
 {
-    public class FeaturedGroupListViewModel
+    public class FeaturedGroupListViewModel : PaginateViewModel
     {
-        public IEnumerable<FeaturedChallengeGroup> FeaturedGroups { get; set; }
-        public PaginateViewModel PaginateModel { get; set; }
-        
-        public FeaturedChallengeGroup FeaturedGroup { get; set; }
-
         public bool CanManageFeaturedGroups { get; set; }
-
-        public bool ShowActive { get; set; }
-
+        public FeaturedChallengeGroup FeaturedGroup { get; set; }
+        public IEnumerable<FeaturedChallengeGroup> FeaturedGroups { get; set; }
         public DateTime Now { get; set; }
+        public PaginateViewModel PaginateModel { get; set; }
+        public bool ShowActive { get; set; }
     }
 }

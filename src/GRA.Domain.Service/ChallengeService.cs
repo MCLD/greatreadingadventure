@@ -20,39 +20,42 @@ namespace GRA.Domain.Service
 
         private readonly IBadgeRepository _badgeRepository;
         private readonly IBranchRepository _branchRepository;
+        private readonly IGraCache _cache;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IChallengeGroupRepository _challengeGroupRepository;
         private readonly IChallengeRepository _challengeRepository;
         private readonly IChallengeTaskRepository _challengeTaskRepository;
-        private readonly IFeaturedChallengeGroupRepository _featuredChallengeGroupRepository;
         private readonly IEventRepository _eventRepository;
-        private readonly IPathResolver _pathResolver;
-        private readonly ITriggerRepository _triggerRepository;
+        private readonly IFeaturedChallengeGroupRepository _featuredChallengeGroupRepository;
         private readonly LanguageService _languageService;
+        private readonly IPathResolver _pathResolver;
         private readonly SiteLookupService _siteLookupService;
-
+        private readonly ITriggerRepository _triggerRepository;
 
         public ChallengeService(ILogger<ChallengeService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
+            IGraCache cache,
             IUserContextProvider userContextProvider,
             IBadgeRepository badgeRepository,
             IBranchRepository branchRepository,
             ICategoryRepository categoryRepository,
-            IChallengeRepository challengeRepository,
             IChallengeGroupRepository challengeGroupRepository,
+            IChallengeRepository challengeRepository,
             IChallengeTaskRepository challengeTaskRepository,
             IEventRepository eventRepository,
             IFeaturedChallengeGroupRepository featuredChallengeGroupRepository,
             IPathResolver pathResolver,
             ITriggerRepository triggerRepository,
             LanguageService languageService,
-            SiteLookupService siteLookupService)
+            SiteLookupService siteLookupService
+            )
             : base(logger, dateTimeProvider, userContextProvider)
         {
             _badgeRepository = badgeRepository
                 ?? throw new ArgumentNullException(nameof(badgeRepository));
             _branchRepository = branchRepository
                 ?? throw new ArgumentNullException(nameof(branchRepository));
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
             _categoryRepository = categoryRepository
                 ?? throw new ArgumentNullException(nameof(categoryRepository));
             _challengeRepository = challengeRepository
@@ -429,6 +432,13 @@ namespace GRA.Domain.Service
             return challengeGroup;
         }
 
+        public async Task<ICollection<ChallengeGroup>> GetGroupListAsync()
+        {
+            VerifyPermission(Permission.ViewAllChallenges);
+
+            return await _challengeGroupRepository.GetAllAsync(GetCurrentSiteId());
+        }
+
         public async Task<List<ChallengeGroup>> GetGroupsByChallengeId(int id)
         {
             VerifyPermission(Permission.ViewAllChallenges);
@@ -485,13 +495,6 @@ namespace GRA.Domain.Service
                 Data = challenges,
                 Count = challengeCount
             };
-        }
-
-        public async Task<ICollection<ChallengeGroup>> GetGroupListAsync()
-        {
-            VerifyPermission(Permission.ViewAllChallenges);
-
-            return await _challengeGroupRepository.GetAllAsync(GetCurrentSiteId());
         }
 
         public async Task<DataWithCount<IEnumerable<ChallengeGroup>>>
@@ -704,6 +707,7 @@ namespace GRA.Domain.Service
         }
 
         #region Featured Challenge Groups methods
+
         public async Task<FeaturedChallengeGroup> AddFeaturedGroupAsync(
             FeaturedChallengeGroup featuredGroup,
             FeaturedChallengeGroupText featuredGroupText,
@@ -730,11 +734,13 @@ namespace GRA.Domain.Service
             featuredGroupText.AltText = featuredGroupText.AltText?.Trim();
             featuredGroupText.Filename = (await HandleFeaturedImage(filename, imageBytes))?.Trim();
 
-            await _featuredChallengeGroupRepository.AddTextAsnyc(featuredGroupText,
+            await _featuredChallengeGroupRepository.AddTextAsync(featuredGroupText,
                 addedFeaturedGroup.Id,
                 await _languageService.GetDefaultLanguageIdAsync());
 
             await _featuredChallengeGroupRepository.SaveAsync();
+
+            await ClearFeaturedChallengeGroupsCacheAsync();
 
             return addedFeaturedGroup;
         }
@@ -765,7 +771,51 @@ namespace GRA.Domain.Service
                 defaultLanguageId);
             await _featuredChallengeGroupRepository.SaveAsync();
 
+            await ClearFeaturedChallengeGroupsCacheAsync();
+
             return featuredGroup;
+        }
+
+        public async Task<IEnumerable<DisplayChallengeGroup>> GetActiveFeaturedChallengeGroupsAsync()
+        {
+            var currentLanguageId = await _languageService
+                .GetLanguageIdAsync(_userContextProvider.GetCurrentCulture().Name);
+            var defaultLanguageId = await _languageService.GetDefaultLanguageIdAsync();
+
+            string cacheKey = string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                CacheKey.FeaturedChallengeGroups,
+                currentLanguageId);
+
+            var featured = await _cache
+                .GetObjectFromCacheAsync<IEnumerable<DisplayChallengeGroup>>(cacheKey);
+
+            if (featured == null)
+            {
+                featured = await _featuredChallengeGroupRepository
+                    .GetActiveAsync(GetCurrentSiteId(), currentLanguageId, defaultLanguageId);
+
+                foreach (var featuredItem in featured)
+                {
+                    featuredItem.ImagePath = '/' + GetFeaturedUrlPath(featuredItem.ImageFile);
+                }
+
+                var now = _dateTimeProvider.Now;
+
+                var nextFeaturedChallengeChange = await _featuredChallengeGroupRepository
+                    .GetNextActiveTimestampAsync(GetCurrentSiteId())
+                    ?? now.AddHours(1);
+
+                _logger.LogDebug("Caching {Count} featured challenge groups until {Expiration} ({TimeSpan})",
+                    featured?.Count() ?? 0,
+                    nextFeaturedChallengeChange,
+                    nextFeaturedChallengeChange - now);
+
+                await _cache.SaveToCacheAsync(cacheKey,
+                     featured,
+                     nextFeaturedChallengeChange - now);
+            }
+
+            return featured;
         }
 
         public async Task<FeaturedChallengeGroup> GetFeaturedGroupByIdAsync(int id)
@@ -776,15 +826,15 @@ namespace GRA.Domain.Service
                 .GetTextByFeaturedGroupAndLanguageAsync(featuredGroup.Id,
                     await _languageService.GetDefaultLanguageIdAsync());
 
-            text.ImagePath = _pathResolver.ResolveContentPath(GetFeaturedUrlPath(text.Filename));
+            text.ImagePath = GetFeaturedUrlPath(text.Filename);
 
             featuredGroup.FeaturedGroupText = text;
 
             return featuredGroup;
         }
 
-        public async Task<DataWithCount<IEnumerable<FeaturedChallengeGroup>>>
-            GetPaignatedFeaturedGroupListAsync(BaseFilter filter)
+        public async Task<ICollectionWithCount<FeaturedChallengeGroup>>
+            GetPaginatedFeaturedGroupListAsync(BaseFilter filter)
         {
             VerifyPermission(Permission.ViewAllChallenges);
 
@@ -793,8 +843,33 @@ namespace GRA.Domain.Service
             return await _featuredChallengeGroupRepository.PageAsync(filter);
         }
 
+        public async Task RemoveFeaturedGroupAsync(int featuredGroupId)
+        {
+            VerifyPermission(Permission.ManageFeaturedChallengeGroups);
+
+            var texts = await _featuredChallengeGroupRepository
+                .GetTextsForFeaturedGroupAsync(featuredGroupId);
+
+            _featuredChallengeGroupRepository.RemoveFeaturedGroupTexts(featuredGroupId);
+            await _featuredChallengeGroupRepository.SaveAsync();
+
+            foreach (var text in texts)
+            {
+                var imagePath = GetFeaturedFilePath(text.Filename);
+                if (File.Exists(imagePath))
+                {
+                    File.Delete(imagePath);
+                }
+            }
+
+            await _featuredChallengeGroupRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId),
+                featuredGroupId);
+
+            await ClearFeaturedChallengeGroupsCacheAsync();
+        }
+
         public async Task ReplaceFeaturedImageAsync(int featuredGroupId,
-            string filename,
+                    string filename,
             byte[] imageBytes)
         {
             VerifyPermission(Permission.ManageFeaturedChallengeGroups);
@@ -823,32 +898,10 @@ namespace GRA.Domain.Service
                 defaultLanguageId);
 
             await _featuredChallengeGroupRepository.SaveAsync();
+            await ClearFeaturedChallengeGroupsCacheAsync();
         }
 
-        public async Task RemoveFeaturedGroupAsync(int featuredGroupId)
-        {
-            VerifyPermission(Permission.ManageFeaturedChallengeGroups);
-
-            var texts = await _featuredChallengeGroupRepository
-                .GetTextsForFeaturedGroupAsync(featuredGroupId);
-
-            _featuredChallengeGroupRepository.RemoveFeaturedGroupTexts(featuredGroupId);
-            await _featuredChallengeGroupRepository.SaveAsync();
-
-            foreach (var text in texts)
-            {
-                var imagePath = GetFeaturedFilePath(text.Filename);
-                if (File.Exists(imagePath))
-                {
-                    File.Delete(imagePath);
-                }
-            }
-
-            await _featuredChallengeGroupRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId),
-                featuredGroupId);
-        }
-
-        public async Task UpdateFeaturedGroupSortAsync(int id, bool increase, bool active)
+        public async Task UpdateFeaturedGroupSortAsync(int id, bool increase)
         {
             VerifyPermission(Permission.ManageFeaturedChallengeGroups);
 
@@ -856,57 +909,44 @@ namespace GRA.Domain.Service
 
             var featuredGroup = await _featuredChallengeGroupRepository.GetByIdAsync(id);
 
-            var featuredGroupInPosition = await _featuredChallengeGroupRepository
-                .GetNextInOrderAsync(featuredGroup.SiteId, featuredGroup.SortOrder, increase, active);
-
-            if (featuredGroupInPosition == null)
-            {
-                _logger.LogError("Unable to update featured group sort for {id}, no featured group in new position (increase: {increase}, active: {active}).",
-                    id,
-                    increase,
-                    active);
-
-                throw new GraException("Unable to update featured group sort.");
-            }
-
-            if (active)
-            {
-                var inbetweenFeatureGroups = await _featuredChallengeGroupRepository
-                    .GetBetweenSortOrdersAsync(featuredGroup.SiteId,
-                        featuredGroup.SortOrder,
-                        featuredGroupInPosition.SortOrder);
-
-                foreach (var inbetweenFeatureGroup in inbetweenFeatureGroups)
-                {
-                    if (increase)
-                    {
-                        inbetweenFeatureGroup.SortOrder--;
-                    }
-                    else
-                    {
-                        inbetweenFeatureGroup.SortOrder++;
-                    }
-
-                    await _featuredChallengeGroupRepository.UpdateAsync(authUserId,
-                        inbetweenFeatureGroup);
-                }
-            }
-
-            featuredGroup.SortOrder = featuredGroupInPosition.SortOrder;
-
             if (increase)
             {
-                featuredGroupInPosition.SortOrder--;
+                var moveGroup = await _featuredChallengeGroupRepository
+                    .GetNextInOrderAsync(GetCurrentSiteId(), featuredGroup.SortOrder, increase);
+                if (moveGroup != null)
+                {
+                    moveGroup.SortOrder--;
+                    featuredGroup.SortOrder++;
+                    await _featuredChallengeGroupRepository.UpdateSaveNoAuditAsync(moveGroup);
+                    await _featuredChallengeGroupRepository.UpdateSaveNoAuditAsync(featuredGroup);
+                }
             }
             else
             {
-                featuredGroup.SortOrder++;
+                var moveGroup = await _featuredChallengeGroupRepository
+                    .GetNextInOrderAsync(GetCurrentSiteId(), featuredGroup.SortOrder, increase);
+                if (moveGroup != null)
+                {
+                    moveGroup.SortOrder++;
+                    featuredGroup.SortOrder--;
+                    await _featuredChallengeGroupRepository.UpdateSaveNoAuditAsync(moveGroup);
+                    await _featuredChallengeGroupRepository.UpdateSaveNoAuditAsync(featuredGroup);
+                }
             }
 
-            await _featuredChallengeGroupRepository.UpdateAsync(authUserId, featuredGroup);
-            await _featuredChallengeGroupRepository.UpdateAsync(authUserId, featuredGroupInPosition);
+            await ClearFeaturedChallengeGroupsCacheAsync();
+        }
 
-            await _featuredChallengeGroupRepository.SaveAsync();
+        private async Task ClearFeaturedChallengeGroupsCacheAsync()
+        {
+            var languages = await _languageService.GetActiveAsync();
+            foreach (var language in languages)
+            {
+                await _cache.RemoveAsync(string
+                    .Format(System.Globalization.CultureInfo.InvariantCulture,
+                    CacheKey.FeaturedChallengeGroups,
+                    language.Id));
+            }
         }
 
         private string GetFeaturedFilePath(string filename)
@@ -922,7 +962,8 @@ namespace GRA.Domain.Service
 
         private string GetFeaturedUrlPath(string filename)
         {
-            return $"site{GetCurrentSiteId()}/{FeaturedFilesPath}/{filename}";
+            return _pathResolver
+                .ResolveContentPath($"site{GetCurrentSiteId()}/{FeaturedFilesPath}/{filename}");
         }
 
         private async Task<string> HandleFeaturedImage(string filename, byte[] imageBytes)
@@ -941,6 +982,7 @@ namespace GRA.Domain.Service
 
             return filename;
         }
-        #endregion
+
+        #endregion Featured Challenge Groups methods
     }
 }

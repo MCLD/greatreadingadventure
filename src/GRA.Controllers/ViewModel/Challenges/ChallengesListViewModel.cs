@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using GRA.Controllers.ViewModel.Shared;
+using GRA.Domain.Model;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using static GRA.Domain.Model.Filters.ChallengeFilter;
 
@@ -13,6 +14,7 @@ namespace GRA.Controllers.ViewModel.Challenges
         public GRA.Domain.Model.ChallengeGroup ChallengeGroup { get; set; }
         public IList<GRA.Domain.Model.Challenge> Challenges { get; set; }
         public bool? Favorites { get; set; }
+        public IEnumerable<DisplayChallengeGroup> FeaturedChallengeGroups { get; set; }
         public bool IsActive { get; set; }
         public bool IsLoggedIn { get; set; }
         public OrderingOption Ordering { get; set; }
