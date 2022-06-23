@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 namespace GRA.Data.Repository
 {
     public class FeaturedChallengeGroupRepository
-        : AuditingRepository<Model.FeaturedChallengeGroup, Domain.Model.FeaturedChallengeGroup>,
+        : AuditingRepository<Model.FeaturedChallengeGroup, FeaturedChallengeGroup>,
         IFeaturedChallengeGroupRepository
     {
         public FeaturedChallengeGroupRepository(ServiceFacade.Repository repositoryFacade,
@@ -234,7 +234,7 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public void RemoveFeaturedGroupTexts(int featuredGroupId, int? languageId = null)
+        public void RemoveFeaturedGroupTexts(int featuredGroupId, int? languageId)
         {
             var textEntities = _context.FeaturedChallengeGroupTexts
                 .AsNoTracking()

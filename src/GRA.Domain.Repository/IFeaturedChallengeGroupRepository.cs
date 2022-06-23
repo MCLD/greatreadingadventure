@@ -28,7 +28,7 @@ namespace GRA.Domain.Repository
 
         Task<ICollectionWithCount<FeaturedChallengeGroup>> PageAsync(BaseFilter filter);
 
-        void RemoveFeaturedGroupTexts(int featuredGroupId, int? languageId = null);
+        void RemoveFeaturedGroupTexts(int featuredGroupId, int? languageId);
 
         Task UpdateTextAsync(FeaturedChallengeGroupText text, int featuredGroupId, int languageId);
     }

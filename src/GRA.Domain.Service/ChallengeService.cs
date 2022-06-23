@@ -850,7 +850,7 @@ namespace GRA.Domain.Service
             var texts = await _featuredChallengeGroupRepository
                 .GetTextsForFeaturedGroupAsync(featuredGroupId);
 
-            _featuredChallengeGroupRepository.RemoveFeaturedGroupTexts(featuredGroupId);
+            _featuredChallengeGroupRepository.RemoveFeaturedGroupTexts(featuredGroupId, null);
             await _featuredChallengeGroupRepository.SaveAsync();
 
             foreach (var text in texts)
@@ -904,8 +904,6 @@ namespace GRA.Domain.Service
         public async Task UpdateFeaturedGroupSortAsync(int id, bool increase)
         {
             VerifyPermission(Permission.ManageFeaturedChallengeGroups);
-
-            int authUserId = GetClaimId(ClaimType.UserId);
 
             var featuredGroup = await _featuredChallengeGroupRepository.GetByIdAsync(id);
 
