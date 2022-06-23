@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Sign in again button on exit pages when the program is running
 - Site setting to show secret codes on the streaming event pages
 - Ability to configure minimum worker threads and completion port threads
+- Featured challenge group scheduling and display carousel
 
 ### Changed
 

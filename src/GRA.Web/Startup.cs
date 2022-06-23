@@ -594,6 +594,7 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IEmailReminderRepository, Data.Repository.EmailReminderRepository>();
             services.AddScoped<Domain.Repository.IEmailSubscriptionAuditLogRepository, Data.Repository.EmailSubscriptionAuditLogRepository>();
             services.AddScoped<Domain.Repository.IEventRepository, Data.Repository.EventRepository>();
+            services.AddScoped<Domain.Repository.IFeaturedChallengeGroupRepository, Data.Repository.FeaturedChallengeGroupRepository>();
             services.AddScoped<Domain.Repository.IGroupInfoRepository, Data.Repository.GroupInfoRepository>();
             services.AddScoped<Domain.Repository.IGroupTypeRepository, Data.Repository.GroupTypeRepository>();
             services.AddScoped<Domain.Repository.IJobRepository, Data.Repository.JobRepository>();

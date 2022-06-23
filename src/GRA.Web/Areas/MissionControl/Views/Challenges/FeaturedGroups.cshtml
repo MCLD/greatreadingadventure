@@ -1,0 +1,200 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Challenges.FeaturedGroupListViewModel
+
+@await Html.PartialAsync("_ChallengeGroupsPartial")
+
+@if (Model.CanManageFeaturedGroups)
+{
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <a asp-action="@nameof(ChallengesController.FeaturedCreate)" class="btn btn-default">Add Featured Group</a>
+        </div>
+    </div>
+}
+
+<div class="row">
+    <div class="col-xs-12">
+        @if (Model.FeaturedGroups.Count() == 0)
+        {
+            <div class="alert alert-warning">No Featured Groups</div>
+        }
+        else
+        {
+            <div>
+                <table class="table table-condensed table-bordered @(Model.CanManageFeaturedGroups ? "link-table" : "table-striped")">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Active</th>
+                            @if (Model.CanManageFeaturedGroups)
+                            {
+                                <th>Actions</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var featuredGroup in Model.FeaturedGroups)
+                        {
+                            <tr>
+                                <td class="td-class text-middle">
+                                    @if (Model.CanManageFeaturedGroups)
+                                    {
+                                        <a asp-action="@nameof(ChallengesController.FeaturedDetails)" asp-route-id="@featuredGroup.Id" class="rowlink">
+                                            @featuredGroup.Name
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        @featuredGroup.Name
+                                    }
+                                </td>
+                                <td class="text-middle">
+                                    @if (featuredGroup.IsActive(Model.Now))
+                                    {
+                                        <span class="text-success">
+                                            <span class="fa-stack">
+                                                <span class="fas fa-circle fa-stack-2x"></span>
+                                                <span class="fas fa-check fa-stack-1x fa-inverse"></span>
+                                            </span>
+
+                                            @(featuredGroup.StartDate?.ToString("g") ?? "forever")
+                                            -
+                                            @(featuredGroup.EndDate?.ToString("g") ?? "forever")
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-danger">
+                                            <span class="fa-stack">
+                                                <span class="fas fa-circle fa-stack-2x"></span>
+                                                <span class="fas fa-times fa-stack-1x fa-inverse"></span>
+                                            </span>                                            @(featuredGroup.StartDate?.ToString("g") ?? "forever")
+                                            -
+                                            @(featuredGroup.EndDate?.ToString("g") ?? "forever")
+                                        </span>
+                                    }
+                                </td>
+                                @if (Model.CanManageFeaturedGroups)
+                                {
+                                    <td class="on-top gra-mc-icon text-middle">
+                                        <form type="post" style="display: inline-block;"
+                                  asp-controller="@ChallengesController.Name"
+                                  asp-action="@nameof(ChallengesController.FeaturedChangeSort)">
+                                            <input type="hidden" name="id" value="@featuredGroup.Id" />
+                                            <input type="hidden" name="page" value="@Model.CurrentPage" />
+                                            <input type="hidden" name="increase" value="false" />
+                                            <button type="submit"
+                                        class="btn btn-default btn-xs btn-spinner"
+                                        disabled="@(Model.CurrentPage == 1 && featuredGroup == Model.FeaturedGroups.First() ? " disabled" : null)">
+                                                <span class="fas fa-arrow-up fa-fw"></span>
+                                            </button>
+                                        </form>
+                                        <form type="post" style="display: inline-block"
+                                  asp-controller="@ChallengesController.Name"
+                                  asp-action="@nameof(ChallengesController.FeaturedChangeSort)">
+                                            <input type="hidden" name="id" value="@featuredGroup.Id" />
+                                            <input type="hidden" name="page" value="@Model.CurrentPage" />
+                                            <input type="hidden" name="increase" value="true" />
+                                            <button type="submit"
+                                        class="btn btn-default btn-xs btn-spinner"
+                                        disabled="@(Model.CurrentPage == Model.MaxPage && featuredGroup == Model.FeaturedGroups.Last() ? " disabled" : null)">
+                                                <span class="fas fa-arrow-down fa-fw"></span>
+                                            </button>
+                                        </form>
+                                        <button type="button"
+                                    class="btn btn-danger btn-xs"
+                                    data-toggle="modal"
+                                    data-target="#deleteModal"
+                                    data-id="@featuredGroup.Id"
+                                    data-name="@featuredGroup.Name">
+                                            <span class="fas fa-times fa-fw" aria-hidden="true"></span>
+                                        </button>
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            @if (Model.MaxPage > 1)
+            {
+                <paginate paginateModel="@Model"></paginate>
+            }
+        }
+    </div>
+</div>
+
+<div class="row">
+    <div class="modal fade"
+         id="deleteModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="deleteModalLabel">
+        <div class="modal-dialog" role="document">
+            <form asp-action="@nameof(ChallengesController.FeaturedDelete)"
+                  method="post"
+                  role="form"
+                  style="display: inline;">
+                <input asp-for="PaginateModel.CurrentPage" type="hidden" />
+                <input asp-for="FeaturedGroup.Id" type="hidden" />
+                <input asp-for="FeaturedGroup.Name" type="hidden" />
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-label="Close dialog">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h1 class="modal-title h4" id="deleteModalLabel">Delete Featuring Group</h1>
+                    </div>
+                    <div class="modal-body">
+                        <span class="fas fa-exclamation-triangle" aria-hidden="true"></span>
+                        <span id="modal-text"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal"
+                                style="margin-right: 1em;">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="btn btn-danger pull-right"
+                                aria-label="Confirm"
+                                button-spinner>
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    @if (Model.CanManageFeaturedGroups)
+    {
+        <script>
+            $("#deleteModal").on("show.bs.modal", function(e) {
+                var button = $(e.relatedTarget);
+                var id = button.data("id");
+                var name = button.data("name");
+                var modal = $(this);
+                modal.find("#modal-text").text("Are you sure you want to stop featuring the group \"" + name + "\'?");
+                modal.find("#FeaturedGroup_Id").val(id);
+                modal.find("#FeaturedGroup_Name").val(name);
+            });
+
+            $(window).on("load", function() {
+                $(".td-class").each(function() {
+                    $(this).children("a.rowlink").height($(this).height() + 11);
+                });
+            });
+            $(window).resize(function() {
+                $(".td-class").each(function() {
+                    $(this).children("a.rowlink").height($(this).height() + 11);
+                });
+            });
+        </script>
+    }
+}

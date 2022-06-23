@@ -1,16 +1,88 @@
 ﻿@model GRA.Controllers.ViewModel.Challenges.ChallengesListViewModel
 
-<noscript>
-    <style>
-        #CategoryPlaceholder {
-            display: none;
-        }
+@section Styles {
+    @if (Model.FeaturedChallengeGroups?.Any() == true)
+    {
+        <link rel="stylesheet" type="text/css" href="@Url.Content("~/css/slick.min.css")" />
+    }
+}
 
-        .favorite-button {
-            display: none;
-        }
-    </style>
-</noscript>
+    <noscript>
+        <style>
+            #CategoryPlaceholder {
+                display: none;
+            }
+
+            .favorite-button {
+                display: none;
+            }
+        </style>
+    </noscript>
+
+    @if (Model.FeaturedChallengeGroups?.Any() == true)
+{
+    <div class="sr-only">
+        <h2>Featured Challenge Groups</h2>
+        <ul>
+            @foreach (var featuredChallenge in Model.FeaturedChallengeGroups)
+            {
+                <li>
+                    <a asp-controller="@ChallengesController.Name"
+               asp-action="@nameof(ChallengesController.List)"
+               asp-route-id="@featuredChallenge.Stub">
+                        @featuredChallenge.Name
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
+
+    <div class="row gra-js-required gra-carousel-container" aria-hidden="true">
+        <div class="col-xs-12 col-sm-10 col-sm-offset-1">
+            <div class="accordion" id="accordionFeatured">
+                <div class="panel panel-default">
+                    <div class="panel-heading" id="headingOne">
+                        <a class="btn btn-link collapsed"
+                       style="padding: 0;"
+                       data-toggle="collapse"
+                       data-target="#collapseFeatured"
+                       data-parent="#accordion"
+                       href="#"
+                       aria-expanded="false"
+                       aria-controls="collapseFeatured">
+                            <span class="lead">Featured Challenge Groups</span>
+                        </a>
+                    </div>
+                    <div id="collapseFeatured"
+                     class="panel-collapse collapse"
+                     aria-labelledby="headingOne"
+                     role="tabpanel"
+                     data-parent="#accordion"
+                     aria-expanded="false">
+                        <div class="panel-body">
+                            <div class="gra-carousel text-center">
+                                @foreach (var featuredChallenge in Model.FeaturedChallengeGroups)
+                                {
+                                    <div>
+                                        <a asp-controller="@ChallengesController.Name"
+                                   asp-action="@nameof(ChallengesController.List)"
+                                   asp-route-id="@featuredChallenge.Stub"
+                                   class="gra-carousel-link">
+                                            <img src="@featuredChallenge.ImagePath"
+                                         alt="@featuredChallenge.AltText"
+                                         style="max-width: 100px;" />
+                                            <p>@featuredChallenge.Name</p>
+                                        </a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 <div class="row">
     <div class="col-xs-12 col-sm-10 col-sm-offset-1">
@@ -62,7 +134,6 @@
                                 </select>
                             </div>
                         </div>
-
                         @if (Model.CategoryList?.Count() > 0)
                         {
                             <div id="Category" class="row row-spacing">
@@ -288,67 +359,92 @@
 </div>
 
 @section scripts {
-<script>
-    var favoriteUrl = "@(Url.Action("UpdateSingleFavorite"))";
-    var showFavorites = "@Model.Favorites" == "True";
+    <script>
+        var favoriteUrl = "@(Url.Action("UpdateSingleFavorite"))";
+        var showFavorites = "@Model.Favorites" == "True";
 
-    $("#CategoryIds").removeAttr("disabled");
-    $("#CategoryPlaceholder").remove();
-    $("#CategoryIds").multiselect({
-        nonSelectedText: "",
-        buttonClass: "form-control",
-        buttonWidth: "100%",
-        disableIfEmpty: true
-    });
+        $("#CategoryIds").removeAttr("disabled");
+        $("#CategoryPlaceholder").remove();
+        $("#CategoryIds").multiselect({
+            nonSelectedText: "",
+            buttonClass: "form-control",
+            buttonWidth: "100%",
+            disableIfEmpty: true
+        });
 
-    $("#searchForm").on("submit", function () {
-        var categoryIds = $("#CategoryIds option:selected")
-            .map(function (a, item) { return item.value; })
-            .get();
+        $("#searchForm").on("submit", function() {
+            var categoryIds = $("#CategoryIds option:selected")
+                .map(function(a, item) { return item.value; })
+                .get();
 
-        if (categoryIds.length > 0) {
-            $("#CategoryIds").attr("disabled", "disabled");
-            $("<input />")
-                .attr("type", "hidden")
-                .attr("name", "Categories")
-                .attr("value", categoryIds.join(","))
-                .appendTo($(this));
-        }
-    });
+            if (categoryIds.length > 0) {
+                $("#CategoryIds").attr("disabled", "disabled");
+                $("<input />")
+                    .attr("type", "hidden")
+                    .attr("name", "Categories")
+                    .attr("value", categoryIds.join(","))
+                    .appendTo($(this));
+            }
+        });
 
-    $(".favorite-button").on("click", function () {
-        var button = $(this);
-        if (button.hasClass("fa-spinner") == false) {
-            button.removeClass("far fa-star").addClass("fas fa-spinner fa-pulse");
-            var favorite = button.data("favorite") == "False";
+        $(".favorite-button").on("click", function() {
+            var button = $(this);
+            if (button.hasClass("fa-spinner") == false) {
+                button.removeClass("far fa-star").addClass("fas fa-spinner fa-pulse");
+                var favorite = button.data("favorite") == "False";
 
-            $.post(favoriteUrl, { challengeId: button.data("challengeid"), favorite: favorite }, function (response) {
-                setTimeout(function() {
-                    if (response.success) {
-                        if (response.favorite) {
-                            button.addClass("fa-star");
-                            button.data("favorite", "True");
-                        }
-                        else {
-                            if (showFavorites) {
-                                button.parent().parent().remove();
+                $.post(favoriteUrl, { challengeId: button.data("challengeid"), favorite: favorite }, function(response) {
+                    setTimeout(function() {
+                        if (response.success) {
+                            if (response.favorite) {
+                                button.addClass("fa-star");
+                                button.data("favorite", "True");
                             }
                             else {
-                                button.removeClass("fas");
-                                button.addClass("far fa-star");
-                                button.data("favorite", "False");
+                                if (showFavorites) {
+                                    button.parent().parent().remove();
+                                }
+                                else {
+                                    button.removeClass("fas");
+                                    button.addClass("far fa-star");
+                                    button.data("favorite", "False");
+                                }
                             }
+                            button.removeClass("fa-spinner fa-pulse").css("transform", "none");
                         }
-                        button.removeClass("fa-spinner fa-pulse").css("transform", "none");
+                        else {
+                            button.addClass("fa-exclamation-triangle").removeClass("fa-spinner fa-pulse").css("transform", "none");
+                            alert(response.message);
                         }
-                    else {
-                        button.addClass("fa-exclamation-triangle").removeClass("fa-spinner fa-pulse").css("transform", "none");
-                        alert(response.message);
-                    }
-                }, 500);
-            });
-        }
+                    }, 500);
+                });
+            }
+        });
+    </script>
 
-    });
-</script>
-}
+    @if (Model.FeaturedChallengeGroups?.Any() == true)
+    {
+        <script type="text/javascript" src="@Url.Content("~/js/slick.min.js")"></script>
+        <script>
+            const sessionFeatured = 'featuredChallengeStatus';
+            $('#collapseFeatured').on('show.bs.collapse', function() {
+                if (sessionStorage) {
+                    sessionStorage.removeItem(sessionFeatured);
+                }
+                if ($('.slick-slider')) {
+                    $('.slick-slider').slick('refresh');
+                }
+            });
+            $('#collapseFeatured').on('hide.bs.collapse', function() {
+                if (sessionStorage) {
+                    sessionStorage.setItem(sessionFeatured, 'hide');
+                }
+            });
+            $('#collapseFeatured').ready(function() {
+                if (sessionStorage && sessionStorage.getItem(sessionFeatured) !== 'hide') {
+                    $('#collapseFeatured').collapse('show');
+                }
+            });
+        </script>
+    }
+    }
