@@ -802,8 +802,13 @@ namespace GRA.Domain.Service
                 var now = _dateTimeProvider.Now;
 
                 var nextFeaturedChallengeChange = await _featuredChallengeGroupRepository
-                    .GetNextActiveTimestampAsync(GetCurrentSiteId())
-                    ?? now.AddHours(1);
+                    .GetNextActiveTimestampAsync(GetCurrentSiteId());
+
+                if (nextFeaturedChallengeChange == null
+                    || nextFeaturedChallengeChange < now)
+                {
+                    nextFeaturedChallengeChange = now.AddHours(8);
+                }
 
                 _logger.LogDebug("Caching {Count} featured challenge groups until {Expiration} ({TimeSpan})",
                     featured?.Count() ?? 0,
@@ -812,7 +817,7 @@ namespace GRA.Domain.Service
 
                 await _cache.SaveToCacheAsync(cacheKey,
                      featured,
-                     nextFeaturedChallengeChange - now);
+                     nextFeaturedChallengeChange.Value - now);
             }
 
             return featured;
