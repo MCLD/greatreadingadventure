@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using GRA.Abstract;
@@ -9,7 +8,6 @@ using GRA.Domain.Model.Filters;
 using GRA.Domain.Model.Utility;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -17,7 +15,7 @@ namespace GRA.Domain.Service
 {
     public class NewsService : Abstract.BaseUserService<NewsService>
     {
-        private readonly IDistributedCache _cache;
+        private readonly IGraCache _cache;
         private readonly EmailService _emailService;
         private readonly IJobRepository _jobRepository;
         private readonly INewsCategoryRepository _newsCategoryRepository;
@@ -27,7 +25,7 @@ namespace GRA.Domain.Service
 
         public NewsService(ILogger<NewsService> logger,
             IDateTimeProvider dateTimeProvider,
-            IDistributedCache cache,
+            IGraCache cache,
             IJobRepository jobRepository,
             INewsCategoryRepository newsCategoryRepository,
             INewsPostRepository newsPostRepository,
@@ -101,7 +99,7 @@ namespace GRA.Domain.Service
                 var category = await _newsCategoryRepository.GetByIdAsync(addedPost.CategoryId);
                 addedPost.CategoryName = category.Name;
 
-                _cache.Remove($"s{GetClaimId(ClaimType.SiteId)}.{CacheKey.LatestNewsPostId}");
+                await _cache.RemoveAsync($"s{GetClaimId(ClaimType.SiteId)}.{CacheKey.LatestNewsPostId}");
             }
 
             return addedPost;
@@ -158,7 +156,7 @@ namespace GRA.Domain.Service
 
             if (publish)
             {
-                _cache.Remove($"s{GetClaimId(ClaimType.SiteId)}.{CacheKey.LatestNewsPostId}");
+                await _cache.RemoveAsync($"s{GetClaimId(ClaimType.SiteId)}.{CacheKey.LatestNewsPostId}");
             }
 
             return currentPost;
@@ -201,24 +199,17 @@ namespace GRA.Domain.Service
             var siteId = GetClaimId(ClaimType.SiteId);
             string cacheKey = $"s{siteId}.{CacheKey.LatestNewsPostId}";
 
-            int lastId;
-            var lastIdString = _cache.GetString(cacheKey);
-            if (string.IsNullOrEmpty(lastIdString))
+            var lastId = await _cache.GetIntFromCacheAsync(cacheKey);
+            if (!lastId.HasValue)
             {
                 lastId = await _newsPostRepository.GetLatestActiveIdAsync(new BaseFilter
                 {
                     SiteId = siteId
                 });
-                _cache.SetString(cacheKey,
-                    lastId.ToString(CultureInfo.InvariantCulture),
-                    ExpireIn(30));
-            }
-            else
-            {
-                lastId = int.Parse(lastIdString, CultureInfo.InvariantCulture);
+                await _cache.SaveToCacheAsync(cacheKey, lastId, ExpireInTimeSpan(30));
             }
 
-            return lastId;
+            return lastId.Value;
         }
 
         public async Task<DataWithCount<IEnumerable<NewsCategory>>> GetPaginatedCategoryListAsync(
@@ -303,7 +294,7 @@ namespace GRA.Domain.Service
             });
 
             var post = await _newsPostRepository.GetByIdAsync(jobDetails.NewsPostId);
-            if(string.IsNullOrEmpty(post.CategoryName))
+            if (string.IsNullOrEmpty(post.CategoryName))
             {
                 var category = await _newsCategoryRepository.GetByIdAsync(post.CategoryId);
                 post.CategoryName = category?.Name;
@@ -376,12 +367,24 @@ namespace GRA.Domain.Service
                     };
                 }
                 directEmailDetails.ToUserId = userId;
-
-                var history = await _emailService.SendDirectAsync(directEmailDetails);
-
-                if (history.Successful)
+                try
                 {
-                    sentEmails++;
+                    var history = await _emailService.SendDirectAsync(directEmailDetails);
+                    if (history.Successful)
+                    {
+                        sentEmails++;
+                    }
+                    else
+                    {
+                        _logger.LogWarning("Unable to send newsletter notification email to user {UserId}",
+                            userId);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning("Unable to send newsletter notification email to user {UserId}: {ErrorMessage}",
+                        userId,
+                        ex.Message);
                 }
 
                 if (sw.Elapsed.TotalSeconds > lastUpdate + 5)

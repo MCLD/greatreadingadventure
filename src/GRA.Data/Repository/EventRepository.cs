@@ -267,6 +267,22 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
+        public async Task<int> RemoveFavoritesAsync(int eventId)
+        {
+            var favorites = await _context
+                .UserFavoriteEvents
+                .AsNoTracking()
+                .Where(_ => _.EventId == eventId)
+                .ToListAsync();
+
+            int favoriteCount = favorites.Count;
+
+            _context.UserFavoriteEvents.RemoveRange(favorites);
+            await _context.SaveChangesAsync();
+
+            return favoriteCount;
+        }
+
         public async Task UpdateUserFavoritesAsync(int authUserId, int userId,
             IEnumerable<int> favoritesToAdd, IEnumerable<int> favoritesToRemove)
         {

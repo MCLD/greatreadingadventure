@@ -8,9 +8,18 @@ namespace GRA.Domain.Service.Abstract
 {
     public abstract class BaseUserService<Service> : BaseService<Service>
     {
+        protected const int DefaultCacheExpiration = 5;
         protected readonly IUserContextProvider _userContextProvider;
+        private ClaimsPrincipal _currentUser = null;
+
+        private int? _currentUserSiteId = null;
+
+        private Permission? _managementPermission = null;
+
+        private UserContext _userContext = null;
+
         protected BaseUserService(ILogger<Service> logger,
-            GRA.Abstract.IDateTimeProvider dateTimeProvider,
+                                            GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider)
             : base(logger, dateTimeProvider)
         {
@@ -18,52 +27,31 @@ namespace GRA.Domain.Service.Abstract
                 ?? throw new ArgumentNullException(nameof(userContextProvider));
         }
 
-        protected const int DefaultCacheExpiration = 5;
-
-        private UserContext _userContext = null;
-        private ClaimsPrincipal _currentUser = null;
-        private int? _currentUserSiteId = null;
-        private Permission? _managementPermission = null;
-
-        protected UserContext GetUserContext()
+        public void ClearCachedUserContext()
         {
-            if (_userContext == null)
+            _userContext = null;
+        }
+
+        public void VerifyCanHouseholdAction()
+        {
+            var userContext = GetUserContext();
+            if (userContext.SiteStage != SiteStage.ProgramOpen
+                && userContext.SiteStage != SiteStage.RegistrationOpen)
             {
-                _userContext = _userContextProvider.GetContext();
+                throw new GraException(Annotations.Validate.NotOpenActivity);
             }
-            return _userContext;
         }
 
-        protected ClaimsPrincipal GetAuthUser()
+        protected DistributedCacheEntryOptions ExpireIn(int? minutes = null)
         {
-            if (_currentUser == null)
-            {
-                var userContext = GetUserContext();
-                _currentUser = userContext.User;
-            }
-            return _currentUser;
+            var fromMinutes = new TimeSpan(0, minutes ?? DefaultCacheExpiration, 0);
+            return new DistributedCacheEntryOptions()
+                .SetAbsoluteExpiration(fromMinutes);
         }
 
-        protected int GetCurrentSiteId()
+        protected TimeSpan ExpireInTimeSpan(int? minutes = null)
         {
-            if (_currentUserSiteId == null)
-            {
-                var userContext = GetUserContext();
-                _currentUserSiteId = userContext.SiteId;
-            }
-            return (int)_currentUserSiteId;
-        }
-
-        protected bool HasPermission(Permission permission)
-        {
-            var currentUser = GetAuthUser();
-            return _userContextProvider.UserHasPermission(currentUser, permission.ToString());
-        }
-
-        protected int GetClaimId(string claimType)
-        {
-            var currentUser = GetAuthUser();
-            return _userContextProvider.GetId(currentUser, claimType);
+            return new TimeSpan(0, minutes ?? DefaultCacheExpiration, 0);
         }
 
         protected int GetActiveUserId()
@@ -78,14 +66,50 @@ namespace GRA.Domain.Service.Abstract
             return (int)userContext.ActiveUserId;
         }
 
-        protected void VerifyCanRegister()
+        protected ClaimsPrincipal GetAuthUser()
         {
-            var userContext = GetUserContext();
-            if (userContext.SiteStage != SiteStage.RegistrationOpen
-                && userContext.SiteStage != SiteStage.ProgramOpen)
+            if (_currentUser == null)
             {
-                throw new GraException(Annotations.Validate.NotOpen);
+                var userContext = GetUserContext();
+                _currentUser = userContext.User;
             }
+            return _currentUser;
+        }
+
+        protected int GetClaimId(string claimType)
+        {
+            var currentUser = GetAuthUser();
+            return _userContextProvider.GetId(currentUser, claimType);
+        }
+
+        protected int GetCurrentSiteId()
+        {
+            if (_currentUserSiteId == null)
+            {
+                var userContext = GetUserContext();
+                _currentUserSiteId = userContext.SiteId;
+            }
+            return (int)_currentUserSiteId;
+        }
+
+        protected UserContext GetUserContext()
+        {
+            if (_userContext == null)
+            {
+                _userContext = _userContextProvider.GetContext();
+            }
+            return _userContext;
+        }
+
+        protected bool HasPermission(Permission permission)
+        {
+            var currentUser = GetAuthUser();
+            return _userContextProvider.UserHasPermission(currentUser, permission.ToString());
+        }
+
+        protected void SetManagementPermission(Permission permission)
+        {
+            _managementPermission = permission;
         }
 
         protected void VerifyCanLog()
@@ -97,28 +121,14 @@ namespace GRA.Domain.Service.Abstract
             }
         }
 
-        public void VerifyCanHouseholdAction()
+        protected void VerifyCanRegister()
         {
             var userContext = GetUserContext();
-            if (userContext.SiteStage != SiteStage.ProgramOpen
-                && userContext.SiteStage != SiteStage.RegistrationOpen)
+            if (userContext.SiteStage != SiteStage.RegistrationOpen
+                && userContext.SiteStage != SiteStage.ProgramOpen)
             {
-                throw new GraException(Annotations.Validate.NotOpenActivity);
+                throw new GraException(Annotations.Validate.NotOpen);
             }
-        }
-
-        protected void VerifyPermission(Permission permission)
-        {
-            if (!HasPermission(permission))
-            {
-                _logger.LogError($"User id {GetClaimId(ClaimType.UserId)} does not have permission {permission}.");
-                throw new GraException(Annotations.Validate.Permission);
-            }
-        }
-
-        protected void SetManagementPermission(Permission permission)
-        {
-            _managementPermission = permission;
         }
 
         protected void VerifyManagementPermission()
@@ -136,16 +146,13 @@ namespace GRA.Domain.Service.Abstract
             }
         }
 
-        public void ClearCachedUserContext()
+        protected void VerifyPermission(Permission permission)
         {
-            _userContext = null;
-        }
-
-        protected DistributedCacheEntryOptions ExpireIn(int? minutes = null)
-        {
-            var fromMinutes = new TimeSpan(0, minutes ?? DefaultCacheExpiration, 0);
-            return new DistributedCacheEntryOptions()
-                .SetAbsoluteExpiration(fromMinutes);
+            if (!HasPermission(permission))
+            {
+                _logger.LogError($"User id {GetClaimId(ClaimType.UserId)} does not have permission {permission}.");
+                throw new GraException(Annotations.Validate.Permission);
+            }
         }
     }
 }

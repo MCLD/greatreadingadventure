@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Packing slip functionality for checking item status on arrival
 - Sign in again button on exit pages when the program is running
 - Site setting to show secret codes on the streaming event pages
+- Ability to configure minimum worker threads and completion port threads
 
 ### Changed
 
@@ -41,6 +42,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Unify email sending to use a single process with logging
 - Allow Mission Control editing of email templates
 - Add email internationalization
+- Show error if user tries to log in as another user that they cannot
+- Log error if initial user email check fails
+- Show friendly error when geolocation fails
+- Bug with avatar translated text display error
+- Check for null viewmodel on some posts
+- Bug with empty username in UsernameInUseAsync
+- Allow deletion of events even if participants have favorited them
 
 ### Updated
 

@@ -6,7 +6,6 @@ using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -15,18 +14,18 @@ namespace GRA.Domain.Service
     public class EventService : BaseUserService<EventService>
     {
         private readonly IBranchRepository _branchRepository;
-        private readonly IDistributedCache _cache;
+        private readonly GRA.Abstract.IGraCache _cache;
         private readonly IChallengeGroupRepository _challengeGroupRepository;
         private readonly IChallengeRepository _challengeRepository;
         private readonly IEventRepository _eventRepository;
         private readonly ILocationRepository _locationRepository;
         private readonly IProgramRepository _programRepository;
-        private readonly ISpatialDistanceRepository _spatialDistanceRepository;
         private readonly SiteLookupService _siteLookupService;
+        private readonly ISpatialDistanceRepository _spatialDistanceRepository;
 
         public EventService(ILogger<EventService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
-            IDistributedCache cache,
+            GRA.Abstract.IGraCache cache,
             IUserContextProvider userContextProvider,
             IBranchRepository branchRepository,
             IChallengeRepository challengeRepository,
@@ -288,11 +287,13 @@ namespace GRA.Domain.Service
             return await GetUpcomingStreamListAsync(count);
         }
 
-        public async Task Remove(int eventId)
+        public async Task<int> Remove(int eventId)
         {
             VerifyPermission(Permission.ManageEvents);
             await _cache.RemoveAsync(CacheKey.StreamingEvents);
+            var favoritesCount = await _eventRepository.RemoveFavoritesAsync(eventId);
             await _eventRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), eventId);
+            return favoritesCount;
         }
 
         public async Task RemoveLocationAsync(int locationId)
@@ -346,7 +347,7 @@ namespace GRA.Domain.Service
         {
             ICollection<Event> events = null;
 
-            var cachedEvents = await _cache.GetStringAsync(CacheKey.StreamingEvents);
+            var cachedEvents = await _cache.GetStringFromCache(CacheKey.StreamingEvents);
 
             if (!string.IsNullOrEmpty(cachedEvents))
             {
@@ -386,12 +387,16 @@ namespace GRA.Domain.Service
                         expiration);
                 }
 
-                await _cache.SetStringAsync(CacheKey.StreamingEvents,
-                    JsonConvert.SerializeObject(events),
-                    new DistributedCacheEntryOptions
-                    {
-                        AbsoluteExpiration = expiration
-                    });
+                TimeSpan expireSpan;
+
+                if (expiration.Value > _dateTimeProvider.Now)
+                {
+                    expireSpan = expiration.Value - _dateTimeProvider.Now;
+
+                    await _cache.SaveToCacheAsync(CacheKey.StreamingEvents,
+                        JsonConvert.SerializeObject(events),
+                        expireSpan);
+                }
             }
 
             return events;

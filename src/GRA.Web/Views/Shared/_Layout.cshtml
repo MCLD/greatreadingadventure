@@ -112,7 +112,7 @@
                         {
                             <li ActiveBy routeKey="Controller" value="Mail" title="Mail">
                                 <a asp-controller="Mail" asp-action="Index">
-                                    @if ((int)Context.Items[GRA.Controllers.ItemKey.UnreadCount] > 0)
+                                    @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.UnreadCount) && (int)Context.Items[GRA.Controllers.ItemKey.UnreadCount] > 0)
                                     {
                                         <span class="fas fa-envelope text-danger" title="@SharedLocalizer[GRA.Annotations.Interface.NewMail]"></span><span class="visible-xs-inline"> @SharedLocalizer[GRA.Domain.Model.DisplayNames.Mail]</span>
                                         <span class="label label-default label-as-badge" style="background-color: #a94442;">

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -99,6 +100,77 @@ namespace GRA.Web
                     config[ConfigurationKey.RuntimeCacheRedisConfiguration],
                     ex.Message);
                 throw;
+            }
+
+            if (!string.IsNullOrEmpty(config[ConfigurationKey.WorkerThreads])
+                || !string.IsNullOrEmpty(config[ConfigurationKey.CompletionPortThreads]))
+            {
+                ThreadPool.GetMinThreads(out int minThreads, out int minCompletionPortThreads);
+                var setThreads = minThreads;
+                var setCompletionPortThreads = minCompletionPortThreads;
+                if (!string.IsNullOrEmpty(config[ConfigurationKey.WorkerThreads]))
+                {
+                    if (int.TryParse(config[ConfigurationKey.WorkerThreads], out int threads))
+                    {
+                        if (threads > minThreads)
+                        {
+                            setThreads = threads;
+                        }
+                        else
+                        {
+                            Log.Error("Configured {SettingName} to value {Value} would place it below the minimum {Minimum}",
+                                ConfigurationKey.WorkerThreads,
+                                config[ConfigurationKey.WorkerThreads],
+                                minThreads);
+                        }
+                    }
+                    else
+                    {
+                        Log.Error("Unable to parse configuration {SettingName} value: {Value}",
+                            ConfigurationKey.WorkerThreads,
+                            config[ConfigurationKey.WorkerThreads]);
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(config[ConfigurationKey.CompletionPortThreads]))
+                {
+                    if (int.TryParse(config[ConfigurationKey.CompletionPortThreads], out int threads))
+                    {
+                        if (threads > minCompletionPortThreads)
+                        {
+                            setCompletionPortThreads = threads;
+                        }
+                        else
+                        {
+                            Log.Error("Configured {SettingName} to value {Value} would place it below the minimum {Minimum}",
+                                ConfigurationKey.CompletionPortThreads,
+                                config[ConfigurationKey.CompletionPortThreads],
+                                minCompletionPortThreads);
+                        }
+                    }
+                    else
+                    {
+                        Log.Error("Unable to parse configuration {SettingName} value: {Value}",
+                            ConfigurationKey.CompletionPortThreads,
+                            config[ConfigurationKey.CompletionPortThreads]);
+                    }
+                }
+
+                if (minThreads != setThreads 
+                    || minCompletionPortThreads != setCompletionPortThreads)
+                {
+                    if (ThreadPool.SetMinThreads(setThreads, setCompletionPortThreads)) {
+                        Log.Information("Set minimum thread counts to {SetThreads} threads, {SetCompletionPortThreads} completion port threads",
+                            setThreads,
+                            setCompletionPortThreads);
+                    }
+                    else
+                    {
+                        Log.Error("Unable to set minimum thread counts to {SetThreads} threads, {SetCompletionPortThreads} completion port threads",
+                            setThreads,
+                            setCompletionPortThreads);
+                    }
+                }
             }
 
             // output the version and revision

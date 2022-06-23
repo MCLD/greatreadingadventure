@@ -1639,6 +1639,10 @@ namespace GRA.Domain.Service
 
         public async Task<bool> UsernameInUseAsync(string username)
         {
+            if(string.IsNullOrEmpty(username))
+            {
+                return false;
+            }
             string trimmedUsername = username.Trim();
             return await _userRepository.UsernameInUseAsync(GetCurrentSiteId(), trimmedUsername);
         }

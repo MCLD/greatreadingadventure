@@ -24,17 +24,17 @@ namespace GRA.Controllers.Filter
     [AttributeUsage(AttributeTargets.All, AllowMultiple = false)]
     public sealed class SiteFilterAttribute : Attribute, IAsyncResourceFilter
     {
-        private readonly ILogger<SiteFilterAttribute> _logger;
-        private readonly IDistributedCache _cache;
+        private readonly IGraCache _cache;
         private readonly IConfiguration _config;
+        private readonly IOptions<RequestLocalizationOptions> _l10nOptions;
+        private readonly ILogger<SiteFilterAttribute> _logger;
         private readonly IPathResolver _pathResolver;
         private readonly SiteLookupService _siteLookupService;
         private readonly IUserContextProvider _userContextProvider;
-        private readonly IOptions<RequestLocalizationOptions> _l10nOptions;
         private readonly UserService _userService;
 
         public SiteFilterAttribute(ILogger<SiteFilterAttribute> logger,
-            IDistributedCache cache,
+            IGraCache cache,
             IConfiguration config,
             IPathResolver pathResolver,
             SiteLookupService siteLookupService,
@@ -157,8 +157,8 @@ namespace GRA.Controllers.Filter
             string siteCssCacheKey = $"s{siteId}.{CacheKey.SiteCss}";
             string siteJsCacheKey = $"s{siteId}.{CacheKey.SiteJs}";
 
-            var cssLastModified = await _cache.GetStringAsync(siteCssCacheKey);
-            var jsLastModified = await _cache.GetStringAsync(siteJsCacheKey);
+            var cssLastModified = await _cache.GetStringFromCache(siteCssCacheKey);
+            var jsLastModified = await _cache.GetStringFromCache(siteJsCacheKey);
 
             // compute the appropriate cache time in minutes, default to 60 if not provided
             int cacheMinutes = 60;
@@ -338,10 +338,9 @@ namespace GRA.Controllers.Filter
                     .ToString("yyMMddHHmmss", CultureInfo.InvariantCulture);
                 if (cacheMinutes > 0)
                 {
-                    await _cache.SetStringAsync(cacheKey,
+                    await _cache.SaveToCacheAsync(cacheKey,
                         updatedLastModified,
-                        new DistributedCacheEntryOptions()
-                            .SetAbsoluteExpiration(TimeSpan.FromMinutes(cacheMinutes)));
+                        TimeSpan.FromMinutes(cacheMinutes));
                 }
             }
             return updatedLastModified;
