@@ -74,6 +74,7 @@
             public const string UsernameListSent = "A list of usernames associated with the email address '{0}' has been sent.";
             public const string VendorItemArrived = "<em>{0}</em> arrived on <strong>{1}</strong> and is ready for pick-up.";
             public const string VendorItemOrdered = "<em>{0}</em> ordered on <strong>{1}</strong>.";
+            public const string VendorItemPickedup = "<em>{0}</em> was picked up on <strong>{1}</strong>.";
             public const string VendorItemShipped = "<em>{0}</em> shipped on <strong>{1}</strong>.";
             public const string YouCanJoinOn = "You can join {0} on {1}.";
         }

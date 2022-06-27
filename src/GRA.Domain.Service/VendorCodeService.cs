@@ -1806,19 +1806,24 @@ namespace GRA.Domain.Service
                     var vendorPrize = await _prizeWinnerService
                         .GetPrizeForVendorCodeAsync(vendorCode.Id);
 
+                    var itemName = "Item";
+
+                    if (!string.IsNullOrWhiteSpace(vendorCode.Details))
+                    {
+                        itemName = vendorCode.Details;
+                    }
+
                     if (vendorPrize?.RedeemedAt.HasValue == true)
                     {
                         user.VendorOrderStatus = VendorOrderStatus.Receieved;
+                        user.VendorCodeMessage
+                            = _sharedLocalizer[Annotations.Info.VendorItemPickedup,
+                                itemName,
+                                vendorPrize.RedeemedAt.Value
+                                    .ToString("d", CultureInfo.InvariantCulture)];
                     }
                     else
                     {
-                        var itemName = "Item";
-
-                        if (!string.IsNullOrWhiteSpace(vendorCode.Details))
-                        {
-                            itemName = vendorCode.Details;
-                        }
-
                         if (vendorCode.ArrivalDate.HasValue && vendorCode.IsDamaged != true
                             && vendorCode.IsMissing != true)
                         {

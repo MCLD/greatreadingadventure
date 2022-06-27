@@ -1593,4 +1593,8 @@
     <value>The email address {0} is invalid.</value>
     <comment>A user-specified email address (shown in {0}) is not valid and cannot be emailed.</comment>
   </data>
+  <data name="&lt;em&gt;{0}&lt;/em&gt; was picked up on &lt;strong&gt;{1}&lt;/strong&gt;." xml:space="preserve">
+    <value>&lt;em&gt;{0}&lt;/em&gt; was picked up on &lt;strong&gt;{1}&lt;/strong&gt;.</value>
+    <comment>Display once a vendor item is picked up; {0} is the detail of the item, {1} is the date it was picked up</comment>
+  </data>
 </root>
