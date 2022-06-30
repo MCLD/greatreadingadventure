@@ -1873,7 +1873,7 @@ namespace GRA.Domain.Service
         {
             var user = await _userRepository.GetByIdAsync(userId);
 
-            if (!string.IsNullOrEmpty(user?.Email))
+            if (user != null && !string.IsNullOrEmpty(user.Email))
             {
                 emailDetails.ClearTags();
                 emailDetails.DirectEmailTemplateId = templateId;
