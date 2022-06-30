@@ -1872,15 +1872,14 @@ namespace GRA.Domain.Service
             VendorCode code)
         {
             var user = await _userRepository.GetByIdAsync(userId);
-            int languageId = string.IsNullOrEmpty(user.Culture)
-                ? await _languageService.GetDefaultLanguageIdAsync()
-                : await _languageService.GetLanguageIdAsync(user.Culture);
 
-            if (!string.IsNullOrEmpty(user.Email))
+            if (!string.IsNullOrEmpty(user?.Email))
             {
                 emailDetails.ClearTags();
                 emailDetails.DirectEmailTemplateId = templateId;
-                emailDetails.LanguageId = languageId;
+                emailDetails.LanguageId = string.IsNullOrEmpty(user.Culture)
+                    ? await _languageService.GetDefaultLanguageIdAsync()
+                    : await _languageService.GetLanguageIdAsync(user.Culture);
                 emailDetails.ToAddress = user.Email;
                 emailDetails.ToName = user.FullName;
                 emailDetails.ToUserId = user.Id;

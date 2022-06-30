@@ -28,6 +28,7 @@ namespace GRA.Domain.Model
         public bool? IsEmailAward { get; set; }
         public bool? IsMissing { get; set; }
         public bool IsUsed { get; set; }
+        public bool IsUserValid { get; set; }
         public DateTime? OrderDate { get; set; }
         public long PackingSlip { get; set; }
         public string ParticipantName { get; set; }
