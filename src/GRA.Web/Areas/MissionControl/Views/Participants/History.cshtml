@@ -22,11 +22,11 @@
                             {
                                 <th width="44">
                                     <button type="button"
-                                            id="deleteCheckedItems"
-                                            class="btn btn-danger btn-xs center-block"
-                                            data-toggle="modal"
-                                            data-target="#deleteModal"
-                                            disabled>
+                                    id="deleteCheckedItems"
+                                    class="btn btn-danger btn-xs center-block"
+                                    data-toggle="modal"
+                                    data-target="#deleteModal"
+                                    disabled>
                                         <span class="fas fa-times" aria-hidden="true"></span>
                                     </button>
                                 </th>
@@ -61,7 +61,16 @@
                                         }
                                         else
                                         {
-                                            @:&nbsp;
+                                            if (!string.IsNullOrEmpty(history.WhyNotDeletable))
+                                            {
+                                                <span class="text-info fas fa-info-circle"
+                                  title="Not able to delete: @history.WhyNotDeletable"
+                                  onClick="alert('Not able to delete: @history.WhyNotDeletable.Replace("'", "\"")')"></span>
+                                            }
+                                            else
+                                            {
+                                                @:&nbsp;
+                                            }
                                         }
                                     </td>
                                 }
@@ -114,17 +123,17 @@
 {
     <div class="row">
         <div class="modal fade"
-             id="deleteModal"
-             tabindex="-1"
-             role="dialog"
-             aria-labelledby="deleteModalLabel">
+         id="deleteModal"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="deleteModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button"
-                                class="close"
-                                data-dismiss="modal"
-                                aria-label="Close dialog">
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close dialog">
                             <span aria-hidden="true">&times;</span>
                         </button>
                         <h1 class="modal-title h4" id="deleteModalLabel">Delete item</h1>
@@ -135,21 +144,21 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button"
-                                class="btn btn-default"
-                                data-dismiss="modal"
-                                style="margin-right: 1em;">
+                            class="btn btn-default"
+                            data-dismiss="modal"
+                            style="margin-right: 1em;">
                             Cancel
                         </button>
                         <form asp-controller="Participants"
-                              asp-action="DeleteHistory"
-                              method="post"
-                              role="form"
-                              style="display:inline">
+                          asp-action="DeleteHistory"
+                          method="post"
+                          role="form"
+                          style="display:inline">
                             <input id="ids" name="ids" type="hidden" />
                             <input id="userId" name="userId" value="@Model.Id" type="hidden" />
                             <button type="submit"
-                                    class="btn btn-danger pull-right"
-                                    aria-label="Confirm">
+                                class="btn btn-danger pull-right"
+                                aria-label="Confirm">
                                 <span class="fas fa-times" aria-hidden="true"></span>
                                 Delete
                             </button>
@@ -164,56 +173,57 @@
 @section scripts
     {
     <script>
-        $(".bundle-link").on("click", function () {
+        $(".bundle-link").on("click", function() {
             var id = $(this).data("id");
             var url = "@Url.Action(nameof(GRA.Controllers.LookupController.GetItemsInBundle), GRA.Controllers.LookupController.Name, new { Area = string.Empty })";
 
             $.getJSON(url, { id: id }, function(response) {
                 $("#bundleModalBody").html("");
                 $("#bundleModal").modal("show");
-                $.each(response, function (index, item) {
+                $.each(response, function(index, item) {
                     $("#bundleModalBody").html($("#bundleModalBody").html() + "<img class='img-thumbnail badge-sm bundle-image' src='/" + item + "' asp-append-version='true' />");
                 });
             });
 
         })
 
-        @if (Model.CanRemoveHistory) {
-        <text>
-        $('#deleteModal').on('show.bs.modal', function(event) {
-            var button = $(event.relatedTarget);
-            var modal = $(this);
-            var checkedHistoryItems = [];
-            $('.checkedHistoryItem').each(function () {
-                if ($(this).prop('checked')) {
-                    checkedHistoryItems.push($(this).data("id"));
-                }
-            });
-
-            if (checkedHistoryItems.length > 0) {
-                $('#ids').val(checkedHistoryItems.join(','));
-                modal.find('#modal-text').text('Are you sure you wish to delete the ' + checkedHistoryItems.length + ' checked items?');
-            } else {
-                event.preventDefault();
-                alert("You must check the boxes next to the items you wish to delete.");
-            }
-        })
-
-        $().ready(function() {
-            $('#deleteCheckedItems').prop("disabled", true);
-            $('.checkedHistoryItem').each(function() {
-                $(this).on('change', function() {
-                    $('#deleteCheckedItems').prop("disabled", true);
+        @if (Model.CanRemoveHistory)
+        {
+            <text>
+                $('#deleteModal').on('show.bs.modal', function(event) {
+                    var button = $(event.relatedTarget);
+                    var modal = $(this);
+                    var checkedHistoryItems = [];
                     $('.checkedHistoryItem').each(function() {
                         if ($(this).prop('checked')) {
-                            $('#deleteCheckedItems').prop("disabled", false);
-                            return false;
+                            checkedHistoryItems.push($(this).data("id"));
                         }
                     });
-                });
-            })
-        });
-        </text>
+
+                    if (checkedHistoryItems.length > 0) {
+                        $('#ids').val(checkedHistoryItems.join(','));
+                        modal.find('#modal-text').text('Are you sure you wish to delete the ' + checkedHistoryItems.length + ' checked items?');
+                    } else {
+                        event.preventDefault();
+                        alert("You must check the boxes next to the items you wish to delete.");
+                    }
+                })
+
+            $().ready(function() {
+                $('#deleteCheckedItems').prop("disabled", true);
+                $('.checkedHistoryItem').each(function() {
+                    $(this).on('change', function() {
+                        $('#deleteCheckedItems').prop("disabled", true);
+                        $('.checkedHistoryItem').each(function() {
+                            if ($(this).prop('checked')) {
+                                $('#deleteCheckedItems').prop("disabled", false);
+                                return false;
+                            }
+                        });
+                    });
+                })
+            });
+            </text>
         }
     </script>
 }

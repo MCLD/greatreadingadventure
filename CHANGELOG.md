@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Site setting to show secret codes on the streaming event pages
 - Ability to configure minimum worker threads and completion port threads
 - Featured challenge group scheduling and display carousel
+- Show reasons on MC participant history page as to why items cannot be deleted
 
 ### Changed
 
