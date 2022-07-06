@@ -10,7 +10,7 @@
     "commonmark": "^0.29.2",
     "eonasdan-bootstrap-datetimepicker": "4.17.49",
     "jquery": "^3.5.1",
-    "jquery-validation": "^1.19.4",
+    "jquery-validation": "^1.19.5",
     "jquery-validation-unobtrusive": "^3.2.11",
     "moment": "^2.29.2",
     "moment-timezone": "^0.5.32",
