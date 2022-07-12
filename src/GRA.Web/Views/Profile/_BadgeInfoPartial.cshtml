@@ -1,13 +1,16 @@
 ﻿@model GRA.Controllers.ViewModel.Profile.BadgeInfoViewModel
 
-<div class="row row-spacing">
-    <div class="col-xs-12 col-sm-3 text-center"
+<div class="row">
+    @if (Model?.UserLog != null)
+    {
+        <div class="col-xs-12 col-sm-3 text-center"
          style="margin-bottom: 1rem;">
-        <img class="img-thumbnail img-responsive"
+            <img class="img-thumbnail img-responsive"
              alt="@Model.UserLog.BadgeAltText"
              src="~/@Model.UserLog.BadgeFilename"
              asp-append-version="true" />
-    </div>
+        </div>
+    }
     <div class="col-xs-12 col-sm-9">
         @if (!string.IsNullOrWhiteSpace(Model.HtmlMessage))
         {
@@ -19,15 +22,18 @@
         }
     </div>
 </div>
-<div class="row" style="margin-top: 1rem;">
-    <div class="col-xs-12">
-        @if (Model?.UserLog?.CreatedAt != null)
-        {
-            <p style="margin-bottom: 0;"><em>@SharedLocalizer[GRA.Annotations.Info.EarnedOn, Model.UserLog.CreatedAt.ToShortDateString()]</em></p>
-        }
-        else
-        {
-            <p style="margin-bottom: 0;">&nbsp;</p>
-        }
+@if (Model?.UserLog != null)
+{
+    <div class="row" style="margin-top: 1rem;">
+        <div class="col-xs-12">
+            @if (Model?.UserLog?.CreatedAt != null)
+            {
+                <p style="margin-bottom: 0;"><em>@SharedLocalizer[GRA.Annotations.Info.EarnedOn, Model.UserLog.CreatedAt.ToShortDateString()]</em></p>
+            }
+            else
+            {
+                <p style="margin-bottom: 0;">&nbsp;</p>
+            }
+        </div>
     </div>
-</div>
+}
