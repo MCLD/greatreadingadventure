@@ -21,20 +21,17 @@ namespace GRA.Controllers.MissionControl
     [Area("MissionControl")]
     public class VendorCodesController : Base.MCController
     {
-        private const string ExcelMimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
         private const string ExcelFileExtension = "xlsx";
-        private const int ExcelStyleIndexBold = 1;
+        private const string ExcelMimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
         private const int ExcelPaddingCharacters = 1;
-
+        private const int ExcelStyleIndexBold = 1;
         private const string NoAccess = "You do not have access to vendor codes.";
 
-        private readonly ILogger _logger;
         private readonly EmailManagementService _emailManagementService;
         private readonly JobService _jobService;
+        private readonly ILogger _logger;
         private readonly UserService _userService;
         private readonly VendorCodeService _vendorCodeService;
-
-        public static string Name { get { return "VendorCodes"; } }
 
         public VendorCodesController(ServiceFacade.Controller context,
             ILogger<VendorCodesController> logger,
@@ -54,6 +51,24 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Vendor code management";
         }
 
+        public static string Name
+        { get { return "VendorCodes"; } }
+
+        /// <summary>
+        /// Drop-down list options (true/false) for packing slip
+        /// </summary>
+        public static IEnumerable<SelectListItem> PackingSlipOptions
+        {
+            get
+            {
+                return new[]
+                {
+                    new SelectListItem("Don't award a prize when item is received via packing slip entry", "False"),
+                    new SelectListItem("Award a prize when item is received via packing slip entry", "True")
+                };
+            }
+        }
+
         /// <summary>
         /// Drop-down list options (true/false) for ship date
         /// </summary>
@@ -69,141 +84,22 @@ namespace GRA.Controllers.MissionControl
             }
         }
 
-        /// <summary>
-        /// Drop-down list options (true/false) for packing slip
-        /// </summary>
-        public static IEnumerable<SelectListItem> PackingSlipOptions
-        {
-            get
-            {
-                return new[]
-                {
-                    new SelectListItem("Don't award a prize when item is received via packing slip entry", "False"),
-                    new SelectListItem("Award a prize when item is received via packing slip entry", "True")
-
-                };
-            }
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Index()
-        {
-            if (UserHasPermission(Permission.ManageVendorCodes))
-            {
-                var vendorCodeStatus = await _vendorCodeService.GetStatusAsync();
-                if (vendorCodeStatus.IsConfigured)
-                {
-                    return View(vendorCodeStatus);
-                }
-                else
-                {
-                    var vendorCodeType = await _vendorCodeService.GetTypeAllAsync();
-                    if (vendorCodeType?.Count == 0)
-                    {
-                        return RedirectToAction(nameof(Configure));
-                    }
-                    else
-                    {
-                        return RedirectToAction(nameof(GenerateCodes));
-                    }
-                }
-            }
-
-            return RedirectToAction(nameof(ViewPackingSlip));
-        }
-
         [HttpGet]
         [Authorize(Policy = Policy.ManageVendorCodes)]
-        public async Task<IActionResult> ImportStatus()
+        public async Task<IActionResult> Configure()
         {
-            var codeTypes = await _vendorCodeService.GetTypeAllAsync();
-            var codeTypeSelectList = codeTypes.Select(_ => new SelectListItem
+            var vendorCodeType = await _vendorCodeService.GetTypeAllAsync();
+
+            var viewModel = vendorCodeType?.FirstOrDefault() ?? new VendorCodeType
             {
-                Value = _.Id.ToString(CultureInfo.InvariantCulture),
-                Text = _.Description
-            });
+                SiteId = GetCurrentSiteId()
+            };
 
-            PageTitle = "Vendor Code Import Status";
+            viewModel.DirectEmailTemplates = await _emailManagementService.GetUserTemplatesAsync();
 
-            return View(codeTypeSelectList);
+            return View("Configure", viewModel);
         }
 
-        [HttpPost]
-        [Authorize(Policy = Policy.ManageVendorCodes)]
-        public async Task<IActionResult> ImportStatus(int vendorCodeTypeId,
-            Microsoft.AspNetCore.Http.IFormFile excelFile)
-        {
-            if (excelFile == null
-                || !string.Equals(Path.GetExtension(excelFile.FileName), ".xls",
-                    StringComparison.OrdinalIgnoreCase))
-            {
-                AlertDanger = "You must select an .xls file.";
-                ModelState.AddModelError("excelFile", "You must select an .xls file.");
-                return RedirectToAction("ImportStatus");
-            }
-
-            if (ModelState.ErrorCount == 0)
-            {
-                var tempFile = _pathResolver.ResolvePrivateTempFilePath();
-                _logger.LogInformation("Accepted vendor id {vendorCodeId} import file {UploadFile} as {TempFile}",
-                    vendorCodeTypeId,
-                    excelFile.FileName,
-                    tempFile);
-
-                using (var fileStream = new FileStream(tempFile, FileMode.Create))
-                {
-                    await excelFile.CopyToAsync(fileStream);
-                }
-
-                string file = WebUtility.UrlEncode(Path.GetFileName(tempFile));
-
-                var site = await GetCurrentSiteAsync();
-
-                var jobToken = await _jobService.CreateJobAsync(new Job
-                {
-                    JobType = JobType.UpdateVendorStatus,
-                    SerializedParameters = JsonConvert
-                        .SerializeObject(new JobDetailsVendorCodeStatus
-                        {
-                            VendorCodeTypeId = vendorCodeTypeId,
-                            Filename = file,
-                            SiteName = site.Name
-                        })
-                });
-
-                return View("Job", new ViewModel.MissionControl.Shared.JobViewModel
-                {
-                    CancelUrl = Url.Action(nameof(ImportStatus)),
-                    JobToken = jobToken.ToString(),
-                    PingSeconds = 5,
-                    SuccessRedirectUrl = "",
-                    SuccessUrl = Url.Action(nameof(ImportStatus)),
-                    Title = "Loading import..."
-                });
-            }
-            else
-            {
-                return RedirectToAction("ImportStatus");
-            }
-        }
-
-        [HttpGet]
-        [Authorize(Policy = Policy.ManageVendorCodes)]
-        public async Task<IActionResult> EmailAward()
-        {
-            var codeTypes = await _vendorCodeService.GetTypeAllAsync();
-            var codeTypeSelectList = codeTypes.Select(_ => new SelectListItem
-            {
-                Value = _.Id.ToString(CultureInfo.InvariantCulture),
-                Text = _.Description
-            });
-
-            PageTitle = "Vendor Code Email Award";
-
-            return View(codeTypeSelectList);
-        }
-
-#pragma warning disable S3220 // Method calls should not resolve ambiguously to overloads with "params"
         [HttpGet]
         [Authorize(Policy = Policy.ManageVendorCodes)]
         public async Task<IActionResult> DownloadUnreportedEmailAddresses(int vendorCodeTypeId)
@@ -362,7 +258,6 @@ namespace GRA.Controllers.MissionControl
                         .EnsureValidFilename($"EmailAwards.{ExcelFileExtension}")
                 };
             }
-#pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception ex)
             {
                 _logger.LogError(ex,
@@ -376,9 +271,23 @@ namespace GRA.Controllers.MissionControl
 
                 return RedirectToAction(nameof(EmailAward));
             }
-#pragma warning restore CA1031 // Do not catch general exception types
         }
-#pragma warning restore S3220 // Method calls should not resolve ambiguously to overloads with "params"
+
+        [HttpGet]
+        [Authorize(Policy = Policy.ManageVendorCodes)]
+        public async Task<IActionResult> EmailAward()
+        {
+            var codeTypes = await _vendorCodeService.GetTypeAllAsync();
+            var codeTypeSelectList = codeTypes.Select(_ => new SelectListItem
+            {
+                Value = _.Id.ToString(CultureInfo.InvariantCulture),
+                Text = _.Description
+            });
+
+            PageTitle = "Vendor Code Email Award";
+
+            return View(codeTypeSelectList);
+        }
 
         [HttpPost]
         [Authorize(Policy = Policy.ManageVendorCodes)]
@@ -441,64 +350,24 @@ namespace GRA.Controllers.MissionControl
 
         [HttpGet]
         [Authorize(Policy = Policy.ManageVendorCodes)]
-        public async Task<IActionResult> Configure()
+        public async Task<IActionResult> ExportCodes()
         {
             var vendorCodeType = await _vendorCodeService.GetTypeAllAsync();
-
-            var viewModel = vendorCodeType?.FirstOrDefault() ?? new VendorCodeType
+            if (vendorCodeType?.FirstOrDefault() == null)
             {
-                SiteId = GetCurrentSiteId()
-            };
-
-            viewModel.DirectEmailTemplates = await _emailManagementService.GetUserTemplatesAsync();
-
-            return View("Configure", viewModel);
-        }
-
-        [HttpPost]
-        [Authorize(Policy = Policy.ManageVendorCodes)]
-        public async Task<IActionResult> UpdateConfiguration(VendorCodeType vendorCodeType)
-        {
-            if (vendorCodeType == null)
-            {
-                AlertDanger = "Could not create empty vendor code type.";
+                AlertDanger = "You must create a vendor code type before you can export codes.";
                 return RedirectToAction(nameof(Index));
             }
 
-            if (!ModelState.IsValid)
-            {
-                vendorCodeType.DirectEmailTemplates = await _emailManagementService
-                    .GetUserTemplatesAsync();
+            string date = _dateTimeProvider.Now.ToString("yyyyMMdd", CultureInfo.InvariantCulture);
+            string codeFileName = vendorCodeType
+                .First()
+                .Description
+                .Replace(" ", "", StringComparison.OrdinalIgnoreCase);
 
-                return View("Configure", vendorCodeType);
-            }
-
-            try
-            {
-                var existingVendorCodeType = await _vendorCodeService.GetTypeAllAsync();
-                if (existingVendorCodeType?.Count > 0)
-                {
-                    vendorCodeType.Id = existingVendorCodeType.First().Id;
-                    await _vendorCodeService.UpdateTypeAsync(vendorCodeType);
-                }
-                else
-                {
-                    await _vendorCodeService.AddTypeAsync(vendorCodeType);
-                }
-            }
-            catch (GraFieldValidationException gex)
-            {
-                foreach (var validationError in gex.FieldValidationErrors)
-                {
-                    foreach (var errorMessage in validationError)
-                    {
-                        ModelState.AddModelError(validationError.Key, errorMessage);
-                    }
-                }
-                return View("Configure", vendorCodeType);
-            }
-
-            return RedirectToAction(nameof(Index));
+            return File(await _vendorCodeService.ExportVendorCodesAsync(vendorCodeType.First().Id),
+                "text/plain",
+                FileUtility.EnsureValidFilename($"{date}-{codeFileName}.txt"));
         }
 
         [HttpGet]
@@ -550,84 +419,110 @@ namespace GRA.Controllers.MissionControl
 
         [HttpGet]
         [Authorize(Policy = Policy.ManageVendorCodes)]
-        public async Task<IActionResult> ExportCodes()
+        public async Task<IActionResult> ImportStatus()
         {
-            var vendorCodeType = await _vendorCodeService.GetTypeAllAsync();
-            if (vendorCodeType?.FirstOrDefault() == null)
+            var codeTypes = await _vendorCodeService.GetTypeAllAsync();
+            var codeTypeSelectList = codeTypes.Select(_ => new SelectListItem
             {
-                AlertDanger = "You must create a vendor code type before you can export codes.";
-                return RedirectToAction(nameof(Index));
+                Value = _.Id.ToString(CultureInfo.InvariantCulture),
+                Text = _.Description
+            });
+
+            PageTitle = "Vendor Code Import Status";
+
+            return View(codeTypeSelectList);
+        }
+
+        [HttpPost]
+        [Authorize(Policy = Policy.ManageVendorCodes)]
+        public async Task<IActionResult> ImportStatus(int vendorCodeTypeId,
+            Microsoft.AspNetCore.Http.IFormFile excelFile)
+        {
+            if (excelFile == null
+                || !string.Equals(Path.GetExtension(excelFile.FileName), ".xls",
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                AlertDanger = "You must select an .xls file.";
+                ModelState.AddModelError("excelFile", "You must select an .xls file.");
+                return RedirectToAction("ImportStatus");
             }
 
-            string date = _dateTimeProvider.Now.ToString("yyyyMMdd", CultureInfo.InvariantCulture);
-            string codeFileName = vendorCodeType
-                .First()
-                .Description
-                .Replace(" ", "", StringComparison.OrdinalIgnoreCase);
+            if (ModelState.ErrorCount == 0)
+            {
+                var tempFile = _pathResolver.ResolvePrivateTempFilePath();
+                _logger.LogInformation("Accepted vendor id {vendorCodeId} import file {UploadFile} as {TempFile}",
+                    vendorCodeTypeId,
+                    excelFile.FileName,
+                    tempFile);
 
-            return File(await _vendorCodeService.ExportVendorCodesAsync(vendorCodeType.First().Id),
-                "text/plain",
-                FileUtility.EnsureValidFilename($"{date}-{codeFileName}.txt"));
+                using (var fileStream = new FileStream(tempFile, FileMode.Create))
+                {
+                    await excelFile.CopyToAsync(fileStream);
+                }
+
+                string file = WebUtility.UrlEncode(Path.GetFileName(tempFile));
+
+                var site = await GetCurrentSiteAsync();
+
+                var jobToken = await _jobService.CreateJobAsync(new Job
+                {
+                    JobType = JobType.UpdateVendorStatus,
+                    SerializedParameters = JsonConvert
+                        .SerializeObject(new JobDetailsVendorCodeStatus
+                        {
+                            VendorCodeTypeId = vendorCodeTypeId,
+                            Filename = file,
+                            SiteName = site.Name
+                        })
+                });
+
+                return View("Job", new ViewModel.MissionControl.Shared.JobViewModel
+                {
+                    CancelUrl = Url.Action(nameof(ImportStatus)),
+                    JobToken = jobToken.ToString(),
+                    PingSeconds = 5,
+                    SuccessRedirectUrl = "",
+                    SuccessUrl = Url.Action(nameof(ImportStatus)),
+                    Title = "Loading import..."
+                });
+            }
+            else
+            {
+                return RedirectToAction("ImportStatus");
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            if (UserHasPermission(Permission.ManageVendorCodes))
+            {
+                var vendorCodeStatus = await _vendorCodeService.GetStatusAsync();
+                if (vendorCodeStatus.IsConfigured)
+                {
+                    return View(vendorCodeStatus);
+                }
+                else
+                {
+                    var vendorCodeType = await _vendorCodeService.GetTypeAllAsync();
+                    if (vendorCodeType?.Count == 0)
+                    {
+                        return RedirectToAction(nameof(Configure));
+                    }
+                    else
+                    {
+                        return RedirectToAction(nameof(GenerateCodes));
+                    }
+                }
+            }
+
+            return RedirectToAction(nameof(ViewPackingSlip));
         }
 
         [HttpPost]
         public IActionResult LookupPackingSlip(long id)
         {
             return RedirectToAction(nameof(ViewPackingSlip), new { id });
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> ViewPackingSlip(long id)
-        {
-            if (id == 0)
-            {
-                return View("EnterPackingSlip");
-            }
-
-            var summary = await _vendorCodeService.VerifyPackingSlipAsync(id);
-            summary.CanViewDetails = UserHasPermission(Permission.ViewParticipantDetails);
-
-            if (summary.VendorCodes.Count > 0 || summary.VendorCodePackingSlip != null)
-            {
-                if (summary.VendorCodePackingSlip != null)
-                {
-                    if (summary.CanViewDetails)
-                    {
-                        var enteredBy = await _userService
-                            .GetDetailsByPermission(summary.VendorCodePackingSlip.CreatedBy);
-                        summary.ReceivedBy = enteredBy.FullName;
-                    }
-                }
-                else
-                {
-                    var vendorCodeType = await _vendorCodeService
-                        .GetTypeById(summary.VendorCodes.First().VendorCodeTypeId);
-                    summary.CanBeReceived = UserHasPermission(Permission.ReceivePackingSlips)
-                        || UserHasPermission(Permission.ManageVendorCodes);
-                    summary.SubmitText = vendorCodeType.AwardPrizeOnPackingSlip
-                        ? "Mark as received and award prizes"
-                        : "Mark as received";
-                }
-
-                var tracking = new HashSet<string>();
-                foreach (var tns in summary.VendorCodes.Select(_ => _.TrackingNumber).Distinct())
-                {
-                    foreach (var tn in tns.Split(','))
-                    {
-                        tracking.Add(tn.Trim());
-                    }
-                }
-
-                if (tracking.Count > 0)
-                {
-                    summary.TrackingNumbers = tracking;
-                }
-
-                return View("ViewPackingSlip", summary);
-            }
-
-            ShowAlertDanger($"Could not find packing slip number {id}, please contact your administrator.");
-            return View("EnterPackingSlip", id);
         }
 
         [HttpPost]
@@ -694,7 +589,110 @@ namespace GRA.Controllers.MissionControl
             return View("EnterPackingSlip", summary.PackingSlipNumber);
         }
 
+        [HttpPost]
+        [Authorize(Policy = Policy.ManageVendorCodes)]
+        public async Task<IActionResult> UpdateConfiguration(VendorCodeType vendorCodeType)
+        {
+            if (vendorCodeType == null)
+            {
+                AlertDanger = "Could not create empty vendor code type.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            if (!ModelState.IsValid)
+            {
+                vendorCodeType.DirectEmailTemplates = await _emailManagementService
+                    .GetUserTemplatesAsync();
+
+                return View("Configure", vendorCodeType);
+            }
+
+            try
+            {
+                var existingVendorCodeType = await _vendorCodeService.GetTypeAllAsync();
+                if (existingVendorCodeType?.Count > 0)
+                {
+                    vendorCodeType.Id = existingVendorCodeType.First().Id;
+                    await _vendorCodeService.UpdateTypeAsync(vendorCodeType);
+                }
+                else
+                {
+                    await _vendorCodeService.AddTypeAsync(vendorCodeType);
+                }
+            }
+            catch (GraFieldValidationException gex)
+            {
+                foreach (var validationError in gex.FieldValidationErrors)
+                {
+                    foreach (var errorMessage in validationError)
+                    {
+                        ModelState.AddModelError(validationError.Key, errorMessage);
+                    }
+                }
+                return View("Configure", vendorCodeType);
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ViewPackingSlip(long id)
+        {
+            if (id == 0)
+            {
+                return View("EnterPackingSlip");
+            }
+
+            var summary = await _vendorCodeService.VerifyPackingSlipAsync(id);
+            summary.CanViewDetails = UserHasPermission(Permission.ViewParticipantDetails);
+
+            if (summary.VendorCodes.Count > 0 || summary.VendorCodePackingSlip != null)
+            {
+                if (summary.VendorCodePackingSlip != null)
+                {
+                    if (summary.CanViewDetails)
+                    {
+                        var enteredBy = await _userService
+                            .GetDetailsByPermission(summary.VendorCodePackingSlip.CreatedBy);
+                        summary.ReceivedBy = enteredBy.FullName;
+                    }
+                }
+                else
+                {
+                    var vendorCodeType = await _vendorCodeService
+                        .GetTypeById(summary.VendorCodes.First().VendorCodeTypeId);
+                    summary.CanBeReceived = UserHasPermission(Permission.ReceivePackingSlips)
+                        || UserHasPermission(Permission.ManageVendorCodes);
+                    summary.SubmitText = vendorCodeType.AwardPrizeOnPackingSlip
+                        ? "Mark as received and award prizes"
+                        : "Mark as received";
+                }
+
+                var tracking = new HashSet<string>();
+                foreach (var tns in summary.VendorCodes
+                    .Where(_ => !string.IsNullOrEmpty(_.TrackingNumber))
+                    .Select(_ => _.TrackingNumber).Distinct())
+                {
+                    foreach (var tn in tns.Split(','))
+                    {
+                        tracking.Add(tn.Trim());
+                    }
+                }
+
+                if (tracking.Count > 0)
+                {
+                    summary.TrackingNumbers = tracking;
+                }
+
+                return View("ViewPackingSlip", summary);
+            }
+
+            ShowAlertDanger($"Could not find packing slip number {id}, please contact your administrator.");
+            return View("EnterPackingSlip", id);
+        }
+
         #region Spreadsheet utility methods
+
         private static (Cell cell, int length) CreateCell(object dataItem)
         {
             var addCell = new Cell
@@ -711,7 +709,6 @@ namespace GRA.Controllers.MissionControl
             return (addCell, dataItem.ToString().Length);
         }
 
-#pragma warning disable S3220 // Method calls should not resolve ambiguously to overloads with "params"
         private static Stylesheet GetStylesheet()
         {
             var stylesheet = new Stylesheet();
@@ -751,7 +748,7 @@ namespace GRA.Controllers.MissionControl
 
             return stylesheet;
         }
-#pragma warning restore S3220 // Method calls should not resolve ambiguously to overloads with "params"
+
         #endregion Spreadsheet utility methods
     }
 }
