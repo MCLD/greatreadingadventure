@@ -19,7 +19,7 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="manifest" href="/manifest.webmanifest">
     @RenderSection("metadata", required: false)
-    <link rel="stylesheet" href="~/css/main.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="/css/main.min.css" />
     @RenderSection("styles", required: false)
     <style>
         div.tooltip-inner {
@@ -231,7 +231,7 @@
             <grasite property="footer"></grasite>
         </footer>
     </div>
-    <script src="~/js/main.min.js" asp-append-version="true"></script>
+    <script src="/js/main.min.js"></script>
     @RenderSection("scripts", required: false)
     <script>
         $(function () {

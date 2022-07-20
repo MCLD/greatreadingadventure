@@ -185,7 +185,7 @@ ClientBin/
 *.dbproj.schemaview
 *.pfx
 *.publishsettings
-#node_modules/
+node_modules/
 orleans.codegen.cs
 
 # RIA/Silverlight projects
@@ -245,11 +245,13 @@ ModelManifest.xml
 ##### Project-specific #####
 release.env
 src/GRA.Web/shared/
-
 src/GRA.Web/Properties/PublishProfiles/
 
-# some bower packages use a "build" directory, un-exclude those
-!src/GRA.Web/node_modules/**/[Bb]uild
+# exclude node_modules
+src/GRA.Web/node_modules/
+
+# exclude yarn cache
+src/GRA.Web/.yarn/
 
 # exclude additional AppSettings files
 src/GRA.Web/appsettings.Release.json

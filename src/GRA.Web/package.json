@@ -15,5 +15,6 @@
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.32",
     "slick-carousel": "^1.8.1"
-  }
+  },
+  "packageManager": "yarn@3.2.1"
 }
