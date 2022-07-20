@@ -28,6 +28,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Order streaming videos on dashboard by start date descending (newest at the top)
 - Vendor item status display on participants profile
 - Show wrench menu to all who have Mission Control access
+- Upgrade from ASP.NET v5.0 to v6.0
 
 ### Fixed
 

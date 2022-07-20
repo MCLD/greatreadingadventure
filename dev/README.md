@@ -2,11 +2,12 @@
 
 ## Environment
 
-GRA code should successfully compile using either the free [Visual Studio Code](https://code.visualstudio.com/) or [Visual Studio Community](https://www.visualstudio.com/vs/community/) edition. External dependencies are managed with NuGet and should be automatically downloaded upon the first build. The current `develop` branch requires [C# 7.1](https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-7-1) to compile, we are currently using Visual Studio 2019.
+GRA code should successfully compile using either the free [Visual Studio Code](https://code.visualstudio.com/) or [Visual Studio Community](https://www.visualstudio.com/vs/community/) edition. External dependencies are managed with NuGet and should be automatically downloaded upon the first build. The current `develop` branch requires [C# 7.1](https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-7-1) to compile, we are currently using Visual Studio 2022.
 
 Framework history:
 
-- Current work (version 4.2.0 and on) use [.NET 5.0](https://docs.microsoft.com/en-us/dotnet/core/dotnet-five)
+- Current work (version 4.3.0 and on) use [.NET 6.0](https://docs.microsoft.com/en-us/dotnet/core/whats-new/dotnet-6)
+- Versions 4.2 and 4.2.1 use [.NET 5.0](https://docs.microsoft.com/en-us/dotnet/core/whats-new/dotnet-5)
 - Version 4.1.1 used ASP.NET Core v2.2
 - Version 4.1.0 used ASP.NET Core v2.1
 - Version 4.0.0 used ASP.NET Core v1.1
