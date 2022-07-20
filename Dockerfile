@@ -27,7 +27,7 @@ RUN dotnet publish -c Release -o "/app/publish/"
 RUN cp /app/release-publish.bash "/app/publish/"
 
 # Get runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS publish
+FROM mcr.microsoft.com/dotnet/aspnet:6.0@sha256:d8b274c1ac356a3bbea84204d20e99046ce5eae20cfa7fbcf703e5aa034cb36b AS publish
 
 WORKDIR /app
 
