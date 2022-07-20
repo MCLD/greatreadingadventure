@@ -60,12 +60,22 @@
                             && User.HasClaim(ClaimType.Permission,
                                 Permission.UnDonateVendorCode.ToString()))
                         {
-                            <button class="btn btn-info btn-spinner"
-                                    asp-action="UndonateCode"
-                                    asp-is-disabled="@(!Model.CanEditDetails)"
-                                    button-spinner>
-                                <span class="buttonText">Un-donate</span>
-                            </button>
+                            if (Model.User.IsDonationLocked)
+                            {
+                                <button class="btn btn-default disabled"
+                                    asp-is-disabled="true">
+                                    <span class="buttonText">Donated through vendor</span>
+                                </button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-info btn-spinner"
+                                        asp-action="@nameof(ParticipantsController.UndonateCode)"
+                                        asp-is-disabled="@(!Model.CanEditDetails)"
+                                        button-spinner>
+                                    <span class="buttonText">Un-donate</span>
+                                </button>
+                            }
                         }
                     }
                     @if (Model.User.VendorCodePackingSlip != default)

@@ -16,6 +16,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Challenge sorting options (most recent, most popular)
 - Packing slip functionality for checking item status on arrival
 - Sign in again button on exit pages when the program is running
+- Site setting to show secret codes on the streaming event pages
+- Ability to configure minimum worker threads and completion port threads
+- Featured challenge group scheduling and display carousel
+- Show reasons on MC participant history page as to why items cannot be deleted
 
 ### Changed
 
@@ -38,6 +42,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Hide branch selection in performer scheduling when no branches are available
 - Mission Control error if a user who posted a news post was deleted
 - Show friendly message when invalid image type is uploaded
+- Unify email sending to use a single process with logging
+- Allow Mission Control editing of email templates
+- Add email internationalization
+- Show error if user tries to log in as another user that they cannot
+- Log error if initial user email check fails
+- Show friendly error when geolocation fails
+- Bug with avatar translated text display error
+- Check for null viewmodel on some posts
+- Bug with empty username in UsernameInUseAsync
+- Allow deletion of events even if participants have favorited them
 
 ### Updated
 

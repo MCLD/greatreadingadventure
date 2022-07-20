@@ -6,7 +6,6 @@ using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -15,17 +14,18 @@ namespace GRA.Domain.Service
     public class EventService : BaseUserService<EventService>
     {
         private readonly IBranchRepository _branchRepository;
-        private readonly IDistributedCache _cache;
+        private readonly GRA.Abstract.IGraCache _cache;
         private readonly IChallengeGroupRepository _challengeGroupRepository;
         private readonly IChallengeRepository _challengeRepository;
         private readonly IEventRepository _eventRepository;
         private readonly ILocationRepository _locationRepository;
         private readonly IProgramRepository _programRepository;
+        private readonly SiteLookupService _siteLookupService;
         private readonly ISpatialDistanceRepository _spatialDistanceRepository;
 
         public EventService(ILogger<EventService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
-            IDistributedCache cache,
+            GRA.Abstract.IGraCache cache,
             IUserContextProvider userContextProvider,
             IBranchRepository branchRepository,
             IChallengeRepository challengeRepository,
@@ -33,7 +33,8 @@ namespace GRA.Domain.Service
             IEventRepository eventRepository,
             ILocationRepository locationRepository,
             IProgramRepository programRepository,
-            ISpatialDistanceRepository spatialDistanceRepository)
+            ISpatialDistanceRepository spatialDistanceRepository,
+            SiteLookupService siteLookupService)
             : base(logger, dateTimeProvider, userContextProvider)
         {
             _branchRepository = branchRepository
@@ -52,6 +53,8 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(programRepository));
             _spatialDistanceRepository = spatialDistanceRepository
                 ?? throw new ArgumentNullException(nameof(spatialDistanceRepository));
+            _siteLookupService = siteLookupService
+                ?? throw new ArgumentNullException(nameof(siteLookupService));
         }
 
         public async Task<Event> Add(Event graEvent)
@@ -259,6 +262,17 @@ namespace GRA.Domain.Service
             return await _eventRepository.GetRelatedEventsForTriggerAsync(triggerId);
         }
 
+        public async Task<string> GetSecretCodeForStreamingEventAsync(int eventId)
+        {
+            if (!await _siteLookupService.GetSiteSettingBoolAsync(GetCurrentSiteId(),
+                SiteSettingKey.Events.StreamingShowCode))
+            {
+                throw new GraException(Annotations.Validate.Permission);
+            }
+
+            return await _eventRepository.GetSecretCodeForStreamingEventAsync(eventId);
+        }
+
         public async Task<ICollection<Event>> GetUpcomingStreamListAsync()
         {
             return await GetUpcomingStreamListAsync(null);
@@ -273,11 +287,13 @@ namespace GRA.Domain.Service
             return await GetUpcomingStreamListAsync(count);
         }
 
-        public async Task Remove(int eventId)
+        public async Task<int> Remove(int eventId)
         {
             VerifyPermission(Permission.ManageEvents);
             await _cache.RemoveAsync(CacheKey.StreamingEvents);
+            var favoritesCount = await _eventRepository.RemoveFavoritesAsync(eventId);
             await _eventRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), eventId);
+            return favoritesCount;
         }
 
         public async Task RemoveLocationAsync(int locationId)
@@ -331,7 +347,7 @@ namespace GRA.Domain.Service
         {
             ICollection<Event> events = null;
 
-            var cachedEvents = await _cache.GetStringAsync(CacheKey.StreamingEvents);
+            var cachedEvents = await _cache.GetStringFromCache(CacheKey.StreamingEvents);
 
             if (!string.IsNullOrEmpty(cachedEvents))
             {
@@ -367,16 +383,20 @@ namespace GRA.Domain.Service
                 }
                 else
                 {
-                    _logger.LogDebug("Expiring dashboard streaming events early becuase an event stops streaming at {Expiration}",
+                    _logger.LogDebug("Expiring dashboard streaming events early because an event stops streaming at {Expiration}",
                         expiration);
                 }
 
-                await _cache.SetStringAsync(CacheKey.StreamingEvents,
-                    JsonConvert.SerializeObject(events),
-                    new DistributedCacheEntryOptions
-                    {
-                        AbsoluteExpiration = expiration
-                    });
+                TimeSpan expireSpan;
+
+                if (expiration.Value > _dateTimeProvider.Now)
+                {
+                    expireSpan = expiration.Value - _dateTimeProvider.Now;
+
+                    await _cache.SaveToCacheAsync(CacheKey.StreamingEvents,
+                        JsonConvert.SerializeObject(events),
+                        expireSpan);
+                }
             }
 
             return events;

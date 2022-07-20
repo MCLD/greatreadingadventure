@@ -63,6 +63,16 @@
             <span asp-validation-for="UploadedFile" class="text-danger"></span>
         </div>
     </div>
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="SignUpSource" class="control-label">Mailing list</label>
+            <select asp-for="SignUpSource"
+                    asp-items="@GRA.Controllers.ViewModel.MissionControl.EmailManagement.EmailAddressesViewModel.AllSources"
+                    class="form-control">
+            </select>
+            <span asp-validation-for="SignUpSource" class="text-danger"></span>
+        </div>
+    </div>
     <div class="row-spacing">
         <button class="btn btn-primary btn-spinner" type="submit" button-spinner>
             <span class="fas fa-file-upload"></span>
@@ -72,31 +82,31 @@
 </form>
 
 @section scripts {
-    <script>
-        $(':file').on('fileselect', function (event, numFiles, label) {
-            var input = $(this).parents('.input-group').find(':text'),
-                log = numFiles > 1 ? numFiles = ' files selected' : label;
+<script>
+    $(':file').on('fileselect', function (event, numFiles, label) {
+        var input = $(this).parents('.input-group').find(':text'),
+            log = numFiles > 1 ? numFiles = ' files selected' : label;
 
-            if (input.length) {
-                input.val(log);
-                $('.btn-file').removeClass('btn-default');
-                $('.btn-file').addClass('btn-success');
-                $("#badgeImage").removeAttr("src");
-                $("#badgeImage").height(200);
-                $("#BadgeMakerImage").val("");
-            }
-            else {
-                input.val('');
-                $('.btn-file').addClass('btn-default');
-                $('.btn-file').removeClass('btn-success');
-            }
-        });
+        if (input.length) {
+            input.val(log);
+            $('.btn-file').removeClass('btn-default');
+            $('.btn-file').addClass('btn-success');
+            $("#badgeImage").removeAttr("src");
+            $("#badgeImage").height(200);
+            $("#BadgeMakerImage").val("");
+        }
+        else {
+            input.val('');
+            $('.btn-file').addClass('btn-default');
+            $('.btn-file').removeClass('btn-success');
+        }
+    });
 
-        $(document).on('change', ':file', function () {
-            var input = $(this),
-                numFiles = input.get(0).files ? input.get(0).files.length : 1,
-                label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-            input.trigger('fileselect', [numFiles, label]);
-        });
-    </script>
+    $(document).on('change', ':file', function () {
+        var input = $(this),
+            numFiles = input.get(0).files ? input.get(0).files.length : 1,
+            label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+        input.trigger('fileselect', [numFiles, label]);
+    });
+</script>
 }

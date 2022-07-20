@@ -1,5 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Challenges.ChallengeGroupListViewModel
 
+@await Html.PartialAsync("_ChallengeGroupsPartial")
+
 <form asp-controller="Challenges" asp-action="Groups" method="get" role="form">
     <div class="row row-spacing" style="padding-top: 10px;">
         <div class="col-xs-8">

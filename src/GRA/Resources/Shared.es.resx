@@ -1581,4 +1581,20 @@
     <value>Iniciar la sesión de nuevo</value>
     <comment>Button shown on exit screen in case the participant wishes to sign in again</comment>
   </data>
+  <data name="You are receiving this email because you are subscribed for updates from {{Sitename}}. You can [instantly unsubscribe at any time]({{UnsubscribeLink}})" xml:space="preserve">
+    <value>Está recibiendo este correo electrónico porque está suscrito para recibir actualizaciones de {{Sitename}}. Puede [anular la suscripción instantáneamente en cualquier momento]({{UnsubscribeLink}})</value>
+    <comment>Default footer for emails including an unsubscribe link.</comment>
+  </data>
+  <data name="The email address associated with username {0} is invalid, please call or stop by to resolve this." xml:space="preserve">
+    <value>La dirección de correo electrónico asociada con el nombre de usuario {0} no es válida, llame o visite una biblioteca para resolver esto.</value>
+    <comment>The email address associated with an account (shown as {0}) is invalid.</comment>
+  </data>
+  <data name="The email address {0} is invalid." xml:space="preserve">
+    <value>La dirección de correo electrónico {0} no es válida.</value>
+    <comment>A user-specified email address (shown in {0}) is not valid and cannot be emailed.</comment>
+  </data>
+  <data name="&lt;em&gt;{0}&lt;/em&gt; was picked up on &lt;strong&gt;{1}&lt;/strong&gt;." xml:space="preserve">
+    <value>&lt;em&gt;{0}&lt;/em&gt; fue recogido el &lt;strong&gt;{1}&lt;/strong&gt;.</value>
+    <comment>Display once a vendor item is picked up; {0} is the detail of the item, {1} is the date it was picked up</comment>
+  </data>
 </root>

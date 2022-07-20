@@ -69,13 +69,13 @@ namespace GRA.Data.Repository
             return await GetByIdAsync(unusedCode.Id);
         }
 
-        public async Task<VendorCode> GetUserVendorCode(int userId)
+        public async Task<ICollection<string>> GetAllCodesAsync(int vendorCodeTypeId)
         {
-            return await DbSet.AsNoTracking()
-                .Where(_ => _.UserId == userId)
-                .OrderByDescending(_ => _.CreatedAt)
-                .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync();
+            return await DbSet
+                .Where(_ => _.VendorCodeTypeId == vendorCodeTypeId)
+                .Select(_ => _.Code)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<VendorCode> GetByCode(string code)
@@ -85,6 +85,24 @@ namespace GRA.Data.Repository
                 .OrderByDescending(_ => _.CreatedAt)
                 .FirstOrDefaultAsync();
             return _mapper.Map<VendorCode>(vendorCode);
+        }
+
+        public async Task<ICollection<VendorCode>> GetByPackingSlipAsync(long packingSlipNumber)
+        {
+            var codes = await DbSet
+                .Where(_ => _.PackingSlip == packingSlipNumber)
+                .AsNoTracking()
+                .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+
+            foreach (var code in codes.Where(_ => _.UserId.HasValue))
+            {
+                code.IsUserValid = _context.Users
+                    .AsNoTracking()
+                    .Any(_ => _.Id == code.UserId.Value && !_.IsDeleted);
+            }
+
+            return codes;
         }
 
         public async Task<ICollection<VendorCode>> GetEarnedCodesAsync(ReportCriterion criterion)
@@ -137,24 +155,20 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task<ICollection<VendorCodeEmailAward>>
-            GetUnreportedEmailAwardCodes(int siteId, int vendorCodeTypeId)
+        public async Task<ICollection<VendorCode>> GetRemainingPrizesForBranchAsync(int branchId)
         {
-            return await _context.Users
+            var remainingPrizes = _context.PrizeWinners.Where(_ => !_.RedeemedAt.HasValue);
+
+            return await DbSet
+                .Where(_ => _.BranchId == branchId && _.UserId.HasValue)
+                .Join(remainingPrizes,
+                    vendorCode => vendorCode.Id,
+                    prize => prize.VendorCodeId,
+                    (vendorCode, _) => vendorCode)
                 .AsNoTracking()
-                .Join(DbSet.Where(_ => _.SiteId == siteId
-                        && _.VendorCodeTypeId == vendorCodeTypeId
-                        && _.IsEmailAward == true
-                        && !_.EmailAwardReported.HasValue),
-                    user => user.Id,
-                    vendorCode => vendorCode.UserId,
-                    (user, vendorcode) => new VendorCodeEmailAward
-                    {
-                        VendorCodeId = vendorcode.Id,
-                        UserId = user.Id,
-                        Name = user.FirstName + " " + user.LastName,
-                        Email = vendorcode.EmailAwardAddress
-                    })
+                .OrderBy(_ => _.ArrivalDate)
+                .ThenBy(_ => _.Details)
+                .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -191,39 +205,34 @@ namespace GRA.Data.Repository
             };
         }
 
-        public async Task<ICollection<string>> GetAllCodesAsync(int vendorCodeTypeId)
+        public async Task<ICollection<VendorCodeEmailAward>>
+            GetUnreportedEmailAwardCodes(int siteId, int vendorCodeTypeId)
         {
-            return await DbSet
-                .Where(_ => _.VendorCodeTypeId == vendorCodeTypeId)
-                .Select(_ => _.Code)
+            return await _context.Users
                 .AsNoTracking()
+                .Join(DbSet.Where(_ => _.SiteId == siteId
+                        && _.VendorCodeTypeId == vendorCodeTypeId
+                        && _.IsEmailAward == true
+                        && !_.EmailAwardReported.HasValue),
+                    user => user.Id,
+                    vendorCode => vendorCode.UserId,
+                    (user, vendorcode) => new VendorCodeEmailAward
+                    {
+                        VendorCodeId = vendorcode.Id,
+                        UserId = user.Id,
+                        Name = user.FirstName + " " + user.LastName,
+                        Email = vendorcode.EmailAwardAddress
+                    })
                 .ToListAsync();
         }
 
-        public async Task<ICollection<VendorCode>> GetByPackingSlipAsync(long packingSlipNumber)
+        public async Task<VendorCode> GetUserVendorCode(int userId)
         {
-            return await DbSet
-                .Where(_ => _.PackingSlip == packingSlipNumber)
-                .AsNoTracking()
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.UserId == userId)
+                .OrderByDescending(_ => _.CreatedAt)
                 .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
-                .ToListAsync();
-        }
-
-        public async Task<ICollection<VendorCode>> GetRemainingPrizesForBranchAsync(int branchId)
-        {
-            var remainingPrizes = _context.PrizeWinners.Where(_ => !_.RedeemedAt.HasValue);
-
-            return await DbSet
-                .Where(_ => _.BranchId == branchId && _.UserId.HasValue)
-                .Join(remainingPrizes,
-                    vendorCode => vendorCode.Id,
-                    prize => prize.VendorCodeId,
-                    (vendorCode, _) => vendorCode)
-                .AsNoTracking()
-                .OrderBy(_ => _.ArrivalDate)
-                .ThenBy(_ => _.Details)
-                .ProjectTo<VendorCode>(_mapper.ConfigurationProvider)
-                .ToListAsync();
+                .FirstOrDefaultAsync();
         }
     }
 }

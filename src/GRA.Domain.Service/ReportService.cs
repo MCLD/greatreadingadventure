@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using GRA.Abstract;
 using GRA.Domain.Model;
 using GRA.Domain.Report;
 using GRA.Domain.Report.Abstract;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -16,7 +16,7 @@ namespace GRA.Domain.Service
 {
     public class ReportService : Abstract.BaseUserService<ReportService>
     {
-        private readonly IDistributedCache _cache;
+        private readonly IGraCache _cache;
         private readonly IJobRepository _jobRepository;
         private readonly IReportCriterionRepository _reportCriterionRepository;
         private readonly IReportRequestRepository _reportRequestRepository;
@@ -27,7 +27,7 @@ namespace GRA.Domain.Service
         public ReportService(ILogger<ReportService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
-            IDistributedCache cache,
+            IGraCache cache,
             IJobRepository jobRepository,
             IReportCriterionRepository reportCriterionRepository,
             IReportRequestRepository reportRequestRepository,
@@ -59,7 +59,7 @@ namespace GRA.Domain.Service
                 request.SiteId = GetCurrentSiteId();
             }
             string cacheKey = $"s{request.SiteId}.p{request.ProgramId}.sys{request.SystemId}.b{request.BranchId}.{CacheKey.CurrentStats}";
-            var summaryJson = _cache.GetString(cacheKey);
+            var summaryJson = await _cache.GetStringFromCache(cacheKey);
             if (string.IsNullOrEmpty(summaryJson))
             {
                 var summary = new StatusSummary
@@ -73,7 +73,9 @@ namespace GRA.Domain.Service
                     DaysUntilEnd = await GetDaysUntilEnd(),
                     AsOf = _dateTimeProvider.Now
                 };
-                _cache.SetString(cacheKey, JsonConvert.SerializeObject(summary), ExpireIn());
+                await _cache.SaveToCacheAsync(cacheKey,
+                    JsonConvert.SerializeObject(summary),
+                    ExpireInTimeSpan());
                 return summary;
             }
             else
@@ -94,6 +96,36 @@ namespace GRA.Domain.Service
                 return 0;
             }
             return ((DateTime)site.ProgramEnds - _dateTimeProvider.Now).Days;
+        }
+
+        public IEnumerable<ReportDetails> GetReportList()
+        {
+            return new Catalog().Get().Where(_ => _.Id >= 0);
+        }
+
+        public async Task<(ReportRequest request, ReportCriterion criterion)> GetReportResultsAsync(int reportRequestId)
+        {
+            if (HasPermission(Permission.ViewAllReporting))
+            {
+                var reportRequest = await _reportRequestRepository.GetByIdAsync(reportRequestId);
+                if (reportRequest == null)
+                {
+                    _logger.LogError("User {UserId} requested non-existant report results id: {ReportRequestId}.",
+                        GetClaimId(ClaimType.UserId),
+                        reportRequestId);
+                    throw new GraException("Report results not found.");
+                }
+                var reportCriteria = await _reportCriterionRepository
+                    .GetByIdAsync(reportRequest.ReportCriteriaId);
+
+                return (reportRequest, reportCriteria);
+            }
+            else
+            {
+                _logger.LogError("User {UserId} doesn't have permission to view all reporting.",
+                    GetClaimId(ClaimType.UserId));
+                throw new GraException("Permission denied.");
+            }
         }
 
         public async Task<int> RequestReport(ReportCriterion criterion, int reportId)
@@ -131,11 +163,6 @@ namespace GRA.Domain.Service
                     requestingUser);
                 throw new GraException("Permission denied.");
             }
-        }
-
-        public IEnumerable<ReportDetails> GetReportList()
-        {
-            return new Catalog().Get().Where(_ => _.Id >= 0);
         }
 
         public async Task<JobStatus> RunReportJobAsync(int jobId,
@@ -284,31 +311,6 @@ namespace GRA.Domain.Service
                     Complete = true,
                     Error = true
                 };
-            }
-        }
-
-        public async Task<(ReportRequest request, ReportCriterion criterion)> GetReportResultsAsync(int reportRequestId)
-        {
-            if (HasPermission(Permission.ViewAllReporting))
-            {
-                var reportRequest = await _reportRequestRepository.GetByIdAsync(reportRequestId);
-                if (reportRequest == null)
-                {
-                    _logger.LogError("User {UserId} requested non-existant report results id: {ReportRequestId}.",
-                        GetClaimId(ClaimType.UserId),
-                        reportRequestId);
-                    throw new GraException("Report results not found.");
-                }
-                var reportCriteria = await _reportCriterionRepository
-                    .GetByIdAsync(reportRequest.ReportCriteriaId);
-
-                return (reportRequest, reportCriteria);
-            }
-            else
-            {
-                _logger.LogError("User {UserId} doesn't have permission to view all reporting.",
-                    GetClaimId(ClaimType.UserId));
-                throw new GraException("Permission denied.");
             }
         }
     }

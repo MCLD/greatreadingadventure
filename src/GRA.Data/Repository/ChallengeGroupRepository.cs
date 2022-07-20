@@ -20,6 +20,15 @@ namespace GRA.Data.Repository
         {
         }
 
+        public async Task<ICollection<ChallengeGroup>> GetAllAsync(int siteId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId)
+                .ProjectTo<ChallengeGroup>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
         public override async Task<ChallengeGroup> GetByIdAsync(int id)
         {
             return await DbSet

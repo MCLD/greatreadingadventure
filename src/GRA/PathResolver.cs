@@ -7,28 +7,10 @@ namespace GRA
     public class PathResolver : IPathResolver
     {
         private readonly IConfiguration _config;
+
         public PathResolver(IConfiguration config)
         {
             _config = config;
-        }
-
-        public string ResolveContentPath(string filePath = default)
-        {
-            string path = _config[ConfigurationKey.ContentPath];
-            if (string.IsNullOrEmpty(path))
-            {
-                path = "content";
-            }
-            if (!string.IsNullOrEmpty(filePath))
-            {
-                if (!path.EndsWith("/", System.StringComparison.OrdinalIgnoreCase)
-                    && !filePath.StartsWith("/", System.StringComparison.OrdinalIgnoreCase))
-                {
-                    path += "/";
-                }
-                path += filePath;
-            }
-            return path;
         }
 
         public string ResolveContentFilePath(string filePath = default)
@@ -50,19 +32,19 @@ namespace GRA
                 : Path.Combine(path, filePath);
         }
 
-        public string ResolvePrivatePath(string filePath = default)
+        public string ResolveContentPath(string filePath = default)
         {
             string path = _config[ConfigurationKey.ContentPath];
             if (string.IsNullOrEmpty(path))
             {
-                path = "private";
+                path = "content";
             }
             if (!string.IsNullOrEmpty(filePath))
             {
                 if (!path.EndsWith("/", System.StringComparison.OrdinalIgnoreCase)
                     && !filePath.StartsWith("/", System.StringComparison.OrdinalIgnoreCase))
                 {
-                    path += "/";
+                    path += '/';
                 }
                 path += filePath;
             }
@@ -78,6 +60,25 @@ namespace GRA
             return string.IsNullOrEmpty(filePath)
                 ? path
                 : Path.Combine(path, filePath);
+        }
+
+        public string ResolvePrivatePath(string filePath = default)
+        {
+            string path = _config[ConfigurationKey.ContentPath];
+            if (string.IsNullOrEmpty(path))
+            {
+                path = "private";
+            }
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                if (!path.EndsWith("/", System.StringComparison.OrdinalIgnoreCase)
+                    && !filePath.StartsWith("/", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    path += '/';
+                }
+                path += filePath;
+            }
+            return path;
         }
 
         public string ResolvePrivateTempFilePath(string filePath = default)

@@ -25,8 +25,6 @@ namespace GRA.Controllers
         private const string ActivityMessage = "ActivityMessage";
         private const string SecretCodeMessage = "SecretCodeMessage";
 
-        private readonly ILogger<ProfileController> _logger;
-        private readonly AutoMapper.IMapper _mapper;
         private readonly ActivityService _activityService;
         private readonly AuthenticationService _authenticationService;
         private readonly AvatarService _avatarService;
@@ -34,7 +32,9 @@ namespace GRA.Controllers
         private readonly ChallengeService _challengeService;
         private readonly DailyLiteracyTipService _dailyLiteracyTipService;
         private readonly EventService _eventService;
+        private readonly ILogger<ProfileController> _logger;
         private readonly MailService _mailService;
+        private readonly AutoMapper.IMapper _mapper;
         private readonly PointTranslationService _pointTranslationService;
         private readonly QuestionnaireService _questionnaireService;
         private readonly SchoolService _schoolService;
@@ -43,8 +43,6 @@ namespace GRA.Controllers
         private readonly VendorCodeService _vendorCodeService;
 
         private string HouseholdTitle;
-
-        public static string Name { get { return "Profile"; } }
 
         public ProfileController(ILogger<ProfileController> logger,
             ServiceFacade.Controller context,
@@ -93,442 +91,144 @@ namespace GRA.Controllers
             PageTitle = "My Profile";
         }
 
-        public override void OnActionExecuting(ActionExecutingContext context)
+        public static string Name
+        { get { return "Profile"; } }
+
+        [HttpPost]
+        public async Task<IActionResult> AddBook(BookListViewModel model)
         {
-            base.OnActionExecuting(context);
-            HouseholdTitle = HttpContext.Items[ItemKey.HouseholdTitle] as string
-                ?? Annotations.Interface.Family;
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    model.Book.Author = model.Book.Author?.Trim();
+                    model.Book.Title = model.Book.Title.Trim();
+                    var result = await _activityService.AddBookAsync(GetActiveUserId(), model.Book);
+                    if (result.Status == ServiceResultStatus.Warning
+                            && !string.IsNullOrWhiteSpace(result.Message))
+                    {
+                        ShowAlertWarning(result.Message);
+                    }
+                    else if (result.Status == ServiceResultStatus.Success)
+                    {
+                        ShowAlertSuccess(_sharedLocalizer[Annotations.Interface.UpdatedItem,
+                            Annotations.Interface.BookList]);
+                    }
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger(_sharedLocalizer[Annotations.Interface.CouldNotCreate,
+                        model.Book.Title,
+                        gex.Message]);
+                }
+            }
+            else
+            {
+                ShowAlertDanger(_sharedLocalizer[Annotations.Interface.CouldNotCreate,
+                    model.Book.Title,
+                    _sharedLocalizer[Annotations.Required.Missing]]);
+            }
+
+            int? page = null;
+            if (model.PaginateModel.CurrentPage != 1)
+            {
+                page = model.PaginateModel.CurrentPage;
+            }
+            return RedirectToAction(nameof(Books), new { page });
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> AddExistingParticipant()
         {
-            User user = await _userService.GetDetails(GetActiveUserId());
-
-            int householdCount = await _userService
-                .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? user.Id);
-            var branchList = await _siteService.GetBranches(user.SystemId);
-            var systemList = await _siteService.GetSystemList();
-            var programList = await _siteService.GetProgramList();
-            var userProgram = programList.SingleOrDefault(_ => _.Id == user.ProgramId);
-            var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
-
-            await _vendorCodeService.PopulateVendorCodeStatusAsync(user);
-
-            var viewModel = new ProfileDetailViewModel
+            var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
+            if (authUser.HouseholdHeadUserId != null)
             {
-                User = user,
-                HouseholdCount = householdCount,
-                HasAccount = !string.IsNullOrWhiteSpace(user.Username),
-                RequirePostalCode = (await GetCurrentSiteAsync()).RequirePostalCode,
-                ShowAge = userProgram.AskAge,
-                ShowSchool = userProgram.AskSchool,
-                ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject),
-                BranchList = new SelectList(branchList.ToList(), "Id", "Name"),
-                SystemList = new SelectList(systemList.ToList(), "Id", "Name"),
-                ProgramList = new SelectList(programList.ToList(), "Id", "Name"),
-                SchoolList = new SelectList(await _schoolService.GetSchoolsAsync(), "Id", "Name"),
-                SchoolId = user.SchoolId,
-                IsHomeschooled = user.IsHomeschooled,
-                SchoolNotListed = user.SchoolNotListed,
-                RestrictChangingSystemBranch = await GetSiteSettingBoolAsync(SiteSettingKey
-                    .Users
-                    .RestrictChangingSystemBranch),
-            };
-
-            if (viewModel.RestrictChangingSystemBranch)
-            {
-                viewModel.SystemName = systemList
-                    .FirstOrDefault(_ => _.Id == viewModel.User.SystemId)?
-                    .Name;
-                viewModel.BranchName = branchList
-                    .FirstOrDefault(_ => _.Id == viewModel.User.BranchId)?
-                    .Name;
+                return RedirectToAction(nameof(Household));
             }
 
-            var (askEmailSubscription, askEmailSubscriptionText)
-                = await GetSiteSettingStringAsync(SiteSettingKey.Users.AskEmailSubPermission);
-            if (askEmailSubscription)
-            {
-                viewModel.AskEmailSubscription = true;
-                viewModel.AskEmailSubscriptionText = askEmailSubscriptionText;
-            }
-
-            var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
-                SiteSettingKey.Users.DefaultDailyPersonalGoal);
-            if (askActivityGoal)
-            {
-                var pointTranslation = await _pointTranslationService
-                    .GetByProgramIdAsync(user.ProgramId);
-                viewModel.TranslationDescriptionPastTense =
-                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
-                viewModel.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
-            }
-
-            return View(viewModel);
+            return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(ProfileDetailViewModel model)
+        public async Task<IActionResult> AddExistingParticipant(HouseholdExistingViewModel model)
         {
-            var site = await GetCurrentSiteAsync();
-            var program = await _siteService.GetProgramByIdAsync(model.User.ProgramId);
-
-            if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.User.PostalCode))
+            var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
+            if (authUser.HouseholdHeadUserId != null)
             {
-                ModelState.AddModelError("User.PostalCode",
-                    _sharedLocalizer[ErrorMessages.Field,
-                        _sharedLocalizer[DisplayNames.ZipCode]]);
+                return RedirectToAction(nameof(Household));
             }
-            if (program.AgeRequired && !model.User.Age.HasValue)
-            {
-                ModelState.AddModelError("User.Age",
-                    _sharedLocalizer[ErrorMessages.Field,
-                        _sharedLocalizer[DisplayNames.Age]]);
-            }
-            if (program.SchoolRequired && !model.SchoolId.HasValue && !model.SchoolNotListed
-                && !model.IsHomeschooled)
-            {
-                ModelState.AddModelError("SchoolId",
-                    _sharedLocalizer[ErrorMessages.Field,
-                        _sharedLocalizer[DisplayNames.School]]);
-            }
-
-            var (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
-                SiteSettingKey.Users.AskEmailSubPermission);
-            if (askEmailSubscription && model.User.IsEmailSubscribed
-                && string.IsNullOrWhiteSpace(model.User.Email))
-            {
-                ModelState.AddModelError("User.Email", " ");
-                ModelState.AddModelError("User.IsEmailSubscribed",
-                    _sharedLocalizer[Annotations.Validate.EmailSubscription]);
-            }
-
-            var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
-                SiteSettingKey.Users.DefaultDailyPersonalGoal);
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    if (!program.AskAge)
+                    // check if we're going to trip group membership requirements
+                    var (useGroups, maximumHousehold) =
+                        await GetSiteSettingIntAsync(SiteSettingKey
+                            .Users
+                            .MaximumHouseholdSizeBeforeGroup);
+
+                    if (useGroups)
                     {
-                        model.User.Age = null;
-                    }
-                    model.User.SchoolId = null;
-                    model.User.SchoolNotListed = false;
-                    model.User.IsHomeschooled = false;
-                    if (program.AskSchool)
-                    {
-                        if (model.IsHomeschooled)
+                        var groupTypes = await _userService.GetGroupTypeListAsync();
+
+                        if (!groupTypes.Any())
                         {
-                            model.User.IsHomeschooled = true;
-                        }
-                        else if (model.SchoolNotListed)
-                        {
-                            model.User.SchoolNotListed = true;
+                            _logger.LogError($"User {authUser.Id} should be forced to make a group but no group types are configured");
                         }
                         else
                         {
-                            model.User.SchoolId = model.SchoolId;
-                        }
-                    }
+                            var currentHousehold
+                                = await _userService.GetHouseholdAsync(authUser.Id,
+                                false,
+                                false,
+                                false);
 
-                    if (!askEmailSubscription)
-                    {
-                        model.User.IsEmailSubscribed = false;
-                    }
+                            var (totalAddCount, addUserId) =
+                                await _userService.CountParticipantsToAdd(model.Username,
+                                    model.Password);
 
-                    if (askActivityGoal && model.User.DailyPersonalGoal > 0)
-                    {
-                        if (model.User.DailyPersonalGoal > Defaults.MaxDailyActivityGoal)
-                        {
-                            model.User.DailyPersonalGoal = Defaults.MaxDailyActivityGoal;
-                        }
-                    }
-                    else
-                    {
-                        model.User.DailyPersonalGoal = null;
-                    }
-
-                    await _userService.Update(model.User);
-                    AlertSuccess = _sharedLocalizer[GRA.Annotations.Interface.ProfileUpdated];
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (GraException gex)
-                {
-                    ShowAlertDanger("Unable to update profile: ", gex);
-                }
-            }
-            var branchList = await _siteService.GetBranches(model.User.SystemId);
-            if (model.User.BranchId < 1)
-            {
-                branchList = branchList.Prepend(new Branch() { Id = -1 });
-            }
-            var systemList = await _siteService.GetSystemList();
-            var programList = await _siteService.GetProgramList();
-            var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
-            model.BranchList = new SelectList(branchList.ToList(), "Id", "Name");
-            model.SystemList = new SelectList(systemList.ToList(), "Id", "Name");
-            model.ProgramList = new SelectList(programList.ToList(), "Id", "Name");
-            model.SchoolList
-                = new SelectList(await _schoolService.GetSchoolsAsync(), "Id", "Name");
-            model.ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject);
-            model.RequirePostalCode = site.RequirePostalCode;
-            model.RestrictChangingSystemBranch = await GetSiteSettingBoolAsync(SiteSettingKey
-                    .Users
-                    .RestrictChangingSystemBranch);
-            model.ShowAge = program.AskAge;
-            model.ShowSchool = program.AskSchool;
-
-            if (model.RestrictChangingSystemBranch)
-            {
-                model.SystemName = systemList
-                    .FirstOrDefault(_ => _.Id == model.User.SystemId)?
-                    .Name;
-                model.BranchName = branchList
-                    .FirstOrDefault(_ => _.Id == model.User.BranchId)?
-                    .Name;
-            }
-
-            if (askEmailSubscription)
-            {
-                model.AskEmailSubscription = true;
-                model.AskEmailSubscriptionText = askEmailSubscriptionText;
-            }
-
-            if (askActivityGoal)
-            {
-                var pointTranslation = await _pointTranslationService
-                    .GetByProgramIdAsync(model.User.ProgramId);
-                model.TranslationDescriptionPastTense =
-                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
-                model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
-            }
-
-            return View(model);
-        }
-
-        public async Task<IActionResult> Household()
-        {
-            var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
-            var hasAccount = true;
-            var activeUserId = GetActiveUserId();
-            if (authUser.Id != activeUserId)
-            {
-                User activeUser = await _userService.GetDetails(activeUserId);
-                if (string.IsNullOrWhiteSpace(activeUser.Username))
-                {
-                    hasAccount = false;
-                }
-            }
-
-            User headUser = null;
-            bool authUserIsHead = !authUser.HouseholdHeadUserId.HasValue;
-            bool showVendorCodes = authUserIsHead && await _vendorCodeService.SiteHasCodesAsync();
-            GroupInfo groupInfo = null;
-
-            if (!authUserIsHead)
-            {
-                groupInfo = await _userService.GetGroupFromHouseholdHeadAsync(headUser?.Id
-                    ?? (int)authUser.HouseholdHeadUserId);
-                headUser = await _userService.GetDetails((int)authUser.HouseholdHeadUserId);
-            }
-            else
-            {
-                groupInfo = await _userService.GetGroupFromHouseholdHeadAsync(authUser.Id);
-                authUser.HasNewMail = await _mailService.UserHasUnreadAsync(authUser.Id);
-                if (showVendorCodes)
-                {
-                    await _vendorCodeService.PopulateVendorCodeStatusAsync(authUser);
-                }
-            }
-
-            var household = await _userService
-                .GetHouseholdAsync(authUser.HouseholdHeadUserId ?? authUser.Id, authUserIsHead,
-                showVendorCodes, authUserIsHead);
-
-            var siteStage = GetSiteStage();
-            var viewModel = new HouseholdListViewModel
-            {
-                Users = household,
-                HouseholdCount = household.Count(),
-                HasAccount = hasAccount,
-                Head = headUser ?? authUser,
-                AuthUserIsHead = authUserIsHead,
-                ActiveUser = activeUserId,
-                CanLogActivity = siteStage == SiteStage.ProgramOpen,
-                CanEditHousehold = siteStage == SiteStage.RegistrationOpen
-                    || siteStage == SiteStage.ProgramOpen,
-                DisableSecretCode
-                    = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable),
-                ShowVendorCodes = showVendorCodes,
-                PointTranslation = await _pointTranslationService
-                        .GetByProgramIdAsync(authUser.ProgramId),
-                LocalizedHouseholdTitle
-                    = _sharedLocalizer[HttpContext.Items[ItemKey.HouseholdTitle].ToString()]
-            };
-
-            if (groupInfo != null)
-            {
-                viewModel.GroupName = groupInfo.Name;
-                viewModel.GroupLeader = authUserIsHead && authUser.Id == activeUserId;
-            }
-
-            if (authUserIsHead)
-            {
-                var householdProgramIds = household.Select(_ => _.ProgramId).Distinct().ToList();
-                if (!householdProgramIds.Contains(authUser.ProgramId))
-                {
-                    householdProgramIds.Add(authUser.ProgramId);
-                }
-
-                var site = await GetCurrentSiteAsync();
-                var dailyImageDictionary = new Dictionary<int, DailyImageViewModel>();
-
-                foreach (var programId in householdProgramIds)
-                {
-                    var program = await _siteService.GetProgramByIdAsync(programId);
-                    if (program.DailyLiteracyTipId.HasValue)
-                    {
-                        var day = _siteLookupService.GetSiteDay(site);
-                        if (day.HasValue)
-                        {
-                            var image = await _dailyLiteracyTipService.GetImageByDayAsync(
-                                program.DailyLiteracyTipId.Value, day.Value);
-                            if (image != null)
+                            // +1 for household manager, counting the people we're adding so >
+                            if (currentHousehold.Count() + 1 + totalAddCount > maximumHousehold)
                             {
-                                var imagePath = Path.Combine($"site{site.Id}", "dailyimages",
-                                    $"dailyliteracytip{program.DailyLiteracyTipId}",
-                                    $"{image.Name}{image.Extension}");
-                                if (System.IO.File.Exists(_pathResolver
-                                    .ResolveContentFilePath(imagePath)))
+                                var groupInfo
+                                    = await _userService.GetGroupFromHouseholdHeadAsync(authUser.Id);
+
+                                if (groupInfo == null)
                                 {
-                                    var dailyLiteracyTip = await _dailyLiteracyTipService
-                                        .GetByIdAsync(program.DailyLiteracyTipId.Value);
-                                    var dailyImageViewModel = new DailyImageViewModel()
+                                    _logger.LogInformation($"Redirecting user {authUser.Id} to create a group when adding member {maximumHousehold + 1}, group will total {currentHousehold.Count() + totalAddCount}");
+                                    // add authenticated user id to session
+                                    HttpContext.Session.SetString(SessionKey.AbsorbUserId,
+                                        addUserId.ToString());
+                                    return View("GroupUpgrade", new GroupUpgradeViewModel
                                     {
-                                        DailyImageMessage = dailyLiteracyTip.Message,
-                                        DailyImagePath
-                                            = _pathResolver.ResolveContentPath(imagePath),
-                                        IsLarge = dailyLiteracyTip.IsLarge
-                                    };
-                                    dailyImageDictionary.Add(program.Id, dailyImageViewModel);
+                                        MaximumHouseholdAllowed = maximumHousehold,
+                                        GroupTypes
+                                            = new SelectList(groupTypes.ToList(), "Id", "Name"),
+                                        AddExisting = true
+                                    });
                                 }
                             }
                         }
                     }
-                }
-                viewModel.DailyImageDictionary = dailyImageDictionary;
+                    // end checking about groups
 
-                if (showVendorCodes)
-                {
-                    await _vendorCodeService.PopulateVendorCodeStatusAsync(viewModel.Head);
-                }
-            }
-
-            if (TempData.ContainsKey(ActivityMessage))
-            {
-                viewModel.ActivityMessage = (string)TempData[ActivityMessage];
-            }
-            if (TempData.ContainsKey(SecretCodeMessage))
-            {
-                viewModel.SecretCodeMessage = (string)TempData[SecretCodeMessage];
-            }
-
-            if (string.IsNullOrWhiteSpace(viewModel.Head.EmailAwardInstructions))
-            {
-                viewModel.Head.EmailAwardInstructions = viewModel.Users
-                    .Where(_ => !string.IsNullOrWhiteSpace(_.EmailAwardInstructions))
-                    .Select(_ => _.EmailAwardInstructions)
-                    .FirstOrDefault();
-            }
-
-            return View(viewModel);
-        }
-
-        public async Task<IActionResult> HouseholdApplyActivity(HouseholdListViewModel model)
-        {
-            var user = await _userService.GetDetails(GetId(ClaimType.UserId));
-            model.PointTranslation = await _pointTranslationService
-                .GetByProgramIdAsync(user.ProgramId, true);
-            if (model.ActivityAmount < 1 && !model.PointTranslation.IsSingleEvent)
-            {
-                TempData[ActivityMessage]
-                    = _sharedLocalizer[Annotations.Required.MustEnterAmount].ToString();
-            }
-            else if (!string.IsNullOrWhiteSpace(model.UserSelection))
-            {
-                var userSelection = model.UserSelection
-                    .Split(',')
-                    .Where(_ => !string.IsNullOrWhiteSpace(_))
-                    .Select(int.Parse)
-                    .Distinct()
-                    .ToList();
-                try
-                {
-                    await _activityService.LogHouseholdActivityAsync(userSelection,
-                        model.PointTranslation.IsSingleEvent
-                            ? 1
-                            : model.ActivityAmount);
-                    ShowAlertSuccess(_sharedLocalizer[Annotations.Interface.ActivityApplied]);
+                    string addedMembers = await _userService
+                        .AddParticipantToHouseholdAsync(model.Username, model.Password);
+                    HttpContext.Session.SetString(SessionKey.HeadOfHousehold, "True");
+                    ShowAlertSuccess(
+                        _sharedLocalizer[Annotations.Interface.AddedParticipantGroupFamily,
+                            addedMembers,
+                            _sharedLocalizer[HouseholdTitle]]);
+                    return RedirectToAction(nameof(Household));
                 }
                 catch (GraException gex)
                 {
-                    TempData[ActivityMessage] = gex.Message;
+                    HttpContext.Session.Remove(SessionKey.AbsorbUserId);
+                    ShowAlertDanger(_sharedLocalizer[Annotations.Validate.UnableToAdd,
+                        gex.Message]);
                 }
             }
-            else
-            {
-                TempData[ActivityMessage]
-                    = _sharedLocalizer[Annotations.Required.SelectFirst].ToString();
-            }
-
-            return RedirectToAction(nameof(Household));
-        }
-
-        public async Task<IActionResult> HouseholdApplySecretCode(HouseholdListViewModel model)
-        {
-            if (string.IsNullOrWhiteSpace(model.SecretCode))
-            {
-                TempData[SecretCodeMessage]
-                    = _sharedLocalizer[Annotations.Required.SecretCode].ToString();
-            }
-            else if (!string.IsNullOrWhiteSpace(model.UserSelection))
-            {
-                var userSelection = model.UserSelection
-                    .Split(',')
-                    .Where(_ => !string.IsNullOrWhiteSpace(_))
-                    .Select(int.Parse)
-                    .Distinct()
-                    .ToList();
-                try
-                {
-                    var codeApplied = await _activityService
-                        .LogHouseholdSecretCodeAsync(userSelection, model.SecretCode);
-                    if (codeApplied)
-                    {
-                        ShowAlertSuccess(_sharedLocalizer[Annotations
-                            .Interface
-                            .SecretCodeApplied]);
-                    }
-                    else
-                    {
-                        TempData[SecretCodeMessage]
-                            = _sharedLocalizer[Annotations.Validate.CodeAlready].ToString();
-                    }
-                }
-                catch (GraException gex)
-                {
-                    TempData[SecretCodeMessage] = gex.Message;
-                }
-            }
-            else
-            {
-                TempData[ActivityMessage]
-                    = _sharedLocalizer[Annotations.Required.SelectFirst].ToString();
-            }
-
-            return RedirectToAction(nameof(Household));
+            return View(model);
         }
 
         public async Task<IActionResult> AddHouseholdMember()
@@ -825,221 +525,48 @@ namespace GRA.Controllers
             return View("HouseholdAdd", model);
         }
 
-        public async Task<IActionResult> AddExistingParticipant()
+        public async Task<IActionResult> Badges(int page = 1)
         {
-            var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
-            if (authUser.HouseholdHeadUserId != null)
+            User user = await _userService.GetDetails(GetActiveUserId());
+
+            var filter = new UserLogFilter(page)
             {
-                return RedirectToAction(nameof(Household));
-            }
+                HasBadge = true
+            };
 
-            return View();
-        }
+            var userLogs = await _userService.GetPaginatedUserHistoryAsync(user.Id, filter);
 
-        [HttpPost]
-        public async Task<IActionResult> AddExistingParticipant(HouseholdExistingViewModel model)
-        {
-            var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
-            if (authUser.HouseholdHeadUserId != null)
+            var paginateModel = new PaginateViewModel
             {
-                return RedirectToAction(nameof(Household));
-            }
+                ItemCount = userLogs.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
+            };
 
-            if (ModelState.IsValid)
+            if (paginateModel.PastMaxPage)
             {
-                try
-                {
-                    // check if we're going to trip group membership requirements
-                    var (useGroups, maximumHousehold) =
-                        await GetSiteSettingIntAsync(SiteSettingKey
-                            .Users
-                            .MaximumHouseholdSizeBeforeGroup);
-
-                    if (useGroups)
+                return RedirectToRoute(
+                    new
                     {
-                        var groupTypes = await _userService.GetGroupTypeListAsync();
-
-                        if (!groupTypes.Any())
-                        {
-                            _logger.LogError($"User {authUser.Id} should be forced to make a group but no group types are configured");
-                        }
-                        else
-                        {
-                            var currentHousehold
-                                = await _userService.GetHouseholdAsync(authUser.Id,
-                                false,
-                                false,
-                                false);
-
-                            var (totalAddCount, addUserId) =
-                                await _userService.CountParticipantsToAdd(model.Username,
-                                    model.Password);
-
-                            // +1 for household manager, counting the people we're adding so >
-                            if (currentHousehold.Count() + 1 + totalAddCount > maximumHousehold)
-                            {
-                                var groupInfo
-                                    = await _userService.GetGroupFromHouseholdHeadAsync(authUser.Id);
-
-                                if (groupInfo == null)
-                                {
-                                    _logger.LogInformation($"Redirecting user {authUser.Id} to create a group when adding member {maximumHousehold + 1}, group will total {currentHousehold.Count() + totalAddCount}");
-                                    // add authenticated user id to session
-                                    HttpContext.Session.SetString(SessionKey.AbsorbUserId,
-                                        addUserId.ToString());
-                                    return View("GroupUpgrade", new GroupUpgradeViewModel
-                                    {
-                                        MaximumHouseholdAllowed = maximumHousehold,
-                                        GroupTypes
-                                            = new SelectList(groupTypes.ToList(), "Id", "Name"),
-                                        AddExisting = true
-                                    });
-                                }
-                            }
-                        }
-                    }
-                    // end checking about groups
-
-                    string addedMembers = await _userService
-                        .AddParticipantToHouseholdAsync(model.Username, model.Password);
-                    HttpContext.Session.SetString(SessionKey.HeadOfHousehold, "True");
-                    ShowAlertSuccess(
-                        _sharedLocalizer[Annotations.Interface.AddedParticipantGroupFamily,
-                            addedMembers,
-                            _sharedLocalizer[HouseholdTitle]]);
-                    return RedirectToAction(nameof(Household));
-                }
-                catch (GraException gex)
-                {
-                    HttpContext.Session.Remove(SessionKey.AbsorbUserId);
-                    ShowAlertDanger(_sharedLocalizer[Annotations.Validate.UnableToAdd,
-                        gex.Message]);
-                }
+                        page = paginateModel.LastPage ?? 1
+                    });
             }
-            return View(model);
-        }
 
-        private async Task<IActionResult> AddExistingPreAuth()
-        {
-            var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
-            if (authUser.HouseholdHeadUserId != null)
+            foreach (var userLog in userLogs.Data)
             {
-                return RedirectToAction(nameof(Household));
+                userLog.BadgeFilename = _pathResolver.ResolveContentPath(userLog.BadgeFilename);
             }
 
-            if (!int.TryParse(HttpContext.Session.GetString(SessionKey.AbsorbUserId),
-                out int userId))
+            var viewModel = new BadgeListViewModel
             {
-                return RedirectToAction(nameof(Household));
-            }
+                UserLogs = userLogs.Data,
+                PaginateModel = paginateModel,
+                HouseholdCount = await _userService
+                    .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? user.Id),
+                HasAccount = !string.IsNullOrWhiteSpace(user.Username)
+            };
 
-            try
-            {
-                string addedMembers = await _userService
-                    .AddParticipantToHouseholdAlreadyAuthorizedAsync(userId);
-                HttpContext.Session.SetString(SessionKey.HeadOfHousehold, "True");
-                HttpContext.Session.Remove(SessionKey.AbsorbUserId);
-                ShowAlertSuccess(
-                    _sharedLocalizer[Annotations.Interface.AddedParticipantGroupFamily,
-                    addedMembers,
-                    HouseholdTitle]);
-            }
-            catch (GraException gex)
-            {
-                HttpContext.Session.Remove(SessionKey.AbsorbUserId);
-                ShowAlertDanger(_sharedLocalizer[Annotations.Validate.UnableToAdd,
-                    gex.Message]);
-            }
-            return RedirectToAction(nameof(Household));
-        }
-
-        public IActionResult RegisterHouseholdMember()
-        {
-            return RedirectToAction(nameof(Household));
-        }
-
-        public IActionResult CancelGroupUpgrade()
-        {
-            if (HttpContext.Session.Keys.Contains(SessionKey.AbsorbUserId))
-            {
-                HttpContext.Session.Remove(SessionKey.AbsorbUserId);
-            }
-            return RedirectToAction(nameof(Household));
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> RegisterHouseholdMember(HouseholdRegisterViewModel model)
-        {
-            var user = await _userService.GetDetails(model.RegisterId);
-            var authUser = GetId(ClaimType.UserId);
-            if (user.HouseholdHeadUserId != authUser || !string.IsNullOrWhiteSpace(user.Username))
-            {
-                return RedirectToAction(nameof(Household));
-            }
-
-            if (model.Validate)
-            {
-                if (ModelState.IsValid)
-                {
-                    user.Username = model.Username;
-                    try
-                    {
-                        await _userService.RegisterHouseholdMemberAsync(user, model.Password);
-                        ShowAlertSuccess(
-                            _sharedLocalizer[Annotations.Interface.AddedParticipantGroupFamily,
-                                user.FullName,
-                                _sharedLocalizer[HouseholdTitle]]);
-                        return RedirectToAction(nameof(Household));
-                    }
-                    catch (GraException gex)
-                    {
-                        ShowAlertDanger(_sharedLocalizer[Annotations.Validate.UnableToAdd,
-                            gex.Message]);
-                    }
-                }
-                return View("HouseholdRegisterMember", model);
-            }
-            else
-            {
-                ModelState.Clear();
-                return View("HouseholdRegisterMember", model);
-            }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> LoginAs(int loginId, bool goToMail = false)
-        {
-            var user = await _userService.GetDetails(loginId);
-            var authUser = GetId(ClaimType.UserId);
-            var activeUser = GetActiveUserId();
-
-            if ((user.Id == authUser || user.HouseholdHeadUserId == authUser)
-                && activeUser != loginId)
-            {
-                HttpContext.Session.SetInt32(SessionKey.ActiveUserId, loginId);
-                var questionnaireId = await _questionnaireService
-                    .GetRequiredQuestionnaire(user.Id, user.Age);
-                if (questionnaireId.HasValue)
-                {
-                    HttpContext.Session.SetInt32(SessionKey.PendingQuestionnaire,
-                        questionnaireId.Value);
-                }
-                else
-                {
-                    HttpContext.Session.Remove(SessionKey.PendingQuestionnaire);
-                }
-                ShowAlertSuccess(_sharedLocalizer[Annotations.Interface.SignedInAs, user.FullName],
-                    "user");
-            }
-
-            if (goToMail)
-            {
-                return RedirectToAction(nameof(MailController.Index), MailController.Name);
-            }
-            else
-            {
-                return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
-            }
+            return View(viewModel);
         }
 
         public async Task<IActionResult> Books(string sort, string order, int page = 1)
@@ -1090,47 +617,105 @@ namespace GRA.Controllers
             return View(viewModel);
         }
 
+        public IActionResult CancelGroupUpgrade()
+        {
+            if (HttpContext.Session.Keys.Contains(SessionKey.AbsorbUserId))
+            {
+                HttpContext.Session.Remove(SessionKey.AbsorbUserId);
+            }
+            return RedirectToAction(nameof(Household));
+        }
+
+        public async Task<IActionResult> ChangePassword()
+        {
+            User user = await _userService.GetDetails(GetActiveUserId());
+            if (string.IsNullOrWhiteSpace(user.Username))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var viewModel = new ChangePasswordViewModel
+            {
+                HouseholdCount = await _userService
+                    .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? user.Id),
+                HasAccount = true
+            };
+
+            return View(viewModel);
+        }
+
         [HttpPost]
-        public async Task<IActionResult> AddBook(BookListViewModel model)
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
             if (ModelState.IsValid)
             {
-                try
+                User user = await _userService.GetDetails(GetActiveUserId());
+                var loginAttempt = await _authenticationService
+                    .AuthenticateUserAsync(user.Username, model.OldPassword);
+                if (loginAttempt.PasswordIsValid)
                 {
-                    model.Book.Author = model.Book.Author?.Trim();
-                    model.Book.Title = model.Book.Title.Trim();
-                    var result = await _activityService.AddBookAsync(GetActiveUserId(), model.Book);
-                    if (result.Status == ServiceResultStatus.Warning
-                            && !string.IsNullOrWhiteSpace(result.Message))
+                    try
                     {
-                        ShowAlertWarning(result.Message);
+                        await _authenticationService.ResetPassword(GetActiveUserId(),
+                            model.NewPassword);
+                        ShowAlertSuccess(_sharedLocalizer[Annotations.Interface.PasswordChanged]);
+                        return RedirectToAction(nameof(ChangePassword));
                     }
-                    else if (result.Status == ServiceResultStatus.Success)
+                    catch (GraException gex)
                     {
-                        ShowAlertSuccess(_sharedLocalizer[Annotations.Interface.UpdatedItem,
-                            Annotations.Interface.BookList]);
+                        ShowAlertDanger(_sharedLocalizer[Annotations
+                                .Validate
+                                .UnableToChangePassword,
+                            gex.Message]);
                     }
                 }
-                catch (GraException gex)
+                else
                 {
-                    ShowAlertDanger(_sharedLocalizer[Annotations.Interface.CouldNotCreate,
-                        model.Book.Title,
-                        gex.Message]);
+                    model.ErrorMessage
+                        = _sharedLocalizer[Annotations.Validate.UsernamePasswordMismatch];
                 }
+            }
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateGroup(GroupUpgradeViewModel viewModel)
+        {
+            if (string.IsNullOrEmpty(viewModel.GroupInfo?.Name?.Trim()))
+            {
+                ShowAlertDanger(_sharedLocalizer[Annotations.Required.GroupName]);
+                return View("GroupUpgrade", viewModel);
+            }
+
+            try
+            {
+                viewModel.GroupInfo.UserId = GetId(ClaimType.UserId);
+                await _userService.CreateGroup(viewModel.GroupInfo.UserId, viewModel.GroupInfo);
+            }
+            catch (Exception ex)
+            {
+                ShowAlertDanger(_sharedLocalizer[Annotations.Interface.CouldNotCreate,
+                    _sharedLocalizer[Annotations.Interface.Group],
+                    ex.Message]);
+                return View("GroupUpgrade", viewModel);
+            }
+            HttpContext.Session.SetString(SessionKey.CallItGroup, "True");
+
+            if (viewModel.AddExisting)
+            {
+                return await AddExistingPreAuth();
             }
             else
             {
-                ShowAlertDanger(_sharedLocalizer[Annotations.Interface.CouldNotCreate,
-                    model.Book.Title,
-                    _sharedLocalizer[Annotations.Required.Missing]]);
+                return RedirectToAction(nameof(AddHouseholdMember));
             }
+        }
 
-            int? page = null;
-            if (model.PaginateModel.CurrentPage != 1)
-            {
-                page = model.PaginateModel.CurrentPage;
-            }
-            return RedirectToAction(nameof(Books), new { page });
+        [HttpPost]
+        public async Task<IActionResult> DonateCode(ProfileDetailViewModel viewModel)
+        {
+            await _vendorCodeService.ResolveCodeStatusAsync(viewModel.User.Id, true, false);
+            return RedirectToAction(nameof(ProfileController.Index), ProfileController.Name);
         }
 
         [HttpPost]
@@ -1166,28 +751,174 @@ namespace GRA.Controllers
             return RedirectToAction(nameof(Books), new { page });
         }
 
-        [HttpPost]
-        public async Task<IActionResult> RemoveBook(BookListViewModel model)
+        public async Task<IActionResult> EmailAward(int? id)
         {
             try
             {
-                await _activityService.RemoveBookAsync(model.Book.Id);
-                ShowAlertSuccess(_sharedLocalizer[Annotations.Interface.RemovedItem,
-                    model.Book.Title]);
+                User user = await _userService.GetDetails(id ?? GetActiveUserId());
+                await _vendorCodeService.PopulateVendorCodeStatusAsync(user);
+
+                if (!user.NeedsToAnswerVendorCodeQuestion)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+
+                var viewModel = new EmailAwardViewModel
+                {
+                    Email = user.Email,
+                    EmailAwardInstructions = user.EmailAwardInstructions,
+                    Name = user.FullName,
+                    UserId = id
+                };
+
+                return View(viewModel);
             }
             catch (GraException gex)
             {
-                ShowAlertDanger(_sharedLocalizer[Annotations.Interface.CouldNotRemove,
-                    model.Book.Title,
-                    gex.Message]);
+                ShowAlertDanger(gex.Message);
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EmailAward(EmailAwardViewModel emailAwardModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                User user = await _userService.GetDetails(emailAwardModel.UserId
+                    ?? GetActiveUserId());
+                await _vendorCodeService.PopulateVendorCodeStatusAsync(user);
+
+                emailAwardModel.Name = user.FullName;
+                emailAwardModel.EmailAwardInstructions = user.EmailAwardInstructions;
+
+                return View(emailAwardModel);
             }
 
-            int? page = null;
-            if (model.PaginateModel.CurrentPage != 1)
+            var userId = emailAwardModel.UserId ?? GetActiveUserId();
+
+            await _vendorCodeService.ResolveCodeStatusAsync(userId,
+                false,
+                true,
+                emailAwardModel.Email);
+
+            if (emailAwardModel.UserId.HasValue)
             {
-                page = model.PaginateModel.CurrentPage;
+                return RedirectToAction(nameof(ProfileController.Household));
             }
-            return RedirectToAction(nameof(Books), new { page });
+            else
+            {
+                return RedirectToAction(nameof(ProfileController.Index));
+            }
+        }
+
+        public async Task<IActionResult> GetUserBadgeInfo(int id)
+        {
+            var viewModel = new BadgeInfoViewModel();
+            try
+            {
+                viewModel.UserLog = await _userService.GetUserLogByIdAsync(id);
+                var badge = await _badgeService
+                    .GetByIdAsync(viewModel.UserLog.BadgeId.Value);
+                viewModel.UserLog.BadgeAltText = badge.AltText;
+
+                if (viewModel.UserLog.ChallengeId.HasValue)
+                {
+                    var challenge = await _challengeService
+                        .GetChallengeDetailsAsync(viewModel.UserLog.ChallengeId.Value);
+                    var url = Url.Action(nameof(ChallengesController.Detail),
+                        ChallengesController.Name,
+                        new { id = challenge.Id });
+
+                    viewModel.HtmlMessage = _sharedLocalizer[Annotations.Info.ChallengeBadgeEarned,
+                        url,
+                        challenge.Name];
+                }
+                else if (viewModel.UserLog.EventId.HasValue)
+                {
+                    var graEvent = await _eventService.GetDetails(viewModel.UserLog.EventId.Value);
+                    var url = Url.Action(nameof(EventsController.Detail),
+                        EventsController.Name,
+                        new { id = graEvent.Id });
+
+                    viewModel.HtmlMessage = _sharedLocalizer[Annotations.Info.EventBadgeEarned,
+                        url,
+                        graEvent.Name];
+                }
+                else
+                {
+                    viewModel.Message = viewModel.UserLog.Description;
+                }
+
+                var fileName = await _badgeService.GetBadgeFilenameAsync(
+                    viewModel.UserLog.BadgeId.Value);
+                viewModel.UserLog.BadgeFilename = _pathResolver.ResolveContentPath(fileName);
+            }
+            catch (GraException gex)
+            {
+                viewModel.Message = gex.Message;
+            }
+
+            return PartialView("_BadgeInfoPartial", viewModel);
+        }
+
+        public async Task<IActionResult> GroupDetails()
+        {
+            var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
+            var groupInfo = await _userService.GetGroupFromHouseholdHeadAsync(authUser.Id);
+
+            if (groupInfo == null)
+            {
+                return RedirectToAction(nameof(Household));
+            }
+            else
+            {
+                return View("GroupDetails", new GroupInfo
+                {
+                    Id = groupInfo.Id,
+                    Name = groupInfo.Name,
+                    GroupTypeName = groupInfo.GroupTypeName
+                });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GroupDetails(GroupInfo groupInfo)
+        {
+            var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
+            groupInfo.UserId = authUser.Id;
+            await _userService.UpdateGroupName(authUser.Id, groupInfo);
+            return RedirectToAction(nameof(Household));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> HandleHouseholdDonation(
+            HouseholdListViewModel viewModel,
+            string donateButton,
+            string redeemButton)
+        {
+            int userId = 0;
+            bool? donationStatus = null;
+            if (!string.IsNullOrEmpty(donateButton))
+            {
+                donationStatus = true;
+                userId = int.Parse(donateButton);
+            }
+            if (!string.IsNullOrEmpty(redeemButton))
+            {
+                donationStatus = false;
+                userId = int.Parse(redeemButton);
+            }
+            if (userId == 0)
+            {
+                _logger.LogError($"User {GetActiveUserId()} unsuccessfully attempted to change donation for user {userId} to {donationStatus}");
+                ShowAlertDanger(_sharedLocalizer[Annotations.Validate.SomethingWentWrong]);
+            }
+            else
+            {
+                await _vendorCodeService.ResolveCodeStatusAsync(userId, donationStatus, false);
+            }
+            return RedirectToAction(nameof(ProfileController.Household), ProfileController.Name);
         }
 
         public async Task<IActionResult> History(int page = 1)
@@ -1259,7 +990,7 @@ namespace GRA.Controllers
                                 " <strong><a href=\"{0}\">{1}</a></strong>",
                                 bundleLink,
                                 _sharedLocalizer[Annotations.Interface.SeeItemsUnlocked]);
-                            itemModel.BadgeAltText =_sharedLocalizer
+                            itemModel.BadgeAltText = _sharedLocalizer
                                 [Annotations.Interface.AvatarBundleAltText, bundle.Name];
                         }
                     }
@@ -1270,255 +1001,227 @@ namespace GRA.Controllers
             return View(viewModel);
         }
 
-        public async Task<IActionResult> Badges(int page = 1)
+        public async Task<IActionResult> Household()
         {
-            User user = await _userService.GetDetails(GetActiveUserId());
-
-            var filter = new UserLogFilter(page)
+            var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
+            var hasAccount = true;
+            var activeUserId = GetActiveUserId();
+            if (authUser.Id != activeUserId)
             {
-                HasBadge = true
+                User activeUser = await _userService.GetDetails(activeUserId);
+                if (string.IsNullOrWhiteSpace(activeUser.Username))
+                {
+                    hasAccount = false;
+                }
+            }
+
+            User headUser = null;
+            bool authUserIsHead = !authUser.HouseholdHeadUserId.HasValue;
+            bool showVendorCodes = authUserIsHead && await _vendorCodeService.SiteHasCodesAsync();
+            GroupInfo groupInfo = null;
+
+            if (!authUserIsHead)
+            {
+                groupInfo = await _userService.GetGroupFromHouseholdHeadAsync(headUser?.Id
+                    ?? (int)authUser.HouseholdHeadUserId);
+                headUser = await _userService.GetDetails((int)authUser.HouseholdHeadUserId);
+            }
+            else
+            {
+                groupInfo = await _userService.GetGroupFromHouseholdHeadAsync(authUser.Id);
+                authUser.HasNewMail = await _mailService.UserHasUnreadAsync(authUser.Id);
+                if (showVendorCodes)
+                {
+                    await _vendorCodeService.PopulateVendorCodeStatusAsync(authUser);
+                }
+            }
+
+            var household = await _userService
+                .GetHouseholdAsync(authUser.HouseholdHeadUserId ?? authUser.Id, authUserIsHead,
+                showVendorCodes, authUserIsHead);
+
+            var siteStage = GetSiteStage();
+            var viewModel = new HouseholdListViewModel
+            {
+                Users = household,
+                HouseholdCount = household.Count(),
+                HasAccount = hasAccount,
+                Head = headUser ?? authUser,
+                AuthUserIsHead = authUserIsHead,
+                ActiveUser = activeUserId,
+                CanLogActivity = siteStage == SiteStage.ProgramOpen,
+                CanEditHousehold = siteStage == SiteStage.RegistrationOpen
+                    || siteStage == SiteStage.ProgramOpen,
+                DisableSecretCode
+                    = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable),
+                ShowVendorCodes = showVendorCodes,
+                PointTranslation = await _pointTranslationService
+                        .GetByProgramIdAsync(authUser.ProgramId),
+                LocalizedHouseholdTitle
+                    = _sharedLocalizer[HttpContext.Items[ItemKey.HouseholdTitle].ToString()]
             };
 
-            var userLogs = await _userService.GetPaginatedUserHistoryAsync(user.Id, filter);
-
-            var paginateModel = new PaginateViewModel
+            if (groupInfo != null)
             {
-                ItemCount = userLogs.Count,
-                CurrentPage = page,
-                ItemsPerPage = filter.Take.Value
-            };
+                viewModel.GroupName = groupInfo.Name;
+                viewModel.GroupLeader = authUserIsHead && authUser.Id == activeUserId;
+            }
 
-            if (paginateModel.PastMaxPage)
+            if (authUserIsHead)
             {
-                return RedirectToRoute(
-                    new
+                var householdProgramIds = household.Select(_ => _.ProgramId).Distinct().ToList();
+                if (!householdProgramIds.Contains(authUser.ProgramId))
+                {
+                    householdProgramIds.Add(authUser.ProgramId);
+                }
+
+                var site = await GetCurrentSiteAsync();
+                var dailyImageDictionary = new Dictionary<int, DailyImageViewModel>();
+
+                foreach (var programId in householdProgramIds)
+                {
+                    var program = await _siteService.GetProgramByIdAsync(programId);
+                    if (program.DailyLiteracyTipId.HasValue)
                     {
-                        page = paginateModel.LastPage ?? 1
-                    });
+                        var day = _siteLookupService.GetSiteDay(site);
+                        if (day.HasValue)
+                        {
+                            var image = await _dailyLiteracyTipService.GetImageByDayAsync(
+                                program.DailyLiteracyTipId.Value, day.Value);
+                            if (image != null)
+                            {
+                                var imagePath = Path.Combine($"site{site.Id}", "dailyimages",
+                                    $"dailyliteracytip{program.DailyLiteracyTipId}",
+                                    $"{image.Name}{image.Extension}");
+                                if (System.IO.File.Exists(_pathResolver
+                                    .ResolveContentFilePath(imagePath)))
+                                {
+                                    var dailyLiteracyTip = await _dailyLiteracyTipService
+                                        .GetByIdAsync(program.DailyLiteracyTipId.Value);
+                                    var dailyImageViewModel = new DailyImageViewModel()
+                                    {
+                                        DailyImageMessage = dailyLiteracyTip.Message,
+                                        DailyImagePath
+                                            = _pathResolver.ResolveContentPath(imagePath),
+                                        IsLarge = dailyLiteracyTip.IsLarge
+                                    };
+                                    dailyImageDictionary.Add(program.Id, dailyImageViewModel);
+                                }
+                            }
+                        }
+                    }
+                }
+                viewModel.DailyImageDictionary = dailyImageDictionary;
+
+                if (showVendorCodes)
+                {
+                    await _vendorCodeService.PopulateVendorCodeStatusAsync(viewModel.Head);
+                }
             }
 
-            foreach (var userLog in userLogs.Data)
+            if (TempData.ContainsKey(ActivityMessage))
             {
-                userLog.BadgeFilename = _pathResolver.ResolveContentPath(userLog.BadgeFilename);
+                viewModel.ActivityMessage = (string)TempData[ActivityMessage];
+            }
+            if (TempData.ContainsKey(SecretCodeMessage))
+            {
+                viewModel.SecretCodeMessage = (string)TempData[SecretCodeMessage];
             }
 
-            var viewModel = new BadgeListViewModel
+            if (string.IsNullOrWhiteSpace(viewModel.Head.EmailAwardInstructions))
             {
-                UserLogs = userLogs.Data,
-                PaginateModel = paginateModel,
-                HouseholdCount = await _userService
-                    .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? user.Id),
-                HasAccount = !string.IsNullOrWhiteSpace(user.Username)
-            };
+                viewModel.Head.EmailAwardInstructions = viewModel.Users
+                    .Where(_ => !string.IsNullOrWhiteSpace(_.EmailAwardInstructions))
+                    .Select(_ => _.EmailAwardInstructions)
+                    .FirstOrDefault();
+            }
 
             return View(viewModel);
         }
 
-        public async Task<IActionResult> GetUserBadgeInfo(int id)
+        public async Task<IActionResult> HouseholdApplyActivity(HouseholdListViewModel model)
         {
-            var viewModel = new BadgeInfoViewModel();
-            try
+            var user = await _userService.GetDetails(GetId(ClaimType.UserId));
+            model.PointTranslation = await _pointTranslationService
+                .GetByProgramIdAsync(user.ProgramId, true);
+            if (model.ActivityAmount < 1 && !model.PointTranslation.IsSingleEvent)
             {
-                viewModel.UserLog = await _userService.GetUserLogByIdAsync(id);
-                var badge = await _badgeService
-                    .GetByIdAsync(viewModel.UserLog.BadgeId.Value);
-                viewModel.UserLog.BadgeAltText = badge.AltText;
-
-                if (viewModel.UserLog.ChallengeId.HasValue)
+                TempData[ActivityMessage]
+                    = _sharedLocalizer[Annotations.Required.MustEnterAmount].ToString();
+            }
+            else if (!string.IsNullOrWhiteSpace(model.UserSelection))
+            {
+                var userSelection = model.UserSelection
+                    .Split(',')
+                    .Where(_ => !string.IsNullOrWhiteSpace(_))
+                    .Select(int.Parse)
+                    .Distinct()
+                    .ToList();
+                try
                 {
-                    var challenge = await _challengeService
-                        .GetChallengeDetailsAsync(viewModel.UserLog.ChallengeId.Value);
-                    var url = Url.Action(nameof(ChallengesController.Detail),
-                        ChallengesController.Name,
-                        new { id = challenge.Id });
-
-                    viewModel.HtmlMessage = _sharedLocalizer[Annotations.Info.ChallengeBadgeEarned,
-                        url,
-                        challenge.Name];
+                    await _activityService.LogHouseholdActivityAsync(userSelection,
+                        model.PointTranslation.IsSingleEvent
+                            ? 1
+                            : model.ActivityAmount);
+                    ShowAlertSuccess(_sharedLocalizer[Annotations.Interface.ActivityApplied]);
                 }
-                else if (viewModel.UserLog.EventId.HasValue)
+                catch (GraException gex)
                 {
-                    var graEvent = await _eventService.GetDetails(viewModel.UserLog.EventId.Value);
-                    var url = Url.Action(nameof(EventsController.Detail),
-                        EventsController.Name,
-                        new { id = graEvent.Id });
-
-                    viewModel.HtmlMessage = _sharedLocalizer[Annotations.Info.EventBadgeEarned,
-                        url,
-                        graEvent.Name];
+                    TempData[ActivityMessage] = gex.Message;
                 }
-                else
-                {
-                    viewModel.Message = viewModel.UserLog.Description;
-                }
-
-                var fileName = await _badgeService.GetBadgeFilenameAsync(
-                    viewModel.UserLog.BadgeId.Value);
-                viewModel.UserLog.BadgeFilename = _pathResolver.ResolveContentPath(fileName);
-            }
-            catch (GraException gex)
-            {
-                viewModel.Message = gex.Message;
-            }
-
-            return PartialView("_BadgeInfoPartial", viewModel);
-        }
-
-        public async Task<IActionResult> ChangePassword()
-        {
-            User user = await _userService.GetDetails(GetActiveUserId());
-            if (string.IsNullOrWhiteSpace(user.Username))
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            var viewModel = new ChangePasswordViewModel
-            {
-                HouseholdCount = await _userService
-                    .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? user.Id),
-                HasAccount = true
-            };
-
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                User user = await _userService.GetDetails(GetActiveUserId());
-                var loginAttempt = await _authenticationService
-                    .AuthenticateUserAsync(user.Username, model.OldPassword);
-                if (loginAttempt.PasswordIsValid)
-                {
-                    try
-                    {
-                        await _authenticationService.ResetPassword(GetActiveUserId(),
-                            model.NewPassword);
-                        ShowAlertSuccess(_sharedLocalizer[Annotations.Interface.PasswordChanged]);
-                        return RedirectToAction(nameof(ChangePassword));
-                    }
-                    catch (GraException gex)
-                    {
-                        ShowAlertDanger(_sharedLocalizer[Annotations
-                                .Validate
-                                .UnableToChangePassword,
-                            gex.Message]);
-                    }
-                }
-                else
-                {
-                    model.ErrorMessage
-                        = _sharedLocalizer[Annotations.Validate.UsernamePasswordMismatch];
-                }
-            }
-            return View(model);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> DonateCode(ProfileDetailViewModel viewModel)
-        {
-            await _vendorCodeService.ResolveCodeStatusAsync(viewModel.User.Id, true, false);
-            return RedirectToAction(nameof(ProfileController.Index), ProfileController.Name);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> RedeemCode(ProfileDetailViewModel viewModel)
-        {
-            await _vendorCodeService.ResolveCodeStatusAsync(viewModel.User.Id, false, false);
-            return RedirectToAction(nameof(ProfileController.Index), ProfileController.Name);
-        }
-
-        public async Task<IActionResult> EmailAward(int? id)
-        {
-            try
-            {
-                User user = await _userService.GetDetails(id ?? GetActiveUserId());
-                await _vendorCodeService.PopulateVendorCodeStatusAsync(user);
-
-                if (!user.NeedsToAnswerVendorCodeQuestion)
-                {
-                    return RedirectToAction(nameof(Index));
-                }
-
-                var viewModel = new EmailAwardViewModel
-                {
-                    Email = user.Email,
-                    EmailAwardInstructions = user.EmailAwardInstructions,
-                    Name = user.FullName,
-                    UserId = id
-                };
-
-                return View(viewModel);
-            }
-            catch (GraException gex)
-            {
-                ShowAlertDanger(gex.Message);
-                return RedirectToAction(nameof(Index));
-            }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> EmailAward(EmailAwardViewModel emailAwardModel)
-        {
-            if (!ModelState.IsValid)
-            {
-                User user = await _userService.GetDetails(emailAwardModel.UserId
-                    ?? GetActiveUserId());
-                await _vendorCodeService.PopulateVendorCodeStatusAsync(user);
-
-                emailAwardModel.Name = user.FullName;
-                emailAwardModel.EmailAwardInstructions = user.EmailAwardInstructions;
-
-                return View(emailAwardModel);
-            }
-
-            var userId = emailAwardModel.UserId ?? GetActiveUserId();
-
-            await _vendorCodeService.ResolveCodeStatusAsync(userId,
-                false,
-                true,
-                emailAwardModel.Email);
-
-            if (emailAwardModel.UserId.HasValue)
-            {
-                return RedirectToAction(nameof(ProfileController.Household));
             }
             else
             {
-                return RedirectToAction(nameof(ProfileController.Index));
+                TempData[ActivityMessage]
+                    = _sharedLocalizer[Annotations.Required.SelectFirst].ToString();
             }
+
+            return RedirectToAction(nameof(Household));
         }
 
-        [HttpPost]
-        public async Task<IActionResult> HandleHouseholdDonation(
-            HouseholdListViewModel viewModel,
-            string donateButton,
-            string redeemButton)
+        public async Task<IActionResult> HouseholdApplySecretCode(HouseholdListViewModel model)
         {
-            int userId = 0;
-            bool? donationStatus = null;
-            if (!string.IsNullOrEmpty(donateButton))
+            if (string.IsNullOrWhiteSpace(model?.SecretCode))
             {
-                donationStatus = true;
-                userId = int.Parse(donateButton);
+                TempData[SecretCodeMessage]
+                    = _sharedLocalizer[Annotations.Required.SecretCode].ToString();
             }
-            if (!string.IsNullOrEmpty(redeemButton))
+            else if (!string.IsNullOrWhiteSpace(model.UserSelection))
             {
-                donationStatus = false;
-                userId = int.Parse(redeemButton);
-            }
-            if (userId == 0)
-            {
-                _logger.LogError($"User {GetActiveUserId()} unsuccessfully attempted to change donation for user {userId} to {donationStatus}");
-                ShowAlertDanger(_sharedLocalizer[Annotations.Validate.SomethingWentWrong]);
+                var userSelection = model.UserSelection
+                    .Split(',')
+                    .Where(_ => !string.IsNullOrWhiteSpace(_))
+                    .Select(int.Parse)
+                    .Distinct()
+                    .ToList();
+                try
+                {
+                    var codeApplied = await _activityService
+                        .LogHouseholdSecretCodeAsync(userSelection, model.SecretCode);
+                    if (codeApplied)
+                    {
+                        ShowAlertSuccess(_sharedLocalizer[Annotations
+                            .Interface
+                            .SecretCodeApplied]);
+                    }
+                    else
+                    {
+                        TempData[SecretCodeMessage]
+                            = _sharedLocalizer[Annotations.Validate.CodeAlready].ToString();
+                    }
+                }
+                catch (GraException gex)
+                {
+                    TempData[SecretCodeMessage] = gex.Message;
+                }
             }
             else
             {
-                await _vendorCodeService.ResolveCodeStatusAsync(userId, donationStatus, false);
+                TempData[ActivityMessage]
+                    = _sharedLocalizer[Annotations.Required.SelectFirst].ToString();
             }
-            return RedirectToAction(nameof(ProfileController.Household), ProfileController.Name);
+
+            return RedirectToAction(nameof(Household));
         }
 
         [HttpPost]
@@ -1531,66 +1234,340 @@ namespace GRA.Controllers
             return RedirectToAction(nameof(ProfileController.Household), ProfileController.Name);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateGroup(GroupUpgradeViewModel viewModel)
+        public async Task<IActionResult> Index()
         {
-            if (string.IsNullOrEmpty(viewModel.GroupInfo?.Name?.Trim()))
+            User user = await _userService.GetDetails(GetActiveUserId());
+
+            int householdCount = await _userService
+                .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? user.Id);
+            var branchList = await _siteService.GetBranches(user.SystemId);
+            var systemList = await _siteService.GetSystemList();
+            var programList = await _siteService.GetProgramList();
+            var userProgram = programList.SingleOrDefault(_ => _.Id == user.ProgramId);
+            var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
+
+            await _vendorCodeService.PopulateVendorCodeStatusAsync(user);
+
+            var viewModel = new ProfileDetailViewModel
             {
-                ShowAlertDanger(_sharedLocalizer[Annotations.Required.GroupName]);
-                return View("GroupUpgrade", viewModel);
+                User = user,
+                HouseholdCount = householdCount,
+                HasAccount = !string.IsNullOrWhiteSpace(user.Username),
+                RequirePostalCode = (await GetCurrentSiteAsync()).RequirePostalCode,
+                ShowAge = userProgram.AskAge,
+                ShowSchool = userProgram.AskSchool,
+                ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject),
+                BranchList = new SelectList(branchList.ToList(), "Id", "Name"),
+                SystemList = new SelectList(systemList.ToList(), "Id", "Name"),
+                ProgramList = new SelectList(programList.ToList(), "Id", "Name"),
+                SchoolList = new SelectList(await _schoolService.GetSchoolsAsync(), "Id", "Name"),
+                SchoolId = user.SchoolId,
+                IsHomeschooled = user.IsHomeschooled,
+                SchoolNotListed = user.SchoolNotListed,
+                RestrictChangingSystemBranch = await GetSiteSettingBoolAsync(SiteSettingKey
+                    .Users
+                    .RestrictChangingSystemBranch),
+            };
+
+            if (viewModel.RestrictChangingSystemBranch)
+            {
+                viewModel.SystemName = systemList
+                    .FirstOrDefault(_ => _.Id == viewModel.User.SystemId)?
+                    .Name;
+                viewModel.BranchName = branchList
+                    .FirstOrDefault(_ => _.Id == viewModel.User.BranchId)?
+                    .Name;
             }
 
+            var (askEmailSubscription, askEmailSubscriptionText)
+                = await GetSiteSettingStringAsync(SiteSettingKey.Users.AskEmailSubPermission);
+            if (askEmailSubscription)
+            {
+                viewModel.AskEmailSubscription = true;
+                viewModel.AskEmailSubscriptionText = askEmailSubscriptionText;
+            }
+
+            var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
+                SiteSettingKey.Users.DefaultDailyPersonalGoal);
+            if (askActivityGoal)
+            {
+                var pointTranslation = await _pointTranslationService
+                    .GetByProgramIdAsync(user.ProgramId);
+                viewModel.TranslationDescriptionPastTense =
+                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                viewModel.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
+            }
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Index(ProfileDetailViewModel model)
+        {
+            var site = await GetCurrentSiteAsync();
+            var program = await _siteService.GetProgramByIdAsync(model.User.ProgramId);
+
+            if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.User.PostalCode))
+            {
+                ModelState.AddModelError("User.PostalCode",
+                    _sharedLocalizer[ErrorMessages.Field,
+                        _sharedLocalizer[DisplayNames.ZipCode]]);
+            }
+            if (program.AgeRequired && !model.User.Age.HasValue)
+            {
+                ModelState.AddModelError("User.Age",
+                    _sharedLocalizer[ErrorMessages.Field,
+                        _sharedLocalizer[DisplayNames.Age]]);
+            }
+            if (program.SchoolRequired && !model.SchoolId.HasValue && !model.SchoolNotListed
+                && !model.IsHomeschooled)
+            {
+                ModelState.AddModelError("SchoolId",
+                    _sharedLocalizer[ErrorMessages.Field,
+                        _sharedLocalizer[DisplayNames.School]]);
+            }
+
+            var (askEmailSubscription, askEmailSubscriptionText) = await GetSiteSettingStringAsync(
+                SiteSettingKey.Users.AskEmailSubPermission);
+            if (askEmailSubscription && model.User.IsEmailSubscribed
+                && string.IsNullOrWhiteSpace(model.User.Email))
+            {
+                ModelState.AddModelError("User.Email", " ");
+                ModelState.AddModelError("User.IsEmailSubscribed",
+                    _sharedLocalizer[Annotations.Validate.EmailSubscription]);
+            }
+
+            var (askActivityGoal, defaultDailyGoal) = await GetSiteSettingIntAsync(
+                SiteSettingKey.Users.DefaultDailyPersonalGoal);
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    if (!program.AskAge)
+                    {
+                        model.User.Age = null;
+                    }
+                    model.User.SchoolId = null;
+                    model.User.SchoolNotListed = false;
+                    model.User.IsHomeschooled = false;
+                    if (program.AskSchool)
+                    {
+                        if (model.IsHomeschooled)
+                        {
+                            model.User.IsHomeschooled = true;
+                        }
+                        else if (model.SchoolNotListed)
+                        {
+                            model.User.SchoolNotListed = true;
+                        }
+                        else
+                        {
+                            model.User.SchoolId = model.SchoolId;
+                        }
+                    }
+
+                    if (!askEmailSubscription)
+                    {
+                        model.User.IsEmailSubscribed = false;
+                    }
+
+                    if (askActivityGoal && model.User.DailyPersonalGoal > 0)
+                    {
+                        if (model.User.DailyPersonalGoal > Defaults.MaxDailyActivityGoal)
+                        {
+                            model.User.DailyPersonalGoal = Defaults.MaxDailyActivityGoal;
+                        }
+                    }
+                    else
+                    {
+                        model.User.DailyPersonalGoal = null;
+                    }
+
+                    await _userService.Update(model.User);
+                    AlertSuccess = _sharedLocalizer[GRA.Annotations.Interface.ProfileUpdated];
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger("Unable to update profile: ", gex);
+                }
+            }
+            var branchList = await _siteService.GetBranches(model.User.SystemId);
+            if (model.User.BranchId < 1)
+            {
+                branchList = branchList.Prepend(new Branch() { Id = -1 });
+            }
+            var systemList = await _siteService.GetSystemList();
+            var programList = await _siteService.GetProgramList();
+            var programViewObject = _mapper.Map<List<ProgramSettingsViewModel>>(programList);
+            model.BranchList = new SelectList(branchList.ToList(), "Id", "Name");
+            model.SystemList = new SelectList(systemList.ToList(), "Id", "Name");
+            model.ProgramList = new SelectList(programList.ToList(), "Id", "Name");
+            model.SchoolList
+                = new SelectList(await _schoolService.GetSchoolsAsync(), "Id", "Name");
+            model.ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject);
+            model.RequirePostalCode = site.RequirePostalCode;
+            model.RestrictChangingSystemBranch = await GetSiteSettingBoolAsync(SiteSettingKey
+                    .Users
+                    .RestrictChangingSystemBranch);
+            model.ShowAge = program.AskAge;
+            model.ShowSchool = program.AskSchool;
+
+            if (model.RestrictChangingSystemBranch)
+            {
+                model.SystemName = systemList
+                    .FirstOrDefault(_ => _.Id == model.User.SystemId)?
+                    .Name;
+                model.BranchName = branchList
+                    .FirstOrDefault(_ => _.Id == model.User.BranchId)?
+                    .Name;
+            }
+
+            if (askEmailSubscription)
+            {
+                model.AskEmailSubscription = true;
+                model.AskEmailSubscriptionText = askEmailSubscriptionText;
+            }
+
+            if (askActivityGoal)
+            {
+                var pointTranslation = await _pointTranslationService
+                    .GetByProgramIdAsync(model.User.ProgramId);
+                model.TranslationDescriptionPastTense =
+                    pointTranslation.TranslationDescriptionPastTense.Replace("{0}", "").Trim();
+                model.ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural;
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LoginAs(int loginId, bool goToMail = false)
+        {
+            User user = null;
             try
             {
-                viewModel.GroupInfo.UserId = GetId(ClaimType.UserId);
-                await _userService.CreateGroup(viewModel.GroupInfo.UserId, viewModel.GroupInfo);
+                user = await _userService.GetDetails(loginId);
             }
-            catch (Exception ex)
+            catch (GraException)
             {
-                ShowAlertDanger(_sharedLocalizer[Annotations.Interface.CouldNotCreate,
-                    _sharedLocalizer[Annotations.Interface.Group],
-                    ex.Message]);
-                return View("GroupUpgrade", viewModel);
+                AlertDanger = "Not able to log in as that user. Please log in as the manager of your family/group.";
+                return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
             }
-            HttpContext.Session.SetString(SessionKey.CallItGroup, "True");
 
-            if (viewModel.AddExisting)
+            var authUser = GetId(ClaimType.UserId);
+            var activeUser = GetActiveUserId();
+
+            if ((user.Id == authUser || user.HouseholdHeadUserId == authUser)
+                && activeUser != loginId)
             {
-                return await AddExistingPreAuth();
+                HttpContext.Session.SetInt32(SessionKey.ActiveUserId, loginId);
+                var questionnaireId = await _questionnaireService
+                    .GetRequiredQuestionnaire(user.Id, user.Age);
+                if (questionnaireId.HasValue)
+                {
+                    HttpContext.Session.SetInt32(SessionKey.PendingQuestionnaire,
+                        questionnaireId.Value);
+                }
+                else
+                {
+                    HttpContext.Session.Remove(SessionKey.PendingQuestionnaire);
+                }
+                ShowAlertSuccess(_sharedLocalizer[Annotations.Interface.SignedInAs, user.FullName],
+                    "user");
+            }
+
+            if (goToMail)
+            {
+                return RedirectToAction(nameof(MailController.Index), MailController.Name);
             }
             else
             {
-                return RedirectToAction(nameof(AddHouseholdMember));
+                return RedirectToAction(nameof(HomeController.Index), HomeController.Name);
             }
         }
 
-        public async Task<IActionResult> GroupDetails()
+        public override void OnActionExecuting(ActionExecutingContext context)
         {
-            var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
-            var groupInfo = await _userService.GetGroupFromHouseholdHeadAsync(authUser.Id);
+            base.OnActionExecuting(context);
+            HouseholdTitle = HttpContext.Items[ItemKey.HouseholdTitle] as string
+                ?? Annotations.Interface.Family;
+        }
 
-            if (groupInfo == null)
+        [HttpPost]
+        public async Task<IActionResult> RedeemCode(ProfileDetailViewModel viewModel)
+        {
+            await _vendorCodeService.ResolveCodeStatusAsync(viewModel.User.Id, false, false);
+            return RedirectToAction(nameof(ProfileController.Index), ProfileController.Name);
+        }
+
+        public IActionResult RegisterHouseholdMember()
+        {
+            return RedirectToAction(nameof(Household));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RegisterHouseholdMember(HouseholdRegisterViewModel model)
+        {
+            var user = await _userService.GetDetails(model.RegisterId);
+            var authUser = GetId(ClaimType.UserId);
+            if (user.HouseholdHeadUserId != authUser || !string.IsNullOrWhiteSpace(user.Username))
             {
                 return RedirectToAction(nameof(Household));
             }
+
+            if (model.Validate)
+            {
+                if (ModelState.IsValid)
+                {
+                    user.Username = model.Username;
+                    try
+                    {
+                        await _userService.RegisterHouseholdMemberAsync(user, model.Password);
+                        ShowAlertSuccess(
+                            _sharedLocalizer[Annotations.Interface.AddedParticipantGroupFamily,
+                                user.FullName,
+                                _sharedLocalizer[HouseholdTitle]]);
+                        return RedirectToAction(nameof(Household));
+                    }
+                    catch (GraException gex)
+                    {
+                        ShowAlertDanger(_sharedLocalizer[Annotations.Validate.UnableToAdd,
+                            gex.Message]);
+                    }
+                }
+                return View("HouseholdRegisterMember", model);
+            }
             else
             {
-                return View("GroupDetails", new GroupInfo
-                {
-                    Id = groupInfo.Id,
-                    Name = groupInfo.Name,
-                    GroupTypeName = groupInfo.GroupTypeName
-                });
+                ModelState.Clear();
+                return View("HouseholdRegisterMember", model);
             }
         }
 
         [HttpPost]
-        public async Task<IActionResult> GroupDetails(GroupInfo groupInfo)
+        public async Task<IActionResult> RemoveBook(BookListViewModel model)
         {
-            var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
-            groupInfo.UserId = authUser.Id;
-            await _userService.UpdateGroupName(authUser.Id, groupInfo);
-            return RedirectToAction(nameof(Household));
+            try
+            {
+                await _activityService.RemoveBookAsync(model.Book.Id);
+                ShowAlertSuccess(_sharedLocalizer[Annotations.Interface.RemovedItem,
+                    model.Book.Title]);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger(_sharedLocalizer[Annotations.Interface.CouldNotRemove,
+                    model.Book.Title,
+                    gex.Message]);
+            }
+
+            int? page = null;
+            if (model.PaginateModel.CurrentPage != 1)
+            {
+                page = model.PaginateModel.CurrentPage;
+            }
+            return RedirectToAction(nameof(Books), new { page });
         }
 
         public async Task<IActionResult> RemoveHouseholdMember(int id)
@@ -1680,6 +1657,40 @@ namespace GRA.Controllers
             model.MemberUsername = memberUsername;
             model.HouseholdTitle = HouseholdTitle;
             return View("HouseholdRemove", model);
+        }
+
+        private async Task<IActionResult> AddExistingPreAuth()
+        {
+            var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
+            if (authUser.HouseholdHeadUserId != null)
+            {
+                return RedirectToAction(nameof(Household));
+            }
+
+            if (!int.TryParse(HttpContext.Session.GetString(SessionKey.AbsorbUserId),
+                out int userId))
+            {
+                return RedirectToAction(nameof(Household));
+            }
+
+            try
+            {
+                string addedMembers = await _userService
+                    .AddParticipantToHouseholdAlreadyAuthorizedAsync(userId);
+                HttpContext.Session.SetString(SessionKey.HeadOfHousehold, "True");
+                HttpContext.Session.Remove(SessionKey.AbsorbUserId);
+                ShowAlertSuccess(
+                    _sharedLocalizer[Annotations.Interface.AddedParticipantGroupFamily,
+                    addedMembers,
+                    HouseholdTitle]);
+            }
+            catch (GraException gex)
+            {
+                HttpContext.Session.Remove(SessionKey.AbsorbUserId);
+                ShowAlertDanger(_sharedLocalizer[Annotations.Validate.UnableToAdd,
+                    gex.Message]);
+            }
+            return RedirectToAction(nameof(Household));
         }
     }
 }

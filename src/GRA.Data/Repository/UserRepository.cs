@@ -25,20 +25,6 @@ namespace GRA.Data.Repository
                 ?? throw new ArgumentNullException(nameof(passwordHasher));
         }
 
-        public async Task AddBulkEmailLogAsync(int userId,
-            int emailTemplateId,
-            string emailAddress)
-        {
-            await _context.EmailUserLogs.AddAsync(new Model.EmailUserLog
-            {
-                EmailAddress = emailAddress,
-                EmailTemplateId = emailTemplateId,
-                UserId = userId,
-                SentAt = _dateTimeProvider.Now
-            });
-            await _context.SaveChangesAsync();
-        }
-
         public async Task AddRoleAsync(int currentUserId, int userId, int roleId)
         {
             var userLookup = await DbSet
@@ -245,6 +231,17 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
+        public async Task<IDictionary<string, int>>
+            GetSubscribedLanguageCountAsync(string unspecifiedString)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => !_.IsDeleted && _.IsEmailSubscribed)
+                .GroupBy(_ => _.Culture)
+                .Select(_ => new { Culture = _.Key, Count = _.Count() })
+                .ToDictionaryAsync(k => k.Culture ?? unspecifiedString, v => v.Count);
+        }
+
         public async Task<int> GetSystemUserId()
         {
             var systemUser = await DbSet
@@ -324,6 +321,7 @@ namespace GRA.Data.Repository
                         && !string.IsNullOrEmpty(_.Username)
                         && !_.IsDeleted)
                     .Select(_ => _.Username)
+                    .OrderBy(_ => _)
                     .ToListAsync()
             };
         }
@@ -392,12 +390,12 @@ namespace GRA.Data.Repository
             };
         }
 
-        public async Task<bool> HasReceivedBulkEmailAsync(int emailTemplateId, string emailAddress)
+        public async Task<bool> IsAnyoneSubscribedAsync()
         {
-            return await _context.EmailUserLogs
+            return await DbSet
                 .AsNoTracking()
-                .AnyAsync(_ => _.EmailTemplateId == emailTemplateId
-                    && _.EmailAddress == emailAddress);
+                .Where(_ => _.IsEmailSubscribed && !_.IsDeleted)
+                .AnyAsync();
         }
 
         public async Task<bool> IsEmailSubscribedAsync(string email)

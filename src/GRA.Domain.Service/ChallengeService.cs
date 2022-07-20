@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using GRA.Abstract;
@@ -14,37 +15,47 @@ namespace GRA.Domain.Service
 {
     public class ChallengeService : BaseUserService<ChallengeService>
     {
+        private const string FeaturedFilesPath = "featuredchallenges";
         private const string TaskFilesPath = "tasks";
+
         private readonly IBadgeRepository _badgeRepository;
         private readonly IBranchRepository _branchRepository;
+        private readonly IGraCache _cache;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IChallengeGroupRepository _challengeGroupRepository;
         private readonly IChallengeRepository _challengeRepository;
         private readonly IChallengeTaskRepository _challengeTaskRepository;
         private readonly IEventRepository _eventRepository;
+        private readonly IFeaturedChallengeGroupRepository _featuredChallengeGroupRepository;
+        private readonly LanguageService _languageService;
         private readonly IPathResolver _pathResolver;
         private readonly SiteLookupService _siteLookupService;
         private readonly ITriggerRepository _triggerRepository;
 
         public ChallengeService(ILogger<ChallengeService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
+            IGraCache cache,
             IUserContextProvider userContextProvider,
             IBadgeRepository badgeRepository,
             IBranchRepository branchRepository,
             ICategoryRepository categoryRepository,
-            IChallengeRepository challengeRepository,
             IChallengeGroupRepository challengeGroupRepository,
+            IChallengeRepository challengeRepository,
             IChallengeTaskRepository challengeTaskRepository,
             IEventRepository eventRepository,
+            IFeaturedChallengeGroupRepository featuredChallengeGroupRepository,
             IPathResolver pathResolver,
-            SiteLookupService siteLookupService,
-            ITriggerRepository triggerRepository)
+            ITriggerRepository triggerRepository,
+            LanguageService languageService,
+            SiteLookupService siteLookupService
+            )
             : base(logger, dateTimeProvider, userContextProvider)
         {
             _badgeRepository = badgeRepository
                 ?? throw new ArgumentNullException(nameof(badgeRepository));
             _branchRepository = branchRepository
                 ?? throw new ArgumentNullException(nameof(branchRepository));
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
             _categoryRepository = categoryRepository
                 ?? throw new ArgumentNullException(nameof(categoryRepository));
             _challengeRepository = challengeRepository
@@ -55,11 +66,16 @@ namespace GRA.Domain.Service
                 ?? throw new ArgumentNullException(nameof(challengeTaskRepository));
             _eventRepository = eventRepository
                 ?? throw new ArgumentNullException(nameof(eventRepository));
+            _featuredChallengeGroupRepository = featuredChallengeGroupRepository
+                ?? throw new ArgumentNullException(nameof(featuredChallengeGroupRepository));
             _pathResolver = pathResolver ?? throw new ArgumentNullException(nameof(pathResolver));
-            _siteLookupService = siteLookupService
-                ?? throw new ArgumentNullException(nameof(siteLookupService));
+
             _triggerRepository = triggerRepository
                 ?? throw new ArgumentNullException(nameof(triggerRepository));
+            _languageService = languageService
+                ?? throw new ArgumentNullException(nameof(languageService));
+            _siteLookupService = siteLookupService
+                ?? throw new ArgumentNullException(nameof(siteLookupService));
         }
 
         public async Task ActivateChallengeAsync(Challenge challenge)
@@ -416,6 +432,13 @@ namespace GRA.Domain.Service
             return challengeGroup;
         }
 
+        public async Task<ICollection<ChallengeGroup>> GetGroupListAsync()
+        {
+            VerifyPermission(Permission.ViewAllChallenges);
+
+            return await _challengeGroupRepository.GetAllAsync(GetCurrentSiteId());
+        }
+
         public async Task<List<ChallengeGroup>> GetGroupsByChallengeId(int id)
         {
             VerifyPermission(Permission.ViewAllChallenges);
@@ -682,5 +705,287 @@ namespace GRA.Domain.Service
             System.IO.File.WriteAllBytes(fullFilePath, taskFile);
             return GetTaskUrlPath(filename);
         }
+
+        #region Featured Challenge Groups methods
+
+        public async Task<FeaturedChallengeGroup> AddFeaturedGroupAsync(
+            FeaturedChallengeGroup featuredGroup,
+            FeaturedChallengeGroupText featuredGroupText,
+            string filename,
+            byte[] imageBytes)
+        {
+            VerifyPermission(Permission.ManageFeaturedChallengeGroups);
+
+            var siteId = GetCurrentSiteId();
+
+            featuredGroup.Name = featuredGroup.Name?.Trim();
+            featuredGroup.SiteId = siteId;
+
+            var maxSortOrder = await _featuredChallengeGroupRepository.GetMaxSortOrderAsync(siteId);
+            if (maxSortOrder.HasValue)
+            {
+                featuredGroup.SortOrder = maxSortOrder.Value + 1;
+            }
+
+            var addedFeaturedGroup = await _featuredChallengeGroupRepository.AddSaveAsync(
+                GetClaimId(ClaimType.UserId),
+                featuredGroup);
+
+            featuredGroupText.AltText = featuredGroupText.AltText?.Trim();
+            featuredGroupText.Filename = (await HandleFeaturedImage(filename, imageBytes))?.Trim();
+
+            await _featuredChallengeGroupRepository.AddTextAsync(featuredGroupText,
+                addedFeaturedGroup.Id,
+                await _languageService.GetDefaultLanguageIdAsync());
+
+            await _featuredChallengeGroupRepository.SaveAsync();
+
+            await ClearFeaturedChallengeGroupsCacheAsync();
+
+            return addedFeaturedGroup;
+        }
+
+        public async Task<FeaturedChallengeGroup> EditFeaturedGroupAsync(
+            FeaturedChallengeGroup group,
+            FeaturedChallengeGroupText text)
+        {
+            VerifyPermission(Permission.ManageFeaturedChallengeGroups);
+
+            var featuredGroup = await _featuredChallengeGroupRepository.GetByIdAsync(group.Id);
+
+            featuredGroup.ChallengeGroupId = group.ChallengeGroupId;
+            featuredGroup.EndDate = group.EndDate;
+            featuredGroup.Name = group.Name?.Trim();
+            featuredGroup.StartDate = group.StartDate;
+
+            var defaultLanguageId = await _languageService.GetDefaultLanguageIdAsync();
+            var groupText = await _featuredChallengeGroupRepository
+                .GetTextByFeaturedGroupAndLanguageAsync(featuredGroup.Id, defaultLanguageId);
+
+            groupText.AltText = text.AltText?.Trim();
+
+            await _featuredChallengeGroupRepository.UpdateAsync(GetClaimId(ClaimType.UserId),
+                featuredGroup);
+            await _featuredChallengeGroupRepository.UpdateTextAsync(groupText,
+                featuredGroup.Id,
+                defaultLanguageId);
+            await _featuredChallengeGroupRepository.SaveAsync();
+
+            await ClearFeaturedChallengeGroupsCacheAsync();
+
+            return featuredGroup;
+        }
+
+        public async Task<IEnumerable<DisplayChallengeGroup>> GetActiveFeaturedChallengeGroupsAsync()
+        {
+            var currentLanguageId = await _languageService
+                .GetLanguageIdAsync(_userContextProvider.GetCurrentCulture().Name);
+            var defaultLanguageId = await _languageService.GetDefaultLanguageIdAsync();
+
+            string cacheKey = string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                CacheKey.FeaturedChallengeGroups,
+                currentLanguageId);
+
+            var featured = await _cache
+                .GetObjectFromCacheAsync<IEnumerable<DisplayChallengeGroup>>(cacheKey);
+
+            if (featured == null)
+            {
+                featured = await _featuredChallengeGroupRepository
+                    .GetActiveAsync(GetCurrentSiteId(), currentLanguageId, defaultLanguageId);
+
+                foreach (var featuredItem in featured)
+                {
+                    featuredItem.ImagePath = '/' + GetFeaturedUrlPath(featuredItem.ImageFile);
+                }
+
+                var now = _dateTimeProvider.Now;
+
+                var nextFeaturedChallengeChange = await _featuredChallengeGroupRepository
+                    .GetNextActiveTimestampAsync(GetCurrentSiteId());
+
+                if (nextFeaturedChallengeChange == null
+                    || nextFeaturedChallengeChange < now)
+                {
+                    nextFeaturedChallengeChange = now.AddHours(8);
+                }
+
+                _logger.LogDebug("Caching {Count} featured challenge groups until {Expiration} ({TimeSpan})",
+                    featured?.Count() ?? 0,
+                    nextFeaturedChallengeChange,
+                    nextFeaturedChallengeChange - now);
+
+                await _cache.SaveToCacheAsync(cacheKey,
+                     featured,
+                     nextFeaturedChallengeChange.Value - now);
+            }
+
+            return featured;
+        }
+
+        public async Task<FeaturedChallengeGroup> GetFeaturedGroupByIdAsync(int id)
+        {
+            var featuredGroup = await _featuredChallengeGroupRepository.GetByIdAsync(id);
+
+            var text = await _featuredChallengeGroupRepository
+                .GetTextByFeaturedGroupAndLanguageAsync(featuredGroup.Id,
+                    await _languageService.GetDefaultLanguageIdAsync());
+
+            text.ImagePath = GetFeaturedUrlPath(text.Filename);
+
+            featuredGroup.FeaturedGroupText = text;
+
+            return featuredGroup;
+        }
+
+        public async Task<ICollectionWithCount<FeaturedChallengeGroup>>
+            GetPaginatedFeaturedGroupListAsync(BaseFilter filter)
+        {
+            VerifyPermission(Permission.ViewAllChallenges);
+
+            filter.SiteId = GetCurrentSiteId();
+
+            return await _featuredChallengeGroupRepository.PageAsync(filter);
+        }
+
+        public async Task RemoveFeaturedGroupAsync(int featuredGroupId)
+        {
+            VerifyPermission(Permission.ManageFeaturedChallengeGroups);
+
+            var texts = await _featuredChallengeGroupRepository
+                .GetTextsForFeaturedGroupAsync(featuredGroupId);
+
+            _featuredChallengeGroupRepository.RemoveFeaturedGroupTexts(featuredGroupId, null);
+            await _featuredChallengeGroupRepository.SaveAsync();
+
+            foreach (var text in texts)
+            {
+                var imagePath = GetFeaturedFilePath(text.Filename);
+                if (File.Exists(imagePath))
+                {
+                    File.Delete(imagePath);
+                }
+            }
+
+            await _featuredChallengeGroupRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId),
+                featuredGroupId);
+
+            await ClearFeaturedChallengeGroupsCacheAsync();
+        }
+
+        public async Task ReplaceFeaturedImageAsync(int featuredGroupId,
+                    string filename,
+            byte[] imageBytes)
+        {
+            VerifyPermission(Permission.ManageFeaturedChallengeGroups);
+
+            var defaultLanguageId = await _languageService.GetDefaultLanguageIdAsync();
+
+            var featuredGroupText = await _featuredChallengeGroupRepository
+                .GetTextByFeaturedGroupAndLanguageAsync(featuredGroupId, defaultLanguageId);
+
+            if (featuredGroupText == null)
+            {
+                return;
+            }
+
+            var oldImagePath = GetFeaturedFilePath(featuredGroupText.Filename);
+
+            featuredGroupText.Filename = (await HandleFeaturedImage(filename, imageBytes))?.Trim();
+
+            if (File.Exists(oldImagePath))
+            {
+                File.Delete(oldImagePath);
+            }
+
+            await _featuredChallengeGroupRepository.UpdateTextAsync(featuredGroupText,
+                featuredGroupId,
+                defaultLanguageId);
+
+            await _featuredChallengeGroupRepository.SaveAsync();
+            await ClearFeaturedChallengeGroupsCacheAsync();
+        }
+
+        public async Task UpdateFeaturedGroupSortAsync(int id, bool increase)
+        {
+            VerifyPermission(Permission.ManageFeaturedChallengeGroups);
+
+            var featuredGroup = await _featuredChallengeGroupRepository.GetByIdAsync(id);
+
+            if (increase)
+            {
+                var moveGroup = await _featuredChallengeGroupRepository
+                    .GetNextInOrderAsync(GetCurrentSiteId(), featuredGroup.SortOrder, increase);
+                if (moveGroup != null)
+                {
+                    moveGroup.SortOrder--;
+                    featuredGroup.SortOrder++;
+                    await _featuredChallengeGroupRepository.UpdateSaveNoAuditAsync(moveGroup);
+                    await _featuredChallengeGroupRepository.UpdateSaveNoAuditAsync(featuredGroup);
+                }
+            }
+            else
+            {
+                var moveGroup = await _featuredChallengeGroupRepository
+                    .GetNextInOrderAsync(GetCurrentSiteId(), featuredGroup.SortOrder, increase);
+                if (moveGroup != null)
+                {
+                    moveGroup.SortOrder++;
+                    featuredGroup.SortOrder--;
+                    await _featuredChallengeGroupRepository.UpdateSaveNoAuditAsync(moveGroup);
+                    await _featuredChallengeGroupRepository.UpdateSaveNoAuditAsync(featuredGroup);
+                }
+            }
+
+            await ClearFeaturedChallengeGroupsCacheAsync();
+        }
+
+        private async Task ClearFeaturedChallengeGroupsCacheAsync()
+        {
+            var languages = await _languageService.GetActiveAsync();
+            foreach (var language in languages)
+            {
+                await _cache.RemoveAsync(string
+                    .Format(System.Globalization.CultureInfo.InvariantCulture,
+                    CacheKey.FeaturedChallengeGroups,
+                    language.Id));
+            }
+        }
+
+        private string GetFeaturedFilePath(string filename)
+        {
+            string contentDir = _pathResolver.ResolveContentFilePath(Path.Combine(
+                $"site{GetCurrentSiteId()}",
+                FeaturedFilesPath));
+
+            System.IO.Directory.CreateDirectory(contentDir);
+
+            return System.IO.Path.Combine(contentDir, filename);
+        }
+
+        private string GetFeaturedUrlPath(string filename)
+        {
+            return _pathResolver
+                .ResolveContentPath($"site{GetCurrentSiteId()}/{FeaturedFilesPath}/{filename}");
+        }
+
+        private async Task<string> HandleFeaturedImage(string filename, byte[] imageBytes)
+        {
+            var fullPath = GetFeaturedFilePath(filename);
+            int dupeCheck = 1;
+            while (File.Exists(fullPath))
+            {
+                filename = Path.GetFileNameWithoutExtension(filename)
+                        + $"-{dupeCheck++}"
+                        + Path.GetExtension(filename);
+                fullPath = GetFeaturedFilePath(filename);
+            }
+
+            await File.WriteAllBytesAsync(fullPath, imageBytes);
+
+            return filename;
+        }
+
+        #endregion Featured Challenge Groups methods
     }
 }

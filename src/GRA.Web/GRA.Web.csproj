@@ -8,7 +8,7 @@
     <Company>Maricopa County Library District</Company>
     <Copyright>Copyright 2017 Maricopa County Library District</Copyright>
     <Description>The Great Reading Adventure is an open-source tool for managing dynamic library reading programs.</Description>
-    <FileVersion>4.2.1.31</FileVersion>
+    <FileVersion>4.2.1.52</FileVersion>
     <OutputType>Exe</OutputType>
     <PackageId>GRA.Web</PackageId>
     <PackageLicenseUrl>https://github.com/mcld/greatreadingadventure/blob/master/LICENSE</PackageLicenseUrl>
@@ -70,7 +70,7 @@
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="6.0.3" />
     <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
     <PackageReference Include="Serilog.Filters.Expressions" Version="2.1.0" />
-    <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="5.7.0" />
+    <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="5.7.1" />
     <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
     <PackageReference Include="Serilog.Sinks.Seq" Version="5.1.1" />
     <PackageReference Include="Serilog.Sinks.Slack.Core" Version="0.1.5-beta" />
@@ -109,6 +109,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="assets\defaultitems\EmailBase\" />
+    <Folder Include="assets\defaultitems\EmailBaseText\" />
+    <Folder Include="assets\defaultitems\DirectEmailTemplate\" />
+    <Folder Include="assets\defaultitems\DirectEmailTemplateText\" />
     <Folder Include="wwwroot\webfonts\" />
   </ItemGroup>
 

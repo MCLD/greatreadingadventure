@@ -10,5 +10,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public int PointsEarned { get; set; }
         public string BadgeFilename { get; set; }
         public bool IsDeletable { get; set; }
+        public string WhyNotDeletable { get; set; }
     }
 }

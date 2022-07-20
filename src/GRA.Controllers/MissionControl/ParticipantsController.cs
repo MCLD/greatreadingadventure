@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.MissionControl.Participants;
 using GRA.Controllers.ViewModel.Shared;
@@ -2123,6 +2124,8 @@ namespace GRA.Controllers.MissionControl
                         }
                     }
 
+                    var whyNotDeletable = new StringBuilder();
+
                     if (!item.AvatarBundleId.HasValue)
                     {
                         if (item.BadgeId.HasValue && !item.ChallengeId.HasValue)
@@ -2138,6 +2141,25 @@ namespace GRA.Controllers.MissionControl
                                 {
                                     itemModel.IsDeletable = true;
                                 }
+                                else
+                                {
+                                    whyNotDeletable.Append("A prize has already been redeemed associated with this item. ");
+                                }
+                            }
+                            else
+                            {
+                                if (trigger?.AwardAvatarBundleId.HasValue != false)
+                                {
+                                    whyNotDeletable.Append("This awarded an avatar bundle which the participant might be using. ");
+                                }
+                                if (trigger?.AwardVendorCodeTypeId.HasValue == true)
+                                {
+                                    whyNotDeletable.Append("This awarded a vendor code prize. ");
+                                }
+                                if (!string.IsNullOrWhiteSpace(trigger?.AwardMail))
+                                {
+                                    whyNotDeletable.Append("This sent the participant an in-application mail which they may have seen. ");
+                                }
                             }
                         }
                         else
@@ -2145,6 +2167,12 @@ namespace GRA.Controllers.MissionControl
                             itemModel.IsDeletable = true;
                         }
                     }
+                    else
+                    {
+                        whyNotDeletable.Append("This is an avatar bundle, participant may be using parts of it. ");
+                    }
+
+                    itemModel.WhyNotDeletable = whyNotDeletable.ToString()?.Trim();
 
                     viewModel.Historys.Add(itemModel);
                 }
@@ -2652,7 +2680,14 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.UnDonateVendorCode)]
         public async Task<IActionResult> UndonateCode(ParticipantsDetailViewModel viewModel)
         {
-            await _vendorCodeService.ResolveCodeStatusAsync(viewModel.User.Id, null, null);
+            try
+            {
+                await _vendorCodeService.ResolveCodeStatusAsync(viewModel.User.Id, null, null);
+            }
+            catch (GraException gex)
+            {
+                AlertWarning = gex.Message;
+            }
             return RedirectToAction(viewModel.Action, new { id = viewModel.User.Id });
         }
 

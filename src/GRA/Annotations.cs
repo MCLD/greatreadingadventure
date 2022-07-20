@@ -74,6 +74,7 @@
             public const string UsernameListSent = "A list of usernames associated with the email address '{0}' has been sent.";
             public const string VendorItemArrived = "<em>{0}</em> arrived on <strong>{1}</strong> and is ready for pick-up.";
             public const string VendorItemOrdered = "<em>{0}</em> ordered on <strong>{1}</strong>.";
+            public const string VendorItemPickedup = "<em>{0}</em> was picked up on <strong>{1}</strong>.";
             public const string VendorItemShipped = "<em>{0}</em> shipped on <strong>{1}</strong>.";
             public const string YouCanJoinOn = "You can join {0} on {1}.";
         }
@@ -125,6 +126,7 @@
             public const string EnterAddressOrZipCode = "Enter an address or ZIP code";
             public const string EnterChallengeSearch = "Enter text to search for a challenge here";
             public const string EnterEventSearch = "Enter text to search for an event here";
+            public const string EmailDefaultFooter = "You are receiving this email because you are subscribed for updates from {{Sitename}}. You can [instantly unsubscribe at any time]({{UnsubscribeLink}})";
             public const string EventHasEnded = "This streaming event has ended.";
             public const string EventNotFound = "Could not find the requested event.";
             public const string EventNotStarted = "This streaming event has not started yet.";
@@ -248,6 +250,7 @@
 
         public static class Validate
         {
+            public const string AssociatedEmailAddressInvalid = "The email address associated with username {0} is invalid, please call or stop by to resolve this.";
             public const string AuthorizationCodeWarning = "To activate an authorization code, please sign in or <a href=\"{0}\">join</a>.";
             public const string BookTitle = "When providing an author of a book, please also provide a title.";
             public const string Branch = "The branch you've selected is not valid, please select another branch.";
@@ -260,6 +263,7 @@
             public const string CouldNotSaveAvatarReason = "Could not save avatar: {0}";
             public const string CustomizeAvatarFirst = "Please customize your avatar and save it, then you can share it!";
             public const string Email = "The {0} field is not a valid e-mail address.";
+            public const string EmailAddressInvalid = "The email address {0} is invalid.";
             public const string EmailConfigured = "Username '{0}' does not have an email address configured.";
             public const string EmailPhoneNeededForPrizes = "Email and Phone Number are not required however at least one is needed in order to be eligible for prizes.";
             public const string EmailSubscription = "Please let us know if you would like to receive emails throughout the program.";
