@@ -358,6 +358,7 @@ namespace GRA.Web
             services.AddControllersWithViews(_ =>
                     _.ModelBinderProviders.RemoveType<DateTimeModelBinderProvider>())
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+                .AddSessionStateTempDataProvider()
                 .AddDataAnnotationsLocalization(_ =>
                 {
                     _.DataAnnotationLocalizerProvider = (__, factory)
@@ -371,12 +372,6 @@ namespace GRA.Web
             );
 
             services.AddAntiforgery(_ => _.Cookie.Name = $"{discriminator}-af");
-
-            services.Configure<CookieTempDataProviderOptions>(_ =>
-            {
-                _.Cookie.IsEssential = true;
-                _.Cookie.Name = $"{discriminator}-tmp";
-            });
 
             // set cookie authentication options
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

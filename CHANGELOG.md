@@ -8,6 +8,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### Added
 
+### Changed
+
+- Moved TempData storage to session from separate cookie
+
+### Fixed
+
+### Updated
+
+### Removed
+
+## 4.2.2
+
+### Added
+
 - Notation on the participant dashboard that title and author are optional
 - Site setting to disable avatar sharing
 - Performer program setup supplemental text
