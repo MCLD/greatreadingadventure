@@ -7,6 +7,7 @@ namespace GRA.Data.Model
     {
         public DateTime? ArrivalDate { get; set; }
 
+        public int? AssociatedUserId { get; set; }
         public int? BranchId { get; set; }
 
         [Required]
@@ -27,6 +28,7 @@ namespace GRA.Data.Model
 
         public DateTime? EmailSentAt { get; set; }
 
+        public bool IsAssigned { get; set; }
         public bool? IsDamaged { get; set; }
 
         public bool? IsDonated { get; set; }
@@ -43,6 +45,9 @@ namespace GRA.Data.Model
         public DateTime? OrderDate { get; set; }
 
         public long PackingSlip { get; set; }
+
+        [MaxLength(255)]
+        public string ReasonForReassignment { get; set; }
 
         public DateTime? ShipDate { get; set; }
 

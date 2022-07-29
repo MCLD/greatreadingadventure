@@ -36,6 +36,7 @@ namespace GRA.Data.Repository
                 unusedCode = await DbSet
                     .Where(_ => _.SiteId == user.SiteId
                         && _.UserId == null
+                        && !_.IsAssigned
                         && _.VendorCodeTypeId == vendorCodeTypeId)
                     .FirstOrDefaultAsync();
 
@@ -46,6 +47,7 @@ namespace GRA.Data.Repository
                 }
 
                 unusedCode.UserId = userId;
+                unusedCode.IsAssigned = true;
 
                 tries++;
                 try
@@ -224,7 +226,7 @@ namespace GRA.Data.Repository
                 return new VendorCodeStatus();
             }
 
-            var assigned = all.Where(_ => _.UserId != null);
+            var assigned = all.Where(_ => _.IsAssigned);
             var emailAwards = assigned.Where(_ => _.IsEmailAward == true && _.IsDonated != true);
             var vendorAwards = assigned.Where(_ => _.IsEmailAward != true && _.IsDonated != true);
 
@@ -243,7 +245,7 @@ namespace GRA.Data.Repository
                     && _.OrderDate == null),
                 Ordered = await vendorAwards.CountAsync(_ => _.OrderDate != null),
                 Shipped = await vendorAwards.CountAsync(_ => _.ShipDate != null),
-                UnusedCodes = await all.CountAsync(_ => _.UserId == null),
+                UnusedCodes = await all.CountAsync(_ => !_.IsAssigned),
                 VendorSelected = await vendorAwards.CountAsync()
             };
         }
